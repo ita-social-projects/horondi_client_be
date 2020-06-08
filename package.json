@@ -1,0 +1,61 @@
+{
+  "name": "horondi_client_be",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^5.1.0",
+    "config": "^3.2.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.0",
+    "mongoose-middleware": "^2.0.1",
+    "morgan": "^1.9.1",
+    "nodemailer": "^6.4.6",
+    "passport": "^0.4.1",
+    "passport-facebook-token": "^3.3.0",
+    "passport-google-token": "^0.1.2",
+    "rotating-file-stream": "^2.0.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "chance": "^1.1.5",
+    "eslint": "^7.1.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-standart": "^0.2.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.9",
+    "nodemon": "^2.0.3",
+    "prettier": "^1.19.1"
+  },
+  "engines": {
+    "node": ">=8.10.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": [
+        "lint-staged"
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

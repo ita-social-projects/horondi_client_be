@@ -1,0 +1,109 @@
+{
+  "root": true,
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": ["airbnb-base"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "rules": {
+    "linebreak-style": ["error", "windows"],
+    "semi": "off",
+    "no-var": "warn",
+    "no-unused-vars": [
+      1,
+      {
+        "vars": "all",
+        "args": "none",
+        "ignoreSiblings": true,
+        "argsIgnorePattern": "res|next|^err"
+      }
+    ],
+    "no-debugger": 0,
+    "no-alert": 0,
+    "no-use-before-define": "off",
+    "no-await-in-loop": 0,
+    "no-return-assign": ["error", "except-parens"],
+    "no-restricted-syntax": [
+      2,
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement"
+    ],
+    "prefer-const": [
+      "error",
+      {
+        "destructuring": "all"
+      }
+    ],
+    "arrow-body-style": [2, "as-needed"],
+    "no-unused-expressions": 0,
+    "no-console": [0, { "allow": ["warn", "error"] }],
+    "no-plusplus": 0,
+    "no-nested-ternary": 0,
+    "no-unneeded-ternary": 2,
+    "prefer-arrow-callback": 1,
+    "prefer-spread": 1,
+    "prefer-template": 1,
+    "prefer-destructuring": 1,
+    "prefer-default-export": 0,
+    "import/prefer-default-export": 0,
+    "no-underscore-dangle": 0,
+    "no-case-declarations": 0,
+    "lines-around-comment": 1,
+    "no-multiple-empty-lines": 2,
+    "lines-between-class-members": [1, "always"],
+    "consistent-return": 0,
+    "no-this-before-super": 2,
+    "indent": [
+      2,
+      2,
+      {
+        "ignoreComments": true,
+        "VariableDeclarator": {
+          "var": 2,
+          "let": 2,
+          "const": 3
+        }
+      }
+    ],
+    "no-return-await": 2,
+    "camelcase": 0,
+    "no-useless-return": 2,
+    "no-multi-str": 2,
+    "no-constant-condition": 1,
+    "no-extra-parens": [1, "functions"],
+    "no-param-reassign": [
+      2,
+      {
+        "props": false
+      }
+    ],
+    "no-multi-spaces": [
+      1,
+      {
+        "exceptions": {
+          "VariableDeclarator": true,
+          "FunctionExpression": true
+        }
+      }
+    ],
+    "radix": 0,
+    "no-shadow": 0,
+    "quotes": [
+      2,
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ]
+  }
+}
