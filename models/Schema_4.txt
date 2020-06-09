@@ -29,7 +29,7 @@ Materials (Anna)
     images:
     {
         primary: String,
-        thumbnail: String
+        thumbnail: Binary
     }
     colors:
     [
