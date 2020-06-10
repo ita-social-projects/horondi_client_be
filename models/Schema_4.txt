@@ -1,0 +1,309 @@
+Categories (Ihor)
+{
+    _id: ObjectID,
+    categoryCode: String,
+    name:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    image: String
+}
+
+Materials (Anna)
+{
+    _id: ObjectID,
+    name: String,
+    composition: String,
+    description:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    images:
+    {
+        primary: String,
+        thumbnail: Binary
+    }
+    colors:
+    [
+        {
+            code: Int32,
+            image: Binary,
+            available: Boolean
+        }
+        {...}
+    ]
+    available: Boolean,
+    additionalPrice: Number
+}
+
+Patterns (Stas)
+{
+    _id: ObjectID,
+    name:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    description:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    images:
+    {
+        primary: String,
+        thumbnail: Binary
+    }
+    material: String,
+    handmade: Boolean,
+    available: Boolean
+}
+
+Products (Anna)
+{
+    _id: ObjectID,
+    category: ObjectID,
+    name:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    description:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    images:
+    {
+        primary: String,
+        additional: [String]
+    }
+    items:
+    [
+        {
+            _id: ObjectID,
+            categoryCode: backpack, <--- separate schemas
+            size:
+            {
+                categoryCode: backpack, <--- separate schemas
+                name: String, // S, M, L
+                heightInCm: Int32,
+                widthInCm: Int32,
+                depthInCm: Int32,
+                volumeInLiters: Int32,
+                weight: Int32
+            }
+            outerLayer:
+            {
+                material: ObjectID,
+                color: Int32
+            }
+            inset:
+            {
+                material: ObjectID,
+                color: Int32
+            }
+            pattern: ObjectID,
+            innerLayer:
+            {
+                material: ObjectID,
+                color: Int32
+            }
+            bottom:
+            {
+                material: ObjectID,
+                color: Int32
+            }
+            pocket: Boolean,
+            strapLength: Int32,
+            closure: String,
+            basePrice: Number,
+            availableNumber: Int32
+        }
+        {...}
+    ]
+    rate: Number,
+    rateCount: Int32,
+    votedUsers:
+    [
+        ObjectID,
+        ObjectID...
+    ]
+}
+
+Currency (Stas)
+{
+    _id: ObjectID,
+    date: Date,
+    convertOptions:
+    [
+        {
+            code: String, // USD, EUR
+            CurrencyRate : Number
+        }
+        {...}
+    ]
+}
+
+Comments (Anna)
+{
+    _id: ObjectID,
+    text: String,
+    date: Datetime,
+    username: String
+}
+
+Users (Ihor)
+{
+    _id: ObjectID,
+    firstName: String,
+    lastName: String,
+    role: String,   // enum: []
+    email: String,
+    phoneNumber: String,
+    address:
+    {
+        country: String,
+        city: String,
+        street: String,
+        buildingNumber: String,
+        appartment: String
+    }
+    avatar: String,
+    credentials:
+    [
+        {
+            source: String, // local, google, facebook
+            tokenPass: String
+        }
+    ]
+    registrationDate: Date,
+    wishlist:
+    [
+        ObjectID,
+        ObjectID...
+    ]
+    cart: -> order status undone?
+    [
+        ObjectID,
+        ObjectID...
+    ]
+    orders:
+    [
+        ObjectID,
+        ObjectID...
+    ]
+}
+
+Orders (Stas)
+{
+    _id: ObjectID,
+    status: String,   // enum: []
+    user:
+    {
+        _id: ObjectID,
+        firstName: String,
+        lastName: String,
+        email: String,
+        phoneNumber: String,
+        address:
+        {
+            country: String,
+            city: String,
+            street: String,
+            buildingNumber: String,
+            appartment: String
+        }
+    }
+    dateOfCreation: Date,
+    dateOfDelivery: Date,
+    items:
+    [
+        {
+            _id: ObjectID,
+            categoryCode: String,
+            name: String,
+            size: String,
+            outerLayer:
+            {
+                material: String,
+                color: Int32
+            }
+            inset:
+            {
+                material: String,
+                color: Int32
+            }
+            pattern: String,
+            innerLayer:
+            {
+                material: String,
+                color: Int32
+            }
+            bottom:
+            {
+                material: String,
+                color: Int32
+            }
+            pocket: Boolean,
+            strapLength: Int32,
+            closure: String,
+            quantity: Int,
+            price: Number
+        },
+        {...}
+    ]
+}
+
+News (Ihor)
+{
+    _id: ObjectID,
+    title:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    text:
+    [
+        {
+            lang: String,
+            value: String
+        }
+        {...}
+    ]
+    images:
+    {
+        primary: String,
+        additional: [String]
+    }
+    video: [String],
+    author:
+    {
+        name: String,
+        avatar: String
+    }
+    date: Timestamp
+}
