@@ -159,7 +159,7 @@ Currency (Stas)
     [
         {
             code: String, // USD, EUR
-            coeficient: Number
+            CurrencyRate : Number
         }
         {...}
     ]
