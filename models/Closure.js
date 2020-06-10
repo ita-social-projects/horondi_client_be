@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
 const Language = require('./Language').schema;
-const SmallImage = require('./SmallImage').schema;
 const Color = require('./Color').schema;
 
-const materialSchema = new mongoose.Schema({
+const closureSchema = new mongoose.Schema({
     name: [Language],
-    composition: String,
-    description: [Language],
-    images: SmallImage,
     colors: [Color],
     available: Boolean,
     additionalPrice: {
@@ -16,4 +12,4 @@ const materialSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Material', materialSchema)
+module.exports = mongoose.model('Closure', closureSchema)
