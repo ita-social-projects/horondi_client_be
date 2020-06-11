@@ -1,34 +1,23 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const NewsSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  text: {
-    type: String,
-    required: true,
-  },
+const Language = require('./Language').schema;
+const PrimaryImage = require('./PrimaryImage').schema;
+
+const NewsSchema = new mongoose.Schema({
+  title: [Language],
+  text: [Language],
+  images: [PrimaryImage],
+  video: String,
+  author: [
+    {
+      name: String,
+      avatar: String,
+    },
+  ],
   date: {
     type: Date,
     default: Date.now,
   },
-  newsImage: {
-    type: String,
-    required: true,
-  },
-  newsVideo: {
-    type: String,
-  },
-  author: {
-    type: String,
-    required: true,
-  },
-  authorPhoto: {
-    type: String,
-  },
 });
 
-const News = model('news', NewsSchema);
-
-export default News;
+module.exports = mongoose.model('News', NewsSchema);

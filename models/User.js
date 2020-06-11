@@ -1,82 +1,48 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
 
-const UserModel = new Schema({
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    minlength: 6,
-    required: true,
-  },
+const userSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
   role: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user',
+    enum: ['user', 'admin'], // enum: [user, admin]
   },
-  confirmedEmail: {
-    type: Boolean,
-    default: false,
+  email: String,
+  phoneNumber: String, // nomber
+  address: {
+    country: String,
+    city: String,
+    street: String,
+    buildingNumber: String,
+    appartment: String,
   },
-  emailToken: {
-    type: String,
-  },
-  avatar: {
-    type: String,
-  },
-  date: {
+  avatar: String,
+  credentials: [
+    {
+      source: String, // local, google, facebook
+      tokenPass: String,
+    },
+  ],
+  registrationDate: {
     type: Date,
     default: Date.now,
   },
-  tokens: [String],
-  wishlist: [String],
-  cart: {
-    cartProducts: Array,
-    cartNumbers: {
-      type: Number,
-      default: 0,
+  wishlist: [
+    {
+      wished: String,
     },
-  },
-  orders: {
-    type: Schema.Types.ObjectId,
-    ref: 'order',
-  },
-  deliveryAddress: {
-    country: {
-      type: String,
-      required: true,
+  ],
+  carts: [
+    {
+      cart: String,
     },
-    city: {
-      type: String,
-      required: true,
+  ],
+  orders: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'Order',
     },
-    street: {
-      type: String,
-      required: true,
-    },
-    buildingNumber: {
-      type: String,
-      required: true,
-    },
-  },
-  deliveryType: {
-    type: String,
-    required: true,
-    enum: ['currier', 'post', 'delivery servise'],
-  },
-  contactPhone: {
-    type: Number,
-    required: true,
-  },
+  ],
 });
 
-const Users = model('user', UserModel);
-export default Users;
+module.exports = mongoose.model('User', userSchema);
