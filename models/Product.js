@@ -4,10 +4,10 @@ const PrimaryImage = require('./PrimaryImage').schema;
 const Item = require('./Item').schema;
 
 const productSchema = new mongoose.Schema({
-    category: [{
+    category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
-    }],
+    },
     name: [Language],
     description: [Language],
     images: [PrimaryImage],

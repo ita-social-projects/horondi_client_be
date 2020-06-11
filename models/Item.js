@@ -4,7 +4,7 @@ const Component = require('./Component').schema;
 
 const ItemSchema = new mongoose.Schema({
     size: Size,
-    component: [Component],
+    components: [Component],
     pattern: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Pattern'

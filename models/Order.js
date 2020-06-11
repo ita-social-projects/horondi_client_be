@@ -1,20 +1,19 @@
 const mongoose = require('mongoose');
-const item = require('./item').schema;
+const Item = require('./Item').schema;
 
 const orderSchema = new mongoose.Schema({
-    
     status: {
         type: String,
         required: true,
         enum: [
-           "delivered",
+            "sent",
             "pending",
-            "canceled"              
-        ]
+            "canceled"
+        ],
+        default: "pending"
     },
     user:
     {
-        
         firstName: String,
         lastName: String,
         email: String,
@@ -28,11 +27,20 @@ const orderSchema = new mongoose.Schema({
             appartment: String
         }
     },
-    dateOfCreation: Date,
+    dateOfCreation: {
+        type: Date,
+        default: Date.now
+    },
     dateOfDelivery: Date,
-    items:[item],
-    product: String
-   
+    deliveryType: String,
+    invoiceNumber: String,
+    items: [
+        {
+            product: String,
+            item: Item
+        }
+    ],
+    totalPrice: Number
 }
 );
 
