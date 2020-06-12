@@ -1,82 +1,58 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require('mongoose');
+const ImageSet = require('./ImageSet').schema;
+const Address = require('./Address').schema;
 
-const UserModel = new Schema({
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    minlength: 6,
-    required: true,
-  },
+const userSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
   role: {
     type: String,
     enum: ['user', 'admin'],
-    default: 'user',
   },
-  confirmedEmail: {
-    type: Boolean,
-    default: false,
-  },
-  emailToken: {
-    type: String,
-  },
-  avatar: {
-    type: String,
-  },
-  date: {
+  email: String,
+  phoneNumber: Number,
+  address: Address,
+  images: ImageSet,
+  credentials: [
+    {
+      source: String, // local, google, facebook
+      tokenPass: String,
+    },
+  ],
+  registrationDate: {
     type: Date,
     default: Date.now,
   },
-  tokens: [String],
-  wishlist: [String],
-  cart: {
-    cartProducts: Array,
-    cartNumbers: {
-      type: Number,
-      default: 0,
+  wishlist: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
     },
-  },
-  orders: {
-    type: Schema.Types.ObjectId,
-    ref: 'order',
-  },
-  deliveryAddress: {
-    country: {
-      type: String,
-      required: true,
+  ],
+  cart: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
     },
-    city: {
-      type: String,
-      required: true,
+  ],
+  orders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order',
     },
-    street: {
-      type: String,
-      required: true,
+  ],
+  purchasedProducts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
     },
-    buildingNumber: {
-      type: String,
-      required: true,
-    },
-  },
-  deliveryType: {
-    type: String,
-    required: true,
-    enum: ['currier', 'post', 'delivery servise'],
-  },
-  contactPhone: {
-    type: Number,
-    required: true,
-  },
+  ],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment'
+    }
+  ]
 });
 
-const Users = model('user', UserModel);
-export default Users;
+module.exports = mongoose.model('User', userSchema);
