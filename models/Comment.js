@@ -6,7 +6,9 @@ const commentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    username: String
+    username: String,
+    product: String,
+    show: Boolean
 });
 
 module.exports = mongoose.model('Comment', commentSchema)

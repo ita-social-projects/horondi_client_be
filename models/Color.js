@@ -5,7 +5,7 @@ const ImageSet = require('./ImageSet').schema;
 const ColorSchema = new mongoose.Schema({
     code: Number,
     name: [Language],
-    image: ImageSet,
+    images: ImageSet,
     available: Boolean
 });
 

@@ -4,10 +4,10 @@ const ImageSet = require('./ImageSet').schema;
 
 const patternSchema = new mongoose.Schema({
   name: [Language],
-  composition: String,
   description: [Language],
   images: ImageSet,
   material: String,
+  composition: String,
   handmade: Boolean,
   available: Boolean,
 });

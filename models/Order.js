@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const Item = require('./Item').schema;
+const Language = require('./Language').schema;
+const Address = require('./Address').schema;
+const Size = require('./Size').schema;
 
 const orderSchema = new mongoose.Schema({
     status: {
@@ -17,31 +19,37 @@ const orderSchema = new mongoose.Schema({
         firstName: String,
         lastName: String,
         email: String,
-        phoneNumber: String,
-        address:
-        {
-            country: String,
-            city: String,
-            street: String,
-            buildingNumber: String,
-            appartment: String
-        }
+        phoneNumber: Number,
+        address: Address
     },
     dateOfCreation: {
         type: Date,
         default: Date.now
     },
-    dateOfDelivery: Date,
-    deliveryType: String,
-    invoiceNumber: String,
-    items: [
-        {
-            product: String,
-            item: Item
-        }
-    ],
-    totalPrice: Number
-}
-);
+    delivery: {
+        sentOn: Date,
+        sentBy: String,
+        invoiceNumber: String,
+    },
+    items: [{
+        product: [Language],
+        size: Size,
+        components: [
+            {
+                name: [Language],
+                material: [Language],
+                color: [Language]
+            }
+        ],
+        pattern: [Language],
+        pocket: Boolean,
+        closure: [Language],
+        closureColor: [Language],
+        actualPrice: Number,
+        quantity: Number
+    }],
+    totalPrice: Number,
+    paymentMethod: String
+});
 
 module.exports = mongoose.model('Order', orderSchema)

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-
 const Language = require('./Language').schema;
 const PrimaryImage = require('./PrimaryImage').schema;
+const ImageSet = require('./ImageSet').schema;
 
 const NewsSchema = new mongoose.Schema({
   title: [Language],
@@ -11,7 +11,7 @@ const NewsSchema = new mongoose.Schema({
   author: [
     {
       name: String,
-      avatar: String,
+      image: ImageSet,
     },
   ],
   date: {

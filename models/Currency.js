@@ -1,12 +1,17 @@
 const mongoose = require('mongoose');
-const CurrencyRate = require('./CurrencyRate').schema;
 
 const CurrencySchema = new mongoose.Schema({
     date: {
       type: Date,
       default: Date.now
     },
-    convertOptions: [CurrencyRate],
+    convertOptions: [
+      {
+        name: String,
+        exchangeRate: Number,
+        show: Boolean
+      }
+    ],
 });
 
 module.exports = mongoose.model('Currency', CurrencySchema);

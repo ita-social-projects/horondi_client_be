@@ -19,7 +19,11 @@ const productSchema = new mongoose.Schema({
     }],
     basePrice: Number,
     items: [Item],
-    available: Boolean
+    available: Boolean,
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+    }]
 });
 
 module.exports = mongoose.model('Product', productSchema)

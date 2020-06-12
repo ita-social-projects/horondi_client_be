@@ -1,22 +1,19 @@
 const mongoose = require('mongoose');
+const ImageSet = require('./ImageSet').schema;
+const Address = require('./Address').schema;
 
 const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
+  gender: String,
   role: {
     type: String,
-    enum: ['user', 'admin'], // enum: [user, admin]
+    enum: ['user', 'admin'],
   },
   email: String,
-  phoneNumber: String, // nomber
-  address: {
-    country: String,
-    city: String,
-    street: String,
-    buildingNumber: String,
-    appartment: String,
-  },
-  avatar: String,
+  phoneNumber: Number,
+  address: Address,
+  images: ImageSet,
   credentials: [
     {
       source: String, // local, google, facebook
@@ -29,20 +26,28 @@ const userSchema = new mongoose.Schema({
   },
   wishlist: [
     {
-      wished: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Item',
     },
   ],
-  carts: [
+  cart: [
     {
-      cart: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Item',
     },
   ],
   orders: [
     {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Order',
     },
   ],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Comment'
+    }
+  ]
 });
 
 module.exports = mongoose.model('User', userSchema);
