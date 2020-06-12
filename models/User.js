@@ -5,7 +5,6 @@ const Address = require('./Address').schema;
 const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
-  gender: String,
   role: {
     type: String,
     enum: ['user', 'admin'],
@@ -27,19 +26,25 @@ const userSchema = new mongoose.Schema({
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Item',
+      ref: 'Product',
     },
   ],
   cart: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Item',
+      ref: 'Product',
     },
   ],
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Order',
+    },
+  ],
+  purchasedProducts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
     },
   ],
   comments: [

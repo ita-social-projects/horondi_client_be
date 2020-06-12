@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Language = require('./Language').schema;
 const PrimaryImage = require('./PrimaryImage').schema;
-const Item = require('./Item').schema;
+const Size = require('./Size').schema;
 
 const productSchema = new mongoose.Schema({
     category: {
@@ -18,7 +18,31 @@ const productSchema = new mongoose.Schema({
         ref: 'User'
     }],
     basePrice: Number,
-    items: [Item],
+    items: [{
+        size: Size,
+        components: [
+            {
+                name: String,
+                material: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Material'
+                },
+                colorCode: Number
+            }
+        ],
+        pattern: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Pattern'
+        },
+        pocket: Boolean,
+        closure: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Closure'
+        },
+        closureColorCode: Number,
+        actualPrice: Number,
+        availableNumber: Number
+    }],
     available: Boolean,
     comments: [{
         type: mongoose.Schema.Types.ObjectId,

@@ -1,13 +1,22 @@
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
-    text: String,
+    text: {
+        type: String,
+        required: Boolean
+    },
     date: {
         type: Date,
         default: Date.now
     },
-    username: String,
-    product: String,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+    },
     show: Boolean
 });
 

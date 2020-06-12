@@ -8,8 +8,7 @@ const CurrencySchema = new mongoose.Schema({
     convertOptions: [
       {
         name: String,
-        exchangeRate: Number,
-        show: Boolean
+        exchangeRate: Number
       }
     ],
 });
