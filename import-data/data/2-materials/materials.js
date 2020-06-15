@@ -5,8 +5,8 @@ const { mapToColors } = require('../../helpers/colors');
 const materials = [
   {
     name: mapToLanguages(['Мальмо', 'Malmo']),
-    description: mapToLanguages(['Malmo (100% polyester) - для рюкзаків, сумок, бананок (всі моделі)',
-        'Malmo (100% polyester) - для рюкзаків, сумок, бананок (всі моделі)']),
+    description: mapToLanguages(['Мальмо (100% поліестер) - для рюкзаків, сумок, бананок (всі моделі)',
+        'Malmo (100% polyester) - for backpacks, bags, fanny-packs (all models)']),
     colors: mapToColors([
       [200, 'Світло-коричневий', 'Light-brown'],
       [201, 'Рожево-коричневий', 'Rosy-brown'],

@@ -2,8 +2,8 @@ const { mapToLanguages } = require('./languages');
 const { mapToImages } = require('./images');
 
 const mapToColors = (names) => {
-    colorsNumber = names.length;
-    result = [];
+    const colorsNumber = names.length;
+    let result = [];
     for (let i = 0; i < colorsNumber; i++) {
         result.push({
             code: names[i][0],
