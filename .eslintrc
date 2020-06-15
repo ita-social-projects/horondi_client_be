@@ -56,6 +56,7 @@
     "prefer-default-export": 0,
     "import/prefer-default-export": 0,
     "no-underscore-dangle": 0,
+    "no-undef": 2,
     "no-case-declarations": 0,
     "lines-around-comment": 1,
     "no-multiple-empty-lines": 2,

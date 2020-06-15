@@ -9,8 +9,8 @@ const NewsSchema = new mongoose.Schema({
   images: [PrimaryImage],
   video: String,
   author: {
-      name: String,
-      image: ImageSet,
+    name: String,
+    image: ImageSet,
   },
   date: {
     type: Date,
