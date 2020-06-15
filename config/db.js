@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 
 const db =
   process.env.MONGO_URL ||
-  'mongodb+srv://lv487nodejs:nodejslv487@cluster0-ltcgb.mongodb.net/horondi?retryWrites=true&w=majority';
-
+  'mongodb+srv://user-read-write1:sfd$42A3a@horondi-yl27g.mongodb.net/horondi-1?retryWrites=true&w=majority';
 const connectDB = async () => {
   try {
     await mongoose.connect(db, {

@@ -1,27 +1,6 @@
-const {
-  GraphQLObjectType,
-  GraphQLList,
-  GraphQLString,
-  GraphQLInt,
-} = require('graphql');
-const UserType = require('./schemaTypes/UserType');
-
-const users = [
-  {
-    id: 1,
-    firstName: 'Ival',
-    lastName: 'Oval',
-    role: 'user',
-    email: 'bandvov@gmail.com',
-  },
-  {
-    id: 2,
-    firstName: 'Rex',
-    lastName: 'Maq',
-    role: 'admin',
-    email: 'mass@gmail.com',
-  },
-];
+const { GraphQLObjectType, GraphQLList, GraphQLString } = require('graphql');
+const Category = require('./models/Category');
+const CategoryType = require('./schemaTypes/CategoryType');
 
 const RootQuery = new GraphQLObjectType({
   name: 'Query',
@@ -30,14 +9,18 @@ const RootQuery = new GraphQLObjectType({
       type: GraphQLList(GraphQLString),
       resolve: () => ['admin', 'user'],
     },
-    user: {
-      type: UserType,
-      args: {
-        id: {
-          type: GraphQLInt,
-        },
+    categories: {
+      type: GraphQLList(CategoryType),
+      resolve: () => {
+        const a = Category.find({ avaliable: true });
+        return {
+          id: a._id,
+        };
       },
-      resolve: (parent, args) => users.find(user => user.id === args.id),
+    },
+    test: {
+      type: GraphQLString,
+      resolve: () => 'test string',
     },
   }),
 });
