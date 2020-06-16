@@ -36,7 +36,7 @@ app.use(
   expressGraphQL({
     schema,
     graphiql: true,
-  })
+  }),
 );
 app.get('/', (req, res) => res.send('API Running'));
 

@@ -34,8 +34,8 @@ passport.use(
       } catch (e) {
         done(e, false, e.message);
       }
-    }
-  )
+    },
+  ),
 );
 
 passport.use(
@@ -65,6 +65,6 @@ passport.use(
       } catch (e) {
         done(e, false, e.message);
       }
-    }
-  )
+    },
+  ),
 );

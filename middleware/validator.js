@@ -61,13 +61,13 @@ const productValidationRules = () => [
 const orderValidationRules = () => [
   body(
     'deliveryType',
-    'deliveryType is required and has to be one of:"currier","post","delivery servise"'
+    'deliveryType is required and has to be one of:"currier","post","delivery servise"',
   )
     .notEmpty()
     .isString(),
   body(
     'paymentMethod',
-    'paymentMethod is required and has to be one of: credit Card,Pay Pal,Cash,Google pay,Amazon Pay,Apple Pay'
+    'paymentMethod is required and has to be one of: credit Card,Pay Pal,Cash,Google pay,Amazon Pay,Apple Pay',
   )
     .notEmpty()
     .isString(),

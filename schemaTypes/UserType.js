@@ -15,7 +15,7 @@ const RoleEnumType = require('./RoleEnumType');
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    id: { type: GraphQLID },
+    _id: GraphQLID,
     firstName: {
       type: GraphQLString,
     },

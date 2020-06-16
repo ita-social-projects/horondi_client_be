@@ -1,6 +1,6 @@
 const { GraphQLObjectType, GraphQLList, GraphQLString } = require('graphql');
-const Category = require('./models/Category');
 const CategoryType = require('./schemaTypes/CategoryType');
+const Category = require('./models/Category');
 
 const RootQuery = new GraphQLObjectType({
   name: 'Query',
@@ -12,15 +12,11 @@ const RootQuery = new GraphQLObjectType({
     categories: {
       type: GraphQLList(CategoryType),
       resolve: () => {
-        const a = Category.find({ avaliable: true });
-        return {
-          id: a._id,
-        };
+        const x = Category.find()
+          .exec()
+          .then((res) => res);
+        return x;
       },
-    },
-    test: {
-      type: GraphQLString,
-      resolve: () => 'test string',
     },
   }),
 });
