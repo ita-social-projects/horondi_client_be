@@ -4,7 +4,7 @@ const {
   GraphQLString,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLEnumType,
+  // GraphQLEnumType,
 } = require('graphql');
 const AddressType = require('./AddressType');
 // const OrderType = require('./OrderType');
@@ -15,7 +15,9 @@ const RoleEnumType = require('./RoleEnumType');
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
-    _id: GraphQLID,
+    _id: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
     firstName: {
       type: GraphQLString,
     },

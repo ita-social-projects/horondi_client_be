@@ -1,7 +1,11 @@
-const { GraphQLObjectType } = require('graphql');
+const { GraphQLObjectType, GraphQLNonNull, GraphQLID } = require('graphql');
 
 const OrderType = new GraphQLObjectType({
   name: 'Order',
-  fields: () => {},
+  fields: () => ({
+    _id: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
+  }),
 });
 module.exports = OrderType;
