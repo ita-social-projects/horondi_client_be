@@ -2,7 +2,7 @@ const path = require('path');
 const { Seeder } = require('mongo-seeding');
 
 // const config = {
-//   database: '',
+//   database: 'mongodb+srv://user-read-write1:sfd$42A3a@horondi-yl27g.mongodb.net/horondi-2?retryWrites=true&w=majority',
 //   dropDatabase: false,
 // };
 
