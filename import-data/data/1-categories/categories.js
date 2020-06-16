@@ -1,37 +1,66 @@
 const { mapToLanguages } = require('../../helpers/languages');
 const { mapToImages } = require('../../helpers/images');
-//const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const categories = [
   {
-    categoryCode: 'backpacks',
+    categoryCode: 'main-backpacks',
     name: mapToLanguages(['Рюкзаки', 'Backpacks']),
-    images: mapToImages('backpack'),
+    images: mapToImages('main-backpack'),
+    subcategories: [
+      {
+        id: getObjectId('subcategory1'),
+        categoryCode: 'sub-backpacks',
+        name: mapToLanguages(['Рюкзаки', 'Backpacks']),
+        images: mapToImages('sub-backpack'),
+        available: true
+      }
+    ],
     available: true
   },
   {
-    categoryCode: 'bags',
+    categoryCode: 'main-bags',
     name: mapToLanguages(['Сумки', 'Bags']),
-    images: mapToImages('bag'),
+    images: mapToImages('main-bag'),
+    subcategories: [
+      {
+        id: getObjectId('subcategory2'),
+        categoryCode: 'sub-bags',
+        name: mapToLanguages(['Сумки', 'Bags']),
+        images: mapToImages('sub-bag'),
+        available: true
+      },
+      {
+        id: getObjectId('subcategory3'),
+        categoryCode: 'sub-fanny-packs',
+        name: mapToLanguages(['Бананки', 'Fanny packs']),
+        images: mapToImages('sub-fanny-pack'),
+        available: true
+      }
+    ],
     available: true
   },
   {
-    categoryCode: 'fanny-packs',
-    name: mapToLanguages(['Бананки', 'Fanny packs']),
-    images: mapToImages('fanny-pack'),
+    categoryCode: 'main-accessories',
+    name: mapToLanguages(['Аксесуари', 'Accessories']),
+    images: mapToImages('main-accessories'),
+    subcategories: [
+        {
+          id: getObjectId('subcategory4'),
+          categoryCode: 'sub-wallets',
+          name: mapToLanguages(['Гаманці', 'Wallets']),
+          images: mapToImages('sub-wallet'),
+          available: true
+        },
+        {
+          id: getObjectId('subcategory5'),
+          categoryCode: 'sub-laptop-cases',
+          name: mapToLanguages(['Чехли для ноутбуків', 'Laptop cases']),
+          images: mapToImages('sub-laptop-case'),
+          available: false
+        }
+    ],
     available: true
-  },
-  {
-    categoryCode: 'wallets',
-    name: mapToLanguages(['Гаманці', 'Wallets']),
-    images: mapToImages('wallet'),
-    available: true
-  },
-  {
-    categoryCode: 'laptop-cases',
-    name: mapToLanguages(['Чехли для ноутбуків', 'Laptop cases']),
-    images: mapToImages('laptop-case'),
-    available: false
   }
 ];
 

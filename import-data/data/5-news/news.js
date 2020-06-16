@@ -14,12 +14,53 @@ const news = [
                 { medium: 'https://ukr.media/static/ba/aimg/3/9/3/393626_5.jpg' }
             ]
         },
-        video: String,
+        video: 'https://www.youtube.com/embed/maP6Daq83fM',
         author: {
             name: 'Danuta Lanska',
             image: { small: 'https://ukr.media/static/ba/aimg/4/1/7/417067_0.jpg' },
         },
-        date: '2019-08-04T23:10:88',
+        date: '2019-08-14T23:10:88',
+    },
+    {
+        title: mapToLanguages(['Що носити модницям влітку 2020: добірка трендових сумок для спекотного сезону',
+                                'A selection of trendy bags for the hot season of summer 2020']),
+        text: mapToLanguages([ukArticles[1], enArticles[1]]),
+        images: {
+            primary: { medium: 'https://s.032.ua/section/newsInternalIcon/upload/images/news/icon/000/052/185/trendi-lita-golovna_5edf9266621db.jpg' },
+            additional: [
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/solomani_5edf8e4b209ed.jpg' },
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/11_5edf8f3209c11.jpg' },
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/cepki_5edf8fffc7403.jpg' },
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/ertfg4_5edf90563e5b1.jpg' },
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/9_5edf90b4381c8.jpg' },
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/11_5edf9163c6237.jpg' },
+                { medium: 'https://s.032.ua/section/newsInText/upload/images/news/intext/000/052/185/7_5edf942a343c8.jpg' }
+            ]
+        },
+        video: 'https://www.youtube.com/embed/VGqZMqMGjgA',
+        author: {
+            name: 'Mariya Nashova',
+            image: { small: 'https://s.032.ua/section/userphoto/upload/managers/photos/000/051/775/866162337758924195687066424348618920034304n_5e4a57bc8f345.jpg' },
+        },
+        date: '2020-06-01T13:55:02',
+    },
+    {
+        title: mapToLanguages(['Аксесуар на пояс, зручна сумка, стильна штучка!',
+                                'Belt accessory, comfortable bag, stylish thingy!']),
+        text: mapToLanguages([ukArticles[2], enArticles[2]]),
+        images: {
+            primary: { medium: 'https://images.stylight.net/image/upload/t_web_post_500x667/q_auto,f_auto/post-c27c63a5b58deb0d4535ddd5993e68b2e4d0776d756fdc41c0f7c391.jpg' },
+            additional: [
+                { small: 'https://intersumka.ua/image/catalog/_all/banan2.jpg' },
+                { small: 'https://intersumka.ua/image/catalog/_all/banan3.jpg' }
+            ]
+        },
+        video: 'https://www.youtube.com/embed/Y7L_gvaGfx0',
+        author: {
+            name: 'Denys Kogut',
+            image: { medium: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' },
+        },
+        date: '2020-02-23T17:10:46',
     }
 ];
 
