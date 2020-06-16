@@ -6,7 +6,9 @@ const CategoryNameType = new GraphQLObjectType({
   fields: () => ({
     lang: {
       type: GraphQLString,
-      value: GraphQLString,
+    },
+    value: {
+      type: GraphQLString,
     },
   }),
 });

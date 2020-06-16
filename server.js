@@ -11,7 +11,6 @@ const RootQuery = require('./rootQuery');
 const connectDB = require('./config/db');
 
 const errorHandler = require('./middleware/errorHandler');
-const Category = require('./models/Category');
 
 require('dotenv').config();
 
@@ -31,6 +30,7 @@ app.use(express.json({ extended: false }));
 const schema = new GraphQLSchema({
   query: RootQuery,
 });
+
 app.use(
   '/graphql',
   expressGraphQL({

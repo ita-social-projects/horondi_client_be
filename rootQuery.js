@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLList } = require('graphql');
+const { GraphQLObjectType, GraphQLList, GraphQLID } = require('graphql');
 const CategoryType = require('./schemaTypes/CategoryType');
 const Category = require('./models/Category');
 
@@ -7,13 +7,18 @@ const RootQuery = new GraphQLObjectType({
   fields: () => ({
     categories: {
       type: GraphQLList(CategoryType),
-      resolve: () => {
-        const x = Category.find().exec();
+      resolve: () => Category.find(),
+    },
 
-        return x;
+    category: {
+      type: CategoryType,
+      args: {
+        id: {
+          type: GraphQLID,
+        },
       },
+      resolve: (parent, args) => Category.findById(args.id),
     },
   }),
 });
-
 module.exports = RootQuery;
