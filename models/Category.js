@@ -6,6 +6,14 @@ const CategorySchema = new mongoose.Schema({
     categoryCode: String,
     name: [Language],
     images: ImageSet,
+    subcategories: [
+        {
+            categoryCode: String,
+            name: [Language],
+            images: ImageSet,
+            available: Boolean
+        }
+    ],
     available: Boolean
 });
 
