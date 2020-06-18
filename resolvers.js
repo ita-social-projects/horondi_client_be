@@ -1,14 +1,13 @@
 const Currency = require('./models/Currency');
-const Language = require('./models/Language');
+const Category = require('./models/Category');
+const News = require('./models/News');
 
 const resolvers = {
   Query: {
-    currency: () => {
-      console.log(Currency.find());
-
-      return Currency.find();
-    },
-    language: () => Language.find(),
+    currencies: () => Currency.find(),
+    categories: () => Category.find(),
+    news: () => News.find(),
   },
 };
+
 module.exports = resolvers;

@@ -2,13 +2,11 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type Language {
-    _id: ID
-    lang: String
-    value: String
+    lang: String!
+    value: String!
   }
 
   type ImageSet {
-    _id: ID
     large: String
     medium: String
     small: String
@@ -16,25 +14,58 @@ const typeDefs = gql`
   }
 
   type PrimaryImage {
-    _id: ID
-    primary: ImageSet
-    additional: [ImageSet]
+    primary: ImageSet!
+    additional: [ImageSet!]
   }
 
   type ConvertOption {
-    name: String
-    exchangeRate: Int
+    name: String!
+    exchangeRate: Float!
   }
 
   type Currency {
-    _id: ID
-    date: String
-    convertOptions: [ConvertOption]
+    _id: ID!
+    date: String!
+    convertOptions: [ConvertOption!]
+  }
+
+  type Subcategory {
+    _id: ID!
+    categoryCode: String!
+    name: [Language!]
+    images: ImageSet
+    available: Boolean!
+  }
+
+  type Category {
+    _id: ID!
+    categoryCode: String!
+    name: [Language!]
+    images: ImageSet
+    subcategories: [Subcategory!]
+    available: Boolean!
+  }
+
+  type Author {
+    name: String!
+    image: ImageSet
+  }
+
+  type News {
+    _id: ID!
+    title: [Language!]
+    text: [Language!]
+    images: [PrimaryImage!]
+    video: String!
+    author: Author!
+    date: String!
   }
 
   type Query {
-    currency: [Currency]
-    language: [Language]
+    currencies: [Currency!]!
+    categories: [Category!]!
+    news: [News!]!
   }
 `;
+
 module.exports = typeDefs;
