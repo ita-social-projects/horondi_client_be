@@ -63,8 +63,11 @@ const typeDefs = gql`
 
   type Query {
     currencies: [Currency!]!
+    currency(id: ID): Currency
     categories: [Category!]!
-    news: [News!]!
+    category(id: ID): Category
+    allNews: [News!]!
+    oneNews(id: ID): News
   }
 `;
 
