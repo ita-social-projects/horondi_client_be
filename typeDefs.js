@@ -1,5 +1,7 @@
 const { gql } = require('apollo-server');
 const category = require('./modules/categories/categories.model');
+const material = require('./modules/materials/materials.model');
+const pattern = require('./modules/patterns/patterns.model')
 
 const typeDefs = gql`
   type Language {
@@ -38,17 +40,10 @@ const typeDefs = gql`
     available: Boolean!
   }
 
-  # type Category {
-  #   _id: ID!
-  #   categoryCode: String!
-  #   name: [Language!]
-  #   images: ImageSet
-  #   subcategories: [Subcategory!]
-  #   available: Boolean!
-  # }
-  type Category{
-  ${category}
+  type Category {
+    ${category}
   }
+
   type Author {
     name: String!
     image: ImageSet
@@ -64,13 +59,36 @@ const typeDefs = gql`
     date: String!
   }
 
+  type Color {
+    code: Int!,
+    name: [Language!],
+    images: ImageSet,
+    available: Boolean!,
+  }
+
+  type Material {
+    ${material}
+  }
+
+  type Pattern {
+    ${pattern}
+  }
+
   type Query {
     currencies: [Currency!]!
     currency(id: ID): Currency
-    categories: [Category!]!
-    category(id: ID): Category
+
+    getAllCategories: [Category!]!
+    getCategoryById(id: ID): Category
+
     allNews: [News!]!
     oneNews(id: ID): News
+
+    getAllMaterials: [Material!]!
+    getMaterialById(id: ID): Material
+
+    getAllPatterns: [Pattern!]!
+    getPatternById(id: ID): Pattern
   }
 `;
 
