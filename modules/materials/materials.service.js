@@ -12,6 +12,7 @@ class MaterialsService {
   async addMaterial(data) {
     const material = await Material(data);
     await material.save();
+    return material;
   }
 
   deleteMaterial(id) {

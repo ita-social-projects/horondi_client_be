@@ -12,6 +12,7 @@ class PatternsService {
   async addPattern(data) {
     const pattern = await Pattern(data);
     await pattern.save();
+    return pattern;
   }
 
   deletePattern(id) {

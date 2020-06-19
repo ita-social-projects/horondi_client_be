@@ -6,4 +6,13 @@ const categoryType = `
     subcategories: [Subcategory!]
     available: Boolean!
 `;
-module.exports = categoryType;
+
+const categoryInput = `
+    categoryCode: String!
+    name: [LanguageInput!]
+    images: ImageSetInput
+    subcategories: [SubcategoryInput!]
+    available: Boolean!
+`;
+
+module.exports = { categoryType, categoryInput };

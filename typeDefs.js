@@ -1,8 +1,20 @@
 const { gql } = require('apollo-server');
-const category = require('./modules/categories/categories.model');
-const material = require('./modules/materials/materials.model');
-const pattern = require('./modules/patterns/patterns.model');
-const currency = require('./modules/currencies/currencies.model');
+const {
+  categoryType,
+  categoryInput,
+} = require('./modules/categories/categories.model');
+const {
+  materialType,
+  materialInput,
+} = require('./modules/materials/materials.model');
+const {
+  patternsType,
+  patternsInput,
+} = require('./modules/patterns/patterns.model');
+const {
+  currencyType,
+  currencyInput,
+} = require('./modules/currencies/currencies.model');
 
 const typeDefs = gql`
   type Language {
@@ -28,7 +40,7 @@ const typeDefs = gql`
   }
 
   type Currency {
-    ${currency}
+    ${currencyType}
   }
 
   type Subcategory {
@@ -40,7 +52,7 @@ const typeDefs = gql`
   }
 
   type Category {
-    ${category}
+    ${categoryType}
   }
 
   type Author {
@@ -66,11 +78,11 @@ const typeDefs = gql`
   }
 
   type Material {
-    ${material}
+    ${materialType}
   }
 
   type Pattern {
-    ${pattern}
+    ${patternsType}
   }
 
   type Query {
@@ -89,6 +101,72 @@ const typeDefs = gql`
     getAllPatterns: [Pattern!]!
     getPatternById(id: ID): Pattern
   }
+
+  input LanguageInput {
+    lang: String!
+    value: String!
+  }
+
+  input PatternInput {
+    ${patternsInput}
+  }
+
+  input ImageSetInput {
+    large: String
+    medium: String
+    small: String
+    thumbnail: String
+  }
+
+  input MaterialInput {
+    ${materialInput}
+  }
+
+  input ColorInput {
+    code: Int!
+    name: [LanguageInput!]
+    images: ImageSetInput
+    available: Boolean!
+  }
+
+  input ConvertOptionInput {
+    name: String!
+    exchangeRate: Float!
+  }
+
+  input CurrencyInput {
+    ${currencyInput}
+  }
+
+  input CategoryInput {
+    ${categoryInput}
+  }
+
+  input SubcategoryInput {
+    categoryCode: String!
+    name: [LanguageInput!]
+    images: ImageSetInput
+    available: Boolean!
+  }
+
+  type Mutation {
+    "Pattern Mutations"
+    addPattern(pattern: PatternInput!): Pattern
+    deletePattern(id: ID!): Pattern
+
+    "Material Mutation"
+    addMaterial(material: MaterialInput!): Material
+    deleteMaterial(id: ID!): Material
+
+    "Category Mutation"
+    addCategory(category: CategoryInput!): Category
+    deleteCategory(id: ID!): Category
+
+    "Currency Mutation"
+    addCurrency(currency: CurrencyInput!): Currency
+    deleteCurrency(id: ID!): Currency
+  }
+
 `;
 
 module.exports = typeDefs;

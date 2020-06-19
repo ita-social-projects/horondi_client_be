@@ -8,4 +8,13 @@ const patternsType = `
     available: Boolean!
 `;
 
-module.exports = patternsType;
+const patternsInput = ` 
+    name: [LanguageInput!]
+    description: [LanguageInput!]
+    images: ImageSetInput
+    material: String!
+    handmade: Boolean!
+    available: Boolean!
+`;
+
+module.exports = { patternsType, patternsInput };

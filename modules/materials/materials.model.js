@@ -7,4 +7,12 @@ const materialType = `
     additionalPrice: Float!
 `;
 
-module.exports = materialType;
+const materialInput = `
+    name: [LanguageInput!]
+    description: [LanguageInput!]
+    colors: [ColorInput!] 
+    available: Boolean!
+    additionalPrice: Float!
+`;
+
+module.exports = { materialType, materialInput };

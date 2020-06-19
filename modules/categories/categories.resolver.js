@@ -1,8 +1,13 @@
 const Category = require('./categories.service');
 
-const categoryQuery = {
+const CategoryQuery = {
   getAllCategories: () => Category.getAllCategories(),
   getCategoryById: (parent, args) => Category.getCategoryById(args.id),
 };
 
-module.exports = categoryQuery;
+const CategoryMutation = {
+  addCategory: (parent, args) => Category.addCategory(args.category),
+  deleteCategory: (parent, args) => Category.deleteCategory(args.id),
+};
+
+module.exports = { CategoryQuery, CategoryMutation };

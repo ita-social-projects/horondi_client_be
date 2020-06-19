@@ -4,4 +4,9 @@ const currencyType = `
     convertOptions: [ConvertOption!]
 `;
 
-module.exports = currencyType;
+const currencyInput = ` 
+    date: String!
+    convertOptions: [ConvertOptionInput!]
+`;
+
+module.exports = { currencyType, currencyInput };

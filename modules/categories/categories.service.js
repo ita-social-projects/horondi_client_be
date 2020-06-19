@@ -12,6 +12,7 @@ class CategoriesService {
   async addCategory(data) {
     const category = await Category(data);
     await category.save();
+    return category;
   }
 
   deleteCategory(id) {

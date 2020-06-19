@@ -1,17 +1,38 @@
-const Currency = require('./modules/currencies/currencies.resolver');
-const Material = require('./modules/materials/materials.resolver');
-const Pattern = require('./modules/patterns/patterns.resolver');
-const Category = require('./modules/categories/categories.resolver');
+const {
+  CurrencyQuery,
+  CurrencyMutation,
+} = require('./modules/currencies/currencies.resolver');
+const {
+  MaterialQuery,
+  MaterialMutation,
+} = require('./modules/materials/materials.resolver');
+const {
+  PatternQuery,
+  PatternMutation,
+} = require('./modules/patterns/patterns.resolver');
+const {
+  CategoryQuery,
+  CategoryMutation,
+} = require('./modules/categories/categories.resolver');
 
 const resolvers = {
   Query: {
-    ...Currency,
+    ...CurrencyQuery,
 
-    ...Category,
+    ...MaterialQuery,
 
-    ...Material,
+    ...PatternQuery,
 
-    ...Pattern,
+    ...CategoryQuery,
+  },
+  Mutation: {
+    ...PatternMutation,
+
+    ...MaterialMutation,
+
+    ...CategoryMutation,
+
+    ...CurrencyMutation,
   },
 };
 

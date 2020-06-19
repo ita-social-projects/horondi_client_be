@@ -5,4 +5,9 @@ const MaterialQuery = {
   getMaterialById: (parent, args) => Material.getMaterialById(args.id),
 };
 
-module.exports = MaterialQuery;
+const MaterialMutation = {
+  addMaterial: (parent, args) => Material.addMaterial(args.material),
+  deleteMaterial: (parent, args) => Material.deleteMaterial(args.id),
+};
+
+module.exports = { MaterialQuery, MaterialMutation };
