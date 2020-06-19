@@ -1,7 +1,8 @@
 const { gql } = require('apollo-server');
 const category = require('./modules/categories/categories.model');
 const material = require('./modules/materials/materials.model');
-const pattern = require('./modules/patterns/patterns.model')
+const pattern = require('./modules/patterns/patterns.model');
+const currency = require('./modules/currencies/currencies.model');
 
 const typeDefs = gql`
   type Language {
@@ -27,9 +28,7 @@ const typeDefs = gql`
   }
 
   type Currency {
-    _id: ID!
-    date: String!
-    convertOptions: [ConvertOption!]
+    ${currency}
   }
 
   type Subcategory {
@@ -75,8 +74,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    currencies: [Currency!]!
-    currency(id: ID): Currency
+    getAllCurrencies: [Currency!]!
+    getCurrencyById(id: ID): Currency
 
     getAllCategories: [Category!]!
     getCategoryById(id: ID): Category

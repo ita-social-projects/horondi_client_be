@@ -1,27 +1,18 @@
-const Currency = require('./models/Currency');
-const News = require('./models/News');
-
-const Material = require('./modules/materials/materials.services');
-const Pattern = require('./modules/patterns/patterns.services');
-const Category = require('./modules/categories/categories.services');
+const Currency = require('./modules/currencies/currencies.resolver');
+const Material = require('./modules/materials/materials.resolver');
+const Pattern = require('./modules/patterns/patterns.resolver');
+const Category = require('./modules/categories/categories.resolver');
 
 const resolvers = {
   Query: {
-    currencies: () => Currency.find(),
-    currency: (parent, args) => Currency.findById(args.id),
+    ...Currency,
 
-    getAllCategories: () => Category.getAllCategories(),
-    getCategoryById: (parent, args) => Category.getCategoryById(args.id),
+    ...Category,
 
-    allNews: () => News.find(),
-    oneNews: (parent, args) => News.findById(args.id),
+    ...Material,
 
-    getAllMaterials: () => Material.getAllMaterials(),
-    getMaterialById: (parent, args) => Material.getMaterialById(args.id),
-    
-    getAllPatterns: () => Pattern.getAllPatterns(),
-    getPatternById: (parent, args) => Pattern.getPatternById(args.id),
-  }
+    ...Pattern,
+  },
 };
 
 module.exports = resolvers;
