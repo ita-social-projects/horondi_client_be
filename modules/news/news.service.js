@@ -10,7 +10,7 @@ class NewsService {
   }
 
   async addNews(data) {
-    const user = await News(data);
+    const user = await new News(data);
     await user.save();
   }
 

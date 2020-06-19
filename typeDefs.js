@@ -1,9 +1,14 @@
 const { gql } = require('apollo-server');
-const { newsType } = require('./modules/news/news.model');
-const queryType = require('./modules/query/query.model');
+const { newsType, newsInputType } = require('./modules/news/news.model');
+const newsQuery = require('./modules/queries/query.model');
+const { newsMutation } = require('./modules/mutations/news.model');
 
 const typeDefs = gql`
   type Language {
+    lang: String!
+    value: String!
+  }
+  input LanguageInput {
     lang: String!
     value: String!
   }
@@ -14,17 +19,27 @@ const typeDefs = gql`
     small: String
     thumbnail: String
   }
+input ImageSetInput {
+    large: String
+    medium: String
+    small: String
+    thumbnail: String
+  }
 
   type PrimaryImage {
     primary: ImageSet!
     additional: [ImageSet!]
+  }
+  input PrimaryImageInput {
+    primary: ImageSetInput!
+    additional: [ImageSetInput!]
   }
 
   type ConvertOption {
     name: String!
     exchangeRate: Float!
   }
-
+ 
   type Currency {
     _id: ID!
     date: String!
@@ -44,12 +59,23 @@ const typeDefs = gql`
     image: ImageSet
   }
 
+  input AuthorInput {
+    name: String!
+    image: ImageSetInput
+  }
+
   type News {
   ${newsType}
   }
+input NewsInput {
+${newsInputType}
+}
 
   type Query {
-   ${queryType}
+    ${newsQuery}
+  }
+  type Mutation {
+    ${newsMutation}
   }
 `;
 

@@ -1,7 +1,9 @@
-const newsResolvers = require('./modules/news/news.resolver');
+const { newsQuery } = require('./modules/news/news.resolver');
+const { newsMutation } = require('./modules/news/news.resolver');
 
 const resolvers = {
-  Query: { ...newsResolvers },
+  Query: { ...newsQuery },
+  Mutation: { ...newsMutation },
 };
 
 module.exports = resolvers;

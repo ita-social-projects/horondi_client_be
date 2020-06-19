@@ -1,8 +1,12 @@
-const News = require('../../models/News');
+const newsService = require('./news.service');
 
 const newsQuery = {
-  allNews: () => News.find(),
-  oneNews: (parent, args) => News.findById(args.id),
+  getAllNews: () => newsService.getAllNews(),
+  getNewsById: (parent, args) => newsService.getNewsById(args.id),
+  deleteNews: (id) => newsService.deleteNews(id),
+};
+const newsMutation = {
+  addNews: (data) => newsService.addNews(data),
 };
 
-module.exports = newsQuery;
+module.exports = { newsQuery, newsMutation };

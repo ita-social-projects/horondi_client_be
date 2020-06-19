@@ -6,4 +6,13 @@ images: [PrimaryImage!]
 video: String!
 author: Author!
 date: String!`;
-module.exports = { newsType };
+
+const newsInputType = `
+title: [LanguageInput!]
+text: [LanguageInput!]
+images: [PrimaryImageInput!]
+video: String!
+author: AuthorInput!
+date: String!`;
+
+module.exports = { newsType, newsInputType };
