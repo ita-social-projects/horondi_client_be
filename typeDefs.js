@@ -1,5 +1,6 @@
 const { gql } = require('apollo-server');
-const category = require('./modules/categories/categories.model');
+const { newsType } = require('./modules/news/news.model');
+const queryType = require('./modules/query/query.model');
 
 const typeDefs = gql`
   type Language {
@@ -38,39 +39,17 @@ const typeDefs = gql`
     available: Boolean!
   }
 
-  # type Category {
-  #   _id: ID!
-  #   categoryCode: String!
-  #   name: [Language!]
-  #   images: ImageSet
-  #   subcategories: [Subcategory!]
-  #   available: Boolean!
-  # }
-  type Category{
-  ${category}
-  }
   type Author {
     name: String!
     image: ImageSet
   }
 
   type News {
-    _id: ID!
-    title: [Language!]
-    text: [Language!]
-    images: [PrimaryImage!]
-    video: String!
-    author: Author!
-    date: String!
+  ${newsType}
   }
 
   type Query {
-    currencies: [Currency!]!
-    currency(id: ID): Currency
-    categories: [Category!]!
-    category(id: ID): Category
-    allNews: [News!]!
-    oneNews(id: ID): News
+   ${queryType}
   }
 `;
 
