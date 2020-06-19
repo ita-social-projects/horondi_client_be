@@ -10,8 +10,9 @@ class CurrenciesService {
   }
 
   async addCurrency(data) {
-    const category = await Currency(data);
-    await category.save();
+    const currency = await new Currency(data);
+    await currency.save();
+    return currency;
   }
 
   deleteCurrency(id) {

@@ -3,10 +3,11 @@ const newsService = require('./news.service');
 const newsQuery = {
   getAllNews: () => newsService.getAllNews(),
   getNewsById: (parent, args) => newsService.getNewsById(args.id),
-  deleteNews: (id) => newsService.deleteNews(id),
 };
 const newsMutation = {
-  addNews: (data) => newsService.addNews(data),
+  addNews: (parent, args) => newsService.addNews(args.news),
+  deleteNews: (parent, args) => newsService.deleteNews(args.id),
+  updateNews: (parent, args) => newsService.updateNews(args.id, args.news),
 };
 
 module.exports = { newsQuery, newsMutation };

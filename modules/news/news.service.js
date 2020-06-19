@@ -9,6 +9,10 @@ class NewsService {
     return News.findById(id);
   }
 
+  updateNews(id, news) {
+    return News.findByIdAndUpdate(id, news);
+  }
+
   async addNews(data) {
     const user = await new News(data);
     await user.save();
