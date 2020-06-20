@@ -1,5 +1,5 @@
 # Horondi
-Backend API for the `Hondri` online store
+Backend API for the `Horondi` online store
 ## Rules and guidelines
 - File naming
     - Files should be name in format `some-component.type.js`
@@ -11,6 +11,7 @@ Backend API for the `Hondri` online store
     - All business logic (any database operations or validation related to the business rules) and interaction with models is located inside service
     - Each model should live in its own folder
     - In each folder files should be named in format `{model-name}.{type}.js`
+      (like `{model-name}.service.js` or `{model-name}.resolver.js`)
     - For each model we define class like `{ModelName}Service`
       in `{model-name}.service.js` and have separate methods for handling different types of operations
 - Configuration
