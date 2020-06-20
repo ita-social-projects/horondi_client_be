@@ -1,10 +1,10 @@
-const currencyType = `    
+const currencyType = `
     _id: ID!
     date: String!
     convertOptions: [ConvertOption!]
 `;
 
-const currencyInput = ` 
+const currencyInput = `
     date: String!
     convertOptions: [ConvertOptionInput!]
 `;

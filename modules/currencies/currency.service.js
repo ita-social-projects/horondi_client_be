@@ -1,6 +1,6 @@
 const Currency = require('../../models/Currency');
 
-class CurrenciesService {
+class CurrencyService {
   getAllCurrencies() {
     return Currency.find();
   }
@@ -9,9 +9,9 @@ class CurrenciesService {
     return Currency.findById(id);
   }
 
-  async addCurrency(data) {
-    const currency = await new Currency(data);
-    await currency.save();
+  addCurrency(data) {
+    const currency = new Currency(data);
+    currency.save();
     return currency;
   }
 
@@ -19,4 +19,4 @@ class CurrenciesService {
     return Currency.findByIdAndDelete(id);
   }
 }
-module.exports = new CurrenciesService();
+module.exports = new CurrencyService();

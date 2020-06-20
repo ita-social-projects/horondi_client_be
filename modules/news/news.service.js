@@ -1,3 +1,4 @@
+const { CheckResultAndHandleErrors } = require('apollo-server');
 const News = require('../../models/News');
 
 class NewsService {
@@ -13,9 +14,9 @@ class NewsService {
     return News.findByIdAndUpdate(id, news);
   }
 
-  async addNews(data) {
-    const user = await new News(data);
-    await user.save();
+  addNews(data) {
+    const user = new News(data);
+    user.save();
   }
 
   deleteNews(id) {

@@ -9,9 +9,9 @@ class PatternsService {
     return Pattern.findById(id);
   }
 
-  async addPattern(data) {
-    const pattern = await new Pattern(data);
-    await pattern.save();
+  addPattern(data) {
+    const pattern = new Pattern(data);
+    pattern.save();
     return pattern;
   }
 

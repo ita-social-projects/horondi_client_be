@@ -9,9 +9,9 @@ class MaterialsService {
     return Material.findById(id);
   }
 
-  async addMaterial(data) {
-    const material = await new Material(data);
-    await material.save();
+  addMaterial(data) {
+    const material = new Material(data);
+    material.save();
     return material;
   }
 

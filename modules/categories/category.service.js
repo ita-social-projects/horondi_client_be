@@ -1,6 +1,6 @@
 const Category = require('../../models/Category');
 
-class CategoriesService {
+class CategoryService {
   getAllCategories() {
     return Category.find();
   }
@@ -9,9 +9,9 @@ class CategoriesService {
     return Category.findById(id);
   }
 
-  async addCategory(data) {
-    const category = await new Category(data);
-    await category.save();
+  addCategory(data) {
+    const category = new Category(data);
+    category.save();
     return category;
   }
 
@@ -19,4 +19,4 @@ class CategoriesService {
     return Category.findByIdAndDelete(id);
   }
 }
-module.exports = new CategoriesService();
+module.exports = new CategoryService();

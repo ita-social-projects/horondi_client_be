@@ -1,21 +1,21 @@
 const { gql } = require('apollo-server');
-const { newsType, newsInputType } = require('./modules/news/news.model');
+const { newsType, newsInputType } = require('./modules/news/news.graphql');
 const {
   categoryType,
   categoryInput,
-} = require('./modules/categories/categories.model');
+} = require('./modules/categories/category.graphql');
 const {
   materialType,
   materialInput,
-} = require('./modules/materials/materials.model');
+} = require('./modules/materials/material.graphql');
 const {
   patternsType,
   patternsInput,
-} = require('./modules/patterns/patterns.model');
+} = require('./modules/patterns/pattern.graphql');
 const {
   currencyType,
   currencyInput,
-} = require('./modules/currencies/currencies.model');
+} = require('./modules/currencies/currency.graphql.js');
 
 const typeDefs = gql`
   type Language {
@@ -33,10 +33,6 @@ const typeDefs = gql`
   type PrimaryImage {
     primary: ImageSet!
     additional: [ImageSet!]
-  }
-  input PrimaryImageInput {
-    primary: ImageSetInput!
-    additional: [ImageSetInput!]
   }
 
   type ConvertOption {
@@ -64,18 +60,9 @@ const typeDefs = gql`
     name: String!
     image: ImageSet
   }
-
-  input AuthorInput {
-    name: String!
-    image: ImageSetInput
-  }
-
   type News {
   ${newsType}
   }
-input NewsInput {
-${newsInputType}
-}
 
   type Color {
     code: Int!,
@@ -112,6 +99,19 @@ ${newsInputType}
     getNewsById(id:ID):News
   }
 
+  input PrimaryImageInput {
+    primary: ImageSetInput!
+    additional: [ImageSetInput!]
+  }
+
+  input AuthorInput {
+    name: String!
+    image: ImageSetInput
+  }
+
+input NewsInput {
+${newsInputType}
+}
   input LanguageInput {
     lang: String!
     value: String!

@@ -3,19 +3,19 @@ const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const {
   currencyQuery,
   currencyMutation,
-} = require('./modules/currencies/currencies.resolver');
+} = require('./modules/currencies/currency.resolver');
 const {
   materialQuery,
   materialMutation,
-} = require('./modules/materials/materials.resolver');
+} = require('./modules/materials/material.resolver');
 const {
   patternQuery,
   patternMutation,
-} = require('./modules/patterns/patterns.resolver');
+} = require('./modules/patterns/pattern.resolver');
 const {
   categoryQuery,
   categoryMutation,
-} = require('./modules/categories/categories.resolver');
+} = require('./modules/categories/category.resolver');
 
 const resolvers = {
   Query: {
