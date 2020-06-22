@@ -1,32 +1,27 @@
-const nodemailer = require('nodemailer');
 require('dotenv').config();
+const nodemailer = require('nodemailer');
 
-const SmtpPool = require('nodemailer/lib/smtp-pool');
+const transport = nodemailer.createTransport({
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});
 
-const sendEmail = async (message, callback) => {
-  const transporter = nodemailer.createTransport(
-    new SmtpPool({
-      host: 'smtp-mail.outlook.com',
-      port: 25,
-      secure: false,
-      tls: {
-        rejectUnauthorized: false,
-        ciphers: 'SSLv3',
-      },
-      auth: {
-        user: 'exzzemple.sender@outlook.com',
-        pass: `i"+Mv!;8vV<PN9t`,
-      },
-    }),
-  );
+const passwordResetEmail = (text) => `
+  <div className="email" style="
+    border: 1px solid black;
+    padding: 20px;
+    font-family: sans-serif;
+    line-height: 2;
+    font-size: 20px;
+  ">
+    <h2>Hello</h2>
+    <p>${text}</p>
+    <p>Thank you</p>
+  </div>
+`;
 
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      return err;
-    }
-    callback();
-    transporter.close();
-  });
-};
-
-module.exports = sendEmail;
+module.exports = { passwordResetEmail, transport };
