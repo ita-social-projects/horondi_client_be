@@ -17,7 +17,7 @@ const sendEmail = async (message, callback) => {
         user: 'exzzemple.sender@outlook.com',
         pass: `i"+Mv!;8vV<PN9t`,
       },
-    })
+    }),
   );
 
   transporter.sendMail(message, (err, info) => {
