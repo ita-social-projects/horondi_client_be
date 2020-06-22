@@ -1,4 +1,4 @@
-const Currency = require('../../models/Currency');
+const Currency = require('./currency.model');
 
 class CurrencyService {
   getAllCurrencies() {
@@ -11,8 +11,7 @@ class CurrencyService {
 
   addCurrency(data) {
     const currency = new Currency(data);
-    currency.save();
-    return currency;
+    return currency.save();
   }
 
   deleteCurrency(id) {

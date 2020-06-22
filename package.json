@@ -2,8 +2,12 @@
   "name": "horondi_client_be",
   "version": "1.0.0",
   "type": "commonjs",
-  "description": "",
+  "description": "Horondi",
   "main": "server.js",
+  "repository": {
+    "url": "https://github.com/horondi/horondi_client_be.git"
+  },
+  "private": "true",
   "scripts": {
     "start": "nodemon server.js",
     "lint": "eslint .",

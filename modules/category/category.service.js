@@ -1,4 +1,4 @@
-const Category = require('../../models/Category');
+const Category = require('./category.model');
 
 class CategoryService {
   getAllCategories() {
@@ -11,8 +11,7 @@ class CategoryService {
 
   addCategory(data) {
     const category = new Category(data);
-    category.save();
-    return category;
+    return category.save();
   }
 
   deleteCategory(id) {

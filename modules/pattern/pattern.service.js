@@ -1,4 +1,4 @@
-const Pattern = require('../../models/Pattern');
+const Pattern = require('./pattern.model');
 
 class PatternsService {
   getAllPatterns() {
@@ -11,8 +11,7 @@ class PatternsService {
 
   addPattern(data) {
     const pattern = new Pattern(data);
-    pattern.save();
-    return pattern;
+    return pattern.save();
   }
 
   deletePattern(id) {

@@ -1,5 +1,4 @@
-const { CheckResultAndHandleErrors } = require('apollo-server');
-const News = require('../../models/News');
+const News = require('./news.model');
 
 class NewsService {
   getAllNews() {
@@ -16,7 +15,7 @@ class NewsService {
 
   addNews(data) {
     const user = new News(data);
-    user.save();
+    return user.save();
   }
 
   deleteNews(id) {

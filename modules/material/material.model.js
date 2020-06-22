@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const Color = require('./Color').schema;
+const Language = require('../../models/Language').schema;
+const Color = require('../../models/Color').schema;
 
 const materialSchema = new mongoose.Schema({
   name: [Language],

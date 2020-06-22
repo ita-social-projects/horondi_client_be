@@ -1,4 +1,4 @@
-const Material = require('../../models/Material');
+const Material = require('./material.model');
 
 class MaterialsService {
   getAllMaterials() {
@@ -11,8 +11,7 @@ class MaterialsService {
 
   addMaterial(data) {
     const material = new Material(data);
-    material.save();
-    return material;
+    return material.save();
   }
 
   deleteMaterial(id) {

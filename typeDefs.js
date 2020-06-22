@@ -1,21 +1,21 @@
 const { gql } = require('apollo-server');
-const { newsType, newsInputType } = require('./modules/news/news.graphql');
+const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   categoryType,
   categoryInput,
-} = require('./modules/categories/category.graphql');
+} = require('./modules/category/category.graphql');
 const {
   materialType,
   materialInput,
-} = require('./modules/materials/material.graphql');
+} = require('./modules/material/material.graphql');
 const {
   patternsType,
   patternsInput,
-} = require('./modules/patterns/pattern.graphql');
+} = require('./modules/pattern/pattern.graphql');
 const {
   currencyType,
   currencyInput,
-} = require('./modules/currencies/currency.graphql.js');
+} = require('./modules/currency/currency.graphql.js');
 
 const typeDefs = gql`
   type Language {
@@ -39,10 +39,12 @@ const typeDefs = gql`
     name: String!
     exchangeRate: Float!
   }
- 
-  type Currency {
-    ${currencyType}
-  }
+
+  ${categoryType}
+  ${currencyType}
+  ${materialType}
+  ${newsType}
+  ${patternsType}
 
   type Subcategory {
     _id: ID!
@@ -52,31 +54,16 @@ const typeDefs = gql`
     available: Boolean!
   }
 
-  type Category {
-    ${categoryType}
-  }
-
   type Author {
     name: String!
     image: ImageSet
   }
-  type News {
-  ${newsType}
-  }
 
   type Color {
-    code: Int!,
-    name: [Language!],
-    images: ImageSet,
-    available: Boolean!,
-  }
-
-  type Material {
-    ${materialType}
-  }
-
-  type Pattern {
-    ${patternsType}
+    code: Int!
+    name: [Language!]
+    images: ImageSet
+    available: Boolean!
   }
 
   type Query {
@@ -86,9 +73,6 @@ const typeDefs = gql`
     getAllCategories: [Category!]!
     getCategoryById(id: ID): Category
 
-    allNews: [News!]!
-    oneNews(id: ID): News
-
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): Material
 
@@ -96,7 +80,7 @@ const typeDefs = gql`
     getPatternById(id: ID): Pattern
 
     getAllNews: [News!]!
-    getNewsById(id:ID):News
+    getNewsById(id: ID): News
   }
 
   input PrimaryImageInput {
@@ -109,16 +93,15 @@ const typeDefs = gql`
     image: ImageSetInput
   }
 
-input NewsInput {
-${newsInputType}
-}
+  ${categoryInput}
+  ${currencyInput}
+  ${materialInput}
+  ${newsInput}
+  ${patternsInput}
+
   input LanguageInput {
     lang: String!
     value: String!
-  }
-
-  input PatternInput {
-    ${patternsInput}
   }
 
   input ImageSetInput {
@@ -126,10 +109,6 @@ ${newsInputType}
     medium: String
     small: String
     thumbnail: String
-  }
-
-  input MaterialInput {
-    ${materialInput}
   }
 
   input ColorInput {
@@ -142,14 +121,6 @@ ${newsInputType}
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
-  }
-
-  input CurrencyInput {
-    ${currencyInput}
-  }
-
-  input CategoryInput {
-    ${categoryInput}
   }
 
   input SubcategoryInput {
@@ -177,11 +148,10 @@ ${newsInputType}
     deleteCurrency(id: ID!): Currency
 
     "News Mutation"
-    addNews(news:NewsInput!):News
-    deleteNews(id:ID!): News
-    updateNews(id:ID!,news:NewsInput!):News
+    addNews(news: NewsInput!): News
+    deleteNews(id: ID!): News
+    updateNews(id: ID!, news: NewsInput!): News
   }
-
 `;
 
 module.exports = typeDefs;

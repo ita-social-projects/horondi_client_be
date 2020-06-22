@@ -6,6 +6,9 @@ const connectDB = require('./config/db');
 connectDB();
 require('dotenv').config();
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log('listen port', PORT));
+server.listen(PORT, () => console.log('apollo server started, port', PORT));
