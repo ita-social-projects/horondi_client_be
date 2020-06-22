@@ -26,6 +26,31 @@ const materials = [
       [215, 'Темно-сірий', 'Dark-gray']
   ]),
     available: true
+  },
+  {
+    name: mapToLanguages(['Бонд', 'Bond']),
+    description: mapToLanguages(['Бонд (100% поліестер) - для рюкзаків моделі Rolltop',
+        'Bond (100% polyester) - for backpacks of Rolltop model']),
+    colors: mapToColors([
+      [300, 'Лляний', 'Linen'],
+      [301, 'Пшеничний', 'Wheat'],
+      [302, 'Світло-лососевий', 'Light-salmon'],
+      [303, 'Лососевий', 'Salmon'],
+      [304, 'Темно-лососевий', 'Dark-salmon'],
+      [305, 'Насичений коричневий', 'Saddle-brown'],
+      [306, 'Світло-сизий', 'Light-slate-gray'],
+      [307, 'Димчатий', 'Whitesmoke'],
+
+      // [308, 'Світло-сталевий', 'Light-steel'],
+      // [309, 'Сталево-блакитний', 'Steel-blue'],
+      // [310, 'Темно-синій', 'Dark-blue'],
+      // [311, 'Світло-сірий', 'Light-gray'],
+      // [312, 'Срібний', 'Silver'],
+      // [313, 'Сизий', 'Slate-gray'],
+      // [314, 'Брудно-сірий', 'Dim-gray'],
+      // [315, 'Темно-сірий', 'Dark-gray']
+  ]),
+    available: true
   }
 ];
 

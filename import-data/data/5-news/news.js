@@ -16,10 +16,10 @@ const news = [
         },
         video: 'https://www.youtube.com/embed/maP6Daq83fM',
         author: {
-            name: 'Danuta Lanska',
+            name: mapToLanguages(['Данута Ланська', 'Danuta Lanska']),
             image: { small: 'https://ukr.media/static/ba/aimg/4/1/7/417067_0.jpg' },
         },
-        date: '2019-08-14T23:10:88',
+        date: new Date('2019-08-14T23:10:88Z'),
     },
     {
         title: mapToLanguages(['Що носити модницям влітку 2020: добірка трендових сумок для спекотного сезону',
@@ -39,10 +39,10 @@ const news = [
         },
         video: 'https://www.youtube.com/embed/VGqZMqMGjgA',
         author: {
-            name: 'Mariya Nashova',
+            name: mapToLanguages(['Марія Нашова', 'Mariya Nashova']),
             image: { small: 'https://s.032.ua/section/userphoto/upload/managers/photos/000/051/775/866162337758924195687066424348618920034304n_5e4a57bc8f345.jpg' },
         },
-        date: '2020-06-01T13:55:02',
+        date: new Date('2020-06-01T13:55:02Z'),
     },
     {
         title: mapToLanguages(['Аксесуар на пояс, зручна сумка, стильна штучка!',
@@ -57,10 +57,10 @@ const news = [
         },
         video: 'https://www.youtube.com/embed/Y7L_gvaGfx0',
         author: {
-            name: 'Denys Kogut',
+            name: mapToLanguages(['Денис Когут', 'Denys Kogut']),
             image: { medium: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' },
         },
-        date: '2020-02-23T17:10:46',
+        date: new Date('2020-02-23T17:10:46Z'),
     }
 ];
 

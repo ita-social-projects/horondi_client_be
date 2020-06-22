@@ -6,7 +6,7 @@ const categories = [
   {
     categoryCode: 'main-backpacks',
     name: mapToLanguages(['Рюкзаки', 'Backpacks']),
-    images: mapToImages('main-backpack'),
+    images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/backpacks.jpg' },
     subcategories: [
       {
         id: getObjectId('subcategory1'),
@@ -21,7 +21,7 @@ const categories = [
   {
     categoryCode: 'main-bags',
     name: mapToLanguages(['Сумки', 'Bags']),
-    images: mapToImages('main-bag'),
+    images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/bags.jpg' },
     subcategories: [
       {
         id: getObjectId('subcategory2'),
@@ -43,7 +43,7 @@ const categories = [
   {
     categoryCode: 'main-accessories',
     name: mapToLanguages(['Аксесуари', 'Accessories']),
-    images: mapToImages('main-accessories'),
+    images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/accessories.jpg' },
     subcategories: [
         {
           id: getObjectId('subcategory4'),

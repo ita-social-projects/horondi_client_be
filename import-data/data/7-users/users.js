@@ -1,0 +1,110 @@
+const fs = require('fs');
+const path = require('path');
+
+const recordNumber = 1000;
+
+const namesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/names.txt', 'utf8');
+const names = namesFromFile.split('\n')
+                .map( line => line.split(' ')[0])
+                .map( word => word.slice(0,1).toUpperCase() + word.slice(1).toLowerCase());
+
+const surnamesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/surnames.txt', 'utf8');
+const surnames = surnamesFromFile.split('\n')
+                .map( line => line.trim());
+
+const citiesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/cities.txt', 'utf8');
+const cities = citiesFromFile.split('\n')
+                .map( line => line.split(' ')[1].trim());
+
+const streetsFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/streets.txt', 'utf8');
+const streets = streetsFromFile.split('\n')
+                .map( line => line.split('(')[0].trim());
+
+function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+}
+
+function generateCredentials() {
+    let credentials = [];
+    const possibleCreds = ['local', 'google', 'facebook'];
+    const credPick = ~~(Math.random() * 100);
+    if ((credPick >= 0 && credPick < 25) || credPick >= 95 ) {
+        credentials.push({
+                source: possibleCreds[0],
+                tokenPass: (Math.random()).toString(36).slice(-10).toUpperCase()
+            }
+        )
+    } if (credPick >= 20 && credPick < 70) {
+        credentials.push({
+                source: possibleCreds[1],
+                tokenPass: (Math.random()).toString(36).slice(-10).toUpperCase()
+            }
+        )
+    } if (credPick >= 60 && credPick < 100) {
+        credentials.push({
+                source: possibleCreds[2],
+                tokenPass: (Math.random()).toString(36).slice(-10).toUpperCase()
+            }
+        )
+    }
+    return credentials;
+}
+
+const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
+    const namesNumber = names.length;
+    const surnamesNumber = surnames.length;
+    const citiesNumber = cities.length;
+    const streetsNumber = streets.length;
+    const countryCode = '38';
+    const phoneOperators = ['039', '067', '068', '096', '097', '098', '050', '066', '095', '099', '063', '093', '091'];
+    const operatorsNumber = phoneOperators.length;
+    let result = [];
+    let usedEmails = [];
+    let emailStub;
+    let usedPhoneNumbers = [];
+    let phoneNumber;
+    for (let i = 0; i < recordNumber; i++) {
+        do {
+            emailStub = (Math.random()).toString(36).slice(-10);
+        } while (emailStub in usedEmails);
+        usedEmails.push(emailStub);
+
+        do {
+            phoneNumber = parseInt(countryCode + phoneOperators[~~(Math.random() * operatorsNumber)] + ~~(Math.random() * 10000000).toString(), 10);
+        } while (phoneNumber in usedPhoneNumbers);
+        usedPhoneNumbers.push(phoneNumber);
+
+        result.push({
+            firstName: names[~~(Math.random() * namesNumber)],
+            lastName: surnames[~~(Math.random() * surnamesNumber)],
+            role: 'user',
+            email: emailStub + '@gmail.com',
+            phoneNumber: phoneNumber,
+            address: {
+                country: 'Україна',
+                city: cities[~~(Math.random() * citiesNumber)],
+                street: streets[~~(Math.random() * streetsNumber)],
+                buildingNumber: ~~(Math.random() * 300),
+                appartment: ~~(Math.random() * 150),
+            },
+            images: {
+                    large: 'large-' + emailStub + '.jpg',
+                    medium: 'medium-' + emailStub + '.jpg',
+                    small: 'small-' + emailStub + '.jpg',
+                    thumbnail: 'thumbnail-' + emailStub + '.jpg'
+                },
+            credentials: generateCredentials(),
+            registrationDate: randomDate(new Date('January 01, 2010 00:00:00'), new Date('May 31, 2020 23:23:59')),
+            wishlist: [],
+            cart: [],
+            orders: [],
+            purchasedProducts: [],
+            comments: []
+        })
+    };
+    return result
+};
+
+const users = mapToUsers(names, surnames, cities, streets, recordNumber);
+
+module.exports = users;
