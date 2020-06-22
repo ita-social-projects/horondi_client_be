@@ -1,23 +1,23 @@
 const patternsType = `
     type Pattern {
     _id: ID!
-    name: [Language!]
-    description: [Language!]
+    name: [Language]
+    description: [Language]
     images: ImageSet
-    material: String!
-    handmade: Boolean!
-    available: Boolean!
+    material: String
+    handmade: Boolean
+    available: Boolean
     }
 `;
 
 const patternsInput = `
     input PatternInput {
-    name: [LanguageInput!]
-    description: [LanguageInput!]
+    name: [LanguageInput]
+    description: [LanguageInput]
     images: ImageSetInput
-    material: String!
-    handmade: Boolean!
-    available: Boolean!
+    material: String
+    handmade: Boolean
+    available: Boolean
     }
 `;
 

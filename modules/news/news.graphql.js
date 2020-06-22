@@ -11,8 +11,8 @@ date: String
 
 const newsInput = `
 input NewsInput {
-title: [LanguageInput!]
-text: [LanguageInput!]
+title: [LanguageInput]
+text: [LanguageInput]
 images: [PrimaryImageInput]
 video: String
 author: AuthorInput
