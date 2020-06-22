@@ -19,8 +19,8 @@ const {
 
 const typeDefs = gql`
   type Language {
-    lang: String!
-    value: String!
+    lang: String
+    value: String
   }
 
   type ImageSet {
@@ -31,13 +31,13 @@ const typeDefs = gql`
   }
 
   type PrimaryImage {
-    primary: ImageSet!
-    additional: [ImageSet!]
+    primary: ImageSet
+    additional: [ImageSet]
   }
 
   type ConvertOption {
-    name: String!
-    exchangeRate: Float!
+    name: String
+    exchangeRate: Float
   }
 
   ${categoryType}
@@ -48,22 +48,22 @@ const typeDefs = gql`
 
   type Subcategory {
     _id: ID!
-    categoryCode: String!
-    name: [Language!]
+    categoryCode: String
+    name: [Language]
     images: ImageSet
-    available: Boolean!
+    available: Boolean
   }
 
   type Author {
-    name: String!
+    name: Language
     image: ImageSet
   }
 
   type Color {
-    code: Int!
-    name: [Language!]
+    code: Int
+    name: [Language]
     images: ImageSet
-    available: Boolean!
+    available: Boolean
   }
 
   type Query {
