@@ -9,6 +9,10 @@ class CurrencyService {
     return Currency.findById(id);
   }
 
+  updateCurrency(id, currency) {
+    return Currency.findByIdAndUpdate(id, currency);
+  }
+
   addCurrency(data) {
     const currency = new Currency(data);
     return currency.save();

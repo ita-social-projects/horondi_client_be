@@ -1,12 +1,16 @@
 const Pattern = require('./pattern.model');
 
 class PatternsService {
-  getAllPatterns() {
+  getAllPatterns(lang) {
     return Pattern.find();
   }
 
   getPatternById(id) {
     return Pattern.findById(id);
+  }
+
+  updatePattern(id, pattern) {
+    return Pattern.findByIdAndUpdate(id, pattern);
   }
 
   addPattern(data) {

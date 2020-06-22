@@ -8,6 +8,7 @@ const currencyQuery = {
 const currencyMutation = {
   addCurrency: (parent, args) => currencyService.addCurrency(args.currency),
   deleteCurrency: (parent, args) => currencyService.deleteCurrency(args.id),
+  updateCurrency: (parent, args) => currencyService.updateCurrency(args.id, args.currency),
 };
 
 module.exports = { currencyQuery, currencyMutation };
