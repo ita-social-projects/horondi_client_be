@@ -1,7 +1,7 @@
 const Pattern = require('./pattern.model');
 
 class PatternsService {
-  getAllPatterns(lang) {
+  getAllPatterns() {
     return Pattern.find();
   }
 
