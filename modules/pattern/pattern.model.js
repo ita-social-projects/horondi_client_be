@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const ImageSet = require('./ImageSet').schema;
+const Language = require('../../models/Language').schema;
+const ImageSet = require('../../models/ImageSet').schema;
 
 const patternSchema = new mongoose.Schema({
   name: [Language],
