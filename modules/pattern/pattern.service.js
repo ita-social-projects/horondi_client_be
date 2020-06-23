@@ -9,6 +9,10 @@ class PatternsService {
     return Pattern.findById(id);
   }
 
+  updatePattern(id, pattern) {
+    return Pattern.findByIdAndUpdate(id, pattern);
+  }
+
   addPattern(data) {
     const pattern = new Pattern(data);
     return pattern.save();

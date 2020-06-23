@@ -9,6 +9,10 @@ class MaterialsService {
     return Material.findById(id);
   }
 
+  updateMaterial(id, material) {
+    return Material.findByIdAndUpdate(id, material);
+  }
+
   addMaterial(data) {
     const material = new Material(data);
     return material.save();
