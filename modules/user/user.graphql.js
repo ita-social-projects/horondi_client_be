@@ -1,9 +1,37 @@
-const newsType = `
+const userType = `
+type User{
+    id:ID!
+    firstName: String
+    lastName: String
+    role: RoleEnum
+    email: String
+    phoneNumber: Int
+    address: Address
+    images: ImageSet
+    credentials: [Credential]
+      registrationDate: String
+      wishlist: [ID]
+      cart: [ID]
+      orders:[ID]
+      purchasedProducts: [ID]
 
 }`;
 
-const newsInput = `
-
+const userInput = `
+input UserInput {
+    firstName: String
+    lastName: String
+    role: String
+    email: String
+    phoneNumber: Int
+    address: AddressInput
+    images: ImageSetInput
+    credentials: [CredentialInput]
+    registrationDate: String
+    wishlist: [ID]
+    cart: [ID]
+    orders:[ID]
+    purchasedProducts: [ID]
 }`;
 
-module.exports = { newsType, newsInput };
+module.exports = { userType, userInput };

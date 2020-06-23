@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server');
 const User = require('./user.model');
 
 class UserService {
@@ -5,7 +6,11 @@ class UserService {
     return User.find();
   }
 
-  getUserById(id) {
+  getUserById(id, data) {
+    const { token } = data.headers || data.cookies || '';
+    if (!token) {
+      throw new AuthenticationError(JSON.stringify({ message: 'no token' }));
+    }
     return User.findById(id);
   }
 
@@ -13,9 +18,22 @@ class UserService {
     return User.findByIdAndUpdate(id, user);
   }
 
-  addUser(data) {
-    const user = new User(data);
-    return user.save();
+  async addUser(data) {
+    const {
+      firstname, lastname, email, credentials,
+    } = data;
+
+    const checkedUser = await User.find({ email });
+
+    if (checkedUser) {
+      return { message: 'user already exist' };
+    }
+    const user = new User({
+      firstname,
+      lastname,
+      email,
+    });
+    await user.save();
   }
 
   deleteUser(id) {

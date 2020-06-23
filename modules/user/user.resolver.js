@@ -1,13 +1,20 @@
+const { AuthenticationError } = require('apollo-server');
 const userService = require('./user.service');
 
 const userQuery = {
-  getAllUsers: () => userService.getAllNews(),
-  getUserById: (parent, args) => userService.getNewsById(args.id),
+  getAllUsers: (parent, args, context) => {
+    console.log(context);
+
+    return userService.getAllUsers();
+  },
+  getUserById: (parent, args, context) => userService.getUserById(args.id, context.req),
 };
 const userMutation = {
-  addUser: (parent, args) => userService.addNews(args.user),
-  deleteUser: (parent, args) => userService.deleteNews(args.id),
-  updateUser: (parent, args) => userService.updateNews(args.id, args.user),
+  addUser: async (parent, args) => {
+    userService.addUser(args.user);
+  },
+  deleteUser: (parent, args) => userService.deleteUser(args.id),
+  updateUser: (parent, args) => userService.updateUser(args.id, args.user),
 };
 
 module.exports = { userQuery, userMutation };
