@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const recordNumber = 1000;
+const recordNumber = 19;
 
 const namesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/names.txt', 'utf8');
 const names = namesFromFile.split('\n')

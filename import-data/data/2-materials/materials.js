@@ -1,12 +1,13 @@
 const { mapToLanguages } = require('../../helpers/languages');
 const { mapToColors } = require('../../helpers/colors');
-//const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const materials = [
   {
+    id: getObjectId('malmo'),
     name: mapToLanguages(['Мальмо', 'Malmo']),
-    description: mapToLanguages(['Мальмо (100% поліестер) - для рюкзаків, сумок, бананок (всі моделі)',
-        'Malmo (100% polyester) - for backpacks, bags, fanny-packs (all models)']),
+    description: mapToLanguages(['Мальмо (100% поліестер) - для рюкзаків, сумок, бананок (всі моделі). Прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води.',
+        'Malmo (100% polyester) - for backpacks, bags, fanny-packs (all models). Layered with special material for durability and water-resistance.']),
     colors: mapToColors([
       [200, 'Світло-коричневий', 'Light-brown'],
       [201, 'Рожево-коричневий', 'Rosy-brown'],
@@ -28,9 +29,10 @@ const materials = [
     available: true
   },
   {
+    id: getObjectId('bond'),
     name: mapToLanguages(['Бонд', 'Bond']),
-    description: mapToLanguages(['Бонд (100% поліестер) - для рюкзаків моделі Rolltop',
-        'Bond (100% polyester) - for backpacks of Rolltop model']),
+    description: mapToLanguages(['Бонд (100% поліестер) - для рюкзаків моделі Rolltop. Прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води.',
+        'Bond (100% polyester) - for backpacks of Rolltop model. Layered with special material for durability and water-resistance.']),
     colors: mapToColors([
       [300, 'Лляний', 'Linen'],
       [301, 'Пшеничний', 'Wheat'],
@@ -55,33 +57,36 @@ const materials = [
     available: true
   },
   {
+    id: getObjectId('faux-leather'),
     name: mapToLanguages(['Шкірзамінник', 'Faux leather']),
     description: mapToLanguages(['Шкірзамінник',
         'Faux leather']),
     colors: mapToColors([
-      [001, 'Чорний', 'Black'],
-      [002, 'Коричневий', 'Brown'],
-      [003, 'Сірий', 'Gray'],
-      [004, 'Рожевий', 'Pink']
+      [1, 'Чорний', 'Black'],
+      [2, 'Коричневий', 'Brown'],
+      [3, 'Сірий', 'Gray'],
+      [4, 'Рожевий', 'Pink']
   ]),
     available: true
   },
   {
+    id: getObjectId('cordura'),
     name: mapToLanguages(['Тканина Кордура', 'Cordura fabric']),
     description: mapToLanguages(['Тканина Кордура',
         'Cordura fabric']),
     colors: mapToColors([
-      [001, 'Чорний', 'Black']
+      [1, 'Чорний', 'Black']
   ]),
     available: true
   },
   {
+    id: getObjectId('genuine-leather'),
     name: mapToLanguages(['Натуральна шкіра', 'Genuine leather']),
     description: mapToLanguages(['Натуральна шкіра',
         'Genuine leather']),
     colors: mapToColors([
-      [001, 'Чорний', 'Black'],
-      [002, 'Коричневий', 'Brown']
+      [1, 'Чорний', 'Black'],
+      [2, 'Коричневий', 'Brown']
   ]),
     available: true
   }

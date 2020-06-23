@@ -9,7 +9,7 @@ const categories = [
     images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/backpacks.jpg' },
     subcategories: [
       {
-        id: getObjectId('subcategory1'),
+        id: getObjectId('sub-backpacks'),
         categoryCode: 'sub-backpacks',
         name: mapToLanguages(['Рюкзаки', 'Backpacks']),
         images: mapToImages('sub-backpack'),
@@ -24,14 +24,14 @@ const categories = [
     images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/bags.jpg' },
     subcategories: [
       {
-        id: getObjectId('subcategory2'),
+        id: getObjectId('sub-bags'),
         categoryCode: 'sub-bags',
         name: mapToLanguages(['Сумки', 'Bags']),
         images: mapToImages('sub-bag'),
         available: true
       },
       {
-        id: getObjectId('subcategory3'),
+        id: getObjectId('sub-fanny-packs'),
         categoryCode: 'sub-fanny-packs',
         name: mapToLanguages(['Бананки', 'Fanny packs']),
         images: mapToImages('sub-fanny-pack'),
@@ -46,14 +46,14 @@ const categories = [
     images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/accessories.jpg' },
     subcategories: [
         {
-          id: getObjectId('subcategory4'),
+          id: getObjectId('sub-wallets'),
           categoryCode: 'sub-wallets',
           name: mapToLanguages(['Гаманці', 'Wallets']),
           images: mapToImages('sub-wallet'),
           available: true
         },
         {
-          id: getObjectId('subcategory5'),
+          id: getObjectId('sub-laptop-cases'),
           categoryCode: 'sub-laptop-cases',
           name: mapToLanguages(['Чехли для ноутбуків', 'Laptop cases']),
           images: mapToImages('sub-laptop-case'),
