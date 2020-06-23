@@ -19,7 +19,7 @@ const news = [
             name: mapToLanguages(['Данута Ланська', 'Danuta Lanska']),
             image: { small: 'https://ukr.media/static/ba/aimg/4/1/7/417067_0.jpg' },
         },
-        date: new Date('2019-08-14T23:10:88Z'),
+        date: new Date('2019-08-14T23:10:38Z'),
     },
     {
         title: mapToLanguages(['Що носити модницям влітку 2020: добірка трендових сумок для спекотного сезону',
@@ -58,7 +58,7 @@ const news = [
         video: 'https://www.youtube.com/embed/Y7L_gvaGfx0',
         author: {
             name: mapToLanguages(['Денис Когут', 'Denys Kogut']),
-            image: { medium: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' },
+            image: { small: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' },
         },
         date: new Date('2020-02-23T17:10:46Z'),
     }

@@ -40,15 +40,48 @@ const materials = [
       [305, 'Насичений коричневий', 'Saddle-brown'],
       [306, 'Світло-сизий', 'Light-slate-gray'],
       [307, 'Димчатий', 'Whitesmoke'],
-
-      // [308, 'Світло-сталевий', 'Light-steel'],
-      // [309, 'Сталево-блакитний', 'Steel-blue'],
-      // [310, 'Темно-синій', 'Dark-blue'],
-      // [311, 'Світло-сірий', 'Light-gray'],
-      // [312, 'Срібний', 'Silver'],
-      // [313, 'Сизий', 'Slate-gray'],
-      // [314, 'Брудно-сірий', 'Dim-gray'],
-      // [315, 'Темно-сірий', 'Dark-gray']
+      [308, 'Бордовий', 'Maroon'],
+      [309, 'Королівський синій', 'Royal-blue'],
+      [310, 'Кораловий', 'Coral'],
+      [311, 'Оранжевий', 'Orange'],
+      [312, 'Золотий', 'Gold'],
+      [313, 'Хакі', 'Khaki'],
+      [314, 'Темний хакі', 'Dark-khaki'],
+      [315, 'Блідо-фіолетовий', 'Pale-violet'],
+      [316, 'Глибокий небесно-синій', 'Deep-sky-blue'],
+      [317, 'Темно-синій', 'Midnight-blue'],
+      [318, 'Темно-червоний', 'Dark-red']
+  ]),
+    available: true
+  },
+  {
+    name: mapToLanguages(['Шкірзамінник', 'Faux leather']),
+    description: mapToLanguages(['Шкірзамінник',
+        'Faux leather']),
+    colors: mapToColors([
+      [001, 'Чорний', 'Black'],
+      [002, 'Коричневий', 'Brown'],
+      [003, 'Сірий', 'Gray'],
+      [004, 'Рожевий', 'Pink']
+  ]),
+    available: true
+  },
+  {
+    name: mapToLanguages(['Тканина Кордура', 'Cordura fabric']),
+    description: mapToLanguages(['Тканина Кордура',
+        'Cordura fabric']),
+    colors: mapToColors([
+      [001, 'Чорний', 'Black']
+  ]),
+    available: true
+  },
+  {
+    name: mapToLanguages(['Натуральна шкіра', 'Genuine leather']),
+    description: mapToLanguages(['Натуральна шкіра',
+        'Genuine leather']),
+    colors: mapToColors([
+      [001, 'Чорний', 'Black'],
+      [002, 'Коричневий', 'Brown']
   ]),
     available: true
   }
