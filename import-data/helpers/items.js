@@ -111,6 +111,7 @@ const mapToItems = (category, sizes, material, basePrice, itemsNumber) => {
         availableNumber = ~~(Math.random() * 5);
 
         items.push({
+            id: getObjectId('item' + i),
             size: mapToSizes({ name: sizeName, sizes: size, volume: volume, weight: weight }),
             components: [
                 mapToComponents ('outer-layer', material, materialColors[~~(Math.random() * materialColorsNumber)]),

@@ -13,6 +13,7 @@ const harbuzDescUK = fs.readFileSync(path.join(__dirname, '../../src') + '/harbu
 const harbuzDescEN = fs.readFileSync(path.join(__dirname, '../../src') + '/harbuzDescEN.html', 'utf8');
 
 const products = [{
+    id: getObjectId('rolltop'),
     category: getObjectId('sub-backpacks'),
     name: mapToLanguages(['Ролтоп', 'RollTop']),
     description: mapToLanguages([rolltopDescUK, rolltopDescEN]),
@@ -32,6 +33,7 @@ const products = [{
     available: true,
     comments: []
 }, {
+    id: getObjectId('new'),
     category: getObjectId('sub-backpacks'),
     name: mapToLanguages(['Новий', 'New']),
     description: mapToLanguages([newDescUK, newDescEN]),
@@ -51,6 +53,7 @@ const products = [{
     available: true,
     comments: []
 }, {
+    id: getObjectId('harbuz'),
     category: getObjectId('sub-backpacks'),
     name: mapToLanguages(['Гарбуз', 'Harbuz']),
     description: mapToLanguages([harbuzDescUK, harbuzDescEN]),
@@ -72,5 +75,3 @@ const products = [{
 }];
 
 module.exports = products;
-
-console.log();
