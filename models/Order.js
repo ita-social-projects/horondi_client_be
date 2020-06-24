@@ -4,52 +4,49 @@ const Address = require('./Address').schema;
 const Size = require('./Size').schema;
 
 const orderSchema = new mongoose.Schema({
-    status: {
-        type: String,
-        required: true,
-        enum: [
-            "sent",
-            "pending",
-            "canceled"
-        ],
-        default: "pending"
-    },
-    user:
+  status: {
+    type: String,
+    required: true,
+    enum: ['sent', 'pending', 'canceled'],
+    default: 'pending',
+  },
+  user: {
+    firstName: String,
+    lastName: String,
+    email: String,
+    phoneNumber: Number,
+    address: Address,
+  },
+  dateOfCreation: {
+    type: Date,
+    default: Date.now,
+  },
+  delivery: {
+    sentOn: Date,
+    sentBy: String,
+    invoiceNumber: String,
+  },
+  items: [
     {
-        firstName: String,
-        lastName: String,
-        email: String,
-        phoneNumber: Number,
-        address: Address
+      product: [Language],
+      size: Size,
+      components: [
+        {
+          name: [Language],
+          material: [Language],
+          color: [Language],
+        },
+      ],
+      pattern: [Language],
+      pocket: Boolean,
+      closure: [Language],
+      closureColor: [Language],
+      actualPrice: Number,
+      quantity: Number,
     },
-    dateOfCreation: {
-        type: Date,
-        default: Date.now
-    },
-    delivery: {
-        sentOn: Date,
-        sentBy: String,
-        invoiceNumber: String,
-    },
-    items: [{
-        product: [Language],
-        size: Size,
-        components: [
-            {
-                name: [Language],
-                material: [Language],
-                color: [Language]
-            }
-        ],
-        pattern: [Language],
-        pocket: Boolean,
-        closure: [Language],
-        closureColor: [Language],
-        actualPrice: Number,
-        quantity: Number
-    }],
-    totalPrice: Number,
-    paymentMethod: String
+  ],
+  totalPrice: Number,
+  paymentMethod: String,
 });
 
-module.exports = mongoose.model('Order', orderSchema)
+module.exports = mongoose.model('Order', orderSchema);
