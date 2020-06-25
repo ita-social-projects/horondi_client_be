@@ -7,6 +7,7 @@ const {
   validateLoginInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
+const verifyUser = require('../../utils/verifyUser');
 
 class UserService {
   getAllUsers() {
@@ -18,11 +19,8 @@ class UserService {
     if (!token) {
       throw new AuthenticationError(JSON.stringify({ message: 'no token' }));
     }
-    const decoded = jwt.verify(data.headers.token, process.env.SECRET);
-    if (decoded) return User.findById(id);
-    throw new AuthenticationError(
-      JSON.stringify({ message: 'Token is not valid' }),
-    );
+
+    if (verifyUser(token)) return User.findById(id);
   }
 
   updateUser(id, user) {
