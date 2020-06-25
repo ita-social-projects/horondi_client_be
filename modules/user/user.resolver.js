@@ -1,11 +1,7 @@
 const userService = require('./user.service');
 
 const userQuery = {
-  getAllUsers: (parent, args, context) => {
-    console.log(context);
-
-    return userService.getAllUsers();
-  },
+  getAllUsers: (parent, args) => userService.getAllUsers(),
   getUserById: (parent, args, context) => userService.getUserById(args.id, context.req),
 };
 const userMutation = {
