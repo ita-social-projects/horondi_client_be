@@ -1,4 +1,3 @@
-const { AuthenticationError } = require('apollo-server');
 const userService = require('./user.service');
 
 const userQuery = {
@@ -10,9 +9,8 @@ const userQuery = {
   getUserById: (parent, args, context) => userService.getUserById(args.id, context.req),
 };
 const userMutation = {
-  addUser: async (parent, args) => {
-    userService.addUser(args.user);
-  },
+  registerUser: (parent, args) => userService.registerUser(args.user),
+  loginUser: (parent, args) => userService.loginUser(args.user),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
   updateUser: (parent, args) => userService.updateUser(args.id, args.user),
 };

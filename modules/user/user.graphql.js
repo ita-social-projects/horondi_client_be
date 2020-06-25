@@ -8,6 +8,7 @@ type User{
     phoneNumber: Int
     address: Address
     images: ImageSet
+    token: String
     credentials: [Credential]
       registrationDate: String
       wishlist: [ID]
@@ -22,6 +23,8 @@ input UserInput {
     firstName: String
     lastName: String
     role: String
+    password: String
+    confirmPassword: String
     email: String
     phoneNumber: Int
     address: AddressInput

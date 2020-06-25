@@ -191,7 +191,8 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): News
 
     "User Mutation"
-    addUser(user: UserInput!): User
+    registerUser(user: UserInput!): User
+    loginUser(user: UserInput!): User
     deleteUser(id: ID!): User
     updateUser(id: ID!, user: UserInput!): User
   }

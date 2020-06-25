@@ -1,9 +1,7 @@
-const { ApolloServer, AuthenticationError } = require('apollo-server');
-const { verify } = require('jsonwebtoken');
+const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
-const User = require('./modules/user/user.model');
 
 connectDB();
 require('dotenv').config();
