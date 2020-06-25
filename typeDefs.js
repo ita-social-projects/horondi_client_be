@@ -55,7 +55,7 @@ const typeDefs = gql`
   }
 
   type Author {
-    name: String!
+    name: [Language]
     image: ImageSet
   }
 
