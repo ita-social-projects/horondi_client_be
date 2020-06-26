@@ -172,18 +172,22 @@ const typeDefs = gql`
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): Pattern
     deletePattern(id: ID!): Pattern
+    updatePattern(id: ID!, pattern: PatternInput!): Pattern
 
     "Material Mutation"
     addMaterial(material: MaterialInput!): Material
     deleteMaterial(id: ID!): Material
+    updateMaterial(id: ID!, material: MaterialInput!): Material
 
     "Category Mutation"
     addCategory(category: CategoryInput!): Category
     deleteCategory(id: ID!): Category
+    updateCategory(id: ID!, category: CategoryInput!): Category
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): Currency
     deleteCurrency(id: ID!): Currency
+    updateCurrency(id: ID!, currency: CurrencyInput!): Currency
 
     "News Mutation"
     addNews(news: NewsInput!): News

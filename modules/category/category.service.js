@@ -9,6 +9,10 @@ class CategoryService {
     return Category.findById(id);
   }
 
+  updateCategory(id, category) {
+    return Category.findByIdAndUpdate(id, category);
+  }
+
   addCategory(data) {
     const category = new Category(data);
     return category.save();
