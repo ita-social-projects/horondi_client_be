@@ -10,15 +10,15 @@ const transport = nodemailer.createTransport({
   },
 });
 
-const passwordResetEmail = text => `
+const passwordResetEmail = (text, firstName) => `
   <div className="email" style="
     border: 1px solid black;
     padding: 20px;
     font-family: sans-serif;
     line-height: 2;
-    font-size: 20px;
+    font-size: 1.1rem;
   ">
-    <h2>Hello</h2>
+    <h2>Hello ${firstName}</h2>
     <p>${text}</p>
     <p>Thank you</p>
   </div>
