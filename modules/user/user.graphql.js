@@ -1,14 +1,14 @@
 const userType = `
 type User{
     id:ID!
-    firstName: String
-    lastName: String
+    firstName: String!
+    lastName: String!
     role: RoleEnum
-    email: String
+    email: String!
     phoneNumber: Int
     address: Address
     images: ImageSet
-    token: String
+    token: String!
     credentials: [Credential]
       registrationDate: String
       wishlist: [ID]
@@ -23,9 +23,8 @@ input UserInput {
     firstName: String
     lastName: String
     role: String
-    password: String
-    confirmPassword: String
-    email: String
+    password: String!
+    email: String!
     phoneNumber: Int
     address: AddressInput
     images: ImageSetInput

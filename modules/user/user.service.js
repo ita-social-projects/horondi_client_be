@@ -1,36 +1,82 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const {
   validateRegisterInput,
   validateLoginInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
-const verifyUser = require('../../utils/verifyUser');
 
 class UserService {
   getAllUsers() {
     return User.find();
   }
 
-  getUserById(id, data) {
-    const { token } = data.headers || data.cookies || '';
-    if (!token) {
-      throw new AuthenticationError(JSON.stringify({ message: 'no token' }));
-    }
-
-    if (verifyUser(token)) return User.findById(id);
+  getUserById(id, auth) {
+    if (auth.errors) throw new Error(auth.errors);
+    return User.findById(id);
   }
 
-  updateUser(id, user) {
-    return User.findByIdAndUpdate(id, user);
+  async updateUser(id, {
+    firstName, lastName, email, password,
+  }, auth) {
+    if (auth.errors) throw new Error(auth.errors);
+
+    const checkedUser = await User.findOne({ email });
+
+    if (!checkedUser) {
+      const massage = 'User with provided email not found';
+      throw new UserInputError(massage, {
+        errors: {
+          email: massage,
+        },
+      });
+    }
+
+    const { errors } = await validateRegisterInput.validateAsync({
+      firstName,
+      lastName,
+      password,
+      email,
+    });
+
+    if (errors) {
+      throw new UserInputError('Errors', { errors });
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 12);
+
+    const credentials = checkedUser.credentials.map(cred => {
+      if (cred.source === 'horondi') {
+        return {
+          _id: cred._id,
+          source: cred.source,
+          tokenPass: encryptedPassword,
+        };
+      }
+      return cred;
+    });
+
+    const updatedUser = {
+      firstName,
+      lastName,
+      email,
+      credentials,
+    };
+
+    return User.findByIdAndUpdate(id, {
+      ...checkedUser._doc,
+      ...updatedUser,
+    });
   }
 
   async loginUser({ email, password }) {
-    const { errors, valid } = validateLoginInput(email, password);
+    const { errors } = await validateLoginInput.validateAsync({
+      email,
+      password,
+    });
 
-    if (!valid) {
+    if (errors) {
       throw new UserInputError('Errors', { errors });
     }
 
@@ -38,57 +84,54 @@ class UserService {
 
     if (!user) {
       errors.general = 'User not found';
-      throw new UserInputError('User not found', { errors });
+      throw new UserInputError(errors.general, { errors });
     }
 
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === 'horondi').tokenPass,
     );
+
     if (!match) {
-      errors.general = 'Wrong crendetials';
-      throw new UserInputError('Wrong crendetials', { errors });
+      errors.general = 'Wrong password';
+      throw new AuthenticationError(errors.general, { errors });
     }
 
-    const token = generateToken(user._id, user.firstName);
+    const token = generateToken(user._id, user.email);
 
     return {
-      ...user._doc,
+      user: { ...user._doc },
       id: user._id,
       token,
     };
   }
 
   async registerUser({
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
+    firstName, lastName, email, password,
   }) {
-    const { valid, errors } = validateRegisterInput(
+    const { errors } = await validateRegisterInput.validateAsync({
       firstName,
       lastName,
       email,
       password,
-      confirmPassword,
-    );
+    });
 
-    if (!valid) {
+    if (errors) {
       throw new UserInputError('Errors', { errors });
     }
 
     const checkedUser = await User.findOne({ email });
 
     if (checkedUser) {
-      throw new UserInputError('User already exist', {
+      const massage = 'User with provided email already exists';
+      throw new UserInputError(massage, {
         errors: {
-          email: 'This email already taken',
+          email: massage,
         },
       });
     }
 
-    const bycryptPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await bcrypt.hash(password, 12);
 
     const user = new User({
       firstName,
@@ -97,12 +140,12 @@ class UserService {
       credentials: [
         {
           source: 'horondi',
-          tokenPass: bycryptPassword,
+          tokenPass: encryptedPassword,
         },
       ],
     });
-    const res = await user.save();
-    return { ...res._doc };
+    const savedUser = await user.save();
+    return savedUser._doc;
   }
 
   deleteUser(id) {

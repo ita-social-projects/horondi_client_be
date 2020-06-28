@@ -31,8 +31,8 @@ const typeDefs = gql`
     user
   }
   type Language {
-    lang: String
-    value: String
+    lang: String!
+    value: String!
   }
 
   type ImageSet {

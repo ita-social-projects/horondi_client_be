@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
-const ImageSet = require('../../models/ImageSet').schema;
+const ImageSet = require('../common/ImageSet').schema;
 
 const NewsSchema = new mongoose.Schema({
   title: [Language],
@@ -9,8 +9,8 @@ const NewsSchema = new mongoose.Schema({
   images: [PrimaryImage],
   video: String,
   author: {
-      name: [Language],
-      image: ImageSet,
+    name: [Language],
+    image: ImageSet,
   },
   date: {
     type: Date,
