@@ -1,8 +1,8 @@
-const { ApolloServer, AuthenticationError } = require('apollo-server');
+const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
-
+const { checkUserExist } = require('./utils/validateUser');
 const verifyUser = require('./utils/verifyUser');
 
 connectDB();
@@ -11,11 +11,15 @@ require('dotenv').config();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => {
-    const { token } = req.headers || req.cookies || '';
-    return {
-      user: verifyUser(token),
-    };
+  context: async ({ req }) => {
+    const { token } = req.headers || '';
+    if (token) {
+      const user = verifyUser(token);
+      await checkUserExist(user.email);
+      return {
+        user,
+      };
+    }
   },
 });
 const PORT = process.env.PORT || 5000;

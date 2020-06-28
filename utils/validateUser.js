@@ -1,6 +1,23 @@
 const Joi = require('@hapi/joi');
+const { UserInputError } = require('apollo-server');
+const User = require('../modules/user/user.model');
 
-module.exports.validateRegisterInput = Joi.object({
+exports.checkUserExist = async email => {
+  const checkedUser = await User.findOne({ email });
+
+  if (!checkedUser) {
+    const massage = 'User with provided email not found';
+    throw new UserInputError(massage, {
+      errors: {
+        email: massage,
+      },
+    });
+  }
+
+  return checkedUser;
+};
+
+exports.validateRegisterInput = Joi.object({
   firstName: Joi.string()
     .alphanum()
     .min(3)
@@ -24,7 +41,7 @@ module.exports.validateRegisterInput = Joi.object({
   }),
 });
 
-module.exports.validateLoginInput = Joi.object({
+exports.validateLoginInput = Joi.object({
   password: Joi.string()
     .min(8)
     .max(20)

@@ -2,6 +2,7 @@ const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const {
+  checkUserExist,
   validateRegisterInput,
   validateLoginInput,
 } = require('../../utils/validateUser');
@@ -12,62 +13,60 @@ class UserService {
     return User.find();
   }
 
-  getUserById(id, auth) {
-    if (auth.errors) throw new Error(auth.errors);
-    return User.findById(id);
+  async getUserById(id, auth) {
+    if (auth) {
+      const user = await User.findById(id);
+
+      if (!user) throw new Error('User not found');
+
+      return user;
+    }
+    throw new Error('Please Log in');
   }
 
   async updateUser(id, {
     firstName, lastName, email, password,
   }, auth) {
-    if (auth.errors) throw new Error(auth.errors);
+    if (auth) {
+      const { errors } = await validateRegisterInput.validateAsync({
+        firstName,
+        lastName,
+        password,
+        email,
+      });
 
-    const checkedUser = await User.findOne({ email });
+      if (errors) {
+        throw new UserInputError('Errors', { errors });
+      }
 
-    if (!checkedUser) {
-      const massage = 'User with provided email not found';
-      throw new UserInputError(massage, {
-        errors: {
-          email: massage,
-        },
+      const checkedUser = await checkUserExist(email);
+
+      const encryptedPassword = await bcrypt.hash(password, 12);
+
+      const credentials = checkedUser.credentials.map(cred => {
+        if (cred.source === 'horondi') {
+          return {
+            _id: cred._id,
+            source: cred.source,
+            tokenPass: encryptedPassword,
+          };
+        }
+        return cred;
+      });
+
+      const updatedUser = {
+        firstName,
+        lastName,
+        email,
+        credentials,
+      };
+
+      return User.findByIdAndUpdate(id, {
+        ...checkedUser._doc,
+        ...updatedUser,
       });
     }
-
-    const { errors } = await validateRegisterInput.validateAsync({
-      firstName,
-      lastName,
-      password,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError('Errors', { errors });
-    }
-
-    const encryptedPassword = await bcrypt.hash(password, 12);
-
-    const credentials = checkedUser.credentials.map(cred => {
-      if (cred.source === 'horondi') {
-        return {
-          _id: cred._id,
-          source: cred.source,
-          tokenPass: encryptedPassword,
-        };
-      }
-      return cred;
-    });
-
-    const updatedUser = {
-      firstName,
-      lastName,
-      email,
-      credentials,
-    };
-
-    return User.findByIdAndUpdate(id, {
-      ...checkedUser._doc,
-      ...updatedUser,
-    });
+    throw new Error('Please Log in');
   }
 
   async loginUser({ email, password }) {
@@ -80,12 +79,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      errors.general = 'User not found';
-      throw new UserInputError(errors.general, { errors });
-    }
+    const user = await checkUserExist(email);
 
     const match = await bcrypt.compare(
       password,
