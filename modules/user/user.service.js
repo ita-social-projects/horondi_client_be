@@ -14,59 +14,53 @@ class UserService {
   }
 
   async getUserById(id, auth) {
-    if (auth) {
-      const user = await User.findById(id);
+    const user = await User.findById(id);
 
-      if (!user) throw new Error('User not found');
+    await checkUserExist('_id', id);
 
-      return user;
-    }
-    throw new Error('Please Log in');
+    return user;
   }
 
   async updateUser(id, {
     firstName, lastName, email, password,
   }, auth) {
-    if (auth) {
-      const { errors } = await validateRegisterInput.validateAsync({
-        firstName,
-        lastName,
-        password,
-        email,
-      });
+    const { errors } = await validateRegisterInput.validateAsync({
+      firstName,
+      lastName,
+      password,
+      email,
+    });
 
-      if (errors) {
-        throw new UserInputError('Errors', { errors });
-      }
-
-      const checkedUser = await checkUserExist(email);
-
-      const encryptedPassword = await bcrypt.hash(password, 12);
-
-      const credentials = checkedUser.credentials.map(cred => {
-        if (cred.source === 'horondi') {
-          return {
-            _id: cred._id,
-            source: cred.source,
-            tokenPass: encryptedPassword,
-          };
-        }
-        return cred;
-      });
-
-      const updatedUser = {
-        firstName,
-        lastName,
-        email,
-        credentials,
-      };
-
-      return User.findByIdAndUpdate(id, {
-        ...checkedUser._doc,
-        ...updatedUser,
-      });
+    if (errors) {
+      throw new UserInputError('Errors', { errors });
     }
-    throw new Error('Please Log in');
+
+    const checkedUser = await checkUserExist('email', email);
+
+    const encryptedPassword = await bcrypt.hash(password, 12);
+
+    const credentials = checkedUser.credentials.map(cred => {
+      if (cred.source === 'horondi') {
+        return {
+          _id: cred._id,
+          source: cred.source,
+          tokenPass: encryptedPassword,
+        };
+      }
+      return cred;
+    });
+
+    const updatedUser = {
+      firstName,
+      lastName,
+      email,
+      credentials,
+    };
+
+    return User.findByIdAndUpdate(id, {
+      ...checkedUser._doc,
+      ...updatedUser,
+    });
   }
 
   async loginUser({ email, password }) {
@@ -79,7 +73,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await checkUserExist(email);
+    const user = await checkUserExist('email', email);
 
     const match = await bcrypt.compare(
       password,
@@ -95,7 +89,6 @@ class UserService {
 
     return {
       user: { ...user._doc },
-      id: user._id,
       token,
     };
   }
