@@ -1,6 +1,6 @@
 const userType = `
 type User{
-    id:ID!
+    _id:ID!
     firstName: String!
     lastName: String!
     role: RoleEnum
@@ -20,7 +20,7 @@ type User{
 
 const userInput = `
 input UserInput {
-    id:ID
+    _id:ID
     firstName: String
     lastName: String
     role: String
