@@ -2,92 +2,123 @@ const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const {
+  checkUserExist,
   validateRegisterInput,
   validateLoginInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
-const verifyUser = require('../../utils/verifyUser');
 
 class UserService {
   getAllUsers() {
     return User.find();
   }
 
-  getUserById(id, data) {
-    const { token } = data.headers || data.cookies || '';
-    if (!token) {
-      throw new AuthenticationError(JSON.stringify({ message: 'no token' }));
-    }
+  async getUserById(id, auth) {
+    const user = await User.findById(id);
 
-    if (verifyUser(token)) return User.findById(id);
+    await checkUserExist('_id', id);
+
+    return user;
   }
 
-  updateUser(id, user) {
-    return User.findByIdAndUpdate(id, user);
-  }
+  async updateUser(id, {
+    firstName, lastName, email, password,
+  }, auth) {
+    const { errors } = await validateRegisterInput.validateAsync({
+      firstName,
+      lastName,
+      password,
+      email,
+    });
 
-  async loginUser({ email, password }) {
-    const { errors, valid } = validateLoginInput(email, password);
-
-    if (!valid) {
+    if (errors) {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await User.findOne({ email });
+    const checkedUser = await checkUserExist('email', email);
 
-    if (!user) {
-      errors.general = 'User not found';
-      throw new UserInputError('User not found', { errors });
+    const encryptedPassword = await bcrypt.hash(password, 12);
+
+    const credentials = checkedUser.credentials.map(cred => {
+      if (cred.source === 'horondi') {
+        return {
+          _id: cred._id,
+          source: cred.source,
+          tokenPass: encryptedPassword,
+        };
+      }
+      return cred;
+    });
+
+    const updatedUser = {
+      firstName,
+      lastName,
+      email,
+      credentials,
+    };
+
+    return User.findByIdAndUpdate(id, {
+      ...checkedUser._doc,
+      ...updatedUser,
+    });
+  }
+
+  async loginUser({ email, password }) {
+    const { errors } = await validateLoginInput.validateAsync({
+      email,
+      password,
+    });
+
+    if (errors) {
+      throw new UserInputError('Errors', { errors });
     }
+
+    const user = await checkUserExist('email', email);
 
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === 'horondi').tokenPass,
     );
+
     if (!match) {
-      errors.general = 'Wrong crendetials';
-      throw new UserInputError('Wrong crendetials', { errors });
+      errors.general = 'Wrong password';
+      throw new AuthenticationError(errors.general, { errors });
     }
 
-    const token = generateToken(user._id, user.firstName);
+    const token = generateToken(user._id, user.email);
 
     return {
-      ...user._doc,
-      id: user._id,
+      user: { ...user._doc },
       token,
     };
   }
 
   async registerUser({
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
+    firstName, lastName, email, password,
   }) {
-    const { valid, errors } = validateRegisterInput(
+    const { errors } = await validateRegisterInput.validateAsync({
       firstName,
       lastName,
       email,
       password,
-      confirmPassword,
-    );
+    });
 
-    if (!valid) {
+    if (errors) {
       throw new UserInputError('Errors', { errors });
     }
 
     const checkedUser = await User.findOne({ email });
 
     if (checkedUser) {
-      throw new UserInputError('User already exist', {
+      const massage = 'User with provided email already exists';
+      throw new UserInputError(massage, {
         errors: {
-          email: 'This email already taken',
+          email: massage,
         },
       });
     }
 
-    const bycryptPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await bcrypt.hash(password, 12);
 
     const user = new User({
       firstName,
@@ -96,12 +127,12 @@ class UserService {
       credentials: [
         {
           source: 'horondi',
-          tokenPass: bycryptPassword,
+          tokenPass: encryptedPassword,
         },
       ],
     });
-    const res = await user.save();
-    return { ...res._doc };
+    const savedUser = await user.save();
+    return savedUser._doc;
   }
 
   deleteUser(id) {

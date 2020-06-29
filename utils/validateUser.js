@@ -1,49 +1,54 @@
-module.exports.validateRegisterInput = (
-  firstName,
-  lastName,
-  email,
-  password,
-  confirmPassword,
-) => {
-  const errors = {};
+const Joi = require('@hapi/joi');
+const { UserInputError } = require('apollo-server');
+const User = require('../modules/user/user.model');
 
-  if (firstName.trim() === '') {
-    errors.firstName = 'This field is required. Please write your first name';
-  }
-  if (lastName.trim() === '') {
-    errors.lastName = 'This field is required. Please write your last name';
-  }
-  if (email.trim() === '') {
-    errors.email = 'This field is required. Please write your email';
-  } else {
-    const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
-    if (!email.match(regEx)) {
-      errors.email = 'Email must be a valid email address';
-    }
-  }
-  if (password === '') {
-    errors.password = 'This field is required. Please write password';
-  } else if (password !== confirmPassword) {
-    errors.confirmPassword = 'Passwords must match';
+exports.checkUserExist = async (key, param) => {
+  const checkedUser = await User.findOne({ [key]: param });
+
+  if (!checkedUser) {
+    const massage = `User with provided ${[key]} not found`;
+    throw new UserInputError(massage, {
+      errors: {
+        [key]: massage,
+      },
+    });
   }
 
-  return {
-    errors,
-    valid: Object.keys(errors).length < 1,
-  };
+  return checkedUser;
 };
 
-module.exports.validateLoginInput = (email, password) => {
-  const errors = {};
-  if (email.trim() === '') {
-    errors.email = 'This field is required. Please write your email';
-  }
-  if (password.trim() === '') {
-    errors.password = 'This field is required. Please write your password';
-  }
+exports.validateRegisterInput = Joi.object({
+  firstName: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required(),
 
-  return {
-    errors,
-    valid: Object.keys(errors).length < 1,
-  };
-};
+  lastName: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(30)
+    .required(),
+
+  password: Joi.string()
+    .min(8)
+    .max(20)
+    .required(),
+
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ['com', 'net'] },
+  }),
+});
+
+exports.validateLoginInput = Joi.object({
+  password: Joi.string()
+    .min(8)
+    .max(20)
+    .required(),
+
+  email: Joi.string().email({
+    minDomainSegments: 2,
+    tlds: { allow: ['com', 'net'] },
+  }),
+});
