@@ -89,6 +89,7 @@ class UserService {
 
     return {
       user: { ...user._doc },
+      id: user._id,
       token,
     };
   }
