@@ -20,6 +20,7 @@ type User{
 
 const userInput = `
 input UserInput {
+    id:ID
     firstName: String
     lastName: String
     role: String
