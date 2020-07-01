@@ -1,21 +1,21 @@
-const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
-const { userQuery, userMutation } = require('./modules/user/user.resolver');
+const { newsQuery, newsMutation } = require('./src/modules/news/news.resolver');
+const { userQuery, userMutation } = require('./src/modules/user/user.resolver');
 const {
   currencyQuery,
   currencyMutation,
-} = require('./modules/currency/currency.resolver');
+} = require('./src/modules/currency/currency.resolver');
 const {
   materialQuery,
   materialMutation,
-} = require('./modules/material/material.resolver');
+} = require('./src/modules/material/material.resolver');
 const {
   patternQuery,
   patternMutation,
-} = require('./modules/pattern/pattern.resolver');
+} = require('./src/modules/pattern/pattern.resolver');
 const {
   categoryQuery,
   categoryMutation,
-} = require('./modules/category/category.resolver');
+} = require('./src/modules/category/category.resolver');
 
 const resolvers = {
   Query: {

@@ -1,22 +1,22 @@
 const { gql } = require('apollo-server');
-const { newsType, newsInput } = require('./modules/news/news.graphql');
-const { userType, userInput } = require('./modules/user/user.graphql');
+const { newsType, newsInput } = require('./src/modules/news/news.graphql');
+const { userType, userInput } = require('./src/modules/user/user.graphql');
 const {
   categoryType,
   categoryInput,
-} = require('./modules/category/category.graphql');
+} = require('./src/modules/category/category.graphql');
 const {
   materialType,
   materialInput,
-} = require('./modules/material/material.graphql');
+} = require('./src/modules/material/material.graphql');
 const {
   patternsType,
   patternsInput,
-} = require('./modules/pattern/pattern.graphql');
+} = require('./src/modules/pattern/pattern.graphql');
 const {
   currencyType,
   currencyInput,
-} = require('./modules/currency/currency.graphql.js');
+} = require('./src/modules/currency/currency.graphql.js');
 
 const typeDefs = gql`
   ${categoryType}
