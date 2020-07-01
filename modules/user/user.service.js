@@ -13,15 +13,15 @@ class UserService {
     return User.find();
   }
 
-  async getUserById(id, auth) {
-    const user = await User.findById(id);
+  async getUserById(auth) {
+    const user = await User.findById(auth.userId);
 
-    await checkUserExist('_id', id);
+    await checkUserExist('_id', auth.userId);
 
     return user;
   }
 
-  async updateUser(id, {
+  async updateUser({
     firstName, lastName, email, password,
   }, auth) {
     const { errors } = await validateRegisterInput.validateAsync({
@@ -35,7 +35,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const checkedUser = await checkUserExist('email', email);
+    const checkedUser = await checkUserExist('_id', auth.userId);
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
@@ -57,7 +57,7 @@ class UserService {
       credentials,
     };
 
-    return User.findByIdAndUpdate(id, {
+    return User.findByIdAndUpdate(auth.userId, {
       ...checkedUser._doc,
       ...updatedUser,
     });
@@ -81,14 +81,14 @@ class UserService {
     );
 
     if (!match) {
-      errors.general = 'Wrong password';
-      throw new AuthenticationError(errors.general, { errors });
+      throw new AuthenticationError('Wrong password');
     }
 
     const token = generateToken(user._id, user.email);
 
     return {
       user: { ...user._doc },
+      id: user._id,
       token,
     };
   }
@@ -132,7 +132,7 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    return savedUser._doc;
+    return { ...savedUser._doc, id: savedUser._id };
   }
 
   deleteUser(id) {
