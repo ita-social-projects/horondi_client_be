@@ -8,9 +8,10 @@
 /coverage
 /logs
 # production
-/.vs
+
 
 # misc
+/.vs
 .DS_Store
 .env
 .env.local
