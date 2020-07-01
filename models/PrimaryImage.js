@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const ImageSet = require('./ImageSet').schema;
+const ImageSet = require('../modules/common/ImageSet').schema;
 
 const primaryImageSchema = new mongoose.Schema({
   primary: ImageSet,

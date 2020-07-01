@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const ImageSet = require('./ImageSet').schema;
-const Address = require('./Address').schema;
+const ImageSet = require('../common/ImageSet').schema;
+const Address = require('../common/Address').schema;
 
 const userSchema = new mongoose.Schema({
   firstName: String,

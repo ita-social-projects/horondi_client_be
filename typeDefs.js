@@ -1,5 +1,6 @@
 const { gql } = require('apollo-server');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
+const { userType, userInput } = require('./modules/user/user.graphql');
 const {
   categoryType,
   categoryInput,
@@ -18,6 +19,17 @@ const {
 } = require('./modules/currency/currency.graphql.js');
 
 const typeDefs = gql`
+  ${categoryType}
+  ${currencyType}
+  ${materialType}
+  ${newsType}
+  ${patternsType}
+  ${userType}
+
+  enum RoleEnum {
+    admin
+    user
+  }
   type Language {
     lang: String!
     value: String!
@@ -30,40 +42,47 @@ const typeDefs = gql`
     thumbnail: String
   }
 
+  type Credential {
+    source: String
+    tokenPass: String
+  }
+
+  type Address {
+    country: String
+    city: String
+    street: String
+    buildingNumber: String
+    appartment: String
+  }
+
   type PrimaryImage {
-    primary: ImageSet!
-    additional: [ImageSet!]
+    primary: ImageSet
+    additional: [ImageSet]
   }
 
   type ConvertOption {
-    name: String!
-    exchangeRate: Float!
+    name: String
+    exchangeRate: Float
   }
-
-  ${categoryType}
-  ${currencyType}
-  ${materialType}
-  ${newsType}
-  ${patternsType}
 
   type Subcategory {
     _id: ID!
-    categoryCode: String!
-    name: [Language!]
+    categoryCode: String
+    name: [Language]
     images: ImageSet
-    available: Boolean!
+    available: Boolean
   }
 
   type Author {
-    name: String!
+    name: [Language]
     image: ImageSet
   }
 
   type Color {
-    code: Int!
-    name: [Language!]
+    code: Int
+    name: [Language]
     images: ImageSet
-    available: Boolean!
+    available: Boolean
   }
 
   type Query {
@@ -81,6 +100,13 @@ const typeDefs = gql`
 
     getAllNews: [News!]!
     getNewsById(id: ID): News
+
+    getAllUsers: [User]
+    getUserById(id: ID): User
+  }
+
+  input RoleEnumInput {
+    role: String
   }
 
   input PrimaryImageInput {
@@ -98,10 +124,19 @@ const typeDefs = gql`
   ${materialInput}
   ${newsInput}
   ${patternsInput}
+  ${userInput}
 
   input LanguageInput {
     lang: String!
     value: String!
+  }
+
+  input AddressInput {
+    country: String
+    city: String
+    street: String
+    buildingNumber: String
+    appartment: String
   }
 
   input ImageSetInput {
@@ -129,7 +164,10 @@ const typeDefs = gql`
     images: ImageSetInput
     available: Boolean!
   }
-
+  input CredentialInput {
+    source: String
+    tokenPass: String
+  }
   type Mutation {
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): Pattern
@@ -155,6 +193,12 @@ const typeDefs = gql`
     addNews(news: NewsInput!): News
     deleteNews(id: ID!): News
     updateNews(id: ID!, news: NewsInput!): News
+
+    "User Mutation"
+    registerUser(user: UserInput!): User
+    loginUser(user: UserInput!): User
+    deleteUser(id: ID!): User
+    updateUser(id: ID!, user: UserInput!): User
   }
 `;
 
