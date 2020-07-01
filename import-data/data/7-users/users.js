@@ -100,7 +100,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
             credentials: generateCredentials(),
             registrationDate: randomDate(new Date('January 01, 2010 00:00:00'), new Date('May 31, 2020 23:23:59')),
             wishlist: [backpacks[~~(Math.random() * backpacksNumber)]],
-            orders: [],
+            orders: [getObjectId('order' + i)],
             purchasedProducts: [],
             comments: []
         })
