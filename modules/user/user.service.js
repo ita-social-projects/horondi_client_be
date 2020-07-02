@@ -35,11 +35,24 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const checkedUser = await checkUserExist('_id', auth.userId);
+    const user = await checkUserExist('_id', auth.userId);
+
+    if (auth.email !== email) {
+      const checkedUser = await User.findOne({ email });
+
+      if (checkedUser) {
+        const massage = 'User with provided email already exists';
+        throw new UserInputError(massage, {
+          errors: {
+            email: massage,
+          },
+        });
+      }
+    }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
-    const credentials = checkedUser.credentials.map(cred => {
+    const credentials = user.credentials.map(cred => {
       if (cred.source === 'horondi') {
         return {
           _id: cred._id,
@@ -58,7 +71,7 @@ class UserService {
     };
 
     return User.findByIdAndUpdate(auth.userId, {
-      ...checkedUser._doc,
+      ...user._doc,
       ...updatedUser,
     });
   }
