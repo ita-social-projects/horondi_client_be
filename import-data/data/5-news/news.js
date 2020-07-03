@@ -1,11 +1,19 @@
+const fs = require('fs');
+const path = require('path');
 const { mapToLanguages } = require('../../helpers/languages');
-const { ukArticles, enArticles } = require('../../helpers/articles');
+
+const article1UK = fs.readFileSync(path.join(__dirname, '../../src') + '/article1UK.html', 'utf8');
+const article1EN = fs.readFileSync(path.join(__dirname, '../../src') + '/article1EN.html', 'utf8');
+const article2UK = fs.readFileSync(path.join(__dirname, '../../src') + '/article2UK.html', 'utf8');
+const article2EN = fs.readFileSync(path.join(__dirname, '../../src') + '/article2EN.html', 'utf8');
+const article3UK = fs.readFileSync(path.join(__dirname, '../../src') + '/article3UK.html', 'utf8');
+const article3EN = fs.readFileSync(path.join(__dirname, '../../src') + '/article3EN.html', 'utf8');
 
 const news = [
     {
         title: mapToLanguages(['Модні новинки сумок на сезон осінь-зима 2019-2020',
                                 'Fasionable new bags for fall-winter 2019-2020 season']),
-        text: mapToLanguages([ukArticles[0], enArticles[0]]),
+        text: mapToLanguages([article1UK, article1EN]),
         images: {
             primary: { medium: 'https://ukr.media/static/ba/aimg/3/9/3/393626_1.jpg' },
             additional: [
@@ -24,7 +32,7 @@ const news = [
     {
         title: mapToLanguages(['Що носити модницям влітку 2020: добірка трендових сумок для спекотного сезону',
                                 'A selection of trendy bags for the hot season of summer 2020']),
-        text: mapToLanguages([ukArticles[1], enArticles[1]]),
+        text: mapToLanguages([article2UK, article2EN]),
         images: {
             primary: { medium: 'https://s.032.ua/section/newsInternalIcon/upload/images/news/icon/000/052/185/trendi-lita-golovna_5edf9266621db.jpg' },
             additional: [
@@ -47,7 +55,7 @@ const news = [
     {
         title: mapToLanguages(['Аксесуар на пояс, зручна сумка, стильна штучка!',
                                 'Belt accessory, comfortable bag, stylish thingy!']),
-        text: mapToLanguages([ukArticles[2], enArticles[2]]),
+        text: mapToLanguages([article3UK, article3EN]),
         images: {
             primary: { medium: 'https://images.stylight.net/image/upload/t_web_post_500x667/q_auto,f_auto/post-c27c63a5b58deb0d4535ddd5993e68b2e4d0776d756fdc41c0f7c391.jpg' },
             additional: [

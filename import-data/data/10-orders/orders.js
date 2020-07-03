@@ -76,11 +76,11 @@ for (let i = 0; i < usersNumber; i++) {
         });
     };
 
-    closurePick = closures.find(el => el.id.toHexString() == item.closure);
-    orders[i]['closure'] = closurePick.name;
-
-    closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
-    orders[i]['closureColor'] = closureColorPick.name;
+    // closurePick = closures.find(el => el.id.toHexString() == item.closure);
+    // orders[i]['closure'] = closurePick.name;
+    // console.log(closurePick);
+    // closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
+    // orders[i]['closureColor'] = closureColorPick.name;
 
     if (item.hasOwnProperty('pattern')) {
         patternPick = patterns.find(el => el.id.toHexString() == item.pattern);
