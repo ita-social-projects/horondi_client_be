@@ -2,32 +2,58 @@ const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const {
-  checkUserExist,
   validateRegisterInput,
   validateLoginInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
 class UserService {
+  async getUserExistByEmail(email) {
+    const checkedUser = await User.findOne({ email });
+
+    if (checkedUser) {
+      const massage = 'User with provided email already exists';
+      throw new UserInputError(massage, {
+        errors: {
+          email: massage,
+        },
+      });
+    }
+  }
+
+  async getUserOrThrow(key, param) {
+    const checkedUser = await User.findOne({ [key]: param });
+
+    if (!checkedUser) {
+      const massage = `User with provided ${[key]} not found`;
+      throw new UserInputError(massage, {
+        errors: {
+          [key]: massage,
+        },
+      });
+    }
+
+    return checkedUser;
+  }
+
   getAllUsers() {
     return User.find();
   }
 
-  async getUserById(auth) {
-    const user = await User.findById(auth.userId);
+  async getUser(id) {
+    const user = await User.findById(id);
 
-    await checkUserExist('_id', auth.userId);
+    await this.getUserOrThrow('_id', id);
 
     return user;
   }
 
   async updateUser({
     firstName, lastName, email, password,
-  }, auth) {
+  }, id) {
     const { errors } = await validateRegisterInput.validateAsync({
       firstName,
       lastName,
-      password,
       email,
     });
 
@@ -35,42 +61,19 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await checkUserExist('_id', auth.userId);
+    const user = await this.getUserOrThrow('_id', id);
 
-    if (auth.email !== email) {
-      const checkedUser = await User.findOne({ email });
-
-      if (checkedUser) {
-        const massage = 'User with provided email already exists';
-        throw new UserInputError(massage, {
-          errors: {
-            email: massage,
-          },
-        });
-      }
+    if (user._doc.email !== email) {
+      await this.getUserExistByEmail(email);
     }
-
-    const encryptedPassword = await bcrypt.hash(password, 12);
-
-    const credentials = user.credentials.map(cred => {
-      if (cred.source === 'horondi') {
-        return {
-          _id: cred._id,
-          source: cred.source,
-          tokenPass: encryptedPassword,
-        };
-      }
-      return cred;
-    });
 
     const updatedUser = {
       firstName,
       lastName,
       email,
-      credentials,
     };
 
-    return User.findByIdAndUpdate(auth.userId, {
+    return User.findByIdAndUpdate(id, {
       ...user._doc,
       ...updatedUser,
     });
@@ -86,7 +89,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await checkUserExist('email', email);
+    const user = await this.getUserOrThrow('email', email);
 
     const match = await bcrypt.compare(
       password,
@@ -120,16 +123,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const checkedUser = await User.findOne({ email });
-
-    if (checkedUser) {
-      const massage = 'User with provided email already exists';
-      throw new UserInputError(massage, {
-        errors: {
-          email: massage,
-        },
-      });
-    }
+    await this.getUserExistByEmail(email);
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
@@ -145,7 +139,7 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    return { ...savedUser._doc, id: savedUser._id };
+    return savedUser;
   }
 
   deleteUser(id) {

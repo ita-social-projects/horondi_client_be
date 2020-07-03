@@ -103,6 +103,7 @@ const typeDefs = gql`
 
     getAllUsers: [User]
     getUserByToken: User
+    getUserById(id: ID!): User
   }
 
   input RoleEnumInput {
@@ -198,7 +199,8 @@ const typeDefs = gql`
     registerUser(user: UserInput!): User
     loginUser(user: UserInput!): User
     deleteUser(id: ID!): User
-    updateUser(user: UserInput!): User
+    updateUserById(user: UserInput!, id: ID!): User
+    updateUserByToken(user: UserInput!): User
   }
 `;
 

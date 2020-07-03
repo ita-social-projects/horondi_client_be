@@ -1,21 +1,4 @@
 const Joi = require('@hapi/joi');
-const { UserInputError } = require('apollo-server');
-const User = require('../modules/user/user.model');
-
-exports.checkUserExist = async (key, param) => {
-  const checkedUser = await User.findOne({ [key]: param });
-
-  if (!checkedUser) {
-    const massage = `User with provided ${[key]} not found`;
-    throw new UserInputError(massage, {
-      errors: {
-        [key]: massage,
-      },
-    });
-  }
-
-  return checkedUser;
-};
 
 exports.validateRegisterInput = Joi.object({
   firstName: Joi.string()
