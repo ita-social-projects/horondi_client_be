@@ -2,8 +2,12 @@
   "name": "horondi_client_be",
   "version": "1.0.0",
   "type": "commonjs",
-  "description": "",
+  "description": "Horondi",
   "main": "server.js",
+  "repository": {
+    "url": "https://github.com/horondi/horondi_client_be.git"
+  },
+  "private": "true",
   "scripts": {
     "start": "nodemon server.js",
     "lint": "eslint .",
@@ -12,15 +16,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "apollo-server": "^2.14.5",
+    "bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",
-    "concurrently": "^5.1.0",
     "config": "^3.2.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-validator": "^6.4.0",
+    "graphql": "^15.1.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.0",
+    "mongoose": "^5.9.18",
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
     "nodemailer": "^6.4.6",
@@ -54,8 +59,8 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "eslint . --fix"
     ]
   }
 }

@@ -1,32 +1,26 @@
-const express = require('express');
-const morgan = require('morgan');
-const cors = require('cors');
-
-const path = require('path');
-const rfs = require('rotating-file-stream');
+const { ApolloServer } = require('apollo-server');
+const typeDefs = require('./typeDefs');
+const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
+const { checkUserExist } = require('./utils/validateUser');
+const verifyUser = require('./utils/verifyUser');
 
-const errorHandler = require('./middleware/errorHandler');
-
+connectDB();
 require('dotenv').config();
 
-const accessLogStream = rfs.createStream('access.log', {
-  interval: '3d',
-  path: path.join(__dirname, 'logs'),
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: async ({ req }) => {
+    const { token } = req.headers || '';
+    if (token) {
+      const user = verifyUser(token);
+      await checkUserExist(user.email);
+      return {
+        user,
+      };
+    }
+  },
 });
-
-const app = express();
-app.use(cors());
-connectDB();
-
-app.use(morgan('combined', { stream: accessLogStream }));
-app.use(morgan('dev'));
-app.use(express.json({ extended: false }));
-
-app.get('/', (req, res) => res.send('API Running'));
-
-app.use(errorHandler);
-
 const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+server.listen(PORT, () => console.log('apollo server started, port', PORT));
