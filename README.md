@@ -1,5 +1,5 @@
 # Hondri
-Backend API for the `Hondri` online store
+Backend API for the `Horondi` online store
 ## Rules and guidelines
 - File naming
     - Files should be name in format `some-component.type.js`
