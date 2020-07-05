@@ -1,4 +1,4 @@
-# Hondri
+# Horondi
 Backend API for the `Horondi` online store
 ## Rules and guidelines
 - File naming
