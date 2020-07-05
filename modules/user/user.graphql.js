@@ -23,7 +23,6 @@ input UserInput {
     firstName: String
     lastName: String
     role: String
-    password: String!
     email: String!
     phoneNumber: Int
     address: AddressInput

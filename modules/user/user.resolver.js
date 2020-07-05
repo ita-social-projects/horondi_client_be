@@ -2,9 +2,7 @@ const userService = require('./user.service');
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(),
-  getUserByToken: (parent, args, context) => (context.user
-    ? userService.getUser(context.user.userId)
-    : new Error('Unauthorized')),
+  getUserByToken: (parent, args, context) => userService.getUser(context.user._id),
   getUserById: (parent, args, context) => (context.user ? userService.getUser(args.id) : new Error('Unauthorized')),
 };
 const userMutation = {
@@ -12,10 +10,10 @@ const userMutation = {
   loginUser: (parent, args) => userService.loginUser(args.user),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
   updateUserById: (parent, args, context) => (context.user
-    ? userService.updateUser(args.user, args.id)
+    ? userService.updateUserById(args.user, args.id)
     : new Error('Unauthorized')),
   updateUserByToken: (parent, args, context) => (context.user
-    ? userService.updateUser(args.user, context.user.userId)
+    ?  userService.updateUserByToken(args.user, context.user)
     : new Error('Unauthorized')),
 };
 

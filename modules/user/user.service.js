@@ -4,11 +4,12 @@ const User = require('./user.model');
 const {
   validateRegisterInput,
   validateLoginInput,
+  validateUpdateInput
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
 class UserService {
-  async getUserExistByEmail(email) {
+  async checkUserExists(email) {
     const checkedUser = await User.findOne({ email });
 
     if (checkedUser) {
@@ -21,14 +22,14 @@ class UserService {
     }
   }
 
-  async getUserOrThrow(key, param) {
+  async getUserByFieldOrThrow(key, param) {
     const checkedUser = await User.findOne({ [key]: param });
 
     if (!checkedUser) {
-      const massage = `User with provided ${[key]} not found`;
-      throw new UserInputError(massage, {
+      const message = `User with provided ${[key]} not found`;
+      throw new UserInputError(message, {
         errors: {
-          [key]: massage,
+          [key]: message,
         },
       });
     }
@@ -41,17 +42,13 @@ class UserService {
   }
 
   async getUser(id) {
-    const user = await User.findById(id);
-
-    await this.getUserOrThrow('_id', id);
-
-    return user;
+    return await this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUser({
+  async updateUserById({
     firstName, lastName, email, password,
   }, id) {
-    const { errors } = await validateRegisterInput.validateAsync({
+    const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
       email,
@@ -61,21 +58,36 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await this.getUserOrThrow('_id', id);
-
+    const user = await this.getUserByFieldOrThrow('_id', id);
+      
     if (user._doc.email !== email) {
-      await this.getUserExistByEmail(email);
+      await this.checkUserExists(email);
     }
-
-    const updatedUser = {
+    
+    return User.findByIdAndUpdate(user._id, {
       firstName,
       lastName,
       email,
-    };
+    });
+  }
 
-    return User.findByIdAndUpdate(id, {
-      ...user._doc,
-      ...updatedUser,
+  async updateUserByToken({
+    firstName, lastName, email, 
+  }, user) {
+    const { errors } = await validateUpdateInput.validateAsync({
+      firstName,
+      lastName,
+      email,
+    });
+
+    if (errors) {
+      throw new UserInputError('Errors', { errors });
+    }
+    
+    return User.findByIdAndUpdate(user._id, {
+      firstName,
+      lastName,
+      email,
     });
   }
 
@@ -89,7 +101,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await this.getUserOrThrow('email', email);
+    const user = await this.getUserByFieldOrThrow('email', email);
 
     const match = await bcrypt.compare(
       password,
@@ -123,7 +135,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    await this.getUserExistByEmail(email);
+    await this.checkUserExists(email);
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 

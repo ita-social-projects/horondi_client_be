@@ -2,7 +2,7 @@ const { ApolloServer } = require('apollo-server');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
-const UserService = require('./modules/user/user.service');
+const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verifyUser');
 
 connectDB();
@@ -15,10 +15,7 @@ const server = new ApolloServer({
     const { token } = req.headers || '';
     if (token) {
       const user = verifyUser(token);
-      await UserService.getUserOrThrow('email', user.email);
-      return {
-        user,
-      };
+      return { user: await userService.getUserByFieldOrThrow('email', user.email) };
     }
   },
 });
