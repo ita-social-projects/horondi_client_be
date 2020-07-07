@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Language = require('./Language').schema;
-const Address = require('./Address').schema;
+const Address = require('../modules/common/Address').schema;
 const Size = require('./Size').schema;
 
 const orderSchema = new mongoose.Schema({
