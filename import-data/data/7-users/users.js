@@ -4,20 +4,20 @@ const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const recordNumber = 19;
 
-const namesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/names.txt', 'utf8');
+const namesFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'names.txt'), 'utf8');
 const names = namesFromFile.split('\n')
                 .map( line => line.split(' ')[0])
                 .map( word => word.slice(0,1).toUpperCase() + word.slice(1).toLowerCase());
 
-const surnamesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/surnames.txt', 'utf8');
+const surnamesFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'surnames.txt'), 'utf8');
 const surnames = surnamesFromFile.split('\n')
                 .map( line => line.trim());
 
-const citiesFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/cities.txt', 'utf8');
+const citiesFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'cities.txt'), 'utf8');
 const cities = citiesFromFile.split('\n')
                 .map( line => line.split(' ')[1].trim());
 
-const streetsFromFile = fs.readFileSync(path.join(__dirname, '../../src') + '/streets.txt', 'utf8');
+const streetsFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'streets.txt'), 'utf8');
 const streets = streetsFromFile.split('\n')
                 .map( line => line.split('(')[0].trim());
 

@@ -26,7 +26,8 @@ const materials = [
       [214, 'Брудно-сірий', 'Dim-gray'],
       [215, 'Темно-сірий', 'Dark-gray']
   ]),
-    available: true
+    available: true,
+    additionalPrice: 0
   },
   {
     id: getObjectId('bond'),
@@ -54,7 +55,8 @@ const materials = [
       [317, 'Темно-синій', 'Midnight-blue'],
       [318, 'Темно-червоний', 'Dark-red']
   ]),
-    available: true
+    available: true,
+    additionalPrice: 0
   },
   {
     id: getObjectId('faux-leather'),
@@ -67,7 +69,8 @@ const materials = [
       [3, 'Сірий', 'Gray'],
       [4, 'Рожевий', 'Pink']
   ]),
-    available: true
+    available: true,
+    additionalPrice: 0
   },
   {
     id: getObjectId('cordura'),
@@ -77,7 +80,8 @@ const materials = [
     colors: mapToColors([
       [1, 'Чорний', 'Black']
   ]),
-    available: true
+    available: true,
+    additionalPrice: 0
   },
   {
     id: getObjectId('genuine-leather'),
@@ -88,7 +92,8 @@ const materials = [
       [1, 'Чорний', 'Black'],
       [2, 'Коричневий', 'Brown']
   ]),
-    available: true
+    available: true,
+    additionalPrice: 350
   }
 ];
 

@@ -5,8 +5,8 @@ const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const mapToItems = (category, sizes, material, basePrice, itemsNumber) => {
     let items = [];
-    let sizeName;
-    let volume;
+    let sizeName = '';
+    let volume = 0;
     let size;
     let materialColors;
     let materialColorsNumber;
@@ -88,7 +88,7 @@ const mapToItems = (category, sizes, material, basePrice, itemsNumber) => {
             bottomMaterial = 'faux-leather';
             bottomColors = fauxColors;
             bottomColorsNumber = fauxColorsNumber;
-        } else if (bottompick == 0) {
+        } else if (bottompick == 1) {
             bottomMaterial = 'cordura';
             bottomColors = corduraColors;
             bottomColorsNumber = corduraColorsNumber;
@@ -99,13 +99,18 @@ const mapToItems = (category, sizes, material, basePrice, itemsNumber) => {
             additionalPriceMaterial = 350;
         }
 
-        closurepick = ~~(Math.random() * 2);
-        if (closurepick == 0) {
-            closureId = getObjectId('metal-closure');
+        if (category == 'backpack') {
+            closurepick = ~~(Math.random() * 2);
+            if (closurepick == 0) {
+                closureId = getObjectId('metal-closure');
+                closureColorCode = ~~(Math.random() * 2) + 1;
+            } else {
+                closureId = getObjectId('plastic-closure');
+                closureColorCode = 1;
+            }
+        } else {
+            closureId = getObjectId('metal-hook');
             closureColorCode = ~~(Math.random() * 2) + 1;
-        } else if (closurepick == 0) {
-            closureId = getObjectId('plastic-closure');
-            closureColorCode = 1;
         }
 
         availableNumber = ~~(Math.random() * 5);
@@ -114,19 +119,25 @@ const mapToItems = (category, sizes, material, basePrice, itemsNumber) => {
             id: getObjectId('item' + i),
             size: mapToSizes({ name: sizeName, sizes: size, volume: volume, weight: weight }),
             components: [
-                mapToComponents ('outer-layer', material, materialColors[~~(Math.random() * materialColorsNumber)]),
-                mapToComponents ('bottom', bottomMaterial, bottomColors[~~(Math.random() * bottomColorsNumber)]),
+                mapToComponents ('outer-layer', material, materialColors[~~(Math.random() * materialColorsNumber)])
             ],
-            pocket: !!(~~(Math.random() * 2)),
-            closure: closureId,
-            closureColorCode: closureColorCode,
             actualPrice: basePrice + additionalPriceSize + additionalPriceMaterial,
             availableNumber: availableNumber
         });
 
         withPattern = ~~(Math.random() * 2);
-        if (withPattern == 1) {
+        if (withPattern == 1 && basePrice != 950) {
             items[items.length-1]['pattern'] = getObjectId(patterns[~~(Math.random() * patternsNumber)]);
+        }
+
+        if (category == 'backpack' || category == 'bag') {
+            items[items.length-1]['components'].push(mapToComponents ('bottom', bottomMaterial, bottomColors[~~(Math.random() * bottomColorsNumber)]));
+            items[items.length-1]['closure'] = closureId;
+            items[items.length-1]['closureColorCode'] = closureColorCode
+        }
+
+        if (category == 'backpack') {
+            items[items.length-1]['pocket'] = !!(~~(Math.random() * 2))
         }
     }
 

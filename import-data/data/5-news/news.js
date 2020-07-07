@@ -2,12 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { mapToLanguages } = require('../../helpers/languages');
 
-const article1UK = fs.readFileSync(path.join(__dirname, '../../src') + '/article1UK.html', 'utf8');
-const article1EN = fs.readFileSync(path.join(__dirname, '../../src') + '/article1EN.html', 'utf8');
-const article2UK = fs.readFileSync(path.join(__dirname, '../../src') + '/article2UK.html', 'utf8');
-const article2EN = fs.readFileSync(path.join(__dirname, '../../src') + '/article2EN.html', 'utf8');
-const article3UK = fs.readFileSync(path.join(__dirname, '../../src') + '/article3UK.html', 'utf8');
-const article3EN = fs.readFileSync(path.join(__dirname, '../../src') + '/article3EN.html', 'utf8');
+const article1UK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'article1UK.html'), 'utf8');
+const article1EN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'article1EN.html'), 'utf8');
+const article2UK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'article2UK.html'), 'utf8');
+const article2EN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'article2EN.html'), 'utf8');
+const article3UK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'article3UK.html'), 'utf8');
+const article3EN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'article3EN.html'), 'utf8');
 
 const news = [
     {

@@ -54,7 +54,6 @@ for (let i = 0; i < usersNumber; i++) {
             product: product.name,
             size: item.size,
             components: [],
-            pocket: item.pocket,
             actualPrice: item.actualPrice,
             quantity: 1,
             },
@@ -76,15 +75,21 @@ for (let i = 0; i < usersNumber; i++) {
         });
     };
 
-    // closurePick = closures.find(el => el.id.toHexString() == item.closure);
-    // orders[i]['closure'] = closurePick.name;
-    // console.log(closurePick);
-    // closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
-    // orders[i]['closureColor'] = closureColorPick.name;
+    if (item.hasOwnProperty('closure')) {
+        closurePick = closures.find(el => el.id.toHexString() == item.closure);
+        orders[i].items[0]['closure'] = closurePick.name;
+        //console.log(closurePick);
+        closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
+        orders[i].items[0]['closureColor'] = closureColorPick.name;
+    }
 
     if (item.hasOwnProperty('pattern')) {
         patternPick = patterns.find(el => el.id.toHexString() == item.pattern);
-        orders[i]['pattern'] = patternPick.name;
+        orders[i].items[0]['pattern'] = patternPick.name;
+    }
+
+    if (item.hasOwnProperty('pocket')) {
+        orders[i].items[0]['pocket'] = item.pocket;
     }
 
     totalPrice = 0;

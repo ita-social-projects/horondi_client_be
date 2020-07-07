@@ -5,12 +5,24 @@ const { mapToImages } = require('../../helpers/images');
 const { mapToItems } = require('../../helpers/items');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
-const rolltopDescUK = fs.readFileSync(path.join(__dirname, '../../src') + '/rolltopDescUK.html', 'utf8');
-const rolltopDescEN = fs.readFileSync(path.join(__dirname, '../../src') + '/rolltopDescEN.html', 'utf8');
-const newDescUK = fs.readFileSync(path.join(__dirname, '../../src') + '/newDescUK.html', 'utf8');
-const newDescEN = fs.readFileSync(path.join(__dirname, '../../src') + '/newDescEN.html', 'utf8');
-const harbuzDescUK = fs.readFileSync(path.join(__dirname, '../../src') + '/harbuzDescUK.html', 'utf8');
-const harbuzDescEN = fs.readFileSync(path.join(__dirname, '../../src') + '/harbuzDescEN.html', 'utf8');
+const rolltopDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'rolltopDescUK.html'), 'utf8');
+const rolltopDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'rolltopDescEN.html'), 'utf8');
+const newDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'newDescUK.html'), 'utf8');
+const newDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'newDescEN.html'), 'utf8');
+const harbuzDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'harbuzDescUK.html'), 'utf8');
+const harbuzDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'harbuzDescEN.html'), 'utf8');
+const bagWithPatternDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagWithPatternDescUK.html'), 'utf8');
+const bagWithPatternDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagWithPatternDescEN.html'), 'utf8');
+const bagThreeColorsDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagThreeColorsDescUK.html'), 'utf8');
+const bagThreeColorsDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagThreeColorsDescEN.html'), 'utf8');
+const bagOneColorDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagOneColorDescUK.html'), 'utf8');
+const bagOneColorDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagOneColorDescEN.html'), 'utf8');
+const bagSimpleDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagSimpleDescUK.html'), 'utf8');
+const bagSimpleDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'bagSimpleDescEN.html'), 'utf8');
+const fannyPackLargeDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'fannyPackLargeDescUK.html'), 'utf8');
+const fannyPackLargeDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'fannyPackLargeDescEN.html'), 'utf8');
+const fannyPackSmallDescUK = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'fannyPackSmallDescUK.html'), 'utf8');
+const fannyPackSmallDescEN = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'fannyPackSmallDescEN.html'), 'utf8');
 
 const products = [{
     id: getObjectId('rolltop'),
@@ -70,6 +82,146 @@ const products = [{
     votedUsers: [],
     basePrice: 1550,
     items: mapToItems('backpack', [[40, 28, 14]], 'malmo', 1550, 15),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('bag-with-pattern'),
+    category: getObjectId('sub-bags'),
+    name: mapToLanguages(['Сумка з гобеленом', 'Bag with pattern']),
+    description: mapToLanguages([bagWithPatternDescUK, bagWithPatternDescEN]),
+    images: {
+        primary: mapToImages('primary-bag-with-pattern'),
+        additional: [
+            mapToImages('additional-bag-with-pattern-1'),
+            mapToImages('additional-bag-with-pattern-2'),
+            mapToImages('additional-bag-with-pattern-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 900,
+    items: mapToItems('bag', [[38, 36, 10]], 'malmo', 900, 10),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('bag-three-colors'),
+    category: getObjectId('sub-bags'),
+    name: mapToLanguages(['Сумка три кольори', 'Three color bag']),
+    description: mapToLanguages([bagThreeColorsDescUK, bagThreeColorsDescEN]),
+    images: {
+        primary: mapToImages('primary-bag-three-colors'),
+        additional: [
+            mapToImages('additional-bag-three-colors-1'),
+            mapToImages('additional-bag-three-colors-2'),
+            mapToImages('additional-bag-three-colors-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 900,
+    items: mapToItems('bag', [[36, 36, 12]], 'malmo', 900, 10),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('bag-one-color'),
+    category: getObjectId('sub-bags'),
+    name: mapToLanguages(['Сумка одноколірна', 'One color bag']),
+    description: mapToLanguages([bagOneColorDescUK, bagOneColorDescEN]),
+    images: {
+        primary: mapToImages('primary-bag-one-color'),
+        additional: [
+            mapToImages('additional-bag-one-color-1'),
+            mapToImages('additional-bag-one-color-2'),
+            mapToImages('additional-bag-one-color-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 900,
+    items: mapToItems('bag', [[36, 36, 12]], 'malmo', 900, 10),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('bag-simple'),
+    category: getObjectId('sub-bags'),
+    name: mapToLanguages(['Сумка', 'Bag']),
+    description: mapToLanguages([bagSimpleDescUK, bagSimpleDescEN]),
+    images: {
+        primary: mapToImages('primary-bag-simple'),
+        additional: [
+            mapToImages('additional-bag-simple-1'),
+            mapToImages('additional-bag-simple-2'),
+            mapToImages('additional-bag-simple-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 950,
+    items: mapToItems('bag', [[36, 36, 12]], 'malmo', 950, 10),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('fanny-pack-large'),
+    category: getObjectId('sub-fanny-packs'),
+    name: mapToLanguages(['Бананка велика', 'Fanny pack large']),
+    description: mapToLanguages([fannyPackLargeDescUK, fannyPackLargeDescEN]),
+    images: {
+        primary: mapToImages('primary-fanny-pack-large'),
+        additional: [
+            mapToImages('additional-fanny-pack-large-1'),
+            mapToImages('additional-fanny-pack-large-2'),
+            mapToImages('additional-fanny-pack-large-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 500,
+    items: mapToItems('fanny-pack', [[17, 35]], 'malmo', 500, 10),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('fanny-pack-small'),
+    category: getObjectId('sub-fanny-packs'),
+    name: mapToLanguages(['Бананка маленька', 'Fanny pack small']),
+    description: mapToLanguages([fannyPackSmallDescUK, fannyPackSmallDescEN]),
+    images: {
+        primary: mapToImages('primary-fanny-pack-small'),
+        additional: [
+            mapToImages('additional-fanny-pack-small-1'),
+            mapToImages('additional-fanny-pack-small-2'),
+            mapToImages('additional-fanny-pack-small-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 400,
+    items: mapToItems('fanny-pack', [[10, 20]], 'malmo', 400, 10),
+    available: true,
+    comments: []
+}, {
+    id: getObjectId('wallet'),
+    category: getObjectId('sub-wallets'),
+    name: mapToLanguages(['Гаманець', 'Wallet']),
+    description: mapToLanguages(['', '']),
+    images: {
+        primary: mapToImages('primary-wallet'),
+        additional: [
+            mapToImages('additional-wallet-1'),
+            mapToImages('additional-wallet-2'),
+            mapToImages('additional-wallet-3')
+        ]
+    },
+    rate: 0,
+    rateCount: 0,
+    votedUsers: [],
+    basePrice: 200,
+    items: mapToItems('wallet', [[10, 10]], 'malmo', 200, 3),
     available: true,
     comments: []
 }];
