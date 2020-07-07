@@ -22,7 +22,6 @@
     "@azure/keyvault-secrets": "^4.0.4",
     "@hapi/joi": "^17.1.1",
     "apollo-server": "^2.14.5",
-    "azure": "^2.3.1",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.5",
     "cors": "^2.8.5",
@@ -49,7 +48,7 @@
     "husky": "^4.2.5",
     "jest": "^26.1.0",
     "lint-staged": "^10.2.9",
-    "nodemon": "^2.0.3",
+    "nodemon": "^2.0.4",
     "prettier": "^1.19.1"
   },
   "engines": {

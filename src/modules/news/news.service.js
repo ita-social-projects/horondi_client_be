@@ -2,11 +2,34 @@ const News = require('./news.model');
 
 class NewsService {
   getAllNews() {
-    return News.find();
+    const news = News.find();
+    if (!news) {
+      return news;
+    }
+    throw new Error([
+      { lang: 'uk', value: 'новин не знайдено' },
+      {
+        lang: 'eng',
+        value: 'news not found',
+      },
+    ]);
   }
 
   getNewsById(id) {
-    return News.findById(id);
+    const news = News.findById(id);
+
+    if (!news) {
+      return news;
+    }
+    throw new Error(
+      JSON.stringify([
+        { lang: 'uk', value: 'новин не знайдено' },
+        {
+          lang: 'eng',
+          value: 'news not found',
+        },
+      ]),
+    );
   }
 
   updateNews(id, news) {

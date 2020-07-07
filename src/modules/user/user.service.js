@@ -2,32 +2,55 @@ const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const {
-  checkUserExist,
   validateRegisterInput,
   validateLoginInput,
+  validateUpdateInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
 class UserService {
+  async checkUserExists(email) {
+    const checkedUser = await User.findOne({ email });
+
+    if (checkedUser) {
+      const massage = 'User with provided email already exists';
+      throw new UserInputError(massage, {
+        errors: {
+          email: massage,
+        },
+      });
+    }
+  }
+
+  async getUserByFieldOrThrow(key, param) {
+    const checkedUser = await User.findOne({ [key]: param });
+
+    if (!checkedUser) {
+      const message = `User with provided ${[key]} not found`;
+      throw new UserInputError(message, {
+        errors: {
+          [key]: message,
+        },
+      });
+    }
+
+    return checkedUser;
+  }
+
   getAllUsers() {
     return User.find();
   }
 
-  async getUserById(id, auth) {
-    const user = await User.findById(id);
-
-    await checkUserExist('_id', id);
-
-    return user;
+  getUser(id) {
+    return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUser(id, {
+  async updateUserById({
     firstName, lastName, email, password,
-  }, auth) {
-    const { errors } = await validateRegisterInput.validateAsync({
+  }, id) {
+    const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
-      password,
       email,
     });
 
@@ -35,31 +58,34 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const checkedUser = await checkUserExist('email', email);
+    const user = await this.getUserByFieldOrThrow('_id', id);
 
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    if (user._doc.email !== email) {
+      await this.checkUserExists(email);
+    }
 
-    const credentials = checkedUser.credentials.map(cred => {
-      if (cred.source === 'horondi') {
-        return {
-          _id: cred._id,
-          source: cred.source,
-          tokenPass: encryptedPassword,
-        };
-      }
-      return cred;
-    });
-
-    const updatedUser = {
+    return User.findByIdAndUpdate(user._id, {
       firstName,
       lastName,
       email,
-      credentials,
-    };
+    });
+  }
 
-    return User.findByIdAndUpdate(id, {
-      ...checkedUser._doc,
-      ...updatedUser,
+  async updateUserByToken({ firstName, lastName, email }, user) {
+    const { errors } = await validateUpdateInput.validateAsync({
+      firstName,
+      lastName,
+      email,
+    });
+
+    if (errors) {
+      throw new UserInputError('Errors', { errors });
+    }
+
+    return User.findByIdAndUpdate(user._id, {
+      firstName,
+      lastName,
+      email,
     });
   }
 
@@ -73,7 +99,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await checkUserExist('email', email);
+    const user = await this.getUserByFieldOrThrow('email', email);
 
     const match = await bcrypt.compare(
       password,
@@ -81,8 +107,7 @@ class UserService {
     );
 
     if (!match) {
-      errors.general = 'Wrong password';
-      throw new AuthenticationError(errors.general, { errors });
+      throw new AuthenticationError('Wrong password');
     }
 
     const token = generateToken(user._id, user.email);
@@ -108,16 +133,7 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const checkedUser = await User.findOne({ email });
-
-    if (checkedUser) {
-      const massage = 'User with provided email already exists';
-      throw new UserInputError(massage, {
-        errors: {
-          email: massage,
-        },
-      });
-    }
+    await this.checkUserExists(email);
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
@@ -133,7 +149,7 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    return savedUser._doc;
+    return savedUser;
   }
 
   deleteUser(id) {
