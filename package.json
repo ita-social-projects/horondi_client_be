@@ -12,7 +12,8 @@
     "start": "nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "seed": "seed -u 'mongodb://127.0.0.1:27017/horondi' --drop-database ./import-data/data --replace-id"
+    "seed": "seed -u 'mongodb://127.0.0.1:27017/horondi' --drop-database ./import-data/data --replace-id",
+    "seed-windows": "seed -u 'mongodb://127.0.0.1:27017/horondi' .\\import-data\\data --replace-id"
   },
   "author": "",
   "license": "ISC",
