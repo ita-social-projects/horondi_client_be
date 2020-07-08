@@ -1,0 +1,361 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries should recive all patterns like in service and resolver 1`] = `
+Array [
+  Object {
+    "_id": "0c3c7929dd85de268bed4fe8",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням рожевої хвильки",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with pink wave pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-pink-wave.jpg",
+      "medium": "medium-pink-wave.jpg",
+      "small": "small-pink-wave.jpg",
+      "thumbnail": "thumbnail-pink-wave.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Рожева хвилька",
+      },
+      Object {
+        "lang": "en",
+        "value": "Pink wave",
+      },
+    ],
+  },
+  Object {
+    "_id": "fdc7529135f2c050c877a67a",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням синьої хвильки",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with blue wave pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-blue-wave.jpg",
+      "medium": "medium-blue-wave.jpg",
+      "small": "small-blue-wave.jpg",
+      "thumbnail": "thumbnail-blue-wave.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Синя хвилька",
+      },
+      Object {
+        "lang": "en",
+        "value": "Blue wave",
+      },
+    ],
+  },
+  Object {
+    "_id": "7c49f713a0fbbc6550a79173",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням стрілок",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with arrow pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-arrows.jpg",
+      "medium": "medium-arrows.jpg",
+      "small": "small-arrows.jpg",
+      "thumbnail": "thumbnail-arrows.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Стрілки",
+      },
+      Object {
+        "lang": "en",
+        "value": "Arrows",
+      },
+    ],
+  },
+  Object {
+    "_id": "4c9a82ce72ca2519f38d0af0",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із синім визерунком",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with blue pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-blue.jpg",
+      "medium": "medium-blue.jpg",
+      "small": "small-blue.jpg",
+      "thumbnail": "thumbnail-blue.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Синій",
+      },
+      Object {
+        "lang": "en",
+        "value": "Blue",
+      },
+    ],
+  },
+  Object {
+    "_id": "466bc8cef3e71de796ec483e",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із чорним визерунком",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with black pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-black.jpg",
+      "medium": "medium-black.jpg",
+      "small": "small-black.jpg",
+      "thumbnail": "thumbnail-black.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Чорний",
+      },
+      Object {
+        "lang": "en",
+        "value": "Black",
+      },
+    ],
+  },
+  Object {
+    "_id": "78988010b890ce6f4d213648",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із червоним визерунком",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with red pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-red.jpg",
+      "medium": "medium-red.jpg",
+      "small": "small-red.jpg",
+      "thumbnail": "thumbnail-red.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Червоний",
+      },
+      Object {
+        "lang": "en",
+        "value": "Red",
+      },
+    ],
+  },
+  Object {
+    "_id": "8404f8cb0b07210f8f71474b",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням вишивки",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with embroidery pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-embroidery.jpg",
+      "medium": "medium-embroidery.jpg",
+      "small": "small-embroidery.jpg",
+      "thumbnail": "thumbnail-embroidery.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Вишивка",
+      },
+      Object {
+        "lang": "en",
+        "value": "Embroidery",
+      },
+    ],
+  },
+  Object {
+    "_id": "38963b72efe3ffd6db352770",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням оленів",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with deer pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-deers.jpg",
+      "medium": "medium-deers.jpg",
+      "small": "small-deers.jpg",
+      "thumbnail": "thumbnail-deers.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Олені",
+      },
+      Object {
+        "lang": "en",
+        "value": "Deers",
+      },
+    ],
+  },
+  Object {
+    "_id": "ab3ccc8dba2a0cf7a1ce4d83",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням людей",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with people pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-people.jpg",
+      "medium": "medium-people.jpg",
+      "small": "small-people.jpg",
+      "thumbnail": "thumbnail-people.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Люди",
+      },
+      Object {
+        "lang": "en",
+        "value": "People",
+      },
+    ],
+  },
+  Object {
+    "_id": "de57efa1b187d1913414b430",
+    "available": true,
+    "description": Array [
+      Object {
+        "lang": "uk",
+        "value": "Фабричний гобелен із зображенням квітів",
+      },
+      Object {
+        "lang": "en",
+        "value": "Manufactured tapestry with flower pattern",
+      },
+    ],
+    "handmade": false,
+    "images": Object {
+      "large": "large-flowers.jpg",
+      "medium": "medium-flowers.jpg",
+      "small": "small-flowers.jpg",
+      "thumbnail": "thumbnail-flowers.jpg",
+    },
+    "material": "Cotton",
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Квіти",
+      },
+      Object {
+        "lang": "en",
+        "value": "Flowers",
+      },
+    ],
+  },
+]
+`;
+
+exports[`querries should recive pattern by id like in service and resolver 1`] = `
+Object {
+  "_id": "0c3c7929dd85de268bed4fe8",
+  "available": true,
+  "description": Array [
+    Object {
+      "lang": "uk",
+      "value": "Фабричний гобелен із зображенням рожевої хвильки",
+    },
+    Object {
+      "lang": "en",
+      "value": "Manufactured tapestry with pink wave pattern",
+    },
+  ],
+  "handmade": false,
+  "images": Object {
+    "large": "large-pink-wave.jpg",
+    "medium": "medium-pink-wave.jpg",
+    "small": "small-pink-wave.jpg",
+    "thumbnail": "thumbnail-pink-wave.jpg",
+  },
+  "material": "Cotton",
+  "name": Array [
+    Object {
+      "lang": "uk",
+      "value": "Рожева хвилька",
+    },
+    Object {
+      "lang": "en",
+      "value": "Pink wave",
+    },
+  ],
+}
+`;

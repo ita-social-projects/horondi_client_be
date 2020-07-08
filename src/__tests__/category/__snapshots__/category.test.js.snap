@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries should recive all categories like in service and resolver 1`] = `
+Array [
+  Object {
+    "available": true,
+    "categoryCode": "main-backpacks",
+    "images": Object {
+      "large": "https://horondi.blob.core.windows.net/horondi/categories/backpacks.jpg",
+      "medium": null,
+      "small": null,
+      "thumbnail": null,
+    },
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Рюкзаки",
+      },
+      Object {
+        "lang": "en",
+        "value": "Backpacks",
+      },
+    ],
+  },
+  Object {
+    "available": true,
+    "categoryCode": "main-bags",
+    "images": Object {
+      "large": "https://horondi.blob.core.windows.net/horondi/categories/bags.jpg",
+      "medium": null,
+      "small": null,
+      "thumbnail": null,
+    },
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Сумки",
+      },
+      Object {
+        "lang": "en",
+        "value": "Bags",
+      },
+    ],
+  },
+  Object {
+    "available": true,
+    "categoryCode": "main-accessories",
+    "images": Object {
+      "large": "https://horondi.blob.core.windows.net/horondi/categories/accessories.jpg",
+      "medium": null,
+      "small": null,
+      "thumbnail": null,
+    },
+    "name": Array [
+      Object {
+        "lang": "uk",
+        "value": "Аксесуари",
+      },
+      Object {
+        "lang": "en",
+        "value": "Accessories",
+      },
+    ],
+  },
+]
+`;
+
+exports[`querries should recive category by id like in service and resolver 1`] = `
+Object {
+  "_id": "5ef3970c0ab5dd42436dd5c4",
+  "categoryCode": "main-backpacks",
+  "images": Object {
+    "large": "https://horondi.blob.core.windows.net/horondi/categories/backpacks.jpg",
+    "medium": null,
+    "small": null,
+    "thumbnail": null,
+  },
+  "name": Array [
+    Object {
+      "lang": "uk",
+      "value": "Рюкзаки",
+    },
+    Object {
+      "lang": "en",
+      "value": "Backpacks",
+    },
+  ],
+}
+`;

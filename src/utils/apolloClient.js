@@ -1,22 +1,18 @@
+const { createHttpLink } = require('apollo-link-http');
+const { InMemoryCache } = require('apollo-cache-inmemory');
+const { ApolloClient } = require('apollo-boost');
 require('dotenv').config();
 
-const { ApolloClient, gql } = require('apollo-boost');
-const {
-  InMemoryCache,
-  NormalizedCacheObject,
-} = require('apollo-cache-inmemory');
+const fetch = require('node-fetch');
 
 const client = new ApolloClient({
-  cache: InMemoryCache,
-  link: process.env.BASE_URI,
+  link: createHttpLink({
+    uri: process.env.BASE_URI,
+    fetch,
+  }),
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
 });
 
-const apolloClient = query => {
-  client.query({
-    query: gql`
-      ${query}
-    `,
-  });
-};
-
-module.exports = { apolloClient };
+module.exports = client;
