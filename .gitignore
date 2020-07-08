@@ -9,7 +9,9 @@
 /logs
 # production
 
+
 # misc
+/.vs
 .DS_Store
 .env
 .env.local

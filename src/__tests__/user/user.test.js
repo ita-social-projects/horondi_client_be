@@ -36,7 +36,12 @@ describe('querries', () => {
                     }
                 }
             `
-        }).then(res => res)
+        }).then(res => {
+            return res;
+        })
+        .catch(error => {
+          console.log(error)
+        });
 
         expect(userService.getAllUsers()).resolves.toBe(res);
         expect(userResolver.userQuery.getAllUsers()).resolves.toBe(res);
@@ -47,8 +52,7 @@ describe('querries', () => {
 //       const res = await client.query({
 //           query: gql`
 //               query {       
-//                 getUserById(id: "0c3c7929dd85de268bed4fe8"){
-//                     _id
+//                 getUserByToken{ 
 //                     name{
 //                         lang
 //                         value
@@ -68,11 +72,21 @@ describe('querries', () => {
 //                     available
 //                 }
 //               }
-//           `
-//       }).then(res => res)
+//           `,
+//           context: {
+//             headers: {
+//                 token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWZjYWY3MWU2MWYwYjQ3MDA4NzA2MTIiLCJlbWFpbCI6InRhY2prYTM0QGdtYWlsLmNvbSIsImlhdCI6MTU5NDIyMjY3MywiZXhwIjoxNTk0MjI2MjczfQ.ECGiqT1ubWP6UWe3hbpH57-USJUvlw25-ZFNhz4NOZ8"
+//             }
+//           }
+//     }).then(res => res)
+//     .catch(err => err)
 
-//       expect(userService.getUserById("0c3c7929dd85de268bed4fe8")).resolves.toBe(res);
-//       expect(userResolver.userQuery.getUserById('',{id:"0c3c7929dd85de268bed4fe8"})).resolves.toBe(res);
-//       expect(res.data.getUserById).toMatchSnapshot()
+//     console.log(res)
+      
+//     //   expect(userService.getUserByToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWZjYWY3MWU2MWYwYjQ3MDA4NzA2MTIiLCJlbWFpbCI6InRhY2prYTM0QGdtYWlsLmNvbSIsImlhdCI6MTU5NDIxOTMxNSwiZXhwIjoxNTk0MjIyOTE1fQ.f2RbXNM0HN7sgjrDwcUgN5edT2m6QV5590EnyKPKbic")).resolves.toBe(res);
+//     //   expect(userResolver.userQuery.getUserById('','',{headers:{
+//     //       token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWZjYWY3MWU2MWYwYjQ3MDA4NzA2MTIiLCJlbWFpbCI6InRhY2prYTM0QGdtYWlsLmNvbSIsImlhdCI6MTU5NDIxOTMxNSwiZXhwIjoxNTk0MjIyOTE1fQ.f2RbXNM0HN7sgjrDwcUgN5edT2m6QV5590EnyKPKbic"
+//     //   }})).resolves.toBe(res);
+//     //   expect(res.data.getUserById).toMatchSnapshot()
 //   })
 })

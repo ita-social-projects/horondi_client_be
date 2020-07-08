@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`mutations should authorize and recive user token 1`] = `
+Object {
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWZjYWY3MWU2MWYwYjQ3MDA4NzA2MTIiLCJlbWFpbCI6InRhY2prYTM0QGdtYWlsLmNvbSIsImlhdCI6MTU5NDIyMjI5NiwiZXhwIjoxNTk0MjI1ODk2fQ.wu4q6mWQb3N3K7uJDdYCUhXIzlZtq6uaWATnm1TT2ME",
+}
+`;
+
 exports[`querries should recive all users like in service and resolver 1`] = `
 Array [
   Object {

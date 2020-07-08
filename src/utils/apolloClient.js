@@ -13,6 +13,13 @@ const client = new ApolloClient({
   cache: new InMemoryCache({
     addTypename: false,
   }),
+  request: operation => {
+    operation.setContext({
+      headers: {
+        token: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWZjYWY3MWU2MWYwYjQ3MDA4NzA2MTIiLCJlbWFpbCI6InRhY2prYTM0QGdtYWlsLmNvbSIsImlhdCI6MTU5NDIxOTMxNSwiZXhwIjoxNTk0MjIyOTE1fQ.f2RbXNM0HN7sgjrDwcUgN5edT2m6QV5590EnyKPKbic`
+      }
+    });
+  }
 });
 
 module.exports = client;

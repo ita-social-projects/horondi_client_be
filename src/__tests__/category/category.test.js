@@ -29,6 +29,7 @@ describe('querries', () => {
                 }
             `
         }).then(res => res)
+        .catch(err => err)
 
         expect(categoryService.getAllCategories()).resolves.toBe(res);
 
@@ -56,6 +57,7 @@ describe('querries', () => {
               }
           `
       }).then(res => res)
+      .catch(err => err)
 
       expect(categoryService.getCategoryById("5ef3970c0ab5dd42436dd5c4")).resolves.toBe(res);
       expect(categoryResolver.categoryQuery.getCategoryById('',{id:"5ef3970c0ab5dd42436dd5c4"})).resolves.toBe(res);

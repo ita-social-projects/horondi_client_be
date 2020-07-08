@@ -35,6 +35,7 @@ describe('querries', () => {
                 }
             `
         }).then(res => res)
+        .catch(err => err)
 
         expect(patternService.getAllPatterns()).resolves.toBe(res);
         expect(patternResolver.patternQuery.getAllPatterns()).resolves.toBe(res);
@@ -68,6 +69,7 @@ describe('querries', () => {
               }
           `
       }).then(res => res)
+      .catch(err => err)
 
       expect(patternService.getPatternById("0c3c7929dd85de268bed4fe8")).resolves.toBe(res);
       expect(patternResolver.patternQuery.getPatternById('',{id:"0c3c7929dd85de268bed4fe8"})).resolves.toBe(res);
