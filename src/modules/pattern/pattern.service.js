@@ -1,25 +1,46 @@
 const Pattern = require('./pattern.model');
 
+const patternErrorMessage = JSON.stringify([
+  { lang: 'uk', value: 'Гобелен  не знайдено' },
+  { lang: 'eng', value: 'Pattern not found' },
+]);
 class PatternsService {
-  getAllPatterns() {
-    return Pattern.find();
+  async getAllPatterns() {
+    const pattern = await Pattern.find();
+    if (pattern) {
+      return pattern;
+    }
+    return new Error(patternErrorMessage);
   }
 
-  getPatternById(id) {
-    return Pattern.findById(id);
+  async getPatternById(id) {
+    const pattern = await Pattern.findById(id);
+    if (pattern) {
+      return pattern;
+    }
+    return new Error(patternErrorMessage);
   }
 
-  updatePattern(id, pattern) {
-    return Pattern.findByIdAndUpdate(id, pattern);
+  async updatePattern(id, pattern) {
+    const patternToUpdate = await Pattern.findByIdAndUpdate(id, pattern);
+    if (patternToUpdate) {
+      return patternToUpdate;
+    }
+    return new Error(patternErrorMessage);
   }
 
-  addPattern(data) {
+  async addPattern(data) {
     const pattern = new Pattern(data);
-    return pattern.save();
+    await pattern.save();
+    return { message: 'Гобелен успішно додано' };
   }
 
-  deletePattern(id) {
-    return Pattern.findByIdAndDelete(id);
+  async deletePattern(id) {
+    const response = await Pattern.findByIdAndDelete(id);
+    if (response) {
+      return response;
+    }
+    return new Error(patternErrorMessage);
   }
 }
 module.exports = new PatternsService();

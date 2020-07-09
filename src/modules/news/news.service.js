@@ -1,66 +1,46 @@
 const News = require('./news.model');
 
+const newsErrorMessage = JSON.stringify([
+  { lang: 'uk', value: 'Новин  не знайдено' },
+  { lang: 'eng', value: 'News not found' },
+]);
 class NewsService {
-  getAllNews() {
-    const news = News.find();
+  async getAllNews() {
+    const news = await News.find();
     if (news) {
       return news;
     }
-    return new Error([
-      { lang: 'uk', value: 'новин не знайдено' },
-      {
-        lang: 'eng',
-        value: 'news not found',
-      },
-    ]);
+    return new Error(newsErrorMessage);
   }
 
-  getNewsById(id) {
-    const news = News.findById(id);
-
-    if (!news) {
-      throw new Error([
-        { lang: 'uk', value: 'новину не знайдено' },
-        {
-          lang: 'eng',
-          value: 'news not found',
-        },
-      ]);
+  async getNewsById(id) {
+    const news = await News.findById(id);
+    if (news) {
+      return news;
     }
-    return news;
+    return new Error(newsErrorMessage);
   }
 
-  updateNews(id, news) {
-    const newsToUpdate = News.findByIdAndUpdate(id, news);
+  async updateNews(id, news) {
+    const newsToUpdate = await News.findByIdAndUpdate(id, news);
     if (news) {
       return newsToUpdate;
     }
-    return new Error([
-      { lang: 'uk', value: 'новину не знайдено' },
-      {
-        lang: 'eng',
-        value: 'news not found',
-      },
-    ]);
+    return new Error(newsErrorMessage);
   }
 
-  addNews(data) {
+  async addNews(data) {
     const user = new News(data);
-    return user.save();
+    await user.save();
+    return { message: 'Новину успішно створено' };
   }
 
-  deleteNews(id) {
-    const news = News.findByIdAndDelete(id);
-    if (!news) {
-      return new Error([
-        { lang: 'uk', value: 'новину не знайдено' },
-        {
-          lang: 'eng',
-          value: 'news not found',
-        },
-      ]);
+  async deleteNews(id) {
+    const news = await News.findByIdAndDelete(id);
+    if (news) {
+      return { message: 'Новину успішно видалено' };
     }
-    return { message: 'news successfully deleted' };
+    return new Error(newsErrorMessage);
   }
 }
 module.exports = new NewsService();

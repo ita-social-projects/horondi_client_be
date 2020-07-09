@@ -1,50 +1,43 @@
 const Category = require('./category.model');
 
+const categoryErrorMessage = JSON.stringify([
+  { lang: 'uk', value: 'Категорій не знайдено' },
+  { lang: 'eng', value: 'Category not found' },
+]);
 class CategoryService {
-  getAllCategories() {
-    const categories = Category.find();
+  async getAllCategories() {
+    const categories = await Category.find();
     if (categories) {
       return categories;
     }
-    return new Error([
-      { lang: 'uk', value: 'категорій не знайдено' },
-      { lang: 'eng', value: 'categories not found' },
-    ]);
+    return new Error(categoryErrorMessage);
   }
 
-  getCategoryById(id) {
-    const category = Category.findById(id);
+  async getCategoryById(id) {
+    const category = await Category.findById(id);
     if (category) {
       return category;
     }
-    return new Error([
-      { lang: 'uk', value: 'категорій не знайдено' },
-      { lang: 'eng', value: 'categories not found' },
-    ]);
+    return new Error(categoryErrorMessage);
   }
 
-  updateCategory(id, category) {
-    const categoryToUpdate = Category.findByIdAndUpdate(id, category);
+  async updateCategory(id, category) {
+    const categoryToUpdate = await Category.findByIdAndUpdate(id, category);
     if (categoryToUpdate) {
-      return category;
+      return categoryToUpdate;
     }
-    return new Error([
-      { lang: 'uk', value: 'категорій не знайдено' },
-      { lang: 'eng', value: 'categories not found' },
-    ]);
+    return new Error(categoryErrorMessage);
   }
 
-  addCategory(data) {
+  async addCategory(data) {
     const category = new Category(data);
-    return category.save();
+    await category.save();
+    return [{ message: 'категорія успішно створена' }];
   }
 
   deleteCategory(id) {
     Category.findByIdAndDelete(id);
-    return [
-      { lang: 'uk', value: 'категорія успішно видалена' },
-      { lang: 'eng', value: 'category not found' },
-    ];
+    return [{ message: 'категорія успішно видалена' }];
   }
 }
 module.exports = new CategoryService();
