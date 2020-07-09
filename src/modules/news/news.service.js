@@ -3,10 +3,10 @@ const News = require('./news.model');
 class NewsService {
   getAllNews() {
     const news = News.find();
-    if (!news) {
+    if (news) {
       return news;
     }
-    throw new Error([
+    return new Error([
       { lang: 'uk', value: 'новин не знайдено' },
       {
         lang: 'eng',
@@ -19,21 +19,29 @@ class NewsService {
     const news = News.findById(id);
 
     if (!news) {
-      return news;
-    }
-    throw new Error(
-      JSON.stringify([
-        { lang: 'uk', value: 'новин не знайдено' },
+      throw new Error([
+        { lang: 'uk', value: 'новину не знайдено' },
         {
           lang: 'eng',
           value: 'news not found',
         },
-      ]),
-    );
+      ]);
+    }
+    return news;
   }
 
   updateNews(id, news) {
-    return News.findByIdAndUpdate(id, news);
+    const newsToUpdate = News.findByIdAndUpdate(id, news);
+    if (news) {
+      return newsToUpdate;
+    }
+    return new Error([
+      { lang: 'uk', value: 'новину не знайдено' },
+      {
+        lang: 'eng',
+        value: 'news not found',
+      },
+    ]);
   }
 
   addNews(data) {
@@ -42,7 +50,17 @@ class NewsService {
   }
 
   deleteNews(id) {
-    return News.findByIdAndDelete(id);
+    const news = News.findByIdAndDelete(id);
+    if (!news) {
+      return new Error([
+        { lang: 'uk', value: 'новину не знайдено' },
+        {
+          lang: 'eng',
+          value: 'news not found',
+        },
+      ]);
+    }
+    return { message: 'news successfully deleted' };
   }
 }
 module.exports = new NewsService();
