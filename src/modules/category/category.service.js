@@ -2,15 +2,36 @@ const Category = require('./category.model');
 
 class CategoryService {
   getAllCategories() {
-    return Category.find();
+    const categories = Category.find();
+    if (categories) {
+      return categories;
+    }
+    return new Error([
+      { lang: 'uk', value: 'категорій не знайдено' },
+      { lang: 'eng', value: 'categories not found' },
+    ]);
   }
 
   getCategoryById(id) {
-    return Category.findById(id);
+    const category = Category.findById(id);
+    if (category) {
+      return category;
+    }
+    return new Error([
+      { lang: 'uk', value: 'категорій не знайдено' },
+      { lang: 'eng', value: 'categories not found' },
+    ]);
   }
 
   updateCategory(id, category) {
-    return Category.findByIdAndUpdate(id, category);
+    const categoryToUpdate = Category.findByIdAndUpdate(id, category);
+    if (categoryToUpdate) {
+      return category;
+    }
+    return new Error([
+      { lang: 'uk', value: 'категорій не знайдено' },
+      { lang: 'eng', value: 'categories not found' },
+    ]);
   }
 
   addCategory(data) {
@@ -19,7 +40,11 @@ class CategoryService {
   }
 
   deleteCategory(id) {
-    return Category.findByIdAndDelete(id);
+    Category.findByIdAndDelete(id);
+    return [
+      { lang: 'uk', value: 'категорія успішно видалена' },
+      { lang: 'eng', value: 'category not found' },
+    ];
   }
 }
 module.exports = new CategoryService();
