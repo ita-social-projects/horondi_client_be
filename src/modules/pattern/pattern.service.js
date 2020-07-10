@@ -9,8 +9,8 @@ class PatternsService {
     return Pattern.findById(id);
   }
 
-  updatePattern(id, pattern) {
-    return Pattern.findByIdAndUpdate(id, pattern);
+  async updatePattern(id, pattern) {
+    return await Pattern.findByIdAndUpdate(id, pattern);
   }
 
   addPattern(data) {
@@ -18,8 +18,8 @@ class PatternsService {
     return pattern.save();
   }
 
-  deletePattern(id) {
-    return Pattern.findByIdAndDelete(id);
+  async deletePattern(id) {
+    return await Pattern.findByIdAndDelete(id);
   }
 }
 module.exports = new PatternsService();

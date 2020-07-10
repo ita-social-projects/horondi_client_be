@@ -32,8 +32,6 @@ describe('querries', () => {
         .catch(err => err)
 
         expect(categoryService.getAllCategories()).resolves.toBe(res);
-
-        expect(res.data.getAllCategories).toMatchSnapshot()
     })
 
     test('should recive category by id like in service and resolver', async () => {

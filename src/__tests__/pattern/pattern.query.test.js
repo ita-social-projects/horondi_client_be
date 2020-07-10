@@ -39,7 +39,6 @@ describe('querries', () => {
 
         expect(patternService.getAllPatterns()).resolves.toBe(res);
         expect(patternResolver.patternQuery.getAllPatterns()).resolves.toBe(res);
-        expect(res.data.getAllPatterns).toMatchSnapshot()
     })
 
     test('should recive pattern by id like in service and resolver', async () => {

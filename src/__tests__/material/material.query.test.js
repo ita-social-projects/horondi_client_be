@@ -42,11 +42,9 @@ describe('querries', () => {
                 }
             `
         }).then(res => res)
-        .catch(err => err)
 
         expect(materialService.getAllMaterials()).resolves.toBe(res);
         expect(materialResolver.materialQuery.getAllMaterials()).resolves.toBe(res);
-        expect(res.data.getAllMaterials).toMatchSnapshot()
     })
 
     test('should recive material by id like in service and resolver', async () => {

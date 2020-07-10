@@ -42,7 +42,10 @@ class UserService {
   }
 
   async getUser(id) {
-    return await this.getUserByFieldOrThrow('_id', id);
+
+    const user = await this.getUserByFieldOrThrow('_id', id);
+    console.log(user)
+    return user;
   }
 
   async updateUserById({
@@ -154,8 +157,9 @@ class UserService {
     return savedUser;
   }
 
-  deleteUser(id) {
-    return User.findByIdAndDelete(id);
+  async deleteUser(id) {
+    const res = await User.findByIdAndDelete(id);
+    return res
   }
 }
 module.exports = new UserService();

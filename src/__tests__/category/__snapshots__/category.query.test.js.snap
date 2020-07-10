@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries should recive category by id like in service and resolver 1`] = `null`;
