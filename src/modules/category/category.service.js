@@ -32,12 +32,14 @@ class CategoryService {
   async addCategory(data) {
     const category = new Category(data);
     await category.save();
-    return [{ message: 'категорія успішно створена' }];
+    return category;
   }
 
   deleteCategory(id) {
-    Category.findByIdAndDelete(id);
-    return [{ message: 'категорія успішно видалена' }];
+    const category = Category.findByIdAndDelete(id);
+    if (!category) {
+      return new Error('Категорію не знайдено');
+    }
   }
 }
 module.exports = new CategoryService();

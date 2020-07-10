@@ -32,15 +32,14 @@ class PatternsService {
   async addPattern(data) {
     const pattern = new Pattern(data);
     await pattern.save();
-    return { message: 'Гобелен успішно додано' };
+    return pattern;
   }
 
   async deletePattern(id) {
     const response = await Pattern.findByIdAndDelete(id);
-    if (response) {
-      return response;
+    if (!response) {
+      return new Error(patternErrorMessage);
     }
-    return new Error(patternErrorMessage);
   }
 }
 module.exports = new PatternsService();

@@ -32,15 +32,14 @@ class MaterialsService {
   async addMaterial(data) {
     const material = new Material(data);
     await material.save();
-    return { message: 'Матеріал успішно додано' };
+    return material;
   }
 
   async deleteMaterial(id) {
     const material = await Material.findByIdAndDelete(id);
-    if (material) {
-      return { message: 'Матеріал успішно видалено' };
+    if (!material) {
+      return { message: 'Матеріал не знайдено' };
     }
-    return { message: 'Матеріал не знайдено' };
   }
 }
 

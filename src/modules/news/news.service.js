@@ -30,17 +30,16 @@ class NewsService {
   }
 
   async addNews(data) {
-    const user = new News(data);
-    await user.save();
-    return { message: 'Новину успішно створено' };
+    const news = new News(data);
+    await news.save();
+    return news;
   }
 
   async deleteNews(id) {
     const news = await News.findByIdAndDelete(id);
     if (news) {
-      return { message: 'Новину успішно видалено' };
+      return new Error(newsErrorMessage);
     }
-    return new Error(newsErrorMessage);
   }
 }
 module.exports = new NewsService();

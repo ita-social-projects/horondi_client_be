@@ -32,15 +32,14 @@ class CurrencyService {
   async addCurrency(data) {
     const currency = new Currency(data);
     await currency.save();
-    return { message: 'Валюту додано' };
+    return currency;
   }
 
   async deleteCurrency(id) {
     const currency = await Currency.findByIdAndDelete(id);
-    if (currency) {
-      return { message: 'Валюту видалено' };
+    if (!currency) {
+      return { message: 'Валюту не знайдено' };
     }
-    return { message: 'Валюту не знайдено' };
   }
 }
 module.exports = new CurrencyService();

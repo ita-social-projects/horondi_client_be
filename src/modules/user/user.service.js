@@ -37,12 +37,20 @@ class UserService {
     return checkedUser;
   }
 
-  getAllUsers() {
-    return User.find();
+  async getAllUsers() {
+    const users = await User.find();
+    if (users) {
+      return users;
+    }
+    throw new Error('Користувачів не знайдено');
   }
 
-  getUser(id) {
-    return this.getUserByFieldOrThrow('_id', id);
+  async getUser(id) {
+    const user = await this.getUserByFieldOrThrow('_id', id);
+    if (user) {
+      return user;
+    }
+    throw new Error('Користувач не знайдений');
   }
 
   async updateUserById({
