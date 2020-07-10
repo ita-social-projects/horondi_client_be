@@ -1,45 +1,41 @@
 const Material = require('./material.model');
 
 const materialErrorMessage = JSON.stringify([
-  { lang: 'uk', value: 'Матеріал не знайдено' },
-  { lang: 'eng', value: 'Material not found' },
+  {
+    lang: 'uk',
+    value: 'Матеріал не знайдено',
+  },
+  {
+    lang: 'eng',
+    value: 'Material not found',
+  },
 ]);
 class MaterialsService {
   async getAllMaterials() {
-    const materials = await Material.find();
-    if (materials) {
-      return materials;
-    }
-    return new Error(materialErrorMessage);
+    return (await Material.find()) || new Error(materialErrorMessage);
   }
 
   async getMaterialById(id) {
-    const material = await Material.findById(id);
-    if (material) {
-      return material;
-    }
-    return new Error(materialErrorMessage);
+    return (await Material.findById(id)) || new Error(materialErrorMessage);
   }
 
   async updateMaterial(id, material) {
-    const materialToUpdate = await Material.findByIdAndUpdate(id, material);
-    if (materialToUpdate) {
-      return materialToUpdate;
-    }
-    return new Error(materialErrorMessage);
+    return (
+      (await Material.findByIdAndUpdate(id, material))
+      || new Error(materialErrorMessage)
+    );
   }
 
   async addMaterial(data) {
-    const material = new Material(data);
-    await material.save();
-    return material;
+    return new Material(data).save();
   }
 
   async deleteMaterial(id) {
-    const material = await Material.findByIdAndDelete(id);
-    if (!material) {
-      return { message: 'Матеріал не знайдено' };
-    }
+    return (
+      (await Material.findByIdAndDelete(id)) || {
+        message: 'Матеріал не знайдено',
+      }
+    );
   }
 }
 
