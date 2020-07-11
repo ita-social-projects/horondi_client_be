@@ -53,7 +53,7 @@ describe('mutations', () => {
                     }
                 }
             `
-        }).then(res => res)
+        })
 
         patternId = res.data.addPattern._id
         
@@ -143,7 +143,7 @@ describe('mutations', () => {
             variables: {
                 patternId
             }
-        }).then(res => res)
+        })
 
         expect(patternService.updatePattern(patternId, {
             name: [{
@@ -184,7 +184,7 @@ describe('mutations', () => {
             variables: {
                 patternId
             }
-        }).then(res => res)
+        })
 
         expect(patternService.deletePattern(patternId)).resolves.toBe(res);
         

@@ -41,7 +41,7 @@ describe('querries', () => {
                     }
                 }
             `
-        }).then(res => res)
+        })
 
         expect(materialService.getAllMaterials()).resolves.toBe(res);
         expect(materialResolver.materialQuery.getAllMaterials()).resolves.toBe(res);
@@ -80,8 +80,7 @@ describe('querries', () => {
                 }
               }
           `
-      }).then(res => res)
-      .catch(err => err)
+      })
 
       expect(materialService.getMaterialById("1d2bba5d0b80938327ac9012")).resolves.toBe(res);
       expect(materialResolver.materialQuery.getMaterialById('',{id:"1d2bba5d0b80938327ac9012"})).resolves.toBe(res);

@@ -6,7 +6,7 @@ const client = require('../../utils/apolloClient');
 
 require('dotenv').config();
 
-let userId
+let userId, token
 
 describe('mutations', () => {
     test('should register user', async () => {
@@ -19,7 +19,7 @@ describe('mutations', () => {
                         email: "tacjka34@gmail.com"
                         password: "12345678Pt"
                     }) {
-                        id
+                        _id
                         firstName
                         lastName
                         email
@@ -31,9 +31,9 @@ describe('mutations', () => {
                     }
                 }
             `
-        }).then(res => res)
+        })
 
-        userId = res.data.registerUser.id
+        userId = res.data.registerUser._id
         
         expect(userService.registerUser({
             firstName: "Petro", 
@@ -48,8 +48,6 @@ describe('mutations', () => {
             email: "tacjka34@gmail.com",
             password: "12345678Pt"
         }})).resolves.toBe(res);
-
-        // expect(res.data.registerUser).toMatchSnapshot()
     })
 
     test('should authorize and recive user token', async () => {
@@ -60,11 +58,15 @@ describe('mutations', () => {
                         email: "tacjka34@gmail.com"
                         password: "12345678Pt"
                     }) {
+                        _id
+                        firstName
                         token
                     }
                 }
             `
-        }).then(res => res)
+        })
+
+        token = res.data.loginUser.token
 
         expect(userService.loginUser({
             email: "tacjka34@gmail.com",
@@ -75,8 +77,69 @@ describe('mutations', () => {
             email: "tacjka34@gmail.com",
             password: "12345678Pt"
         }})).resolves.toBe(res);
+    })
 
-        // expect(res.data.loginUser).toMatchSnapshot()
+    test('should update user by id', async () => {
+        const res = await client.mutate({
+            mutation: gql`
+                mutation($userId: ID!) {       
+                    updateUserById(user: {
+                        firstName: "Updated",
+                    }, id: $userId){
+                        firstName
+                        lastName
+                        email
+                        role
+                    }
+                }
+            `,
+            context: {
+                headers: {
+                    token
+                }
+            },
+            variables: {
+                userId
+            }
+        })
+
+        expect(userService.updateUserById({
+                firstName: "Updated",
+        },userId)).resolves.toBe(res);
+        
+        expect(userResolver.userMutation.updateUserById(null,{ id: userId, user:{
+            firstName: "Updated",
+        }}, { user: { _id: userId } })).resolves.toBe(res);
+    })
+
+    test('should update user by token', async () => {
+        const res = await client.mutate({
+            mutation: gql`
+                mutation {       
+                    updateUserByToken(user: {
+                        firstName: "Updated",
+                    }){
+                        firstName
+                        lastName
+                        email
+                        role
+                    }
+                }
+            `,
+            context: {
+                headers: {
+                    token
+                }
+            },
+        })
+
+        expect(userService.updateUserByToken({
+                firstName: "Updated",
+        },res.data.updateUserByToken)).resolves.toBe(res);
+        
+        expect(userResolver.userMutation.updateUserByToken(null,{ user:{
+            firstName: "Updated",
+        }}, { user: res.data.updateUserByToken })).resolves.toBe(res);
     })
 
     test('should delete user', async () => {
@@ -84,14 +147,14 @@ describe('mutations', () => {
             mutation: gql`
                 mutation($userId: ID!) {       
                     deleteUser(id: $userId) {
-                        id
+                        _id
                     }
                 }
             `,
             variables: {
                 userId
             }
-        }).then(res => res)
+        })
 
         expect(userService.deleteUser(userId)).resolves.toBe(res);
         

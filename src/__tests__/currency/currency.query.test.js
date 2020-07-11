@@ -21,8 +21,7 @@ describe('querries', () => {
                     }
                 }
             `
-        }).then(res => res)
-        .catch(err => err)
+        })
 
         expect(currencyService.getAllCurrencies()).resolves.toBe(res);
         expect(currencyResolver.currencyQuery.getAllCurrencies()).resolves.toBe(res);
@@ -41,8 +40,7 @@ describe('querries', () => {
                 }
               }
           `
-      }).then(res => res)
-      .catch(err => err)
+      })
 
       expect(currencyService.getCurrencyById("5f0462f514438544ec76a77b")).resolves.toBe(res);
       expect(currencyResolver.currencyQuery.getCurrencyById('',{id:"5f0462f514438544ec76a77b"})).resolves.toBe(res);

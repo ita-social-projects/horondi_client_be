@@ -69,7 +69,7 @@ describe('mutations', () => {
                     }
                 }
             `
-        }).then(res => res)
+        })
 
         materialId = res.data.addMaterial._id
         
@@ -188,7 +188,7 @@ describe('mutations', () => {
             variables: {
                 materialId
             }
-        }).then(res => res)
+        })
 
         expect(materialService.updateMaterial(materialId, {
             name: [{
@@ -227,7 +227,7 @@ describe('mutations', () => {
             variables: {
                 materialId
             }
-        }).then(res => res)
+        })
 
         expect(materialService.deleteMaterial(materialId)).resolves.toBe(res);
         

@@ -1,25 +1,45 @@
 const News = require('./news.model');
 
+const newsErrorMessage = JSON.stringify([
+  { lang: 'uk', value: 'Новин  не знайдено' },
+  { lang: 'eng', value: 'News not found' },
+]);
 class NewsService {
-  getAllNews() {
-    return News.find();
+  async getAllNews() {
+    const news = await News.find();
+    if (news) {
+      return news;
+    }
+    return new Error(newsErrorMessage);
   }
 
-  getNewsById(id) {
-    return News.findById(id);
+  async getNewsById(id) {
+    const news = await News.findById(id);
+    if (news) {
+      return news;
+    }
+    return new Error(newsErrorMessage);
   }
 
-  updateNews(id, news) {
-    return News.findByIdAndUpdate(id, news);
+  async updateNews(id, news) {
+    const newsToUpdate = await News.findByIdAndUpdate(id, news);
+    if (news) {
+      return newsToUpdate;
+    }
+    return new Error(newsErrorMessage);
   }
 
-  addNews(data) {
-    const user = new News(data);
-    return user.save();
+  async addNews(data) {
+    const news = new News(data);
+    await news.save();
+    return news;
   }
 
-  deleteNews(id) {
-    return News.findByIdAndDelete(id);
+  async deleteNews(id) {
+    const news = await News.findByIdAndDelete(id);
+    if (news) {
+      return new Error(newsErrorMessage);
+    }
   }
 }
 module.exports = new NewsService();

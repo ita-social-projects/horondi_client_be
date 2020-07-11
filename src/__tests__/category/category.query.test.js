@@ -28,8 +28,7 @@ describe('querries', () => {
                     }
                 }
             `
-        }).then(res => res)
-        .catch(err => err)
+        })
 
         expect(categoryService.getAllCategories()).resolves.toBe(res);
     })
@@ -38,7 +37,7 @@ describe('querries', () => {
       const res = await client.query({
           query: gql`
               query {       
-                getCategoryById(id: "5ef3970c0ab5dd42436dd5c4"){
+                getCategoryById(id: "5f0462f414438544ec76a778"){
                   _id
                   name {
                     value
@@ -54,11 +53,10 @@ describe('querries', () => {
                 }
               }
           `
-      }).then(res => res)
-      .catch(err => err)
+      })
 
-      expect(categoryService.getCategoryById("5ef3970c0ab5dd42436dd5c4")).resolves.toBe(res);
-      expect(categoryResolver.categoryQuery.getCategoryById('',{id:"5ef3970c0ab5dd42436dd5c4"})).resolves.toBe(res);
+      expect(categoryService.getCategoryById("5f0462f414438544ec76a778")).resolves.toBe(res);
+      expect(categoryResolver.categoryQuery.getCategoryById('',{id:"5f0462f414438544ec76a778"})).resolves.toBe(res);
       expect(res.data.getCategoryById).toMatchSnapshot()
   })
 })

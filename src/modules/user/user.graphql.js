@@ -1,6 +1,6 @@
 const userType = `
 type User{
-    id:ID!
+    _id:ID!
     firstName: String
     lastName: String
     password: String
@@ -25,7 +25,7 @@ input UserInput {
     lastName: String
     password: String
     role: String
-    email: String!
+    email: String
     phoneNumber: String
     address: AddressInput
     images: ImageSetInput

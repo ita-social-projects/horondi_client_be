@@ -33,7 +33,7 @@ describe('mutations', () => {
                     }
                 }
             `
-        }).then(res => res)
+        })
 
         currencyId = res.data.addCurrency._id
         
@@ -89,7 +89,7 @@ describe('mutations', () => {
             variables: {
                 currencyId
             }
-        }).then(res => res)
+        })
 
         expect(currencyService.updateCurrency(currencyId, {
             convertOptions: [{
@@ -128,7 +128,7 @@ describe('mutations', () => {
             variables: {
                 currencyId
             }
-        }).then(res => res)
+        })
 
         expect(currencyService.deleteCurrency(currencyId)).resolves.toBe(res);
         
