@@ -1,6 +1,6 @@
 const { gql } = require('apollo-server');
 const { newsType, newsInput } = require('./src/modules/news/news.graphql');
-const { userType, userInput } = require('./src/modules/user/user.graphql');
+const { userType, userInput, userRegisterInput, userLoginInput } = require('./src/modules/user/user.graphql');
 const {
   categoryType,
   categoryInput,
@@ -126,6 +126,8 @@ const typeDefs = gql`
   ${newsInput}
   ${patternsInput}
   ${userInput}
+  ${userLoginInput}
+  ${userRegisterInput}
 
   input LanguageInput {
     lang: String!
@@ -196,8 +198,8 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): News
 
     "User Mutation"
-    registerUser(user: UserInput!): User
-    loginUser(user: UserInput!): User
+    registerUser(user: userRegisterInput!): User
+    loginUser(user: userLoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
