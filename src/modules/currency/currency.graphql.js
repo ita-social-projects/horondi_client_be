@@ -1,6 +1,6 @@
 const currencyType = `type Currency {
     _id: ID!
-    date: String
+    date: String!
     convertOptions: [ConvertOption!]
 }
 `;
