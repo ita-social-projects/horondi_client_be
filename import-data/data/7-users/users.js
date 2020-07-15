@@ -15,7 +15,10 @@ const surnames = surnamesFromFile.split('\n')
 
 const citiesFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'cities.txt'), 'utf8');
 const cities = citiesFromFile.split('\n')
-                .map( line => line.split(' ')[1].trim());
+                .map( line => line.split('\t')[1].trim());
+
+const regions = citiesFromFile.split('\n')
+                .map( line => line.split('\t')[2].trim());
 
 const streetsFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'streets.txt'), 'utf8');
 const streets = streetsFromFile.split('\n')
@@ -67,6 +70,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
     let emailStub;
     let usedPhoneNumbers = [];
     let phoneNumber;
+    let location;
     for (let i = 0; i < recordNumber; i++) {
         do {
             emailStub = (Math.random()).toString(36).slice(-10);
@@ -78,6 +82,8 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
         } while (phoneNumber in usedPhoneNumbers);
         usedPhoneNumbers.push(phoneNumber);
 
+        location = ~~(Math.random() * citiesNumber);
+
         result.push({
             firstName: names[~~(Math.random() * namesNumber)],
             lastName: surnames[~~(Math.random() * surnamesNumber)],
@@ -86,7 +92,8 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
             phoneNumber: phoneNumber,
             address: {
                 country: 'Україна',
-                city: cities[~~(Math.random() * citiesNumber)],
+                //region: regions[location],
+                city: cities[location],
                 street: streets[~~(Math.random() * streetsNumber)],
                 buildingNumber: ~~(Math.random() * 300),
                 appartment: ~~(Math.random() * 150),

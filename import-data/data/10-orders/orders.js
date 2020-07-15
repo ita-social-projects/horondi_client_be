@@ -3,6 +3,7 @@ const products = require('../9-products/products');
 const materials = require('../2-materials/materials');
 const patterns = require('../4-patterns/patterns');
 const closures = require('../6-closures/closures');
+//const categories = require('../1-categories/categories');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 let orders = [];
@@ -78,7 +79,6 @@ for (let i = 0; i < usersNumber; i++) {
     if (item.hasOwnProperty('closure')) {
         closurePick = closures.find(el => el.id.toHexString() == item.closure);
         orders[i].items[0]['closure'] = closurePick.name;
-        //console.log(closurePick);
         closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
         orders[i].items[0]['closureColor'] = closureColorPick.name;
     }
@@ -91,6 +91,16 @@ for (let i = 0; i < usersNumber; i++) {
     if (item.hasOwnProperty('pocket')) {
         orders[i].items[0]['pocket'] = item.pocket;
     }
+
+    // if (product.hasOwnProperty('category')) {
+    //     for (let j = 0; j < categories.length; j++) {
+    //         for (let k = 0; k < categories[j].subcategories.length; k++) {
+    //             if (categories[j].subcategories[k].id.toHexString() == product.category) {
+    //                 orders[i].items[0]['category'] = categories[j].subcategories[k].name
+    //             }
+    //         }
+    //     }
+    // }
 
     totalPrice = 0;
     for (let j = 0; j < orders[i].items.length; j++) {
