@@ -1,4 +1,4 @@
-const users = require('../7-users/users');
+const users = require('../8-users/users');
 const products = require('../9-products/products');
 const materials = require('../2-materials/materials');
 const patterns = require('../4-patterns/patterns');

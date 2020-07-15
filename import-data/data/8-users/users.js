@@ -71,6 +71,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
     let usedPhoneNumbers = [];
     let phoneNumber;
     let location;
+    let commentsOfUser = [];
     for (let i = 0; i < recordNumber; i++) {
         do {
             emailStub = (Math.random()).toString(36).slice(-10);
@@ -84,7 +85,13 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
 
         location = ~~(Math.random() * citiesNumber);
 
+        commentsOfUser = [];
+        for (let j = 0; j < 3; j++){
+            commentsOfUser.push(getObjectId('comment' + i + '_' + j));
+        }
+
         result.push({
+            id: getObjectId('user' + i),
             firstName: names[~~(Math.random() * namesNumber)],
             lastName: surnames[~~(Math.random() * surnamesNumber)],
             role: 'user',
@@ -109,7 +116,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
             wishlist: [backpacks[~~(Math.random() * backpacksNumber)]],
             orders: [getObjectId('order' + i)],
             purchasedProducts: [],
-            comments: []
+            comments: commentsOfUser
         })
     };
     return result
