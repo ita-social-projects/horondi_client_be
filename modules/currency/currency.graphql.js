@@ -7,7 +7,7 @@ const currencyType = `type Currency {
 
 const currencyInput = `
     input CurrencyInput {
-    date: String!
+    date: String
     convertOptions: [ConvertOptionInput!]
     }
     `;

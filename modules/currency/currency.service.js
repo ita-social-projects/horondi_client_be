@@ -13,9 +13,9 @@ class CurrencyService {
     return Currency.findByIdAndUpdate(id, currency);
   }
 
-  addCurrency(data) {
+  async addCurrency(data) {
     const currency = new Currency(data);
-    return currency.save();
+    return await currency.save();
   }
 
   deleteCurrency(id) {

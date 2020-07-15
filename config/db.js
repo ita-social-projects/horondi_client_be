@@ -4,6 +4,10 @@ const configService = require('../utils/configService');
 
 const connectDB = async () => {
   const db = await configService.getSecret('MONGO_URL');
+
+  //Connecting to Test DB
+  // const db = process.env.TEST_MONGO
+
   try {
     await mongoose.connect(db, {
       useNewUrlParser: true,

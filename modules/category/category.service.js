@@ -13,9 +13,9 @@ class CategoryService {
     return Category.findByIdAndUpdate(id, category);
   }
 
-  addCategory(data) {
+  async addCategory(data) {
     const category = new Category(data);
-    return category.save();
+    return await category.save();
   }
 
   deleteCategory(id) {

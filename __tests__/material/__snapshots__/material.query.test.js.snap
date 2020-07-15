@@ -1,0 +1,411 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries should recive material by id like in service and resolver 1`] = `
+Object {
+  "_id": "1d2bba5d0b80938327ac9012",
+  "additionalPrice": 0,
+  "available": true,
+  "colors": Array [
+    Object {
+      "available": true,
+      "code": 300,
+      "images": Object {
+        "large": "large-linen.jpg",
+        "medium": "medium-linen.jpg",
+        "small": "small-linen.jpg",
+        "thumbnail": "thumbnail-linen.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Лляний",
+        },
+        Object {
+          "lang": "en",
+          "value": "Linen",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 301,
+      "images": Object {
+        "large": "large-wheat.jpg",
+        "medium": "medium-wheat.jpg",
+        "small": "small-wheat.jpg",
+        "thumbnail": "thumbnail-wheat.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Пшеничний",
+        },
+        Object {
+          "lang": "en",
+          "value": "Wheat",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 302,
+      "images": Object {
+        "large": "large-light-salmon.jpg",
+        "medium": "medium-light-salmon.jpg",
+        "small": "small-light-salmon.jpg",
+        "thumbnail": "thumbnail-light-salmon.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Світло-лососевий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Light-salmon",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 303,
+      "images": Object {
+        "large": "large-salmon.jpg",
+        "medium": "medium-salmon.jpg",
+        "small": "small-salmon.jpg",
+        "thumbnail": "thumbnail-salmon.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Лососевий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Salmon",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 304,
+      "images": Object {
+        "large": "large-dark-salmon.jpg",
+        "medium": "medium-dark-salmon.jpg",
+        "small": "small-dark-salmon.jpg",
+        "thumbnail": "thumbnail-dark-salmon.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Темно-лососевий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Dark-salmon",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 305,
+      "images": Object {
+        "large": "large-saddle-brown.jpg",
+        "medium": "medium-saddle-brown.jpg",
+        "small": "small-saddle-brown.jpg",
+        "thumbnail": "thumbnail-saddle-brown.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Насичений коричневий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Saddle-brown",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 306,
+      "images": Object {
+        "large": "large-light-slate-gray.jpg",
+        "medium": "medium-light-slate-gray.jpg",
+        "small": "small-light-slate-gray.jpg",
+        "thumbnail": "thumbnail-light-slate-gray.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Світло-сизий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Light-slate-gray",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 307,
+      "images": Object {
+        "large": "large-whitesmoke.jpg",
+        "medium": "medium-whitesmoke.jpg",
+        "small": "small-whitesmoke.jpg",
+        "thumbnail": "thumbnail-whitesmoke.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Димчатий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Whitesmoke",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 308,
+      "images": Object {
+        "large": "large-maroon.jpg",
+        "medium": "medium-maroon.jpg",
+        "small": "small-maroon.jpg",
+        "thumbnail": "thumbnail-maroon.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Бордовий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Maroon",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 309,
+      "images": Object {
+        "large": "large-royal-blue.jpg",
+        "medium": "medium-royal-blue.jpg",
+        "small": "small-royal-blue.jpg",
+        "thumbnail": "thumbnail-royal-blue.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Королівський синій",
+        },
+        Object {
+          "lang": "en",
+          "value": "Royal-blue",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 310,
+      "images": Object {
+        "large": "large-coral.jpg",
+        "medium": "medium-coral.jpg",
+        "small": "small-coral.jpg",
+        "thumbnail": "thumbnail-coral.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Кораловий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Coral",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 311,
+      "images": Object {
+        "large": "large-orange.jpg",
+        "medium": "medium-orange.jpg",
+        "small": "small-orange.jpg",
+        "thumbnail": "thumbnail-orange.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Оранжевий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Orange",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 312,
+      "images": Object {
+        "large": "large-gold.jpg",
+        "medium": "medium-gold.jpg",
+        "small": "small-gold.jpg",
+        "thumbnail": "thumbnail-gold.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Золотий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Gold",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 313,
+      "images": Object {
+        "large": "large-khaki.jpg",
+        "medium": "medium-khaki.jpg",
+        "small": "small-khaki.jpg",
+        "thumbnail": "thumbnail-khaki.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Хакі",
+        },
+        Object {
+          "lang": "en",
+          "value": "Khaki",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 314,
+      "images": Object {
+        "large": "large-dark-khaki.jpg",
+        "medium": "medium-dark-khaki.jpg",
+        "small": "small-dark-khaki.jpg",
+        "thumbnail": "thumbnail-dark-khaki.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Темний хакі",
+        },
+        Object {
+          "lang": "en",
+          "value": "Dark-khaki",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 315,
+      "images": Object {
+        "large": "large-pale-violet.jpg",
+        "medium": "medium-pale-violet.jpg",
+        "small": "small-pale-violet.jpg",
+        "thumbnail": "thumbnail-pale-violet.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Блідо-фіолетовий",
+        },
+        Object {
+          "lang": "en",
+          "value": "Pale-violet",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 316,
+      "images": Object {
+        "large": "large-deep-sky-blue.jpg",
+        "medium": "medium-deep-sky-blue.jpg",
+        "small": "small-deep-sky-blue.jpg",
+        "thumbnail": "thumbnail-deep-sky-blue.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Глибокий небесно-синій",
+        },
+        Object {
+          "lang": "en",
+          "value": "Deep-sky-blue",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 317,
+      "images": Object {
+        "large": "large-midnight-blue.jpg",
+        "medium": "medium-midnight-blue.jpg",
+        "small": "small-midnight-blue.jpg",
+        "thumbnail": "thumbnail-midnight-blue.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Темно-синій",
+        },
+        Object {
+          "lang": "en",
+          "value": "Midnight-blue",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "code": 318,
+      "images": Object {
+        "large": "large-dark-red.jpg",
+        "medium": "medium-dark-red.jpg",
+        "small": "small-dark-red.jpg",
+        "thumbnail": "thumbnail-dark-red.jpg",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Темно-червоний",
+        },
+        Object {
+          "lang": "en",
+          "value": "Dark-red",
+        },
+      ],
+    },
+  ],
+  "description": Array [
+    Object {
+      "lang": "uk",
+      "value": "Бонд (100% поліестер) - для рюкзаків моделі Rolltop. Прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води.",
+    },
+    Object {
+      "lang": "en",
+      "value": "Bond (100% polyester) - for backpacks of Rolltop model. Layered with special material for durability and water-resistance.",
+    },
+  ],
+  "name": Array [
+    Object {
+      "lang": "uk",
+      "value": "Бонд",
+    },
+    Object {
+      "lang": "en",
+      "value": "Bond",
+    },
+  ],
+}
+`;

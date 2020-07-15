@@ -28,14 +28,12 @@ exports.validateUpdateInput = Joi.object({
   firstName: Joi.string()
     .alphanum()
     .min(3)
-    .max(30)
-    .required(),
+    .max(30),
 
   lastName: Joi.string()
     .alphanum()
     .min(3)
-    .max(30)
-    .required(),
+    .max(30),
 
   email: Joi.string().email({
     minDomainSegments: 2,
@@ -51,6 +49,5 @@ exports.validateLoginInput = Joi.object({
 
   email: Joi.string().email({
     minDomainSegments: 2,
-    tlds: { allow: ['com', 'net'] },
   }),
 });

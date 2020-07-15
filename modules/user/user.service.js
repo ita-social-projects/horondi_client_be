@@ -44,50 +44,31 @@ class UserService {
   async getUser(id) {
     return await this.getUserByFieldOrThrow('_id', id);
   }
-
-  async updateUserById({
-    firstName, lastName, email, password,
-  }, id) {
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
+  async updateUserById(updatedUser, id) {
+    const { errors } = await validateUpdateInput.validateAsync({...updatedUser});
 
     if (errors) {
       throw new UserInputError('Errors', { errors });
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
-      
-    if (user._doc.email !== email) {
-      await this.checkUserExists(email);
+
+    if (user._doc.email !== updatedUser.email) {
+      await this.checkUserExists(updatedUser.email);
     }
-    
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+
+    return User.findByIdAndUpdate(user._id,{ ...user._doc, ...updatedUser });
   }
 
-  async updateUserByToken({
-    firstName, lastName, email, 
-  }, user) {
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
+  async updateUserByToken(updatedUser, user) {
+    const { errors } = await validateUpdateInput.validateAsync({...updatedUser});
 
     if (errors) {
       throw new UserInputError('Errors', { errors });
     }
-    
+
     return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
+      ...user._doc, ...updatedUser
     });
   }
 
@@ -115,8 +96,8 @@ class UserService {
     const token = generateToken(user._id, user.email);
 
     return {
-      user: { ...user._doc },
-      id: user._id,
+       ...user._doc,
+      _id: user._id,
       token,
     };
   }
@@ -154,8 +135,9 @@ class UserService {
     return savedUser;
   }
 
-  deleteUser(id) {
-    return User.findByIdAndDelete(id);
+  async deleteUser(id) {
+    const res = await User.findByIdAndDelete(id);
+    return res
   }
 }
 module.exports = new UserService();

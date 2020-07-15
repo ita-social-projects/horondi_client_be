@@ -1,22 +1,21 @@
 const userType = `
 type User{
-    id:ID!
-    firstName: String!
-    lastName: String!
+    _id:ID!
+    firstName: String
+    lastName: String
     password: String
     role: RoleEnum
     email: String!
-    phoneNumber: Int
+    phoneNumber: String
     address: Address
     images: ImageSet
-    token: String!
+    token: String
     credentials: [Credential]
       registrationDate: String
       wishlist: [ID]
       cart: [ID]
       orders:[ID]
       purchasedProducts: [ID]
-
 }`;
 
 const userInput = `
@@ -25,16 +24,27 @@ input UserInput {
     lastName: String
     password: String
     role: String
-    email: String!
-    phoneNumber: Int
+    email: String
+    phoneNumber: String
     address: AddressInput
     images: ImageSetInput
-    credentials: [CredentialInput]
-    registrationDate: String
     wishlist: [ID]
     cart: [ID]
     orders:[ID]
     purchasedProducts: [ID]
 }`;
+const userLoginInput = `
+input userLoginInput {
+    password: String!
+    email: String!
+}`;
 
-module.exports = { userType, userInput };
+const userRegisterInput = `
+input userRegisterInput {
+    firstName: String!
+    lastName: String!
+    password: String!
+    email: String!
+}`;
+
+module.exports = { userType, userInput, userRegisterInput, userLoginInput };

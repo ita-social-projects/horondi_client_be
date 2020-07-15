@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries should recive category by id like in service and resolver 1`] = `
+Object {
+  "_id": "5f0462f414438544ec76a778",
+  "categoryCode": "main-backpacks",
+  "images": Object {
+    "large": "https://horondi.blob.core.windows.net/horondi/categories/backpacks.jpg",
+    "medium": null,
+    "small": null,
+    "thumbnail": null,
+  },
+  "name": Array [
+    Object {
+      "lang": "uk",
+      "value": "Рюкзаки",
+    },
+    Object {
+      "lang": "en",
+      "value": "Backpacks",
+    },
+  ],
+}
+`;
