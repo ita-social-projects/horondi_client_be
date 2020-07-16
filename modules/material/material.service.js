@@ -32,9 +32,7 @@ class MaterialsService {
 
   async deleteMaterial(id) {
     return (
-      (await Material.findByIdAndDelete(id)) || {
-        message: 'Матеріал не знайдено',
-      }
+      (await Material.findByIdAndDelete(id)) || new Error(materialErrorMessage)
     );
   }
 }

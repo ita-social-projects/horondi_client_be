@@ -8,6 +8,13 @@ const {
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
+const userErrorMessages = [
+  {
+    lang: 'uk',
+    value: 'Користувача не знайдено',
+  },
+  { lang: 'eng', value: 'User not found' },
+];
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({
@@ -42,13 +49,13 @@ class UserService {
   }
 
   async getAllUsers() {
-    return (await User.find()) || new Error('Користувачів не знайдено');
+    return (await User.find()) || new Error(userErrorMessages);
   }
 
   async getUser(id) {
     return (
       (await this.getUserByFieldOrThrow('_id', id))
-      || new Error('Користувач не знайдений')
+      || new Error(userErrorMessages)
     );
   }
 
@@ -169,8 +176,8 @@ class UserService {
     return savedUser;
   }
 
-  deleteUser(id) {
-    return User.findByIdAndDelete(id);
+  async deleteUser(id) {
+    return (await User.findByIdAndDelete(id)) || new Error(userErrorMessages);
   }
 }
 module.exports = new UserService();

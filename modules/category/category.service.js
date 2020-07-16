@@ -31,7 +31,7 @@ class CategoryService {
   }
 
   deleteCategory(id) {
-    return Category.findByIdAndDelete(id) || new Error('Категорію не знайдено');
+    return Category.findByIdAndDelete(id) || new Error(categoryErrorMessage);
   }
 }
 module.exports = new CategoryService();

@@ -32,9 +32,7 @@ class CurrencyService {
 
   async deleteCurrency(id) {
     return (
-      (await Currency.findByIdAndDelete(id)) || {
-        message: 'Валюту не знайдено',
-      }
+      (await Currency.findByIdAndDelete(id)) || new Error(currencyErrorMessage)
     );
   }
 }
