@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`news mutations delete news 1`] = `
+Object {
+  "data": Object {
+    "deleteNews": Object {
+      "title": Array [
+        Object {
+          "lang": "uk",
+          "value": "тест",
+        },
+        Object {
+          "lang": "eng",
+          "value": "blabla",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`news mutations deleting not existing news should throw error 1`] = `[Error: GraphQL error: [{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]]`;
