@@ -116,7 +116,7 @@ const typeDefs = gql`
   }
 
   input AuthorInput {
-    name: String!
+    name: [LanguageInput]
     image: ImageSetInput
   }
 
