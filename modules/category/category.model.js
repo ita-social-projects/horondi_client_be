@@ -8,10 +8,8 @@ const CategorySchema = new mongoose.Schema({
   images: ImageSet,
   subcategories: [
     {
-      categoryCode: String,
-      name: [Language],
-      images: ImageSet,
-      available: Boolean,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
     },
   ],
   available: Boolean,
