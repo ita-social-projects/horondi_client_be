@@ -1,6 +1,6 @@
 const Material = require('./material.model');
 
-const materialErrorMessage = JSON.stringify([
+const MATERIAL_NOT_FOUND = JSON.stringify([
   {
     lang: 'uk',
     value: 'Матеріал не знайдено',
@@ -12,17 +12,18 @@ const materialErrorMessage = JSON.stringify([
 ]);
 class MaterialsService {
   async getAllMaterials() {
-    return (await Material.find()) || new Error(materialErrorMessage);
+    const material = await Material.find();
+    return material;
   }
 
   async getMaterialById(id) {
-    return (await Material.findById(id)) || new Error(materialErrorMessage);
+    return (await Material.findById(id)) || new Error(MATERIAL_NOT_FOUND);
   }
 
   async updateMaterial(id, material) {
     return (
       (await Material.findByIdAndUpdate(id, material))
-      || new Error(materialErrorMessage)
+      || new Error(MATERIAL_NOT_FOUND)
     );
   }
 
@@ -32,9 +33,7 @@ class MaterialsService {
 
   async deleteMaterial(id) {
     return (
-      (await Material.findByIdAndDelete(id)) || {
-        message: 'Матеріал не знайдено',
-      }
+      (await Material.findByIdAndDelete(id)) || new Error(MATERIAL_NOT_FOUND)
     );
   }
 }

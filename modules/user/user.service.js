@@ -42,7 +42,8 @@ class UserService {
   }
 
   async getAllUsers() {
-    return (await User.find()) || new Error('Користувачів не знайдено');
+    const user = await User.find();
+    return user;
   }
 
   async getUser(id) {

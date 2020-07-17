@@ -1,6 +1,6 @@
 const Category = require('./category.model');
 
-const categoryErrorMessage = JSON.stringify([
+const CATEGORY_NOT_FOUND = JSON.stringify([
   {
     lang: 'uk',
     value: 'Категорій не знайдено',
@@ -12,17 +12,18 @@ const categoryErrorMessage = JSON.stringify([
 ]);
 class CategoryService {
   async getAllCategories() {
-    return (await Category.find()) || new Error(categoryErrorMessage);
+    const category = await Category.find();
+    return category;
   }
 
   async getCategoryById(id) {
-    return (await Category.findById(id)) || new Error(categoryErrorMessage);
+    return (await Category.findById(id)) || new Error(CATEGORY_NOT_FOUND);
   }
 
   async updateCategory(id, category) {
     return (
       (await Category.findByIdAndUpdate(id, category))
-      || new Error(categoryErrorMessage)
+      || new Error(CATEGORY_NOT_FOUND)
     );
   }
 
@@ -31,7 +32,7 @@ class CategoryService {
   }
 
   deleteCategory(id) {
-    return Category.findByIdAndDelete(id) || new Error('Категорію не знайдено');
+    return Category.findByIdAndDelete(id) || new Error(CATEGORY_NOT_FOUND);
   }
 }
 module.exports = new CategoryService();

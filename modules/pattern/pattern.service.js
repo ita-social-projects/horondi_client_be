@@ -1,6 +1,6 @@
 const Pattern = require('./pattern.model');
 
-const patternErrorMessage = JSON.stringify([
+const PATTERN_NOT_FOUND = JSON.stringify([
   {
     lang: 'uk',
     value: 'Гобелен  не знайдено',
@@ -12,17 +12,18 @@ const patternErrorMessage = JSON.stringify([
 ]);
 class PatternsService {
   async getAllPatterns() {
-    return (await Pattern.find()) || new Error(patternErrorMessage);
+    const pattern = await Pattern.find();
+    return pattern;
   }
 
   async getPatternById(id) {
-    return (await Pattern.findById(id)) || new Error(patternErrorMessage);
+    return (await Pattern.findById(id)) || new Error(PATTERN_NOT_FOUND);
   }
 
   async updatePattern(id, pattern) {
     return (
       (await Pattern.findByIdAndUpdate(id, pattern))
-      || new Error(patternErrorMessage)
+      || new Error(PATTERN_NOT_FOUND)
     );
   }
 
@@ -32,7 +33,7 @@ class PatternsService {
 
   async deletePattern(id) {
     return (
-      (await Pattern.findByIdAndDelete(id)) || new Error(patternErrorMessage)
+      (await Pattern.findByIdAndDelete(id)) || new Error(PATTERN_NOT_FOUND)
     );
   }
 }
