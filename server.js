@@ -14,7 +14,9 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const { token } = req.headers || '';
     if (token) {
-      const user = verifyUser(token);
+      const user = verifyUser(token) ;
+      if(!user)
+        throw new Error('Wrong token')
       return { user: await userService.getUserByFieldOrThrow('email', user.email) };
     }
   },

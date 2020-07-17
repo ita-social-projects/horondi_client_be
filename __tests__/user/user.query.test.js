@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const client = require('../../utils/apolloClient');
+const client = require('../../utils/apollo-client');
 
 require('dotenv').config();
 
