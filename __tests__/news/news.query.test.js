@@ -5,12 +5,6 @@ const { newsQuery } = require('../../modules/news/news.resolver');
 require('dotenv').config();
 const newsService = require('../../modules/news/news.service');
 
-beforeAll(() => {
-  server.start();
-});
-afterAll(() => {
-  server.stop();
-});
 describe('querries', () => {
   test('#1 all resolvers and services should be defined', () => {
     expect(newsQuery.getAllNews).toBeDefined();

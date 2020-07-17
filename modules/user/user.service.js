@@ -49,7 +49,8 @@ class UserService {
   }
 
   async getAllUsers() {
-    return (await User.find()) || new Error(userErrorMessages);
+    const user = await User.find();
+    return user;
   }
 
   async getUser(id) {

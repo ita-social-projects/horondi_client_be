@@ -1,6 +1,6 @@
 const News = require('./news.model');
 
-const newsErrorMessage = JSON.stringify([
+const NEWS_NOT_FOUND = JSON.stringify([
   {
     lang: 'uk',
     value: 'Новин  не знайдено',
@@ -12,16 +12,17 @@ const newsErrorMessage = JSON.stringify([
 ]);
 class NewsService {
   async getAllNews() {
-    return (await News.find()) || new Error(newsErrorMessage);
+    const news = await News.find();
+    return news;
   }
 
   async getNewsById(id) {
-    return (await News.findById(id)) || new Error(newsErrorMessage);
+    return (await News.findById(id)) || new Error(NEWS_NOT_FOUND);
   }
 
   async updateNews(id, news) {
     return (
-      (await News.findByIdAndUpdate(id, news)) || new Error(newsErrorMessage)
+      (await News.findByIdAndUpdate(id, news)) || new Error(NEWS_NOT_FOUND)
     );
   }
 
@@ -30,7 +31,7 @@ class NewsService {
   }
 
   async deleteNews(id) {
-    return (await News.findByIdAndDelete(id)) || new Error(newsErrorMessage);
+    return (await News.findByIdAndDelete(id)) || new Error(NEWS_NOT_FOUND);
   }
 }
 module.exports = new NewsService();

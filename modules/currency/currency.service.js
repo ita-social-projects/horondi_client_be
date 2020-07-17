@@ -1,6 +1,6 @@
 const Currency = require('./currency.model');
 
-const currencyErrorMessage = JSON.stringify([
+const CURRENCY_NOT_FOUND = JSON.stringify([
   {
     lang: 'uk',
     value: 'Валюту не знайдено',
@@ -12,17 +12,18 @@ const currencyErrorMessage = JSON.stringify([
 ]);
 class CurrencyService {
   async getAllCurrencies() {
-    return (await Currency.find()) || new Error(currencyErrorMessage);
+    const currency = await Currency.find();
+    return currency;
   }
 
   async getCurrencyById(id) {
-    return (await Currency.findById(id)) || new Error(currencyErrorMessage);
+    return (await Currency.findById(id)) || new Error(CURRENCY_NOT_FOUND);
   }
 
   async updateCurrency(id, currency) {
     return (
       (await Currency.findByIdAndUpdate(id, currency))
-      || new Error(currencyErrorMessage)
+      || new Error(CURRENCY_NOT_FOUND)
     );
   }
 
@@ -32,7 +33,7 @@ class CurrencyService {
 
   async deleteCurrency(id) {
     return (
-      (await Currency.findByIdAndDelete(id)) || new Error(currencyErrorMessage)
+      (await Currency.findByIdAndDelete(id)) || new Error(CURRENCY_NOT_FOUND)
     );
   }
 }
