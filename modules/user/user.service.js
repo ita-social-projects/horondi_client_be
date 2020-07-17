@@ -15,7 +15,16 @@ class UserService {
     });
 
     if (checkedUser) {
-      const massage = 'User with provided email already exists';
+      const massage = [
+        {
+          lang: 'uk',
+          value: `Користувач з таким емейлом вже зареєстрований`,
+        },
+        {
+          lang: 'eng',
+          value: 'User with provided email already exists',
+        },
+      ];
       throw new UserInputError(massage, {
         errors: {
           email: massage,
@@ -30,7 +39,16 @@ class UserService {
     });
 
     if (!checkedUser) {
-      const message = `User with provided ${[key]} not found`;
+      const message = [
+        {
+          lang: 'uk',
+          value: `Користувач з данним ${[key]} не знайдений`,
+        },
+        {
+          lang: 'eng',
+          value: `User with provided ${[key]} not found`,
+        },
+      ];
       throw new UserInputError(message, {
         errors: {
           [key]: message,
@@ -47,10 +65,7 @@ class UserService {
   }
 
   async getUser(id) {
-    return (
-      (await this.getUserByFieldOrThrow('_id', id))
-      || new Error('Користувач не знайдений')
-    );
+    return await this.getUserByFieldOrThrow('_id', id);
   }
 
   async updateUserById({
@@ -121,7 +136,16 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError('Wrong password');
+      throw new AuthenticationError(`${[
+        {
+          lang: 'uk',
+          value: `Невірний пароль`,
+        },
+        {
+          lang: 'eng',
+          value: `Wrong password`,
+        },
+      ]}`);
     }
 
     const token = generateToken(user._id, user.email);
