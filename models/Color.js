@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Language = require('./Language').schema;
-const ImageSet = require('./ImageSet').schema;
+const ImageSet = require('../modules/common/ImageSet').schema;
 
 const ColorSchema = new mongoose.Schema({
   code: Number,

@@ -5,6 +5,7 @@
   "description": "Horondi",
   "main": "server.js",
   "repository": {
+    "type": "git",
     "url": "https://github.com/horondi/horondi_client_be.git"
   },
   "private": "true",
@@ -13,17 +14,21 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "seed": "seed -u 'mongodb://127.0.0.1:27017/horondi' --drop-database ./import-data/data --replace-id",
-    "seed-windows": "seed -u 'mongodb://127.0.0.1:27017/horondi' .\\import-data\\data --replace-id"
+    "seed-windows": "seed -u 'mongodb://127.0.0.1:27017/horondi' .\\import-data\\data --replace-id",
+    "test": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/identity": "^1.0.3",
+    "@azure/keyvault-secrets": "^4.0.4",
+    "@hapi/joi": "^17.1.1",
     "apollo-server": "^2.14.5",
+    "azure": "^2.3.1-preview",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express-validator": "^6.5.0",
     "graphql": "^15.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.18",
@@ -44,9 +49,10 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "husky": "^4.2.5",
+    "jest": "^26.1.0",
     "lint-staged": "^10.2.9",
     "mongo-seeding-cli": "^3.4.1",
-    "nodemon": "^2.0.3",
+    "nodemon": "^2.0.4",
     "prettier": "^1.19.1"
   },
   "engines": {
