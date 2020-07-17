@@ -1,17 +1,30 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const userService = require('../../modules/user/user.service')
-const userResolver = require('../../modules/user/user.resolver')
 const client = require('../../utils/apolloClient');
 
 require('dotenv').config();
 
+let token
+
+describe('queries', () => {
+    beforeEach(async () => {
+        const res = await client.mutate({
+            mutation: gql`
+                mutation {       
+                    loginUser(user: {
+                        email: "tacjka334@gmail.com"
+                        password: "12345678Pt"
+                    }) {
+                        token
+                    }
+                }
+            `
+        })
+        token = res.data.loginUser.token
+    });
 
 
-describe('querries', () => {
-
-
-    test('should recive all users like in service and resolver', async () => {
+    test('should recive all users', async () => {
         const res = await client.query({
             query: gql`
                 query {       
@@ -40,25 +53,39 @@ describe('querries', () => {
                 }
             `
         })
-
-        expect(userService.getAllUsers()).resolves.toBe(res);
-        expect(userResolver.userQuery.getAllUsers()).resolves.toBe(res);
+         expect(res.data.getAllUsers).toContainEqual({
+            "email": "adj0959pza@gmail.com",
+            "firstName": "Ніл",
+            "lastName": "Бабич",
+            "phoneNumber": "380396032485",
+            "purchasedProducts": [],
+            "role": "user",
+            "orders": [
+              "83ee481820a2056b8e5cc015"
+            ],
+            "wishlist": [
+              "f94fe36ef59ff80fe02afb28"
+            ],
+            "credentials": [
+              {
+                "source": "google",
+                "tokenPass": "IHOI2HOL8O"
+              }
+            ],
+            "registrationDate": "1552340261653",
+            "address": {
+              "country": "Україна",
+              "city": "Ніжин",
+              "street": "Вулиця Спокійна",
+              "appartment": "48",
+              "buildingNumber": "12"
+            }
+          });
 
     })
 
-    test('should recive user by token like in service and resolver', async () => {
-        const token = await client.mutate({
-            mutation: gql`
-                mutation {       
-                    loginUser(user: {
-                        email: "tacjka334@gmail.com"
-                        password: "12345678Pt"
-                    }) {
-                        token
-                    }
-                }
-            `
-        }).then(res => res.data.loginUser.token)
+    test('should recive user by token', async () => {
+        
 
         const res = await client.query({
             query: gql`
@@ -94,25 +121,10 @@ describe('querries', () => {
             }
         })
       
-        expect(userResolver.userQuery.getUserByToken(null, null,{user:{
-            _id: res.data.getUserByToken._id
-        }})).resolves.toBe(res);
         expect(res.data.getUserByToken).toMatchSnapshot()
     })
 
-    test('should recive user by id like in service and resolver', async () => {
-        const token = await client.mutate({
-            mutation: gql`
-                mutation {       
-                    loginUser(user: {
-                        email: "tacjka334@gmail.com"
-                        password: "12345678Pt"
-                    }) {
-                        token
-                    }
-                }
-            `
-        }).then(res => res.data.loginUser.token)
+    test('should recive user by id', async () => {
 
         const res = await client.query({
             query: gql`
@@ -147,10 +159,7 @@ describe('querries', () => {
                 }
             }
         })
-      
-        expect(userResolver.userQuery.getUserByToken(null, null,{user:{
-            _id: "5f089b814cd4341468389160"
-        }})).resolves.toBe(res);
+
         expect(res.data.getUserByToken).toMatchSnapshot()
     })
 })

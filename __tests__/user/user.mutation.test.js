@@ -1,7 +1,5 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const userService = require('../../modules/user/user.service')
-const userResolver = require('../../modules/user/user.resolver')
 const client = require('../../utils/apolloClient');
 
 require('dotenv').config();
@@ -35,19 +33,10 @@ describe('mutations', () => {
 
         userId = res.data.registerUser._id
         
-        expect(userService.registerUser({
-            firstName: "Petro", 
-            lastName: "Tatsenyak",
-            email: "tacjka34@gmail.com",
-            password: "12345678Pt"
-        })).resolves.toBe(res);
-        
-        expect(userResolver.userMutation.registerUser('',{ user:{
-            firstName: "Petro",
-            lastName: "Tatsenyak",
-            email: "tacjka34@gmail.com",
-            password: "12345678Pt"
-        }})).resolves.toBe(res);
+        expect(res.data.registerUser).toHaveProperty(
+            'email', 'tacjka34@gmail.com'
+        );
+
     })
 
     test('should authorize and recive user token', async () => {
@@ -65,18 +54,10 @@ describe('mutations', () => {
                 }
             `
         })
-
-        token = res.data.loginUser.token
-
-        expect(userService.loginUser({
-            email: "tacjka34@gmail.com",
-            password: "12345678Pt"
-        })).resolves.toBe(res);
         
-        expect(userResolver.userMutation.loginUser('',{ user:{
-            email: "tacjka34@gmail.com",
-            password: "12345678Pt"
-        }})).resolves.toBe(res);
+        expect(res.data.loginUser).toHaveProperty('token');
+        
+        token = res.data.loginUser.token  
     })
 
     test('should update user by id', async () => {
@@ -103,13 +84,9 @@ describe('mutations', () => {
             }
         })
 
-        expect(userService.updateUserById({
-                firstName: "Updated",
-        },userId)).resolves.toBe(res);
-        
-        expect(userResolver.userMutation.updateUserById(null,{ id: userId, user:{
-            firstName: "Updated",
-        }}, { user: { _id: userId } })).resolves.toBe(res);
+        expect(res.data.updateUserById).toHaveProperty(
+            'firstName', 'Updated'
+        );
     })
 
     test('should update user by token', async () => {
@@ -117,7 +94,7 @@ describe('mutations', () => {
             mutation: gql`
                 mutation {       
                     updateUserByToken(user: {
-                        firstName: "Updated",
+                        firstName: "UpdatedByToken",
                     }){
                         firstName
                         lastName
@@ -132,14 +109,29 @@ describe('mutations', () => {
                 }
             },
         })
+        expect(res.data.updateUserByToken).toHaveProperty(
+            'firstName', 'UpdatedByToken'
+        );
+    })
 
-        expect(userService.updateUserByToken({
-                firstName: "Updated",
-        },res.data.updateUserByToken)).resolves.toBe(res);
+    test('should throw Unauthorized error', async () => {
+        const res = await client.mutate({
+            mutation: gql`
+                mutation {       
+                    updateUserByToken(user: {
+                        firstName: "UpdatedByToken",
+                    }){
+                        firstName
+                        lastName
+                        email
+                        role
+                    }
+                }
+            `,
+
+        }).catch(err => err)
         
-        expect(userResolver.userMutation.updateUserByToken(null,{ user:{
-            firstName: "Updated",
-        }}, { user: res.data.updateUserByToken })).resolves.toBe(res);
+        expect(res.graphQLErrors).toBeDefined()
     })
 
     test('should delete user', async () => {
@@ -156,9 +148,7 @@ describe('mutations', () => {
             }
         })
 
-        expect(userService.deleteUser(userId)).resolves.toBe(res);
-        
-        expect(userResolver.userMutation.deleteUser('',userId)).resolves.toBe(res);
+        expect(res.data.deleteUser._id).toEqual(userId);
 
     })
 })

@@ -57,7 +57,7 @@ class UserService {
       await this.checkUserExists(updatedUser.email);
     }
 
-    return User.findByIdAndUpdate(user._id,{ ...user._doc, ...updatedUser });
+    return User.findByIdAndUpdate(user._id,{ ...user._doc, ...updatedUser }, {new: true});
   }
 
   async updateUserByToken(updatedUser, user) {
@@ -69,7 +69,7 @@ class UserService {
 
     return User.findByIdAndUpdate(user._id, {
       ...user._doc, ...updatedUser
-    });
+    }, {new: true});
   }
 
   async loginUser({ email, password }) {
