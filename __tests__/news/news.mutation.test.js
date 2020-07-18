@@ -1,33 +1,13 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const client = require('../../utils/apolloService');
+const client = require('../../utils/apollo-client');
 const newsService = require('../../modules/news/news.service');
 const { newsMutation } = require('../../modules/news/news.resolver');
 require('dotenv').config();
 
-let newsToUpdateAndDeleteId = '';
-
-const createQuery = JSON.stringify({
-  title: [
-    { lang: 'uk', value: 'тест' },
-    { lang: 'eng', value: 'test' },
-  ],
-  text: [
-    { lang: 'ua', value: 'тест новина' },
-    { lang: 'eng', value: 'test news' },
-  ],
-  images: {
-    primary: { medium: 'sdfsdf4.jpg' },
-    additional: { small: 'dfgfdg.jpg' },
-  },
-  video: '3ffefefds.jpg',
-  date: '1212121',
-  author: [
-    { lang: 'ua', value: 'тест автор' },
-    { lang: 'eng', value: 'test autor' },
-  ],
-});
+const newsToDeleteId = '5f12a384620d1e39a0c607ae';
+const newsToUpdateId = '5f12be2493926837cce2c028';
 
 describe('news mutations', () => {
   test('News mutations should be defined', () => {
@@ -54,45 +34,160 @@ describe('news mutations', () => {
                   primary: { medium: "sdfsdf4.jpg" }
                   additional: { small: "dfgfdg.jpg" }
                 }
+                author: {
+                  name: [
+                    { lang: "uk", value: "Vova" }
+                    { lang: "eng", value: "vas" }
+                  ]
+                  image: { small: "author.jpg" }
+                }
                 video: "3ffefefds.jpg"
                 date: "1212121"
               }
             ) {
-              _id
+              date
             }
           }
         `,
       })
-      .then(res => res);
-
-    newsToUpdateAndDeleteId = res.data.addNews._id;
-
-    expect(newsMutation.addNews(null, createQuery)).resolves.toBe(res);
-    expect(newsService.addNews(null, createQuery)).resolves.toBe(res);
+      .then(res => res)
+      .catch(e => e);
+    expect(
+      newsService.addNews({
+        title: [
+          { lang: 'uk', value: 'тест' },
+          { lang: 'eng', value: 'test' },
+        ],
+        text: [
+          { lang: 'ua', value: 'тест новина' },
+          { lang: 'eng', value: 'test news' },
+        ],
+        images: {
+          primary: { medium: 'sdfsdf4.jpg' },
+          additional: { small: 'dfgfdg.jpg' },
+        },
+        author: {
+          name: [
+            { lang: 'uk', value: 'Vova' },
+            { lang: 'eng', value: 'vas' },
+          ],
+          image: { small: 'author.jpg' },
+        },
+        video: '3ffefefds.jpg',
+        date: '1212121',
+      }),
+    ).resolves.toHaveReturned({});
+    expect(res).toEqual({
+      data: {
+        addNews: {
+          date: '1212121',
+        },
+      },
+    });
   });
   test('update news', async () => {
     const updateQuery = `
+    mutation {
+      updateNews(
+        id: "${newsToUpdateId}"
+        news: {
+          title: [
+            { lang: "uk", value: "апдейт тест" }
+            { lang: "eng", value: "update test" }
+          ]
+          text: [
+            { lang: "ua", value: "апдейт тест новина" }
+            { lang: "eng", value: "test news" }
+          ]
+          images: {
+            primary: { medium: "updatesdfsdf4.jpg" }
+            additional: { small: "updatedfgfdg.jpg" }
+          }
+          author: {
+            name: [
+              { lang: "uk", value: "updateVova" }
+              { lang: "eng", value: "updatevas" }
+            ]
+            image: { small: "updateauthor.jpg" }
+          }
+          video: "update3ffefefds.jpg"
+          date: "3244234212121"
+        }
+      ) {
+        title {
+          lang
+          value
+        }
+        text {
+          lang
+          value
+        }
+        images {
+          primary {
+            medium
+          }
+        }
+        author {
+          name {
+            lang
+            value
+          }
+        }
+        date
+      }
+    }
+    
+        `;
+    const res = await client
+      .mutate({
+        mutation: gql`
+          ${updateQuery}
+        `,
+      })
+      .then(res => res)
+      .catch(e => e);
+
+    expect(res).toEqual({
+      data: {
+        updateNews: {
+          author: {
+            name: [
+              { lang: 'uk', value: 'updateVova' },
+              { lang: 'eng', value: 'updatevas' },
+            ],
+          },
+          date: '3244234212121',
+          images: { primary: { medium: 'updatesdfsdf4.jpg' } },
+          text: [
+            { lang: 'ua', value: 'апдейт тест новина' },
+            { lang: 'eng', value: 'test news' },
+          ],
+          title: [
+            { lang: 'uk', value: 'апдейт тест' },
+            { lang: 'eng', value: 'update test' },
+          ],
+        },
+      },
+    });
+  });
+
+  test('update not existing news should throw an error', async () => {
+    const updateQuery = `
           mutation {
             updateNews(
-              id:"${newsToUpdateAndDeleteId}"
+              id:"5f11e97c4f67a262547090cf"
               news: {
-                title: [
-                  { lang: "uk", value: "тест" }
-                  { lang: "eng", value: "blabla" }
-                ]
-                text: [
-                  { lang: "uk", value: "текст новини" }
-                  { lang: "eng", value: "news text" }
-                ]
-                date: "43423"
-                video: "g34g4g4g4"
-                images: { primary: { medium: "3g3g3g32g.jpg" } }
-              }
-            ) {
-              title {
-                lang
-                value
-              }
+                      title: [
+                        { lang: "uk", value: "тест апдейт" }
+                        { lang: "eng", value: "test update" }
+                      ]
+                    }
+                  ){
+                    title{
+                      lang
+                      value
+             
+              } 
             }
           }
         `;
@@ -102,24 +197,16 @@ describe('news mutations', () => {
           ${updateQuery}
         `,
       })
-      .then(res => res);
+      .then(res => res)
+      .catch(e => e.message);
 
-    expect(
-      newsMutation.updateNews(newsToUpdateAndDeleteId, {
-        ...updateQuery,
-      }),
-    ).resolves.toBe(res);
-    expect(
-      newsService.updateNews(newsToUpdateAndDeleteId, {
-        ...updateQuery,
-      }),
-    ).resolves.toBe(res);
+    expect(res).toEqual("GraphQL error: Cannot read property 'save' of null");
   });
 
   test('delete news', async () => {
     const deleteQuery = `
 mutation {
-  deleteNews(id:"${newsToUpdateAndDeleteId}") {
+  deleteNews(id:"${newsToDeleteId}") {
     title{
       lang
       value
@@ -133,19 +220,20 @@ mutation {
           ${deleteQuery}
         `,
       })
-      .then(res => res);
+      .then(res => {
+        console.log(res);
+        return res;
+      })
+      .catch(e => e.message);
 
     expect(res).toMatchSnapshot();
-    expect(
-      newsMutation.deleteNews(null, newsToUpdateAndDeleteId),
-    ).resolves.toBe(res);
-    expect(newsService.deleteNews(newsToUpdateAndDeleteId)).resolves.toBe(res);
+    expect(res).toEqual(res);
   });
 
   test('deleting not existing news should throw error', async () => {
     const deleteQuery = `
 mutation {
-  deleteNews(id:"1f057091a23481321c43edcf") {
+  deleteNews(id:"1f057091a83481321c43edcf") {
     title{
       lang
       value
@@ -160,14 +248,11 @@ mutation {
         `,
       })
       .then(res => res)
-      .catch(e => e);
+      .catch(e => e.message);
 
     expect(res).toMatchSnapshot();
-    expect(
-      newsMutation.deleteNews(null, '1f057091a23481321c43edcf'),
-    ).resolves.toThrow(res);
-    expect(newsService.deleteNews('1f057091a23481321c43edcf')).resolves.toThrow(
-      res,
+    expect(res).toEqual(
+      'GraphQL error: [{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]',
     );
   });
 });

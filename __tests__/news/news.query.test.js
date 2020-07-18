@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const client = require('../../utils/apolloService');
+const client = require('../../utils/apollo-client');
 const { newsQuery } = require('../../modules/news/news.resolver');
 require('dotenv').config();
 const newsService = require('../../modules/news/news.service');
@@ -36,8 +36,27 @@ describe('querries', () => {
       .then(res => res);
 
     expect(res).not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.toBe(res);
-    expect(newsService.getAllNews()).resolves.toBe(res);
+    expect(newsQuery.getAllNews()).resolves.not.toBe(null);
+    expect(newsQuery.getAllNews()).resolves.toBe({
+      data: {
+        getAllNews: [
+          {
+            _id: '5f12be2493926837cce2c028',
+            images: {
+              primary: {
+                medium: 'sdfsdf4.jpg',
+              },
+              additional: [
+                {
+                  small: 'dfgfdg.jpg',
+                  medium: null,
+                },
+              ],
+            },
+          },
+        ],
+      },
+    });
   });
 
   test('#3 should receive text, video, date', async () => {
@@ -59,8 +78,26 @@ describe('querries', () => {
       .then(res => res);
 
     expect(res).not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.toBe(res);
-    expect(newsService.getAllNews()).resolves.toBe(res);
+    expect(newsQuery.getAllNews()).resolves.toBe({
+      data: {
+        getAllNews: [
+          {
+            text: [
+              {
+                lang: 'ua',
+                value: 'тест новина',
+              },
+              {
+                lang: 'eng',
+                value: 'test news',
+              },
+            ],
+            video: '3ffefefds.jpg',
+            date: '1212121',
+          },
+        ],
+      },
+    });
   });
 
   test('#4 should receive author, images', async () => {
@@ -96,8 +133,39 @@ describe('querries', () => {
 
     expect(res).not.toBe(null);
     expect(newsQuery.getAllNews()).resolves.not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.toBe(res);
-    expect(newsService.getAllNews()).resolves.toBe(res);
+    expect(newsQuery.getAllNews()).resolves.toBe({
+      data: {
+        getAllNews: [
+          {
+            author: {
+              name: [
+                {
+                  lang: 'uk',
+                  value: 'тест автор',
+                },
+                {
+                  lang: 'eng',
+                  value: 'test author',
+                },
+              ],
+              image: null,
+            },
+            images: {
+              primary: {
+                medium: 'sdfsdf4.jpg',
+              },
+              additional: [
+                {
+                  medium: null,
+                  small: 'dfgfdg.jpg',
+                  large: null,
+                },
+              ],
+            },
+          },
+        ],
+      },
+    });
   });
 
   test('#5 should receive one news id,title', async () => {
@@ -105,7 +173,7 @@ describe('querries', () => {
       .query({
         query: gql`
           query {
-            getNewsById(id: "5f0570bca23481321c43f422") {
+            getNewsById(id: "5f12be2493926837cce2c028") {
               _id
               images {
                 primary {
@@ -124,14 +192,28 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '5f0570bca23481321c43f422'),
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
     ).resolves.not.toBe(null);
     expect(
-      newsQuery.getNewsById(null, '5f0570bca23481321c43f422'),
-    ).resolves.toBe(res);
-    expect(newsService.getNewsById('5f0570bca23481321c43f422')).resolves.toBe(
-      res,
-    );
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
+    ).resolves.toBe({
+      data: {
+        getNewsById: {
+          _id: '5f12be2493926837cce2c028',
+          images: {
+            primary: {
+              medium: 'sdfsdf4.jpg',
+            },
+            additional: [
+              {
+                small: 'dfgfdg.jpg',
+                medium: null,
+              },
+            ],
+          },
+        },
+      },
+    });
   });
 
   test('#6 should receive one news author, images', async () => {
@@ -139,7 +221,7 @@ describe('querries', () => {
       .query({
         query: gql`
           query {
-            getNewsById(id: "5f0570bca23481321c43f422") {
+            getNewsById(id: "5f12be2493926837cce2c028") {
               author {
                 name {
                   lang
@@ -167,53 +249,38 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '5f0570bca23481321c43f422'),
-    ).resolves.toBe(res);
-    expect(newsService.getNewsById('5f0570bca23481321c43f422')).resolves.toBe(
-      res,
-    );
-  });
-  test('#7 check if field images is in response', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query {
-            getNewsById(id: "5f0570bca23481321c43f422") {
-              author {
-                name {
-                  lang
-                  value
-                }
-                image {
-                  small
-                }
-              }
-              images {
-                primary {
-                  medium
-                }
-                additional {
-                  medium
-                  small
-                  large
-                }
-              }
-            }
-          }
-        `,
-      })
-      .then(res => res);
-
-    expect(res).toMatchSnapshot();
-    expect(
-      newsQuery.getNewsById(null, '5f0570bca23481321c43f422').then(res => res)
-        .images,
-    ).toEqual(res.data.images);
-
-    expect(
-      newsService.getNewsById('5f0570bca23481321c43f422').then(res => res)
-        .images,
-    ).toEqual(res.data.images);
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
+    ).resolves.toBe({
+      data: {
+        getNewsById: {
+          author: {
+            name: [
+              {
+                lang: 'uk',
+                value: 'тест автор',
+              },
+              {
+                lang: 'eng',
+                value: 'test author',
+              },
+            ],
+            image: null,
+          },
+          images: {
+            primary: {
+              medium: 'sdfsdf4.jpg',
+            },
+            additional: [
+              {
+                medium: null,
+                small: 'dfgfdg.jpg',
+                large: null,
+              },
+            ],
+          },
+        },
+      },
+    });
   });
 
   // error test
@@ -252,10 +319,36 @@ describe('querries', () => {
     expect(res).toMatchSnapshot();
     expect(
       newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
-    ).resolves.toThrow(res);
-
+    ).resolves.toBeInstanceOf(Error);
     expect(
-      newsService.getNewsById('1f0570bca23481321c43f433'),
-    ).resolves.toThrow(res);
+      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
+    ).resolves.toThrow({
+      errors: [
+        {
+          message:
+            '[{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]',
+          locations: [
+            {
+              line: 2,
+              column: 3,
+            },
+          ],
+          path: ['getNewsById'],
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            exception: {
+              stacktrace: [
+                'Error: [{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]',
+                '    at NewsService.getNewsById (C:\\Users\\Admin\\Desktop\\VS Code project\\HORONDI\\horondi_client_be\\modules\\news\\news.service.js:20:41)',
+                '    at processTicksAndRejections (internal/process/task_queues.js:97:5)',
+              ],
+            },
+          },
+        },
+      ],
+      data: {
+        getNewsById: null,
+      },
+    });
   });
 });

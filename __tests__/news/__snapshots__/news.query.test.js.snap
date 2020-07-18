@@ -4,16 +4,16 @@ exports[`querries #5 should receive one news id,title 1`] = `
 Object {
   "data": Object {
     "getNewsById": Object {
-      "_id": "5f0570bca23481321c43f422",
+      "_id": "5f12be2493926837cce2c028",
       "images": Object {
         "additional": Array [
           Object {
             "medium": null,
-            "small": "dfgfdg.jpg",
+            "small": "updatedfgfdg.jpg",
           },
         ],
         "primary": Object {
-          "medium": "sdfsdf4.jpg",
+          "medium": "updatesdfsdf4.jpg",
         },
       },
     },
@@ -29,47 +29,30 @@ Object {
   "data": Object {
     "getNewsById": Object {
       "author": Object {
-        "image": null,
-        "name": Array [],
-      },
-      "images": Object {
-        "additional": Array [
-          Object {
-            "large": null,
-            "medium": null,
-            "small": "dfgfdg.jpg",
-          },
-        ],
-        "primary": Object {
-          "medium": "sdfsdf4.jpg",
+        "image": Object {
+          "small": "updateauthor.jpg",
         },
-      },
-    },
-  },
-  "loading": false,
-  "networkStatus": 7,
-  "stale": false,
-}
-`;
-
-exports[`querries #7 check if field images is in response 1`] = `
-Object {
-  "data": Object {
-    "getNewsById": Object {
-      "author": Object {
-        "image": null,
-        "name": Array [],
+        "name": Array [
+          Object {
+            "lang": "uk",
+            "value": "updateVova",
+          },
+          Object {
+            "lang": "eng",
+            "value": "updatevas",
+          },
+        ],
       },
       "images": Object {
         "additional": Array [
           Object {
             "large": null,
             "medium": null,
-            "small": "dfgfdg.jpg",
+            "small": "updatedfgfdg.jpg",
           },
         ],
         "primary": Object {
-          "medium": "sdfsdf4.jpg",
+          "medium": "updatesdfsdf4.jpg",
         },
       },
     },

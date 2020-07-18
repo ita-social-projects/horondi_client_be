@@ -12,8 +12,7 @@ const NEWS_NOT_FOUND = JSON.stringify([
 ]);
 class NewsService {
   async getAllNews() {
-    const news = await News.find();
-    return news;
+    return News.find();
   }
 
   async getNewsById(id) {
@@ -21,9 +20,8 @@ class NewsService {
   }
 
   async updateNews(id, news) {
-    return (
-      (await News.findByIdAndUpdate(id, news)) || new Error(NEWS_NOT_FOUND)
-    );
+    const updated = await News.findByIdAndUpdate(id, news);
+    return updated.save();
   }
 
   async addNews(data) {
