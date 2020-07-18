@@ -8,6 +8,10 @@ const {
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
+const USER_NOT_FOUND = JSON.stringify([
+  { lang: 'uk', value: 'Користувач не знайдений' },
+  { lang: 'eng', value: 'User not found' },
+]);
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({
@@ -15,7 +19,7 @@ class UserService {
     });
 
     if (checkedUser) {
-      const massage = [
+      const massage = JSON.stringify([
         {
           lang: 'uk',
           value: `Користувач з таким емейлом вже зареєстрований`,
@@ -24,7 +28,7 @@ class UserService {
           lang: 'eng',
           value: 'User with provided email already exists',
         },
-      ];
+      ]);
       throw new UserInputError(massage, {
         errors: {
           email: massage,
@@ -39,7 +43,7 @@ class UserService {
     });
 
     if (!checkedUser) {
-      const message = [
+      const message = JSON.stringify([
         {
           lang: 'uk',
           value: `Користувач з данним ${[key]} не знайдений`,
@@ -48,7 +52,7 @@ class UserService {
           lang: 'eng',
           value: `User with provided ${[key]} not found`,
         },
-      ];
+      ]);
       throw new UserInputError(message, {
         errors: {
           [key]: message,
@@ -64,8 +68,8 @@ class UserService {
     return user;
   }
 
-  async getUser(id) {
-    return await this.getUserByFieldOrThrow('_id', id);
+  getUser(id) {
+    return this.getUserByFieldOrThrow('_id', id);
   }
 
   async updateUserById({
@@ -136,16 +140,18 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError(`${[
-        {
-          lang: 'uk',
-          value: `Невірний пароль`,
-        },
-        {
-          lang: 'eng',
-          value: `Wrong password`,
-        },
-      ]}`);
+      throw new AuthenticationError(
+        `${JSON.stringify([
+          {
+            lang: 'uk',
+            value: `Невірний пароль`,
+          },
+          {
+            lang: 'eng',
+            value: `Wrong password`,
+          },
+        ])}`,
+      );
     }
 
     const token = generateToken(user._id, user.email);
@@ -195,7 +201,7 @@ class UserService {
   }
 
   deleteUser(id) {
-    return User.findByIdAndDelete(id);
+    return User.findByIdAndDelete(id) || new Error(USER_NOT_FOUND);
   }
 }
 module.exports = new UserService();
