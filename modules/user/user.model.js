@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
       ref: 'Comment',
     },
   ],
+  banned: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);
