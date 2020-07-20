@@ -64,8 +64,7 @@ class UserService {
   }
 
   async getAllUsers() {
-    const user = await User.find();
-    return user;
+    return await User.find();
   }
 
   getUser(id) {
@@ -93,11 +92,15 @@ class UserService {
       await this.checkUserExists(email);
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        firstName,
+        lastName,
+        email,
+      },
+      { new: true },
+    );
   }
 
   async updateUserByToken({ firstName, lastName, email }, user) {
@@ -113,11 +116,15 @@ class UserService {
       });
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        firstName,
+        lastName,
+        email,
+      },
+      { new: true },
+    );
   }
 
   async loginUser({ email, password }) {

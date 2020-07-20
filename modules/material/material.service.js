@@ -1,3 +1,4 @@
+const { ApolloError } = require('apollo-server');
 const Material = require('./material.model');
 
 const MATERIAL_NOT_FOUND = JSON.stringify([
@@ -10,30 +11,47 @@ const MATERIAL_NOT_FOUND = JSON.stringify([
     value: 'Material not found',
   },
 ]);
+
+const MATERIAL_ALREADY_EXIST = [
+  { lang: 'uk', value: 'Матеріал вже існує' },
+  { lang: 'eng', value: 'MATERIAL already exist' },
+];
 class MaterialsService {
   async getAllMaterials() {
-    const material = await Material.find();
-    return material;
+    return await Material.find();
   }
 
   async getMaterialById(id) {
-    return (await Material.findById(id)) || new Error(MATERIAL_NOT_FOUND);
+    return (
+      (await Material.findById(id)) || new ApolloError(MATERIAL_NOT_FOUND, 404)
+    );
   }
 
   async updateMaterial(id, material) {
     return (
-      (await Material.findByIdAndUpdate(id, material))
-      || new Error(MATERIAL_NOT_FOUND)
+      (await Material.findByIdAndUpdate(id, material, { new: true }))
+      || new ApolloError(MATERIAL_NOT_FOUND, 404)
     );
   }
 
   async addMaterial(data) {
+    const material = await Material.find({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    if (material.length !== 0) {
+      return new ApolloError(MATERIAL_ALREADY_EXIST, 400);
+    }
     return new Material(data).save();
   }
 
   async deleteMaterial(id) {
     return (
-      (await Material.findByIdAndDelete(id)) || new Error(MATERIAL_NOT_FOUND)
+      (await Material.findByIdAndDelete(id))
+      || new Error(MATERIAL_NOT_FOUND, 404)
     );
   }
 }
