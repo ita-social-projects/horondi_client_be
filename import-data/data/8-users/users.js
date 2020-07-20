@@ -116,7 +116,8 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
             wishlist: [backpacks[~~(Math.random() * backpacksNumber)]],
             orders: [getObjectId('order' + i)],
             purchasedProducts: [],
-            comments: commentsOfUser
+            comments: commentsOfUser,
+            banned: false
         })
     };
     return result
