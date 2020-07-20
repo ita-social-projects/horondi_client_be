@@ -1,4 +1,4 @@
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, AuthenticationError } = require('apollo-server');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
@@ -16,7 +16,7 @@ const server = new ApolloServer({
     if (token) {
       const user = verifyUser(token) ;
       if(!user)
-        throw new Error('Wrong token')
+        throw new AuthenticationError('Invalid authorization token')
       return { user: await userService.getUserByFieldOrThrow('email', user.email) };
     }
   },

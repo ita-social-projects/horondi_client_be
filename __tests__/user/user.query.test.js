@@ -4,25 +4,64 @@ const client = require('../../utils/apollo-client');
 
 require('dotenv').config();
 
-let token
+let token, userId
 
 describe('queries', () => {
-    beforeEach(async () => {
-        const res = await client.mutate({
+    beforeAll(async () => {
+        const register = await client.mutate({
+            mutation: gql`
+                mutation {       
+                    registerUser(user: {
+                        firstName: "Test" 
+                        lastName: "User"
+                        email: "test.email@gmail.com"
+                        password: "12345678Te"
+                    }) {
+                        _id
+                        firstName
+                        lastName
+                        email
+                        role
+                        registrationDate
+                        credentials {
+                            tokenPass
+                        } 
+                    }
+                }
+            `
+        })
+
+        userId = register.data.registerUser._id
+
+        const auth = await client.mutate({
             mutation: gql`
                 mutation {       
                     loginUser(user: {
-                        email: "tacjka334@gmail.com"
-                        password: "12345678Pt"
+                        email: "test.email@gmail.com"
+                        password: "12345678Te"
                     }) {
                         token
                     }
                 }
             `
         })
-        token = res.data.loginUser.token
+        token = auth.data.loginUser.token
     });
 
+    afterAll(async () => {
+        await client.mutate({
+            mutation: gql`
+                mutation($userId: ID!) {       
+                    deleteUser(id: $userId) {
+                        _id
+                    }
+                }
+            `,
+            variables: {
+                userId
+            }
+        })
+    });
 
     test('should recive all users', async () => {
         const res = await client.query({
@@ -32,61 +71,19 @@ describe('queries', () => {
                         email
                         firstName
                         lastName
-                        phoneNumber
-                        purchasedProducts
-                        role
-                        orders
-                        wishlist
-                        credentials{
-                            source
-                            tokenPass
-                        }
-                        registrationDate
-                        address{
-                            country
-                            city
-                            street
-                            appartment
-                            buildingNumber
-                        }
                     }
                 }
             `
         })
          expect(res.data.getAllUsers).toContainEqual({
-            "email": "adj0959pza@gmail.com",
-            "firstName": "Ніл",
-            "lastName": "Бабич",
-            "phoneNumber": "380396032485",
-            "purchasedProducts": [],
-            "role": "user",
-            "orders": [
-              "83ee481820a2056b8e5cc015"
-            ],
-            "wishlist": [
-              "f94fe36ef59ff80fe02afb28"
-            ],
-            "credentials": [
-              {
-                "source": "google",
-                "tokenPass": "IHOI2HOL8O"
-              }
-            ],
-            "registrationDate": "1552340261653",
-            "address": {
-              "country": "Україна",
-              "city": "Ніжин",
-              "street": "Вулиця Спокійна",
-              "appartment": "48",
-              "buildingNumber": "12"
-            }
+            "firstName": "Test" ,
+            "lastName": "User",
+            "email": "test.email@gmail.com"
           });
 
     })
 
     test('should recive user by token', async () => {
-        
-
         const res = await client.query({
             query: gql`
                 query {       
@@ -101,9 +98,7 @@ describe('queries', () => {
                     wishlist
                     credentials{
                         source
-                        tokenPass
                     }
-                    registrationDate
                     address{
                         country
                         city
@@ -120,7 +115,16 @@ describe('queries', () => {
                 }
             }
         })
-      
+
+        expect(res.data.getUserByToken).toHaveProperty(
+            'firstName', 'Test'
+        );
+        expect(res.data.getUserByToken).toHaveProperty(
+            'lastName', 'User'
+        );
+        expect(res.data.getUserByToken).toHaveProperty(
+            'email', 'test.email@gmail.com'
+        );
         expect(res.data.getUserByToken).toMatchSnapshot()
     })
 
@@ -128,8 +132,8 @@ describe('queries', () => {
 
         const res = await client.query({
             query: gql`
-                query {       
-                getUserById(id: "5f089b814cd4341468389160") {
+                query($userId: ID! ) {       
+                getUserById(id: $userId) {
                     email
                     firstName
                     lastName
@@ -140,9 +144,7 @@ describe('queries', () => {
                     wishlist
                     credentials{
                         source
-                        tokenPass
                     }
-                    registrationDate
                     address{
                         country
                         city
@@ -157,9 +159,21 @@ describe('queries', () => {
                 headers: {
                     token
                 }
+            },
+            variables: {
+                userId
             }
         })
 
+        expect(res.data.getUserById).toHaveProperty(
+            'firstName', 'Test'
+        );
+        expect(res.data.getUserById).toHaveProperty(
+            'lastName', 'User'
+        );
+        expect(res.data.getUserById).toHaveProperty(
+            'email', 'test.email@gmail.com'
+        );
         expect(res.data.getUserByToken).toMatchSnapshot()
     })
 })

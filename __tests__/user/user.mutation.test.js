@@ -113,11 +113,12 @@ describe('mutations', () => {
                 mutation($userId: ID!) {       
                     updateUserById(user: {
                         firstName: "Updated",
+                        lastName: "Updated",
+                        email: "tacjka34@gmail.com",
                     }, id: $userId){
                         firstName
                         lastName
                         email
-                        role
                     }
                 }
             `,
@@ -133,6 +134,12 @@ describe('mutations', () => {
 
         expect(res.data.updateUserById).toHaveProperty(
             'firstName', 'Updated'
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'lastName', 'Updated'
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'email', 'tacjka34@gmail.com'
         );
     })
 
@@ -154,9 +161,9 @@ describe('mutations', () => {
                 headers: {
                     token
                 }
-            },
+            }, 
             variables: {
-                userId: "83ee481820a2056b8e5cc015"
+                userId: "23ee481430a0056b8e5cc015"
             }
         }).catch(err => err)
 
@@ -169,6 +176,8 @@ describe('mutations', () => {
                 mutation {       
                     updateUserByToken(user: {
                         firstName: "UpdatedByToken",
+                        lastName: "Updated",
+                        email: "tacjka34@gmail.com",
                     }){
                         firstName
                         lastName
@@ -185,6 +194,12 @@ describe('mutations', () => {
         })
         expect(res.data.updateUserByToken).toHaveProperty(
             'firstName', 'UpdatedByToken'
+        );
+        expect(res.data.updateUserByToken).toHaveProperty(
+            'lastName', 'Updated'
+        );
+        expect(res.data.updateUserByToken).toHaveProperty(
+            'email', 'tacjka34@gmail.com'
         );
     })
 
@@ -208,7 +223,7 @@ describe('mutations', () => {
         expect(res.graphQLErrors[0].message).toBe('Unauthorized') 
     })
 
-    test('should throw wrong token Error', async () => {
+    test('should throw Invalid authorization token Error', async () => {
         const res = await client.mutate({
             mutation: gql`
                 mutation {       
@@ -229,7 +244,7 @@ describe('mutations', () => {
             },
         }).catch(err => err)
 
-        expect(res.networkError.result.errors[0].message).toBe('Context creation failed: Wrong token') 
+        expect(res.networkError.result.errors[0].message).toBe('Context creation failed: Invalid authorization token') 
     })
 
     test('should delete user', async () => {
@@ -249,4 +264,6 @@ describe('mutations', () => {
         expect(res.data.deleteUser._id).toEqual(userId);
 
     })
+    
+
 })
