@@ -9,25 +9,25 @@ const aboutUsEN = fs.readFileSync(path.join(srcPath, 'aboutUsEN.html'), 'utf8');
 
 const aboutTexts = [
     {
-        categoryCode: 'about-us',
+        code: 'about-us',
         title: mapToLanguages(['Про нас', 'About Us']),
         text: mapToLanguages([aboutUsUK, aboutUsEN]),
         date: new Date(),
     },
     {
-        categoryCode: 'terms-and-conditions',
+        code: 'terms-and-conditions',
         title: mapToLanguages(['Умови', 'Terms and Conditions']),
         text: mapToLanguages([' ', ' ']),
         date: new Date(),
     },
     {
-        categoryCode: 'payment-and-shipping',
+        code: 'payment-and-shipping',
         title: mapToLanguages(['Оплата і доставка', 'Payment and Shipping']),
         text: mapToLanguages([' ', ' ']),
         date: new Date(),
     },
     {
-        categoryCode: 'contacts',
+        code: 'contacts',
         title: mapToLanguages(['Контакти', 'Contacts']),
         text: mapToLanguages([' ', ' ']),
         date: new Date(),
