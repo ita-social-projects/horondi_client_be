@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 
 const CurrencySchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    default: Date.now,
-  },
+  lastUpdatedDate: Date,
   convertOptions: [
     {
       name: String,

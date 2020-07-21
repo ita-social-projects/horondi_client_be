@@ -11,12 +11,13 @@ type User{
     images: ImageSet
     token: String!
     credentials: [Credential]
-      registrationDate: String
-      wishlist: [ID]
-      cart: [ID]
-      orders:[ID]
-      purchasedProducts: [ID]
-
+    registrationDate: String
+    wishlist: [ID]
+    orders:[ID]
+    purchasedProducts: [ID]
+    comments: [ID]
+    banned: Boolean
+    confirmed: Boolean
 }`;
 
 const userInput = `
@@ -32,9 +33,11 @@ input UserInput {
     credentials: [CredentialInput]
     registrationDate: String
     wishlist: [ID]
-    cart: [ID]
     orders:[ID]
     purchasedProducts: [ID]
+    comments: [ID]
+    banned: Boolean
+    confirmed: Boolean
 }`;
 
 module.exports = { userType, userInput };
