@@ -10,6 +10,7 @@ type User{
     address: Address
     images: ImageSet
     token: String!
+    confirmed: Boolean!
     credentials: [Credential]
       registrationDate: String
       wishlist: [ID]

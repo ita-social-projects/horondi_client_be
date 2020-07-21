@@ -1,12 +1,14 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateUpdateInput
+  validateUpdateInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
+const { sendEmail, confirmationMessage } = require('../../utils/sendmail');
 
 class UserService {
   async checkUserExists(email) {
@@ -42,7 +44,7 @@ class UserService {
   }
 
   async getUser(id) {
-    return await this.getUserByFieldOrThrow('_id', id);
+    return this.getUserByFieldOrThrow('_id', id);
   }
 
   async updateUserById({
@@ -59,11 +61,9 @@ class UserService {
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
-      
     if (user._doc.email !== email) {
       await this.checkUserExists(email);
     }
-    
     return User.findByIdAndUpdate(user._id, {
       firstName,
       lastName,
@@ -71,9 +71,7 @@ class UserService {
     });
   }
 
-  async updateUserByToken({
-    firstName, lastName, email, 
-  }, user) {
+  async updateUserByToken({ firstName, lastName, email }, user) {
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -83,7 +81,7 @@ class UserService {
     if (errors) {
       throw new UserInputError('Errors', { errors });
     }
-    
+
     return User.findByIdAndUpdate(user._id, {
       firstName,
       lastName,
@@ -151,11 +149,38 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
+    const token = await generateToken(savedUser._id, savedUser.email);
+    const message = {
+      from: `horondi.devproject@gmail.com`,
+      to: 'bobbyf4de@gmail.com',
+      subject: 'Confirm Email',
+      html: confirmationMessage(firstName, token),
+    };
+    await sendEmail(message, () => {
+      console.log('Successful registration!');
+    });
     return savedUser;
   }
 
   deleteUser(id) {
     return User.findByIdAndDelete(id);
+  }
+
+  async confirmUser(token) {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    // console.log(decoded);
+    const user = await User.findOne({ email: decoded.email });
+    console.log(user);
+    if (!user) {
+      return new Error('Token is not valid');
+    }
+    console.log('USER CONFIRMED', user.confirmed);
+    if (user.confirmed) {
+      return new Error('The user is already confirmed!');
+    }
+    user.confirmed = true;
+    await User.findByIdAndUpdate(user._id, user);
+    return true;
   }
 }
 module.exports = new UserService();

@@ -201,6 +201,7 @@ const typeDefs = gql`
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
   }
 `;
 

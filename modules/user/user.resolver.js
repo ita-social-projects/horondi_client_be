@@ -13,8 +13,9 @@ const userMutation = {
     ? userService.updateUserById(args.user, args.id)
     : new Error('Unauthorized')),
   updateUserByToken: (parent, args, context) => (context.user
-    ?  userService.updateUserByToken(args.user, context.user)
+    ? userService.updateUserByToken(args.user, context.user)
     : new Error('Unauthorized')),
+  confirmUser: (parent, args) => userService.confirmUser(args.token),
 };
 
 module.exports = { userQuery, userMutation };
