@@ -1,13 +1,13 @@
 const currencyType = `type Currency {
     _id: ID!
-    date: String!
+    lastUpdatedDate: String!
     convertOptions: [ConvertOption!]
 }
 `;
 
 const currencyInput = `
     input CurrencyInput {
-    date: String!
+    lastUpdatedDate: String!
     convertOptions: [ConvertOptionInput!]
     }
     `;
