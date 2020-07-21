@@ -1,36 +1,17 @@
-const { ApolloError } = require('apollo-server');
 const News = require('./news.model');
+const { NEWS_ALREADY_EXIST } = require('../../error-messages/news.messages');
 
-const NEWS_NOT_FOUND = JSON.stringify([
-  {
-    lang: 'uk',
-    value: 'Новин  не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'News not found',
-  },
-]);
-
-const NEWS_ALREADY_EXIST = [
-  { lang: 'uk', value: 'Новина вже існує' },
-  { lang: 'eng', value: 'News already exist' },
-];
 class NewsService {
   async getAllNews() {
-    const news = await News.find();
-    return news;
+    return await News.find();
   }
 
   async getNewsById(id) {
-    return (await News.findById(id)) || new ApolloError(NEWS_NOT_FOUND, 404);
+    return await News.findById(id);
   }
 
   async updateNews(id, news) {
-    return (
-      (await News.findByIdAndUpdate(id, news, { new: true }))
-      || new ApolloError(NEWS_NOT_FOUND, 404)
-    );
+    return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
   async addNews(data) {
@@ -42,15 +23,13 @@ class NewsService {
       },
     });
     if (news.length !== 0) {
-      return new ApolloError(NEWS_ALREADY_EXIST, 400);
+      return new Error(NEWS_ALREADY_EXIST);
     }
     return new News(data).save();
   }
 
   async deleteNews(id) {
-    return (
-      (await News.findByIdAndDelete(id)) || new ApolloError(NEWS_NOT_FOUND, 404)
-    );
+    return await News.findByIdAndDelete(id);
   }
 }
 module.exports = new NewsService();

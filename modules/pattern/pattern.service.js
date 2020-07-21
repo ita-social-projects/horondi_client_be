@@ -1,20 +1,8 @@
-const { ApolloError } = require('apollo-server');
 const Pattern = require('./pattern.model');
+const {
+  PATTERN_ALREADY_EXIST,
+} = require('../../error-messages/pattern.messages');
 
-const PATTERN_NOT_FOUND = JSON.stringify([
-  {
-    lang: 'uk',
-    value: 'Гобелен  не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'Pattern not found',
-  },
-]);
-const PATTERN_ALREADY_EXIST = [
-  { lang: 'uk', value: 'Гобелен вже існує' },
-  { lang: 'eng', value: 'Pattern already exist' },
-];
 class PatternsService {
   async getAllPatterns() {
     const pattern = await Pattern.find();
@@ -22,16 +10,11 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    return (
-      (await Pattern.findById(id)) || new ApolloError(PATTERN_NOT_FOUND, 404)
-    );
+    return await Pattern.findById(id);
   }
 
   async updatePattern(id, pattern) {
-    return (
-      (await Pattern.findByIdAndUpdate(id, pattern, { new: true }))
-      || new Error(PATTERN_NOT_FOUND, 404)
-    );
+    return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
   }
 
   async addPattern(data) {
@@ -43,15 +26,13 @@ class PatternsService {
       },
     });
     if (pattern.length !== 0) {
-      return new ApolloError(PATTERN_ALREADY_EXIST, 400);
+      return new Error(PATTERN_ALREADY_EXIST);
     }
     return new Pattern(data).save();
   }
 
   async deletePattern(id) {
-    return (
-      (await Pattern.findByIdAndDelete(id)) || new Error(PATTERN_NOT_FOUND, 404)
-    );
+    return await Pattern.findByIdAndDelete(id);
   }
 }
 module.exports = new PatternsService();

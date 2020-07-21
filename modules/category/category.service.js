@@ -1,10 +1,9 @@
 const { ApolloError } = require('apollo-server');
 const Category = require('./category.model');
+const {
+  CATEGORY_ALREADY_EXIST,
+} = require('../../error-messages/category.messages');
 
-const CATEGORY_ALREADY_EXIST = [
-  { lang: 'uk', value: 'Категорія вже існує' },
-  { lang: 'eng', value: 'Category already exist' },
-];
 class CategoryService {
   async getAllCategories() {
     return await Category.find();

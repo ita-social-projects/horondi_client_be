@@ -52,10 +52,34 @@ const resolvers = {
       return 'Error';
     },
   },
-  AllCategoriesResult: {
+  CurrencyResult: {
     __resolveType: obj => {
-      if (obj.length > 0) {
-        return 'Category';
+      if (obj.date) {
+        return 'Currency';
+      }
+      return 'Error';
+    },
+  },
+  NewsResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return 'News';
+      }
+      return 'Error';
+    },
+  },
+  MaterialResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Material';
+      }
+      return 'Error';
+    },
+  },
+  PatternResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Pattern';
       }
       return 'Error';
     },

@@ -88,24 +88,28 @@ const typeDefs = gql`
     statusCode: Int
     message: String
   }
+
   union CategoryResult = Category | Error
-  union AllCategoriesResult = Category | Error
+  union CurrencyResult = Currency | Error
+  union MaterialResult = Material | Error
+  union PatternResult = Pattern | Error
+  union NewsResult = News | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
-    getCurrencyById(id: ID): Currency
+    getCurrencyById(id: ID, language: Int!): CurrencyResult
 
-    getAllCategories(language: Int): [Category]
-    getCategoryById(id: ID, language: Int): CategoryResult
+    getAllCategories: [Category]
+    getCategoryById(id: ID, language: Int!): CategoryResult
 
     getAllMaterials: [Material!]!
-    getMaterialById(id: ID): Material
+    getMaterialById(id: ID, language: Int!): MaterialResult
 
     getAllPatterns: [Pattern!]!
-    getPatternById(id: ID): Pattern
+    getPatternById(id: ID, language: Int!): PatternResult
 
     getAllNews: [News!]!
-    getNewsById(id: ID): News
+    getNewsById(id: ID, language: Int!): NewsResult
 
     getAllUsers: [User]
     getUserByToken: User
@@ -178,32 +182,40 @@ const typeDefs = gql`
   type Mutation {
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): Pattern
-    deletePattern(id: ID!): Pattern
-    updatePattern(id: ID!, pattern: PatternInput!): Pattern
+    deletePattern(id: ID!, language: Int!): Pattern
+    updatePattern(id: ID!, pattern: PatternInput!, language: Int!): Pattern
 
     "Material Mutation"
     addMaterial(material: MaterialInput!): Material
-    deleteMaterial(id: ID!): Material
-    updateMaterial(id: ID!, material: MaterialInput!): Material
+    deleteMaterial(id: ID!, language: Int!): MaterialResult
+    updateMaterial(
+      id: ID!
+      material: MaterialInput!
+      language: Int!
+    ): MaterialResult
 
     "Category Mutation"
     addCategory(category: CategoryInput!): Category
-    deleteCategory(id: ID!, language: Int): CategoryResult
+    deleteCategory(id: ID!, language: Int!): CategoryResult
     updateCategory(
       id: ID!
       category: CategoryInput!
-      language: Int
+      language: Int!
     ): CategoryResult
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): Currency
-    deleteCurrency(id: ID!): Currency
-    updateCurrency(id: ID!, currency: CurrencyInput!): Currency
+    deleteCurrency(id: ID!, language: Int!): CurrencyResult
+    updateCurrency(
+      id: ID!
+      currency: CurrencyInput!
+      language: Int!
+    ): CurrencyResult
 
     "News Mutation"
     addNews(news: NewsInput!): News
-    deleteNews(id: ID!): News
-    updateNews(id: ID!, news: NewsInput!): News
+    deleteNews(id: ID!, language: Int!): NewsResult
+    updateNews(id: ID!, news: NewsInput!, language: Int!): NewsResult
 
     "User Mutation"
     registerUser(user: UserInput!): User

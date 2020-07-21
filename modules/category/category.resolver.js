@@ -8,6 +8,7 @@ const categoryQuery = {
 
   getCategoryById: async (parent, args) => {
     const category = await categoryService.getCategoryById(args.id);
+
     if (category) {
       return category;
     }
