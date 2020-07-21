@@ -117,7 +117,8 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
             orders: [getObjectId('order' + i)],
             purchasedProducts: [],
             comments: commentsOfUser,
-            banned: false
+            banned: false,
+            confirmed: false
         })
     };
     return result
