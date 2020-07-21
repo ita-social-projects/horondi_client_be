@@ -1,20 +1,22 @@
-const categoryType = `  
-    type Category { 
+const categoryType = `
+    type Category {
     _id: ID!
-    categoryCode: String
+    code: String
     name: [Language]
     images: ImageSet
-    subcategories: [Subcategory]
+    subcategories: [ID]
+    isMain: Boolean
     available: Boolean
 }
 `;
 
 const categoryInput = `
     input CategoryInput {
-    categoryCode: String
+    code: String
     name: [LanguageInput]
     images: ImageSetInput
-    subcategories: [SubcategoryInput]
+    subcategories: [ID]
+    isMain: Boolean
     available: Boolean
     }`;
 
