@@ -84,13 +84,19 @@ const typeDefs = gql`
     images: ImageSet
     available: Boolean
   }
+  type Error {
+    statusCode: Int
+    message: String
+  }
+  union CategoryResult = Category | Error
+  union AllCategoriesResult = Category | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): Currency
 
-    getAllCategories: [Category!]!
-    getCategoryById(id: ID): Category
+    getAllCategories(language: Int): [Category]
+    getCategoryById(id: ID, language: Int): CategoryResult
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): Material
@@ -182,8 +188,12 @@ const typeDefs = gql`
 
     "Category Mutation"
     addCategory(category: CategoryInput!): Category
-    deleteCategory(id: ID!): Category
-    updateCategory(id: ID!, category: CategoryInput!): Category
+    deleteCategory(id: ID!, language: Int): CategoryResult
+    updateCategory(
+      id: ID!
+      category: CategoryInput!
+      language: Int
+    ): CategoryResult
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): Currency

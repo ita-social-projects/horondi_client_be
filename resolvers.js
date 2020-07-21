@@ -44,6 +44,22 @@ const resolvers = {
 
     ...userMutation,
   },
+  CategoryResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Category';
+      }
+      return 'Error';
+    },
+  },
+  AllCategoriesResult: {
+    __resolveType: obj => {
+      if (obj.length > 0) {
+        return 'Category';
+      }
+      return 'Error';
+    },
+  },
 };
 
 module.exports = resolvers;

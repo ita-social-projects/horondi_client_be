@@ -1,16 +1,6 @@
 const { ApolloError } = require('apollo-server');
 const Category = require('./category.model');
 
-const CATEGORY_NOT_FOUND = JSON.stringify([
-  {
-    lang: 'uk',
-    value: 'Категорій не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'Category not found',
-  },
-]);
 const CATEGORY_ALREADY_EXIST = [
   { lang: 'uk', value: 'Категорія вже існує' },
   { lang: 'eng', value: 'Category already exist' },
@@ -21,16 +11,11 @@ class CategoryService {
   }
 
   async getCategoryById(id) {
-    return (
-      (await Category.findById(id)) || new ApolloError(CATEGORY_NOT_FOUND, 404)
-    );
+    return await Category.findById(id);
   }
 
   async updateCategory(id, category) {
-    return (
-      (await Category.findByIdAndUpdate(id, category, { new: true }))
-      || new ApolloError(CATEGORY_NOT_FOUND, 404)
-    );
+    return await Category.findByIdAndUpdate(id, category, { new: true });
   }
 
   async addCategory(data) {
@@ -48,9 +33,7 @@ class CategoryService {
   }
 
   deleteCategory(id) {
-    return (
-      Category.findByIdAndDelete(id) || new ApolloError(CATEGORY_NOT_FOUND, 404)
-    );
+    return Category.findByIdAndDelete(id);
   }
 }
 module.exports = new CategoryService();
