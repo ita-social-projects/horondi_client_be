@@ -63,6 +63,7 @@ describe('mutations', () => {
             `
         }).catch(err => err)
 
+        expect(res.graphQLErrors.length).toBe(1) 
         expect(res.graphQLErrors[0].message).toBe('User with provided email already exists') 
 
     })
@@ -103,7 +104,8 @@ describe('mutations', () => {
                 }
             `
         }).catch(err => err)
-
+    
+        expect(res.graphQLErrors.length).toBe(1) 
         expect(res.graphQLErrors[0].message).toBe('User with provided email not found') 
     })
 
@@ -167,6 +169,8 @@ describe('mutations', () => {
             }
         }).catch(err => err)
 
+
+        expect(res.graphQLErrors.length).toBe(1) 
         expect(res.graphQLErrors[0].message).toBe('User with provided _id not found') 
     })
 
