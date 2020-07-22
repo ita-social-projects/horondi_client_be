@@ -8,9 +8,9 @@ const NEWS_NOT_FOUND = [
     value: 'News not found',
   },
 ];
-const NEWS_ALREADY_EXIST = [
+const NEWS_ALREADY_EXIST = JSON.stringify([
   { lang: 'uk', value: 'Новина вже існує' },
   { lang: 'eng', value: 'News already exist' },
-];
+]);
 
 module.exports = { NEWS_NOT_FOUND, NEWS_ALREADY_EXIST };

@@ -12,7 +12,7 @@ const currencyQuery = {
     }
     return {
       statusCode: 404,
-      message: CURRENCY_NOT_FOUND[args.language].value,
+      message: CURRENCY_NOT_FOUND,
     };
   },
 };
@@ -26,7 +26,7 @@ const currencyMutation = {
     }
     return {
       statusCode: 404,
-      message: CURRENCY_NOT_FOUND[args.language].value,
+      message: CURRENCY_NOT_FOUND,
     };
   },
   updateCurrency: async (parent, args) => {
@@ -39,7 +39,7 @@ const currencyMutation = {
     }
     return {
       statusCode: 404,
-      message: CURRENCY_NOT_FOUND[args.language].value,
+      message: CURRENCY_NOT_FOUND,
     };
   },
 };

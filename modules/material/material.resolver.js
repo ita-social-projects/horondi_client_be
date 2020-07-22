@@ -12,7 +12,7 @@ const materialQuery = {
     }
     return {
       statusCode: 404,
-      message: MATERIAL_NOT_FOUND[args.language].value,
+      message: MATERIAL_NOT_FOUND,
     };
   },
 };
@@ -26,7 +26,7 @@ const materialMutation = {
     }
     return {
       statusCode: 404,
-      message: MATERIAL_NOT_FOUND[args.language].value,
+      message: MATERIAL_NOT_FOUND,
     };
   },
   updateMaterial: async (parent, args) => {
@@ -39,7 +39,7 @@ const materialMutation = {
     }
     return {
       statusCode: 404,
-      message: MATERIAL_NOT_FOUND[args.language].value,
+      message: MATERIAL_NOT_FOUND,
     };
   },
 };

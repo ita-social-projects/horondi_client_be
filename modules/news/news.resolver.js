@@ -10,7 +10,7 @@ const newsQuery = {
     }
     return {
       statusCode: 404,
-      message: NEWS_NOT_FOUND[args.language].value,
+      message: NEWS_NOT_FOUND,
     };
   },
 };
@@ -23,7 +23,7 @@ const newsMutation = {
     }
     return {
       statusCode: 404,
-      message: NEWS_NOT_FOUND[args.language].value,
+      message: NEWS_NOT_FOUND,
     };
   },
   updateNews: async (parent, args) => {
@@ -33,7 +33,7 @@ const newsMutation = {
     }
     return {
       statusCode: 404,
-      message: NEWS_NOT_FOUND[args.language].value,
+      message: NEWS_NOT_FOUND,
     };
   },
 };

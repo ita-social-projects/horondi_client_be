@@ -15,10 +15,11 @@ class NewsService {
   }
 
   async addNews(data) {
+    console.log('data', data.title[0], data.title[1]);
     const news = await News.find({
-      name: {
+      title: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },
     });

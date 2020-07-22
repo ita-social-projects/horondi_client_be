@@ -19,12 +19,14 @@ class CategoryService {
 
   async addCategory(data) {
     const category = await Category.find({
+      code: data.code,
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
     });
+
     if (category.length !== 0) {
       return new ApolloError(CATEGORY_ALREADY_EXIST, 400);
     }
