@@ -29,8 +29,11 @@ const currencyMutation = {
       message: CURRENCY_NOT_FOUND[args.language].value,
     };
   },
-  updateCurrency: (parent, args) => {
-    const currency = currencyService.updateCurrency(args.id, args.currency);
+  updateCurrency: async (parent, args) => {
+    const currency = await currencyService.updateCurrency(
+      args.id,
+      args.currency,
+    );
     if (currency) {
       return currency;
     }

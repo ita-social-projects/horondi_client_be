@@ -17,8 +17,8 @@ const patternQuery = {
 
 const patternMutation = {
   addPattern: (parent, args) => patternService.addPattern(args.pattern),
-  deletePattern: (parent, args) => {
-    const pattern = patternService.deletePattern(args.id);
+  deletePattern: async (parent, args) => {
+    const pattern = await patternService.deletePattern(args.id);
     if (pattern) {
       return pattern;
     }
@@ -27,8 +27,8 @@ const patternMutation = {
       message: PATTERN_NOT_FOUND[args.language].value,
     };
   },
-  updatePattern: (parent, args) => {
-    const pattern = patternService.updatePattern(args.id, args.pattern);
+  updatePattern: async (parent, args) => {
+    const pattern = await patternService.updatePattern(args.id, args.pattern);
     if (pattern) {
       return pattern;
     }

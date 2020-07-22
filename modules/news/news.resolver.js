@@ -16,8 +16,8 @@ const newsQuery = {
 };
 const newsMutation = {
   addNews: (parent, args) => newsService.addNews(args.news),
-  deleteNews: (parent, args) => {
-    const news = newsService.deleteNews(args.id);
+  deleteNews: async (parent, args) => {
+    const news = await newsService.deleteNews(args.id);
     if (news) {
       return news;
     }
@@ -26,8 +26,8 @@ const newsMutation = {
       message: NEWS_NOT_FOUND[args.language].value,
     };
   },
-  updateNews: (parent, args) => {
-    const news = newsService.updateNews(args.id, args.news);
+  updateNews: async (parent, args) => {
+    const news = await newsService.updateNews(args.id, args.news);
     if (news) {
       return news;
     }

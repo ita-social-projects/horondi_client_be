@@ -19,8 +19,8 @@ const materialQuery = {
 
 const materialMutation = {
   addMaterial: (parent, args) => materialService.addMaterial(args.material),
-  deleteMaterial: (parent, args) => {
-    const material = materialService.deleteMaterial(args.id);
+  deleteMaterial: async (parent, args) => {
+    const material = await materialService.deleteMaterial(args.id);
     if (material) {
       return material;
     }
@@ -29,8 +29,11 @@ const materialMutation = {
       message: MATERIAL_NOT_FOUND[args.language].value,
     };
   },
-  updateMaterial: (parent, args) => {
-    const material = materialService.updateMaterial(args.id, args.material);
+  updateMaterial: async (parent, args) => {
+    const material = await materialService.updateMaterial(
+      args.id,
+      args.material,
+    );
     if (material) {
       return material;
     }
