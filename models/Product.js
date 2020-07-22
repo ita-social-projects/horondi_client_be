@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Language = require('./Language').schema;
 const PrimaryImage = require('./PrimaryImage').schema;
+const ImageSet = require('../modules/common/ImageSet').schema;
 const Size = require('./Size').schema;
 const Color = require('./Color').schema;
-const Pattern = require('../modules/pattern/pattern.model').schema;
 
 const productSchema = new mongoose.Schema({
   subcategory: {
@@ -17,7 +17,8 @@ const productSchema = new mongoose.Schema({
   strapLengthInCm: Number,
   images: [PrimaryImage],
   colors: [Color],
-  pattern: [Pattern],
+  pattern: [Language],
+  patternImages: ImageSet,
   closure: [Language],
   closureColor: String,
   basePrice: Number,
