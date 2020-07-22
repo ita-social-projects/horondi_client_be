@@ -6,25 +6,25 @@ const materials = [
   {
     id: getObjectId('malmo'),
     name: mapToLanguages(['Мальмо', 'Malmo']),
-    description: mapToLanguages(['Мальмо (100% поліестер) - для рюкзаків, сумок, бананок (всі моделі). Прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води.',
-        'Malmo (100% polyester) - for backpacks, bags, fanny-packs (all models). Layered with special material for durability and water-resistance.']),
+    description: mapToLanguages(['100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
+      '100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern']),
     colors: mapToColors([
-      [200, 'Світло-коричневий', 'Light-brown'],
-      [201, 'Рожево-коричневий', 'Rosy-brown'],
-      [202, 'Насичений коричневий', 'Saddle-brown'],
-      [203, 'Темно-коричневий', 'Dark-brown'],
-      [204, 'Світло-рожевий', 'Light-pink'],
-      [205, 'Вишневий', 'Violet-red'],
-      [206, 'Золотий', 'Golden'],
-      [207, 'Темно-оливковий', 'Dark-olive'],
-      [208, 'Світло-сталевий', 'Light-steel'],
-      [209, 'Сталево-блакитний', 'Steel-blue'],
-      [210, 'Темно-синій', 'Dark-blue'],
-      [211, 'Світло-сірий', 'Light-gray'],
-      [212, 'Срібний', 'Silver'],
-      [213, 'Сизий', 'Slate-gray'],
-      [214, 'Брудно-сірий', 'Dim-gray'],
-      [215, 'Темно-сірий', 'Dark-gray']
+      [200, 'Світло-коричневий', 'Light-brown', 'brown'],
+      [201, 'Рожево-коричневий', 'Rosy-brown', 'brown'],
+      [202, 'Насичений коричневий', 'Saddle-brown', 'brown'],
+      [203, 'Темно-коричневий', 'Dark-brown', 'brown'],
+      [204, 'Світло-рожевий', 'Light-pink', 'pink'],
+      [205, 'Вишневий', 'Violet-red', 'red'],
+      [206, 'Золотий', 'Golden', 'yellow'],
+      [207, 'Темно-оливковий', 'Dark-olive', 'green'],
+      [208, 'Світло-сталевий', 'Light-steel', 'grey'],
+      [209, 'Сталево-блакитний', 'Steel-blue', 'blue'],
+      [210, 'Темно-синій', 'Dark-blue', 'blue'],
+      [211, 'Світло-сірий', 'Light-grey', 'grey'],
+      [212, 'Срібний', 'Silver', 'grey'],
+      [213, 'Сизий', 'Slate-grey', 'grey'],
+      [214, 'Брудно-сірий', 'Dim-grey', 'grey'],
+      [215, 'Темно-сірий', 'Dark-grey', 'grey']
   ]),
     available: true,
     additionalPrice: 0
@@ -32,28 +32,28 @@ const materials = [
   {
     id: getObjectId('bond'),
     name: mapToLanguages(['Бонд', 'Bond']),
-    description: mapToLanguages(['Бонд (100% поліестер) - для рюкзаків моделі Rolltop. Прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води.',
-        'Bond (100% polyester) - for backpacks of Rolltop model. Layered with special material for durability and water-resistance.']),
+    description: mapToLanguages(['100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
+      '100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern']),
     colors: mapToColors([
-      [300, 'Лляний', 'Linen'],
-      [301, 'Пшеничний', 'Wheat'],
-      [302, 'Світло-лососевий', 'Light-salmon'],
-      [303, 'Лососевий', 'Salmon'],
-      [304, 'Темно-лососевий', 'Dark-salmon'],
-      [305, 'Насичений коричневий', 'Saddle-brown'],
-      [306, 'Світло-сизий', 'Light-slate-gray'],
-      [307, 'Димчатий', 'Whitesmoke'],
-      [308, 'Бордовий', 'Maroon'],
-      [309, 'Королівський синій', 'Royal-blue'],
-      [310, 'Кораловий', 'Coral'],
-      [311, 'Оранжевий', 'Orange'],
-      [312, 'Золотий', 'Gold'],
-      [313, 'Хакі', 'Khaki'],
-      [314, 'Темний хакі', 'Dark-khaki'],
-      [315, 'Блідо-фіолетовий', 'Pale-violet'],
-      [316, 'Глибокий небесно-синій', 'Deep-sky-blue'],
-      [317, 'Темно-синій', 'Midnight-blue'],
-      [318, 'Темно-червоний', 'Dark-red']
+      [300, 'Лляний', 'Linen', 'beige'],
+      [301, 'Пшеничний', 'Wheat', 'beige'],
+      [302, 'Світло-лососевий', 'Light-salmon', 'beige'],
+      [303, 'Лососевий', 'Salmon', 'brown'],
+      [304, 'Темно-лососевий', 'Dark-salmon', 'brown'],
+      [305, 'Насичений коричневий', 'Saddle-brown', 'brown'],
+      [306, 'Світло-сизий', 'Light-slate-grey', 'grey'],
+      [307, 'Димчатий', 'Whitesmoke', 'grey'],
+      [308, 'Бордовий', 'Maroon', 'red'],
+      [309, 'Королівський синій', 'Royal-blue', 'blue'],
+      [310, 'Кораловий', 'Coral', 'orange'],
+      [311, 'Оранжевий', 'Orange', 'orange'],
+      [312, 'Золотий', 'Gold', 'yellow'],
+      [313, 'Хакі', 'Khaki', 'green'],
+      [314, 'Темний хакі', 'Dark-khaki', 'green'],
+      [315, 'Блідо-фіолетовий', 'Pale-violet', 'red'],
+      [316, 'Глибокий небесно-синій', 'Deep-sky-blue', 'blue'],
+      [317, 'Темно-синій', 'Midnight-blue', 'blue'],
+      [318, 'Темно-червоний', 'Dark-red', 'red']
   ]),
     available: true,
     additionalPrice: 0
@@ -64,10 +64,10 @@ const materials = [
     description: mapToLanguages(['Шкірзамінник',
         'Faux leather']),
     colors: mapToColors([
-      [1, 'Чорний', 'Black'],
-      [2, 'Коричневий', 'Brown'],
-      [3, 'Сірий', 'Gray'],
-      [4, 'Рожевий', 'Pink']
+      [1, 'Чорний', 'Black', 'black'],
+      [2, 'Коричневий', 'Brown', 'brown'],
+      [3, 'Сірий', 'Grey', 'grey'],
+      [4, 'Рожевий', 'Pink', 'pink']
   ]),
     available: true,
     additionalPrice: 0
@@ -78,7 +78,7 @@ const materials = [
     description: mapToLanguages(['Тканина Кордура',
         'Cordura fabric']),
     colors: mapToColors([
-      [1, 'Чорний', 'Black']
+      [1, 'Чорний', 'Black', 'black']
   ]),
     available: true,
     additionalPrice: 0
@@ -89,8 +89,8 @@ const materials = [
     description: mapToLanguages(['Натуральна шкіра',
         'Genuine leather']),
     colors: mapToColors([
-      [1, 'Чорний', 'Black'],
-      [2, 'Коричневий', 'Brown']
+      [1, 'Чорний', 'Black', 'black'],
+      [2, 'Коричневий', 'Brown', 'brown']
   ]),
     available: true,
     additionalPrice: 350

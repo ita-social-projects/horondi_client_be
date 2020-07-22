@@ -7,8 +7,8 @@ const closures = [
         id: getObjectId('metal-closure'),
         name: mapToLanguages(['Металева защіпка', 'Metal closure']),
         colors: mapToColors([
-            [1, 'Чорна', 'Black'],
-            [2, 'Золотиста', 'Golden']
+            [1, 'Чорна', 'Black', 'black'],
+            [2, 'Золотиста', 'Golden', 'yellow']
         ]),
         available: true,
         additionalPrice: 10
@@ -17,7 +17,7 @@ const closures = [
         id: getObjectId('plastic-closure'),
         name: mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']),
         colors: mapToColors([
-            [1, 'Чорна', 'Black']
+            [1, 'Чорна', 'Black', 'black']
         ]),
         available: true,
         additionalPrice: 0
@@ -26,8 +26,8 @@ const closures = [
         id: getObjectId('metal-hook'),
         name: mapToLanguages(['Металевий гачок', 'Metal hook']),
         colors: mapToColors([
-            [1, 'Чорний', 'Black'],
-            [2, 'Золотистий', 'Golden']
+            [1, 'Чорний', 'Black', 'black'],
+            [2, 'Золотистий', 'Golden', 'yellow']
         ]),
         available: true,
         additionalPrice: 10
