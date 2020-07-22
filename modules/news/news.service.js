@@ -1,35 +1,35 @@
 const News = require('./news.model');
+const { NEWS_ALREADY_EXIST } = require('../../error-messages/news.messages');
 
-const NEWS_NOT_FOUND = JSON.stringify([
-  {
-    lang: 'uk',
-    value: 'Новин  не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'News not found',
-  },
-]);
 class NewsService {
   async getAllNews() {
-    return News.find();
+    return await News.find();
   }
 
   async getNewsById(id) {
-    return (await News.findById(id)) || new Error(NEWS_NOT_FOUND);
+    return await News.findById(id);
   }
 
   async updateNews(id, news) {
-    const updated = await News.findByIdAndUpdate(id, news);
-    return updated.save();
+    return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
   async addNews(data) {
+    const news = await News.find({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    if (news.length !== 0) {
+      return new Error(NEWS_ALREADY_EXIST);
+    }
     return new News(data).save();
   }
 
   async deleteNews(id) {
-    return (await News.findByIdAndDelete(id)) || new Error(NEWS_NOT_FOUND);
+    return await News.findByIdAndDelete(id);
   }
 }
 module.exports = new NewsService();

@@ -8,13 +8,10 @@ const {
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
-const userErrorMessages = [
-  {
-    lang: 'uk',
-    value: 'Користувача не знайдено',
-  },
+const USER_NOT_FOUND = JSON.stringify([
+  { lang: 'uk', value: 'Користувач не знайдений' },
   { lang: 'eng', value: 'User not found' },
-];
+]);
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({
@@ -22,7 +19,16 @@ class UserService {
     });
 
     if (checkedUser) {
-      const massage = 'User with provided email already exists';
+      const massage = JSON.stringify([
+        {
+          lang: 'uk',
+          value: `Користувач з таким емейлом вже зареєстрований`,
+        },
+        {
+          lang: 'eng',
+          value: 'User with provided email already exists',
+        },
+      ]);
       throw new UserInputError(massage, {
         errors: {
           email: massage,
@@ -37,7 +43,16 @@ class UserService {
     });
 
     if (!checkedUser) {
-      const message = `User with provided ${[key]} not found`;
+      const message = JSON.stringify([
+        {
+          lang: 'uk',
+          value: `Користувач з данним ${[key]} не знайдений`,
+        },
+        {
+          lang: 'eng',
+          value: `User with provided ${[key]} not found`,
+        },
+      ]);
       throw new UserInputError(message, {
         errors: {
           [key]: message,
@@ -49,15 +64,11 @@ class UserService {
   }
 
   async getAllUsers() {
-    const user = await User.find();
-    return user;
+    return await User.find();
   }
 
-  async getUser(id) {
-    return (
-      (await this.getUserByFieldOrThrow('_id', id))
-      || new Error(userErrorMessages)
-    );
+  getUser(id) {
+    return this.getUserByFieldOrThrow('_id', id);
   }
 
   async updateUserById({
@@ -81,11 +92,15 @@ class UserService {
       await this.checkUserExists(email);
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        firstName,
+        lastName,
+        email,
+      },
+      { new: true },
+    );
   }
 
   async updateUserByToken({ firstName, lastName, email }, user) {
@@ -101,11 +116,15 @@ class UserService {
       });
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        firstName,
+        lastName,
+        email,
+      },
+      { new: true },
+    );
   }
 
   async loginUser({ email, password }) {
@@ -128,7 +147,18 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError('Wrong password');
+      throw new AuthenticationError(
+        `${JSON.stringify([
+          {
+            lang: 'uk',
+            value: `Невірний пароль`,
+          },
+          {
+            lang: 'eng',
+            value: `Wrong password`,
+          },
+        ])}`,
+      );
     }
 
     const token = generateToken(user._id, user.email);
@@ -177,8 +207,8 @@ class UserService {
     return savedUser;
   }
 
-  async deleteUser(id) {
-    return (await User.findByIdAndDelete(id)) || new Error(userErrorMessages);
+  deleteUser(id) {
+    return User.findByIdAndDelete(id) || new Error(USER_NOT_FOUND);
   }
 }
 module.exports = new UserService();

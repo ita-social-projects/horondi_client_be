@@ -2,65 +2,20 @@
 
 exports[`querries #5 should receive one news id,title 1`] = `
 Object {
-  "data": Object {
-    "getNewsById": Object {
-      "_id": "5f12be2493926837cce2c028",
-      "images": Object {
-        "additional": Array [
-          Object {
-            "medium": null,
-            "small": "updatedfgfdg.jpg",
-          },
-        ],
-        "primary": Object {
-          "medium": "updatesdfsdf4.jpg",
-        },
-      },
-    },
-  },
+  "data": null,
   "loading": false,
   "networkStatus": 7,
-  "stale": false,
+  "stale": true,
 }
 `;
 
-exports[`querries #6 should receive one news author, images 1`] = `
+exports[`querries #6 should receive one news author, image 1`] = `
 Object {
-  "data": Object {
-    "getNewsById": Object {
-      "author": Object {
-        "image": Object {
-          "small": "updateauthor.jpg",
-        },
-        "name": Array [
-          Object {
-            "lang": "uk",
-            "value": "updateVova",
-          },
-          Object {
-            "lang": "eng",
-            "value": "updatevas",
-          },
-        ],
-      },
-      "images": Object {
-        "additional": Array [
-          Object {
-            "large": null,
-            "medium": null,
-            "small": "updatedfgfdg.jpg",
-          },
-        ],
-        "primary": Object {
-          "medium": "updatesdfsdf4.jpg",
-        },
-      },
-    },
-  },
+  "data": null,
   "loading": false,
   "networkStatus": 7,
-  "stale": false,
+  "stale": true,
 }
 `;
 
-exports[`querries #8 should throw error 1`] = `[Error: GraphQL error: [{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]]`;
+exports[`querries #8 should throw error 1`] = `[Error: Network error: Response not successful: Received status code 400]`;

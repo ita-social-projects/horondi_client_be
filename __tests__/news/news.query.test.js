@@ -173,16 +173,21 @@ describe('querries', () => {
       .query({
         query: gql`
           query {
-            getNewsById(id: "5f12be2493926837cce2c028") {
-              _id
-              images {
-                primary {
-                  medium
+            getNewsById(id: "5f12c4b963044a08e4f71697", language: 1) {
+              ... on News {
+                images {
+                  primary {
+                    medium
+                  }
+                  additional {
+                    small
+                    medium
+                  }
                 }
-                additional {
-                  small
-                  medium
-                }
+              }
+              ... on Error {
+                message
+                statusCode
               }
             }
           }
@@ -192,14 +197,14 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
+      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697', 0)
     ).resolves.not.toBe(null);
     expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
+      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697', 0)
     ).resolves.toBe({
       data: {
         getNewsById: {
-          _id: '5f12be2493926837cce2c028',
+          _id: '5f12c4b963044a08e4f71697',
           images: {
             primary: {
               medium: 'sdfsdf4.jpg',
@@ -216,30 +221,26 @@ describe('querries', () => {
     });
   });
 
-  test('#6 should receive one news author, images', async () => {
+  test('#6 should receive one news author, image', async () => {
     const res = await client
       .query({
         query: gql`
           query {
-            getNewsById(id: "5f12be2493926837cce2c028") {
-              author {
-                name {
-                  lang
-                  value
-                }
-                image {
-                  small
+            getNewsById(id: "5f12c4b963044a08e4f71697", language: 1) {
+              ... on News {
+                author {
+                  name {
+                    lang
+                    value
+                  }
+                  image {
+                    small
+                  }
                 }
               }
-              images {
-                primary {
-                  medium
-                }
-                additional {
-                  medium
-                  small
-                  large
-                }
+              ... on Error {
+                message
+                statusCode
               }
             }
           }
@@ -249,7 +250,10 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028', 0)
+    ).resolves.toHaveReturned();
+    expect(
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028', 0)
     ).resolves.toBe({
       data: {
         getNewsById: {
@@ -257,26 +261,16 @@ describe('querries', () => {
             name: [
               {
                 lang: 'uk',
-                value: 'тест автор',
+                value: 'Vova',
               },
               {
                 lang: 'eng',
-                value: 'test author',
+                value: 'vas',
               },
             ],
-            image: null,
-          },
-          images: {
-            primary: {
-              medium: 'sdfsdf4.jpg',
+            image: {
+              small: 'author.jpg',
             },
-            additional: [
-              {
-                medium: null,
-                small: 'dfgfdg.jpg',
-                large: null,
-              },
-            ],
           },
         },
       },
@@ -318,10 +312,10 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
+      newsQuery.getNewsById(null, '1f0570bca23481321c43f433')
     ).resolves.toBeInstanceOf(Error);
     expect(
-      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
+      newsQuery.getNewsById(null, '1f0570bca23481321c43f433')
     ).resolves.toThrow({
       errors: [
         {

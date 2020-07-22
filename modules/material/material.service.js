@@ -1,40 +1,37 @@
 const Material = require('./material.model');
+const {
+  MATERIAL_ALREADY_EXIST,
+} = require('../../error-messages/material.messages');
 
-const MATERIAL_NOT_FOUND = JSON.stringify([
-  {
-    lang: 'uk',
-    value: 'Матеріал не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'Material not found',
-  },
-]);
 class MaterialsService {
   async getAllMaterials() {
-    const material = await Material.find();
-    return material;
+    return await Material.find();
   }
 
   async getMaterialById(id) {
-    return (await Material.findById(id)) || new Error(MATERIAL_NOT_FOUND);
+    return await Material.findById(id);
   }
 
   async updateMaterial(id, material) {
-    return (
-      (await Material.findByIdAndUpdate(id, material))
-      || new Error(MATERIAL_NOT_FOUND)
-    );
+    return await Material.findByIdAndUpdate(id, material, { new: true });
   }
 
   async addMaterial(data) {
+    const material = await Material.find({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    if (material.length !== 0) {
+      return new Error(MATERIAL_ALREADY_EXIST);
+    }
     return new Material(data).save();
   }
 
   async deleteMaterial(id) {
-    return (
-      (await Material.findByIdAndDelete(id)) || new Error(MATERIAL_NOT_FOUND)
-    );
+    return await Material.findByIdAndDelete(id);
   }
 }
 
