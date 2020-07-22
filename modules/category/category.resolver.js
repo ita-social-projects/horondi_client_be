@@ -14,15 +14,13 @@ const categoryQuery = {
     }
     return {
       statusCode: 404,
-      message: CATEGORY_NOT_FOUND[args.language].value,
+      message: CATEGORY_NOT_FOUND,
     };
   },
 };
 
 const categoryMutation = {
-  addCategory: (parent, args) => {
-    categoryService.addCategory(args.category);
-  },
+  addCategory: (parent, args) => categoryService.addCategory(args.category),
   deleteCategory: async (parent, args) => {
     const deletedCategory = await categoryService.deleteCategory(args.id);
     if (deletedCategory) {
@@ -30,7 +28,7 @@ const categoryMutation = {
     }
     return {
       statusCode: 404,
-      message: CATEGORY_NOT_FOUND[args.language].value,
+      message: CATEGORY_NOT_FOUND,
     };
   },
   updateCategory: async (parent, args) => {
@@ -43,7 +41,7 @@ const categoryMutation = {
     }
     return {
       statusCode: 404,
-      message: CATEGORY_NOT_FOUND[args.language].value,
+      message: CATEGORY_NOT_FOUND,
     };
   },
 };

@@ -1,5 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`news mutations delete news 1`] = `"Network error: Response not successful: Received status code 400"`;
+exports[`news mutations delete news 1`] = `
+Object {
+  "data": Object {
+    "deleteNews": Object {
+      "message": Array [
+        Object {
+          "lang": "uk",
+          "value": "Новин  не знайдено",
+        },
+        Object {
+          "lang": "eng",
+          "value": "News not found",
+        },
+      ],
+    },
+  },
+}
+`;
 
-exports[`news mutations deleting not existing news should throw error 1`] = `"Network error: Response not successful: Received status code 400"`;
+exports[`news mutations deleting not existing news should throw error 1`] = `
+Object {
+  "data": Object {
+    "deleteNews": Object {
+      "message": Array [
+        Object {
+          "lang": "uk",
+          "value": "Новин  не знайдено",
+        },
+        Object {
+          "lang": "eng",
+          "value": "News not found",
+        },
+      ],
+      "statusCode": 404,
+    },
+  },
+}
+`;

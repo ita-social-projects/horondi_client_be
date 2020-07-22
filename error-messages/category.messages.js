@@ -9,9 +9,9 @@ const CATEGORY_NOT_FOUND = [
   },
 ];
 
-const CATEGORY_ALREADY_EXIST = [
+const CATEGORY_ALREADY_EXIST = JSON.stringify([
   { lang: 'uk', value: 'Категорія вже існує' },
   { lang: 'eng', value: 'Category already exist' },
-];
+]);
 
 module.exports = { CATEGORY_NOT_FOUND, CATEGORY_ALREADY_EXIST };

@@ -5,7 +5,7 @@ const client = require('../../utils/apollo-client');
 const { newsMutation } = require('../../modules/news/news.resolver');
 require('dotenv').config();
 
-const newsToDeleteId = '5f12cfe9d11f5c2f186990c0';
+const newsToDeleteId = '5f12c1091bfb9532348587fe';
 const newsToUpdateId = '5f12be2493926837cce2c028';
 
 describe('news mutations', () => {
@@ -22,12 +22,12 @@ describe('news mutations', () => {
             addNews(
               news: {
                 title: [
-                  { lang: "uk", value: "тест" }
-                  { lang: "eng", value: "test" }
+                  { lang: "uk", value: "те1aст" }
+                  { lang: "eng", value: "te1ast" }
                 ]
                 text: [
-                  { lang: "ua", value: "тест новина" }
-                  { lang: "eng", value: "test news" }
+                  { lang: "ua", value: "тест1 нaовина" }
+                  { lang: "eng", value: "test1 naews" }
                 ]
                 images: {
                   primary: { medium: "sdfsdf4.jpg" }
@@ -87,7 +87,7 @@ describe('news mutations', () => {
           video: "update3ffefefds.jpg"
           date: "3244234212121"
         }
-        language: 0
+    
       ) {
         ...on News{
         
@@ -114,7 +114,10 @@ describe('news mutations', () => {
         }
         ...on Error{
           statusCode
-          message
+          message{
+            lang
+            value
+          }
         }
       }
     }
@@ -156,27 +159,28 @@ describe('news mutations', () => {
   test('update not existing news should throw an error', async () => {
     const updateQuery = `
           mutation {
-            updateNews(
-              id:"5f11e97c4f67a262547090cf"
-              news: {
-                      title: [
-                        { lang: "uk", value: "тест апдейт" }
-                        { lang: "eng", value: "test update" }
-                      ]
-                    },language:0
-                  ){
-                    ...on News{
-    
-                      title {
-                        lang
-                        value
-                      }
-                    }
-                    ...on Error{
-                      statusCode
-                      message
-                    }
-            }
+              updateNews(
+                id: "1f12be2493926837cce2c028"
+                news: {
+                  title: [
+                    { lang: "dsfdsf", value: "adas" }
+                    { lang: "adas", value: "adasd" }
+                  ]
+                }
+              ) {
+                ... on News {
+                  title {
+                    lang
+                    value
+                  }
+                }
+                ... on Error {
+                  message {
+                    lang
+                    value
+                  }
+                }
+              }
           }
         `;
     const res = await client
@@ -191,8 +195,16 @@ describe('news mutations', () => {
     expect(res).toEqual({
       data: {
         updateNews: {
-          statusCode: 404,
-          message: 'Новин  не знайдено',
+          message: [
+            {
+              lang: 'uk',
+              value: 'Новин  не знайдено',
+            },
+            {
+              lang: 'eng',
+              value: 'News not found',
+            },
+          ],
         },
       },
     });
@@ -201,10 +213,20 @@ describe('news mutations', () => {
   test('delete news', async () => {
     const deleteQuery = `
 mutation {
-  deleteNews(id:"${newsToDeleteId}",language:0) {
-    title{
-      lang
-      value
+  deleteNews(id:"${newsToDeleteId}") {
+   ...on News{
+
+     title{
+       lang
+       value
+      } 
+    }
+    ...on Error{
+      message{
+  
+        lang
+        value
+      }
     }
   }
 }
@@ -228,7 +250,7 @@ mutation {
   test('deleting not existing news should throw error', async () => {
     const deleteQuery = `
 mutation {
-  deleteNews(id:"1f057091a83481321c43edcf",language:0) {
+  deleteNews(id:"1f057091a83481321c43edcf") {
     ... on News {
       title {
         lang
@@ -237,7 +259,10 @@ mutation {
     }
     ... on Error {
       statusCode
-      message
+      message{
+        lang
+        value
+      }
     }
   }
 }
@@ -254,9 +279,18 @@ mutation {
     expect(res).toMatchSnapshot();
     expect(res).toEqual({
       data: {
-        updateNews: {
+        deleteNews: {
           statusCode: 404,
-          message: 'Новин  не знайдено',
+          message: [
+            {
+              lang: 'uk',
+              value: 'Новин  не знайдено',
+            },
+            {
+              lang: 'eng',
+              value: 'News not found',
+            },
+          ],
         },
       },
     });

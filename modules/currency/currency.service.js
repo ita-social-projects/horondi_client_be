@@ -19,9 +19,12 @@ class CurrencyService {
 
   async addCurrency(data) {
     const currency = await Currency.find({
-      name: {
+      convertOptions: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: [
+            { name: data.convertOptions[0].name },
+            { name: data.convertOptions[1].name },
+          ],
         },
       },
     });

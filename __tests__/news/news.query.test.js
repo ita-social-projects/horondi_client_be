@@ -173,7 +173,7 @@ describe('querries', () => {
       .query({
         query: gql`
           query {
-            getNewsById(id: "5f12c4b963044a08e4f71697", language: 1) {
+            getNewsById(id: "5f12c4b963044a08e4f71697") {
               ... on News {
                 images {
                   primary {
@@ -186,7 +186,10 @@ describe('querries', () => {
                 }
               }
               ... on Error {
-                message
+                message {
+                  lang
+                  value
+                }
                 statusCode
               }
             }
@@ -197,10 +200,10 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697', 0)
+      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697'),
     ).resolves.not.toBe(null);
     expect(
-      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697', 0)
+      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697'),
     ).resolves.toBe({
       data: {
         getNewsById: {
@@ -226,7 +229,7 @@ describe('querries', () => {
       .query({
         query: gql`
           query {
-            getNewsById(id: "5f12c4b963044a08e4f71697", language: 1) {
+            getNewsById(id: "5f12c4b963044a08e4f71697") {
               ... on News {
                 author {
                   name {
@@ -239,7 +242,10 @@ describe('querries', () => {
                 }
               }
               ... on Error {
-                message
+                message {
+                  lang
+                  value
+                }
                 statusCode
               }
             }
@@ -250,10 +256,10 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028', 0)
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
     ).resolves.toHaveReturned();
     expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028', 0)
+      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
     ).resolves.toBe({
       data: {
         getNewsById: {
@@ -312,10 +318,10 @@ describe('querries', () => {
 
     expect(res).toMatchSnapshot();
     expect(
-      newsQuery.getNewsById(null, '1f0570bca23481321c43f433')
+      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
     ).resolves.toBeInstanceOf(Error);
     expect(
-      newsQuery.getNewsById(null, '1f0570bca23481321c43f433')
+      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
     ).resolves.toThrow({
       errors: [
         {

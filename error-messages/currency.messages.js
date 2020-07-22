@@ -9,8 +9,8 @@ const CURRENCY_NOT_FOUND = [
   },
 ];
 
-const CURRENCY_ALREADY_EXIST = [
+const CURRENCY_ALREADY_EXIST = JSON.stringify([
   { lang: 'uk', value: 'Валюта вже існує' },
   { lang: 'eng', value: 'Currency already exist' },
-];
+]);
 module.exports = { CURRENCY_NOT_FOUND, CURRENCY_ALREADY_EXIST };

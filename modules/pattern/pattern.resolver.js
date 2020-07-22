@@ -10,7 +10,7 @@ const patternQuery = {
     }
     return {
       statusCode: 404,
-      message: PATTERN_NOT_FOUND[args.language].value,
+      message: PATTERN_NOT_FOUND,
     };
   },
 };
@@ -24,7 +24,7 @@ const patternMutation = {
     }
     return {
       statusCode: 404,
-      message: PATTERN_NOT_FOUND[args.language].value,
+      message: PATTERN_NOT_FOUND,
     };
   },
   updatePattern: (parent, args) => {
@@ -34,7 +34,7 @@ const patternMutation = {
     }
     return {
       statusCode: 404,
-      message: PATTERN_NOT_FOUND[args.language].value,
+      message: PATTERN_NOT_FOUND,
     };
   },
 };
