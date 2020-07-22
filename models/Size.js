@@ -6,8 +6,12 @@ const SizeSchema = new mongoose.Schema({
   widthInCm: Number,
   depthInCm: Number,
   volumeInLiters: Number,
-  weight: Number,
+  weightInKg: Number,
   available: Boolean,
+  additionalPrice: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model('Size', SizeSchema);
