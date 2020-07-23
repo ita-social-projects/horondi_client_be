@@ -41,7 +41,7 @@ const rolltops = [
     ['Rolltop Yellow 2', [206, 'Золотий', 'Golden', 'yellow'], ['Олені', 'Deers'], 'deers', 'purple'],
     ['Rolltop Grey 2', [208, 'Світло-сталевий', 'Light-steel', 'grey'], ['Олені', 'Deers'], 'deers', 'brown'],
     ['Rolltop Black 1', [215, 'Темно-сірий', 'Dark-grey', 'grey'], ['Чорний', 'Black'], 'black', 'black'],
-    ['Rolltop Brown 1' [305, 'Насичений коричневий', 'Saddle-brown', 'brown'], ['Люди', 'People'], 'people', 'brown'],
+    ['Rolltop Brown 1', [305, 'Насичений коричневий', 'Saddle-brown', 'brown'], ['Люди', 'People'], 'people', 'brown'],
 ];
 const rolltopNumber = rolltops.length;
 
@@ -66,14 +66,12 @@ for(i = 0; i < rolltopNumber; i++) {
             ]
         },
         colors: mapToColors([rolltops[i][1]]),
-        pattern: {
-            name: mapToLanguages([rolltops[i][2]]),
-            images: mapToImages([rolltops[i][3]])
-        },
+        pattern: mapToLanguages(rolltops[i][2]),
+        patternImages: mapToImages(rolltops[i][3]),
         closure: mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']),
         closureColor: 'black',
         basePrice: 1450,
-        options: mapToOptions('backpack', [rolltops[i][4]])
+        options: mapToOptions('backpack', rolltops[i][4])
     })
 }
 

@@ -31,9 +31,9 @@ function addDays(date, days) {
 
 for (let i = 0; i < usersNumber; i++) {
     const dateOfCreation = randomDate(users[i].registrationDate, new Date('June 30, 2020 23:23:59'));
-    product = products[~~(Math.random() * productsNumber)];
-    item = product.items[~~(Math.random() * product.items.length)];
-
+    // product = products[~~(Math.random() * productsNumber)];
+    // item = product.items[~~(Math.random() * product.items.length)];
+    //
     orders[i] = {
         id: getObjectId('order' + i),
         status: 'sent', //'sent', 'pending', 'canceled'
@@ -50,63 +50,63 @@ for (let i = 0; i < usersNumber; i++) {
             sentBy: 'Nova Poshta',
             invoiceNumber: ~~(Math.random() * 10000000).toString(),
         },
-        items: [
-            {
-            product: product.name,
-            size: item.size,
-            components: [],
-            actualPrice: item.actualPrice,
-            quantity: 1,
-            },
-        ],
+    //     items: [
+    //         {
+    //         product: product.name,
+    //         size: item.size,
+    //         components: [],
+    //         actualPrice: item.actualPrice,
+    //         quantity: 1,
+    //         },
+    //     ],
         paymentMethod: 'card'
     };
 
-    componentsNumber = item.components.length;
-    for (let j = 0; j < componentsNumber; j++) {
-        materialPick = materials.find(el => el.id.toHexString() == item.components[j].material);
-        materialColorPick = materialPick.colors.find(el => el.code == item.components[j].colorCode);
-        orders[i].items[0].components.push({
-            name: {
-                lang: 'en',
-                value: item.components[j].name,
-            },
-            material: materialPick.name,
-            color: materialColorPick.name,
-        });
-    };
+    // componentsNumber = item.components.length;
+    // for (let j = 0; j < componentsNumber; j++) {
+    //     materialPick = materials.find(el => el.id.toHexString() == item.components[j].material);
+    //     materialColorPick = materialPick.colors.find(el => el.code == item.components[j].colorCode);
+    //     orders[i].items[0].components.push({
+    //         name: {
+    //             lang: 'en',
+    //             value: item.components[j].name,
+    //         },
+    //         material: materialPick.name,
+    //         color: materialColorPick.name,
+    //     });
+    // };
 
-    if (item.hasOwnProperty('closure')) {
-        closurePick = closures.find(el => el.id.toHexString() == item.closure);
-        orders[i].items[0]['closure'] = closurePick.name;
-        closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
-        orders[i].items[0]['closureColor'] = closureColorPick.name;
-    }
-
-    if (item.hasOwnProperty('pattern')) {
-        patternPick = patterns.find(el => el.id.toHexString() == item.pattern);
-        orders[i].items[0]['pattern'] = patternPick.name;
-    }
-
-    if (item.hasOwnProperty('pocket')) {
-        orders[i].items[0]['pocket'] = item.pocket;
-    }
-
-    // if (product.hasOwnProperty('category')) {
-    //     for (let j = 0; j < categories.length; j++) {
-    //         for (let k = 0; k < categories[j].subcategories.length; k++) {
-    //             if (categories[j].subcategories[k].id.toHexString() == product.category) {
-    //                 orders[i].items[0]['category'] = categories[j].subcategories[k].name
-    //             }
-    //         }
-    //     }
+    // if (item.hasOwnProperty('closure')) {
+    //     closurePick = closures.find(el => el.id.toHexString() == item.closure);
+    //     orders[i].items[0]['closure'] = closurePick.name;
+    //     closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
+    //     orders[i].items[0]['closureColor'] = closureColorPick.name;
     // }
 
-    totalPrice = 0;
-    for (let j = 0; j < orders[i].items.length; j++) {
-        totalPrice += orders[i].items[j].actualPrice * orders[i].items[j].quantity;
-    }
-    orders[i]['totalPrice'] = totalPrice;
+    // if (item.hasOwnProperty('pattern')) {
+    //     patternPick = patterns.find(el => el.id.toHexString() == item.pattern);
+    //     orders[i].items[0]['pattern'] = patternPick.name;
+    // }
+
+    // if (item.hasOwnProperty('pocket')) {
+    //     orders[i].items[0]['pocket'] = item.pocket;
+    // }
+
+    // // if (product.hasOwnProperty('category')) {
+    // //     for (let j = 0; j < categories.length; j++) {
+    // //         for (let k = 0; k < categories[j].subcategories.length; k++) {
+    // //             if (categories[j].subcategories[k].id.toHexString() == product.category) {
+    // //                 orders[i].items[0]['category'] = categories[j].subcategories[k].name
+    // //             }
+    // //         }
+    // //     }
+    // // }
+
+    // totalPrice = 0;
+    // for (let j = 0; j < orders[i].items.length; j++) {
+    //     totalPrice += orders[i].items[j].actualPrice * orders[i].items[j].quantity;
+    // }
+    // orders[i]['totalPrice'] = totalPrice;
 }
 
 module.exports = orders;

@@ -1,5 +1,8 @@
-const mapToSizes = ({name=0, size=0, volume=0, weight=0, price = 0}) => {
+const { getObjectId, getObjectIds } = require('mongo-seeding');
+
+const mapToSizes = ({type = 0, name=0, size=0, volume=0, weight=0, price = 0}) => {
     const dimensions = {};
+    dimensions['id'] = getObjectId(type);
     if (name != 0) {
         dimensions['name'] = name;
     };
