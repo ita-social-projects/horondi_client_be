@@ -11,11 +11,13 @@ type User{
     images: ImageSet
     token: String
     credentials: [Credential]
-      registrationDate: String
-      wishlist: [ID]
-      cart: [ID]
-      orders:[ID]
-      purchasedProducts: [ID]
+    registrationDate: String
+    wishlist: [ID]
+    orders:[ID]
+    purchasedProducts: [ID]
+    comments: [ID]
+    banned: Boolean
+    confirmed: Boolean
 }`;
 
 const userInput = `
@@ -29,9 +31,11 @@ input UserInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
-    cart: [ID]
     orders:[ID]
     purchasedProducts: [ID]
+    comments: [ID]
+    banned: Boolean
+    confirmed: Boolean
 }`;
 const userLoginInput = `
 input userLoginInput {

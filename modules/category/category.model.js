@@ -3,17 +3,16 @@ const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
 
 const CategorySchema = new mongoose.Schema({
-  categoryCode: String,
+  code: String,
   name: [Language],
   images: ImageSet,
   subcategories: [
     {
-      categoryCode: String,
-      name: [Language],
-      images: ImageSet,
-      available: Boolean,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
     },
   ],
+  isMain: Boolean,
   available: Boolean,
 });
 
