@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Language = require('./Language').schema;
 const PrimaryImage = require('./PrimaryImage').schema;
 const ImageSet = require('../modules/common/ImageSet').schema;
-const Size = require('./Size').schema;
 const Color = require('./Color').schema;
 
 const productSchema = new mongoose.Schema({
@@ -24,7 +23,10 @@ const productSchema = new mongoose.Schema({
   basePrice: Number,
   options: [
     {
-      size: Size,
+      size: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Size',
+      },
       bottomMaterial: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Material',
