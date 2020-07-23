@@ -9,6 +9,12 @@ const {
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 const { sendEmail, confirmationMessage } = require('../../utils/sendmail');
+const {
+  CONFIRMATION_ERROR,
+  TOKEN_NOT_VALID,
+  NOT_CONFIRMED,
+  WRONG_CREDENTIALS,
+} = require('../../error-messages/user.messages');
 
 class UserService {
   async checkUserExists(email) {
@@ -24,16 +30,18 @@ class UserService {
     }
   }
 
-  async getUserByFieldOrThrow(key, param) {
+  async getUserByFieldOrThrow(key, param, customError) {
     const checkedUser = await User.findOne({ [key]: param });
 
-    if (!checkedUser) {
+    if (!checkedUser && !customError) {
       const message = `User with provided ${[key]} not found`;
       throw new UserInputError(message, {
         errors: {
           [key]: message,
         },
       });
+    } else if (!checkedUser && customError) {
+      throw new UserInputError(customError);
     }
 
     return checkedUser;
@@ -89,7 +97,7 @@ class UserService {
     });
   }
 
-  async loginUser({ email, password }) {
+  async loginUser({ email, password }, language) {
     const { errors } = await validateLoginInput.validateAsync({
       email,
       password,
@@ -99,7 +107,11 @@ class UserService {
       throw new UserInputError('Errors', { errors });
     }
 
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await this.getUserByFieldOrThrow(
+      'email',
+      email,
+      WRONG_CREDENTIALS[language].value,
+    );
 
     const match = await bcrypt.compare(
       password,
@@ -107,9 +119,12 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError('Wrong password');
+      throw new AuthenticationError(WRONG_CREDENTIALS[language].value);
     }
 
+    if (!user.confirmed) {
+      return new Error(NOT_CONFIRMED[language].value);
+    }
     const token = generateToken(user._id, user.email);
 
     return {
@@ -152,13 +167,11 @@ class UserService {
     const token = await generateToken(savedUser._id, savedUser.email);
     const message = {
       from: `horondi.devproject@gmail.com`,
-      to: 'bobbyf4de@gmail.com',
+      to: savedUser.email,
       subject: 'Confirm Email',
       html: confirmationMessage(firstName, token),
     };
-    await sendEmail(message, () => {
-      console.log('Successful registration!');
-    });
+    await sendEmail(message);
     return savedUser;
   }
 
@@ -166,21 +179,19 @@ class UserService {
     return User.findByIdAndDelete(id);
   }
 
-  async confirmUser(token) {
-    const decoded = jwt.verify(token, process.env.SECRET);
-    // console.log(decoded);
-    const user = await User.findOne({ email: decoded.email });
-    console.log(user);
-    if (!user) {
-      return new Error('Token is not valid');
+  async confirmUser(token, language) {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET);
+      const user = await User.findOne({ email: decoded.email });
+      if (!user) {
+        return new Error(TOKEN_NOT_VALID[language].value);
+      }
+      user.confirmed = true;
+      await User.findByIdAndUpdate(user._id, user);
+      return true;
+    } catch (e) {
+      return new Error(CONFIRMATION_ERROR[language].value);
     }
-    console.log('USER CONFIRMED', user.confirmed);
-    if (user.confirmed) {
-      return new Error('The user is already confirmed!');
-    }
-    user.confirmed = true;
-    await User.findByIdAndUpdate(user._id, user);
-    return true;
   }
 }
 module.exports = new UserService();

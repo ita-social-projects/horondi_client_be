@@ -7,7 +7,7 @@ const userQuery = {
 };
 const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user),
-  loginUser: (parent, args) => userService.loginUser(args.user),
+  loginUser: (parent, args) => userService.loginUser(args.user, args.language),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
   updateUserById: (parent, args, context) => (context.user
     ? userService.updateUserById(args.user, args.id)
@@ -15,7 +15,7 @@ const userMutation = {
   updateUserByToken: (parent, args, context) => (context.user
     ? userService.updateUserByToken(args.user, context.user)
     : new Error('Unauthorized')),
-  confirmUser: (parent, args) => userService.confirmUser(args.token),
+  confirmUser: (parent, args) => userService.confirmUser(args.token, args.language),
 };
 
 module.exports = { userQuery, userMutation };
