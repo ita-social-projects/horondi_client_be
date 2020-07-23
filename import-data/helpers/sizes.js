@@ -21,9 +21,8 @@ const mapToSizes = ({type = 0, name=0, size=0, volume=0, weight=0, price = 0}) =
         dimensions['weightInKg'] = weight;
     };
     dimensions['available'] = true;
-    if (price != 0) {
-        dimensions['additionalPrice'] = price;
-    };
+    dimensions['additionalPrice'] = price;
+
     return dimensions;
 };
 

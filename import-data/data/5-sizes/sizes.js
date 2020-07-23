@@ -1,4 +1,4 @@
-const { mapToSizes } = require('./sizes');
+const { mapToSizes } = require('../../helpers/sizes');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const sizes = [

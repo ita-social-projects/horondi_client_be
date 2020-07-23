@@ -10,11 +10,7 @@ const mapToOptions = (category, color) => {
     let availableNumber;
 
     if (category == 'backpack') {
-        sizes = [
-            mapToSizes({ name: 'S', size: [35, 26, 14], volume: 15, weight: 0.8, price: -50 }),
-            mapToSizes({ name: 'M', size: [40, 28, 14], volume: 19, weight: 0.8, price: 0 }),
-            mapToSizes({ name: 'L', size: [45, 28, 14], volume: 21, weight: 0.8, price: 50 })
-        ];
+        sizes = ['backpack-S', 'backpack-M', 'backpack-L'];
     }
     const sizeNumber = sizes.length;
 
@@ -42,7 +38,7 @@ const mapToOptions = (category, color) => {
             for (let k = 0; k < 2; k++) {
                 availableNumber = ~~(Math.random() * 5);
                 options.push({
-                    size: sizes[i],
+                    size: getObjectId(sizes[i]),
                     bottomMaterial: bottomMaterials[j],
                     bottomColor: bottomColors[j],
                     additions: [],
