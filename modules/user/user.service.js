@@ -8,10 +8,21 @@ const {
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
-const USER_NOT_FOUND = JSON.stringify([
+const USER_NOT_FOUND = [
   { lang: 'uk', value: 'Користувач не знайдений' },
   { lang: 'eng', value: 'User not found' },
-]);
+];
+
+const USER_ALREADY_EXIST = [
+  {
+    lang: 'uk',
+    value: `Користувач з таким емейлом вже зареєстрований`,
+  },
+  {
+    lang: 'eng',
+    value: 'User with provided email already exists',
+  },
+]
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({
@@ -19,19 +30,9 @@ class UserService {
     });
 
     if (checkedUser) {
-      const massage = JSON.stringify([
-        {
-          lang: 'uk',
-          value: `Користувач з таким емейлом вже зареєстрований`,
-        },
-        {
-          lang: 'eng',
-          value: 'User with provided email already exists',
-        },
-      ]);
-      throw new UserInputError(massage, {
+      throw new UserInputError(USER_ALREADY_EXIST, {
         errors: {
-          email: massage,
+          email: USER_ALREADY_EXIST,
         },
       });
     }
@@ -43,7 +44,7 @@ class UserService {
     });
 
     if (!checkedUser) {
-      const message = JSON.stringify([
+      const USER_WITH_KEY_NOT_FOUND = [
         {
           lang: 'uk',
           value: `Користувач з данним ${[key]} не знайдений`,
@@ -51,11 +52,11 @@ class UserService {
         {
           lang: 'eng',
           value: `User with provided ${[key]} not found`,
-        },
-      ]);
-      throw new UserInputError(message, {
+        }
+      ]
+      throw new UserInputError(USER_WITH_KEY_NOT_FOUND, {
         errors: {
-          [key]: message,
+          [key]: USER_WITH_KEY_NOT_FOUND,
         },
       });
     }
@@ -147,8 +148,7 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError(
-        `${JSON.stringify([
+      throw new AuthenticationError([
           {
             lang: 'uk',
             value: `Невірний пароль`,
@@ -157,7 +157,7 @@ class UserService {
             lang: 'eng',
             value: `Wrong password`,
           },
-        ])}`,
+        ],
       );
     }
 

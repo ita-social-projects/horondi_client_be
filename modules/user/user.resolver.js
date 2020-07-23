@@ -1,6 +1,6 @@
 const userService = require('./user.service');
 
-const Unauthorized = `${JSON.stringify([
+const USER_NOT_AUTHORIZE = [
   {
     lang: 'uk',
     value: `Користувач неавторизований`,
@@ -9,7 +9,7 @@ const Unauthorized = `${JSON.stringify([
     lang: 'eng',
     value: `Unauthorized`,
   },
-])}`;
+];
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(),
@@ -18,7 +18,7 @@ const userQuery = {
   },
   getUserById: (parent, args, context) => (context.user
     ? userService.getUser(args.id)
-    : new Error(Unauthorized)),
+    : new Error(USER_NOT_AUTHORIZE)),
 };
 const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user),
@@ -27,12 +27,12 @@ const userMutation = {
   updateUserById: (parent, args, context) => {
     context.user
       ? userService.updateUserById(args.user, args.id)
-      : new Error(Unauthorized);
+      : new Error(USER_NOT_AUTHORIZE);
   },
   updateUserByToken: (parent, args, context) => {
     context.user
       ? userService.updateUserByToken(args.user, context.user)
-      : new Error(Unauthorized);
+      : new Error(USER_NOT_AUTHORIZE);
   },
 };
 
