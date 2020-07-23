@@ -33,8 +33,8 @@ class CategoryService {
     return new Category(data).save();
   }
 
-  deleteCategory(id) {
-    return Category.findByIdAndDelete(id);
+  async deleteCategory(id) {
+    return await Category.findByIdAndDelete(id);
   }
 }
 module.exports = new CategoryService();
