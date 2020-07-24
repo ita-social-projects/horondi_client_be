@@ -22,7 +22,7 @@ const USER_ALREADY_EXIST = [
     lang: 'eng',
     value: 'User with provided email already exists',
   },
-]
+];
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({
@@ -52,8 +52,8 @@ class UserService {
         {
           lang: 'eng',
           value: `User with provided ${[key]} not found`,
-        }
-      ]
+        },
+      ];
       throw new UserInputError(USER_WITH_KEY_NOT_FOUND, {
         errors: {
           [key]: USER_WITH_KEY_NOT_FOUND,
@@ -149,16 +149,15 @@ class UserService {
 
     if (!match) {
       throw new AuthenticationError([
-          {
-            lang: 'uk',
-            value: `Невірний пароль`,
-          },
-          {
-            lang: 'eng',
-            value: `Wrong password`,
-          },
-        ],
-      );
+        {
+          lang: 'uk',
+          value: `Невірний пароль`,
+        },
+        {
+          lang: 'eng',
+          value: `Wrong password`,
+        },
+      ]);
     }
 
     const token = generateToken(user._id, user.email);
