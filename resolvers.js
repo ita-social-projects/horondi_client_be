@@ -26,9 +26,10 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
-const { getCategoryById } = require('./modules/category/category.service');
+const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/products/products.service');
+const materialsService = require('./modules/material/material.service');
 
 const resolvers = {
   Query: {
@@ -54,8 +55,13 @@ const resolvers = {
   },
 
   Products: {
-    subcategory: parent => getCategoryById(parent.subcategory),
-    comments: parent => parent.comments,
+    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
+    comments: parent => parent.comments, // TODO: array of comments. How to get all
+  },
+
+  ProductOptions: {
+    size: parent => productsService.getSizeById(parent.size),
+    bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
   },
 
   Mutation: {

@@ -95,6 +95,40 @@ const typeDefs = gql`
     available: Boolean
   }
 
+  type ProductOptions {
+    size: Size
+    bottomMaterial: BottomMaterial
+    bottomColor: String
+    availableCount: Boolean
+    additions: [ProductAdditions]
+  }
+
+  type ProductAdditions {
+    name: [Language]
+    description: [Language]
+    available: Boolean
+    additionalPrice: Int
+  }
+
+  type Size {
+    name: String
+    heightInCm: Int
+    widthInCm: Int
+    depthInCm: Int
+    volumeInLiters: Int
+    weightInKg: Int
+    available: Boolean
+    additionalPrice: Int
+  }
+
+  type BottomMaterial {
+    name: [Language]
+    description: [Language]
+    colors: [Color]
+    available: Boolean
+    additionalPrice: Int
+  }
+
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): Currency
@@ -187,6 +221,7 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+
   type Mutation {
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): Pattern

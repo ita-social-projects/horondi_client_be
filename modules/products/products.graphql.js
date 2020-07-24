@@ -1,6 +1,7 @@
 const productsType = `
 type Products {
 _id: ID!
+subcategory: Category
 name: [Language]
 description: [Language]
 mainMaterial: [Language]
@@ -13,12 +14,12 @@ patternImages: ImageSet
 closure: [Language]
 closureColor: String
 basePrice: Int
+options: [ProductOptions]
 available: Boolean
 isHotItem: Boolean
 purchasedCount: Int
 rate: Float
 rateCount: Int
-subcategory: Category
 comments: [Comments]
 }
 `;
