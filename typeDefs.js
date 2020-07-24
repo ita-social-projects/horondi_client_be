@@ -2,6 +2,10 @@ const { gql } = require('apollo-server');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const { userType, userInput } = require('./modules/user/user.graphql');
 const {
+  productsType,
+  productsInput,
+} = require('./modules/products/products.graphql');
+const {
   categoryType,
   categoryInput,
 } = require('./modules/category/category.graphql');
@@ -25,6 +29,7 @@ const typeDefs = gql`
   ${newsType}
   ${patternsType}
   ${userType}
+  ${productsType}
 
   enum RoleEnum {
     admin
@@ -104,6 +109,9 @@ const typeDefs = gql`
     getAllUsers: [User]
     getUserByToken: User
     getUserById(id: ID!): User
+
+    getAllProducts: [Products!]!
+    getProductsById(id: ID!): Products
   }
 
   input RoleEnumInput {
@@ -126,6 +134,7 @@ const typeDefs = gql`
   ${newsInput}
   ${patternsInput}
   ${userInput}
+  ${productsInput}
 
   input LanguageInput {
     lang: String!
@@ -201,6 +210,11 @@ const typeDefs = gql`
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+
+    "Products Mutation"
+    addProducts(product: productsInput!): Products
+    deleteProducts(id: ID!): Products
+    updateProductById(id: ID!, product: productsInput!): Products
   }
 `;
 
