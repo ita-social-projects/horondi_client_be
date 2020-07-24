@@ -21,7 +21,7 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const { getCategoryById } = require('./modules/category/category.service');
-const { getUserByFieldOrThrow } = require('./modules/user/user.service');
+// const { getUserByFieldOrThrow } = require('./modules/user/user.service');
 
 const resolvers = {
   Query: {
@@ -41,17 +41,14 @@ const resolvers = {
   },
 
   Products: {
-    subcategory: parent => {
-      console.log(parent.subcategory);
-      return getCategoryById(parent.category);
-    },
-    comments: parent => {
-      console.log(parent.comments);
-      return parent.comments;
-    },
-    votedUsers: parent => {
-      getUserByFieldOrThrow('id', parent.votedUsers);
-    },
+    subcategory: parent => getCategoryById(parent.subcategory),
+    // comments: parent => {
+    //   console.log(parent.comments);
+    //   return parent.comments;
+    // },
+    // votedUsers: parent => {
+    //   getUserByFieldOrThrow('id', parent.votedUsers);
+    // },
   },
 
   Mutation: {
