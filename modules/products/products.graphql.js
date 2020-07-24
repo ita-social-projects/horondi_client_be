@@ -19,8 +19,7 @@ purchasedCount: Int
 rate: Float
 rateCount: Int
 subcategory: Category
-comments: [ID!]
-votedUsers: [ID!]
+comments: [Comments]
 }
 `;
 

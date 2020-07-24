@@ -4,6 +4,12 @@ const {
   productsQuery,
   productsMutation,
 } = require('./modules/products/products.resolver');
+
+const {
+  commentsQuery,
+  commentsMutation,
+} = require('./modules/comments/comments.resolver');
+
 const {
   currencyQuery,
   currencyMutation,
@@ -21,7 +27,8 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const { getCategoryById } = require('./modules/category/category.service');
-// const { getUserByFieldOrThrow } = require('./modules/user/user.service');
+const userService = require('./modules/user/user.service');
+const productsService = require('./modules/products/products.service');
 
 const resolvers = {
   Query: {
@@ -38,17 +45,17 @@ const resolvers = {
     ...userQuery,
 
     ...productsQuery,
+
+    ...commentsQuery,
+  },
+  Comments: {
+    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
+    product: parent => productsService.getProductsById(parent.product),
   },
 
   Products: {
     subcategory: parent => getCategoryById(parent.subcategory),
-    // comments: parent => {
-    //   console.log(parent.comments);
-    //   return parent.comments;
-    // },
-    // votedUsers: parent => {
-    //   getUserByFieldOrThrow('id', parent.votedUsers);
-    // },
+    comments: parent => parent.comments,
   },
 
   Mutation: {
@@ -65,6 +72,8 @@ const resolvers = {
     ...userMutation,
 
     ...productsMutation,
+
+    ...commentsMutation,
   },
 };
 

@@ -21,6 +21,10 @@ const {
   currencyType,
   currencyInput,
 } = require('./modules/currency/currency.graphql.js');
+const {
+  commentsType,
+  commentsInput,
+} = require('./modules/comments/comments.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -30,6 +34,7 @@ const typeDefs = gql`
   ${patternsType}
   ${userType}
   ${productsType}
+  ${commentsType}
 
   enum RoleEnum {
     admin
@@ -112,6 +117,9 @@ const typeDefs = gql`
 
     getAllProducts: [Products!]!
     getProductsById(id: ID!): Products
+
+    getAllComments: [Comments]
+    getCommentsById(id: ID!): Comments
   }
 
   input RoleEnumInput {
@@ -135,6 +143,7 @@ const typeDefs = gql`
   ${patternsInput}
   ${userInput}
   ${productsInput}
+  ${commentsInput}
 
   input LanguageInput {
     lang: String!
@@ -215,6 +224,11 @@ const typeDefs = gql`
     addProducts(product: productsInput!): Products
     deleteProducts(id: ID!): Products
     updateProductById(id: ID!, product: productsInput!): Products
+
+    "Comments Mutation"
+    addComments(comment: commentsInput!): Comments
+    deleteCommentsById(id: ID!): Products
+    updateCommentsById(id: ID!, product: commentsInput!): Comments
   }
 `;
 
