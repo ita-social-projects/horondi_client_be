@@ -9,6 +9,10 @@ class CommentsService {
     return Comments.findById(id);
   }
 
+  getAllCommentsByProduct(id) {
+    return Comments.find({ product: id });
+  }
+
   updateCommentsById(id, comments) {
     return Comments.findByIdAndUpdate(id, comments);
   }

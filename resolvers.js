@@ -30,6 +30,7 @@ const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/products/products.service');
 const materialsService = require('./modules/material/material.service');
+const commentsService = require('./modules/comments/comments.service');
 
 const resolvers = {
   Query: {
@@ -56,7 +57,7 @@ const resolvers = {
 
   Products: {
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
-    comments: parent => parent.comments, // TODO: array of comments. How to get all
+    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
   },
 
   ProductOptions: {
