@@ -93,6 +93,7 @@ const typeDefs = gql`
     name: [Language]
     images: ImageSet
     available: Boolean
+    simpleName: String
   }
 
   type ProductOptions {
@@ -151,9 +152,29 @@ const typeDefs = gql`
 
     getAllProducts: [Products!]!
     getProductsById(id: ID!): Products
+    getProductsByOptions(
+      filter: FilterInput
+      limit: Int
+      skip: Int
+      search: String
+      sort: SortInput
+    ): [Products]!
 
     getAllComments: [Comments]
     getCommentsById(id: ID!): Comments
+  }
+
+  input SortInput {
+    purchasedCount: Int
+    basePrice: Int
+    rate: Int
+    isHotItem: Boolean
+  }
+
+  input FilterInput {
+    pattern: [String]
+    material: [String]
+    simpleName: [String]
   }
 
   input RoleEnumInput {

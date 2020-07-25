@@ -1,6 +1,5 @@
 const Products = require('./products.model');
 const Size = require('../../models/Size');
-const materialModel = require('../material/material.model');
 
 class ProductsService {
   getAllProducts() {
@@ -13,6 +12,13 @@ class ProductsService {
 
   getSizeById(id) {
     return Size.findById(id);
+  }
+
+  getProductsByOptions(filter, skip, limit, sort, search) {
+    return Products.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
   }
 
   updateProductById(id, products) {
