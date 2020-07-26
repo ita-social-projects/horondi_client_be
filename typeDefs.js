@@ -173,8 +173,9 @@ const typeDefs = gql`
 
   input FilterInput {
     pattern: [String]
-    material: [String]
-    simpleName: [String]
+    materials: [String]
+    colors: [String]
+    price: [Int]
   }
 
   input RoleEnumInput {
