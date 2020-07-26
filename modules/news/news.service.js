@@ -1,5 +1,6 @@
 const News = require('./news.model');
 const { NEWS_ALREADY_EXIST } = require('../../error-messages/news.messages');
+const checkNewsExist = require('../../utils/checkNewsExist');
 
 class NewsService {
   async getAllNews() {
@@ -15,15 +16,8 @@ class NewsService {
   }
 
   async addNews(data) {
-    console.log('data', data.title[0], data.title[1]);
-    const news = await News.find({
-      title: {
-        $elemMatch: {
-          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
-        },
-      },
-    });
-    if (news.length !== 0) {
+    const news = await checkNewsExist(data);
+    if (news) {
       return new Error(NEWS_ALREADY_EXIST);
     }
     return new News(data).save();

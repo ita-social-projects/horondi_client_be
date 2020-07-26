@@ -3,6 +3,7 @@ const Category = require('./category.model');
 const {
   CATEGORY_ALREADY_EXIST,
 } = require('../../error-messages/category.messages');
+const checkCategoryEXist = require('../../utils/checkCategoryExist');
 
 class CategoryService {
   async getAllCategories() {
@@ -18,16 +19,9 @@ class CategoryService {
   }
 
   async addCategory(data) {
-    const category = await Category.find({
-      code: data.code,
-      name: {
-        $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-        },
-      },
-    });
-
-    if (category.length !== 0) {
+    const category = await checkCategoryEXist(data);
+    console.log(category);
+    if (category) {
       return new ApolloError(CATEGORY_ALREADY_EXIST, 400);
     }
     return new Category(data).save();
