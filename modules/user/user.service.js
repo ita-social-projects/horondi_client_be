@@ -5,7 +5,7 @@ const {
   validateRegisterInput,
   validateLoginInput,
   validateUpdateInput
-} = require('../../utils/validateUser');
+} = require('../../utils/validate-user');
 const generateToken = require('../../utils/createToken');
 
 class UserService {

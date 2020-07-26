@@ -33,7 +33,7 @@ describe('queries', () => {
 
         userId = register.data.registerUser._id
 
-        const auth = await client.mutate({
+        const authRes  = await client.mutate({
             mutation: gql`
                 mutation {       
                     loginUser(user: {
@@ -45,7 +45,7 @@ describe('queries', () => {
                 }
             `
         })
-        token = auth.data.loginUser.token
+        token = authRes.data.loginUser.token
     });
 
     afterAll(async () => {
@@ -71,6 +71,7 @@ describe('queries', () => {
                         email
                         firstName
                         lastName
+                        phoneNumber
                     }
                 }
             `
@@ -78,8 +79,9 @@ describe('queries', () => {
          expect(res.data.getAllUsers).toContainEqual({
             "firstName": "Test" ,
             "lastName": "User",
-            "email": "test.email@gmail.com"
-          });
+            "email": "test.email@gmail.com",
+            "phoneNumber": null        
+        });
 
     })
 
