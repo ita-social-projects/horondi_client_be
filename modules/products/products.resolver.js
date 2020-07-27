@@ -3,10 +3,8 @@ const productsService = require('./products.service');
 const productsQuery = {
   getAllProducts: () => productsService.getAllProducts(),
   getProductsById: (parent, args) => productsService.getProductsById(args.id),
-  getProductsByOptions:  (parent, args) => productsService.getProductsByOptions(args) 
-  
+  getProductsByOptions: (parent, args) => productsService.getProductsByOptions(args),
 };
-
 
 const productsMutation = {
   addProducts: (parent, args) => productsService.addProducts(args.products),
