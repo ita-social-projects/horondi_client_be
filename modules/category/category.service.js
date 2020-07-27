@@ -1,4 +1,3 @@
-const { ApolloError } = require('apollo-server');
 const Category = require('./category.model');
 const {
   CATEGORY_ALREADY_EXIST,
@@ -19,10 +18,10 @@ class CategoryService {
   }
 
   async addCategory(data) {
-    const category = await checkCategoryEXist(data);
-    console.log(category);
-    if (category) {
-      return new ApolloError(CATEGORY_ALREADY_EXIST, 400);
+    if (await checkCategoryEXist(data)) {
+      return new Error(
+        JSON.stringify({ message: CATEGORY_ALREADY_EXIST, statusCode: 400 })
+      );
     }
     return new Category(data).save();
   }

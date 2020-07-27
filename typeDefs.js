@@ -86,7 +86,7 @@ const typeDefs = gql`
   }
   type Error {
     statusCode: Int
-    message: [Language]
+    message: String
   }
 
   union CategoryResult = Category | Error

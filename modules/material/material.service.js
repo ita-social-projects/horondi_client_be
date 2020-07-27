@@ -2,6 +2,7 @@ const Material = require('./material.model');
 const {
   MATERIAL_ALREADY_EXIST,
 } = require('../../error-messages/material.messages');
+const checkMaterialExist = require('../../utils/checkMaterialExist');
 
 class MaterialsService {
   async getAllMaterials() {
@@ -17,15 +18,8 @@ class MaterialsService {
   }
 
   async addMaterial(data) {
-    const material = await Material.find({
-      name: {
-        $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-        },
-      },
-    });
-    if (material.length !== 0) {
-      return new Error(MATERIAL_ALREADY_EXIST);
+    if (await checkMaterialExist(data)) {
+      return new Error({ statusCode: 400, MATERIAL_ALREADY_EXIST });
     }
     return new Material(data).save();
   }

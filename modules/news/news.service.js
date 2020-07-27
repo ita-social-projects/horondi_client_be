@@ -1,6 +1,7 @@
 const News = require('./news.model');
 const { NEWS_ALREADY_EXIST } = require('../../error-messages/news.messages');
 const checkNewsExist = require('../../utils/checkNewsExist');
+const CustomError = require('../../utils/error');
 
 class NewsService {
   async getAllNews() {
@@ -16,9 +17,8 @@ class NewsService {
   }
 
   async addNews(data) {
-    const news = await checkNewsExist(data);
-    if (news) {
-      return new Error(NEWS_ALREADY_EXIST);
+    if (await checkNewsExist(data)) {
+      throw new CustomError(400, NEWS_ALREADY_EXIST);
     }
     return new News(data).save();
   }

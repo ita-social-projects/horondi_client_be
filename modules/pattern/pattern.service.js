@@ -2,6 +2,7 @@ const Pattern = require('./pattern.model');
 const {
   PATTERN_ALREADY_EXIST,
 } = require('../../error-messages/pattern.messages');
+const checkPatternExist = require('../../utils/checkPatternExist');
 
 class PatternsService {
   async getAllPatterns() {
@@ -18,14 +19,7 @@ class PatternsService {
   }
 
   async addPattern(data) {
-    const pattern = await Pattern.find({
-      name: {
-        $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-        },
-      },
-    });
-    if (pattern.length !== 0) {
+    if (await checkPatternExist(data)) {
       return new Error(PATTERN_ALREADY_EXIST);
     }
     return new Pattern(data).save();

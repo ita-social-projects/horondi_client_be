@@ -3,6 +3,7 @@ const Currency = require('./currency.model');
 const {
   CURRENCY_ALREADY_EXIST,
 } = require('../../error-messages/currency.messages');
+const checkCurrencyExist = require('../../utils/checkCurrencyExist');
 
 class CurrencyService {
   async getAllCurrencies() {
@@ -18,17 +19,7 @@ class CurrencyService {
   }
 
   async addCurrency(data) {
-    const currency = await Currency.find({
-      convertOptions: {
-        $elemMatch: {
-          $or: [
-            { name: data.convertOptions[0].name },
-            { name: data.convertOptions[1].name },
-          ],
-        },
-      },
-    });
-    if (currency.length !== 0) {
+    if (await checkCurrencyExist(data)) {
       return new ApolloError(CURRENCY_ALREADY_EXIST, 400);
     }
     return new Currency(data).save();

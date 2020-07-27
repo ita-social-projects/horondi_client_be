@@ -1,6 +1,6 @@
 const Category = require('../modules/category/category.model');
 
-const checkCategoryEXist = async data => {
+const checkCategoryExist = async data => {
   const category = await Category.find({
     code: data.code,
     name: {
@@ -11,4 +11,4 @@ const checkCategoryEXist = async data => {
   });
   return category.length > 0;
 };
-module.exports = checkCategoryEXist;
+module.exports = checkCategoryExist;
