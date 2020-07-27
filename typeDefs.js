@@ -160,7 +160,7 @@ const typeDefs = gql`
     ): [Products]!
 
     getAllComments: [Comments]
-    getCommentsById(id: ID!): Comments
+    getCommentById(id: ID!): Comments
   }
 
   input SortInput {
@@ -277,14 +277,14 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
 
     "Products Mutation"
-    addProducts(product: productsInput!): Products
-    deleteProducts(id: ID!): Products
-    updateProductById(id: ID!, product: productsInput!): Products
+    addProduct(product: productsInput!): Products
+    deleteProduct(id: ID!): Products
+    updateProduct(id: ID!, product: productsInput!): Products
 
     "Comments Mutation"
-    addComments(comment: commentsInput!): Comments
-    deleteCommentsById(id: ID!): Products
-    updateCommentsById(id: ID!, product: commentsInput!): Comments
+    addComment(comment: commentsInput!): Comments
+    deleteComment(id: ID!): Products
+    updateComment(id: ID!, product: commentsInput!): Comments
   }
 `;
 

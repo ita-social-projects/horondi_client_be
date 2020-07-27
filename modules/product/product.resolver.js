@@ -6,9 +6,9 @@ const productsQuery = {
 };
 
 const productsMutation = {
-  addProducts: (parent, args) => productsService.addProducts(args.products),
-  deleteProducts: (parent, args) => productsService.deleteProducts(args.id),
-  updateProductById: (parent, args) => productsService.updateProductById(args.id, args.products),
+  addProduct: (parent, args) => productsService.addProduct(args.products),
+  deleteProduct: (parent, args) => productsService.deleteProduct(args.id),
+  updateProduct: (parent, args) => productsService.updateProduct(args.id, args.products),
 };
 
 module.exports = { productsQuery, productsMutation };

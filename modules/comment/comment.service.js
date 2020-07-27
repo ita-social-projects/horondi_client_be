@@ -5,7 +5,7 @@ class CommentsService {
     return Comments.find();
   }
 
-  getCommentsById(id) {
+  getCommentById(id) {
     return Comments.findById(id);
   }
 
@@ -13,16 +13,16 @@ class CommentsService {
     return Comments.find({ product: id });
   }
 
-  updateCommentsById(id, comments) {
+  updateComment(id, comments) {
     return Comments.findByIdAndUpdate(id, comments);
   }
 
-  addComments(data) {
+  addComment(data) {
     const comments = new Comments(data);
     return comments.save();
   }
 
-  deleteComments(id) {
+  deleteComment(id) {
     return Comments.findByIdAndDelete(id);
   }
 }

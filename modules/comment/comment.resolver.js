@@ -2,13 +2,13 @@ const commentsService = require('./comment.service');
 
 const commentsQuery = {
   getAllComments: () => commentsService.getAllComments(),
-  getCommentsById: (parent, args) => commentsService.getCommentsById(args.id),
+  getCommentById: (parent, args) => commentsService.getCommentById(args.id),
 };
 
 const commentsMutation = {
-  addComments: (parent, args) => commentsService.addComments(args.comments),
-  deleteCommentsById: (parent, args) => commentsService.deleteComments(args.id),
-  updateCommentsById: (parent, args) => commentsService.updateCommentsById(args.id, args.comments),
+  addComment: (parent, args) => commentsService.addComment(args.comment),
+  deleteComment: (parent, args) => commentsService.deleteComment(args.id),
+  updateComment: (parent, args) => commentsService.updateComment(args.id, args.comment),
 };
 
 module.exports = { commentsQuery, commentsMutation };

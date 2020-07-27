@@ -62,16 +62,16 @@ class ProductsService {
       .sort(sort);
   }
 
-  updateProductById(id, products) {
+  updateProduct(id, products) {
     return Products.findByIdAndUpdate(id, products);
   }
 
-  addProducts(data) {
+  addProduct(data) {
     const product = new Products(data);
     return product.save();
   }
 
-  deleteProducts(id) {
+  deleteProduct(id) {
     return Products.findByIdAndDelete(id);
   }
 }
