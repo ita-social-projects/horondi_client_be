@@ -14,48 +14,53 @@ class ProductsService {
     return Size.findById(id);
   }
 
-  filterItems(args = {}){
+  filterItems(args = {}) {
     const filter = {};
-    const {
-      pattern, colors, price
-    } = args;
-  
-    if (colors.length) {
+    const { pattern, colors, price } = args;
+
+    if (colors) {
       filter.colors = {
         $elemMatch: {
           simpleName: { $in: colors },
         },
       };
     }
-    if (pattern.length) {
+    if (pattern) {
       filter.pattern = {
         $elemMatch: {
           value: { $in: pattern },
         },
       };
     }
-    if(price){
+    if (price) {
       filter.basePrice = {
-          $gte: price[0], 
-          $lte: price[1]
+        $gte: price[0],
+        $lte: price[1],
       };
     }
     return filter;
-  };
+  }
 
-  async getProductsByOptions({filter, skip, limit, sort, search}) {
-    
+  getProductsByOptions({
+    filter, skip, limit, sort, search,
+  }) {
     const isNotBlank = str => !(!str || str.trim().length === 0);
     const filters = this.filterItems(filter);
 
     if (isNotBlank(search)) {
-      filters.$or =  [
-        { name: { $elemMatch: { value: { $regex: new RegExp(search,'i') } } } },
-        { description: { $elemMatch: { value: { $regex: new RegExp(search,'i') } } } },
+      filters.$or = [
+        {
+          name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
+        },
+        {
+          description: {
+            $elemMatch: { value: { $regex: new RegExp(search, 'i') } },
+          },
+        },
       ];
     }
-    
-    return await Products.find( filters)
+
+    return Products.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
