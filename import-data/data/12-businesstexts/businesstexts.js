@@ -17,19 +17,19 @@ const aboutTexts = [
     {
         code: 'terms-and-conditions',
         title: mapToLanguages(['Умови', 'Terms and Conditions']),
-        text: mapToLanguages([' ', ' ']),
+        text: mapToLanguages(['Умови очікуйте найближчим часом...', 'Terms and Conditions will appear shortly...']),
         date: new Date(),
     },
     {
         code: 'payment-and-shipping',
         title: mapToLanguages(['Оплата і доставка', 'Payment and Shipping']),
-        text: mapToLanguages([' ', ' ']),
+        text: mapToLanguages(['Оплату і доставку очікуйте найближчим часом...', 'Payment and Shipping will appear shortly...']),
         date: new Date(),
     },
     {
         code: 'contacts',
         title: mapToLanguages(['Контакти', 'Contacts']),
-        text: mapToLanguages([' ', ' ']),
+        text: mapToLanguages(['Контакти очікуйте найближчим часом...', 'Contacts will appear shortly...']),
         date: new Date(),
     }
 ];

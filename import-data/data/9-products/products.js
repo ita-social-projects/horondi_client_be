@@ -14,7 +14,7 @@ for(let i = 0; i < productsNumber; i++) {
     products[i]['rate'] = rate;
     products[i]['available'] = true;
     products[i]['isHotItem'] = true;
-    products[i]['purchasedNumber'] = ~~(Math.random() * (50 - 10) + 10);
+    products[i]['purchasedCount'] = ~~(Math.random() * (50 - 10) + 10);
 }
 
 module.exports = products;

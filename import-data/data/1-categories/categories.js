@@ -4,6 +4,7 @@ const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const categories = [
   {
+    id: getObjectId('main-backpacks'),
     code: 'main-backpacks',
     name: mapToLanguages(['Рюкзаки', 'Backpacks']),
     images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/backpacks.jpg' },
@@ -23,6 +24,7 @@ const categories = [
     available: true
   },
   {
+    id: getObjectId('main-bags'),
     code: 'main-bags',
     name: mapToLanguages(['Сумки', 'Bags']),
     images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/bags.jpg' },
@@ -52,6 +54,7 @@ const categories = [
     available: true
   },
   {
+    id: getObjectId('main-accessories'),
     code: 'main-accessories',
     name: mapToLanguages(['Аксесуари', 'Accessories']),
     images: { large: 'https://horondi.blob.core.windows.net/horondi/categories/accessories.jpg' },

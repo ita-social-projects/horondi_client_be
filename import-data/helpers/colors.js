@@ -8,7 +8,7 @@ const mapToColors = (names) => {
         result.push({
             code: names[i][0],
             name: mapToLanguages([names[i][1], names[i][2]]),
-            simpleName: names[i][3],
+            simpleName: mapToLanguages([names[i][3], names[i][4]]),
             images: mapToImages(names[i][2].toLowerCase()),
             available: true
         })

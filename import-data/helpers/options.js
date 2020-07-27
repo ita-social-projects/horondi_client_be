@@ -2,49 +2,70 @@ const { mapToSizes } = require('./sizes');
 const { mapToLanguages } = require('./languages');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
-const mapToOptions = (category, color) => {
+const mapToOptions = (productName, color) => {
     let options = [];
     let sizes = [];
     let bottomMaterials = [];
-    let bottomColors = [];
-    let availableNumber;
+    let bottomColorsUK = [];
+    let bottomColorsEN = [];
+    let availableCount;
+    let additionalCompNum;
 
-    if (category == 'backpack') {
+    if (productName == 'rolltop') {
         sizes = ['backpack-S', 'backpack-M', 'backpack-L'];
+    } else if (productName == 'new' || productName == 'harbuz') {
+        sizes = ['backpack-M', 'backpack-L'];
     }
+    sizes = (sizes.length === 0) ? [productName] : sizes;
     const sizeNumber = sizes.length;
 
     if (color == 'pink') {
         bottomMaterials = [getObjectId('faux-leather')];
+    } else if (color == 'black2') {
+        bottomMaterials = [getObjectId('cordura'), getObjectId('genuine-leather')];
+    } else if (color == '') {
+        bottomMaterials = [];
     } else {
         bottomMaterials = [getObjectId('faux-leather'), getObjectId('cordura'), getObjectId('genuine-leather')];
     }
-    const materialNumber = bottomMaterials.length;
+    const materialNumber = (bottomMaterials.length === 0) ? 1 : bottomMaterials.length;
 
     if (color == 'pink') {
-        bottomColors = ['pink'];
+        bottomColorsUK = ['рожевий'];
+        bottomColorsEN = ['pink'];
     } else if (color == 'red') {
-        bottomColors = ['red', 'black', 'brown'];
+        bottomColorsUK = ['червоний', 'чорний', 'коричневий'];
+        bottomColorsEN = ['red', 'black', 'brown'];
     } else if (color == 'purple') {
-        bottomColors = ['purple', 'black', 'brown'];
+        bottomColorsUK = ['пурпуровий', 'чорний', 'коричневий'];
+        bottomColorsEN = ['purple', 'black', 'brown'];
     } else if (color == 'brown') {
-        bottomColors = ['brown', 'black', 'brown'];
+        bottomColorsUK = ['коричневий', 'чорний', 'коричневий'];
+        bottomColorsEN = ['brown', 'black', 'brown'];
+    } else if (color == 'black2'){
+        bottomColorsUK = ['чорний', 'чорний'];
+        bottomColorsEN = ['black', 'black'];
+    } else if (color == '') {
+        bottomColorsUK = [];
+        bottomColorsEN = [];
     } else {
-        bottomColors = ['black', 'black', 'black'];
+        bottomColorsUK = ['чорний', 'чорний', 'чорний'];
+        bottomColorsEN = ['black', 'black', 'black'];
     }
 
     for (let i = 0; i < sizeNumber; i++) {
         for (let j = 0; j < materialNumber; j++) {
-            for (let k = 0; k < 2; k++) {
-                availableNumber = ~~(Math.random() * 5);
+            additionalCompNum = (productName == 'rolltop') ? 2 : 1;
+            for (let k = 0; k < additionalCompNum; k++) {
+                availableCount = ~~(Math.random() * 5);
                 options.push({
                     size: getObjectId(sizes[i]),
-                    bottomMaterial: bottomMaterials[j],
-                    bottomColor: bottomColors[j],
+                    bottomMaterial: (bottomMaterials.length === 0) ? '' : bottomMaterials[j],
+                    bottomColor: (bottomColorsUK.length === 0) ? [] : mapToLanguages([bottomColorsUK[j], bottomColorsEN[j]]),
                     additions: [],
-                    availableNumber: availableNumber,
+                    availableCount: availableCount,
                 });
-                if (k == 1) {
+                if (productName == 'rolltop' && k == 1) {
                     options[options.length-1]['additions'] = [{
                         name: mapToLanguages(['Кишеня', 'Pocket']),
                         description: mapToLanguages(['Бокова кишенька за бажанням', 'Side pocket by request']),
