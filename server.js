@@ -15,7 +15,9 @@ const server = new ApolloServer({
     const { token } = req.headers || '';
     if (token) {
       const user = verifyUser(token);
-      return { user: await userService.getUserByFieldOrThrow('email', user.email) };
+      return {
+        user: await userService.getUserByFieldOrThrow('email', user.email),
+      };
     }
   },
 });
