@@ -2,10 +2,6 @@ const Products = require('./products.model');
 const Size = require('../../models/Size');
 
 class ProductsService {
-  getAllProducts() {
-    return Products.find();
-  }
-
   getProductsById(id) {
     return Products.findById(id);
   }
@@ -41,7 +37,7 @@ class ProductsService {
     return filter;
   }
 
-  getProductsByOptions({
+  getProducts({
     filter, skip, limit, sort, search,
   }) {
     const isNotBlank = str => !(!str || str.trim().length === 0);
