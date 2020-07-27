@@ -1,16 +1,49 @@
 const categoryService = require('./category.service');
+const {
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
 
 const categoryQuery = {
-  getAllCategories: () => categoryService.getAllCategories(),
-  getCategoryById: (parent, args) => categoryService.getCategoryById(args.id),
+  getAllCategories: (parent, args) => categoryService.getAllCategories(),
+
+  getCategoryById: async (parent, args) => {
+    const category = await categoryService.getCategoryById(args.id);
+
+    if (category) {
+      return category;
+    }
+    return {
+      statusCode: 404,
+      message: CATEGORY_NOT_FOUND,
+    };
+  },
 };
 
 const categoryMutation = {
-  addCategory: (parent, args) => {
-    categoryService.addCategory(args.category);
+  addCategory: (parent, args) => categoryService.addCategory(args.category),
+  deleteCategory: async (parent, args) => {
+    const deletedCategory = await categoryService.deleteCategory(args.id);
+    if (deletedCategory) {
+      return deletedCategory;
+    }
+    return {
+      statusCode: 404,
+      message: CATEGORY_NOT_FOUND,
+    };
   },
-  deleteCategory: (parent, args) => categoryService.deleteCategory(args.id),
-  updateCategory: (parent, args) => categoryService.updateCategory(args.id, args.category),
+  updateCategory: async (parent, args) => {
+    const updatedCategory = await categoryService.updateCategory(
+      args.id,
+      args.category,
+    );
+    if (updatedCategory) {
+      return updatedCategory;
+    }
+    return {
+      statusCode: 404,
+      message: CATEGORY_NOT_FOUND,
+    };
+  },
 };
 
 module.exports = { categoryQuery, categoryMutation };

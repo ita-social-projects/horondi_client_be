@@ -1,25 +1,38 @@
 const Pattern = require('./pattern.model');
+const {
+  PATTERN_ALREADY_EXIST,
+} = require('../../error-messages/pattern.messages');
 
 class PatternsService {
-  getAllPatterns() {
-    return Pattern.find();
+  async getAllPatterns() {
+    const pattern = await Pattern.find();
+    return pattern;
   }
 
-  getPatternById(id) {
-    return Pattern.findById(id);
+  async getPatternById(id) {
+    return await Pattern.findById(id);
   }
 
-  updatePattern(id, pattern) {
-    return Pattern.findByIdAndUpdate(id, pattern);
+  async updatePattern(id, pattern) {
+    return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
   }
 
-  addPattern(data) {
-    const pattern = new Pattern(data);
-    return pattern.save();
+  async addPattern(data) {
+    const pattern = await Pattern.find({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    if (pattern.length !== 0) {
+      return new Error(PATTERN_ALREADY_EXIST);
+    }
+    return new Pattern(data).save();
   }
 
-  deletePattern(id) {
-    return Pattern.findByIdAndDelete(id);
+  async deletePattern(id) {
+    return await Pattern.findByIdAndDelete(id);
   }
 }
 module.exports = new PatternsService();
