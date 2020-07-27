@@ -3,12 +3,12 @@ const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const {
   productsQuery,
   productsMutation,
-} = require('./modules/products/products.resolver');
+} = require('./modules/product/product.resolver');
 
 const {
   commentsQuery,
   commentsMutation,
-} = require('./modules/comments/comments.resolver');
+} = require('./modules/comment/comment.resolver');
 
 const {
   currencyQuery,
@@ -28,9 +28,9 @@ const {
 } = require('./modules/category/category.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
-const productsService = require('./modules/products/products.service');
+const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
-const commentsService = require('./modules/comments/comments.service');
+const commentsService = require('./modules/comment/comment.service');
 
 const resolvers = {
   Query: {

@@ -1,4 +1,4 @@
-const Comments = require('./comments.model');
+const Comments = require('./comment.model');
 
 class CommentsService {
   getAllComments() {

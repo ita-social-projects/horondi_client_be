@@ -1,4 +1,4 @@
-const commentsService = require('./comments.service');
+const commentsService = require('./comment.service');
 
 const commentsQuery = {
   getAllComments: () => commentsService.getAllComments(),

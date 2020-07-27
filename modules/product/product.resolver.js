@@ -1,4 +1,4 @@
-const productsService = require('./products.service');
+const productsService = require('./product.service');
 
 const productsQuery = {
   getProductsById: (parent, args) => productsService.getProductsById(args.id),

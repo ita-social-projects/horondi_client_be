@@ -4,7 +4,7 @@ const { userType, userInput } = require('./modules/user/user.graphql');
 const {
   productsType,
   productsInput,
-} = require('./modules/products/products.graphql');
+} = require('./modules/product/product.graphql');
 const {
   categoryType,
   categoryInput,
@@ -24,7 +24,7 @@ const {
 const {
   commentsType,
   commentsInput,
-} = require('./modules/comments/comments.graphql');
+} = require('./modules/comment/comment.graphql');
 
 const typeDefs = gql`
   ${categoryType}
