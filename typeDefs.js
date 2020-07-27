@@ -155,6 +155,7 @@ const typeDefs = gql`
     getProductsByOptions(
       filter: FilterInput
       limit: Int
+      offset: Int
       skip: Int
       search: String
       sort: SortInput

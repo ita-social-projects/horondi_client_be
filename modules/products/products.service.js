@@ -16,23 +16,26 @@ class ProductsService {
 
   filterItems(args = {}) {
     const filter = {};
-    const { pattern, colors, price } = args;
+    // const { pattern, colors, price } = args;
+    const pattern = args.pattern || [];
+    const colors = args.colors || [];
+    const price = args.price || [];
 
-    if (colors) {
+    if (colors.length) {
       filter.colors = {
         $elemMatch: {
           simpleName: { $in: colors },
         },
       };
     }
-    if (pattern) {
+    if (pattern.length) {
       filter.pattern = {
         $elemMatch: {
           value: { $in: pattern },
         },
       };
     }
-    if (price) {
+    if (price.length) {
       filter.basePrice = {
         $gte: price[0],
         $lte: price[1],
@@ -42,7 +45,12 @@ class ProductsService {
   }
 
   getProductsByOptions({
-    filter, skip, limit, sort, search,
+    filter,
+    skip,
+    limit,
+    // offset,
+    sort,
+    search,
   }) {
     const isNotBlank = str => !(!str || str.trim().length === 0);
     const filters = this.filterItems(filter);
@@ -60,10 +68,13 @@ class ProductsService {
       ];
     }
 
-    return Products.find(filters)
-      .skip(skip)
-      .limit(limit)
-      .sort(sort);
+    return (
+      Products.find(filters)
+        .skip(skip)
+        .limit(limit)
+        // .offset(offset)
+        .sort(sort)
+    );
   }
 
   updateProductById(id, products) {
