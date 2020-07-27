@@ -3,6 +3,7 @@ const commentsService = require('./comment.service');
 const commentsQuery = {
   getAllComments: () => commentsService.getAllComments(),
   getCommentById: (parent, args) => commentsService.getCommentById(args.id),
+  getAllCommentsByProduct: (parent, args) => commentsService.getAllCommentsByProduct(args.id),
 };
 
 const commentsMutation = {
