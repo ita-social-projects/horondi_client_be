@@ -34,9 +34,17 @@ describe('mutations', () => {
         userId = res.data.registerUser._id
         
         expect(res.data.registerUser).toHaveProperty(
+            'firstName', 'Petro'
+        );
+        expect(res.data.registerUser).toHaveProperty(
+            'lastName', 'Tatsenyak'
+        );
+        expect(res.data.registerUser).toHaveProperty(
             'email', 'tacjka34@gmail.com'
         );
-
+        expect(res.data.registerUser).toHaveProperty('credentials');  
+        expect(res.data.registerUser).toHaveProperty('role');
+        expect(res.data.registerUser).toHaveProperty('registrationDate');
     })
 
     test('should throw error User with provided email already exist', async () => {
@@ -224,6 +232,7 @@ describe('mutations', () => {
 
         }).catch(err => err)
         
+        expect(res.graphQLErrors.length).toBe(1) 
         expect(res.graphQLErrors[0].message).toBe('Unauthorized') 
     })
 
