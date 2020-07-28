@@ -17,7 +17,11 @@ class ProductsService {
     if (colors.length) {
       filter.colors = {
         $elemMatch: {
-          simpleName: { $in: colors },
+          simpleName: { 
+            $elemMatch: {
+              value: { $in: colors } 
+            },
+          }
         },
       };
     }
