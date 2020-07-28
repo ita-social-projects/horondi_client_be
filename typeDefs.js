@@ -93,7 +93,7 @@ const typeDefs = gql`
     name: [Language]
     images: ImageSet
     available: Boolean
-    simpleName: String
+    simpleName: [Language]
   }
 
   type ProductOptions {

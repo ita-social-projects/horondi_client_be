@@ -56,6 +56,7 @@ const resolvers = {
   },
 
   Products: {
+    category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
     comments: parent => commentsService.getAllCommentsByProduct(parent._id),
   },

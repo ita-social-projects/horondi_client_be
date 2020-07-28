@@ -1,6 +1,7 @@
 const productsType = `
 type Products {
 _id: ID!
+category: Category!
 subcategory: Category!
 name: [Language]!
 description: [Language]!
