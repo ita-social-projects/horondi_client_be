@@ -5,6 +5,10 @@ const ImageSet = require('../common/ImageSet').schema;
 const Color = require('../../models/Color').schema;
 
 const productSchema = new mongoose.Schema({
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+  },
   subcategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
@@ -31,7 +35,7 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Material',
       },
-      bottomColor: String,
+      bottomColor: [Language],
       additions: [
         {
           name: [Language],

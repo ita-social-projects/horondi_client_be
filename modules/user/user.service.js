@@ -8,28 +8,55 @@ const {
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
 
+const USER_NOT_FOUND = [
+  { lang: 'uk', value: 'Користувач не знайдений' },
+  { lang: 'eng', value: 'User not found' },
+];
+
+const USER_ALREADY_EXIST = [
+  {
+    lang: 'uk',
+    value: `Користувач з таким емейлом вже зареєстрований`,
+  },
+  {
+    lang: 'eng',
+    value: 'User with provided email already exists',
+  },
+];
 class UserService {
   async checkUserExists(email) {
-    const checkedUser = await User.findOne({ email });
+    const checkedUser = await User.findOne({
+      email,
+    });
 
     if (checkedUser) {
-      const massage = 'User with provided email already exists';
-      throw new UserInputError(massage, {
+      throw new UserInputError(USER_ALREADY_EXIST, {
         errors: {
-          email: massage,
+          email: USER_ALREADY_EXIST,
         },
       });
     }
   }
 
   async getUserByFieldOrThrow(key, param) {
-    const checkedUser = await User.findOne({ [key]: param });
+    const checkedUser = await User.findOne({
+      [key]: param,
+    });
 
     if (!checkedUser) {
-      const message = `User with provided ${[key]} not found`;
-      throw new UserInputError(message, {
+      const USER_WITH_KEY_NOT_FOUND = [
+        {
+          lang: 'uk',
+          value: `Користувач з данним ${[key]} не знайдений`,
+        },
+        {
+          lang: 'eng',
+          value: `User with provided ${[key]} not found`,
+        },
+      ];
+      throw new UserInputError(USER_WITH_KEY_NOT_FOUND, {
         errors: {
-          [key]: message,
+          [key]: USER_WITH_KEY_NOT_FOUND,
         },
       });
     }
@@ -37,8 +64,8 @@ class UserService {
     return checkedUser;
   }
 
-  getAllUsers() {
-    return User.find();
+  async getAllUsers() {
+    return await User.find();
   }
 
   getUser(id) {
@@ -55,7 +82,9 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
@@ -64,11 +93,15 @@ class UserService {
       await this.checkUserExists(email);
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        firstName,
+        lastName,
+        email,
+      },
+      { new: true },
+    );
   }
 
   async updateUserByToken({ firstName, lastName, email }, user) {
@@ -79,14 +112,20 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        firstName,
+        lastName,
+        email,
+      },
+      { new: true },
+    );
   }
 
   async loginUser({ email, password }) {
@@ -96,7 +135,9 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     const user = await this.getUserByFieldOrThrow('email', email);
@@ -107,13 +148,24 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError('Wrong password');
+      throw new AuthenticationError([
+        {
+          lang: 'uk',
+          value: `Невірний пароль`,
+        },
+        {
+          lang: 'eng',
+          value: `Wrong password`,
+        },
+      ]);
     }
 
     const token = generateToken(user._id, user.email);
 
     return {
-      user: { ...user._doc },
+      user: {
+        ...user._doc,
+      },
       id: user._id,
       token,
     };
@@ -130,7 +182,9 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     await this.checkUserExists(email);
@@ -153,7 +207,7 @@ class UserService {
   }
 
   deleteUser(id) {
-    return User.findByIdAndDelete(id);
+    return User.findByIdAndDelete(id) || new Error(USER_NOT_FOUND);
   }
 }
 module.exports = new UserService();

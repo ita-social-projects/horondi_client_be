@@ -82,6 +82,46 @@ const resolvers = {
 
     ...commentsMutation,
   },
+  CategoryResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Category';
+      }
+      return 'Error';
+    },
+  },
+  CurrencyResult: {
+    __resolveType: obj => {
+      if (obj.date) {
+        return 'Currency';
+      }
+      return 'Error';
+    },
+  },
+  NewsResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return 'News';
+      }
+      return 'Error';
+    },
+  },
+  MaterialResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Material';
+      }
+      return 'Error';
+    },
+  },
+  PatternResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Pattern';
+      }
+      return 'Error';
+    },
+  },
 };
 
 module.exports = resolvers;
