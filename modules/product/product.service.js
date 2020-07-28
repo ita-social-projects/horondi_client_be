@@ -12,8 +12,12 @@ class ProductsService {
 
   filterItems(args = {}) {
     const filter = {};
-    const { pattern = [], colors = [], price = [0, 999999] } = args;
+    const { pattern = [], colors = [], price = [0, 999999], category = [] } = args;
 
+
+    if (category.length) {
+      filter.category = { $in: category }
+    };
     if (colors.length) {
       filter.colors = {
         $elemMatch: {

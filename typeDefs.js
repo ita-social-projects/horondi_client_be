@@ -186,6 +186,7 @@ const typeDefs = gql`
     materials: [String]
     colors: [String]
     price: [Int]
+    category: [String]
   }
 
   input RoleEnumInput {
