@@ -45,7 +45,9 @@ class UserService {
     return await this.getUserByFieldOrThrow('_id', id);
   }
   async updateUserById(updatedUser, id) {
-    const { errors } = await validateUpdateInput.validateAsync({...updatedUser});
+    const { firstName, lastName, email } = updatedUser
+  
+    const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
 
     if (errors) {
       throw new UserInputError('Errors', { errors });
@@ -61,7 +63,9 @@ class UserService {
   }
 
   async updateUserByToken(updatedUser, user) {
-    const { errors } = await validateUpdateInput.validateAsync({...updatedUser});
+    const { firstName, lastName, email } = updatedUser
+
+    const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
 
     if (errors) {
       throw new UserInputError('Errors', { errors });

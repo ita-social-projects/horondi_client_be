@@ -30,6 +30,8 @@ describe('mutations', () => {
 
         userId = res.data.registerUser._id
         
+
+        expect(typeof res.data.registerUser._id).toBe('string')
         expect(res.data.registerUser).toHaveProperty(
             'firstName', 'Petro'
         );
@@ -79,6 +81,10 @@ describe('mutations', () => {
                     }) {
                         _id
                         firstName
+                        lastName
+                        email
+                        role
+                        registrationDate
                         token
                     }
                 }
@@ -86,6 +92,18 @@ describe('mutations', () => {
         })
         
         expect(res.data.loginUser).toHaveProperty('token');
+        expect(typeof res.data.loginUser.token).toBe('string')
+        expect(res.data.loginUser).toHaveProperty(
+            'firstName', 'Petro'
+        );
+        expect(res.data.loginUser).toHaveProperty(
+            'lastName', 'Tatsenyak'
+        );
+        expect(res.data.loginUser).toHaveProperty(
+            'email', 'tacjka34@gmail.com'
+        );
+        expect(res.data.loginUser).toHaveProperty('role', 'user');
+        expect(res.data.loginUser).toHaveProperty('registrationDate');
         
         token = res.data.loginUser.token  
     })
@@ -118,10 +136,38 @@ describe('mutations', () => {
                         firstName: "Updated",
                         lastName: "Updated",
                         email: "tacjka34@gmail.com",
+                        phoneNumber: "380666666666",
+                        role: "admin",
+                        address: {
+                            country: "Ukraine"
+                            city: "Kiev"
+                            street: "Shevchenka"
+                            buildingNumber: "23"
+                        },
+                        wishlist: [
+                            "c2a6b03f190dfb2b4aa91f8a"
+                        ],
+                        orders: [
+                            "c94c4ebc880eb65b4ea39818"
+                        ]
+                        comments: [
+                            "f89ebabf1782ba3447a8fca8"
+                        ]
                     }, id: $userId){
                         firstName
                         lastName
                         email
+                        phoneNumber
+                        role
+                        address {
+                            country
+                            city
+                            street
+                            buildingNumber
+                        }
+                        wishlist
+                        orders
+                        comments
                     }
                 }
             `,
@@ -143,6 +189,29 @@ describe('mutations', () => {
         );
         expect(res.data.updateUserById).toHaveProperty(
             'email', 'tacjka34@gmail.com'
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'phoneNumber', '380666666666'
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'role', 'admin'
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'address', {
+                country: "Ukraine",
+                city: "Kiev",
+                street: "Shevchenka",
+                buildingNumber: "23"
+            }
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'wishlist', ["c2a6b03f190dfb2b4aa91f8a"]
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'orders', ["c94c4ebc880eb65b4ea39818"]
+        );
+        expect(res.data.updateUserById).toHaveProperty(
+            'comments', ["f89ebabf1782ba3447a8fca8"]
         );
     })
 
