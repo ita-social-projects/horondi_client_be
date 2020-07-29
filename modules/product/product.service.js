@@ -13,16 +13,13 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern = [],
-      colors = [],
-      price = [0, 999999],
-      category = [],
+      pattern, colors, price, category,
     } = args;
 
-    if (category.length) {
+    if (category && category.length) {
       filter.category = { $in: category };
     }
-    if (colors.length) {
+    if (colors && colors.length) {
       filter.colors = {
         $elemMatch: {
           simpleName: {
@@ -33,14 +30,14 @@ class ProductsService {
         },
       };
     }
-    if (pattern.length) {
+    if (pattern && pattern.length) {
       filter.pattern = {
         $elemMatch: {
           value: { $in: pattern },
         },
       };
     }
-    if (price.length) {
+    if (price && price.length) {
       filter.basePrice = {
         $gte: price[0],
         $lte: price[1],
