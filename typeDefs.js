@@ -117,7 +117,7 @@ const typeDefs = gql`
     widthInCm: Int
     depthInCm: Int
     volumeInLiters: Int
-    weightInKg: Int
+    weightInKg: Float
     available: Boolean
     additionalPrice: Int
   }
