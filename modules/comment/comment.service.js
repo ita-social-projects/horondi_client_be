@@ -1,10 +1,6 @@
 const Comments = require('./comment.model');
 
 class CommentsService {
-  getAllComments() {
-    return Comments.find();
-  }
-
   getCommentById(id) {
     return Comments.findById(id);
   }
@@ -14,7 +10,7 @@ class CommentsService {
   }
 
   updateComment(id, comments) {
-    return Comments.findByIdAndUpdate(id, comments);
+    return Comments.findByIdAndUpdate(id, comments, { new: true });
   }
 
   addComment(data) {

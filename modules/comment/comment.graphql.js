@@ -1,23 +1,23 @@
-const commentsType = `
-type Comments {
+const commentType = `
+type Comment {
 _id: ID!
 text: String!
 date: String!
 user: User!
-product: Products
+product: Product
 show: Boolean
 }
 `;
 
-const commentsInput = `
-input commentsInput {
+const commentInput = `
+input commentInput {
   text: String
   user: ID
-  product: String!
+  product: ID!
   show: Boolean!
 }`;
 
 module.exports = {
-  commentsType,
-  commentsInput,
+  commentType,
+  commentInput,
 };

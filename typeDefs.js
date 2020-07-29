@@ -2,8 +2,8 @@ const { gql } = require('apollo-server');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const { userType, userInput } = require('./modules/user/user.graphql');
 const {
-  productsType,
-  productsInput,
+  productType,
+  productInput,
 } = require('./modules/product/product.graphql');
 const {
   categoryType,
@@ -22,8 +22,8 @@ const {
   currencyInput,
 } = require('./modules/currency/currency.graphql.js');
 const {
-  commentsType,
-  commentsInput,
+  commentType,
+  commentInput,
 } = require('./modules/comment/comment.graphql');
 
 const typeDefs = gql`
@@ -33,8 +33,8 @@ const typeDefs = gql`
   ${newsType}
   ${patternsType}
   ${userType}
-  ${productsType}
-  ${commentsType}
+  ${productType}
+  ${commentType}
 
   enum RoleEnum {
     admin
@@ -160,18 +160,18 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    getProductsById(id: ID!): Products
+    getProductsById(id: ID!): Product
     getProducts(
       filter: FilterInput
       limit: Int
       skip: Int
       search: String
       sort: SortInput
-    ): [Products]!
+    ): [Product]!
 
-    getAllComments: [Comments]
-    getCommentById(id: ID!): Comments
-    getAllCommentsByProduct(id: ID!): [Comments]
+    getAllComments: [Comment]
+    getCommentById(id: ID!): Comment
+    getAllCommentsByProduct(id: ID!): [Comment!]!
   }
 
   input SortInput {
@@ -209,8 +209,8 @@ const typeDefs = gql`
   ${newsInput}
   ${patternsInput}
   ${userInput}
-  ${productsInput}
-  ${commentsInput}
+  ${productInput}
+  ${commentInput}
 
   input LanguageInput {
     lang: String!
@@ -288,15 +288,15 @@ const typeDefs = gql`
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
 
-    "Products Mutation"
-    addProduct(product: productsInput!): Products
-    deleteProduct(id: ID!): Products
-    updateProduct(id: ID!, product: productsInput!): Products
+    "Product Mutation"
+    addProduct(product: productInput!): Product
+    deleteProduct(id: ID!): Product
+    updateProduct(id: ID!, product: productInput!): Product
 
-    "Comments Mutation"
-    addComment(comment: commentsInput!): Comments
-    deleteComment(id: ID!): Products
-    updateComment(id: ID!, product: commentsInput!): Comments
+    "Comment Mutation"
+    addComment(comment: commentInput!): Comment
+    deleteComment(id: ID!): Comment
+    updateComment(id: ID!, product: commentInput!): Comment
   }
 `;
 

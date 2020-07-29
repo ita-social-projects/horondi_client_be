@@ -12,20 +12,24 @@ class ProductsService {
 
   filterItems(args = {}) {
     const filter = {};
-    const { pattern = [], colors = [], price = [0, 999999], category = [] } = args;
-
+    const {
+      pattern = [],
+      colors = [],
+      price = [0, 999999],
+      category = [],
+    } = args;
 
     if (category.length) {
-      filter.category = { $in: category }
-    };
+      filter.category = { $in: category };
+    }
     if (colors.length) {
       filter.colors = {
         $elemMatch: {
-          simpleName: { 
+          simpleName: {
             $elemMatch: {
-              value: { $in: colors } 
+              value: { $in: colors },
             },
-          }
+          },
         },
       };
     }
@@ -71,7 +75,7 @@ class ProductsService {
   }
 
   updateProduct(id, products) {
-    return Products.findByIdAndUpdate(id, products);
+    return Products.findByIdAndUpdate(id, products, { new: true });
   }
 
   addProduct(data) {

@@ -1,5 +1,5 @@
-const productsType = `
-type Products {
+const productType = `
+type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
@@ -21,12 +21,12 @@ isHotItem: Boolean!
 purchasedCount: Int
 rate: Float
 rateCount: Int
-comments: [Comments]
+comments: [Comment]
 }
 `;
 
-const productsInput = `
-input productsInput {
+const productInput = `
+input productInput {
 subcategory: CategoryInput!
 name: [LanguageInput]!
 description: [LanguageInput]!
@@ -45,6 +45,6 @@ isHotItem: Boolean
 }`;
 
 module.exports = {
-  productsType,
-  productsInput,
+  productType,
+  productInput,
 };

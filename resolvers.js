@@ -50,12 +50,12 @@ const resolvers = {
 
     ...commentsQuery,
   },
-  Comments: {
+  Comment: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
     product: parent => productsService.getProductsById(parent.product),
   },
 
-  Products: {
+  Product: {
     category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
     comments: parent => commentsService.getAllCommentsByProduct(parent._id),
