@@ -93,6 +93,16 @@ const fannyPacks = [
 ];
 const fannyPacksNumber = fannyPacks.length;
 
+const wallets = [
+    [['Гаманець гірчичний', 'Wallet Mustard'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', ''],
+    [['Гаманець червоний', 'Wallet Red'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Червоний', 'Red'], 'red', ''],
+    [['Гаманець синій', 'Wallet Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', ''],
+    [['Гаманець рожевий', 'Wallet Pink'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', ''],
+    [['Гаманець зелений', 'Wallet Green'], [[207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], ['Чорний', 'Black'], 'black', ''],
+    [['Гаманець асфальтний', 'Wallet Slate Grey'], [[212, 'Срібний', 'Silver', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', ''],
+];
+const walletsNumber = wallets.length;
+
 let products = [];
 let counter = 0;
 let oldTotalProducts = 0;
@@ -141,6 +151,13 @@ while (counter < newTotalProducts){
     counter++
 }
 
+oldTotalProducts = newTotalProducts;
+newTotalProducts += walletsNumber;
+while (counter < newTotalProducts){
+    mapProduct('main-accessories', 'sub-wallets', 'wallet', counter, wallets[counter - oldTotalProducts], 'Опис очікуйте найближчим часом...', 'Description will appear shortly...', 200);
+    counter++
+}
+
 function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
     pattern = (product[2].length === 0) ? [] : mapToLanguages(product[2]);
     patternImages = (product[3] === '') ? null : mapToImages(product[3]);
@@ -150,7 +167,7 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         mainMaterial = fabricDescription;
         closure = mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']);
         closureColor = 'black'
-    } else if (name == 'fanny-pack') {
+    } else if (name == 'fanny-pack' || name == 'wallet') {
         strapLengthInCm = 0;
         innerMaterial = [];
         mainMaterial = malmoDescription;
@@ -206,21 +223,6 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
 //     },
 //     basePrice: 400,
 //     items: mapToItems('fanny-pack', [[10, 20]], 'malmo', 400, 10)
-// }, {
-//     id: getObjectId('product' + 0),
-//     category: getObjectId('sub-wallets'),
-//     name: mapToLanguages(['Гаманець', 'Wallet']),
-//     description: mapToLanguages(['', '']),
-//     images: {
-//         primary: mapToImages('primary-wallet'),
-//         additional: [
-//             mapToImages('additional-wallet-1'),
-//             mapToImages('additional-wallet-2'),
-//             mapToImages('additional-wallet-3')
-//         ]
-//     },
-//     basePrice: 200,
-//     items: mapToItems('wallet', [[10, 10]], 'malmo', 200, 3)
 // }];
 
 module.exports = products;

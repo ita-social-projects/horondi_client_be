@@ -8,7 +8,8 @@ const sizes = [
     mapToSizes({ type: 'patbag', name: '', size: [38, 36, 10], volume: 0, weight: 0, price: 0 }),
     mapToSizes({ type: 'col1bag', name: '', size: [36, 36, 12], volume: 0, weight: 0, price: 0 }),
     mapToSizes({ type: 'col3smplbag', name: '', size: [38, 36, 12], volume: 0, weight: 0, price: 0 }),
-    mapToSizes({ type: 'fanny-pack', name: '', size: [17,35], volume: 0, weight: 0, price: 0 })
+    mapToSizes({ type: 'fanny-pack', name: '', size: [17,35], volume: 0, weight: 0, price: 0 }),
+    mapToSizes({ type: 'wallet', name: '', size: [10,10], volume: 0, weight: 0, price: 0 })
 ];
 
 module.exports = sizes;
