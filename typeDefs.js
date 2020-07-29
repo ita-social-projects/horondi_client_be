@@ -139,6 +139,7 @@ const typeDefs = gql`
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
+  union ProductResult = Product | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -160,7 +161,7 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    getProductsById(id: ID!): Product
+    getProductById(id: ID!): ProductResult
     getProducts(
       filter: FilterInput
       limit: Int

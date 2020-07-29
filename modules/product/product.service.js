@@ -2,11 +2,11 @@ const Products = require('./product.model');
 const Size = require('../../models/Size');
 
 class ProductsService {
-  getProductsById(id) {
-    return Products.findById(id);
+  async getProductById(id) {
+    return await Products.findById(id);
   }
 
-  getSizeById(id) {
+  async getSizeById(id) {
     return Size.findById(id);
   }
 
