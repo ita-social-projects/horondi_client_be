@@ -23,9 +23,6 @@ describe('mutations', () => {
                         email
                         role
                         registrationDate
-                        credentials {
-                            tokenPass
-                        } 
                     }
                 }
             `
@@ -42,8 +39,7 @@ describe('mutations', () => {
         expect(res.data.registerUser).toHaveProperty(
             'email', 'tacjka34@gmail.com'
         );
-        expect(res.data.registerUser).toHaveProperty('credentials');  
-        expect(res.data.registerUser).toHaveProperty('role');
+        expect(res.data.registerUser).toHaveProperty('role', 'user');
         expect(res.data.registerUser).toHaveProperty('registrationDate');
     })
 
@@ -63,9 +59,6 @@ describe('mutations', () => {
                         email
                         role
                         registrationDate
-                        credentials {
-                            tokenPass
-                        } 
                     }
                 }
             `
