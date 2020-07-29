@@ -27,16 +27,12 @@ const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user),
   loginUser: (parent, args) => userService.loginUser(args.user),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
-  updateUserById: (parent, args, context) => {
-    context.user
-      ? userService.updateUserById(args.user, args.id)
-      : new Error(USER_NOT_AUTHORIZE);
-  },
-  updateUserByToken: (parent, args, context) => {
-    context.user
-      ? userService.updateUserByToken(args.user, context.user)
-      : new Error(USER_NOT_AUTHORIZE);
-  },
+  updateUserById: (parent, args, context) => (context.user
+    ? userService.updateUserById(args.user, args.id)
+    : new Error(USER_NOT_AUTHORIZE)),
+  updateUserByToken: (parent, args, context) => (context.user
+    ? userService.updateUserByToken(args.user, context.user)
+    : new Error(USER_NOT_AUTHORIZE)),
 };
 
 module.exports = { userQuery, userMutation };
