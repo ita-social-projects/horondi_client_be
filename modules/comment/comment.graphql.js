@@ -12,7 +12,6 @@ show: Boolean
 const commentInput = `
 input commentInput {
   text: String
-  user: ID
   product: ID!
   show: Boolean!
 }`;
