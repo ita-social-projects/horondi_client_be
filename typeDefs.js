@@ -75,17 +75,33 @@ const typeDefs = gql`
     images: ImageSet
     available: Boolean
   }
+  type Error {
+    statusCode: Int
+    message: [Language]
+  }
+
+  union CategoryResult = Category | Error
+  union CurrencyResult = Currency | Error
+  union MaterialResult = Material | Error
+  union PatternResult = Pattern | Error
+  union NewsResult = News | Error
+
   type Query {
     getAllCurrencies: [Currency!]!
-    getCurrencyById(id: ID): Currency
-    getAllCategories: [Category!]!
-    getCategoryById(id: ID): Category
+    getCurrencyById(id: ID): CurrencyResult
+
+    getAllCategories: [Category]
+    getCategoryById(id: ID): CategoryResult
+
     getAllMaterials: [Material!]!
-    getMaterialById(id: ID): Material
+    getMaterialById(id: ID): MaterialResult
+
     getAllPatterns: [Pattern!]!
-    getPatternById(id: ID): Pattern
+    getPatternById(id: ID): PatternResult
+
     getAllNews: [News!]!
-    getNewsById(id: ID): News
+    getNewsById(id: ID): NewsResult
+
     getAllUsers: [User]
     getUserByToken: User
     getUserById(id: ID!): User
@@ -98,7 +114,7 @@ const typeDefs = gql`
     additional: [ImageSetInput!]
   }
   input AuthorInput {
-    name: String!
+    name: [LanguageInput]
     image: ImageSetInput
   }
   ${categoryInput}
@@ -146,6 +162,7 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+
   type Mutation {
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): Pattern
@@ -153,20 +170,24 @@ const typeDefs = gql`
     updatePattern(id: ID!, pattern: PatternInput!): Pattern
     "Material Mutation"
     addMaterial(material: MaterialInput!): Material
-    deleteMaterial(id: ID!): Material
-    updateMaterial(id: ID!, material: MaterialInput!): Material
+    deleteMaterial(id: ID!): MaterialResult
+    updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
+
     "Category Mutation"
     addCategory(category: CategoryInput!): Category
-    deleteCategory(id: ID!): Category
-    updateCategory(id: ID!, category: CategoryInput!): Category
+    deleteCategory(id: ID!): CategoryResult
+    updateCategory(id: ID!, category: CategoryInput!): CategoryResult
+
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): Currency
-    deleteCurrency(id: ID!): Currency
-    updateCurrency(id: ID!, currency: CurrencyInput!): Currency
+    deleteCurrency(id: ID!): CurrencyResult
+    updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
+
     "News Mutation"
     addNews(news: NewsInput!): News
-    deleteNews(id: ID!): News
-    updateNews(id: ID!, news: NewsInput!): News
+    deleteNews(id: ID!): NewsResult
+    updateNews(id: ID!, news: NewsInput!): NewsResult
+
     "User Mutation"
     registerUser(user: userRegisterInput!): User
     loginUser(user: userLoginInput!): User

@@ -76,7 +76,7 @@
         }
       }
     ],
-    "no-return-await": 2,
+    "no-return-await": 0,
     "camelcase": 0,
     "no-useless-return": 2,
     "no-multi-str": 2,

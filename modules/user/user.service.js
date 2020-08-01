@@ -8,28 +8,35 @@ const {
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/createToken');
 
+const USER_NOT_FOUND = 'User not found' 
+
+const USER_ALREADY_EXIST = 'User with provided email already exists'
+
 class UserService {
   async checkUserExists(email) {
-    const checkedUser = await User.findOne({ email });
+    const checkedUser = await User.findOne({
+      email,
+    });
 
     if (checkedUser) {
-      const massage = 'User with provided email already exists';
-      throw new UserInputError(massage, {
+      throw new UserInputError(USER_ALREADY_EXIST, {
         errors: {
-          email: massage,
+          email: USER_ALREADY_EXIST,
         },
       });
     }
   }
 
   async getUserByFieldOrThrow(key, param) {
-    const checkedUser = await User.findOne({ [key]: param });
+    const checkedUser = await User.findOne({
+      [key]: param,
+    });
 
     if (!checkedUser) {
-      const message = `User with provided ${[key]} not found`;
-      throw new UserInputError(message, {
+      const USER_WITH_KEY_NOT_FOUND =  `User with provided ${[key]} not found`
+      throw new UserInputError(USER_WITH_KEY_NOT_FOUND, {
         errors: {
-          [key]: message,
+          [key]: USER_WITH_KEY_NOT_FOUND,
         },
       });
     }
@@ -37,12 +44,12 @@ class UserService {
     return checkedUser;
   }
 
-  getAllUsers() {
-    return User.find();
+  async getAllUsers() {
+    return await User.find();
   }
 
-  async getUser(id) {
-    return await this.getUserByFieldOrThrow('_id', id);
+  getUser(id) {
+    return this.getUserByFieldOrThrow('_id', id);
   }
   async updateUserById(updatedUser, id) {
     const { firstName, lastName, email } = updatedUser
@@ -50,7 +57,9 @@ class UserService {
     const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
@@ -68,7 +77,9 @@ class UserService {
     const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     return User.findByIdAndUpdate(user._id, {
@@ -83,7 +94,9 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     const user = await this.getUserByFieldOrThrow('email', email);
@@ -94,7 +107,7 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError('Wrong password');
+      throw new AuthenticationError( `Wrong password`);
     }
 
     const token = generateToken(user._id, user.email);
@@ -117,7 +130,9 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError('Errors', {
+        errors,
+      });
     }
 
     await this.checkUserExists(email);
@@ -140,8 +155,8 @@ class UserService {
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id);
-    return res
+    const res = await User.findByIdAndDelete(id)
+    return res || new Error(USER_NOT_FOUND);
   }
 }
 module.exports = new UserService();
