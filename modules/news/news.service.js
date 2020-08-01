@@ -1,7 +1,8 @@
 const News = require('./news.model');
-const { NEWS_ALREADY_EXIST } = require('../../error-messages/news.messages');
-const checkNewsExist = require('../../utils/checkNewsExist');
-const CustomError = require('../../utils/error');
+const {
+  NEWS_ALREADY_EXIST,
+  NEWS_NOT_FOUND,
+} = require('../../error-messages/news.messages');
 
 class NewsService {
   async getAllNews() {
@@ -9,7 +10,7 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    return await News.findById(id);
+    throw new Error(NEWS_NOT_FOUND) || (await News.findById(id));
   }
 
   async updateNews(id, news) {
@@ -17,14 +18,25 @@ class NewsService {
   }
 
   async addNews(data) {
-    if (await checkNewsExist(data)) {
-      throw new CustomError(400, NEWS_ALREADY_EXIST);
+    if (await this.checkNewsExist(data)) {
+      throw new Error(NEWS_ALREADY_EXIST);
     }
     return new News(data).save();
   }
 
   async deleteNews(id) {
     return await News.findByIdAndDelete(id);
+  }
+
+  async checkNewsExist(data) {
+    const news = await News.find({
+      title: {
+        $elemMatch: {
+          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
+        },
+      },
+    });
+    return news.length > 0;
   }
 }
 module.exports = new NewsService();

@@ -18,7 +18,16 @@ const currencyQuery = {
 };
 
 const currencyMutation = {
-  addCurrency: (parent, args) => currencyService.addCurrency(args.currency),
+  addCurrency: async (parent, args) => {
+    try {
+      return await currencyService.addCurrency(args.currency);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
   deleteCurrency: async (parent, args) => {
     const currency = await currencyService.deleteCurrency(args.id);
     if (currency) {

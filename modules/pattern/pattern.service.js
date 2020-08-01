@@ -1,17 +1,16 @@
 const Pattern = require('./pattern.model');
 const {
   PATTERN_ALREADY_EXIST,
+  PATTERN_NOT_FOUND,
 } = require('../../error-messages/pattern.messages');
-const checkPatternExist = require('../../utils/checkPatternExist');
 
 class PatternsService {
   async getAllPatterns() {
-    const pattern = await Pattern.find();
-    return pattern;
+    return await Pattern.find();
   }
 
   async getPatternById(id) {
-    return await Pattern.findById(id);
+    throw new Error(PATTERN_NOT_FOUND) || (await Pattern.findById(id));
   }
 
   async updatePattern(id, pattern) {
@@ -19,14 +18,25 @@ class PatternsService {
   }
 
   async addPattern(data) {
-    if (await checkPatternExist(data)) {
-      return new Error(PATTERN_ALREADY_EXIST);
+    if (await this.checkPatternExist(data)) {
+      throw new Error(PATTERN_ALREADY_EXIST);
     }
     return new Pattern(data).save();
   }
 
   async deletePattern(id) {
     return await Pattern.findByIdAndDelete(id);
+  }
+
+  async checkPatternExist(data) {
+    const pattern = await Pattern.find({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return pattern.length > 0;
   }
 }
 module.exports = new PatternsService();

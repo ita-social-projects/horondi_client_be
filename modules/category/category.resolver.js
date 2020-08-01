@@ -20,7 +20,16 @@ const categoryQuery = {
 };
 
 const categoryMutation = {
-  addCategory: (parent, args) => categoryService.addCategory(args.category),
+  addCategory: async (parent, args) => {
+    try {
+      return await categoryService.addCategory(args.category);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
   deleteCategory: async (parent, args) => {
     const deletedCategory = await categoryService.deleteCategory(args.id);
     if (deletedCategory) {

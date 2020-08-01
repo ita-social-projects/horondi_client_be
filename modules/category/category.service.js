@@ -1,8 +1,8 @@
 const Category = require('./category.model');
 const {
   CATEGORY_ALREADY_EXIST,
+  CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
-const checkCategoryEXist = require('../../utils/checkCategoryExist');
 
 class CategoryService {
   async getAllCategories() {
@@ -10,7 +10,7 @@ class CategoryService {
   }
 
   async getCategoryById(id) {
-    return await Category.findById(id);
+    throw new Error(CATEGORY_NOT_FOUND) || (await Category.findById(id));
   }
 
   async updateCategory(id, category) {
@@ -18,16 +18,26 @@ class CategoryService {
   }
 
   async addCategory(data) {
-    if (await checkCategoryEXist(data)) {
-      return new Error(
-        JSON.stringify({ message: CATEGORY_ALREADY_EXIST, statusCode: 400 })
-      );
+    if (await this.checkCategoryEXist(data)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
     }
     return new Category(data).save();
   }
 
   async deleteCategory(id) {
     return await Category.findByIdAndDelete(id);
+  }
+
+  async checkCategoryExist(data) {
+    const category = await Category.find({
+      code: data.code,
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return category.length > 0;
   }
 }
 module.exports = new CategoryService();

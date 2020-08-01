@@ -1,9 +1,8 @@
-const { ApolloError } = require('apollo-server');
 const Currency = require('./currency.model');
 const {
   CURRENCY_ALREADY_EXIST,
+  CURRENCY_NOT_FOUND,
 } = require('../../error-messages/currency.messages');
-const checkCurrencyExist = require('../../utils/checkCurrencyExist');
 
 class CurrencyService {
   async getAllCurrencies() {
@@ -11,7 +10,7 @@ class CurrencyService {
   }
 
   async getCurrencyById(id) {
-    return await Currency.findById(id);
+    throw new Error(CURRENCY_NOT_FOUND) || (await Currency.findById(id));
   }
 
   async updateCurrency(id, currency) {
@@ -19,14 +18,28 @@ class CurrencyService {
   }
 
   async addCurrency(data) {
-    if (await checkCurrencyExist(data)) {
-      return new ApolloError(CURRENCY_ALREADY_EXIST, 400);
+    if (await this.checkCurrencyExist(data)) {
+      throw new Error(CURRENCY_ALREADY_EXIST);
     }
     return new Currency(data).save();
   }
 
   async deleteCurrency(id) {
     return await Currency.findByIdAndDelete(id);
+  }
+
+  async checkCurrencyExist(data) {
+    const currency = await Currency.find({
+      convertOptions: {
+        $elemMatch: {
+          $or: [
+            { name: data.convertOptions[0].name },
+            { name: data.convertOptions[1].name },
+          ],
+        },
+      },
+    });
+    return currency.length > 0;
   }
 }
 module.exports = new CurrencyService();

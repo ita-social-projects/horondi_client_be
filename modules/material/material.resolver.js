@@ -18,7 +18,16 @@ const materialQuery = {
 };
 
 const materialMutation = {
-  addMaterial: (parent, args) => materialService.addMaterial(args.material),
+  addMaterial: async (parent, args) => {
+    try {
+      return await materialService.addMaterial(args.material);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
   deleteMaterial: async (parent, args) => {
     const material = await materialService.deleteMaterial(args.id);
     if (material) {
