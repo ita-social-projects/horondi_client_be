@@ -1,22 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`queries should recive user by id 1`] = `undefined`;
-
-exports[`queries should recive user by token 1`] = `
+exports[`queries should recive user by id 1`] = `
 Object {
-  "address": null,
-  "credentials": Array [
-    Object {
-      "source": "horondi",
-    },
+  "_id": "5f246fd1918df1146098ee75",
+  "address": Object {
+    "buildingNumber": "23",
+    "city": "Kiev",
+    "country": "Ukraine",
+    "street": "Shevchenka",
+  },
+  "comments": Array [
+    "f89ebabf1782ba3447a8fca8",
   ],
   "email": "test.email@gmail.com",
   "firstName": "Test",
   "lastName": "User",
-  "orders": Array [],
-  "phoneNumber": null,
-  "purchasedProducts": Array [],
+  "orders": Array [
+    "c94c4ebc880eb65b4ea39818",
+  ],
+  "phoneNumber": "380666666666",
   "role": "user",
-  "wishlist": Array [],
+  "wishlist": Array [
+    "c2a6b03f190dfb2b4aa91f8a",
+  ],
+}
+`;
+
+exports[`queries should recive user by token 1`] = `
+Object {
+  "address": Object {
+    "buildingNumber": "23",
+    "city": "Kiev",
+    "country": "Ukraine",
+    "street": "Shevchenka",
+  },
+  "comments": Array [
+    "f89ebabf1782ba3447a8fca8",
+  ],
+  "email": "test.email@gmail.com",
+  "firstName": "Test",
+  "lastName": "User",
+  "orders": Array [
+    "c94c4ebc880eb65b4ea39818",
+  ],
+  "phoneNumber": "380666666666",
+  "role": "user",
+  "wishlist": Array [
+    "c2a6b03f190dfb2b4aa91f8a",
+  ],
 }
 `;
