@@ -10,7 +10,7 @@ class CurrencyService {
   }
 
   async getCurrencyById(id) {
-    throw new Error(CURRENCY_NOT_FOUND) || (await Currency.findById(id));
+    return await Currency.findById(id);
   }
 
   async updateCurrency(id, currency) {

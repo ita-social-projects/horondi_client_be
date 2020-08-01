@@ -10,7 +10,7 @@ class CategoryService {
   }
 
   async getCategoryById(id) {
-    throw new Error(CATEGORY_NOT_FOUND) || (await Category.findById(id));
+    return await Category.findById(id);
   }
 
   async updateCategory(id, category) {
