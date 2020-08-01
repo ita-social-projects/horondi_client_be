@@ -425,7 +425,6 @@ describe('mutations', () => {
     test('should update user by token', async () => {
         const { 
             email,
-            role,
             phoneNumber,
             address,
             wishlist,
