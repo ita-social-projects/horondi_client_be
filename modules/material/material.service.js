@@ -10,7 +10,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    throw new Error(MATERIAL_NOT_FOUND) || (await Material.findById(id));
+    return await Material.findById(id);
   }
 
   async updateMaterial(id, material) {

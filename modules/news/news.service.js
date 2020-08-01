@@ -10,7 +10,7 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    throw new Error(NEWS_NOT_FOUND) || (await News.findById(id));
+    return await News.findById(id);
   }
 
   async updateNews(id, news) {

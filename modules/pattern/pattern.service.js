@@ -10,7 +10,7 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    throw new Error(PATTERN_NOT_FOUND) || (await Pattern.findById(id));
+    return await Pattern.findById(id);
   }
 
   async updatePattern(id, pattern) {
