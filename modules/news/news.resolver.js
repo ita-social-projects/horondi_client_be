@@ -4,14 +4,14 @@ const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const newsQuery = {
   getAllNews: () => newsService.getAllNews(),
   getNewsById: async (parent, args) => {
-    try {
-      return await newsService.getNewsById(args.id);
-    } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+    const news = await newsService.getNewsById(args.id);
+    if (news) {
+      return news;
     }
+    return {
+      statusCode: 404,
+      message: NEWS_NOT_FOUND,
+    };
   },
 };
 const newsMutation = {

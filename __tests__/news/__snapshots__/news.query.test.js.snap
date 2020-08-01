@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries #5 should receive one news id,title 1`] = `[Error: Network error: Response not successful: Received status code 400]`;
+
+exports[`querries #6 should receive one news author, image 1`] = `
+Object {
+  "data": null,
+  "loading": false,
+  "networkStatus": 7,
+  "stale": true,
+}
+`;
+
+exports[`querries #8 should throw error 1`] = `
+Object {
+  "data": null,
+  "loading": false,
+  "networkStatus": 7,
+  "stale": true,
+}
+`;

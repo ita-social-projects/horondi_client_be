@@ -21,14 +21,14 @@ const categoryQuery = {
 
 const categoryMutation = {
   addCategory: async (parent, args) => {
-    try {
-      return await categoryService.addCategory(args.category);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+    const category = await categoryService.addCategory(args.category);
+    if (category) {
+      return category;
     }
+    return {
+      statusCode: 400,
+      message: CATEGORY_NOT_FOUND,
+    };
   },
   deleteCategory: async (parent, args) => {
     const deletedCategory = await categoryService.deleteCategory(args.id);

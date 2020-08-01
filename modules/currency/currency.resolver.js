@@ -19,14 +19,14 @@ const currencyQuery = {
 
 const currencyMutation = {
   addCurrency: async (parent, args) => {
-    try {
-      return await currencyService.addCurrency(args.currency);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+    const currency = await currencyService.addCurrency(args.currency);
+    if (currency) {
+      return currency;
     }
+    return {
+      statusCode: 400,
+      message: CURRENCY_NOT_FOUND,
+    };
   },
   deleteCurrency: async (parent, args) => {
     const currency = await currencyService.deleteCurrency(args.id);

@@ -17,14 +17,14 @@ const patternQuery = {
 
 const patternMutation = {
   addPattern: async (parent, args) => {
-    try {
-      return await patternService.addPattern(args.pattern);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+    const pattern = await patternService.addPattern(args.pattern);
+    if (pattern) {
+      return pattern;
     }
+    return {
+      statusCode: 400,
+      message: PATTERN_NOT_FOUND,
+    };
   },
 
   deletePattern: async (parent, args) => {
