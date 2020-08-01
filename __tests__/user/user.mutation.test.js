@@ -79,6 +79,9 @@ describe('mutations', () => {
         );
         expect(res.data.registerUser).toHaveProperty('role', 'user');
         expect(res.data.registerUser).toHaveProperty('registrationDate');
+        const date = new Date(+res.data.registerUser.registrationDate).toDateString()
+        const dateNow = new Date(Date.now()).toDateString()
+        expect(dateNow).toBe(date);
     })
 
     test('should throw error User with provided email already exist', async () => {
