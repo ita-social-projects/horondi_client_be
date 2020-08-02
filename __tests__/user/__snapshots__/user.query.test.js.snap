@@ -8,19 +8,13 @@ Object {
     "country": "Ukraine",
     "street": "Shevchenka",
   },
-  "comments": Array [
-    "f89ebabf1782ba3447a8fca8",
-  ],
+  "comments": Array [],
   "email": "test.email@gmail.com",
   "firstName": "Test",
   "lastName": "User",
-  "orders": Array [
-    "c94c4ebc880eb65b4ea39818",
-  ],
+  "orders": Array [],
   "phoneNumber": "380666666666",
   "role": "user",
-  "wishlist": Array [
-    "c2a6b03f190dfb2b4aa91f8a",
-  ],
+  "wishlist": Array [],
 }
 `;

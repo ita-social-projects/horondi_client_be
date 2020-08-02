@@ -19,15 +19,9 @@ const testUser = {
         street: "Shevchenka",
         buildingNumber: "23",
     },
-    wishlist: [
-        "c2a6b03f190dfb2b4aa91f8a",
-    ],
-    orders: [
-        "c94c4ebc880eb65b4ea39818",
-    ],
-    comments: [
-        "f89ebabf1782ba3447a8fca8",
-    ],
+    wishlist: [],
+    orders: [],
+    comments: [],
 }
 
 describe('mutations', () => {

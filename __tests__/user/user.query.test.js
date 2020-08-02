@@ -62,15 +62,9 @@ describe('queries', () => {
                             street: "Shevchenka"
                             buildingNumber: "23"
                         },
-                        wishlist: [
-                            "c2a6b03f190dfb2b4aa91f8a"
-                        ],
-                        orders: [
-                            "c94c4ebc880eb65b4ea39818"
-                        ]
-                        comments: [
-                            "f89ebabf1782ba3447a8fca8"
-                        ]
+                        wishlist: [],
+                        orders: []
+                        comments: []
                     }){
                         firstName
                         lastName
@@ -132,15 +126,9 @@ describe('queries', () => {
                 street: "Shevchenka",
                 buildingNumber: "23",
             },
-            wishlist: [
-                "c2a6b03f190dfb2b4aa91f8a"
-            ],
-            orders: [
-                "c94c4ebc880eb65b4ea39818"
-            ],
-            comments: [
-                "f89ebabf1782ba3447a8fca8"
-            ]       
+            wishlist: [],
+            orders: [],
+            comments: []       
         });
 
     })
@@ -198,13 +186,13 @@ describe('queries', () => {
             }
         );
         expect(res.data.getUserByToken).toHaveProperty(
-            'wishlist', ["c2a6b03f190dfb2b4aa91f8a"]
+            'wishlist', []
         );
         expect(res.data.getUserByToken).toHaveProperty(
-            'orders', ["c94c4ebc880eb65b4ea39818"]
+            'orders', []
         );
         expect(res.data.getUserByToken).toHaveProperty(
-            'comments', ["f89ebabf1782ba3447a8fca8"]
+            'comments', []
         );
         expect(res.data.getUserByToken).toMatchSnapshot()
     })
@@ -271,17 +259,17 @@ describe('queries', () => {
             }
         );
         expect(res.data.getUserById).toHaveProperty(
-            'wishlist', ["c2a6b03f190dfb2b4aa91f8a"]
+            'wishlist', []
         );
         expect(res.data.getUserById).toHaveProperty(
-            'orders', ["c94c4ebc880eb65b4ea39818"]
+            'orders', []
         );
         expect(res.data.getUserById).toHaveProperty(
-            'comments', ["f89ebabf1782ba3447a8fca8"]
+            'comments', []
         );
     })
 
-    test('should recive user by id', async () => {
+    test('should trow Error User with provided _id not found', async () => {
 
         const res = await client.query({
             query: gql`
