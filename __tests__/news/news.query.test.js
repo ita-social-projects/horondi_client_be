@@ -5,308 +5,146 @@ const { newsQuery } = require('../../modules/news/news.resolver');
 require('dotenv').config();
 const newsService = require('../../modules/news/news.service');
 
+const NEWS_ID = '5f25bf7a6f5b2c3a189eaf2a';
+
 describe('querries', () => {
-  test('#1 all resolvers and services should be defined', () => {
+  test('#1 All query resolvers and services should be defined', () => {
     expect(newsQuery.getAllNews).toBeDefined();
     expect(newsQuery.getNewsById).toBeDefined();
     expect(newsService.getAllNews).toBeDefined();
     expect(newsService.getNewsById).toBeDefined();
   });
-
-  test('#2 should receive id,title', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query {
-            getAllNews {
-              _id
-              images {
-                primary {
-                  medium
-                }
-                additional {
-                  small
-                  medium
-                }
+  test('#2 Should receive all news', async () => {
+    const response = await client.query({
+      query: gql`
+        query {
+          getAllNews {
+            _id
+            date
+            title {
+              lang
+              value
+            }
+            text {
+              lang
+              value
+            }
+            images {
+              primary {
+                medium
+              }
+              additional {
+                medium
               }
             }
-          }
-        `,
-      })
-      .then(res => res);
-
-    expect(res).not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.toBe({
-      data: {
-        getAllNews: [
-          {
-            _id: '5f12be2493926837cce2c028',
-            images: {
-              primary: {
-                medium: 'sdfsdf4.jpg',
-              },
-              additional: [
-                {
-                  small: 'dfgfdg.jpg',
-                  medium: null,
-                },
-              ],
-            },
-          },
-        ],
-      },
-    });
-  });
-
-  test('#3 should receive text, video, date', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query {
-            getAllNews {
-              text {
+            video
+            author {
+              name {
                 lang
                 value
               }
-              video
-              date
+              image {
+                small
+              }
             }
           }
-        `,
-      })
-      .then(res => res);
-
-    expect(res).not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.toBe({
-      data: {
-        getAllNews: [
-          {
-            text: [
-              {
-                lang: 'ua',
-                value: 'тест новина',
-              },
-              {
-                lang: 'eng',
-                value: 'test news',
-              },
-            ],
-            video: '3ffefefds.jpg',
-            date: '1212121',
-          },
-        ],
-      },
+        }
+      `,
     });
-  });
 
-  test('#4 should receive author, images', async () => {
-    const res = await client
+    expect(response.data.getAllNews[0]).toMatchSnapshot();
+    expect(newsQuery.getAllNews).not.toThrow();
+    expect(response.data.getAllNews[0]).toHaveProperty('title');
+    expect(response.data.getAllNews[0].title).toBeInstanceOf(Array);
+    expect(response.data.getAllNews[0].text).toBeInstanceOf(Array);
+    expect(response.data.getAllNews[0]).toHaveProperty('author');
+    expect(response.data.getAllNews[0].author).toBeInstanceOf(Object);
+    expect(response.data.getAllNews[0]).toHaveProperty('images');
+    expect(response.data.getAllNews[0].images).toBeInstanceOf(Object);
+    expect(response.data.getAllNews[0]).toHaveProperty('date');
+    expect(response.data.getAllNews[0].images).toHaveProperty('primary');
+    expect(response.data.getAllNews[0].images).toHaveProperty('additional');
+  });
+  test('#3 Should receive one news', async () => {
+    const response = await client
       .query({
         query: gql`
-          query {
-            getAllNews {
-              author {
-                name {
-                  lang
+          query($id: ID) {
+            getNewsById(id: $id) {
+              ... on News {
+                title {
                   value
                 }
-                image {
-                  small
+                text {
+                  value
                 }
-              }
-              images {
-                primary {
-                  medium
-                }
-                additional {
-                  medium
-                  small
-                  large
-                }
-              }
-            }
-          }
-        `,
-      })
-      .then(res => res);
-
-    expect(res).not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.not.toBe(null);
-    expect(newsQuery.getAllNews()).resolves.toBe({
-      data: {
-        getAllNews: [
-          {
-            author: {
-              name: [
-                {
-                  lang: 'uk',
-                  value: 'тест автор',
-                },
-                {
-                  lang: 'eng',
-                  value: 'test author',
-                },
-              ],
-              image: null,
-            },
-            images: {
-              primary: {
-                medium: 'sdfsdf4.jpg',
-              },
-              additional: [
-                {
-                  medium: null,
-                  small: 'dfgfdg.jpg',
-                  large: null,
-                },
-              ],
-            },
-          },
-        ],
-      },
-    });
-  });
-
-  test('#5 should receive one news id,title', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query {
-            getNewsById(id: "5f12c4b963044a08e4f71697") {
-              ... on News {
+                date
+                video
                 images {
                   primary {
                     medium
                   }
                   additional {
-                    small
                     medium
                   }
                 }
-              }
-              ... on Error {
-                message {
-                  lang
-                  value
-                }
-                statusCode
-              }
-            }
-          }
-        `,
-      })
-      .then(res => res)
-      .catch(error => error);
-
-    expect(res).toMatchSnapshot();
-    expect(
-      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697'),
-    ).resolves.not.toBe(null);
-    expect(
-      newsQuery.getNewsById(null, '5f12c4b963044a08e4f71697'),
-    ).resolves.toBe({
-      data: {
-        getNewsById: {
-          _id: '5f12c4b963044a08e4f71697',
-          images: {
-            primary: {
-              medium: 'sdfsdf4.jpg',
-            },
-            additional: [
-              {
-                small: 'dfgfdg.jpg',
-                medium: null,
-              },
-            ],
-          },
-        },
-      },
-    });
-  });
-
-  test('#6 should receive one news author, image', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query {
-            getNewsById(id: "5f12c4b963044a08e4f71697") {
-              ... on News {
                 author {
                   name {
-                    lang
                     value
-                  }
-                  image {
-                    small
                   }
                 }
               }
               ... on Error {
+                statusCode
                 message
-                statusCode
               }
             }
           }
         `,
+        variables: { id: NEWS_ID },
       })
-      .then(res => res)
-      .catch(error => error);
+      .catch(e => e);
 
-    expect(res).toMatchSnapshot();
-    expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
-    ).resolves.toHaveReturned();
-    expect(
-      newsQuery.getNewsById(null, '5f12be2493926837cce2c028'),
-    ).resolves.toBe({
-      data: {
-        getNewsById: {
-          author: {
-            name: [
-              {
-                lang: 'uk',
-                value: 'Vova',
-              },
-              {
-                lang: 'eng',
-                value: 'vas',
-              },
-            ],
-            image: {
-              small: 'author.jpg',
-            },
-          },
-        },
-      },
-    });
+    expect(newsQuery.getNewsById(null, NEWS_ID)).resolves.not.toThrow();
+    expect(newsService.getNewsById(NEWS_ID)).resolves.not.toThrow();
+    expect(response.data.getNewsById).toHaveProperty('title');
+    expect(response.data.getNewsById.title).toBeInstanceOf(Array);
+    expect(response.data.getNewsById.text).toBeInstanceOf(Array);
+    expect(response.data.getNewsById).toHaveProperty('author');
+    expect(response.data.getNewsById.author).toBeInstanceOf(Object);
+    expect(response.data.getNewsById).toHaveProperty('images');
+    expect(response.data.getNewsById.images).toBeInstanceOf(Object);
+    expect(response.data.getNewsById).toHaveProperty('date');
+    expect(response.data.getNewsById.images).toHaveProperty('primary');
+    expect(response.data.getNewsById.images).toHaveProperty('additional');
   });
 
-  // error test
-  test('#8 should throw error', async () => {
-    const res = await client
+  test('#4 Returning not existing news should return error message', async () => {
+    const response = await client
       .query({
         query: gql`
           query {
-            getNewsById(id: "1f0570bca23481321c43f433") {
+            getNewsById(id: "1f15bf7a6f5b2c3a189eaf2a") {
               ... on News {
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                  image {
-                    small
-                  }
+                title {
+                  value
                 }
+                text {
+                  value
+                }
+                date
+                video
                 images {
                   primary {
                     medium
                   }
                   additional {
                     medium
-                    small
-                    large
+                  }
+                }
+                author {
+                  name {
+                    value
                   }
                 }
               }
@@ -319,41 +157,9 @@ describe('querries', () => {
         `,
       })
       .then(res => res)
-      .catch(error => error);
-
-    expect(res).toMatchSnapshot();
-    expect(
-      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
-    ).resolves.toBeInstanceOf(Error);
-    expect(
-      newsQuery.getNewsById(null, '1f0570bca23481321c43f433'),
-    ).resolves.toThrow({
-      errors: [
-        {
-          message:
-            '[{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]',
-          locations: [
-            {
-              line: 2,
-              column: 3,
-            },
-          ],
-          path: ['getNewsById'],
-          extensions: {
-            code: 'INTERNAL_SERVER_ERROR',
-            exception: {
-              stacktrace: [
-                'Error: [{"lang":"uk","value":"Новин  не знайдено"},{"lang":"eng","value":"News not found"}]',
-                '    at NewsService.getNewsById (C:\\Users\\Admin\\Desktop\\VS Code project\\HORONDI\\horondi_client_be\\modules\\news\\news.service.js:20:41)',
-                '    at processTicksAndRejections (internal/process/task_queues.js:97:5)',
-              ],
-            },
-          },
-        },
-      ],
-      data: {
-        getNewsById: null,
-      },
-    });
+      .catch(e => e);
+    expect(response.data.getNewsById).not.toBeNull();
+    expect(response.data.getNewsById).toHaveProperty('statusCode');
+    expect(response.data.getNewsById).toHaveProperty('message');
   });
 });

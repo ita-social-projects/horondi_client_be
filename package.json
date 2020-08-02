@@ -13,7 +13,8 @@
     "start": "nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "generate": "graphql-codegen"
   },
   "author": "",
   "license": "ISC",
@@ -43,6 +44,8 @@
     "rotating-file-stream": "^2.0.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.17.7",
+    "@graphql-codegen/fragment-matcher": "^1.17.7",
     "babel-eslint": "^10.1.0",
     "chance": "^1.1.5",
     "eslint": "^7.1.0",
@@ -71,5 +74,8 @@
       "prettier --write",
       "eslint . --fix"
     ]
+  },
+  "jest": {
+    "collectCoverage": true
   }
 }
