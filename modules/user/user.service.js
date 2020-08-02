@@ -4,25 +4,14 @@ const User = require('./user.model');
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateUpdateInput,
-} = require('../../utils/validateUser');
+  validateUpdateInput
+} = require('../../utils/validate-user');
 const generateToken = require('../../utils/createToken');
 
-const USER_NOT_FOUND = [
-  { lang: 'uk', value: 'Користувач не знайдений' },
-  { lang: 'eng', value: 'User not found' },
-];
+const USER_NOT_FOUND = 'User not found' 
 
-const USER_ALREADY_EXIST = [
-  {
-    lang: 'uk',
-    value: `Користувач з таким емейлом вже зареєстрований`,
-  },
-  {
-    lang: 'eng',
-    value: 'User with provided email already exists',
-  },
-];
+const USER_ALREADY_EXIST = 'User with provided email already exists'
+
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({
@@ -44,16 +33,7 @@ class UserService {
     });
 
     if (!checkedUser) {
-      const USER_WITH_KEY_NOT_FOUND = [
-        {
-          lang: 'uk',
-          value: `Користувач з данним ${[key]} не знайдений`,
-        },
-        {
-          lang: 'eng',
-          value: `User with provided ${[key]} not found`,
-        },
-      ];
+      const USER_WITH_KEY_NOT_FOUND =  `User with provided ${[key]} not found`
       throw new UserInputError(USER_WITH_KEY_NOT_FOUND, {
         errors: {
           [key]: USER_WITH_KEY_NOT_FOUND,
@@ -71,15 +51,10 @@ class UserService {
   getUser(id) {
     return this.getUserByFieldOrThrow('_id', id);
   }
-
-  async updateUserById({
-    firstName, lastName, email, password,
-  }, id) {
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
+  async updateUserById(updatedUser, id) {
+    const { firstName, lastName, email } = updatedUser
+  
+    const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
 
     if (errors) {
       throw new UserInputError('Errors', {
@@ -89,27 +64,17 @@ class UserService {
 
     const user = await this.getUserByFieldOrThrow('_id', id);
 
-    if (user._doc.email !== email) {
-      await this.checkUserExists(email);
+    if (user._doc.email !== updatedUser.email) {
+      await this.checkUserExists(updatedUser.email);
     }
 
-    return User.findByIdAndUpdate(
-      user._id,
-      {
-        firstName,
-        lastName,
-        email,
-      },
-      { new: true },
-    );
+    return User.findByIdAndUpdate(user._id,{ ...user._doc, ...updatedUser }, {new: true});
   }
 
-  async updateUserByToken({ firstName, lastName, email }, user) {
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
+  async updateUserByToken(updatedUser, user) {
+    const { firstName, lastName, email } = updatedUser
+
+    const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
 
     if (errors) {
       throw new UserInputError('Errors', {
@@ -117,15 +82,9 @@ class UserService {
       });
     }
 
-    return User.findByIdAndUpdate(
-      user._id,
-      {
-        firstName,
-        lastName,
-        email,
-      },
-      { new: true },
-    );
+    return User.findByIdAndUpdate(user._id, {
+      ...user._doc, ...updatedUser
+    }, {new: true});
   }
 
   async loginUser({ email, password }) {
@@ -148,25 +107,14 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError([
-        {
-          lang: 'uk',
-          value: `Невірний пароль`,
-        },
-        {
-          lang: 'eng',
-          value: `Wrong password`,
-        },
-      ]);
+      throw new AuthenticationError( `Wrong password`);
     }
 
     const token = generateToken(user._id, user.email);
 
     return {
-      user: {
-        ...user._doc,
-      },
-      id: user._id,
+       ...user._doc,
+      _id: user._id,
       token,
     };
   }
@@ -206,8 +154,9 @@ class UserService {
     return savedUser;
   }
 
-  deleteUser(id) {
-    return User.findByIdAndDelete(id) || new Error(USER_NOT_FOUND);
+  async deleteUser(id) {
+    const res = await User.findByIdAndDelete(id)
+    return res || new Error(USER_NOT_FOUND);
   }
 }
 module.exports = new UserService();
