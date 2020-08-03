@@ -32,7 +32,7 @@ class CategoryService {
   }
 
   async checkCategoryExist(data) {
-    const category = await Category.countDocuments({
+    const categoriesCount = await Category.countDocuments({
       code: data.code,
       name: {
         $elemMatch: {
@@ -40,7 +40,7 @@ class CategoryService {
         },
       },
     });
-    return category > 0;
+    return categoriesCount > 0;
   }
 }
 module.exports = new CategoryService();

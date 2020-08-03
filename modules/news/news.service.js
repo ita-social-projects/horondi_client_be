@@ -32,14 +32,14 @@ class NewsService {
   }
 
   async checkNewsExist(data) {
-    const news = await News.countDocuments({
+    const newsCount = await News.countDocuments({
       title: {
         $elemMatch: {
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },
     });
-    return news > 0;
+    return newsCount > 0;
   }
 }
 module.exports = new NewsService();

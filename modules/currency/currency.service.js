@@ -32,7 +32,7 @@ class CurrencyService {
   }
 
   async checkCurrencyExist(data) {
-    const currency = await Currency.countDocuments({
+    const currenciesCount = await Currency.countDocuments({
       convertOptions: {
         $elemMatch: {
           $or: [
@@ -42,7 +42,7 @@ class CurrencyService {
         },
       },
     });
-    return currency > 0;
+    return currenciesCount > 0;
   }
 }
 module.exports = new CurrencyService();

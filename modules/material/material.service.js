@@ -29,14 +29,14 @@ class MaterialsService {
   }
 
   async checkMaterialExist(data) {
-    const material = await Material.countDocuments({
+    const materialsCount = await Material.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
     });
-    return material > 0;
+    return materialsCount > 0;
   }
 }
 

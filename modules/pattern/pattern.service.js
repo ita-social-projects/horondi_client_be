@@ -32,14 +32,14 @@ class PatternsService {
   }
 
   async checkPatternExist(data) {
-    const pattern = await Pattern.countDocuments({
+    const patternsCount = await Pattern.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
     });
-    return pattern > 0;
+    return patternsCount > 0;
   }
 }
 module.exports = new PatternsService();
