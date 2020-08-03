@@ -18,7 +18,16 @@ const commentsQuery = {
 
 const commentsMutation = {
   addComment: (parent, args) => commentsService.addComment(args.comment),
-  deleteComment: (parent, args) => commentsService.deleteComment(args.id),
+  deleteComment: async (parent, args) => {
+    const deletedComment = await commentsService.deleteComment(args.id);
+    if (deletedComment) {
+      return deletedComment;
+    }
+    return {
+      statusCode: 404,
+      message: COMMENT_NOT_FOUND,
+    };
+  },
   updateComment: (parent, args) => commentsService.updateComment(args.id, args.comment),
 };
 

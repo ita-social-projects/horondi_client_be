@@ -17,7 +17,16 @@ const productsQuery = {
 
 const productsMutation = {
   addProduct: (parent, args) => productsService.addProduct(args.products),
-  deleteProduct: (parent, args) => productsService.deleteProduct(args.id),
+  deleteProduct: async (parent, args) => {
+    const deletedProduct = await productsService.deleteProduct(args.id);
+    if (deletedProduct) {
+      return deletedProduct;
+    }
+    return {
+      statusCode: 404,
+      message: PRODUCT_NOT_FOUND,
+    };
+  },
   updateProduct: (parent, args) => productsService.updateProduct(args.id, args.products),
 };
 
