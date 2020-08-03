@@ -140,7 +140,8 @@ const resolvers = {
   },
   CommentResult: {
     __resolveType: obj => {
-      if (obj.name) {
+      console.log(obj.product);
+      if (obj.product) {
         return 'Comment';
       }
       return 'Error';

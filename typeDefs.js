@@ -168,9 +168,8 @@ const typeDefs = gql`
       sort: SortInput
     ): [ProductResult]!
 
-    getAllComments: [CommentResult]
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(id: ID!): [CommentResult!]!
+    getAllCommentsByProduct(id: ID!): [CommentResult]
   }
 
   input SortInput {
