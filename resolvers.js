@@ -1,6 +1,16 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const {
+  productsQuery,
+  productsMutation,
+} = require('./modules/product/product.resolver');
+
+const {
+  commentsQuery,
+  commentsMutation,
+} = require('./modules/comment/comment.resolver');
+
+const {
   currencyQuery,
   currencyMutation,
 } = require('./modules/currency/currency.resolver');
@@ -16,6 +26,11 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const categoryService = require('./modules/category/category.service');
+const userService = require('./modules/user/user.service');
+const productsService = require('./modules/product/product.service');
+const materialsService = require('./modules/material/material.service');
+const commentsService = require('./modules/comment/comment.service');
 
 const resolvers = {
   Query: {
@@ -30,7 +45,27 @@ const resolvers = {
     ...newsQuery,
 
     ...userQuery,
+
+    ...productsQuery,
+
+    ...commentsQuery,
   },
+  Comment: {
+    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
+    product: parent => productsService.getProductsById(parent.product),
+  },
+
+  Product: {
+    category: parent => categoryService.getCategoryById(parent.category),
+    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
+    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
+  },
+
+  ProductOptions: {
+    size: parent => productsService.getSizeById(parent.size),
+    bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
+  },
+
   Mutation: {
     ...patternMutation,
 
@@ -43,6 +78,10 @@ const resolvers = {
     ...newsMutation,
 
     ...userMutation,
+
+    ...productsMutation,
+
+    ...commentsMutation,
   },
   CategoryResult: {
     __resolveType: obj => {

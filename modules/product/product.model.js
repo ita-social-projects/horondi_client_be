@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const PrimaryImage = require('./PrimaryImage').schema;
-const ImageSet = require('../modules/common/ImageSet').schema;
-const Color = require('./Color').schema;
+const Language = require('../../models/Language').schema;
+const PrimaryImage = require('../../models/PrimaryImage').schema;
+const ImageSet = require('../common/ImageSet').schema;
+const Color = require('../../models/Color').schema;
 
 const productSchema = new mongoose.Schema({
   category: {
@@ -36,15 +36,17 @@ const productSchema = new mongoose.Schema({
         ref: 'Material',
       },
       bottomColor: [Language],
-      additions: [{
-        name: [Language],
-        description: [Language],
-        available: Boolean,
-        additionalPrice: {
-          type: Number,
-          default: 0,
+      additions: [
+        {
+          name: [Language],
+          description: [Language],
+          available: Boolean,
+          additionalPrice: {
+            type: Number,
+            default: 0,
+          },
         },
-      }],
+      ],
       availableCount: Number,
     },
   ],
