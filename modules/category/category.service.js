@@ -1,7 +1,7 @@
-const { ApolloError } = require('apollo-server');
 const Category = require('./category.model');
 const {
   CATEGORY_ALREADY_EXIST,
+  CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 
 class CategoryService {
@@ -14,11 +14,25 @@ class CategoryService {
   }
 
   async updateCategory(id, category) {
+    if (await this.checkNewsExist(category)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
     return await Category.findByIdAndUpdate(id, category, { new: true });
   }
 
   async addCategory(data) {
-    const category = await Category.find({
+    if (await this.checkCategoryEXist(data)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    return new Category(data).save();
+  }
+
+  async deleteCategory(id) {
+    return await Category.findByIdAndDelete(id);
+  }
+
+  async checkCategoryExist(data) {
+    const categoriesCount = await Category.countDocuments({
       code: data.code,
       name: {
         $elemMatch: {
@@ -26,15 +40,7 @@ class CategoryService {
         },
       },
     });
-
-    if (category.length !== 0) {
-      return new ApolloError(CATEGORY_ALREADY_EXIST, 400);
-    }
-    return new Category(data).save();
-  }
-
-  async deleteCategory(id) {
-    return await Category.findByIdAndDelete(id);
+    return categoriesCount > 0;
   }
 }
 module.exports = new CategoryService();

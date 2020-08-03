@@ -18,7 +18,16 @@ const currencyQuery = {
 };
 
 const currencyMutation = {
-  addCurrency: (parent, args) => currencyService.addCurrency(args.currency),
+  addCurrency: async (parent, args) => {
+    try {
+      return await currencyService.addCurrency(args.currency);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
   deleteCurrency: async (parent, args) => {
     const currency = await currencyService.deleteCurrency(args.id);
     if (currency) {
@@ -30,17 +39,14 @@ const currencyMutation = {
     };
   },
   updateCurrency: async (parent, args) => {
-    const currency = await currencyService.updateCurrency(
-      args.id,
-      args.currency,
-    );
-    if (currency) {
-      return currency;
+    try {
+      return await currencyService.updateCurrency(args.id, args.currency);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: CURRENCY_NOT_FOUND,
-    };
   },
 };
 
