@@ -4,9 +4,7 @@ const USER_NOT_AUTHORIZE = `Invalid authorization token`;
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(),
-  getUserByToken: (parent, args, context) => {
-    userService.getUser(context.user._id);
-  },
+  getUserByToken: (parent, args, context) => userService.getUser(context.user._id),
   getUserById: (parent, args, context) => {
     if (context.user) {
       return userService.getUser(args.id);
