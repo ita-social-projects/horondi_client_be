@@ -1,15 +1,6 @@
 const userService = require('./user.service');
 
-const USER_NOT_AUTHORIZE = [
-  {
-    lang: 'uk',
-    value: `Користувач неавторизований`,
-  },
-  {
-    lang: 'eng',
-    value: `Unauthorized`,
-  },
-];
+const USER_NOT_AUTHORIZE = `Invalid authorization token`;
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(),

@@ -2,14 +2,12 @@ const Joi = require('@hapi/joi');
 
 exports.validateRegisterInput = Joi.object({
   firstName: Joi.string()
-    .alphanum()
-    .min(3)
+    .min(2)
     .max(30)
     .required(),
 
   lastName: Joi.string()
-    .alphanum()
-    .min(3)
+    .min(2)
     .max(30)
     .required(),
 
@@ -25,16 +23,12 @@ exports.validateRegisterInput = Joi.object({
 
 exports.validateUpdateInput = Joi.object({
   firstName: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required(),
+    .min(2)
+    .max(30),
 
   lastName: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required(),
+    .min(2)
+    .max(30),
 
   email: Joi.string().email({
     minDomainSegments: 2,
