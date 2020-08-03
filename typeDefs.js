@@ -126,9 +126,15 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type Products {
+    products: [Product]
+    productsCount: Int
   }
 
   union CategoryResult = Category | Error
@@ -164,7 +170,7 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): [Product]!
+    ): Products!
 
     getAllComments: [Comment]
     getCommentById(id: ID!): Comment

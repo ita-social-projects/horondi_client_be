@@ -2,7 +2,14 @@ const productsService = require('./product.service');
 
 const productsQuery = {
   getProductsById: (parent, args) => productsService.getProductsById(args.id),
-  getProducts: (parent, args) => productsService.getProducts(args),
+  getProducts: async (parent, args) => {
+    const products = await productsService.getProducts(args);
+    const productsCount = await productsService.getProductsCount(args);
+    return {
+      products,
+      productsCount,
+    };
+  },
 };
 
 const productsMutation = {

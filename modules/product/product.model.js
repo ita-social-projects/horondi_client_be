@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
   mainMaterial: [Language],
   innerMaterial: [Language],
   strapLengthInCm: Number,
-  images: [PrimaryImage],
+  images: PrimaryImage,
   colors: [Color],
   pattern: [Language],
   patternImages: ImageSet,

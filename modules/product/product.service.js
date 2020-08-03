@@ -51,6 +51,27 @@ class ProductsService {
   }) {
     const isNotBlank = str => !(!str || str.trim().length === 0);
     const filters = this.filterItems(filter);
+    if (isNotBlank(search)) {
+      filters.$or = [
+        {
+          name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
+        },
+        {
+          description: {
+            $elemMatch: { value: { $regex: new RegExp(search, 'i') } },
+          },
+        },
+      ];
+    }
+    return Products.find(filters)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
+  }
+
+  getProductsCount({ filter, search }) {
+    const isNotBlank = str => !(!str || str.trim().length === 0);
+    const filters = this.filterItems(filter);
 
     if (isNotBlank(search)) {
       filters.$or = [
@@ -65,10 +86,7 @@ class ProductsService {
       ];
     }
 
-    return Products.find(filters)
-      .skip(skip)
-      .limit(limit)
-      .sort(sort);
+    return Products.find(filters).countDocuments();
   }
 
   updateProduct(id, products) {
