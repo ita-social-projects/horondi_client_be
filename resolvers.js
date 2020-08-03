@@ -1,6 +1,16 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const {
+  productsQuery,
+  productsMutation,
+} = require('./modules/product/product.resolver');
+
+const {
+  commentsQuery,
+  commentsMutation,
+} = require('./modules/comment/comment.resolver');
+
+const {
   currencyQuery,
   currencyMutation,
 } = require('./modules/currency/currency.resolver');
@@ -16,8 +26,13 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const categoryService = require('./modules/category/category.service');
+const userService = require('./modules/user/user.service');
+const productsService = require('./modules/product/product.service');
+const materialsService = require('./modules/material/material.service');
+const commentsService = require('./modules/comment/comment.service');
 
-const schemaNames = {
+const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
@@ -37,7 +52,27 @@ const resolvers = {
     ...newsQuery,
 
     ...userQuery,
+
+    ...productsQuery,
+
+    ...commentsQuery,
   },
+  Comment: {
+    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
+    product: parent => productsService.getProductsById(parent.product),
+  },
+
+  Product: {
+    category: parent => categoryService.getCategoryById(parent.category),
+    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
+    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
+  },
+
+  ProductOptions: {
+    size: parent => productsService.getSizeById(parent.size),
+    bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
+  },
+
   Mutation: {
     ...patternMutation,
 
@@ -50,11 +85,15 @@ const resolvers = {
     ...newsMutation,
 
     ...userMutation,
+
+    ...productsMutation,
+
+    ...commentsMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return schemaNames.category;
+        return SCHEMA_NAMES.category;
       }
       return 'Error';
     },
@@ -62,7 +101,7 @@ const resolvers = {
   CurrencyResult: {
     __resolveType: obj => {
       if (obj.date) {
-        return schemaNames.currency;
+        return SCHEMA_NAMES.currency;
       }
       return 'Error';
     },
@@ -70,7 +109,7 @@ const resolvers = {
   NewsResult: {
     __resolveType: obj => {
       if (obj.title) {
-        return schemaNames.news;
+        return SCHEMA_NAMES.news;
       }
       return 'Error';
     },
@@ -78,7 +117,7 @@ const resolvers = {
   MaterialResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return schemaNames.material;
+        return SCHEMA_NAMES.material;
       }
       return 'Error';
     },
@@ -86,7 +125,7 @@ const resolvers = {
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return schemaNames.pattern;
+        return SCHEMA_NAMES.pattern;
       }
       return 'Error';
     },

@@ -39,14 +39,14 @@ const patternMutation = {
   },
 
   updatePattern: async (parent, args) => {
-    const pattern = await patternService.updatePattern(args.id, args.pattern);
-    if (pattern) {
-      return pattern;
+    try {
+      return await patternService.addPattern(args.id, args.pattern);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: PATTERN_NOT_FOUND,
-    };
   },
 };
 

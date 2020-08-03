@@ -39,17 +39,14 @@ const currencyMutation = {
     };
   },
   updateCurrency: async (parent, args) => {
-    const currency = await currencyService.updateCurrency(
-      args.id,
-      args.currency,
-    );
-    if (currency) {
-      return currency;
+    try {
+      return await currencyService.updateCurrency(args.id, args.currency);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: CURRENCY_NOT_FOUND,
-    };
   },
 };
 

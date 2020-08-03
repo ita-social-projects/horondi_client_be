@@ -4,14 +4,14 @@ const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const newsQuery = {
   getAllNews: () => newsService.getAllNews(),
   getNewsById: async (parent, args) => {
-    const news = await newsService.getNewsById(args.id);
-    if (news) {
-      return news;
+    try {
+      return await newsService.getNewsById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: NEWS_NOT_FOUND,
-    };
   },
 };
 const newsMutation = {
@@ -36,14 +36,14 @@ const newsMutation = {
     };
   },
   updateNews: async (parent, args) => {
-    const news = await newsService.updateNews(args.id, args.news);
-    if (news) {
-      return news;
+    try {
+      return await newsService.updateNews(args.id, args.news);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: NEWS_NOT_FOUND,
-    };
   },
 };
 module.exports = { newsQuery, newsMutation };

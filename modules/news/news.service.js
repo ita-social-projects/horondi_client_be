@@ -10,10 +10,17 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    return await News.findById(id);
+    const news = await News.findById(id);
+    if (news) {
+      return news;
+    }
+    throw new Error(NEWS_NOT_FOUND);
   }
 
   async updateNews(id, news) {
+    if (await this.checkNewsExist(news)) {
+      throw new Error(NEWS_ALREADY_EXIST);
+    }
     return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
@@ -29,14 +36,14 @@ class NewsService {
   }
 
   async checkNewsExist(data) {
-    const news = await News.find({
+    const newsCount = await News.countDocuments({
       title: {
         $elemMatch: {
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },
     });
-    return news.length > 0;
+    return newsCount > 0;
   }
 }
 module.exports = new NewsService();

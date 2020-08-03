@@ -132,5 +132,9 @@ describe('news mutations', () => {
       })
       .then(res => res)
       .catch(e => e);
+    expect(res.data.updateNews).toMatchSnapshot();
+    expect(res.data.updateNews).not.toTrow();
+    expect(res.data.updateNews.title).toBeInstanceOf(Array);
+    expect(res.data.updateNews.title).toBe(news.title);
   });
 });

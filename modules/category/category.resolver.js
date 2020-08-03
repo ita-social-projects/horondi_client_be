@@ -41,17 +41,14 @@ const categoryMutation = {
     };
   },
   updateCategory: async (parent, args) => {
-    const updatedCategory = await categoryService.updateCategory(
-      args.id,
-      args.category,
-    );
-    if (updatedCategory) {
-      return updatedCategory;
+    try {
+      return await categoryService.updateCategory(args.id, args.category);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: CATEGORY_NOT_FOUND,
-    };
   },
 };
 

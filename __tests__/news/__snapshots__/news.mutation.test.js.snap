@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`news mutations #3 update news 1`] = `
+Object {
+  "__typename": "Error",
+  "message": "NEWS_ALREADY_EXIST",
+  "statusCode": 404,
+}
+`;

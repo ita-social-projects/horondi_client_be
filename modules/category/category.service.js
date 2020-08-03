@@ -14,6 +14,9 @@ class CategoryService {
   }
 
   async updateCategory(id, category) {
+    if (await this.checkNewsExist(category)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
     return await Category.findByIdAndUpdate(id, category, { new: true });
   }
 
@@ -29,7 +32,7 @@ class CategoryService {
   }
 
   async checkCategoryExist(data) {
-    const category = await Category.find({
+    const categoriesCount = await Category.countDocuments({
       code: data.code,
       name: {
         $elemMatch: {
@@ -37,7 +40,7 @@ class CategoryService {
         },
       },
     });
-    return category.length > 0;
+    return categoriesCount > 0;
   }
 }
 module.exports = new CategoryService();

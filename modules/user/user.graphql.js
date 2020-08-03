@@ -1,15 +1,15 @@
 const userType = `
 type User{
-    id:ID!
-    firstName: String!
-    lastName: String!
+    _id:ID!
+    firstName: String
+    lastName: String
     password: String
     role: RoleEnum
     email: String!
-    phoneNumber: Int
+    phoneNumber: String
     address: Address
     images: ImageSet
-    token: String!
+    token: String
     credentials: [Credential]
     registrationDate: String
     wishlist: [ID]
@@ -26,12 +26,10 @@ input UserInput {
     lastName: String
     password: String
     role: String
-    email: String!
-    phoneNumber: Int
+    email: String
+    phoneNumber: String
     address: AddressInput
     images: ImageSetInput
-    credentials: [CredentialInput]
-    registrationDate: String
     wishlist: [ID]
     orders:[ID]
     purchasedProducts: [ID]
@@ -39,5 +37,23 @@ input UserInput {
     banned: Boolean
     confirmed: Boolean
 }`;
+const userLoginInput = `
+input userLoginInput {
+    password: String!
+    email: String!
+}`;
 
-module.exports = { userType, userInput };
+const userRegisterInput = `
+input userRegisterInput {
+    firstName: String!
+    lastName: String!
+    password: String!
+    email: String!
+}`;
+
+module.exports = {
+  userType,
+  userInput,
+  userRegisterInput,
+  userLoginInput,
+};
