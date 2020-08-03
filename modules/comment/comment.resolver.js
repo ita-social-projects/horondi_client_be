@@ -1,5 +1,5 @@
 const commentsService = require('./comment.service');
-const COMMENT_NOT_FOUND = require('../../error-messages/comment.messages');
+const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 
 const commentsQuery = {
   getAllComments: () => commentsService.getAllComments(),
