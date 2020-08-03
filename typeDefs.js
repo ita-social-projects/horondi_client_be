@@ -128,7 +128,7 @@ const typeDefs = gql`
   }
   type Error {
     statusCode: Int
-    message: [Language]
+    message: String
   }
 
   union CategoryResult = Category | Error
@@ -266,7 +266,7 @@ const typeDefs = gql`
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
 
     "News Mutation"
-    addNews(news: NewsInput!): News
+    addNews(news: NewsInput!): NewsResult
     deleteNews(id: ID!): NewsResult
     updateNews(id: ID!, news: NewsInput!): NewsResult
 

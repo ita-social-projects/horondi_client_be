@@ -15,7 +15,16 @@ const newsQuery = {
   },
 };
 const newsMutation = {
-  addNews: (parent, args) => newsService.addNews(args.news),
+  addNews: async (parent, args) => {
+    try {
+      return await newsService.addNews(args.news);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
   deleteNews: async (parent, args) => {
     const news = await newsService.deleteNews(args.id);
     if (news) {
@@ -27,15 +36,14 @@ const newsMutation = {
     };
   },
   updateNews: async (parent, args) => {
-    const news = await newsService.updateNews(args.id, args.news);
-    if (news) {
-      return news;
+    try {
+      return await newsService.updateNews(args.id, args.news);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: NEWS_NOT_FOUND,
-    };
   },
 };
-
 module.exports = { newsQuery, newsMutation };

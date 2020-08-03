@@ -1,16 +1,4 @@
-const PATTERN_NOT_FOUND = [
-  {
-    lang: 'uk',
-    value: 'Гобелен  не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'Pattern not found',
-  },
-];
+const PATTERN_NOT_FOUND = 'PATTERN_NOT_FOUND';
 
-const PATTERN_ALREADY_EXIST = [
-  { lang: 'uk', value: 'Гобелен вже існує' },
-  { lang: 'eng', value: 'Pattern already exist' },
-];
+const PATTERN_ALREADY_EXIST = 'PATTERN_ALREADY_EXIST';
 module.exports = { PATTERN_NOT_FOUND, PATTERN_ALREADY_EXIST };
