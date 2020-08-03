@@ -1,16 +1,4 @@
-const MATERIAL_NOT_FOUND = [
-  {
-    lang: 'uk',
-    value: 'Матеріал не знайдено',
-  },
-  {
-    lang: 'eng',
-    value: 'Material not found',
-  },
-];
-const MATERIAL_ALREADY_EXIST = [
-  { lang: 'uk', value: 'Матеріал вже існує' },
-  { lang: 'eng', value: 'MATERIAL already exist' },
-];
+const MATERIAL_NOT_FOUND = 'MATERIAL_NOT_FOUND';
 
+const MATERIAL_ALREADY_EXIST = 'MATERIAL_ALREADY_EXIST';
 module.exports = { MATERIAL_NOT_FOUND, MATERIAL_ALREADY_EXIST };

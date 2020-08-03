@@ -32,6 +32,13 @@ const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 
+const SCHEMA_NAMES = {
+  category: 'Category',
+  news: 'News',
+  pattern: 'Pattern',
+  material: 'Material',
+  currency: 'Currency',
+};
 const resolvers = {
   Query: {
     ...currencyQuery,
@@ -86,7 +93,7 @@ const resolvers = {
   CategoryResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return 'Category';
+        return SCHEMA_NAMES.category;
       }
       return 'Error';
     },
@@ -94,7 +101,7 @@ const resolvers = {
   CurrencyResult: {
     __resolveType: obj => {
       if (obj.date) {
-        return 'Currency';
+        return SCHEMA_NAMES.currency;
       }
       return 'Error';
     },
@@ -102,7 +109,7 @@ const resolvers = {
   NewsResult: {
     __resolveType: obj => {
       if (obj.title) {
-        return 'News';
+        return SCHEMA_NAMES.news;
       }
       return 'Error';
     },
@@ -110,7 +117,7 @@ const resolvers = {
   MaterialResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return 'Material';
+        return SCHEMA_NAMES.material;
       }
       return 'Error';
     },
@@ -118,7 +125,7 @@ const resolvers = {
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return 'Pattern';
+        return SCHEMA_NAMES.pattern;
       }
       return 'Error';
     },
