@@ -38,6 +38,8 @@ const SCHEMA_NAMES = {
   pattern: 'Pattern',
   material: 'Material',
   currency: 'Currency',
+  product: 'Product',
+  comment: 'Comment',
 };
 const resolvers = {
   Query: {
@@ -133,16 +135,15 @@ const resolvers = {
   ProductResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return 'Product';
+        return SCHEMA_NAMES.product;
       }
       return 'Error';
     },
   },
   CommentResult: {
     __resolveType: obj => {
-      console.log(obj.product);
       if (obj.product) {
-        return 'Comment';
+        return SCHEMA_NAMES.comment;
       }
       return 'Error';
     },

@@ -1,8 +1,22 @@
 const productsService = require('./product.service');
-const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
+const {
+  PRODUCT_NOT_FOUND,
+  PRODUCTS_NOT_FOUND,
+} = require('../../error-messages/products.messages');
 
 const productsQuery = {
-  getProducts: (parent, args) => productsService.getProducts(args),
+  getProducts: async (parent, args) => {
+    const products = await productsService.getProducts(args);
+    if (products.length > 0) {
+      return products;
+    }
+    return [
+      {
+        statusCode: 404,
+        message: PRODUCTS_NOT_FOUND,
+      },
+    ];
+  },
   getProductById: async (parent, args) => {
     const product = await productsService.getProductById(args.id);
     if (product) {
