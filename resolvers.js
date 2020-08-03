@@ -138,6 +138,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  CommentResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return 'Comment';
+      }
+      return 'Error';
+    },
+  },
 };
 
 module.exports = resolvers;

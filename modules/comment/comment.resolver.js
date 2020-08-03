@@ -1,8 +1,18 @@
 const commentsService = require('./comment.service');
+const COMMENT_NOT_FOUND = require('../../error-messages/comment.messages');
 
 const commentsQuery = {
   getAllComments: () => commentsService.getAllComments(),
-  getCommentById: (parent, args) => commentsService.getCommentById(args.id),
+  getCommentById: async (parent, args) => {
+    const comment = await commentsService.getCommentById(args.id);
+    if (comment) {
+      return comment;
+    }
+    return {
+      statusCode: 404,
+      message: COMMENT_NOT_FOUND,
+    };
+  },
   getAllCommentsByProduct: (parent, args) => commentsService.getAllCommentsByProduct(args.id),
 };
 

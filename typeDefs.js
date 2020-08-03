@@ -137,6 +137,7 @@ const typeDefs = gql`
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
+  union CommentResult = Comment | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -165,11 +166,11 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): [Product]!
+    ): [ProductResult]!
 
-    getAllComments: [Comment]
-    getCommentById(id: ID!): Comment
-    getAllCommentsByProduct(id: ID!): [Comment!]!
+    getAllComments: [CommentResult]
+    getCommentById(id: ID!): CommentResult
+    getAllCommentsByProduct(id: ID!): [CommentResult!]!
   }
 
   input SortInput {
