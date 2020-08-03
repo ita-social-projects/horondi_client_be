@@ -4,13 +4,13 @@ const User = require('./user.model');
 const {
   validateRegisterInput,
   validateLoginInput,
-  validateUpdateInput
+  validateUpdateInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/createToken');
 
-const USER_NOT_FOUND = 'User not found' 
+const USER_NOT_FOUND = 'User not found';
 
-const USER_ALREADY_EXIST = 'User with provided email already exists'
+const USER_ALREADY_EXIST = 'User with provided email already exists';
 
 class UserService {
   async checkUserExists(email) {
@@ -33,7 +33,7 @@ class UserService {
     });
 
     if (!checkedUser) {
-      const USER_WITH_KEY_NOT_FOUND =  `User with provided ${[key]} not found`
+      const USER_WITH_KEY_NOT_FOUND = `User with provided ${[key]} not found`;
       throw new UserInputError(USER_WITH_KEY_NOT_FOUND, {
         errors: {
           [key]: USER_WITH_KEY_NOT_FOUND,
@@ -51,10 +51,15 @@ class UserService {
   getUser(id) {
     return this.getUserByFieldOrThrow('_id', id);
   }
+
   async updateUserById(updatedUser, id) {
-    const { firstName, lastName, email } = updatedUser
-  
-    const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
+    const { firstName, lastName, email } = updatedUser;
+
+    const { errors } = await validateUpdateInput.validateAsync({
+      firstName,
+      lastName,
+      email,
+    });
 
     if (errors) {
       throw new UserInputError('Errors', {
@@ -68,13 +73,21 @@ class UserService {
       await this.checkUserExists(updatedUser.email);
     }
 
-    return User.findByIdAndUpdate(user._id,{ ...user._doc, ...updatedUser }, {new: true});
+    return User.findByIdAndUpdate(
+      user._id,
+      { ...user._doc, ...updatedUser },
+      { new: true },
+    );
   }
 
   async updateUserByToken(updatedUser, user) {
-    const { firstName, lastName, email } = updatedUser
+    const { firstName, lastName, email } = updatedUser;
 
-    const { errors } = await validateUpdateInput.validateAsync({ firstName, lastName, email });
+    const { errors } = await validateUpdateInput.validateAsync({
+      firstName,
+      lastName,
+      email,
+    });
 
     if (errors) {
       throw new UserInputError('Errors', {
@@ -82,9 +95,14 @@ class UserService {
       });
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      ...user._doc, ...updatedUser
-    }, {new: true});
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        ...user._doc,
+        ...updatedUser,
+      },
+      { new: true },
+    );
   }
 
   async loginUser({ email, password }) {
@@ -107,13 +125,13 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError( `Wrong password`);
+      throw new AuthenticationError(`Wrong password`);
     }
 
     const token = generateToken(user._id, user.email);
 
     return {
-       ...user._doc,
+      ...user._doc,
       _id: user._id,
       token,
     };
@@ -155,7 +173,7 @@ class UserService {
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id)
+    const res = await User.findByIdAndDelete(id);
     return res || new Error(USER_NOT_FOUND);
   }
 }

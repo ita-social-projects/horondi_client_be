@@ -51,4 +51,6 @@ input userRegisterInput {
     email: String!
 }`;
 
-module.exports = { userType, userInput, userRegisterInput, userLoginInput };
+module.exports = {
+  userType, userInput, userRegisterInput, userLoginInput,
+};

@@ -14,10 +14,11 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const { token } = req.headers || '';
     if (token) {
-      const user = verifyUser(token) ;
-      if(!user)
-        throw new AuthenticationError('Invalid authorization token')
-      return { user: await userService.getUserByFieldOrThrow('email', user.email) };
+      const user = verifyUser(token);
+      if (!user) throw new AuthenticationError('Invalid authorization token');
+      return {
+        user: await userService.getUserByFieldOrThrow('email', user.email),
+      };
     }
   },
 });

@@ -1,6 +1,15 @@
 const { gql } = require('apollo-server');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
-const { userType, userInput, userRegisterInput, userLoginInput } = require('./modules/user/user.graphql');
+const {
+  userType,
+  userInput,
+  userRegisterInput,
+  userLoginInput,
+} = require('./modules/user/user.graphql');
+const {
+  productType,
+  productInput,
+} = require('./modules/product/product.graphql');
 const {
   categoryType,
   categoryInput,
@@ -17,6 +26,10 @@ const {
   currencyType,
   currencyInput,
 } = require('./modules/currency/currency.graphql.js');
+const {
+  commentType,
+  commentInput,
+} = require('./modules/comment/comment.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -25,6 +38,9 @@ const typeDefs = gql`
   ${newsType}
   ${patternsType}
   ${userType}
+  ${productType}
+  ${commentType}
+
   enum RoleEnum {
     admin
     user
@@ -74,6 +90,41 @@ const typeDefs = gql`
     name: [Language]
     images: ImageSet
     available: Boolean
+    simpleName: [Language]
+  }
+
+  type ProductOptions {
+    size: Size
+    bottomMaterial: BottomMaterial
+    bottomColor: [Language]
+    availableCount: Boolean
+    additions: [ProductAdditions]
+  }
+
+  type ProductAdditions {
+    name: [Language]
+    description: [Language]
+    available: Boolean
+    additionalPrice: Int
+  }
+
+  type Size {
+    name: String
+    heightInCm: Int
+    widthInCm: Int
+    depthInCm: Int
+    volumeInLiters: Int
+    weightInKg: Float
+    available: Boolean
+    additionalPrice: Int
+  }
+
+  type BottomMaterial {
+    name: [Language]
+    description: [Language]
+    colors: [Color]
+    available: Boolean
+    additionalPrice: Int
   }
   type Error {
     statusCode: Int
@@ -105,6 +156,34 @@ const typeDefs = gql`
     getAllUsers: [User]
     getUserByToken: User
     getUserById(id: ID!): User
+
+    getProductsById(id: ID!): Product
+    getProducts(
+      filter: FilterInput
+      limit: Int
+      skip: Int
+      search: String
+      sort: SortInput
+    ): [Product]!
+
+    getAllComments: [Comment]
+    getCommentById(id: ID!): Comment
+    getAllCommentsByProduct(id: ID!): [Comment!]!
+  }
+
+  input SortInput {
+    purchasedCount: Int
+    basePrice: Int
+    rate: Int
+    isHotItem: Boolean
+  }
+
+  input FilterInput {
+    pattern: [String]
+    materials: [String]
+    colors: [String]
+    price: [Int]
+    category: [String]
   }
   input RoleEnumInput {
     role: String
@@ -123,8 +202,11 @@ const typeDefs = gql`
   ${newsInput}
   ${patternsInput}
   ${userInput}
+  ${productInput}
+  ${commentInput}
   ${userLoginInput}
   ${userRegisterInput}
+
   input LanguageInput {
     lang: String!
     value: String!
@@ -194,6 +276,16 @@ const typeDefs = gql`
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+
+    "Product Mutation"
+    addProduct(product: productInput!): Product
+    deleteProduct(id: ID!): Product
+    updateProduct(id: ID!, product: productInput!): Product
+
+    "Comment Mutation"
+    addComment(comment: commentInput!): Comment
+    deleteComment(id: ID!): Comment
+    updateComment(id: ID!, product: commentInput!): Comment
   }
 `;
 

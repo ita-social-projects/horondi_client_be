@@ -7,7 +7,7 @@ const fetch = require('node-fetch');
 
 const client = new ApolloClient({
   link: createHttpLink({
-    uri: process.env.TEST_BASE_URI ,
+    uri: process.env.TEST_BASE_URI,
     fetch,
   }),
   cache: new InMemoryCache({
