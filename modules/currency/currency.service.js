@@ -14,6 +14,9 @@ class CurrencyService {
   }
 
   async updateCurrency(id, currency) {
+    if (await this.checkNewsExist(currency)) {
+      throw new Error(CURRENCY_ALREADY_EXIST);
+    }
     return await Currency.findByIdAndUpdate(id, currency, { new: true });
   }
 
@@ -29,7 +32,7 @@ class CurrencyService {
   }
 
   async checkCurrencyExist(data) {
-    const currency = await Currency.find({
+    const currency = await Currency.countDocuments({
       convertOptions: {
         $elemMatch: {
           $or: [
@@ -39,7 +42,7 @@ class CurrencyService {
         },
       },
     });
-    return currency.length > 0;
+    return currency > 0;
   }
 }
 module.exports = new CurrencyService();

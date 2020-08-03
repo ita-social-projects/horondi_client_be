@@ -17,7 +17,7 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 
-const schemaNames = {
+const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
@@ -54,7 +54,7 @@ const resolvers = {
   CategoryResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return schemaNames.category;
+        return SCHEMA_NAMES.category;
       }
       return 'Error';
     },
@@ -62,7 +62,7 @@ const resolvers = {
   CurrencyResult: {
     __resolveType: obj => {
       if (obj.date) {
-        return schemaNames.currency;
+        return SCHEMA_NAMES.currency;
       }
       return 'Error';
     },
@@ -70,7 +70,7 @@ const resolvers = {
   NewsResult: {
     __resolveType: obj => {
       if (obj.title) {
-        return schemaNames.news;
+        return SCHEMA_NAMES.news;
       }
       return 'Error';
     },
@@ -78,7 +78,7 @@ const resolvers = {
   MaterialResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return schemaNames.material;
+        return SCHEMA_NAMES.material;
       }
       return 'Error';
     },
@@ -86,7 +86,7 @@ const resolvers = {
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {
-        return schemaNames.pattern;
+        return SCHEMA_NAMES.pattern;
       }
       return 'Error';
     },

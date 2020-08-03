@@ -14,6 +14,9 @@ class PatternsService {
   }
 
   async updatePattern(id, pattern) {
+    if (await this.checkPatternExist(pattern)) {
+      throw new Error(PATTERN_ALREADY_EXIST);
+    }
     return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
   }
 
@@ -29,14 +32,14 @@ class PatternsService {
   }
 
   async checkPatternExist(data) {
-    const pattern = await Pattern.find({
+    const pattern = await Pattern.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
     });
-    return pattern.length > 0;
+    return pattern > 0;
   }
 }
 module.exports = new PatternsService();
