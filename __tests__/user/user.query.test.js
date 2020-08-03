@@ -241,7 +241,7 @@ describe('queries', () => {
     expect(res.data.getUserById).toHaveProperty('comments', []);
   });
 
-  test('should trow Error User with provided _id not found', async () => {
+  test('should throw Error User with provided _id not found', async () => {
     const res = await client
       .query({
         query: gql`
