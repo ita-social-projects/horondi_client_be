@@ -27,20 +27,20 @@ comments: [Comment]
 
 const productInput = `
 input ProductInput {
-subcategory: CategoryInput
-name: [LanguageInput]
-description: [LanguageInput]
-mainMaterial: [LanguageInput]
-innerMaterial: [LanguageInput]
-strapLengthInCm: Int
-images: [PrimaryImageInput]
-colors: [ColorInput]
+subcategory: CategoryInput!
+name: [LanguageInput]!
+description: [LanguageInput]!
+mainMaterial: [LanguageInput]!
+innerMaterial: [LanguageInput]!
+strapLengthInCm: Int!
+images: [PrimaryImageInput]!
+colors: [ColorInput]!
 pattern: [LanguageInput]
 patternImages: ImageSetInput
-closure: [LanguageInput]
+closure: [LanguageInput]!
 closureColor: String
-basePrice: Int
-available: Boolean
+basePrice: Int!
+available: Boolean!
 isHotItem: Boolean
 }`;
 
