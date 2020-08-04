@@ -19,14 +19,14 @@ const materialQuery = {
 
 const materialMutation = {
   addMaterial: async (parent, args) => {
-    const material = await materialService.addMaterial(args.material);
-    if (material) {
-      return material;
+    try {
+      return await materialService.addMaterial(args.material);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 400,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
   deleteMaterial: async (parent, args) => {
     const material = await materialService.deleteMaterial(args.id);
@@ -39,14 +39,17 @@ const materialMutation = {
     };
   },
   updateMaterial: async (parent, args) => {
-    try {
-      return await materialService.updateMaterial(args.id, args.material);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+    const material = await materialService.updateMaterial(
+      args.id,
+      args.material,
+    );
+    if (material) {
+      return material;
     }
+    return {
+      statusCode: 400,
+      message: MATERIAL_NOT_FOUND,
+    };
   },
 };
 

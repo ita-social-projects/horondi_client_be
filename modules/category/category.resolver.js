@@ -7,28 +7,27 @@ const categoryQuery = {
   getAllCategories: (parent, args) => categoryService.getAllCategories(),
 
   getCategoryById: async (parent, args) => {
-    const category = await categoryService.getCategoryById(args.id);
-
-    if (category) {
-      return category;
+    try {
+      return await categoryService.getCategoryById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: CATEGORY_NOT_FOUND,
-    };
   },
 };
 
 const categoryMutation = {
   addCategory: async (parent, args) => {
-    const category = await categoryService.addCategory(args.category);
-    if (category) {
-      return category;
+    try {
+      return await categoryService.addCategory(args.category);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 400,
-      message: CATEGORY_NOT_FOUND,
-    };
   },
   deleteCategory: async (parent, args) => {
     const deletedCategory = await categoryService.deleteCategory(args.id);
@@ -41,14 +40,17 @@ const categoryMutation = {
     };
   },
   updateCategory: async (parent, args) => {
-    try {
-      return await categoryService.updateCategory(args.id, args.category);
-    } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+    const category = await categoryService.updateCategory(
+      args.id,
+      args.category,
+    );
+    if (category) {
+      return category;
     }
+    return {
+      statusCode: 404,
+      message: CATEGORY_NOT_FOUND,
+    };
   },
 };
 

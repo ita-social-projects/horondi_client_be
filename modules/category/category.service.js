@@ -10,18 +10,19 @@ class CategoryService {
   }
 
   async getCategoryById(id) {
-    return await Category.findById(id);
+    const category = await Category.findById(id);
+    if (category) {
+      return category;
+    }
+    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async updateCategory(id, category) {
-    if (await this.checkNewsExist(category)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
-    }
     return await Category.findByIdAndUpdate(id, category, { new: true });
   }
 
   async addCategory(data) {
-    if (await this.checkCategoryEXist(data)) {
+    if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
     return new Category(data).save();
