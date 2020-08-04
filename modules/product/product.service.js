@@ -91,9 +91,9 @@ class ProductsService {
 
   async checkProductExist(data) {
     const productCount = await Products.countDocuments({
-      title: {
+      name: {
         $elemMatch: {
-          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
     });

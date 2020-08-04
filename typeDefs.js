@@ -279,9 +279,9 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
 
     "Product Mutation"
-    addProduct(product: productInput!): Product
-    deleteProduct(id: ID!): Product
-    updateProduct(id: ID!, product: productInput!): Product
+    addProduct(product: ProductInput!): ProductResult
+    deleteProduct(id: ID!): ProductResult
+    updateProduct(id: ID!, product: ProductInput!): ProductResult
 
     "Comment Mutation"
     addComment(comment: commentInput!): Comment

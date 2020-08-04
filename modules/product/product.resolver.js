@@ -31,8 +31,9 @@ const productsQuery = {
 
 const productsMutation = {
   addProduct: async (parent, args) => {
+    console.log(args);
     try {
-      return await productsService.addProduct(args.products);
+      return await productsService.addProduct(args.product);
     } catch (e) {
       return {
         statusCode: 400,
@@ -53,7 +54,7 @@ const productsMutation = {
   updateProduct: async (parent, args) => {
     const product = await productsService.getProductById(args.id);
     if (product) {
-      return productsService.updateProduct(args.id, args.products);
+      return productsService.updateProduct(args.id, args.product);
     }
     return {
       statusCode: 404,
