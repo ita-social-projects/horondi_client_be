@@ -6,13 +6,14 @@ require('dotenv').config();
 const newsService = require('../../modules/news/news.service');
 
 const NEWS_ID = '5f25bf7a6f5b2c3a189eaf2a';
+const NEWS_NOT_EXIST_ID = '1f25bf7a1f5b2c3a189eaf2a';
 
 describe('querries', () => {
   test('#1 All query resolvers and services should be defined', () => {
-    expect(newsQuery.getAllNews).toBeDefined();
-    expect(newsQuery.getNewsById).toBeDefined();
-    expect(newsService.getAllNews).toBeDefined();
-    expect(newsService.getNewsById).toBeDefined();
+    expect(newsQuery.getAllNews).not.toThrow();
+    expect(newsQuery.getNewsById).not.toThrow();
+    expect(newsService.getNewsById).not.toThrow();
+    expect(newsService.getAllNews).not.toThrow();
   });
   test('#2 Should receive all news', async () => {
     const response = await client.query({
@@ -53,7 +54,8 @@ describe('querries', () => {
     });
 
     expect(response.data.getAllNews[0]).toMatchSnapshot();
-    expect(newsQuery.getAllNews).not.toThrow();
+    expect(response.data.getAllNews).toBeInstanceOf(Object);
+    expect(response.data.getAllNews.length).toBeGreaterThan(0);
     expect(response.data.getAllNews[0]).toHaveProperty('title');
     expect(response.data.getAllNews[0].title).toBeInstanceOf(Array);
     expect(response.data.getAllNews[0].text).toBeInstanceOf(Array);
@@ -105,8 +107,6 @@ describe('querries', () => {
       })
       .catch(e => e);
 
-    expect(newsQuery.getNewsById(null, NEWS_ID)).resolves.not.toThrow();
-    expect(newsService.getNewsById(NEWS_ID)).resolves.not.toThrow();
     expect(response.data.getNewsById).toHaveProperty('title');
     expect(response.data.getNewsById.title).toBeInstanceOf(Array);
     expect(response.data.getNewsById.text).toBeInstanceOf(Array);
@@ -124,7 +124,7 @@ describe('querries', () => {
       .query({
         query: gql`
           query {
-            getNewsById(id: "1f15bf7a6f5b2c3a189eaf2a") {
+            getNewsById(id: "${NEWS_NOT_EXIST_ID}") {
               ... on News {
                 title {
                   value
@@ -158,7 +158,9 @@ describe('querries', () => {
       })
       .then(res => res)
       .catch(e => e);
-    expect(response.data.getNewsById).not.toBeNull();
+
+    expect(response.data).not.toBeNull();
+    expect(response.data.getNewsById).toBeDefined();
     expect(response.data.getNewsById).toHaveProperty('statusCode');
     expect(response.data.getNewsById).toHaveProperty('message');
   });
