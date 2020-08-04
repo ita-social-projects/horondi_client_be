@@ -30,7 +30,16 @@ const productsQuery = {
 };
 
 const productsMutation = {
-  addProduct: (parent, args) => productsService.addProduct(args.products),
+  addProduct: async (parent, args) => {
+    try {
+      return await productsService.addProduct(args.products);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
   deleteProduct: async (parent, args) => {
     const deletedProduct = await productsService.deleteProduct(args.id);
     if (deletedProduct) {
@@ -41,7 +50,16 @@ const productsMutation = {
       message: PRODUCT_NOT_FOUND,
     };
   },
-  updateProduct: (parent, args) => productsService.updateProduct(args.id, args.products),
+  updateProduct: async (parent, args) => {
+    const product = await productsService.getProductById(args.id);
+    if (product) {
+      return productsService.updateProduct(args.id, args.products);
+    }
+    return {
+      statusCode: 404,
+      message: PRODUCT_NOT_FOUND,
+    };
+  },
 };
 
 module.exports = { productsQuery, productsMutation };

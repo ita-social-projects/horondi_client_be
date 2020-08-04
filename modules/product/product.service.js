@@ -1,5 +1,8 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const {
+  PRODUCT_ALREADY_EXIST,
+} = require('../../error-messages/products.messages');
 
 class ProductsService {
   async getProductById(id) {
@@ -75,13 +78,26 @@ class ProductsService {
     return Products.findByIdAndUpdate(id, products, { new: true });
   }
 
-  addProduct(data) {
-    const product = new Products(data);
-    return product.save();
+  async addProduct(data) {
+    if (await this.checkProductExist(data)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return new Products(data).save();
   }
 
   deleteProduct(id) {
     return Products.findByIdAndDelete(id);
+  }
+
+  async checkProductExist(data) {
+    const productCount = await Products.countDocuments({
+      title: {
+        $elemMatch: {
+          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
+        },
+      },
+    });
+    return productCount > 0;
   }
 }
 module.exports = new ProductsService();
