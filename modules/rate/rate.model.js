@@ -5,7 +5,7 @@ const rateSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  date: {
+  lastUpdatedDate: {
     type: Date,
     default: Date.now,
   },
@@ -13,7 +13,6 @@ const rateSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  email: String,
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',

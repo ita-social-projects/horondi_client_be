@@ -2,9 +2,8 @@ const rateType = `
 type Rate {
 _id: ID!
 rate: Int!
-date: String!
+lastUpdatedDate: String!
 user: User
-email: String
 product: Product
 show: Boolean
 }
