@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const PrimaryImage = require('./PrimaryImage').schema;
-const ImageSet = require('../modules/common/ImageSet').schema;
-const Size = require('./Size').schema;
-const Color = require('./Color').schema;
+const Language = require('../../models/Language').schema;
+const PrimaryImage = require('../../models/PrimaryImage').schema;
+const ImageSet = require('../common/ImageSet').schema;
+const Color = require('../../models/Color').schema;
 
 const productSchema = new mongoose.Schema({
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+  },
   subcategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
@@ -24,35 +27,34 @@ const productSchema = new mongoose.Schema({
   basePrice: Number,
   options: [
     {
-      size: Size,
+      size: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Size',
+      },
       bottomMaterial: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Material',
       },
-      bottomColor: String,
-      additions: [{
-        name: [Language],
-        description: [Language],
-        available: Boolean,
-        additionalPrice: {
-          type: Number,
-          default: 0,
+      bottomColor: [Language],
+      additions: [
+        {
+          name: [Language],
+          description: [Language],
+          available: Boolean,
+          additionalPrice: {
+            type: Number,
+            default: 0,
+          },
         },
-      }],
-      availableNumber: Number,
+      ],
+      availableCount: Number,
     },
   ],
   available: Boolean,
   isHotItem: Boolean,
-  purchasedNumber: Number,
+  purchasedCount: Number,
   rate: Number,
   rateCount: Number,
-  votedUsers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-  ],
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,

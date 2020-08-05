@@ -1,25 +1,46 @@
 const Category = require('./category.model');
+const {
+  CATEGORY_ALREADY_EXIST,
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
 
 class CategoryService {
-  getAllCategories() {
-    return Category.find();
+  async getAllCategories() {
+    return await Category.find();
   }
 
-  getCategoryById(id) {
-    return Category.findById(id);
+  async getCategoryById(id) {
+    return await Category.findById(id);
   }
 
-  updateCategory(id, category) {
-    return Category.findByIdAndUpdate(id, category);
+  async updateCategory(id, category) {
+    if (await this.checkNewsExist(category)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    return await Category.findByIdAndUpdate(id, category, { new: true });
   }
 
-  addCategory(data) {
-    const category = new Category(data);
-    return category.save();
+  async addCategory(data) {
+    if (await this.checkCategoryEXist(data)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    return new Category(data).save();
   }
 
-  deleteCategory(id) {
-    return Category.findByIdAndDelete(id);
+  async deleteCategory(id) {
+    return await Category.findByIdAndDelete(id);
+  }
+
+  async checkCategoryExist(data) {
+    const categoriesCount = await Category.countDocuments({
+      code: data.code,
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return categoriesCount > 0;
   }
 }
 module.exports = new CategoryService();

@@ -1,7 +1,7 @@
 const categoryType = `
     type Category {
     _id: ID!
-    code: String
+    categoryCode: String
     name: [Language]
     images: ImageSet
     subcategories: [ID]
@@ -12,7 +12,7 @@ const categoryType = `
 
 const categoryInput = `
     input CategoryInput {
-    code: String
+    categoryCode: String
     name: [LanguageInput]
     images: ImageSetInput
     subcategories: [ID]

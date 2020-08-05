@@ -1,25 +1,45 @@
 const News = require('./news.model');
+const {
+  NEWS_ALREADY_EXIST,
+  NEWS_NOT_FOUND,
+} = require('../../error-messages/news.messages');
 
 class NewsService {
-  getAllNews() {
-    return News.find();
+  async getAllNews() {
+    return await News.find();
   }
 
-  getNewsById(id) {
-    return News.findById(id);
+  async getNewsById(id) {
+    return await News.findById(id);
   }
 
-  updateNews(id, news) {
-    return News.findByIdAndUpdate(id, news);
+  async updateNews(id, news) {
+    if (await this.checkNewsExist(news)) {
+      throw new Error(NEWS_ALREADY_EXIST);
+    }
+    return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
-  addNews(data) {
-    const user = new News(data);
-    return user.save();
+  async addNews(data) {
+    if (await this.checkNewsExist(data)) {
+      throw new Error(NEWS_ALREADY_EXIST);
+    }
+    return new News(data).save();
   }
 
-  deleteNews(id) {
-    return News.findByIdAndDelete(id);
+  async deleteNews(id) {
+    return await News.findByIdAndDelete(id);
+  }
+
+  async checkNewsExist(data) {
+    const newsCount = await News.countDocuments({
+      title: {
+        $elemMatch: {
+          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
+        },
+      },
+    });
+    return newsCount > 0;
   }
 }
 module.exports = new NewsService();
