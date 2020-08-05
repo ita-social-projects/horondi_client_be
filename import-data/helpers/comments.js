@@ -45,35 +45,27 @@ for (let i = 0; i < productsNumber; i++){
     commentsPerProduct[i] = new Array();
 }
 
-let votedUsers = [];
-for (let i = 0; i < productsNumber; i++){
-    votedUsers[i] = new Array();
-}
-
 for (let i = 0; i < usersNumber; i++){
-    commentsPerUserNumber = 4;
+    commentsPerUserNumber = ~~(Math.random() * 3) + 1;
     for (let j = 0; j < commentsPerUserNumber; j++){
-        dateOfCreation = randomDate(users[i].registrationDate, new Date('June 30, 2020 23:23:59'));
+        dateOfCreation = randomDate(users[i].registrationDate, new Date('July 31, 2020 23:23:59'));
         productId = ~~(Math.random() * productsNumber);
         comments.push({
             id: getObjectId('comment' + i + '_' + j),
             text: commentsOptions[~~(Math.random() * commentsOptionsNumber)],
             date: dateOfCreation,
             user: getObjectId('user' + i),
+            email: users[i].email,
             product: getObjectId('product' + productId),
             show: true
         });
         commentsPerProduct[productId].push(
             getObjectId('comment' + i + '_' + j)
-        );
-        votedUsers[productId].push(
-            getObjectId('user' + i)
         )
     }
 };
 
 module.exports = {
     comments,
-    commentsPerProduct,
-    votedUsers
+    commentsPerProduct
 };

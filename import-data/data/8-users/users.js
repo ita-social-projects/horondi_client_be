@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
-const recordNumber = 19;
+const recordNumber = 100;
 
 const namesFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'names.txt'), 'utf8');
 const names = namesFromFile.split('\n')

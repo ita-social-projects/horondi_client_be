@@ -1,15 +1,15 @@
 const products = require('../../helpers/products');
-const { commentsPerProduct, votedUsers } = require('../../helpers/comments');
+const { commentsPerProduct } = require('../../helpers/comments');
+const { ratesPerProduct } = require('../../helpers/rates');
 
 const productsNumber = products.length;
 let votedUsersNumber;
 let rate;
 
 for(let i = 0; i < productsNumber; i++) {
-    votedUsersNumber = votedUsers[i].length;
-    rate = (votedUsersNumber == 0) ? 0 : ~~(Math.random() * (50 - 35) + 35) / 10;
+    votedUsersNumber = ratesPerProduct[i].length;
+    rate = (votedUsersNumber == 0) ? null : ratesPerProduct[i].reduce((total, el) => total + el) / votedUsersNumber;
     products[i]['comments'] = commentsPerProduct[i];
-    products[i]['votedUsers'] = votedUsers[i];
     products[i]['rateCount'] = votedUsersNumber;
     products[i]['rate'] = rate;
     products[i]['available'] = true;

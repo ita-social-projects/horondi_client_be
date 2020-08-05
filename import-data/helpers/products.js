@@ -159,7 +159,7 @@ while (counter < newTotalProducts){
 }
 
 function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
-    pattern = (product[2].length === 0) ? [] : mapToLanguages(product[2]);
+    pattern = (product[2].length === 0) ? null : mapToLanguages(product[2]);
     patternImages = (product[3] === '') ? null : mapToImages(product[3]);
     if (name == 'rolltop' || name == 'new' || name == 'harbuz') {
         strapLengthInCm = 100;
