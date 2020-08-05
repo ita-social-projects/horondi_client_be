@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
-  text: {
-    type: String,
-    required: true,
+const rateSchema = new mongoose.Schema({
+  rate: {
+    type: Number,
+    default: 0,
   },
   date: {
     type: Date,
@@ -21,4 +21,4 @@ const commentSchema = new mongoose.Schema({
   show: Boolean,
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+module.exports = mongoose.model('Rate', rateSchema);
