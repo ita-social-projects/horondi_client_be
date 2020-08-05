@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const client = require('../../utils/apollo-client');
+const client = require('../../utils/apollo-test-client');
 const { newsQuery } = require('../../modules/news/news.resolver');
 require('dotenv').config();
 const newsService = require('../../modules/news/news.service');

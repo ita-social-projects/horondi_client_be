@@ -1,7 +1,7 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
-const client = require('../../utils/apollo-client');
+const client = require('../../utils/apollo-test-client');
 const { newsMutation } = require('../../modules/news/news.resolver');
 const newsService = require('../../modules/news/news.service');
 
