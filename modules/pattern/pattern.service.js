@@ -6,7 +6,11 @@ const {
 
 class PatternsService {
   async getAllPatterns() {
-    return await Pattern.find();
+    const pattern = await Pattern.find();
+    if (pattern) {
+      return pattern;
+    }
+    throw new Error(PATTERN_NOT_FOUND);
   }
 
   async getPatternById(id) {

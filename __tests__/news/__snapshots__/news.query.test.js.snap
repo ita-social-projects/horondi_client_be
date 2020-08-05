@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`querries #2 Should receive all news 1`] = `
+Object {
+  "__typename": "News",
+  "_id": "5f25bf7a6f5b2c3a189eaf2a",
+  "author": Object {
+    "__typename": "Author",
+    "image": Object {
+      "__typename": "ImageSet",
+      "small": "updateauthor.jpg",
+    },
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "lang": "uk",
+        "value": "updateVova",
+      },
+      Object {
+        "__typename": "Language",
+        "lang": "eng",
+        "value": "updatevas",
+      },
+    ],
+  },
+  "date": "111114342342",
+  "images": Object {
+    "__typename": "PrimaryImage",
+    "additional": Array [
+      Object {
+        "__typename": "ImageSet",
+        "medium": null,
+      },
+    ],
+    "primary": Object {
+      "__typename": "ImageSet",
+      "medium": "updatesdfsdf4.jpg",
+    },
+  },
+  "text": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "ua",
+      "value": "апдейт тест новина",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "eng",
+      "value": "test news",
+    },
+  ],
+  "title": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "апдейт тест",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "eng",
+      "value": "update test",
+    },
+  ],
+  "video": "update3ffefefds.jpg",
+}
+`;
+
+exports[`querries #3 Should receive one news 1`] = `
+Object {
+  "__typename": "News",
+  "_id": "5f25bf7a6f5b2c3a189eaf2a",
+  "author": Object {
+    "__typename": "Author",
+    "image": Object {
+      "__typename": "ImageSet",
+      "small": "updateauthor.jpg",
+    },
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "lang": "uk",
+        "value": "updateVova",
+      },
+      Object {
+        "__typename": "Language",
+        "lang": "eng",
+        "value": "updatevas",
+      },
+    ],
+  },
+  "date": "111114342342",
+  "images": Object {
+    "__typename": "PrimaryImage",
+    "additional": Array [
+      Object {
+        "__typename": "ImageSet",
+        "medium": null,
+      },
+    ],
+    "primary": Object {
+      "__typename": "ImageSet",
+      "medium": "updatesdfsdf4.jpg",
+    },
+  },
+  "text": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "ua",
+      "value": "апдейт тест новина",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "eng",
+      "value": "test news",
+    },
+  ],
+  "title": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "апдейт тест",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "eng",
+      "value": "update test",
+    },
+  ],
+  "video": "update3ffefefds.jpg",
+}
+`;
+
+exports[`querries #4 Returning not existing news should return error message 1`] = `
+Object {
+  "__typename": "News",
+  "_id": "5f25bf7a6f5b2c3a189eaf2a",
+  "author": Object {
+    "__typename": "Author",
+    "image": Object {
+      "__typename": "ImageSet",
+      "small": "updateauthor.jpg",
+    },
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "lang": "uk",
+        "value": "updateVova",
+      },
+      Object {
+        "__typename": "Language",
+        "lang": "eng",
+        "value": "updatevas",
+      },
+    ],
+  },
+  "date": "111114342342",
+  "images": Object {
+    "__typename": "PrimaryImage",
+    "additional": Array [
+      Object {
+        "__typename": "ImageSet",
+        "medium": null,
+      },
+    ],
+    "primary": Object {
+      "__typename": "ImageSet",
+      "medium": "updatesdfsdf4.jpg",
+    },
+  },
+  "text": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "ua",
+      "value": "апдейт тест новина",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "eng",
+      "value": "test news",
+    },
+  ],
+  "title": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "апдейт тест",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "eng",
+      "value": "update test",
+    },
+  ],
+  "video": "update3ffefefds.jpg",
+}
+`;
