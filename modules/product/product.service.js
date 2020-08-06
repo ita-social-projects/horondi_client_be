@@ -13,9 +13,13 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category,
+      pattern, colors, price, category, isHotItem
     } = args;
 
+
+    if(isHotItem){
+      filter.isHotItem = isHotItem
+    }
     if (category && category.length) {
       filter.category = { $in: category };
     }
