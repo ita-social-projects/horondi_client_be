@@ -8,25 +8,18 @@ const {
   validateUpdateInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
-const { sendEmail, confirmationMessage } = require('../../utils/sendmail');
 const {
-  CONFIRMATION_ERROR,
-  TOKEN_NOT_VALID,
-  NOT_CONFIRMED,
-  WRONG_CREDENTIALS,
-} = require('../../error-messages/user.messages');
+  sendEmail,
+  confirmationMessage,
+  recoveryMessage,
+} = require('../../utils/sendmail');
 
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({ email });
 
     if (checkedUser) {
-      const massage = 'User with provided email already exists';
-      throw new UserInputError(massage, {
-        errors: {
-          email: massage,
-        },
-      });
+      throw new UserInputError('USER_ALREADY_EXIST');
     }
   }
 
@@ -34,12 +27,8 @@ class UserService {
     const checkedUser = await User.findOne({ [key]: param });
 
     if (!checkedUser && !customError) {
-      const message = `User with provided ${[key]} not found`;
-      throw new UserInputError(message, {
-        errors: {
-          [key]: message,
-        },
-      });
+      const message = `User with provided ${key} not found`;
+      throw new UserInputError(message);
     } else if (!checkedUser && customError) {
       throw new UserInputError(customError);
     }
@@ -69,9 +58,6 @@ class UserService {
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
-    if (user._doc.email !== email) {
-      await this.checkUserExists(email);
-    }
     return User.findByIdAndUpdate(user._id, {
       firstName,
       lastName,
@@ -97,7 +83,7 @@ class UserService {
     });
   }
 
-  async loginUser({ email, password }, language) {
+  async loginUser({ email, password }) {
     const { errors } = await validateLoginInput.validateAsync({
       email,
       password,
@@ -110,7 +96,7 @@ class UserService {
     const user = await this.getUserByFieldOrThrow(
       'email',
       email,
-      WRONG_CREDENTIALS[language].value,
+      'WRONG_CREDENTIALS',
     );
 
     const match = await bcrypt.compare(
@@ -119,12 +105,9 @@ class UserService {
     );
 
     if (!match) {
-      throw new AuthenticationError(WRONG_CREDENTIALS[language].value);
+      throw new UserInputError('WRONG_CREDENTIALS');
     }
 
-    if (!user.confirmed) {
-      return new Error(NOT_CONFIRMED[language].value);
-    }
     const token = generateToken(user._id, user.email);
 
     return {
@@ -164,9 +147,11 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    const token = await generateToken(savedUser._id, savedUser.email);
+    const token = await generateToken(savedUser._id, savedUser.email, {
+      EXPIRES_IN: undefined,
+    });
     const message = {
-      from: `horondi.devproject@gmail.com`,
+      from: process.env.MAIL_USER,
       to: savedUser.email,
       subject: 'Confirm Email',
       html: confirmationMessage(firstName, token),
@@ -179,19 +164,33 @@ class UserService {
     return User.findByIdAndDelete(id);
   }
 
-  async confirmUser(token, language) {
-    try {
-      const decoded = jwt.verify(token, process.env.SECRET);
-      const user = await User.findOne({ email: decoded.email });
-      if (!user) {
-        return new Error(TOKEN_NOT_VALID[language].value);
-      }
-      user.confirmed = true;
-      await User.findByIdAndUpdate(user._id, user);
-      return true;
-    } catch (e) {
-      return new Error(CONFIRMATION_ERROR[language].value);
+  async confirmUser(token) {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      throw new UserInputError('TOKEN_NOT_VALID');
     }
+    user.confirmed = true;
+    await User.findByIdAndUpdate(user._id, user);
+    return true;
+  }
+
+  async recoverUser(email) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError('USER_NOT_FOUND');
+    }
+    const token = await generateToken(user._id, user.email, {
+      EXPIRES_IN: process.env.RECOVERY_EXPIRE,
+    });
+    const message = {
+      from: process.env.MAIL_USER,
+      to: email,
+      subject: 'Recovery Instructions',
+      html: recoveryMessage(user.firstName, token),
+    };
+    await sendEmail(message);
+    return true;
   }
 }
 module.exports = new UserService();

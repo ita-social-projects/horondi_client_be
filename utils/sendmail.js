@@ -37,6 +37,21 @@ const confirmationMessage = (firstName, token) => `
   </div>
 `;
 
+const recoveryMessage = (firstName, token) => `
+  <div className="email" style="
+    border: 1px solid black;
+    padding: 20px;
+    font-family: sans-serif;
+    line-height: 2;
+    font-size: 1.1rem;
+  ">
+    <h2>Hello, ${firstName}</h2>
+    <p>Please click the link below to recover your password</p>
+    <a href=${process.env.FRONT_BASE_URI}recovery/${token}>Confirm email</a> 
+    <p>If you think you shouldn't have received this email, please ignore it.</p>
+  </div>
+`;
+
 const sendEmail = async (message, callback) => {
   const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
@@ -66,4 +81,5 @@ module.exports = {
   transport,
   sendEmail,
   confirmationMessage,
+  recoveryMessage,
 };

@@ -197,11 +197,12 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: UserInput!): User
-    loginUser(user: UserInput!, language: Int!): User
+    loginUser(user: UserInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
-    confirmUser(token: String!, language: Int!): Boolean
+    confirmUser(token: String!): Boolean
+    recoverUser(email: String!): Boolean
   }
 `;
 
