@@ -166,10 +166,10 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): [ProductResult]!
+    ): [Product]!
 
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(id: ID!): [CommentResult]
+    getAllCommentsByProduct(productId: ID!): [CommentResult]
   }
 
   input SortInput {
@@ -185,6 +185,7 @@ const typeDefs = gql`
     colors: [String]
     price: [Int]
     category: [String]
+    search: String
   }
   input RoleEnumInput {
     role: String
@@ -284,7 +285,7 @@ const typeDefs = gql`
     updateProduct(id: ID!, product: ProductInput!): ProductResult
 
     "Comment Mutation"
-    addComment(comment: commentInput!): Comment
+    addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): Comment
     updateComment(id: ID!, product: commentInput!): Comment
   }

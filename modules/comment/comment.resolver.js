@@ -15,17 +15,16 @@ const commentsQuery = {
   },
 
   getAllCommentsByProduct: async (parent, args) => {
-    const product = await productsService.getProductById(args.id);
-    const comment = await commentsService.getAllCommentsByProduct(args.id);
-    if (product) {
-      return comment;
+    try {
+      return await commentsService.getAllCommentsByProduct(args.id);
+    } catch (error) {
+      return [
+        {
+          statusCode: 404,
+          message: error.message,
+        },
+      ];
     }
-    return [
-      {
-        statusCode: 404,
-        message: COMMENT_NOT_FOUND,
-      },
-    ];
   },
 };
 
