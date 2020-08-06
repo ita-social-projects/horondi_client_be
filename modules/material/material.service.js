@@ -1,25 +1,42 @@
 const Material = require('./material.model');
+const {
+  MATERIAL_ALREADY_EXIST,
+  MATERIAL_NOT_FOUND,
+} = require('../../error-messages/material.messages');
 
 class MaterialsService {
-  getAllMaterials() {
-    return Material.find();
+  async getAllMaterials() {
+    return await Material.find();
   }
 
-  getMaterialById(id) {
-    return Material.findById(id);
+  async getMaterialById(id) {
+    return await Material.findById(id);
   }
 
-  updateMaterial(id, material) {
-    return Material.findByIdAndUpdate(id, material);
+  async updateMaterial(id, material) {
+    return await Material.findByIdAndUpdate(id, material, { new: true });
   }
 
-  addMaterial(data) {
-    const material = new Material(data);
-    return material.save();
+  async addMaterial(data) {
+    if (await this.checkMaterialExist(data)) {
+      throw new Error(MATERIAL_ALREADY_EXIST);
+    }
+    return new Material(data).save();
   }
 
-  deleteMaterial(id) {
-    return Material.findByIdAndDelete(id);
+  async deleteMaterial(id) {
+    return await Material.findByIdAndDelete(id);
+  }
+
+  async checkMaterialExist(data) {
+    const materialsCount = await Material.countDocuments({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return materialsCount > 0;
   }
 }
 

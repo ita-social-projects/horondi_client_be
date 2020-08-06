@@ -1,25 +1,48 @@
 const Currency = require('./currency.model');
+const {
+  CURRENCY_ALREADY_EXIST,
+  CURRENCY_NOT_FOUND,
+} = require('../../error-messages/currency.messages');
 
 class CurrencyService {
-  getAllCurrencies() {
-    return Currency.find();
+  async getAllCurrencies() {
+    return await Currency.find();
   }
 
-  getCurrencyById(id) {
-    return Currency.findById(id);
+  async getCurrencyById(id) {
+    return await Currency.findById(id);
   }
 
-  updateCurrency(id, currency) {
-    return Currency.findByIdAndUpdate(id, currency);
+  async updateCurrency(id, currency) {
+    if (await this.checkNewsExist(currency)) {
+      throw new Error(CURRENCY_ALREADY_EXIST);
+    }
+    return await Currency.findByIdAndUpdate(id, currency, { new: true });
   }
 
-  addCurrency(data) {
-    const currency = new Currency(data);
-    return currency.save();
+  async addCurrency(data) {
+    if (await this.checkCurrencyExist(data)) {
+      throw new Error(CURRENCY_ALREADY_EXIST);
+    }
+    return new Currency(data).save();
   }
 
-  deleteCurrency(id) {
-    return Currency.findByIdAndDelete(id);
+  async deleteCurrency(id) {
+    return await Currency.findByIdAndDelete(id);
+  }
+
+  async checkCurrencyExist(data) {
+    const currenciesCount = await Currency.countDocuments({
+      convertOptions: {
+        $elemMatch: {
+          $or: [
+            { name: data.convertOptions[0].name },
+            { name: data.convertOptions[1].name },
+          ],
+        },
+      },
+    });
+    return currenciesCount > 0;
   }
 }
 module.exports = new CurrencyService();

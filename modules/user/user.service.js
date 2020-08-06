@@ -6,7 +6,7 @@ const {
   validateRegisterInput,
   validateLoginInput,
   validateUpdateInput,
-} = require('../../utils/validateUser');
+} = require('../../utils/validate-user');
 const generateToken = require('../../utils/createToken');
 const { sendEmail } = require('../../utils/sendmail');
 const {
@@ -23,7 +23,9 @@ const {
 
 class UserService {
   async checkUserExists(email) {
-    const checkedUser = await User.findOne({ email });
+    const checkedUser = await User.findOne({
+      email,
+    });
 
     if (checkedUser) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
@@ -31,7 +33,9 @@ class UserService {
   }
 
   async getUserByFieldOrThrow(key, param) {
-    const checkedUser = await User.findOne({ [key]: param });
+    const checkedUser = await User.findOne({
+      [key]: param,
+    });
 
     if (!checkedUser) {
       throw new UserInputError(USER_NOT_FOUND, { key, statusCode: 400 });
@@ -40,17 +44,17 @@ class UserService {
     return checkedUser;
   }
 
-  getAllUsers() {
-    return User.find();
+  async getAllUsers() {
+    return await User.find();
   }
 
   async getUser(id) {
     return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUserById({
-    firstName, lastName, email, password,
-  }, id) {
+  async updateUserById(updatedUser, id) {
+    const { firstName, lastName, email } = updatedUser;
+
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -62,14 +66,21 @@ class UserService {
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+
+    if (user._doc.email !== updatedUser.email) {
+      await this.checkUserExists(updatedUser.email);
+    }
+
+    return User.findByIdAndUpdate(
+      user._id,
+      { ...user._doc, ...updatedUser },
+      { new: true },
+    );
   }
 
-  async updateUserByToken({ firstName, lastName, email }, user) {
+  async updateUserByToken(updatedUser, user) {
+    const { firstName, lastName, email } = updatedUser;
+
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -80,11 +91,14 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    return User.findByIdAndUpdate(user._id, {
-      firstName,
-      lastName,
-      email,
-    });
+    return User.findByIdAndUpdate(
+      user._id,
+      {
+        ...user._doc,
+        ...updatedUser,
+      },
+      { new: true },
+    );
   }
 
   async loginUser({ email, password }) {
@@ -111,8 +125,8 @@ class UserService {
     const token = generateToken(user._id, user.email);
 
     return {
-      user: { ...user._doc },
-      id: user._id,
+      ...user._doc,
+      _id: user._id,
       token,
     };
   }
@@ -160,8 +174,9 @@ class UserService {
     return savedUser;
   }
 
-  deleteUser(id) {
-    return User.findByIdAndDelete(id);
+  async deleteUser(id) {
+    const res = await User.findByIdAndDelete(id);
+    return res || new Error(USER_NOT_FOUND);
   }
 
   async confirmUser(token) {

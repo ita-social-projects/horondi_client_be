@@ -13,27 +13,17 @@ const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user, args.language),
   loginUser: (parent, args) => userService.loginUser(args.user),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
-  updateUserById: (parent, args, context) => {
-    try {
-      if (!context.user) {
-        return new UserInputError(USER_NOT_AUTHORIZED);
-      }
-      return userService.updateUserById(args.user, args.id);
-    } catch (e) {
-      return e;
-    }
-  },
-  updateUserByToken: (parent, args, context) => {
-    try {
-      if (context.user) {
-        return userService.updateUserByToken(args.user, context.user);
-      }
-    } catch (e) {
-      return e;
-    }
-  },
+  updateUserById: (parent, args, context) => (context.user
+    ? userService.updateUserById(args.user, args.id)
+    : new UserInputError(USER_NOT_AUTHORIZED)),
+  updateUserByToken: (parent, args, context) => (context.user
+    ? userService.updateUserByToken(args.user, context.user)
+    : new UserInputError(USER_NOT_AUTHORIZED)),
   confirmUser: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
 };
 
-module.exports = { userQuery, userMutation };
+module.exports = {
+  userQuery,
+  userMutation,
+};
