@@ -164,7 +164,7 @@ const typeDefs = gql`
     getUserById(id: ID!): User
 
     getProductsById(id: ID!): Product
-    getPaginatedProducts(
+    getProducts(
       filter: FilterInput
       limit: Int
       skip: Int
