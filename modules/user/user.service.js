@@ -105,6 +105,45 @@ class UserService {
     );
   }
 
+  async loginAdmin({ email, password }) {
+    const { errors } = await validateLoginInput.validateAsync({
+      email,
+      password,
+    });
+
+    if (errors) {
+      throw new UserInputError('Errors', {
+        errors,
+      });
+    }
+
+    const user = await this.getUserByFieldOrThrow('email', email);
+
+    const match = await bcrypt.compare(
+      password,
+      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
+    );
+
+    if (user.role === 'user') {
+      throw new AuthenticationError(`No access!`);
+    }
+
+    if (!match) {
+      throw new AuthenticationError(`Wrong password!`);
+    }
+
+    const token = generateToken(user._id, user.email);
+
+    return {
+      user: {
+        ...user._doc,
+      },
+      _id: user._id,
+      role: user.role,
+      token,
+    };
+  }
+
   async loginUser({ email, password }) {
     const { errors } = await validateLoginInput.validateAsync({
       email,
