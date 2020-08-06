@@ -5,11 +5,11 @@ const {
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
-  async getProductById(id) {
-    return await Products.findById(id);
+  getProductById(id) {
+    return Products.findById(id);
   }
 
-  async getSizeById(id) {
+  getSizeById(id) {
     return Size.findById(id);
   }
 
