@@ -2,13 +2,15 @@ const productsService = require('./product.service');
 
 const productsQuery = {
   getProductsById: (parent, args) => productsService.getProductsById(args.id),
-  getProducts: async (parent, args) => {
-    const products = await productsService.getProducts(args);
-    const productsCount = await productsService.getProductsCount(args);
-    return {
-      products,
-      productsCount,
-    };
+  getPaginatedProducts: async (parent, args) => {
+    try {
+      return await productsService.getPaginatedProducts(args);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
   },
 };
 

@@ -1,5 +1,8 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const {
+  PRODUCTS_NOT_FOUND,
+} = require('../../error-messages/products.messages');
 
 class ProductsService {
   getProductsById(id) {
@@ -85,8 +88,19 @@ class ProductsService {
         },
       ];
     }
-
     return Products.find(filters).countDocuments();
+  }
+
+  async getPaginatedProducts(data) {
+    const items = await this.getProducts(data);
+    const count = await this.getProductsCount(data);
+    if (items) {
+      return {
+        items,
+        count,
+      };
+    }
+    throw new Error(PRODUCTS_NOT_FOUND);
   }
 
   updateProduct(id, products) {
