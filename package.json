@@ -13,7 +13,7 @@
     "start": "nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --coverage --detectOpenHandles",
+    "test": "jest --coverage --detectOpenHandles ",
     "generate": "graphql-codegen"
   },
   "author": "",

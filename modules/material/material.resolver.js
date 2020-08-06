@@ -6,14 +6,14 @@ const {
 const materialQuery = {
   getAllMaterials: () => materialService.getAllMaterials(),
   getMaterialById: async (parent, args) => {
-    const material = await materialService.getMaterialById(args.id);
-    if (material) {
-      return material;
+    try {
+      return await materialService.getMaterialById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
 };
 
@@ -41,7 +41,7 @@ const materialMutation = {
   updateMaterial: async (parent, args) => {
     const material = await materialService.updateMaterial(
       args.id,
-      args.material,
+      args.material
     );
     if (material) {
       return material;

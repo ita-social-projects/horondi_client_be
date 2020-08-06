@@ -27,9 +27,7 @@ const testUser = {
 
 describe('mutations', () => {
   test('should register user', async () => {
-    const {
-      firstName, lastName, email, password,
-    } = testUser;
+    const { firstName, lastName, email, password } = testUser;
 
     const res = await client.mutate({
       mutation: gql`
@@ -68,23 +66,21 @@ describe('mutations', () => {
     expect(typeof res.data.registerUser._id).toBe('string');
     expect(res.data.registerUser).toHaveProperty(
       'firstName',
-      testUser.firstName,
+      testUser.firstName
     );
     expect(res.data.registerUser).toHaveProperty('lastName', testUser.lastName);
     expect(res.data.registerUser).toHaveProperty('email', testUser.email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
     const date = new Date(
-      +res.data.registerUser.registrationDate,
+      +res.data.registerUser.registrationDate
     ).toDateString();
     const dateNow = new Date(Date.now()).toDateString();
     expect(dateNow).toBe(date);
   });
 
   test('should throw error User with provided email already exist', async () => {
-    const {
-      firstName, lastName, email, password,
-    } = testUser;
+    const { firstName, lastName, email, password } = testUser;
 
     const res = await client
       .mutate({
@@ -123,7 +119,7 @@ describe('mutations', () => {
 
     expect(res.graphQLErrors.length).toBe(1);
     expect(res.graphQLErrors[0].message).toBe(
-      'User with provided email already exists',
+      'User with provided email already exists'
     );
   });
 
@@ -180,7 +176,7 @@ describe('mutations', () => {
 
     expect(res.graphQLErrors.length).toBe(1);
     expect(res.graphQLErrors[0].message).toBe(
-      'User with provided email not found',
+      'User with provided email not found'
     );
   });
 
@@ -217,9 +213,7 @@ describe('mutations', () => {
       comments,
     } = testUser;
 
-    const {
-      country, city, street, buildingNumber,
-    } = address;
+    const { country, city, street, buildingNumber } = address;
 
     const res = await client.mutate({
       mutation: gql`
@@ -297,7 +291,7 @@ describe('mutations', () => {
     expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
     expect(res.data.updateUserById).toHaveProperty(
       'phoneNumber',
-      testUser.phoneNumber,
+      testUser.phoneNumber
     );
     expect(res.data.updateUserById).toHaveProperty('role', testUser.role);
     expect(res.data.updateUserById).toHaveProperty('address', {
@@ -308,12 +302,12 @@ describe('mutations', () => {
     });
     expect(res.data.updateUserById).toHaveProperty(
       'wishlist',
-      testUser.wishlist,
+      testUser.wishlist
     );
     expect(res.data.updateUserById).toHaveProperty('orders', testUser.orders);
     expect(res.data.updateUserById).toHaveProperty(
       'comments',
-      testUser.comments,
+      testUser.comments
     );
   });
 
@@ -328,9 +322,7 @@ describe('mutations', () => {
       comments,
     } = testUser;
 
-    const {
-      country, city, street, buildingNumber,
-    } = address;
+    const { country, city, street, buildingNumber } = address;
 
     const res = await client
       .mutate({
@@ -407,7 +399,7 @@ describe('mutations', () => {
 
     expect(res.graphQLErrors.length).toBe(1);
     expect(res.graphQLErrors[0].message).toBe(
-      'User with provided _id not found',
+      'User with provided _id not found'
     );
   });
 
@@ -421,9 +413,7 @@ describe('mutations', () => {
       comments,
     } = testUser;
 
-    const {
-      country, city, street, buildingNumber,
-    } = address;
+    const { country, city, street, buildingNumber } = address;
 
     const res = await client.mutate({
       mutation: gql`
@@ -493,16 +483,16 @@ describe('mutations', () => {
 
     expect(res.data.updateUserByToken).toHaveProperty(
       'firstName',
-      'UpdatedByToken',
+      'UpdatedByToken'
     );
     expect(res.data.updateUserByToken).toHaveProperty(
       'lastName',
-      'UpdatedByToken',
+      'UpdatedByToken'
     );
     expect(res.data.updateUserByToken).toHaveProperty('email', testUser.email);
     expect(res.data.updateUserByToken).toHaveProperty(
       'phoneNumber',
-      testUser.phoneNumber,
+      testUser.phoneNumber
     );
     expect(res.data.updateUserByToken).toHaveProperty('role', 'user');
     expect(res.data.updateUserByToken).toHaveProperty('address', {
@@ -513,15 +503,15 @@ describe('mutations', () => {
     });
     expect(res.data.updateUserByToken).toHaveProperty(
       'wishlist',
-      testUser.wishlist,
+      testUser.wishlist
     );
     expect(res.data.updateUserByToken).toHaveProperty(
       'orders',
-      testUser.orders,
+      testUser.orders
     );
     expect(res.data.updateUserByToken).toHaveProperty(
       'comments',
-      testUser.comments,
+      testUser.comments
     );
   });
 
@@ -568,7 +558,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.networkError.result.errors[0].message).toBe(
-      'Context creation failed: Invalid authorization token',
+      'Context creation failed: Invalid authorization token'
     );
   });
 
