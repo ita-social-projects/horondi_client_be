@@ -41,7 +41,7 @@ const materialMutation = {
   updateMaterial: async (parent, args) => {
     const material = await materialService.updateMaterial(
       args.id,
-      args.material
+      args.material,
     );
     if (material) {
       return material;

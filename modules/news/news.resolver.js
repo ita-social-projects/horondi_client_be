@@ -43,7 +43,7 @@ const newsMutation = {
     return {
       statusCode: 404,
       message: NEWS_NOT_FOUND,
-    }; 
+    };
   },
 };
 module.exports = { newsQuery, newsMutation };

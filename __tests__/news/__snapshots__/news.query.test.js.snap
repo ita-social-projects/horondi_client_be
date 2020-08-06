@@ -34,11 +34,11 @@ Object {
   "text": Array [
     Object {
       "__typename": "Language",
-      "value": "u p d a t e d a s d",
+      "value": "u p d a t e N1 d a s d",
     },
     Object {
       "__typename": "Language",
-      "value": "update d a s d",
+      "value": "update dN1 a s d",
     },
   ],
   "title": Array [
