@@ -107,7 +107,8 @@ describe('querries', () => {
       .then(res => res)
       .catch(e => e);
 
-    expect(res.data.getAllNews[1]).toEqual({
+    expect(res.data.getAllNews).toBeDefined();
+    expect(res.data.getAllNews[0]).toEqual({
       __typename: 'News',
       title: [
         {
@@ -200,6 +201,9 @@ describe('querries', () => {
         })
         .then(res => res)
         .catch(e => e);
+
+      expect(res.data.getNewsById).toMatchSnapshot();
+      expect(res.data.getNewsById).toBeDefined();
       expect(res.data.getNewsById).toHaveProperty('title', [
         {
           __typename: 'Language',
@@ -212,7 +216,7 @@ describe('querries', () => {
           value: 'aab',
         },
       ]);
-      expect(res.data.getNewsById).not.toBeNull();
+
       expect(res.data.getNewsById.title).toBeInstanceOf(Array);
       expect(res.data.getNewsById).toHaveProperty('text', [
         {
@@ -303,7 +307,6 @@ describe('querries', () => {
       .then(res => res)
       .catch(e => e);
 
-    expect(res.data).not.toBeNull();
     expect(res.data.getNewsById).toBeDefined();
     expect(res.data.getNewsById).toHaveProperty('statusCode');
     expect(res.data.getNewsById).toHaveProperty('message');

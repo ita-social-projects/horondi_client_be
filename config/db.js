@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
-  const db = process.env.TEST_MONGO;
+  const db = process.env.MONGO_URL;
   try {
     await mongoose.connect(db, {
       useNewUrlParser: true,
