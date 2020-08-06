@@ -1,58 +1,7 @@
 const nodemailer = require('nodemailer');
+const { EMAIL_ERROR } = require('../error-messages/user.messages');
 
-const transport = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-});
-
-const passwordResetEmail = (text, firstName) => `
-  <div className="email" style="
-    border: 1px solid black;
-    padding: 20px;
-    font-family: sans-serif;
-    line-height: 2;
-    font-size: 1.1rem;
-  ">
-    <h2>Hello ${firstName}</h2>
-    <p>${text}</p>
-    <p>Thank you</p>
-  </div>
-`;
-
-const confirmationMessage = (firstName, token) => `
-  <div className="email" style="
-    border: 1px solid black;
-    padding: 20px;
-    font-family: sans-serif;
-    line-height: 2;
-    font-size: 1.1rem;
-  ">
-    <h2>Hello, ${firstName}</h2>
-    <p>Please confirm email</p>
-    <a href=${process.env.FRONT_BASE_URI}confirmation/${token}>Confirm email</a> 
-  </div>
-`;
-
-const recoveryMessage = (firstName, token) => `
-  <div className="email" style="
-    border: 1px solid black;
-    padding: 20px;
-    font-family: sans-serif;
-    line-height: 2;
-    font-size: 1.1rem;
-  ">
-    <h2>Hello, ${firstName}</h2>
-    <p>Please click the link below to recover your password</p>
-    <a href=${process.env.FRONT_BASE_URI}recovery/${token}>Confirm email</a> 
-    <p>If you think you shouldn't have received this email, please ignore it.</p>
-  </div>
-`;
-
-const sendEmail = async (message, callback) => {
+const sendEmail = async message => new Promise(resolve => {
   const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
     port: process.env.MAIL_PORT,
@@ -65,21 +14,15 @@ const sendEmail = async (message, callback) => {
       ciphers: 'SSLv3',
     },
   });
-
   transporter.sendMail(message, (err, info) => {
     if (err) {
-      console.log(err);
-      return err;
+      throw new Error(EMAIL_ERROR);
     }
-    callback();
     transporter.close();
+    resolve(info);
   });
-};
+});
 
 module.exports = {
-  passwordResetEmail,
-  transport,
   sendEmail,
-  confirmationMessage,
-  recoveryMessage,
 };

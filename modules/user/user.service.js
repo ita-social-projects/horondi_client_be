@@ -1,4 +1,4 @@
-const { AuthenticationError, UserInputError } = require('apollo-server');
+const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
@@ -8,29 +8,33 @@ const {
   validateUpdateInput,
 } = require('../../utils/validateUser');
 const generateToken = require('../../utils/createToken');
+const { sendEmail } = require('../../utils/sendmail');
 const {
-  sendEmail,
   confirmationMessage,
   recoveryMessage,
-} = require('../../utils/sendmail');
+} = require('../../utils/localization');
+
+const {
+  USER_ALREADY_EXIST,
+  USER_NOT_FOUND,
+  INPUT_NOT_VALID,
+  WRONG_CREDENTIALS,
+} = require('../../error-messages/user.messages');
 
 class UserService {
   async checkUserExists(email) {
     const checkedUser = await User.findOne({ email });
 
     if (checkedUser) {
-      throw new UserInputError('USER_ALREADY_EXIST');
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
   }
 
-  async getUserByFieldOrThrow(key, param, customError) {
+  async getUserByFieldOrThrow(key, param) {
     const checkedUser = await User.findOne({ [key]: param });
 
-    if (!checkedUser && !customError) {
-      const message = `User with provided ${key} not found`;
-      throw new UserInputError(message);
-    } else if (!checkedUser && customError) {
-      throw new UserInputError(customError);
+    if (!checkedUser) {
+      throw new UserInputError(USER_NOT_FOUND, { key, statusCode: 400 });
     }
 
     return checkedUser;
@@ -54,7 +58,7 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
     const user = await this.getUserByFieldOrThrow('_id', id);
@@ -73,7 +77,7 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
     return User.findByIdAndUpdate(user._id, {
@@ -90,14 +94,10 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await this.getUserByFieldOrThrow(
-      'email',
-      email,
-      'WRONG_CREDENTIALS',
-    );
+    const user = await this.getUserByFieldOrThrow('email', email);
 
     const match = await bcrypt.compare(
       password,
@@ -105,7 +105,7 @@ class UserService {
     );
 
     if (!match) {
-      throw new UserInputError('WRONG_CREDENTIALS');
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
     const token = generateToken(user._id, user.email);
@@ -119,7 +119,7 @@ class UserService {
 
   async registerUser({
     firstName, lastName, email, password,
-  }) {
+  }, language) {
     const { errors } = await validateRegisterInput.validateAsync({
       firstName,
       lastName,
@@ -128,7 +128,7 @@ class UserService {
     });
 
     if (errors) {
-      throw new UserInputError('Errors', { errors });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
     await this.checkUserExists(email);
@@ -154,7 +154,7 @@ class UserService {
       from: process.env.MAIL_USER,
       to: savedUser.email,
       subject: 'Confirm Email',
-      html: confirmationMessage(firstName, token),
+      html: confirmationMessage(firstName, token, language),
     };
     await sendEmail(message);
     return savedUser;
@@ -168,17 +168,17 @@ class UserService {
     const decoded = jwt.verify(token, process.env.SECRET);
     const user = await User.findOne({ email: decoded.email });
     if (!user) {
-      throw new UserInputError('TOKEN_NOT_VALID');
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
     }
     user.confirmed = true;
     await User.findByIdAndUpdate(user._id, user);
     return true;
   }
 
-  async recoverUser(email) {
+  async recoverUser(email, language) {
     const user = await User.findOne({ email });
     if (!user) {
-      throw new UserInputError('USER_NOT_FOUND');
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
     const token = await generateToken(user._id, user.email, {
       EXPIRES_IN: process.env.RECOVERY_EXPIRE,
@@ -187,7 +187,7 @@ class UserService {
       from: process.env.MAIL_USER,
       to: email,
       subject: 'Recovery Instructions',
-      html: recoveryMessage(user.firstName, token),
+      html: recoveryMessage(user.firstName, token, language),
     };
     await sendEmail(message);
     return true;
