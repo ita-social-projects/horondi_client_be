@@ -1,5 +1,8 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const {
+  PRODUCTS_NOT_FOUND,
+} = require('../../error-messages/products.messages');
 
 class ProductsService {
   getProductsById(id) {
@@ -50,12 +53,11 @@ class ProductsService {
     return filter;
   }
 
-  getProducts({
+  async getProducts({
     filter, skip, limit, sort, search,
   }) {
-    const isNotBlank = str => !(!str || str.trim().length === 0);
     const filters = this.filterItems(filter);
-    if (isNotBlank(search)) {
+    if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
           name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
@@ -67,34 +69,20 @@ class ProductsService {
         },
       ];
     }
-    return Products.find(filters)
+    const items = await Products.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
-  }
 
-  getProductsCount({ filter, search }) {
-    const isNotBlank = str => !(!str || str.trim().length === 0);
-    const filters = this.filterItems(filter);
-
-    if (isNotBlank(search)) {
-      filters.$or = [
-        {
-          name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
-        },
-        {
-          description: {
-            $elemMatch: { value: { $regex: new RegExp(search, 'i') } },
-          },
-        },
-      ];
+    if (!items) {
+      throw new Error(PRODUCTS_NOT_FOUND);
     }
 
-    return Products.find(filters).countDocuments();
-  }
-
-  updateProduct(id, products) {
-    return Products.findByIdAndUpdate(id, products, { new: true });
+    const count = await Products.find(filters).countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   addProduct(data) {
