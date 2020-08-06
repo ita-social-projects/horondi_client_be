@@ -132,9 +132,9 @@ const typeDefs = gql`
     message: String
   }
 
-  type Products {
-    products: [Product]
-    productsCount: Int
+  type PaginatedProducts {
+    items: [Product]
+    count: Int
   }
 
   union CategoryResult = Category | Error
@@ -170,7 +170,7 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): Products!
+    ): PaginatedProducts!
 
     getAllComments: [Comment]
     getCommentById(id: ID!): Comment
