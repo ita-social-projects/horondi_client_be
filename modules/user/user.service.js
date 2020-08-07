@@ -7,7 +7,7 @@ const {
   validateLoginInput,
   validateUpdateInput,
 } = require('../../utils/validate-user');
-const generateToken = require('../../utils/createToken');
+const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendmail');
 const {
   confirmationMessage,
