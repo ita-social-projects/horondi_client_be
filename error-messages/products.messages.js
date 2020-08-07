@@ -1,10 +1,3 @@
-// const PRODUCT_NOT_FOUND = [
-//   {
-//     lang: 'uk',
-//     value: 'Продукт не знайдено',
-//   },
-//   {
-//     lang: 'en',
-//     value: 'Product not found',
-//   },
-// ];
+const PRODUCT_NOT_FOUND = 'PRODUCT_NOT_FOUND';
+const PRODUCTS_NOT_FOUND = 'PRODUCTS_NOT_FOUND';
+module.exports = { PRODUCT_NOT_FOUND, PRODUCTS_NOT_FOUND };
