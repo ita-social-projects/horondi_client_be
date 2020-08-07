@@ -126,9 +126,15 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type PaginatedProducts {
+    items: [Product]
+    count: Int
   }
 
   union CategoryResult = Category | Error
@@ -164,7 +170,7 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): [Product]!
+    ): PaginatedProducts!
 
     getAllComments: [Comment]
     getCommentById(id: ID!): Comment
@@ -184,6 +190,7 @@ const typeDefs = gql`
     colors: [String]
     price: [Int]
     category: [String]
+    isHotItem: Boolean
   }
   input RoleEnumInput {
     role: String

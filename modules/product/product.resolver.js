@@ -2,7 +2,16 @@ const productsService = require('./product.service');
 
 const productsQuery = {
   getProductsById: (parent, args) => productsService.getProductsById(args.id),
-  getProducts: (parent, args) => productsService.getProducts(args),
+  getProducts: async (parent, args) => {
+    try {
+      return await productsService.getProducts(args);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const productsMutation = {
