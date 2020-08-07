@@ -10,11 +10,19 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return await Material.findById(id);
+    const foundMaterial = await Material.findById(id);
+    if (foundMaterial) {
+      return foundMaterial;
+    }
+    throw new Error(MATERIAL_NOT_FOUND);
   }
 
   async updateMaterial(id, material) {
-    return await Material.findByIdAndUpdate(id, material, { new: true });
+    const foundMaterial = await Material.findByIdAndUpdate(id, material);
+    if (foundMaterial) {
+      return foundMaterial;
+    }
+    throw new Error(MATERIAL_NOT_FOUND);
   }
 
   async addMaterial(data) {
@@ -25,7 +33,11 @@ class MaterialsService {
   }
 
   async deleteMaterial(id) {
-    return await Material.findByIdAndDelete(id);
+    const foundMaterial = await Material.findByIdAndDelete(id);
+    if (foundMaterial) {
+      return foundMaterial;
+    }
+    throw new Error(MATERIAL_NOT_FOUND);
   }
 
   async checkMaterialExist(data) {

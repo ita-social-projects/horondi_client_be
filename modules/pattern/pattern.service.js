@@ -10,14 +10,21 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    return await Pattern.findById(id);
+    const foundPattern = await Pattern.findById(id);
+    if (foundPattern) {
+      return foundPattern;
+    }
+    throw new Error(PATTERN_NOT_FOUND);
   }
 
   async updatePattern(id, pattern) {
-    if (await this.checkPatternExist(pattern)) {
-      throw new Error(PATTERN_ALREADY_EXIST);
+    const foundPattern = await Pattern.findByIdAndUpdate(id, pattern, {
+      new: true,
+    });
+    if (foundPattern) {
+      return foundPattern;
     }
-    return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
+    throw new Error(PATTERN_NOT_FOUND);
   }
 
   async addPattern(data) {
@@ -28,7 +35,11 @@ class PatternsService {
   }
 
   async deletePattern(id) {
-    return await Pattern.findByIdAndDelete(id);
+    const foundPattern = await Pattern.findByIdAndDelete(id);
+    if (foundPattern) {
+      return foundPattern;
+    }
+    throw new Error(PATTERN_NOT_FOUND);
   }
 
   async checkPatternExist(data) {

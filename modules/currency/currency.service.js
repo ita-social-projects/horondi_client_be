@@ -10,14 +10,21 @@ class CurrencyService {
   }
 
   async getCurrencyById(id) {
-    return await Currency.findById(id);
+    const foundCurrency = await Currency.findById(id);
+    if (foundCurrency) {
+      return foundCurrency;
+    }
+    throw new Error(CURRENCY_NOT_FOUND);
   }
 
   async updateCurrency(id, currency) {
-    if (await this.checkNewsExist(currency)) {
-      throw new Error(CURRENCY_ALREADY_EXIST);
+    const foundCurrency = await Currency.findByIdAndUpdate(id, currency, {
+      new: true,
+    });
+    if (foundCurrency) {
+      return foundCurrency;
     }
-    return await Currency.findByIdAndUpdate(id, currency, { new: true });
+    throw new Error(CURRENCY_NOT_FOUND);
   }
 
   async addCurrency(data) {
@@ -28,7 +35,11 @@ class CurrencyService {
   }
 
   async deleteCurrency(id) {
-    return await Currency.findByIdAndDelete(id);
+    const foundCurrency = await Currency.findByIdAndDelete(id);
+    if (foundCurrency) {
+      return foundCurrency;
+    }
+    throw new Error(CURRENCY_NOT_FOUND);
   }
 
   async checkCurrencyExist(data) {

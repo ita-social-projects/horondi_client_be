@@ -10,14 +10,21 @@ class CategoryService {
   }
 
   async getCategoryById(id) {
-    return await Category.findById(id);
+    const category = await Category.findById(id);
+    if (category) {
+      return category;
+    }
+    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async updateCategory(id, category) {
-    if (await this.checkNewsExist(category)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+    const foundCategory = await Category.findByIdAndUpdate(id, category, {
+      new: true,
+    });
+    if (foundCategory) {
+      return foundCategory;
     }
-    return await Category.findByIdAndUpdate(id, category, { new: true });
+    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async addCategory(data) {
@@ -28,7 +35,11 @@ class CategoryService {
   }
 
   async deleteCategory(id) {
-    return await Category.findByIdAndDelete(id);
+    const category = await Category.findByIdAndDelete(id);
+    if (category) {
+      return category;
+    }
+    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async checkCategoryExist(data) {
