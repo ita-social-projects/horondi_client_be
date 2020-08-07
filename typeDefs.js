@@ -126,9 +126,15 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type PaginatedProducts {
+    items: [Product]
+    count: Int
   }
 
   union CategoryResult = Category | Error
@@ -166,7 +172,7 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): [Product]!
+    ): PaginatedProducts!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
@@ -186,6 +192,7 @@ const typeDefs = gql`
     price: [Int]
     category: [String]
     search: String
+    isHotItem: Boolean
   }
   input RoleEnumInput {
     role: String
@@ -273,11 +280,13 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
-    loginUser(user: userLoginInput!): User
+    registerUser(user: UserInput!, language: Int!): User
+    loginUser(user: UserInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
+    recoverUser(email: String!, language: Int!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
