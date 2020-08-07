@@ -4,8 +4,8 @@ const client = require('../../utils/apollo-test-client');
 
 require('dotenv').config();
 
-let userId; let
-    token;
+let userId;
+let token;
 
 const testUser = {
   firstName: 'Petro',

@@ -14,11 +14,16 @@ class NewsService {
   }
 
   async updateNews(id, news) {
+    const foundNews = await this.checkNewsExist(news);
+    if (foundNews > 1) {
+      throw new Error(NEWS_NOT_FOUND);
+    }
     return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
   async addNews(data) {
-    if (await this.checkNewsExist(data)) {
+    const newsCount = await this.checkNewsExist(data);
+    if (newsCount) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
     return new News(data).save();
@@ -36,7 +41,7 @@ class NewsService {
         },
       },
     });
-    return newsCount > 0;
+    return newsCount;
   }
 }
 module.exports = new NewsService();
