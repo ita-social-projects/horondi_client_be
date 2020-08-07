@@ -96,6 +96,7 @@ const typeDefs = gql`
   type ProductOptions {
     size: Size
     bottomMaterial: Material
+    description: [Language]
     bottomColor: [Language]
     availableCount: Boolean
     additions: [ProductAdditions]
@@ -250,6 +251,7 @@ const typeDefs = gql`
   input ProductOptionsInput {
     size: ID!
     bottomMaterial: ID!
+    description: [LanguageInput!]
     bottomColor: [LanguageInput!]
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
