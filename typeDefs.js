@@ -271,11 +271,13 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
-    loginUser(user: userLoginInput!): User
+    registerUser(user: UserInput!, language: Int!): User
+    loginUser(user: UserInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
+    recoverUser(email: String!, language: Int!): Boolean
 
     "Product Mutation"
     addProduct(product: productInput!): Product

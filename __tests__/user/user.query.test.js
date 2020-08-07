@@ -4,8 +4,8 @@ const client = require('../../utils/apollo-test-client');
 
 require('dotenv').config();
 
-let token; let
-    userId;
+let token;
+let userId;
 
 describe('queries', () => {
   beforeAll(async () => {
