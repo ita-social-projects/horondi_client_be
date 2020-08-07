@@ -75,9 +75,9 @@ class ProductsService {
     return Products.findByIdAndUpdate(id, products, { new: true });
   }
 
-  addProduct(data) {
+  async addProduct(data) {
     const product = new Products(data);
-    return product.save();
+    return await product.save();
   }
 
   deleteProduct(id) {

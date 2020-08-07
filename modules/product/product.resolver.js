@@ -6,7 +6,7 @@ const productsQuery = {
 };
 
 const productsMutation = {
-  addProduct: (parent, args) => productsService.addProduct(args.products),
+  addProduct: (parent, args) => productsService.addProduct(args.product),
   deleteProduct: (parent, args) => productsService.deleteProduct(args.id),
   updateProduct: (parent, args) => productsService.updateProduct(args.id, args.products),
 };

@@ -95,7 +95,7 @@ const typeDefs = gql`
 
   type ProductOptions {
     size: Size
-    bottomMaterial: BottomMaterial
+    bottomMaterial: Material
     bottomColor: [Language]
     availableCount: Boolean
     additions: [ProductAdditions]
@@ -109,6 +109,7 @@ const typeDefs = gql`
   }
 
   type Size {
+    _id: ID!
     name: String
     heightInCm: Int
     widthInCm: Int
@@ -119,16 +120,16 @@ const typeDefs = gql`
     additionalPrice: Int
   }
 
-  type BottomMaterial {
-    name: [Language]
-    description: [Language]
-    colors: [Color]
-    available: Boolean
-    additionalPrice: Int
-  }
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type ProductOptionsAdditonals {
+    name: [Language!]
+    description: [Language!]
+    available: Boolean
+    additionalPrice: Int
   }
 
   union CategoryResult = Category | Error
@@ -229,6 +230,7 @@ const typeDefs = gql`
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
+    simpleName: [LanguageInput!]
   }
   input ConvertOptionInput {
     name: String!
@@ -243,6 +245,31 @@ const typeDefs = gql`
   input CredentialInput {
     source: String
     tokenPass: String
+  }
+
+  input ProductOptionsInput {
+    size: ID!
+    bottomMaterial: ID!
+    bottomColor: [LanguageInput!]
+    availableCount: Int
+    additions: [ProductOptionsAdditonalsInput]
+  }
+
+  input SizeInput {
+    name: String
+    heightInCm: Int
+    widthInCm: Int
+    depthInCm: Int
+    volumeInLiters: Int
+    weightInKg: Float
+    available: Boolean
+    additionalPrice: Int
+  }
+  input ProductOptionsAdditonalsInput {
+    name: [LanguageInput!]
+    description: [LanguageInput!]
+    available: Boolean
+    additionalPrice: Int
   }
 
   type Mutation {

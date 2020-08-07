@@ -27,7 +27,7 @@ comments: [Comment]
 
 const productInput = `
 input productInput {
-subcategory: CategoryInput!
+subcategory: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
@@ -42,6 +42,7 @@ closureColor: String
 basePrice: Int!
 available: Boolean!
 isHotItem: Boolean
+options:[ProductOptionsInput]
 }`;
 
 module.exports = {
