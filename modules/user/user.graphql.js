@@ -52,5 +52,8 @@ input userRegisterInput {
 }`;
 
 module.exports = {
-  userType, userInput, userRegisterInput, userLoginInput,
+  userType,
+  userInput,
+  userRegisterInput,
+  userLoginInput,
 };
