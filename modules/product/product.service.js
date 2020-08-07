@@ -70,7 +70,7 @@ class ProductsService {
       .limit(limit)
       .sort(sort);
 
-    if (!items) {
+    if (!items.length) {
       throw new Error(PRODUCTS_NOT_FOUND);
     }
 
