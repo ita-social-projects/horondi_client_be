@@ -37,8 +37,8 @@ input UserInput {
     banned: Boolean
     confirmed: Boolean
 }`;
-const userLoginInput = `
-input userLoginInput {
+const LoginInput = `
+input LoginInput {
     password: String!
     email: String!
 }`;
@@ -52,8 +52,8 @@ input userRegisterInput {
 }`;
 
 module.exports = {
-  userType,
-  userInput,
-  userRegisterInput,
-  userLoginInput,
+    userType,
+    userInput,
+    userRegisterInput,
+    LoginInput,
 };

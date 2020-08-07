@@ -4,7 +4,7 @@ const {
   userType,
   userInput,
   userRegisterInput,
-  userLoginInput,
+  LoginInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -211,7 +211,7 @@ const typeDefs = gql`
   ${userInput}
   ${productInput}
   ${commentInput}
-  ${userLoginInput}
+  ${LoginInput}
   ${userRegisterInput}
 
   input LanguageInput {
@@ -279,7 +279,8 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: UserInput!, language: Int!): User
-    loginUser(user: UserInput!): User
+    loginUser(loginInput: LoginInput!): User
+    loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
