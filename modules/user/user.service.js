@@ -6,6 +6,7 @@ const {
   validateRegisterInput,
   validateLoginInput,
   validateUpdateInput,
+  validateNewPassword,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendmail');
@@ -205,6 +206,25 @@ class UserService {
       html: recoveryMessage(user.firstName, token, language),
     };
     await sendEmail(message);
+    return true;
+  }
+
+  async changePassword(password, token) {
+    const { errors } = await validateNewPassword.validateAsync({
+      password,
+    });
+
+    if (errors) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
+    }
+
+    user.credentials[0].tokenPass = await bcrypt.hash(password, 12);
+    await user.save();
     return true;
   }
 }

@@ -1,7 +1,7 @@
 const recoveryMessage = (firstName, token, language) => {
   if (language === 0) {
     return `
-  <div className="email" style="
+        <div className="email" style="
     border: 1px solid black;
     padding: 20px;
     font-family: Montserrat sans-serif;
