@@ -4,7 +4,7 @@ const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 
 let NEWS_ID = '';
-
+const NEWS_DOES_NOT_EXIST_ID = '1f2ad470eb08183384e6111b';
 describe('test news mutations', () => {
   test('#1 should add news to database', async () => {
     const res = await client
@@ -179,7 +179,7 @@ describe('test news mutations', () => {
           }
         }
       `,
-      variables: { id: '1f2ad470eb08183384e6111b' },
+      variables: { id: NEWS_DOES_NOT_EXIST_ID },
     });
     expect(res.data.updateNews).toHaveProperty('message');
     expect(res.data.updateNews).toHaveProperty('statusCode');
@@ -225,5 +225,36 @@ describe('test news mutations', () => {
         { __typename: 'Language', lang: 'eng', value: 'updated sd' },
       ],
     });
+  });
+  test('#5 delete not existing news should return error', async () => {
+    const res = await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteNews(id: $id) {
+            ... on News {
+              text {
+                lang
+                value
+              }
+              author {
+                name {
+                  lang
+                  value
+                }
+              }
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: NEWS_DOES_NOT_EXIST_ID },
+    });
+    expect(res.data.deleteNews).toBeDefined();
+    expect(res.data.deleteNews).not.toBeNull();
+    expect(res.data.deleteNews).toHaveProperty('statusCode');
+    expect(res.data.deleteNews).toHaveProperty('message');
   });
 });
