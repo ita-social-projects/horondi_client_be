@@ -4,14 +4,12 @@ const { mapToLanguages } = require('../../helpers/languages');
 
 const srcPath = path.join(__dirname, '..', '..', 'src');
 
-const aboutUsUK = fs.readFileSync(path.join(srcPath, 'aboutUsUK.html'), 'utf8');
-const aboutUsEN = fs.readFileSync(path.join(srcPath, 'aboutUsEN.html'), 'utf8');
-
 const aboutTexts = [
     {
         code: 'about-us',
         title: mapToLanguages(['Про нас', 'About Us']),
-        text: mapToLanguages([aboutUsUK, aboutUsEN]),
+        text: mapToLanguages([fs.readFileSync(path.join(srcPath, 'aboutUsUK.html'), 'utf8').split('\n').join(''),
+                fs.readFileSync(path.join(srcPath, 'aboutUsEN.html'), 'utf8').split('\n').join('')]),
         date: new Date(),
     },
     {
