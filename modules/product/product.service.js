@@ -1,8 +1,5 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
-const {
-  PRODUCTS_NOT_FOUND,
-} = require('../../error-messages/products.messages');
 
 class ProductsService {
   getProductsById(id) {
@@ -69,10 +66,6 @@ class ProductsService {
       .skip(skip)
       .limit(limit)
       .sort(sort);
-
-    if (!items.length) {
-      throw new Error(PRODUCTS_NOT_FOUND);
-    }
 
     const count = await Products.find(filters).countDocuments();
     return {
