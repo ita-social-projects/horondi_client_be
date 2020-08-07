@@ -19,7 +19,7 @@ const {
   USER_NOT_FOUND,
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
-  NO_ACCESS
+  INVALID
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -129,7 +129,7 @@ class UserService {
     );
 
     if (user.role === ROLES.user) {
-      throw new UserInputError(NO_ACCESS, { statusCode: 400 });
+      throw new UserInputError(INVALID, { statusCode: 400 });
     }
 
     if (!match) {

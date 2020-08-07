@@ -36,17 +36,14 @@ const newsMutation = {
     };
   },
   updateNews: async (parent, args) => {
-
-    const news = await newsService.updateNews(args.id, args.news);
-    if (news) {
-      return news;
+    try {
+      return await newsService.updateNews(args.id, args.news);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-
-    return {
-      statusCode: 404,
-      message: NEWS_NOT_FOUND,
-    };
-
   },
 };
 module.exports = { newsQuery, newsMutation };
