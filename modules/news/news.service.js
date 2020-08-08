@@ -14,7 +14,7 @@ class NewsService {
   }
 
   async updateNews(id, news) {
-    if (await this.checkNewsExist(news)) {
+    if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
     return await News.findByIdAndUpdate(id, news, { new: true });
@@ -31,8 +31,9 @@ class NewsService {
     return await News.findByIdAndDelete(id);
   }
 
-  async checkNewsExist(data) {
+  async checkNewsExist(data, id) {
     const newsCount = await News.countDocuments({
+      _id: { $ne: id },
       title: {
         $elemMatch: {
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
