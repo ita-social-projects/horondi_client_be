@@ -1,5 +1,8 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const {
+  PRODUCTS_NOT_FOUND,
+} = require('../../error-messages/products.messages');
 
 class ProductsService {
   getProductsById(id) {
@@ -13,9 +16,13 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category,
+      pattern, colors, price, category, isHotItem
     } = args;
 
+
+    if(isHotItem){
+      filter.isHotItem = isHotItem
+    }
     if (category && category.length) {
       filter.category = { $in: category };
     }
