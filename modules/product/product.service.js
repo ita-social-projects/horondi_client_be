@@ -1,5 +1,8 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const {
+  PRODUCTS_NOT_FOUND,
+} = require('../../error-messages/products.messages');
 
 class ProductsService {
   getProductsById(id) {
@@ -13,9 +16,13 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category,
+      pattern, colors, price, category, isHotItem
     } = args;
 
+
+    if(isHotItem){
+      filter.isHotItem = isHotItem
+    }
     if (category && category.length) {
       filter.category = { $in: category };
     }
@@ -46,13 +53,11 @@ class ProductsService {
     return filter;
   }
 
-  getProducts({
+  async getProducts({
     filter, skip, limit, sort, search,
   }) {
-    const isNotBlank = str => !(!str || str.trim().length === 0);
     const filters = this.filterItems(filter);
-
-    if (isNotBlank(search)) {
+    if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
           name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
@@ -64,15 +69,20 @@ class ProductsService {
         },
       ];
     }
-
-    return Products.find(filters)
+    const items = await Products.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
-  }
 
-  updateProduct(id, products) {
-    return Products.findByIdAndUpdate(id, products, { new: true });
+    if (!items) {
+      throw new Error(PRODUCTS_NOT_FOUND);
+    }
+
+    const count = await Products.find(filters).countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   addProduct(data) {
