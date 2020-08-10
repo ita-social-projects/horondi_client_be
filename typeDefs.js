@@ -142,6 +142,8 @@ const typeDefs = gql`
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
+  union ProductResult = Product | Error
+  union CommentResult = Comment | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -163,7 +165,7 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    getProductsById(id: ID!): Product
+    getProductById(id: ID!): ProductResult
     getProducts(
       filter: FilterInput
       limit: Int
@@ -172,9 +174,8 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
 
-    getAllComments: [Comment]
-    getCommentById(id: ID!): Comment
-    getAllCommentsByProduct(id: ID!): [Comment!]!
+    getCommentById(id: ID!): CommentResult
+    getAllCommentsByProduct(productId: ID!): [CommentResult]
   }
 
   input SortInput {
@@ -190,6 +191,7 @@ const typeDefs = gql`
     colors: [String]
     price: [Int]
     category: [String]
+    search: String
     isHotItem: Boolean
   }
   input RoleEnumInput {
@@ -288,12 +290,12 @@ const typeDefs = gql`
     recoverUser(email: String!, language: Int!): Boolean
 
     "Product Mutation"
-    addProduct(product: productInput!): Product
-    deleteProduct(id: ID!): Product
-    updateProduct(id: ID!, product: productInput!): Product
+    addProduct(product: ProductInput!): ProductResult
+    deleteProduct(id: ID!): ProductResult
+    updateProduct(id: ID!, product: ProductInput!): ProductResult
 
     "Comment Mutation"
-    addComment(comment: commentInput!): Comment
+    addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): Comment
     updateComment(id: ID!, product: commentInput!): Comment
   }

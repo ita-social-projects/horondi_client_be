@@ -1,11 +1,12 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
 const {
+  PRODUCT_ALREADY_EXIST,
   PRODUCTS_NOT_FOUND,
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
-  getProductsById(id) {
+  getProductById(id) {
     return Products.findById(id);
   }
 
@@ -16,12 +17,11 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category, isHotItem
+      pattern, colors, price, category, isHotItem,
     } = args;
 
-
-    if(isHotItem){
-      filter.isHotItem = isHotItem
+    if (isHotItem) {
+      filter.isHotItem = isHotItem;
     }
     if (category && category.length) {
       filter.category = { $in: category };
@@ -85,13 +85,26 @@ class ProductsService {
     };
   }
 
-  addProduct(data) {
-    const product = new Products(data);
-    return product.save();
+  async addProduct(data) {
+    if (await this.checkProductExist(data)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return new Products(data).save();
   }
 
   deleteProduct(id) {
     return Products.findByIdAndDelete(id);
+  }
+
+  async checkProductExist(data) {
+    const productCount = await Products.countDocuments({
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return productCount > 0;
   }
 }
 module.exports = new ProductsService();
