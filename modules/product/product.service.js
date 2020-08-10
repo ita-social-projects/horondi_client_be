@@ -85,6 +85,14 @@ class ProductsService {
     };
   }
 
+  async updateProduct(id, products) {
+    const product = await Products.findById(id);
+    if (!product) {
+      throw new Error(PRODUCTS_NOT_FOUND);
+    }
+    return Products.findByIdAndUpdate(id, products, { new: true });
+  }
+
   async addProduct(data) {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
