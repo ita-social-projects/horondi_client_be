@@ -59,7 +59,7 @@ const resolvers = {
   },
   Comment: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
-    product: parent => productsService.getProductsById(parent.product),
+    product: parent => productsService.getProductById(parent.product),
   },
 
   Product: {

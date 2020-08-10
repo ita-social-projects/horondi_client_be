@@ -164,7 +164,7 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    getProductsById(id: ID!): Product
+    getProductById(id: ID!): Product
     getProducts(
       filter: FilterInput
       limit: Int

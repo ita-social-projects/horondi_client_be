@@ -5,7 +5,7 @@ const {
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
-  getProductsById(id) {
+  getProductById(id) {
     return Products.findById(id);
   }
 
