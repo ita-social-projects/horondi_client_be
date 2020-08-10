@@ -51,21 +51,27 @@ const productSchema = new mongoose.Schema({
   ],
   available: Boolean,
   isHotItem: Boolean,
-  purchasedCount: Number,
-  rate: Number,
-  rateCount: Number,
-  votedUsers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-  ],
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
-    },
-  ],
+  purchasedCount: {
+    type: Number,
+    default: 0,
+  },
+  rate: {
+    type: Number,
+    default: 0,
+  },
+  rateCount: {
+    type: Number,
+    default: 0,
+  },
+  comments: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+      }
+    ],
+    default: []
+  }
 });
 
 module.exports = mongoose.model('Product', productSchema);
