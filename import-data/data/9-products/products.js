@@ -8,7 +8,7 @@ let rate;
 
 for(let i = 0; i < productsNumber; i++) {
     votedUsersNumber = ratesPerProduct[i].length;
-    rate = (votedUsersNumber == 0) ? null : ratesPerProduct[i].reduce((total, el) => total + el) / votedUsersNumber;
+    rate = (votedUsersNumber == 0) ? 0 : ratesPerProduct[i].reduce((total, el) => total + el) / votedUsersNumber;
     products[i]['comments'] = commentsPerProduct[i];
     products[i]['rateCount'] = votedUsersNumber;
     products[i]['rate'] = rate;
