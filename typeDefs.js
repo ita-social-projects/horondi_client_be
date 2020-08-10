@@ -49,6 +49,10 @@ const typeDefs = gql`
     lang: String!
     value: String!
   }
+  type CurrencySet {
+    currency: String!
+    value: Int!
+  }
   type ImageSet {
     large: String
     medium: String
@@ -105,7 +109,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type Size {
@@ -116,7 +120,7 @@ const typeDefs = gql`
     volumeInLiters: Int
     weightInKg: Float
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type BottomMaterial {
@@ -217,6 +221,10 @@ const typeDefs = gql`
   input LanguageInput {
     lang: String!
     value: String!
+  }
+  input CurrencySetInput {
+    currency: String!
+    value: Int!
   }
   input AddressInput {
     country: String
