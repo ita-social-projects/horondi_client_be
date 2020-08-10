@@ -18,13 +18,12 @@ class PatternsService {
   }
 
   async updatePattern(id, pattern) {
-    const foundPattern = await Pattern.findByIdAndUpdate(id, pattern, {
+    if (await this.checkPatternExist(pattern, id)) {
+      throw new Error(PATTERN_ALREADY_EXIST);
+    }
+    return await Pattern.findByIdAndUpdate(id, pattern, {
       new: true,
     });
-    if (foundPattern) {
-      return foundPattern;
-    }
-    throw new Error(PATTERN_NOT_FOUND);
   }
 
   async addPattern(data) {
@@ -42,8 +41,9 @@ class PatternsService {
     throw new Error(PATTERN_NOT_FOUND);
   }
 
-  async checkPatternExist(data) {
+  async checkPatternExist(data, id) {
     const patternsCount = await Pattern.countDocuments({
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

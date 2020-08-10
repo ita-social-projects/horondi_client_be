@@ -91,8 +91,9 @@ class ProductsService {
     return Products.findByIdAndDelete(id);
   }
 
-  async checkProductExist(data) {
+  async checkProductExist(data, id) {
     const productCount = await Products.countDocuments({
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

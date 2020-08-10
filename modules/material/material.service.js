@@ -18,11 +18,10 @@ class MaterialsService {
   }
 
   async updateMaterial(id, material) {
-    const foundMaterial = await Material.findByIdAndUpdate(id, material);
-    if (foundMaterial) {
-      return foundMaterial;
+    if (await this.checkMaterialExist(material, id)) {
+      throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    throw new Error(MATERIAL_NOT_FOUND);
+    return await Material.findByIdAndUpdate(id, material);
   }
 
   async addMaterial(data) {
@@ -40,8 +39,9 @@ class MaterialsService {
     throw new Error(MATERIAL_NOT_FOUND);
   }
 
-  async checkMaterialExist(data) {
+  async checkMaterialExist(data, id) {
     const materialsCount = await Material.countDocuments({
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

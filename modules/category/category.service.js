@@ -18,13 +18,12 @@ class CategoryService {
   }
 
   async updateCategory(id, category) {
-    const foundCategory = await Category.findByIdAndUpdate(id, category, {
+    if (await this.checkCategoryExist(category, id)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    return await Category.findByIdAndUpdate(id, category, {
       new: true,
     });
-    if (foundCategory) {
-      return foundCategory;
-    }
-    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async addCategory(data) {
@@ -42,9 +41,9 @@ class CategoryService {
     throw new Error(CATEGORY_NOT_FOUND);
   }
 
-  async checkCategoryExist(data) {
+  async checkCategoryExist(data, id) {
     const categoriesCount = await Category.countDocuments({
-      code: data.code,
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
