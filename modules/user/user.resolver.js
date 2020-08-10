@@ -11,7 +11,8 @@ const userQuery = {
 };
 const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user, args.language),
-  loginUser: (parent, args) => userService.loginUser(args.user),
+  loginUser: (parent, args) => userService.loginUser(args.loginInput),
+  loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
   updateUserById: (parent, args, context) => (context.user
     ? userService.updateUserById(args.user, args.id)

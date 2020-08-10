@@ -1,14 +1,45 @@
 const commentsService = require('./comment.service');
+const productsService = require('../product/product.service');
+const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 
 const commentsQuery = {
-  getAllComments: () => commentsService.getAllComments(),
-  getCommentById: (parent, args) => commentsService.getCommentById(args.id),
-  getAllCommentsByProduct: (parent, args) => commentsService.getAllCommentsByProduct(args.id),
+  getCommentById: async (parent, args) => {
+    const comment = await commentsService.getCommentById(args.id);
+    if (comment) {
+      return comment;
+    }
+    return {
+      statusCode: 404,
+      message: COMMENT_NOT_FOUND,
+    };
+  },
+
+  getAllCommentsByProduct: async (parent, args) => {
+    try {
+      return await commentsService.getAllCommentsByProduct(args.id);
+    } catch (error) {
+      return [
+        {
+          statusCode: 404,
+          message: error.message,
+        },
+      ];
+    }
+  },
 };
 
 const commentsMutation = {
   addComment: (parent, args) => commentsService.addComment(args.comment),
-  deleteComment: (parent, args) => commentsService.deleteComment(args.id),
+  deleteComment: async (parent, args) => {
+    const deletedComment = await commentsService.deleteComment(args.id);
+    if (deletedComment) {
+      return deletedComment;
+    }
+    return {
+      statusCode: 404,
+      message: COMMENT_NOT_FOUND,
+    };
+  },
   updateComment: (parent, args) => commentsService.updateComment(args.id, args.comment),
 };
 

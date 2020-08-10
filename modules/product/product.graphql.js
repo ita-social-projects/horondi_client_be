@@ -26,7 +26,7 @@ comments: [Comment]
 `;
 
 const productInput = `
-input productInput {
+input ProductInput {
 subcategory: CategoryInput!
 name: [LanguageInput]!
 description: [LanguageInput]!
