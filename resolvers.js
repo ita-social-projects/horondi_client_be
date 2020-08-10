@@ -38,6 +38,8 @@ const SCHEMA_NAMES = {
   pattern: 'Pattern',
   material: 'Material',
   currency: 'Currency',
+  product: 'Product',
+  comment: 'Comment',
 };
 const resolvers = {
   Query: {
@@ -126,6 +128,22 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.pattern;
+      }
+      return 'Error';
+    },
+  },
+  ProductResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.product;
+      }
+      return 'Error';
+    },
+  },
+  CommentResult: {
+    __resolveType: obj => {
+      if (obj.product) {
+        return SCHEMA_NAMES.comment;
       }
       return 'Error';
     },
