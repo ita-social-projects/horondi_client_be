@@ -27,6 +27,7 @@ comments: [Comment]
 
 const productInput = `
 input ProductInput {
+category: ID!
 subcategory: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
