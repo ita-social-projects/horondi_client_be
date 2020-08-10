@@ -1,24 +1,22 @@
 const newsType = `
 type News {
 _id: ID!
-lang: String
-title: String
-text: String
+title: [Language]
+text: [Language]
 images: PrimaryImage
+video: String
 author: Author
 date: String
-show: Boolean
 }`;
 
 const newsInput = `
 input NewsInput {
-lang: String
-title: String
-text: String
+title: [LanguageInput]
+text: [LanguageInput]
 images: PrimaryImageInput
+video: String
 author: AuthorInput
 date: String
-show: Boolean
 }`;
 
 module.exports = { newsType, newsInput };

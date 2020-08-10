@@ -82,7 +82,7 @@ const typeDefs = gql`
     available: Boolean
   }
   type Author {
-    name: String
+    name: [Language]
     image: ImageSet
   }
   type Color {
@@ -193,7 +193,7 @@ const typeDefs = gql`
     additional: [ImageSetInput!]
   }
   input AuthorInput {
-    name: String
+    name: [LanguageInput]
     image: ImageSetInput
   }
   ${categoryInput}
