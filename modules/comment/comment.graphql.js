@@ -3,7 +3,6 @@ type Comment {
 _id: ID!
 text: String!
 date: String!
-user: User
 email: String
 product: Product
 show: Boolean

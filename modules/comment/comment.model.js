@@ -9,10 +9,6 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
   email: String,
   product: {
     type: mongoose.Schema.Types.ObjectId,
