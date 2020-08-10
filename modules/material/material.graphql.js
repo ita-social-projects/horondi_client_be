@@ -5,7 +5,7 @@ const materialType = `
     description: [Language]
     colors: [Color]
     available: Boolean
-    additionalPrice: Float
+    additionalPrice: [CurrencySet]
     }
 `;
 
@@ -15,7 +15,7 @@ const materialInput = `
     description: [LanguageInput]
     colors: [ColorInput]
     available: Boolean
-    additionalPrice: Float
+    additionalPrice: [CurrencySetInput]
     }
 `;
 

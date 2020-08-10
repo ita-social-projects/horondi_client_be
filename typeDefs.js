@@ -4,7 +4,7 @@ const {
   userType,
   userInput,
   userRegisterInput,
-  userLoginInput,
+  LoginInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -48,6 +48,10 @@ const typeDefs = gql`
   type Language {
     lang: String!
     value: String!
+  }
+  type CurrencySet {
+    currency: String!
+    value: Int!
   }
   type ImageSet {
     large: String
@@ -105,7 +109,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type Size {
@@ -116,7 +120,7 @@ const typeDefs = gql`
     volumeInLiters: Int
     weightInKg: Float
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type BottomMaterial {
@@ -126,9 +130,15 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type PaginatedProducts {
+    items: [Product]
+    count: Int
   }
 
   union CategoryResult = Category | Error
@@ -164,7 +174,7 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): [Product]!
+    ): PaginatedProducts!
 
     getAllComments: [Comment]
     getCommentById(id: ID!): Comment
@@ -184,6 +194,7 @@ const typeDefs = gql`
     colors: [String]
     price: [Int]
     category: [String]
+    isHotItem: Boolean
   }
   input RoleEnumInput {
     role: String
@@ -204,12 +215,16 @@ const typeDefs = gql`
   ${userInput}
   ${productInput}
   ${commentInput}
-  ${userLoginInput}
+  ${LoginInput}
   ${userRegisterInput}
 
   input LanguageInput {
     lang: String!
     value: String!
+  }
+  input CurrencySetInput {
+    currency: String!
+    value: Int!
   }
   input AddressInput {
     country: String
@@ -271,11 +286,14 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
-    loginUser(user: userLoginInput!): User
+    registerUser(user: UserInput!, language: Int!): User
+    loginUser(loginInput: LoginInput!): User
+    loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
+    recoverUser(email: String!, language: Int!): Boolean
 
     "Product Mutation"
     addProduct(product: productInput!): Product
