@@ -3,6 +3,7 @@ const Size = require('../../models/Size');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCTS_NOT_FOUND,
+  PRODUCT_NOT_FOUND,
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
@@ -88,7 +89,7 @@ class ProductsService {
   async updateProduct(id, products) {
     const product = await Products.findById(id);
     if (!product) {
-      throw new Error(PRODUCTS_NOT_FOUND);
+      throw new Error(PRODUCT_NOT_FOUND);
     }
     return Products.findByIdAndUpdate(id, products, { new: true });
   }

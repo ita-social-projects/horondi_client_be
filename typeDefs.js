@@ -98,7 +98,7 @@ const typeDefs = gql`
     bottomMaterial: Material
     description: [Language]
     bottomColor: [Language]
-    availableCount: Boolean
+    availableCount: Int
     additions: [ProductAdditions]
   }
 
