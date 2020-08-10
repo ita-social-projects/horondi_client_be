@@ -21,7 +21,7 @@ class NewsService {
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    throw new Error(NEWS_NOT_FOUND);
+    return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
   async addNews(data) {
