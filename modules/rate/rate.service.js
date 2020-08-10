@@ -9,7 +9,7 @@ class RatesService {
     return Rates.find({ product: id });
   }
 
-  updateRate(id, Rates) {
+  updateRate(id, rates) {
     return Rates.findByIdAndUpdate(id, rates, { new: true });
   }
 
