@@ -279,6 +279,7 @@ const typeDefs = gql`
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     changePassword(password: String!, token: String!): Boolean
+    checkIfExists(token: String!): Boolean
 
     "Product Mutation"
     addProduct(product: productInput!): Product

@@ -22,6 +22,7 @@ const userMutation = {
   confirmUser: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   changePassword: (parent, args) => userService.changePassword(args.password, args.token),
+  checkIfExists: (parent, args) => userService.checkIfExists(args.token),
 };
 
 module.exports = {

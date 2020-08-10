@@ -23,14 +23,10 @@ const {
 } = require('../../error-messages/user.messages');
 
 class UserService {
-  async checkUserExists(email) {
-    const checkedUser = await User.findOne({
-      email,
-    });
-
-    if (checkedUser) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
-    }
+  async checkIfExists(token) {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    await this.getUserByFieldOrThrow('email', decoded.email);
+    return true;
   }
 
   async getUserByFieldOrThrow(key, param) {
@@ -69,7 +65,10 @@ class UserService {
     const user = await this.getUserByFieldOrThrow('_id', id);
 
     if (user._doc.email !== updatedUser.email) {
-      await this.checkUserExists(updatedUser.email);
+      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
+      if (user) {
+        throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      }
     }
 
     return User.findByIdAndUpdate(
@@ -112,7 +111,10 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
 
     const match = await bcrypt.compare(
       password,
@@ -146,7 +148,9 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    await this.checkUserExists(email);
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
@@ -182,10 +186,7 @@ class UserService {
 
   async confirmUser(token) {
     const decoded = jwt.verify(token, process.env.SECRET);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
-    }
+    const user = await this.getUserByFieldOrThrow('email', decoded.email);
     user.confirmed = true;
     await User.findByIdAndUpdate(user._id, user);
     return true;
