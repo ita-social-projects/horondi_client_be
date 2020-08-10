@@ -3,27 +3,28 @@ const path = require('path');
 const { mapToLanguages } = require('./languages');
 const { mapToImages } = require('./images');
 const { mapToColors } = require('./colors');
+const { mapToCurrencies } = require('./currencyset');
 const { mapToOptions } = require('./options');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
-const rolltopDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'rolltopDescUK.html'), 'utf8');
-const rolltopDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'rolltopDescEN.html'), 'utf8');
-const newDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'newDescUK.html'), 'utf8');
-const newDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'newDescEN.html'), 'utf8');
-const harbuzDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'harbuzDescUK.html'), 'utf8');
-const harbuzDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'harbuzDescEN.html'), 'utf8');
-const bagWithPatternDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagWithPatternDescUK.html'), 'utf8');
-const bagWithPatternDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagWithPatternDescEN.html'), 'utf8');
-const bagThreeColorsDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagThreeColorsDescUK.html'), 'utf8');
-const bagThreeColorsDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagThreeColorsDescEN.html'), 'utf8');
-const bagOneColorDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagOneColorDescUK.html'), 'utf8');
-const bagOneColorDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagOneColorDescEN.html'), 'utf8');
-const bagSimpleDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagSimpleDescUK.html'), 'utf8');
-const bagSimpleDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagSimpleDescEN.html'), 'utf8');
-const fannyPackLargeDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackLargeDescUK.html'), 'utf8');
-const fannyPackLargeDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackLargeDescEN.html'), 'utf8');
-const fannyPackSmallDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackSmallDescUK.html'), 'utf8');
-const fannyPackSmallDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackSmallDescEN.html'), 'utf8');
+const rolltopDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'rolltopDescUK.html'), 'utf8').split('\n').join('');
+const rolltopDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'rolltopDescEN.html'), 'utf8').split('\n').join('');
+const newDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'newDescUK.html'), 'utf8').split('\n').join('');
+const newDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'newDescEN.html'), 'utf8').split('\n').join('');
+const harbuzDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'harbuzDescUK.html'), 'utf8').split('\n').join('');
+const harbuzDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'harbuzDescEN.html'), 'utf8').split('\n').join('');
+const bagWithPatternDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagWithPatternDescUK.html'), 'utf8').split('\n').join('');
+const bagWithPatternDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagWithPatternDescEN.html'), 'utf8').split('\n').join('');
+const bagThreeColorsDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagThreeColorsDescUK.html'), 'utf8').split('\n').join('');
+const bagThreeColorsDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagThreeColorsDescEN.html'), 'utf8').split('\n').join('');
+const bagOneColorDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagOneColorDescUK.html'), 'utf8').split('\n').join('');
+const bagOneColorDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagOneColorDescEN.html'), 'utf8').split('\n').join('');
+const bagSimpleDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagSimpleDescUK.html'), 'utf8').split('\n').join('');
+const bagSimpleDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagSimpleDescEN.html'), 'utf8').split('\n').join('');
+const fannyPackLargeDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackLargeDescUK.html'), 'utf8').split('\n').join('');
+const fannyPackLargeDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackLargeDescEN.html'), 'utf8').split('\n').join('');
+const fannyPackSmallDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackSmallDescUK.html'), 'utf8').split('\n').join('');
+const fannyPackSmallDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackSmallDescEN.html'), 'utf8').split('\n').join('');
 
 const fabricDescription = mapToLanguages([
     '100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
@@ -84,12 +85,12 @@ const bags = [
 const bagsNumber = bags.length;
 
 const fannyPacks = [
-    [['Бананка гірчична', 'Fanny Pack Mustard'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', ''],
-    [['Бананка червона', 'Fanny Pack Red'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Червоний', 'Red'], 'red', ''],
-    [['Бананка синя', 'Fanny Pack Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', ''],
-    [['Бананка рожева', 'Fanny Pack Pink'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', ''],
-    [['Бананка зелена', 'Fanny Pack Green'], [[207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], ['Чорний', 'Black'], 'black', ''],
-    [['Бананка асфальтна', 'Fanny Pack Slate Grey'], [[212, 'Срібний', 'Silver', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', ''],
+    [['Бананка гірчична', 'Fanny-Pack Mustard'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', ''],
+    [['Бананка червона', 'Fanny-Pack Red'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Червоний', 'Red'], 'red', ''],
+    [['Бананка синя', 'Fanny-Pack Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', ''],
+    [['Бананка рожева', 'Fanny-Pack Pink'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', ''],
+    [['Бананка зелена', 'Fanny-Pack Green'], [[207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], ['Чорний', 'Black'], 'black', ''],
+    [['Бананка асфальтна', 'Fanny-Pack Slate Grey'], [[212, 'Срібний', 'Silver', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', ''],
 ];
 const fannyPacksNumber = fannyPacks.length;
 
@@ -114,60 +115,62 @@ let innerMaterial;
 let mainMaterial;
 let closure;
 let closureColor;
+let model;
 
 newTotalProducts += rolltopNumber;
 while (counter < newTotalProducts){
-    mapProduct('main-backpacks', 'sub-backpacks', 'rolltop', counter, rolltops[counter - oldTotalProducts], rolltopDescUK, rolltopDescEN, 1450);
+    mapProduct('main-backpacks', 'sub-backpacks', 'rolltop', counter, rolltops[counter - oldTotalProducts], rolltopDescUK, rolltopDescEN, 145000);
     counter++
 }
 
 oldTotalProducts = newTotalProducts;
 newTotalProducts += newsNumber;
 while (counter < newTotalProducts){
-    mapProduct('main-backpacks', 'sub-backpacks', 'new', counter, news[counter - oldTotalProducts], newDescUK, newDescEN, 1650);
+    mapProduct('main-backpacks', 'sub-backpacks', 'new', counter, news[counter - oldTotalProducts], newDescUK, newDescEN, 165000);
     counter++
 }
 
 oldTotalProducts = newTotalProducts;
 newTotalProducts += harbuzNumber;
 while (counter < newTotalProducts){
-    mapProduct('main-backpacks', 'sub-backpacks', 'harbuz', counter, harbuz[counter - oldTotalProducts], harbuzDescUK, harbuzDescEN, 1550);
+    mapProduct('main-backpacks', 'sub-backpacks', 'harbuz', counter, harbuz[counter - oldTotalProducts], harbuzDescUK, harbuzDescEN, 155000);
     counter++
 }
 
 oldTotalProducts = newTotalProducts;
 newTotalProducts += bagsNumber;
-mapProduct('main-bags', 'sub-bags', 'patbag', counter, bags[0], bagWithPatternDescUK, bagWithPatternDescEN, 900);
-mapProduct('main-bags', 'sub-bags', 'patbag', counter + 1, bags[1], bagWithPatternDescUK, bagWithPatternDescEN, 900);
-mapProduct('main-bags', 'sub-bags', 'col1bag', counter + 2, bags[2], bagOneColorDescUK, bagOneColorDescEN, 900);
-mapProduct('main-bags', 'sub-bags', 'col3smplbag', counter + 3, bags[3], bagThreeColorsDescUK, bagThreeColorsDescEN, 900);
-mapProduct('main-bags', 'sub-bags', 'col3smplbag', counter + 4, bags[4], bagSimpleDescUK, bagSimpleDescEN, 950);
+mapProduct('main-bags', 'sub-bags', 'patbag', counter, bags[0], bagWithPatternDescUK, bagWithPatternDescEN, 90000);
+mapProduct('main-bags', 'sub-bags', 'patbag', counter + 1, bags[1], bagWithPatternDescUK, bagWithPatternDescEN, 90000);
+mapProduct('main-bags', 'sub-bags', 'col1bag', counter + 2, bags[2], bagOneColorDescUK, bagOneColorDescEN, 90000);
+mapProduct('main-bags', 'sub-bags', 'col3smplbag', counter + 3, bags[3], bagThreeColorsDescUK, bagThreeColorsDescEN, 90000);
+mapProduct('main-bags', 'sub-bags', 'col3smplbag', counter + 4, bags[4], bagSimpleDescUK, bagSimpleDescEN, 95000);
 counter += bagsNumber;
 
 oldTotalProducts = newTotalProducts;
 newTotalProducts += fannyPacksNumber;
 while (counter < newTotalProducts){
-    mapProduct('main-bags', 'sub-fanny-packs', 'fanny-pack', counter, fannyPacks[counter - oldTotalProducts], fannyPackLargeDescUK, fannyPackLargeDescEN, 500);
+    mapProduct('main-bags', 'sub-fanny-packs', 'fanny-pack', counter, fannyPacks[counter - oldTotalProducts], fannyPackLargeDescUK, fannyPackLargeDescEN, 50000);
     counter++
 }
 
 oldTotalProducts = newTotalProducts;
 newTotalProducts += walletsNumber;
 while (counter < newTotalProducts){
-    mapProduct('main-accessories', 'sub-wallets', 'wallet', counter, wallets[counter - oldTotalProducts], 'Опис очікуйте найближчим часом...', 'Description will appear shortly...', 200);
+    mapProduct('main-accessories', 'sub-wallets', 'wallet', counter, wallets[counter - oldTotalProducts], 'Опис очікуйте найближчим часом...', 'Description will appear shortly...', 20000);
     counter++
 }
 
 function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
+    model = [product[0][0].split(' ')[0], product[0][1].split(' ')[0]];
     pattern = (product[2].length === 0) ? mapToLanguages(['Немає', 'None']) : mapToLanguages(product[2]);
     patternImages = (product[3] === '') ? null : mapToImages(product[3]);
-    if (name == 'rolltop' || name == 'new' || name == 'harbuz') {
+    if (model[1] == 'Rolltop' || model[1] == 'New' || model[1] == 'Harbuz') {
         strapLengthInCm = 100;
         innerMaterial = mapToLanguages(['Oxford 135', 'Oxford 135']);
         mainMaterial = fabricDescription;
         closure = mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']);
         closureColor = 'black'
-    } else if (name == 'fanny-pack' || name == 'wallet') {
+    } else if (model[1] == 'Fanny-Pack' || model[1] == 'Wallet') {
         strapLengthInCm = 0;
         innerMaterial = [];
         mainMaterial = malmoDescription;
@@ -184,6 +187,7 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         id: getObjectId('product' + i),
         category: getObjectId(cat),
         subcategory: getObjectId(subcat),
+        model: mapToLanguages([model[0], model[1]]),
         name: mapToLanguages([product[0][0], product[0][1]]),
         description: mapToLanguages([descUK, descEN]),
         mainMaterial: mainMaterial,
@@ -202,7 +206,7 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         patternImages: patternImages,
         closure: closure,
         closureColor: closureColor,
-        basePrice: price,
+        basePrice: mapToCurrencies(price),
         options: mapToOptions(name, product[4])
     })
 }

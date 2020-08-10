@@ -1,5 +1,6 @@
 const { mapToLanguages } = require('../../helpers/languages');
 const { mapToColors } = require('../../helpers/colors');
+const { mapToCurrencies } = require('../../helpers/currencyset');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const materials = [
@@ -27,7 +28,7 @@ const materials = [
       [215, 'Темно-сірий', 'Dark-grey', 'сірий', 'grey']
   ]),
     available: true,
-    additionalPrice: 0
+    additionalPrice: mapToCurrencies(0)
   },
   {
     id: getObjectId('bond'),
@@ -56,7 +57,7 @@ const materials = [
       [318, 'Темно-червоний', 'Dark-red', 'червоний', 'red']
   ]),
     available: true,
-    additionalPrice: 0
+    additionalPrice: mapToCurrencies(0)
   },
   {
     id: getObjectId('faux-leather'),
@@ -70,7 +71,7 @@ const materials = [
       [4, 'Рожевий', 'Pink', 'рожевий', 'pink']
   ]),
     available: true,
-    additionalPrice: 0
+    additionalPrice: mapToCurrencies(0)
   },
   {
     id: getObjectId('cordura'),
@@ -81,7 +82,7 @@ const materials = [
       [1, 'Чорний', 'Black', 'чорний', 'black']
   ]),
     available: true,
-    additionalPrice: 0
+    additionalPrice: mapToCurrencies(0)
   },
   {
     id: getObjectId('genuine-leather'),
@@ -93,7 +94,7 @@ const materials = [
       [2, 'Коричневий', 'Brown', 'коричневий', 'brown']
   ]),
     available: true,
-    additionalPrice: 350
+    additionalPrice: mapToCurrencies(35000)
   }
 ];
 

@@ -1,4 +1,4 @@
-const { mapToSizes } = require('./sizes');
+const { mapToCurrencies } = require('./currencyset');
 const { mapToLanguages } = require('./languages');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
@@ -70,7 +70,7 @@ const mapToOptions = (productName, color) => {
                         name: mapToLanguages(['Кишеня', 'Pocket']),
                         description: mapToLanguages(['Бокова кишенька за бажанням', 'Side pocket by request']),
                         available: true,
-                        additionalPrice: 100
+                        additionalPrice: mapToCurrencies(10000)
                     }]
                 }
             }

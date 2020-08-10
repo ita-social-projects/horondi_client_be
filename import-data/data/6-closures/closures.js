@@ -1,4 +1,5 @@
 const { mapToLanguages } = require('../../helpers/languages');
+const { mapToCurrencies } = require('../../helpers/currencyset');
 const { mapToColors } = require('../../helpers/colors');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
@@ -11,7 +12,7 @@ const closures = [
             [2, 'Золотиста', 'Golden', 'yellow']
         ]),
         available: true,
-        additionalPrice: 10
+        additionalPrice: mapToCurrencies(1000)
     },
     {
         id: getObjectId('plastic-closure'),
@@ -20,7 +21,7 @@ const closures = [
             [1, 'Чорна', 'Black', 'black']
         ]),
         available: true,
-        additionalPrice: 0
+        additionalPrice: mapToCurrencies(0)
     },
     {
         id: getObjectId('metal-hook'),
@@ -30,7 +31,7 @@ const closures = [
             [2, 'Золотистий', 'Golden', 'yellow']
         ]),
         available: true,
-        additionalPrice: 10
+        additionalPrice: mapToCurrencies(1000)
     }
 ];
 
