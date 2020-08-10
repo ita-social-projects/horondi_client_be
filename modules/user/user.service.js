@@ -20,7 +20,17 @@ const {
   USER_NOT_FOUND,
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
+  INVALID_PERMISSIONS
 } = require('../../error-messages/user.messages');
+
+const ROLES = {
+  user: 'user',
+  admin: 'admin',
+}
+
+const SOURCES = {
+  horondi: 'horondi',
+}
 
 class UserService {
   async checkIfExists(token) {
@@ -99,6 +109,42 @@ class UserService {
       },
       { new: true },
     );
+  }
+
+  async loginAdmin({ email, password }) {
+    const { errors } = await validateLoginInput.validateAsync({
+      email,
+      password,
+    });
+
+    if (errors) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+
+    const user = await this.getUserByFieldOrThrow('email', email);
+
+    const match = await bcrypt.compare(
+      password,
+      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass,
+    );
+
+    if (user.role === ROLES.user) {
+      throw new UserInputError(INVALID_PERMISSIONS, { statusCode: 400 });
+    }
+
+    if (!match) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
+
+    const token = generateToken(user._id, user.email);
+
+    return {
+      user: {
+        ...user._doc,
+      },
+      _id: user._id,
+      token,
+    };
   }
 
   async loginUser({ email, password }) {

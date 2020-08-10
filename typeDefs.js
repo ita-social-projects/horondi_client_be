@@ -4,7 +4,7 @@ const {
   userType,
   userInput,
   userRegisterInput,
-  userLoginInput,
+  LoginInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -126,9 +126,15 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type PaginatedProducts {
+    items: [Product]
+    count: Int
   }
 
   union CategoryResult = Category | Error
@@ -136,6 +142,8 @@ const typeDefs = gql`
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
+  union ProductResult = Product | Error
+  union CommentResult = Comment | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -157,18 +165,17 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    getProductsById(id: ID!): Product
+    getProductById(id: ID!): ProductResult
     getProducts(
       filter: FilterInput
       limit: Int
       skip: Int
       search: String
       sort: SortInput
-    ): [Product]!
+    ): PaginatedProducts!
 
-    getAllComments: [Comment]
-    getCommentById(id: ID!): Comment
-    getAllCommentsByProduct(id: ID!): [Comment!]!
+    getCommentById(id: ID!): CommentResult
+    getAllCommentsByProduct(productId: ID!): [CommentResult]
   }
 
   input SortInput {
@@ -184,6 +191,8 @@ const typeDefs = gql`
     colors: [String]
     price: [Int]
     category: [String]
+    search: String
+    isHotItem: Boolean
   }
   input RoleEnumInput {
     role: String
@@ -204,7 +213,7 @@ const typeDefs = gql`
   ${userInput}
   ${productInput}
   ${commentInput}
-  ${userLoginInput}
+  ${LoginInput}
   ${userRegisterInput}
 
   input LanguageInput {
@@ -272,7 +281,8 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: UserInput!, language: Int!): User
-    loginUser(user: UserInput!): User
+    loginUser(loginInput: LoginInput!): User
+    loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
@@ -282,12 +292,12 @@ const typeDefs = gql`
     checkIfExists(token: String!): Boolean
 
     "Product Mutation"
-    addProduct(product: productInput!): Product
-    deleteProduct(id: ID!): Product
-    updateProduct(id: ID!, product: productInput!): Product
+    addProduct(product: ProductInput!): ProductResult
+    deleteProduct(id: ID!): ProductResult
+    updateProduct(id: ID!, product: ProductInput!): ProductResult
 
     "Comment Mutation"
-    addComment(comment: commentInput!): Comment
+    addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): Comment
     updateComment(id: ID!, product: commentInput!): Comment
   }
