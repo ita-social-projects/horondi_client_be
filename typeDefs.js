@@ -137,6 +137,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedNews {
+    items: [News]
+    count: Int
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -158,7 +163,7 @@ const typeDefs = gql`
     getAllPatterns: [Pattern!]!
     getPatternById(id: ID): PatternResult
 
-    getAllNews: [News!]!
+    getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
