@@ -12,10 +12,10 @@ const ContactSchema = new mongoose.Schema({
     buildingNumber: [Language],
   },
   email: String,
-  images: {
+  images: [{
     lang: String,
     value: ImageSet,
-  },
+  }],
   link: String
 });
 
