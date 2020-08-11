@@ -24,7 +24,6 @@ function mapToModels(cat, subcat, name, description, priority){
         name: mapToLanguages(name),
         description: mapToLanguages(description),
         images: mapToImages(name[1]),
-        link: 'String',
         priority: priority,
         show: true
     })
