@@ -126,6 +126,20 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
+  type UserForComment {
+    email: String
+    name: String
+    images: ImageSet
+    isAdmin: Boolean
+  }
+
+  type UserRate {
+    user: User
+    rate: Int
+    lastUpdatedDate: String
+  }
+
   type Error {
     statusCode: Int
     message: String
@@ -217,6 +231,17 @@ const typeDefs = gql`
     street: String
     buildingNumber: String
     appartment: String
+  }
+  input UserForCommentInput {
+    email: String
+    name: String
+    images: ImageSetInput
+    isAdmin: Boolean
+  }
+  input UserRateInput {
+    user: UserInput
+    rate: Int
+    lastUpdatedDate: String
   }
   input ImageSetInput {
     large: String
