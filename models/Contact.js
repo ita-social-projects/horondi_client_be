@@ -5,14 +5,17 @@ const ImageSet = require('../modules/common/ImageSet').schema;
 const ContactSchema = new mongoose.Schema({
   phoneNumber: Number,
   openHours: [Language],
-  address: [{
+  address: {
     city: [Language],
     postalCode: Number,
     street: [Language],
     buildingNumber: [Language],
-  }],
+  },
   email: String,
-  images: ImageSet,
+  images: {
+    lang: String,
+    value: ImageSet,
+  },
   link: String
 });
 
