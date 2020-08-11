@@ -39,14 +39,17 @@ const materialMutation = {
     };
   },
   updateMaterial: async (parent, args) => {
-    try {
-      return await materialService.updateMaterial(args.id, args.material);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+    const material = await materialService.updateMaterial(
+      args.id,
+      args.material,
+    );
+    if (material) {
+      return material;
     }
+    return {
+      statusCode: 400,
+      message: MATERIAL_NOT_FOUND,
+    };
   },
 };
 
