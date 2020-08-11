@@ -1,120 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`querries #1 Should receive all news 1`] = `
-Array [
-  Object {
-    "__typename": "News",
-    "author": Object {
-      "__typename": "Author",
-      "name": Array [
-        Object {
-          "__typename": "Language",
-          "lang": "uk",
-          "value": "a sd",
-        },
-        Object {
-          "__typename": "Language",
-          "lang": "eng",
-          "value": "a sd",
-        },
-      ],
-    },
-    "date": "1111118820047",
-    "images": Object {
-      "__typename": "PrimaryImage",
-      "additional": Array [
-        Object {
-          "__typename": "ImageSet",
-          "medium": "as dasdsa.jpg",
-        },
-      ],
-      "primary": Object {
-        "__typename": "ImageSet",
-        "medium": "ada s.jpg",
-      },
-    },
-    "text": Array [
-      Object {
-        "__typename": "Language",
-        "lang": "uk",
-        "value": "d a s d",
-      },
-      Object {
-        "__typename": "Language",
-        "lang": "eng",
-        "value": "a s d",
-      },
-    ],
-    "title": Array [
-      Object {
-        "__typename": "Language",
-        "lang": "uk",
-        "value": "aab",
-      },
-      Object {
-        "__typename": "Language",
-        "lang": "eng",
-        "value": "aab",
-      },
-    ],
-  },
-]
-`;
-
-exports[`querries #2 Should receive all news 1`] = `
-Object {
-  "__typename": "News",
-  "_id": "5f2ad470eb08183384e6797b",
-  "author": Object {
-    "__typename": "Author",
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "a sd",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "a sd",
-      },
-    ],
-  },
-  "date": "1111118820047",
-  "images": Object {
-    "__typename": "PrimaryImage",
-    "additional": Array [
-      Object {
-        "__typename": "ImageSet",
-        "medium": "as dasdsa.jpg",
-      },
-    ],
-    "primary": Object {
-      "__typename": "ImageSet",
-      "medium": "ada s.jpg",
-    },
-  },
-  "text": Array [
-    Object {
-      "__typename": "Language",
-      "value": "u p d a t e N1 d a s d",
-    },
-    Object {
-      "__typename": "Language",
-      "value": "update dN1 a s d",
-    },
-  ],
-  "title": Array [
-    Object {
-      "__typename": "Language",
-      "value": "azzzzda",
-    },
-    Object {
-      "__typename": "Language",
-      "value": "aadaszzdas",
-    },
-  ],
-}
-`;
-
 exports[`querries #2 Should receive one news 1`] = `
 Object {
   "__typename": "News",
@@ -128,7 +13,7 @@ Object {
       },
       Object {
         "__typename": "Language",
-        "lang": "eng",
+        "lang": "en",
         "value": "a sd",
       },
     ],
@@ -155,7 +40,7 @@ Object {
     },
     Object {
       "__typename": "Language",
-      "lang": "eng",
+      "lang": "en",
       "value": "a s d",
     },
   ],
@@ -167,10 +52,9 @@ Object {
     },
     Object {
       "__typename": "Language",
-      "lang": "eng",
+      "lang": "en",
       "value": "aab",
     },
   ],
-  "video": null,
 }
 `;

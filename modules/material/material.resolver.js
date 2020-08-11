@@ -1,7 +1,4 @@
 const materialService = require('./material.service');
-const {
-  MATERIAL_NOT_FOUND,
-} = require('../../error-messages/material.messages');
 
 const materialQuery = {
   getAllMaterials: () => materialService.getAllMaterials(),
@@ -29,27 +26,24 @@ const materialMutation = {
     }
   },
   deleteMaterial: async (parent, args) => {
-    const material = await materialService.deleteMaterial(args.id);
-    if (material) {
-      return material;
+    try {
+      return await materialService.deleteMaterial(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
   updateMaterial: async (parent, args) => {
-    const material = await materialService.updateMaterial(
-      args.id,
-      args.material,
-    );
-    if (material) {
-      return material;
+    try {
+      return await materialService.updateMaterial(args.id, args.material);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 400,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
 };
 

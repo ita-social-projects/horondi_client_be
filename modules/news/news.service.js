@@ -10,15 +10,22 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    const news = await News.findById(id);
-    if (news) {
-      return news;
+    const foundNews = await News.findById(id);
+    if (foundNews) {
+      return foundNews;
     }
     throw new Error(NEWS_NOT_FOUND);
   }
 
   async updateNews(id, news) {
-    return await News.findByIdAndUpdate(id, news, { new: true });
+    if (await this.checkNewsExist(news, id)) {
+      throw new Error(NEWS_ALREADY_EXIST);
+    }
+    const updatedNews = await News.findByIdAndUpdate(id, news, { new: true });
+    if (!updatedNews) {
+      throw new Error(NEWS_NOT_FOUND);
+    }
+    return updatedNews;
   }
 
   async addNews(data) {
@@ -29,11 +36,16 @@ class NewsService {
   }
 
   async deleteNews(id) {
-    return await News.findByIdAndDelete(id);
+    const foundNews = await News.findByIdAndDelete(id);
+    if (foundNews) {
+      return foundNews;
+    }
+    throw new Error(NEWS_NOT_FOUND);
   }
 
-  async checkNewsExist(data) {
+  async checkNewsExist(data, id) {
     const newsCount = await News.countDocuments({
+      _id: { $ne: id },
       title: {
         $elemMatch: {
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],

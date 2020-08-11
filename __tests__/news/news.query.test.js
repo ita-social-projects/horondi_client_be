@@ -2,9 +2,10 @@
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
+const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 
-let NEWS_ID = '';
-const NEWS_NOT_EXIST_ID = '1f25bf7a1f5b2c3a189eaf2a';
+let newsId = '';
+const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
 
 describe('querries', () => {
   beforeAll(async () => {
@@ -16,16 +17,16 @@ describe('querries', () => {
               news: {
                 title: [
                   { lang: "uk", value: "aab" }
-                  { lang: "eng", value: "aab" }
+                  { lang: "en", value: "aab" }
                 ]
                 text: [
                   { lang: "uk", value: "d a s d" }
-                  { lang: "eng", value: "a s d" }
+                  { lang: "en", value: "a s d" }
                 ]
                 author: {
                   name: [
                     { lang: "uk", value: "a sd" }
-                    { lang: "eng", value: "a sd" }
+                    { lang: "en", value: "a sd" }
                   ]
                 }
                 images: {
@@ -48,7 +49,7 @@ describe('querries', () => {
       })
       .then(res => res)
       .catch(e => e);
-    NEWS_ID = res.data.addNews._id;
+    newsId = res.data.addNews._id;
   });
   afterAll(async () => {
     await client
@@ -66,7 +67,7 @@ describe('querries', () => {
             }
           }
         `,
-        variables: { id: NEWS_ID },
+        variables: { id: newsId },
       })
       .then(res => res)
       .catch(e => e);
@@ -108,7 +109,7 @@ describe('querries', () => {
       .catch(e => e);
 
     expect(res.data.getAllNews).toBeDefined();
-    expect(res.data.getAllNews[0]).toEqual({
+    expect(res.data.getAllNews).toContainEqual({
       __typename: 'News',
       title: [
         {
@@ -118,13 +119,13 @@ describe('querries', () => {
         },
         {
           __typename: 'Language',
-          lang: 'eng',
+          lang: 'en',
           value: 'aab',
         },
       ],
       text: [
         { __typename: 'Language', lang: 'uk', value: 'd a s d' },
-        { __typename: 'Language', lang: 'eng', value: 'a s d' },
+        { __typename: 'Language', lang: 'en', value: 'a s d' },
       ],
       author: {
         __typename: 'Author',
@@ -136,7 +137,7 @@ describe('querries', () => {
           },
           {
             __typename: 'Language',
-            lang: 'eng',
+            lang: 'en',
             value: 'a sd',
           },
         ],
@@ -188,7 +189,6 @@ describe('querries', () => {
                     }
                   }
                   date
-                  video
                 }
                 ... on Error {
                   statusCode
@@ -197,7 +197,7 @@ describe('querries', () => {
               }
             }
           `,
-          variables: { id: NEWS_ID },
+          variables: { id: newsId },
         })
         .then(res => res)
         .catch(e => e);
@@ -212,7 +212,7 @@ describe('querries', () => {
         },
         {
           __typename: 'Language',
-          lang: 'eng',
+          lang: 'en',
           value: 'aab',
         },
       ]);
@@ -226,7 +226,7 @@ describe('querries', () => {
         },
         {
           __typename: 'Language',
-          lang: 'eng',
+          lang: 'en',
           value: 'a s d',
         },
       ]);
@@ -241,7 +241,7 @@ describe('querries', () => {
           },
           {
             __typename: 'Language',
-            lang: 'eng',
+            lang: 'en',
             value: 'a sd',
           },
         ],
@@ -271,8 +271,8 @@ describe('querries', () => {
     const res = await client
       .query({
         query: gql`
-          query {
-            getNewsById(id: "${NEWS_NOT_EXIST_ID}") {
+          query($id: ID!) {
+            getNewsById(id: $id) {
               ... on News {
                 title {
                   value
@@ -281,7 +281,6 @@ describe('querries', () => {
                   value
                 }
                 date
-                video
                 images {
                   primary {
                     medium
@@ -303,12 +302,12 @@ describe('querries', () => {
             }
           }
         `,
+        variables: { id: newsDoesNotExistId },
       })
       .then(res => res)
       .catch(e => e);
-
     expect(res.data.getNewsById).toBeDefined();
-    expect(res.data.getNewsById).toHaveProperty('statusCode');
-    expect(res.data.getNewsById).toHaveProperty('message');
+    expect(res.data.getNewsById).toHaveProperty('statusCode', 404);
+    expect(res.data.getNewsById).toHaveProperty('message', NEWS_NOT_FOUND);
   });
 });

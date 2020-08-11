@@ -21,6 +21,7 @@ const server = new ApolloServer({
       };
     }
   },
+  cors: { origin: '*' },
 });
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log('apollo server started, port', PORT));
