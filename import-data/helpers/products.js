@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const { mapToLanguages } = require('./languages');
 const { mapToImages } = require('./images');
 const { mapToColors } = require('./colors');
@@ -7,24 +5,7 @@ const { mapToCurrencies } = require('./currencyset');
 const { mapToOptions } = require('./options');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
-const rolltopDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'rolltopDescUK.html'), 'utf8').split('\n').join('');
-const rolltopDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'rolltopDescEN.html'), 'utf8').split('\n').join('');
-const newDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'newDescUK.html'), 'utf8').split('\n').join('');
-const newDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'newDescEN.html'), 'utf8').split('\n').join('');
-const harbuzDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'harbuzDescUK.html'), 'utf8').split('\n').join('');
-const harbuzDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'harbuzDescEN.html'), 'utf8').split('\n').join('');
-const bagWithPatternDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagWithPatternDescUK.html'), 'utf8').split('\n').join('');
-const bagWithPatternDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagWithPatternDescEN.html'), 'utf8').split('\n').join('');
-const bagThreeColorsDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagThreeColorsDescUK.html'), 'utf8').split('\n').join('');
-const bagThreeColorsDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagThreeColorsDescEN.html'), 'utf8').split('\n').join('');
-const bagOneColorDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagOneColorDescUK.html'), 'utf8').split('\n').join('');
-const bagOneColorDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagOneColorDescEN.html'), 'utf8').split('\n').join('');
-const bagSimpleDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagSimpleDescUK.html'), 'utf8').split('\n').join('');
-const bagSimpleDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'bagSimpleDescEN.html'), 'utf8').split('\n').join('');
-const fannyPackLargeDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackLargeDescUK.html'), 'utf8').split('\n').join('');
-const fannyPackLargeDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackLargeDescEN.html'), 'utf8').split('\n').join('');
-const fannyPackSmallDescUK = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackSmallDescUK.html'), 'utf8').split('\n').join('');
-const fannyPackSmallDescEN = fs.readFileSync(path.join(__dirname, '..', 'src', 'fannyPackSmallDescEN.html'), 'utf8').split('\n').join('');
+const { rolltopDescUK, rolltopDescEN, newDescUK, newDescEN, harbuzDescUK, harbuzDescEN, bagWithPatternDescUK, bagWithPatternDescEN, bagThreeColorsDescUK, bagThreeColorsDescEN, bagOneColorDescUK, bagOneColorDescEN, bagSimpleDescUK, bagSimpleDescEN, fannyPackLargeDescUK, fannyPackLargeDescEN, fannyPackSmallDescUK, fannyPackSmallDescEN } = require('./productDesc');
 
 const fabricDescription = mapToLanguages([
     '100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
@@ -79,18 +60,18 @@ const bags = [
     [['Сумка з гобеленом', 'Bag with a Pattern'], [[200, 'Світло-коричневий', 'Light-brown', 'коричневий', 'brown']], ['Люди', 'People'], 'people', 'black2'],
     [['Сумка з гобеленом синя', 'Bag with a Pattern Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Олені', 'Deers'], 'deers', 'black2'],
     [['Сумка синя', 'Bag Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], [], '', 'black2'],
-    [['Сумка "Три кольори"', 'Bag Three Colors'], [[211, 'Світло-сірий', 'Light-grey', 'сірий', 'grey'], [213, 'Сизий', 'Slate-grey', 'сірий', 'grey'], [215, 'Темно-сірий', 'Dark-grey', 'сірий', 'grey']], [], '', 'black2'],
+    [['Сумка "Три кольори"', 'Three Color Bag'], [[211, 'Світло-сірий', 'Light-grey', 'сірий', 'grey'], [213, 'Сизий', 'Slate-grey', 'сірий', 'grey'], [215, 'Темно-сірий', 'Dark-grey', 'сірий', 'grey']], [], '', 'black2'],
     [['Сумка', 'Bag'], [[211, 'Світло-сірий', 'Light-grey', 'сірий', 'grey']], [], '', 'black2'],
 ];
 const bagsNumber = bags.length;
 
 const fannyPacks = [
-    [['Бананка гірчична', 'Fanny-Pack Mustard'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', ''],
-    [['Бананка червона', 'Fanny-Pack Red'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Червоний', 'Red'], 'red', ''],
-    [['Бананка синя', 'Fanny-Pack Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', ''],
-    [['Бананка рожева', 'Fanny-Pack Pink'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', ''],
-    [['Бананка зелена', 'Fanny-Pack Green'], [[207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], ['Чорний', 'Black'], 'black', ''],
-    [['Бананка асфальтна', 'Fanny-Pack Slate Grey'], [[212, 'Срібний', 'Silver', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', ''],
+    [['Бананка гірчична', 'Fanny Pack Mustard'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', ''],
+    [['Бананка червона', 'Fanny Pack Red'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Червоний', 'Red'], 'red', ''],
+    [['Бананка синя', 'Fanny Pack Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', ''],
+    [['Бананка рожева', 'Fanny Pack Pink'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', ''],
+    [['Бананка зелена', 'Fanny Pack Green'], [[207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], ['Чорний', 'Black'], 'black', ''],
+    [['Бананка асфальтна', 'Fanny Pack Slate Grey'], [[212, 'Срібний', 'Silver', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', ''],
 ];
 const fannyPacksNumber = fannyPacks.length;
 
@@ -162,6 +143,10 @@ while (counter < newTotalProducts){
 
 function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
     model = [product[0][0].split(' ')[0], product[0][1].split(' ')[0]];
+    model = (model[0] == 'Сумка') ? [product[0][0], product[0][1]] : model;
+    model = (name == 'patbag') ? ['Сумка з гобеленом', 'Bag with a Pattern'] : model;
+    model = (name == 'col1bag') ? ['Сумка одноколірна', 'One Color Bag'] : model;
+    model = (name == 'fanny-pack') ? ['Бананка', 'Fanny Pack'] : model;
     pattern = (product[2].length === 0) ? mapToLanguages(['Немає', 'None']) : mapToLanguages(product[2]);
     patternImages = (product[3] === '') ? null : mapToImages(product[3]);
     if (model[1] == 'Rolltop' || model[1] == 'New' || model[1] == 'Harbuz') {
@@ -170,7 +155,7 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         mainMaterial = fabricDescription;
         closure = mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']);
         closureColor = 'black'
-    } else if (model[1] == 'Fanny-Pack' || model[1] == 'Wallet') {
+    } else if (model[1] == 'Fanny Pack' || model[1] == 'Wallet') {
         strapLengthInCm = 0;
         innerMaterial = [];
         mainMaterial = malmoDescription;
