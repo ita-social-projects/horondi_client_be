@@ -10,7 +10,10 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
-  email: String,
+  email: {
+    type: String,
+    required: true,
+  },
   phoneNumber: Number,
   address: Address,
   images: ImageSet,

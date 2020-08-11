@@ -5,7 +5,7 @@ type User{
     lastName: String
     password: String
     role: RoleEnum
-    email: String
+    email: String!
     phoneNumber: String
     address: Address
     images: ImageSet
@@ -26,7 +26,7 @@ input UserInput {
     lastName: String
     password: String
     role: String
-    email: String
+    email: String!
     phoneNumber: String
     address: AddressInput
     images: ImageSetInput
