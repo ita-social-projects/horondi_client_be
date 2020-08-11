@@ -17,7 +17,7 @@ describe('queries', () => {
               subcategory: "688ded7be0c2621f2fb17b05"
               name: [
                 { lang: "en", value: "Coool Baggy" }
-                { lang: "ua", value: "СУПЕРСЬКИЙ Рюкзачечок))" }
+                { lang: "ua", value: "СУПЕРСЬКИЙ Рюкзачечок" }
               ]
               description: [
                 { lang: "en", value: "Baggy is so cool" }
@@ -140,7 +140,24 @@ describe('queries', () => {
     });
     productId = createProduct.data.addProduct._id;
   });
-
+  afterAll(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteProduct(id: $id) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: productId },
+    });
+  });
   test('#1 Should receive all products', async () => {
     const products = await client.query({
       query: gql`
@@ -182,7 +199,11 @@ describe('queries', () => {
         }
       `,
     });
-
-    expect(products.data.getProducts).toBeDefined();
+    const allProducts = products.data.getProducts.items;
+    expect(allProducts).toBeDefined();
+    const reversedProducts = allProducts.reverse();
+    expect(reversedProducts.length).toBeGreaterThan(0);
+    expect(reversedProducts[0].name).toBeInstanceOf(Array);
+    // expect(reversedProducts[0]).toContainEqual()
   });
 });
