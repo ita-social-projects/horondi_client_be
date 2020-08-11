@@ -30,6 +30,10 @@ const {
   commentType,
   commentInput,
 } = require('./modules/comment/comment.graphql');
+const {
+  businessTextType,
+  businessTextInput,
+} = require('./modules/business-text/business-text.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -40,6 +44,7 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${businessTextType}
 
   enum RoleEnum {
     admin
@@ -144,6 +149,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union BusinessTextResult = BusinessText | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -176,6 +182,9 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getAllBusinessTexts: [BusinessText]
+    getBusinessTextById(id: ID): BusinessTextResult
   }
 
   input SortInput {
@@ -215,6 +224,7 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${businessTextInput}
 
   input LanguageInput {
     lang: String!
@@ -298,6 +308,14 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): Comment
     updateComment(id: ID!, product: commentInput!): Comment
+
+    "BusinessText Mutation"
+    addBusinessText(category: BusinessTextInput!): BusinessText
+    deleteBusinessText(id: ID!): BusinessTextResult
+    updateBusinessText(
+      id: ID!
+      businessText: BusinessTextInput!
+    ): BusinessTextResult
   }
 `;
 

@@ -26,6 +26,10 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const {
+  businessTextQuery,
+  businessTexMutation,
+} = require('./modules/business-text/business-text.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -40,6 +44,7 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  businessText: 'BusinessText',
 };
 const resolvers = {
   Query: {
@@ -58,6 +63,8 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...businessTextQuery,
   },
   Comment: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
@@ -91,6 +98,8 @@ const resolvers = {
     ...productsMutation,
 
     ...commentsMutation,
+
+    ...businessTexMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
