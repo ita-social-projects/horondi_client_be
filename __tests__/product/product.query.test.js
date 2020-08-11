@@ -140,119 +140,49 @@ describe('queries', () => {
     });
     productId = createProduct.data.addProduct._id;
   });
-  test('#1 Should receive all products', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query {
-            getProducts {
-                items{
-                category
-                subcategory
-                name {
-                    lang
-                    value
-                  }
-                description {
-                    lang
-                    value
-                  }
-                mainMaterial {
-                lang
-                value
-                  }
-                innerMaterial {
-                lang
-                value
-                  }
-                strapLengthInCm
-                images {
-                    primary{
-                        large
-                        medium
-                        small
-                        thumbnail
-                            }
-                      additional{
-                        large
-                        medium
-                        small
-                        thumbnail
-                            }
-                }
-                colors{
-                    code
-                    name{
-                      lang
-                      value
-                    }
-                    images{
-                      large
-                      medium
-                      small
-                      thumbnail
-                    }
-                    available
-                    simpleName{
-                      lang
-                      value
-                    }
-                  } 
-                }
-            }
-        `,
-      })
-      .then(res => res)
-      .catch(e => e);
 
-    expect(res.data.getProducts).toBeDefined();
-    // expect(res.data.getAllNews[0]).toEqual({
-    //   __typename: 'News',
-    //   title: [
-    //     {
-    //       __typename: 'Language',
-    //       lang: 'uk',
-    //       value: 'aab',
-    //     },
-    //     {
-    //       __typename: 'Language',
-    //       lang: 'eng',
-    //       value: 'aab',
-    //     },
-    //   ],
-    //   text: [
-    //     { __typename: 'Language', lang: 'uk', value: 'd a s d' },
-    //     { __typename: 'Language', lang: 'eng', value: 'a s d' },
-    //   ],
-    //   author: {
-    //     __typename: 'Author',
-    //     name: [
-    //       {
-    //         __typename: 'Language',
-    //         lang: 'uk',
-    //         value: 'a sd',
-    //       },
-    //       {
-    //         __typename: 'Language',
-    //         lang: 'eng',
-    //         value: 'a sd',
-    //       },
-    //     ],
-    //   },
-    //   images: {
-    //     __typename: 'PrimaryImage',
-    //     primary: {
-    //       __typename: 'ImageSet',
-    //       medium: 'ada s.jpg',
-    //     },
-    //     additional: [
-    //       {
-    //         __typename: 'ImageSet',
-    //         medium: 'as dasdsa.jpg',
-    //       },
-    //     ],
-    //   },
-    //   date: '1111118820047',
-    // });
+  test('#1 Should receive all products', async () => {
+    const products = await client.query({
+      query: gql`
+        query {
+          getProducts {
+            items {
+              _id
+              category {
+                _id
+              }
+              subcategory {
+                _id
+              }
+              name {
+                value
+              }
+              description {
+                value
+              }
+              mainMaterial {
+                value
+              }
+              innerMaterial {
+                value
+              }
+              strapLengthInCm
+              pattern {
+                value
+              }
+              closureColor
+              basePrice
+              available
+              isHotItem
+              purchasedCount
+              rate
+              rateCount
+            }
+          }
+        }
+      `,
+    });
+
+    expect(products.data.getProducts).toBeDefined();
   });
 });
