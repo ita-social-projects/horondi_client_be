@@ -128,14 +128,14 @@ const typeDefs = gql`
   }
 
   type UserForComment {
-    email: String
+    email: String!
     name: String
     images: ImageSet
     isAdmin: Boolean
   }
 
   type UserRate {
-    user: User
+    user: User!
     rate: Int
     lastUpdatedDate: String
   }
@@ -241,13 +241,13 @@ const typeDefs = gql`
     appartment: String
   }
   input UserForCommentInput {
-    email: String
+    email: String!
     name: String
     images: ImageSetInput
     isAdmin: Boolean
   }
   input UserRateInput {
-    user: UserInput
+    user: ID!
     rate: Int
     lastUpdatedDate: String
   }

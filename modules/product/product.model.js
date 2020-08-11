@@ -60,10 +60,7 @@ const productSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    rate: {
-      type: Number,
-      default: 0,
-    },
+    rate: Number,
     lastUpdatedDate: {
       type: Date,
       default: Date.now,
