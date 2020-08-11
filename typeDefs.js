@@ -47,7 +47,7 @@ const typeDefs = gql`
   }
   type Language {
     lang: String!
-    value: String!
+    value: String
   }
   type ImageSet {
     large: String
@@ -223,7 +223,7 @@ const typeDefs = gql`
 
   input LanguageInput {
     lang: String!
-    value: String!
+    value: String
   }
   input AddressInput {
     country: String
