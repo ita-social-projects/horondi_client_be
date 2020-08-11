@@ -81,12 +81,15 @@ class ProductsService {
     };
   }
 
-  async updateProduct(id, products) {
+  async updateProduct(id, productData) {
     const product = await Products.findById(id);
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
-    return Products.findByIdAndUpdate(id, products, { new: true });
+    if (await this.checkProductExist(productData, id)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return Products.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(data) {
