@@ -20,20 +20,20 @@ const {
   USER_NOT_FOUND,
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
-  INVALID_PERMISSIONS
+  INVALID_PERMISSIONS,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
   user: 'user',
   admin: 'admin',
-}
+};
 
 const SOURCES = {
   horondi: 'horondi',
-}
+};
 
 class UserService {
-  async checkIfExists(token) {
+  async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, process.env.SECRET);
     await this.getUserByFieldOrThrow('email', decoded.email);
     return true;
@@ -256,7 +256,7 @@ class UserService {
     return true;
   }
 
-  async changePassword(password, token) {
+  async resetPassword(password, token) {
     const { errors } = await validateNewPassword.validateAsync({
       password,
     });

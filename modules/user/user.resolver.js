@@ -22,8 +22,8 @@ const userMutation = {
     : new UserInputError(USER_NOT_AUTHORIZED)),
   confirmUser: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
-  changePassword: (parent, args) => userService.changePassword(args.password, args.token),
-  checkIfExists: (parent, args) => userService.checkIfExists(args.token),
+  resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
+  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
 };
 
 module.exports = {
