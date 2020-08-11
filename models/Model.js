@@ -14,7 +14,6 @@ const modelSchema = new mongoose.Schema({
   name: [Language],
   description: [Language],
   images: ImageSet,
-  link: String,
   priority: Number,
   show: Boolean
 });
