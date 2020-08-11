@@ -16,8 +16,8 @@ describe('queries', () => {
               category: "ddc81f5dbac48c38d0403dd3"
               subcategory: "688ded7be0c2621f2fb17b05"
               name: [
-                { lang: "en", value: "Baggy" }
-                { lang: "ua", value: "Рюкзачечок))" }
+                { lang: "en", value: "Coool Baggy" }
+                { lang: "ua", value: "СУПЕРСЬКИЙ Рюкзачечок))" }
               ]
               description: [
                 { lang: "en", value: "Baggy is so cool" }
@@ -131,19 +131,19 @@ describe('queries', () => {
               ]
             }
           ) {
-            _id
+            ... on Product {
+              _id
+            }
           }
         }
       `,
     });
     productId = createProduct.data.addProduct._id;
   });
-});
-
-test('#1 Should receive all products', async () => {
-  const res = await client
-    .query({
-      query: gql`
+  test('#1 Should receive all products', async () => {
+    const res = await client
+      .query({
+        query: gql`
           query {
             getProducts {
                 items{
@@ -201,57 +201,58 @@ test('#1 Should receive all products', async () => {
                 }
             }
         `,
-    })
-    .then(res => res)
-    .catch(e => e);
+      })
+      .then(res => res)
+      .catch(e => e);
 
-  expect(res.data.getProducts).toBeDefined();
-  // expect(res.data.getAllNews[0]).toEqual({
-  //   __typename: 'News',
-  //   title: [
-  //     {
-  //       __typename: 'Language',
-  //       lang: 'uk',
-  //       value: 'aab',
-  //     },
-  //     {
-  //       __typename: 'Language',
-  //       lang: 'eng',
-  //       value: 'aab',
-  //     },
-  //   ],
-  //   text: [
-  //     { __typename: 'Language', lang: 'uk', value: 'd a s d' },
-  //     { __typename: 'Language', lang: 'eng', value: 'a s d' },
-  //   ],
-  //   author: {
-  //     __typename: 'Author',
-  //     name: [
-  //       {
-  //         __typename: 'Language',
-  //         lang: 'uk',
-  //         value: 'a sd',
-  //       },
-  //       {
-  //         __typename: 'Language',
-  //         lang: 'eng',
-  //         value: 'a sd',
-  //       },
-  //     ],
-  //   },
-  //   images: {
-  //     __typename: 'PrimaryImage',
-  //     primary: {
-  //       __typename: 'ImageSet',
-  //       medium: 'ada s.jpg',
-  //     },
-  //     additional: [
-  //       {
-  //         __typename: 'ImageSet',
-  //         medium: 'as dasdsa.jpg',
-  //       },
-  //     ],
-  //   },
-  //   date: '1111118820047',
-  // });
+    expect(res.data.getProducts).toBeDefined();
+    // expect(res.data.getAllNews[0]).toEqual({
+    //   __typename: 'News',
+    //   title: [
+    //     {
+    //       __typename: 'Language',
+    //       lang: 'uk',
+    //       value: 'aab',
+    //     },
+    //     {
+    //       __typename: 'Language',
+    //       lang: 'eng',
+    //       value: 'aab',
+    //     },
+    //   ],
+    //   text: [
+    //     { __typename: 'Language', lang: 'uk', value: 'd a s d' },
+    //     { __typename: 'Language', lang: 'eng', value: 'a s d' },
+    //   ],
+    //   author: {
+    //     __typename: 'Author',
+    //     name: [
+    //       {
+    //         __typename: 'Language',
+    //         lang: 'uk',
+    //         value: 'a sd',
+    //       },
+    //       {
+    //         __typename: 'Language',
+    //         lang: 'eng',
+    //         value: 'a sd',
+    //       },
+    //     ],
+    //   },
+    //   images: {
+    //     __typename: 'PrimaryImage',
+    //     primary: {
+    //       __typename: 'ImageSet',
+    //       medium: 'ada s.jpg',
+    //     },
+    //     additional: [
+    //       {
+    //         __typename: 'ImageSet',
+    //         medium: 'as dasdsa.jpg',
+    //       },
+    //     ],
+    //   },
+    //   date: '1111118820047',
+    // });
+  });
 });
