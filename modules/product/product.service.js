@@ -1,8 +1,11 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const {
+  PRODUCT_ALREADY_EXIST,
+} = require('../../error-messages/products.messages');
 
 class ProductsService {
-  getProductsById(id) {
+  getProductById(id) {
     return Products.findById(id);
   }
 
@@ -13,9 +16,12 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category,
+      pattern, colors, price, category, isHotItem,
     } = args;
 
+    if (isHotItem) {
+      filter.isHotItem = isHotItem;
+    }
     if (category && category.length) {
       filter.category = { $in: category };
     }
@@ -46,13 +52,11 @@ class ProductsService {
     return filter;
   }
 
-  getProducts({
+  async getProducts({
     filter, skip, limit, sort, search,
   }) {
-    const isNotBlank = str => !(!str || str.trim().length === 0);
     const filters = this.filterItems(filter);
-
-    if (isNotBlank(search)) {
+    if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
           name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
@@ -64,24 +68,39 @@ class ProductsService {
         },
       ];
     }
-
-    return Products.find(filters)
+    const items = await Products.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
+
+    const count = await Products.find(filters).countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
-  updateProduct(id, products) {
-    return Products.findByIdAndUpdate(id, products, { new: true });
-  }
-
-  addProduct(data) {
-    const product = new Products(data);
-    return product.save();
+  async addProduct(data) {
+    if (await this.checkProductExist(data)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return new Products(data).save();
   }
 
   deleteProduct(id) {
     return Products.findByIdAndDelete(id);
+  }
+
+  async checkProductExist(data, id) {
+    const productCount = await Products.countDocuments({
+      _id: { $ne: id },
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return productCount > 0;
   }
 }
 module.exports = new ProductsService();

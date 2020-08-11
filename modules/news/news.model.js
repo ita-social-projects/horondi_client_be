@@ -7,7 +7,6 @@ const NewsSchema = new mongoose.Schema({
   title: [Language],
   text: [Language],
   images: PrimaryImage,
-  video: String,
   author: {
     name: {
       type: Array,
@@ -28,6 +27,7 @@ const NewsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  show: Boolean,
 });
 
 module.exports = mongoose.model('News', NewsSchema);

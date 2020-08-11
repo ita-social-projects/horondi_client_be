@@ -8,7 +8,7 @@ description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
 strapLengthInCm: Int!
-images: [PrimaryImage]!
+images: PrimaryImage!
 colors: [Color]!
 pattern: [Language]
 patternImages: ImageSet
@@ -27,7 +27,7 @@ comments: [Comment]
 `;
 
 const productInput = `
-input productInput {
+input ProductInput {
 subcategory: CategoryInput!
 name: [LanguageInput]!
 description: [LanguageInput]!

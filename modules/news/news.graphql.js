@@ -4,9 +4,9 @@ _id: ID!
 title: [Language]
 text: [Language]
 images: PrimaryImage
-video: String
 author: Author
 date: String
+show: Boolean
 }`;
 
 const newsInput = `
@@ -14,9 +14,9 @@ input NewsInput {
 title: [LanguageInput]
 text: [LanguageInput]
 images: PrimaryImageInput
-video: String
 author: AuthorInput
 date: String
+show: Boolean
 }`;
 
 module.exports = { newsType, newsInput };
