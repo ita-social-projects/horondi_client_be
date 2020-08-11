@@ -10,11 +10,18 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return await Material.findById(id);
+    const foundMaterial = await Material.findById(id);
+    if (foundMaterial) {
+      return foundMaterial;
+    }
+    throw new Error(MATERIAL_NOT_FOUND);
   }
 
   async updateMaterial(id, material) {
-    return await Material.findByIdAndUpdate(id, material, { new: true });
+    if (await this.checkMaterialExist(material, id)) {
+      throw new Error(MATERIAL_ALREADY_EXIST);
+    }
+    return await Material.findByIdAndUpdate(id, material);
   }
 
   async addMaterial(data) {
@@ -25,11 +32,16 @@ class MaterialsService {
   }
 
   async deleteMaterial(id) {
-    return await Material.findByIdAndDelete(id);
+    const foundMaterial = await Material.findByIdAndDelete(id);
+    if (foundMaterial) {
+      return foundMaterial;
+    }
+    throw new Error(MATERIAL_NOT_FOUND);
   }
 
-  async checkMaterialExist(data) {
+  async checkMaterialExist(data, id) {
     const materialsCount = await Material.countDocuments({
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

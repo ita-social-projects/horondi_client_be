@@ -19,17 +19,17 @@ const {
   USER_NOT_FOUND,
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
-  INVALID_PERMISSIONS
+  INVALID_PERMISSIONS,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
   user: 'user',
   admin: 'admin',
-}
+};
 
 const SOURCES = {
   horondi: 'horondi',
-}
+};
 
 class UserService {
   async checkUserExists(email) {
