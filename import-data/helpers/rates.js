@@ -29,9 +29,11 @@ for (let i = 0; i < successfulPurchasesNumber; i++){
             product: getObjectId('product' + successfulPurchases[i][2]),
             show: true
         });
-        ratesPerProduct[successfulPurchases[i][1]].push(
-            rate
-        )
+        ratesPerProduct[successfulPurchases[i][1]].push({
+            user: successfulPurchases[i][0],
+            rate: ~~(Math.random() * 3) + 3,
+            lastUpdatedDate: randomDate(successfulPurchases[i][2], new Date('July 31, 2020 23:23:59'))
+        })
 };
 
 module.exports = {

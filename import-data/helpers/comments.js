@@ -54,7 +54,12 @@ for (let i = 0; i < usersNumber; i++){
             id: getObjectId('comment' + i + '_' + j),
             text: commentsOptions[~~(Math.random() * commentsOptionsNumber)],
             date: dateOfCreation,
-            email: users[i].email,
+            user: {
+                email: users[i].email,
+                name: users[i].firstName + ' ' + users[i].lastName,
+                images: users[i].images,
+                isAdmin: false
+            },
             product: getObjectId('product' + productId),
             show: true
         });
