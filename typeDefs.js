@@ -252,7 +252,16 @@ const typeDefs = gql`
     tokenPass: String
   }
 
+  type File {
+    id: ID!
+    path: String!
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
   type Mutation {
+    uploadSingleFile(file: Upload!): File!
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): Pattern
     deletePattern(id: ID!): Pattern

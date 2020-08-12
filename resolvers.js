@@ -31,6 +31,7 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
+const uploadService = require('./modules/upload/upload.service');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -74,6 +75,8 @@ const resolvers = {
   },
 
   Mutation: {
+    uploadSingleFile: (parent, args)  => uploadService.uploadSingleFile(args.file),
+    
     ...patternMutation,
 
     ...materialMutation,
