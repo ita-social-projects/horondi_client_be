@@ -27,14 +27,15 @@ comments: [Comment]
 
 const productInput = `
 input ProductInput {
-subcategory: CategoryInput!
+category: ID!
+subcategory: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
-images: [PrimaryImageInput]!
-colors: [ColorInput]!
+images: PrimaryImageInput!
+colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]!
@@ -42,6 +43,7 @@ closureColor: String
 basePrice: Int!
 available: Boolean!
 isHotItem: Boolean
+options:[ProductOptionsInput]
 }`;
 
 module.exports = {
