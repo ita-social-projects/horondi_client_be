@@ -17,6 +17,14 @@ class BusinessTextService {
     throw new Error(BUSINESS_TEXT_NOT_FOUND);
   }
 
+  async getBusinessTextByCode(code) {
+    const businessText = await BusinessText.findOne({ code });
+    if (businessText) {
+      return businessText;
+    }
+    throw new Error(BUSINESS_TEXT_NOT_FOUND);
+  }
+
   async updateBusinessText(id, businessText) {
     if (await this.checkBusinessTextExist(businessText, id)) {
       throw new Error(BUSINESS_TEXT_ALREADY_EXIST);
@@ -46,7 +54,7 @@ class BusinessTextService {
       _id: { $ne: id },
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },
     });

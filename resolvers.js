@@ -157,6 +157,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  BusinessTextResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.businessText;
+      }
+      return 'Error';
+    },
+  },
 };
 
 module.exports = resolvers;

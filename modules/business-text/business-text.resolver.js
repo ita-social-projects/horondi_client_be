@@ -13,6 +13,16 @@ const businessTextQuery = {
       };
     }
   },
+  getBusinessTextByCode: async (parent, args) => {
+    try {
+      return await businessTextService.getBusinessTextByCode(args.code);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const businessTexMutation = {

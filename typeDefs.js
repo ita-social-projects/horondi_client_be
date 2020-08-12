@@ -184,7 +184,8 @@ const typeDefs = gql`
     getAllCommentsByProduct(productId: ID!): [CommentResult]
 
     getAllBusinessTexts: [BusinessText]
-    getBusinessTextById(id: ID): BusinessTextResult
+    getBusinessTextById(id: ID!): BusinessTextResult
+    getBusinessTextByCode(code: String!): BusinessTextResult
   }
 
   input SortInput {
@@ -310,7 +311,7 @@ const typeDefs = gql`
     updateComment(id: ID!, product: commentInput!): Comment
 
     "BusinessText Mutation"
-    addBusinessText(category: BusinessTextInput!): BusinessText
+    addBusinessText(businessText: BusinessTextInput!): BusinessText
     deleteBusinessText(id: ID!): BusinessTextResult
     updateBusinessText(
       id: ID!
