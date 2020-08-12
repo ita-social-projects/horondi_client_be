@@ -245,10 +245,6 @@ const typeDefs = gql`
     images: ImageSetInput
     isAdmin: Boolean
   }
-  input UserRateInput {
-    user: ID!
-    rate: Int!
-  }
   input ImageSetInput {
     large: String
     medium: String
