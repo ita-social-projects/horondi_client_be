@@ -4,7 +4,7 @@ const newsQuery = {
   getAllNews: (parent, args) => newsService.getAllNews(args),
   getNewsById: async (parent, args) => {
     try {
-      return await newsService.deleteNews(args.id, args.news);
+      return await newsService.getNewsById(args.id, args.news);
     } catch (e) {
       return {
         statusCode: 404,
