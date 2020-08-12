@@ -21,6 +21,7 @@ isHotItem: Boolean!
 purchasedCount: Int
 rate: Float
 rateCount: Int
+userRates: [UserRate]
 comments: [Comment]
 }
 `;
