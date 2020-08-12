@@ -16,8 +16,8 @@ describe('queries', () => {
               category: "ddc81f5dbac48c38d0403dd3"
               subcategory: "688ded7be0c2621f2fb17b05"
               name: [
-                { lang: "en", value: "Coool Baggy" }
-                { lang: "ua", value: "СУПЕРСЬКИЙ Рюкзачечок" }
+                { lang: "en", value: "Very Coool Baggy" }
+                { lang: "ua", value: "ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок" }
               ]
               description: [
                 { lang: "en", value: "Baggy is so cool" }
@@ -26,11 +26,11 @@ describe('queries', () => {
               mainMaterial: [
                 {
                   lang: "uk"
-                  value: "Canvas-400G прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка"
+                  value: "Canvas-400G прошита додатковим шаром спеціального матеріалу"
                 }
                 {
                   lang: "en"
-                  value: "Canvas-400G padded with a layer of durable and water-resistant material + inner layer"
+                  value: "Canvas-400G padded with a layer of durable and water-resistant material"
                 }
               ]
               innerMaterial: [
@@ -140,31 +140,12 @@ describe('queries', () => {
     });
     productId = createProduct.data.addProduct._id;
   });
-  afterAll(async () => {
-    await client.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteProduct(id: $id) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: productId },
-    });
-  });
   test('#1 Should receive all products', async () => {
     const products = await client.query({
       query: gql`
         query {
           getProducts {
             items {
-              _id
               category {
                 _id
               }
@@ -200,10 +181,253 @@ describe('queries', () => {
       `,
     });
     const allProducts = products.data.getProducts.items;
+    expect(allProducts).toMatchSnapshot();
     expect(allProducts).toBeDefined();
-    const reversedProducts = allProducts.reverse();
-    expect(reversedProducts.length).toBeGreaterThan(0);
-    expect(reversedProducts[0].name).toBeInstanceOf(Array);
-    // expect(reversedProducts[0]).toContainEqual()
+    expect(allProducts.length).toBeGreaterThan(0);
+    expect(allProducts[0].name).toBeInstanceOf(Array);
+    expect(allProducts).toContainEqual({
+      __typename: 'Product',
+      available: true,
+      basePrice: 1550,
+      category: {
+        __typename: 'Category',
+        _id: 'ddc81f5dbac48c38d0403dd3',
+      },
+      closureColor: 'black',
+      description: [
+        {
+          __typename: 'Language',
+          value: 'Baggy is so cool',
+        },
+        {
+          __typename: 'Language',
+          value: 'Рюкзачечок - супер кльовий))',
+        },
+      ],
+      innerMaterial: [
+        {
+          __typename: 'Language',
+          value: 'Oxford 135',
+        },
+        {
+          __typename: 'Language',
+          value: 'Oxford 135',
+        },
+      ],
+      isHotItem: false,
+      mainMaterial: [
+        {
+          __typename: 'Language',
+          value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
+        },
+        {
+          __typename: 'Language',
+          value:
+            'Canvas-400G padded with a layer of durable and water-resistant material',
+        },
+      ],
+      name: [
+        {
+          __typename: 'Language',
+          value: 'Very Coool Baggy',
+        },
+        {
+          __typename: 'Language',
+          value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок',
+        },
+      ],
+      pattern: [
+        {
+          __typename: 'Language',
+          value: 'Вишивка',
+        },
+        {
+          __typename: 'Language',
+          value: 'Embroidery',
+        },
+      ],
+      purchasedCount: null,
+      rate: null,
+      rateCount: null,
+      strapLengthInCm: 100,
+      subcategory: {
+        __typename: 'Category',
+        _id: '688ded7be0c2621f2fb17b05',
+      },
+    });
+  });
+  test('#2 Should receive product by ID', async () => {
+    const getProduct = await client.query({
+      query: gql`
+        query($id: ID!) {
+          getProductById(id: $id) {
+            ... on Product {
+              _id
+              category {
+                _id
+              }
+              subcategory {
+                _id
+              }
+              name {
+                value
+              }
+              description {
+                value
+              }
+              mainMaterial {
+                value
+              }
+              innerMaterial {
+                value
+              }
+              strapLengthInCm
+              pattern {
+                value
+              }
+              closureColor
+              basePrice
+              available
+              isHotItem
+              purchasedCount
+              rate
+              rateCount
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: productId },
+    });
+    const receivedProduct = getProduct.data.getProductById;
+    expect(receivedProduct).toMatchSnapshot();
+    expect(receivedProduct).toBeDefined();
+    expect(receivedProduct).toHaveProperty('name', [
+      { __typename: 'Language', value: 'Very Coool Baggy' },
+      { __typename: 'Language', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+    ]);
+    expect(receivedProduct).toHaveProperty('description', [
+      { __typename: 'Language', value: 'Baggy is so cool' },
+      { __typename: 'Language', value: 'Рюкзачечок - супер кльовий))' },
+    ]);
+    expect(receivedProduct).toHaveProperty('category', {
+      __typename: 'Category',
+      _id: 'ddc81f5dbac48c38d0403dd3',
+    });
+    expect(receivedProduct).toHaveProperty('subcategory', {
+      __typename: 'Category',
+      _id: '688ded7be0c2621f2fb17b05',
+    });
+    expect(receivedProduct).toHaveProperty('mainMaterial', [
+      {
+        __typename: 'Language',
+        value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
+      },
+      {
+        __typename: 'Language',
+        value:
+          'Canvas-400G padded with a layer of durable and water-resistant material',
+      },
+    ]);
+    expect(receivedProduct).toHaveProperty('innerMaterial', [
+      {
+        __typename: 'Language',
+        value: 'Oxford 135',
+      },
+      {
+        __typename: 'Language',
+        value: 'Oxford 135',
+      },
+    ]);
+    expect(receivedProduct).toHaveProperty('strapLengthInCm', 100);
+    expect(receivedProduct).toHaveProperty('pattern', [
+      {
+        __typename: 'Language',
+        value: 'Вишивка',
+      },
+      {
+        __typename: 'Language',
+        value: 'Embroidery',
+      },
+    ]);
+    expect(receivedProduct).toHaveProperty('closureColor', 'black');
+    expect(receivedProduct).toHaveProperty('basePrice', 1550);
+    expect(receivedProduct).toHaveProperty('available', true);
+    expect(receivedProduct).toHaveProperty('isHotItem', false);
+    expect(receivedProduct).toHaveProperty('purchasedCount', null);
+    expect(receivedProduct).toHaveProperty('rate', null);
+    expect(receivedProduct).toHaveProperty('rateCount', null);
+  });
+  test('#3 Should receive error if product ID is wrong', async () => {
+    const getProduct = await client.query({
+      query: gql`
+        query($id: ID!) {
+          getProductById(id: $id) {
+            ... on Product {
+              _id
+              category {
+                _id
+              }
+              subcategory {
+                _id
+              }
+              name {
+                value
+              }
+              description {
+                value
+              }
+              mainMaterial {
+                value
+              }
+              innerMaterial {
+                value
+              }
+              strapLengthInCm
+              pattern {
+                value
+              }
+              closureColor
+              basePrice
+              available
+              isHotItem
+              purchasedCount
+              rate
+              rateCount
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: '1a1111da11da1111111a111a' },
+    });
+    const receivedError = getProduct.data.getProductById;
+    expect(receivedError).toBeDefined();
+    expect(receivedError).toHaveProperty('statusCode');
+    expect(receivedError).toHaveProperty('message');
+  });
+  afterAll(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteProduct(id: $id) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: productId },
+    });
   });
 });
