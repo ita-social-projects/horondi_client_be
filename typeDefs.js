@@ -137,7 +137,6 @@ const typeDefs = gql`
   type UserRate {
     user: User!
     rate: Int!
-    lastUpdatedDate: String
   }
 
   type Error {
@@ -249,7 +248,6 @@ const typeDefs = gql`
   input UserRateInput {
     user: ID!
     rate: Int!
-    lastUpdatedDate: String
   }
   input ImageSetInput {
     large: String

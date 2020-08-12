@@ -60,11 +60,7 @@ const productSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    rate: Number,
-    lastUpdatedDate: {
-      type: Date,
-      default: Date.now,
-    }
+    rate: Number
   }],
   comments: [
     {
