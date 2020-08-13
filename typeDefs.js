@@ -137,6 +137,10 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
+  type BasePrice {
+    currency: String
+    value: Int
+  }
 
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
@@ -280,6 +284,10 @@ const typeDefs = gql`
     description: [LanguageInput!]
     available: Boolean
     additionalPrice: Int
+  }
+  input BasePriceInput {
+    currency: String
+    value: Int
   }
 
   type Mutation {

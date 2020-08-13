@@ -89,7 +89,13 @@ class ProductsService {
     if (await this.checkProductExist(productData, id)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    return Products.findByIdAndUpdate(id, productData, { new: true });
+    const updatedProduct = await Products.findByIdAndUpdate(id, productData, {
+      new: true,
+    });
+    console.log(updatedProduct);
+    if (updatedProduct) {
+      return updatedProduct;
+    }
   }
 
   async addProduct(data) {
@@ -104,6 +110,7 @@ class ProductsService {
   }
 
   async checkProductExist(data, id) {
+    console.log(data);
     const productCount = await Products.countDocuments({
       _id: { $ne: id },
       name: {

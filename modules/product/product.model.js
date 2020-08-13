@@ -3,6 +3,7 @@ const Language = require('../../models/Language').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
 const ImageSet = require('../common/ImageSet').schema;
 const Color = require('../../models/Color').schema;
+const BasePrice = require('../../models/BasePrice').schema;
 
 const productSchema = new mongoose.Schema({
   category: {
@@ -24,7 +25,7 @@ const productSchema = new mongoose.Schema({
   patternImages: ImageSet,
   closure: [Language],
   closureColor: String,
-  basePrice: Number,
+  basePrice: [BasePrice],
   options: [
     {
       size: {

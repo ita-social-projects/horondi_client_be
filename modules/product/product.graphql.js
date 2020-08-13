@@ -14,7 +14,7 @@ pattern: [Language]
 patternImages: ImageSet
 closure: [Language]!
 closureColor: String
-basePrice: Int!
+basePrice: [BasePrice]
 options: [ProductOptions]!
 available: Boolean!
 isHotItem: Boolean!
@@ -27,21 +27,21 @@ comments: [Comment]
 
 const productInput = `
 input ProductInput {
-category: ID!
-subcategory: ID!
-name: [LanguageInput]!
-description: [LanguageInput]!
-mainMaterial: [LanguageInput]!
-innerMaterial: [LanguageInput]!
-strapLengthInCm: Int!
-images: PrimaryImageInput!
-colors: [ColorInput]! 
+category: ID
+subcategory: ID
+name: [LanguageInput]
+description: [LanguageInput]
+mainMaterial: [LanguageInput]
+innerMaterial: [LanguageInput]
+strapLengthInCm: Int
+images: PrimaryImageInput
+colors: [ColorInput]
 pattern: [LanguageInput]
 patternImages: ImageSetInput
-closure: [LanguageInput]!
+closure: [LanguageInput]
 closureColor: String
-basePrice: Int!
-available: Boolean!
+basePrice: [BasePriceInput]
+available: Boolean
 isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;
