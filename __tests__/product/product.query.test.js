@@ -306,7 +306,6 @@ describe('Product queries', () => {
       variables: { id: productId },
     });
     const receivedProduct = getProduct.data.getProductById;
-    expect(receivedProduct).toMatchSnapshot();
     expect(receivedProduct).toBeDefined();
     expect(receivedProduct).toHaveProperty('name', [
       { __typename: 'Language', value: 'Very Coool Baggy' },
@@ -412,8 +411,8 @@ describe('Product queries', () => {
     });
     const receivedError = getProduct.data.getProductById;
     expect(receivedError).toBeDefined();
-    expect(receivedError).toHaveProperty('statusCode');
-    expect(receivedError).toHaveProperty('message');
+    expect(receivedError).toHaveProperty('statusCode', 404);
+    expect(receivedError).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
   });
   afterAll(async () => {
     await client.mutate({

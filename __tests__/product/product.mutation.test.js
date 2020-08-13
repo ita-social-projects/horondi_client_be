@@ -5,6 +5,7 @@ const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
 
 let productId;
+let sameNameProductId;
 const badProductId = '1a1111da11da1111111a111a';
 const newProduct = {
   category: 'ddc81f5dbac48c38d0403dd3',
@@ -244,75 +245,124 @@ const productForUpdate = {
     },
   ],
 };
-const expectedResult = {
-  __typename: 'Product',
-  available: true,
-  basePrice: 1550,
-  category: {
-    __typename: 'Category',
-    _id: 'ddc81f5dbac48c38d0403dd3',
-  },
-  closureColor: 'black',
+const sameNameForUpdate = {
+  category: 'ddc81f5dbac48c38d0403dd3',
+  subcategory: '688ded7be0c2621f2fb17b05',
+  name: [
+    { lang: 'en', value: 'Baggy!!!' },
+    { lang: 'ua', value: 'Рюкзачечок!!!!' },
+  ],
   description: [
-    {
-      __typename: 'Language',
-      value: 'Baggy is so cool',
-    },
-    {
-      __typename: 'Language',
-      value: 'Рюкзачечок - супер кльовий))',
-    },
+    { lang: 'en', value: 'Baggy is so cool' },
+    { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
   ],
-  innerMaterial: [
-    {
-      __typename: 'Language',
-      value: 'Oxford 135',
-    },
-    {
-      __typename: 'Language',
-      value: 'Oxford 135',
-    },
-  ],
-  isHotItem: false,
   mainMaterial: [
     {
-      __typename: 'Language',
+      lang: 'uk',
       value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
     },
     {
-      __typename: 'Language',
+      lang: 'en',
       value:
         'Canvas-400G padded with a layer of durable and water-resistant material',
     },
   ],
-  name: [
-    {
-      __typename: 'Language',
-      value: 'Very Coool Baggy',
-    },
-    {
-      __typename: 'Language',
-      value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок',
-    },
+  innerMaterial: [
+    { lang: 'uk', value: 'Oxford 135' },
+    { lang: 'en', value: 'Oxford 135' },
   ],
   pattern: [
-    {
-      __typename: 'Language',
-      value: 'Вишивка',
+    { lang: 'uk', value: 'Вишивка' },
+    { lang: 'en', value: 'Embroidery' },
+  ],
+  patternImages: {
+    large: 'large-embroidery.jpg',
+    medium: 'medium-embroidery.jpg',
+    small: 'small-embroidery.jpg',
+    thumbnail: 'thumbnail-embroidery.jpg',
+  },
+  strapLengthInCm: 100,
+  closure: [
+    { lang: 'uk', value: 'Фастекс (пластикова защіпка)' },
+    { lang: 'en', value: 'Plastic closure' },
+  ],
+  closureColor: 'black',
+  basePrice: 1550,
+  available: true,
+  isHotItem: false,
+  images: {
+    primary: {
+      large: 'large-primary_15.jpg',
+      medium: 'medium-primary_15.jpg',
+      small: 'small-primary_15.jpg',
+      thumbnail: 'thumbnail-primary_15.jpg',
     },
+    additional: [
+      {
+        large: 'large-additional_15_1.jpg',
+        medium: 'medium-additional_15_1.jpg',
+        small: 'small-additional_15_1.jpg',
+        thumbnail: 'thumbnail-additional_15_1.jpg',
+      },
+      {
+        large: 'large-additional_15_2.jpg',
+        medium: 'medium-additional_15_2.jpg',
+        small: 'small-additional_15_2.jpg',
+        thumbnail: 'thumbnail-additional_15_2.jpg',
+      },
+      {
+        large: 'large-additional_15_3.jpg',
+        medium: 'medium-additional_15_3.jpg',
+        small: 'small-additional_15_3.jpg',
+        thumbnail: 'thumbnail-additional_15_3.jpg',
+      },
+    ],
+  },
+  colors: [
     {
-      __typename: 'Language',
-      value: 'Embroidery',
+      code: 206,
+      name: [
+        { lang: 'uk', value: 'Золотий' },
+        { lang: 'en', value: 'Golden' },
+      ],
+      images: {
+        large: 'large-golden.jpg',
+        medium: 'medium-golden.jpg',
+        small: 'small-golden.jpg',
+        thumbnail: 'thumbnail-golden.jpg',
+      },
+      available: true,
+      simpleName: [
+        { lang: 'uk', value: 'жовтий' },
+        { lang: 'en', value: 'yellow' },
+      ],
     },
   ],
-  purchasedCount: null,
-  rate: null,
-  rateCount: null,
-  strapLengthInCm: 100,
-  subcategory: {
-    __typename: 'Category',
-    _id: '688ded7be0c2621f2fb17b05',
-  },
+  options: [
+    {
+      size: '50288e8716e80d9569f64e2e',
+      bottomMaterial: 'dadba32060da96e40847166d',
+      description: [
+        { lang: 'ua', value: 'Тканина Кордура' },
+        { lang: 'en', value: 'Cordura fabric' },
+      ],
+      availableCount: 7,
+      additions: [
+        {
+          available: true,
+          name: [
+            { lang: 'uk', value: 'Кишеня' },
+            { lang: 'en', value: 'Pocket' },
+          ],
+          description: [
+            { lang: 'uk', value: 'Бокова кишенька за бажанням' },
+            { lang: 'en', value: 'Side pocket by request' },
+          ],
+          additionalPrice: 100,
+        },
+      ],
+    },
+  ],
 };
 
 describe('Product mutations', () => {
@@ -376,7 +426,6 @@ describe('Product mutations', () => {
       variables: { id: productId },
     });
     const receivedProduct = getProduct.data.getProductById;
-    expect(receivedProduct).toMatchSnapshot();
     expect(receivedProduct).toBeDefined();
     expect(receivedProduct).toHaveProperty('name', [
       { __typename: 'Language', value: 'Very Coool Baggy' },
@@ -435,7 +484,30 @@ describe('Product mutations', () => {
     expect(receivedProduct).toHaveProperty('rateCount', null);
   });
 
-  test('#2 Should update new product', async () => {
+  test('#2 AddProduct should return Error product already exist', async () => {
+    const createProduct = await client.mutate({
+      mutation: gql`
+        mutation($product: ProductInput!) {
+          addProduct(product: $product) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { product: newProduct },
+    });
+    const result = createProduct.data.addProduct;
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('statusCode', 400);
+    expect(result).toHaveProperty('message', 'PRODUCT_ALREADY_EXIST');
+  });
+
+  test('#3 Should update new product', async () => {
     const updateProduct = await client.mutate({
       mutation: gql`
         mutation($product: ProductInput!, $id: ID!) {
@@ -473,6 +545,83 @@ describe('Product mutations', () => {
         value: 'Жахливий Рюкзачечок',
       },
     ]);
+  });
+
+  test('#4 UpdateProduct should return Error product not found', async () => {
+    const updateProduct = await client.mutate({
+      mutation: gql`
+        mutation($product: ProductInput!, $id: ID!) {
+          updateProduct(id: $id, product: $product) {
+            ... on Product {
+              _id
+              name {
+                lang
+                value
+              }
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        product: productForUpdate,
+        id: badProductId,
+      },
+    });
+    const productAfterUpdate = updateProduct.data.updateProduct;
+    expect(productAfterUpdate).toBeDefined();
+    expect(productAfterUpdate).toHaveProperty('statusCode', 400);
+    expect(productAfterUpdate).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
+  });
+
+  test('#5 UpdateProduct should return Error product already exist', async () => {
+    const createProduct = await client.mutate({
+      mutation: gql`
+        mutation($product: ProductInput!) {
+          addProduct(product: $product) {
+            ... on Product {
+              _id
+            }
+          }
+        }
+      `,
+      variables: { product: sameNameForUpdate },
+    });
+    sameNameProductId = createProduct.data.addProduct._id;
+
+    const updateProduct = await client.mutate({
+      mutation: gql`
+        mutation($product: ProductInput!, $id: ID!) {
+          updateProduct(id: $id, product: $product) {
+            ... on Product {
+              _id
+              name {
+                lang
+                value
+              }
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        product: sameNameForUpdate,
+        id: productId,
+      },
+    });
+    const productAfterUpdate = updateProduct.data.updateProduct;
+    expect(productAfterUpdate).toBeDefined();
+    expect(productAfterUpdate).toHaveProperty('statusCode', 400);
+    expect(productAfterUpdate).toHaveProperty(
+      'message',
+      'PRODUCT_ALREADY_EXIST',
+    );
   });
 
   afterAll(async () => {
