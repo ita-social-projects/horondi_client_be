@@ -95,9 +95,10 @@ const typeDefs = gql`
 
   type ProductOptions {
     size: Size
-    bottomMaterial: BottomMaterial
+    bottomMaterial: Material
+    description: [Language]
     bottomColor: [Language]
-    availableCount: Boolean
+    availableCount: Int
     additions: [ProductAdditions]
   }
 
@@ -109,20 +110,13 @@ const typeDefs = gql`
   }
 
   type Size {
+    _id: ID!
     name: String
     heightInCm: Int
     widthInCm: Int
     depthInCm: Int
     volumeInLiters: Int
     weightInKg: Float
-    available: Boolean
-    additionalPrice: Int
-  }
-
-  type BottomMaterial {
-    name: [Language]
-    description: [Language]
-    colors: [Color]
     available: Boolean
     additionalPrice: Int
   }
@@ -142,6 +136,13 @@ const typeDefs = gql`
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type ProductOptionsAdditonals {
+    name: [Language!]
+    description: [Language!]
+    available: Boolean
+    additionalPrice: Int
   }
 
   type PaginatedProducts {
@@ -256,6 +257,7 @@ const typeDefs = gql`
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
+    simpleName: [LanguageInput!]
   }
   input ConvertOptionInput {
     name: String!
@@ -270,6 +272,32 @@ const typeDefs = gql`
   input CredentialInput {
     source: String
     tokenPass: String
+  }
+
+  input ProductOptionsInput {
+    size: ID!
+    bottomMaterial: ID!
+    description: [LanguageInput!]
+    bottomColor: [LanguageInput!]
+    availableCount: Int
+    additions: [ProductOptionsAdditonalsInput]
+  }
+
+  input SizeInput {
+    name: String
+    heightInCm: Int
+    widthInCm: Int
+    depthInCm: Int
+    volumeInLiters: Int
+    weightInKg: Float
+    available: Boolean
+    additionalPrice: Int
+  }
+  input ProductOptionsAdditonalsInput {
+    name: [LanguageInput!]
+    description: [LanguageInput!]
+    available: Boolean
+    additionalPrice: Int
   }
 
   type Mutation {

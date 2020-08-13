@@ -2,7 +2,7 @@ const productsService = require('./product.service');
 const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
 
 const productsQuery = {
-  getProductsById: (parent, args) => productsService.getProductsById(args.id),
+  getProductById: (parent, args) => productsService.getProductById(args.id),
   getProducts: async (parent, args) => {
     try {
       return await productsService.getProducts(args);
