@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { randomDateSince } = require('../../helpers/dates');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const recordNumber = 100;
@@ -26,10 +27,6 @@ const streets = streetsFromFile.split('\n')
 
 const backpacks = getObjectIds(['rolltop', 'new', 'harbuz']);
 const backpacksNumber = backpacks.length;
-
-function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-}
 
 function generateCredentials() {
     let credentials = [];
@@ -112,7 +109,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
                     thumbnail: 'thumbnail-' + emailStub + '.jpg'
                 },
             credentials: generateCredentials(),
-            registrationDate: randomDate(new Date('January 01, 2010 00:00:00'), new Date('May 31, 2020 23:23:59')),
+            registrationDate: randomDateSince(new Date('January 01, 2010 00:00:00')),
             wishlist: [backpacks[~~(Math.random() * backpacksNumber)]],
             orders: [getObjectId('order' + i)],
             purchasedProducts: [],

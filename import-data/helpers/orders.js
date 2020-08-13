@@ -4,6 +4,7 @@ const products = require('./products');
 // const patterns = require('../4-patterns/patterns');
 // const closures = require('../6-closures/closures');
 // const categories = require('../1-categories/categories');
+const { randomDateSince, addDays } = require('./dates');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 let orders = [];
@@ -21,18 +22,8 @@ let closureColorPick;
 let totalPrice;
 let successfulPurchases = [];
 
-function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-}
-
-function addDays(date, days) {
-    let result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-}
-
 for (let i = 0; i < usersNumber; i++) {
-    const dateOfCreation = randomDate(users[i].registrationDate, new Date('July 31, 2020 23:23:59'));
+    const dateOfCreation = randomDateSince(users[i].registrationDate);
     productCount = ~~(Math.random() * productsNumber);
     product = products[productCount];
     // item = product.items[~~(Math.random() * product.items.length)];
