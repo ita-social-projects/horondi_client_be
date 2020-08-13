@@ -2550,7 +2550,7 @@ Array [
 exports[`Product queries #2 Should receive product by ID 1`] = `
 Object {
   "__typename": "Product",
-  "_id": "5f34e77b0fc2614314615a9d",
+  "_id": "5f34fc01871d083f485408cd",
   "available": true,
   "basePrice": 1550,
   "category": Object {
