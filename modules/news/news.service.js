@@ -10,9 +10,9 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    const news = await News.findById(id);
-    if (news) {
-      return news;
+    const foundNews = await News.findById(id);
+    if (foundNews) {
+      return foundNews;
     }
     throw new Error(NEWS_NOT_FOUND);
   }
@@ -32,7 +32,11 @@ class NewsService {
   }
 
   async deleteNews(id) {
-    return await News.findByIdAndDelete(id);
+    const foundNews = await News.findByIdAndDelete(id);
+    if (foundNews) {
+      return foundNews;
+    }
+    throw new Error(NEWS_NOT_FOUND);
   }
 
   async checkNewsExist(data, id) {

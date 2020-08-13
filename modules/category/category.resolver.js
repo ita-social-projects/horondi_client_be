@@ -11,7 +11,7 @@ const categoryQuery = {
       return await categoryService.getCategoryById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: 400,
         message: e.message,
       };
     }
@@ -30,14 +30,14 @@ const categoryMutation = {
     }
   },
   deleteCategory: async (parent, args) => {
-    const deletedCategory = await categoryService.deleteCategory(args.id);
-    if (deletedCategory) {
-      return deletedCategory;
+    try {
+      return await categoryService.deleteCategory(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: CATEGORY_NOT_FOUND,
-    };
   },
   updateCategory: async (parent, args) => {
     const category = await categoryService.updateCategory(

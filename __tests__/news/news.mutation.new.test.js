@@ -5,7 +5,7 @@ const client = require('../../utils/apollo-test-client');
 const { newsMutation } = require('../../modules/news/news.resolver');
 const newsService = require('../../modules/news/news.service');
 
-let newsToUpdateAndDeleteId = '';
+// let newsToUpdateAndDeleteId = '';
 const news = {
   title: [
     { lang: 'uk', value: 'adsa' },

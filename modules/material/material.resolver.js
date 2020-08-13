@@ -6,14 +6,14 @@ const {
 const materialQuery = {
   getAllMaterials: () => materialService.getAllMaterials(),
   getMaterialById: async (parent, args) => {
-    const material = await materialService.getMaterialById(args.id);
-    if (material) {
-      return material;
+    try {
+      return await materialService.getMaterialById(args.material);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
 };
 
@@ -29,14 +29,14 @@ const materialMutation = {
     }
   },
   deleteMaterial: async (parent, args) => {
-    const material = await materialService.deleteMaterial(args.id);
-    if (material) {
-      return material;
+    try {
+      return await materialService.deleteMaterial(args.id);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
   updateMaterial: async (parent, args) => {
     const material = await materialService.updateMaterial(

@@ -55,10 +55,13 @@ const productSchema = new mongoose.Schema({
   purchasedCount: Number,
   rate: Number,
   rateCount: Number,
-  votedUsers: [
+  userRates: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      rate: Number,
     },
   ],
   comments: [

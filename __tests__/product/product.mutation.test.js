@@ -622,10 +622,26 @@ describe('Product mutations', () => {
       'message',
       'PRODUCT_ALREADY_EXIST',
     );
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteProduct(id: $id) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: sameNameProductId },
+    });
   });
 
-  afterAll(async () => {
-    await client.mutate({
+  test('#6 deleteProduct should return productId and ', async () => {
+    const deletedProduct = await client.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteProduct(id: $id) {
@@ -641,5 +657,31 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
+    const result = deletedProduct.data.deleteProduct;
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('_id', productId);
+  });
+
+  test('#7 deleteProduct should return error product not found', async () => {
+    const deletedProduct = await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteProduct(id: $id) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: productId },
+    });
+    const result = deletedProduct.data.deleteProduct;
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('statusCode', 404);
+    expect(result).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
   });
 });
