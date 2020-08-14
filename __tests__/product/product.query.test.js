@@ -74,7 +74,7 @@ describe('Product queries', () => {
     expect(allProducts).toContainEqual(expectedResult);
   });
   test('#2 Should receive product by ID', async () => {
-    const getProduct = await client.query({
+    const product = await client.query({
       query: gql`
         query($id: ID!) {
           getProductById(id: $id) {
@@ -119,25 +119,25 @@ describe('Product queries', () => {
       `,
       variables: { id: productId },
     });
-    const receivedProduct = getProduct.data.getProductById;
-    expect(receivedProduct).toBeDefined();
-    expect(receivedProduct).toHaveProperty('name', [
+    const resultProduct = product.data.getProductById;
+    expect(resultProduct).toBeDefined();
+    expect(resultProduct).toHaveProperty('name', [
       { __typename: 'Language', value: 'Very Coool Baggy' },
       { __typename: 'Language', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
     ]);
-    expect(receivedProduct).toHaveProperty('description', [
+    expect(resultProduct).toHaveProperty('description', [
       { __typename: 'Language', value: 'Baggy is so cool' },
       { __typename: 'Language', value: 'Рюкзачечок - супер кльовий))' },
     ]);
-    expect(receivedProduct).toHaveProperty('category', {
+    expect(resultProduct).toHaveProperty('category', {
       __typename: 'Category',
       _id: 'ddc81f5dbac48c38d0403dd3',
     });
-    expect(receivedProduct).toHaveProperty('subcategory', {
+    expect(resultProduct).toHaveProperty('subcategory', {
       __typename: 'Category',
       _id: '688ded7be0c2621f2fb17b05',
     });
-    expect(receivedProduct).toHaveProperty('mainMaterial', [
+    expect(resultProduct).toHaveProperty('mainMaterial', [
       {
         __typename: 'Language',
         value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
@@ -148,7 +148,7 @@ describe('Product queries', () => {
           'Canvas-400G padded with a layer of durable and water-resistant material',
       },
     ]);
-    expect(receivedProduct).toHaveProperty('innerMaterial', [
+    expect(resultProduct).toHaveProperty('innerMaterial', [
       {
         __typename: 'Language',
         value: 'Oxford 135',
@@ -158,8 +158,8 @@ describe('Product queries', () => {
         value: 'Oxford 135',
       },
     ]);
-    expect(receivedProduct).toHaveProperty('strapLengthInCm', 100);
-    expect(receivedProduct).toHaveProperty('pattern', [
+    expect(resultProduct).toHaveProperty('strapLengthInCm', 100);
+    expect(resultProduct).toHaveProperty('pattern', [
       {
         __typename: 'Language',
         value: 'Вишивка',
@@ -169,13 +169,13 @@ describe('Product queries', () => {
         value: 'Embroidery',
       },
     ]);
-    expect(receivedProduct).toHaveProperty('closureColor', 'black');
-    expect(receivedProduct).toHaveProperty('basePrice', 1550);
-    expect(receivedProduct).toHaveProperty('available', true);
-    expect(receivedProduct).toHaveProperty('isHotItem', false);
-    expect(receivedProduct).toHaveProperty('purchasedCount', null);
-    expect(receivedProduct).toHaveProperty('rate', null);
-    expect(receivedProduct).toHaveProperty('rateCount', null);
+    expect(resultProduct).toHaveProperty('closureColor', 'black');
+    expect(resultProduct).toHaveProperty('basePrice', 1550);
+    expect(resultProduct).toHaveProperty('available', true);
+    expect(resultProduct).toHaveProperty('isHotItem', false);
+    expect(resultProduct).toHaveProperty('purchasedCount', null);
+    expect(resultProduct).toHaveProperty('rate', null);
+    expect(resultProduct).toHaveProperty('rateCount', null);
   });
   test('#3 Should receive error if product ID is wrong', async () => {
     const getProduct = await client.query({
