@@ -259,7 +259,7 @@ class UserService {
 
     user.banned = !user.banned;
 
-    await User.findByIdAndUpdate(user._id, user);
+    await user.save();
 
     return true;
   }
