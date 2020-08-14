@@ -345,7 +345,7 @@ const sameNameForUpdate = {
   ],
   strapLengthInCm: 100,
   closure: [
-    { lang: 'uk', value: 'Фастекс (пластикова защіпка)' },
+    { lang: 'uk', value: 'Фастекс (пластик)' },
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
@@ -384,8 +384,8 @@ const sameNameForUpdate = {
     {
       code: 206,
       name: [
-        { lang: 'uk', value: 'Золотий' },
-        { lang: 'en', value: 'Golden' },
+        { lang: 'uk', value: 'Золото' },
+        { lang: 'en', value: 'Gold' },
       ],
       available: true,
       simpleName: [
