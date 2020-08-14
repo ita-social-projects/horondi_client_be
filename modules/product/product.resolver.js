@@ -2,16 +2,16 @@ const productsService = require('./product.service');
 const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
 
 const productsQuery = {
-  getProducts: (parent, args) => productsService.getProducts(args),
-  getProductById: async (parent, args) => {
-    const product = await productsService.getProductById(args.id);
-    if (product) {
-      return product;
+  getProductById: (parent, args) => productsService.getProductById(args.id),
+  getProducts: async (parent, args) => {
+    try {
+      return await productsService.getProducts(args);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: PRODUCT_NOT_FOUND,
-    };
   },
 };
 
@@ -41,7 +41,7 @@ const productsMutation = {
       return await productsService.updateProduct(args.id, args.product);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }
