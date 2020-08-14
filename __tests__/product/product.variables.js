@@ -310,13 +310,13 @@ const expectedResult = {
 const sameNameForUpdate = {
   category: 'ddc81f5dbac48c38d0403dd3',
   subcategory: '688ded7be0c2621f2fb17b05',
-  name: [
-    { lang: 'en', value: 'Baggy!!!' },
-    { lang: 'ua', value: 'Рюкзачечок!!!!' },
-  ],
   description: [
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
+  ],
+  name: [
+    { lang: 'en', value: 'Baggy!!!' },
+    { lang: 'ua', value: 'Рюкзачечок!!!!' },
   ],
   mainMaterial: [
     {
@@ -333,16 +333,16 @@ const sameNameForUpdate = {
     { lang: 'uk', value: 'Oxford 135' },
     { lang: 'en', value: 'Oxford 135' },
   ],
-  pattern: [
-    { lang: 'uk', value: 'Вишивка' },
-    { lang: 'en', value: 'Embroidery' },
-  ],
   patternImages: {
     large: 'large-embroidery.jpg',
     medium: 'medium-embroidery.jpg',
     small: 'small-embroidery.jpg',
     thumbnail: 'thumbnail-embroidery.jpg',
   },
+  pattern: [
+    { lang: 'uk', value: 'Вишивка' },
+    { lang: 'en', value: 'Embroidery' },
+  ],
   strapLengthInCm: 100,
   closure: [
     { lang: 'uk', value: 'Фастекс (пластикова защіпка)' },
@@ -353,12 +353,6 @@ const sameNameForUpdate = {
   available: true,
   isHotItem: false,
   images: {
-    primary: {
-      large: 'large-primary_15.jpg',
-      medium: 'medium-primary_15.jpg',
-      small: 'small-primary_15.jpg',
-      thumbnail: 'thumbnail-primary_15.jpg',
-    },
     additional: [
       {
         large: 'large-additional_15_1.jpg',
@@ -379,6 +373,12 @@ const sameNameForUpdate = {
         thumbnail: 'thumbnail-additional_15_3.jpg',
       },
     ],
+    primary: {
+      large: 'large-primary_15.jpg',
+      medium: 'medium-primary_15.jpg',
+      small: 'small-primary_15.jpg',
+      thumbnail: 'thumbnail-primary_15.jpg',
+    },
   },
   colors: [
     {
@@ -387,17 +387,17 @@ const sameNameForUpdate = {
         { lang: 'uk', value: 'Золотий' },
         { lang: 'en', value: 'Golden' },
       ],
+      available: true,
+      simpleName: [
+        { lang: 'uk', value: 'жовтий' },
+        { lang: 'en', value: 'yelow' },
+      ],
       images: {
         large: 'large-golden.jpg',
         medium: 'medium-golden.jpg',
         small: 'small-golden.jpg',
         thumbnail: 'thumbnail-golden.jpg',
       },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'жовтий' },
-        { lang: 'en', value: 'yellow' },
-      ],
     },
   ],
   options: [
