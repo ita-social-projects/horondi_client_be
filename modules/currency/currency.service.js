@@ -27,9 +27,6 @@ class CurrencyService {
   }
 
   async addCurrency(data) {
-    if (await this.checkCurrencyExist(data)) {
-      throw new Error(CURRENCY_ALREADY_EXIST);
-    }
     return new Currency(data).save();
   }
 
@@ -39,6 +36,10 @@ class CurrencyService {
       return foundCurrency;
     }
     throw new Error(CURRENCY_NOT_FOUND);
+  }
+
+  async deleteAllInCurrency() {
+    await Currency.deleteMany({});
   }
 
   async checkCurrencyExist(data, id) {

@@ -46,8 +46,13 @@ class ProductsService {
     }
     if (price && price.length) {
       filter.basePrice = {
-        $gte: price[0],
-        $lte: price[1],
+        $elemMatch: {
+          currency: 'UAH',
+          value: {
+            $gte: price[0],
+            $lte: price[1],
+          },
+        },
       };
     }
     return filter;
@@ -92,7 +97,6 @@ class ProductsService {
     const updatedProduct = await Products.findByIdAndUpdate(id, productData, {
       new: true,
     });
-    console.log(updatedProduct);
     if (updatedProduct) {
       return updatedProduct;
     }
@@ -110,7 +114,6 @@ class ProductsService {
   }
 
   async checkProductExist(data, id) {
-    console.log(data);
     const productCount = await Products.countDocuments({
       _id: { $ne: id },
       name: {

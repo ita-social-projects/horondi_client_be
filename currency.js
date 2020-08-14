@@ -1,33 +1,40 @@
 const axios = require('axios');
-const productService = require('./modules/product/product.service');
+const Agenda = require('agenda');
+require('dotenv').config();
+const currencyService = require('./modules/currency/currency.service');
 
-const updateCurrency = async () => {
+const agenda = new Agenda({ db: { address: process.env.TEST_MONGO } });
+
+agenda.define('set currency to database', async job => {
   try {
-    const currency = await axios.get(
-      'https://openexcha ngerates.org/api/latest.json?app_id=863956b0030a4e53957b84a90022b2e9&base=usd',
-    );
-    const products = await productService.getProducts({});
-    products.items.map(async item => {
-      const x = [
+    const currency = await axios.get(process.env.CURRENCY_API);
+
+    const actualCourse = {
+      lastUpdatedDate: Date.now(),
+      convertOptions: [
         {
-          name: [
-            { lang: 'uk', value: item.name[0].value },
-            { lang: 'en', value: item.name[1].value },
-          ],
-          basePrice: [
-            {
-              currency: 'UAH',
-              value: Math.round(
-                item.basePrice[1].value * currency.data.rates.UAH,
-              ),
-            },
-          ],
+          name: 'USD',
+          exchangeRate: 1,
         },
-      ];
-      productService.updateProduct(item._id, JSON.stringify(x)).catch(e => e);
-    });
+
+        {
+          name: 'UAH',
+          exchangeRate: currency.data.rates.UAH,
+        },
+      ],
+    };
+
+    await currencyService.deleteAllInCurrency({});
+    await currencyService
+      .addCurrency(actualCourse)
+      .then(res => res)
+      .catch(e => {
+        console.error(e);
+      });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
-};
-module.exports = { updateCurrency };
+})(async () => {
+  await agenda.start();
+  await agenda.every('24 hours', 'set currency to database');
+})();
