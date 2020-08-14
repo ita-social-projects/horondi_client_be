@@ -10,10 +10,6 @@ class NewsService {
       .skip(skip)
       .limit(limit);
 
-    if (!items) {
-      throw new Error(NEWS_NOT_FOUND);
-    }
-
     const count = await News.find().countDocuments();
 
     return {
