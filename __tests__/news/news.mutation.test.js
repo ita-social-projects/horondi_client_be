@@ -45,6 +45,19 @@ const newsUpdateData = {
     ],
   },
 };
+const existingNews = {
+  title: [
+    {
+      lang: 'uk',
+      value: 'Аксесуар на пояс, зручна сумка, стильна штучка!',
+    },
+    {
+      lang: 'en',
+      value: 'Belt accessory, comfortable bag, stylish thingy!',
+    },
+  ],
+  date: '43432432432434',
+};
 
 let newsId = '';
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
@@ -239,7 +252,44 @@ describe('test news mutations', () => {
     expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
     expect(res.data.updateNews).toHaveProperty('statusCode', 404);
   });
-  test('#5 delete news', async () => {
+  test('#5 update not existing news should return error', async () => {
+    const res = await client
+      .mutate({
+        mutation: gql`
+          mutation($id: ID!, $news: NewsInput!) {
+            updateNews(id: $id, news: $news) {
+              ... on News {
+                _id
+                text {
+                  lang
+                  value
+                }
+                title {
+                  lang
+                  value
+                }
+                author {
+                  name {
+                    lang
+                    value
+                  }
+                }
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: { id: newsId, news: existingNews },
+      })
+      .then(res => res)
+      .catch(e => e);
+    expect(res.data.updateNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
+    expect(res.data.updateNews).toHaveProperty('statusCode', 400);
+  });
+  test('#6 delete news', async () => {
     const res = await client.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -281,7 +331,7 @@ describe('test news mutations', () => {
       ],
     });
   });
-  test('#6 delete not existing news should return error', async () => {
+  test('#7 delete not existing news should return error', async () => {
     const res = await client.mutate({
       mutation: gql`
         mutation($id: ID!) {

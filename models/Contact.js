@@ -12,11 +12,13 @@ const ContactSchema = new mongoose.Schema({
     buildingNumber: [Language],
   },
   email: String,
-  images: [{
-    lang: String,
-    value: ImageSet,
-  }],
-  link: String
+  images: [
+    {
+      lang: String,
+      value: ImageSet,
+    },
+  ],
+  link: String,
 });
 
 module.exports = mongoose.model('Contact', ContactSchema);

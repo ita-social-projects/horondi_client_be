@@ -259,7 +259,7 @@ describe('querries', () => {
       expect(res.data.getNewsById.images).toBeInstanceOf(Object);
       expect(res.data.getNewsById).toHaveProperty('date', '1111118820047');
     } catch (e) {
-      console.log('e', e);
+      console.error(e);
     }
   });
 
