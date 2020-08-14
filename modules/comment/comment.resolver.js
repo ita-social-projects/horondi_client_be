@@ -1,5 +1,4 @@
 const commentsService = require('./comment.service');
-const productsService = require('../product/product.service');
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 
 const commentsQuery = {

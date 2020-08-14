@@ -2,7 +2,7 @@ const Products = require('./product.model');
 const Size = require('../../models/Size');
 const {
   PRODUCT_ALREADY_EXIST,
-  PRODUCTS_NOT_FOUND,
+  PRODUCT_NOT_FOUND,
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
@@ -74,15 +74,22 @@ class ProductsService {
       .limit(limit)
       .sort(sort);
 
-    if (!items) {
-      throw new Error(PRODUCTS_NOT_FOUND);
-    }
-
     const count = await Products.find(filters).countDocuments();
     return {
       items,
       count,
     };
+  }
+
+  async updateProduct(id, productData) {
+    const product = await Products.findById(id);
+    if (!product) {
+      throw new Error(PRODUCT_NOT_FOUND);
+    }
+    if (await this.checkProductExist(productData, id)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return Products.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(data) {
@@ -96,8 +103,9 @@ class ProductsService {
     return Products.findByIdAndDelete(id);
   }
 
-  async checkProductExist(data) {
+  async checkProductExist(data, id) {
     const productCount = await Products.countDocuments({
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
