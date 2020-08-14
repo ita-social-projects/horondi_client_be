@@ -3,7 +3,11 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
+<<<<<<< HEAD
 - master
+=======
+- p
+>>>>>>> origin
 
 resources:
 - repo: self
