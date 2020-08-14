@@ -80,19 +80,19 @@ describe('Product queries', () => {
           getProductById(id: $id) {
             ... on Product {
               _id
+              name {
+                value
+              }
               category {
                 _id
               }
               subcategory {
                 _id
               }
-              name {
+              mainMaterial {
                 value
               }
               description {
-                value
-              }
-              mainMaterial {
                 value
               }
               innerMaterial {
@@ -102,13 +102,13 @@ describe('Product queries', () => {
               pattern {
                 value
               }
-              closureColor
               basePrice
               available
-              isHotItem
+              closureColor
               purchasedCount
-              rate
+              isHotItem
               rateCount
+              rate
             }
             ... on Error {
               statusCode
