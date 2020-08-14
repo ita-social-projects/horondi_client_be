@@ -254,7 +254,7 @@ class UserService {
     return true;
   }
 
-  async handleUserStatus(id) {
+  async switchUserStatus(id) {
     const user = await this.getUserByFieldOrThrow('_id', id);
 
     user.banned = !user.banned;
