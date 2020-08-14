@@ -1,4 +1,7 @@
 const materialService = require('./material.service');
+const {
+  MATERIAL_NOT_FOUND,
+} = require('../../error-messages/material.messages');
 
 const materialQuery = {
   getAllMaterials: () => materialService.getAllMaterials(),
@@ -40,7 +43,7 @@ const materialMutation = {
       return await materialService.updateMaterial(args.id, args.material);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === MATERIAL_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }

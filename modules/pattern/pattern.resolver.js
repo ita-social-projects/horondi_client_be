@@ -43,7 +43,7 @@ const patternMutation = {
       return await patternService.addPattern(args.id, args.pattern);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === PATTERN_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }

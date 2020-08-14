@@ -47,7 +47,6 @@ describe('querries', () => {
           }
         `,
       })
-      .then(res => res)
       .catch(e => e);
     newsId = res.data.addNews._id;
   });
@@ -69,7 +68,6 @@ describe('querries', () => {
         `,
         variables: { id: newsId },
       })
-      .then(res => res)
       .catch(e => e);
   });
   test('#1 Should receive all news', async () => {
@@ -105,9 +103,7 @@ describe('querries', () => {
           }
         `,
       })
-      .then(res => res)
       .catch(e => e);
-
     expect(res.data.getAllNews).toBeDefined();
     expect(res.data.getAllNews).toContainEqual({
       __typename: 'News',
@@ -158,6 +154,7 @@ describe('querries', () => {
       date: '1111118820047',
     });
   });
+
   test('#2 Should receive one news', async () => {
     try {
       const res = await client
@@ -199,7 +196,6 @@ describe('querries', () => {
           `,
           variables: { id: newsId },
         })
-        .then(res => res)
         .catch(e => e);
 
       expect(res.data.getNewsById).toMatchSnapshot();
@@ -304,7 +300,6 @@ describe('querries', () => {
         `,
         variables: { id: newsDoesNotExistId },
       })
-      .then(res => res)
       .catch(e => e);
     expect(res.data.getNewsById).toBeDefined();
     expect(res.data.getNewsById).toHaveProperty('statusCode', 404);

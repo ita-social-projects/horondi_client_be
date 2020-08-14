@@ -1,4 +1,5 @@
 const newsService = require('./news.service');
+const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 
 const newsQuery = {
   getAllNews: () => newsService.getAllNews(),
@@ -39,7 +40,7 @@ const newsMutation = {
       return await newsService.updateNews(args.id, args.news);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === NEWS_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }
