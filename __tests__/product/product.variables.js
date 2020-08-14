@@ -136,12 +136,12 @@ const productForUpdate = {
     },
     {
       lang: 'en',
-      value: 'Canvas-400G padded without a layer water-resistant material',
+      value: 'Canvas-400QQ padded without a layer water-resistant material',
     },
   ],
   innerMaterial: [
-    { lang: 'uk', value: 'Oxford 185' },
-    { lang: 'en', value: 'Oxford 185' },
+    { lang: 'uk', value: 'Oxford 115' },
+    { lang: 'en', value: 'Oxford 115' },
   ],
   pattern: [
     { lang: 'uk', value: 'Вишивочка' },
@@ -150,10 +150,9 @@ const productForUpdate = {
   patternImages: {
     large: 'large-embroidery.jpg',
     medium: 'medium-embroidery.jpg',
-    small: 'small-embroidery.jpg',
     thumbnail: 'thumbnail-embroidery.jpg',
   },
-  strapLengthInCm: 100,
+  strapLengthInCm: 90,
   closure: [
     { lang: 'uk', value: 'Фастекс (пластикова защіпка)' },
     { lang: 'en', value: 'Plastic closure' },
@@ -166,7 +165,6 @@ const productForUpdate = {
     primary: {
       large: 'large-primary_15_1.jpg',
       medium: 'medium-primary_15_1.jpg',
-      small: 'small-primary_15_1.jpg',
       thumbnail: 'thumbnail-primary_15_1.jpg',
     },
     additional: [
@@ -179,13 +177,11 @@ const productForUpdate = {
       {
         large: 'large-additional_15.jpg',
         medium: 'medium-additional_15.jpg',
-        small: 'small-additional_15.jpg',
         thumbnail: 'thumbnail-additional_15.jpg',
       },
       {
         large: 'large-additional_15_2.jpg',
         medium: 'medium-additional_15_2.jpg',
-        small: 'small-additional_15_2.jpg',
         thumbnail: 'thumbnail-additional_15_2.jpg',
       },
     ],
@@ -200,7 +196,6 @@ const productForUpdate = {
       images: {
         large: 'large-golden.jpg',
         medium: 'medium-golden.jpg',
-        small: 'small-golden.jpg',
         thumbnail: 'thumbnail-golden.jpg',
       },
       available: true,
@@ -212,25 +207,25 @@ const productForUpdate = {
   ],
   options: [
     {
-      size: '50288e8716e80d9569f64e2e',
-      bottomMaterial: 'dadba32060da96e40847166d',
+      size: '50288e8716e80d7569f64e2e',
+      bottomMaterial: 'dadba32080da96e40847166d',
       description: [
-        { lang: 'ua', value: 'Тканина Кордура' },
-        { lang: 'en', value: 'Cordura fabric' },
+        { lang: 'ua', value: 'Кордура' },
+        { lang: 'en', value: 'Cordura' },
       ],
       availableCount: 50,
       additions: [
         {
-          available: true,
+          available: false,
           name: [
             { lang: 'uk', value: 'Кишеня' },
             { lang: 'en', value: 'Pocket' },
           ],
           description: [
-            { lang: 'uk', value: 'Бокова кишенька за бажанням' },
-            { lang: 'en', value: 'Side pocket by request' },
+            { lang: 'uk', value: 'Бокова кишенька' },
+            { lang: 'en', value: 'Side pocket' },
           ],
-          additionalPrice: 100,
+          additionalPrice: 1000,
         },
       ],
     },
@@ -343,7 +338,7 @@ const sameNameForUpdate = {
     { lang: 'uk', value: 'Вишивка' },
     { lang: 'en', value: 'Embroidery' },
   ],
-  strapLengthInCm: 100,
+  strapLengthInCm: 1000,
   closure: [
     { lang: 'uk', value: 'Фастекс (пластик)' },
     { lang: 'en', value: 'Plastic closure' },
