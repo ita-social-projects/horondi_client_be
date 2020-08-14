@@ -1,4 +1,7 @@
 const categoryService = require('./category.service');
+const {
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
 
 const categoryQuery = {
   getAllCategories: (parent, args) => categoryService.getAllCategories(),
@@ -8,7 +11,7 @@ const categoryQuery = {
       return await categoryService.getCategoryById(args.id);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: e.message,
       };
     }
@@ -41,7 +44,7 @@ const categoryMutation = {
       return await categoryService.updateCategory(args.id, args.category);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: e.message === CATEGORY_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }
