@@ -22,6 +22,7 @@ const userMutation = {
     : new UserInputError(USER_NOT_AUTHORIZED)),
   confirmUser: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
+  handleUserStatus: (parent, args) => userService.handleUserStatus(args.id),
 };
 
 module.exports = {

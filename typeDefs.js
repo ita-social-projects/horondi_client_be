@@ -334,6 +334,7 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
+    handleUserStatus(id: ID!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult

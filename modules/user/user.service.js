@@ -253,5 +253,15 @@ class UserService {
     await sendEmail(message);
     return true;
   }
+
+  async handleUserStatus(id) {
+    const user = await this.getUserByFieldOrThrow('_id', id);
+
+    user.banned = !user.banned;
+
+    await User.findByIdAndUpdate(user._id, user);
+
+    return true;
+  }
 }
 module.exports = new UserService();
