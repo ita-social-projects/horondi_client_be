@@ -254,7 +254,7 @@ const typeDefs = gql`
 
   type File {
     id: ID!
-    path: String!
+    path: ImageSet! 
     filename: String!
     mimetype: String!
     encoding: String!

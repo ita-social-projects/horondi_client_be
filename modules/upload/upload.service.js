@@ -1,50 +1,84 @@
-const multer = require('multer')
-    , inMemoryStorage = multer.memoryStorage()
-    , uploadStrategy = multer({ storage: inMemoryStorage }).single('image')
-
-    , azureStorage = require('azure-storage')
-    , blobService = azureStorage.createBlobService('horondi','S9gV0QHu3p1rYcmJQAjhRTJ7EHR4a6KXa640fcUB3a8Q9VJRpJJ3eQF6GXifzrWuk2K4FDKG4sCGvSD49v1qrw==','https://horondi.blob.core.windows.net/horondi')
-    , containerName = 'images'
-
-    const Jimp = require("jimp");
-    const fs = require('fs');
+const azureStorage = require('azure-storage')
+const blobService = azureStorage.createBlobService('horondi','S9gV0QHu3p1rYcmJQAjhRTJ7EHR4a6KXa640fcUB3a8Q9VJRpJJ3eQF6GXifzrWuk2K4FDKG4sCGvSD49v1qrw==','https://horondi.blob.core.windows.net/horondi')
+const containerName = 'images'
+const getStream = require('into-stream')
+const streamToBuffer = require('stream-to-buffer')
+const Jimp = require("jimp");
+const uniqid = require('uniqid');
 
 class UploadService{
-    getBlobName(originalName) {
-        const identifier = Math.random().toString().replace(/0\./, ''); // remove "0." from start of string
-        return `${identifier}-${originalName}`;
-    };
-
     async uploadSingleFile(file){
         const { createReadStream, mimetype, filename } = await file;
-        const fileBuffer = Buffer.from(filename)
 
-        Jimp.read(filename).then( image => { 
-            console.log(image);
-            image.resize(1920, Jimp.AUTO).getBuffer(mimetype,  (err, buffer) => 
-            {
-                console.log(buffer);
-                const
-                    blobName = this.getBlobName(`large_${filename}`),
-                    stream = createReadStream()
-                    , streamLength = fileBuffer.length
-      
-                
-                blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                    console.log("HERE")
-                    if(err) {
-                        console.log(err)
-                        return;
-                    }
+        const inputStream = createReadStream()
+
+        const id = uniqid()
         
-                    console.log( 'File large uploaded to Azure Blob storage.' )           
+        streamToBuffer(inputStream, (err, inputBuffer) =>{
+            Jimp.read(inputBuffer).then( image => { 
+                image.resize(1920, Jimp.AUTO).getBuffer(image.getMIME(),  (err, buffer) => 
+                {
+                    const
+                        blobName = `large_${id}_${filename}`,
+                        stream = getStream(buffer),
+                        streamLength = buffer.length
+                    
+                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                        if(err) {
+                            throw new Error(err)
+                        }
+                    })
+                })
+                image.resize(1080, Jimp.AUTO).getBuffer(image.getMIME(),  (err, buffer) => 
+                {
+                    const
+                        blobName = `medium_${id}_${filename}`,
+                        stream = getStream(buffer),
+                        streamLength = buffer.length
+                    
+                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                        if(err) {
+                            throw new Error(err)
+                        }
+                    })
+                })
+
+                image.resize(768, Jimp.AUTO).getBuffer(image.getMIME(),  (err, buffer) => 
+                {
+                    const
+                        blobName = `small_${id}_${filename}`,
+                        stream = getStream(buffer),
+                        streamLength = buffer.length
+                    
+                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                        if(err) {
+                            throw new Error(err)
+                        }
+                    })
+                })
+
+                image.resize(128, Jimp.AUTO).getBuffer(image.getMIME(),  (err, buffer) => 
+                {
+                    const
+                        blobName = `thumbnail_${id}_${filename}`,
+                        stream = getStream(buffer),
+                        streamLength = buffer.length
+                    
+                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                        if(err) {
+                            throw new Error(err)
+                        }
+                    })
                 })
             })
-
         })
-
         return {
-            path: 'path'
+            path: {
+                large: `https://horondi.blob.core.windows.net/horondi/images/large_${id}_${filename}`,
+                medium: `https://horondi.blob.core.windows.net/horondi/images/medium_${id}_${filename}`,
+                small: `https://horondi.blob.core.windows.net/horondi/images/small_${id}_${filename}`,
+                thumbnail: `https://horondi.blob.core.windows.net/horondi/images/thumbnail_${id}_${filename}`,
+            }
         }
     }
 }
