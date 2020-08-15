@@ -15,7 +15,7 @@ const modelSchema = new mongoose.Schema({
   description: [Language],
   images: ImageSet,
   priority: Number,
-  show: Boolean
+  show: Boolean,
 });
 
 module.exports = mongoose.model('Model', modelSchema);
