@@ -10,30 +10,44 @@ class CategoryService {
   }
 
   async getCategoryById(id) {
-    return await Category.findById(id);
+    const category = await Category.findById(id);
+    if (category) {
+      return category;
+    }
+    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async updateCategory(id, category) {
-    if (await this.checkNewsExist(category)) {
+    const categoryToUpdate = await Category.findById(id);
+    if (!categoryToUpdate) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
+    if (await this.checkCategoryExist(category, id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    return await Category.findByIdAndUpdate(id, category, { new: true });
+    return await Category.findByIdAndUpdate(id, category, {
+      new: true,
+    });
   }
 
   async addCategory(data) {
-    if (await this.checkCategoryEXist(data)) {
+    if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
     return new Category(data).save();
   }
 
   async deleteCategory(id) {
-    return await Category.findByIdAndDelete(id);
+    const category = await Category.findByIdAndDelete(id);
+    if (category) {
+      return category;
+    }
+    throw new Error(CATEGORY_NOT_FOUND);
   }
 
-  async checkCategoryExist(data) {
+  async checkCategoryExist(data, id) {
     const categoriesCount = await Category.countDocuments({
-      code: data.code,
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

@@ -4,7 +4,7 @@ const {
   userType,
   userInput,
   userRegisterInput,
-  userLoginInput,
+  LoginInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -95,9 +95,10 @@ const typeDefs = gql`
 
   type ProductOptions {
     size: Size
-    bottomMaterial: BottomMaterial
+    bottomMaterial: Material
+    description: [Language]
     bottomColor: [Language]
-    availableCount: Boolean
+    availableCount: Int
     additions: [ProductAdditions]
   }
 
@@ -109,6 +110,7 @@ const typeDefs = gql`
   }
 
   type Size {
+    _id: ID!
     name: String
     heightInCm: Int
     widthInCm: Int
@@ -119,17 +121,28 @@ const typeDefs = gql`
     additionalPrice: Int
   }
 
-  type BottomMaterial {
-    name: [Language]
-    description: [Language]
-    colors: [Color]
-    available: Boolean
-    additionalPrice: Int
+  type UserForComment {
+    email: String!
+    name: String
+    images: ImageSet
+    isAdmin: Boolean
+  }
+
+  type UserRate {
+    user: User!
+    rate: Int!
   }
 
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type ProductOptionsAdditonals {
+    name: [Language!]
+    description: [Language!]
+    available: Boolean
+    additionalPrice: Int
   }
 
   type PaginatedProducts {
@@ -142,6 +155,8 @@ const typeDefs = gql`
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
+  union ProductResult = Product | Error
+  union CommentResult = Comment | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -163,7 +178,7 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    getProductsById(id: ID!): Product
+    getProductById(id: ID!): ProductResult
     getProducts(
       filter: FilterInput
       limit: Int
@@ -172,9 +187,8 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
 
-    getAllComments: [Comment]
-    getCommentById(id: ID!): Comment
-    getAllCommentsByProduct(id: ID!): [Comment!]!
+    getCommentById(id: ID!): CommentResult
+    getAllCommentsByProduct(productId: ID!): [CommentResult]
   }
 
   input SortInput {
@@ -190,6 +204,7 @@ const typeDefs = gql`
     colors: [String]
     price: [Int]
     category: [String]
+    search: String
     isHotItem: Boolean
   }
   input RoleEnumInput {
@@ -211,7 +226,7 @@ const typeDefs = gql`
   ${userInput}
   ${productInput}
   ${commentInput}
-  ${userLoginInput}
+  ${LoginInput}
   ${userRegisterInput}
 
   input LanguageInput {
@@ -225,6 +240,12 @@ const typeDefs = gql`
     buildingNumber: String
     appartment: String
   }
+  input UserForCommentInput {
+    email: String!
+    name: String
+    images: ImageSetInput
+    isAdmin: Boolean
+  }
   input ImageSetInput {
     large: String
     medium: String
@@ -236,6 +257,7 @@ const typeDefs = gql`
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
+    simpleName: [LanguageInput!]
   }
   input ConvertOptionInput {
     name: String!
@@ -260,24 +282,50 @@ const typeDefs = gql`
     encoding: String!
   }
 
+  input ProductOptionsInput {
+    size: ID!
+    bottomMaterial: ID!
+    description: [LanguageInput!]
+    bottomColor: [LanguageInput!]
+    availableCount: Int
+    additions: [ProductOptionsAdditonalsInput]
+  }
+
+  input SizeInput {
+    name: String
+    heightInCm: Int
+    widthInCm: Int
+    depthInCm: Int
+    volumeInLiters: Int
+    weightInKg: Float
+    available: Boolean
+    additionalPrice: Int
+  }
+  input ProductOptionsAdditonalsInput {
+    name: [LanguageInput!]
+    description: [LanguageInput!]
+    available: Boolean
+    additionalPrice: Int
+  }
+
   type Mutation {
     uploadSingleFile(file: Upload!): File!
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!): Pattern
-    deletePattern(id: ID!): Pattern
-    updatePattern(id: ID!, pattern: PatternInput!): Pattern
+    addPattern(pattern: PatternInput!): PatternResult
+    deletePattern(id: ID!): PatternResult
+    updatePattern(id: ID!, pattern: PatternInput!): PatternResult
     "Material Mutation"
-    addMaterial(material: MaterialInput!): Material
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): Category
+    addCategory(category: CategoryInput!): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
     "Currency Mutation"
-    addCurrency(currency: CurrencyInput!): Currency
+    addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
 
@@ -287,19 +335,22 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
-    loginUser(user: userLoginInput!): User
+    registerUser(user: UserInput!, language: Int!): User
+    loginUser(loginInput: LoginInput!): User
+    loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
+    recoverUser(email: String!, language: Int!): Boolean
 
     "Product Mutation"
-    addProduct(product: productInput!): Product
-    deleteProduct(id: ID!): Product
-    updateProduct(id: ID!, product: productInput!): Product
+    addProduct(product: ProductInput!): ProductResult
+    deleteProduct(id: ID!): ProductResult
+    updateProduct(id: ID!, product: ProductInput!): ProductResult
 
     "Comment Mutation"
-    addComment(comment: commentInput!): Comment
+    addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): Comment
     updateComment(id: ID!, product: commentInput!): Comment
   }
