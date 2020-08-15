@@ -18,6 +18,11 @@ class NewsService {
   }
 
   async updateNews(id, news) {
+    const updatedNews = await News.findById(id);
+    if (!updatedNews) {
+      throw new Error(NEWS_NOT_FOUND);
+    }
+
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }

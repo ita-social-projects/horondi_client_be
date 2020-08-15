@@ -302,21 +302,21 @@ const typeDefs = gql`
 
   type Mutation {
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!): Pattern
-    deletePattern(id: ID!): Pattern
-    updatePattern(id: ID!, pattern: PatternInput!): Pattern
+    addPattern(pattern: PatternInput!): PatternResult
+    deletePattern(id: ID!): PatternResult
+    updatePattern(id: ID!, pattern: PatternInput!): PatternResult
     "Material Mutation"
-    addMaterial(material: MaterialInput!): Material
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): Category
+    addCategory(category: CategoryInput!): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
     "Currency Mutation"
-    addCurrency(currency: CurrencyInput!): Currency
+    addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
 
@@ -326,7 +326,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: UserInput!, language: Int!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -335,6 +335,8 @@ const typeDefs = gql`
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): Boolean
+    resetPassword(password: String!, token: String!): Boolean
+    checkIfTokenIsValid(token: String!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
