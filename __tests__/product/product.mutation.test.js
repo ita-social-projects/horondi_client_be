@@ -6,7 +6,7 @@ const {
   newProduct,
   productForUpdate,
   sameNameForUpdate,
-} = require('./product.variables');
+} = require('../../tests-variables/product.variables');
 
 require('dotenv').config();
 
@@ -221,7 +221,7 @@ describe('Product mutations', () => {
     });
     const productAfterUpdate = updateProduct.data.updateProduct;
     expect(productAfterUpdate).toBeDefined();
-    expect(productAfterUpdate).toHaveProperty('statusCode', 400);
+    expect(productAfterUpdate).toHaveProperty('statusCode', 404);
     expect(productAfterUpdate).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
   });
 

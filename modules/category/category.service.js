@@ -18,6 +18,10 @@ class CategoryService {
   }
 
   async updateCategory(id, category) {
+    const categoryToUpdate = await Category.findById(id);
+    if (!categoryToUpdate) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
     if (await this.checkCategoryExist(category, id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }

@@ -5,7 +5,7 @@ const {
   badProductId,
   newProduct,
   expectedResult,
-} = require('./product.variables');
+} = require('../../tests-variables/product.variables');
 require('dotenv').config();
 
 let productId;
@@ -67,7 +67,6 @@ describe('Product queries', () => {
       `,
     });
     const allProducts = products.data.getProducts.items;
-    expect(allProducts).toMatchSnapshot();
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
     expect(allProducts[0].name).toBeInstanceOf(Array);

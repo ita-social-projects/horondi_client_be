@@ -50,7 +50,7 @@ const productsMutation = {
       return await productsService.updateProduct(args.id, args.product);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }

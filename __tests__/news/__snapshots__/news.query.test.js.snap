@@ -1,205 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`querries #2 Should receive all news 1`] = `
+exports[`querries #2 Should receive one news 1`] = `
 Object {
   "__typename": "News",
-  "_id": "5f2181d2c8a6f1408e5d78e4",
   "author": Object {
     "__typename": "Author",
-    "image": Object {
-      "__typename": "ImageSet",
-      "small": "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    },
     "name": Array [
       Object {
         "__typename": "Language",
         "lang": "uk",
-        "value": "Денис Когут",
+        "value": "a sd",
       },
       Object {
         "__typename": "Language",
         "lang": "en",
-        "value": "Denys Kogut",
+        "value": "a sd",
       },
     ],
   },
-  "date": "1582477846000",
+  "date": "1111118820047",
   "images": Object {
     "__typename": "PrimaryImage",
     "additional": Array [
       Object {
         "__typename": "ImageSet",
-        "medium": null,
-      },
-      Object {
-        "__typename": "ImageSet",
-        "medium": null,
+        "medium": "as dasdsa.jpg",
       },
     ],
     "primary": Object {
       "__typename": "ImageSet",
-      "medium": "https://images.stylight.net/image/upload/t_web_post_500x667/q_auto,f_auto/post-c27c63a5b58deb0d4535ddd5993e68b2e4d0776d756fdc41c0f7c391.jpg",
+      "medium": "ada s.jpg",
     },
   },
   "text": Array [
     Object {
       "__typename": "Language",
       "lang": "uk",
-      "value": "<p>У далекі буремні 90-ті без цього предмету побуту своє існування не уявляли ні тусовщики, ні спортсмени, ні гучні продавці на ринках, ні валютники біля обмінників, ні зайняті мами, ні бізнесмени. «Бельтбег», «омоньер», «сумка-нирка», «барижка», «бананка» ... Скільки імен у цієї модної деталі костюма! На сьогоднішній день цей вид сумки отримав заслужену любов і визнання.</p><p><strong>Бананка</strong> - все необхідне під рукою. Але чи всі ви знаєте, що історія сумок на пояс почалася в ті далекі часи, коли одяг шився без кишень, а перші гроші - залізні та мідні монети - вже з'явилися? О, як же незручно було переносити монети! Це була дійсно актуальна проблема тих років. Ось тоді і знайшлися підприємливі спритні кравці, які вигадали спеціальні поясні мішечки, в яких можна зберігати і транспортувати гроші. Минуло трохи часу, та ці сумки стали невід'ємним елементом гардеробу і чоловіків, і жінок. Саме по сумці, що висіла на поясі, можна було визначити статус людини. У простолюдинів вони були з простих міцних матеріалів. Представники вищих верств суспільства могли дозволити собі сумки з дорогих тканин, щедро розшиті всілякими візерунками і дорогоцінним камінням. Носили в таких сумочках гроші, парфуми, хустки, нюхальну сіль або навіть інструменти та зброю.</p><p>З тих пір сенс поясної сумки не втратив своєї актуальності, лише вміст злегка оновився: смартфон, банківська картка, ключі - і вперед! Ви готові до пригод!</p>
-<p><img src='https://intersumka.ua/image/catalog/_all/banan2.jpg' alt=\\"Чоловік з білою бананкою\\"></p>
-<h3>Плюсами цього супермодного аксесуара є:</h3>
-<ul>
-    <li>практичність і універсальність. Все необхідне з вами, при цьому руки залишаються вільними. Сумки не мають «вікових обмежень»: підходять і дітям, і підліткам, і людям старшого віку і навіть пенсіонерам.</li>
-    <li>різноманітність. Маса моделей дозволить обрати «свою» сумку.</li>
-    <li>ненав’язливість. Не привертає зайву увагу та не виглядає об’ємним. У той же час може стати прекрасним акцентом, що надає особливий шик вашому образу.</li>
-</ul>
-<h3>Для кого ж призначена ця сумка?</h3>
-<ul>
-    <li>Для любителів гарнітури «вільні руки» і «бути без нічого» - коли немає необхідності тягти об’ємну сумку або рюкзак, а кілька дрібниць захопити потрібно. Наприклад, для повсякденної прогулянки, на дискотеку, шопінг, побачення або прогулянку з собакою.</li>
-    <li>Для мандрівників - турист ховає документи, гроші, телефон і не боїться крадіжки, бо все на виду.</li>
-    <li>Для працівників сфери торгівлі або водіїв таксі - сумки відмінно замінюють портмоне й ідеально підходять для виручки.</li>
-    <li>Для будівельників і монтажних працівників - міцні і функціональні. Для спортсменів - телефон, ключі не обтягують кишені, а лежать в сумці і не заважають пересуванню.</li>
-</ul>
-<h3>Сумки на пояс відрізняються моделями:</h3>
-<ul>
-    <li>повсякденні (міські) бананки - компактні, без зайвих деталей, але дарують комфорт.</li>
-    <li>спортивні - виготовляються з дихаючих і водонепроникних матеріалів.</li>
-    <li>сумки гаманці - невеликого розміру для мінімальної кількості речей.</li>
-    <li>клатч на пояс - модно, стильно і дуже зручно.</li>
-    <li>якір - головна відмінність - трапецієвидна форма і більший розмір.</li>
-    <li>сумка теслі - місткість - головна перевага.</li>
-    <li>сумка для годування тварин - використовується на виставках, прогулянці, в процесі дресирування вихованця.</li>
-</ul>
-<h3>Може виникнути цілком резонне питання: як і з чим носити таку сумку?</h3>
-<ul>
-    <li>бельтбег носять: на поясі, як попереду, так і ззаду, що досить логічно, враховуючи, що це поясна сумка. Хочете підкреслити талію - підніміть пояс вище, відвернути увагу від неї - опустіть нижче;</li>
-    <li>через плече перед собою - завжди на виду і практично недосяжна для злодіїв;</li>
-    <li>на стегнах ближче до спини - ідеально для тих, хто побачив кілька зайвих сантиметрів на своїй талії або має вузькі стегна.</li>
-</ul>
-<p>Носити бананку можна практично з будь-яким одягом: класичний костюм, джинси і футболки, легке плаття до підлоги або міні-спідниця; на поясі під розкритим пальто восени або поверх пуховика взимку.</p>
-<p><img src='https://intersumka.ua/image/catalog/_all/banan3.jpg' alt=\\"Жінка з жовтою бананкою на поясі\\"></p>
-<h3>Отже, підводимо підсумки.</h3>
-<p>Сумки - бананки ефектно доповнять ваш образ, незалежно від того, повсякденний це гардероб або вечірнє вбрання. Залежно від обраної моделі ви можете виглядати жіночно (мужньо) і стильно, або зухвало і сміливо. Це поєднання комфорту і стілю. В сучасному мегаактивному ритмі життя кондукторка - незамінний аксесуар. Адже ніщо не сковує рухів, що дуже важливо. Ви можете спокійно займатися шопінгом, їздити на велосипеді або бігати в парку, веселитися на дискотеці, насолоджуватися екскурсією, фотографувати або навіть спілкуватися в соцмережах. З цього виходить, що ця універсальна, практична сумка повинна бути в гардеробі у кожної людини!</p>
-",
+      "value": "d a s d",
     },
     Object {
       "__typename": "Language",
       "lang": "en",
-      "value": "<p>In the turbulent 1990s, no partygoers, no athletes, no loud sellers in the markets, no money changers near exchangers, no busy mothers, no businessmen imagined their existence without this household item. «Beltbag», «omonier», «kidney bag», «baryzhka», «banana» ... How many names in this fashionable detail of a suit! To date, this type of bag has received well-deserved love and recognition.</p><p><strong>Fanny pack</strong> - everything you need at hand. But do you all know that the history of belt bags began in those distant times, when clothes were sewn without pockets, and the first money - iron and copper coins - had already appeared? Oh, how inconvenient it was to carry coins! This was a really pressing issue in those years. That's when there were enterprising nimble tailors who invented special waist bags in which you can store and transport money. It took some time, but these bags have become an integral part of the wardrobe of both men and women. It was on the bag that hung on his belt, it was possible to determine the status of the person. In the common people, they were made of simple durable materials. Representatives of the upper strata of society could afford bags made of expensive fabrics, generously embroidered with all sorts of patterns and precious stones. They carried money, perfumes, handkerchiefs, sniffing salt or even tools and weapons in such bags.</p><p>Since then, the meaning of the waist bag has not lost its relevance, only the content has been slightly updated: smartphone, bank card, keys - and so on! You are ready for adventure!</p>
-<p><img src='https://intersumka.ua/image/catalog/_all/banan2.jpg' alt=\\"Man with a white fanny pack\\"></p>
-<h3>The advantages of this super fashionable accessory are:</h3>
-<ul>
-    <li>practicality and versatility. Everything you need is with you, while your hands remain free. Bags have no \\"age restrictions\\": they are suitable for children, teenagers, the elderly and even retirees.</li>
-    <li>variety. A lot of models will allow you to choose \\"your\\" bag.</li>
-    <li>unobtrusiveness. Does not attract too much attention and does not look bulky. At the same time, it can be a great accent that gives a special chic to your image.</li>
-</ul>
-<h3>Who is this bag for?</h3>
-<ul>
-    <li>For fans of the headset \\"hands free\\" and \\"to be without anything\\" - when there is no need to carry a bulky bag or backpack, and a few little things need to be captured. For example, for a daily walk, a disco, shopping, a date or a walk with a dog.</li>
-    <li>For travelers - a tourist hides documents, money, phone and is not afraid of theft, because everything is in sight.</li>
-    <li>For trade workers or taxi drivers, bags are a great replacement for a purse and are ideal for revenue.</li>
-    <li>For builders and installers - strong and functional. For athletes - a phone, the keys do not fit in your pocket, but lie in a bag and do not interfere with movement.</li>
-</ul>
-<h3>Belt bags differ in models:</h3>
-<ul>
-    <li>everyday (urban) bananas - compact, without unnecessary details, but give comfort.</li>
-    <li>sports - are made of breathable and waterproof materials.</li>
-    <li>handbags wallets - small size for a minimum number of things.</li>
-    <li>belt clutch - fashionable, stylish and very comfortable.</li>
-    <li>anchor - the main difference - a trapezoidal shape and larger size.</li>
-    <li>carpenter’s bag - capacity - the main advantage.</li>
-    <li>bag for feeding animals - used at exhibitions, walks, in the process of training a pet.</li>
-</ul>
-<h3>A very reasonable question may arise: how and with what to carry such a bag?</h3>
-<ul>
-    <li>Beltbag is worn: on the belt, both in front and behind, which is quite logical, given that it is a waist bag. Want to emphasize the waist - raise the belt higher, distract from it - lower;</li>
-    <li>over his shoulder in front of him - always in sight and almost inaccessible to thieves;</li>
-    <li>on the thighs closer to the back - ideal for those who saw a few extra inches at their waist or have narrow thighs.</li>
-</ul>
-<p>You can wear a banana with almost any clothing: a classic suit, jeans and T-shirts, a light floor-length dress or a mini-skirt; on the belt under an open coat in autumn or on top of a down jacket in winter.</p>
-<p><img src='https://intersumka.ua/image/catalog/_all/banan3.jpg' alt=\\"Woman with a yellow fanny pack on her belt\\"></p>
-<h3>So, let’s summarize.</h3>
-<p>Bags - bananas will effectively complement your image, regardless of whether it is an everyday wardrobe or evening dress. Depending on the chosen model, you can look feminine (masculine) and stylish, or bold and bold. It is a combination of comfort and style. In the modern megaactive rhythm of life, the conductor is an indispensable accessory. After all, nothing restricts movement, which is very important. You can go shopping, ride a bike or run in the park, have fun at a disco, enjoy a tour, take photos or even chat on social networks. It follows that this versatile, practical bag should be in everyone’s wardrobe!</p>
-",
+      "value": "a s d",
     },
   ],
   "title": Array [
     Object {
       "__typename": "Language",
       "lang": "uk",
-      "value": "Аксесуар на пояс, зручна сумка, стильна штучка!",
+      "value": "aab",
     },
     Object {
       "__typename": "Language",
       "lang": "en",
-      "value": "Belt accessory, comfortable bag, stylish thingy!",
+      "value": "aab",
     },
   ],
-  "video": "https://www.youtube.com/embed/Y7L_gvaGfx0",
-}
-`;
-
-exports[`querries #3 Should receive one news 1`] = `
-Object {
-  "__typename": "News",
-  "_id": "5f25bf7a6f5b2c3a189eaf2a",
-  "author": Object {
-    "__typename": "Author",
-    "image": Object {
-      "__typename": "ImageSet",
-      "small": "updateauthor.jpg",
-    },
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "lang": "uk",
-        "value": "updateVova",
-      },
-      Object {
-        "__typename": "Language",
-        "lang": "eng",
-        "value": "updatevas",
-      },
-    ],
-  },
-  "date": "111114342342",
-  "images": Object {
-    "__typename": "PrimaryImage",
-    "additional": Array [
-      Object {
-        "__typename": "ImageSet",
-        "medium": null,
-      },
-    ],
-    "primary": Object {
-      "__typename": "ImageSet",
-      "medium": "updatesdfsdf4.jpg",
-    },
-  },
-  "text": Array [
-    Object {
-      "__typename": "Language",
-      "lang": "ua",
-      "value": "апдейт тест новина",
-    },
-    Object {
-      "__typename": "Language",
-      "lang": "eng",
-      "value": "test news",
-    },
-  ],
-  "title": Array [
-    Object {
-      "__typename": "Language",
-      "lang": "uk",
-      "value": "апдейт тест",
-    },
-    Object {
-      "__typename": "Language",
-      "lang": "eng",
-      "value": "update test",
-    },
-  ],
-  "video": "update3ffefefds.jpg",
 }
 `;
