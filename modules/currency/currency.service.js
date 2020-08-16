@@ -18,6 +18,10 @@ class CurrencyService {
   }
 
   async updateCurrency(id, currency) {
+    const currencyToUpdate = await Currency.findById(id);
+    if (!currencyToUpdate) {
+      throw new Error(CURRENCY_NOT_FOUND);
+    }
     if (await this.checkCurrencyExist(currency, id)) {
       throw new Error(CURRENCY_ALREADY_EXIST);
     }

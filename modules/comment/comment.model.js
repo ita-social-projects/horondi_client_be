@@ -14,7 +14,7 @@ const commentSchema = new mongoose.Schema({
     email: String,
     name: String,
     images: ImageSet,
-    isAdmin: Boolean
+    isAdmin: Boolean,
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
