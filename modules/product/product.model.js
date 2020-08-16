@@ -15,6 +15,7 @@ const productSchema = new mongoose.Schema({
   },
   name: [Language],
   description: [Language],
+  model: [Language],
   mainMaterial: [Language],
   innerMaterial: [Language],
   strapLengthInCm: Number,
@@ -24,7 +25,10 @@ const productSchema = new mongoose.Schema({
   patternImages: ImageSet,
   closure: [Language],
   closureColor: String,
-  basePrice: Number,
+  basePrice: [{
+    currency: String,
+    value: Number
+  }],
   options: [
     {
       size: {

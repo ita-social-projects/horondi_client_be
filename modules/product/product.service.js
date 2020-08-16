@@ -1,5 +1,6 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
+const Model = require('../../models/Model');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -14,10 +15,14 @@ class ProductsService {
     return Size.findById(id);
   }
 
+  getModelsByCategory(id) {
+    return Model.find({ category: id })
+  }
+
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category, isHotItem,
+      pattern, colors, price, category, isHotItem, models
     } = args;
 
     if (isHotItem) {
@@ -25,6 +30,13 @@ class ProductsService {
     }
     if (category && category.length) {
       filter.category = { $in: category };
+    }
+    if (models && models.length) {
+      filter.model = {
+        $elemMatch: { 
+          value: { $in: models }
+        }
+      }
     }
     if (colors && colors.length) {
       filter.colors = {
@@ -46,8 +58,13 @@ class ProductsService {
     }
     if (price && price.length) {
       filter.basePrice = {
-        $gte: price[0],
-        $lte: price[1],
+        $elemMatch: {
+          currency: "UAH",
+          value: {
+            $gte: price[0],
+            $lte: price[1],
+          }
+        }
       };
     }
     return filter;

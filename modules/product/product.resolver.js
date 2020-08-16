@@ -13,6 +13,7 @@ const productsQuery = {
       };
     }
   },
+  getModelsByCategory: (parent, args) => productsService.getModelsByCategory(args.id)
 };
 
 const productsMutation = {

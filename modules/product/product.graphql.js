@@ -4,6 +4,7 @@ _id: ID!
 category: Category!
 subcategory: Category!
 name: [Language]!
+model: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
@@ -14,7 +15,7 @@ pattern: [Language]
 patternImages: ImageSet
 closure: [Language]!
 closureColor: String
-basePrice: Int!
+basePrice: [Price]!
 options: [ProductOptions]!
 available: Boolean!
 isHotItem: Boolean!
@@ -31,6 +32,7 @@ input ProductInput {
 category: ID!
 subcategory: ID!
 name: [LanguageInput]!
+model: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!

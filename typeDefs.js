@@ -59,6 +59,10 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+  type Price {
+    currency: String
+    value: Int
+  }
   type Address {
     country: String
     city: String
@@ -133,6 +137,16 @@ const typeDefs = gql`
     rate: Int!
   }
 
+  type Model {
+    category: ID!,
+    subcategory: ID!,
+    name: [Language],
+    description: [Language],
+    images: ImageSet,
+    priority: Int,
+    show: Boolean,
+  }
+
   type Error {
     statusCode: Int
     message: String
@@ -189,6 +203,8 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getModelsByCategory(id: ID!): [Model]
   }
 
   input SortInput {
@@ -206,6 +222,7 @@ const typeDefs = gql`
     category: [String]
     search: String
     isHotItem: Boolean
+    models: [String]
   }
   input RoleEnumInput {
     role: String
