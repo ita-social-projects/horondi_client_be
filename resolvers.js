@@ -159,6 +159,7 @@ const resolvers = {
   },
   EmailChatResult: {
     __resolveType: obj => {
+      console.log(obj);
       if (obj.text) {
         return SCHEMA_NAMES.emailChat;
       }

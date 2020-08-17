@@ -196,6 +196,7 @@ const typeDefs = gql`
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
 
+    getAllEmailChats: [EmailChat]
     getEmailChatById(id: ID!): EmailChatResult
   }
 
@@ -358,6 +359,8 @@ const typeDefs = gql`
 
     "EmailChat Mutation"
     addEmailChat(chat: EmailChatInput!): EmailChat
+    updateEmailChat(id: ID!, chat: EmailChatInput!): EmailChatResult
+    deleteEmailChat(id: ID!): EmailChatResult
   }
 `;
 
