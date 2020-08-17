@@ -1,5 +1,4 @@
 const { mapToSizes } = require('../../helpers/sizes');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const sizes = [
     mapToSizes({ type: 'backpack-S', name: 'S', size: [35, 26, 14], volume: 15, weight: 0.8, price: -5000 }),

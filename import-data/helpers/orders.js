@@ -1,9 +1,9 @@
 const users = require('../data/8-users/users');
 const products = require('./products');
-// const materials = require('../2-materials/materials');
-// const patterns = require('../4-patterns/patterns');
-// const closures = require('../6-closures/closures');
-// const categories = require('../1-categories/categories');
+const materials = require('../data/2-materials/materials');
+const sizes = require('../data/5-sizes/sizes');
+const categories = require('../data/1-categories/categories');
+const { mapToCurrencies } = require('./currencyset');
 const { randomDateSince, addDays } = require('./dates');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
@@ -12,13 +12,12 @@ const usersNumber = users.length;
 const productsNumber = products.length;
 let product;
 let productCount;
-let item;
-let componentsNumber;
-let patternPick;
+let option;
+let categoryPick;
+let subcategoryPick;
 let materialPick;
-let materialColorPick;
-let closurePick;
-let closureColorPick;
+let sizePick;
+let actualPrice;
 let totalPrice;
 let successfulPurchases = [];
 
@@ -26,7 +25,16 @@ for (let i = 0; i < usersNumber; i++) {
     const dateOfCreation = randomDateSince(users[i].registrationDate);
     productCount = ~~(Math.random() * productsNumber);
     product = products[productCount];
-    // item = product.items[~~(Math.random() * product.items.length)];
+    option = product.options[~~(Math.random() * product.options.length)];
+
+    categoryPick = categories.find(el => el.id.toHexString() == product.category);
+    subcategoryPick = categories.find(el => el.id.toHexString() == product.subcategory);
+    materialPick = (option.bottomMaterial == null) ? null : materials.find(el => el.id.toHexString() == option.bottomMaterial);
+    sizePick = sizes.find(el => el.id.toHexString() == option.size);
+
+    actualPrice = product.basePrice[0].value + sizePick.additionalPrice[0].value;
+    actualPrice = (materialPick == null) ? actualPrice : actualPrice + materialPick.additionalPrice[0].value;
+    actualPrice = (option.additions.length === 0) ? actualPrice : actualPrice + option.additions[0].additionalPrice[0].value;
 
     successfulPurchases[i] = [users[i].id, productCount, dateOfCreation];
 
@@ -46,64 +54,37 @@ for (let i = 0; i < usersNumber; i++) {
             sentBy: 'Nova Poshta',
             invoiceNumber: ~~(Math.random() * 10000000).toString(),
         },
-    //     items: [
-    //         {
-    //         product: product.name,
-    //         size: item.size,
-    //         components: [],
-    //         actualPrice: item.actualPrice,
-    //         quantity: 1,
-    //         },
-    //     ],
+        items: [
+            {
+                category: categoryPick.name,
+                subcategory: subcategoryPick.name,
+                model: product.model,
+                name: product.name,
+                mainMaterial: product.mainMaterial,
+                colors: product.colors,
+                pattern: product.pattern,
+                closure: product.closure,
+                closureColor: product.closureColor,
+                size: sizePick,
+                bottomMaterial: (materialPick == null) ? [] : materialPick.name,
+                bottomColor: option.bottomColor,
+                additions: option.additions,
+                actualPrice: mapToCurrencies(actualPrice),
+                quantity: 1,
+            },
+        ],
         paymentMethod: 'card'
     };
 
-    // componentsNumber = item.components.length;
-    // for (let j = 0; j < componentsNumber; j++) {
-    //     materialPick = materials.find(el => el.id.toHexString() == item.components[j].material);
-    //     materialColorPick = materialPick.colors.find(el => el.code == item.components[j].colorCode);
-    //     orders[i].items[0].components.push({
-    //         name: {
-    //             lang: 'en',
-    //             value: item.components[j].name,
-    //         },
-    //         material: materialPick.name,
-    //         color: materialColorPick.name,
-    //     });
-    // };
-
-    // if (item.hasOwnProperty('closure')) {
-    //     closurePick = closures.find(el => el.id.toHexString() == item.closure);
-    //     orders[i].items[0]['closure'] = closurePick.name;
-    //     closureColorPick = closurePick.colors.find(el => el.code == item.closureColorCode);
-    //     orders[i].items[0]['closureColor'] = closureColorPick.name;
-    // }
-
-    // if (item.hasOwnProperty('pattern')) {
-    //     patternPick = patterns.find(el => el.id.toHexString() == item.pattern);
-    //     orders[i].items[0]['pattern'] = patternPick.name;
-    // }
-
-    // if (item.hasOwnProperty('pocket')) {
-    //     orders[i].items[0]['pocket'] = item.pocket;
-    // }
-
-    // // if (product.hasOwnProperty('category')) {
-    // //     for (let j = 0; j < categories.length; j++) {
-    // //         for (let k = 0; k < categories[j].subcategories.length; k++) {
-    // //             if (categories[j].subcategories[k].id.toHexString() == product.category) {
-    // //                 orders[i].items[0]['category'] = categories[j].subcategories[k].name
-    // //             }
-    // //         }
-    // //     }
-    // // }
-
-    // totalPrice = 0;
-    // for (let j = 0; j < orders[i].items.length; j++) {
-    //     totalPrice += orders[i].items[j].actualPrice * orders[i].items[j].quantity;
-    // }
-    // orders[i]['totalPrice'] = totalPrice;
+    totalPrice = 0;
+    for (let j = 0; j < orders[i].items.length; j++) {
+        totalPrice += orders[i].items[j].actualPrice[0].value * orders[i].items[j].quantity;
+    }
+    orders[i]['totalPrice'] = mapToCurrencies(totalPrice);
 }
+
+console.log(orders[0].items[0])
+console.log(orders[0].totalPrice)
 
 module.exports = {
     orders,

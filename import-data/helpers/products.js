@@ -149,6 +149,10 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
     model = (name == 'fanny-pack') ? ['Бананка', 'Fanny Pack'] : model;
     pattern = (product[2].length === 0) ? mapToLanguages(['Немає', 'None']) : mapToLanguages(product[2]);
     patternImages = (product[3] === '') ? null : mapToImages(product[3]);
+    strapLengthInCm = 0;
+    innerMaterial = [];
+    closure = [];
+    closureColor = ''
     if (model[1] == 'Rolltop' || model[1] == 'New' || model[1] == 'Harbuz') {
         strapLengthInCm = 100;
         innerMaterial = mapToLanguages(['Oxford 135', 'Oxford 135']);
@@ -156,17 +160,9 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         closure = mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']);
         closureColor = 'black'
     } else if (model[1] == 'Fanny Pack' || model[1] == 'Wallet') {
-        strapLengthInCm = 0;
-        innerMaterial = [];
         mainMaterial = malmoDescription;
-        closure = [];
-        closureColor = ''
     } else {
-        strapLengthInCm = 0;
-        innerMaterial = [];
         mainMaterial = (product[2].length === 0) ? canvasDescription : canvasPatternDescription;
-        closure = [];
-        closureColor = ''
     }
     products.push({
         id: getObjectId('product' + i),
