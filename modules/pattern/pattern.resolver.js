@@ -4,14 +4,14 @@ const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const patternQuery = {
   getAllPatterns: () => patternService.getAllPatterns(),
   getPatternById: async (parent, args) => {
-    const pattern = await patternService.getPatternById(args.id);
-    if (pattern) {
-      return pattern;
+    try {
+      return await patternService.getPatternById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: PATTERN_NOT_FOUND,
-    };
   },
 };
 
@@ -28,14 +28,14 @@ const patternMutation = {
   },
 
   deletePattern: async (parent, args) => {
-    const pattern = await patternService.deletePattern(args.id);
-    if (pattern) {
-      return pattern;
+    try {
+      return await patternService.deletePattern(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: PATTERN_NOT_FOUND,
-    };
   },
 
   updatePattern: async (parent, args) => {
@@ -43,7 +43,7 @@ const patternMutation = {
       return await patternService.addPattern(args.id, args.pattern);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === PATTERN_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }

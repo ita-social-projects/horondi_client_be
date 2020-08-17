@@ -1,11 +1,12 @@
 const Products = require('./product.model');
 const Size = require('../../models/Size');
 const {
-  PRODUCTS_NOT_FOUND,
+  PRODUCT_ALREADY_EXIST,
+  PRODUCT_NOT_FOUND,
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
-  getProductsById(id) {
+  getProductById(id) {
     return Products.findById(id);
   }
 
@@ -16,12 +17,11 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category, isHotItem
+      pattern, colors, price, category, isHotItem,
     } = args;
 
-
-    if(isHotItem){
-      filter.isHotItem = isHotItem
+    if (isHotItem) {
+      filter.isHotItem = isHotItem;
     }
     if (category && category.length) {
       filter.category = { $in: category };
@@ -74,10 +74,6 @@ class ProductsService {
       .limit(limit)
       .sort(sort);
 
-    if (!items) {
-      throw new Error(PRODUCTS_NOT_FOUND);
-    }
-
     const count = await Products.find(filters).countDocuments();
     return {
       items,
@@ -85,13 +81,38 @@ class ProductsService {
     };
   }
 
-  addProduct(data) {
-    const product = new Products(data);
-    return product.save();
+  async updateProduct(id, productData) {
+    const product = await Products.findById(id);
+    if (!product) {
+      throw new Error(PRODUCT_NOT_FOUND);
+    }
+    if (await this.checkProductExist(productData, id)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return Products.findByIdAndUpdate(id, productData, { new: true });
+  }
+
+  async addProduct(data) {
+    if (await this.checkProductExist(data)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
+    return new Products(data).save();
   }
 
   deleteProduct(id) {
     return Products.findByIdAndDelete(id);
+  }
+
+  async checkProductExist(data, id) {
+    const productCount = await Products.countDocuments({
+      _id: { $ne: id },
+      name: {
+        $elemMatch: {
+          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+        },
+      },
+    });
+    return productCount > 0;
   }
 }
 module.exports = new ProductsService();

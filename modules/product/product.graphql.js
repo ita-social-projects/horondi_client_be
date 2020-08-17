@@ -22,20 +22,22 @@ isHotItem: Boolean!
 purchasedCount: Int
 rate: Float
 rateCount: Int
+userRates: [UserRate]
 comments: [Comment]
 }
 `;
 
 const productInput = `
-input productInput {
-subcategory: CategoryInput!
+input ProductInput {
+category: ID!
+subcategory: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
-images: [PrimaryImageInput]!
-colors: [ColorInput]!
+images: PrimaryImageInput!
+colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]!
@@ -43,6 +45,7 @@ closureColor: String
 basePrice: [CurrencySetInput]!
 available: Boolean!
 isHotItem: Boolean
+options:[ProductOptionsInput]
 }`;
 
 module.exports = {

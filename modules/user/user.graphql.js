@@ -5,7 +5,7 @@ type User{
     lastName: String
     password: String
     role: RoleEnum
-    email: String!
+    email: String
     phoneNumber: String
     address: Address
     images: ImageSet
@@ -52,8 +52,8 @@ input userRegisterInput {
 }`;
 
 module.exports = {
-    userType,
-    userInput,
-    userRegisterInput,
-    LoginInput,
+  userType,
+  userInput,
+  userRegisterInput,
+  LoginInput,
 };
