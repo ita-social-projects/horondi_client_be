@@ -6,12 +6,8 @@ const contacts = [{
   phoneNumber: 380961737361,
   openHours: mapToLanguages(['Пн: 09:00 - 17:00|Вт: 09:00 - 18:00|Ср: 09:00 - 18:00|Чт: 09:00 - 18:00|Пт: 09:00 - 18:00|Сб: Вихідний|Нд: Вихідний',
         'Mon: 9 a.m. - 5 p.m.|Tue: 9 a.m. - 6 p.m.|Wed: 9 a.m. - 6 p.m.|Thu: 9 a.m. - 6 p.m.|Fri: 9 a.m. - 6 p.m.|Sat: Closed|Sun: Closed']),
-  address: {
-    city: mapToLanguages(['Львів', 'Lviv']),
-    postalCode: 79000,
-    street: mapToLanguages(['Угорська', 'Uhorska']),
-    buildingNumber: mapToLanguages(['2', '2']),
-  },
+  address: mapToLanguages(['<p>Львів 79000</p><p>вул. Угорська, 2</p>',
+          '<p>Lviv 79000</p><p>2 Uhorska Str.</p>']),
   email: 'horondi@gmail.com',
   images: [{
     lang: 'uk',
