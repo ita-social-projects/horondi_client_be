@@ -1,6 +1,9 @@
 const Comments = require('./comment.model');
 const Product = require('../product/product.model');
-const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
+const {
+  COMMENT_NOT_FOUND,
+  COMMENT_FOR_NOT_EXISTING_PRODUCT,
+} = require('../../error-messages/comment.messages');
 
 class CommentsService {
   getCommentById(id) {
@@ -19,13 +22,21 @@ class CommentsService {
     return Comments.findByIdAndUpdate(id, comment, { new: true });
   }
 
-  addComment(data) {
+  async addComment(id, data) {
+    const product = await Product.findById(id);
+    if (!product) {
+      throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
+    }
     const comments = new Comments(data);
     return comments.save();
   }
 
-  deleteComment(id) {
-    return Comments.findByIdAndDelete(id);
+  async deleteComment(id) {
+    const commentToDelete = await Comments.findByIdAndDelete(id);
+    if (commentToDelete) {
+      return commentToDelete;
+    }
+    throw new Error(COMMENT_NOT_FOUND);
   }
 }
 module.exports = new CommentsService();

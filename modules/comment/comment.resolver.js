@@ -28,16 +28,27 @@ const commentsQuery = {
 };
 
 const commentsMutation = {
-  addComment: (parent, args) => commentsService.addComment(args.comment),
-  deleteComment: async (parent, args) => {
-    const deletedComment = await commentsService.deleteComment(args.id);
-    if (deletedComment) {
-      return deletedComment;
+  addComment: async (parent, args) => {
+    try {
+      return await commentsService.addComment(args.productId, args.comment);
+    } catch (error) {
+      return [
+        {
+          statusCode: 404,
+          message: error.message,
+        },
+      ];
     }
-    return {
-      statusCode: 404,
-      message: COMMENT_NOT_FOUND,
-    };
+  },
+  deleteComment: async (parent, args) => {
+    try {
+      await commentsService.deleteComment(args.id);
+    } catch (error) {
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
+    }
   },
   updateComment: (parent, args) => commentsService.updateComment(args.id, args.comment),
 };
