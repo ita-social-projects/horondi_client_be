@@ -30,6 +30,10 @@ const {
   commentType,
   commentInput,
 } = require('./modules/comment/comment.graphql');
+const {
+  emailChatType,
+  emailChatInput,
+} = require('./modules/email-chat/email-chat.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -40,6 +44,7 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${emailChatType}
 
   enum RoleEnum {
     admin
@@ -157,6 +162,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union EmailChatResult = EmailChat | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -189,6 +195,8 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getEmailChatById(id: ID!): EmailChatResult
   }
 
   input SortInput {
@@ -228,6 +236,7 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${emailChatInput}
 
   input LanguageInput {
     lang: String!
@@ -346,6 +355,9 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): Comment
     updateComment(id: ID!, product: commentInput!): Comment
+
+    "EmailChat Mutation"
+    addEmailChat(chat: EmailChatInput!): EmailChatResult
   }
 `;
 

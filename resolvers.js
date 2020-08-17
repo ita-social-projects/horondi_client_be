@@ -26,6 +26,10 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const {
+  EmailChatQuery,
+  EmailChatMutation,
+} = require('./modules/email-chat/email-chat.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -40,6 +44,7 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  emailChat: 'EmailChat',
 };
 const resolvers = {
   Query: {
@@ -58,6 +63,8 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...EmailChatQuery,
   },
   Comment: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
@@ -91,6 +98,8 @@ const resolvers = {
     ...productsMutation,
 
     ...commentsMutation,
+
+    ...EmailChatMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -144,6 +153,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.product) {
         return SCHEMA_NAMES.comment;
+      }
+      return 'Error';
+    },
+  },
+  EmailChatResult: {
+    __resolveType: obj => {
+      if (obj.chat) {
+        return SCHEMA_NAMES.emailChat;
       }
       return 'Error';
     },
