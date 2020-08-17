@@ -5,7 +5,7 @@ const EmailChatSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  senderName: {
     type: String,
   },
   date: {

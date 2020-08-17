@@ -1,7 +1,7 @@
 const emailChatType = `
 type EmailChat {
   _id: ID!
-  name: String
+  senderName: String
   text: String!
   date: String!
   email: String!
@@ -11,7 +11,7 @@ type EmailChat {
 
 const emailChatInput = `
 input EmailChatInput {
-  name: String
+  senderName: String
   text: String!
   email: String!
   status: String
