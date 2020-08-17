@@ -357,7 +357,7 @@ const typeDefs = gql`
     updateComment(id: ID!, product: commentInput!): Comment
 
     "EmailChat Mutation"
-    addEmailChat(chat: EmailChatInput!): EmailChatResult
+    addEmailChat(chat: EmailChatInput!): EmailChat
   }
 `;
 

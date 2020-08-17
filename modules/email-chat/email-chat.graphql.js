@@ -12,7 +12,7 @@ const emailChatInput = `
 input EmailChatInput {
   text: String!
   email: String!
-  status: String!
+  status: String
 }`;
 
 module.exports = {

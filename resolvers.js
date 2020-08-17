@@ -27,8 +27,8 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const {
-  EmailChatQuery,
-  EmailChatMutation,
+  emailChatQuery,
+  emailChatMutation,
 } = require('./modules/email-chat/email-chat.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
@@ -64,7 +64,7 @@ const resolvers = {
 
     ...commentsQuery,
 
-    ...EmailChatQuery,
+    ...emailChatQuery,
   },
   Comment: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
@@ -99,7 +99,7 @@ const resolvers = {
 
     ...commentsMutation,
 
-    ...EmailChatMutation,
+    ...emailChatMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -159,7 +159,7 @@ const resolvers = {
   },
   EmailChatResult: {
     __resolveType: obj => {
-      if (obj.chat) {
+      if (obj.text) {
         return SCHEMA_NAMES.emailChat;
       }
       return 'Error';
