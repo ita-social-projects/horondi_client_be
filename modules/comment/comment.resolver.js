@@ -15,7 +15,7 @@ const commentsQuery = {
 
   getAllCommentsByProduct: async (parent, args) => {
     try {
-      return await commentsService.getAllCommentsByProduct(args.id);
+      return await commentsService.getAllCommentsByProduct(args.productId);
     } catch (error) {
       return [
         {
