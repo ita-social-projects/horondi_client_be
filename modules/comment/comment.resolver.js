@@ -50,7 +50,16 @@ const commentsMutation = {
       };
     }
   },
-  updateComment: (parent, args) => commentsService.updateComment(args.id, args.comment),
+  updateComment: async (parent, args) => {
+    try {
+      await commentsService.updateComment(args.id, args.comment);
+    } catch (error) {
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
+    }
+  },
 };
 
 module.exports = { commentsQuery, commentsMutation };
