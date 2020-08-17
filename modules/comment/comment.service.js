@@ -19,9 +19,12 @@ class CommentsService {
   }
 
   async updateComment(id, comment) {
-    const commentToUpdate = Comment.findByIdAndUpdate(id, comment, {
+    const commentToUpdate = await Comment.findByIdAndUpdate(id, comment, {
       new: true,
     });
+    // console.log(id)
+    // console.log(comment)
+    console.log(commentToUpdate);
     if (commentToUpdate) {
       return commentToUpdate;
     }

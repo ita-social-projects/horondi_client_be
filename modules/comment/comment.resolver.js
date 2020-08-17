@@ -42,7 +42,7 @@ const commentsMutation = {
   },
   deleteComment: async (parent, args) => {
     try {
-      await commentsService.deleteComment(args.id);
+      return await commentsService.deleteComment(args.id);
     } catch (error) {
       return {
         statusCode: 404,
@@ -52,7 +52,7 @@ const commentsMutation = {
   },
   updateComment: async (parent, args) => {
     try {
-      await commentsService.updateComment(args.id, args.comment);
+      return await commentsService.updateComment(args.id, args.comment);
     } catch (error) {
       return {
         statusCode: 404,
