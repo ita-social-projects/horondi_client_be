@@ -9,12 +9,17 @@
     "url": "https://github.com/horondi/horondi_client_be.git"
   },
   "private": "true",
+  "resolutions": {
+    "apollo-server-core/fs-capacitor": "^6.2.0",
+    "apollo-server-core/graphql-upload": "^11.0.0"
+  },
   "scripts": {
     "start": "nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --coverage --detectOpenHandles ",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "preinstall": "npx npm-force-resolutions"
   },
   "author": "",
   "license": "ISC",
@@ -39,13 +44,13 @@
     "mongoose": "^5.9.18",
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
-    "nodemailer": "^6.4.10",
     "node-fetch": "^2.6.0",
+    "nodemailer": "^6.4.10",
+    "npm-force-resolutions": "0.0.3",
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
     "rotating-file-stream": "^2.0.2",
-    "stream-to-buffer": "^0.1.0",
     "uniqid": "^5.2.0"
   },
   "devDependencies": {
