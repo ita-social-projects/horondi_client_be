@@ -65,7 +65,9 @@ const typeDefs = gql`
   }
   type Address {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -248,7 +250,9 @@ const typeDefs = gql`
   }
   input AddressInput {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String

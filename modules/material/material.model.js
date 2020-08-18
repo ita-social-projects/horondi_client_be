@@ -6,6 +6,7 @@ const Color = require('../../models/Color').schema;
 const materialSchema = new mongoose.Schema({
   name: [Language],
   description: [Language],
+  purpose: String,
   colors: [Color],
   available: Boolean,
   additionalPrice: [CurrencySet]
