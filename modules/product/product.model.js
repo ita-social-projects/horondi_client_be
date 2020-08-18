@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
+const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
 const ImageSet = require('../common/ImageSet').schema;
 const Color = require('../../models/Color').schema;
@@ -13,6 +14,7 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
+  model: [Language],
   name: [Language],
   description: [Language],
   mainMaterial: [Language],
@@ -24,7 +26,7 @@ const productSchema = new mongoose.Schema({
   patternImages: ImageSet,
   closure: [Language],
   closureColor: String,
-  basePrice: Number,
+  basePrice: [CurrencySet],
   options: [
     {
       size: {
@@ -41,10 +43,7 @@ const productSchema = new mongoose.Schema({
           name: [Language],
           description: [Language],
           available: Boolean,
-          additionalPrice: {
-            type: Number,
-            default: 0,
-          },
+          additionalPrice: [CurrencySet]
         },
       ],
       availableCount: Number,
@@ -52,9 +51,18 @@ const productSchema = new mongoose.Schema({
   ],
   available: Boolean,
   isHotItem: Boolean,
-  purchasedCount: Number,
-  rate: Number,
-  rateCount: Number,
+  purchasedCount: {
+    type: Number,
+    default: 0,
+  },
+  rate: {
+    type: Number,
+    default: 0,
+  },
+  rateCount: {
+    type: Number,
+    default: 0,
+  },
   userRates: [
     {
       user: {
@@ -64,12 +72,15 @@ const productSchema = new mongoose.Schema({
       rate: Number,
     },
   ],
-  comments: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
-    },
-  ],
+  comments: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment'
+      }
+    ],
+    default: []
+  }
 });
 
 module.exports = mongoose.model('Product', productSchema);

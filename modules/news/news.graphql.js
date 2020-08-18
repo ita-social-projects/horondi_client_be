@@ -7,6 +7,7 @@ images: PrimaryImage
 author: Author
 date: String
 show: Boolean
+languages: [String]
 }`;
 
 const newsInput = `
@@ -17,6 +18,7 @@ images: PrimaryImageInput
 author: AuthorInput
 date: String
 show: Boolean
+languages: [String]
 }`;
 
 module.exports = { newsType, newsInput };
