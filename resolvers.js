@@ -60,7 +60,6 @@ const resolvers = {
     ...commentsQuery,
   },
   Comment: {
-    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
     product: parent => productsService.getProductById(parent.product),
   },
 
