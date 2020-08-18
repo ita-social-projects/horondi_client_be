@@ -11,6 +11,11 @@ const {
 } = require('./modules/comment/comment.resolver');
 
 const {
+  contactsQuery,
+  contactsMutation,
+} = require('./modules/contacts/contacts.resolver');
+
+const {
   currencyQuery,
   currencyMutation,
 } = require('./modules/currency/currency.resolver');
@@ -40,6 +45,7 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  contact: 'Contact',
 };
 const resolvers = {
   Query: {
@@ -58,6 +64,8 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...contactsQuery,
   },
   Comment: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
@@ -91,6 +99,8 @@ const resolvers = {
     ...productsMutation,
 
     ...commentsMutation,
+
+    ...contactsMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -144,6 +154,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.product) {
         return SCHEMA_NAMES.comment;
+      }
+      return 'Error';
+    },
+  },
+  ContactResult: {
+    __resolveType: obj => {
+      if (obj.address) {
+        return SCHEMA_NAMES.contact;
       }
       return 'Error';
     },
