@@ -12,6 +12,7 @@ mapToCategories('sub-fanny-packs', ['Бананки', 'Fanny packs'], '', []);
 mapToCategories('main-accessories', ['Аксесуари', 'Accessories'], 'https://horondi.blob.core.windows.net/horondi/categories/accessories.jpg', ['sub-wallets', 'sub-laptop-cases']);
 mapToCategories('sub-wallets', ['Гаманці', 'Wallets'], '', []);
 mapToCategories('sub-laptop-cases', ['Чехли для ноутбуків', 'Laptop cases'], '', []);
+mapToCategories('none', ['Немає', 'None'], '', []);
 
 function mapToCategories(code, name, image, subCodes){
   categories.push({

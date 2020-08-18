@@ -23,7 +23,8 @@ const news = [
             image: { small: 'https://ukr.media/static/ba/aimg/4/1/7/417067_0.jpg' },
         },
         date: new Date('2019-08-14T23:10:38Z'),
-        show: true
+        show: true,
+        languages: ['uk', 'en']
     },
     {
         title: mapToLanguages(['Що носити модницям влітку 2020: добірка трендових сумок для спекотного сезону',
@@ -47,7 +48,8 @@ const news = [
             image: { small: 'https://s.032.ua/section/userphoto/upload/managers/photos/000/051/775/866162337758924195687066424348618920034304n_5e4a57bc8f345.jpg' },
         },
         date: new Date('2020-06-01T13:55:02Z'),
-        show: true
+        show: true,
+        languages: ['uk', 'en']
     },
     {
         title: mapToLanguages(['Аксесуар на пояс, зручна сумка, стильна штучка!',
@@ -66,7 +68,8 @@ const news = [
             image: { small: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500' },
         },
         date: new Date('2020-02-23T17:10:46Z'),
-        show: true
+        show: true,
+        languages: ['uk', 'en']
     },
     {
         title: mapToLanguages(['Даруємо знижку - 10%', null]),
@@ -81,7 +84,8 @@ const news = [
             image: { small: 'https://scontent.fiev1-1.fna.fbcdn.net/v/t1.0-1/p148x148/70185999_2269139786546041_1214757974128459776_o.png?_nc_cat=109&_nc_sid=1eb0c7&_nc_ohc=yhpVEU0rep8AX8IyGUG&_nc_oc=AQlqGh37cAVcZbcz6VKWShS0nbnApzfMDKQtWrcKpBYGXoj20RumzX8zuL4p2C1lY5U&_nc_ht=scontent.fiev1-1.fna&oh=0c41615ad374c216c9a6188d2e4e67c8&oe=5F52785E' },
         },
         date: new Date('2020-08-01T08:53:18Z'),
-        show: true
+        show: true,
+        languages: ['uk']
     },
     {
         title: mapToLanguages([null, 'Delivery to the EU now available']),
@@ -96,7 +100,8 @@ const news = [
             image: { small: 'https://scontent.fiev1-1.fna.fbcdn.net/v/t1.0-1/p148x148/70185999_2269139786546041_1214757974128459776_o.png?_nc_cat=109&_nc_sid=1eb0c7&_nc_ohc=yhpVEU0rep8AX8IyGUG&_nc_oc=AQlqGh37cAVcZbcz6VKWShS0nbnApzfMDKQtWrcKpBYGXoj20RumzX8zuL4p2C1lY5U&_nc_ht=scontent.fiev1-1.fna&oh=0c41615ad374c216c9a6188d2e4e67c8&oe=5F52785E' },
         },
         date: new Date('2019-11-15T11:32:03Z'),
-        show: true
+        show: true,
+        languages: ['en']
     }
 ];
 

@@ -9,6 +9,7 @@ const materials = [
     name: mapToLanguages(['Мальмо', 'Malmo']),
     description: mapToLanguages(['100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
       '100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern']),
+    purpose: 'main',
     colors: mapToColors([
       [200, 'Світло-коричневий', 'Light-brown', 'коричневий', 'brown'],
       [201, 'Рожево-коричневий', 'Rosy-brown', 'коричневий', 'brown'],
@@ -35,6 +36,7 @@ const materials = [
     name: mapToLanguages(['Бонд', 'Bond']),
     description: mapToLanguages(['100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
       '100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern']),
+    purpose: 'main',
     colors: mapToColors([
       [300, 'Лляний', 'Linen', 'бежевий', 'beige'],
       [301, 'Пшеничний', 'Wheat', 'бежевий', 'beige'],
@@ -64,6 +66,7 @@ const materials = [
     name: mapToLanguages(['Шкірзамінник', 'Faux leather']),
     description: mapToLanguages(['Шкірзамінник',
         'Faux leather']),
+    purpose: 'bottom',
     colors: mapToColors([
       [1, 'Чорний', 'Black', 'чорний', 'black'],
       [2, 'Коричневий', 'Brown', 'коричневий', 'brown'],
@@ -78,6 +81,7 @@ const materials = [
     name: mapToLanguages(['Тканина Кордура', 'Cordura fabric']),
     description: mapToLanguages(['Тканина Кордура',
         'Cordura fabric']),
+    purpose: 'bottom',
     colors: mapToColors([
       [1, 'Чорний', 'Black', 'чорний', 'black']
   ]),
@@ -89,6 +93,7 @@ const materials = [
     name: mapToLanguages(['Натуральна шкіра', 'Genuine leather']),
     description: mapToLanguages(['Натуральна шкіра',
         'Genuine leather']),
+    purpose: 'bottom',
     colors: mapToColors([
       [1, 'Чорний', 'Black', 'чорний', 'black'],
       [2, 'Коричневий', 'Brown', 'коричневий', 'brown']

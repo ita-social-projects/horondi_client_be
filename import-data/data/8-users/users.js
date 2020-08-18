@@ -96,8 +96,9 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
             phoneNumber: phoneNumber,
             address: {
                 country: 'Україна',
-                //region: regions[location],
+                region: regions[location],
                 city: cities[location],
+                zipcode: ~~(Math.random() * (99999 - 10000) + 10000),
                 street: streets[~~(Math.random() * streetsNumber)],
                 buildingNumber: ~~(Math.random() * 300),
                 appartment: ~~(Math.random() * 150),

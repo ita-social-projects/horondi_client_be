@@ -17,6 +17,7 @@ let categoryPick;
 let subcategoryPick;
 let materialPick;
 let sizePick;
+let colors;
 let actualPrice;
 let totalPrice;
 let successfulPurchases = [];
@@ -35,6 +36,11 @@ for (let i = 0; i < usersNumber; i++) {
     actualPrice = product.basePrice[0].value + sizePick.additionalPrice[0].value;
     actualPrice = (materialPick == null) ? actualPrice : actualPrice + materialPick.additionalPrice[0].value;
     actualPrice = (option.additions.length === 0) ? actualPrice : actualPrice + option.additions[0].additionalPrice[0].value;
+
+    colors = [];
+    for (let j = 0; j < product.colors.length; j++) {
+        colors.push(product.colors[j].name);
+    }
 
     successfulPurchases[i] = [users[i].id, productCount, dateOfCreation];
 
@@ -60,15 +66,20 @@ for (let i = 0; i < usersNumber; i++) {
                 subcategory: subcategoryPick.name,
                 model: product.model,
                 name: product.name,
-                mainMaterial: product.mainMaterial,
-                colors: product.colors,
+                colors: colors,
                 pattern: product.pattern,
                 closure: product.closure,
                 closureColor: product.closureColor,
-                size: sizePick,
+                size: {
+                    heightInCm: sizePick.heightInCm,
+                    widthInCm: sizePick.widthInCm,
+                    depthInCm: sizePick.depthInCm,
+                    volumeInLiters: sizePick.volumeInLiters,
+                    weightInKg: sizePick.weightInKg
+                },
                 bottomMaterial: (materialPick == null) ? [] : materialPick.name,
                 bottomColor: option.bottomColor,
-                additions: option.additions,
+                additions: (option.additions.length == 0) ? [] : [option.additions[0].name],
                 actualPrice: mapToCurrencies(actualPrice),
                 quantity: 1,
             },
@@ -83,8 +94,8 @@ for (let i = 0; i < usersNumber; i++) {
     orders[i]['totalPrice'] = mapToCurrencies(totalPrice);
 }
 
-console.log(orders[0].items[0])
-console.log(orders[0].totalPrice)
+//console.log(orders[0].items[0])
+//console.log(orders[0].totalPrice)
 
 module.exports = {
     orders,
