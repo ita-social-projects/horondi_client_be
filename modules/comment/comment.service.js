@@ -19,13 +19,13 @@ class CommentsService {
   }
 
   async updateComment(id, comment) {
-    const commentToUpdate = await Comment.findByIdAndUpdate(id, comment, {
+    const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
       new: true,
     });
-    if (commentToUpdate) {
-      return commentToUpdate;
+    if (!updatedComment) {
+      throw new Error(COMMENT_NOT_FOUND);
     }
-    throw new Error(COMMENT_NOT_FOUND);
+    return updatedComment;
   }
 
   async addComment(id, data) {
@@ -38,11 +38,11 @@ class CommentsService {
   }
 
   async deleteComment(id) {
-    const commentToDelete = await Comment.findByIdAndDelete(id);
-    if (commentToDelete) {
-      return commentToDelete;
+    const deletedComment = await Comment.findByIdAndDelete(id);
+    if (!deletedComment) {
+      throw new Error(COMMENT_NOT_FOUND);
     }
-    throw new Error(COMMENT_NOT_FOUND);
+    return deletedComment;
   }
 }
 module.exports = new CommentsService();
