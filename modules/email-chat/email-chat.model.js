@@ -20,7 +20,15 @@ const EmailChatSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'pending',
-    enum: ['pending', 'answered'],
+    enum: ['pending', 'answered', 'spam'],
+  },
+  answer: {
+    admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    date: Date,
+    text: String,
   },
 });
 
