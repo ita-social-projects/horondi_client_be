@@ -166,6 +166,12 @@ const typeDefs = gql`
     count: Int
   }
 
+  type EmailAnswer {
+    admin: User
+    date: String
+    text: String
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -325,6 +331,12 @@ const typeDefs = gql`
     description: [LanguageInput!]
     available: Boolean
     additionalPrice: Int
+  }
+
+  input EmailAnswerInput {
+    admin: ID!
+    date: String
+    text: String!
   }
 
   type Mutation {

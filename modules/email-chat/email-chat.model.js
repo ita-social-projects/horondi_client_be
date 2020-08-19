@@ -1,21 +1,13 @@
 const mongoose = require('mongoose');
 
 const EmailChatSchema = new mongoose.Schema({
-  text: {
-    type: String,
-    required: true,
-  },
-  senderName: {
-    type: String,
-  },
+  text: String,
+  senderName: String,
   date: {
     type: Date,
     default: Date.now,
   },
-  email: {
-    type: String,
-    required: true,
-  },
+  email: String,
   status: {
     type: String,
     required: true,

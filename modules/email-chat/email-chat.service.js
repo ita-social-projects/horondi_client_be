@@ -16,19 +16,19 @@ class EmailChatService {
   }
 
   async updateEmailChat(id, chat) {
-    const chatToUpdate = await EmailChat.findById(id);
-    if (chatToUpdate) {
-      return EmailChat.findByIdAndUpdate(id, chat, { new: true });
+    const updatedChat = await EmailChat.findById(id);
+    if (!updatedChat) {
+      throw new Error(CHAT_NOT_FOUND);
     }
-    throw new Error(CHAT_NOT_FOUND);
+    return EmailChat.findByIdAndUpdate(id, chat, { new: true });
   }
 
   async deleteEmailChat(id) {
-    const chatToUpdate = await EmailChat.findById(id);
-    if (chatToUpdate) {
-      return EmailChat.findByIdAndDelete(id);
+    const deletedChat = await EmailChat.findById(id);
+    if (!deletedChat) {
+      throw new Error(CHAT_NOT_FOUND);
     }
-    throw new Error(CHAT_NOT_FOUND);
+    return EmailChat.findByIdAndDelete(id);
   }
 }
 module.exports = new EmailChatService();
