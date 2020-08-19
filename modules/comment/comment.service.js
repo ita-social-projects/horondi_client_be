@@ -1,31 +1,48 @@
-const Comments = require('./comment.model');
+const Comment = require('./comment.model');
 const Product = require('../product/product.model');
-const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
+const {
+  COMMENT_NOT_FOUND,
+  COMMENT_FOR_NOT_EXISTING_PRODUCT,
+} = require('../../error-messages/comment.messages');
 
 class CommentsService {
   getCommentById(id) {
-    return Comments.findById(id);
+    return Comment.findById(id);
   }
 
   async getAllCommentsByProduct(id) {
     const product = await Product.findById(id);
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new Error(COMMENT_NOT_FOUND);
     }
-    return Comments.find({ product: id });
+    return Comment.find({ product: id });
   }
 
-  updateComment(id, comments) {
-    return Comments.findByIdAndUpdate(id, comments, { new: true });
+  async updateComment(id, comment) {
+    const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
+      new: true,
+    });
+    if (!updatedComment) {
+      throw new Error(COMMENT_NOT_FOUND);
+    }
+    return updatedComment;
   }
 
-  addComment(data) {
-    const comments = new Comments(data);
-    return comments.save();
+  async addComment(id, data) {
+    const product = await Product.findById(id);
+    if (!product) {
+      throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
+    }
+    const comment = new Comment(data);
+    return comment.save();
   }
 
-  deleteComment(id) {
-    return Comments.findByIdAndDelete(id);
+  async deleteComment(id) {
+    const deletedComment = await Comment.findByIdAndDelete(id);
+    if (!deletedComment) {
+      throw new Error(COMMENT_NOT_FOUND);
+    }
+    return deletedComment;
   }
 }
 module.exports = new CommentsService();

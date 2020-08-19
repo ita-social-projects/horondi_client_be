@@ -370,11 +370,11 @@ const typeDefs = gql`
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult
-    deleteComment(id: ID!): Comment
-    updateComment(id: ID!, product: commentInput!): Comment
+    deleteComment(id: ID!): CommentResult
+    updateComment(id: ID!, comment: commentInput!): CommentResult
 
     "Contacts Mutation"
-    addContact(contact: contactInput!): Contact
+    addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
   }
