@@ -28,6 +28,7 @@ const NewsSchema = new mongoose.Schema({
     default: Date.now,
   },
   show: Boolean,
+  languages: [String],
 });
 
 module.exports = mongoose.model('News', NewsSchema);
