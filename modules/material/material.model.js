@@ -9,7 +9,7 @@ const materialSchema = new mongoose.Schema({
   purpose: String,
   colors: [Color],
   available: Boolean,
-  additionalPrice: [CurrencySet]
+  additionalPrice: [CurrencySet],
 });
 
 module.exports = mongoose.model('Material', materialSchema);

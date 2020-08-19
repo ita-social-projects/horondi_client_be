@@ -7,7 +7,7 @@ const closureSchema = new mongoose.Schema({
   name: [Language],
   colors: [Color],
   available: Boolean,
-  additionalPrice: [CurrencySet]
+  additionalPrice: [CurrencySet],
 });
 
 module.exports = mongoose.model('Closure', closureSchema);
