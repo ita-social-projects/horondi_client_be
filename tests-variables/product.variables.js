@@ -1,4 +1,5 @@
 const badProductId = '1a1111da11da1111111a111a';
+
 const newProduct = {
   category: 'ddc81f5dbac48c38d0403dd3',
   subcategory: '688ded7be0c2621f2fb17b05',
@@ -124,6 +125,7 @@ const newProduct = {
     },
   ],
 };
+
 const productForUpdate = {
   category: 'ddc81f5dbac48c38d0403dd3',
   subcategory: '688ded7be0c2621f2fb17b05',
@@ -164,7 +166,10 @@ const productForUpdate = {
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'white',
-  basePrice: 7777,
+  basePrice: [
+    { currency: 'UAH', value: 777000 },
+    { currency: 'USD', value: 7779 },
+  ],
   available: false,
   isHotItem: true,
   images: {
@@ -231,90 +236,14 @@ const productForUpdate = {
             { lang: 'uk', value: 'Бокова кишенька' },
             { lang: 'en', value: 'Side pocket' },
           ],
-          additionalPrice: 1000,
+          additionalPrice: [
+            { currency: 'UAH', value: 145000 },
+            { currency: 'USD', value: 5229 },
+          ],
         },
       ],
     },
   ],
-};
-const expectedResult = {
-  __typename: 'Product',
-  available: true,
-  basePrice: [
-    {
-      __typename: 'Currency',
-      value: 145000,
-    },
-    {
-      __typename: 'Currency',
-      value: 5229,
-    },
-  ],
-  category: {
-    __typename: 'Category',
-    _id: 'ddc81f5dbac48c38d0403dd3',
-  },
-  closureColor: 'black',
-  description: [
-    {
-      __typename: 'Language',
-      value: 'Baggy is so cool',
-    },
-    {
-      __typename: 'Language',
-      value: 'Рюкзачечок - супер кльовий))',
-    },
-  ],
-  innerMaterial: [
-    {
-      __typename: 'Language',
-      value: 'Oxford 135',
-    },
-    {
-      __typename: 'Language',
-      value: 'Oxford 135',
-    },
-  ],
-  isHotItem: false,
-  mainMaterial: [
-    {
-      __typename: 'Language',
-      value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
-    },
-    {
-      __typename: 'Language',
-      value:
-        'Canvas-400G padded with a layer of durable and water-resistant material',
-    },
-  ],
-  name: [
-    {
-      __typename: 'Language',
-      value: 'Baggy for 19 database',
-    },
-    {
-      __typename: 'Language',
-      value: 'Рюкзачечок для 19 бази',
-    },
-  ],
-  pattern: [
-    {
-      __typename: 'Language',
-      value: 'Вишивка',
-    },
-    {
-      __typename: 'Language',
-      value: 'Embroidery',
-    },
-  ],
-  purchasedCount: 0,
-  rate: 0,
-  rateCount: 0,
-  strapLengthInCm: 100,
-  subcategory: {
-    __typename: 'Category',
-    _id: '688ded7be0c2621f2fb17b05',
-  },
 };
 
 const sameNameForUpdate = {
@@ -359,7 +288,10 @@ const sameNameForUpdate = {
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: 1550,
+  basePrice: [
+    { currency: 'UAH', value: 145000 },
+    { currency: 'USD', value: 5229 },
+  ],
   available: true,
   isHotItem: false,
   images: {
@@ -430,16 +362,19 @@ const sameNameForUpdate = {
             { lang: 'uk', value: 'Бокова кишенька за бажанням' },
             { lang: 'en', value: 'Side pocket by request' },
           ],
-          additionalPrice: 100,
+          additionalPrice: [
+            { currency: 'UAH', value: 145000 },
+            { currency: 'USD', value: 5229 },
+          ],
         },
       ],
     },
   ],
 };
+
 module.exports = {
   badProductId,
   newProduct,
   productForUpdate,
-  expectedResult,
   sameNameForUpdate,
 };

@@ -57,7 +57,9 @@ describe('Product mutations', () => {
                 value
               }
               closureColor
-              basePrice
+              basePrice {
+                value
+              }
               available
               isHotItem
               purchasedCount
@@ -126,19 +128,19 @@ describe('Product mutations', () => {
     expect(receivedProduct).toHaveProperty('closureColor', 'black');
     expect(receivedProduct).toHaveProperty('basePrice', [
       {
-        __typename: 'Currency',
+        __typename: 'CurrencySet',
         value: 145000,
       },
       {
-        __typename: 'Currency',
+        __typename: 'CurrencySet',
         value: 5229,
       },
     ]);
     expect(receivedProduct).toHaveProperty('available', true);
     expect(receivedProduct).toHaveProperty('isHotItem', false);
-    expect(receivedProduct).toHaveProperty('purchasedCount', null);
-    expect(receivedProduct).toHaveProperty('rate', null);
-    expect(receivedProduct).toHaveProperty('rateCount', null);
+    expect(receivedProduct).toHaveProperty('purchasedCount', 0);
+    expect(receivedProduct).toHaveProperty('rate', 0);
+    expect(receivedProduct).toHaveProperty('rateCount', 0);
   });
 
   test('#2 AddProduct should return Error product already exist', async () => {
