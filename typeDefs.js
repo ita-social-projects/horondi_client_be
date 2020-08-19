@@ -314,7 +314,7 @@ const typeDefs = gql`
     name: [LanguageInput!]
     description: [LanguageInput!]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySetInput]
   }
 
   type Mutation {

@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema({
         widthInCm: Number,
         depthInCm: Number,
         volumeInLiters: Number,
-        weightInKg: Number
+        weightInKg: Number,
       },
       bottomMaterial: [Language],
       bottomColor: [Language],
