@@ -221,7 +221,7 @@ class UserService {
       subject: 'Confirm Email',
       html: confirmationMessage(firstName, token, language),
     };
-    await sendEmail(message);
+    // await sendEmail(message);
     return savedUser;
   }
 
