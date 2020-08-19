@@ -24,7 +24,7 @@ const userMutation = {
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   switchUserStatus: (parent, args) => userService.switchUserStatus(args.id),
   resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
-  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token)
+  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
 };
 
 module.exports = {
