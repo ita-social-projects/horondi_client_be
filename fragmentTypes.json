@@ -60,6 +60,42 @@
             "name": "Error"
           }
         ]
+      },
+      {
+        "kind": "UNION",
+        "name": "ProductResult",
+        "possibleTypes": [
+          {
+            "name": "Product"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "CommentResult",
+        "possibleTypes": [
+          {
+            "name": "Comment"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "EmailChatResult",
+        "possibleTypes": [
+          {
+            "name": "EmailChat"
+          },
+          {
+            "name": "Error"
+          }
+        ]
       }
     ]
   }

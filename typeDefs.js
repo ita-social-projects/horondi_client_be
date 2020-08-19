@@ -334,9 +334,9 @@ const typeDefs = gql`
   }
 
   input EmailAnswerInput {
-    admin: ID!
+    admin: ID
     date: String
-    text: String!
+    text: String
   }
 
   type Mutation {
