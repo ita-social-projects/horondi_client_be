@@ -13,7 +13,8 @@
     "start": "nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --coverage"
+    "test": "jest --coverage --detectOpenHandles ",
+    "generate": "graphql-codegen"
   },
   "author": "",
   "license": "ISC",
@@ -46,6 +47,8 @@
     "unirest": "^0.6.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.17.7",
+    "@graphql-codegen/fragment-matcher": "^1.17.7",
     "babel-eslint": "^10.1.0",
     "chance": "^1.1.5",
     "eslint": "^7.1.0",
@@ -54,7 +57,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "husky": "^4.2.5",
-    "jest": "^26.1.0",
+    "jest": "^26.3.0",
     "lint-staged": "^10.2.9",
     "nodemon": "^2.0.4",
     "prettier": "^1.19.1"
@@ -74,5 +77,8 @@
       "prettier --write",
       "eslint . --fix"
     ]
+  },
+  "jest": {
+    "collectCoverage": true
   }
 }

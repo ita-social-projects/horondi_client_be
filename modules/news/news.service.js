@@ -5,8 +5,17 @@ const {
 } = require('../../error-messages/news.messages');
 
 class NewsService {
-  async getAllNews() {
-    return await News.find();
+  async getAllNews({ skip, limit }) {
+    const items = await News.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await News.find().countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getNewsById(id) {
@@ -18,14 +27,15 @@ class NewsService {
   }
 
   async updateNews(id, news) {
+    const updatedNews = await News.findById(id);
+    if (!updatedNews) {
+      throw new Error(NEWS_NOT_FOUND);
+    }
+
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    const updatedNews = await News.findByIdAndUpdate(id, news, { new: true });
-    if (updatedNews) {
-      return updatedNews;
-    }
-    throw new Error(NEWS_NOT_FOUND);
+    return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
   async addNews(data) {

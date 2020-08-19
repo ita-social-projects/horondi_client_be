@@ -45,3 +45,10 @@ exports.validateLoginInput = Joi.object({
     minDomainSegments: 2,
   }),
 });
+
+exports.validateNewPassword = Joi.object({
+  password: Joi.string()
+    .min(8)
+    .max(20)
+    .required(),
+});

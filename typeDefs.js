@@ -47,7 +47,11 @@ const typeDefs = gql`
   }
   type Language {
     lang: String!
-    value: String!
+    value: String
+  }
+  type CurrencySet {
+    currency: String!
+    value: Int!
   }
   type ImageSet {
     large: String
@@ -61,7 +65,9 @@ const typeDefs = gql`
   }
   type Address {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -106,7 +112,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type Size {
@@ -118,7 +124,19 @@ const typeDefs = gql`
     volumeInLiters: Int
     weightInKg: Float
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
+  }
+
+  type UserForComment {
+    email: String!
+    name: String
+    images: ImageSet
+    isAdmin: Boolean
+  }
+
+  type UserRate {
+    user: User!
+    rate: Int!
   }
 
   type Error {
@@ -137,9 +155,10 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
-  type BasePrice {
-    currency: String
-    value: Int
+
+  type PaginatedNews {
+    items: [News]
+    count: Int
   }
 
   union CategoryResult = Category | Error
@@ -163,7 +182,7 @@ const typeDefs = gql`
     getAllPatterns: [Pattern!]!
     getPatternById(id: ID): PatternResult
 
-    getAllNews: [News!]!
+    getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
@@ -223,14 +242,26 @@ const typeDefs = gql`
 
   input LanguageInput {
     lang: String!
-    value: String!
+    value: String
+  }
+  input CurrencySetInput {
+    currency: String!
+    value: Int!
   }
   input AddressInput {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
+  }
+  input UserForCommentInput {
+    email: String!
+    name: String
+    images: ImageSetInput
+    isAdmin: Boolean
   }
   input ImageSetInput {
     large: String
@@ -292,21 +323,21 @@ const typeDefs = gql`
 
   type Mutation {
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!): Pattern
-    deletePattern(id: ID!): Pattern
-    updatePattern(id: ID!, pattern: PatternInput!): Pattern
+    addPattern(pattern: PatternInput!): PatternResult
+    deletePattern(id: ID!): PatternResult
+    updatePattern(id: ID!, pattern: PatternInput!): PatternResult
     "Material Mutation"
-    addMaterial(material: MaterialInput!): Material
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): Category
+    addCategory(category: CategoryInput!): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
     "Currency Mutation"
-    addCurrency(currency: CurrencyInput!): Currency
+    addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
 
@@ -316,7 +347,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: UserInput!, language: Int!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -324,6 +355,8 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
+    resetPassword(password: String!, token: String!): Boolean
+    checkIfTokenIsValid(token: String!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult

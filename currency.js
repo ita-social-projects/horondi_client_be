@@ -9,7 +9,7 @@ agenda.define('set currency to database', async job => {
   try {
     const currency = await axios.get(process.env.CURRENCY_API);
 
-    const actualCourse = {
+    const currencyRate = {
       lastUpdatedDate: Date.now(),
       convertOptions: [
         {
@@ -26,7 +26,7 @@ agenda.define('set currency to database', async job => {
 
     await currencyService.deleteAllInCurrency({});
     await currencyService
-      .addCurrency(actualCourse)
+      .addCurrency(currencyRate)
       .then(res => res)
       .catch(e => {
         console.error(e);

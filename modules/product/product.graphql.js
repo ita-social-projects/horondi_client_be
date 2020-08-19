@@ -3,6 +3,7 @@ type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
+model: [Language]
 name: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
@@ -14,13 +15,14 @@ pattern: [Language]
 patternImages: ImageSet
 closure: [Language]!
 closureColor: String
-basePrice: [BasePrice]
+basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
 isHotItem: Boolean!
 purchasedCount: Int
 rate: Float
 rateCount: Int
+userRates: [UserRate]
 comments: [Comment]
 }
 `;
@@ -40,8 +42,8 @@ pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]
 closureColor: String
-basePrice: [BasePriceInput]
-available: Boolean
+basePrice: [CurrencySetInput]!
+available: Boolean!
 isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;
