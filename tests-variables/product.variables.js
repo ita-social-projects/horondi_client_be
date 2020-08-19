@@ -41,7 +41,10 @@ const newProduct = {
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: 1550,
+  basePrice: [
+    { currency: 'UAH', value: 145000 },
+    { currency: 'USD', value: 5229 },
+  ],
   available: true,
   isHotItem: false,
   images: {
@@ -112,7 +115,10 @@ const newProduct = {
             { lang: 'uk', value: 'Бокова кишенька за бажанням' },
             { lang: 'en', value: 'Side pocket by request' },
           ],
-          additionalPrice: 10000000,
+          additionalPrice: [
+            { currency: 'UAH', value: 145000 },
+            { currency: 'USD', value: 5229 },
+          ],
         },
       ],
     },
@@ -234,7 +240,16 @@ const productForUpdate = {
 const expectedResult = {
   __typename: 'Product',
   available: true,
-  basePrice: 1550,
+  basePrice: [
+    {
+      __typename: 'Currency',
+      value: 145000,
+    },
+    {
+      __typename: 'Currency',
+      value: 5229,
+    },
+  ],
   category: {
     __typename: 'Category',
     _id: 'ddc81f5dbac48c38d0403dd3',
@@ -275,11 +290,11 @@ const expectedResult = {
   name: [
     {
       __typename: 'Language',
-      value: 'Very Coool Baggy',
+      value: 'Baggy for 19 database',
     },
     {
       __typename: 'Language',
-      value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок',
+      value: 'Рюкзачечок для 19 бази',
     },
   ],
   pattern: [
@@ -292,9 +307,9 @@ const expectedResult = {
       value: 'Embroidery',
     },
   ],
-  purchasedCount: null,
-  rate: null,
-  rateCount: null,
+  purchasedCount: 0,
+  rate: 0,
+  rateCount: 0,
   strapLengthInCm: 100,
   subcategory: {
     __typename: 'Category',

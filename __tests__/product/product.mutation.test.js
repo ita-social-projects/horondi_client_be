@@ -124,7 +124,16 @@ describe('Product mutations', () => {
       },
     ]);
     expect(receivedProduct).toHaveProperty('closureColor', 'black');
-    expect(receivedProduct).toHaveProperty('basePrice', 1550);
+    expect(receivedProduct).toHaveProperty('basePrice', [
+      {
+        __typename: 'Currency',
+        value: 145000,
+      },
+      {
+        __typename: 'Currency',
+        value: 5229,
+      },
+    ]);
     expect(receivedProduct).toHaveProperty('available', true);
     expect(receivedProduct).toHaveProperty('isHotItem', false);
     expect(receivedProduct).toHaveProperty('purchasedCount', null);

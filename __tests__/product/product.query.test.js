@@ -4,7 +4,6 @@ const client = require('../../utils/apollo-test-client');
 const {
   badProductId,
   newProduct,
-  expectedResult,
 } = require('../../tests-variables/product.variables');
 require('dotenv').config();
 
@@ -55,7 +54,9 @@ describe('Product queries', () => {
                 value
               }
               closureColor
-              basePrice
+              basePrice {
+                value
+              }
               available
               isHotItem
               purchasedCount
@@ -70,7 +71,7 @@ describe('Product queries', () => {
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
     expect(allProducts[0].name).toBeInstanceOf(Array);
-    expect(allProducts).toContainEqual(expectedResult);
+    expect(allProducts).toMatchSnapshot();
   });
   test('#2 Should receive product by ID', async () => {
     const product = await client.query({
@@ -101,7 +102,9 @@ describe('Product queries', () => {
               pattern {
                 value
               }
-              basePrice
+              basePrice {
+                value
+              }
               available
               closureColor
               purchasedCount
@@ -169,12 +172,21 @@ describe('Product queries', () => {
       },
     ]);
     expect(resultProduct).toHaveProperty('closureColor', 'black');
-    expect(resultProduct).toHaveProperty('basePrice', 1550);
+    expect(resultProduct).toHaveProperty('basePrice', [
+      {
+        __typename: 'CurrencySet',
+        value: 145000,
+      },
+      {
+        __typename: 'CurrencySet',
+        value: 5229,
+      },
+    ]);
     expect(resultProduct).toHaveProperty('available', true);
     expect(resultProduct).toHaveProperty('isHotItem', false);
-    expect(resultProduct).toHaveProperty('purchasedCount', null);
-    expect(resultProduct).toHaveProperty('rate', null);
-    expect(resultProduct).toHaveProperty('rateCount', null);
+    expect(resultProduct).toHaveProperty('purchasedCount', 0);
+    expect(resultProduct).toHaveProperty('rate', 0);
+    expect(resultProduct).toHaveProperty('rateCount', 0);
   });
   test('#3 Should receive error if product ID is wrong', async () => {
     const getProduct = await client.query({
@@ -206,7 +218,9 @@ describe('Product queries', () => {
                 value
               }
               closureColor
-              basePrice
+              basePrice {
+                value
+              }
               available
               isHotItem
               purchasedCount
