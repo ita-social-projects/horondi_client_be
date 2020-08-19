@@ -1,10 +1,7 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const {
-  badProductId,
-  newProduct,
-} = require('../../modules/product/product.tests.variables');
+const { badProductId, newProduct } = require('./product.variables');
 require('dotenv').config();
 
 let productId;

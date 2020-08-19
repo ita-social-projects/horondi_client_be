@@ -6,7 +6,7 @@ const {
   newProduct,
   productForUpdate,
   sameNameForUpdate,
-} = require('../../modules/product/product.tests.variables');
+} = require('./product.variables');
 
 require('dotenv').config();
 
