@@ -59,7 +59,7 @@ describe('Product mutations', () => {
       variables: { product: newProduct },
     });
     productId = createProduct.data.addProduct._id;
-    createdProduct = createProduct.data.addProduct;
+    const createdProduct = createProduct.data.addProduct;
     expect(createdProduct).toBeDefined();
     expect(createdProduct).toHaveProperty('name', [
       { __typename: 'Language', value: 'Very Coool Baggy' },
