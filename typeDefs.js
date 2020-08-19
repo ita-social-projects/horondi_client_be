@@ -52,7 +52,11 @@ const typeDefs = gql`
   }
   type Language {
     lang: String!
-    value: String!
+    value: String
+  }
+  type CurrencySet {
+    currency: String!
+    value: Int!
   }
   type ImageSet {
     large: String
@@ -66,7 +70,9 @@ const typeDefs = gql`
   }
   type Address {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -111,7 +117,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type Size {
@@ -123,7 +129,7 @@ const typeDefs = gql`
     volumeInLiters: Int
     weightInKg: Float
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type UserForComment {
@@ -155,6 +161,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedNews {
+    items: [News]
+    count: Int
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -177,7 +188,7 @@ const typeDefs = gql`
     getAllPatterns: [Pattern!]!
     getPatternById(id: ID): PatternResult
 
-    getAllNews: [News!]!
+    getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
@@ -241,11 +252,17 @@ const typeDefs = gql`
 
   input LanguageInput {
     lang: String!
-    value: String!
+    value: String
+  }
+  input CurrencySetInput {
+    currency: String!
+    value: Int!
   }
   input AddressInput {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -354,8 +371,8 @@ const typeDefs = gql`
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult
-    deleteComment(id: ID!): Comment
-    updateComment(id: ID!, product: commentInput!): Comment
+    deleteComment(id: ID!): CommentResult
+    updateComment(id: ID!, comment: commentInput!): CommentResult
 
     "EmailChat Mutation"
     addEmailChat(chat: EmailChatInput!): EmailChat
