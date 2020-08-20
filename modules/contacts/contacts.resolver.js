@@ -2,13 +2,12 @@ const contactsService = require('./contacts.service');
 
 const contactsQuery = {
   getContacts: () => contactsService.getContacts(),
+  getContactById: (_, args) => contactsService.getContactById(args.id),
 };
 
 const contactsMutation = {
   addContact: async (_, args) => {
     try {
-      console.log(args);
-
       return await contactsService.addContact(args.contact);
     } catch (e) {
       return {
