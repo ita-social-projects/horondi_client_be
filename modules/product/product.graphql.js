@@ -3,8 +3,8 @@ type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
+model: [Language]
 name: [Language]!
-model: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
@@ -15,7 +15,7 @@ pattern: [Language]
 patternImages: ImageSet
 closure: [Language]!
 closureColor: String
-basePrice: [Price]!
+basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
 isHotItem: Boolean!
@@ -43,7 +43,7 @@ pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]!
 closureColor: String
-basePrice: Int!
+basePrice: [CurrencySetInput]!
 available: Boolean!
 isHotItem: Boolean
 options:[ProductOptionsInput]

@@ -60,7 +60,6 @@ const resolvers = {
     ...commentsQuery,
   },
   Comment: {
-    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
     product: parent => productsService.getProductById(parent.product),
   },
 
@@ -73,6 +72,10 @@ const resolvers = {
   ProductOptions: {
     size: parent => productsService.getSizeById(parent.size),
     bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
+  },
+
+  UserRate: {
+    user: parent => userService.getUserByFieldOrThrow(parent.user),
   },
 
   Mutation: {
