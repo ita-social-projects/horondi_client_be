@@ -40,6 +40,7 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  successfulResponse: 'SuccessfulResponse',
 };
 const resolvers = {
   Query: {
@@ -147,6 +148,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.product) {
         return SCHEMA_NAMES.comment;
+      }
+      return 'Error';
+    },
+  },
+  LogicalResult: {
+    __resolveType: obj => {
+      if (obj.isSuccess) {
+        return SCHEMA_NAMES.successfulResponse;
       }
       return 'Error';
     },

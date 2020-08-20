@@ -263,7 +263,7 @@ class UserService {
 
     await user.save();
 
-    return true;
+    return { isSuccess: true };
   }
 
   async resetPassword(password, token) {

@@ -588,4 +588,54 @@ describe('mutations', () => {
 
     expect(res.data.deleteUser._id).toEqual(userId);
   });
+
+  test('Should change user status', async () => {
+    const result = await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          switchUserStatus(id: $id) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+      variables: {
+        id: '9c031d62a3c4909b216e1d86',
+      },
+    });
+
+    const { switchUserStatus: response } = result.data;
+
+    expect(response.isSuccess).toEqual(true);
+  });
+
+  test('Should return error when switch status of non-existent user', async () => {
+    const result = await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          switchUserStatus(id: $id) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+      variables: {
+        id: '069f27ccdb9bab4b93aa6cc8',
+      },
+    });
+
+    const { switchUserStatus: response } = result.data;
+
+    expect(response.message).toEqual('USER_NOT_FOUND');
+  });
 });

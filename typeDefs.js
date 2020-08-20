@@ -161,6 +161,10 @@ const typeDefs = gql`
     count: Int
   }
 
+  type SuccessfulResponse {
+    isSuccess: Boolean
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -168,6 +172,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union LogicalResult = SuccessfulResponse | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -351,7 +356,7 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
-    switchUserStatus(id: ID!): Boolean
+    switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
 
