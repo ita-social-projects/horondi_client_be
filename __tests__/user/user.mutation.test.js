@@ -6,6 +6,7 @@ require('dotenv').config();
 
 let userId;
 let token;
+let badId;
 
 const testUser = {
   firstName: 'Petro',
@@ -24,6 +25,10 @@ const testUser = {
   orders: [],
   comments: [],
 };
+
+beforeAll(() => {
+  badId = '9c031d62a3c4909b216e1d87';
+});
 
 describe('mutations', () => {
   test('should register user', async () => {
@@ -605,7 +610,7 @@ describe('mutations', () => {
         }
       `,
       variables: {
-        id: '9c031d62a3c4909b216e1d86',
+        id: userId,
       },
     });
 
@@ -630,12 +635,13 @@ describe('mutations', () => {
         }
       `,
       variables: {
-        id: '069f27ccdb9bab4b93aa6cc8',
+        id: badId,
       },
     });
 
     const { switchUserStatus: response } = result.data;
 
     expect(response.message).toEqual('USER_NOT_FOUND');
+    expect(response.statusCode).toEqual(400);
   });
 });
