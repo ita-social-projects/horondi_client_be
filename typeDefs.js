@@ -63,10 +63,6 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
-  type Price {
-    value: Int
-    currency: String
-  }
   type Model {
     id: ID!
     category: ID!
