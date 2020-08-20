@@ -53,7 +53,7 @@ class ProductsService {
     if (price && price.length) {
       filter.basePrice = {
         $elemMatch: {
-          currency: "USD",
+          currency: "UAH",
           value: {
             $gte: price[0],
             $lte: price[1],
@@ -85,8 +85,6 @@ class ProductsService {
       .skip(skip)
       .limit(limit)
       .sort(sort);
-
-      console.log(items);
 
     const count = await Products.find(filters).countDocuments();
     return {
