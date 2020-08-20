@@ -208,6 +208,7 @@ const typeDefs = gql`
     getAllCommentsByProduct(productId: ID!): [CommentResult]
 
     getContacts: [ContactResult!]!
+    getContactById: ContactResult
   }
 
   input SortInput {
