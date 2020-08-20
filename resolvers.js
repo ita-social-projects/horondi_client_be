@@ -82,6 +82,10 @@ const resolvers = {
     bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
   },
 
+  UserRate: {
+    user: parent => userService.getUserByFieldOrThrow(parent.user),
+  },
+
   Mutation: {
     ...patternMutation,
 
