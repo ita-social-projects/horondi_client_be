@@ -30,7 +30,7 @@ describe('mutations', () => {
     const {
       firstName, lastName, email, password,
     } = testUser;
-
+    
     const res = await client.mutate({
       mutation: gql`
         mutation(
