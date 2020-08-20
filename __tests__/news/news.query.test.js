@@ -76,36 +76,39 @@ describe('querries', () => {
         query: gql`
           query {
             getAllNews {
-              title {
-                lang
-                value
-              }
-              text {
-                lang
-                value
-              }
-              author {
-                name {
+              items{
+                title {
                   lang
                   value
                 }
-              }
-              images {
-                primary {
-                  medium
+                text {
+                  lang
+                  value
                 }
-                additional {
-                  medium
+                author {
+                  name {
+                    lang
+                    value
+                  }
                 }
+                images {
+                  primary {
+                    medium
+                  }
+                  additional {
+                    medium
+                  }
+                }
+                date
               }
-              date
             }
           }
         `,
       })
       .catch(e => e);
+      console.log(res);
     expect(res.data.getAllNews).toBeDefined();
-    expect(res.data.getAllNews).toContainEqual({
+    expect(res.data.getAllNews.items).toContainEqual({
       __typename: 'News',
       title: [
         {
