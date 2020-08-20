@@ -68,6 +68,16 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+  type Model {
+    id: ID!
+    category: ID!
+    subcategory: ID!
+    name: [Language]
+    description: [Language]
+    images: [ImageSet]
+    priority: Int
+    show: Boolean
+  }
   type Address {
     country: String
     region: String
@@ -206,6 +216,8 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getModelsbyCategory(id: ID!): [Model]
 
     getContacts: [ContactResult!]!
     getContactById: ContactResult
