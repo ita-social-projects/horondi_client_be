@@ -17,7 +17,6 @@ const productSchema = new mongoose.Schema({
   model: [Language],
   name: [Language],
   description: [Language],
-  model: [Language],
   mainMaterial: [Language],
   innerMaterial: [Language],
   strapLengthInCm: Number,
