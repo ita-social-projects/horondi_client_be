@@ -2,11 +2,11 @@ const contactsService = require('./contacts.service');
 
 const contactsQuery = {
   getContacts: () => contactsService.getContacts(),
-  getContactById: (_, args) => contactsService.getContactById(args.id),
+  getContactById: (parent, args) => contactsService.getContactById(args.id),
 };
 
 const contactsMutation = {
-  addContact: async (_, args) => {
+  addContact: async (parent, args) => {
     try {
       return await contactsService.addContact(args.contact);
     } catch (e) {
@@ -17,7 +17,7 @@ const contactsMutation = {
     }
   },
 
-  deleteContact: async (_, args) => {
+  deleteContact: async (parent, args) => {
     try {
       return await contactsService.deleteContact(args.id);
     } catch (e) {
@@ -28,7 +28,7 @@ const contactsMutation = {
     }
   },
 
-  updateContact: async (_, args) => {
+  updateContact: async (parent, args) => {
     try {
       return await contactsService.updateContact(args.id, args.contact);
     } catch (e) {

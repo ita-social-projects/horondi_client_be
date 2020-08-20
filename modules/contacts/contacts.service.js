@@ -13,10 +13,10 @@ class ContactsService {
     const contact = await Contact.findById(id);
 
     if (contact) {
-      return contact;
+      throw new Error(CONTACT_NOT_FOUND);
     }
 
-    throw new Error(CONTACT_NOT_FOUND);
+    return contact;
   }
 
   async addContact(data) {
