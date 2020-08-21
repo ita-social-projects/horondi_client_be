@@ -12,7 +12,7 @@ class ContactsService {
   async getContactById(id) {
     const contact = await Contact.findById(id);
 
-    if (contact) {
+    if (!contact) {
       throw new Error(CONTACT_NOT_FOUND);
     }
 
@@ -40,11 +40,11 @@ class ContactsService {
   async deleteContact(id) {
     const contact = await Contact.findByIdAndDelete(id);
 
-    if (contact) {
-      return contact;
+    if (!contact) {
+      throw new Error(CONTACT_NOT_FOUND);
     }
 
-    throw new Error(CONTACT_NOT_FOUND);
+    return contact;
   }
 
   async checkContactExist(data, id) {
