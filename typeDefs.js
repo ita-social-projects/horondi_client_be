@@ -63,6 +63,16 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+  type Model {
+    id: ID!
+    category: ID!
+    subcategory: ID!
+    name: [Language]
+    description: [Language]
+    images: [ImageSet]
+    priority: Int
+    show: Boolean
+  }
   type Address {
     country: String
     region: String
@@ -200,6 +210,8 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getModelsbyCategory(id: ID!): [Model]
   }
 
   input SortInput {
@@ -314,7 +326,7 @@ const typeDefs = gql`
     name: [LanguageInput!]
     description: [LanguageInput!]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySetInput]
   }
   input BasePriceInput {
     currency: String
@@ -365,8 +377,8 @@ const typeDefs = gql`
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult
-    deleteComment(id: ID!): Comment
-    updateComment(id: ID!, product: commentInput!): Comment
+    deleteComment(id: ID!): CommentResult
+    updateComment(id: ID!, comment: commentInput!): CommentResult
   }
 `;
 

@@ -252,7 +252,7 @@ describe('test news mutations', () => {
     expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
     expect(res.data.updateNews).toHaveProperty('statusCode', 404);
   });
-  test('#5 update not existing news should return error', async () => {
+  test('#5 update news with same title should return error', async () => {
     const res = await client
       .mutate({
         mutation: gql`

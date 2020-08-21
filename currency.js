@@ -13,24 +13,18 @@ agenda.define('set currency to database', async job => {
       lastUpdatedDate: Date.now(),
       convertOptions: [
         {
-          name: 'USD',
-          exchangeRate: 1,
-        },
-
-        {
           name: 'UAH',
           exchangeRate: currency.data.rates.UAH,
+        },
+        {
+          name: 'USD',
+          exchangeRate: 1,
         },
       ],
     };
 
     await currencyService.deleteAllInCurrency({});
-    await currencyService
-      .addCurrency(currencyRate)
-      .then(res => res)
-      .catch(e => {
-        console.error(e);
-      });
+    await currencyService.addCurrency(currencyRate);
   } catch (e) {
     console.error(e);
   }

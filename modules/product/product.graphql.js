@@ -3,7 +3,7 @@ type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
-model: [Language]
+model: [Language]!
 name: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
@@ -29,15 +29,16 @@ comments: [Comment]
 
 const productInput = `
 input ProductInput {
-category: ID
-subcategory: ID
-name: [LanguageInput]
-description: [LanguageInput]
-mainMaterial: [LanguageInput]
-innerMaterial: [LanguageInput]
-strapLengthInCm: Int
-images: PrimaryImageInput
-colors: [ColorInput]
+category: ID!
+subcategory: ID!
+model: ID!
+name: [LanguageInput]!
+description: [LanguageInput]!
+mainMaterial: [LanguageInput]!
+innerMaterial: [LanguageInput]!
+strapLengthInCm: Int!
+images: PrimaryImageInput!
+colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]

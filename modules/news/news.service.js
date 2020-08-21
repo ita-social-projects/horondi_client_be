@@ -58,6 +58,7 @@ class NewsService {
       _id: { $ne: id },
       title: {
         $elemMatch: {
+          value: { $ne: null },
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },
