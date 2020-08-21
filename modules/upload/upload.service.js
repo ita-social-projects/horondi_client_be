@@ -1,5 +1,9 @@
 const azureStorage = require('azure-storage');
-const blobService = azureStorage.createBlobService('horondi', 'S9gV0QHu3p1rYcmJQAjhRTJ7EHR4a6KXa640fcUB3a8Q9VJRpJJ3eQF6GXifzrWuk2K4FDKG4sCGvSD49v1qrw==', 'https://horondi.blob.core.windows.net/horondi');
+const blobService = azureStorage.createBlobService(
+    'horondi', 
+    'S9gV0QHu3p1rYcmJQAjhRTJ7EHR4a6KXa640fcUB3a8Q9VJRpJJ3eQF6GXifzrWuk2K4FDKG4sCGvSD49v1qrw==', 
+    'https://horondi.blob.core.windows.net/horondi'
+);
 const containerName = 'images';
 const getStream = require('into-stream');
 const Jimp = require("jimp");
@@ -7,7 +11,7 @@ const uniqid = require('uniqid');
 
 class UploadService {
     async uploadSingleFile(file) {
-        const { createReadStream, mimetype, filename } = await file;
+        const { createReadStream, filename } = await file;
 
         const inputStream = createReadStream()
         let fileBuffer;
