@@ -15,11 +15,15 @@ describe('Product queries', () => {
             ... on Product {
               _id
             }
+            ... on Error {
+              message
+            }
           }
         }
       `,
       variables: { product: newProduct },
     });
+    console.log(createProduct);
     productId = createProduct.data.addProduct._id;
   });
   test('#1 Should receive all products', async () => {

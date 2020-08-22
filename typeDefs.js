@@ -344,7 +344,7 @@ const typeDefs = gql`
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): CategoryResult
+    addCategory(category: CategoryInput!, parentId: ID!): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
