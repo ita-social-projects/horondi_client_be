@@ -3,6 +3,7 @@ const badProductId = '1a1111da11da1111111a111a';
 const newProduct = {
   category: 'ddc81f5dbac48c38d0403dd3',
   subcategory: '688ded7be0c2621f2fb17b05',
+  model: '5f3bb1273c5ced2f05062550',
   name: [
     { lang: 'en', value: 'Very Coool Baggy' },
     { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
@@ -129,6 +130,7 @@ const newProduct = {
 const productForUpdate = {
   category: 'ddc81f5dbac48c38d0403dd3',
   subcategory: '688ded7be0c2621f2fb17b05',
+  model: '5f3bb1273c5ced2f05062550',
   name: [
     { lang: 'en', value: 'Bad Baggy' },
     { lang: 'ua', value: 'Жахливий Рюкзачечок' },
@@ -249,6 +251,7 @@ const productForUpdate = {
 const sameNameForUpdate = {
   category: 'ddc81f5dbac48c38d0403dd3',
   subcategory: '688ded7be0c2621f2fb17b05',
+  model: '5f3bb1273c5ced2f05062550',
   description: [
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },

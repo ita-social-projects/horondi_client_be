@@ -3,7 +3,7 @@ type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
-model: [Language]!
+model: Model!
 name: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
