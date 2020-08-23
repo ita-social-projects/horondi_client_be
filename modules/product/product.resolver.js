@@ -1,5 +1,5 @@
 const productsService = require('./product.service');
-const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
+const { PRODUCT_NOT_FOUND, MODEL_NOT_FOUND } = require('../../error-messages/products.messages');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
@@ -22,7 +22,18 @@ const productsQuery = {
       };
     }
   },
-  getModelsByCategory: (parent, args) => productsService.getModelsByCategory(args.id)
+  getModelsByCategory: async (parent, args) => {
+      const models = await productsService.getModelsByCategory(args.id)
+      if (models) {
+        return models;
+      }
+      return {
+        statusCode: 404,
+        message: MODEL_NOT_FOUND,
+      };
+  }
+  
+  
 };
 
 const productsMutation = {

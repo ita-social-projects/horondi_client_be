@@ -63,10 +63,6 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
-  type Price {
-    currency: String
-    value: Int
-  }
   type Address {
     country: String
     region: String
