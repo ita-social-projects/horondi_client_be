@@ -5,8 +5,17 @@ const {
 } = require('../../error-messages/news.messages');
 
 class NewsService {
-  async getAllNews() {
-    return await News.find();
+  async getAllNews({ skip, limit }) {
+    const items = await News.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await News.find().countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getNewsById(id) {
@@ -49,6 +58,7 @@ class NewsService {
       _id: { $ne: id },
       title: {
         $elemMatch: {
+          value: { $ne: null },
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },

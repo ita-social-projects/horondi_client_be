@@ -47,7 +47,11 @@ const typeDefs = gql`
   }
   type Language {
     lang: String!
-    value: String!
+    value: String
+  }
+  type CurrencySet {
+    currency: String!
+    value: Int!
   }
   type ImageSet {
     large: String
@@ -59,9 +63,21 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+  type Model {
+    id: ID!
+    category: ID!
+    subcategory: ID!
+    name: [Language]
+    description: [Language]
+    images: [ImageSet]
+    priority: Int
+    show: Boolean
+  }
   type Address {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -106,7 +122,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type Size {
@@ -118,7 +134,7 @@ const typeDefs = gql`
     volumeInLiters: Int
     weightInKg: Float
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type UserForComment {
@@ -150,6 +166,15 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedNews {
+    items: [News]
+    count: Int
+  }
+
+  type SuccessfulResponse {
+    isSuccess: Boolean
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -157,6 +182,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union LogicalResult = SuccessfulResponse | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -171,7 +197,7 @@ const typeDefs = gql`
     getAllPatterns: [Pattern!]!
     getPatternById(id: ID): PatternResult
 
-    getAllNews: [News!]!
+    getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
@@ -189,6 +215,8 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getModelsbyCategory(id: ID!): [Model]
   }
 
   input SortInput {
@@ -231,11 +259,17 @@ const typeDefs = gql`
 
   input LanguageInput {
     lang: String!
-    value: String!
+    value: String
+  }
+  input CurrencySetInput {
+    currency: String!
+    value: Int!
   }
   input AddressInput {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -305,7 +339,7 @@ const typeDefs = gql`
     name: [LanguageInput!]
     description: [LanguageInput!]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySetInput]
   }
 
   type Mutation {
@@ -335,7 +369,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: UserInput!, language: Int!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -343,6 +377,9 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
+    switchUserStatus(id: ID!): LogicalResult
+    resetPassword(password: String!, token: String!): Boolean
+    checkIfTokenIsValid(token: String!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -351,8 +388,8 @@ const typeDefs = gql`
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult
-    deleteComment(id: ID!): Comment
-    updateComment(id: ID!, product: commentInput!): Comment
+    deleteComment(id: ID!): CommentResult
+    updateComment(id: ID!, comment: commentInput!): CommentResult
   }
 `;
 

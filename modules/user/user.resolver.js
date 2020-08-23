@@ -22,6 +22,18 @@ const userMutation = {
     : new UserInputError(USER_NOT_AUTHORIZED)),
   confirmUser: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
+  switchUserStatus: async (parent, args) => {
+    try {
+      return await userService.switchUserStatus(args.id);
+    } catch (err) {
+      return {
+        statusCode: 400,
+        message: err.message,
+      };
+    }
+  },
+  resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
+  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
 };
 
 module.exports = {

@@ -26,6 +26,8 @@
   "dependencies": {
     "@azure/identity": "^1.0.3",
     "@azure/keyvault-secrets": "^4.0.4",
+    "@graphql-codegen/cli": "^1.17.7",
+    "@graphql-codegen/fragment-matcher": "^1.17.7",
     "@hapi/joi": "^17.1.1",
     "apollo-boost": "^0.4.9",
     "apollo-cache-inmemory": "^1.6.6",
