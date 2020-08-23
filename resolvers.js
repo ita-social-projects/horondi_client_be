@@ -77,7 +77,7 @@ const resolvers = {
   },
 
   Mutation: {
-    uploadSingleFile: (parent, args) => uploadService.uploadSingleFile(args.file),
+    uploadFiles: (parent, args) => uploadService.uploadFiles(args.files),
 
     ...patternMutation,
 

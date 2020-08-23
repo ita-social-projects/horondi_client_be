@@ -309,7 +309,7 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    uploadSingleFile(file: Upload!): File!
+    uploadFiles(files: [Upload]!): [File]!
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult
