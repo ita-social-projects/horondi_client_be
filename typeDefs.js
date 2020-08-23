@@ -230,13 +230,16 @@ const typeDefs = gql`
     search: String
     isHotItem: Boolean
   }
+
   input RoleEnumInput {
     role: String
   }
+
   input PrimaryImageInput {
     primary: ImageSetInput!
     additional: [ImageSetInput!]
   }
+
   input AuthorInput {
     name: [LanguageInput]
     image: ImageSetInput
@@ -256,10 +259,12 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+
   input CurrencySetInput {
     currency: String!
     value: Int!
   }
+
   input AddressInput {
     country: String
     region: String
@@ -269,18 +274,21 @@ const typeDefs = gql`
     buildingNumber: String
     appartment: String
   }
+
   input UserForCommentInput {
     email: String!
     name: String
     images: ImageSetInput
     isAdmin: Boolean
   }
+
   input ImageSetInput {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   input ColorInput {
     code: Int!
     name: [LanguageInput!]
@@ -288,16 +296,19 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
+
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
   }
+
   input SubcategoryInput {
     categoryCode: String!
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
   }
+
   input CredentialInput {
     source: String
     tokenPass: String
@@ -322,15 +333,17 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   input ProductOptionsAdditonalsInput {
     name: [LanguageInput!]
     description: [LanguageInput!]
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+
   input BasePriceInput {
-    currency: String
-    value: Int
+    currency: String!
+    value: Int!
   }
 
   type Mutation {

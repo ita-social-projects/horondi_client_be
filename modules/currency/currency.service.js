@@ -5,6 +5,13 @@ const {
 } = require('../../error-messages/currency.messages');
 
 class CurrencyService {
+  constructor() {
+    this.currencyTypes = {
+      0: 'UAH',
+      1: 'USD',
+    };
+  }
+
   async getAllCurrencies() {
     return await Currency.find();
   }
@@ -31,6 +38,9 @@ class CurrencyService {
   }
 
   async addCurrency(data) {
+    if (await this.checkCurrencyExist(data)) {
+      throw new Error(CURRENCY_ALREADY_EXIST);
+    }
     return new Currency(data).save();
   }
 
@@ -42,7 +52,7 @@ class CurrencyService {
     throw new Error(CURRENCY_NOT_FOUND);
   }
 
-  async deleteAllInCurrency() {
+  async deleteAllCurrencies() {
     await Currency.deleteMany({});
   }
 

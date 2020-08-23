@@ -44,9 +44,7 @@
     "nodemailer": "^6.4.10",
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
-    "passport-google-token": "^0.1.2",
-    "rotating-file-stream": "^2.0.2",
-    "unirest": "^0.6.0"
+    "passport-google-token": "^0.1.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",
