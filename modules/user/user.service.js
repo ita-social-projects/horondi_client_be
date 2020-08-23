@@ -256,6 +256,16 @@ class UserService {
     return true;
   }
 
+  async switchUserStatus(id) {
+    const user = await this.getUserByFieldOrThrow('_id', id);
+
+    user.banned = !user.banned;
+
+    await user.save();
+
+    return { isSuccess: true };
+  }
+
   async resetPassword(password, token) {
     const { errors } = await validateNewPassword.validateAsync({
       password,
