@@ -3,7 +3,7 @@ type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
-model: [Language]
+model: [Language]!
 name: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
@@ -31,6 +31,7 @@ const productInput = `
 input ProductInput {
 category: ID!
 subcategory: ID!
+model: ID!
 name: [LanguageInput]!
 model: [LanguageInput]!
 description: [LanguageInput]!
