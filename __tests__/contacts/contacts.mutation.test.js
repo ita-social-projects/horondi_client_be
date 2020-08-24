@@ -94,7 +94,7 @@ describe('Contacts mutations test', () => {
         `,
         variables: { contact },
       })
-      .then(res => res)
+      .then(response => response)
       .catch(e => e);
     contactsId = res.data.addContact._id;
     expect(res.data.addContact).toHaveProperty('phoneNumber', '1241241242144');
@@ -165,7 +165,7 @@ describe('Contacts mutations test', () => {
         `,
         variables: { contact },
       })
-      .then(res => res)
+      .then(response => response)
       .catch(e => e);
     expect(res.data.addContact).toBeDefined();
     expect(res.data.addContact).toHaveProperty(
@@ -252,7 +252,7 @@ describe('Contacts mutations test', () => {
         `,
         variables: { id: notExistContactId, contact: updatedContact },
       })
-      .then(res => res)
+      .then(response => response)
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty('message', CONTACT_NOT_FOUND);
     expect(res.data.updateContact).toHaveProperty('statusCode', 404);
@@ -290,7 +290,7 @@ describe('Contacts mutations test', () => {
         `,
         variables: { id: notExistContactId, contact: existingContact },
       })
-      .then(res => res)
+      .then(response => response)
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty('message', CONTACT_NOT_FOUND);
     expect(res.data.updateContact).toHaveProperty('statusCode', 404);
