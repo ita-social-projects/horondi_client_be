@@ -42,7 +42,7 @@ const contactsMutation = {
       return await contactsService.updateContact(args.id, args.contact);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: e.message,
       };
     }
