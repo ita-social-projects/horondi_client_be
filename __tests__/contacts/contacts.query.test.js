@@ -25,10 +25,12 @@ describe('Contacts querries', () => {
                   { lang: "en", value: "Street" }
                 ]
                 email: "test@test.com"
-                images: [
-                  { lang: "uk", value: { medium: "medium.jpg" } }
-                  { lang: "en", value: { medium: "medium.jpg" } }
-                ]
+                images: {
+                  large: "large.jpg"
+                  medium: "medium.jpg"
+                  small: "small.jpg"
+                  thumbnail: "thumbnail.jpg"
+                }
                 link: "https://testURL.com"
               }
             ) {
@@ -44,6 +46,7 @@ describe('Contacts querries', () => {
         `,
       })
       .catch(e => e);
+    console.log(res);
     contactsId = res.data.addContact._id;
   });
 
@@ -91,8 +94,8 @@ describe('Contacts querries', () => {
                 link
               }
               ... on Error {
-                statusCode
                 message
+                statusCode
               }
             }
           }
@@ -101,29 +104,19 @@ describe('Contacts querries', () => {
       .catch(e => e);
     expect(res.data.getContacts).toBeDefined();
     expect(res.data.getContacts).toContainEqual({
-      contacts: {
-        phoneNumber: '1241241242144',
-        openHours: {
-          __typename: 'Language',
-          lang: 'uk',
-          value: 'ПН ...',
-        },
-        address: {
-          __typename: 'Language',
-          lang: 'uk',
-          value: 'Вулиця',
-        },
-        email: 'test@test.com',
-        images: {
-          __typename: 'Language',
-          lang: 'uk',
-          value: {
-            __typename: 'ImageSet',
-            medium: 'medium.jpg',
-          },
-        },
-        link: 'https://testURL.com',
-      },
+      __typename: 'Contact',
+      address: [
+        { __typename: 'Language', lang: 'uk', value: 'Вулиця' },
+        { __typename: 'Language', lang: 'en', value: 'Street' },
+      ],
+      email: 'test@test.com',
+      images: { __typename: 'ImageSet', medium: null },
+      link: 'https://testURL.com',
+      openHours: [
+        { __typename: 'Language', lang: 'uk', value: 'ПН ...' },
+        { __typename: 'Language', lang: 'en', value: 'FR ...' },
+      ],
+      phoneNumber: '1241241242144',
     });
   });
 
@@ -247,8 +240,8 @@ describe('Contacts querries', () => {
                 link
               }
               ... on Error {
-                statusCode
                 message
+                statusCode
               }
             }
           }
