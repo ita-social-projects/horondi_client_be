@@ -4,10 +4,11 @@ const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contacts.messages');
 
-const notExistContactId = '8g311ec5s9g8ee390432a865';
+const notExistContactId = '5f311ec5f2983e390432a8c3';
+
 let contactsId = '';
 
-describe('Contacts querries', () => {
+describe('Contacts queries', () => {
   beforeAll(async () => {
     const res = await client
       .mutate({
@@ -46,7 +47,6 @@ describe('Contacts querries', () => {
         `,
       })
       .catch(e => e);
-    console.log(res);
     contactsId = res.data.addContact._id;
   });
 
@@ -160,8 +160,6 @@ describe('Contacts querries', () => {
         'phoneNumber',
         '1241241242144',
       );
-
-      expect(res.data.getContactById.phoneNumber).toBeInstanceOf(Array);
       expect(res.data.getContactById).toHaveProperty('openHours', [
         {
           __typename: 'Language',
@@ -184,29 +182,15 @@ describe('Contacts querries', () => {
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'a sd',
+          value: 'Street',
         },
       ]);
       expect(res.data.getContactById.address).toBeInstanceOf(Object);
       expect(res.data.getContactById).toHaveProperty('email', 'test@test.com');
-      expect(res.data.getContactById).toHaveProperty('images', [
-        {
-          __typename: 'Language',
-          lang: 'uk',
-          value: {
-            __typename: 'ImageSet',
-            medium: 'medium.jpg',
-          },
-        },
-        {
-          __typename: 'Language',
-          lang: 'en',
-          value: {
-            __typename: 'ImageSet',
-            medium: 'medium.jpg',
-          },
-        },
-      ]);
+      expect(res.data.getContactById).toHaveProperty('images', {
+        __typename: 'ImageSet',
+        medium: null,
+      });
       expect(res.data.getContactById.images).toBeInstanceOf(Object);
       expect(res.data.getContactById).toHaveProperty(
         'link',
@@ -240,8 +224,8 @@ describe('Contacts querries', () => {
                 link
               }
               ... on Error {
-                message
                 statusCode
+                message
               }
             }
           }
