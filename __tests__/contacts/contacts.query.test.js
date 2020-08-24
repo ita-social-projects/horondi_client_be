@@ -44,7 +44,6 @@ describe('Contacts querries', () => {
         `,
       })
       .catch(e => e);
-    console.log('\x1b[44m%s\x1b[0m', res);
     contactsId = res.data.addContact._id;
   });
 
