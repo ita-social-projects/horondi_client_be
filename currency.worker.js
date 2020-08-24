@@ -1,7 +1,10 @@
 const axios = require('axios');
 const Agenda = require('agenda');
 require('dotenv').config();
-const currencyService = require('./modules/currency/currency.service');
+const {
+  currencyService,
+  currencyTypes,
+} = require('./modules/currency/currency.service');
 
 const currencyWorker = () => {
   const agenda = new Agenda({ db: { address: process.env.MONGO_URL } });
@@ -13,11 +16,11 @@ const currencyWorker = () => {
         lastUpdatedDate: Date.now(),
         convertOptions: [
           {
-            name: currencyService.currencyTypes[0],
+            name: currencyTypes.UAH,
             exchangeRate: currency.data.rates.UAH,
           },
           {
-            name: currencyService.currencyTypes[1],
+            name: currencyTypes.USD,
             exchangeRate: 1,
           },
         ],

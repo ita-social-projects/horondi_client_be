@@ -23,7 +23,6 @@ describe('Product queries', () => {
       `,
       variables: { product: newProduct },
     });
-    console.log(createProduct);
     productId = createProduct.data.addProduct._id;
   });
   test('#1 Should receive all products', async () => {

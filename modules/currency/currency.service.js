@@ -5,13 +5,6 @@ const {
 } = require('../../error-messages/currency.messages');
 
 class CurrencyService {
-  constructor() {
-    this.currencyTypes = {
-      0: 'UAH',
-      1: 'USD',
-    };
-  }
-
   async getAllCurrencies() {
     return await Currency.find();
   }
@@ -71,4 +64,9 @@ class CurrencyService {
     return currenciesCount > 0;
   }
 }
-module.exports = new CurrencyService();
+
+const currencyTypes = {
+  UAH: 'UAH',
+  USD: 'USD',
+};
+module.exports = { currencyService: new CurrencyService(), currencyTypes };

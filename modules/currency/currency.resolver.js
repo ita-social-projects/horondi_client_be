@@ -1,4 +1,4 @@
-const currencyService = require('./currency.service');
+const { currencyService } = require('./currency.service');
 const {
   CURRENCY_NOT_FOUND,
 } = require('../../error-messages/currency.messages');
