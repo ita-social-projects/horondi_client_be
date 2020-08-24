@@ -1,5 +1,7 @@
-const Products = require('./product.model');
+const Product = require('./product.model');
 const Size = require('../../models/Size');
+const Model = require('../../models/Model');
+
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -7,11 +9,15 @@ const {
 
 class ProductsService {
   getProductById(id) {
-    return Products.findById(id);
+    return Product.findById(id);
   }
 
   getSizeById(id) {
     return Size.findById(id);
+  }
+
+  getModelsByCategory(id) {
+    return Model.find({ category: id})
   }
 
   filterItems(args = {}) {
@@ -46,8 +52,14 @@ class ProductsService {
     }
     if (price && price.length) {
       filter.basePrice = {
-        $gte: price[0],
-        $lte: price[1],
+        $elemMatch: {
+          currency: "UAH",
+          value: {
+            $gte: price[0],
+            $lte: price[1],
+          }
+        }
+        
       };
     }
     return filter;
@@ -69,12 +81,12 @@ class ProductsService {
         },
       ];
     }
-    const items = await Products.find(filters)
+    const items = await Product.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
 
-    const count = await Products.find(filters).countDocuments();
+    const count = await Product.find(filters).countDocuments();
     return {
       items,
       count,
@@ -82,29 +94,29 @@ class ProductsService {
   }
 
   async updateProduct(id, productData) {
-    const product = await Products.findById(id);
+    const product = await Product.findById(id);
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
     if (await this.checkProductExist(productData, id)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    return Products.findByIdAndUpdate(id, productData, { new: true });
+    return Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(data) {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    return new Products(data).save();
+    return new Product(data).save();
   }
 
   deleteProduct(id) {
-    return Products.findByIdAndDelete(id);
+    return Product.findByIdAndDelete(id);
   }
 
   async checkProductExist(data, id) {
-    const productCount = await Products.countDocuments({
+    const productCount = await Product.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
