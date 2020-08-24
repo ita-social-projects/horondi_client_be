@@ -10,9 +10,10 @@
   },
   "private": "true",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "cross-env NODE_ENV=development nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles ",
     "generate": "graphql-codegen"
   },
@@ -32,6 +33,7 @@
     "bcryptjs": "^2.4.3",
     "config": "^3.2.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "graphql": "^15.1.0",
     "jsonwebtoken": "^8.5.1",
