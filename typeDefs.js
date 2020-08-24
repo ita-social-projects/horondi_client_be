@@ -225,7 +225,7 @@ const typeDefs = gql`
     getModelsbyCategory(id: ID!): [Model]
 
     getContacts: [ContactResult!]!
-    getContactById: ContactResult
+    getContactById(id: ID!): ContactResult
   }
 
   input SortInput {
