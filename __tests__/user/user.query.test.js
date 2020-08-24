@@ -297,3 +297,99 @@ describe('queries', () => {
     });
   });
 });
+
+describe('Testing obtaining information restrictions', () => {
+  let userId;
+  let userToken;
+  let adminToken;
+  let firstName;
+  let lastName;
+
+  beforeAll(() => {
+    firstName = 'Pepo';
+    lastName = 'Markelo';
+    adminId = '9c031d62a3c4909b216e1d86';
+    userId = '5f43af8522155b08109e0304';
+    userToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQzYWY4NTIyMTU1YjA4MTA5ZTAzMDQiLCJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNTk4Mjk3MjExLCJleHAiOjE1OTkxNjEyMTF9.G0qIuYSb89KNnKy7A2QNTmF6xcsGPhtuodNm8yoUC1s';
+    adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5YzAzMWQ2MmEzYzQ5MDliMjE2ZTFkODYiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTU5ODI5NzAzOCwiZXhwIjoxNTk5MTYxMDM4fQ.rr9c-ah-X5F0Vy57fuTxMa0gljYt_qc1mIBpI2lis74';
+  });
+
+  test('Any user doesn`t allowed to obtain information about all users', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          {
+            getAllUsers {
+              _id
+              firstName
+              lastName
+              email
+            }
+          }
+        `,
+        context: {
+          headers: {
+            token: userToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    expect(result.graphQLErrors.length).toBe(1);
+    expect(result.graphQLErrors[0].message).toBe('INVALID_PERMISSIONS');
+  });
+
+  test('Admin can obtain all the information about users', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          {
+            getAllUsers {
+              _id
+              firstName
+              lastName
+              email
+            }
+          }
+        `,
+        context: {
+          headers: {
+            token: adminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.length).toBeGreaterThan(3);
+  });
+
+  test('User can obtain the information about himself', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          query($id: ID!) {
+            getUserById(id: $id) {
+              firstName
+              lastName
+            }
+          }
+        `,
+        variables: {
+          id: userId,
+        },
+        context: {
+          headers: {
+            token: userToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const userInfo = result.data.getUserById;
+
+    expect(userInfo.firstName).toEqual(firstName);
+    expect(userInfo.lastName).toEqual(lastName);
+  });
+});
