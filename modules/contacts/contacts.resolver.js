@@ -2,7 +2,16 @@ const contactsService = require('./contacts.service');
 
 const contactsQuery = {
   getContacts: () => contactsService.getContacts(),
-  getContactById: (parent, args) => contactsService.getContactById(args.id),
+  getContactById: async (parent, args) => {
+    try {
+      return await contactsService.getContactById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const contactsMutation = {
