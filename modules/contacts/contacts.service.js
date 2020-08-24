@@ -50,12 +50,12 @@ class ContactsService {
   async checkContactExist(data, id) {
     const contactCount = await Contact.countDocuments({
       _id: { $ne: id },
-      name: {
+      address: {
         $elemMatch: {
-          $and: [
-            { value: data.phoneNumber },
+          value: { $ne: null },
+          $or: [
             { value: data.address[0].value },
-            { value: data.email },
+            { value: data.address[1].value },
           ],
         },
       },
