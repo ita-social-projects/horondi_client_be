@@ -22,8 +22,8 @@ describe('Contacts queries', () => {
                   { lang: "en", value: "FR ..." }
                 ]
                 address: [
-                  { lang: "uk", value: "Вулиця" }
-                  { lang: "en", value: "Street" }
+                  { lang: "uk", value: "Вулиця 4" }
+                  { lang: "en", value: "Street 4" }
                 ]
                 email: "test@test.com"
                 images: {
@@ -177,12 +177,12 @@ describe('Contacts queries', () => {
         {
           __typename: 'Language',
           lang: 'uk',
-          value: 'Вулиця',
+          value: 'Вулиця 4',
         },
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'Street',
+          value: 'Street 4',
         },
       ]);
       expect(res.data.getContactById.address).toBeInstanceOf(Object);
