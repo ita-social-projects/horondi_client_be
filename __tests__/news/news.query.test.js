@@ -76,7 +76,7 @@ describe('querries', () => {
         query: gql`
           query {
             getAllNews {
-              items{
+              items {
                 title {
                   lang
                   value
@@ -106,7 +106,7 @@ describe('querries', () => {
         `,
       })
       .catch(e => e);
-      console.log(res);
+    console.log(res);
     expect(res.data.getAllNews).toBeDefined();
     expect(res.data.getAllNews.items).toContainEqual({
       __typename: 'News',
