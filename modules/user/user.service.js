@@ -221,7 +221,10 @@ class UserService {
       subject: 'Confirm Email',
       html: confirmationMessage(firstName, token, language),
     };
-    await sendEmail(message);
+
+    if(process.env.NODE_ENV !== 'test')
+      await sendEmail(message);
+      
     return savedUser;
   }
 

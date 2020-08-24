@@ -21,6 +21,7 @@ const server = new ApolloServer({
       };
     }
   },
+  introspection: true,
   cors: { origin: '*' },
 });
 const PORT = process.env.PORT || 5000;
