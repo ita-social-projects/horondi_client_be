@@ -255,7 +255,7 @@ describe('Contacts mutations test', () => {
       .then(res => res)
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty('message', CONTACT_NOT_FOUND);
-    expect(res.data.updateContact).toHaveProperty('statusCode', 400);
+    expect(res.data.updateContact).toHaveProperty('statusCode', 404);
   });
 
   test('#5 update not existing contact should return error', async () => {
@@ -293,7 +293,7 @@ describe('Contacts mutations test', () => {
       .then(res => res)
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty('message', CONTACT_NOT_FOUND);
-    expect(res.data.updateContact).toHaveProperty('statusCode', 400);
+    expect(res.data.updateContact).toHaveProperty('statusCode', 404);
   });
 
   test('#6 delete contact', async () => {
