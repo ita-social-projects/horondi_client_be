@@ -60,6 +60,26 @@ const commentsMutation = {
       };
     }
   },
+  addRate: async (parent, args) => {
+    try {
+      return await commentsService.addRate(args.product, args.userRate);
+    } catch (error) {
+      return {
+        statusCode: 400,
+        message: error.message,
+      };
+    }
+  },
+  updateRate: async (parent, args) => {
+    try {
+      return await commentsService.updateRate(args.product, args.userRate);
+    } catch (error) {
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
+    }
+  },
 };
 
 module.exports = { commentsQuery, commentsMutation };

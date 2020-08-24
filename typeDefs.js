@@ -333,6 +333,10 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+  input UserRateInput {
+    user: ID!
+    rate: Int
+  }
 
   type Mutation {
     "Pattern Mutations"
@@ -381,6 +385,10 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
+
+    "Rate Mutation"
+    addRate(product: ID!, userRate: UserRateInput!): Product
+    updateRate(product: ID!, userRate: UserRateInput!): Product
   }
 `;
 
