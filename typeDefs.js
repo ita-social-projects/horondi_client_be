@@ -335,7 +335,7 @@ const typeDefs = gql`
   }
   input UserRateInput {
     user: ID!
-    rate: Int
+    rate: Int!
   }
 
   type Mutation {
