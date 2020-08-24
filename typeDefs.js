@@ -156,6 +156,7 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
+    getSubcategories(ids: [ID]!): [Category]
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): MaterialResult
@@ -225,18 +226,18 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+  input ImageSetInput {
+    large: String
+    medium: String
+    small: String
+    thumbnail: String
+  }
   input AddressInput {
     country: String
     city: String
     street: String
     buildingNumber: String
     appartment: String
-  }
-  input ImageSetInput {
-    large: String
-    medium: String
-    small: String
-    thumbnail: String
   }
   input ColorInput {
     code: Int!
@@ -270,7 +271,7 @@ const typeDefs = gql`
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): Category
+    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 

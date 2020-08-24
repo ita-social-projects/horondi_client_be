@@ -26,11 +26,35 @@ class CategoryService {
     });
   }
 
-  async addCategory(data) {
-    if (await this.checkCategoryEXist(data)) {
+  async addCategory(data, parentId) {
+    if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    return new Category(data).save();
+    let selectedId = parentId;
+    if (!parentId) {
+      selectedId = null;
+    }
+    const parentCategory = await this.getCategoryById(selectedId);
+    const newCategory = new Category(data);
+
+    if (!parentCategory.isMain) {
+      throw new Error('CATEGORY_IS_NOT_MAIN');
+    }
+    if (parentId && !parentCategory) {
+      throw new Error('CATEGORY_NOT_FOUND');
+    }
+    if (data.isMain && parentCategory) {
+      throw new Error('WRONG_CATEGORY_DATA');
+    }
+    if (!parentCategory.available) {
+      newCategory.available = false;
+    }
+    const savedCategory = await newCategory.save();
+    if (parentCategory) {
+      parentCategory.subcategories.push(savedCategory._id);
+      await parentCategory.save();
+    }
+    return savedCategory;
   }
 
   async deleteCategory(id) {
@@ -46,11 +70,18 @@ class CategoryService {
       _id: { $ne: id },
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });
     return categoriesCount > 0;
   }
+
+  async getSubcategories(ids) {
+    const subcategories = await Category.find({ _id: { $in: ids } });
+
+    return subcategories;
+  }
 }
+
 module.exports = new CategoryService();

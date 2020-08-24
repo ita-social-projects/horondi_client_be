@@ -136,7 +136,7 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = generateToken(user._id, user.email);
+    const token = generateToken(user._id, user.email, { EXPIRES_IN: '10h' });
 
     return {
       user: {
