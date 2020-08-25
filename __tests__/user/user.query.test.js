@@ -299,11 +299,10 @@ describe('queries', () => {
 });
 
 describe('Testing obtaining information restrictions', () => {
-  let userId;
   let userToken;
-  let adminToken;
   let firstName;
   let lastName;
+  let adminToken;
 
   beforeAll(() => {
     firstName = 'Pepo';

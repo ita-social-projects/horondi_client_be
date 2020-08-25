@@ -647,7 +647,6 @@ describe('mutations', () => {
 });
 
 describe('User`s mutation restictions tests', () => {
-  let userId;
   let adminId;
   let userToken;
   let firstName;
@@ -661,7 +660,6 @@ describe('User`s mutation restictions tests', () => {
     adminId = '9c031d62a3c4909b216e1d86';
     userId = '5f43af8522155b08109e0304';
     userToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQzYWY4NTIyMTU1YjA4MTA5ZTAzMDQiLCJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNTk4Mjk3MjExLCJleHAiOjE1OTkxNjEyMTF9.G0qIuYSb89KNnKy7A2QNTmF6xcsGPhtuodNm8yoUC1s';
-    adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5YzAzMWQ2MmEzYzQ5MDliMjE2ZTFkODYiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTU5ODI5NzAzOCwiZXhwIjoxNTk5MTYxMDM4fQ.rr9c-ah-X5F0Vy57fuTxMa0gljYt_qc1mIBpI2lis74';
   });
 
   test('User doesn`t allowed to change another user`s data', async () => {
