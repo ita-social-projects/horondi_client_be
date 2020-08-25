@@ -33,7 +33,6 @@ category: ID!
 subcategory: ID!
 model: ID!
 name: [LanguageInput]!
-model: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
