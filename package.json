@@ -15,7 +15,8 @@
     "lint:fix": "eslint . --fix",
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles ",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "ci": "start-server-and-test test-server http://localhost:6000 test"
   },
   "author": "",
   "license": "ISC",
@@ -45,7 +46,8 @@
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
-    "rotating-file-stream": "^2.0.2"
+    "rotating-file-stream": "^2.0.2",
+    "start-server-and-test": "^1.11.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",
