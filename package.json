@@ -26,6 +26,7 @@
   "dependencies": {
     "@azure/identity": "^1.0.3",
     "@azure/keyvault-secrets": "^4.0.4",
+    "@azure/storage-blob": "^12.2.0-preview.1",
     "@graphql-codegen/cli": "^1.17.7",
     "@graphql-codegen/fragment-matcher": "^1.17.7",
     "@hapi/joi": "^17.1.1",

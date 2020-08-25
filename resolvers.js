@@ -31,7 +31,9 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const uploadService = require('./modules/upload/upload.service');
+const {
+  uploadMutation
+} = require('./modules/upload/upload.resolver');
 const productService = require('./modules/product/product.service');
 
 const SCHEMA_NAMES = {
@@ -87,7 +89,7 @@ const resolvers = {
   },
 
   Mutation: {
-    uploadFiles: (parent, args) => uploadService.uploadFiles(args.files),
+    ...uploadMutation,
 
     ...patternMutation,
 
