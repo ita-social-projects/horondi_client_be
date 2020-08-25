@@ -309,8 +309,8 @@ const typeDefs = gql`
   }
 
   type File {
-    path: ImageSet! 
-    url: String!
+    fileNames: ImageSet! 
+    prefixUrl: String!
   }
 
   input ProductOptionsInput {
@@ -341,7 +341,7 @@ const typeDefs = gql`
 
   type Mutation {
     uploadFiles(files: [Upload]!): [File]!
-    deleteFiles(files: [String]): [String]
+    deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult

@@ -90,8 +90,8 @@ class UploadService {
             })
 
             return {
-                url: process.env.IMAGE_LINK,
-                path: {
+                prefixUrl: process.env.IMAGE_LINK,
+                fileNames: {
                     large: `large_${id}_${filename}`,
                     medium: `medium_${id}_${filename}`,
                     small: `small_${id}_${filename}`,
@@ -102,13 +102,16 @@ class UploadService {
     }
 
     async deleteFiles(files) {
-        return files.map(fileName => 
-            blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
-                if(!err){
-                    return res
-                }
-                throw err
-            })
+        return files.map(fileName => {
+                blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
+                    if(!err){
+                        return res
+                    }
+                    throw err
+                })
+
+                return `Deleted ${fileName}`
+            }
         )
     }
 }
