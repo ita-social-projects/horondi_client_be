@@ -31,6 +31,10 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
+const {
+  uploadMutation
+} = require('./modules/upload/upload.resolver');
+const productService = require('./modules/product/product.service');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -38,6 +42,9 @@ const SCHEMA_NAMES = {
   pattern: 'Pattern',
   material: 'Material',
   currency: 'Currency',
+  product: 'Product',
+  comment: 'Comment',
+  successfulResponse: 'SuccessfulResponse',
 };
 const resolvers = {
   Query: {
@@ -58,8 +65,7 @@ const resolvers = {
     ...commentsQuery,
   },
   Comment: {
-    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
-    product: parent => productsService.getProductsById(parent.product),
+    product: parent => productsService.getProductById(parent.product),
   },
 
   Product: {
@@ -68,12 +74,23 @@ const resolvers = {
     comments: parent => commentsService.getAllCommentsByProduct(parent._id),
   },
 
+  Model: {
+    category: parent => categoryService.getCategoryById(parent.category),
+    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
+  },
+
   ProductOptions: {
     size: parent => productsService.getSizeById(parent.size),
     bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
   },
 
+  UserRate: {
+    user: parent => userService.getUserByFieldOrThrow(parent.user),
+  },
+
   Mutation: {
+    ...uploadMutation,
+
     ...patternMutation,
 
     ...materialMutation,
@@ -126,6 +143,30 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.pattern;
+      }
+      return 'Error';
+    },
+  },
+  ProductResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.product;
+      }
+      return 'Error';
+    },
+  },
+  CommentResult: {
+    __resolveType: obj => {
+      if (obj.product) {
+        return SCHEMA_NAMES.comment;
+      }
+      return 'Error';
+    },
+  },
+  LogicalResult: {
+    __resolveType: obj => {
+      if (obj.isSuccess) {
+        return SCHEMA_NAMES.successfulResponse;
       }
       return 'Error';
     },

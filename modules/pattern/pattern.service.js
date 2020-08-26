@@ -10,14 +10,24 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    return await Pattern.findById(id);
+    const foundPattern = await Pattern.findById(id);
+    if (foundPattern) {
+      return foundPattern;
+    }
+    throw new Error(PATTERN_NOT_FOUND);
   }
 
   async updatePattern(id, pattern) {
-    if (await this.checkPatternExist(pattern)) {
+    const patternToUpdate = await Pattern.findById(id);
+    if (!patternToUpdate) {
+      throw new Error(PATTERN_NOT_FOUND);
+    }
+    if (await this.checkPatternExist(pattern, id)) {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
-    return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
+    return await Pattern.findByIdAndUpdate(id, pattern, {
+      new: true,
+    });
   }
 
   async addPattern(data) {
@@ -28,11 +38,16 @@ class PatternsService {
   }
 
   async deletePattern(id) {
-    return await Pattern.findByIdAndDelete(id);
+    const foundPattern = await Pattern.findByIdAndDelete(id);
+    if (foundPattern) {
+      return foundPattern;
+    }
+    throw new Error(PATTERN_NOT_FOUND);
   }
 
-  async checkPatternExist(data) {
+  async checkPatternExist(data, id) {
     const patternsCount = await Pattern.countDocuments({
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

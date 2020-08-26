@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
           name: [Language],
           description: [Language],
           available: Boolean,
-          additionalPrice: [CurrencySet]
+          additionalPrice: [CurrencySet],
         },
       ],
       availableCount: Number,
@@ -51,15 +51,36 @@ const productSchema = new mongoose.Schema({
   ],
   available: Boolean,
   isHotItem: Boolean,
-  purchasedCount: Number,
-  rate: Number,
-  rateCount: Number,
-  comments: [
+  purchasedCount: {
+    type: Number,
+    default: 0,
+  },
+  rate: {
+    type: Number,
+    default: 0,
+  },
+  rateCount: {
+    type: Number,
+    default: 0,
+  },
+  userRates: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      rate: Number,
     },
   ],
+  comments: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+      },
+    ],
+    default: [],
+  },
 });
 
 module.exports = mongoose.model('Product', productSchema);

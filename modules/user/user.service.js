@@ -6,6 +6,7 @@ const {
   validateRegisterInput,
   validateLoginInput,
   validateUpdateInput,
+  validateNewPassword,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendmail');
@@ -19,27 +20,23 @@ const {
   USER_NOT_FOUND,
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
-  INVALID_PERMISSIONS
+  INVALID_PERMISSIONS,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
   user: 'user',
   admin: 'admin',
-}
+};
 
 const SOURCES = {
   horondi: 'horondi',
-}
+};
 
 class UserService {
-  async checkUserExists(email) {
-    const checkedUser = await User.findOne({
-      email,
-    });
-
-    if (checkedUser) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
-    }
+  async checkIfTokenIsValid(token) {
+    const decoded = jwt.verify(token, process.env.SECRET);
+    await this.getUserByFieldOrThrow('email', decoded.email);
+    return true;
   }
 
   async getUserByFieldOrThrow(key, param) {
@@ -78,7 +75,10 @@ class UserService {
     const user = await this.getUserByFieldOrThrow('_id', id);
 
     if (user._doc.email !== updatedUser.email) {
-      await this.checkUserExists(updatedUser.email);
+      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
+      if (user) {
+        throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      }
     }
 
     return User.findByIdAndUpdate(
@@ -157,7 +157,10 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
 
     const match = await bcrypt.compare(
       password,
@@ -191,7 +194,9 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    await this.checkUserExists(email);
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
@@ -227,10 +232,7 @@ class UserService {
 
   async confirmUser(token) {
     const decoded = jwt.verify(token, process.env.SECRET);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
-    }
+    const user = await this.getUserByFieldOrThrow('email', decoded.email);
     user.confirmed = true;
     await User.findByIdAndUpdate(user._id, user);
     return true;
@@ -251,6 +253,35 @@ class UserService {
       html: recoveryMessage(user.firstName, token, language),
     };
     await sendEmail(message);
+    return true;
+  }
+
+  async switchUserStatus(id) {
+    const user = await this.getUserByFieldOrThrow('_id', id);
+
+    user.banned = !user.banned;
+
+    await user.save();
+
+    return { isSuccess: true };
+  }
+
+  async resetPassword(password, token) {
+    const { errors } = await validateNewPassword.validateAsync({
+      password,
+    });
+
+    if (errors) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+    const decoded = jwt.verify(token, process.env.SECRET);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
+    }
+
+    user.credentials[0].tokenPass = await bcrypt.hash(password, 12);
+    await user.save();
     return true;
   }
 }

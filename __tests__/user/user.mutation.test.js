@@ -6,6 +6,7 @@ require('dotenv').config();
 
 let userId;
 let token;
+let badId;
 
 const testUser = {
   firstName: 'Petro',
@@ -24,6 +25,10 @@ const testUser = {
   orders: [],
   comments: [],
 };
+
+beforeAll(() => {
+  badId = '9c031d62a3c4909b216e1d87';
+});
 
 describe('mutations', () => {
   test('should register user', async () => {
@@ -587,5 +592,56 @@ describe('mutations', () => {
     });
 
     expect(res.data.deleteUser._id).toEqual(userId);
+  });
+
+  test('Should change user status', async () => {
+    const result = await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          switchUserStatus(id: $id) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+      variables: {
+        id: userId,
+      },
+    });
+
+    const { switchUserStatus: response } = result.data;
+
+    expect(response.isSuccess).toEqual(true);
+  });
+
+  test('Should return error when switch status of non-existent user', async () => {
+    const result = await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          switchUserStatus(id: $id) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+      variables: {
+        id: badId,
+      },
+    });
+
+    const { switchUserStatus: response } = result.data;
+
+    expect(response.message).toEqual('USER_NOT_FOUND');
+    expect(response.statusCode).toEqual(400);
   });
 });

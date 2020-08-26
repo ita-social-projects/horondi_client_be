@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ImageSet = require('../common/ImageSet').schema;
 
 const commentSchema = new mongoose.Schema({
   text: {
@@ -10,10 +11,11 @@ const commentSchema = new mongoose.Schema({
     default: Date.now,
   },
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    email: String,
+    name: String,
+    images: ImageSet,
+    isAdmin: Boolean,
   },
-  email: String,
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',

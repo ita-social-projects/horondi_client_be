@@ -5,15 +5,33 @@ const {
 } = require('../../error-messages/news.messages');
 
 class NewsService {
-  async getAllNews() {
-    return await News.find();
+  async getAllNews({ skip, limit }) {
+    const items = await News.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await News.find().countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getNewsById(id) {
-    return await News.findById(id);
+    const foundNews = await News.findById(id);
+    if (foundNews) {
+      return foundNews;
+    }
+    throw new Error(NEWS_NOT_FOUND);
   }
 
   async updateNews(id, news) {
+    const updatedNews = await News.findById(id);
+    if (!updatedNews) {
+      throw new Error(NEWS_NOT_FOUND);
+    }
+
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
@@ -28,7 +46,11 @@ class NewsService {
   }
 
   async deleteNews(id) {
-    return await News.findByIdAndDelete(id);
+    const foundNews = await News.findByIdAndDelete(id);
+    if (foundNews) {
+      return foundNews;
+    }
+    throw new Error(NEWS_NOT_FOUND);
   }
 
   async checkNewsExist(data, id) {
@@ -36,6 +58,7 @@ class NewsService {
       _id: { $ne: id },
       title: {
         $elemMatch: {
+          value: { $ne: null },
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },

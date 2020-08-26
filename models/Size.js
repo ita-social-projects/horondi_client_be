@@ -9,7 +9,7 @@ const SizeSchema = new mongoose.Schema({
   volumeInLiters: Number,
   weightInKg: Number,
   available: Boolean,
-  additionalPrice: [CurrencySet]
+  additionalPrice: [CurrencySet],
 });
 
 module.exports = mongoose.model('Size', SizeSchema);

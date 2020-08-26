@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Language = require('./Language').schema;
+const CurrencySet = require('./CurrencySet').schema;
 const Address = require('../modules/common/Address').schema;
-const Size = require('./Size').schema;
 
 const orderSchema = new mongoose.Schema({
   status: {
@@ -28,24 +28,29 @@ const orderSchema = new mongoose.Schema({
   },
   items: [
     {
-      product: [Language],
-      size: Size,
-      components: [
-        {
-          name: [Language],
-          material: [Language],
-          color: [Language],
-        },
-      ],
+      category: [Language],
+      subcategory: [Language],
+      model: [Language],
+      name: [Language],
+      colors: [[Language]],
       pattern: [Language],
-      pocket: Boolean,
       closure: [Language],
-      closureColor: [Language],
-      actualPrice: Number,
+      closureColor: String,
+      size: {
+        heightInCm: Number,
+        widthInCm: Number,
+        depthInCm: Number,
+        volumeInLiters: Number,
+        weightInKg: Number,
+      },
+      bottomMaterial: [Language],
+      bottomColor: [Language],
+      additions: [[Language]],
+      actualPrice: [CurrencySet],
       quantity: Number,
     },
   ],
-  totalPrice: Number,
+  totalPrice: [CurrencySet],
   paymentMethod: String,
 });
 

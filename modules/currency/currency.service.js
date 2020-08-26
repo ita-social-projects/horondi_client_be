@@ -10,14 +10,24 @@ class CurrencyService {
   }
 
   async getCurrencyById(id) {
-    return await Currency.findById(id);
+    const foundCurrency = await Currency.findById(id);
+    if (foundCurrency) {
+      return foundCurrency;
+    }
+    throw new Error(CURRENCY_NOT_FOUND);
   }
 
   async updateCurrency(id, currency) {
-    if (await this.checkNewsExist(currency)) {
+    const currencyToUpdate = await Currency.findById(id);
+    if (!currencyToUpdate) {
+      throw new Error(CURRENCY_NOT_FOUND);
+    }
+    if (await this.checkCurrencyExist(currency, id)) {
       throw new Error(CURRENCY_ALREADY_EXIST);
     }
-    return await Currency.findByIdAndUpdate(id, currency, { new: true });
+    return await Currency.findByIdAndUpdate(id, currency, {
+      new: true,
+    });
   }
 
   async addCurrency(data) {
@@ -28,11 +38,16 @@ class CurrencyService {
   }
 
   async deleteCurrency(id) {
-    return await Currency.findByIdAndDelete(id);
+    const foundCurrency = await Currency.findByIdAndDelete(id);
+    if (foundCurrency) {
+      return foundCurrency;
+    }
+    throw new Error(CURRENCY_NOT_FOUND);
   }
 
-  async checkCurrencyExist(data) {
+  async checkCurrencyExist(data, id) {
     const currenciesCount = await Currency.countDocuments({
+      _id: { $ne: id },
       convertOptions: {
         $elemMatch: {
           $or: [
