@@ -18,6 +18,10 @@ class MaterialsService {
   }
 
   async updateMaterial(id, material) {
+    const materialToUpdate = await Material.findById(id);
+    if (!materialToUpdate) {
+      throw new Error(MATERIAL_NOT_FOUND);
+    }
     if (await this.checkMaterialExist(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }

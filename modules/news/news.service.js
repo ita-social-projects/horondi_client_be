@@ -10,10 +10,6 @@ class NewsService {
       .skip(skip)
       .limit(limit);
 
-    if (!items) {
-      throw new Error(NEWS_NOT_FOUND);
-    }
-
     const count = await News.find().countDocuments();
 
     return {
@@ -31,6 +27,11 @@ class NewsService {
   }
 
   async updateNews(id, news) {
+    const updatedNews = await News.findById(id);
+    if (!updatedNews) {
+      throw new Error(NEWS_NOT_FOUND);
+    }
+
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
@@ -57,6 +58,7 @@ class NewsService {
       _id: { $ne: id },
       title: {
         $elemMatch: {
+          value: { $ne: null },
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },

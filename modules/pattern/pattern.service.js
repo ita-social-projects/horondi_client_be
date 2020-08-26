@@ -18,6 +18,10 @@ class PatternsService {
   }
 
   async updatePattern(id, pattern) {
+    const patternToUpdate = await Pattern.findById(id);
+    if (!patternToUpdate) {
+      throw new Error(PATTERN_NOT_FOUND);
+    }
     if (await this.checkPatternExist(pattern, id)) {
       throw new Error(PATTERN_ALREADY_EXIST);
     }

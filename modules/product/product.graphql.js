@@ -3,6 +3,7 @@ type Product {
 _id: ID!
 category: Category!
 subcategory: Category!
+model: [Language]!
 name: [Language]!
 description: [Language]!
 mainMaterial: [Language]!
@@ -14,34 +15,38 @@ pattern: [Language]
 patternImages: ImageSet
 closure: [Language]!
 closureColor: String
-basePrice: Int!
+basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
 isHotItem: Boolean!
 purchasedCount: Int
 rate: Float
 rateCount: Int
+userRates: [UserRate]
 comments: [Comment]
 }
 `;
 
 const productInput = `
 input ProductInput {
-subcategory: CategoryInput!
+category: ID!
+subcategory: ID!
+model: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
-images: [PrimaryImageInput]!
-colors: [ColorInput]!
+images: PrimaryImageInput!
+colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]!
 closureColor: String
-basePrice: Int!
+basePrice: [CurrencySetInput]!
 available: Boolean!
 isHotItem: Boolean
+options:[ProductOptionsInput]
 }`;
 
 module.exports = {

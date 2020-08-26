@@ -49,6 +49,10 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+  type CurrencySet {
+    currency: String!
+    value: Int!
+  }
   type ImageSet {
     large: String
     medium: String
@@ -59,9 +63,21 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
+  type Model {
+    id: ID!
+    category: ID!
+    subcategory: ID!
+    name: [Language]
+    description: [Language]
+    images: [ImageSet]
+    priority: Int
+    show: Boolean
+  }
   type Address {
     country: String
+    region: String
     city: String
+    zipcode: Int
     street: String
     buildingNumber: String
     appartment: String
@@ -95,9 +111,10 @@ const typeDefs = gql`
 
   type ProductOptions {
     size: Size
-    bottomMaterial: BottomMaterial
+    bottomMaterial: Material
+    description: [Language]
     bottomColor: [Language]
-    availableCount: Boolean
+    availableCount: Int
     additions: [ProductAdditions]
   }
 
@@ -105,10 +122,11 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
   type Size {
+    _id: ID!
     name: String
     heightInCm: Int
     widthInCm: Int
@@ -116,20 +134,31 @@ const typeDefs = gql`
     volumeInLiters: Int
     weightInKg: Float
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
 
-  type BottomMaterial {
-    name: [Language]
-    description: [Language]
-    colors: [Color]
-    available: Boolean
-    additionalPrice: Int
+  type UserForComment {
+    email: String!
+    name: String
+    images: ImageSet
+    isAdmin: Boolean
+  }
+
+  type UserRate {
+    user: User!
+    rate: Int!
   }
 
   type Error {
     statusCode: Int
     message: String
+  }
+
+  type ProductOptionsAdditonals {
+    name: [Language!]
+    description: [Language!]
+    available: Boolean
+    additionalPrice: Int
   }
 
   type PaginatedProducts {
@@ -142,6 +171,10 @@ const typeDefs = gql`
     count: Int
   }
 
+  type SuccessfulResponse {
+    isSuccess: Boolean
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -149,6 +182,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union LogicalResult = SuccessfulResponse | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -156,7 +190,7 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
-    getSubcategories(ids: [ID]!): [Category]
+    getSubcategories(id: ID!): [Category]
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): MaterialResult
@@ -182,6 +216,8 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getModelsbyCategory(id: ID!): [Model]
   }
 
   input SortInput {
@@ -226,24 +262,38 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+
+  input CurrencySetInput {
+    currency: String!
+    value: Int!
+  }
+  input AddressInput {
+    country: String
+    region: String
+    city: String
+    zipcode: Int
+    street: String
+    buildingNumber: String
+    appartment: String
+  }
+  input UserForCommentInput {
+    email: String!
+    name: String
+    images: ImageSetInput
+    isAdmin: Boolean
+  }
   input ImageSetInput {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
-  input AddressInput {
-    country: String
-    city: String
-    street: String
-    buildingNumber: String
-    appartment: String
-  }
   input ColorInput {
     code: Int!
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
+    simpleName: [LanguageInput!]
   }
   input ConvertOptionInput {
     name: String!
@@ -260,13 +310,40 @@ const typeDefs = gql`
     tokenPass: String
   }
 
+  input ProductOptionsInput {
+    size: ID!
+    bottomMaterial: ID!
+    description: [LanguageInput!]
+    bottomColor: [LanguageInput!]
+    availableCount: Int
+    additions: [ProductOptionsAdditonalsInput]
+  }
+
+  input SizeInput {
+    name: String
+    heightInCm: Int
+    widthInCm: Int
+    depthInCm: Int
+    volumeInLiters: Int
+    weightInKg: Float
+    available: Boolean
+    additionalPrice: Int
+  }
+  input ProductOptionsAdditonalsInput {
+    name: [LanguageInput!]
+    description: [LanguageInput!]
+    available: Boolean
+    additionalPrice: [CurrencySetInput]
+  }
+
   type Mutation {
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!): Pattern
-    deletePattern(id: ID!): Pattern
-    updatePattern(id: ID!, pattern: PatternInput!): Pattern
+    addPattern(pattern: PatternInput!): PatternResult
+    deletePattern(id: ID!): PatternResult
+    updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+
     "Material Mutation"
-    addMaterial(material: MaterialInput!): Material
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
@@ -276,7 +353,7 @@ const typeDefs = gql`
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
     "Currency Mutation"
-    addCurrency(currency: CurrencyInput!): Currency
+    addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
 
@@ -286,7 +363,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: UserInput!, language: Int!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -294,6 +371,9 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
+    switchUserStatus(id: ID!): LogicalResult
+    resetPassword(password: String!, token: String!): Boolean
+    checkIfTokenIsValid(token: String!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -302,8 +382,8 @@ const typeDefs = gql`
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult
-    deleteComment(id: ID!): Comment
-    updateComment(id: ID!, product: commentInput!): Comment
+    deleteComment(id: ID!): CommentResult
+    updateComment(id: ID!, comment: commentInput!): CommentResult
   }
 `;
 

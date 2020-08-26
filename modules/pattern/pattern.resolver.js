@@ -1,10 +1,11 @@
 const patternService = require('./pattern.service');
+const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
 const patternQuery = {
   getAllPatterns: () => patternService.getAllPatterns(),
   getPatternById: async (parent, args) => {
     try {
-      return await patternService.getPatternById(args.id, args.pattern);
+      return await patternService.getPatternById(args.id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -39,10 +40,10 @@ const patternMutation = {
 
   updatePattern: async (parent, args) => {
     try {
-      return await patternService.addPattern(args.id, args.pattern);
+      return await patternService.updatePattern(args.id, args.pattern);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: e.message === PATTERN_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }
