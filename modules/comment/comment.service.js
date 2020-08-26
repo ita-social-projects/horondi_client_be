@@ -56,7 +56,7 @@ class CommentsService {
     const rateToAdd = await Product.findByIdAndUpdate(
       id,
       {
-        rate: newRate.toFixed(2),
+        rate: newRate.toFixed(1),
         rateCount: rateCount++,
         userRates: [...product.userRates, data],
       },
@@ -81,7 +81,7 @@ class CommentsService {
     const rateToUpdate = await Product.findByIdAndUpdate(
       id,
       {
-        rate: newRate.toFixed(2),
+        rate: newRate.toFixed(1),
         userRates: newUserRates,
       },
       { new: true },
