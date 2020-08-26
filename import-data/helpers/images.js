@@ -1,9 +1,9 @@
 const mapToImages = (name) => {
     return {
-        large: 'large-'.concat(name).concat('.jpg'),
-        medium: 'medium-'.concat(name).concat('.jpg'),
-        small: 'small-'.concat(name).concat('.jpg'),
-        thumbnail: 'thumbnail-'.concat(name).concat('.jpg')
+        large: 'large_'.concat(name),
+        medium: 'medium_'.concat(name),
+        small: 'small_'.concat(name),
+        thumbnail: 'thumbnail_'.concat(name)
     }
 };
 

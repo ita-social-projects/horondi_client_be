@@ -28,37 +28,32 @@ const canvasPatternDescription = mapToLanguages([
 ]);
 
 const rolltops = [
-    [['Ролтоп червоний 1', 'Rolltop Red 1'], [[318, 'Темно-червоний', 'Dark-red', 'червоний', 'red']], ['Чорний', 'Black'], 'black', 'black'],
-    [['Ролтоп сірий 1', 'Rolltop Grey 1'], [[213, 'Сизий', 'Slate-grey', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', 'black'],
-    [['Ролтоп зелений 1', 'Rolltop Green 1'], [[207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], ['Чорний', 'Black'], 'black', 'black'],
-    [['Ролтоп рожевий 1', 'Rolltop Pink 1'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', 'pink'],
-    [['Ролтоп кавовий 1', 'Rolltop Coffee 1'], [[304, 'Темно-лососевий', 'Dark-salmon', 'коричневий', 'brown']], ['Вишивка', 'Embroidery'], 'embroidery', 'brown'],
-    [['Ролтоп синій 1', 'Rolltop Blue 1'], [[309, 'Королівський синій', 'Royal-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', 'black'],
-    [['Ролтоп жовтий 1', 'Rolltop Yellow 1'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', 'red'],
-    [['Ролтоп жовтий 2', 'Rolltop Yellow 2'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Олені', 'Deers'], 'deers', 'purple'],
-    [['Ролтоп сірий 2', 'Rolltop Grey 2'], [[208, 'Світло-сталевий', 'Light-steel', 'сірий', 'grey']], ['Олені', 'Deers'], 'deers', 'brown'],
-    [['Ролтоп чорний 1', 'Rolltop Black 1'], [[215, 'Темно-сірий', 'Dark-grey', 'сірий', 'grey']], ['Чорний', 'Black'], 'black', 'black'],
-    [['Ролтоп коричневий 1', 'Rolltop Brown 1'], [[305, 'Насичений коричневий', 'Saddle-brown', 'коричневий', 'brown']], ['Люди', 'People'], 'people', 'brown'],
+    [['Ролтоп червоний 1', 'Rolltop Red 1'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Чорний', 'Black'], 'black', 'black', ['335nr4dqvkebecnuj_27.png', '335nr4dqvkebecnze_28.png', '335nr4dqvkebectld_29.png', '335nr4dqvkebecyfv_30.png', '335nr4dqvkebed33u_31.png', '335nr4dqvkebed7z1_32.jpg', '335nr4dqvkebedcvy_33.jpg', '335nr4dqvkebedpt3_34.jpg', '335nr4dqvkebedzp1_35.jpg', '335nr4dqvkebeeatg_36.jpg']],
+    [['Ролтоп сірий 1', 'Rolltop Grey 1'], [[212, 'Срібний', 'Silver', 'сірий', 'grey']], ['Вишивка', 'Embroidery'], 'embroidery', 'black', ['335nr4ek4kebfcavm_70.png', '335nr4ek4kebfcbae_71.png', '335nr4ek4kebfcgue_72.png', '335nr4ek4kebfcmba_73.png', '335nr4ek4kebfcr44_74.png', '335nr4ek4kebfcvu1_75.jpg', '335nr4ek4kebfd0qo_76.jpg', '335nr4ek4kebfdewo_77.jpg', '335nr4ek4kebfdre4_78.jpg']],
+    [['Ролтоп рожевий 1', 'Rolltop Pink 1'], [[204, 'Світло-рожевий', 'Light-pink', 'рожевий', 'pink']], ['Вишивка', 'Embroidery'], 'embroidery', 'pink', ['335nr4e1gkebesgxb_79.png', '335nr4e1gkebesh7c_80.png', '335nr4e1gkebesmn7_81.png', '335nr4e1gkebestmp_82.png', '335nr4e1gkebesyqv_83.png', '335nr4e1gkebet3se_84.jpg', '335nr4e1gkebet8nl_85.jpg', '335nr4e1gkebetlxn_86.jpg', '335nr4e1gkebeu0v1_87.jpg', '335nr4e1gkebeud5i_88.jpg', '335nr4e1gkebeuqa7_89.jpg']],
+    [['Ролтоп синій 1', 'Rolltop Blue 1'], [[309, 'Королівський синій', 'Royal-blue', 'синій', 'blue']], ['Стрілки', 'Arrows'], 'arrows', 'black', ['335nr4bmtkebc3u7t_37.png', '335nr4bmtkebc3upv_38.png', '335nr4bmtkebc40zf_39.png', '335nr4bmtkebc466e_40.png', '335nr4bmtkebc4bcw_41.png', '335nr4bmtkebc4gm6_42.jpg', '335nr4bmtkebc4lrv_43.jpg', '335nr4bmtkebc6afu_44.jpg', '335nr4bmtkebc6km7_45.jpg']],
+    [['Ролтоп жовтий 1', 'Rolltop Yellow 1'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Квіти', 'Flowers'], 'flowers', 'brown', ['335nr4d20kebdojum_53.png', '335nr4d20kebdok1t_54.png', '335nr4d20kebdopdw_55.png', '335nr4d20kebdouly_57.png', '335nr4d20kebdoz9v_58.jpg', '335nr4d20kebdp40b_60.jpg']],
+    [['Ролтоп жовтий 2', 'Rolltop Yellow 2'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Олені', 'Deers'], 'deers', 'brown', ['335nr49rckeba7th0_19.png', '335nr49rckeba7tqy_20.png', '335nr49rckeba80my_21.png', '335nr49rckeba87ql_22.png', '335nr49rckeba8cjp_23.png', '335nr49rckeba8h4q_24.jpg', '335nr49rckeba8me0_25.jpg', '335nr49rckeba9rms_26.jpg']],
+    [['Ролтоп чорний 1', 'Rolltop Black 1'], [[215, 'Темно-сірий', 'Dark-grey', 'сірий', 'grey']], ['Сірі ромби', 'Grey diamonds'], 'black', 'black', ['335nr4f35kebfxow4_1.png', '335nr4f35kebfxp2b_2.png', '335nr4f35kebfxubm_3.png', '335nr4f35kebfxzi5_4.png', '335nr4f35kebfy3ua_5.jpg', '335nr4f35kebfy8bp_6.jpg', '335nr4f35kebfylbb_7.jpg']],
+    [['Ролтоп оливковий 1', 'Rolltop Olive 1'], [[314, 'Темний хакі', 'Dark-khaki', 'зелений', 'green']], ['Чорний', 'Black'], 'black', 'black', ['335nr4ctikebdd2hg_46.png', '335nr4ctikebdd2s5_47.png', '335nr4ctikebdd876_48.png', '335nr4ctikebddd64_49.png', '335nr4ctikebddhta_50.png', '335nr4ctikebddmjf_52.jpg']],
 ];
 const rolltopNumber = rolltops.length;
 
 const news = [
-    [['Новий червоний', 'New Red'], [[318, 'Темно-червоний', 'Dark-red', 'червоний', 'red']], ['Чорний', 'Black'], 'black', 'black2'],
-    [['Новий жовтий', 'New Yellow'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Синій', 'Blue'], 'blue', 'black2'],
-    [['Новий з деревом', 'New Red with Tree'], [[318, 'Темно-червоний', 'Dark-red', 'червоний', 'red']], ['Олені', 'Deers'], 'deers', 'black2'],
+    [['Новий червоний 1', 'New Red 1'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Чорний', 'Black'], 'black', 'black2', ['335nr4fwekebgzp06_90.png', '335nr4fwekebgzp7b_91.png', '335nr4fwekebgzuys_92.png', '335nr4fwekebh00ep_93.png', '335nr4fwekebh05gn_94.png', '335nr4fwekebh0a75_95.jpg', '335nr4fwekebh0f82_96.jpg', '335nr4fwekebh1jqt_IMG_0224.jpg', '335nr4fwekebh37xp_IMG_0227.jpg']],
+    [['Новий жовтий 1', 'New Yellow 1'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow']], ['Синій', 'Blue'], 'blue', 'black2', ['335nr4gfjkebhks7l_119.png', '335nr4gfjkebhksnw_120.png', '335nr4gfjkebhkxwv_121.png', '335nr4gfjkebhl5il_122.png', '335nr4gfjkebhlaho_123.png', '335nr4gfjkebhlfi7_124.png', '335nr4gfjkebhlk6e_125.png', '335nr4guckebhvsmw_126.jpg', '335nr4guckebhvsvb_127.jpg', '335nr4guckebhw7ub_128.jpg', '335nr4guckebhwjtv_129.jpg', '335nr4guckebhwvv4_130.jpg', '335nr4guckebhx7s4_131.jpg', '335nr4guckebhxnbv_132.jpg']],
+    [['Новий червоний 2', 'New Red 2'], [[205, 'Вишневий', 'Violet-red', 'червоний', 'red']], ['Олені', 'Deers'], 'deers', 'black2', ['335nr4h2gkebi9zm2_103.png', '335nr4h2gkebi9zut_104.png', '335nr4h2gkebia59w_105.png', '335nr4h2gkebiaadc_106.png', '335nr4h2gkebiafko_107.png', '335nr4h2gkebiakrv_108.jpg', '335nr4h2gkebiapt1_109.jpg', '335nr4h2gkebib2zj_110.jpg']],
 ];
 const newsNumber = news.length;
 
 const harbuz = [
-    [['Гарбуз сірий', 'Harbuz Grey'], [[318, 'Темно-червоний', 'Dark-red', 'червоний', 'red'], [213, 'Сизий', 'Slate-grey', 'сірий', 'grey']], [], '', 'black'],
-    [['Гарбуз зелений', 'Harbuz Green'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow'], [207, 'Темно-оливковий', 'Dark-olive', 'зелений', 'green']], [], '', 'black'],
-    [['Гарбуз коричневий', 'Harbuz Brown'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow'], [305, 'Насичений коричневий', 'Saddle-brown', 'коричневий', 'brown']], [], '', 'black'],
+    [['Гарбуз коричневий', 'Harbuz Brown'], [[206, 'Золотий', 'Golden', 'жовтий', 'yellow'], [200, 'Світло-коричневий', 'Light-brown', 'коричневий', 'brown']], [], '', 'black', ['335nr4hiekebio8km_137.png', '335nr4hiekebio8xg_138.png', '335nr4hiekebioehd_139.png', '335nr4hiekebion8o_140.png', '335nr4hiekebioryd_141.png', '335nr4hiekebiowqk_142.jpg', '335nr4hiekebip1kc_143.jpg', '335nr4hiekebipfn9_144.jpg', '335nr4hiekebipsm2_145.jpg']],
 ];
 const harbuzNumber = harbuz.length;
 
 const bags = [
-    [['Сумка з гобеленом', 'Bag with a Pattern'], [[200, 'Світло-коричневий', 'Light-brown', 'коричневий', 'brown']], ['Люди', 'People'], 'people', 'black2'],
-    [['Сумка з гобеленом синя', 'Bag with a Pattern Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Олені', 'Deers'], 'deers', 'black2'],
+    [['Сумка з гобеленом', 'Bag with a Pattern'], [[200, 'Світло-коричневий', 'Light-brown', 'коричневий', 'brown']], ['Люди', 'People'], 'people', 'black2', ['335nr4hvwkebjt0zp_97.png', '335nr4hvwkebjt1cg_98.png', '335nr4hvwkebjt6xk_99.png', '335nr4hvwkebjtbqm_100.jpg', '335nr4hvwkebjtge6_101.jpg', '335nr4hvwkebjtsou_102.jpg']],
+    [['Сумка з гобеленом синя', 'Bag with a Pattern Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], ['Олені', 'Deers'], 'deers', 'black2', ['335nr4ijbkebk0m7o_111.png', '335nr4ijbkebk0mhm_112.png', '335nr4ijbkebk0rww_113.png', '335nr4ijbkebk0wqp_114.jpg', '335nr4ijbkebk119l_115.jpg', '335nr4ijbkebk1apk_116.jpg', '335nr4ijbkebk1lpz_117.jpg', '335nr4ijbkebk1wxm_118.jpg']],
     [['Сумка синя', 'Bag Blue'], [[209, 'Сталево-блакитний', 'Steel-blue', 'синій', 'blue']], [], '', 'black2'],
     [['Сумка "Три кольори"', 'Three Color Bag'], [[211, 'Світло-сірий', 'Light-grey', 'сірий', 'grey'], [213, 'Сизий', 'Slate-grey', 'сірий', 'grey'], [215, 'Темно-сірий', 'Dark-grey', 'сірий', 'grey']], [], '', 'black2'],
     [['Сумка', 'Bag'], [[211, 'Світло-сірий', 'Light-grey', 'сірий', 'grey']], [], '', 'black2'],
@@ -176,11 +171,7 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         strapLengthInCm: strapLengthInCm,
         images: {
             primary: mapToImages('primary_' + i),
-            additional: [
-                mapToImages('additional_'+ i + '_1'),
-                mapToImages('additional_'+ i + '_2'),
-                mapToImages('additional_'+ i + '_3')
-            ]
+            additional: []
         },
         colors: mapToColors(product[1]),
         pattern: pattern,
@@ -190,6 +181,12 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         basePrice: mapToCurrencies(price),
         options: mapToOptions(name, product[4])
     })
+    if (product[5] != undefined) {
+        products[i].images.primary = mapToImages(product[5][0]);
+        for (let j = 1; j < product[5].length; j++){
+            products[i].images.additional[j-1] = mapToImages(product[5][j]);
+        }
+    }
 }
 
 
