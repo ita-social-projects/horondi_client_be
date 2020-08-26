@@ -364,7 +364,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!, language: Int!): User
+    registerUser(user: userRegisterInput!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
