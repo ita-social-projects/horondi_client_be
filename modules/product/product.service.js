@@ -1,9 +1,11 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
 const Model = require('../../models/Model');
+var ObjectId = require('mongoose').Types.ObjectId;
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
+  CATEGORY_NOT_VALID
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
@@ -16,6 +18,8 @@ class ProductsService {
   }
 
   getModelsByCategory(id) {
+    if(!ObjectId.isValid(id))
+      throw new Error(CATEGORY_NOT_VALID)
     return Model.find({ category: id })
   }
 

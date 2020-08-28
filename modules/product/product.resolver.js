@@ -1,5 +1,5 @@
 const productsService = require('./product.service');
-const { PRODUCT_NOT_FOUND, MODEL_NOT_FOUND } = require('../../error-messages/products.messages');
+const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
