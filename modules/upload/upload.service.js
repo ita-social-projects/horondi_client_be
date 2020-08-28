@@ -9,8 +9,36 @@ const containerName = 'images';
 const getStream = require('into-stream');
 const Jimp = require("jimp");
 const uniqid = require('uniqid');
+const util = require('util');
 
 class UploadService {
+
+    async uploadResizedImage(size, imageName, image) {
+        const resizedImage = image.resize(size, Jimp.AUTO)
+    
+        const buffer = await new Promise((resolve, reject) => {
+            resizedImage.getBuffer(resizedImage.getMIME(), (err, buffer) => {
+                if(err)
+                    reject(err)
+                resolve(buffer)
+            })
+        })
+        
+        const blobName = imageName;
+        const stream = getStream(buffer);
+        const streamLength = buffer.length;
+
+
+        return await new Promise((resolve, reject) => {
+            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+                if (err) {
+                    reject(new Error(err))
+                }
+                resolve(blobName)
+            })
+        })
+    }
+    
     async uploadFiles(files) {
         return files.map(async file => {
             const { createReadStream, filename } = await file;
@@ -35,67 +63,25 @@ class UploadService {
                 });
             })
 
-            Jimp.read(inputBuffer).then(image => {
-                image.resize(1920, Jimp.AUTO).getBuffer(image.getMIME(), (err, buffer) => {
-                    const
-                        blobName = `large_${id}_${filename}`,
-                        stream = getStream(buffer),
-                        streamLength = buffer.length
+            const image = await Jimp.read(inputBuffer)
 
+            const createName = (sizeName) => `${sizeName}_${id}_${filename}`
 
-                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                        if (err) {
-                            throw new Error(err)
-                        }
-                    })
-                })
-                image.resize(1080, Jimp.AUTO).getBuffer(image.getMIME(), (err, buffer) => {
-                    const
-                        blobName = `medium_${id}_${filename}`,
-                        stream = getStream(buffer),
-                        streamLength = buffer.length
+            this.uploadResizedImage(1920, createName('large'), image)
 
-                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                        if (err) {
-                            throw new Error(err)
-                        }
-                    })
-                })
+             this.uploadResizedImage(1080, createName('medium'), image)
 
-                image.resize(768, Jimp.AUTO).getBuffer(image.getMIME(), (err, buffer) => {
-                    const
-                        blobName = `small_${id}_${filename}`,
-                        stream = getStream(buffer),
-                        streamLength = buffer.length
+             this.uploadResizedImage(768, createName('small'), image)
 
-                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                        if (err) {
-                            throw new Error(err)
-                        }
-                    })
-                })
-
-                image.resize(128, Jimp.AUTO).getBuffer(image.getMIME(), (err, buffer) => {
-                    const
-                        blobName = `thumbnail_${id}_${filename}`,
-                        stream = getStream(buffer),
-                        streamLength = buffer.length
-
-                    blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
-                        if (err) {
-                            throw new Error(err)
-                        }
-                    })
-                })
-            })
+             this.uploadResizedImage(128, createName('thumbnail'), image)
 
             return {
                 prefixUrl: process.env.IMAGE_LINK,
                 fileNames: {
-                    large: `large_${id}_${filename}`,
-                    medium: `medium_${id}_${filename}`,
-                    small: `small_${id}_${filename}`,
-                    thumbnail: `thumbnail_${id}_${filename}`,
+                    large: createName('large'),
+                    medium: createName('medium'),
+                    small: createName('small'),
+                    thumbnail: createName('thumbnail'),
                 }
             }
         })
