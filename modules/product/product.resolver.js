@@ -22,18 +22,7 @@ const productsQuery = {
       };
     }
   },
-  getModelsByCategory: async (parent, args) => {
-      const models = await productsService.getModelsByCategory(args.id)
-      if (models) {
-        return models;
-      }
-      return {
-        statusCode: 404,
-        message: MODEL_NOT_FOUND,
-      };
-  }
-  
-  
+  getModelsByCategory: async (parent, args) => await productsService.getModelsByCategory(args.id)
 };
 
 const productsMutation = {
