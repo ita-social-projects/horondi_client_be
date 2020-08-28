@@ -69,11 +69,11 @@ class UploadService {
 
             this.uploadResizedImage(1920, createName('large'), image)
 
-             this.uploadResizedImage(1080, createName('medium'), image)
+            this.uploadResizedImage(1080, createName('medium'), image)
 
-             this.uploadResizedImage(768, createName('small'), image)
+            this.uploadResizedImage(768, createName('small'), image)
 
-             this.uploadResizedImage(128, createName('thumbnail'), image)
+            this.uploadResizedImage(128, createName('thumbnail'), image)
 
             return {
                 prefixUrl: process.env.IMAGE_LINK,
@@ -88,16 +88,15 @@ class UploadService {
     }
 
     async deleteFiles(files) {
-        return files.map(fileName => {
+        return files.map(async fileName => 
+            await new Promise((resolve, reject) =>
                 blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
                     if(!err){
-                        return res
+                        resolve(res)
                     }
-                    throw err
+                    reject(err)
                 })
-
-                return `Deleted ${fileName}`
-            }
+            )
         )
     }
 }
