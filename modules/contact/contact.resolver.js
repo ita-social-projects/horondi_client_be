@@ -1,10 +1,10 @@
-const contactsService = require('./contacts.service');
+const contactService = require('./contact.service');
 
-const contactsQuery = {
-  getContacts: () => contactsService.getContacts(),
+const contactQuery = {
+  getContacts: () => contactService.getContacts(),
   getContactById: async (parent, args) => {
     try {
-      return await contactsService.getContactById(args.id);
+      return await contactService.getContactById(args.id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -14,10 +14,10 @@ const contactsQuery = {
   },
 };
 
-const contactsMutation = {
+const contactMutation = {
   addContact: async (parent, args) => {
     try {
-      return await contactsService.addContact(args.contact);
+      return await contactService.addContact(args.contact);
     } catch (e) {
       return {
         statusCode: 400,
@@ -28,7 +28,7 @@ const contactsMutation = {
 
   deleteContact: async (parent, args) => {
     try {
-      return await contactsService.deleteContact(args.id);
+      return await contactService.deleteContact(args.id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -39,7 +39,7 @@ const contactsMutation = {
 
   updateContact: async (parent, args) => {
     try {
-      return await contactsService.updateContact(args.id, args.contact);
+      return await contactService.updateContact(args.id, args.contact);
     } catch (e) {
       return {
         statusCode: 404,
@@ -49,4 +49,4 @@ const contactsMutation = {
   },
 };
 
-module.exports = { contactsQuery, contactsMutation };
+module.exports = { contactQuery, contactMutation };
