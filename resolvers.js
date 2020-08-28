@@ -11,9 +11,9 @@ const {
 } = require('./modules/comment/comment.resolver');
 
 const {
-  contactsQuery,
-  contactsMutation,
-} = require('./modules/contacts/contacts.resolver');
+  contactQuery,
+  contactMutation,
+} = require('./modules/contact/contact.resolver');
 
 const {
   currencyQuery,
@@ -67,7 +67,7 @@ const resolvers = {
 
     ...commentsQuery,
 
-    ...contactsQuery,
+    ...contactQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -110,7 +110,7 @@ const resolvers = {
 
     ...commentsMutation,
 
-    ...contactsMutation,
+    ...contactMutation,
   },
   CategoryResult: {
     __resolveType: obj => {

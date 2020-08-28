@@ -33,7 +33,7 @@ const {
 const {
   contactType,
   contactInput,
-} = require('./modules/contacts/contacts.graphql');
+} = require('./modules/contact/contact.graphql');
 
 const typeDefs = gql`
   ${categoryType}
