@@ -1,12 +1,8 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
-const Model = require('../../models/Model');
-var ObjectId = require('mongoose').Types.ObjectId;
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
-  CATEGORY_NOT_VALID,
-  MODEL_ALREADY_EXIST
 } = require('../../error-messages/products.messages');
 
 class ProductsService {
@@ -16,12 +12,6 @@ class ProductsService {
 
   getSizeById(id) {
     return Size.findById(id);
-  }
-
-  getModelsByCategory(id) {
-    if(!ObjectId.isValid(id))
-      throw new Error(CATEGORY_NOT_VALID)
-    return Model.find({ category: id })
   }
 
   filterItems(args = {}) {
@@ -121,19 +111,8 @@ class ProductsService {
     return new Product(data).save();
   }
 
-  async addModel(data) {
-    if (await this.checkModelExist(data)) {
-      throw new Error(MODEL_ALREADY_EXIST);
-    }
-    return await new Model(data).save();
-  }
-
   deleteProduct(id) {
     return Product.findByIdAndDelete(id);
-  }
-
-  deleteModel(id) {
-    return Model.findByIdAndDelete(id);
   }
 
   async checkProductExist(data, id) {
@@ -146,17 +125,6 @@ class ProductsService {
       },
     });
     return modelCount > 0;
-  }
-
-  async checkModelExist(data) {
-    const productCount = await Model.countDocuments({
-      name: {
-        $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-        },
-      },
-    });
-    return productCount > 0;
   }
 }
 module.exports = new ProductsService();

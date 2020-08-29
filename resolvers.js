@@ -19,6 +19,10 @@ const {
   materialMutation,
 } = require('./modules/material/material.resolver');
 const {
+  modelsQuery,
+  modelsMutation,
+} = require('./modules/model/model.resolver');
+const {
   patternQuery,
   patternMutation,
 } = require('./modules/pattern/pattern.resolver');
@@ -31,7 +35,6 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const productService = require('./modules/product/product.service');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -61,6 +64,8 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...modelsQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -102,6 +107,8 @@ const resolvers = {
     ...productsMutation,
 
     ...commentsMutation,
+
+    ...modelsMutation,
   },
   CategoryResult: {
     __resolveType: obj => {

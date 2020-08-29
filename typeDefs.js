@@ -11,6 +11,10 @@ const {
   productInput,
 } = require('./modules/product/product.graphql');
 const {
+  modelType,
+  modelInput,
+} = require('./modules/model/model.graphql');
+const {
   categoryType,
   categoryInput,
 } = require('./modules/category/category.graphql');
@@ -40,6 +44,7 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${modelType}
 
   enum RoleEnum {
     admin
@@ -138,17 +143,6 @@ const typeDefs = gql`
   type UserRate {
     user: User!
     rate: Int!
-  }
-
-  type Model {
-    _id: ID!
-    category: Category!,
-    subcategory: Category,
-    name: [Language],
-    description: [Language],
-    images: ImageSet,
-    priority: Int,
-    show: Boolean,
   }
 
   type Error {
@@ -260,6 +254,7 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${modelInput}
 
   input LanguageInput {
     lang: String!
@@ -336,16 +331,6 @@ const typeDefs = gql`
     description: [LanguageInput!]
     available: Boolean
     additionalPrice: [CurrencySetInput]
-  }
-
-  input ModelInput {
-    category: ID!,
-    subcategory: ID,
-    name: [LanguageInput],
-    description: [LanguageInput],
-    images: ImageSetInput,
-    priority: Int,
-    show: Boolean,
   }
 
   type Mutation {
