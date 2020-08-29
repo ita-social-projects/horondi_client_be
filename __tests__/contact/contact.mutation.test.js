@@ -5,7 +5,7 @@ const client = require('../../utils/apollo-test-client');
 const {
   CONTACT_ALREADY_EXIST,
   CONTACT_NOT_FOUND,
-} = require('../../error-messages/contacts.messages');
+} = require('../../error-messages/contact.messages');
 
 const contact = {
   phoneNumber: '1241241242144',
@@ -208,7 +208,10 @@ describe('Contacts mutations test', () => {
         variables: { id: contactsId, contact: updatedContact },
       })
       .catch(e => e);
-    expect(res.data.updateContact).toHaveProperty('email', 'test@test.com');
+    expect(res.data.updateContact).toHaveProperty(
+      'email',
+      'updatedtest@updatedtest.com',
+    );
     expect(res.data.updateContact.images).toBeInstanceOf(Object);
     expect(res.data.updateContact).toHaveProperty('images', {
       __typename: 'ImageSet',

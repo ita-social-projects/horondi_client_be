@@ -2,7 +2,7 @@
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
-const { CONTACT_NOT_FOUND } = require('../../error-messages/contacts.messages');
+const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 
 const notExistContactId = '5f311ec5f2983e390432a8c3';
 
