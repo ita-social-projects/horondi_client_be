@@ -1,5 +1,5 @@
 const productsService = require('./product.service');
-const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
+const { PRODUCT_NOT_FOUND, MODEL_NOT_FOUND } = require('../../error-messages/products.messages');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
@@ -46,12 +46,32 @@ const productsMutation = {
       message: PRODUCT_NOT_FOUND,
     };
   },
+  deleteModel: async (parent, args) => {
+    const deletedModel = await productsService.deleteModel(args.id);
+    if (deletedModel) {
+      return deletedModel;
+    }
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
   updateProduct: async (parent, args) => {
     try {
       return await productsService.updateProduct(args.id, args.product);
     } catch (e) {
       return {
         statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
+        message: e.message,
+      };
+    }
+  },
+  addModel: async (parent, args) => {
+    try {
+      return await productsService.addModel(args.model);
+    } catch (e) {
+      return {
+        statusCode: 400,
         message: e.message,
       };
     }

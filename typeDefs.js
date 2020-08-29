@@ -141,8 +141,9 @@ const typeDefs = gql`
   }
 
   type Model {
+    _id: ID!
     category: Category!,
-    subcategory: Category!,
+    subcategory: Category,
     name: [Language],
     description: [Language],
     images: ImageSet,
@@ -184,6 +185,7 @@ const typeDefs = gql`
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
   union LogicalResult = SuccessfulResponse | Error
+  union ModelResult = Model | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -336,6 +338,16 @@ const typeDefs = gql`
     additionalPrice: [CurrencySetInput]
   }
 
+  input ModelInput {
+    category: ID!,
+    subcategory: ID,
+    name: [LanguageInput],
+    description: [LanguageInput],
+    images: ImageSetInput,
+    priority: Int,
+    show: Boolean,
+  }
+
   type Mutation {
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): PatternResult
@@ -383,6 +395,10 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
+    
+    "Model Mutation"
+    addModel(model: ModelInput!): ModelResult
+    deleteModel(id: ID!): ModelResult
   }
 `;
 

@@ -42,6 +42,7 @@ const SCHEMA_NAMES = {
   product: 'Product',
   comment: 'Comment',
   successfulResponse: 'SuccessfulResponse',
+  model: 'Model'
 };
 const resolvers = {
   Query: {
@@ -162,6 +163,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.isSuccess) {
         return SCHEMA_NAMES.successfulResponse;
+      }
+      return 'Error';
+    },
+  },
+  ModelResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.model;
       }
       return 'Error';
     },
