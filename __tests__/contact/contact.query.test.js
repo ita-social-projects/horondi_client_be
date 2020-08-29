@@ -3,6 +3,7 @@ const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
+const { newContact } = require('./contact.variables');
 
 const notExistContactId = '5f311ec5f2983e390432a8c3';
 
@@ -13,28 +14,8 @@ describe('Contacts queries', () => {
     const res = await client
       .mutate({
         mutation: gql`
-          mutation {
-            addContact(
-              contact: {
-                phoneNumber: "1241241242144"
-                openHours: [
-                  { lang: "uk", value: "ПН ..." }
-                  { lang: "en", value: "FR ..." }
-                ]
-                address: [
-                  { lang: "uk", value: "Вулиця 4" }
-                  { lang: "en", value: "Street 4" }
-                ]
-                email: "test@test.com"
-                images: {
-                  large: "large.jpg"
-                  medium: "medium.jpg"
-                  small: "small.jpg"
-                  thumbnail: "thumbnail.jpg"
-                }
-                link: "https://testURL.com"
-              }
-            ) {
+          mutation($contact: contactInput!) {
+            addContact(contact: $contact) {
               ... on Contact {
                 _id
               }
@@ -45,6 +26,7 @@ describe('Contacts queries', () => {
             }
           }
         `,
+        variables: { contact: newContact },
       })
       .catch(e => e);
     contactsId = res.data.addContact._id;
