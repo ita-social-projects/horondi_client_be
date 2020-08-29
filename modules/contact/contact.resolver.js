@@ -6,12 +6,10 @@ const {
 
 const contactQuery = {
   getContacts: () => contactService.getContacts(),
-  getContactById: async (parent, args) => (
-    (await contactService.getContactById(args.id)) || {
-      statusCode: 404,
-      message: CONTACT_NOT_FOUND,
-    }
-  ),
+  getContactById: async (parent, args) => (await contactService.getContactById(args.id)) || {
+    statusCode: 404,
+    message: CONTACT_NOT_FOUND,
+  },
 };
 
 const contactMutation = {
