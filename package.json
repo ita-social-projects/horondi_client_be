@@ -14,9 +14,10 @@
     "apollo-server-core/graphql-upload": "^11.0.0"
   },
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "cross-env NODE_ENV=development nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles ",
     "generate": "graphql-codegen",
     "preinstall": "npx npm-force-resolutions"
@@ -39,6 +40,7 @@
     "bcryptjs": "^2.4.3",
     "config": "^3.2.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "graphql": "^15.1.0",
     "into-stream": "^5.1.1",
