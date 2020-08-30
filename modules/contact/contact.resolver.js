@@ -19,12 +19,14 @@ const contactMutation = {
       message: CONTACT_ALREADY_EXIST,
     }
   ),
+
   deleteContact: async (parent, args) => (
     (await contactService.deleteContact(args.id)) || {
       statusCode: 404,
       message: CONTACT_NOT_FOUND,
     }
   ),
+
   updateContact: async (parent, args) => (
     (await contactService.updateContact(args.id, args.contact)) || {
       statusCode: 404,
