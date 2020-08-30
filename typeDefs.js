@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-express');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,

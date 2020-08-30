@@ -576,23 +576,6 @@ describe('mutations', () => {
     );
   });
 
-  test('should delete user', async () => {
-    const res = await client.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            _id
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
-
-    expect(res.data.deleteUser._id).toEqual(userId);
-  });
-
   test('Should change user status', async () => {
     const result = await client.mutate({
       mutation: gql`
@@ -616,6 +599,23 @@ describe('mutations', () => {
     const { switchUserStatus: response } = result.data;
 
     expect(response.isSuccess).toEqual(true);
+  });
+
+  test('should delete user', async () => {
+    const res = await client.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
+
+    expect(res.data.deleteUser._id).toEqual(userId);
   });
 
   test('Should return error when switch status of non-existent user', async () => {

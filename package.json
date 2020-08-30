@@ -16,7 +16,7 @@
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles ",
     "generate": "graphql-codegen",
-    "ci": "start-server-and-test test-server http://localhost:6000 test"
+    "test-full": "start-server-and-test test-server http://localhost:5000/health test"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-link-http": "^1.5.17",
     "apollo-server": "^2.14.5",
+    "apollo-server-express": "^2.17.0",
     "azure": "^2.3.1-preview",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.5",
