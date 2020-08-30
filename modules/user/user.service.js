@@ -34,6 +34,7 @@ const SOURCES = {
 
 class UserService {
   async checkIfTokenIsValid(token) {
+    console.log(token)
     const decoded = jwt.verify(token, process.env.SECRET);
     await this.getUserByFieldOrThrow('email', decoded.email);
     return true;
