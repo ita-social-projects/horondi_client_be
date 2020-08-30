@@ -40,6 +40,9 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
+const {
+  uploadMutation
+} = require('./modules/upload/upload.resolver');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -100,6 +103,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...uploadMutation,
+
     ...patternMutation,
 
     ...materialMutation,
