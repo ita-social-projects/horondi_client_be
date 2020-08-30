@@ -59,7 +59,7 @@ describe('Product queries', () => {
         variables: { model: { ...newModelMutation, category: categoryId } },
       });
 
-      model = createModel.data.addModel;
+      const model = createModel.data.addModel;
       modelId = model._id;
     
     expect(model).toBeDefined();
@@ -200,18 +200,18 @@ describe('Product queries', () => {
         variables: { model: { ...newModelUpdated, category: categoryId }, id: modelId },
       });
 
-      model = updateModel.data.updateModel;
+      const modelUpdate = updateModel.data.updateModel;
     
-      expect(model).toBeDefined();
-      expect(model).toHaveProperty('name', [ 
+      expect(modelUpdate).toBeDefined();
+      expect(modelUpdate).toHaveProperty('name', [ 
           { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
           { "__typename": "Language", value: "Updated", lang: "en" } 
         ]);
-      expect(model).toHaveProperty('description', [
+      expect(modelUpdate).toHaveProperty('description', [
           { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
           { "__typename": "Language", value: "Updated", lang: "en" } 
         ]);
-      expect(model).toHaveProperty('images', {
+      expect(modelUpdate).toHaveProperty('images', {
           "__typename": "ImageSet",
           "large": "large_new",
           "medium": "medium_new",
@@ -219,7 +219,7 @@ describe('Product queries', () => {
           "thumbnail": "thumbnail_new"
             
       });
-      expect(model).toHaveProperty('category', {"__typename": "Category", "name": categoryName});
+      expect(modelUpdate).toHaveProperty('category', {"__typename": "Category", "name": categoryName});
   });
   test('Should delete model', async () => {
     const deleteModel =  await client.mutate({
@@ -257,25 +257,25 @@ describe('Product queries', () => {
         variables: { id: modelId },
       });
 
-      model = deleteModel.data.deleteModel;
+      const modelDelete = deleteModel.data.deleteModel;
     
-    expect(model).toBeDefined();
-    expect(model).toHaveProperty('name', [ 
+    expect(modelDelete).toBeDefined();
+    expect(modelDelete).toHaveProperty('name', [ 
         { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
         { "__typename": "Language", value: "Updated", lang: "en" } 
       ]);
-    expect(model).toHaveProperty('description', [
+    expect(modelDelete).toHaveProperty('description', [
         { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
         { "__typename": "Language", value: "Updated", lang: "en" } 
       ]);
-    expect(model).toHaveProperty('images', {
+    expect(modelDelete).toHaveProperty('images', {
         "__typename": "ImageSet",
         "large": "large_new",
         "medium": "medium_new",
         "small": "small_new",
         "thumbnail": "thumbnail_new"
     });
-    expect(model).toHaveProperty('category', {"__typename": "Category", "name": categoryName});
+    expect(modelDelete).toHaveProperty('category', {"__typename": "Category", "name": categoryName});
   });
   afterAll(async () => {
     await client.mutate({
