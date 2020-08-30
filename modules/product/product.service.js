@@ -54,12 +54,12 @@ class ProductsService {
     if (price && price.length) {
       filter.basePrice = {
         $elemMatch: {
-          currency: "UAH",
+          currency: 'UAH',
           value: {
             $gte: price[0],
             $lte: price[1],
-          }
-        }
+          },
+        },
       };
     }
     return filter;

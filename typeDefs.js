@@ -34,6 +34,10 @@ const {
   commentType,
   commentInput,
 } = require('./modules/comment/comment.graphql');
+const {
+  contactType,
+  contactInput,
+} = require('./modules/contact/contact.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -45,6 +49,7 @@ const typeDefs = gql`
   ${productType}
   ${commentType}
   ${modelType}
+  ${contactType}
 
   enum RoleEnum {
     admin
@@ -180,6 +185,7 @@ const typeDefs = gql`
   union CommentResult = Comment | Error
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
+  union ContactResult = Contact | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -214,6 +220,9 @@ const typeDefs = gql`
     getAllCommentsByProduct(productId: ID!): [CommentResult]
 
     getModelsByCategory(id: ID!): [Model]
+
+    getContacts: [ContactResult!]!
+    getContactById(id: ID!): ContactResult
   }
 
   input SortInput {
@@ -255,6 +264,7 @@ const typeDefs = gql`
   ${LoginInput}
   ${userRegisterInput}
   ${modelInput}
+  ${contactInput}
 
   input LanguageInput {
     lang: String!
@@ -359,7 +369,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!, language: Int!): User
+    registerUser(user: userRegisterInput!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -385,6 +395,11 @@ const typeDefs = gql`
     addModel(model: ModelInput!): ModelResult
     updateModel(id: ID!, model: ModelInput!): ModelResult
     deleteModel(id: ID!): ModelResult
+
+    "Contacts Mutation"
+    addContact(contact: contactInput!): ContactResult
+    deleteContact(id: ID!): ContactResult
+    updateContact(id: ID!, contact: contactInput!): ContactResult
   }
 `;
 

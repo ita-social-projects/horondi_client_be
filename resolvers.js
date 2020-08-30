@@ -11,6 +11,11 @@ const {
 } = require('./modules/comment/comment.resolver');
 
 const {
+  contactQuery,
+  contactMutation,
+} = require('./modules/contact/contact.resolver');
+
+const {
   currencyQuery,
   currencyMutation,
 } = require('./modules/currency/currency.resolver');
@@ -45,7 +50,8 @@ const SCHEMA_NAMES = {
   product: 'Product',
   comment: 'Comment',
   successfulResponse: 'SuccessfulResponse',
-  model: 'Model'
+  model: 'Model',
+  contact: 'Contact',
 };
 const resolvers = {
   Query: {
@@ -66,6 +72,8 @@ const resolvers = {
     ...commentsQuery,
 
     ...modelsQuery,
+    
+    ...contactQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -109,6 +117,8 @@ const resolvers = {
     ...commentsMutation,
 
     ...modelsMutation,
+    
+    ...contactMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -178,6 +188,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.model;
+      }
+      return 'Error';
+    }
+  },
+  ContactResult: {
+    __resolveType: obj => {
+      if (obj.address) {
+        return SCHEMA_NAMES.contact;
       }
       return 'Error';
     },
