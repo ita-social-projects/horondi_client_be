@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const { newCategory, newModelMutation } = require('./model.variables');
+const { newCategory, newModelMutation, newModelUpdated } = require('./model.variables');
 require('dotenv').config();
 
 let modelId, categoryName, categoryId;
@@ -97,7 +97,10 @@ describe('Product queries', () => {
                     lang
                 }
                 images {
-                    large
+                    large 
+                    medium
+                    small
+                    thumbnail
                 }
                 category {
                     name { 
@@ -136,6 +139,9 @@ describe('Product queries', () => {
                 }
                 images {
                     large
+                    medium
+                    small
+                    thumbnail
                 }
                 category {
                     name { 
@@ -157,6 +163,63 @@ describe('Product queries', () => {
       expect(error).toBeDefined();
       expect(error).toHaveProperty('statusCode', 404);
       expect(error).toHaveProperty('message', 'MODEL_NOT_FOUND');
+  });
+  test('Should update model', async () => {
+    const updateModel = await client.mutate({
+        mutation: gql`
+          mutation($model: ModelInput!, $id: ID!) {
+            updateModel(id: $id, model: $model) {
+                ...on Model {
+                  name {
+                      value
+                      lang
+                  }
+                  description {
+                      value
+                      lang
+                  }
+                  images {
+                      large
+                      medium
+                      small
+                      thumbnail
+                  }
+                  category {
+                    name { 
+                      value
+                    }
+                  }
+                }
+                ...on Error {
+                  statusCode
+                  message
+                }
+              }
+            }
+        `,
+        variables: { model: { ...newModelUpdated, category: categoryId }, id: modelId },
+      });
+
+      model = updateModel.data.updateModel;
+    
+      expect(model).toBeDefined();
+      expect(model).toHaveProperty('name', [ 
+          { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
+          { "__typename": "Language", value: "Updated", lang: "en" } 
+        ]);
+      expect(model).toHaveProperty('description', [
+          { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
+          { "__typename": "Language", value: "Updated", lang: "en" } 
+        ]);
+      expect(model).toHaveProperty('images', {
+          "__typename": "ImageSet",
+          "large": "large_new",
+          "medium": "medium_new",
+          "small": "small_new",
+          "thumbnail": "thumbnail_new"
+            
+      });
+      expect(model).toHaveProperty('category', {"__typename": "Category", "name": categoryName});
   });
   test('Should delete model', async () => {
     const deleteModel =  await client.mutate({
@@ -198,12 +261,12 @@ describe('Product queries', () => {
     
     expect(model).toBeDefined();
     expect(model).toHaveProperty('name', [ 
-        { "__typename": "Language", value: "Мутація", lang: "uk" }, 
-        { "__typename": "Language", value: "Mutation", lang: "en" } 
+        { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
+        { "__typename": "Language", value: "Updated", lang: "en" } 
       ]);
     expect(model).toHaveProperty('description', [
-        { "__typename": "Language", value: "Мутація", lang: "uk" }, 
-        { "__typename": "Language", value: "Mutation", lang: "en" } 
+        { "__typename": "Language", value: "Обновлено", lang: "uk" }, 
+        { "__typename": "Language", value: "Updated", lang: "en" } 
       ]);
     expect(model).toHaveProperty('images', {
         "__typename": "ImageSet",

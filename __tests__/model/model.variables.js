@@ -53,8 +53,27 @@ const newModelMutation = {
   },
 }
 
+const newModelUpdated = {
+  name: [ 
+    { value: "Обновлено", lang: "uk" }, 
+    { value: "Updated", lang: "en" } 
+  ],
+  description: [
+    { value: "Обновлено", lang: "uk" }, 
+    { value: "Updated", lang: "en" } 
+  ],
+  images: {
+    "large": "large_new",
+    "medium": "medium_new",
+    "small": "small_new",
+    "thumbnail": "thumbnail_new"
+  },
+}
+
+
 module.exports = {
   newCategory,
   newModel,
-  newModelMutation
+  newModelMutation,
+  newModelUpdated
 }

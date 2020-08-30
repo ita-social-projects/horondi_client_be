@@ -2,7 +2,8 @@ const Model = require('./model.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 const {
   CATEGORY_NOT_VALID,
-  MODEL_ALREADY_EXIST
+  MODEL_ALREADY_EXIST,
+  MODEL_NOT_FOUND
 } = require('../../error-messages/model.messages');
 const CategoryService = require('../category/category.service')
 
@@ -22,19 +23,30 @@ class ModelsService {
     return await new Model(data).save();
   }
 
+  async updateModel(id, newModel) {
+    const model = await Model.findById(id);
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
+    if (await this.checkModelExist(newModel)) {
+      throw new Error(MODEL_ALREADY_EXIST);
+    }
+    return Model.findByIdAndUpdate(id, newModel, { new: true });
+  }
+
   deleteModel(id) {
     return Model.findByIdAndDelete(id);
   }
 
   async checkModelExist(data) {
-    const productCount = await Model.countDocuments({
+    const modelCount = await Model.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
     });
-    return productCount > 0;
+    return modelCount > 0;
   }
 }
 module.exports = new ModelsService();

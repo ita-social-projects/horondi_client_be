@@ -383,6 +383,7 @@ const typeDefs = gql`
     
     "Model Mutation"
     addModel(model: ModelInput!): ModelResult
+    updateModel(id: ID!, model: ModelInput!): ModelResult
     deleteModel(id: ID!): ModelResult
   }
 `;
