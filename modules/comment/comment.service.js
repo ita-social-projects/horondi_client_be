@@ -49,8 +49,8 @@ class CommentsService {
   async addRate(id, data, user) {
     const product = await Product.findById(id);
     const { userRates } = product;
-    const { rate } = userRates.find(rate => String(rate.user) === String(user._id)) || {};
     let { rateCount } = product;
+    const { rate } = userRates.find(rate => String(rate.user) === String(user._id)) || {};
 
     const rateSum = product.rate * rateCount - (rate ? rate : !!rate) + data.rate;
     rateCount = rate ? rateCount : ++rateCount
