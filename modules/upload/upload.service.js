@@ -9,7 +9,6 @@ const containerName = 'images';
 const getStream = require('into-stream');
 const Jimp = require("jimp");
 const uniqid = require('uniqid');
-const util = require('util');
 
 class UploadService {
 
@@ -18,23 +17,23 @@ class UploadService {
     
         const buffer = await new Promise((resolve, reject) => {
             resizedImage.getBuffer(resizedImage.getMIME(), (err, buffer) => {
-                if(err)
+                if(err){
                     reject(err)
+                }
                 resolve(buffer)
             })
         })
         
-        const blobName = imageName;
         const stream = getStream(buffer);
         const streamLength = buffer.length;
 
 
         return await new Promise((resolve, reject) => {
-            blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => {
+            blobService.createBlockBlobFromStream(containerName, imageName, stream, streamLength, err => {
                 if (err) {
-                    reject(new Error(err))
+                    reject(err)
                 }
-                resolve(blobName)
+                resolve(imageName)
             })
         })
     }
@@ -91,10 +90,10 @@ class UploadService {
         return files.map(async fileName => 
             await new Promise((resolve, reject) =>
                 blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
-                    if(!err){
-                        resolve(res)
+                    if(err){
+                        resolve(err)
                     }
-                    reject(err)
+                    reject(res)
                 })
             )
         )
