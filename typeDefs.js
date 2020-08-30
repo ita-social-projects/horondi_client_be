@@ -241,6 +241,7 @@ const typeDefs = gql`
     search: String
     isHotItem: Boolean
     models: [String]
+    currency: Int
   }
   input RoleEnumInput {
     role: String

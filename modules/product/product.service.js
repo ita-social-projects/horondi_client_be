@@ -17,7 +17,7 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category, isHotItem, models
+      pattern, colors, price, category, isHotItem, models, currency
     } = args;
 
     if (isHotItem) {
@@ -52,9 +52,11 @@ class ProductsService {
       };
     }
     if (price && price.length) {
+      const currencySign =
+      currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
       filter.basePrice = {
         $elemMatch: {
-          currency: 'UAH',
+          currency: currencySign,
           value: {
             $gte: price[0],
             $lte: price[1],
