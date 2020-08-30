@@ -15,7 +15,8 @@
     "lint:fix": "eslint . --fix",
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles ",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "test-full": "start-server-and-test test-server http://localhost:5000/health test"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +30,7 @@
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-link-http": "^1.5.17",
     "apollo-server": "^2.14.5",
+    "apollo-server-express": "^2.17.0",
     "azure": "^2.3.1-preview",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.5",
@@ -45,7 +47,8 @@
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
-    "rotating-file-stream": "^2.0.2"
+    "rotating-file-stream": "^2.0.2",
+    "start-server-and-test": "^1.11.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",
