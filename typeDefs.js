@@ -348,6 +348,9 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+  input UserRateInput {
+    rate: Int!
+  }
 
   type Mutation {
     uploadFiles(files: [Upload]!): [File]!
@@ -399,6 +402,9 @@ const typeDefs = gql`
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
     
+    "Rate Mutation"
+    addRate(product: ID!, userRate: UserRateInput!): ProductResult
+
     "Model Mutation"
     addModel(model: ModelInput!): ModelResult
     updateModel(id: ID!, model: ModelInput!): ModelResult

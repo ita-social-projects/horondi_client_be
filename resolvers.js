@@ -99,7 +99,7 @@ const resolvers = {
   },
 
   UserRate: {
-    user: parent => userService.getUserByFieldOrThrow(parent.user),
+    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
   },
 
   Mutation: {
