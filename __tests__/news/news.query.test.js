@@ -106,7 +106,7 @@ describe('querries', () => {
         `,
       })
       .catch(e => e);
-    console.log(res);
+
     expect(res.data.getAllNews).toBeDefined();
     expect(res.data.getAllNews.items).toContainEqual({
       __typename: 'News',
