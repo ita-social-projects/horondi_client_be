@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const CurrencySet = require('./CurrencySet').schema;
-const Address = require('../modules/common/Address').schema;
+const Language = require('../../models/Language').schema;
+const CurrencySet = require('../../models/CurrencySet').schema;
+const Address = require('../common/Address').schema;
 
 const orderSchema = new mongoose.Schema({
   status: {

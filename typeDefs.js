@@ -11,6 +11,10 @@ const {
   productInput,
 } = require('./modules/product/product.graphql');
 const {
+  orderType,
+  orderInput,
+} = require('./modules/order/order.graphql');
+const {
   modelType,
   modelInput,
 } = require('./modules/model/model.graphql');
@@ -50,6 +54,7 @@ const typeDefs = gql`
   ${commentType}
   ${modelType}
   ${contactType}
+  ${orderType}
 
   enum RoleEnum {
     admin
@@ -72,6 +77,37 @@ const typeDefs = gql`
   type Credential {
     source: String
     tokenPass: String
+  }
+
+  type OrderUser {
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+    address: Address
+  }
+
+  type Delivery {
+    sentOn: String
+    sentBy: String
+    invoiceNumber: String
+  }
+
+  type OrderItems {
+    category: [Language]
+    subcategory: [Language]
+    model: [Language]
+    name: [Language]
+    colors: [[Language]]
+    pattern: [Language]
+    closure: [Language]
+    closureColor: String
+    size: Size,
+    bottomMaterial: [Language]
+    bottomColor: [Language]
+    additions: [[Language]]
+    actualPrice: [CurrencySet]
+    quantity: Int
   }
 
   type Address {
@@ -254,6 +290,38 @@ const typeDefs = gql`
     name: [LanguageInput]
     image: ImageSetInput
   }
+
+  type OrderUserInput {
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+    address: AddressInput
+  }
+
+  type DeliveryInput {
+    sentOn: String
+    sentBy: String
+    invoiceNumber: String
+  }
+
+  type OrderItemsInput {
+    category: [LanguageInput]
+    subcategory: [LanguageInput]
+    model: [LanguageInput]
+    name: [LanguageInput]
+    colors: [[LanguageInput]]
+    pattern: [LanguageInput]
+    closure: [LanguageInput]
+    closureColor: String
+    size: SizeInput,
+    bottomMaterial: [LanguageInput]
+    bottomColor: [LanguageInput]
+    additions: [[LanguageInput]]
+    actualPrice: [CurrencySetInput]
+    quantity: Int
+  }
+
   ${categoryInput}
   ${currencyInput}
   ${materialInput}
@@ -266,6 +334,7 @@ const typeDefs = gql`
   ${userRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${orderInput}
 
   input LanguageInput {
     lang: String!
