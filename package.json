@@ -46,7 +46,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.1.0",
     "into-stream": "^5.1.1",
-    "jimp": "^0.16.0",
+    "jimp": "^0.16.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.18",
     "mongoose-middleware": "^2.0.1",
@@ -58,9 +58,9 @@
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
     "rotating-file-stream": "^2.0.2",
+    "start-server-and-test": "^1.11.3",
     "uniqid": "^5.2.0",
-    "util": "^0.12.3",
-    "start-server-and-test": "^1.11.3"
+    "util": "^0.12.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",
