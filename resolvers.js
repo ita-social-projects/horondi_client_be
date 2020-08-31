@@ -24,6 +24,10 @@ const {
   materialMutation,
 } = require('./modules/material/material.resolver');
 const {
+  modelsQuery,
+  modelsMutation,
+} = require('./modules/model/model.resolver');
+const {
   patternQuery,
   patternMutation,
 } = require('./modules/pattern/pattern.resolver');
@@ -36,7 +40,9 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const productService = require('./modules/product/product.service');
+const {
+  uploadMutation
+} = require('./modules/upload/upload.resolver');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -47,6 +53,7 @@ const SCHEMA_NAMES = {
   product: 'Product',
   comment: 'Comment',
   successfulResponse: 'SuccessfulResponse',
+  model: 'Model',
   contact: 'Contact',
 };
 const resolvers = {
@@ -67,6 +74,8 @@ const resolvers = {
 
     ...commentsQuery,
 
+    ...modelsQuery,
+    
     ...contactQuery,
   },
   Comment: {
@@ -94,6 +103,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...uploadMutation,
+
     ...patternMutation,
 
     ...materialMutation,
@@ -110,6 +121,8 @@ const resolvers = {
 
     ...commentsMutation,
 
+    ...modelsMutation,
+    
     ...contactMutation,
   },
   CategoryResult: {
@@ -175,6 +188,14 @@ const resolvers = {
       }
       return 'Error';
     },
+  },
+  ModelResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.model;
+      }
+      return 'Error';
+    }
   },
   ContactResult: {
     __resolveType: obj => {
