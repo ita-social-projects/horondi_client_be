@@ -1,0 +1,170 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Order queries should recive order by id 1`] = `
+Object {
+  "__typename": "Order",
+  "delivery": Object {
+    "__typename": "Delivery",
+    "invoiceNumber": "6280260",
+    "sentBy": "Nova Poshta",
+  },
+  "items": Array [
+    Object {
+      "__typename": "OrderItems",
+      "actualPrice": Array [
+        Object {
+          "__typename": "CurrencySet",
+          "currency": "UAH",
+          "value": 90000,
+        },
+        Object {
+          "__typename": "CurrencySet",
+          "currency": "USD",
+          "value": 3246,
+        },
+      ],
+      "additions": Array [],
+      "bottomColor": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "чорний",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "black",
+        },
+      ],
+      "bottomMaterial": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "Тканина Кордура",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "Cordura fabric",
+        },
+      ],
+      "category": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "Сумки",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "Bags",
+        },
+      ],
+      "closure": Array [],
+      "closureColor": "",
+      "colors": Array [
+        Array [
+          Object {
+            "__typename": "Language",
+            "lang": "uk",
+            "value": "Сталево-блакитний",
+          },
+          Object {
+            "__typename": "Language",
+            "lang": "en",
+            "value": "Steel-blue",
+          },
+        ],
+      ],
+      "model": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "Сумка з гобеленом",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "Bag with a Pattern",
+        },
+      ],
+      "name": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "Сумка з гобеленом синя",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "Bag with a Pattern Blue",
+        },
+      ],
+      "pattern": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "Олені",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "Deers",
+        },
+      ],
+      "quantity": 1,
+      "size": Object {
+        "__typename": "Size",
+        "depthInCm": 10,
+        "heightInCm": 38,
+        "volumeInLiters": 0,
+        "weightInKg": 0,
+        "widthInCm": 36,
+      },
+      "subcategory": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "Сумки",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "Bags",
+        },
+      ],
+    },
+  ],
+  "paymentMethod": "card",
+  "status": "pending",
+  "totalPrice": Array [
+    Object {
+      "__typename": "CurrencySet",
+      "currency": "UAH",
+      "value": 90000,
+    },
+    Object {
+      "__typename": "CurrencySet",
+      "currency": "USD",
+      "value": 3246,
+    },
+  ],
+  "user": Object {
+    "__typename": "OrderUser",
+    "address": Object {
+      "__typename": "Address",
+      "appartment": "97",
+      "buildingNumber": "25",
+      "city": "Новомиргород",
+      "country": "Україна",
+      "region": "Кіровоградська область",
+      "street": "Бульвар Марії Приймаченко",
+      "zipcode": 98908,
+    },
+    "email": "test@gmail.com",
+    "firstName": "Test",
+    "lastName": "Test",
+    "phoneNumber": "380953544271",
+  },
+}
+`;

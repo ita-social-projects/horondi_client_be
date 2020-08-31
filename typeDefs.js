@@ -222,7 +222,8 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
-
+  union OrderResult = Order | Error
+  
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -235,6 +236,9 @@ const typeDefs = gql`
 
     getAllPatterns: [Pattern!]!
     getPatternById(id: ID): PatternResult
+
+    getAllOrders: [Order!]!
+    getOrderById(id: ID): OrderResult
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
@@ -291,7 +295,7 @@ const typeDefs = gql`
     image: ImageSetInput
   }
 
-  type OrderUserInput {
+  input OrderUserInput {
     firstName: String
     lastName: String
     email: String
@@ -299,13 +303,13 @@ const typeDefs = gql`
     address: AddressInput
   }
 
-  type DeliveryInput {
+  input DeliveryInput {
     sentOn: String
     sentBy: String
     invoiceNumber: String
   }
 
-  type OrderItemsInput {
+  input OrderItemsInput {
     category: [LanguageInput]
     subcategory: [LanguageInput]
     model: [LanguageInput]
@@ -483,6 +487,11 @@ const typeDefs = gql`
     addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
+
+    "Order Mutation"
+    addOrder(order: OrderInput!): OrderResult
+    updateOrder(id: ID!, order: OrderInput!): OrderResult
+    deleteOrder(id: ID!): OrderResult
   }
 `;
 
