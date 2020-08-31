@@ -127,9 +127,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe(
-      'User with provided email already exists',
-    );
+    expect(res.graphQLErrors[0].message).toBe('USER_ALREADY_EXIST');
   });
 
   test('should authorize and recive user token', async () => {
@@ -138,7 +136,7 @@ describe('mutations', () => {
     const res = await client.mutate({
       mutation: gql`
         mutation($email: String!, $password: String!) {
-          loginUser(user: { email: $email, password: $password }) {
+          loginUser(loginInput: { email: $email, password: $password }) {
             _id
             firstName
             lastName
@@ -172,7 +170,10 @@ describe('mutations', () => {
         mutation: gql`
           mutation {
             loginUser(
-              user: { email: "udernotfound@gmail.com", password: "12345678Pt" }
+              loginInput: {
+                email: "udernotfound@gmail.com"
+                password: "12345678Pt"
+              }
             ) {
               _id
               firstName
@@ -184,9 +185,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe(
-      'User with provided email not found',
-    );
+    expect(res.graphQLErrors[0].message).toBe('WRONG_CREDENTIALS');
   });
 
   test('should throw error Wrong password', async () => {
@@ -194,7 +193,7 @@ describe('mutations', () => {
       .mutate({
         mutation: gql`
           mutation($email: String!) {
-            loginUser(user: { email: $email, password: "12345678pT" }) {
+            loginUser(loginInput: { email: $email, password: "12345678pT" }) {
               _id
               firstName
               token
@@ -208,7 +207,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('Wrong password');
+    expect(res.graphQLErrors[0].message).toBe('WRONG_CREDENTIALS');
   });
 
   test('should update user by id', async () => {
@@ -310,6 +309,7 @@ describe('mutations', () => {
       city: testUser.address.city,
       street: testUser.address.street,
       buildingNumber: testUser.address.buildingNumber,
+      __typename: 'Address',
     });
     expect(res.data.updateUserById).toHaveProperty(
       'wishlist',
@@ -411,9 +411,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe(
-      'User with provided _id not found',
-    );
+    expect(res.graphQLErrors[0].message).toBe('USER_NOT_FOUND');
   });
 
   test('should update user by token', async () => {
@@ -515,6 +513,7 @@ describe('mutations', () => {
       city: testUser.address.city,
       street: testUser.address.street,
       buildingNumber: testUser.address.buildingNumber,
+      __typename: 'Address',
     });
     expect(res.data.updateUserByToken).toHaveProperty(
       'wishlist',
@@ -547,7 +546,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('Invalid authorization token');
+    expect(res.graphQLErrors[0].message).toBe('USER_NOT_AUTHORIZED');
   });
 
   test('should throw Invalid authorization token Error', async () => {
@@ -577,23 +576,6 @@ describe('mutations', () => {
     );
   });
 
-  test('should delete user', async () => {
-    const res = await client.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            _id
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
-
-    expect(res.data.deleteUser._id).toEqual(userId);
-  });
-
   test('Should change user status', async () => {
     const result = await client.mutate({
       mutation: gql`
@@ -617,6 +599,23 @@ describe('mutations', () => {
     const { switchUserStatus: response } = result.data;
 
     expect(response.isSuccess).toEqual(true);
+  });
+
+  test('should delete user', async () => {
+    const res = await client.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
+
+    expect(res.data.deleteUser._id).toEqual(userId);
   });
 
   test('Should return error when switch status of non-existent user', async () => {

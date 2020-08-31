@@ -40,7 +40,10 @@ describe('queries', () => {
       mutation: gql`
         mutation {
           loginUser(
-            user: { email: "test.email@gmail.com", password: "12345678Te" }
+            loginInput: {
+              email: "test.email@gmail.com"
+              password: "12345678Te"
+            }
           ) {
             token
           }
@@ -118,6 +121,7 @@ describe('queries', () => {
         }
       `,
     });
+
     expect(res.data.getAllUsers).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
@@ -129,10 +133,12 @@ describe('queries', () => {
         city: 'Kiev',
         street: 'Shevchenka',
         buildingNumber: '23',
+        __typename: 'Address',
       },
       wishlist: [],
       orders: [],
       comments: [],
+      __typename: 'User',
     });
   });
 
@@ -181,6 +187,7 @@ describe('queries', () => {
       city: 'Kiev',
       street: 'Shevchenka',
       buildingNumber: '23',
+      __typename: 'Address',
     });
     expect(res.data.getUserByToken).toHaveProperty('wishlist', []);
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
@@ -235,6 +242,7 @@ describe('queries', () => {
       city: 'Kiev',
       street: 'Shevchenka',
       buildingNumber: '23',
+      __typename: 'Address',
     });
     expect(res.data.getUserById).toHaveProperty('wishlist', []);
     expect(res.data.getUserById).toHaveProperty('orders', []);
@@ -277,9 +285,7 @@ describe('queries', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe(
-      'User with provided _id not found',
-    );
+    expect(res.graphQLErrors[0].message).toBe('USER_NOT_FOUND');
   });
 
   afterAll(async () => {

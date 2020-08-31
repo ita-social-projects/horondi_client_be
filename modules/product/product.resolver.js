@@ -22,7 +22,6 @@ const productsQuery = {
       };
     }
   },
-  getModelsbyCategory: (parent, args) => productsService.getModelsByCategory(args.id),
 };
 
 const productsMutation = {
