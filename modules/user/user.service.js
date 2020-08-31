@@ -136,7 +136,7 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = generateToken(user._id, user.email, { EXPIRES_IN: '10h' });
+    const token = generateToken(user._id, user.email);
 
     return {
       user: {
@@ -222,9 +222,8 @@ class UserService {
       html: confirmationMessage(firstName, token, language),
     };
 
-    if(process.env.NODE_ENV !== 'test')
-      await sendEmail(message);
-      
+    if (process.env.NODE_ENV !== 'test') await sendEmail(message);
+
     return savedUser;
   }
 

@@ -190,7 +190,7 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
-    getSubcategories(id: ID!): [Category]
+    getSubcategories(parentCategoryId: ID!): [Category]
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): MaterialResult

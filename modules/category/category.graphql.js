@@ -1,7 +1,7 @@
 const categoryType = `
     type Category {
     _id: ID!
-    code: String
+    code: String!
     name: [Language]
     images: ImageSet
     subcategories: [ID]

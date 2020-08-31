@@ -4,6 +4,8 @@ const {
   CATEGORY_NOT_FOUND,
   CATEGORY_IS_NOT_MAIN,
   WRONG_CATEGORY_DATA,
+  PARENT_ID_NOT_PROVIDED,
+  CATEGORY_INPUT_ERROR,
 } = require('../../error-messages/category.messages');
 
 class CategoryService {
@@ -21,6 +23,9 @@ class CategoryService {
 
   async updateCategory(id, category) {
     const categoryToUpdate = await Category.findById(id);
+    if (await this.checkCategoryExist(category, id)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
     if (!categoryToUpdate) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -30,22 +35,18 @@ class CategoryService {
   }
 
   async addCategory(data, parentId) {
-    if (data.name.length < 2 || !data.code || (!data.isMain && !parentId)) {
-      throw new Error(WRONG_CATEGORY_DATA);
+    if (data.name.length < 2) {
+      throw new Error(CATEGORY_INPUT_ERROR);
+    }
+    if (!data.isMain && !parentId) {
+      throw new Error(PARENT_ID_NOT_PROVIDED);
     }
     if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    let selectedId = parentId;
-    if (!parentId) {
-      selectedId = null;
-    }
-    const parentCategory = await Category.findOne({ _id: selectedId });
-    const newCategory = new Category(data);
 
-    if (selectedId && !parentCategory) {
-      throw new Error(CATEGORY_NOT_FOUND);
-    }
+    const parentCategory = await this.getCategoryById(parentId);
+    const newCategory = new Category(data);
     const savedCategory = await newCategory.save();
     if (parentCategory) {
       if (!parentCategory.isMain) {
@@ -100,10 +101,10 @@ class CategoryService {
     if (!category.isMain) {
       return [];
     }
-    const idList = category.subcategories.length
-      ? category.subcategories
-      : [''];
-    return await Category.find({ _id: { $in: idList } });
+    if (!category.subcategories.length) {
+      return [];
+    }
+    return await Category.find({ _id: { $in: category.subcategories } });
   }
 }
 

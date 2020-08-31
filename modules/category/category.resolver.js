@@ -18,9 +18,8 @@ const categoryQuery = {
   },
   getSubcategories: async (parent, args) => {
     try {
-      return await categoryService.getSubcategories(args.id);
+      return await categoryService.getSubcategories(args.parentCategoryId);
     } catch (e) {
-      console.log(e.message);
       return {
         statusCode: 400,
         message: e.message,
