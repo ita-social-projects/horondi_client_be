@@ -300,16 +300,76 @@ describe('queries', () => {
 
 describe('Testing obtaining information restrictions', () => {
   let userToken;
+  let userLogin;
+  let userPassword;
+  let adminLogin;
+  let adminPassword;
   let firstName;
   let lastName;
   let adminToken;
 
   beforeAll(() => {
+    userLogin = 'example@gmail.com';
+    userPassword = 'qwertY123';
+    adminLogin = 'admin@gmail.com';
+    adminPassword = 'qwertY123';
     firstName = 'Pepo';
     lastName = 'Markelo';
     userId = '5f43af8522155b08109e0304';
-    userToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQzYWY4NTIyMTU1YjA4MTA5ZTAzMDQiLCJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNTk4Mjk3MjExLCJleHAiOjE1OTkxNjEyMTF9.G0qIuYSb89KNnKy7A2QNTmF6xcsGPhtuodNm8yoUC1s';
-    adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI5YzAzMWQ2MmEzYzQ5MDliMjE2ZTFkODYiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTU5ODI5NzAzOCwiZXhwIjoxNTk5MTYxMDM4fQ.rr9c-ah-X5F0Vy57fuTxMa0gljYt_qc1mIBpI2lis74';
+  });
+
+  test('User must login', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: LoginInput!) {
+            loginUser(loginInput: $user) {
+              token
+              _id
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: userLogin,
+            password: userPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const userInfo = result.data;
+
+    expect(userInfo.loginUser).not.toEqual(null);
+
+    userToken = userInfo.loginUser.token;
+  });
+
+  test('Admin must login', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($admin: LoginInput!) {
+            loginAdmin(loginInput: $admin) {
+              token
+              _id
+            }
+          }
+        `,
+        variables: {
+          admin: {
+            email: adminLogin,
+            password: adminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const adminInfo = await result.data;
+
+    expect(adminInfo.loginAdmin).not.toEqual(null);
+
+    adminToken = adminInfo.loginAdmin.token;
   });
 
   test('Any user doesn`t allowed to obtain information about all users', async () => {

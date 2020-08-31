@@ -652,14 +652,43 @@ describe('User`s mutation restictions tests', () => {
   let firstName;
   let lastName;
   let email;
+  let password;
 
   beforeAll(() => {
     firstName = 'Pepo';
     lastName = 'Markelo';
     email = 'example@gmail.com';
+    password = 'qwertY123';
     adminId = '9c031d62a3c4909b216e1d86';
     userId = '5f43af8522155b08109e0304';
-    userToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQzYWY4NTIyMTU1YjA4MTA5ZTAzMDQiLCJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNTk4Mjk3MjExLCJleHAiOjE1OTkxNjEyMTF9.G0qIuYSb89KNnKy7A2QNTmF6xcsGPhtuodNm8yoUC1s';
+  });
+
+  test('User must login', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: LoginInput!) {
+            loginUser(loginInput: $user) {
+              token
+              _id
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email,
+            password,
+          },
+        },
+      })
+      .catch(err => err);
+
+    console.log(result);
+    const userInfo = result.data;
+
+    expect(userInfo.loginUser).not.toEqual(null);
+
+    userToken = userInfo.loginUser.token;
   });
 
   test('User doesn`t allowed to change another user`s data', async () => {

@@ -41,6 +41,8 @@ const typeDefs = gql`
   ${productType}
   ${commentType}
 
+  scalar Upload
+
   enum RoleEnum {
     admin
     user

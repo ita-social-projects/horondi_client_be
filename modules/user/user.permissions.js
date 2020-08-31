@@ -7,7 +7,7 @@ const {
 
 const userPermissionsQuery = {
   getAllUsers: isAuthorizedAdmin,
-  getUserByToken: or(isAuthorizedAdmin, isTheSameUser),
+  getUserByToken: or(isAuthorizedAdmin, isAuthorized),
   getUserById: or(isAuthorizedAdmin, isTheSameUser),
 };
 const userPermissionsMutations = {
