@@ -51,6 +51,8 @@ const typeDefs = gql`
   ${modelType}
   ${contactType}
 
+  scalar Upload
+
   enum RoleEnum {
     admin
     user

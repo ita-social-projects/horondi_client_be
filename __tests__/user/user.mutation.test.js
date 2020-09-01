@@ -26,11 +26,11 @@ const testUser = {
   comments: [],
 };
 
-beforeAll(() => {
-  badId = '9c031d62a3c4909b216e1d87';
-});
-
 describe('mutations', () => {
+  beforeAll(() => {
+    badId = '9c031d62a3c4909b216e1d87';
+  });
+
   test('should register user', async () => {
     const {
       firstName, lastName, email, password,
@@ -642,5 +642,127 @@ describe('mutations', () => {
 
     expect(response.message).toEqual('USER_NOT_FOUND');
     expect(response.statusCode).toEqual(400);
+  });
+});
+
+describe('User`s mutation restictions tests', () => {
+  let adminId;
+  let userToken;
+  let firstName;
+  let lastName;
+  let email;
+  let password;
+
+  beforeAll(() => {
+    firstName = 'Pepo';
+    lastName = 'Markelo';
+    email = 'example@gmail.com';
+    password = 'qwertY123';
+    adminId = '9c031d62a3c4909b216e1d86';
+    userId = '5f43af8522155b08109e0304';
+  });
+
+  test('User must login', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: LoginInput!) {
+            loginUser(loginInput: $user) {
+              token
+              _id
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email,
+            password,
+          },
+        },
+      })
+      .catch(err => err);
+
+    console.log(result);
+    const userInfo = result.data;
+
+    expect(userInfo.loginUser).not.toEqual(null);
+
+    userToken = userInfo.loginUser.token;
+  });
+
+  test('User doesn`t allowed to change another user`s data', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: UserInput!, $id: ID!) {
+            updateUserById(user: $user, id: $id) {
+              firstName
+              lastName
+            }
+          }
+        `,
+        variables: {
+          user: { firstName, lastName, email },
+          id: adminId,
+        },
+        context: {
+          headers: {
+            token: userToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    expect(result.graphQLErrors.length).toBe(1);
+    expect(result.graphQLErrors[0].message).toEqual('WRONG_CREDENTIALS');
+  });
+
+  test('User can change his own data', async () => {
+    const res = await client.mutate({
+      mutation: gql`
+        mutation($user: UserInput!, $id: ID!) {
+          updateUserById(user: $user, id: $id) {
+            firstName
+            lastName
+          }
+        }
+      `,
+      variables: {
+        user: { firstName, lastName, email },
+        id: userId,
+      },
+      context: {
+        headers: {
+          token: userToken,
+        },
+      },
+    });
+
+    const userInfo = res.data.updateUserById;
+
+    expect(userInfo.firstName).toBe(firstName);
+    expect(userInfo.lastName).toBe(lastName);
+  });
+
+  test('Unknown user doesn`t allowed to change any data', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: UserInput!, $id: ID!) {
+            updateUserById(user: $user, id: $id) {
+              firstName
+              lastName
+            }
+          }
+        `,
+        variables: {
+          user: { firstName, lastName, email },
+          id: userId,
+        },
+      })
+      .catch(err => err);
+
+    expect(result.graphQLErrors.length).toBe(1);
+    expect(result.graphQLErrors[0].message).toEqual('USER_NOT_AUTHORIZED');
   });
 });
