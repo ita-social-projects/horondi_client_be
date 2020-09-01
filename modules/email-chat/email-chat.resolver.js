@@ -1,10 +1,10 @@
-const EmailChatService = require('./email-chat.service');
+const emailChatService = require('./email-chat.service');
 const { CHAT_NOT_FOUND } = require('../../error-messages/email-chat.messages');
 
 const emailChatQuery = {
-  getAllEmailChats: async (parent, args) => await EmailChatService.getAllChats(),
+  getAllEmailChats: async (parent, args) => await emailChatService.getAllChats(),
   getEmailChatById: async (parent, args) => {
-    const chat = await EmailChatService.getEmailChatById(args.id);
+    const chat = await emailChatService.getEmailChatById(args.id);
     if (chat) {
       return chat;
     }
@@ -16,10 +16,10 @@ const emailChatQuery = {
 };
 
 const emailChatMutation = {
-  addEmailChat: async (parent, args) => await EmailChatService.addEmailChat(args.chat),
+  addEmailChat: async (parent, args) => await emailChatService.addEmailChat(args.chat),
   updateEmailChat: async (parent, args) => {
     try {
-      return await EmailChatService.updateEmailChat(args.id, args.chat);
+      return await emailChatService.updateEmailChat(args.id, args.chat);
     } catch (error) {
       return {
         statusCode: 404,
@@ -29,7 +29,7 @@ const emailChatMutation = {
   },
   deleteEmailChat: async (parent, args) => {
     try {
-      return await EmailChatService.deleteEmailChat(args.id);
+      return await emailChatService.deleteEmailChat(args.id);
     } catch (error) {
       return {
         statusCode: 404,
