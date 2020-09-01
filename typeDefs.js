@@ -388,7 +388,7 @@ const typeDefs = gql`
     updateComment(id: ID!, comment: commentInput!): CommentResult
 
     "BusinessText Mutation"
-    addBusinessText(businessText: BusinessTextInput!): BusinessText
+    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
     deleteBusinessText(id: ID!): BusinessTextResult
     updateBusinessText(
       id: ID!
