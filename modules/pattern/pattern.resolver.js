@@ -2,7 +2,7 @@ const patternService = require('./pattern.service');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
 const patternQuery = {
-  getAllPatterns: () => patternService.getAllPatterns(),
+  getAllPatterns: (pattern, args) => patternService.getAllPatterns(args),
   getPatternById: async (parent, args) => {
     try {
       return await patternService.getPatternById(args.id);
