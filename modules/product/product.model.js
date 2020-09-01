@@ -15,12 +15,9 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
-  model: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Model',
-  },
   name: [Language],
   description: [Language],
+  model: [Language],
   mainMaterial: [Language],
   innerMaterial: [Language],
   strapLengthInCm: Number,
