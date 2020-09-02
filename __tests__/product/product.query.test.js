@@ -42,10 +42,6 @@ describe('Product queries', () => {
       variables: { model: { ...newModel, category: categoryId } },
     });
     modelId = createModel.data.addModel._id;
-    console.log(`categoryId - ${categoryId}`)
-    console.log(`subcategoryId - ${subcategoryId}`)
-    console.log(`modelId - ${modelId}`)
-
     const createProduct = await client.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
@@ -59,7 +55,6 @@ describe('Product queries', () => {
       variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
     });
     productId = createProduct.data.addProduct._id;
-    console.log(createProduct)
   });
   test('#1 Should receive all products', async () => {
     const products = await client.query({

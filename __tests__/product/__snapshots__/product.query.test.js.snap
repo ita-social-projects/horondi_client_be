@@ -2126,7 +2126,7 @@ Array [
     ],
     "category": Object {
       "__typename": "Category",
-      "_id": "5f4f48fd3d1a381f5440a691",
+      "_id": "5f4f53c63c96061edc346b61",
     },
     "closureColor": "black",
     "description": Array [
@@ -2186,7 +2186,7 @@ Array [
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
-      "_id": "5f4f48fd3d1a381f5440a691",
+      "_id": "5f4f53c63c96061edc346b61",
     },
   },
 ]
