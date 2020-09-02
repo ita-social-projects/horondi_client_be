@@ -35,6 +35,10 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const {
+  deliveryQuery,
+} = require('./modules/delivery/delivery.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -55,6 +59,8 @@ const SCHEMA_NAMES = {
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
+  deliveryCity: 'DeliveryCity',
+  deliveryWarehouse: 'DeliveryWarehouse'
 };
 const resolvers = {
   Query: {
@@ -77,6 +83,8 @@ const resolvers = {
     ...modelsQuery,
     
     ...contactQuery,
+
+    ...deliveryQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -201,6 +209,22 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
+      }
+      return 'Error';
+    },
+  },
+  DeliveryCityResult: {
+    __resolveType: obj => {
+      if (obj.Ref) {
+        return SCHEMA_NAMES.deliveryCity;
+      }
+      return 'Error';
+    },
+  },
+  DeliveryWarehouseResult: {
+    __resolveType: obj => {
+      if (obj.Ref) {
+        return SCHEMA_NAMES.deliveryWarehouse;
       }
       return 'Error';
     },

@@ -178,6 +178,22 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+  type DeliveryCity {
+    Description: String
+    Ref: String
+    CityID: String
+  }
+
+  type DeliveryWarehouse {
+    Description: String
+    ShortAddress: String
+    Number: Int
+    PlaceMaxWeightAllowed:  Int
+    TotalMaxWeightAllowed: Int
+    Phone: String
+    Ref: String
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -188,6 +204,8 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union DeliveryCityResult = DeliveryCity | Error
+  union DeliveryWarehouseResult = DeliveryWarehouse | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -225,6 +243,9 @@ const typeDefs = gql`
 
     getContacts: [ContactResult!]!
     getContactById(id: ID!): ContactResult
+
+    getDeliveryCities(city: String):[DeliveryCityResult]
+    getDeliveryWarehouses(city: String): [DeliveryWarehouseResult]
   }
 
   input SortInput {
