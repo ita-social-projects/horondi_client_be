@@ -4,7 +4,7 @@ const client = require('../../utils/apollo-test-client');
 const { badProductId, newProduct } = require('./product.variables');
 require('dotenv').config();
 
-let productId;
+let productId
 
 describe('Product queries', () => {
   beforeAll(async () => {

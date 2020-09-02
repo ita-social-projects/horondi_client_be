@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const ImageSet = require('../modules/common/ImageSet').schema;
+const Language = require('../../models/Language').schema;
+const ImageSet = require('../common/ImageSet').schema;
 
 const ContactSchema = new mongoose.Schema({
   phoneNumber: Number,
   openHours: [Language],
-  address: String,
+  address: [Language],
   email: String,
   images: [
     {

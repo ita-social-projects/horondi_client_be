@@ -40,7 +40,10 @@ describe('queries', () => {
       mutation: gql`
         mutation {
           loginUser(
-            user: { email: "test.email@gmail.com", password: "12345678Te" }
+            loginInput: {
+              email: "test.email@gmail.com"
+              password: "12345678Te"
+            }
           ) {
             token
           }
@@ -118,6 +121,7 @@ describe('queries', () => {
         }
       `,
     });
+
     expect(res.data.getAllUsers).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
@@ -129,10 +133,12 @@ describe('queries', () => {
         city: 'Kiev',
         street: 'Shevchenka',
         buildingNumber: '23',
+        __typename: 'Address',
       },
       wishlist: [],
       orders: [],
       comments: [],
+      __typename: 'User',
     });
   });
 
@@ -181,6 +187,7 @@ describe('queries', () => {
       city: 'Kiev',
       street: 'Shevchenka',
       buildingNumber: '23',
+      __typename: 'Address',
     });
     expect(res.data.getUserByToken).toHaveProperty('wishlist', []);
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
@@ -235,6 +242,7 @@ describe('queries', () => {
       city: 'Kiev',
       street: 'Shevchenka',
       buildingNumber: '23',
+      __typename: 'Address',
     });
     expect(res.data.getUserById).toHaveProperty('wishlist', []);
     expect(res.data.getUserById).toHaveProperty('orders', []);
@@ -277,9 +285,7 @@ describe('queries', () => {
       .catch(err => err);
 
     expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe(
-      'User with provided _id not found',
-    );
+    expect(res.graphQLErrors[0].message).toBe('USER_NOT_FOUND');
   });
 
   afterAll(async () => {
@@ -295,5 +301,159 @@ describe('queries', () => {
         userId,
       },
     });
+  });
+});
+
+describe('Testing obtaining information restrictions', () => {
+  let userToken;
+  let userLogin;
+  let userPassword;
+  let adminLogin;
+  let adminPassword;
+  let firstName;
+  let lastName;
+  let adminToken;
+
+  beforeAll(() => {
+    userLogin = 'example@gmail.com';
+    userPassword = 'qwertY123';
+    adminLogin = 'admin@gmail.com';
+    adminPassword = 'qwertY123';
+    firstName = 'Pepo';
+    lastName = 'Markelo';
+    userId = '5f43af8522155b08109e0304';
+  });
+
+  test('User must login', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: LoginInput!) {
+            loginUser(loginInput: $user) {
+              token
+              _id
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: userLogin,
+            password: userPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const userInfo = result.data;
+
+    expect(userInfo.loginUser).not.toEqual(null);
+
+    userToken = userInfo.loginUser.token;
+  });
+
+  test('Admin must login', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($admin: LoginInput!) {
+            loginAdmin(loginInput: $admin) {
+              token
+              _id
+            }
+          }
+        `,
+        variables: {
+          admin: {
+            email: adminLogin,
+            password: adminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const adminInfo = await result.data;
+
+    expect(adminInfo.loginAdmin).not.toEqual(null);
+
+    adminToken = adminInfo.loginAdmin.token;
+  });
+
+  test('Any user doesn`t allowed to obtain information about all users', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          {
+            getAllUsers {
+              _id
+              firstName
+              lastName
+              email
+            }
+          }
+        `,
+        context: {
+          headers: {
+            token: userToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    expect(result.graphQLErrors.length).toBe(1);
+    expect(result.graphQLErrors[0].message).toBe('INVALID_PERMISSIONS');
+  });
+
+  test('Admin can obtain all the information about users', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          {
+            getAllUsers {
+              _id
+              firstName
+              lastName
+              email
+            }
+          }
+        `,
+        context: {
+          headers: {
+            token: adminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.length).toBeGreaterThan(3);
+  });
+
+  test('User can obtain the information about himself', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          query($id: ID!) {
+            getUserById(id: $id) {
+              firstName
+              lastName
+            }
+          }
+        `,
+        variables: {
+          id: userId,
+        },
+        context: {
+          headers: {
+            token: userToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const userInfo = result.data.getUserById;
+
+    expect(userInfo.firstName).toEqual(firstName);
+    expect(userInfo.lastName).toEqual(lastName);
   });
 });

@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-express');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -10,6 +10,10 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
+const {
+  modelType,
+  modelInput,
+} = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -34,6 +38,11 @@ const {
   emailChatType,
   emailChatInput,
 } = require('./modules/email-chat/email-chat.graphql');
+const {
+  contactType,
+  contactInput,
+} = require('./modules/contact/contact.graphql');
+
 
 const typeDefs = gql`
   ${categoryType}
@@ -45,6 +54,10 @@ const typeDefs = gql`
   ${productType}
   ${commentType}
   ${emailChatType}
+  ${modelType}
+  ${contactType}
+
+  scalar Upload
 
   enum RoleEnum {
     admin
@@ -68,16 +81,7 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
-  type Model {
-    id: ID!
-    category: ID!
-    subcategory: ID!
-    name: [Language]
-    description: [Language]
-    images: [ImageSet]
-    priority: Int
-    show: Boolean
-  }
+
   type Address {
     country: String
     region: String
@@ -180,6 +184,9 @@ const typeDefs = gql`
     admin: User
     date: String
     text: String
+}
+  type SuccessfulResponse {
+    isSuccess: Boolean
   }
 
   union CategoryResult = Category | Error
@@ -190,6 +197,9 @@ const typeDefs = gql`
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
   union EmailChatResult = EmailChat | Error
+  union LogicalResult = SuccessfulResponse | Error
+  union ModelResult = Model | Error
+  union ContactResult = Contact | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -223,12 +233,13 @@ const typeDefs = gql`
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
 
-
     getAllEmailChats: [EmailChat]
     getEmailChatById(id: ID!): EmailChatResult
 
-    getModelsbyCategory(id: ID!): [Model]
+    getModelsByCategory(id: ID!): [Model]
 
+    getContacts: [ContactResult!]!
+    getContactById(id: ID!): ContactResult
   }
 
   input SortInput {
@@ -246,6 +257,8 @@ const typeDefs = gql`
     category: [String]
     search: String
     isHotItem: Boolean
+    models: [String]
+    currency: Int
   }
   input RoleEnumInput {
     role: String
@@ -269,6 +282,8 @@ const typeDefs = gql`
   ${LoginInput}
   ${userRegisterInput}
   ${emailChatInput}
+  ${modelInput}
+  ${contactInput}
 
   input LanguageInput {
     lang: String!
@@ -321,6 +336,11 @@ const typeDefs = gql`
     tokenPass: String
   }
 
+  type File {
+    fileNames: ImageSet! 
+    prefixUrl: String!
+  }
+
   input ProductOptionsInput {
     size: ID!
     bottomMaterial: ID!
@@ -346,6 +366,9 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+  input UserRateInput {
+    rate: Int!
+  }
 
   input EmailAnswerInput {
     admin: ID
@@ -354,6 +377,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    uploadFiles(files: [Upload]!): [File]!
+    deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult
@@ -379,7 +404,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!, language: Int!): User
+    registerUser(user: userRegisterInput!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -387,6 +412,7 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
+    switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
 
@@ -399,11 +425,25 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
-
+    
     "EmailChat Mutation"
     addEmailChat(chat: EmailChatInput!): EmailChat
     updateEmailChat(id: ID!, chat: EmailChatInput!): EmailChatResult
     deleteEmailChat(id: ID!): EmailChatResult
+    
+    "Rate Mutation"
+    addRate(product: ID!, userRate: UserRateInput!): ProductResult
+
+    "Model Mutation"
+    addModel(model: ModelInput!): ModelResult
+    updateModel(id: ID!, model: ModelInput!): ModelResult
+    deleteModel(id: ID!): ModelResult
+
+    "Contacts Mutation"
+    addContact(contact: contactInput!): ContactResult
+    deleteContact(id: ID!): ContactResult
+    updateContact(id: ID!, contact: contactInput!): ContactResult
+
   }
 `;
 
