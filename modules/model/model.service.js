@@ -48,5 +48,13 @@ class ModelsService {
     });
     return modelCount > 0;
   }
+
+  async getModelName(data) {
+    const model = await Model.findById(data.model)
+    const productModel = {
+      model: model.name
+    }
+    return {...data, ...productModel} 
+  }
 }
 module.exports = new ModelsService();

@@ -5,7 +5,6 @@ const { newCategory, newModel } = require('./model.variables');
 require('dotenv').config();
 
 let modelId, categoryId
-// , categoryName;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -23,8 +22,6 @@ describe('Product queries', () => {
     });
     categoryId = createCategory.data.addCategory._id;
    
-    // categoryName = createCategory.data.addCategory.name;
-
     const createModel = await client.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
