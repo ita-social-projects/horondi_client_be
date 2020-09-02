@@ -3,6 +3,7 @@ const Product = require('../product/product.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
+  RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
 class CommentsService {
@@ -43,6 +44,36 @@ class CommentsService {
       throw new Error(COMMENT_NOT_FOUND);
     }
     return deletedComment;
+  }
+
+  async addRate(id, data, user) {
+    const product = await Product.findById(id);
+    const { userRates } = product;
+    let { rateCount } = product;
+    const { rate } =      userRates.find(rate => String(rate.user) === String(user._id)) || {};
+
+    const rateSum =      product.rate * rateCount - (rate || !!rate) + data.rate;
+    rateCount = rate ? rateCount : ++rateCount;
+    const newRate = rateSum / rateCount;
+
+    const newUserRates = rate
+      ? userRates.map(item => (String(item.user) === String(user._id)
+        ? { user: item.user, rate: data.rate }
+        : item))
+      : [...userRates, { ...data, user: user._id }];
+
+    const rateToAdd = await Product.findByIdAndUpdate(
+      id,
+      {
+        rateCount,
+        rate: newRate.toFixed(1),
+        userRates: newUserRates,
+      },
+      { new: true },
+    );
+
+    if (rateToAdd) return rateToAdd;
+    throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
   }
 }
 module.exports = new CommentsService();
