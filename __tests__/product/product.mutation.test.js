@@ -2,10 +2,12 @@
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 const {
+  newModel,
+  newCategory,
   badProductId,
-  newProduct,
-  productForUpdate,
-  sameNameForUpdate,
+  getNewProduct,
+  getProductForUpdate,
+  getSameNameForUpdate,
 } = require('./product.variables');
 
 require('dotenv').config();
@@ -14,6 +16,43 @@ let productId;
 let sameNameProductId;
 
 describe('Product mutations', () => {
+  beforeAll(async () => {
+    const createCategory = await client.mutate({
+      mutation: gql`
+        mutation($category: CategoryInput!) {
+          addCategory(category: $category) {
+            ... on Category {
+              _id
+              name {
+                value
+              }
+            }
+          }
+        }
+      `,
+      variables: { category: newCategory },
+    });
+    categoryId = createCategory.data.addCategory._id;
+    subcategoryId = createCategory.data.addCategory._id;
+    
+    const createModel = await client.mutate({
+      mutation: gql`
+        mutation($model: ModelInput!) {
+          addModel(model: $model) {
+            ... on Model {
+              _id
+              name {
+                value
+              }
+            }
+          }
+        }
+      `,
+      variables: { model: { ...newModel, category: categoryId } },
+    });
+    modelId = createModel.data.addModel._id;
+  });
+
   test('#1 Should add new product', async () => {
     const createProduct = await client.mutate({
       mutation: gql`
@@ -56,7 +95,7 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: newProduct },
+      variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
     });
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
@@ -71,11 +110,11 @@ describe('Product mutations', () => {
     ]);
     expect(createdProduct).toHaveProperty('category', {
       __typename: 'Category',
-      _id: 'ddc81f5dbac48c38d0403dd3',
+      _id: categoryId,
     });
     expect(createdProduct).toHaveProperty('subcategory', {
       __typename: 'Category',
-      _id: '688ded7be0c2621f2fb17b05',
+      _id: categoryId,
     });
     expect(createdProduct).toHaveProperty('mainMaterial', [
       {
@@ -184,11 +223,11 @@ describe('Product mutations', () => {
     ]);
     expect(receivedProduct).toHaveProperty('category', {
       __typename: 'Category',
-      _id: 'ddc81f5dbac48c38d0403dd3',
+      _id: categoryId,
     });
     expect(receivedProduct).toHaveProperty('subcategory', {
       __typename: 'Category',
-      _id: '688ded7be0c2621f2fb17b05',
+      _id: categoryId,
     });
     expect(receivedProduct).toHaveProperty('mainMaterial', [
       {
@@ -255,7 +294,7 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: newProduct },
+      variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
     });
     const result = createProduct.data.addProduct;
     expect(result).toBeDefined();
@@ -310,7 +349,7 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: productForUpdate,
+        product: getProductForUpdate(categoryId, subcategoryId, modelId),
         id: productId,
       },
     });
@@ -326,11 +365,11 @@ describe('Product mutations', () => {
     ]);
     expect(productAfterUpdate).toHaveProperty('category', {
       __typename: 'Category',
-      _id: 'ddc81f5dbac48c38d0403dd3',
+      _id: categoryId,
     });
     expect(productAfterUpdate).toHaveProperty('subcategory', {
       __typename: 'Category',
-      _id: '688ded7be0c2621f2fb17b05',
+      _id: subcategoryId,
     });
     expect(productAfterUpdate).toHaveProperty('mainMaterial', [
       {
@@ -389,7 +428,7 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: productForUpdate,
+        product: getProductForUpdate(categoryId, subcategoryId, modelId),
         id: badProductId,
       },
     });
@@ -410,7 +449,7 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: sameNameForUpdate },
+      variables: { product: getSameNameForUpdate(categoryId, subcategoryId, modelId) },
     });
     sameNameProductId = createProduct.data.addProduct._id;
 
@@ -433,7 +472,7 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: sameNameForUpdate,
+        product: getSameNameForUpdate(categoryId, subcategoryId, modelId),
         id: productId,
       },
     });
@@ -523,11 +562,11 @@ describe('Product mutations', () => {
     ]);
     expect(result).toHaveProperty('category', {
       __typename: 'Category',
-      _id: 'ddc81f5dbac48c38d0403dd3',
+      _id: categoryId,
     });
     expect(result).toHaveProperty('subcategory', {
       __typename: 'Category',
-      _id: '688ded7be0c2621f2fb17b05',
+      _id: categoryId,
     });
     expect(result).toHaveProperty('mainMaterial', [
       {
@@ -587,5 +626,56 @@ describe('Product mutations', () => {
     expect(result).toBeDefined();
     expect(result).toHaveProperty('statusCode', 404);
     expect(result).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
+  });
+
+  afterAll(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteProduct(id: $id) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: productId },
+    });
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteCategory(id: $id) {
+            ... on Category {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: categoryId },
+    });
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteModel(id: $id) {
+            ... on Model {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: modelId },
+    });
   });
 });

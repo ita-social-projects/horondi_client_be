@@ -106,18 +106,15 @@ class ProductsService {
     if (await this.checkProductExist(productData, id)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    return Product.findByIdAndUpdate(id, productData, { new: true });
+    const updatedProduct = await this.getModel(productData)
+    return Product.findByIdAndUpdate(id, updatedProduct, { new: true });
   }
 
   async addProduct(data) {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    const model = await Model.findById(data.model)
-    const productModel = {
-      model: model.name
-    }
-    const newProduct = {...data, ...productModel} 
+    const newProduct = await this.getModel(data)
     return new Product(newProduct).save();
   }
 
@@ -135,6 +132,13 @@ class ProductsService {
       },
     });
     return modelCount > 0;
+  }
+  async getModel(data) {
+    const model = await Model.findById(data.model)
+    const productModel = {
+      model: model.name
+    }
+    return {...data, ...productModel} 
   }
 }
 module.exports = new ProductsService();
