@@ -16,12 +16,22 @@ const categoryQuery = {
       };
     }
   },
+  getSubcategories: async (parent, args) => {
+    try {
+      return await categoryService.getSubcategories(args.parentCategoryId);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const categoryMutation = {
   addCategory: async (parent, args) => {
     try {
-      return await categoryService.addCategory(args.category);
+      return await categoryService.addCategory(args.category, args.parentId);
     } catch (e) {
       return {
         statusCode: 400,
