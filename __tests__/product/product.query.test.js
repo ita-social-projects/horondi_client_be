@@ -1,13 +1,51 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const { badProductId, newProduct } = require('./product.variables');
+const { newModel, badProductId, newCategory, getNewProduct } = require('./product.variables');
 require('dotenv').config();
 
-let productId
+let productId, categoryId, subcategoryId, modelId
 
 describe('Product queries', () => {
   beforeAll(async () => {
+    const createCategory = await client.mutate({
+      mutation: gql`
+        mutation($category: CategoryInput!) {
+          addCategory(category: $category) {
+            ... on Category {
+              _id
+              name {
+                value
+              }
+            }
+          }
+        }
+      `,
+      variables: { category: newCategory },
+    });
+    categoryId = createCategory.data.addCategory._id;
+    subcategoryId = createCategory.data.addCategory._id;
+    
+    const createModel = await client.mutate({
+      mutation: gql`
+        mutation($model: ModelInput!) {
+          addModel(model: $model) {
+            ... on Model {
+              _id
+              name {
+                value
+              }
+            }
+          }
+        }
+      `,
+      variables: { model: { ...newModel, category: categoryId } },
+    });
+    modelId = createModel.data.addModel._id;
+    console.log(`categoryId - ${categoryId}`)
+    console.log(`subcategoryId - ${subcategoryId}`)
+    console.log(`modelId - ${modelId}`)
+
     const createProduct = await client.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
@@ -18,11 +56,11 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { product: newProduct },
+      variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
     });
     productId = createProduct.data.addProduct._id;
+    console.log(createProduct)
   });
-
   test('#1 Should receive all products', async () => {
     const products = await client.query({
       query: gql`
@@ -82,9 +120,7 @@ describe('Product queries', () => {
                 value
               }
               model {
-                name {
                   value
-                }
               }
               category {
                 _id
@@ -136,11 +172,11 @@ describe('Product queries', () => {
     ]);
     expect(resultProduct).toHaveProperty('category', {
       __typename: 'Category',
-      _id: 'ddc81f5dbac48c38d0403dd3',
+      _id: categoryId,
     });
     expect(resultProduct).toHaveProperty('subcategory', {
       __typename: 'Category',
-      _id: '688ded7be0c2621f2fb17b05',
+      _id: subcategoryId,
     });
     expect(resultProduct).toHaveProperty('mainMaterial', [
       {
@@ -260,6 +296,38 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: productId },
+    });
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteCategory(id: $id) {
+            ... on Category {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: categoryId },
+    });
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteModel(id: $id) {
+            ... on Model {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: modelId },
     });
   });
 });

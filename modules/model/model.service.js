@@ -1,5 +1,5 @@
-const Model = require('./model.model');
 const ObjectId = require('mongoose').Types.ObjectId;
+const Model = require('./model.model');
 const {
   CATEGORY_NOT_VALID,
   MODEL_ALREADY_EXIST,

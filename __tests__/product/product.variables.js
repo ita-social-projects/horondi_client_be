@@ -1,131 +1,133 @@
 const badProductId = '1a1111da11da1111111a111a';
 
-const newProduct = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
-  model: '5f3bb1273c5ced2f05062550',
-  name: [
-    { lang: 'en', value: 'Very Coool Baggy' },
-    { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
-  ],
-  description: [
-    { lang: 'en', value: 'Baggy is so cool' },
-    { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
-  ],
-  mainMaterial: [
-    {
-      lang: 'uk',
-      value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
-    },
-    {
-      lang: 'en',
-      value:
-        'Canvas-400G padded with a layer of durable and water-resistant material',
-    },
-  ],
-  innerMaterial: [
-    { lang: 'uk', value: 'Oxford 135' },
-    { lang: 'en', value: 'Oxford 135' },
-  ],
-  pattern: [
-    { lang: 'uk', value: 'Вишивка' },
-    { lang: 'en', value: 'Embroidery' },
-  ],
-  patternImages: {
-    large: 'large-embroidery.jpg',
-    medium: 'medium-embroidery.jpg',
-    small: 'small-embroidery.jpg',
-    thumbnail: 'thumbnail-embroidery.jpg',
-  },
-  strapLengthInCm: 100,
-  closure: [
-    { lang: 'uk', value: 'Фастекс (пластикова защіпка)' },
-    { lang: 'en', value: 'Plastic closure' },
-  ],
-  closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
-  available: true,
-  isHotItem: false,
-  images: {
-    primary: {
-      large: 'large-primary_15.jpg',
-      medium: 'medium-primary_15.jpg',
-      small: 'small-primary_15.jpg',
-      thumbnail: 'thumbnail-primary_15.jpg',
-    },
-    additional: [
+const getNewProduct = (categoryId, subcategoryId, modelId) => {
+  return {
+    category: categoryId,
+    subcategory: subcategoryId,
+    model: modelId,
+    name: [
+      { lang: 'en', value: 'Very Coool Baggy' },
+      { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+    ],
+    description: [
+      { lang: 'en', value: 'Baggy is so cool' },
+      { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
+    ],
+    mainMaterial: [
       {
-        large: 'large-additional_15_1.jpg',
-        medium: 'medium-additional_15_1.jpg',
-        small: 'small-additional_15_1.jpg',
-        thumbnail: 'thumbnail-additional_15_1.jpg',
+        lang: 'uk',
+        value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
       },
       {
-        large: 'large-additional_15_2.jpg',
-        medium: 'medium-additional_15_2.jpg',
-        small: 'small-additional_15_2.jpg',
-        thumbnail: 'thumbnail-additional_15_2.jpg',
-      },
-      {
-        large: 'large-additional_15_3.jpg',
-        medium: 'medium-additional_15_3.jpg',
-        small: 'small-additional_15_3.jpg',
-        thumbnail: 'thumbnail-additional_15_3.jpg',
+        lang: 'en',
+        value:
+          'Canvas-400G padded with a layer of durable and water-resistant material',
       },
     ],
-  },
-  colors: [
-    {
-      code: 206,
-      name: [
-        { lang: 'uk', value: 'Золотий' },
-        { lang: 'en', value: 'Golden' },
-      ],
-      images: {
-        large: 'large-golden.jpg',
-        medium: 'medium-golden.jpg',
-        small: 'small-golden.jpg',
-        thumbnail: 'thumbnail-golden.jpg',
-      },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'жовтий' },
-        { lang: 'en', value: 'yellow' },
-      ],
+    innerMaterial: [
+      { lang: 'uk', value: 'Oxford 135' },
+      { lang: 'en', value: 'Oxford 135' },
+    ],
+    pattern: [
+      { lang: 'uk', value: 'Вишивка' },
+      { lang: 'en', value: 'Embroidery' },
+    ],
+    patternImages: {
+      large: 'large-embroidery.jpg',
+      medium: 'medium-embroidery.jpg',
+      small: 'small-embroidery.jpg',
+      thumbnail: 'thumbnail-embroidery.jpg',
     },
-  ],
-  options: [
-    {
-      size: '50288e8716e80d9569f64e2e',
-      bottomMaterial: 'dadba32060da96e40847166d',
-      description: [
-        { lang: 'ua', value: 'Тканина Кордура' },
-        { lang: 'en', value: 'Cordura fabric' },
-      ],
-      availableCount: 777,
-      additions: [
+    strapLengthInCm: 100,
+    closure: [
+      { lang: 'uk', value: 'Фастекс (пластикова защіпка)' },
+      { lang: 'en', value: 'Plastic closure' },
+    ],
+    closureColor: 'black',
+    basePrice: [
+      { currency: 'UAH', value: 145000 },
+      { currency: 'USD', value: 5229 },
+    ],
+    available: true,
+    isHotItem: false,
+    images: {
+      primary: {
+        large: 'large-primary_15.jpg',
+        medium: 'medium-primary_15.jpg',
+        small: 'small-primary_15.jpg',
+        thumbnail: 'thumbnail-primary_15.jpg',
+      },
+      additional: [
         {
-          available: true,
-          name: [
-            { lang: 'uk', value: 'Кишеня' },
-            { lang: 'en', value: 'Pocket' },
-          ],
-          description: [
-            { lang: 'uk', value: 'Бокова кишенька за бажанням' },
-            { lang: 'en', value: 'Side pocket by request' },
-          ],
-          additionalPrice: [
-            { currency: 'UAH', value: 145000 },
-            { currency: 'USD', value: 5229 },
-          ],
+          large: 'large-additional_15_1.jpg',
+          medium: 'medium-additional_15_1.jpg',
+          small: 'small-additional_15_1.jpg',
+          thumbnail: 'thumbnail-additional_15_1.jpg',
+        },
+        {
+          large: 'large-additional_15_2.jpg',
+          medium: 'medium-additional_15_2.jpg',
+          small: 'small-additional_15_2.jpg',
+          thumbnail: 'thumbnail-additional_15_2.jpg',
+        },
+        {
+          large: 'large-additional_15_3.jpg',
+          medium: 'medium-additional_15_3.jpg',
+          small: 'small-additional_15_3.jpg',
+          thumbnail: 'thumbnail-additional_15_3.jpg',
         },
       ],
     },
-  ],
-};
+    colors: [
+      {
+        code: 206,
+        name: [
+          { lang: 'uk', value: 'Золотий' },
+          { lang: 'en', value: 'Golden' },
+        ],
+        images: {
+          large: 'large-golden.jpg',
+          medium: 'medium-golden.jpg',
+          small: 'small-golden.jpg',
+          thumbnail: 'thumbnail-golden.jpg',
+        },
+        available: true,
+        simpleName: [
+          { lang: 'uk', value: 'жовтий' },
+          { lang: 'en', value: 'yellow' },
+        ],
+      },
+    ],
+    options: [
+      {
+        size: '50288e8716e80d9569f64e2e',
+        bottomMaterial: 'dadba32060da96e40847166d',
+        description: [
+          { lang: 'ua', value: 'Тканина Кордура' },
+          { lang: 'en', value: 'Cordura fabric' },
+        ],
+        availableCount: 777,
+        additions: [
+          {
+            available: true,
+            name: [
+              { lang: 'uk', value: 'Кишеня' },
+              { lang: 'en', value: 'Pocket' },
+            ],
+            description: [
+              { lang: 'uk', value: 'Бокова кишенька за бажанням' },
+              { lang: 'en', value: 'Side pocket by request' },
+            ],
+            additionalPrice: [
+              { currency: 'UAH', value: 145000 },
+              { currency: 'USD', value: 5229 },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
 
 const productForUpdate = {
   category: 'ddc81f5dbac48c38d0403dd3',
@@ -375,9 +377,49 @@ const sameNameForUpdate = {
   ],
 };
 
+const newCategory = {
+  "available": true,
+  "name": [
+    {
+      "value": "Тестовенька категорія",
+      "lang": "uk"
+    },
+    {
+      "value": "Testy Category",
+      "lang": "en"
+    }
+  ],
+  "categoryCode": null,
+  "images": {
+    "large": "large_none",
+    "medium": "medium_none",
+    "small": "small_none",
+    "thumbnail": "thumbnail_none"
+  }
+}
+
+const newModel = {
+  name: [ 
+    { value: "Тестова моделька", lang: "uk" }, 
+    { value: "Test modelyy", lang: "en" } 
+  ],
+  description: [
+    { value: "Тест", lang: "uk" }, 
+    { value: "Test", lang: "en" } 
+  ],
+  images: {
+    "large": "large_new",
+    "medium": "medium_new",
+    "small": "small_new",
+    "thumbnail": "thumbnail_new"
+  },
+}
+
 module.exports = {
   badProductId,
-  newProduct,
   productForUpdate,
   sameNameForUpdate,
+  newCategory,
+  newModel,
+  getNewProduct
 };

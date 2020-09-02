@@ -1,5 +1,8 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
+const Model = require('../../modules/model/model.model')
+
+
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -110,7 +113,12 @@ class ProductsService {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    return new Product(data).save();
+    const model = await Model.findById(data.model)
+    const productModel = {
+      model: model.name
+    }
+    const newProduct = {...data, ...productModel} 
+    return new Product(newProduct).save();
   }
 
   deleteProduct(id) {

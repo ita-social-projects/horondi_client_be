@@ -4,7 +4,6 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
 const ImageSet = require('../common/ImageSet').schema;
 const Color = require('../../models/Color').schema;
-const Model = require('../../models/Model').schema;
 
 const productSchema = new mongoose.Schema({
   category: {
@@ -15,9 +14,9 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
+  model: [Language],
   name: [Language],
   description: [Language],
-  model: [Language],
   mainMaterial: [Language],
   innerMaterial: [Language],
   strapLengthInCm: Number,
