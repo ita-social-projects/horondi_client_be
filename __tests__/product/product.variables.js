@@ -2,9 +2,9 @@ const badProductId = '1a1111da11da1111111a111a';
 
 const getNewProduct = (categoryId, subcategoryId, modelId) => {
   return {
-    category: categoryId,
     subcategory: subcategoryId,
     model: modelId,
+    category: categoryId,
     name: [
       { lang: 'en', value: 'Very Coool Baggy' },
       { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
@@ -131,9 +131,9 @@ const getNewProduct = (categoryId, subcategoryId, modelId) => {
 
 const getProductForUpdate = (categoryId, subcategoryId, modelId) => {
   return {
+    model: modelId,
     category: categoryId,
     subcategory: subcategoryId,
-    model: modelId,
     name: [
       { lang: 'en', value: 'Bad Baggy' },
       { lang: 'ua', value: 'Жахливий Рюкзачечок' },
