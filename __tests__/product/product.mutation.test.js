@@ -12,8 +12,7 @@ const {
 
 require('dotenv').config();
 
-let productId;
-let sameNameProductId;
+let productId, categoryId, subcategoryId, modelId, sameNameProductId;
 
 describe('Product mutations', () => {
   beforeAll(async () => {
@@ -34,7 +33,7 @@ describe('Product mutations', () => {
     });
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
-    
+
     const createModel = await client.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
