@@ -5,6 +5,7 @@ const businessTextSchema = new mongoose.Schema({
   code: String,
   title: [Language],
   text: [Language],
+  languages: [String],
   date: {
     type: Date,
     default: Date.now,
