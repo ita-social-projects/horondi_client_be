@@ -1,14 +1,13 @@
 const { ApolloServer, AuthenticationError } = require('apollo-server-express');
+const express = require('express')
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
-const express = require('express')
 
 connectDB();
 require('dotenv').config();
-
 
 const server = new ApolloServer({
   typeDefs,
@@ -31,9 +30,7 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
-app.get('/health', (req, res) => 
-  res.send('Health page!')
-);
+app.get('/health', (req, res) => res.send('Health page!'));
 
 server.applyMiddleware({ app });
 

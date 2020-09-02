@@ -4,9 +4,8 @@ const {
   CATEGORY_NOT_FOUND,
   CATEGORY_IS_NOT_MAIN,
   WRONG_CATEGORY_DATA,
-  PARENT_ID_NOT_PROVIDED,
-  CATEGORY_INPUT_ERROR,
 } = require('../../error-messages/category.messages');
+const { validateCategoryInput } = require('../../utils/validate-category')
 
 class CategoryService {
   async getAllCategories() {
@@ -23,11 +22,11 @@ class CategoryService {
 
   async updateCategory(id, category) {
     const categoryToUpdate = await Category.findById(id);
-    if (await this.checkCategoryExist(category, id)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
-    }
     if (!categoryToUpdate) {
       throw new Error(CATEGORY_NOT_FOUND);
+    }
+    if (await this.checkCategoryExist(category, id)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
     }
     return await Category.findByIdAndUpdate(id, category, {
       new: true,
@@ -35,19 +34,14 @@ class CategoryService {
   }
 
   async addCategory(data, parentId) {
-    if (data.name.length < 2) {
-      throw new Error(CATEGORY_INPUT_ERROR);
-    }
-    if (!data.isMain && !parentId) {
-      throw new Error(PARENT_ID_NOT_PROVIDED);
-    }
+    await validateCategoryInput.validateAsync({ ...data, parentId });
+
     if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
-    const parentCategory = await this.getCategoryById(parentId);
-    const newCategory = new Category(data);
-    const savedCategory = await newCategory.save();
+    const parentCategory = await Category.findById(parentId);
+    const savedCategory = await new Category(data).save();
     if (parentCategory) {
       if (!parentCategory.isMain) {
         throw new Error(CATEGORY_IS_NOT_MAIN);

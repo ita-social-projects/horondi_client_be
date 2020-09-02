@@ -9,7 +9,7 @@ const {
   validateNewPassword,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendmail');
+const { sendEmail } = require('../../utils/sendGrid-email')
 const {
   confirmationMessage,
   recoveryMessage,
@@ -222,7 +222,9 @@ class UserService {
       html: confirmationMessage(firstName, token, language),
     };
 
-    if (process.env.NODE_ENV !== 'test') await sendEmail(message);
+    if (process.env.NODE_ENV !== 'test') {
+      await sendEmail(message);
+    }
 
     return savedUser;
   }
