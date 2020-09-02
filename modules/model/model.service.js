@@ -23,6 +23,8 @@ class ModelsService {
     return await new Model(data).save();
   }
 
+
+
   async updateModel(id, newModel) {
     const model = await Model.findById(id);
     if (!model) {
@@ -32,6 +34,14 @@ class ModelsService {
       throw new Error(MODEL_ALREADY_EXIST);
     }
     return Model.findByIdAndUpdate(id, newModel, { new: true });
+  }
+
+  async getModelById (id) {
+    const model = await Model.findById(id);
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
+    return model;
   }
 
   deleteModel(id) {
@@ -47,14 +57,6 @@ class ModelsService {
       },
     });
     return modelCount > 0;
-  }
-
-  async getModelName(data) {
-    const model = await Model.findById(data.model)
-    const productModel = {
-      model: model.name
-    }
-    return {...data, ...productModel} 
   }
 }
 module.exports = new ModelsService();

@@ -1,6 +1,6 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
-const ModelService = require('../../modules/model/model.service')
+const modelService = require('../../modules/model/model.service')
 
 
 const {
@@ -106,16 +106,18 @@ class ProductsService {
     if (await this.checkProductExist(productData, id)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    const updatedProductWithModel = await ModelService.getModelName(productData)
-    return Product.findByIdAndUpdate(id, updatedProductWithModel, { new: true });
+    const model = await modelService.getModelById(productData.model)
+    productData.model = model.name;
+    return Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(data) {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    const productWithModel = await ModelService.getModelName(data)
-    return new Product(productWithModel).save();
+    const model = await modelService.getModelById(data.model)
+    data.model = model.name;
+    return new Product(data).save();
   }
 
   deleteProduct(id) {
