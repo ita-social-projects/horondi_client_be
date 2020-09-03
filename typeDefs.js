@@ -192,6 +192,17 @@ const typeDefs = gql`
     TotalMaxWeightAllowed: Int
     Phone: String
     Ref: String
+    Schedule: WarehouseSchedule
+  }
+
+  type WarehouseSchedule {
+    Monday: String
+    Tuesday: String
+    Wednesday: String
+    Thursday: String
+    Friday: String
+    Saturday: String
+    Sunday: String
   }
 
   type DeliveryPrice {
@@ -254,7 +265,7 @@ const typeDefs = gql`
 
     getDeliveryCities(city: String):[DeliveryCityResult]
     getDeliveryWarehouses(city: String): [DeliveryWarehouseResult]
-    getDeliveryPrice(data: DeliveryDetailsInput): [DeliveryPriceResult]
+    getDeliveryPrice(data: DeliveryPriceInput): [DeliveryPriceResult]
   }
 
   input SortInput {
@@ -383,7 +394,7 @@ const typeDefs = gql`
   input UserRateInput {
     rate: Int!
   }
-  input DeliveryDetailsInput {
+  input DeliveryPriceInput {
     CitySender: String
     CityRecipient: String
     Weight: Float
