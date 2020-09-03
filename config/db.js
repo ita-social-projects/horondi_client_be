@@ -1,11 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-const db =
-  process.env.MONGO_URL ||
-  'mongodb+srv://lv487nodejs:nodejslv487@cluster0-ltcgb.mongodb.net/horondi?retryWrites=true&w=majority';
-
 const connectDB = async () => {
+  const db = process.env.MONGO_URL;
   try {
     await mongoose.connect(db, {
       useNewUrlParser: true,

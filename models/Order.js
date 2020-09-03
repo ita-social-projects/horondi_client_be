@@ -1,79 +1,57 @@
-import { model, Schema } from 'mongoose';
+const mongoose = require('mongoose');
+const Language = require('./Language').schema;
+const CurrencySet = require('./CurrencySet').schema;
+const Address = require('../modules/common/Address').schema;
 
-const OrderSchema = new Schema({
-  firstName: { type: String },
-  lastName: { type: String },
-  email: {
-    type: String,
-    required: true,
-  },
-  orderItems: [
-    {
-      item: {
-        type: Schema.Types.ObjectId,
-        ref: 'product',
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'user',
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  deliveryAddress: {
-    country: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    street: {
-      type: String,
-      required: true,
-    },
-    buildingNumber: {
-      type: String,
-      required: true,
-    },
-  },
-  deliveryType: {
-    type: String,
-    required: true,
-    enum: ['currier', 'post', 'delivery servise'],
-  },
-  contactPhone: {
-    type: Number,
-    required: true,
-  },
-  paymentMethod: {
-    type: String,
-    required: true,
-    enum: [
-      'credit card',
-      'pay pal',
-      'cash',
-      'google pay',
-      'amazon pay',
-      'apple pay',
-    ],
-  },
+const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['delivered', 'pending', 'canceled'],
+    enum: ['sent', 'pending', 'canceled'],
+    default: 'pending',
   },
+  user: {
+    firstName: String,
+    lastName: String,
+    email: String,
+    phoneNumber: Number,
+    address: Address,
+  },
+  dateOfCreation: {
+    type: Date,
+    default: Date.now,
+  },
+  delivery: {
+    sentOn: Date,
+    sentBy: String,
+    invoiceNumber: String,
+  },
+  items: [
+    {
+      category: [Language],
+      subcategory: [Language],
+      model: [Language],
+      name: [Language],
+      colors: [[Language]],
+      pattern: [Language],
+      closure: [Language],
+      closureColor: String,
+      size: {
+        heightInCm: Number,
+        widthInCm: Number,
+        depthInCm: Number,
+        volumeInLiters: Number,
+        weightInKg: Number,
+      },
+      bottomMaterial: [Language],
+      bottomColor: [Language],
+      additions: [[Language]],
+      actualPrice: [CurrencySet],
+      quantity: Number,
+    },
+  ],
+  totalPrice: [CurrencySet],
+  paymentMethod: String,
 });
 
-const Orders = model('order', OrderSchema);
-
-module.exports = Orders;
+module.exports = mongoose.model('Order', orderSchema);
