@@ -2,7 +2,10 @@ const Category = require('./category.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
+  CATEGORY_IS_NOT_MAIN,
+  WRONG_CATEGORY_DATA,
 } = require('../../error-messages/category.messages');
+const { validateCategoryInput } = require('../../utils/validate-category');
 
 class CategoryService {
   async getAllCategories() {
@@ -30,15 +33,42 @@ class CategoryService {
     });
   }
 
-  async addCategory(data) {
+  async addCategory(data, parentId) {
+    await validateCategoryInput.validateAsync({ ...data, parentId });
+
     if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    return new Category(data).save();
+
+    const parentCategory = await Category.findById(parentId);
+    const savedCategory = await new Category(data).save();
+    if (parentCategory) {
+      if (!parentCategory.isMain) {
+        throw new Error(CATEGORY_IS_NOT_MAIN);
+      }
+      if (data.isMain) {
+        throw new Error(WRONG_CATEGORY_DATA);
+      }
+      if (!parentCategory.available) {
+        savedCategory.available = false;
+      }
+      parentCategory.subcategories.push(savedCategory._id);
+      await parentCategory.save();
+    }
+    return await savedCategory.save();
   }
 
   async deleteCategory(id) {
     const category = await Category.findByIdAndDelete(id);
+
+    if (!category.isMain) {
+      const parentCategory = await Category.findOne({
+        subcategories: { $in: [id] },
+      });
+      await this.updateCategory(parentCategory._id, {
+        $pull: { subcategories: { $in: [id] } },
+      });
+    }
     if (category) {
       return category;
     }
@@ -46,15 +76,30 @@ class CategoryService {
   }
 
   async checkCategoryExist(data, id) {
+    if (!data.name.length) {
+      return false;
+    }
     const categoriesCount = await Category.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });
     return categoriesCount > 0;
   }
+
+  async getSubcategories(id) {
+    const category = await this.getCategoryById(id);
+    if (!category.isMain) {
+      return [];
+    }
+    if (!category.subcategories.length) {
+      return [];
+    }
+    return await Category.find({ _id: { $in: category.subcategories } });
+  }
 }
+
 module.exports = new CategoryService();

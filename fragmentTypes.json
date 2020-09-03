@@ -84,6 +84,42 @@
             "name": "Error"
           }
         ]
+      },
+      {
+        "kind": "UNION",
+        "name": "LogicalResult",
+        "possibleTypes": [
+          {
+            "name": "SuccessfulResponse"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "ModelResult",
+        "possibleTypes": [
+          {
+            "name": "Model"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "ContactResult",
+        "possibleTypes": [
+          {
+            "name": "Contact"
+          },
+          {
+            "name": "Error"
+          }
+        ]
       }
     ]
   }

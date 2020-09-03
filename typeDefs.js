@@ -48,6 +48,8 @@ const typeDefs = gql`
   ${modelType}
   ${contactType}
 
+  scalar Upload
+
   enum RoleEnum {
     admin
     user
@@ -194,6 +196,7 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
+    getSubcategories(parentCategoryId: ID!): [Category]
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): MaterialResult
@@ -272,6 +275,7 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+
   input CurrencySetInput {
     currency: String!
     value: Int!
@@ -360,13 +364,14 @@ const typeDefs = gql`
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult
     updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+
     "Material Mutation"
     addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): CategoryResult
+    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
@@ -381,7 +386,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User

@@ -1,8 +1,6 @@
 const badProductId = '1a1111da11da1111111a111a';
 
-const newProduct = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
+const getNewProduct = (categoryId, subcategoryId, modelId) => ({
   name: [
     { lang: 'en', value: 'Very Coool Baggy' },
     { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
@@ -11,6 +9,9 @@ const newProduct = {
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
   ],
+  subcategory: subcategoryId,
+  model: modelId,
+  category: categoryId,
   mainMaterial: [
     {
       lang: 'uk',
@@ -19,7 +20,7 @@ const newProduct = {
     {
       lang: 'en',
       value:
-        'Canvas-400G padded with a layer of durable and water-resistant material',
+          'Canvas-400G padded with a layer of durable and water-resistant material',
     },
   ],
   innerMaterial: [
@@ -124,19 +125,20 @@ const newProduct = {
       ],
     },
   ],
-};
+});
 
-const productForUpdate = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
+const getProductForUpdate = (categoryId, subcategoryId, modelId) => ({
+  model: modelId,
   name: [
     { lang: 'en', value: 'Bad Baggy' },
     { lang: 'ua', value: 'Жахливий Рюкзачечок' },
   ],
+  subcategory: subcategoryId,
   description: [
     { lang: 'en', value: 'Baggy is so bad' },
     { lang: 'ua', value: 'Рюкзачечок - не добрий))' },
   ],
+  category: categoryId,
   mainMaterial: [
     {
       lang: 'uk',
@@ -244,11 +246,12 @@ const productForUpdate = {
       ],
     },
   ],
-};
+});
 
-const sameNameForUpdate = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
+const getSameNameForUpdate = (categoryId, subcategoryId, modelId) => ({
+  category: categoryId,
+  subcategory: subcategoryId,
+  model: modelId,
   description: [
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
@@ -265,7 +268,7 @@ const sameNameForUpdate = {
     {
       lang: 'en',
       value:
-        'Canvas-400B padded with a layer of durable and water-resistant material',
+          'Canvas-400B padded with a layer of durable and water-resistant material',
     },
   ],
   innerMaterial: [
@@ -370,11 +373,51 @@ const sameNameForUpdate = {
       ],
     },
   ],
+});
+
+const newCategory = {
+  available: true,
+  name: [
+    {
+      value: 'Тестовенька категорія',
+      lang: 'uk',
+    },
+    {
+      value: 'Testy Category',
+      lang: 'en',
+    },
+  ],
+  categoryCode: null,
+  images: {
+    large: 'large_none',
+    medium: 'medium_none',
+    small: 'small_none',
+    thumbnail: 'thumbnail_none',
+  },
+};
+
+const newModel = {
+  name: [
+    { value: 'Тестова моделька', lang: 'uk' },
+    { value: 'Test modelyy', lang: 'en' },
+  ],
+  description: [
+    { value: 'Тест', lang: 'uk' },
+    { value: 'Test', lang: 'en' },
+  ],
+  images: {
+    large: 'large_new',
+    medium: 'medium_new',
+    small: 'small_new',
+    thumbnail: 'thumbnail_new',
+  },
 };
 
 module.exports = {
   badProductId,
-  newProduct,
-  productForUpdate,
-  sameNameForUpdate,
+  newCategory,
+  newModel,
+  getNewProduct,
+  getProductForUpdate,
+  getSameNameForUpdate,
 };

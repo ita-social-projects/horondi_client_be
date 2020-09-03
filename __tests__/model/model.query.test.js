@@ -4,8 +4,8 @@ const client = require('../../utils/apollo-test-client');
 const { newCategory, newModel } = require('./model.variables');
 require('dotenv').config();
 
-let modelId;
-let categoryId;
+let modelId; let
+    categoryId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -22,7 +22,6 @@ describe('Product queries', () => {
       variables: { category: newCategory },
     });
     categoryId = createCategory.data.addCategory._id;
-    categoryName = createCategory.data.addCategory.name;
 
     const createModel = await client.mutate({
       mutation: gql`
