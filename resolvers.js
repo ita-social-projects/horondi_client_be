@@ -60,7 +60,8 @@ const SCHEMA_NAMES = {
   model: 'Model',
   contact: 'Contact',
   deliveryCity: 'DeliveryCity',
-  deliveryWarehouse: 'DeliveryWarehouse'
+  deliveryWarehouse: 'DeliveryWarehouse',
+  deliveryPrice: 'DeliveryPrice',
 };
 const resolvers = {
   Query: {
@@ -225,6 +226,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.Ref) {
         return SCHEMA_NAMES.deliveryWarehouse;
+      }
+      return 'Error';
+    },
+  },
+  DeliveryPriceResult: {
+    __resolveType: obj => {
+      if (obj.Cost) {
+        return SCHEMA_NAMES.deliveryPrice;
       }
       return 'Error';
     },

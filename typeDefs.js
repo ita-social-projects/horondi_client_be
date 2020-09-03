@@ -194,6 +194,13 @@ const typeDefs = gql`
     Ref: String
   }
 
+  type DeliveryPrice {
+      AssessedCost: Int
+      Cost: Int
+      CostRedelivery: Int
+      CostPack: Int
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -206,6 +213,7 @@ const typeDefs = gql`
   union ContactResult = Contact | Error
   union DeliveryCityResult = DeliveryCity | Error
   union DeliveryWarehouseResult = DeliveryWarehouse | Error
+  union DeliveryPriceResult = DeliveryPrice | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -246,6 +254,7 @@ const typeDefs = gql`
 
     getDeliveryCities(city: String):[DeliveryCityResult]
     getDeliveryWarehouses(city: String): [DeliveryWarehouseResult]
+    getDeliveryPrice(data: DeliveryDetailsInput): [DeliveryPriceResult]
   }
 
   input SortInput {
@@ -373,6 +382,15 @@ const typeDefs = gql`
   }
   input UserRateInput {
     rate: Int!
+  }
+  input DeliveryDetailsInput {
+    CitySender: String
+    CityRecipient: String
+    Weight: Float
+    ServiceType: String
+    Cost: Float
+    CargoType: String
+    SeatsAmount: Int
   }
 
   type Mutation {

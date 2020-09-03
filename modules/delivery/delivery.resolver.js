@@ -25,6 +25,17 @@ const deliveryQuery = {
             statusCode: 404,
             message: WAREHOUSE_NOT_FOUND,
         }]
+    },
+
+    getDeliveryPrice: async (parent, args) => {
+        const price = await deliveryService.getDeliveryPrice(args.data);
+        if(price.length) {
+            return price
+        }
+        return [{
+            statusCode: 404,
+            message: WAREHOUSE_NOT_FOUND,
+        }]
     }
 }
 
