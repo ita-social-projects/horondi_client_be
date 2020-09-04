@@ -6,8 +6,8 @@ const {
     WAREHOUSE_NOT_FOUND,
  } = require('../../error-messages/delivery.message')
 
-class DeliveryService {
-    async getDeliveryCities(city){  
+class NovaPoshtaService {
+    async getNovaPoshtaCities(city){  
         const res = await post(
             'https://api.novaposhta.ua/v2.0/json/',
             { 
@@ -29,7 +29,7 @@ class DeliveryService {
         return res.body.data.slice(0, 10);
     }
 
-    async getDeliveryWarehouses(city){  
+    async getNovaPoshtaWarehouses(city){  
         const res = await post(
             'https://api.novaposhta.ua/v2.0/json/',
             { 
@@ -51,7 +51,7 @@ class DeliveryService {
         return res.body.data.slice(0, 10);
     }
 
-    async getDeliveryPrice(data) {
+    async getNovaPoshtaPrice(data) {
         const {
             CitySender = "db5c88f5-391c-11dd-90d9-001a92567626",
             CityRecipient,
@@ -85,6 +85,10 @@ class DeliveryService {
 
         return res.body.data
     }
+
+    async getUkrPoshtaRegion(region) {
+       //TO DO
+    }
 }
 
-module.exports = new DeliveryService()
+module.exports = new NovaPoshtaService()

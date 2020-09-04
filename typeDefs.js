@@ -178,13 +178,13 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
-  type DeliveryCity {
+  type NovaPoshtaCity {
     Description: String
     Ref: String
     CityID: String
   }
 
-  type DeliveryWarehouse {
+  type NovaPoshtaWarehouse {
     Description: String
     ShortAddress: String
     Number: Int
@@ -205,11 +205,21 @@ const typeDefs = gql`
     Sunday: String
   }
 
-  type DeliveryPrice {
+  type NovaPoshtaPrice {
       AssessedCost: Int
       Cost: Int
       CostRedelivery: Int
       CostPack: Int
+  }
+
+  type UkrPoshtaRegion {
+     res: String
+  }
+
+  type Payment {
+    payment_id: String
+    response_status: String
+    checkout_url: String
   }
 
   union CategoryResult = Category | Error
@@ -222,9 +232,10 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
-  union DeliveryCityResult = DeliveryCity | Error
-  union DeliveryWarehouseResult = DeliveryWarehouse | Error
-  union DeliveryPriceResult = DeliveryPrice | Error
+  union NovaPoshtaCityResult = NovaPoshtaCity | Error
+  union NovaPoshtaWarehouseResult = NovaPoshtaWarehouse | Error
+  union NovaPoshtaPriceResult = NovaPoshtaPrice | Error
+  union UkrPoshtaRegionResult = UkrPoshtaRegion | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -263,9 +274,13 @@ const typeDefs = gql`
     getContacts: [ContactResult!]!
     getContactById(id: ID!): ContactResult
 
-    getDeliveryCities(city: String):[DeliveryCityResult]
-    getDeliveryWarehouses(city: String): [DeliveryWarehouseResult]
-    getDeliveryPrice(data: DeliveryPriceInput): [DeliveryPriceResult]
+    getNovaPoshtaCities(city: String):[NovaPoshtaCityResult]
+    getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouseResult]
+    getNovaPoshtaPrice(data: NovaPoshtaPriceInput): [NovaPoshtaPriceResult]
+
+    getUkrPoshtaRegion(region: String): UkrPoshtaRegion
+
+    getPaymentCheckout(data: PaymentInput): Payment
   }
 
   input SortInput {
@@ -394,7 +409,7 @@ const typeDefs = gql`
   input UserRateInput {
     rate: Int!
   }
-  input DeliveryPriceInput {
+  input NovaPoshtaPriceInput {
     CitySender: String
     CityRecipient: String
     Weight: Float
@@ -402,6 +417,13 @@ const typeDefs = gql`
     Cost: Float
     CargoType: String
     SeatsAmount: Int
+  }
+
+  input PaymentInput {
+    order_id: String
+    order_desc: String
+    currency: String
+    amount: Int
   }
 
   type Mutation {

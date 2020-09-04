@@ -4,9 +4,9 @@ const {
     WAREHOUSE_NOT_FOUND 
 }= require('../../error-messages/delivery.message')
 
-const deliveryQuery = {
-    getDeliveryCities: async (parent, args) => {
-        const cities = await deliveryService.getDeliveryCities(args.city);
+const novaPoshtaQuery = {
+    getNovaPoshtaCities: async (parent, args) => {
+        const cities = await deliveryService.getNovaPoshtaCities(args.city);
         if(cities.length) {
             return cities
         }
@@ -16,8 +16,8 @@ const deliveryQuery = {
         }]
     },
 
-    getDeliveryWarehouses: async (parent, args) => {
-        const cities = await deliveryService.getDeliveryWarehouses(args.city);
+    getNovaPoshtaWarehouses: async (parent, args) => {
+        const cities = await deliveryService.getNovaPoshtaWarehouses(args.city);
         if(cities.length) {
             return cities
         }
@@ -27,8 +27,8 @@ const deliveryQuery = {
         }]
     },
 
-    getDeliveryPrice: async (parent, args) => {
-        const price = await deliveryService.getDeliveryPrice(args.data);
+    getNovaPoshtaPrice: async (parent, args) => {
+        const price = await deliveryService.getNovaPoshtaPrice(args.data);
         if(price.length) {
             return price
         }
@@ -39,4 +39,8 @@ const deliveryQuery = {
     }
 }
 
-module.exports = { deliveryQuery }
+const ukrPoshtaQuery = {
+    getUkrPoshtaRegion: async (parent, args) =>  await deliveryService.getUkrPoshtaRegion(args.region)
+}
+
+module.exports = { novaPoshtaQuery, ukrPoshtaQuery }

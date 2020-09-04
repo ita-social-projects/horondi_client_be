@@ -36,8 +36,12 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const {
-  deliveryQuery,
+  novaPoshtaQuery,
+  ukrPoshtaQuery
 } = require('./modules/delivery/delivery.resolver');
+const {
+  paymentQuery
+} = require('./modules/payment/payment.resolver');
 
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
@@ -59,9 +63,9 @@ const SCHEMA_NAMES = {
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
-  deliveryCity: 'DeliveryCity',
-  deliveryWarehouse: 'DeliveryWarehouse',
-  deliveryPrice: 'DeliveryPrice',
+  novaPoshtaCity: 'NovaPoshtaCity',
+  novaPoshtaWarehouse: 'NovaPoshtaWarehouse',
+  novaPoshtaPrice: 'NovaPoshtaPrice',
 };
 const resolvers = {
   Query: {
@@ -85,7 +89,11 @@ const resolvers = {
     
     ...contactQuery,
 
-    ...deliveryQuery,
+    ...novaPoshtaQuery,
+
+    ...ukrPoshtaQuery,
+
+    ...paymentQuery
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -214,26 +222,26 @@ const resolvers = {
       return 'Error';
     },
   },
-  DeliveryCityResult: {
+  NovaPoshtaCityResult: {
     __resolveType: obj => {
       if (obj.Ref) {
-        return SCHEMA_NAMES.deliveryCity;
+        return SCHEMA_NAMES.novaPoshtaCity;
       }
       return 'Error';
     },
   },
-  DeliveryWarehouseResult: {
+  NovaPoshtaWarehouseResult: {
     __resolveType: obj => {
       if (obj.Ref) {
-        return SCHEMA_NAMES.deliveryWarehouse;
+        return SCHEMA_NAMES.novaPoshtaWarehouse;
       }
       return 'Error';
     },
   },
-  DeliveryPriceResult: {
+  NovaPoshtaPriceResult: {
     __resolveType: obj => {
       if (obj.Cost) {
-        return SCHEMA_NAMES.deliveryPrice;
+        return SCHEMA_NAMES.novaPoshtaPrice;
       }
       return 'Error';
     },
