@@ -20,9 +20,9 @@ const productsQuery = {
         statusCode: 404,
         message: e.message,
       };
-    }
+    };
   },
-  getModelsbyCategory: (parent, args) => productsService.getModelsByCategory(args.id),
+  getModelsByCategory: (parent, args) => productsService.getModelsByCategory(args.id)
 };
 
 const productsMutation = {

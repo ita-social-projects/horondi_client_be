@@ -2,7 +2,9 @@
 
 exports[`queries should recive user by token 1`] = `
 Object {
+  "__typename": "User",
   "address": Object {
+    "__typename": "Address",
     "buildingNumber": "23",
     "city": "Kiev",
     "country": "Ukraine",

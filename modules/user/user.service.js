@@ -9,7 +9,7 @@ const {
   validateNewPassword,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendmail');
+const { sendEmail } = require('../../utils/sendGrid-email')
 const {
   confirmationMessage,
   recoveryMessage,
@@ -221,7 +221,11 @@ class UserService {
       subject: 'Confirm Email',
       html: confirmationMessage(firstName, token, language),
     };
-    await sendEmail(message);
+
+    if (process.env.NODE_ENV !== 'test') {
+      await sendEmail(message);
+    }
+
     return savedUser;
   }
 
@@ -254,6 +258,16 @@ class UserService {
     };
     await sendEmail(message);
     return true;
+  }
+
+  async switchUserStatus(id) {
+    const user = await this.getUserByFieldOrThrow('_id', id);
+
+    user.banned = !user.banned;
+
+    await user.save();
+
+    return { isSuccess: true };
   }
 
   async resetPassword(password, token) {
