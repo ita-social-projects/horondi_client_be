@@ -1,5 +1,7 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
+const modelService = require('../model/model.service');
+
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -21,7 +23,13 @@ class ProductsService {
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category, isHotItem, models, currency,
+      pattern,
+      colors,
+      price,
+      category,
+      isHotItem,
+      models,
+      currency,
     } = args;
 
     if (isHotItem) {
@@ -35,7 +43,7 @@ class ProductsService {
         $elemMatch: {
           value: { $in: models },
         },
-      }
+      };
     }
     if (colors && colors.length) {
       filter.colors = {
@@ -56,7 +64,7 @@ class ProductsService {
       };
     }
     if (price && price.length) {
-      const currencySign =      currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
+      const currencySign = currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
       filter.basePrice = {
         $elemMatch: {
           currency: currencySign,
@@ -106,6 +114,8 @@ class ProductsService {
     if (await this.checkProductExist(productData, id)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
+    const model = await modelService.getModelById(productData.model);
+    productData.model = model.name;
     return Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
@@ -113,6 +123,8 @@ class ProductsService {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
+    const model = await modelService.getModelById(data.model);
+    data.model = model.name;
     return new Product(data).save();
   }
 
