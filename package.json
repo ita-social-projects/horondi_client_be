@@ -6,7 +6,7 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/horondi/horondi_client_be.git"
+    "url": "https://github.com/ita-social-projects/horondi_client_be"
   },
   "private": "true",
   "resolutions": {
