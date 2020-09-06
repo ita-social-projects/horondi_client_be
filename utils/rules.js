@@ -1,4 +1,4 @@
-const { rule, and } = require('graphql-shield');
+const { rule } = require('graphql-shield');
 const { UserInputError } = require('apollo-server');
 const {
   INVALID_PERMISSIONS,
@@ -11,8 +11,8 @@ const isAuthorized = rule()(async (parent, args, context, info) => {
   return new UserInputError(USER_NOT_AUTHORIZED, { statusCode: 401 });
 });
 
-const isAdmin = rule()(async (parent, args, context, info) => {
-  if (context.user.role === 'admin') return true;
+const hasRoles = (roles) => rule()(async (parent, args, context, info) => {
+  if (context.user && roles.includes(context.user.roles)) return true;
   return new UserInputError(INVALID_PERMISSIONS, { statusCode: 403 });
 });
 
@@ -21,8 +21,6 @@ const isTheSameUser = rule()(async (parent, args, context, info) => {
   return new UserInputError(WRONG_CREDENTIALS, { statusCode: 401 });
 });
 
-const isAuthorizedAdmin = and(isAuthorized, isAdmin);
-
 module.exports = {
-  isAdmin, isAuthorized, isTheSameUser, isAuthorizedAdmin,
+  hasRoles, isAuthorized, isTheSameUser
 };

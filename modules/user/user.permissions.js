@@ -1,27 +1,28 @@
-const { or, allow } = require('graphql-shield');
+const { or } = require('graphql-shield');
 const {
   isAuthorized,
   isTheSameUser,
-  isAuthorizedAdmin,
+  hasRoles
 } = require('../../utils/rules');
 
 const userPermissionsQuery = {
-  getAllUsers: isAuthorizedAdmin,
-  getUserByToken: or(isAuthorizedAdmin, isAuthorized),
-  getUserById: or(isAuthorizedAdmin, isTheSameUser),
+  getAllUsers: hasRoles(['admin','superadmin']),
+  getUserByToken: or(isAuthorized, hasRoles(['admin','superadmin'])),
+  getUserById: or(isTheSameUser,hasRoles(['admin','superadmin'])),
 };
 const userPermissionsMutations = {
-  registerUser: allow,
-  loginUser: allow,
-  loginAdmin: allow,
-  deleteUser: isAuthorizedAdmin,
-  updateUserById: or(isTheSameUser, isAuthorizedAdmin),
-  updateUserByToken: or(isAuthorized, isAuthorizedAdmin),
-  confirmUser: allow,
-  recoverUser: allow,
-  switchUserStatus: isAuthorizedAdmin,
-  resetPassword: allow,
-  checkIfTokenIsValid: allow,
+  registerUser: !isAuthorized,
+  loginUser: !isAuthorized,
+  loginAdmin: !isAuthorized,
+  deleteUser: hasRoles(['admin','superadmin']),
+  updateUserById: or(isTheSameUser, hasRoles(['admin','superadmin'])),
+  updateUserByToken: or(isAuthorized, hasRoles(['admin','superadmin'])),
+  confirmUser: !isAuthorized,
+  recoverUser: !isAuthorized,
+  switchUserStatus: hasRoles(['admin','superadmin']),
+  resetPassword: !isAuthorized,
+  checkIfTokenIsValid: !isAuthorized,
+  registerSpecialUser: hasRoles(['superadmin'])
 };
 
 module.exports = { userPermissionsMutations, userPermissionsQuery };

@@ -52,3 +52,26 @@ exports.validateNewPassword = Joi.object({
     .max(20)
     .required(),
 });
+
+exports.validateSpecialUserRegisterInput = Joi.object({
+  email: Joi.string().email({
+    minDomainSegments: 2,
+  })
+})
+
+exports.validateSpecialUserConfirmInput = Joi.object({
+  firstName: Joi.string()
+    .min(2)
+    .max(30)
+    .required(),
+
+  lastName: Joi.string()
+    .min(2)
+    .max(30)
+    .required(),
+
+  password: Joi.string()
+    .min(8)
+    .max(20)
+    .required()
+});

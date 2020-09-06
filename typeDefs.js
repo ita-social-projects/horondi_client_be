@@ -5,6 +5,8 @@ const {
   userInput,
   userRegisterInput,
   LoginInput,
+  specialUserConfirmInput,
+  specialUserRegisterInput
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -188,6 +190,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union UserResult = User | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -267,6 +270,8 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${specialUserConfirmInput}
+  ${specialUserRegisterInput}
   ${modelInput}
   ${contactInput}
 
@@ -386,6 +391,7 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
+    registerSpecialUser(user: specialUserRegisterInput!,role: String!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -396,6 +402,7 @@ const typeDefs = gql`
     switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    confirmSpecialUser(user: specialUserConfirmInput!,token: String!): LogicalResult
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult

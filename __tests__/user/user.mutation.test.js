@@ -8,6 +8,26 @@ let userId;
 let token;
 let badId;
 
+const superAdminLogin = async() => {
+  const result = await client.mutate({
+    mutation: gql`
+      mutation($user: LoginInput!) {
+        loginAdmin(loginInput: $user) {
+          token
+        }
+      }
+    `,
+    variables: {
+      user: {email: process.env.SUPERADMIN_EMAIL,
+            password: process.env.SUPERADMIN_PASSWORD}
+    }
+  });
+
+  const {token} = result.data.loginAdmin; 
+
+  return token;
+}
+
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
@@ -765,4 +785,137 @@ describe('User`s mutation restictions tests', () => {
     expect(result.graphQLErrors.length).toBe(1);
     expect(result.graphQLErrors[0].message).toEqual('USER_NOT_AUTHORIZED');
   });
+});
+
+describe("Creating users with custom roles",() => {
+    let superAdminToken;
+    let role;
+    let adminId;
+    let adminToken;
+    let adminPassword;
+    let adminEmail;
+    let adminFirstName;
+    let adminLastName;
+
+    beforeAll(async () => {
+        superAdminToken = await superAdminLogin();
+        role = 'admin';
+
+        adminEmail = 'admin2@gmail.com';
+        adminFirstName = 'Hook';
+        adminLastName = 'Age';
+        adminPassword = 'qwertY123';
+    })
+
+    afterAll(async () => {
+      await client.mutate({
+        mutation: gql`
+        mutation($id: ID!){
+          deleteUser(id: $id){
+            firstName
+          }
+        }
+        `,
+        variables: {
+          id: adminId
+        }
+      })
+    });
+
+    test("Should create an user with custom role and generate a confirmation token",async () => {
+      const result = await client.mutate({
+        mutation: gql`
+          mutation($role: String!,$user: specialUserRegisterInput!) {
+            registerSpecialUser(user:$user,role: $role){
+              ... on User {
+                email
+                token
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          role,
+          user: {
+            email: adminEmail
+          }
+        },
+        context: {
+          headers: {
+            token: superAdminToken
+          }
+        }
+      })
+      .catch(err => err);
+
+      const {email,token} = result.data.registerSpecialUser;
+
+      expect(email).toEqual(adminEmail);
+      
+      adminToken = token;
+    })
+
+    test("Should confirm user with a custom role", async () => {
+      const result = await client.mutate({
+        mutation: gql`
+          mutation($user: specialUserConfirmInput!,$token: String!){
+            confirmSpecialUser(user: $user,token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          token: adminToken,
+          user: {
+            firstName: adminFirstName,
+            lastName: adminLastName,
+            password: adminPassword
+          }
+        }
+      })
+      .catch(err => err);
+
+      const {isSuccess} = result.data.confirmSpecialUser;
+
+      expect(isSuccess).toEqual(true);
+    });
+
+    test("Should successfully login as an admin", async () => {
+      const result = await client.mutate({
+        mutation: gql`
+          mutation($user: LoginInput!) {
+            loginAdmin(loginInput: $user) {
+              firstName
+              lastName
+              _id
+              token
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: adminEmail,
+            password: adminPassword
+          }
+        }
+      })
+      .catch(err => err);
+
+      const {firstName,lastName,_id: id} = result.data.loginAdmin;
+
+      expect(firstName).toEqual(adminFirstName);
+      expect(lastName).toEqual(adminLastName);
+
+      adminId = id;
+    });
 });

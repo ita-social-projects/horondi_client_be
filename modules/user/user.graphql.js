@@ -51,9 +51,24 @@ input userRegisterInput {
     email: String!
 }`;
 
+const specialUserRegisterInput = `
+input specialUserRegisterInput {
+    email: String!
+}
+`
+const specialUserConfirmInput = `
+input specialUserConfirmInput {
+    firstName: String!
+    lastName: String!
+    password: String!
+}
+`
+
 module.exports = {
   userType,
   userInput,
   userRegisterInput,
   LoginInput,
+  specialUserRegisterInput,
+  specialUserConfirmInput
 };

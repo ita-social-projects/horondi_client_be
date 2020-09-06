@@ -55,6 +55,7 @@ const SCHEMA_NAMES = {
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
+  user: 'User'
 };
 const resolvers = {
   Query: {
@@ -205,6 +206,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  UserResult: {
+    __resolveType: obj => {
+      if (obj.email) {
+        return SCHEMA_NAMES.user;
+      }
+      return 'Error';
+    }
+  }
 };
 
 module.exports = resolvers;

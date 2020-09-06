@@ -7,12 +7,15 @@ const {
   validateLoginInput,
   validateUpdateInput,
   validateNewPassword,
+  validateSpecialUserRegisterInput,
+  validateSpecialUserConfirmInput
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendGrid-email')
 const {
   confirmationMessage,
   recoveryMessage,
+  SpecialUserConfirmationMessage
 } = require('../../utils/localization');
 
 const {
@@ -24,8 +27,8 @@ const {
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
-  user: 'user',
   admin: 'admin',
+  user: 'user'
 };
 
 const SOURCES = {
@@ -139,9 +142,7 @@ class UserService {
     const token = generateToken(user._id, user.email);
 
     return {
-      user: {
-        ...user._doc,
-      },
+      ...user._doc,
       _id: user._id,
       token,
     };
@@ -287,6 +288,83 @@ class UserService {
     user.credentials[0].tokenPass = await bcrypt.hash(password, 12);
     await user.save();
     return true;
+  }
+
+  async registerSpecialUser(userInput,role) {
+      const {email} = userInput;
+      const { errors } = await validateSpecialUserRegisterInput.validateAsync({
+        email
+      });
+  
+      if (errors) {
+        throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      }
+  
+      if (await User.findOne({ email })) {
+        throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      }
+
+      const user = new User({
+        email,
+        role
+      });
+
+      const savedUser = await user.save();
+      const token = await generateToken(savedUser._id, savedUser.email, {
+        EXPIRES_IN: undefined,
+      });
+
+      const message = {
+        from: process.env.MAIL_USER,
+        to: savedUser.email,
+        subject: 'Confirm Email',
+        html: SpecialUserConfirmationMessage(token),
+      };
+  
+      if (process.env.NODE_ENV === 'test') {
+        return {...savedUser._doc,token}
+      }
+
+      await sendEmail(message);
+
+      return savedUser;
+  }
+
+  async confirmSpecialUser(updatedUser,token){
+    const {firstName,lastName,password} = updatedUser;
+
+    const { errors } = await validateSpecialUserConfirmInput.validateAsync({
+      firstName,
+      lastName,
+      password
+    });
+
+    if (errors) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+
+    const decoded = jwt.verify(token,process.env.SECRET)
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 12);
+    
+    await User.findByIdAndUpdate(user._id,
+      { ...user._doc,
+        firstName,
+        lastName,
+        credentials: [
+          {
+            source: 'horondi',
+            tokenPass: encryptedPassword,
+          },
+        ],
+        confirmed: true})
+    
+    return { isSuccess: true };
   }
 }
 module.exports = new UserService();

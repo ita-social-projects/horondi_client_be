@@ -34,6 +34,26 @@ const userMutation = {
   },
   resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
   checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
+  registerSpecialUser: async (parent,args) => {
+    try {
+      return await userService.registerSpecialUser(args.user,args.role)
+    } catch (err) {
+      return {
+        statusCode: 400,
+        message: err.message
+      }
+    }
+  },
+  confirmSpecialUser: async (parent,args) => {
+    try {
+      return await userService.confirmSpecialUser(args.user,args.token)
+    } catch (err) {
+      return {
+        statusCode: 400,
+        message: err.message
+      }
+    }
+  }
 };
 
 module.exports = {

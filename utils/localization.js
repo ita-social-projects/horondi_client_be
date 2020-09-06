@@ -108,7 +108,36 @@ padding-top: 100px;
 `;
 };
 
+const SpecialUserConfirmationMessage = (token) => {
+  return `
+  <div style="
+background-color:  #3F3F3F;
+height: 450px;
+padding-top: 100px;
+">
+  <div style="
+  background-color: white;
+  width: 553px;
+  height: 140px;
+  margin: 28px 88px;
+  padding: 52px 45px;
+  font-family: Helvetica
+  ">
+    <p style="
+    margin: 0px
+    ">
+      Для продовження реєстрації, будь ласка, перейдіть за посиланням нижче:
+    </p>
+    <a style="color: black; margin: 0px"  href=${process.env.ADMIN_BASE_URI}confirmation/${token}>Відновити пароль</a>
+    <p style="margin-bottom: 45px">Якщо ви не подавали заявку на відновлення - проігноруйте це повідомлення.</p>
+    <p>З найкращимим побажаннями, команда HORONDI.</p>
+  </div>
+</div>
+`;
+};
+
 module.exports = {
   confirmationMessage,
   recoveryMessage,
+  SpecialUserConfirmationMessage
 };
