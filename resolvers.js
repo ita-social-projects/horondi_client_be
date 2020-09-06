@@ -35,6 +35,11 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+
+const {
+  orderQuery
+} = require('./modules/order/order.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -55,6 +60,7 @@ const SCHEMA_NAMES = {
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
+  order: 'Order'
 };
 const resolvers = {
   Query: {
@@ -77,6 +83,8 @@ const resolvers = {
     ...modelsQuery,
 
     ...contactQuery,
+
+    ...orderQuery
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -210,6 +218,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  OrderResult: {
+    __resolveType: obj => {
+      if (obj.status) {
+        return SCHEMA_NAMES.order;
+      }
+      return 'Error'
+    }
+  }
 };
 
 module.exports = resolvers;

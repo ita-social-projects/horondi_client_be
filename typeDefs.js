@@ -38,6 +38,9 @@ const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
+const {
+  orderType
+} = require('./modules/order/order.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -50,6 +53,7 @@ const typeDefs = gql`
   ${commentType}
   ${modelType}
   ${contactType}
+  ${orderType}
 
   scalar Upload
 
@@ -140,11 +144,27 @@ const typeDefs = gql`
     additionalPrice: [CurrencySet]
   }
 
+  type SizeForOrder {
+    heightInCm: Int,
+    widthInCm: Int,
+    depthInCm: Int,
+    volumeInLiters: Int,
+    weightInKg: Int,
+  }
+
   type UserForComment {
     email: String!
     name: String
     images: ImageSet
     isAdmin: Boolean
+  }
+
+  type UserForOrder {
+    firstName: String,
+    lastName: String,
+    email: String,
+    phoneNumber: Int,
+    address: Address,
   }
 
   type UserRate {
@@ -174,6 +194,29 @@ const typeDefs = gql`
     count: Int
   }
 
+  type Delivery {
+    sentOn: String,
+    sentBy: String,
+    invoiceNumber: String,
+  }
+
+  type ProductForOrder {
+    category: [Language]
+    subcategory: [Language]
+    model: [Language]
+    name: [Language]
+    colors: [[Language]]
+    pattern: [Language]
+    closure: [Language]
+    closureColor: String
+    size: SizeForOrder
+    bottomMaterial: [Language]
+    bottomColor: [Language]
+    additions: [[Language]]
+    actualPrice: [CurrencySet]
+    quantity: Int
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -188,6 +231,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union OrderResult = Order | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -226,6 +270,8 @@ const typeDefs = gql`
 
     getContacts: [ContactResult!]!
     getContactById(id: ID!): ContactResult
+
+    getOrderById(id: ID!): OrderResult
   }
 
   input SortInput {
