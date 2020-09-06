@@ -393,7 +393,7 @@ const newCategory = {
       "lang": "en"
     }
   ],
-  "categoryCode": null,
+  "code": "new catyyy",
   "images": {
     "large": "large_none",
     "medium": "medium_none",
