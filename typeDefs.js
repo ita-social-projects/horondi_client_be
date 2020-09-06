@@ -172,6 +172,16 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedContacts {
+    items: [Contact]
+    count: Int
+  }
+
+  type LanguageImageSet {
+    lang: String
+    value: ImageSet
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -221,7 +231,7 @@ const typeDefs = gql`
 
     getModelsByCategory(id: ID!): [Model]
 
-    getContacts: [ContactResult!]!
+    getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
   }
 
@@ -319,7 +329,7 @@ const typeDefs = gql`
   }
 
   type File {
-    fileNames: ImageSet! 
+    fileNames: ImageSet!
     prefixUrl: String!
   }
 
@@ -348,6 +358,12 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+
+  input LanguageImageSetInput {
+    lang: String!
+    value: ImageSetInput
+  }
+
   input UserRateInput {
     rate: Int!
   }
@@ -401,7 +417,7 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
-    
+
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 

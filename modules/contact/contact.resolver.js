@@ -5,7 +5,7 @@ const {
 } = require('../../error-messages/contact.messages');
 
 const contactQuery = {
-  getContacts: () => contactService.getContacts(),
+  getContacts: (parent, args) => contactService.getContacts(args),
   getContactById: async (parent, args) => (await contactService.getContactById(args.id)) || {
     statusCode: 404,
     message: CONTACT_NOT_FOUND,
