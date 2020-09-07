@@ -57,31 +57,30 @@ describe('Contacts queries', () => {
     const res = await client
       .query({
         query: gql`
-          query {
-            getContacts {
-              ... on Contact {
-                phoneNumber
-                openHours {
-                  lang
-                  value
-                }
-                address {
-                  lang
-                  value
-                }
-                email
-                images {
-                  medium
-                }
-                link
+        query($skip: Int, $limit: Int) {
+          getContacts(skip: $skip, limit: $limit) {
+            items {
+              _id
+              phoneNumber
+              openHours {
+                lang
+                value
               }
-              ... on Error {
-                message
-                statusCode
+              address {
+                lang
+                value
               }
+              email
+              link
             }
+            count
           }
+        }
         `,
+        variables: {
+          skip: 1,
+          limit: 6
+        },
       })
       .catch(e => e);
     expect(res.data.getContacts).toBeDefined();

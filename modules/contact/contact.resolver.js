@@ -6,7 +6,8 @@ const {
 
 const contactQuery = {
   getContacts: (parent, args) => contactService.getContacts(args),
-  getContactById: async (parent, args) => (await contactService.getContactById(args.id)) || {
+  getContactById: async (parent, args) => (
+    await contactService.getContactById(args.id)) || {
     statusCode: 404,
     message: CONTACT_NOT_FOUND,
   },
