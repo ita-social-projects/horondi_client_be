@@ -6,17 +6,17 @@ const patternToAdd = {
     },
     {
       lang: 'en',
-      value: 'pattest',
+      value: 'test',
     },
   ],
   description: [
     {
       lang: 'uk',
-      value: 'тестовий опис',
+      value: 'test',
     },
     {
       lang: 'en',
-      value: 'test description',
+      value: 'test',
     },
   ],
   images: {
@@ -25,9 +25,48 @@ const patternToAdd = {
     small: 'small_335nr4j5dkebkw5cy_test.jpg',
     thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
   },
-  material: 'Cotton',
+  material: 'test',
   handmade: false,
   available: true,
 };
 
-module.exports = { patternToAdd };
+const patternToUpdate = {
+  name: [
+    {
+      lang: 'uk',
+      value: 'test',
+    },
+    {
+      lang: 'en',
+      value: 'pattest',
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: 'updated тестовий опис',
+    },
+    {
+      lang: 'en',
+      value: 'updated test description',
+    },
+  ],
+};
+
+const patternAlreadyExist = {
+  name: [
+    {
+      lang: 'uk',
+      value: 'Синій',
+    },
+    {
+      lang: 'en',
+      value: 'Blue',
+    },
+  ],
+
+  material: 'Cordura',
+  handmade: true,
+  available: true,
+};
+module.exports = { patternToAdd, patternToUpdate, patternAlreadyExist };

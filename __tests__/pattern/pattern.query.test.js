@@ -2,16 +2,47 @@ const { gql } = require('apollo-boost');
 /* eslint-disable no-undef */
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
-const { patternToAdd } = require('./pattern.variables');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
 let patternId = '';
-const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
+const patternDoesNotExistId = '5f367ec5f2983e390432a8c3';
 
+const patternToAdd = {
+  name: [
+    {
+      lang: 'uk',
+      value: 't e s t',
+    },
+    {
+      lang: 'en',
+      value: 'pa t t e s t',
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: 'тестовий опис',
+    },
+    {
+      lang: 'en',
+      value: 'test description',
+    },
+  ],
+  images: {
+    large: 'large_335nr4j5dkebkw5cy_test.jpg',
+    medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
+    small: 'small_335nr4j5dkebkw5cy_test.jpg',
+    thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
+  },
+  material: 'test',
+  handmade: false,
+  available: true,
+};
 describe('pattern tests', () => {
   beforeAll(async () => {
     const res = await client
       .mutate({
+        variables: { pattern: patternToAdd },
         mutation: gql`
           mutation($pattern: PatternInput!) {
             addPattern(pattern: $pattern) {
@@ -25,10 +56,8 @@ describe('pattern tests', () => {
             }
           }
         `,
-        variables: { pattern: patternToAdd },
       })
       .catch(e => e);
-    console.log(res);
     patternId = res.data.addPattern._id;
   });
   afterAll(async () => {
@@ -119,6 +148,7 @@ describe('pattern tests', () => {
     try {
       const res = await client
         .query({
+          variables: { id: patternId },
           query: gql`
             query($id: ID!) {
               getPatternId(id: $id) {
@@ -154,7 +184,6 @@ describe('pattern tests', () => {
               }
             }
           `,
-          variables: { id: patternId },
         })
         .catch(e => e);
 
@@ -196,6 +225,7 @@ describe('pattern tests', () => {
     try {
       const res = await client
         .query({
+          variables: { id: patternDoesNotExistId },
           query: gql`
             query($id: ID!) {
               getPatternId(id: $id) {
@@ -231,7 +261,6 @@ describe('pattern tests', () => {
               }
             }
           `,
-          variables: { id: patternId },
         })
         .catch(e => e);
       expect(res.data.getPatternById).toBeDefined();
