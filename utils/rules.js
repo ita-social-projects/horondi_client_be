@@ -12,7 +12,7 @@ const isAuthorized = rule()(async (parent, args, context, info) => {
 });
 
 const hasRoles = (roles) => rule()(async (parent, args, context, info) => {
-  if (context.user && roles.includes(context.user.roles)) return true;
+  if (context.user && roles.includes(context.user.role)) return true;
   return new UserInputError(INVALID_PERMISSIONS, { statusCode: 403 });
 });
 
