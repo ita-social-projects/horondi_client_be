@@ -382,68 +382,68 @@ const getSameNameForUpdate = (categoryId, subcategoryId, modelId, materialId) =>
 }
 
 const newCategory = {
-  "available": true,
-  "name": [
+  'available': true,
+  'name': [
     {
-      "value": "Тестовенька категорія",
-      "lang": "uk"
+      'value': 'Тестовенька категорія',
+      'lang': 'uk'
     },
     {
-      "value": "Testy Category",
-      "lang": "en"
+      'value': 'Testy Category',
+      'lang': 'en'
     }
   ],
-  "code": "new catyyy",
-  "images": {
-    "large": "large_none",
-    "medium": "medium_none",
-    "small": "small_none",
-    "thumbnail": "thumbnail_none"
+  'code': 'new catyyy',
+  'images': {
+    'large': 'large_none',
+    'medium': 'medium_none',
+    'small': 'small_none',
+    'thumbnail': 'thumbnail_none'
   }
 }
 
 const newModel = {
   name: [
-    { value: "Тестова моделька", lang: "uk" },
-    { value: "Test modelyy", lang: "en" }
+    { value: 'Тестова моделька', lang: 'uk' },
+    { value: 'Test modelyy', lang: 'en' }
   ],
   description: [
-    { value: "Тест", lang: "uk" },
-    { value: "Test", lang: "en" }
+    { value: 'Тест', lang: 'uk' },
+    { value: 'Test', lang: 'en' }
   ],
   images: {
-    "large": "large_new",
-    "medium": "medium_new",
-    "small": "small_new",
-    "thumbnail": "thumbnail_new"
+    'large': 'large_new',
+    'medium': 'medium_new',
+    'small': 'small_new',
+    'thumbnail': 'thumbnail_new'
   },
 }
 
 const newMaterial = {
   name: [
-    { lang: "uk", value: "Тестовий матеріальчик" },
-    { lang: "en", value: "Test Materialyy" }
+    { lang: 'uk', value: 'Тестовий матеріальчик' },
+    { lang: 'en', value: 'Test Materialyy' }
   ],
   description: [
-    { lang: "uk", value: "Опис Тестового матеріальчика" },
-    { lang: "en", value: "Description for Test Materialyy" }
+    { lang: 'uk', value: 'Опис Тестового матеріальчика' },
+    { lang: 'en', value: 'Description for Test Materialyy' }
   ],
-  purpose: "bottomMaterial",
+  purpose: 'bottomMaterial',
   available: true,
   additionalPrice: [
-    { currency: "UAH", value: 0 },
-    { currency: "USD", value: 0 }
+    { currency: 'UAH', value: 0 },
+    { currency: 'USD', value: 0 }
   ],
   colors:{
     code:777,
     name:[
-      { lang: "uk", value: "Тестовий колір" },
-      { lang: "en", value: "Test color" }
+      { lang: 'uk', value: 'Тестовий колір' },
+      { lang: 'en', value: 'Test color' }
     ],
     available:true,
     simpleName: [
-    { lang: "uk", value: "Проста назва матеріальчика" },
-    { lang: "en", value: "Simple Name for Test Materialyy" }
+    { lang: 'uk', value: 'Проста назва матеріальчика' },
+    { lang: 'en', value: 'Simple Name for Test Materialyy' }
   ]
   }
 }
