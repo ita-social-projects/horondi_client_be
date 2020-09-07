@@ -61,20 +61,3 @@ exports.validateAdminRegisterInput = Joi.object({
   role: Joi.string()
   .valid(...availableForRegistrationRoles)
 })
-
-exports.validateAdminConfirmInput = Joi.object({
-  firstName: Joi.string()
-    .min(2)
-    .max(30)
-    .required(),
-
-  lastName: Joi.string()
-    .min(2)
-    .max(30)
-    .required(),
-
-  password: Joi.string()
-    .min(8)
-    .max(20)
-    .required()
-});

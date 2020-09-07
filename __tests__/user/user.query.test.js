@@ -456,4 +456,59 @@ describe('Testing obtaining information restrictions', () => {
     expect(userInfo.firstName).toEqual(firstName);
     expect(userInfo.lastName).toEqual(lastName);
   });
+
+  test("Should throw an error when validate invalid token",async () => {
+
+    const invalidAdminToken = 'y' + adminToken.slice(1);
+
+    const result = await client.query({
+      query: gql`
+        query($token: String!){
+          validateToken(token: $token) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        token: invalidAdminToken
+      }
+    })
+    .catch(err => err);
+
+    const data = result.data.validateToken;
+
+    expect(data.message).toEqual('INVALID_INVITATIONAL_TOKEN');
+
+  });
+
+  test("Should return successful response when token is valid",async () => {
+    const result = await client.query({
+      query: gql`
+        query($token: String!){
+          validateToken(token: $token) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        token: adminToken
+      }
+    })
+    .catch(err => err);
+
+    const data = result.data.validateToken;
+
+    expect(data.isSuccess).toEqual(true);
+    
+  });
 });

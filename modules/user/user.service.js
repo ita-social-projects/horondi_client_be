@@ -7,7 +7,6 @@ const {
   validateLoginInput,
   validateUpdateInput,
   validateNewPassword,
-  validateAdminConfirmInput,
   validateAdminRegisterInput
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
@@ -335,7 +334,7 @@ class UserService {
   async completeAdminRegister(updatedUser,token){
     const {firstName,lastName,password} = updatedUser;
 
-    const { errors } = await validateAdminConfirmInput.validateAsync({
+    const { errors } = await validateRegisterInput.validateAsync({
       firstName,
       lastName,
       password
@@ -368,6 +367,16 @@ class UserService {
         {new: true})
     
     return { isSuccess: true };
+  }
+
+  validateToken(token){
+    try {
+      jwt.verify(token,process.env.SECRET);
+      return {isSuccess: true};
+    }
+    catch(err) {
+      throw new UserInputError(INVALID_INVITATIONAL_TOKEN, { statusCode: 400 });
+    }
   }
 }
 module.exports = new UserService();

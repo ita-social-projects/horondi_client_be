@@ -8,6 +8,17 @@ const userQuery = {
   getUserById: (parent, args, context) => (context.user
     ? userService.getUser(args.id)
     : new UserInputError(USER_NOT_AUTHORIZED)),
+  validateToken: (parent,args) => {
+    try {
+      return userService.validateToken(args.token);
+    }
+    catch(err) {
+      return {
+        statusCode: 400,
+        message: err.message
+      }
+    }
+  }
 };
 const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user, args.language),

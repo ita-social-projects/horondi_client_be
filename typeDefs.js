@@ -214,6 +214,8 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
+    validateToken(token: String!): LogicalResult
+
     getProductById(id: ID!): ProductResult
     getProducts(
       filter: FilterInput
