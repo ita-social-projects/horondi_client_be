@@ -41,7 +41,7 @@ const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const {
-  uploadMutation
+  uploadMutation,
 } = require('./modules/upload/upload.resolver');
 
 const SCHEMA_NAMES = {
@@ -75,7 +75,7 @@ const resolvers = {
     ...commentsQuery,
 
     ...modelsQuery,
-    
+
     ...contactQuery,
   },
   Comment: {
@@ -95,7 +95,12 @@ const resolvers = {
 
   ProductOptions: {
     size: parent => productsService.getSizeById(parent.size),
-    bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
+    bottomMaterial: parent => {
+      if (parent.bottomMaterial) {
+        return materialsService.getMaterialById(parent.bottomMaterial)
+      }
+      return null
+    },
   },
 
   UserRate: {
@@ -122,7 +127,7 @@ const resolvers = {
     ...commentsMutation,
 
     ...modelsMutation,
-    
+
     ...contactMutation,
   },
   CategoryResult: {
@@ -195,7 +200,7 @@ const resolvers = {
         return SCHEMA_NAMES.model;
       }
       return 'Error';
-    }
+    },
   },
   ContactResult: {
     __resolveType: obj => {
