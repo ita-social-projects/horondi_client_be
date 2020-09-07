@@ -7,8 +7,8 @@ const {
   validateLoginInput,
   validateUpdateInput,
   validateNewPassword,
-  validateSpecialUserRegisterInput,
-  validateSpecialUserConfirmInput
+  validateAdminConfirmInput,
+  validateAdminRegisterInput
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendGrid-email')
@@ -24,6 +24,7 @@ const {
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
+  INVALID_INVITATIONAL_TOKEN
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -290,10 +291,11 @@ class UserService {
     return true;
   }
 
-  async registerSpecialUser(userInput,role) {
-      const {email} = userInput;
-      const { errors } = await validateSpecialUserRegisterInput.validateAsync({
-        email
+  async registerAdmin(userInput) {
+      const {email,role} = userInput;
+      const { errors } = await validateAdminRegisterInput.validateAsync({
+        email,
+        role
       });
   
       if (errors) {
@@ -317,7 +319,7 @@ class UserService {
       const message = {
         from: process.env.MAIL_USER,
         to: savedUser.email,
-        subject: 'Confirm Email',
+        subject: '[Horondi] Invitation to become an admin',
         html: SpecialUserConfirmationMessage(token),
       };
   
@@ -330,10 +332,10 @@ class UserService {
       return savedUser;
   }
 
-  async confirmSpecialUser(updatedUser,token){
+  async completeAdminRegister(updatedUser,token){
     const {firstName,lastName,password} = updatedUser;
 
-    const { errors } = await validateSpecialUserConfirmInput.validateAsync({
+    const { errors } = await validateAdminConfirmInput.validateAsync({
       firstName,
       lastName,
       password
@@ -347,13 +349,13 @@ class UserService {
     const user = await User.findOne({ email: decoded.email });
 
     if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
+      throw new UserInputError(INVALID_INVITATIONAL_TOKEN, { statusCode: 400 });
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
     
     await User.findByIdAndUpdate(user._id,
-      { ...user._doc,
+       {
         firstName,
         lastName,
         credentials: [
@@ -362,7 +364,8 @@ class UserService {
             tokenPass: encryptedPassword,
           },
         ],
-        confirmed: true})
+        confirmed: true},
+        {new: true})
     
     return { isSuccess: true };
   }

@@ -34,9 +34,9 @@ const userMutation = {
   },
   resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
   checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
-  registerSpecialUser: async (parent,args) => {
+  registerAdmin: async (parent,args) => {
     try {
-      return await userService.registerSpecialUser(args.user,args.role)
+      return await userService.registerAdmin(args.user)
     } catch (err) {
       return {
         statusCode: 400,
@@ -44,9 +44,9 @@ const userMutation = {
       }
     }
   },
-  confirmSpecialUser: async (parent,args) => {
+  completeAdminRegister: async (parent,args) => {
     try {
-      return await userService.confirmSpecialUser(args.user,args.token)
+      return await userService.completeAdminRegister(args.user,args.token)
     } catch (err) {
       return {
         statusCode: 400,

@@ -4,25 +4,28 @@ const {
   isTheSameUser,
   hasRoles
 } = require('../../utils/rules');
+const {roles} = require('../../consts');
+
+const {ADMIN,SUPERADMIN} = roles;
 
 const userPermissionsQuery = {
-  getAllUsers: hasRoles(['admin','superadmin']),
-  getUserByToken: or(isAuthorized, hasRoles(['admin','superadmin'])),
-  getUserById: or(isTheSameUser,hasRoles(['admin','superadmin'])),
+  getAllUsers: hasRoles([ADMIN,SUPERADMIN]),
+  getUserByToken: or(isAuthorized, hasRoles([ADMIN,SUPERADMIN])),
+  getUserById: or(isTheSameUser,hasRoles([ADMIN,SUPERADMIN])),
 };
 const userPermissionsMutations = {
   registerUser: !isAuthorized,
   loginUser: !isAuthorized,
   loginAdmin: !isAuthorized,
-  deleteUser: hasRoles(['admin','superadmin']),
-  updateUserById: or(isTheSameUser, hasRoles(['admin','superadmin'])),
-  updateUserByToken: or(isAuthorized, hasRoles(['admin','superadmin'])),
+  deleteUser: hasRoles([ADMIN,SUPERADMIN]),
+  updateUserById: or(isTheSameUser, hasRoles([ADMIN,SUPERADMIN])),
+  updateUserByToken: or(isAuthorized, hasRoles([ADMIN,SUPERADMIN])),
   confirmUser: !isAuthorized,
   recoverUser: !isAuthorized,
-  switchUserStatus: hasRoles(['admin','superadmin']),
+  switchUserStatus: hasRoles([ADMIN,SUPERADMIN]),
   resetPassword: !isAuthorized,
   checkIfTokenIsValid: !isAuthorized,
-  registerSpecialUser: hasRoles(['superadmin'])
+  registerAdmin: hasRoles([SUPERADMIN])
 };
 
 module.exports = { userPermissionsMutations, userPermissionsQuery };

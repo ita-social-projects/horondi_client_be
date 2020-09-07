@@ -52,12 +52,13 @@ input userRegisterInput {
 }`;
 
 const specialUserRegisterInput = `
-input specialUserRegisterInput {
+input SpecialUserRegisterInput {
     email: String!
+    role: String!
 }
 `
 const specialUserConfirmInput = `
-input specialUserConfirmInput {
+input SpecialUserConfirmInput {
     firstName: String!
     lastName: String!
     password: String!

@@ -392,7 +392,7 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    registerSpecialUser(user: specialUserRegisterInput!,role: String!): UserResult
+    registerAdmin(user: SpecialUserRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -403,7 +403,7 @@ const typeDefs = gql`
     switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
-    confirmSpecialUser(user: specialUserConfirmInput!,token: String!): LogicalResult
+    completeAdminRegister(user: SpecialUserConfirmInput!,token: String!): LogicalResult
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
