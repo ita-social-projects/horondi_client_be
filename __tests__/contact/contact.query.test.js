@@ -88,6 +88,7 @@ describe('Contacts queries', () => {
         },
       })
       .catch(e => e);
+
     expect(res.data.getContacts).toBeDefined();
     expect(res.data.getContacts).toContainEqual({
       __typename: 'Contact',
