@@ -1,6 +1,6 @@
-const { ApolloServer, AuthenticationError, makeExecutableSchema } = require('apollo-server-express');
+const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
 const { applyMiddleware } = require('graphql-middleware');
-const express = require('express')
+const express = require('express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
@@ -22,7 +22,12 @@ const server = new ApolloServer({
     const { token } = req.headers || '';
     if (token) {
       const user = verifyUser(token);
-      if (!user) throw new AuthenticationError('Invalid authorization token');
+      if (!user) {
+        return {
+          statusCode: 401,
+          message: 'Invalid authorization token',
+        };
+      }
       return {
         user: await userService.getUserByFieldOrThrow('email', user.email),
       };
@@ -41,5 +46,9 @@ app.get('/health', (req, res) => res.send('Health page!'));
 server.applyMiddleware({ app });
 
 app.listen(PORT, () => {
-  console.log('apollo server started, port', PORT, `,Graphql path: ${server.graphqlPath}`);
+  console.log(
+    'apollo server started, port',
+    PORT,
+    `,Graphql path: ${server.graphqlPath}`,
+  );
 });

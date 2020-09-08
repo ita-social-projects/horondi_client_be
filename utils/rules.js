@@ -17,12 +17,15 @@ const isAdmin = rule()(async (parent, args, context, info) => {
 });
 
 const isTheSameUser = rule()(async (parent, args, context, info) => {
-  if (`${context.user._id}` === args.id) return true;
+  if (context.user._id.toString() === args.id) return true;
   return new UserInputError(WRONG_CREDENTIALS, { statusCode: 401 });
 });
 
 const isAuthorizedAdmin = and(isAuthorized, isAdmin);
 
 module.exports = {
-  isAdmin, isAuthorized, isTheSameUser, isAuthorizedAdmin,
+  isAdmin,
+  isAuthorized,
+  isTheSameUser,
+  isAuthorizedAdmin,
 };

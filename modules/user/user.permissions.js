@@ -7,7 +7,7 @@ const {
 
 const userPermissionsQuery = {
   getAllUsers: isAuthorizedAdmin,
-  getUserByToken: or(isAuthorizedAdmin, isAuthorized),
+  getUserByToken: allow,
   getUserById: or(isAuthorizedAdmin, isTheSameUser),
 };
 const userPermissionsMutations = {
@@ -22,6 +22,7 @@ const userPermissionsMutations = {
   switchUserStatus: isAuthorizedAdmin,
   resetPassword: allow,
   checkIfTokenIsValid: allow,
+  sendConfirmationLetter: isAuthorized,
 };
 
 module.exports = { userPermissionsMutations, userPermissionsQuery };

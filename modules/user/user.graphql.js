@@ -22,6 +22,7 @@ type User{
 
 const userInput = `
 input UserInput {
+    _id:ID!
     firstName: String
     lastName: String
     password: String
@@ -36,6 +37,7 @@ input UserInput {
     comments: [ID]
     banned: Boolean
     confirmed: Boolean
+    token: String
 }`;
 const LoginInput = `
 input LoginInput {

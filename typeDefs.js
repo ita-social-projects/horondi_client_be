@@ -10,10 +10,7 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -80,7 +77,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -188,6 +185,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union UserResult = User | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -207,7 +205,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
-    getUserByToken: User
+    getUserByToken: UserResult
     getUserById(id: ID!): User
 
     getProductById(id: ID!): ProductResult
@@ -283,7 +281,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -323,7 +321,7 @@ const typeDefs = gql`
   }
 
   type File {
-    fileNames: ImageSet! 
+    fileNames: ImageSet!
     prefixUrl: String!
   }
 
@@ -391,11 +389,12 @@ const typeDefs = gql`
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!): User
     updateUserByToken(user: UserInput!): User
-    confirmUser(token: String!): Boolean
+    confirmUser(token: String!): User
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    sendConfirmationLetter(email: String!, language: Int!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -406,7 +405,7 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
-    
+
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 

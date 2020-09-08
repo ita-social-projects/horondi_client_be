@@ -1,4 +1,6 @@
 const Joi = require('@hapi/joi');
+const { UserInputError } = require('apollo-server');
+const { INPUT_NOT_VALID } = require('../error-messages/user.messages');
 
 exports.validateRegisterInput = Joi.object({
   firstName: Joi.string()
@@ -19,7 +21,7 @@ exports.validateRegisterInput = Joi.object({
   email: Joi.string().email({
     minDomainSegments: 2,
   }),
-});
+}).error(new UserInputError(INPUT_NOT_VALID, { statusCode: 400 }));
 
 exports.validateUpdateInput = Joi.object({
   firstName: Joi.string()
@@ -50,5 +52,6 @@ exports.validateNewPassword = Joi.object({
   password: Joi.string()
     .min(8)
     .max(20)
-    .required(),
+    .required()
+    .error(new UserInputError(INPUT_NOT_VALID, { statusCode: 400 })),
 });

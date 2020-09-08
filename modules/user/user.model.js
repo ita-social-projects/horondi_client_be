@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     default: 'user',
   },
   email: String,
-  phoneNumber: Number,
+  phoneNumber: String,
   address: Address,
   images: ImageSet,
   credentials: [
@@ -56,6 +56,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  recoveryAttempts: Number,
+  lastRecoveryDate: {
+    type: Date,
+    default: Date.now,
+  },
+  recoveryToken: String,
 });
 
 module.exports = mongoose.model('User', userSchema);
