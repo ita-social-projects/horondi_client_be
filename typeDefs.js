@@ -171,6 +171,16 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedContacts {
+    items: [Contact]
+    count: Int
+  }
+
+  type LanguageImageSet {
+    lang: String
+    value: ImageSet
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -222,7 +232,7 @@ const typeDefs = gql`
 
     getModelsByCategory(id: ID!): [Model]
 
-    getContacts: [ContactResult!]!
+    getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
   }
 
@@ -350,6 +360,12 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+
+  input LanguageImageSetInput {
+    lang: String!
+    value: ImageSetInput
+  }
+
   input UserRateInput {
     rate: Int!
   }

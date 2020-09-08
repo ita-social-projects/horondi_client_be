@@ -4,8 +4,8 @@ const client = require('../../utils/apollo-test-client');
 const { newCategory, newModel } = require('./model.variables');
 require('dotenv').config();
 
-let modelId;
-let categoryId;
+let modelId; let
+    categoryId
 
 describe('Product queries', () => {
   beforeAll(async () => {
