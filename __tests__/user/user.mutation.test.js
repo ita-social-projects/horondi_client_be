@@ -830,6 +830,11 @@ describe("Creating users with custom roles",() => {
         `,
         variables: {
           id
+        },
+        context: {
+          headers: {
+            token: superAdminToken
+          }
         }
       })
     });
