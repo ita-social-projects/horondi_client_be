@@ -4,24 +4,30 @@ const {
   INVALID_PERMISSIONS,
   USER_NOT_AUTHORIZED,
   WRONG_CREDENTIALS,
+  USER_ALREADY_AUTHORIZED
 } = require('../error-messages/user.messages');
 
-const isAuthorized = rule()(async (parent, args, context, info) => {
-  if (context.user) return true;
-  return new UserInputError(USER_NOT_AUTHORIZED, { statusCode: 401 });
+const isAuthorized = rule()((parent, args, context, info) => {
+  return (context.user) ? true : new UserInputError(USER_NOT_AUTHORIZED, { statusCode: 401 })
 });
 
-const hasRoles = (roles) => rule()(async (parent, args, context, info) => {
-  return (context.user && roles.includes(context.user.role)) 
+const isNotAuthorized = rule()((parent, args, context, info) => {
+  return (context.user) ? new UserInputError(USER_ALREADY_AUTHORIZED, { statusCode: 400 }) : true
+});
+
+const hasRoles = (roles) => rule()(
+  (parent, args, context, info) => {
+  return ((context.user && roles.includes(context.user.role))
   ? true
-  : new UserInputError(INVALID_PERMISSIONS, { statusCode: 403 });
+  : new UserInputError(INVALID_PERMISSIONS, { statusCode: 403 }));
 });
 
-const isTheSameUser = rule()(async (parent, args, context, info) => {
-  if (`${context.user._id}` === args.id) return true;
-  return new UserInputError(WRONG_CREDENTIALS, { statusCode: 401 });
+const isTheSameUser = rule()((parent, args, context, info) => {
+  return ((`${context.user._id}` === args.id)
+  ? true
+  : new UserInputError(WRONG_CREDENTIALS, { statusCode: 401 }));
 });
 
 module.exports = {
-  hasRoles, isAuthorized, isTheSameUser
+  hasRoles, isAuthorized, isTheSameUser,isNotAuthorized
 };

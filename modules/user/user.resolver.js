@@ -35,7 +35,7 @@ const userMutation = {
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
     try {
-      return await userService.switchUserStatus(args.id);
+      return userService.switchUserStatus(args.id);
     } catch (err) {
       return {
         statusCode: 400,
