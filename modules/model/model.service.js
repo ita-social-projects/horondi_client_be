@@ -1,4 +1,4 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+const { ObjectId } = require('mongoose').Types;
 const Model = require('./model.model');
 const {
   CATEGORY_NOT_VALID,
@@ -23,8 +23,6 @@ class ModelsService {
     return await new Model(data).save();
   }
 
-
-
   async updateModel(id, newModel) {
     const model = await Model.findById(id);
     if (!model) {
@@ -36,7 +34,7 @@ class ModelsService {
     return Model.findByIdAndUpdate(id, newModel, { new: true });
   }
 
-  async getModelById (id) {
+  async getModelById(id) {
     const model = await Model.findById(id);
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
