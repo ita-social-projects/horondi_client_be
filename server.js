@@ -11,7 +11,6 @@ const permissions = require('./permissions');
 connectDB();
 require('dotenv').config();
 
-
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions,
