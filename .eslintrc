@@ -113,7 +113,6 @@
         "ignoreRegExpLiterals": true
       }
     ],
-    "linebreak-style": ["error", "windows"],
     "radix": 0,
     "no-shadow": 0,
     "quotes": [

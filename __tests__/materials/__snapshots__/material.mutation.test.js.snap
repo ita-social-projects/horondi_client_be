@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test material mutations #6 deleting not existing material should return error 1`] = `
+Object {
+  "__typename": "Error",
+  "message": "MATERIAL_NOT_FOUND",
+  "statusCode": 404,
+}
+`;
