@@ -2,7 +2,7 @@ const EmailChatService = require('./email-chat.service');
 const { CHAT_NOT_FOUND } = require('../../error-messages/email-chat.messages');
 
 const emailChatQuestionQuery = {
-  getAllEmailQuestion: async (parent, args) => await EmailChatService.getAllEmailQuestions(),
+  getAllEmailQuestions: async (parent, args) => await EmailChatService.getAllEmailQuestions(),
   getEmailQuestionById: async (parent, args) => {
     const chat = await EmailChatService.getEmailQuestionById(args.id);
     if (chat) {

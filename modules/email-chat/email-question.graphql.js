@@ -1,12 +1,12 @@
 const emailQuestionType = `
 type EmailQuestion {
-  _id: ID!
+  _id: ID
   senderName: String!
   text: String!
   date: String!
   email: String!
   status: String!
-  answer: EmailAnswer
+  answer: EmailAnswear
 }
 `;
 
@@ -18,6 +18,6 @@ input EmailQuestionInput {
 }`;
 
 module.exports = {
-    emailQuestionType,
-    emailQuestionInput
+  emailQuestionType,
+  emailQuestionInput,
 };
