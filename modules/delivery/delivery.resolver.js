@@ -36,7 +36,9 @@ const novaPoshtaQuery = {
             statusCode: 404,
             message: WAREHOUSE_NOT_FOUND,
         }]
-    }
+    },
+
+    createNovaPoshtaOrder: async (parent, args) => await deliveryService.createNovaPoshtaOrder(args.data)
 }
 
 const ukrPoshtaQuery = {

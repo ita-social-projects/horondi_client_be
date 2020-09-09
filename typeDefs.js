@@ -216,6 +216,13 @@ const typeDefs = gql`
      res: String
   }
 
+  type NovaPoshtaOrder {
+    Ref: String,
+    CostOnSite: Float,
+    IntDocNumber: String,
+    TypeDocument: String
+  }
+
   type Payment {
     payment_id: String
     response_status: String
@@ -277,10 +284,12 @@ const typeDefs = gql`
     getNovaPoshtaCities(city: String):[NovaPoshtaCityResult]
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouseResult]
     getNovaPoshtaPrice(data: NovaPoshtaPriceInput): [NovaPoshtaPriceResult]
+    createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrder
 
     getUkrPoshtaRegion(region: String): UkrPoshtaRegion
 
     getPaymentCheckout(data: PaymentInput): Payment
+    getPaymentRefund(data: PaymentInput): Payment
   }
 
   input SortInput {
@@ -388,6 +397,22 @@ const typeDefs = gql`
     bottomColor: [LanguageInput!]
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
+  }
+  input NovaPoshtaOrderInput {
+    CitySender: String,
+    Weight: Float,
+    PayerType: String,
+    PaymentMethod: String,
+    ServiceType: String,
+    Cost: Float,
+    CargoType: String,
+    SeatsAmount: Int,
+    Description: String,
+    RecipientCityName: String,
+    RecipientAddressName: String,
+    RecipientName: String,
+    RecipientType: String,
+    RecipientsPhone: String,
   }
 
   input SizeInput {
