@@ -6,7 +6,7 @@ type EmailQuestion {
   date: String!
   email: String!
   status: String!
-  answer: EmailAnswear
+  answear: EmailAnswear
 }
 `;
 

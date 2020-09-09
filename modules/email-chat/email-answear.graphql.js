@@ -1,6 +1,5 @@
 const emailAnswearType = `
 type EmailAnswear {
-  _id: ID!
   admin: User!
   date: String!
   text: String!
@@ -15,13 +14,6 @@ input EmailAnswearInput {
 }`;
 
 module.exports = {
-    emailAnswearType,
-    emailAnswearInput
+  emailAnswearType,
+  emailAnswearInput,
 };
-
-
-
-
-
-
-

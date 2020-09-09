@@ -113,6 +113,15 @@ const resolvers = {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
   },
 
+  EmailQuestion: {
+    answear: parent => {
+      if (parent.answear) {
+        return parent.answear;
+      }
+      return null;
+    },
+  },
+
   Mutation: {
     ...uploadMutation,
 
