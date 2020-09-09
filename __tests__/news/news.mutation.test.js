@@ -1,5 +1,6 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-undef */
+require('dotenv').config();
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 const {
@@ -60,9 +61,28 @@ const existingNews = {
 };
 
 let newsId = '';
+let token;
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
 
 describe('test news mutations', () => {
+  beforeAll(async () => {
+    const loginInput = {
+      email: process.env.ADMIN_LOGIN,
+      password: process.env.ADMIN_PASSWORD,
+    };
+    const login = await client.mutate({
+      mutation: gql`
+        mutation($loginInput: LoginInput!) {
+          loginAdmin(loginInput: $loginInput) {
+            token
+          }
+        }
+      `,
+      variables: { loginInput },
+    });
+    token = login.data.loginAdmin.token;
+  });
+
   test('#1 should add news to database', async () => {
     const res = await client
       .mutate({
@@ -101,6 +121,11 @@ describe('test news mutations', () => {
             }
           }
         `,
+        context: {
+          headers: {
+            token,
+          },
+        },
         variables: { news },
       })
       .then(res => res)
@@ -162,6 +187,11 @@ describe('test news mutations', () => {
             }
           }
         `,
+        context: {
+          headers: {
+            token,
+          },
+        },
         variables: { news },
       })
       .then(res => res)
@@ -169,6 +199,7 @@ describe('test news mutations', () => {
     expect(res.data.addNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
     expect(res.data.addNews).toHaveProperty('statusCode', 400);
   });
+
   test('#3 update news', async () => {
     const res = await client.mutate({
       mutation: gql`
@@ -197,6 +228,11 @@ describe('test news mutations', () => {
           }
         }
       `,
+      context: {
+        headers: {
+          token,
+        },
+      },
       variables: { id: newsId, news: newsUpdateData },
     });
 
@@ -245,6 +281,11 @@ describe('test news mutations', () => {
             }
           }
         `,
+        context: {
+          headers: {
+            token,
+          },
+        },
         variables: { id: newsDoesNotExistId, news: newsUpdateData },
       })
       .then(res => res)
@@ -252,6 +293,7 @@ describe('test news mutations', () => {
     expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
     expect(res.data.updateNews).toHaveProperty('statusCode', 404);
   });
+
   test('#5 update not existing news should return error', async () => {
     const res = await client
       .mutate({
@@ -282,6 +324,11 @@ describe('test news mutations', () => {
             }
           }
         `,
+        context: {
+          headers: {
+            token,
+          },
+        },
         variables: { id: newsId, news: existingNews },
       })
       .then(res => res)
@@ -289,6 +336,7 @@ describe('test news mutations', () => {
     expect(res.data.updateNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
     expect(res.data.updateNews).toHaveProperty('statusCode', 400);
   });
+
   test('#6 delete news', async () => {
     const res = await client.mutate({
       mutation: gql`
@@ -313,6 +361,11 @@ describe('test news mutations', () => {
           }
         }
       `,
+      context: {
+        headers: {
+          token,
+        },
+      },
       variables: { id: newsId },
     });
     expect(res.data.deleteNews).toBeDefined();
@@ -331,6 +384,7 @@ describe('test news mutations', () => {
       ],
     });
   });
+
   test('#7 delete not existing news should return error', async () => {
     const res = await client.mutate({
       mutation: gql`
@@ -355,6 +409,11 @@ describe('test news mutations', () => {
           }
         }
       `,
+      context: {
+        headers: {
+          token,
+        },
+      },
       variables: { id: newsDoesNotExistId },
     });
     expect(res.data.deleteNews).toBeDefined();

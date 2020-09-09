@@ -6,18 +6,18 @@ const {
 
 const {
   newsPermissionsQuery,
-  newsPermissionsMutations
+  newsPermissionsMutations,
 } = require('./modules/news/news.permissions');
 
 const permissions = shield(
   {
     Query: {
       ...userPermissionsQuery,
-      ...newsPermissionsQuery
+      ...newsPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutations,
-      ...newsPermissionsMutations
+      ...newsPermissionsMutations,
     },
   },
   {

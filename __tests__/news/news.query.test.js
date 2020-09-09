@@ -5,10 +5,29 @@ require('dotenv').config();
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 
 let newsId = '';
+let token;
 const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
 
 describe('querries', () => {
   beforeAll(async () => {
+    const loginInput = {
+      email: process.env.ADMIN_LOGIN,
+      password: process.env.ADMIN_PASSWORD,
+    };
+
+    const login = await client.mutate({
+      mutation: gql`
+        mutation($loginInput: LoginInput!) {
+          loginAdmin(loginInput: $loginInput) {
+            token
+          }
+        }
+      `,
+      variables: { loginInput },
+    });
+
+    token = login.data.loginAdmin.token;
+
     const res = await client
       .mutate({
         mutation: gql`
@@ -46,6 +65,11 @@ describe('querries', () => {
             }
           }
         `,
+        context: {
+          headers: {
+            token,
+          },
+        },
       })
       .catch(e => e);
     newsId = res.data.addNews._id;
@@ -66,6 +90,11 @@ describe('querries', () => {
             }
           }
         `,
+        context: {
+          headers: {
+            token,
+          },
+        },
         variables: { id: newsId },
       })
       .catch(e => e);

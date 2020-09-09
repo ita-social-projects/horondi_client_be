@@ -12,7 +12,11 @@ const {
 
 require('dotenv').config();
 
-let productId, categoryId, subcategoryId, modelId, sameNameProductId;
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let sameNameProductId;
 
 describe('Product mutations', () => {
   beforeAll(async () => {
@@ -448,7 +452,9 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getSameNameForUpdate(categoryId, subcategoryId, modelId) },
+      variables: {
+        product: getSameNameForUpdate(categoryId, subcategoryId, modelId),
+      },
     });
     sameNameProductId = createProduct.data.addProduct._id;
 
