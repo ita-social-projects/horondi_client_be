@@ -39,7 +39,7 @@ const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-question.resolver');
-
+const emailChatAnswerMutation = require('./modules/email-chat/email-answer.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -59,6 +59,7 @@ const SCHEMA_NAMES = {
   model: 'Model',
   contact: 'Contact',
   emailQuestion: 'EmailQuestion',
+  emailAnswer: 'EmailAnswer',
 };
 const resolvers = {
   Query: {
@@ -114,9 +115,9 @@ const resolvers = {
   },
 
   EmailQuestion: {
-    answear: parent => {
-      if (parent.answear) {
-        return parent.answear;
+    answer: parent => {
+      if (parent.answer) {
+        return parent.answer;
       }
       return null;
     },
@@ -146,19 +147,13 @@ const resolvers = {
     ...contactMutation,
 
     ...emailChatQuestionMutation,
+
+    ...emailChatAnswerMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.category;
-      }
-      return 'Error';
-    },
-  },
-  EmailQuestionResult: {
-    __resolveType: obj => {
-      if (obj.text) {
-        return SCHEMA_NAMES.emailQuestion;
       }
       return 'Error';
     },
@@ -231,6 +226,22 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
+      }
+      return 'Error';
+    },
+  },
+  EmailQuestionResult: {
+    __resolveType: obj => {
+      if (obj.text) {
+        return SCHEMA_NAMES.emailQuestion;
+      }
+      return 'Error';
+    },
+  },
+  EmailAnswerResult: {
+    __resolveType: obj => {
+      if (obj.text) {
+        return SCHEMA_NAMES.emailAnswer;
       }
       return 'Error';
     },

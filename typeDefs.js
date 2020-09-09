@@ -40,9 +40,8 @@ const {
   emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
 const {
-  emailAnswearType,
-  emailAnswearInput,
-} = require('./modules/email-chat/email-answear.graphql');
+  emailAnswerType,
+} = require('./modules/email-chat/email-answer.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -56,7 +55,7 @@ const typeDefs = gql`
   ${modelType}
   ${contactType}
   ${emailQuestionType}
-  ${emailAnswearType}
+  ${emailAnswerType}
 
   scalar Upload
 
@@ -206,6 +205,7 @@ const typeDefs = gql`
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
   union EmailQuestionResult = EmailQuestion | Error
+  union EmailAnswerResult = EmailAnswer | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -291,7 +291,6 @@ const typeDefs = gql`
   ${modelInput}
   ${contactInput}
   ${emailQuestionInput}
-  ${emailAnswearInput}
 
   input LanguageInput {
     lang: String!
@@ -452,6 +451,8 @@ const typeDefs = gql`
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
+    spamQuestion(questionId: ID!): EmailQuestionResult
+    emailChatAnswer(questionId: ID!, text: String!): EmailAnswerResult
   }
 `;
 
