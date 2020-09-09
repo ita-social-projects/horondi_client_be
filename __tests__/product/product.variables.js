@@ -1,6 +1,6 @@
 const badProductId = '1a1111da11da1111111a111a';
 
-const getNewProduct = (categoryId, subcategoryId, modelId) => ({
+const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   name: [
     { lang: 'en', value: 'Very Coool Baggy' },
     { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
@@ -20,7 +20,7 @@ const getNewProduct = (categoryId, subcategoryId, modelId) => ({
     {
       lang: 'en',
       value:
-        'Canvas-400G padded with a layer of durable and water-resistant material',
+          'Canvas-400G padded with a layer of durable and water-resistant material',
     },
   ],
   innerMaterial: [
@@ -100,7 +100,7 @@ const getNewProduct = (categoryId, subcategoryId, modelId) => ({
   options: [
     {
       size: '50288e8716e80d9569f64e2e',
-      bottomMaterial: 'dadba32060da96e40847166d',
+      bottomMaterial: materialId,
       description: [
         { lang: 'ua', value: 'Тканина Кордура' },
         { lang: 'en', value: 'Cordura fabric' },
@@ -127,7 +127,12 @@ const getNewProduct = (categoryId, subcategoryId, modelId) => ({
   ],
 });
 
-const getProductForUpdate = (categoryId, subcategoryId, modelId) => ({
+const getProductForUpdate = (
+  categoryId,
+  subcategoryId,
+  modelId,
+  materialId,
+) => ({
   model: modelId,
   name: [
     { lang: 'en', value: 'Bad Baggy' },
@@ -221,7 +226,7 @@ const getProductForUpdate = (categoryId, subcategoryId, modelId) => ({
   options: [
     {
       size: '50288e8716e80d7569f64e2e',
-      bottomMaterial: 'dadba32080da96e40847166d',
+      bottomMaterial: materialId,
       description: [
         { lang: 'ua', value: 'Кордура' },
         { lang: 'en', value: 'Cordura' },
@@ -248,7 +253,12 @@ const getProductForUpdate = (categoryId, subcategoryId, modelId) => ({
   ],
 });
 
-const getSameNameForUpdate = (categoryId, subcategoryId, modelId) => ({
+const getSameNameForUpdate = (
+  categoryId,
+  subcategoryId,
+  modelId,
+  materialId,
+) => ({
   category: categoryId,
   subcategory: subcategoryId,
   model: modelId,
@@ -268,7 +278,7 @@ const getSameNameForUpdate = (categoryId, subcategoryId, modelId) => ({
     {
       lang: 'en',
       value:
-        'Canvas-400B padded with a layer of durable and water-resistant material',
+          'Canvas-400B padded with a layer of durable and water-resistant material',
     },
   ],
   innerMaterial: [
@@ -348,7 +358,7 @@ const getSameNameForUpdate = (categoryId, subcategoryId, modelId) => ({
   options: [
     {
       size: '50288e8716e80d9569f64e2e',
-      bottomMaterial: 'dadba32060da96e40847166d',
+      bottomMaterial: materialId,
       description: [
         { lang: 'ua', value: 'Тканина Кордура' },
         { lang: 'en', value: 'Cordura fabric' },
@@ -387,7 +397,7 @@ const newCategory = {
       lang: 'en',
     },
   ],
-  categoryCode: null,
+  code: 'new catyyy',
   images: {
     large: 'large_none',
     medium: 'medium_none',
@@ -413,10 +423,40 @@ const newModel = {
   },
 };
 
+const newMaterial = {
+  name: [
+    { lang: 'uk', value: 'Тестовий матеріальчик' },
+    { lang: 'en', value: 'Test Materialyy' },
+  ],
+  description: [
+    { lang: 'uk', value: 'Опис Тестового матеріальчика' },
+    { lang: 'en', value: 'Description for Test Materialyy' },
+  ],
+  purpose: 'bottomMaterial',
+  available: true,
+  additionalPrice: [
+    { currency: 'UAH', value: 0 },
+    { currency: 'USD', value: 0 },
+  ],
+  colors: {
+    code: 777,
+    name: [
+      { lang: 'uk', value: 'Тестовий колір' },
+      { lang: 'en', value: 'Test color' },
+    ],
+    available: true,
+    simpleName: [
+      { lang: 'uk', value: 'Проста назва матеріальчика' },
+      { lang: 'en', value: 'Simple Name for Test Materialyy' },
+    ],
+  },
+};
+
 module.exports = {
   badProductId,
   newCategory,
   newModel,
+  newMaterial,
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,
