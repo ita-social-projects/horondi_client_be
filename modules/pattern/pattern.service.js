@@ -44,7 +44,7 @@ class PatternsService {
     }
     throw new Error(PATTERN_NOT_FOUND);
   }
-
+ 
   async checkPatternExist(data, id) {
     const patternsCount = await Pattern.countDocuments({
       _id: { $ne: id },
