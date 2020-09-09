@@ -102,7 +102,12 @@ const resolvers = {
 
   ProductOptions: {
     size: parent => productsService.getSizeById(parent.size),
-    bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
+    bottomMaterial: parent => {
+      if (parent.bottomMaterial) {
+        return materialsService.getMaterialById(parent.bottomMaterial)
+      }
+      return null
+    },
   },
 
   UserRate: {
