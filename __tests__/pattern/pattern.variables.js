@@ -1,22 +1,28 @@
+const user = {
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASS,
+};
+const testValue = 'test value';
+const updateValue = 'update value';
 const patternToAdd = {
   name: [
     {
       lang: 'uk',
-      value: 'test',
+      value: testValue,
     },
     {
       lang: 'en',
-      value: 'test',
+      value: testValue,
     },
   ],
   description: [
     {
       lang: 'uk',
-      value: 'test',
+      value: testValue,
     },
     {
       lang: 'en',
-      value: 'test',
+      value: testValue,
     },
   ],
   images: {
@@ -34,21 +40,21 @@ const patternToUpdate = {
   name: [
     {
       lang: 'uk',
-      value: 'test',
+      value: testValue,
     },
     {
       lang: 'en',
-      value: 'pattest',
+      value: testValue,
     },
   ],
   description: [
     {
       lang: 'uk',
-      value: 'updated тестовий опис',
+      value: updateValue,
     },
     {
       lang: 'en',
-      value: 'updated test description',
+      value: updateValue,
     },
   ],
 };
@@ -69,4 +75,11 @@ const patternAlreadyExist = {
   handmade: true,
   available: true,
 };
-module.exports = { patternToAdd, patternToUpdate, patternAlreadyExist };
+module.exports = {
+  patternToAdd,
+  patternToUpdate,
+  patternAlreadyExist,
+  user,
+  testValue,
+  updateValue,
+};

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pattern tests #3 request not existing pattern should throw error 1`] = `
+Object {
+  "__typename": "Error",
+  "message": "PATTERN_NOT_FOUND",
+  "statusCode": 404,
+}
+`;
