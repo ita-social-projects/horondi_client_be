@@ -27,8 +27,7 @@ class EmailChatService {
     if (!question) {
       throw new Error(QUESTION_NOT_FOUND);
     }
-    question.answer.admin = '5f47531b5c5f312d08eb7dd5';
-    // question.answer.admin = adminId
+    question.answer.admin = adminId;
     question.status = 'SPAM';
     question.answer.text = '';
     question.answer.date = Date.now();
@@ -41,8 +40,7 @@ class EmailChatService {
       throw new Error(QUESTION_NOT_FOUND);
     }
     question.status = 'ANSWERED';
-    // question.answer.admin = adminId
-    question.answer.admin = '5f47531b5c5f312d08eb7dd5';
+    question.answer.admin = adminId;
     question.answer.text = args.text;
     question.answer.date = Date.now();
     return EmailChat.findByIdAndUpdate(args.questionId, question, {
