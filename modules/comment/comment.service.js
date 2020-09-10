@@ -1,5 +1,6 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
+
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -17,6 +18,10 @@ class CommentsService {
       throw new Error(COMMENT_NOT_FOUND);
     }
     return Comment.find({ product: id });
+  }
+
+  async getAllCommentsByUser(userEmail) {
+    return Comment.find({ 'user.email': userEmail });
   }
 
   async updateComment(id, comment) {
