@@ -1,8 +1,10 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-require('dotenv').config();
+const loginAdminOperation = require('../../utils/loginAdmin');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
+
+require('dotenv').config();
 
 let newsId = '';
 let token;
@@ -10,23 +12,7 @@ const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
 
 describe('querries', () => {
   beforeAll(async () => {
-    const loginInput = {
-      email: process.env.ADMIN_LOGIN,
-      password: process.env.ADMIN_PASSWORD,
-    };
-
-    const login = await client.mutate({
-      mutation: gql`
-        mutation($loginInput: LoginInput!) {
-          loginAdmin(loginInput: $loginInput) {
-            token
-          }
-        }
-      `,
-      variables: { loginInput },
-    });
-
-    token = login.data.loginAdmin.token;
+    token = await loginAdminOperation();
 
     const res = await client
       .mutate({

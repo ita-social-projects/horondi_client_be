@@ -3,6 +3,7 @@
 require('dotenv').config();
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
+const loginAdminOperation = require('../../utils/loginAdmin');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
@@ -66,21 +67,7 @@ const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
 
 describe('test news mutations', () => {
   beforeAll(async () => {
-    const loginInput = {
-      email: process.env.ADMIN_LOGIN,
-      password: process.env.ADMIN_PASSWORD,
-    };
-    const login = await client.mutate({
-      mutation: gql`
-        mutation($loginInput: LoginInput!) {
-          loginAdmin(loginInput: $loginInput) {
-            token
-          }
-        }
-      `,
-      variables: { loginInput },
-    });
-    token = login.data.loginAdmin.token;
+    token = await loginAdminOperation();
   });
 
   test('#1 should add news to database', async () => {
