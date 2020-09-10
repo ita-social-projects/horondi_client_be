@@ -39,9 +39,6 @@ const {
   emailQuestionType,
   emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
-const {
-  emailAnswerType,
-} = require('./modules/email-chat/email-answer.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -55,7 +52,6 @@ const typeDefs = gql`
   ${modelType}
   ${contactType}
   ${emailQuestionType}
-  ${emailAnswerType}
 
   scalar Upload
 
@@ -194,6 +190,12 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+  type EmailAnswer {
+    admin: User!
+    date: String!
+    text: String!
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -205,7 +207,6 @@ const typeDefs = gql`
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
   union EmailQuestionResult = EmailQuestion | Error
-  union EmailAnswerResult = EmailAnswer | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -452,7 +453,7 @@ const typeDefs = gql`
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     spamQuestion(questionId: ID!): EmailQuestionResult
-    emailChatAnswer(questionId: ID!, text: String!): EmailAnswerResult
+    emailChatAnswer(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
 

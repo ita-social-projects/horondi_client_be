@@ -39,7 +39,6 @@ const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-question.resolver');
-const emailChatAnswerMutation = require('./modules/email-chat/email-answer.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -59,7 +58,6 @@ const SCHEMA_NAMES = {
   model: 'Model',
   contact: 'Contact',
   emailQuestion: 'EmailQuestion',
-  emailAnswer: 'EmailAnswer',
 };
 const resolvers = {
   Query: {
@@ -116,11 +114,14 @@ const resolvers = {
 
   EmailQuestion: {
     answer: parent => {
-      if (parent.answer) {
+      if (parent.answer.date) {
         return parent.answer;
       }
       return null;
     },
+  },
+  EmailAnswer: {
+    admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
 
   Mutation: {
@@ -147,8 +148,6 @@ const resolvers = {
     ...contactMutation,
 
     ...emailChatQuestionMutation,
-
-    ...emailChatAnswerMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -234,14 +233,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
-      }
-      return 'Error';
-    },
-  },
-  EmailAnswerResult: {
-    __resolveType: obj => {
-      if (obj.text) {
-        return SCHEMA_NAMES.emailAnswer;
       }
       return 'Error';
     },

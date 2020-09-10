@@ -19,10 +19,7 @@ const EmailChatSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    date: {
-      type: Date,
-      default: Date.now,
-    },
+    date: Date,
     text: String,
   },
 });

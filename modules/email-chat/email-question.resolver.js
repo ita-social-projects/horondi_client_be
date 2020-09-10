@@ -19,9 +19,22 @@ const emailChatQuestionQuery = {
 
 const emailChatQuestionMutation = {
   addEmailQuestion: async (parent, args) => await EmailChatService.addEmailQuestion(args.question),
-  spamQuestion: async (parent, args) => {
+  spamQuestion: async (parent, args, context) => {
     try {
-      return await EmailChatService.sendEmailQuestionToSpam(args.questionId);
+      return await EmailChatService.sendEmailQuestionToSpam(
+        args.questionId,
+        context.user,
+      );
+    } catch (error) {
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
+    }
+  },
+  emailChatAnswer: async (parent, args, context) => {
+    try {
+      return await EmailChatService.giveAnswer(args, context.user);
     } catch (error) {
       return {
         statusCode: 404,
