@@ -10,6 +10,9 @@ const { getObjectId, getObjectIds } = require('mongo-seeding');
 let orders = [];
 const usersNumber = users.length;
 const productsNumber = products.length;
+let dateOfCreation;
+let sentOn;
+let lastUpdatedDate;
 let product;
 let productCount;
 let option;
@@ -19,11 +22,13 @@ let materialPick;
 let sizePick;
 let colors;
 let actualPrice;
-let totalPrice;
+let totalItemsPrice;
 let successfulPurchases = [];
 
 for (let i = 0; i < usersNumber; i++) {
-    const dateOfCreation = randomDateSince(users[i].registrationDate);
+    dateOfCreation = randomDateSince(users[i].registrationDate);
+    sentOn = addDays(dateOfCreation, ~~(Math.random() * (5 - 1) + 1));
+    lastUpdatedDate = addDays(sentOn, ~~(Math.random() * (5 - 1) + 1));
     productCount = ~~(Math.random() * productsNumber);
     product = products[productCount];
     option = product.options[~~(Math.random() * product.options.length)];
@@ -46,20 +51,29 @@ for (let i = 0; i < usersNumber; i++) {
 
     orders[i] = {
         id: getObjectId('order' + i),
-        status: 'sent', //'sent', 'pending', 'canceled'
+        status: 'DELIVERED',
         user: {
             firstName: users[i].firstName,
             lastName: users[i].lastName,
             email: users[i].email,
             phoneNumber: users[i].phoneNumber,
-            address: users[i].address,
         },
         dateOfCreation: dateOfCreation,
+        lastUpdatedDate: lastUpdatedDate,
+        completed: true,
+        userComment: '',
+        adminComment: '',
+        cancellationReason: '',
         delivery: {
-            sentOn: addDays(dateOfCreation, ~~(Math.random() * (5 - 1) + 1)),
+            sentOn: sentOn,
             sentBy: 'Nova Poshta',
+            courier: true,
+            courierOffice: ~~(Math.random() * (20 - 1) + 1),
             invoiceNumber: ~~(Math.random() * 10000000).toString(),
+            serviceType: 'WarehouseDoors',
+            cost: mapToCurrencies(50.00),
         },
+        address: users[i].address,
         items: [
             {
                 category: categoryPick.name,
@@ -84,18 +98,23 @@ for (let i = 0; i < usersNumber; i++) {
                 quantity: 1,
             },
         ],
-        paymentMethod: 'card'
+        paymentMethod: 'card',
+        isPaid: true,
     };
 
-    totalPrice = 0;
+    totalItemsPrice = 0;
     for (let j = 0; j < orders[i].items.length; j++) {
-        totalPrice += orders[i].items[j].actualPrice[0].value * orders[i].items[j].quantity;
+        totalItemsPrice += orders[i].items[j].actualPrice[0].value * orders[i].items[j].quantity;
     }
-    orders[i]['totalPrice'] = mapToCurrencies(totalPrice);
+    orders[i]['totalItemsPrice'] = mapToCurrencies(totalItemsPrice);
+
+    orders[i]['totalPriceToPay'] = mapToCurrencies(orders[i]['totalItemsPrice'][0].value + orders[i].delivery.cost[0].value);
 }
 
-//console.log(orders[0].items[0])
-//console.log(orders[0].totalPrice)
+console.log(orders[0]);
+// console.log(orders[0].totalItemsPrice);
+// console.log(orders[0].delivery.cost[0].value);
+// console.log(orders[0].totalPriceToPay);
 
 module.exports = {
     orders,
