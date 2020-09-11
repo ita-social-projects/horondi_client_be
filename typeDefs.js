@@ -208,6 +208,12 @@ const typeDefs = gql`
     count: Int
   }
 
+  enum Status {
+    SENT
+    PENDING 
+    CANCELED
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }

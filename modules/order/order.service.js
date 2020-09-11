@@ -1,7 +1,9 @@
 const Order = require('./order.model');
 const {
   ORDER_NOT_FOUND,
+  ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 class OrdersService {
   async getAllOrders() {
@@ -9,6 +11,9 @@ class OrdersService {
   }
 
   async getOrderById(id) {
+    if(!ObjectId.isValid(id)){
+      throw new Error(ORDER_NOT_VALID)
+    }
     const foundOrder = await Order.findById(id);
     if (foundOrder) {
       return foundOrder;
@@ -17,6 +22,9 @@ class OrdersService {
   }
 
   async updateOrder(id, order) {
+    if(!ObjectId.isValid(id)){
+      throw new Error(ORDER_NOT_VALID)
+    }
     const orderToUpdate = await Order.findById(id);
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
@@ -31,6 +39,9 @@ class OrdersService {
   }
 
   async deleteOrder(id) {
+    if(!ObjectId.isValid(id)){
+      throw new Error(ORDER_NOT_VALID)
+    }
     const foundOrder = await Order.findByIdAndDelete(id);
     if (foundOrder) {
       return foundOrder;

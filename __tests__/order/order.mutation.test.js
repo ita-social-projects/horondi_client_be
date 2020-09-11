@@ -141,8 +141,8 @@ describe('Order mutations', () => {
   test('Should update order', async () => {
     const order = await client.mutate({
       mutation: gql`
-        mutation($order: OrderInput!, $id: ID!) {
-          updateOrder(order: $order, id: $id) {
+        mutation($id: ID!, $order: OrderInput!) {
+          updateOrder(id: $id, order: $order) {
             ...on Order {
               _id
               status

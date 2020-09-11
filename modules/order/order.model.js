@@ -7,7 +7,7 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['sent', 'pending', 'canceled'],
+    enum: ['SENT', 'PENDING', 'CANCELED'],
     default: 'pending',
   },
   user: {

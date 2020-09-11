@@ -1,3 +1,4 @@
 const ORDER_NOT_FOUND = 'ORDER_NOT_FOUND';
+const ORDER_NOT_VALID = 'ORDER_NOT_VALID';
 
-module.exports = { ORDER_NOT_FOUND };
+module.exports = { ORDER_NOT_FOUND, ORDER_NOT_VALID };

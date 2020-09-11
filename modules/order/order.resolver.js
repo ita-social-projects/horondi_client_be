@@ -12,16 +12,7 @@ const ordersQuery = {
       message: ORDER_NOT_FOUND,
     };
   },
-  getAllOrders: async (parent, args) => {
-    try {
-      return await ordersService.getAllOrders(args);
-    } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
-    }
-  },
+  getAllOrders: async (parent, args) =>  await ordersService.getAllOrders(args)
 };
 
 const ordersMutation = {

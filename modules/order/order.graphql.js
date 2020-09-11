@@ -1,7 +1,7 @@
 const orderType = `
 type Order {
   _id: ID!
-  status: String
+  status: Status,
   user: OrderUser,
   dateOfCreation: String,
   delivery: Delivery,
