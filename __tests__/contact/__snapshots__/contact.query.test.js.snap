@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Contacts queries #2 Should receive selected contact 1`] = `
+Object {
+  "__typename": "Contact",
+  "address": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "Вулиця 4",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "en",
+      "value": "Street 4",
+    },
+  ],
+  "email": "test@test.com",
+  "images": Object {
+    "__typename": "ImageSet",
+    "medium": null,
+  },
+  "link": "https://testURL.com",
+  "openHours": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "ПН ...",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "en",
+      "value": "FR ...",
+    },
+  ],
+  "phoneNumber": "1241241242144",
+}
+`;

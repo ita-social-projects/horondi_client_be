@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server');
+const { gql } = require('apollo-server-express');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -10,6 +10,10 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
+const {
+  modelType,
+  modelInput,
+} = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -30,6 +34,10 @@ const {
   commentType,
   commentInput,
 } = require('./modules/comment/comment.graphql');
+const {
+  contactType,
+  contactInput,
+} = require('./modules/contact/contact.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -40,6 +48,10 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${modelType}
+  ${contactType}
+
+  scalar Upload
 
   enum RoleEnum {
     admin
@@ -63,16 +75,7 @@ const typeDefs = gql`
     source: String
     tokenPass: String
   }
-  type Model {
-    id: ID!
-    category: ID!
-    subcategory: ID!
-    name: [Language]
-    description: [Language]
-    images: [ImageSet]
-    priority: Int
-    show: Boolean
-  }
+
   type Address {
     country: String
     region: String
@@ -183,6 +186,8 @@ const typeDefs = gql`
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
   union LogicalResult = SuccessfulResponse | Error
+  union ModelResult = Model | Error
+  union ContactResult = Contact | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -190,6 +195,7 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
+    getSubcategories(parentCategoryId: ID!): [Category]
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): MaterialResult
@@ -216,7 +222,10 @@ const typeDefs = gql`
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
 
-    getModelsbyCategory(id: ID!): [Model]
+    getModelsByCategory(id: ID!): [Model]
+
+    getContacts: [ContactResult!]!
+    getContactById(id: ID!): ContactResult
   }
 
   input SortInput {
@@ -234,6 +243,8 @@ const typeDefs = gql`
     category: [String]
     search: String
     isHotItem: Boolean
+    models: [String]
+    currency: Int
   }
   input RoleEnumInput {
     role: String
@@ -256,11 +267,14 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${modelInput}
+  ${contactInput}
 
   input LanguageInput {
     lang: String!
     value: String
   }
+
   input CurrencySetInput {
     currency: String!
     value: Int!
@@ -338,6 +352,9 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+  input UserRateInput {
+    rate: Int!
+  }
 
   type Mutation {
     uploadFiles(files: [Upload]!): [File]!
@@ -346,13 +363,14 @@ const typeDefs = gql`
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult
     updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+
     "Material Mutation"
     addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): CategoryResult
+    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
@@ -367,7 +385,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -388,6 +406,19 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
+    
+    "Rate Mutation"
+    addRate(product: ID!, userRate: UserRateInput!): ProductResult
+
+    "Model Mutation"
+    addModel(model: ModelInput!): ModelResult
+    updateModel(id: ID!, model: ModelInput!): ModelResult
+    deleteModel(id: ID!): ModelResult
+
+    "Contacts Mutation"
+    addContact(contact: contactInput!): ContactResult
+    deleteContact(id: ID!): ContactResult
+    updateContact(id: ID!, contact: contactInput!): ContactResult
   }
 `;
 

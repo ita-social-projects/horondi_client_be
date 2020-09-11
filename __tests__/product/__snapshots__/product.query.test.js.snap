@@ -71,7 +71,7 @@ Array [
         "value": "Black",
       },
     ],
-    "purchasedCount": 47,
+    "purchasedCount": 35,
     "rate": 4,
     "rateCount": 2,
     "strapLengthInCm": 100,
@@ -142,93 +142,15 @@ Array [
     "pattern": Array [
       Object {
         "__typename": "Language",
-        "value": "Чорний",
+        "value": "Вишивка",
       },
       Object {
         "__typename": "Language",
-        "value": "Black",
+        "value": "Embroidery",
       },
     ],
-    "purchasedCount": 11,
+    "purchasedCount": 39,
     "rate": 3.75,
-    "rateCount": 4,
-    "strapLengthInCm": 100,
-    "subcategory": Object {
-      "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
-    },
-  },
-  Object {
-    "__typename": "Product",
-    "available": true,
-    "basePrice": Array [
-      Object {
-        "__typename": "CurrencySet",
-        "value": 145000,
-      },
-      Object {
-        "__typename": "CurrencySet",
-        "value": 5229,
-      },
-    ],
-    "category": Object {
-      "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
-    },
-    "closureColor": "black",
-    "description": Array [
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
-      },
-    ],
-    "innerMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-    ],
-    "isHotItem": true,
-    "mainMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
-      },
-    ],
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Ролтоп зелений 1",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Rolltop Green 1",
-      },
-    ],
-    "pattern": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Чорний",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Black",
-      },
-    ],
-    "purchasedCount": 36,
-    "rate": 4,
     "rateCount": 4,
     "strapLengthInCm": 100,
     "subcategory": Object {
@@ -305,87 +227,9 @@ Array [
         "value": "Embroidery",
       },
     ],
-    "purchasedCount": 29,
-    "rate": 3.6666666666666665,
-    "rateCount": 3,
-    "strapLengthInCm": 100,
-    "subcategory": Object {
-      "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
-    },
-  },
-  Object {
-    "__typename": "Product",
-    "available": true,
-    "basePrice": Array [
-      Object {
-        "__typename": "CurrencySet",
-        "value": 145000,
-      },
-      Object {
-        "__typename": "CurrencySet",
-        "value": 5229,
-      },
-    ],
-    "category": Object {
-      "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
-    },
-    "closureColor": "black",
-    "description": Array [
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
-      },
-    ],
-    "innerMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-    ],
-    "isHotItem": true,
-    "mainMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
-      },
-    ],
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Ролтоп кавовий 1",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Rolltop Coffee 1",
-      },
-    ],
-    "pattern": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Вишивка",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Embroidery",
-      },
-    ],
-    "purchasedCount": 30,
-    "rate": 4,
-    "rateCount": 1,
+    "purchasedCount": 27,
+    "rate": 3.3333333333333335,
+    "rateCount": 6,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -461,9 +305,9 @@ Array [
         "value": "Arrows",
       },
     ],
-    "purchasedCount": 41,
-    "rate": 3,
-    "rateCount": 1,
+    "purchasedCount": 39,
+    "rate": 3.7,
+    "rateCount": 3,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -539,9 +383,9 @@ Array [
         "value": "Flowers",
       },
     ],
-    "purchasedCount": 45,
-    "rate": 4.666666666666667,
-    "rateCount": 3,
+    "purchasedCount": 25,
+    "rate": 3.2,
+    "rateCount": 5,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -617,87 +461,9 @@ Array [
         "value": "Deers",
       },
     ],
-    "purchasedCount": 42,
-    "rate": 3,
-    "rateCount": 2,
-    "strapLengthInCm": 100,
-    "subcategory": Object {
-      "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
-    },
-  },
-  Object {
-    "__typename": "Product",
-    "available": true,
-    "basePrice": Array [
-      Object {
-        "__typename": "CurrencySet",
-        "value": 145000,
-      },
-      Object {
-        "__typename": "CurrencySet",
-        "value": 5229,
-      },
-    ],
-    "category": Object {
-      "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
-    },
-    "closureColor": "black",
-    "description": Array [
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
-      },
-    ],
-    "innerMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-    ],
-    "isHotItem": true,
-    "mainMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
-      },
-    ],
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Ролтоп сірий 2",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Rolltop Grey 2",
-      },
-    ],
-    "pattern": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Олені",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Deers",
-      },
-    ],
-    "purchasedCount": 14,
-    "rate": 4,
-    "rateCount": 2,
+    "purchasedCount": 11,
+    "rate": 3.75,
+    "rateCount": 4,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -766,16 +532,16 @@ Array [
     "pattern": Array [
       Object {
         "__typename": "Language",
-        "value": "Чорний",
+        "value": "Сірі ромби",
       },
       Object {
         "__typename": "Language",
-        "value": "Black",
+        "value": "Grey diamonds",
       },
     ],
-    "purchasedCount": 48,
-    "rate": 4,
-    "rateCount": 4,
+    "purchasedCount": 37,
+    "rate": 3,
+    "rateCount": 1,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -834,26 +600,26 @@ Array [
     "name": Array [
       Object {
         "__typename": "Language",
-        "value": "Ролтоп коричневий 1",
+        "value": "Ролтоп оливковий 1",
       },
       Object {
         "__typename": "Language",
-        "value": "Rolltop Brown 1",
+        "value": "Rolltop Olive 1",
       },
     ],
     "pattern": Array [
       Object {
         "__typename": "Language",
-        "value": "Люди",
+        "value": "Чорний",
       },
       Object {
         "__typename": "Language",
-        "value": "People",
+        "value": "Black",
       },
     ],
-    "purchasedCount": 36,
-    "rate": 3.5,
-    "rateCount": 2,
+    "purchasedCount": 28,
+    "rate": 3,
+    "rateCount": 5,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -912,11 +678,11 @@ Array [
     "name": Array [
       Object {
         "__typename": "Language",
-        "value": "Новий червоний",
+        "value": "Новий червоний 1",
       },
       Object {
         "__typename": "Language",
-        "value": "New Red",
+        "value": "New Red 1",
       },
     ],
     "pattern": Array [
@@ -929,7 +695,85 @@ Array [
         "value": "Black",
       },
     ],
-    "purchasedCount": 37,
+    "purchasedCount": 40,
+    "rate": 3,
+    "rateCount": 1,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 165000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5950,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Два відділення для ноутбука – одне ззовні на спинці, а інше всередині. Захищені м'яким піноматеріалом;</li>    <li>Бокова кишеня для дрібничок на замочку;</li>    <li>Бокова кишеня для пляшки з водою;</li>    <li>Передня велика кишеня 35х28 см;</li>    <li>Внутрішня кишеня для дрібничок;</li>    <li>Спинка рюкзака зроблена з використанням вентиляційної сітки;</li>    <li>Лямки з піноматеріалу, поверх яких прострочена ремінна стрічка для підвищення їх міцності.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments for laptop protected with soft foam – one on the back outside and one inside;</li>    <li>Side pocket for knickknacks with a zipper;</li>    <li>Side pocket for a water bottle;</li>    <li>Large front pocket 35x28 cm;</li>    <li>Inside pocket for knickknacks;</li>    <li>The back has ventilation mesh embedded in it;</li>    <li>Straps are made out of foam with belt ribbon stitched over it for higher durability.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Новий жовтий 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "New Yellow 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Синій",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Blue",
+      },
+    ],
+    "purchasedCount": 44,
     "rate": 4,
     "rateCount": 1,
     "strapLengthInCm": 100,
@@ -990,89 +834,11 @@ Array [
     "name": Array [
       Object {
         "__typename": "Language",
-        "value": "Новий жовтий",
+        "value": "Новий червоний 2",
       },
       Object {
         "__typename": "Language",
-        "value": "New Yellow",
-      },
-    ],
-    "pattern": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Синій",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Blue",
-      },
-    ],
-    "purchasedCount": 37,
-    "rate": 3.8333333333333335,
-    "rateCount": 6,
-    "strapLengthInCm": 100,
-    "subcategory": Object {
-      "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
-    },
-  },
-  Object {
-    "__typename": "Product",
-    "available": true,
-    "basePrice": Array [
-      Object {
-        "__typename": "CurrencySet",
-        "value": 165000,
-      },
-      Object {
-        "__typename": "CurrencySet",
-        "value": 5950,
-      },
-    ],
-    "category": Object {
-      "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
-    },
-    "closureColor": "black",
-    "description": Array [
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Два відділення для ноутбука – одне ззовні на спинці, а інше всередині. Захищені м'яким піноматеріалом;</li>    <li>Бокова кишеня для дрібничок на замочку;</li>    <li>Бокова кишеня для пляшки з водою;</li>    <li>Передня велика кишеня 35х28 см;</li>    <li>Внутрішня кишеня для дрібничок;</li>    <li>Спинка рюкзака зроблена з використанням вентиляційної сітки;</li>    <li>Лямки з піноматеріалу, поверх яких прострочена ремінна стрічка для підвищення їх міцності.</li></ul>",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Two compartments for laptop protected with soft foam – one on the back outside and one inside;</li>    <li>Side pocket for knickknacks with a zipper;</li>    <li>Side pocket for a water bottle;</li>    <li>Large front pocket 35x28 cm;</li>    <li>Inside pocket for knickknacks;</li>    <li>The back has ventilation mesh embedded in it;</li>    <li>Straps are made out of foam with belt ribbon stitched over it for higher durability.</li></ul>",
-      },
-    ],
-    "innerMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-    ],
-    "isHotItem": true,
-    "mainMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
-      },
-    ],
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Новий з деревом",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "New Red with Tree",
+        "value": "New Red 2",
       },
     ],
     "pattern": Array [
@@ -1085,165 +851,9 @@ Array [
         "value": "Deers",
       },
     ],
-    "purchasedCount": 34,
-    "rate": 4,
-    "rateCount": 5,
-    "strapLengthInCm": 100,
-    "subcategory": Object {
-      "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
-    },
-  },
-  Object {
-    "__typename": "Product",
-    "available": true,
-    "basePrice": Array [
-      Object {
-        "__typename": "CurrencySet",
-        "value": 155000,
-      },
-      Object {
-        "__typename": "CurrencySet",
-        "value": 5590,
-      },
-    ],
-    "category": Object {
-      "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
-    },
-    "closureColor": "black",
-    "description": Array [
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Передня та бокові кишені 20х20 см та 20х14 см;</li>    <li>Головне відділення закривається на замок та дві защіпки.</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Front pocket and side pockets 20x20 cm and 20x14 cm;</li>    <li>Main compartment closes with a zipper and two closures.</li>    <li>The back is padded with foam.</li></ul>",
-      },
-    ],
-    "innerMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-    ],
-    "isHotItem": true,
-    "mainMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
-      },
-    ],
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Гарбуз сірий",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Harbuz Grey",
-      },
-    ],
-    "pattern": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Немає",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "None",
-      },
-    ],
-    "purchasedCount": 16,
-    "rate": 4.428571428571429,
-    "rateCount": 7,
-    "strapLengthInCm": 100,
-    "subcategory": Object {
-      "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
-    },
-  },
-  Object {
-    "__typename": "Product",
-    "available": true,
-    "basePrice": Array [
-      Object {
-        "__typename": "CurrencySet",
-        "value": 155000,
-      },
-      Object {
-        "__typename": "CurrencySet",
-        "value": 5590,
-      },
-    ],
-    "category": Object {
-      "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
-    },
-    "closureColor": "black",
-    "description": Array [
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Передня та бокові кишені 20х20 см та 20х14 см;</li>    <li>Головне відділення закривається на замок та дві защіпки.</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "<ul>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Front pocket and side pockets 20x20 cm and 20x14 cm;</li>    <li>Main compartment closes with a zipper and two closures.</li>    <li>The back is padded with foam.</li></ul>",
-      },
-    ],
-    "innerMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Oxford 135",
-      },
-    ],
-    "isHotItem": true,
-    "mainMaterial": Array [
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
-      },
-    ],
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Гарбуз зелений",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Harbuz Green",
-      },
-    ],
-    "pattern": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Немає",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "None",
-      },
-    ],
-    "purchasedCount": 21,
-    "rate": 4.333333333333333,
-    "rateCount": 6,
+    "purchasedCount": 14,
+    "rate": 4.666666666666667,
+    "rateCount": 3,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -1319,9 +929,9 @@ Array [
         "value": "None",
       },
     ],
-    "purchasedCount": 29,
-    "rate": 3.6666666666666665,
-    "rateCount": 3,
+    "purchasedCount": 36,
+    "rate": 4.75,
+    "rateCount": 4,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -1388,9 +998,9 @@ Array [
         "value": "People",
       },
     ],
-    "purchasedCount": 33,
+    "purchasedCount": 28,
     "rate": 4,
-    "rateCount": 1,
+    "rateCount": 7,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1457,9 +1067,9 @@ Array [
         "value": "Deers",
       },
     ],
-    "purchasedCount": 14,
-    "rate": 4.333333333333333,
-    "rateCount": 3,
+    "purchasedCount": 49,
+    "rate": 3.8,
+    "rateCount": 5,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1526,9 +1136,9 @@ Array [
         "value": "None",
       },
     ],
-    "purchasedCount": 32,
-    "rate": 5,
-    "rateCount": 3,
+    "purchasedCount": 16,
+    "rate": 4,
+    "rateCount": 4,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1595,9 +1205,9 @@ Array [
         "value": "None",
       },
     ],
-    "purchasedCount": 42,
-    "rate": 4.2,
-    "rateCount": 5,
+    "purchasedCount": 19,
+    "rate": 5,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1664,9 +1274,9 @@ Array [
         "value": "None",
       },
     ],
-    "purchasedCount": 14,
-    "rate": 3.6666666666666665,
-    "rateCount": 3,
+    "purchasedCount": 17,
+    "rate": 3,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1733,9 +1343,9 @@ Array [
         "value": "Flowers",
       },
     ],
-    "purchasedCount": 22,
-    "rate": 4.333333333333333,
-    "rateCount": 3,
+    "purchasedCount": 36,
+    "rate": 4.5,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1802,9 +1412,9 @@ Array [
         "value": "Red",
       },
     ],
-    "purchasedCount": 16,
-    "rate": 0,
-    "rateCount": 0,
+    "purchasedCount": 32,
+    "rate": 4.25,
+    "rateCount": 4,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1871,9 +1481,9 @@ Array [
         "value": "Arrows",
       },
     ],
-    "purchasedCount": 14,
-    "rate": 3.75,
-    "rateCount": 4,
+    "purchasedCount": 12,
+    "rate": 4,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1940,8 +1550,8 @@ Array [
         "value": "Embroidery",
       },
     ],
-    "purchasedCount": 11,
-    "rate": 3.5,
+    "purchasedCount": 46,
+    "rate": 5,
     "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
@@ -2009,9 +1619,9 @@ Array [
         "value": "Black",
       },
     ],
-    "purchasedCount": 31,
-    "rate": 4.5,
-    "rateCount": 2,
+    "purchasedCount": 10,
+    "rate": 4.666666666666667,
+    "rateCount": 3,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -2078,8 +1688,8 @@ Array [
         "value": "Black",
       },
     ],
-    "purchasedCount": 43,
-    "rate": 3.25,
+    "purchasedCount": 12,
+    "rate": 4.25,
     "rateCount": 4,
     "strapLengthInCm": 0,
     "subcategory": Object {
@@ -2147,9 +1757,9 @@ Array [
         "value": "Flowers",
       },
     ],
-    "purchasedCount": 23,
-    "rate": 5,
-    "rateCount": 2,
+    "purchasedCount": 44,
+    "rate": 4,
+    "rateCount": 3,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -2216,9 +1826,9 @@ Array [
         "value": "Red",
       },
     ],
-    "purchasedCount": 34,
-    "rate": 4,
-    "rateCount": 3,
+    "purchasedCount": 31,
+    "rate": 3.5,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -2285,9 +1895,9 @@ Array [
         "value": "Arrows",
       },
     ],
-    "purchasedCount": 25,
-    "rate": 3,
-    "rateCount": 1,
+    "purchasedCount": 49,
+    "rate": 4,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -2354,9 +1964,9 @@ Array [
         "value": "Embroidery",
       },
     ],
-    "purchasedCount": 12,
-    "rate": 3.75,
-    "rateCount": 4,
+    "purchasedCount": 35,
+    "rate": 4.2,
+    "rateCount": 5,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -2423,7 +2033,7 @@ Array [
         "value": "Black",
       },
     ],
-    "purchasedCount": 10,
+    "purchasedCount": 36,
     "rate": 4.25,
     "rateCount": 4,
     "strapLengthInCm": 0,
@@ -2492,9 +2102,9 @@ Array [
         "value": "Black",
       },
     ],
-    "purchasedCount": 37,
-    "rate": 0,
-    "rateCount": 0,
+    "purchasedCount": 23,
+    "rate": 4.666666666666667,
+    "rateCount": 3,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -2516,7 +2126,7 @@ Array [
     ],
     "category": Object {
       "__typename": "Category",
-      "_id": "ddc81f5dbac48c38d0403dd3",
+      "_id": "5f5629f4edda651700d41d39",
     },
     "closureColor": "black",
     "description": Array [
@@ -2576,7 +2186,7 @@ Array [
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
-      "_id": "688ded7be0c2621f2fb17b05",
+      "_id": "5f5629f4edda651700d41d39",
     },
   },
 ]
