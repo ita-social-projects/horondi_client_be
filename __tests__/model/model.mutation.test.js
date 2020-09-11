@@ -5,6 +5,7 @@ const {
   newCategory,
   newModelMutation,
   newModelUpdated,
+  wrongId,
 } = require('./model.variables');
 require('dotenv').config();
 
@@ -164,7 +165,7 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { id: '56ade69dd46eafc5968e5390' },
+      variables: { id: wrongId },
     });
 
     const error = res.data.deleteModel;

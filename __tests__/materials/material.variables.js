@@ -42,8 +42,8 @@ const material = {
 };
 const materialToUpdate = {
   name: [
-    { lang: 'uk', value: 'Тест update' },
-    { lang: 'en', value: 'Test update' },
+    { lang: 'uk', value: 'Тест mu ta tion' },
+    { lang: 'en', value: 'Test mu ta tion' },
   ],
   description: [
     { lang: 'uk', value: 'Опис update' },

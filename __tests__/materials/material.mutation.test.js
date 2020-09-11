@@ -18,11 +18,11 @@ let token;
 let materialId;
 const materialDoesNotExistId = '1f2ad410eb01783384e6111b';
 
-describe('test material mutations', () => {
-  beforeAll(async () => {
-    token = await adminLogin(user);
-  });
-  test('#1 should add material to database', async () => {
+beforeAll(async () => {
+  token = await adminLogin(user);
+});
+describe('test adding material', () => {
+  test('should add material to database', async () => {
     const res = await client
       .mutate({
         context: {
@@ -141,7 +141,7 @@ describe('test material mutations', () => {
     ]);
     expect(newMaterial.colors).toBeInstanceOf(Array);
   });
-  test('#2 adding existing material should return error', async () => {
+  test('#2 adding material with the existing name should return error', async () => {
     const res = await client
       .mutate({
         context: {
@@ -201,7 +201,8 @@ describe('test material mutations', () => {
     expect(newMaterial).toHaveProperty('message', MATERIAL_ALREADY_EXIST);
     expect(newMaterial).toHaveProperty('statusCode', 400);
   });
-
+});
+describe('update material tests', () => {
   test('#3 update material', async () => {
     const res = await client
       .mutate({
@@ -257,8 +258,8 @@ describe('test material mutations', () => {
 
     expect(updatedMaterial).toBeDefined();
     expect(updatedMaterial).toHaveProperty('name', [
-      { __typename: 'Language', lang: 'uk', value: 'Тест update' },
-      { __typename: 'Language', lang: 'en', value: 'Test update' },
+      { __typename: 'Language', lang: 'uk', value: 'Тест mu ta tion' },
+      { __typename: 'Language', lang: 'en', value: 'Test mu ta tion' },
     ]);
     expect(updatedMaterial.name).toBeInstanceOf(Array);
     expect(updatedMaterial).toHaveProperty('description', [
@@ -312,6 +313,8 @@ describe('test material mutations', () => {
   test('#3 update not existing material should return error', async () => {
     const res = await client
       .mutate({
+        context: { headers: { token } },
+        variables: { id: materialDoesNotExistId, material: materialToUpdate },
         mutation: gql`
           mutation($id: ID!, $material: MaterialInput!) {
             updateMaterial(id: $id, material: $material) {
@@ -357,8 +360,6 @@ describe('test material mutations', () => {
             }
           }
         `,
-        context: { headers: { token } },
-        variables: { id: materialDoesNotExistId, material: materialToUpdate },
       })
       .catch(e => e);
     const updatedMaterial = res.data.updateMaterial;
@@ -389,6 +390,8 @@ describe('test material mutations', () => {
     expect(updatedMaterial).toHaveProperty('statusCode', 400);
     expect(updatedMaterial).toHaveProperty('message', MATERIAL_ALREADY_EXIST);
   });
+});
+describe('delete material tests', () => {
   test('#5 should delete material', async () => {
     const res = await client
       .mutate({
