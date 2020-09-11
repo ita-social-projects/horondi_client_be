@@ -5,6 +5,7 @@ const {
   patternToAdd,
   patternToUpdate,
   patternAlreadyExist,
+  patternDoesNotExistId,
   user,
   testValue,
   updateValue,
@@ -17,7 +18,6 @@ require('dotenv').config();
 const { adminLogin } = require('../helper-functions');
 
 let patternId = '';
-const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
 let token = '';
 
 describe('pattern mutation tests', () => {

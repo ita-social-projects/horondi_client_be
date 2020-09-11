@@ -1,3 +1,5 @@
+const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
+
 const user = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASS,
@@ -79,6 +81,7 @@ module.exports = {
   patternToAdd,
   patternToUpdate,
   patternAlreadyExist,
+  patternDoesNotExistId,
   user,
   testValue,
   updateValue,
