@@ -37,7 +37,7 @@ const {
 } = require('./modules/category/category.resolver');
 const {
   businessTextQuery,
-  businessTexMutation,
+  businessTextMutation,
 } = require('./modules/business-text/business-text.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
@@ -133,7 +133,7 @@ const resolvers = {
 
     ...commentsMutation,
 
-    ...businessTexMutation,
+    ...businessTextMutation,
 
     ...modelsMutation,
 

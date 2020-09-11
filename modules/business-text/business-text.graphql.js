@@ -1,7 +1,7 @@
 const businessTextType = `
     type BusinessText {
     _id: ID!
-    code: String
+    code: String!
     title: [Language]
     text: [Language]
     languages: [String]
@@ -11,7 +11,7 @@ const businessTextType = `
 
 const businessTextInput = `
     input BusinessTextInput {
-    code: String
+    code: String!
     title: [LanguageInput]
     text: [LanguageInput]
     languages: [String]

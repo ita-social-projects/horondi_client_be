@@ -25,7 +25,7 @@ const businessTextQuery = {
   },
 };
 
-const businessTexMutation = {
+const businessTextMutation = {
   addBusinessText: async (parent, args) => {
     try {
       return await businessTextService.addBusinessText(args.businessText);
@@ -61,4 +61,4 @@ const businessTexMutation = {
   },
 };
 
-module.exports = { businessTextQuery, businessTexMutation };
+module.exports = { businessTextQuery, businessTextMutation };
