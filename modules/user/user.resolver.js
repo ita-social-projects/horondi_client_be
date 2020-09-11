@@ -14,14 +14,18 @@ const userMutation = {
   updateUserById: async (parent, args) => {
     try {
       if (!args.upload) {
-        return userService.updateUserById(args.user, args.id);
+        return await userService.updateUserById(args.user, args.id);
       }
-      const uploadResult = await uploadFiles(args.upload);
-      const images = uploadResult[0].fileNames;
+      const uploadResult = await uploadFiles([args.upload]);
+      const imageResults = await uploadResult[0];
+      const images = imageResults.fileNames;
       if (!images) {
         return userService.updateUserById(args.user, args.id);
       }
-      return userService.updateUserById({ ...args.user, images }, args.id);
+      return await userService.updateUserById(
+        { ...args.user, images },
+        args.id,
+      );
     } catch ({ message }) {
       return {
         statusCode: 400,

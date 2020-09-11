@@ -1,3 +1,4 @@
+const { GraphQLUpload } = require('apollo-server');
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const {

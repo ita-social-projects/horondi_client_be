@@ -12,40 +12,9 @@ const Jimp = require('jimp');
 const uniqid = require('uniqid');
 
 class UploadService {
-  async uploadResizedImage(size, imageName, image) {
-    const resizedImage = image.resize(size, Jimp.AUTO);
-
-    const buffer = await new Promise((resolve, reject) => {
-      resizedImage.getBuffer(resizedImage.getMIME(), (err, buffer) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(buffer);
-      });
-    });
-
-    const stream = getStream(buffer);
-    const streamLength = buffer.length;
-
-    return await new Promise((resolve, reject) => {
-      blobService.createBlockBlobFromStream(
-        containerName,
-        imageName,
-        stream,
-        streamLength,
-        err => {
-          if (err) {
-            reject(err);
-          }
-          resolve(imageName);
-        },
-      );
-    });
-  }
-
   async uploadFiles(files) {
     return files.map(async file => {
-      const { createReadStream, filename } = await file.promise;
+      const { createReadStream, filename } = await file.file;
 
       const inputStream = createReadStream();
       let fileBuffer;
@@ -67,15 +36,40 @@ class UploadService {
 
       const image = await Jimp.read(inputBuffer);
 
-      const createName = sizeName => `${sizeName}_${id}_${filename}`;
+      const createName = sizeName => `${process.env.IMAGE_LINK}${sizeName}_${id}_${filename}`;
 
-      this.uploadResizedImage(1920, createName('large'), image);
+      const uploadResizedImage = async (size, imageName, image) => {
+        const resizedImage = image.resize(size, Jimp.AUTO);
+        const buffer = await new Promise((resolve, reject) => {
+          resizedImage.getBuffer(resizedImage.getMIME(), (err, buffer) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(buffer);
+          });
+        });
+        const stream = getStream(buffer);
+        const streamLength = buffer.length;
+        return await new Promise((resolve, reject) => {
+          blobService.createBlockBlobFromStream(
+            containerName,
+            imageName,
+            stream,
+            streamLength,
+            err => {
+              if (err) {
+                reject(err);
+              }
+              resolve(imageName);
+            },
+          );
+        });
+      };
 
-      this.uploadResizedImage(1080, createName('medium'), image);
-
-      this.uploadResizedImage(768, createName('small'), image);
-
-      this.uploadResizedImage(128, createName('thumbnail'), image);
+      await uploadResizedImage(1920, createName('large'), image);
+      await uploadResizedImage(1080, createName('medium'), image);
+      await uploadResizedImage(768, createName('small'), image);
+      await uploadResizedImage(128, createName('thumbnail'), image);
 
       return {
         prefixUrl: process.env.IMAGE_LINK,

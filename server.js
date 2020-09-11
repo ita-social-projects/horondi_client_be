@@ -43,7 +43,6 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.get('/health', (req, res) => res.send('Health page!'));
-
 server.applyMiddleware({ app });
 
 app.listen(PORT, () => {
