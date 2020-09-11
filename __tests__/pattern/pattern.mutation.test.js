@@ -62,7 +62,6 @@ describe('pattern mutation tests', () => {
       })
       .catch(e => e);
     patternId = res.data.addPattern._id;
-    expect(res.data.addPattern).toMatchSnapshot();
     expect(res.data.addPattern).toHaveProperty('name', [
       {
         __typename: 'Language',
