@@ -7,25 +7,47 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['sent', 'pending', 'canceled'],
-    default: 'pending',
+    enum: ['CREATED', 'CONFIRMED', 'CANCELLED', 'REFUNDED', 'SENT', 'DELIVERED'],
+    default: 'CREATED',
   },
   user: {
     firstName: String,
     lastName: String,
+    patronymicName: String,
     email: String,
     phoneNumber: Number,
-    address: Address,
   },
   dateOfCreation: {
     type: Date,
     default: Date.now,
   },
+  lastUpdatedDate: Date,
+  completed: Boolean,
+  userComment: {
+    type: String,
+    default: '',
+  },
+  adminComment: {
+    type: String,
+    default: '',
+  },
+  cancellationReason: {
+    type: String,
+    default: '',
+  },
   delivery: {
     sentOn: Date,
     sentBy: String,
+    courier: Boolean,
+    courierOffice: Number,
     invoiceNumber: String,
+    serviceType: {
+      type: String,
+      enum: ['WarehouseWarehouse', 'WarehouseDoors'],
+    },
+    cost: [CurrencySet],
   },
+  address: Address,
   items: [
     {
       category: [Language],
@@ -50,8 +72,14 @@ const orderSchema = new mongoose.Schema({
       quantity: Number,
     },
   ],
-  totalPrice: [CurrencySet],
-  paymentMethod: String,
+  totalItemsPrice: [CurrencySet],
+  totalPriceToPay: [CurrencySet],
+  paymentMethod: {
+    type: String,
+    required: true,
+    enum: ['card', 'cash'],
+  },
+  isPaid: Boolean,
 });
 
 module.exports = mongoose.model('Order', orderSchema);
