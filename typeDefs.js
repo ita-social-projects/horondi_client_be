@@ -403,14 +403,13 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
-    updateUserById(user: UserInput!, id: ID!): User
-    updateUserByToken(user: UserInput!): User
-    confirmUser(token: String!): User
+    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    confirmUserEmail(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
-    sendConfirmationLetter(email: String!, language: Int!): Boolean
+    sendEmailConfirmation(email: String!, language: Int!): Boolean
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult

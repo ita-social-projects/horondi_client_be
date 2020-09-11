@@ -1,10 +1,20 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const { newModel, badProductId, newCategory, newMaterial, getNewProduct } = require('./product.variables');
+const {
+  newModel,
+  badProductId,
+  newCategory,
+  newMaterial,
+  getNewProduct,
+} = require('./product.variables');
 require('dotenv').config();
 
-let productId, categoryId, subcategoryId, modelId, materialId
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -42,7 +52,7 @@ describe('Product queries', () => {
     });
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
-    
+
     const createModel = await client.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
@@ -69,7 +79,9 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId, materialId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     productId = createProduct.data.addProduct._id;
   });
@@ -132,7 +144,7 @@ describe('Product queries', () => {
                 value
               }
               model {
-                  value
+                value
               }
               category {
                 _id

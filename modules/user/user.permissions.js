@@ -16,13 +16,12 @@ const userPermissionsMutations = {
   loginAdmin: allow,
   deleteUser: isAuthorizedAdmin,
   updateUserById: or(isTheSameUser, isAuthorizedAdmin),
-  updateUserByToken: or(isAuthorized, isAuthorizedAdmin),
-  confirmUser: allow,
+  confirmUserEmail: allow,
   recoverUser: allow,
   switchUserStatus: isAuthorizedAdmin,
   resetPassword: allow,
   checkIfTokenIsValid: allow,
-  sendConfirmationLetter: isAuthorized,
+  sendEmailConfirmation: isAuthorized,
 };
 
 module.exports = { userPermissionsMutations, userPermissionsQuery };

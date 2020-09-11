@@ -23,6 +23,7 @@ const {
   INVALID_PERMISSIONS,
   RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
   TOKEN_NOT_VALID,
+  USER_ALREADY_CONFIRMED,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -209,11 +210,15 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    const token = await generateToken(savedUser._id, savedUser.email);
+    const token = await generateToken(savedUser._id, savedUser.email, {
+      useConfirmationSecret: true,
+    });
+    savedUser.confirmationToken = token;
+    await savedUser.save();
     const message = {
       from: process.env.MAIL_USER,
       to: savedUser.email,
-      subject: 'Confirm Email',
+      subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(firstName, token, language),
     };
 
@@ -226,11 +231,18 @@ class UserService {
 
   async sendConfirmationLetter(email, language) {
     const user = await this.getUserByFieldOrThrow('email', email);
-    const token = await generateToken(user._id, user.email);
+    if (user.confirmed) {
+      throw new Error(USER_ALREADY_CONFIRMED);
+    }
+    const token = await generateToken(user._id, user.email, {
+      useConfirmationSecret: true,
+    });
+    user.confirmationToken = token;
+    await user.save();
     const message = {
       from: process.env.MAIL_USER,
       to: user.email,
-      subject: 'Confirm Email',
+      subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(user.firstName, token, language),
     };
     await sendEmail(message);
@@ -243,12 +255,17 @@ class UserService {
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, process.env.SECRET);
-    return await User.findByIdAndUpdate(
-      decoded.userId,
-      { confirmed: true },
-      { new: true },
-    );
+    const decoded = jwt.verify(token, process.env.CONFIRMATION_SECRET);
+    const updates = {
+      $set: {
+        confirmed: true,
+      },
+      $unset: {
+        confirmationToken: '',
+      },
+    };
+    await User.findByIdAndUpdate(decoded.userId, updates);
+    return true;
   }
 
   async recoverUser(email, language) {
@@ -264,7 +281,7 @@ class UserService {
     const message = {
       from: process.env.MAIL_USER,
       to: email,
-      subject: 'Recovery Instructions',
+      subject: '[HORONDI] Instructions for password recovery',
       html: recoveryMessage(user.firstName, token, language),
     };
     await sendEmail(message);
@@ -294,7 +311,7 @@ class UserService {
     const dayHasPassed =      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
     if (dayHasPassed) {
       await User.findByIdAndUpdate(user._id, {
-        recoveryAttempts: null,
+        recoveryAttempts: 0,
         lastRecoveryDate: Date.now(),
       });
     }

@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
+const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 
 connectDB();
 require('dotenv').config();
@@ -25,7 +26,7 @@ const server = new ApolloServer({
       if (!user) {
         return {
           statusCode: 401,
-          message: 'Invalid authorization token',
+          message: INVALID_PERMISSIONS,
         };
       }
       return {

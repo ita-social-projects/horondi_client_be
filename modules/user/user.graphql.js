@@ -37,7 +37,6 @@ input UserInput {
     comments: [ID]
     banned: Boolean
     confirmed: Boolean
-    token: String
 }`;
 const LoginInput = `
 input LoginInput {

@@ -62,6 +62,7 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   recoveryToken: String,
+  confirmationToken: String,
 });
 
 module.exports = mongoose.model('User', userSchema);
