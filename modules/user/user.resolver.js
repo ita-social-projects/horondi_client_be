@@ -1,8 +1,5 @@
 const userService = require('./user.service');
 const { uploadFiles } = require('../upload/upload.service');
-const {
-  USER_ALREADY_CONFIRMED,
-} = require('../../error-messages/user.messages');
 
 const userQuery = {
   getAllUsers: () => userService.getAllUsers(),
@@ -16,12 +13,10 @@ const userMutation = {
   deleteUser: (parent, args) => userService.deleteUser(args.id),
   updateUserById: async (parent, args) => {
     try {
-      if (!(await args.upload)) {
+      if (!args.upload) {
         return userService.updateUserById(args.user, args.id);
       }
-      const data = await args.upload;
-      console.log(data);
-      const uploadResult = await uploadFiles(data);
+      const uploadResult = await uploadFiles(args.upload);
       const images = uploadResult[0].fileNames;
       if (!images) {
         return userService.updateUserById(args.user, args.id);
