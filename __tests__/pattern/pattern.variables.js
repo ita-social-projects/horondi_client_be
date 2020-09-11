@@ -1,4 +1,8 @@
 const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
+const skip = 0;
+const wrongSkip = -1;
+const wrongLimit = -5;
+const limit = 5;
 
 const user = {
   email: process.env.ADMIN_EMAIL,
@@ -85,4 +89,8 @@ module.exports = {
   user,
   testValue,
   updateValue,
+  skip,
+  limit,
+  wrongSkip,
+  wrongLimit,
 };

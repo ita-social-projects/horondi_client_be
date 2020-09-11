@@ -4,7 +4,14 @@ const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const { adminLogin } = require('../helper-functions');
-const { user, patternDoesNotExistId } = require('./pattern.variables');
+const {
+  user,
+  patternDoesNotExistId,
+  skip,
+  limit,
+  wrongLimit,
+  wrongSkip,
+} = require('./pattern.variables');
 
 let token;
 let patternId;
@@ -259,5 +266,78 @@ describe('pattern tests', () => {
     expect(newPattern).toBeDefined();
     expect(newPattern).toHaveProperty('statusCode', 404);
     expect(newPattern).toHaveProperty('message', PATTERN_NOT_FOUND);
+  });
+  test('pattern pagination test', async () => {
+    const res = await client
+      .query({
+        variables: { skip, limit },
+        query: gql`
+          query($skip: Int, $limit: Int) {
+            getAllPatterns(skip: $skip, limit: $limit) {
+              items {
+                name {
+                  lang
+                  value
+                }
+                description {
+                  lang
+                  value
+                }
+                images {
+                  large
+                  medium
+                  small
+                  thumbnail
+                }
+                material
+                handmade
+                available
+              }
+              count
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+
+    expect(res.data.getAllPatterns).toMatchSnapshot();
+    expect(res.data.getAllPatterns.items).toHaveLength(5);
+    expect(res.data.getAllPatterns.count).toEqual(17);
+  });
+  test('pattern pagination test with wrong arguments', async () => {
+    const res = await client
+      .query({
+        variables: { skip: wrongLimit, limit: wrongSkip },
+        query: gql`
+          query($skip: Int, $limit: Int) {
+            getAllPatterns(skip: $skip, limit: $limit) {
+              items {
+                name {
+                  lang
+                  value
+                }
+                description {
+                  lang
+                  value
+                }
+                images {
+                  large
+                  medium
+                  small
+                  thumbnail
+                }
+                material
+                handmade
+                available
+              }
+              count
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+    expect(res.graphQLErrors[0].message).toEqual(
+      'Skip value must be non-negative, but received: -5',
+    );
   });
 });
