@@ -49,5 +49,5 @@ In the project directory, you should run
 - Copy content of `.env.example` file to the newly created `.env`
 - Run `docker-compose up --build` to build all services
 
-
+   
 

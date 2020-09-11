@@ -56,6 +56,8 @@ const typeDefs = gql`
   ${contactType}
   ${orderType}
 
+  scalar Upload
+
   enum RoleEnum {
     admin
     user
@@ -214,6 +216,16 @@ const typeDefs = gql`
     CANCELED
   }
 
+  type PaginatedContacts {
+    items: [Contact]
+    count: Int
+  }
+
+  type LanguageImageSet {
+    lang: String
+    value: ImageSet
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -236,6 +248,7 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
+    getSubcategories(parentCategoryId: ID!): [Category]
 
     getAllMaterials: [Material!]!
     getMaterialById(id: ID): MaterialResult
@@ -267,7 +280,7 @@ const typeDefs = gql`
 
     getModelsByCategory(id: ID!): [Model]
 
-    getContacts: [ContactResult!]!
+    getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
   }
 
@@ -350,6 +363,7 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+
   input CurrencySetInput {
     currency: String!
     value: Int!
@@ -398,7 +412,7 @@ const typeDefs = gql`
   }
 
   type File {
-    fileNames: ImageSet! 
+    fileNames: ImageSet!
     prefixUrl: String!
   }
 
@@ -427,6 +441,12 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+
+  input LanguageImageSetInput {
+    lang: String!
+    value: ImageSetInput
+  }
+
   input UserRateInput {
     rate: Int!
   }
@@ -438,13 +458,14 @@ const typeDefs = gql`
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult
     updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+
     "Material Mutation"
     addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): CategoryResult
+    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
@@ -459,7 +480,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -480,7 +501,7 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
-    
+
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 

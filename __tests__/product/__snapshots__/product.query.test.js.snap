@@ -279,8 +279,8 @@ Array [
       },
     ],
     "purchasedCount": 17,
-    "rate": 4,
-    "rateCount": 1,
+    "rate": 3,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1299,8 +1299,8 @@ Array [
       },
     ],
     "purchasedCount": 39,
-    "rate": 4,
-    "rateCount": 2,
+    "rate": 3.7,
+    "rateCount": 3,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -1585,7 +1585,7 @@ Array [
     ],
     "purchasedCount": 44,
     "rate": 4,
-    "rateCount": 7,
+    "rateCount": 1,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -1818,8 +1818,8 @@ Array [
       },
     ],
     "purchasedCount": 40,
-    "rate": 3.5,
-    "rateCount": 4,
+    "rate": 3,
+    "rateCount": 1,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -2111,40 +2111,83 @@ Array [
       "_id": "ed17f080d44d728efe0a4ad1",
     },
   },
-]
-`;
-
-exports[`Product queries #4 Should receive all models by category id 1`] = `
-Array [
   Object {
-    "__typename": "Model",
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
     "category": Object {
       "__typename": "Category",
-      "name": Array [
-        Object {
-          "__typename": "Language",
-          "value": "Нова",
-        },
-        Object {
-          "__typename": "Language",
-          "value": "New",
-        },
-      ],
+      "_id": "5f574079bcba8e4df00d3320",
     },
-    "images": Object {
-      "__typename": "ImageSet",
-      "large": "new",
-    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Baggy is so cool",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Рюкзачечок - супер кльовий))",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": false,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G прошита додатковим шаром спеціального матеріалу",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G padded with a layer of durable and water-resistant material",
+      },
+    ],
     "name": Array [
       Object {
         "__typename": "Language",
-        "value": "Тест",
+        "value": "Very Coool Baggy",
       },
       Object {
         "__typename": "Language",
-        "value": "Test",
+        "value": "ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок",
       },
     ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Вишивка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Embroidery",
+      },
+    ],
+    "purchasedCount": 0,
+    "rate": 0,
+    "rateCount": 0,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "5f574079bcba8e4df00d3320",
+    },
   },
 ]
 `;

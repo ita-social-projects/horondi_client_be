@@ -1,5 +1,5 @@
-const Model = require('./model.model');
 const ObjectId = require('mongoose').Types.ObjectId;
+const Model = require('./model.model');
 const {
   CATEGORY_NOT_VALID,
   MODEL_ALREADY_EXIST,
@@ -23,6 +23,8 @@ class ModelsService {
     return await new Model(data).save();
   }
 
+
+
   async updateModel(id, newModel) {
     const model = await Model.findById(id);
     if (!model) {
@@ -32,6 +34,14 @@ class ModelsService {
       throw new Error(MODEL_ALREADY_EXIST);
     }
     return Model.findByIdAndUpdate(id, newModel, { new: true });
+  }
+
+  async getModelById (id) {
+    const model = await Model.findById(id);
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
+    return model;
   }
 
   deleteModel(id) {

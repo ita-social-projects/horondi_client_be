@@ -4,7 +4,7 @@ const client = require('../../utils/apollo-test-client');
 const { newCategory, newModel } = require('./model.variables');
 require('dotenv').config();
 
-let modelId, categoryId, categoryName;
+let modelId, categoryId
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -21,8 +21,7 @@ describe('Product queries', () => {
       variables: { category: newCategory },
     });
     categoryId = createCategory.data.addCategory._id;
-    categoryName = createCategory.data.addCategory.name;
-
+   
     const createModel = await client.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
@@ -74,17 +73,17 @@ describe('Product queries', () => {
     })
 
     const models = res.data.getModelsByCategory;
-    
+
     expect(models).toBeDefined();
     expect(models.length).toBeGreaterThan(0);
     expect(models[0].name).toBeInstanceOf(Array);
-    expect(models[0]).toHaveProperty('name', [ 
-        { "__typename": "Language", value: "Тест", lang: "uk" }, 
-        { "__typename": "Language", value: "Test", lang: "en" } 
+    expect(models[0]).toHaveProperty('name', [
+        { "__typename": "Language", value: "Тест", lang: "uk" },
+        { "__typename": "Language", value: "Test", lang: "en" }
       ]);
     expect(models[0]).toHaveProperty('description', [
-        { "__typename": "Language", value: "Тест", lang: "uk" }, 
-        { "__typename": "Language", value: "Test", lang: "en" } 
+        { "__typename": "Language", value: "Тест", lang: "uk" },
+        { "__typename": "Language", value: "Test", lang: "en" }
       ]);
     expect(models[0]).toHaveProperty('images', {
         "__typename": "ImageSet",
@@ -132,7 +131,7 @@ describe('Product queries', () => {
     }).catch(err => err)
 
     const error = res;
-    
+
     expect(error.graphQLErrors[0].message).toBe("CATEGORY_NOT_VALID");
   });
   test('Should throw error CATEGORY_NOT_FOUND', async () => {
