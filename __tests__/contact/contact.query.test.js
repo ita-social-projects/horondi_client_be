@@ -60,7 +60,6 @@ describe('Contacts queries', () => {
           query($skip: Int, $limit: Int) {
             getContacts(skip: $skip, limit: $limit) {
               items {
-                _id
                 phoneNumber
                 openHours {
                   lang
@@ -84,29 +83,28 @@ describe('Contacts queries', () => {
         `,
         variables: {
           skip: 1,
-          limit: 6,
+          limit: 1,
         },
       })
       .catch(e => e);
 
     expect(res.data.getContacts).toBeDefined();
-    expect(res.data.getContacts).toContainEqual({
+    expect(res.data.getContacts.items).toContainEqual(
+      {
       __typename: 'Contact',
       address: [
-        { __typename: 'Language', lang: 'uk', value: 'Вулиця' },
-        { __typename: 'Language', lang: 'en', value: 'Street' },
+        { __typename: 'Language', lang: 'uk', value: 'Вулиця 4' },
+        { __typename: 'Language', lang: 'en', value: 'Street 4' },
       ],
       email: 'test@test.com',
       images: [
         {
-          __typename: 'Language',
-          lang: 'uk',
-          value: { __typename: 'ImageSet', medium: null },
+          __typename:  'LanguageImageSet',
+          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
         {
-          __typename: 'Language',
-          lang: 'en',
-          value: { __typename: 'ImageSet', medium: null },
+          __typename:  'LanguageImageSet',
+          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
       ],
       link: 'https://testURL.com',
@@ -189,16 +187,14 @@ describe('Contacts queries', () => {
       expect(res.data.getContactById).toHaveProperty('email', 'test@test.com');
       expect(res.data.getContactById).toHaveProperty('images', [
         {
-          __typename: 'Language',
-          lang: 'uk',
-          value: { __typename: 'ImageSet', medium: null },
+          __typename:  'LanguageImageSet',
+          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
         {
-          __typename: 'Language',
-          lang: 'en',
-          value: { __typename: 'ImageSet', medium: null },
+          __typename:  'LanguageImageSet',
+          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
-      ]);
+      ],);
       expect(res.data.getContactById.images).toBeInstanceOf(Array);
       expect(res.data.getContactById).toHaveProperty(
         'link',

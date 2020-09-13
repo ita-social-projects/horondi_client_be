@@ -31,7 +31,9 @@ describe('Contacts mutations test', () => {
                 }
                 email
                 images {
-                  medium
+                  value {
+                    medium
+                  }
                 }
                 link
               }
@@ -75,11 +77,17 @@ describe('Contacts mutations test', () => {
     ]);
     expect(res.data.addContact.address).toBeInstanceOf(Object);
     expect(res.data.addContact).toHaveProperty('email', 'test@test.com');
-    expect(res.data.addContact.images).toBeInstanceOf(Object);
-    expect(res.data.addContact).toHaveProperty('images', {
-      __typename: 'ImageSet',
-      medium: null,
-    });
+    expect(res.data.addContact.images).toBeInstanceOf(Array);
+    expect(res.data.addContact).toHaveProperty('images', [
+      {
+        __typename: 'LanguageImageSet',
+        value: { __typename: 'ImageSet', medium: 'medium.jpg' },
+      },
+      {
+        __typename: 'LanguageImageSet',
+        value: { __typename: 'ImageSet', medium: 'medium.jpg' },
+      },
+    ]);
     expect(res.data.addContact).toHaveProperty('link', 'https://testURL.com');
   });
 
@@ -120,19 +128,17 @@ describe('Contacts mutations test', () => {
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com',
+      'updatedtest@updatedtest.com'
     );
     expect(res.data.updateContact.images).toBeInstanceOf(Array);
     expect(res.data.updateContact).toHaveProperty('images', [
       {
-        __typename: 'Language',
-        lang: 'uk',
-        value: { __typename: 'ImageSet', medium: null },
+        __typename:  'LanguageImageSet',
+        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
       },
       {
-        __typename: 'Language',
-        lang: 'en',
-        value: { __typename: 'ImageSet', medium: null },
+        __typename:  'LanguageImageSet',
+        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
       },
     ]);
     expect(res.data.updateContact).toHaveProperty('address', [
@@ -219,19 +225,17 @@ describe('Contacts mutations test', () => {
     expect(res.data.deleteContact.openHours).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com',
+      'updatedtest@updatedtest.com'
     );
     expect(res.data.deleteContact.images).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty('images', [
       {
-        __typename: 'Language',
-        lang: 'uk',
-        value: { __typename: 'ImageSet', medium: null },
+        __typename:  'LanguageImageSet',
+        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
       },
       {
-        __typename: 'Language',
-        lang: 'en',
-        value: { __typename: 'ImageSet', medium: null },
+        __typename:  'LanguageImageSet',
+        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
       },
     ]);
   });
