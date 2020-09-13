@@ -4,7 +4,8 @@ const {
 } = require('../../error-messages/email-chat.messages');
 
 const emailChatQuestionQuery = {
-  getAllEmailQuestions: (parent, args) => emailChatService.getAllEmailQuestions(),
+  getAllEmailQuestions: (parent, args) =>
+    emailChatService.getAllEmailQuestions(),
   getEmailQuestionById: async (parent, args) => {
     const question = await emailChatService.getEmailQuestionById(args.id);
     if (question) {
@@ -23,7 +24,7 @@ const emailChatQuestionMutation = {
     try {
       return await emailChatService.sendEmailQuestionToSpam(
         args.questionId,
-        context.user,
+        context.user
       );
     } catch (error) {
       return {

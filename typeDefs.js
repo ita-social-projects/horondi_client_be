@@ -175,6 +175,10 @@ const typeDefs = gql`
     items: [News]
     count: Int
   }
+  type PaginatedMaterials {
+    items: [Material]
+    count: Int
+  }
 
   type PaginatedContacts {
     items: [Contact]
@@ -216,7 +220,7 @@ const typeDefs = gql`
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
-    getAllMaterials: [Material!]!
+    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
     getAllPatterns: [Pattern!]!
