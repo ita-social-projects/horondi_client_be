@@ -24,6 +24,19 @@ class CommentsService {
     return Comment.find({ 'user.email': userEmail });
   }
 
+  async getAllComments({ skip, limit }) {
+    const items = await Comment.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Comment.find().countDocuments();
+
+    return {
+      items,
+      count,
+    };
+  }
+
   async updateComment(id, comment) {
     const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
       new: true,
