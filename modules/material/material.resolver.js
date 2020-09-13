@@ -4,7 +4,7 @@ const {
 } = require('../../error-messages/material.messages');
 
 const materialQuery = {
-  getAllMaterials: (parent, args) => materialService.getAllMaterials(args),
+  getAllMaterials: async (parent, args) => await materialService.getAllMaterials(args),
   getMaterialById: async (parent, args) => {
     try {
       return await materialService.getMaterialById(args.id);
