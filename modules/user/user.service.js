@@ -7,6 +7,7 @@ const {
   validateLoginInput,
   validateUpdateInput,
   validateNewPassword,
+  validateSendConfirmation,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendGrid-email');
@@ -14,6 +15,7 @@ const {
   confirmationMessage,
   recoveryMessage,
 } = require('../../utils/localization');
+const { uploadFiles } = require('../upload/upload.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -21,9 +23,9 @@ const {
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
-  RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
+  PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
   TOKEN_NOT_VALID,
-  USER_ALREADY_CONFIRMED,
+  USER_EMAIL_ALREADY_CONFIRMED,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -66,7 +68,7 @@ class UserService {
     return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUserById(updatedUser, id) {
+  async updateUserById(updatedUser, id, upload) {
     const { firstName, lastName, email } = updatedUser;
 
     const { errors } = await validateUpdateInput.validateAsync({
@@ -86,6 +88,12 @@ class UserService {
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
+    }
+
+    if (upload) {
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      updatedUser.images = imageResults.fileNames;
     }
 
     return User.findByIdAndUpdate(id, updatedUser, { new: true });
@@ -230,9 +238,10 @@ class UserService {
   }
 
   async sendConfirmationLetter(email, language) {
+    await validateSendConfirmation.validateAsync({ email, language });
     const user = await this.getUserByFieldOrThrow('email', email);
     if (user.confirmed) {
-      throw new Error(USER_ALREADY_CONFIRMED);
+      throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
     const token = await generateToken(user._id, user.email, {
       useConfirmationSecret: true,
@@ -316,7 +325,7 @@ class UserService {
       });
     }
     if (user.recoveryAttempts >= 3) {
-      throw new UserInputError(RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
+      throw new UserInputError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
         statusCode: 403,
       });
     }

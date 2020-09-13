@@ -55,3 +55,16 @@ exports.validateNewPassword = Joi.object({
     .required()
     .error(new UserInputError(INPUT_NOT_VALID, { statusCode: 400 })),
 });
+
+exports.validateSendConfirmation = Joi.object({
+  email: Joi.string()
+    .pattern(
+      new RegExp(
+        '^([\\w-]+(?:\\.[\\w-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,6}(?:\\.[a-z]{2})?)$',
+      ),
+    )
+    .required(),
+  language: Joi.number()
+    .integer()
+    .min(0),
+}).error(new UserInputError(INPUT_NOT_VALID, { statusCode: 400 }));

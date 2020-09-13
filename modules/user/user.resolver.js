@@ -1,5 +1,4 @@
 const userService = require('./user.service');
-const { uploadFiles } = require('../upload/upload.service');
 
 const userQuery = {
   getAllUsers: () => userService.getAllUsers(),
@@ -11,28 +10,7 @@ const userMutation = {
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
-  updateUserById: async (parent, args) => {
-    try {
-      if (!args.upload) {
-        return await userService.updateUserById(args.user, args.id);
-      }
-      const uploadResult = await uploadFiles([await args.upload]);
-      const imageResults = await uploadResult[0];
-      const images = imageResults.fileNames;
-      if (!images) {
-        return userService.updateUserById(args.user, args.id);
-      }
-      return await userService.updateUserById(
-        { ...args.user, images },
-        args.id,
-      );
-    } catch ({ message }) {
-      return {
-        statusCode: 400,
-        message,
-      };
-    }
-  },
+  updateUserById: (parent, args) => userService.updateUserById(args.user, args.id, args.upload),
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
