@@ -22,7 +22,7 @@ class EmailChatService {
     return emailChat.save();
   }
 
-  async sendEmailQuestionToSpam(questionId, adminId) {
+  async makeQuestionSpam(questionId, adminId) {
     const question = await EmailChat.findById(questionId);
     if (!question) {
       throw new Error(QUESTION_NOT_FOUND);
@@ -34,7 +34,7 @@ class EmailChatService {
     return EmailChat.findByIdAndUpdate(questionId, question, { new: true });
   }
 
-  async giveAnswer(args, adminId) {
+  async answerEmailQuestion(args, adminId) {
     const question = await this.getEmailQuestionById(args.questionId);
     if (!question) {
       throw new Error(QUESTION_NOT_FOUND);

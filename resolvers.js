@@ -38,7 +38,7 @@ const {
 const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
-} = require('./modules/email-chat/email-question.resolver');
+} = require('./modules/email-chat/email-chat.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
