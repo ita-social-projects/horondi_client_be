@@ -5,16 +5,20 @@ const {
 } = require('../../error-messages/material.messages');
 
 class MaterialsService {
-  async getAllMaterials() {
-    return await Material.find();
+  async getAllMaterials({ skip, limit }) {
+    const items = await Material.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Material.find().countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getMaterialById(id) {
-    const foundMaterial = await Material.findById(id);
-    if (foundMaterial) {
-      return foundMaterial;
-    }
-    throw new Error(MATERIAL_NOT_FOUND);
+    return Material.findById(id);
   }
 
   async updateMaterial(id, material) {

@@ -279,8 +279,8 @@ Array [
       },
     ],
     "purchasedCount": 17,
-    "rate": 4,
-    "rateCount": 1,
+    "rate": 3,
+    "rateCount": 2,
     "strapLengthInCm": 0,
     "subcategory": Object {
       "__typename": "Category",
@@ -1299,8 +1299,8 @@ Array [
       },
     ],
     "purchasedCount": 39,
-    "rate": 4,
-    "rateCount": 2,
+    "rate": 3.7,
+    "rateCount": 3,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -1585,7 +1585,7 @@ Array [
     ],
     "purchasedCount": 44,
     "rate": 4,
-    "rateCount": 7,
+    "rateCount": 1,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -1818,8 +1818,8 @@ Array [
       },
     ],
     "purchasedCount": 40,
-    "rate": 3.5,
-    "rateCount": 4,
+    "rate": 3,
+    "rateCount": 1,
     "strapLengthInCm": 100,
     "subcategory": Object {
       "__typename": "Category",
@@ -2110,41 +2110,6 @@ Array [
       "__typename": "Category",
       "_id": "ed17f080d44d728efe0a4ad1",
     },
-  },
-]
-`;
-
-exports[`Product queries #4 Should receive all models by category id 1`] = `
-Array [
-  Object {
-    "__typename": "Model",
-    "category": Object {
-      "__typename": "Category",
-      "name": Array [
-        Object {
-          "__typename": "Language",
-          "value": "Нова",
-        },
-        Object {
-          "__typename": "Language",
-          "value": "New",
-        },
-      ],
-    },
-    "images": Object {
-      "__typename": "ImageSet",
-      "large": "new",
-    },
-    "name": Array [
-      Object {
-        "__typename": "Language",
-        "value": "Тест",
-      },
-      Object {
-        "__typename": "Language",
-        "value": "Test",
-      },
-    ],
   },
 ]
 `;

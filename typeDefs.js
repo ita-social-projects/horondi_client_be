@@ -10,10 +10,7 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -38,6 +35,10 @@ const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
+const {
+  emailQuestionType,
+  emailQuestionInput,
+} = require('./modules/email-chat/email-question.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -50,6 +51,7 @@ const typeDefs = gql`
   ${commentType}
   ${modelType}
   ${contactType}
+  ${emailQuestionType}
 
   scalar Upload
 
@@ -173,6 +175,20 @@ const typeDefs = gql`
     items: [News]
     count: Int
   }
+  type PaginatedMaterials {
+    items: [Material]
+    count: Int
+  }
+
+  type PaginatedContacts {
+    items: [Contact]
+    count: Int
+  }
+
+  type LanguageImageSet {
+    lang: String
+    value: ImageSet
+  }
 
   type SuccessfulResponse {
     isSuccess: Boolean
@@ -229,6 +245,12 @@ const typeDefs = gql`
     checkout_url: String
   }
 
+  type EmailAnswer {
+    admin: User!
+    date: String!
+    text: String!
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -243,6 +265,7 @@ const typeDefs = gql`
   union NovaPoshtaWarehouseResult = NovaPoshtaWarehouse | Error
   union NovaPoshtaPriceResult = NovaPoshtaPrice | Error
   union UkrPoshtaRegionResult = UkrPoshtaRegion | Error
+  union EmailQuestionResult = EmailQuestion | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -250,8 +273,9 @@ const typeDefs = gql`
 
     getAllCategories: [Category]
     getCategoryById(id: ID): CategoryResult
+    getSubcategories(parentCategoryId: ID!): [Category]
 
-    getAllMaterials: [Material!]!
+    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
     getAllPatterns: [Pattern!]!
@@ -278,7 +302,7 @@ const typeDefs = gql`
 
     getModelsByCategory(id: ID!): [Model]
 
-    getContacts: [ContactResult!]!
+    getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
 
     getNovaPoshtaCities(city: String):[NovaPoshtaCityResult]
@@ -290,6 +314,9 @@ const typeDefs = gql`
 
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
+    
+    getAllEmailQuestions: [EmailQuestion]
+    getEmailQuestionById(id: ID!): EmailQuestionResult
   }
 
   input SortInput {
@@ -333,11 +360,13 @@ const typeDefs = gql`
   ${userRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${emailQuestionInput}
 
   input LanguageInput {
     lang: String!
     value: String
   }
+
   input CurrencySetInput {
     currency: String!
     value: Int!
@@ -386,7 +415,7 @@ const typeDefs = gql`
   }
 
   type File {
-    fileNames: ImageSet! 
+    fileNames: ImageSet!
     prefixUrl: String!
   }
 
@@ -431,6 +460,12 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySetInput]
   }
+
+  input LanguageImageSetInput {
+    lang: String!
+    value: ImageSetInput
+  }
+
   input UserRateInput {
     rate: Int!
   }
@@ -458,13 +493,14 @@ const typeDefs = gql`
     addPattern(pattern: PatternInput!): PatternResult
     deletePattern(id: ID!): PatternResult
     updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+
     "Material Mutation"
     addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!): CategoryResult
+    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
     deleteCategory(id: ID!): CategoryResult
     updateCategory(id: ID!, category: CategoryInput!): CategoryResult
 
@@ -479,7 +515,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!): NewsResult
 
     "User Mutation"
-    registerUser(user: userRegisterInput!): User
+    registerUser(user: userRegisterInput!, language: Int!): User
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -500,7 +536,7 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
-    
+
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 
@@ -513,6 +549,12 @@ const typeDefs = gql`
     addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
+
+    "EmailChat Mutation"
+    addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestion(id: ID!): EmailQuestionResult
+    makeQuestionSpam(questionId: ID!): EmailQuestionResult
+    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
 

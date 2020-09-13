@@ -1,19 +1,19 @@
+const { ObjectId } = require('mongoose').Types;
 const Model = require('./model.model');
-const ObjectId = require('mongoose').Types.ObjectId;
 const {
   CATEGORY_NOT_VALID,
   MODEL_ALREADY_EXIST,
-  MODEL_NOT_FOUND
+  MODEL_NOT_FOUND,
 } = require('../../error-messages/model.messages');
-const CategoryService = require('../category/category.service')
+const CategoryService = require('../category/category.service');
 
 class ModelsService {
   async getModelsByCategory(id) {
-    if(!ObjectId.isValid(id)){
-      throw new Error(CATEGORY_NOT_VALID)
+    if (!ObjectId.isValid(id)) {
+      throw new Error(CATEGORY_NOT_VALID);
     }
-    await CategoryService.getCategoryById(id)
-    return Model.find({ category: id })
+    await CategoryService.getCategoryById(id);
+    return Model.find({ category: id });
   }
 
   async addModel(data) {
@@ -32,6 +32,14 @@ class ModelsService {
       throw new Error(MODEL_ALREADY_EXIST);
     }
     return Model.findByIdAndUpdate(id, newModel, { new: true });
+  }
+
+  async getModelById(id) {
+    const model = await Model.findById(id);
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
+    return model;
   }
 
   deleteModel(id) {
