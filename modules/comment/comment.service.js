@@ -25,7 +25,10 @@ class CommentsService {
   }
 
   async getAllComments({ skip, limit }) {
-    const items = await Comment.find()
+    const dateFrom = new Date().getTime();
+    const dateTo = dateFrom - 2592000000;
+
+    const items = await Comment.find({date: {$gt: dateTo, $lt: dateFrom}})
       .skip(skip)
       .limit(limit);
 
