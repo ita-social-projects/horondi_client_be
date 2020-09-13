@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const defaultParams = {
   expiresIn: process.env.EXPIRES_IN,
