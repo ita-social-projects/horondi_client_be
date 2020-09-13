@@ -49,11 +49,11 @@ class EmailChatService {
   }
 
   async deleteEmailQuestion(id) {
-    const deletedChat = await EmailChat.findById(id);
+    const deletedChat = await EmailChat.findByIdAndDelete(id);
     if (!deletedChat) {
       throw new Error(CHAT_NOT_FOUND);
     }
-    return EmailChat.findByIdAndDelete(id);
+    return deletedChat;
   }
 }
 module.exports = new EmailChatService();

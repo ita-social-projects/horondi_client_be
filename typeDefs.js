@@ -452,8 +452,8 @@ const typeDefs = gql`
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
-    spamQuestion(questionId: ID!): EmailQuestionResult
-    emailChatAnswer(questionId: ID!, text: String!): EmailQuestionResult
+    makeQuestionSpam(questionId: ID!): EmailQuestionResult
+    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
 

@@ -1,12 +1,12 @@
-const EmailChatService = require('./email-chat.service');
+const emailChatService = require('./email-chat.service');
 const {
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
 
 const emailChatQuestionQuery = {
-  getAllEmailQuestions: (parent, args) => EmailChatService.getAllEmailQuestions(),
+  getAllEmailQuestions: (parent, args) => emailChatService.getAllEmailQuestions(),
   getEmailQuestionById: async (parent, args) => {
-    const question = await EmailChatService.getEmailQuestionById(args.id);
+    const question = await emailChatService.getEmailQuestionById(args.id);
     if (question) {
       return question;
     }
@@ -18,10 +18,10 @@ const emailChatQuestionQuery = {
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: async (parent, args) => await EmailChatService.addEmailQuestion(args.question),
+  addEmailQuestion: async (parent, args) => await emailChatService.addEmailQuestion(args.question),
   spamQuestion: async (parent, args, context) => {
     try {
-      return await EmailChatService.sendEmailQuestionToSpam(
+      return await emailChatService.sendEmailQuestionToSpam(
         args.questionId,
         context.user,
       );
@@ -34,7 +34,7 @@ const emailChatQuestionMutation = {
   },
   emailChatAnswer: async (parent, args, context) => {
     try {
-      return await EmailChatService.giveAnswer(args, context.user);
+      return await emailChatService.giveAnswer(args, context.user);
     } catch (error) {
       return {
         statusCode: 404,
@@ -44,7 +44,7 @@ const emailChatQuestionMutation = {
   },
   deleteEmailQuestion: async (parent, args) => {
     try {
-      return await EmailChatService.deleteEmailQuestion(args.id);
+      return await emailChatService.deleteEmailQuestion(args.id);
     } catch (error) {
       return {
         statusCode: 404,
