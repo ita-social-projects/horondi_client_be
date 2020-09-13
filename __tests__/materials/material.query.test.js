@@ -62,8 +62,8 @@ describe('material query tests', () => {
           `,
         })
         .catch(e => e);
-      const { count } = res.data.getAllMaterials;
-      expect(res.data.getAllMaterials.items).toHaveLength(5);
+      const { items, count } = res.data.getAllMaterials;
+      expect(items).toHaveLength(5);
       expect(count).not.toBeNull();
       expect(count).toEqual(6);
     });
@@ -165,8 +165,9 @@ describe('material query tests', () => {
           `,
         })
         .catch(e => e);
-      const { items } = res.data.getAllMaterials;
-      expect(items.length).toEqual(3);
+      const { items, count } = res.data.getAllMaterials;
+      expect(items).toHaveLength(3);
+      expect(count).toEqual(6);
       expect(items).not.toBeNull();
     });
     test('#4 We hould receive all materials if skip is 0 and limit is 0', async () => {
@@ -218,8 +219,9 @@ describe('material query tests', () => {
         })
         .catch(e => e);
 
-      const { items } = res.data.getAllMaterials;
-      expect(items.length).toEqual(6);
+      const { items, count } = res.data.getAllMaterials;
+      expect(items).toHaveLength(6);
+      expect(count).toEqual(6);
       expect(items).not.toBeNull();
     });
   });
