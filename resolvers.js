@@ -35,14 +35,16 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const {
+  emailChatQuestionQuery,
+  emailChatQuestionMutation,
+} = require('./modules/email-chat/email-question.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const {
-  uploadMutation,
-} = require('./modules/upload/upload.resolver');
+const { uploadMutation } = require('./modules/upload/upload.resolver');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -55,6 +57,7 @@ const SCHEMA_NAMES = {
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
+  emailQuestion: 'EmailQuestion',
 };
 const resolvers = {
   Query: {
@@ -77,6 +80,8 @@ const resolvers = {
     ...modelsQuery,
 
     ...contactQuery,
+
+    ...emailChatQuestionQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -97,14 +102,26 @@ const resolvers = {
     size: parent => productsService.getSizeById(parent.size),
     bottomMaterial: parent => {
       if (parent.bottomMaterial) {
-        return materialsService.getMaterialById(parent.bottomMaterial)
+        return materialsService.getMaterialById(parent.bottomMaterial);
       }
-      return null
+      return null;
     },
   },
 
   UserRate: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
+  },
+
+  EmailQuestion: {
+    answer: parent => {
+      if (parent.answer.date) {
+        return parent.answer;
+      }
+      return null;
+    },
+  },
+  EmailAnswer: {
+    admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
 
   Mutation: {
@@ -129,6 +146,8 @@ const resolvers = {
     ...modelsMutation,
 
     ...contactMutation,
+
+    ...emailChatQuestionMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -206,6 +225,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
+      }
+      return 'Error';
+    },
+  },
+  EmailQuestionResult: {
+    __resolveType: obj => {
+      if (obj.text) {
+        return SCHEMA_NAMES.emailQuestion;
       }
       return 'Error';
     },
