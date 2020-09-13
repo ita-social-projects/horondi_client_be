@@ -86,17 +86,16 @@ describe('material mutations tests', () => {
       const newMaterial = res.data.addMaterial;
       materialId = newMaterial._id;
 
-      expect(newMaterial).toMatchSnapshot();
       expect(newMaterial).toBeDefined();
       expect(newMaterial).toHaveProperty(
         'name',
-        material.name.map(item => ({ ...languageTypeName, ...item })),
+        material.name.map(item => ({ ...languageTypeName, ...item }))
       );
       expect(newMaterial.name).toBeInstanceOf(Array);
 
       expect(newMaterial).toHaveProperty(
         'description',
-        material.description.map(item => ({ ...languageTypeName, ...item })),
+        material.description.map(item => ({ ...languageTypeName, ...item }))
       );
       expect(newMaterial.description).toBeInstanceOf(Array);
 
@@ -109,7 +108,7 @@ describe('material mutations tests', () => {
         material.additionalPrice.map(item => ({
           ...currencyTypeName,
           ...item,
-        })),
+        }))
       );
       expect(newMaterial.additionalPrice).toBeInstanceOf(Array);
 
@@ -249,7 +248,7 @@ describe('material mutations tests', () => {
       expect(updatedMaterial).toBeDefined();
       expect(updatedMaterial).toHaveProperty(
         'name',
-        materialToUpdate.name.map(item => ({ ...languageTypeName, ...item })),
+        materialToUpdate.name.map(item => ({ ...languageTypeName, ...item }))
       );
       expect(updatedMaterial.name).toBeInstanceOf(Array);
       expect(updatedMaterial).toHaveProperty(
@@ -257,23 +256,23 @@ describe('material mutations tests', () => {
         materialToUpdate.description.map(item => ({
           ...languageTypeName,
           ...item,
-        })),
+        }))
       );
       expect(updatedMaterial.name).toBeInstanceOf(Array);
       expect(updatedMaterial).toHaveProperty(
         'purpose',
-        materialToUpdate.purpose,
+        materialToUpdate.purpose
       );
       expect(updatedMaterial).toHaveProperty(
         'available',
-        materialToUpdate.available,
+        materialToUpdate.available
       );
       expect(updatedMaterial).toHaveProperty(
         'additionalPrice',
         materialToUpdate.additionalPrice.map(item => ({
           ...currencyTypeName,
           ...item,
-        })),
+        }))
       );
       expect(updatedMaterial.name).toBeInstanceOf(Array);
       expect(updatedMaterial).toHaveProperty('colors', [
