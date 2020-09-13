@@ -9,7 +9,7 @@ const {
 let token;
 let materialId;
 const materialDoesNotExistId = '5f311ec5f2983e390432a8c3';
-const { user } = require('./material.variables');
+const { user, languageTypeName } = require('./material.variables');
 const { adminLogin } = require('../helper-functions');
 
 const material = {
@@ -161,10 +161,7 @@ describe('querries', () => {
           ],
           images: {
             __typename: 'ImageSet',
-            large: 'large_test',
-            medium: 'medium_test',
-            small: 'small_test',
-            thumbnail: 'thumbnail_test',
+            ...material.colors[0].images,
           },
           available: true,
           simpleName: [
@@ -232,61 +229,48 @@ describe('querries', () => {
       })
       .catch(e => e);
     const receivedMaterial = res.data.getMaterialById;
+
+    expect(receivedMaterial).toMatchSnapshot();
     expect(receivedMaterial).toBeDefined();
-    expect(receivedMaterial).toHaveProperty('name', [
-      { __typename: 'Language', lang: 'uk', value: 'Тест' },
-      { __typename: 'Language', lang: 'en', value: 'Test' },
-    ]);
+    expect(receivedMaterial).toHaveProperty(
+      'name',
+      material.name.map(item => ({ __typename: 'Language', ...item })),
+    );
     expect(receivedMaterial.name).toBeInstanceOf(Array);
 
-    expect(receivedMaterial).toHaveProperty('description', [
-      {
-        __typename: 'Language',
-        lang: 'uk',
-        value: 'Опис Тестового матеріальчика',
-      },
-      {
-        __typename: 'Language',
-        lang: 'en',
-        value: 'Description for Test Materialyy',
-      },
-    ]);
+    expect(receivedMaterial).toHaveProperty(
+      'description',
+      material.description.map(item => ({ ...languageTypeName, ...item })),
+    );
     expect(receivedMaterial.description).toBeInstanceOf(Array);
 
     expect(receivedMaterial).toHaveProperty('purpose', 'test');
 
     expect(receivedMaterial).toHaveProperty('available', true);
 
-    expect(receivedMaterial).toHaveProperty('additionalPrice', [
-      { __typename: 'CurrencySet', currency: 'UAH', value: 0 },
-      { __typename: 'CurrencySet', currency: 'USD', value: 0 },
-    ]);
+    expect(receivedMaterial).toHaveProperty(
+      'additionalPrice',
+      material.additionalPrice.map(item => ({
+        __typename: 'CurrencySet',
+        ...item,
+      })),
+    );
     expect(receivedMaterial.additionalPrice).toBeInstanceOf(Array);
 
     expect(receivedMaterial).toHaveProperty('colors', [
       {
         __typename: 'Color',
         code: 777,
-        name: [
-          { __typename: 'Language', lang: 'uk', value: 'Тестовий колір' },
-          { __typename: 'Language', lang: 'en', value: 'Test color' },
-        ],
-        images: {
-          __typename: 'ImageSet',
-          large: 'large_test',
-          medium: 'medium_test',
-          small: 'small_test',
-          thumbnail: 'thumbnail_test',
-        },
+        name: material.colors[0].name.map(item => ({
+          ...languageTypeName,
+          ...item,
+        })),
+        images: { __typename: 'ImageSet', ...material.colors[0].images },
         available: true,
-        simpleName: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'проста назва кольору',
-          },
-          { __typename: 'Language', lang: 'en', value: 'simple color name' },
-        ],
+        simpleName: material.colors[0].simpleName.map(item => ({
+          ...languageTypeName,
+          ...item,
+        })),
       },
     ]);
     expect(receivedMaterial.colors).toBeInstanceOf(Array);

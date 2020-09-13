@@ -1,17 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`material mutations tests delete material tests #7 deleting not existing material should return error 1`] = `
-Object {
-  "__typename": "Error",
-  "message": "MATERIAL_NOT_FOUND",
-  "statusCode": 404,
-}
-`;
-
-exports[`material mutations tests test adding material #1 should add material to database 1`] = `
+exports[`querries #2 Should receive one material 1`] = `
 Object {
   "__typename": "Material",
-  "_id": "5f5dfd614fb26e45bc51af08",
   "additionalPrice": Array [
     Object {
       "__typename": "CurrencySet",
@@ -67,24 +58,24 @@ Object {
     Object {
       "__typename": "Language",
       "lang": "uk",
-      "value": "Опис test",
+      "value": "Опис Тестового матеріальчика",
     },
     Object {
       "__typename": "Language",
       "lang": "en",
-      "value": "Description test",
+      "value": "Description for Test Materialyy",
     },
   ],
   "name": Array [
     Object {
       "__typename": "Language",
       "lang": "uk",
-      "value": "Тест mutation",
+      "value": "Тест",
     },
     Object {
       "__typename": "Language",
       "lang": "en",
-      "value": "Test mutation",
+      "value": "Test",
     },
   ],
   "purpose": "test",

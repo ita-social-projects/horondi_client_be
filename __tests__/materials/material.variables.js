@@ -4,6 +4,10 @@ const user = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASS,
 };
+const languageTypeName = { __typename: 'Language' };
+const currencyTypeName = { __typename: 'CurrencySet' };
+const imageTypeName = { __typename: 'ImageSet' };
+
 const material = {
   name: [
     { lang: 'uk', value: 'Тест mutation' },
@@ -125,4 +129,7 @@ module.exports = {
   material,
   materialToUpdate,
   materialWithExistingName,
+  languageTypeName,
+  currencyTypeName,
+  imageTypeName,
 };
