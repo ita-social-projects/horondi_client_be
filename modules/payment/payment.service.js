@@ -15,7 +15,6 @@ class PaymentService {
       }
     })
     const signString = secret + '|' + Object.values(ordered).join('|')
-    console.log(signString);
     return crypto.createHash('sha1').update(signString).digest('hex')
   }
 

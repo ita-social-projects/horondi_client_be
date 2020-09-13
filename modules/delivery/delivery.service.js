@@ -13,12 +13,12 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                "modelName": "Address",
-                "calledMethod": "getCities",
-                "methodProperties": {
-                    "FindByString": city
+                modelName: 'Address',
+                calledMethod: 'getCities',
+                methodProperties: {
+                    FindByString: city
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -35,12 +35,12 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                "modelName": "AddressGeneral",
-                "calledMethod": "getWarehouses",
-                "methodProperties": {
-                    "CityName": city
+                modelName: 'AddressGeneral',
+                calledMethod: 'getWarehouses',
+                methodProperties: {
+                    CityName: city
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -53,12 +53,12 @@ class NovaPoshtaService {
 
     async getNovaPoshtaPrice(data) {
         const {
-            CitySender = "db5c88f5-391c-11dd-90d9-001a92567626",
+            CitySender = 'db5c88f5-391c-11dd-90d9-001a92567626',
             CityRecipient,
             Weight,
             ServiceType,
             Cost,
-            CargoType = "Cargo",
+            CargoType = 'Cargo',
             SeatsAmount = 1,
         } = data
 
@@ -67,9 +67,9 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                "modelName": "InternetDocument",
-                "calledMethod": "getDocumentPrice",
-                "methodProperties": {
+                modelName: 'InternetDocument',
+                calledMethod: 'getDocumentPrice',
+                methodProperties: {
                     CitySender,
                     CityRecipient,
                     Weight,
@@ -78,7 +78,7 @@ class NovaPoshtaService {
                     CargoType,
                     SeatsAmount,
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -88,21 +88,20 @@ class NovaPoshtaService {
     
     async createNovaPoshtaOrder(data) {
         const {
-            CitySender = "db5c88f5-391c-11dd-90d9-001a92567626",
+            CitySender = 'db5c88f5-391c-11dd-90d9-001a92567626',
             Weight,
-            PayerType = "Sender",
-            PaymentMethod = "Cash",
-            ServiceType = "WarehouseWarehouse",
+            PayerType = 'Sender',
+            PaymentMethod = 'Cash',
+            ServiceType = 'WarehouseWarehouse',
             Cost,
-            CargoType = "Parcel",
+            CargoType = 'Parcel',
             SeatsAmount = 1,
             Description,
             RecipientCityName,
             RecipientAddressName,
-            RecipientName = "Тест Тест Тест",
-            RecipientType = "PrivatePerson",
+            RecipientName = 'Тест Тест Тест',
+            RecipientType = 'PrivatePerson',
             RecipientsPhone,
-            RecipientWarehouse,
         } = data
 
         const sender = await this.getSenderCounterparty()
@@ -116,10 +115,10 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                "modelName": "InternetDocument",
-                "calledMethod": "save",
-                "methodProperties": {
-                    NewAddress:"1",
+                modelName: 'InternetDocument',
+                calledMethod: 'save',
+                methodProperties: {
+                    NewAddress:'1',
                     CitySender,
                     Weight,
                     ServiceType,
@@ -134,17 +133,16 @@ class NovaPoshtaService {
                     RecipientsPhone,
                     PayerType,
                     PaymentMethod,
-                    RecipientArea:"",
-                    RecipientAreaRegions:"",
-                    RecipientHouse:"",
-                    RecipientFlat:"",
+                    RecipientArea:'',
+                    RecipientAreaRegions:'',
+                    RecipientHouse:'',
+                    RecipientFlat:'',
                     Sender:sender.Ref,
                     SenderAddress:address.Ref,
                     ContactSender:contactSender.Ref,
                     SendersPhone: contactSender.Phones,
-                    "DateTime":"23.09.2020",
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -158,13 +156,13 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                "modelName": "Counterparty",
-                "calledMethod": "getCounterparties",
-                "methodProperties": {
-                    "CounterpartyProperty": "Sender",
-                    "Page": "1"
+                modelName: 'Counterparty',
+                calledMethod: 'getCounterparties',
+                methodProperties: {
+                    CounterpartyProperty: 'Sender',
+                    Page: '1'
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -178,13 +176,13 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                modelName: "Address",
-                calledMethod: "getStreet",
+                modelName: 'Address',
+                calledMethod: 'getStreet',
                 methodProperties: {
                     CityRef: CityRef,
                     FindByString: street
                 },
-                apiKey: "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -195,22 +193,22 @@ class NovaPoshtaService {
     async getSenderAddress(CityRef) {
         const sender = await this.getSenderCounterparty()
         
-        const street = await this.getNovaPoshtaStreet(CityRef, "Литвиненка")
+        const street = await this.getNovaPoshtaStreet(CityRef, 'Литвиненка')
 
         const res = await post(
             'https://api.novaposhta.ua/v2.0/json/',
             { 
               json: true,
               body: {
-                modelName: "Address",
-                calledMethod: "save",
+                modelName: 'Address',
+                calledMethod: 'save',
                 methodProperties: {
                     CounterpartyRef: sender.Ref,
                     StreetRef: street.Ref,
-                    BuildingNumber: "8",
-                    Flat: "1", 
+                    BuildingNumber: '8',
+                    Flat: '1', 
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                'apiKey': process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
@@ -224,22 +222,18 @@ class NovaPoshtaService {
             { 
               json: true,
               body: {
-                "modelName": "Counterparty",
-                "calledMethod": "getCounterpartyContactPersons",
-                "methodProperties": {
+                modelName: 'Counterparty',
+                calledMethod: 'getCounterpartyContactPersons',
+                methodProperties: {
                     Ref: Sender,
-                    Page: "1"
+                    Page: '1'
                 },
-                "apiKey": "9d5b19bd585bb3ac5aee7b9d6dc08d57"
+                apiKey: process.env.NOVA_POSHTA_API_KEY
               }
             },
         );
             
         return res.body.data[0]
-    }
-
-    async getUkrPoshtaRegion(region) {
-       //TO DO
     }
 }
 
