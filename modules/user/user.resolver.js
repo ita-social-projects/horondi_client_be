@@ -16,7 +16,7 @@ const userMutation = {
       if (!args.upload) {
         return await userService.updateUserById(args.user, args.id);
       }
-      const uploadResult = await uploadFiles([args.upload]);
+      const uploadResult = await uploadFiles([await args.upload]);
       const imageResults = await uploadResult[0];
       const images = imageResults.fileNames;
       if (!images) {
