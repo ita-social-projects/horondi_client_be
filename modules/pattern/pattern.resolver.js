@@ -1,5 +1,6 @@
 const patternService = require('./pattern.service');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
+const { uploadFiles } = require('../upload/upload.service');
 
 const patternQuery = {
   getAllPatterns: (parent, args) => patternService.getAllPatterns(args),
@@ -18,7 +19,19 @@ const patternQuery = {
 const patternMutation = {
   addPattern: async (parent, args) => {
     try {
-      return await patternService.addPattern(args.pattern);
+      if (!args.upload) {
+        return await patternService.addPattern(args.pattern);
+      }
+      const uploadResult = await uploadFiles([args.upload]);
+
+      const imageResults = await uploadResult[0];
+
+      const images = imageResults.fileNames;
+      if (!images) {
+        return await patternService.addPattern(args.pattern);
+      }
+
+      return await patternService.addPattern({ ...args.pattern, images });
     } catch (e) {
       return {
         statusCode: 400,
@@ -40,7 +53,23 @@ const patternMutation = {
 
   updatePattern: async (parent, args) => {
     try {
-      return await patternService.updatePattern(args.id, args.pattern);
+      if (!args.upload) {
+        return await patternService.updatePattern(args.id, args.pattern);
+      }
+      const uploadResult = await uploadFiles([args.upload]);
+
+      const imageResults = await uploadResult[0];
+
+      const images = imageResults.fileNames;
+
+      if (!images) {
+        return await patternService.updatePattern(args.id, args.pattern);
+      }
+
+      return await patternService.updatePattern(args.id, {
+        ...args.pattern,
+        images,
+      });
     } catch (e) {
       return {
         statusCode: e.message === PATTERN_NOT_FOUND ? 404 : 400,
