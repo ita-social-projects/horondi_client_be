@@ -19,9 +19,8 @@ const emailChatQuestionQuery = {
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: async (parent, args) =>
-    await emailChatService.addEmailQuestion(args.question),
-  spamQuestion: async (parent, args, context) => {
+  addEmailQuestion: async (parent, args) => await emailChatService.addEmailQuestion(args.question),
+  makeQuestionSpam: async (parent, args, context) => {
     try {
       return await emailChatService.sendEmailQuestionToSpam(
         args.questionId,
@@ -34,7 +33,7 @@ const emailChatQuestionMutation = {
       };
     }
   },
-  emailChatAnswer: async (parent, args, context) => {
+  answerEmailQuestion: async (parent, args, context) => {
     try {
       return await emailChatService.giveAnswer(args, context.user);
     } catch (error) {
