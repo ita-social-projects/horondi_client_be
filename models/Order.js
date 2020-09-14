@@ -22,7 +22,10 @@ const orderSchema = new mongoose.Schema({
     default: Date.now,
   },
   lastUpdatedDate: Date,
-  completed: Boolean,
+  completed: {
+    type: Boolean,
+    default: false,
+  },
   userComment: {
     type: String,
     default: '',
@@ -38,7 +41,7 @@ const orderSchema = new mongoose.Schema({
   delivery: {
     sentOn: Date,
     sentBy: String,
-    courier: Boolean,
+    byCourier: Boolean,
     courierOffice: Number,
     invoiceNumber: String,
     serviceType: {
@@ -77,9 +80,12 @@ const orderSchema = new mongoose.Schema({
   paymentMethod: {
     type: String,
     required: true,
-    enum: ['card', 'cash'],
+    enum: ['CARD', 'CASH'],
   },
-  isPaid: Boolean,
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('Order', orderSchema);
