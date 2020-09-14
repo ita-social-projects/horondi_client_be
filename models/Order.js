@@ -44,10 +44,6 @@ const orderSchema = new mongoose.Schema({
     byCourier: Boolean,
     courierOffice: Number,
     invoiceNumber: String,
-    serviceType: {
-      type: String,
-      enum: ['WarehouseWarehouse', 'WarehouseDoors'],
-    },
     cost: [CurrencySet],
   },
   address: Address,
