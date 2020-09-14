@@ -20,7 +20,7 @@ const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
     {
       lang: 'en',
       value:
-          'Canvas-400G padded with a layer of durable and water-resistant material',
+        'Canvas-400G padded with a layer of durable and water-resistant material',
     },
   ],
   innerMaterial: [
@@ -131,7 +131,7 @@ const getProductForUpdate = (
   categoryId,
   subcategoryId,
   modelId,
-  materialId,
+  materialId
 ) => ({
   model: modelId,
   name: [
@@ -257,7 +257,7 @@ const getSameNameForUpdate = (
   categoryId,
   subcategoryId,
   modelId,
-  materialId,
+  materialId
 ) => ({
   category: categoryId,
   subcategory: subcategoryId,
@@ -278,7 +278,7 @@ const getSameNameForUpdate = (
     {
       lang: 'en',
       value:
-          'Canvas-400B padded with a layer of durable and water-resistant material',
+        'Canvas-400B padded with a layer of durable and water-resistant material',
     },
   ],
   innerMaterial: [

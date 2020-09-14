@@ -10,8 +10,11 @@ const {
 } = require('./product.variables');
 require('dotenv').config();
 
-let productId; let categoryId; let subcategoryId; let modelId; let
-    materialId;
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
