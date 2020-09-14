@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const loginAdminOperation = require('../../utils/loginAdmin');
+const loginAdminOperation = require('../../utils/login-admin');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 
 require('dotenv').config();
@@ -10,7 +10,7 @@ let newsId = '';
 let token;
 const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
 
-describe('querries', () => {
+describe('Get all news', () => {
   beforeAll(async () => {
     token = await loginAdminOperation();
 
@@ -85,7 +85,8 @@ describe('querries', () => {
       })
       .catch(e => e);
   });
-  test('#1 Should receive all news', async () => {
+
+  test('Should receive all news', async () => {
     const res = await client
       .query({
         query: gql`
@@ -172,8 +173,10 @@ describe('querries', () => {
       date: '1111118820047',
     });
   });
+});
 
-  test('#2 Should receive one news', async () => {
+describe('Get news by ID', () => {
+  test('Should receive one news', async () => {
     try {
       const res = await client
         .query({
@@ -281,7 +284,7 @@ describe('querries', () => {
     }
   });
 
-  test('#3 Returning not existing news should return error message', async () => {
+  test('Returning not existing news should return error message', async () => {
     const res = await client
       .query({
         query: gql`
