@@ -1,5 +1,5 @@
 const products = require('./products');
-const users = require('../data/8-users/users');
+const users = require('./users');
 const { getObjectId } = require('mongo-seeding');
 
 const commentsOptions = [

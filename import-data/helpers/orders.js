@@ -1,4 +1,4 @@
-const users = require('../data/8-users/users');
+const users = require('./users');
 const products = require('./products');
 const materials = require('../data/2-materials/materials');
 const sizes = require('../data/5-sizes/sizes');
