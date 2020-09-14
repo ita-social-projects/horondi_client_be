@@ -28,6 +28,35 @@ const server = new ApolloServer({
       };
     }
   },
+  plugins: [
+    {
+      requestDidStart(){
+        return {
+          willSendResponse(context){
+            if (context.errors) {
+              console.log(context.response.http)
+              context.response.data = {
+                [context.errors[0].path]: context.response.errors[0]
+              }
+              delete context.response.errors
+            }
+          }
+        }
+      }
+    }
+  ],
+  formatError: (err) => {
+    const {originalError} = err;
+
+    if(originalError.name === 'RuleError') {
+      return {
+        message: originalError.message,
+        statusCode: originalError.statusCode
+      }
+    }
+
+    return err;
+  },
   introspection: true,
   cors: { origin: '*' },
 });
