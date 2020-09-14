@@ -7,7 +7,6 @@ const crypto = require('crypto')
 
 class PaymentService {
   genSignature (data, secret) {
-    console.log(data);
     const ordered = {}
     Object.keys(data).sort().forEach(function (key) {
       if (data[key] !== '' && key !== 'signature' && key !== 'response_signature_string') {
@@ -57,7 +56,7 @@ class PaymentService {
       const sig = this.genSignature(data, process.env.PAYMENT_SECRET)
      
       const res = await post(
-          'https://api.fondy.eu/api/reverse/order_id',
+          process.env.PAYMENT_API_LINK,
           { 
             json: true,
             body: {

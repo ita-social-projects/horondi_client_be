@@ -65,6 +65,7 @@ const SCHEMA_NAMES = {
   model: 'Model',
   contact: 'Contact',
   novaPoshtaCity: 'NovaPoshtaCity',
+  novaPoshtaStreet: 'NovaPoshtaStreet',
   novaPoshtaWarehouse: 'NovaPoshtaWarehouse',
   novaPoshtaPrice: 'NovaPoshtaPrice',
   emailQuestion: 'EmailQuestion',
@@ -249,6 +250,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.Ref) {
         return SCHEMA_NAMES.novaPoshtaCity;
+      }
+      return 'Error';
+    },
+  },
+  NovaPoshtaStreetResult: {
+    __resolveType: obj => {
+      if (obj.Ref) {
+        return SCHEMA_NAMES.novaPoshtaStreet;
       }
       return 'Error';
     },

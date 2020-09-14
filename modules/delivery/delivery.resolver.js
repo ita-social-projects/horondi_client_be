@@ -1,7 +1,8 @@
 const deliveryService = require('./delivery.service')
 const { 
     CITY_NOT_FOUND, 
-    WAREHOUSE_NOT_FOUND 
+    WAREHOUSE_NOT_FOUND,
+    STREET_NOT_FOUND
 }= require('../../error-messages/delivery.message')
 
 const novaPoshtaQuery = {
@@ -13,6 +14,17 @@ const novaPoshtaQuery = {
         return [{
             statusCode: 404,
             message: CITY_NOT_FOUND,
+        }]
+    },
+
+    getNovaPoshtaStreet: async (parent, args) => {
+        const streets = await deliveryService.getNovaPoshtaStreet(args.cityRef, args.street);
+        if(streets.length) {
+            return streets
+        }
+        return [{
+            statusCode: 404,
+            message: STREET_NOT_FOUND,
         }]
     },
 

@@ -36,6 +36,10 @@ const {
   contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
+  deliveryTypes,
+  deliveryInputs,
+} = require('./modules/delivery/delivery.graphql');
+const {
   emailQuestionType,
   emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
@@ -52,6 +56,7 @@ const typeDefs = gql`
   ${modelType}
   ${contactType}
   ${emailQuestionType}
+  ${deliveryTypes}
 
   scalar Upload
 
@@ -194,51 +199,6 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
-  type NovaPoshtaCity {
-    Description: String
-    Ref: String
-    CityID: String
-  }
-
-  type NovaPoshtaWarehouse {
-    Description: String
-    ShortAddress: String
-    Number: Int
-    PlaceMaxWeightAllowed:  Int
-    TotalMaxWeightAllowed: Int
-    Phone: String
-    Ref: String
-    Schedule: WarehouseSchedule
-  }
-
-  type WarehouseSchedule {
-    Monday: String
-    Tuesday: String
-    Wednesday: String
-    Thursday: String
-    Friday: String
-    Saturday: String
-    Sunday: String
-  }
-
-  type NovaPoshtaPrice {
-      AssessedCost: Int
-      Cost: Int
-      CostRedelivery: Int
-      CostPack: Int
-  }
-
-  type UkrPoshtaRegion {
-     res: String
-  }
-
-  type NovaPoshtaOrder {
-    Ref: String,
-    CostOnSite: Float,
-    IntDocNumber: String,
-    TypeDocument: String
-  }
-
   type Payment {
     payment_id: String
     response_status: String
@@ -264,6 +224,7 @@ const typeDefs = gql`
   union NovaPoshtaCityResult = NovaPoshtaCity | Error
   union NovaPoshtaWarehouseResult = NovaPoshtaWarehouse | Error
   union NovaPoshtaPriceResult = NovaPoshtaPrice | Error
+  union NovaPoshtaStreetResult = NovaPoshtaStreet | Error
   union UkrPoshtaRegionResult = UkrPoshtaRegion | Error
   union EmailQuestionResult = EmailQuestion | Error
 
@@ -306,6 +267,7 @@ const typeDefs = gql`
     getContactById(id: ID!): ContactResult
 
     getNovaPoshtaCities(city: String):[NovaPoshtaCityResult]
+    getNovaPoshtaStreet(cityRef: String, street: String):[NovaPoshtaStreetResult]
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouseResult]
     getNovaPoshtaPrice(data: NovaPoshtaPriceInput): [NovaPoshtaPriceResult]
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrder
@@ -361,6 +323,7 @@ const typeDefs = gql`
   ${modelInput}
   ${contactInput}
   ${emailQuestionInput}
+  ${deliveryInputs}
 
   input LanguageInput {
     lang: String!
@@ -427,22 +390,6 @@ const typeDefs = gql`
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
   }
-  input NovaPoshtaOrderInput {
-    CitySender: String,
-    Weight: Float,
-    PayerType: String,
-    PaymentMethod: String,
-    ServiceType: String,
-    Cost: Float,
-    CargoType: String,
-    SeatsAmount: Int,
-    Description: String,
-    RecipientCityName: String,
-    RecipientAddressName: String,
-    RecipientName: String,
-    RecipientType: String,
-    RecipientsPhone: String,
-  }
 
   input SizeInput {
     name: String
@@ -469,16 +416,7 @@ const typeDefs = gql`
   input UserRateInput {
     rate: Int!
   }
-  input NovaPoshtaPriceInput {
-    CitySender: String
-    CityRecipient: String
-    Weight: Float
-    ServiceType: String
-    Cost: Float
-    CargoType: String
-    SeatsAmount: Int
-  }
-
+  
   input PaymentInput {
     order_id: String
     order_desc: String
