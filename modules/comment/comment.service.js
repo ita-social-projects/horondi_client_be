@@ -50,16 +50,19 @@ class CommentsService {
     const product = await Product.findById(id);
     const { userRates } = product;
     let { rateCount } = product;
-    const { rate } =      userRates.find(rate => String(rate.user) === String(user._id)) || {};
+    const { rate } =
+      userRates.find(rate => String(rate.user) === String(user._id)) || {};
 
-    const rateSum =      product.rate * rateCount - (rate || !!rate) + data.rate;
+    const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
     rateCount = rate ? rateCount : ++rateCount;
     const newRate = rateSum / rateCount;
 
     const newUserRates = rate
-      ? userRates.map(item => (String(item.user) === String(user._id)
-        ? { user: item.user, rate: data.rate }
-        : item))
+      ? userRates.map(item =>
+          String(item.user) === String(user._id)
+            ? { user: item.user, rate: data.rate }
+            : item
+        )
       : [...userRates, { ...data, user: user._id }];
 
     const rateToAdd = await Product.findByIdAndUpdate(
@@ -69,7 +72,7 @@ class CommentsService {
         rate: newRate.toFixed(1),
         userRates: newUserRates,
       },
-      { new: true },
+      { new: true }
     );
 
     if (rateToAdd) return rateToAdd;

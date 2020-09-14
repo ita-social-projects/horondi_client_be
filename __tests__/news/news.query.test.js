@@ -199,7 +199,7 @@ describe('querries', () => {
         variables: { id: newsId },
       })
       .catch(e => e);
-    console.log(res);
+
     expect(res.data.getNewsById).toBeDefined();
     expect(res.data.getNewsById).toHaveProperty('title', [
       {

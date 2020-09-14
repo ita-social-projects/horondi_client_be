@@ -300,9 +300,8 @@ describe('pattern tests', () => {
       })
       .catch(e => e);
 
-    expect(res.data.getAllPatterns).toMatchSnapshot();
     expect(res.data.getAllPatterns.items).toHaveLength(5);
-    expect(res.data.getAllPatterns.count).toEqual(17);
+    expect(res.data.getAllPatterns.count).toEqual(18);
   });
   test('pattern pagination test with wrong arguments', async () => {
     const res = await client
@@ -337,7 +336,7 @@ describe('pattern tests', () => {
       })
       .catch(e => e);
     expect(res.graphQLErrors[0].message).toEqual(
-      'Skip value must be non-negative, but received: -5',
+      'Skip value must be non-negative, but received: -5'
     );
   });
 });
