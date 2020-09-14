@@ -1,6 +1,6 @@
 const { mapToLanguages } = require('../../helpers/languages');
 const { mapToImages } = require('../../helpers/images');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId } = require('mongo-seeding');
 
 let patterns = [];
 

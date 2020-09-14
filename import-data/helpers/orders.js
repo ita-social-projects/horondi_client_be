@@ -5,7 +5,7 @@ const sizes = require('../data/5-sizes/sizes');
 const categories = require('../data/1-categories/categories');
 const { mapToCurrencies } = require('./currencyset');
 const { randomDateSince, addDays } = require('./dates');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId } = require('mongo-seeding');
 
 let orders = [];
 const usersNumber = users.length;
@@ -27,12 +27,12 @@ let successfulPurchases = [];
 
 for (let i = 0; i < usersNumber; i++) {
     dateOfCreation = randomDateSince(users[i].registrationDate);
-    sentOn = addDays(dateOfCreation, ~~(Math.random() * (5 - 1) + 1));
-    lastUpdatedDate = addDays(sentOn, ~~(Math.random() * (5 - 1) + 1));
-    productCount = ~~(Math.random() * productsNumber);
+    sentOn = addDays(dateOfCreation, Math.floor((Math.random() * (5 - 1) + 1)));
+    lastUpdatedDate = addDays(sentOn, Math.floor((Math.random() * (5 - 1) + 1)));
+    productCount = Math.floor((Math.random() * productsNumber));
     product = products[productCount];
-    option = product.options[~~(Math.random() * product.options.length)];
-
+    option = product.options[Math.floor((Math.random() * product.options.length))];
+    
     categoryPick = categories.find(el => el.id.toHexString() == product.category);
     subcategoryPick = categories.find(el => el.id.toHexString() == product.subcategory);
     materialPick = (option.bottomMaterial == null) ? null : materials.find(el => el.id.toHexString() == option.bottomMaterial);
@@ -55,6 +55,7 @@ for (let i = 0; i < usersNumber; i++) {
         user: {
             firstName: users[i].firstName,
             lastName: users[i].lastName,
+            patronymicName: 'Іванович',
             email: users[i].email,
             phoneNumber: users[i].phoneNumber,
         },
@@ -67,11 +68,11 @@ for (let i = 0; i < usersNumber; i++) {
         delivery: {
             sentOn: sentOn,
             sentBy: 'Nova Poshta',
-            courier: true,
-            courierOffice: ~~(Math.random() * (20 - 1) + 1),
-            invoiceNumber: ~~(Math.random() * 10000000).toString(),
+            byCourier: true,
+            courierOffice: Math.floor((Math.random() * (20 - 1) + 1)),
+            invoiceNumber: Math.floor((Math.random() * 10000000)).toString(),
             serviceType: 'WarehouseDoors',
-            cost: mapToCurrencies(50.00),
+            cost: mapToCurrencies(5000),
         },
         address: users[i].address,
         items: [
@@ -93,12 +94,12 @@ for (let i = 0; i < usersNumber; i++) {
                 },
                 bottomMaterial: (materialPick == null) ? [] : materialPick.name,
                 bottomColor: option.bottomColor,
-                additions: (option.additions.length == 0) ? [] : [option.additions[0].name],
+                additions: (option.additions.length === 0) ? [] : [option.additions[0].name],
                 actualPrice: mapToCurrencies(actualPrice),
                 quantity: 1,
             },
         ],
-        paymentMethod: 'card',
+        paymentMethod: 'CARD',
         isPaid: true,
     };
 
@@ -110,11 +111,6 @@ for (let i = 0; i < usersNumber; i++) {
 
     orders[i]['totalPriceToPay'] = mapToCurrencies(orders[i]['totalItemsPrice'][0].value + orders[i].delivery.cost[0].value);
 }
-
-console.log(orders[0]);
-// console.log(orders[0].totalItemsPrice);
-// console.log(orders[0].delivery.cost[0].value);
-// console.log(orders[0].totalPriceToPay);
 
 module.exports = {
     orders,

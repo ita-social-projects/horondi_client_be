@@ -1,11 +1,10 @@
 const { mapToImages } = require('../../helpers/images');
 const { mapToLanguages } = require('../../helpers/languages');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const contacts = [{
   phoneNumber: 380961737361,
-  openHours: mapToLanguages(['Пн: 09:00 - 17:00|Вт: 09:00 - 18:00|Ср: 09:00 - 18:00|Чт: 09:00 - 18:00|Пт: 09:00 - 18:00|Сб: Вихідний|Нд: Вихідний',
-        'Mon: 9 a.m. - 5 p.m.|Tue: 9 a.m. - 6 p.m.|Wed: 9 a.m. - 6 p.m.|Thu: 9 a.m. - 6 p.m.|Fri: 9 a.m. - 6 p.m.|Sat: Closed|Sun: Closed']),
+  openHours: mapToLanguages(['Пн: 10:00 - 19:00|Вт: 10:00 - 19:00|Ср: 10:00 - 19:00|Чт: 10:00 - 19:00|Пт: 10:00 - 19:00|Сб: Вихідний|Нд: Вихідний',
+        'Mon: 10 a.m. - 7 p.m.|Tue: 10 a.m. - 7 p.m.|Wed: 10 a.m. - 7 p.m.|Thu: 10 a.m. - 7 p.m.|Fri: 10 a.m. - 7 p.m.|Sat: Closed|Sun: Closed']),
   address: mapToLanguages(['<p>Львів</p><p>вул. Угорська, 2</p>',
           '<p>Lviv</p><p>2 Uhorska Str.</p>']),
   email: 'horondi@gmail.com',

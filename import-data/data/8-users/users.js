@@ -1,9 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+// const products = require('../../helpers/products');
+// const { successfulPurchases } = require('../../helpers/orders');
 const { randomDateSince } = require('../../helpers/dates');
 const { getObjectId, getObjectIds } = require('mongo-seeding');
 
 const recordNumber = 100;
+
+// const purchasesNumber = successfulPurchases.length;
 
 const namesFromFile = fs.readFileSync(path.join(__dirname, '..', '..', 'src', 'names.txt'), 'utf8');
 const names = namesFromFile.split('\n')
@@ -31,7 +35,7 @@ const backpacksNumber = backpacks.length;
 function generateCredentials() {
     let credentials = [];
     const possibleCreds = ['local', 'google', 'facebook'];
-    const credPick = ~~(Math.random() * 100);
+    const credPick = Math.floor((Math.random() * 100));
     if ((credPick >= 0 && credPick < 25) || credPick >= 95 ) {
         credentials.push({
                 source: possibleCreds[0],
@@ -62,6 +66,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
     const countryCode = '38';
     const phoneOperators = ['039', '067', '068', '096', '097', '098', '050', '066', '095', '099', '063', '093', '091'];
     const operatorsNumber = phoneOperators.length;
+    // let purchasesOfUser;
     let result = [];
     let usedEmails = [];
     let emailStub;
@@ -76,21 +81,29 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
         usedEmails.push(emailStub);
 
         do {
-            phoneNumber = parseInt(countryCode + phoneOperators[~~(Math.random() * operatorsNumber)] + ~~(Math.random() * 10000000).toString(), 10);
+            phoneNumber = parseInt(countryCode + phoneOperators[Math.floor((Math.random() * operatorsNumber))] + 
+                Math.floor((Math.random() * 10000000)).toString(), 10);
         } while (phoneNumber in usedPhoneNumbers);
         usedPhoneNumbers.push(phoneNumber);
 
-        location = ~~(Math.random() * citiesNumber);
+        location = Math.floor((Math.random() * citiesNumber));
 
         commentsOfUser = [];
         for (let j = 0; j < 3; j++){
             commentsOfUser.push(getObjectId('comment' + i + '_' + j));
         }
 
+        // purchasesOfUser = [];
+        // for (let j = 0; j < purchasesNumber; j++){
+        //     if (successfulPurchases[j][0] == getObjectId('user' + i)) {
+        //         purchasesOfUser.push(products[successfulPurchases[j][1]].id);
+        //     }
+        // }
+
         result.push({
             id: getObjectId('user' + i),
-            firstName: names[~~(Math.random() * namesNumber)],
-            lastName: surnames[~~(Math.random() * surnamesNumber)],
+            firstName: names[Math.floor((Math.random() * namesNumber))],
+            lastName: surnames[Math.floor((Math.random() * surnamesNumber))],
             role: 'user',
             email: emailStub + '@gmail.com',
             phoneNumber: phoneNumber,
@@ -98,10 +111,10 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
                 country: 'Україна',
                 region: regions[location],
                 city: cities[location],
-                zipcode: ~~(Math.random() * (99999 - 10000) + 10000),
-                street: streets[~~(Math.random() * streetsNumber)],
-                buildingNumber: ~~(Math.random() * 300),
-                appartment: ~~(Math.random() * 150),
+                zipcode: Math.floor((Math.random() * (99999 - 10000) + 10000)),
+                street: streets[Math.floor((Math.random() * streetsNumber))],
+                buildingNumber: Math.floor((Math.random() * 300)),
+                appartment: Math.floor((Math.random() * 150)),
             },
             images: {
                     large: 'large-' + emailStub + '.jpg',
@@ -111,7 +124,7 @@ const mapToUsers = (names, surnames, cities, streets, recordNumber) => {
                 },
             credentials: generateCredentials(),
             registrationDate: randomDateSince(new Date('January 01, 2010 00:00:00')),
-            wishlist: [backpacks[~~(Math.random() * backpacksNumber)]],
+            wishlist: [backpacks[Math.floor((Math.random() * backpacksNumber))]],
             orders: [getObjectId('order' + i)],
             purchasedProducts: [],
             comments: commentsOfUser,

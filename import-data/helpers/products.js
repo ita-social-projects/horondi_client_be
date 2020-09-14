@@ -3,9 +3,25 @@ const { mapToImages } = require('./images');
 const { mapToColors } = require('./colors');
 const { mapToCurrencies } = require('./currencyset');
 const { mapToOptions } = require('./options');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId } = require('mongo-seeding');
 
-const { rolltopDescUK, rolltopDescEN, newDescUK, newDescEN, harbuzDescUK, harbuzDescEN, bagWithPatternDescUK, bagWithPatternDescEN, bagThreeColorsDescUK, bagThreeColorsDescEN, bagOneColorDescUK, bagOneColorDescEN, bagSimpleDescUK, bagSimpleDescEN, fannyPackLargeDescUK, fannyPackLargeDescEN, fannyPackSmallDescUK, fannyPackSmallDescEN } = require('./productDesc');
+const { rolltopDescUK, 
+    rolltopDescEN, 
+    newDescUK, 
+    newDescEN, 
+    harbuzDescUK, 
+    harbuzDescEN, 
+    bagWithPatternDescUK, 
+    bagWithPatternDescEN, 
+    bagThreeColorsDescUK, 
+    bagThreeColorsDescEN, 
+    bagOneColorDescUK, 
+    bagOneColorDescEN, 
+    bagSimpleDescUK, 
+    bagSimpleDescEN, 
+    fannyPackLargeDescUK, 
+    fannyPackLargeDescEN 
+} = require('./productDesc');
 
 const fabricDescription = mapToLanguages([
     '100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен',
@@ -138,23 +154,23 @@ while (counter < newTotalProducts){
 
 function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
     model = [product[0][0].split(' ')[0], product[0][1].split(' ')[0]];
-    model = (model[0] == 'Сумка') ? [product[0][0], product[0][1]] : model;
-    model = (name == 'patbag') ? ['Сумка з гобеленом', 'Bag with a Pattern'] : model;
-    model = (name == 'col1bag') ? ['Сумка одноколірна', 'One Color Bag'] : model;
-    model = (name == 'fanny-pack') ? ['Бананка', 'Fanny Pack'] : model;
+    model = (model[0] === 'Сумка') ? [product[0][0], product[0][1]] : model;
+    model = (name === 'patbag') ? ['Сумка з гобеленом', 'Bag with a Pattern'] : model;
+    model = (name === 'col1bag') ? ['Сумка одноколірна', 'One Color Bag'] : model;
+    model = (name === 'fanny-pack') ? ['Бананка', 'Fanny Pack'] : model;
     pattern = (product[2].length === 0) ? mapToLanguages(['Немає', 'None']) : mapToLanguages(product[2]);
     patternImages = (product[3] === '') ? null : mapToImages(product[3]);
     strapLengthInCm = 0;
     innerMaterial = [];
     closure = [];
     closureColor = ''
-    if (model[1] == 'Rolltop' || model[1] == 'New' || model[1] == 'Harbuz') {
+    if (model[1] === 'Rolltop' || model[1] === 'New' || model[1] === 'Harbuz') {
         strapLengthInCm = 100;
         innerMaterial = mapToLanguages(['Oxford 135', 'Oxford 135']);
         mainMaterial = fabricDescription;
         closure = mapToLanguages(['Фастекс (пластикова защіпка)', 'Plastic closure']);
         closureColor = 'black'
-    } else if (model[1] == 'Fanny Pack' || model[1] == 'Wallet') {
+    } else if (model[1] === 'Fanny Pack' || model[1] === 'Wallet') {
         mainMaterial = malmoDescription;
     } else {
         mainMaterial = (product[2].length === 0) ? canvasDescription : canvasPatternDescription;
@@ -181,7 +197,7 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
         basePrice: mapToCurrencies(price),
         options: mapToOptions(name, product[4])
     })
-    if (product[5] != undefined) {
+    if (product[5] !== undefined) {
         products[i].images.primary = mapToImages(product[5][0]);
         for (let j = 1; j < product[5].length; j++){
             products[i].images.additional[j-1] = mapToImages(product[5][j]);

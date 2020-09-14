@@ -1,5 +1,5 @@
 const { mapToCurrencies } = require('./currencyset');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId } = require('mongo-seeding');
 
 const mapToSizes = ({type = '', name='', size=0, volume=0, weight=0, price = 0}) => {
     return {

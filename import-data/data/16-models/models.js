@@ -1,7 +1,23 @@
 const { mapToLanguages } = require('../../helpers/languages');
 const { mapToImages } = require('../../helpers/images');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
-const { rolltopDescUK, rolltopDescEN, newDescUK, newDescEN, harbuzDescUK, harbuzDescEN, bagWithPatternDescUK, bagWithPatternDescEN, bagThreeColorsDescUK, bagThreeColorsDescEN, bagOneColorDescUK, bagOneColorDescEN, bagSimpleDescUK, bagSimpleDescEN, fannyPackLargeDescUK, fannyPackLargeDescEN, fannyPackSmallDescUK, fannyPackSmallDescEN } = require('../../helpers/productDesc');
+const { getObjectId } = require('mongo-seeding');
+const { rolltopDescUK, 
+    rolltopDescEN, 
+    newDescUK, 
+    newDescEN, 
+    harbuzDescUK, 
+    harbuzDescEN, 
+    bagWithPatternDescUK, 
+    bagWithPatternDescEN, 
+    bagThreeColorsDescUK, 
+    bagThreeColorsDescEN, 
+    bagOneColorDescUK, 
+    bagOneColorDescEN, 
+    bagSimpleDescUK, 
+    bagSimpleDescEN, 
+    fannyPackLargeDescUK, 
+    fannyPackLargeDescEN 
+} = require('../../helpers/productDesc');
 
 let models = [];
 

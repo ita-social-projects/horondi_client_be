@@ -12,7 +12,7 @@ for (let i = 0; i < productsNumber; i++){
 for (let i = 0; i < successfulPurchasesNumber; i++){
         ratesPerProduct[successfulPurchases[i][1]].push({
             user: successfulPurchases[i][0],
-            rate: ~~(Math.random() * 3) + 3
+            rate: Math.floor((Math.random() * 3) + 3)
         })
 };
 

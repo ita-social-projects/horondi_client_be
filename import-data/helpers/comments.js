@@ -1,6 +1,6 @@
 const products = require('./products');
 const users = require('../data/8-users/users');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId } = require('mongo-seeding');
 
 const commentsOptions = [
     'Користуюсь вже місяць - чудовий виріб!',
@@ -46,13 +46,13 @@ for (let i = 0; i < productsNumber; i++){
 }
 
 for (let i = 0; i < usersNumber; i++){
-    commentsPerUserNumber = ~~(Math.random() * 3) + 1;
+    commentsPerUserNumber = Math.floor((Math.random() * 3) + 1);
     for (let j = 0; j < commentsPerUserNumber; j++){
         dateOfCreation = randomDate(users[i].registrationDate, new Date('July 31, 2020 23:23:59'));
-        productId = ~~(Math.random() * productsNumber);
+        productId = Math.floor((Math.random() * productsNumber));
         comments.push({
             id: getObjectId('comment' + i + '_' + j),
-            text: commentsOptions[~~(Math.random() * commentsOptionsNumber)],
+            text: commentsOptions[Math.floor((Math.random() * commentsOptionsNumber))],
             date: dateOfCreation,
             user: {
                 email: users[i].email,

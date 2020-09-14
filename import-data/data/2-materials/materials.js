@@ -1,7 +1,7 @@
 const { mapToLanguages } = require('../../helpers/languages');
 const { mapToColors } = require('../../helpers/colors');
 const { mapToCurrencies } = require('../../helpers/currencyset');
-const { getObjectId, getObjectIds } = require('mongo-seeding');
+const { getObjectId } = require('mongo-seeding');
 
 const materials = [
   {
