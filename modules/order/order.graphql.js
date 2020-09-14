@@ -11,7 +11,7 @@ type Order {
 }`
 const orderInput = ` 
 input OrderInput {
-  status: String
+  status: Status
   user: OrderUserInput,
   dateOfCreation: String,
   delivery: DeliveryInput,
