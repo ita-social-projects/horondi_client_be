@@ -28,15 +28,7 @@ const commentsQuery = {
 
   getAllCommentsByUser: async (parent, args) => {
     const comments = await commentsService.getAllCommentsByUser(args.userEmail);
-
-    if (comments.length) {
-      return comments;
-    }
-
-    return [{
-      statusCode: 404,
-      message: COMMENT_NOT_FOUND,
-    }];
+    return comments;
   },
 };
 
