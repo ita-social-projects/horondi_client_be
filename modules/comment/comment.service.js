@@ -24,15 +24,18 @@ class CommentsService {
     return Comment.find({ 'user.email': userEmail });
   }
 
-  async getAllComments({ skip, limit }) {
+  async getAllRecentComments({ skip, limit }) {
     const dateFrom = new Date().getTime();
     const dateTo = dateFrom - 2592000000;
 
-    const items = await Comment.find({date: {$gt: dateTo, $lt: dateFrom}})
+    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
+      .sort({ date: -1 })
       .skip(skip)
       .limit(limit);
 
-    const count = await Comment.find().countDocuments();
+    const count = await Comment.find({
+      date: { $gt: dateTo, $lt: dateFrom },
+    }).countDocuments();
 
     return {
       items,
@@ -71,26 +74,30 @@ class CommentsService {
     const product = await Product.findById(id);
     const { userRates } = product;
     let { rateCount } = product;
-    const { rate } = userRates.find(rate => String(rate.user) === String(user._id)) || {};
+    const { rate } =
+      userRates.find(rate => String(rate.user) === String(user._id)) || {};
 
-    const rateSum = product.rate * rateCount - (rate ? rate : !!rate) + data.rate;
-    rateCount = rate ? rateCount : ++rateCount
+    const rateSum =
+      product.rate * rateCount - (rate ? rate : !!rate) + data.rate;
+    rateCount = rate ? rateCount : ++rateCount;
     const newRate = rateSum / rateCount;
 
     const newUserRates = rate
-        ? userRates.map(item => (String(item.user) === String(user._id)
-          ? { user: item.user, rate: data.rate }
-          : item))
-        : [...userRates, { ...data, user: user._id }]
+      ? userRates.map(item =>
+          String(item.user) === String(user._id)
+            ? { user: item.user, rate: data.rate }
+            : item
+        )
+      : [...userRates, { ...data, user: user._id }];
 
     const rateToAdd = await Product.findByIdAndUpdate(
-        id,
-        {
-          rateCount: rateCount,
-          rate: newRate.toFixed(1),
-          userRates: newUserRates,
-        },
-        { new: true },
+      id,
+      {
+        rateCount: rateCount,
+        rate: newRate.toFixed(1),
+        userRates: newUserRates,
+      },
+      { new: true }
     );
 
     if (rateToAdd) return rateToAdd;

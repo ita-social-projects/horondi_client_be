@@ -39,8 +39,8 @@ const commentsQuery = {
     }
   },
 
-  getAllComments: async (parent, args) =>
-    commentsService.getAllComments(args),
+  getAllRecentComments: async (parent, args) =>
+    commentsService.getAllRecentComments(args),
 };
 
 const commentsMutation = {
