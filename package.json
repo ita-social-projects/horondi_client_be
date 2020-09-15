@@ -95,8 +95,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "prettier --write",
-      "eslint . --fix"
+      "prettier --write"
     ]
   },
   "jest": {
