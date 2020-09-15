@@ -2,6 +2,7 @@ const materialService = require('./material.service');
 const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
+const { uploadFiles } = require('../upload/upload.service');
 
 const materialQuery = {
   getAllMaterials: async (parent, args) =>
@@ -21,7 +22,19 @@ const materialQuery = {
 const materialMutation = {
   addMaterial: async (parent, args) => {
     try {
-      return await materialService.addMaterial(args.material);
+      if (!args.upload) {
+        return await materialService.addMaterial(args.material);
+      }
+      const uploadResult = await uploadFiles([args.upload]);
+
+      const imageResults = await uploadResult[0];
+
+      const images = imageResults.fileNames;
+      if (!images) {
+        return await materialService.addMaterial(args.material);
+      }
+
+      return await materialService.addMaterial({ ...args.material, images });
     } catch (e) {
       return {
         statusCode: 400,
@@ -41,7 +54,23 @@ const materialMutation = {
   },
   updateMaterial: async (parent, args) => {
     try {
-      return await materialService.updateMaterial(args.id, args.material);
+      if (!args.upload) {
+        return await materialService.updateMaterial(args.id, args.material);
+      }
+      const uploadResult = await uploadFiles([args.upload]);
+
+      const imageResults = await uploadResult[0];
+
+      const images = imageResults.fileNames;
+
+      if (!images) {
+        return await materialService.updateMaterial(args.id, args.material);
+      }
+
+      return await materialService.updateMaterial(args.id, {
+        ...args.pattern,
+        images,
+      });
     } catch (e) {
       return {
         statusCode: e.message === MATERIAL_NOT_FOUND ? 404 : 400,
