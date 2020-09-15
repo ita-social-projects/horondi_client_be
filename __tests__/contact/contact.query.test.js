@@ -89,8 +89,7 @@ describe('Contacts queries', () => {
       .catch(e => e);
 
     expect(res.data.getContacts).toBeDefined();
-    expect(res.data.getContacts.items).toContainEqual(
-      {
+    expect(res.data.getContacts.items).toContainEqual({
       __typename: 'Contact',
       address: [
         { __typename: 'Language', lang: 'uk', value: 'Вулиця 4' },
@@ -99,11 +98,11 @@ describe('Contacts queries', () => {
       email: 'test@test.com',
       images: [
         {
-          __typename:  'LanguageImageSet',
+          __typename: 'LanguageImageSet',
           value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
         {
-          __typename:  'LanguageImageSet',
+          __typename: 'LanguageImageSet',
           value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
       ],
@@ -187,14 +186,14 @@ describe('Contacts queries', () => {
       expect(res.data.getContactById).toHaveProperty('email', 'test@test.com');
       expect(res.data.getContactById).toHaveProperty('images', [
         {
-          __typename:  'LanguageImageSet',
+          __typename: 'LanguageImageSet',
           value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
         {
-          __typename:  'LanguageImageSet',
+          __typename: 'LanguageImageSet',
           value: { __typename: 'ImageSet', medium: 'medium.jpg' },
         },
-      ],);
+      ]);
       expect(res.data.getContactById.images).toBeInstanceOf(Array);
       expect(res.data.getContactById).toHaveProperty(
         'link',
