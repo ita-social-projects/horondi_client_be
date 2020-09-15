@@ -51,14 +51,14 @@ input userRegisterInput {
     email: String!
 }`;
 
-const specialUserRegisterInput = `
-input SpecialUserRegisterInput {
+const adminRegisterInput = `
+input AdminRegisterInput {
     email: String!
     role: String!
 }
 `
-const specialUserConfirmInput = `
-input SpecialUserConfirmInput {
+const adminConfirmInput = `
+input AdminConfirmInput {
     firstName: String!
     lastName: String!
     password: String!
@@ -70,6 +70,6 @@ module.exports = {
   userInput,
   userRegisterInput,
   LoginInput,
-  specialUserRegisterInput,
-  specialUserConfirmInput
+  adminRegisterInput,
+  adminConfirmInput
 };

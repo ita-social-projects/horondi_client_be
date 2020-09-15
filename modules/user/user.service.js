@@ -14,7 +14,7 @@ const { sendEmail } = require('../../utils/sendGrid-email')
 const {
   confirmationMessage,
   recoveryMessage,
-  SpecialUserConfirmationMessage
+  adminConfirmationMessage
 } = require('../../utils/localization');
 
 const {
@@ -23,7 +23,7 @@ const {
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
-  INVALID_INVITATIONAL_TOKEN
+  INVALID_ADMIN_INVITATIONAL_TOKEN
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -292,15 +292,14 @@ class UserService {
 
   async registerAdmin(userInput) {
       const {email,role} = userInput;
-      const { errors } = await validateAdminRegisterInput.validateAsync({
-        email,
-        role
-      });
-  
-      if (errors) {
-        throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+
+      try {
+        await validateAdminRegisterInput.validateAsync({ email,role })
+      } 
+      catch(err) {
+        throw new UserInputError(INPUT_NOT_VALID,{statusCode: 400})
       }
-  
+    
       if (await User.findOne({ email })) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
@@ -311,18 +310,17 @@ class UserService {
       });
 
       const savedUser = await user.save();
-      const token = await generateToken(savedUser._id, savedUser.email, {
-        EXPIRES_IN: undefined,
-      });
+      const token = await generateToken(savedUser._id, savedUser.email);
 
       const message = {
         from: process.env.MAIL_USER,
         to: savedUser.email,
         subject: '[Horondi] Invitation to become an admin',
-        html: SpecialUserConfirmationMessage(token),
+        html: adminConfirmationMessage(token),
       };
   
       if (process.env.NODE_ENV === 'test') {
+        console.log(token);
         return {...savedUser._doc,token}
       }
 
@@ -333,49 +331,55 @@ class UserService {
 
   async completeAdminRegister(updatedUser,token){
     const {firstName,lastName,password} = updatedUser;
+    let decoded;
 
-    const { errors } = await validateRegisterInput.validateAsync({
+    try {
+    await validateRegisterInput.validateAsync({
       firstName,
       lastName,
       password
     });
-
-    if (errors) {
+    } catch (err) {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const decoded = jwt.verify(token,process.env.SECRET)
+    try {
+      decoded = jwt.verify(token,process.env.SECRET);
+    } 
+    catch(err) {
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, { statusCode: 400 });
+    }
+
     const user = await User.findOne({ email: decoded.email });
 
     if (!user) {
-      throw new UserInputError(INVALID_INVITATIONAL_TOKEN, { statusCode: 400 });
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, { statusCode: 400 });
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
+
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.credentials = [
+      {
+        source: 'horondi',
+        tokenPass: encryptedPassword,
+      }
+    ];
+    user.confirmed = true;
     
-    await User.findByIdAndUpdate(user._id,
-       {
-        firstName,
-        lastName,
-        credentials: [
-          {
-            source: 'horondi',
-            tokenPass: encryptedPassword,
-          },
-        ],
-        confirmed: true},
-        {new: true})
+    await user.save();
     
     return { isSuccess: true };
   }
 
-  validateToken(token){
+  validateConfirmationToken(token){
     try {
       jwt.verify(token,process.env.SECRET);
       return {isSuccess: true};
     }
     catch(err) {
-      throw new UserInputError(INVALID_INVITATIONAL_TOKEN, { statusCode: 400 });
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, { statusCode: 400 });
     }
   }
 }

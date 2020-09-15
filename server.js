@@ -7,6 +7,8 @@ const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
+const errorOutputPlugin = require('./plugins/error-output.plugin');
+const formatError = require('./utils/format-error');
 
 connectDB();
 require('dotenv').config();
@@ -29,34 +31,9 @@ const server = new ApolloServer({
     }
   },
   plugins: [
-    {
-      requestDidStart(){
-        return {
-          willSendResponse(context){
-            if (context.errors) {
-              console.log(context.response.http)
-              context.response.data = {
-                [context.errors[0].path]: context.response.errors[0]
-              }
-              delete context.response.errors
-            }
-          }
-        }
-      }
-    }
+   errorOutputPlugin
   ],
-  formatError: (err) => {
-    const {originalError} = err;
-
-    if(originalError.name === 'RuleError') {
-      return {
-        message: originalError.message,
-        statusCode: originalError.statusCode
-      }
-    }
-
-    return err;
-  },
+  formatError,
   introspection: true,
   cors: { origin: '*' },
 });

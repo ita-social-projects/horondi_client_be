@@ -4,8 +4,7 @@ class RuleError extends ApolloError {
     constructor(message,statusCode) {
         super(message);
         this.statusCode = statusCode;
-        
-        Object.defineProperty(this,'name',{value: "RuleError"})
+        this.name = "RuleError";
     }
 }
 

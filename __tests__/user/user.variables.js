@@ -6,11 +6,19 @@ const adminUser = {
 }
 
 const superAdminUser = {
-    email: process.env.SUPERADMIN_EMAIL,
-    password: process.env.SUPERADMIN_PASSWORD
+    email: process.env.SUPER_ADMIN_EMAIL,
+    password: process.env.SUPER_ADMIN_PASSWORD
+}
+
+const newAdmin = {
+    email: 'admin2@gmail.com',
+    firstName: 'Hook',
+    lastName: 'Age',
+    password: 'qwertY123'
 }
 
 module.exports = {
     adminUser,
+    newAdmin,
     superAdminUser
 }

@@ -12,7 +12,7 @@ const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN,SUPERADMIN]),
   getUserByToken: or(isAuthorized, hasRoles([ADMIN,SUPERADMIN])),
   getUserById: or(isTheSameUser,hasRoles([ADMIN,SUPERADMIN])),
-  validateToken: allow
+  validateConfirmationToken: allow
 };
 const userPermissionsMutation = {
   registerUser: allow,

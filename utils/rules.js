@@ -1,5 +1,5 @@
 const { rule,and } = require('graphql-shield');
-const RuleError = require('../errors/rule-error');
+const RuleError = require('../errors/rule.error');
 const {
   INVALID_PERMISSIONS,
   USER_NOT_AUTHORIZED,

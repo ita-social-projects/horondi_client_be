@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
+const {INVALID_ADMIN_INVITATIONAL_TOKEN} = require('../../error-messages/user.messages')
 
 require('dotenv').config();
 
@@ -464,7 +465,7 @@ describe('Testing obtaining information restrictions', () => {
     const result = await client.query({
       query: gql`
         query($token: String!){
-          validateToken(token: $token) {
+          validateConfirmationToken(token: $token) {
             ... on SuccessfulResponse {
               isSuccess
             }
@@ -480,9 +481,9 @@ describe('Testing obtaining information restrictions', () => {
     })
     .catch(err => err);
 
-    const data = result.data.validateToken;
+    const data = result.data.validateConfirmationToken;
 
-    expect(data.message).toEqual('INVALID_INVITATIONAL_TOKEN');
+    expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
 
   });
 
@@ -490,7 +491,7 @@ describe('Testing obtaining information restrictions', () => {
     const result = await client.query({
       query: gql`
         query($token: String!){
-          validateToken(token: $token) {
+          validateConfirmationToken(token: $token) {
             ... on SuccessfulResponse {
               isSuccess
             }
@@ -506,7 +507,7 @@ describe('Testing obtaining information restrictions', () => {
     })
     .catch(err => err);
 
-    const data = result.data.validateToken;
+    const data = result.data.validateConfirmationToken;
 
     expect(data.isSuccess).toEqual(true);
     

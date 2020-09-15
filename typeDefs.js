@@ -5,8 +5,8 @@ const {
   userInput,
   userRegisterInput,
   LoginInput,
-  specialUserConfirmInput,
-  specialUserRegisterInput
+  adminConfirmInput,
+  adminRegisterInput
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -214,7 +214,7 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
-    validateToken(token: String!): LogicalResult
+    validateConfirmationToken(token: String!): LogicalResult!
 
     getProductById(id: ID!): ProductResult
     getProducts(
@@ -273,8 +273,8 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
-  ${specialUserConfirmInput}
-  ${specialUserRegisterInput}
+  ${adminConfirmInput}
+  ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
 
@@ -394,7 +394,7 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    registerAdmin(user: SpecialUserRegisterInput!): UserResult
+    registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -402,10 +402,10 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
-    switchUserStatus(id: ID!): LogicalResult
+    switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
-    completeAdminRegister(user: SpecialUserConfirmInput!,token: String!): LogicalResult
+    completeAdminRegister(user: AdminConfirmInput!,token: String!): LogicalResult!
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult

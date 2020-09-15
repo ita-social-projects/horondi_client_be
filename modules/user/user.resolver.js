@@ -8,9 +8,9 @@ const userQuery = {
   getUserById: (parent, args, context) => (context.user
     ? userService.getUser(args.id)
     : new UserInputError(USER_NOT_AUTHORIZED)),
-  validateToken: (parent,args) => {
+  validateConfirmationToken: (parent,args) => {
     try {
-      return userService.validateToken(args.token);
+      return userService.validateConfirmationToken(args.token);
     }
     catch(err) {
       return {
@@ -35,7 +35,7 @@ const userMutation = {
   recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
     try {
-      return userService.switchUserStatus(args.id);
+      return await userService.switchUserStatus(args.id);
     } catch (err) {
       return {
         statusCode: 400,

@@ -1,32 +1,15 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const {adminUser,superAdminUser} = require('./user.variables');
+const {adminUser,superAdminUser,newAdmin} = require('./user.variables');
+const adminLogin = require('../helpers/admin-login');
+const {INPUT_NOT_VALID,INVALID_ADMIN_INVITATIONAL_TOKEN,USER_ALREADY_EXIST} = require('../../error-messages/user.messages')
 
 require('dotenv').config();
 
 let userId;
 let token;
 let badId;
-
-const adminLogin = async(user) => {
-  const result = await client.mutate({
-    mutation: gql`
-      mutation($user: LoginInput!) {
-        loginAdmin(loginInput: $user) {
-          token
-        }
-      }
-    `,
-    variables: {
-      user
-    }
-  });
-
-  const {token} = result.data.loginAdmin; 
-
-  return token;
-}
 
 const testUser = {
   firstName: 'Petro',
@@ -787,36 +770,28 @@ describe('User`s mutation restictions tests', () => {
   });
 });
 
-describe("Creating users with custom roles",() => {
+describe("Register admin",() => {
     let superAdminToken;
-    let role;
+    let role ='admin';
     let id;
     let token;
-    let password;
-    let email;
-    let firstName;
-    let invalidFirstName;
-    let lastName;
-    let invalidEmail;
-    let adminEmail;
-    let invalidRole;
-    let invalidToken;
+    let invalidFirstName ='H';
+    let invalidEmail ='invalid@com';
+    let adminEmail = adminUser.email;;
+    let invalidRole ='superadmin';
+    let invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
+    VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
+    GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
+    5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
+    let {
+      email: newAdminEmail,
+      password: newAdminPassword,
+      firstName: newAdminFirstName,
+      lastName: newAdminLastName
+    } = newAdmin;
 
     beforeAll(async () => {
         superAdminToken = await adminLogin(superAdminUser);
-        role = 'admin';
-        invalidRole = 'superadmin';
-        email = 'admin2@gmail.com';
-        invalidEmail = 'invalid@com';
-        adminEmail = adminUser.email;
-        invalidFirstName = 'H';
-        firstName = 'Hook';
-        lastName = 'Age';
-        password = 'qwertY123';
-        invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
-        VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
-        GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
-        5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
     })
 
     afterAll(async () => {
@@ -842,7 +817,7 @@ describe("Creating users with custom roles",() => {
     test('Should throw an error when use already in-usage email while admin registration', async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserRegisterInput!) {
+          mutation($user: AdminRegisterInput!) {
             registerAdmin(user:$user){
               ... on User {
                 email
@@ -869,17 +844,16 @@ describe("Creating users with custom roles",() => {
       })
       .catch(err => err);
 
-      console.log(result);
-
       const data = result.data.registerAdmin;
 
-      expect(data.message).toEqual('USER_ALREADY_EXIST')
+      expect(data.message).toEqual(USER_ALREADY_EXIST)
+      expect(data.statusCode).toEqual(400);
     });
 
     test('Should throw an error when use invalid email while admin registration', async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserRegisterInput!) {
+          mutation($user: AdminRegisterInput!) {
             registerAdmin(user:$user){
               ... on User {
                 email
@@ -894,7 +868,7 @@ describe("Creating users with custom roles",() => {
         `,
         variables: {
           user: {
-            email,
+            email: newAdminEmail,
             role: invalidRole
           }
         },
@@ -908,13 +882,14 @@ describe("Creating users with custom roles",() => {
 
       const data = result.data.registerAdmin;
 
+      expect(data.message).toEqual(INPUT_NOT_VALID)
       expect(data.statusCode).toEqual(400)
     });
 
     test('Should throw an error when use invalid role', async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserRegisterInput!) {
+          mutation($user: AdminRegisterInput!) {
             registerAdmin(user:$user){
               ... on User {
                 email
@@ -943,13 +918,14 @@ describe("Creating users with custom roles",() => {
 
       const data = result.data.registerAdmin;
 
+      expect(data.message).toEqual(INPUT_NOT_VALID)
       expect(data.statusCode).toEqual(400)
     });
 
     test('Should create an user with custom role and generate a confirmation token',async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserRegisterInput!) {
+          mutation($user: AdminRegisterInput!) {
             registerAdmin(user:$user){
               ... on User {
                 email
@@ -964,7 +940,7 @@ describe("Creating users with custom roles",() => {
         `,
         variables: {
           user: {
-            email,
+            email: newAdminEmail,
             role
           }
         },
@@ -978,7 +954,7 @@ describe("Creating users with custom roles",() => {
 
       const data = result.data.registerAdmin;
 
-      expect(data.email).toEqual(email);
+      expect(data.email).toEqual(newAdminEmail);
       
       token = data.token;
     })
@@ -986,7 +962,7 @@ describe("Creating users with custom roles",() => {
     test("Should throw an error when use invalid firstname", async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserConfirmInput!,$token: String!){
+          mutation($user: AdminConfirmInput!,$token: String!){
             completeAdminRegister(user: $user,token: $token) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -999,11 +975,11 @@ describe("Creating users with custom roles",() => {
           }
         `,
         variables: {
-          token: token,
+          token,
           user: {
             firstName: invalidFirstName,
-            lastName,
-            password
+            lastName: newAdminLastName,
+            password: newAdminPassword
           }
         }
       })
@@ -1011,13 +987,14 @@ describe("Creating users with custom roles",() => {
 
       const data = result.data.completeAdminRegister;
 
+      expect(data.message).toEqual(INPUT_NOT_VALID);
       expect(data.statusCode).toEqual(400);
     });
 
     test("Should throw an error when use invalid token", async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserConfirmInput!,$token: String!){
+          mutation($user: AdminConfirmInput!,$token: String!){
             completeAdminRegister(user: $user,token: $token) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -1032,9 +1009,9 @@ describe("Creating users with custom roles",() => {
         variables: {
           token: invalidToken,
           user: {
-            firstName,
-            lastName,
-            password
+            firstName: newAdminFirstName,
+            lastName: newAdminLastName,
+            password: newAdminPassword
           }
         }
       })
@@ -1042,13 +1019,13 @@ describe("Creating users with custom roles",() => {
 
       const data = result.data.completeAdminRegister;
 
-      expect(data.message).toEqual('invalid token');
+      expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
     });
 
     test("Should confirm user with a custom role", async () => {
       const result = await client.mutate({
         mutation: gql`
-          mutation($user: SpecialUserConfirmInput!,$token: String!){
+          mutation($user: AdminConfirmInput!,$token: String!){
             completeAdminRegister(user: $user,token: $token) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -1061,11 +1038,11 @@ describe("Creating users with custom roles",() => {
           }
         `,
         variables: {
-          token: token,
+          token,
           user: {
-            firstName,
-            lastName,
-            password
+            firstName: newAdminFirstName,
+            lastName: newAdminLastName,
+            password: newAdminPassword
           }
         }
       })
@@ -1090,8 +1067,8 @@ describe("Creating users with custom roles",() => {
         `,
         variables: {
           user: {
-            email,
-            password
+            email: newAdminEmail,
+            password: newAdminPassword
           }
         }
       })
@@ -1099,8 +1076,8 @@ describe("Creating users with custom roles",() => {
 
       const data = result.data.loginAdmin;
 
-      expect(data.firstName).toEqual(firstName);
-      expect(data.lastName).toEqual(lastName);
+      expect(data.firstName).toEqual(newAdminFirstName);
+      expect(data.lastName).toEqual(newAdminLastName);
 
       id = data._id;
     });
