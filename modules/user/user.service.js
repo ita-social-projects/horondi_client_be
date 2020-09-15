@@ -24,7 +24,8 @@ const {
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
   PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
-  TOKEN_NOT_VALID,
+  RESET_TOKEN_NOT_VALID,
+  AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
 } = require('../../error-messages/user.messages');
 
@@ -43,7 +44,7 @@ class UserService {
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
-      throw new UserInputError(TOKEN_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, { statusCode: 400 });
     }
     return true;
   }
@@ -219,7 +220,8 @@ class UserService {
     });
     const savedUser = await user.save();
     const token = await generateToken(savedUser._id, savedUser.email, {
-      useConfirmationSecret: true,
+      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: process.env.CONFIRMATION_SECRET,
     });
     savedUser.confirmationToken = token;
     await savedUser.save();
@@ -244,7 +246,8 @@ class UserService {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
     const token = await generateToken(user._id, user.email, {
-      useConfirmationSecret: true,
+      secret: process.env.CONFIRMATION_SECRET,
+      expiresIn: process.env.RECOVERY_EXPIRE,
     });
     user.confirmationToken = token;
     await user.save();
@@ -284,7 +287,8 @@ class UserService {
     }
 
     const token = await generateToken(user._id, user.email, {
-      EXPIRES_IN: process.env.RECOVERY_EXPIRE,
+      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: process.env.SECRET,
     });
     user.recoveryToken = token;
     const message = {
@@ -314,7 +318,7 @@ class UserService {
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
-      throw new UserInputError(TOKEN_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(RESET_TOKEN_NOT_VALID, { statusCode: 400 });
     }
 
     const dayHasPassed =      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;

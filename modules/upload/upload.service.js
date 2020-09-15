@@ -79,10 +79,10 @@ class UploadService {
     return {
       prefixUrl: process.env.IMAGE_LINK,
       fileNames: {
-        large: process.env.IMAGE_LINK + createName('large'),
-        medium: process.env.IMAGE_LINK + createName('medium'),
-        small: process.env.IMAGE_LINK + createName('small'),
-        thumbnail: process.env.IMAGE_LINK + createName('thumbnail'),
+        large: createName('large'),
+        medium: createName('medium'),
+        small: createName('small'),
+        thumbnail: createName('thumbnail'),
       },
     };
   });

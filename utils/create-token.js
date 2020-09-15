@@ -10,7 +10,6 @@ const generateToken = async (userId, email, params = defaultParams) => {
   const options = {
     expiresIn: params.expiresIn,
   };
-  const { secret } = params;
-  return jwt.sign({ userId, email }, secret, options);
+  return jwt.sign({ userId, email }, params.secret, options);
 };
 module.exports = generateToken;
