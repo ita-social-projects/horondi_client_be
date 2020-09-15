@@ -1,8 +1,17 @@
 const Contact = require('./contact.model');
 
 class ContactService {
-  async getContacts() {
-    return await Contact.find();
+  async getContacts({ skip, limit }) {
+    const items = await Contact.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Contact.find().countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getContactById(id) {

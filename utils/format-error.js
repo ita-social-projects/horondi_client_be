@@ -1,15 +1,14 @@
-const formatError = (err) => {
-    const {originalError} = err;
-    console.log(err);
+const formatError = err => {
+  const { originalError } = err;
 
-    if(originalError && originalError.name === 'RuleError') {
-      return {
-        message: originalError.message,
-        statusCode: originalError.statusCode
-      }
-    }
+  if (originalError && originalError.name === 'RuleError') {
+    return {
+      message: originalError.message,
+      statusCode: originalError.statusCode,
+    };
+  }
 
-    return err;
-}
+  return err;
+};
 
 module.exports = formatError;

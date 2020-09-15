@@ -4,6 +4,7 @@ const client = require('../../utils/apollo-test-client');
 const {
   newModel,
   newCategory,
+  newMaterial,
   badProductId,
   getNewProduct,
   getProductForUpdate,
@@ -12,10 +13,32 @@ const {
 
 require('dotenv').config();
 
-let productId, categoryId, subcategoryId, modelId, sameNameProductId;
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let sameNameProductId;
+let materialId;
 
 describe('Product mutations', () => {
   beforeAll(async () => {
+    const createMaterial = await client.mutate({
+      mutation: gql`
+        mutation($material: MaterialInput!) {
+          addMaterial(material: $material) {
+            ... on Material {
+              _id
+              name {
+                value
+              }
+            }
+          }
+        }
+      `,
+      variables: { material: newMaterial },
+    });
+    materialId = createMaterial.data.addMaterial._id;
+
     const createCategory = await client.mutate({
       mutation: gql`
         mutation($category: CategoryInput!) {
@@ -94,7 +117,9 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
@@ -293,7 +318,9 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     const result = createProduct.data.addProduct;
     expect(result).toBeDefined();
@@ -348,7 +375,12 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getProductForUpdate(categoryId, subcategoryId, modelId),
+        product: getProductForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
         id: productId,
       },
     });
@@ -427,7 +459,12 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getProductForUpdate(categoryId, subcategoryId, modelId),
+        product: getProductForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
         id: badProductId,
       },
     });
@@ -448,7 +485,14 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getSameNameForUpdate(categoryId, subcategoryId, modelId) },
+      variables: {
+        product: getSameNameForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
+      },
     });
     sameNameProductId = createProduct.data.addProduct._id;
 
@@ -471,7 +515,12 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getSameNameForUpdate(categoryId, subcategoryId, modelId),
+        product: getSameNameForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
         id: productId,
       },
     });
@@ -480,7 +529,7 @@ describe('Product mutations', () => {
     expect(productAfterUpdate).toHaveProperty('statusCode', 400);
     expect(productAfterUpdate).toHaveProperty(
       'message',
-      'PRODUCT_ALREADY_EXIST',
+      'PRODUCT_ALREADY_EXIST'
     );
     await client.mutate({
       mutation: gql`
@@ -628,6 +677,22 @@ describe('Product mutations', () => {
   });
 
   afterAll(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteMaterial(id: $id) {
+            ... on Material {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: materialId },
+    });
     await client.mutate({
       mutation: gql`
         mutation($id: ID!) {

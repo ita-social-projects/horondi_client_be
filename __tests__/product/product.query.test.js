@@ -1,13 +1,40 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const { newModel, badProductId, newCategory, getNewProduct } = require('./product.variables');
+const {
+  newModel,
+  badProductId,
+  newCategory,
+  newMaterial,
+  getNewProduct,
+} = require('./product.variables');
 require('dotenv').config();
 
-let productId, categoryId, subcategoryId, modelId
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
+    const createMaterial = await client.mutate({
+      mutation: gql`
+        mutation($material: MaterialInput!) {
+          addMaterial(material: $material) {
+            ... on Material {
+              _id
+              name {
+                value
+              }
+            }
+          }
+        }
+      `,
+      variables: { material: newMaterial },
+    });
+    materialId = createMaterial.data.addMaterial._id;
+
     const createCategory = await client.mutate({
       mutation: gql`
         mutation($category: CategoryInput!) {
@@ -25,7 +52,7 @@ describe('Product queries', () => {
     });
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
-    
+
     const createModel = await client.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
@@ -52,7 +79,9 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     productId = createProduct.data.addProduct._id;
   });
@@ -115,7 +144,7 @@ describe('Product queries', () => {
                 value
               }
               model {
-                  value
+                value
               }
               category {
                 _id
@@ -323,6 +352,22 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: modelId },
+    });
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteMaterial(id: $id) {
+            ... on Material {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: materialId },
     });
   });
 });

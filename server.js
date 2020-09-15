@@ -1,6 +1,10 @@
-const { ApolloServer, AuthenticationError, makeExecutableSchema } = require('apollo-server-express');
+const {
+  ApolloServer,
+  AuthenticationError,
+  makeExecutableSchema,
+} = require('apollo-server-express');
 const { applyMiddleware } = require('graphql-middleware');
-const express = require('express')
+const express = require('express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
@@ -15,7 +19,7 @@ require('dotenv').config();
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
-  permissions,
+  permissions
 );
 
 const server = new ApolloServer({
@@ -30,9 +34,7 @@ const server = new ApolloServer({
       };
     }
   },
-  plugins: [
-   errorOutputPlugin
-  ],
+  plugins: [errorOutputPlugin],
   formatError,
   introspection: true,
   cors: { origin: '*' },
@@ -47,5 +49,9 @@ app.get('/health', (req, res) => res.send('Health page!'));
 server.applyMiddleware({ app });
 
 app.listen(PORT, () => {
-  console.log('apollo server started, port', PORT, `,Graphql path: ${server.graphqlPath}`);
+  console.log(
+    'apollo server started, port',
+    PORT,
+    `,Graphql path: ${server.graphqlPath}`
+  );
 });
