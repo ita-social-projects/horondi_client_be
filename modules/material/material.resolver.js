@@ -68,7 +68,7 @@ const materialMutation = {
       }
 
       return await materialService.updateMaterial(args.id, {
-        ...args.pattern,
+        ...args.material,
         images,
       });
     } catch (e) {
