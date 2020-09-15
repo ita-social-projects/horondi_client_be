@@ -27,14 +27,21 @@ const materialMutation = {
       }
       const uploadResult = await uploadFiles([args.upload]);
 
-      const imageResults = await uploadResult[0];
+      const imageResults = await uploadResult;
 
       const images = imageResults.fileNames;
       if (!images) {
         return await materialService.addMaterial(args.material);
       }
 
-      return await materialService.addMaterial({ ...args.material, images });
+      const mappedColors = args.material.colors.map((item, index) => [
+        ...item,
+        images[index],
+      ]);
+      return await materialService.addMaterial({
+        ...args.material,
+        colors: mappedColors,
+      });
     } catch (e) {
       return {
         statusCode: 400,
