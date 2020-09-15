@@ -1,6 +1,7 @@
 const patternService = require('./pattern.service');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
-const { uploadFiles } = require('../upload/upload.service');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const Pattern = require('./pattern.model');
 
 const patternQuery = {
   getAllPatterns: (parent, args) => patternService.getAllPatterns(args),
@@ -30,7 +31,8 @@ const patternMutation = {
       if (!images) {
         return await patternService.addPattern(args.pattern);
       }
-
+      const pattern = await Pattern.findById(args.id).lean();
+      deleteFiles(Object.values(pattern.images));
       return await patternService.addPattern({ ...args.pattern, images });
     } catch (e) {
       return {
@@ -65,7 +67,6 @@ const patternMutation = {
       if (!images) {
         return await patternService.updatePattern(args.id, args.pattern);
       }
-
       return await patternService.updatePattern(args.id, {
         ...args.pattern,
         images,
