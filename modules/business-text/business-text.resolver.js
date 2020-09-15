@@ -1,4 +1,7 @@
 const businessTextService = require('./business-text.service');
+const {
+  BUSINESS_TEXT_NOT_FOUND,
+} = require('../../error-messages/business-text.messages');
 
 const businessTextQuery = {
   getAllBusinessTexts: (parent, args) => businessTextService.getAllBusinessTexts(),
@@ -47,16 +50,9 @@ const businessTextMutation = {
     }
   },
   updateBusinessText: async (parent, args) => {
-    try {
-      return await businessTextService.updateBusinessText(
-        args.id,
-        args.businessText,
-      );
-    } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+    (await businessTextService.updateBusinessText(args.id, args.businessText)) || {
+      statusCode: 404,
+      message: BUSINESS_TEXT_NOT_FOUND,
     }
   },
 };

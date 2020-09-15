@@ -26,12 +26,11 @@ class BusinessTextService {
   }
 
   async updateBusinessText(id, businessText) {
-    if (await this.checkBusinessTextExist(businessText, id)) {
-      throw new Error(BUSINESS_TEXT_ALREADY_EXIST);
-    }
-    return await BusinessText.findByIdAndUpdate(id, businessText, {
+    const text = await BusinessText.findByIdAndUpdate(id, businessText, {
       new: true,
     });
+
+    return text || null;
   }
 
   async addBusinessText(data) {
@@ -50,15 +49,7 @@ class BusinessTextService {
   }
 
   async checkBusinessTextExist(data, id) {
-    const businessTextCount = await BusinessText.countDocuments({
-      _id: { $ne: id },
-      name: {
-        $elemMatch: {
-          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
-        },
-      },
-    });
-    return businessTextCount > 0;
+    return await BusinessText.find({code: data.code})
   }
 }
 module.exports = new BusinessTextService();
