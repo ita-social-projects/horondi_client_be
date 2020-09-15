@@ -35,6 +35,10 @@ const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
+const {
+  emailQuestionType,
+  emailQuestionInput,
+} = require('./modules/email-chat/email-question.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -47,6 +51,7 @@ const typeDefs = gql`
   ${commentType}
   ${modelType}
   ${contactType}
+  ${emailQuestionType}
 
   scalar Upload
 
@@ -174,6 +179,10 @@ const typeDefs = gql`
     items: [News]
     count: Int
   }
+  type PaginatedMaterials {
+    items: [Material]
+    count: Int
+  }
 
   type PaginatedContacts {
     items: [Contact]
@@ -189,6 +198,12 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+  type EmailAnswer {
+    admin: User!
+    date: String!
+    text: String!
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -199,6 +214,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union EmailQuestionResult = EmailQuestion | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -208,7 +224,7 @@ const typeDefs = gql`
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
-    getAllMaterials: [Material!]!
+    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
@@ -237,6 +253,9 @@ const typeDefs = gql`
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
+
+    getAllEmailQuestions: [EmailQuestion]
+    getEmailQuestionById(id: ID!): EmailQuestionResult
   }
 
   input SortInput {
@@ -280,6 +299,7 @@ const typeDefs = gql`
   ${userRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${emailQuestionInput}
 
   input LanguageInput {
     lang: String!
@@ -436,6 +456,12 @@ const typeDefs = gql`
     addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
+
+    "EmailChat Mutation"
+    addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestion(id: ID!): EmailQuestionResult
+    makeQuestionSpam(questionId: ID!): EmailQuestionResult
+    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
 
