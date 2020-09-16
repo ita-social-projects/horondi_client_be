@@ -30,9 +30,7 @@ class BusinessTextService {
       new: true,
     });
 
-    console.log(text);
-
-    return text;
+    return text || null;
   }
 
   async addBusinessText(data) {

@@ -11,7 +11,7 @@ const businessTextQuery = {
       return await businessTextService.getBusinessTextById(args.id);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: e.message,
       };
     }

@@ -1,201 +1,304 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const { newCategory, newModel } = require('./business-text.variables');
 require('dotenv').config();
+const { BUSINESS_TEXT_NOT_FOUND } = require('../../error-messages/business-text.messages');
+const { newBusinessText, notExistBusinessTextId } = require('./business-text.variables');
 
-let modelId, categoryId
+let businessText = null;
+let businessTextId = '';
 
-describe('Product queries', () => {
+describe('Contacts queries', () => {
   beforeAll(async () => {
-    const createCategory = await client.mutate({
-      mutation: gql`
-        mutation($category: CategoryInput!) {
-          addCategory(category: $category) {
-            ... on Category {
-              _id
-            }
-          }
-        }
-      `,
-      variables: { category: newCategory },
-    });
-    categoryId = createCategory.data.addCategory._id;
-
-    const createModel = await client.mutate({
-      mutation: gql`
-        mutation($model: ModelInput!) {
-          addModel(model: $model) {
-            ... on Model {
-              _id
-              name {
-                value
+    const res = await client
+      .mutate({
+        mutation: gql`
+          mutation($businessText: BusinessTextInput!) {
+              addBusinessText(businessText: $businessText) {
+                  ... on BusinessText {
+                      _id
+                      code
+                      title {
+                          value
+                          lang
+                      }
+                      text {
+                          value
+                          lang
+                      }
+                  }
+                  ... on Error {
+                      message
+                      statusCode
+                  }
               }
-            }
           }
-        }
       `,
-      variables: { model: { ...newModel, category: categoryId } },
-    });
-    modelId = createModel.data.addModel._id;
-  });
-  test('Should receive all models by category id', async () => {
-    const res = await client.query({
-      query: gql`
-        query(
-          $category: ID!
-        ){
-          getModelsByCategory(id: $category){
-            category{
-              name {
-                value
-              }
-            },
-            name {
-              value
-              lang
-            }
-            description {
-              value
-              lang
-            }
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
-          }
-        }`,
         variables: {
-          category: categoryId
-        }
-    })
+          businessText: newBusinessText,
+        },
+      })
+      .then(response => response)
+      .catch(e => e);
 
-    const models = res.data.getModelsByCategory;
-
-    expect(models).toBeDefined();
-    expect(models.length).toBeGreaterThan(0);
-    expect(models[0].name).toBeInstanceOf(Array);
-    expect(models[0]).toHaveProperty('name', [
-        { "__typename": "Language", value: "Тест", lang: "uk" },
-        { "__typename": "Language", value: "Test", lang: "en" }
-      ]);
-    expect(models[0]).toHaveProperty('description', [
-        { "__typename": "Language", value: "Тест", lang: "uk" },
-        { "__typename": "Language", value: "Test", lang: "en" }
-      ]);
-    expect(models[0]).toHaveProperty('images', {
-        "__typename": "ImageSet",
-        "large": "large_new",
-        "medium": "medium_new",
-        "small": "small_new",
-        "thumbnail": "thumbnail_new"
-    });
-    expect(models[0]).toHaveProperty('category', {
-      "__typename": "Category", "name": [
-            {
-            "__typename": "Language",
-            "value": "Нова",
-           },
-            {
-             "__typename": "Language",
-             "value": "New",
-          },
-      ]
-    });
+    businessTextId = res.data.addBusinessText._id;
   });
-  test('Should throw error CATEGORY_NOT_VALID', async () => {
-    const res = await client.query({
-      query: gql`
-        query{
-          getModelsByCategory(id: "$category"){
-            category{
-              name {
-                value
-              }
-            },
-            name {
-              value
-              lang
-            }
-            description {
-              value
-              lang
-            }
-            images {
-              large
-            }
-          }
-        }`
-    }).catch(err => err)
 
-    const error = res;
-
-    expect(error.graphQLErrors[0].message).toBe("CATEGORY_NOT_VALID");
-  });
-  test('Should throw error CATEGORY_NOT_FOUND', async () => {
-    const res = await client.query({
-      query: gql`
-        query{
-          getModelsByCategory(id: "56ade69dd46eafc5968e5390"){
-            category{
-              name {
-                value
-              }
-            },
-            name {
-              value
-              lang
-            }
-            description {
-              value
-              lang
-            }
-            images {
-              large
-            }
-          }
-        }`
-    }).catch(err => err)
-
-    const error = res;
-
-    expect(error.graphQLErrors[0].message).toBe("CATEGORY_NOT_FOUND");
-  });
   afterAll(async () => {
     await client.mutate({
       mutation: gql`
-        mutation($id: ID!) {
-          deleteCategory(id: $id) {
-            ... on Category {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
+          mutation($id: ID!) {
+              deleteBusinessText(id: $id) {
+                  ... on BusinessText {
+                      _id
+                      code
+                      title {
+                          value
+                          lang
+                      }
+                      text {
+                          value
+                          lang
+                      }
+                  }
+                  ... on Error {
+                      message
+                      statusCode
+                  }
+              }
           }
-        }
       `,
-      variables: { id: categoryId },
+      variables: { id: businessTextId },
     });
+  });
 
-    await client.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteModel(id: $id) {
-            ... on Model {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
+  test('#1 Should receive all business texts', async () => {
+    const res = await client
+      .query({
+        query: gql`
+          query {
+              getAllBusinessTexts {
+                  code
+                  title {
+                      value
+                      lang
+                  }
+                  text {
+                      lang
+                      value
+                  }
+              }
           }
-        }
       `,
-      variables: { id: modelId },
+      })
+      .catch(e => e);
+
+    const allTexts = res.data.getAllBusinessTexts;
+    const justAddedText = allTexts[allTexts.length - 1];
+
+    expect(allTexts).toBeDefined();
+    expect(justAddedText).toEqual({
+      __typename: 'BusinessText',
+      title: [
+        {
+          __typename: 'Language',
+          value: 'НоваБТ',
+          lang: 'uk',
+        },
+        {
+          __typename: 'Language',
+          value: 'NewBT',
+          lang: 'en',
+        },
+      ],
+      code: 'new-code',
+      text: [
+        {
+          __typename: 'Language',
+          value: 'Тут бізнес текст',
+          lang: 'uk',
+        },
+        {
+          __typename: 'Language',
+          value: 'Business text here',
+          lang: 'en',
+        },
+      ],
     });
+  });
+
+  test('#2 Should receive selected business text', async () => {
+    try {
+      const res = await client
+        .query({
+          query: gql`
+            query($id: ID!) {
+                getBusinessTextById(id: $id) {
+                    ... on BusinessText {
+                        code
+                        title {
+                            value
+                            lang
+                        }
+                        text {
+                            lang
+                            value
+                        }
+                    }
+                    ... on Error {
+                        statusCode
+                        message
+                    }
+                }
+            }
+        `,
+          variables: { id: businessTextId },
+        })
+        .catch(e => e);
+
+      businessText = res.data.getBusinessTextById
+
+      expect(businessText).toBeDefined();
+      expect(businessText).toHaveProperty(
+        'code',
+        'new-code',
+      );
+      expect(businessText.title)
+        .toBeInstanceOf(Array);
+      expect(businessText)
+        .toHaveProperty('title', [
+          {
+            __typename: 'Language',
+            lang: 'uk',
+            value: 'НоваБТ',
+          },
+          {
+            __typename: 'Language',
+            lang: 'en',
+            value: 'NewBT',
+          },
+        ]);
+      expect(businessText.text).toBeInstanceOf(Array);
+      expect(businessText)
+        .toHaveProperty('text', [
+          {
+            __typename: 'Language',
+            lang: 'uk',
+            value: 'Тут бізнес текст',
+          },
+          {
+            __typename: 'Language',
+            lang: 'en',
+            value: 'Business text here',
+          },
+        ]);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  test('#3 Returning not existing business text should return error message', async () => {
+    const res = await client
+      .query({
+        query: gql`
+          query($id: ID!) {
+              getBusinessTextById(id: $id) {
+                  ... on BusinessText {
+                      code
+                      title {
+                          value
+                          lang
+                      }
+                      text {
+                          lang
+                          value
+                      }
+                  }
+                  ... on Error {
+                      statusCode
+                      message
+                  }
+              }
+          }
+      `,
+        variables: { id: notExistBusinessTextId },
+      })
+      .catch(e => e);
+    expect(res.data.getBusinessTextById).toBeDefined();
+    expect(res.data.getBusinessTextById).toHaveProperty('statusCode', 404);
+    expect(res.data.getBusinessTextById).toHaveProperty(
+      'message',
+      BUSINESS_TEXT_NOT_FOUND,
+    );
+  });
+
+  test('#4 Should receive selected business text by code', async () => {
+    try {
+      const res = await client
+        .query({
+          query: gql`
+            query($code: String!) {
+                getBusinessTextByCode(code: $code) {
+                    ... on BusinessText {
+                        code
+                        title {
+                            value
+                            lang
+                        }
+                        text {
+                            lang
+                            value
+                        }
+                    }
+                    ... on Error {
+                        statusCode
+                        message
+                    }
+                }
+            }
+        `,
+          variables: { code: 'new-code' },
+        })
+        .catch(e => e);
+
+      businessText = res.data.getBusinessTextByCode
+
+      expect(businessText).toBeDefined();
+      expect(businessText).toHaveProperty(
+        'code',
+        'new-code',
+      );
+      expect(businessText.title)
+        .toBeInstanceOf(Array);
+      expect(businessText)
+        .toHaveProperty('title', [
+          {
+            __typename: 'Language',
+            lang: 'uk',
+            value: 'НоваБТ',
+          },
+          {
+            __typename: 'Language',
+            lang: 'en',
+            value: 'NewBT',
+          },
+        ]);
+      expect(businessText.text).toBeInstanceOf(Array);
+      expect(businessText)
+        .toHaveProperty('text', [
+          {
+            __typename: 'Language',
+            lang: 'uk',
+            value: 'Тут бізнес текст',
+          },
+          {
+            __typename: 'Language',
+            lang: 'en',
+            value: 'Business text here',
+          },
+        ]);
+    } catch (e) {
+      console.error(e);
+    }
   });
 });

@@ -247,7 +247,7 @@ describe('Business text mutations test', () => {
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'Updated business text',
+          value: 'Business text here',
         },
       ]);
   });
