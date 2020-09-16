@@ -1,8 +1,6 @@
 const commentsService = require('./comment.service');
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
-
 const commentsQuery = {
   getCommentById: async (parent, args) => {
     const comment = await commentsService.getCommentById(args.id);
@@ -32,21 +30,6 @@ const commentsQuery = {
 const commentsMutation = {
   addComment: async (parent, args) => {
     try {
-      if (!args.upload) {
-        return await commentsService.addComment(args.productId, args.comment);
-      }
-
-      const uploadResult = await uploadFiles([args.upload])[0];
-      const images = uploadResult.fileNames;
-
-      if (!images) {
-        return await commentsService.addComment(args.productId, args.comment);
-      }
-
-      const pattern = await Pattern.findById(args.id).lean();
-      deleteFiles(Object.values(pattern.images));
-      return await patternService.addPattern({ ...args.pattern, images });
-
       return await commentsService.addComment(args.productId, args.comment);
     } catch (error) {
       return [
