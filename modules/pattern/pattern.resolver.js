@@ -31,8 +31,6 @@ const patternMutation = {
       if (!images) {
         return await patternService.addPattern(args.pattern);
       }
-      const pattern = await Pattern.findById(args.id).lean();
-      deleteFiles(Object.values(pattern.images));
       return await patternService.addPattern({ ...args.pattern, images });
     } catch (e) {
       return {
@@ -45,8 +43,10 @@ const patternMutation = {
   deletePattern: async (parent, args) => {
     try {
       const pattern = await Pattern.findById(args.id).lean();
-      deleteFiles(Object.values(pattern.images));
-      return await patternService.deletePattern(args.id);
+      const deletedImages = await deleteFiles(Object.values(pattern.images));
+      if (await Promise.allSettled(deletedImages)) {
+        return await patternService.deletePattern(args.id);
+      }
     } catch (e) {
       return {
         statusCode: 404,
