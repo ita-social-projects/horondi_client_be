@@ -4,8 +4,8 @@ const client = require('../../utils/apollo-test-client');
 const { newCategory, newModel } = require('./model.variables');
 require('dotenv').config();
 
-let modelId; let
-    categoryId
+let modelId;
+let categoryId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -43,15 +43,13 @@ describe('Product queries', () => {
   test('Should receive all models by category id', async () => {
     const res = await client.query({
       query: gql`
-        query(
-          $category: ID!
-        ){
-          getModelsByCategory(id: $category){
-            category{
+        query($category: ID!) {
+          getModelsByCategory(id: $category) {
+            category {
               name {
                 value
               }
-            },
+            }
             name {
               value
               lang
@@ -67,11 +65,12 @@ describe('Product queries', () => {
               thumbnail
             }
           }
-        }`,
+        }
+      `,
       variables: {
         category: categoryId,
       },
-    })
+    });
 
     const models = res.data.getModelsByCategory;
 
@@ -108,58 +107,64 @@ describe('Product queries', () => {
     });
   });
   test('Should throw error CATEGORY_NOT_VALID', async () => {
-    const res = await client.query({
-      query: gql`
-        query{
-          getModelsByCategory(id: "$category"){
-            category{
+    const res = await client
+      .query({
+        query: gql`
+          query {
+            getModelsByCategory(id: "$category") {
+              category {
+                name {
+                  value
+                }
+              }
               name {
                 value
+                lang
               }
-            },
-            name {
-              value
-              lang
-            }
-            description {
-              value
-              lang
-            }
-            images {
-              large
+              description {
+                value
+                lang
+              }
+              images {
+                large
+              }
             }
           }
-        }`,
-    }).catch(err => err)
+        `,
+      })
+      .catch(err => err);
 
     const error = res;
 
     expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_VALID');
   });
   test('Should throw error CATEGORY_NOT_FOUND', async () => {
-    const res = await client.query({
-      query: gql`
-        query{
-          getModelsByCategory(id: "56ade69dd46eafc5968e5390"){
-            category{
+    const res = await client
+      .query({
+        query: gql`
+          query {
+            getModelsByCategory(id: "56ade69dd46eafc5968e5390") {
+              category {
+                name {
+                  value
+                }
+              }
               name {
                 value
+                lang
               }
-            },
-            name {
-              value
-              lang
-            }
-            description {
-              value
-              lang
-            }
-            images {
-              large
+              description {
+                value
+                lang
+              }
+              images {
+                large
+              }
             }
           }
-        }`,
-    }).catch(err => err)
+        `,
+      })
+      .catch(err => err);
 
     const error = res;
 

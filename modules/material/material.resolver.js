@@ -4,16 +4,16 @@ const {
 } = require('../../error-messages/material.messages');
 
 const materialQuery = {
-  getAllMaterials: () => materialService.getAllMaterials(),
+  getAllMaterials: async (parent, args) => await materialService.getAllMaterials(args),
   getMaterialById: async (parent, args) => {
     const material = await materialService.getMaterialById(args.id);
     if (material) {
-      return material
+      return material;
     }
     return {
       statusCode: 404,
       message: MATERIAL_NOT_FOUND,
-    }
+    };
   },
 };
 
