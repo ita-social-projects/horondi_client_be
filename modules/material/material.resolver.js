@@ -61,23 +61,7 @@ const materialMutation = {
   },
   updateMaterial: async (parent, args) => {
     try {
-      if (!args.upload) {
-        return await materialService.updateMaterial(args.id, args.material);
-      }
-      const uploadResult = await uploadFiles([args.upload]);
-
-      const imageResults = await uploadResult[0];
-
-      const images = imageResults.fileNames;
-
-      if (!images) {
-        return await materialService.updateMaterial(args.id, args.material);
-      }
-
-      return await materialService.updateMaterial(args.id, {
-        ...args.material,
-        images,
-      });
+      return await materialService.updateMaterial(args.id, args.material);
     } catch (e) {
       return {
         statusCode: e.message === MATERIAL_NOT_FOUND ? 404 : 400,
