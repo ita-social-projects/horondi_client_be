@@ -44,6 +44,8 @@ const patternMutation = {
 
   deletePattern: async (parent, args) => {
     try {
+      const pattern = await Pattern.findById(args.id).lean();
+      deleteFiles(Object.values(pattern.images));
       return await patternService.deletePattern(args.id);
     } catch (e) {
       return {
