@@ -9,7 +9,7 @@ description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
 strapLengthInCm: Int!
-images: PrimaryImage!
+images: PrimaryImage
 colors: [Color]!
 pattern: [Language]
 patternImages: ImageSet
@@ -18,7 +18,7 @@ closureColor: String
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
-isHotItem: Boolean!
+isHotItem: Boolean
 purchasedCount: Int
 rate: Float
 rateCount: Int
@@ -37,19 +37,18 @@ description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
-images: PrimaryImageInput!
 colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
 closure: [LanguageInput]!
 closureColor: String
-basePrice: [CurrencySetInput]!
+basePrice: Int!
 available: Boolean!
 isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;
 
 module.exports = {
-  productType,
-  productInput,
+	productType,
+	productInput
 };

@@ -1,43 +1,19 @@
 const { gql } = require('apollo-server-express');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
-  userType,
-  userInput,
-  userRegisterInput,
-  LoginInput,
+	userType,
+	userInput,
+	userRegisterInput,
+	LoginInput
 } = require('./modules/user/user.graphql');
-const {
-  productType,
-  productInput,
-} = require('./modules/product/product.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
-const {
-  categoryType,
-  categoryInput,
-} = require('./modules/category/category.graphql');
-const {
-  materialType,
-  materialInput,
-} = require('./modules/material/material.graphql');
-const {
-  patternsType,
-  patternsInput,
-} = require('./modules/pattern/pattern.graphql');
-const {
-  currencyType,
-  currencyInput,
-} = require('./modules/currency/currency.graphql.js');
-const {
-  commentType,
-  commentInput,
-} = require('./modules/comment/comment.graphql');
-const {
-  contactType,
-  contactInput,
-} = require('./modules/contact/contact.graphql');
+const { productType, productInput } = require('./modules/product/product.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
+const { categoryType, categoryInput } = require('./modules/category/category.graphql');
+const { materialType, materialInput } = require('./modules/material/material.graphql');
+const { patternsType, patternsInput } = require('./modules/pattern/pattern.graphql');
+const { currencyType, currencyInput } = require('./modules/currency/currency.graphql.js');
+const { commentType, commentInput } = require('./modules/comment/comment.graphql');
+const { contactType, contactInput } = require('./modules/contact/contact.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -188,6 +164,11 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+  type AllProductOptions {
+	sizes: [Size]
+	bottomMaterials: [Material]
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -236,6 +217,7 @@ const typeDefs = gql`
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
+	getProductOptions: AllProductOptions
   }
 
   input SortInput {
@@ -338,8 +320,8 @@ const typeDefs = gql`
   }
 
   input ProductOptionsInput {
-    size: ID!
-    bottomMaterial: ID!
+    size: ID
+    bottomMaterial: ID
     description: [LanguageInput!]
     bottomColor: [LanguageInput!]
     availableCount: Int
@@ -414,7 +396,7 @@ const typeDefs = gql`
     checkIfTokenIsValid(token: String!): Boolean
 
     "Product Mutation"
-    addProduct(product: ProductInput!): ProductResult
+    addProduct(product: ProductInput!, upload: Upload!): ProductResult
     deleteProduct(id: ID!): ProductResult
     updateProduct(id: ID!, product: ProductInput!): ProductResult
 

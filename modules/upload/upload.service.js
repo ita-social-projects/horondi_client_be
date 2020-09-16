@@ -38,7 +38,7 @@ class UploadService {
         })
     }
     
-    async uploadFiles(files) {
+    uploadFiles = async (files) => {
         return files.map(async file => {
             const { createReadStream, filename } = await file.promise;
 

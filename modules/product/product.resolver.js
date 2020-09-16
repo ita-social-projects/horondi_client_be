@@ -23,12 +23,13 @@ const productsQuery = {
     }
   },
   getModelsByCategory: (parent, args) => productsService.getModelsByCategory(args.id),
+  getProductOptions: () => productsService.getProductOptions(),
 };
 
 const productsMutation = {
   addProduct: async (parent, args) => {
     try {
-      return await productsService.addProduct(args.product);
+      return await productsService.addProduct(args.product, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
