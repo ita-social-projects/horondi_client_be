@@ -39,7 +39,7 @@ const {
   businessTextQuery,
   businessTextMutation,
 } = require('./modules/business-text/business-text.resolver');
-const = {
+const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
