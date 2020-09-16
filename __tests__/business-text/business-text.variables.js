@@ -5,7 +5,7 @@ const newBusinessText = {
       "lang": "uk"
     },
     {
-      "value": "NewBS",
+      "value": "NewBT",
       "lang": "en"
     }
   ],
@@ -29,7 +29,7 @@ const updatedBusinessText = {
       "lang": "uk"
     },
     {
-      "value": "UpdatedBS",
+      "value": "UpdatedBT",
       "lang": "en"
     }
   ],

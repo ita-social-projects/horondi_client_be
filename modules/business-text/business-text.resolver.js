@@ -49,11 +49,9 @@ const businessTextMutation = {
       };
     }
   },
-  updateBusinessText: async (parent, args) => {
-    (await businessTextService.updateBusinessText(args.id, args.businessText)) || {
-      statusCode: 404,
-      message: BUSINESS_TEXT_NOT_FOUND,
-    }
+  updateBusinessText: async (parent, args) => (await businessTextService.updateBusinessText(args.id, args.businessText)) || {
+    statusCode: 404,
+    message: BUSINESS_TEXT_NOT_FOUND,
   },
 };
 

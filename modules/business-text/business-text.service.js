@@ -30,11 +30,13 @@ class BusinessTextService {
       new: true,
     });
 
-    return text || null;
+    console.log(text);
+
+    return text;
   }
 
   async addBusinessText(data) {
-    if (await this.checkBusinessTextExist(data)) {
+    if (await this.checkBusinessTextExist(data).length) {
       throw new Error(BUSINESS_TEXT_ALREADY_EXIST);
     }
     return new BusinessText(data).save();
@@ -49,7 +51,8 @@ class BusinessTextService {
   }
 
   async checkBusinessTextExist(data, id) {
-    return await BusinessText.find({code: data.code})
+    const page  = await BusinessText.find({code: data.code})
+    return page
   }
 }
 module.exports = new BusinessTextService();

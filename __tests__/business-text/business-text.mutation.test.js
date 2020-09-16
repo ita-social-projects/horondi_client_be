@@ -10,6 +10,7 @@ let businessText = null;
 let businessTextId = '';
 
 describe('Business text mutations test', () => {
+
   test('#1 should add business text to database', async () => {
     const res = await client
       .mutate({
@@ -35,7 +36,9 @@ describe('Business text mutations test', () => {
               }
           }
       `,
-        variables: { newBusinessText },
+        variables: {
+          businessText: newBusinessText
+        },
       })
       .then(response => response)
       .catch(e => e);
@@ -50,12 +53,12 @@ describe('Business text mutations test', () => {
         {
           __typename: 'Language',
           lang: 'uk',
-          value: 'НоваБС',
+          value: 'НоваБТ',
         },
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'NewBS',
+          value: 'NewBT',
         },
       ]);
     expect(businessText.title)
@@ -76,7 +79,7 @@ describe('Business text mutations test', () => {
     expect(businessText.text)
       .toBeInstanceOf(Array);
     expect(businessText.code)
-      .toBeInstanceOf(String);
+      .isPrototypeOf(String);
   });
 
   test('#2 update business text', async () => {
@@ -130,7 +133,7 @@ describe('Business text mutations test', () => {
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'UpdatedBS',
+          value: 'UpdatedBT',
         },
       ]);
     expect(businessText)
@@ -174,11 +177,12 @@ describe('Business text mutations test', () => {
           }
       `,
         variables: {
-          id: businessTextId,
+          id: notExistBusinessTextId,
           businessText: updatedBusinessText,
         },
       })
       .catch(e => e);
+
     expect(res.data.updateBusinessText)
       .toHaveProperty('message', BUSINESS_TEXT_NOT_FOUND);
     expect(res.data.updateBusinessText)
@@ -213,7 +217,6 @@ describe('Business text mutations test', () => {
     });
 
     businessText = res.data.deleteBusinessText
-
     expect(businessText)
       .toHaveProperty(
         'code',
@@ -231,7 +234,7 @@ describe('Business text mutations test', () => {
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'UpdatedBS',
+          value: 'UpdatedBT',
         },
       ]);
     expect(businessText)
