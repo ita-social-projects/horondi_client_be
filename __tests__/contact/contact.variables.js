@@ -9,9 +9,10 @@ const contact = {
     { lang: 'en', value: 'Street 3' },
   ],
   email: 'test@test.com',
-  images: {
-    medium: 'medium.jpg',
-  },
+  images: [
+    { lang: 'uk', value: { medium: 'medium.jpg' } },
+    { lang: 'en', value: { medium: 'medium.jpg' } },
+  ],
   link: 'https://testURL.com',
 };
 
@@ -26,9 +27,10 @@ const updatedContact = {
     { lang: 'en', value: 'updatedStreet' },
   ],
   email: 'updatedtest@updatedtest.com',
-  images: {
-    medium: 'updatedmedium.jpg',
-  },
+  images: [
+    { lang: 'uk', value: { medium: 'updatedmedium.jpg' } },
+    { lang: 'en', value: { medium: 'updatedmedium.jpg' } },
+  ],
   link: 'https://testURL.com',
 };
 
@@ -43,12 +45,10 @@ const newContact = {
     { lang: 'en', value: 'Street 4' },
   ],
   email: 'test@test.com',
-  images: {
-    large: 'large.jpg',
-    medium: 'medium.jpg',
-    small: 'small.jpg',
-    thumbnail: 'thumbnail.jpg',
-  },
+  images: [
+    { lang: 'uk', value: { medium: 'medium.jpg' } },
+    { lang: 'en', value: { medium: 'medium.jpg' } },
+  ],
   link: 'https://testURL.com',
 };
 

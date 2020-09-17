@@ -10,6 +10,13 @@ require('dotenv').config();
 
 let modelId; let categoryName; let
     categoryId;
+  wrongId,
+} = require('./model.variables');
+require('dotenv').config();
+
+let modelId;
+let categoryName;
+let categoryId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -163,7 +170,7 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { id: '56ade69dd46eafc5968e5390' },
+      variables: { id: wrongId },
     });
 
     const error = res.data.deleteModel;

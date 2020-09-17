@@ -52,7 +52,7 @@ class CommentsService {
     let { rateCount } = product;
     const { rate } =      userRates.find(rate => String(rate.user) === String(user._id)) || {};
 
-    const rateSum =      product.rate * rateCount - (rate || !!rate) + data.rate;
+    const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
     rateCount = rate ? rateCount : ++rateCount;
     const newRate = rateSum / rateCount;
 
