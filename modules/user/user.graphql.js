@@ -10,6 +10,7 @@ type User{
     address: Address
     images: ImageSet
     token: String
+    invitationalToken: String
     credentials: [Credential]
     registrationDate: String
     wishlist: [ID]
@@ -56,14 +57,14 @@ input AdminRegisterInput {
     email: String!
     role: String!
 }
-`
+`;
 const adminConfirmInput = `
 input AdminConfirmInput {
     firstName: String!
     lastName: String!
     password: String!
 }
-`
+`;
 
 module.exports = {
   userType,
@@ -71,5 +72,5 @@ module.exports = {
   userRegisterInput,
   LoginInput,
   adminRegisterInput,
-  adminConfirmInput
+  adminConfirmInput,
 };

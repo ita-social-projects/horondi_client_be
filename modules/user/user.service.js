@@ -7,14 +7,14 @@ const {
   validateLoginInput,
   validateUpdateInput,
   validateNewPassword,
-  validateAdminRegisterInput
+  validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendGrid-email')
+const { sendEmail } = require('../../utils/sendGrid-email');
 const {
   confirmationMessage,
   recoveryMessage,
-  adminConfirmationMessage
+  adminConfirmationMessage,
 } = require('../../utils/localization');
 
 const {
@@ -23,12 +23,12 @@ const {
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
-  INVALID_ADMIN_INVITATIONAL_TOKEN
+  INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
   admin: 'admin',
-  user: 'user'
+  user: 'user',
 };
 
 const SOURCES = {
@@ -87,7 +87,7 @@ class UserService {
     return User.findByIdAndUpdate(
       user._id,
       { ...user._doc, ...updatedUser },
-      { new: true },
+      { new: true }
     );
   }
 
@@ -110,7 +110,7 @@ class UserService {
         ...user._doc,
         ...updatedUser,
       },
-      { new: true },
+      { new: true }
     );
   }
 
@@ -128,7 +128,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass,
+      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
     );
 
     if (user.role === ROLES.user) {
@@ -165,7 +165,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
+      user.credentials.find(cred => cred.source === 'horondi').tokenPass
     );
 
     if (!match) {
@@ -181,9 +181,7 @@ class UserService {
     };
   }
 
-  async registerUser({
-    firstName, lastName, email, password,
-  }, language) {
+  async registerUser({ firstName, lastName, email, password }, language) {
     const { errors } = await validateRegisterInput.validateAsync({
       firstName,
       lastName,
@@ -291,69 +289,73 @@ class UserService {
   }
 
   async registerAdmin(userInput) {
-      const {email,role} = userInput;
+    const { email, role } = userInput;
 
-      try {
-        await validateAdminRegisterInput.validateAsync({ email,role })
-      } 
-      catch(err) {
-        throw new UserInputError(INPUT_NOT_VALID,{statusCode: 400})
-      }
-    
-      if (await User.findOne({ email })) {
-        throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
-      }
+    try {
+      await validateAdminRegisterInput.validateAsync({ email, role });
+    } catch (err) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
 
-      const user = new User({
-        email,
-        role
-      });
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
 
-      const savedUser = await user.save();
-      const token = await generateToken(savedUser._id, savedUser.email);
+    const user = new User({
+      email,
+      role,
+    });
 
-      const message = {
-        from: process.env.MAIL_USER,
-        to: savedUser.email,
-        subject: '[Horondi] Invitation to become an admin',
-        html: adminConfirmationMessage(token),
-      };
-  
-      if (process.env.NODE_ENV === 'test') {
-        console.log(token);
-        return {...savedUser._doc,token}
-      }
+    const savedUser = await user.save();
+    const invitationalToken = await generateToken(
+      savedUser._id,
+      savedUser.email
+    );
 
-      await sendEmail(message);
+    if (process.env.NODE_ENV === 'test') {
+      return { ...savedUser._doc, invitationalToken };
+    }
 
-      return savedUser;
+    const message = {
+      from: process.env.MAIL_USER,
+      to: savedUser.email,
+      subject: '[Horondi] Invitation to become an admin',
+      html: adminConfirmationMessage(invitationalToken),
+    };
+
+    await sendEmail(message);
+
+    return savedUser;
   }
 
-  async completeAdminRegister(updatedUser,token){
-    const {firstName,lastName,password} = updatedUser;
+  async completeAdminRegister(updatedUser, token) {
+    const { firstName, lastName, password } = updatedUser;
     let decoded;
 
     try {
-    await validateRegisterInput.validateAsync({
-      firstName,
-      lastName,
-      password
-    });
+      await validateRegisterInput.validateAsync({
+        firstName,
+        lastName,
+        password,
+      });
     } catch (err) {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
     try {
-      decoded = jwt.verify(token,process.env.SECRET);
-    } 
-    catch(err) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, { statusCode: 400 });
+      decoded = jwt.verify(token, process.env.SECRET);
+    } catch (err) {
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
+        statusCode: 400,
+      });
     }
 
     const user = await User.findOne({ email: decoded.email });
 
     if (!user) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, { statusCode: 400 });
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
+        statusCode: 400,
+      });
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -364,22 +366,23 @@ class UserService {
       {
         source: 'horondi',
         tokenPass: encryptedPassword,
-      }
+      },
     ];
     user.confirmed = true;
-    
+
     await user.save();
-    
+
     return { isSuccess: true };
   }
 
-  validateConfirmationToken(token){
+  validateConfirmationToken(token) {
     try {
-      jwt.verify(token,process.env.SECRET);
-      return {isSuccess: true};
-    }
-    catch(err) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, { statusCode: 400 });
+      jwt.verify(token, process.env.SECRET);
+      return { isSuccess: true };
+    } catch (err) {
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
+        statusCode: 400,
+      });
     }
   }
 }

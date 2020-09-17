@@ -14,6 +14,7 @@ require('dotenv').config();
 let userId;
 let token;
 let badId;
+let invitationalToken;
 
 const testUser = {
   firstName: 'Petro',
@@ -767,47 +768,14 @@ describe('User`s mutation restictions tests', () => {
 describe('Register admin', () => {
   let superAdminToken;
   let role = 'admin';
-  let id;
-  let token;
-  let invalidFirstName = 'H';
-  let invalidLastName = 'O';
-  let invalidPassword = 'You';
   let invalidEmail = 'invalid@com';
   let adminEmail = adminUser.email;
   let invalidRole = 'superadmin';
-  let invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
-    VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
-    GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
-    5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
-  let {
-    email: newAdminEmail,
-    password: newAdminPassword,
-    firstName: newAdminFirstName,
-    lastName: newAdminLastName,
-  } = newAdmin;
+
+  let { email: newAdminEmail } = newAdmin;
 
   beforeAll(async () => {
     superAdminToken = await adminLogin(superAdminUser);
-  });
-
-  afterAll(async () => {
-    await client.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteUser(id: $id) {
-            firstName
-          }
-        }
-      `,
-      variables: {
-        id,
-      },
-      context: {
-        headers: {
-          token: superAdminToken,
-        },
-      },
-    });
   });
 
   test('Should throw an error when use already in-usage email while admin registration', async () => {
@@ -929,7 +897,7 @@ describe('Register admin', () => {
             registerAdmin(user: $user) {
               ... on User {
                 email
-                token
+                invitationalToken
               }
               ... on Error {
                 message
@@ -956,8 +924,23 @@ describe('Register admin', () => {
 
     expect(data.email).toEqual(newAdminEmail);
 
-    token = data.token;
+    invitationalToken = data.invitationalToken;
   });
+});
+
+describe('Admin confirmation', () => {
+  let invalidFirstName = 'H';
+  let invalidLastName = 'O';
+  let invalidPassword = 'You';
+  let invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
+    VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
+    GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
+    5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
+  let {
+    password: newAdminPassword,
+    firstName: newAdminFirstName,
+    lastName: newAdminLastName,
+  } = newAdmin;
 
   test('Should throw an error when use invalid lastname', async () => {
     const result = await client
@@ -976,7 +959,7 @@ describe('Register admin', () => {
           }
         `,
         variables: {
-          token,
+          token: invitationalToken,
           user: {
             firstName: newAdminFirstName,
             lastName: invalidLastName,
@@ -1009,7 +992,7 @@ describe('Register admin', () => {
           }
         `,
         variables: {
-          token,
+          token: invitationalToken,
           user: {
             firstName: invalidFirstName,
             lastName: newAdminLastName,
@@ -1042,7 +1025,7 @@ describe('Register admin', () => {
           }
         `,
         variables: {
-          token,
+          token: invitationalToken,
           user: {
             firstName: newAdminFirstName,
             lastName: newAdminLastName,
@@ -1107,7 +1090,7 @@ describe('Register admin', () => {
           }
         `,
         variables: {
-          token,
+          token: invitationalToken,
           user: {
             firstName: newAdminFirstName,
             lastName: newAdminLastName,
@@ -1120,6 +1103,40 @@ describe('Register admin', () => {
     const { isSuccess } = result.data.completeAdminRegister;
 
     expect(isSuccess).toEqual(true);
+  });
+});
+
+describe('New admin login', () => {
+  let id;
+  let {
+    firstName: newAdminFirstName,
+    lastName: newAdminLastName,
+    email: newAdminEmail,
+    password: newAdminPassword,
+  } = newAdmin;
+
+  beforeAll(async () => {
+    superAdminToken = await adminLogin(superAdminUser);
+  });
+
+  afterAll(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteUser(id: $id) {
+            firstName
+          }
+        }
+      `,
+      variables: {
+        id,
+      },
+      context: {
+        headers: {
+          token: superAdminToken,
+        },
+      },
+    });
   });
 
   test('Should successfully login as an admin', async () => {
