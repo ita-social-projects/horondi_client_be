@@ -15,7 +15,7 @@ const permissions = shield(
       ...materialPermissionsQuery,
     },
     Mutation: {
-      ...userPermissionsMutations,
+      ...userPermissionsMutation,
       ...materialPermissionsMutations,
     },
   },
