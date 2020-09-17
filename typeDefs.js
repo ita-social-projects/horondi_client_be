@@ -449,7 +449,7 @@ const typeDefs = gql`
     deleteModel(id: ID!): ModelResult
 
     "Contacts Mutation"
-    addContact(contact: contactInput!): ContactResult
+    addContact(contact: contactInput!, upload: Upload!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
 
