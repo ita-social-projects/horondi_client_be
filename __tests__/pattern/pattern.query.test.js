@@ -2,11 +2,51 @@ const { gql } = require('apollo-boost');
 /* eslint-disable no-undef */
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
-const { patternToAdd } = require('./pattern.variables');
+const {
+  patternDoesNotExistId,
+  skip,
+  limit,
+  wrongLimit,
+  wrongSkip,
+  languageTypeName,
+  imageTypeName,
+} = require('./pattern.variables');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
-let patternId = '';
-const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
+let patternId;
+
+const testValue = 't e s t new';
+const patternToAdd = {
+  name: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  images: {
+    large: 'large_335nr4j5dkebkw5cy_test.jpg',
+    medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
+    small: 'small_335nr4j5dkebkw5cy_test.jpg',
+    thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
+  },
+  material: 'test',
+  handmade: false,
+  available: true,
+};
 
 beforeAll(async () => {
   const res = await client
@@ -24,10 +64,11 @@ beforeAll(async () => {
           }
         }
       `,
+
       variables: { pattern: patternToAdd },
     })
     .catch(e => e);
-  console.log(res);
+
   patternId = res.data.addPattern._id;
 });
 afterAll(async () => {
@@ -60,7 +101,6 @@ describe('pattern query tests', () => {
             query {
               getAllPatterns {
                 items {
-                  _id
                   name {
                     lang
                     value
@@ -84,35 +124,18 @@ describe('pattern query tests', () => {
           `,
         })
         .catch(e => e);
+
+      expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns).toBeDefined();
       expect(res.data.getAllPatterns.items).toContainEqual({
-        name: [
-          {
-            lang: 'uk',
-            value: 'test',
-          },
-          {
-            lang: 'en',
-            value: 'pattest',
-          },
-        ],
-        description: [
-          {
-            lang: 'uk',
-            value: 'тестовий опис',
-          },
-          {
-            lang: 'en',
-            value: 'test description',
-          },
-        ],
-        images: {
-          large: 'large_335nr4j5dkebkw5cy_test.jpg',
-          medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
-          small: 'small_335nr4j5dkebkw5cy_test.jpg',
-          thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
-        },
-        material: 'Cotton',
+        __typename: 'Pattern',
+        name: patternToAdd.name.map(item => ({ ...languageTypeName, ...item })),
+        description: patternToAdd.description.map(item => ({
+          ...languageTypeName,
+          ...item,
+        })),
+        images: { ...imageTypeName, ...patternToAdd.images },
+        material: patternToAdd.material,
         handmade: false,
         available: true,
       });
@@ -165,32 +188,32 @@ describe('pattern query tests', () => {
         expect(res.data.getPatternById.name).toBeInstanceOf(Array);
         expect(res.data.getPatternById).toHaveProperty(
           'name',
-          patternToAdd.name,
+          patternToAdd.name
         );
         expect(res.data.getPatternById.images).toBeInstanceOf(Object);
         expect(res.data.getPatternById).toHaveProperty(
           'images',
-          patternToAdd.images,
+          patternToAdd.images
         );
         expect(res.data.getPatternById.images).toBeInstanceOf(Object);
         expect(res.data.getPatternById).toHaveProperty(
           'description',
-          patternToAdd.description,
+          patternToAdd.description
         );
         expect(res.data.getPatternById.description).toBeInstanceOf(Array);
         expect(res.data.getPatternById).toHaveProperty(
           'material',
-          patternToAdd.material,
+          patternToAdd.material
         );
         expect(res.data.getPatternById.colors).toBeInstanceOf(String);
         expect(res.data.getPatternById).toHaveProperty(
           'handmade',
-          patternToAdd.handmade,
+          patternToAdd.handmade
         );
         expect(res.data.getPatternById.handmade).toBeInstanceOf(Boolean);
         expect(res.data.getPatternById).toHaveProperty(
           'available',
-          patternToAdd.available,
+          patternToAdd.available
         );
         expect(res.data.getPatternById.available).toBeInstanceOf(Boolean);
       } catch (e) {
@@ -236,21 +259,91 @@ describe('pattern query tests', () => {
                 }
               }
             `,
-            variables: { id: patternId },
+            variables: { id: patternDoesNotExistId },
           })
           .catch(e => e);
         expect(res.data.getPatternById).toBeDefined();
         expect(res.data.getPatternById).toHaveProperty('statusCode', 404);
         expect(res.data.getPatternById).toHaveProperty(
           'message',
-          PATTERN_NOT_FOUND,
+          PATTERN_NOT_FOUND
         );
       } catch (e) {
         console.error(e);
       }
     });
-    describe('tests for pattern pagination', () => {
-      test('should receive 5 patterns', async () => {});
+    test('pattern pagination test', async () => {
+      const res = await client
+        .query({
+          variables: { skip, limit },
+          query: gql`
+            query($skip: Int, $limit: Int) {
+              getAllPatterns(skip: $skip, limit: $limit) {
+                items {
+                  name {
+                    lang
+                    value
+                  }
+                  description {
+                    lang
+                    value
+                  }
+                  images {
+                    large
+                    medium
+                    small
+                    thumbnail
+                  }
+                  material
+                  handmade
+                  available
+                }
+                count
+              }
+            }
+          `,
+        })
+        .catch(e => e);
+
+      expect(res.data.getAllPatterns).toMatchSnapshot();
+      expect(res.data.getAllPatterns.items).toHaveLength(5);
+      expect(res.data.getAllPatterns.count).toEqual(16);
+    });
+    test('pattern pagination test with wrong arguments', async () => {
+      const res = await client
+        .query({
+          variables: { skip: wrongLimit, limit: wrongSkip },
+          query: gql`
+            query($skip: Int, $limit: Int) {
+              getAllPatterns(skip: $skip, limit: $limit) {
+                items {
+                  name {
+                    lang
+                    value
+                  }
+                  description {
+                    lang
+                    value
+                  }
+                  images {
+                    large
+                    medium
+                    small
+                    thumbnail
+                  }
+                  material
+                  handmade
+                  available
+                }
+                count
+              }
+            }
+          `,
+        })
+        .catch(e => e);
+      expect(res.graphQLErrors[0].message).toEqual(
+        'Skip value must be non-negative, but received: -5'
+      );
     });
   });
 });
