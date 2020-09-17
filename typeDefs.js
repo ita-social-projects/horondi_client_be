@@ -451,7 +451,11 @@ const typeDefs = gql`
     "Contacts Mutation"
     addContact(contact: contactInput!, upload: Upload!): ContactResult
     deleteContact(id: ID!): ContactResult
-    updateContact(id: ID!, contact: contactInput!): ContactResult
+    updateContact(
+      id: ID!
+      contact: contactInput!
+      upload: Upload!
+    ): ContactResult
 
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion

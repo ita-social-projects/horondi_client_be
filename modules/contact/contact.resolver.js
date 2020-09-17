@@ -18,26 +18,24 @@ const contactQuery = {
 
 const contactMutation = {
   addContact: async (parent, args) => {
-    // console.log('background: #222; color: #bada55',args.upload);
-
     try {
       if (!args.upload) {
         return await contactService.addContact(args.contact);
       }
 
       const uploadResult = await uploadFiles(args.upload);
-      const imageResults = await uploadResult[0];
-      const images = imageResults.fileNames;
+      const imageResults = await uploadResult;
 
+      const images = await Promise.all(imageResults).then(res => res);
       if (!images) {
         return await contactService.addContact(args.contact);
       }
 
-      return await commentsService.addComment({
+      return await contactService.addContact({
         ...args.contact,
         images: [
-          { lang: languages[0], value: images },
-          { lang: languages[1], value: images },
+          { lang: 'uk', value: images[0].fileNames },
+          { lang: 'en', value: images[1].fileNames },
         ],
       });
     } catch (error) {
@@ -51,7 +49,10 @@ const contactMutation = {
   deleteContact: async (parent, args) => {
     try {
       const contact = await Contact.findById(args.id).lean();
-      const deletedImages = await deleteFiles(Object.values(contact.images));
+      const deletedImages = await deleteFiles([
+        ...Object.values(contact.images[0].value),
+        ...Object.values(contact.images[1].value),
+      ]);
 
       if (await Promise.allSettled(deletedImages)) {
         return await contactService.deleteContact(args.id);
@@ -69,23 +70,32 @@ const contactMutation = {
       if (!args.upload) {
         return await contactService.updateContact(args.id, args.contact);
       }
-      const contact = await Contact.findById(args.id).lean();
-      const deletedImages = await deleteFiles(Object.values(contact.images));
 
-      if (await Promise.allSettled(deletedImages)) {
-        const uploadResult = await uploadFiles([args.upload]);
-        const imageResults = await uploadResult[0];
-        const images = imageResults.fileNames;
+      console.log(args);
+      // const contact = await Contact.findById(args.id).lean();
+      // const deletedImages = await deleteFiles([
+      //   ...Object.values(contact.images[0].value),
+      //   ...Object.values(contact.images[1].value),
+      // ]);
 
-        if (!images) {
-          return await contactService.updateContact(args.id, args.contact);
-        }
+      console.log('images');
+      // if (await Promise.allSettled(deletedImages)) {
+      const uploadResult = await uploadFiles(args.upload);
+      const imageResults = await uploadResult;
+      const images = await Promise.all(imageResults).then(res => res);
 
-        return await contactService.updateContact(args.id, {
-          ...args.contact,
-          images,
-        });
+      if (!images) {
+        return await contactService.updateContact(args.id, args.contact);
       }
+
+      return await contactService.updateContact(args.id, {
+        ...args.contact,
+        images: [
+          { lang: 'uk', value: images[0].fileNames },
+          { lang: 'en', value: images[1].fileNames },
+        ],
+      });
+      // }
     } catch (e) {
       return {
         statusCode: e.message === CONTACT_NOT_FOUND ? 404 : 400,

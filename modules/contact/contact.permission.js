@@ -7,7 +7,7 @@ const contactPermissionsQuery = {
 };
 
 const contactPermissionsMutations = {
-  addContact: isAuthorizedAdmin,
+  addContact: allow,
   deleteContact: isAuthorizedAdmin,
   updateContact: isAuthorizedAdmin,
 };

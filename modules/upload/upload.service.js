@@ -43,7 +43,7 @@ class UploadService {
     });
   }
 
-  async uploadFiles(files) {
+  uploadFiles = async files => {
     return files.map(async file => {
       const { createReadStream, filename } = await file.promise;
       const inputStream = createReadStream();
@@ -67,7 +67,6 @@ class UploadService {
       const image = await Jimp.read(inputBuffer);
 
       const createName = sizeName => `${sizeName}_${id}_${filename}`;
-      console.log('IN UPLOAD SERVICE', this);
 
       this.uploadResizedImage(1920, createName('large'), image);
 
@@ -87,7 +86,7 @@ class UploadService {
         },
       };
     });
-  }
+  };
 
   async deleteFiles(files) {
     return files.map(
