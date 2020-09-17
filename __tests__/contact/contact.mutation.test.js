@@ -120,7 +120,7 @@ describe('Contacts mutations test', () => {
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com',
+      'updatedtest@updatedtest.com'
     );
     expect(res.data.updateContact.images).toBeInstanceOf(Array);
     expect(res.data.updateContact).toHaveProperty('images', [
@@ -219,7 +219,7 @@ describe('Contacts mutations test', () => {
     expect(res.data.deleteContact.openHours).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com',
+      'updatedtest@updatedtest.com'
     );
     expect(res.data.deleteContact.images).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty('images', [
