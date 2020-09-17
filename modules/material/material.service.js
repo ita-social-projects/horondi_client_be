@@ -29,7 +29,7 @@ class MaterialsService {
     if (await this.checkMaterialExist(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    return await Material.findByIdAndUpdate(id, material);
+    return await Material.findByIdAndUpdate(id, material, { new: true });
   }
 
   async addMaterial(data) {

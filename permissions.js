@@ -3,6 +3,10 @@ const {
   userPermissionsMutations,
   userPermissionsQuery,
 } = require('./modules/user/user.permissions');
+const {
+  materialPermissionsQuery,
+  materialPermissionsMutations,
+} = require('./modules/material/material.permissions');
 
 const {
   contactPermissionsQuery,
@@ -13,10 +17,12 @@ const permissions = shield(
   {
     Query: {
       ...userPermissionsQuery,
+      ...materialPermissionsQuery,
       ...contactPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutations,
+      ...materialPermissionsMutations,
       ...contactPermissionsMutations,
     },
   },

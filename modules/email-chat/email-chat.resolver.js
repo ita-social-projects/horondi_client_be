@@ -19,7 +19,8 @@ const emailChatQuestionQuery = {
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: async (parent, args) => await emailChatService.addEmailQuestion(args.question),
+  addEmailQuestion: async (parent, args) =>
+    await emailChatService.addEmailQuestion(args.question),
   makeQuestionSpam: async (parent, args, context) => {
     try {
       return await emailChatService.sendEmailQuestionToSpam(
