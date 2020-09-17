@@ -15,7 +15,7 @@ const {
   confirmationMessage,
   recoveryMessage,
 } = require('../../utils/localization');
-const { uploadFiles } = require('../upload/upload.service');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -44,7 +44,9 @@ class UserService {
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
-      throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {
+        statusCode: 400,
+      });
     }
     return true;
   }
@@ -82,14 +84,18 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await this.getUserByFieldOrThrow('_id', id);
+    const user = await User.findById(id).lean();
 
-    if (user._doc.email !== updatedUser.email) {
+    if (user.email !== updatedUser.email) {
       const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
+
+    deleteFiles(
+      Object.values(user.images).filter(item => typeof item === 'string')
+    );
 
     if (upload) {
       const uploadResult = await uploadFiles([upload]);
@@ -97,7 +103,8 @@ class UserService {
       updatedUser.images = imageResults.fileNames;
     }
 
-    return User.findByIdAndUpdate(id, updatedUser, { new: true });
+    const uuser = await User.findByIdAndUpdate(id, updatedUser, { new: true });
+    return uuser;
   }
 
   async updateUserByToken(updatedUser, user) {
@@ -119,7 +126,7 @@ class UserService {
         ...user._doc,
         ...updatedUser,
       },
-      { new: true },
+      { new: true }
     );
   }
 
@@ -137,7 +144,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass,
+      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
     );
 
     if (user.role === ROLES.user) {
@@ -176,7 +183,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
+      user.credentials.find(cred => cred.source === 'horondi').tokenPass
     );
 
     if (!match) {
@@ -192,9 +199,7 @@ class UserService {
     };
   }
 
-  async registerUser({
-    firstName, lastName, email, password,
-  }, language) {
+  async registerUser({ firstName, lastName, email, password }, language) {
     await validateRegisterInput.validateAsync({
       firstName,
       lastName,
@@ -321,7 +326,8 @@ class UserService {
       throw new UserInputError(RESET_TOKEN_NOT_VALID, { statusCode: 400 });
     }
 
-    const dayHasPassed =      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
+    const dayHasPassed =
+      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
     if (dayHasPassed) {
       await User.findByIdAndUpdate(user._id, {
         recoveryAttempts: 0,
