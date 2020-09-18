@@ -4,7 +4,8 @@ const {
 } = require('../../error-messages/business-text.messages');
 
 const businessTextQuery = {
-  getAllBusinessTexts: (parent, args) => businessTextService.getAllBusinessTexts(),
+  getAllBusinessTexts: (parent, args) =>
+    businessTextService.getAllBusinessTexts(),
 
   getBusinessTextById: async (parent, args) => {
     try {
@@ -30,14 +31,15 @@ const businessTextQuery = {
 
 const businessTextMutation = {
   addBusinessText: async (parent, args) => {
-    try {
-      return await businessTextService.addBusinessText(args.businessText);
+    return await businessTextService.addBusinessText(args.businessText);
+    /*    try {
+
     } catch (e) {
       return {
         statusCode: 400,
         message: e.message,
       };
-    }
+    }*/
   },
   deleteBusinessText: async (parent, args) => {
     try {
@@ -49,10 +51,14 @@ const businessTextMutation = {
       };
     }
   },
-  updateBusinessText: async (parent, args) => (await businessTextService.updateBusinessText(args.id, args.businessText)) || {
-    statusCode: 404,
-    message: BUSINESS_TEXT_NOT_FOUND,
-  },
+  updateBusinessText: async (parent, args) =>
+    (await businessTextService.updateBusinessText(
+      args.id,
+      args.businessText
+    )) || {
+      statusCode: 404,
+      message: BUSINESS_TEXT_NOT_FOUND,
+    },
 };
 
 module.exports = { businessTextQuery, businessTextMutation };
