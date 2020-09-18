@@ -11,13 +11,15 @@ const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
+const errorOutputPlugin = require('./plugins/error-output.plugin');
+const formatError = require('./utils/format-error');
 
 connectDB();
 require('dotenv').config();
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
-  permissions,
+  permissions
 );
 
 const server = new ApolloServer({
@@ -32,6 +34,8 @@ const server = new ApolloServer({
       };
     }
   },
+  plugins: [errorOutputPlugin],
+  formatError,
   introspection: true,
   cors: { origin: '*' },
 });
@@ -48,6 +52,6 @@ app.listen(PORT, () => {
   console.log(
     'apollo server started, port',
     PORT,
-    `,Graphql path: ${server.graphqlPath}`,
+    `,Graphql path: ${server.graphqlPath}`
   );
 });
