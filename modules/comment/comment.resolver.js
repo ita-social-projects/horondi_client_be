@@ -65,7 +65,7 @@ const commentsMutation = {
       return await commentsService.addRate(
         args.product,
         args.userRate,
-        context.user,
+        context.user
       );
     } catch (error) {
       return {

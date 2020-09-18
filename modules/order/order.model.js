@@ -7,7 +7,14 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['CREATED', 'CONFIRMED', 'CANCELLED', 'REFUNDED', 'SENT', 'DELIVERED'],
+    enum: [
+      'CREATED',
+      'CONFIRMED',
+      'CANCELLED',
+      'REFUNDED',
+      'SENT',
+      'DELIVERED',
+    ],
     default: 'CREATED',
   },
   user: {

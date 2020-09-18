@@ -63,6 +63,7 @@ const SCHEMA_NAMES = {
   model: 'Model',
   contact: 'Contact',
   order: 'Order',
+  user: 'User',
   emailQuestion: 'EmailQuestion',
 };
 const resolvers = {
@@ -243,6 +244,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.status) {
         return SCHEMA_NAMES.order;
+      }
+      return 'Error';
+    },
+  },
+  UserResult: {
+    __resolveType: obj => {
+      if (obj.email) {
+        return SCHEMA_NAMES.user;
       }
       return 'Error';
     },

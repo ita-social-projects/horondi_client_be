@@ -5,6 +5,8 @@ const {
   userInput,
   userRegisterInput,
   LoginInput,
+  adminConfirmInput,
+  adminRegisterInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -64,6 +66,7 @@ const typeDefs = gql`
   scalar Upload
 
   enum RoleEnum {
+    superadmin
     admin
     user
   }
@@ -219,6 +222,7 @@ const typeDefs = gql`
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
   union OrderResult = Order | Error
+  union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
 
   type Query {
@@ -244,6 +248,8 @@ const typeDefs = gql`
     getAllUsers: [User]
     getUserByToken: User
     getUserById(id: ID!): User
+
+    validateConfirmationToken(token: String!): LogicalResult!
 
     getProductById(id: ID!): ProductResult
     getProducts(
@@ -306,6 +312,8 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${adminConfirmInput}
+  ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
   ${orderInputs}
@@ -433,6 +441,7 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
+    registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -440,9 +449,13 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
-    switchUserStatus(id: ID!): LogicalResult
+    switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    completeAdminRegister(
+      user: AdminConfirmInput!
+      token: String!
+    ): LogicalResult!
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
