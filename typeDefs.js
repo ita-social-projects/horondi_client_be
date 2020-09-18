@@ -404,9 +404,17 @@ const typeDefs = gql`
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
+    addCategory(
+      category: CategoryInput!
+      parentId: ID
+      upload: Upload
+    ): CategoryResult
     deleteCategory(id: ID!): CategoryResult
-    updateCategory(id: ID!, category: CategoryInput!): CategoryResult
+    updateCategory(
+      id: ID!
+      category: CategoryInput!
+      upload: Upload
+    ): CategoryResult
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult

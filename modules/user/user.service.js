@@ -24,7 +24,7 @@ const {
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
   PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
-  RESET_TOKEN_NOT_VALID,
+  RESET_PASSWORD_TOKEN_NOT_VALID,
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
 } = require('../../error-messages/user.messages');
@@ -93,18 +93,18 @@ class UserService {
       }
     }
 
-    deleteFiles(
-      Object.values(user.images).filter(item => typeof item === 'string')
-    );
-
     if (upload) {
+      await deleteFiles(
+        Object.values(user.images).filter(
+          item => typeof item === 'string' && item
+        )
+      );
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
 
-    const uuser = await User.findByIdAndUpdate(id, updatedUser, { new: true });
-    return uuser;
+    return User.findByIdAndUpdate(id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
@@ -323,7 +323,9 @@ class UserService {
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
-      throw new UserInputError(RESET_TOKEN_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
+        statusCode: 400,
+      });
     }
 
     const dayHasPassed =
