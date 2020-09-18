@@ -1,15 +1,9 @@
-const { UserInputError } = require('apollo-server');
 const userService = require('./user.service');
-const { USER_NOT_AUTHORIZED } = require('../../error-messages/user.messages');
 
 const userQuery = {
-  getAllUsers: (parent, args) => userService.getAllUsers(),
-  getUserByToken: (parent, args, context) =>
-    userService.getUser(context.user._id),
-  getUserById: (parent, args, context) =>
-    context.user
-      ? userService.getUser(args.id)
-      : new UserInputError(USER_NOT_AUTHORIZED),
+  getAllUsers: () => userService.getAllUsers(),
+  getUserByToken: (parent, args, context) => context.user,
+  getUserById: (parent, args) => userService.getUser(args.id),
   validateConfirmationToken: (parent, args) => {
     try {
       return userService.validateConfirmationToken(args.token);
@@ -22,22 +16,13 @@ const userQuery = {
   },
 };
 const userMutation = {
-  registerUser: (parent, args) =>
-    userService.registerUser(args.user, args.language),
+  registerUser: (parent, args) => userService.registerUser(args.user, args.language),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
-  updateUserById: (parent, args, context) =>
-    context.user
-      ? userService.updateUserById(args.user, args.id)
-      : new UserInputError(USER_NOT_AUTHORIZED),
-  updateUserByToken: (parent, args, context) =>
-    context.user
-      ? userService.updateUserByToken(args.user, context.user)
-      : new UserInputError(USER_NOT_AUTHORIZED),
-  confirmUser: (parent, args) => userService.confirmUser(args.token),
-  recoverUser: (parent, args) =>
-    userService.recoverUser(args.email, args.language),
+  updateUserById: (parent, args) => userService.updateUserById(args.user, args.id, args.upload),
+  confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
+  recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
     try {
       return await userService.switchUserStatus(args.id);
@@ -48,10 +33,18 @@ const userMutation = {
       };
     }
   },
-  resetPassword: (parent, args) =>
-    userService.resetPassword(args.password, args.token),
-  checkIfTokenIsValid: (parent, args) =>
-    userService.checkIfTokenIsValid(args.token),
+  resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
+  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
+  sendEmailConfirmation: (parent, args) => {
+    try {
+      return userService.sendConfirmationLetter(args.email, args.language);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      }
+    }
+  },
   registerAdmin: async (parent, args) => {
     try {
       return await userService.registerAdmin(args.user);

@@ -90,7 +90,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -240,7 +240,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
-    getUserByToken: User
+    getUserByToken: UserResult
     getUserById(id: ID!): User
 
     validateConfirmationToken(token: String!): LogicalResult!
@@ -329,7 +329,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -422,9 +422,17 @@ const typeDefs = gql`
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
+    addCategory(
+      category: CategoryInput!
+      parentId: ID
+      upload: Upload
+    ): CategoryResult
     deleteCategory(id: ID!): CategoryResult
-    updateCategory(id: ID!, category: CategoryInput!): CategoryResult
+    updateCategory(
+      id: ID!
+      category: CategoryInput!
+      upload: Upload
+    ): CategoryResult
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult
@@ -442,13 +450,13 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
-    updateUserById(user: UserInput!, id: ID!): User
-    updateUserByToken(user: UserInput!): User
-    confirmUser(token: String!): Boolean
+    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    confirmUserEmail(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    sendEmailConfirmation(email: String!, language: Int!): Boolean
     completeAdminRegister(
       user: AdminConfirmInput!
       token: String!
