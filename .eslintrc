@@ -122,6 +122,8 @@
         "avoidEscape": true,
         "allowTemplateLiterals": true
       }
-    ]
+    ],
+    "no-confusing-arrow": 0,
+    "implicit-arrow-linebreak": ["error", "below"]
   }
 }

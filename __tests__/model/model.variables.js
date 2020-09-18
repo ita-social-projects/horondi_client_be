@@ -1,3 +1,4 @@
+const wrongId = '56ade69dd46eafc5968e5390';
 const newCategory = {
   available: true,
   name: [
@@ -75,4 +76,5 @@ module.exports = {
   newModel,
   newModelMutation,
   newModelUpdated,
+  wrongId,
 };

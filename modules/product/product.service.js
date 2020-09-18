@@ -78,9 +78,7 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({
-    filter, skip, limit, sort, search,
-  }) {
+  async getProducts({ filter, skip, limit, sort, search }) {
     const filters = this.filterItems(filter);
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
