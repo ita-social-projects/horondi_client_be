@@ -7,6 +7,7 @@ const {
   contact,
   updatedContact,
   notExistContactId,
+  newContact,
 } = require('./contact.variables');
 
 let contactsId = '';
@@ -53,39 +54,45 @@ describe('Contacts mutations test', () => {
     expect(res.data.addContact).toHaveProperty('openHours', [
       {
         __typename: 'Language',
-        lang: 'uk',
-        value: 'ПН ...',
+        lang: contact.openHours[0].lang,
+        value: contact.openHours[0].value,
       },
       {
         __typename: 'Language',
-        lang: 'en',
-        value: 'FR ...',
+        lang: contact.openHours[1].lang,
+        value: contact.openHours[1].value,
       },
     ]);
     expect(res.data.addContact.openHours).toBeInstanceOf(Array);
     expect(res.data.addContact).toHaveProperty('address', [
       {
         __typename: 'Language',
-        lang: 'uk',
-        value: 'Вулиця 3',
+        lang: contact.address[0].lang,
+        value: contact.address[0].value,
       },
       {
         __typename: 'Language',
-        lang: 'en',
-        value: 'Street 3',
+        lang: contact.address[1].lang,
+        value: contact.address[1].value,
       },
     ]);
     expect(res.data.addContact.address).toBeInstanceOf(Object);
-    expect(res.data.addContact).toHaveProperty('email', 'test@test.com');
+    expect(res.data.addContact).toHaveProperty('email', newContact.email);
     expect(res.data.addContact.images).toBeInstanceOf(Array);
     expect(res.data.addContact).toHaveProperty('images', [
       {
         __typename: 'LanguageImageSet',
-        value: { __typename: 'ImageSet', medium: 'medium.jpg' },
+        value: {
+          __typename: 'ImageSet',
+          medium: contact.images[0].value.medium,
+        },
       },
       {
         __typename: 'LanguageImageSet',
-        value: { __typename: 'ImageSet', medium: 'medium.jpg' },
+        value: {
+          __typename: 'ImageSet',
+          medium: contact.images[1].value.medium,
+        },
       },
     ]);
     expect(res.data.addContact).toHaveProperty('link', 'https://testURL.com');
@@ -128,22 +135,36 @@ describe('Contacts mutations test', () => {
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com'
+      updatedContact.email
     );
     expect(res.data.updateContact.images).toBeInstanceOf(Array);
     expect(res.data.updateContact).toHaveProperty('images', [
       {
-        __typename:  'LanguageImageSet',
-        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
+        __typename: 'LanguageImageSet',
+        value: {
+          __typename: 'ImageSet',
+          medium: updatedContact.images[0].value.medium,
+        },
       },
       {
-        __typename:  'LanguageImageSet',
-        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
+        __typename: 'LanguageImageSet',
+        value: {
+          __typename: 'ImageSet',
+          medium: updatedContact.images[1].value.medium,
+        },
       },
     ]);
     expect(res.data.updateContact).toHaveProperty('address', [
-      { __typename: 'Language', lang: 'uk', value: 'updatedВулиця' },
-      { __typename: 'Language', lang: 'en', value: 'updatedStreet' },
+      {
+        __typename: 'Language',
+        lang: updatedContact.address[0].lang,
+        value: updatedContact.address[0].value,
+      },
+      {
+        __typename: 'Language',
+        lang: updatedContact.address[1].lang,
+        value: updatedContact.address[1].value,
+      },
     ]);
   });
 
@@ -225,17 +246,23 @@ describe('Contacts mutations test', () => {
     expect(res.data.deleteContact.openHours).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com'
+      updatedContact.email
     );
     expect(res.data.deleteContact.images).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty('images', [
       {
-        __typename:  'LanguageImageSet',
-        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
+        __typename: 'LanguageImageSet',
+        value: {
+          __typename: 'ImageSet',
+          medium: updatedContact.images[0].value.medium,
+        },
       },
       {
-        __typename:  'LanguageImageSet',
-        value: { __typename: 'ImageSet', medium: 'updatedmedium.jpg' },
+        __typename: 'LanguageImageSet',
+        value: {
+          __typename: 'ImageSet',
+          medium: updatedContact.images[1].value.medium,
+        },
       },
     ]);
   });
