@@ -2113,3 +2113,2507 @@ Array [
   },
 ]
 `;
+
+exports[`Product queries #3 Should receive error if product ID is wrong 1`] = `
+Array [
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп червоний 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Red 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 47,
+    "rate": 4,
+    "rateCount": 2,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп сірий 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Grey 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 11,
+    "rate": 3.75,
+    "rateCount": 4,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп зелений 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Green 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 36,
+    "rate": 4.32,
+    "rateCount": 3,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп рожевий 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Pink 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Вишивка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Embroidery",
+      },
+    ],
+    "purchasedCount": 29,
+    "rate": 3.6666666666666665,
+    "rateCount": 3,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп кавовий 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Coffee 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Вишивка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Embroidery",
+      },
+    ],
+    "purchasedCount": 30,
+    "rate": 4,
+    "rateCount": 1,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп синій 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Blue 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Стрілки",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Arrows",
+      },
+    ],
+    "purchasedCount": 41,
+    "rate": 3,
+    "rateCount": 1,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп жовтий 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Yellow 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Квіти",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Flowers",
+      },
+    ],
+    "purchasedCount": 45,
+    "rate": 4.666666666666667,
+    "rateCount": 3,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп жовтий 2",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Yellow 2",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Олені",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Deers",
+      },
+    ],
+    "purchasedCount": 42,
+    "rate": 3,
+    "rateCount": 2,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп сірий 2",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Grey 2",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Олені",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Deers",
+      },
+    ],
+    "purchasedCount": 14,
+    "rate": 4,
+    "rateCount": 2,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп чорний 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Black 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 48,
+    "rate": 3,
+    "rateCount": 4,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 145000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5229,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Ззовні: передня кишеня - 20х20 та потаємна кишеня на спинці на замочку;</li>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Головне відділення закривається на замок та дві защіпки;</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Outside: Front pocket 20x20 cm and a zipped hidden pocket on the back;</li>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Main compartment closes with a zipper and two closures;</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Ролтоп коричневий 1",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Rolltop Brown 1",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Люди",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "People",
+      },
+    ],
+    "purchasedCount": 36,
+    "rate": 3.5,
+    "rateCount": 2,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 165000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5950,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Два відділення для ноутбука – одне ззовні на спинці, а інше всередині. Захищені м'яким піноматеріалом;</li>    <li>Бокова кишеня для дрібничок на замочку;</li>    <li>Бокова кишеня для пляшки з водою;</li>    <li>Передня велика кишеня 35х28 см;</li>    <li>Внутрішня кишеня для дрібничок;</li>    <li>Спинка рюкзака зроблена з використанням вентиляційної сітки;</li>    <li>Лямки з піноматеріалу, поверх яких прострочена ремінна стрічка для підвищення їх міцності.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments for laptop protected with soft foam – one on the back outside and one inside;</li>    <li>Side pocket for knickknacks with a zipper;</li>    <li>Side pocket for a water bottle;</li>    <li>Large front pocket 35x28 cm;</li>    <li>Inside pocket for knickknacks;</li>    <li>The back has ventilation mesh embedded in it;</li>    <li>Straps are made out of foam with belt ribbon stitched over it for higher durability.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Новий червоний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "New Red",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 37,
+    "rate": 4,
+    "rateCount": 1,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 165000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5950,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Два відділення для ноутбука – одне ззовні на спинці, а інше всередині. Захищені м'яким піноматеріалом;</li>    <li>Бокова кишеня для дрібничок на замочку;</li>    <li>Бокова кишеня для пляшки з водою;</li>    <li>Передня велика кишеня 35х28 см;</li>    <li>Внутрішня кишеня для дрібничок;</li>    <li>Спинка рюкзака зроблена з використанням вентиляційної сітки;</li>    <li>Лямки з піноматеріалу, поверх яких прострочена ремінна стрічка для підвищення їх міцності.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments for laptop protected with soft foam – one on the back outside and one inside;</li>    <li>Side pocket for knickknacks with a zipper;</li>    <li>Side pocket for a water bottle;</li>    <li>Large front pocket 35x28 cm;</li>    <li>Inside pocket for knickknacks;</li>    <li>The back has ventilation mesh embedded in it;</li>    <li>Straps are made out of foam with belt ribbon stitched over it for higher durability.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Новий жовтий",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "New Yellow",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Синій",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Blue",
+      },
+    ],
+    "purchasedCount": 37,
+    "rate": 3.8333333333333335,
+    "rateCount": 6,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 165000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5950,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Два відділення для ноутбука – одне ззовні на спинці, а інше всередині. Захищені м'яким піноматеріалом;</li>    <li>Бокова кишеня для дрібничок на замочку;</li>    <li>Бокова кишеня для пляшки з водою;</li>    <li>Передня велика кишеня 35х28 см;</li>    <li>Внутрішня кишеня для дрібничок;</li>    <li>Спинка рюкзака зроблена з використанням вентиляційної сітки;</li>    <li>Лямки з піноматеріалу, поверх яких прострочена ремінна стрічка для підвищення їх міцності.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments for laptop protected with soft foam – one on the back outside and one inside;</li>    <li>Side pocket for knickknacks with a zipper;</li>    <li>Side pocket for a water bottle;</li>    <li>Large front pocket 35x28 cm;</li>    <li>Inside pocket for knickknacks;</li>    <li>The back has ventilation mesh embedded in it;</li>    <li>Straps are made out of foam with belt ribbon stitched over it for higher durability.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Новий з деревом",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "New Red with Tree",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Олені",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Deers",
+      },
+    ],
+    "purchasedCount": 34,
+    "rate": 4,
+    "rateCount": 5,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 155000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5590,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Передня та бокові кишені 20х20 см та 20х14 см;</li>    <li>Головне відділення закривається на замок та дві защіпки.</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Front pocket and side pockets 20x20 cm and 20x14 cm;</li>    <li>Main compartment closes with a zipper and two closures.</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гарбуз сірий",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Harbuz Grey",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Немає",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "None",
+      },
+    ],
+    "purchasedCount": 16,
+    "rate": 4.428571428571429,
+    "rateCount": 7,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 155000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5590,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Передня та бокові кишені 20х20 см та 20х14 см;</li>    <li>Головне відділення закривається на замок та дві защіпки.</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Front pocket and side pockets 20x20 cm and 20x14 cm;</li>    <li>Main compartment closes with a zipper and two closures.</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гарбуз зелений",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Harbuz Green",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Немає",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "None",
+      },
+    ],
+    "purchasedCount": 21,
+    "rate": 4.333333333333333,
+    "rateCount": 6,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 155000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 5590,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "ddc81f5dbac48c38d0403dd3",
+    },
+    "closureColor": "black",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Всередині два відділення: одне для ноутбука захищене стінкою з піноматеріалу та додаткова кишенька для дрібничок;</li>    <li>Передня та бокові кишені 20х20 см та 20х14 см;</li>    <li>Головне відділення закривається на замок та дві защіпки.</li>    <li>Спинка зроблена з використанням піноматеріалу.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Two compartments on the inside: Laptop compartment protected with foam-wall and one more pocket for knickknacks;</li>    <li>Front pocket and side pockets 20x20 cm and 20x14 cm;</li>    <li>Main compartment closes with a zipper and two closures.</li>    <li>The back is padded with foam.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Oxford 135",
+      },
+    ],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гарбуз коричневий",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Harbuz Brown",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Немає",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "None",
+      },
+    ],
+    "purchasedCount": 29,
+    "rate": 3.6666666666666665,
+    "rateCount": 3,
+    "strapLengthInCm": 100,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "688ded7be0c2621f2fb17b05",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 90000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 3246,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Всередині є одна велика кишеня - 30х25 см та дві маленькі - 15х15 см;</li>    <li>Зовнішня кишеня на передній стінці;</li>    <li>Довжина ручок дозволяє носити в руках, також є регульований плечовий ремінь.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Inside: one large pocket - 30x25 cm and two small ones - 15x15 cm;</li>    <li>Outer pocket on the front;</li>    <li>Long handles and an adjustable shoulder strap.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Сумка з гобеленом",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Bag with a Pattern",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Люди",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "People",
+      },
+    ],
+    "purchasedCount": 33,
+    "rate": 4,
+    "rateCount": 1,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "e1f1b72509068804c599d1ff",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 90000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 3246,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Всередині є одна велика кишеня - 30х25 см та дві маленькі - 15х15 см;</li>    <li>Зовнішня кишеня на передній стінці;</li>    <li>Довжина ручок дозволяє носити в руках, також є регульований плечовий ремінь.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Inside: one large pocket - 30x25 cm and two small ones - 15x15 cm;</li>    <li>Outer pocket on the front;</li>    <li>Long handles and an adjustable shoulder strap.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Сумка з гобеленом синя",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Bag with a Pattern Blue",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Олені",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Deers",
+      },
+    ],
+    "purchasedCount": 14,
+    "rate": 4.333333333333333,
+    "rateCount": 3,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "e1f1b72509068804c599d1ff",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 90000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 3246,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Всередині є одна велика кишеня - 30х25 см та дві маленькі - 15х15 см;</li>    <li>Міцні ручки + регульований плечовий ремінь.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Inside: one large pocket - 30x25 cm and two small ones - 15x15 cm;</li>    <li>Sturdy handles + adjustable shoulder strap.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G padded with a layer of durable and water-resistant material + inner layer",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Сумка синя",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Bag Blue",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Немає",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "None",
+      },
+    ],
+    "purchasedCount": 32,
+    "rate": 5,
+    "rateCount": 3,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "e1f1b72509068804c599d1ff",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 90000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 3246,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Всередині є одна велика кишеня - 30х25 см та дві маленькі - 15х15 см;</li>    <li>Довжина ручок дозволяє носити в руках, також є регульований плечовий ремінь.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Inside: one large pocket - 30x25 cm and two small ones - 15x15 cm;</li>    <li>Long handles and an adjustable shoulder strap.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G padded with a layer of durable and water-resistant material + inner layer",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Сумка \\"Три кольори\\"",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Three Color Bag",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Немає",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "None",
+      },
+    ],
+    "purchasedCount": 42,
+    "rate": 4.2,
+    "rateCount": 5,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "e1f1b72509068804c599d1ff",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 95000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 3426,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Всередині є одна велика кишеня - 30х25 см та дві маленькі - 15х15 см;</li>    <li>Довжина ручок дозволяє носити як на плечі так і в руках.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Inside: one large pocket - 30x25 cm and two small ones - 15x15 cm;</li>    <li>Handles are long enough to carry either in hand or on the shoulder.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Canvas-400G padded with a layer of durable and water-resistant material + inner layer",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Сумка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Bag",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Немає",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "None",
+      },
+    ],
+    "purchasedCount": 14,
+    "rate": 3.6666666666666665,
+    "rateCount": 3,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "e1f1b72509068804c599d1ff",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 50000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 1803,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Зовнішня передня кишенька для дрібничок;</li>    <li>Всередині кишеня на липучці.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Outer front pocket for knickknacks;</li>    <li>Inside pocket with velcro.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Бананка гірчична",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Fanny Pack Mustard",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Квіти",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Flowers",
+      },
+    ],
+    "purchasedCount": 22,
+    "rate": 4.333333333333333,
+    "rateCount": 3,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "47727f468018c6e246903dbf",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 50000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 1803,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Зовнішня передня кишенька для дрібничок;</li>    <li>Всередині кишеня на липучці.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Outer front pocket for knickknacks;</li>    <li>Inside pocket with velcro.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Бананка червона",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Fanny Pack Red",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Червоний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Red",
+      },
+    ],
+    "purchasedCount": 16,
+    "rate": 0,
+    "rateCount": 0,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "47727f468018c6e246903dbf",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 50000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 1803,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Зовнішня передня кишенька для дрібничок;</li>    <li>Всередині кишеня на липучці.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Outer front pocket for knickknacks;</li>    <li>Inside pocket with velcro.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Бананка синя",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Fanny Pack Blue",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Стрілки",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Arrows",
+      },
+    ],
+    "purchasedCount": 14,
+    "rate": 3.75,
+    "rateCount": 4,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "47727f468018c6e246903dbf",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 50000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 1803,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Зовнішня передня кишенька для дрібничок;</li>    <li>Всередині кишеня на липучці.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Outer front pocket for knickknacks;</li>    <li>Inside pocket with velcro.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Бананка рожева",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Fanny Pack Pink",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Вишивка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Embroidery",
+      },
+    ],
+    "purchasedCount": 11,
+    "rate": 3.5,
+    "rateCount": 2,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "47727f468018c6e246903dbf",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 50000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 1803,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Зовнішня передня кишенька для дрібничок;</li>    <li>Всередині кишеня на липучці.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Outer front pocket for knickknacks;</li>    <li>Inside pocket with velcro.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Бананка зелена",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Fanny Pack Green",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 31,
+    "rate": 4.5,
+    "rateCount": 2,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "47727f468018c6e246903dbf",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 50000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 1803,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "54c1cfb719f3bb97c28d762e",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Основне відділення на блискавці;</li>    <li>Зовнішня передня кишенька для дрібничок;</li>    <li>Всередині кишеня на липучці.</li></ul>",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "<ul>    <li>Main compartment with zipper;</li>    <li>Outer front pocket for knickknacks;</li>    <li>Inside pocket with velcro.</li></ul>",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Бананка асфальтна",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Fanny Pack Slate Grey",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 43,
+    "rate": 3.25,
+    "rateCount": 4,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "47727f468018c6e246903dbf",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 20000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 721,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "1a83772f0ec8fe5a2ef119ba",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Опис очікуйте найближчим часом...",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Description will appear shortly...",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гаманець гірчичний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Wallet Mustard",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Квіти",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Flowers",
+      },
+    ],
+    "purchasedCount": 23,
+    "rate": 5,
+    "rateCount": 2,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "ed17f080d44d728efe0a4ad1",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 20000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 721,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "1a83772f0ec8fe5a2ef119ba",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Опис очікуйте найближчим часом...",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Description will appear shortly...",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гаманець червоний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Wallet Red",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Червоний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Red",
+      },
+    ],
+    "purchasedCount": 34,
+    "rate": 4,
+    "rateCount": 3,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "ed17f080d44d728efe0a4ad1",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 20000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 721,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "1a83772f0ec8fe5a2ef119ba",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Опис очікуйте найближчим часом...",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Description will appear shortly...",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гаманець синій",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Wallet Blue",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Стрілки",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Arrows",
+      },
+    ],
+    "purchasedCount": 25,
+    "rate": 3,
+    "rateCount": 1,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "ed17f080d44d728efe0a4ad1",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 20000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 721,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "1a83772f0ec8fe5a2ef119ba",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Опис очікуйте найближчим часом...",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Description will appear shortly...",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гаманець рожевий",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Wallet Pink",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Вишивка",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Embroidery",
+      },
+    ],
+    "purchasedCount": 12,
+    "rate": 3.75,
+    "rateCount": 4,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "ed17f080d44d728efe0a4ad1",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 20000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 721,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "1a83772f0ec8fe5a2ef119ba",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Опис очікуйте найближчим часом...",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Description will appear shortly...",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гаманець зелений",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Wallet Green",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 10,
+    "rate": 4.25,
+    "rateCount": 4,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "ed17f080d44d728efe0a4ad1",
+    },
+  },
+  Object {
+    "__typename": "Product",
+    "available": true,
+    "basePrice": Array [
+      Object {
+        "__typename": "CurrencySet",
+        "value": 20000,
+      },
+      Object {
+        "__typename": "CurrencySet",
+        "value": 721,
+      },
+    ],
+    "category": Object {
+      "__typename": "Category",
+      "_id": "1a83772f0ec8fe5a2ef119ba",
+    },
+    "closureColor": "",
+    "description": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Опис очікуйте найближчим часом...",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Description will appear shortly...",
+      },
+    ],
+    "innerMaterial": Array [],
+    "isHotItem": true,
+    "mainMaterial": Array [
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) прошита додатковим шаром спеціального матеріалу, який зміцнює та захищає від води + підкладка + фабричний гобелен",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "100% poliester (Malmo) padded with a layer of durable and water-resistant material + inner layer + factory-made pattern",
+      },
+    ],
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Гаманець асфальтний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Wallet Slate Grey",
+      },
+    ],
+    "pattern": Array [
+      Object {
+        "__typename": "Language",
+        "value": "Чорний",
+      },
+      Object {
+        "__typename": "Language",
+        "value": "Black",
+      },
+    ],
+    "purchasedCount": 37,
+    "rate": 0,
+    "rateCount": 0,
+    "strapLengthInCm": 0,
+    "subcategory": Object {
+      "__typename": "Category",
+      "_id": "ed17f080d44d728efe0a4ad1",
+    },
+  },
+]
+`;

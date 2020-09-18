@@ -1,21 +1,27 @@
 const { shield } = require('graphql-shield');
 const {
-  userPermissionsMutations,
+  userPermissionsMutation,
   userPermissionsQuery,
 } = require('./modules/user/user.permissions');
+const {
+  materialPermissionsQuery,
+  materialPermissionsMutations,
+} = require('./modules/material/material.permissions');
 
 const permissions = shield(
   {
     Query: {
       ...userPermissionsQuery,
+      ...materialPermissionsQuery,
     },
     Mutation: {
-      ...userPermissionsMutations,
+      ...userPermissionsMutation,
+      ...materialPermissionsMutations,
     },
   },
   {
     allowExternalErrors: true,
-  },
+  }
 );
 
 module.exports = permissions;
