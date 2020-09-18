@@ -20,7 +20,7 @@
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles ",
     "generate": "graphql-codegen",
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
     "test-full": "start-server-and-test test-server http://localhost:5000/health test"
   },
   "author": "",
