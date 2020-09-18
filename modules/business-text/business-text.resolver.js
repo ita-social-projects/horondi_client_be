@@ -31,15 +31,14 @@ const businessTextQuery = {
 
 const businessTextMutation = {
   addBusinessText: async (parent, args) => {
-    return await businessTextService.addBusinessText(args.businessText);
-    /*    try {
-
+    try {
+      return await businessTextService.addBusinessText(args.businessText);
     } catch (e) {
       return {
         statusCode: 400,
         message: e.message,
       };
-    }*/
+    }
   },
   deleteBusinessText: async (parent, args) => {
     try {

@@ -2,6 +2,7 @@ const BusinessText = require('./business-text.model');
 const {
   BUSINESS_TEXT_NOT_FOUND,
   BUSINESS_TEXT_ALREADY_EXIST,
+  BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
 } = require('../../error-messages/business-text.messages');
 
 class BusinessTextService {
@@ -26,6 +27,14 @@ class BusinessTextService {
   }
 
   async updateBusinessText(id, businessText) {
+    const pages = await this.checkBusinessTextExistByCode(businessText);
+    if (pages.length) {
+      return {
+        message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
+        statusCode: 400,
+      };
+    }
+
     const text = await BusinessText.findByIdAndUpdate(id, businessText, {
       new: true,
     });
