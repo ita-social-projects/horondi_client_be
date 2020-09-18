@@ -6,6 +6,45 @@ const {
 const ObjectId = require('mongoose').Types.ObjectId;
 
 class OrdersService {
+  calculateTotalItemsPrice(items){
+    return items.reduce((previousPrice, currentItem) =>  {
+      const { actualPrice, quantity } = currentItem
+      
+      return [ 
+        { 
+          currency: 'UAH', 
+          value: (actualPrice[0].value * quantity) + previousPrice[0].value
+        },
+        { 
+          currency: 'USD', 
+          value: (actualPrice[1].value  * quantity) + previousPrice[1].value 
+        }
+      ]
+    }, [ 
+      { 
+        currency: 'UAH', 
+        value: 0 
+      },
+      { 
+        currency: 'USD', 
+        value: 0 
+      }
+    ])
+  }
+
+  calculateTotalPriceToPay({delivery}, totalItemsPrice){
+    return  [ 
+        { 
+          currency: 'UAH', 
+          value: totalItemsPrice[0].value + delivery.cost[0].value
+        },
+        { 
+          currency: 'USD', 
+          value: totalItemsPrice[1].value + delivery.cost[1].value 
+        }
+      ]
+  }
+
   async getAllOrders() {
     return await Order.find();
   }
@@ -29,13 +68,40 @@ class OrdersService {
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
     }
-    return await Order.findByIdAndUpdate(id, order, {
+
+    if(order.items) {
+      const totalItemsPrice = this.calculateTotalItemsPrice(order.items)
+    
+      const totalPriceToPay = this.calculateTotalPriceToPay(order, totalItemsPrice)
+
+      order = {
+        ...order, 
+        totalItemsPrice, 
+        totalPriceToPay,
+      }
+    }
+
+    return await Order.findByIdAndUpdate(id,{ ...order, lastUpdatedDate: Date.now()}, {
       new: true,
     });
   }
 
   async addOrder(data) {
-    return new Order(data).save();
+    
+    const { items } = data
+
+    const totalItemsPrice = this.calculateTotalItemsPrice(items)
+   
+    const totalPriceToPay = this.calculateTotalPriceToPay(data, totalItemsPrice)
+    
+    const order = {
+      ...data, 
+      totalItemsPrice, 
+      totalPriceToPay,
+      lastUpdatedDate: Date.now(),
+    }
+
+    return new Order(order).save();
   }
 
   async deleteOrder(id) {
