@@ -5,6 +5,8 @@ const {
   userInput,
   userRegisterInput,
   LoginInput,
+  adminConfirmInput,
+  adminRegisterInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -32,6 +34,10 @@ const {
   commentInput,
 } = require('./modules/comment/comment.graphql');
 const {
+  businessTextType,
+  businessTextInput,
+} = require('./modules/business-text/business-text.graphql');
+const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
@@ -49,6 +55,7 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${businessTextType}
   ${modelType}
   ${contactType}
   ${emailQuestionType}
@@ -56,6 +63,7 @@ const typeDefs = gql`
   scalar Upload
 
   enum RoleEnum {
+    superadmin
     admin
     user
   }
@@ -207,9 +215,11 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union BusinessTextResult = BusinessText | Error
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
 
   type Query {
@@ -233,6 +243,8 @@ const typeDefs = gql`
     getUserByToken: User
     getUserById(id: ID!): User
 
+    validateConfirmationToken(token: String!): LogicalResult!
+
     getProductById(id: ID!): ProductResult
     getProducts(
       filter: FilterInput
@@ -244,6 +256,10 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getAllBusinessTexts: [BusinessText]
+    getBusinessTextById(id: ID!): BusinessTextResult
+    getBusinessTextByCode(code: String!): BusinessTextResult
 
     getModelsByCategory(id: ID!): [Model]
 
@@ -293,6 +309,9 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${businessTextInput}
+  ${adminConfirmInput}
+  ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
   ${emailQuestionInput}
@@ -419,6 +438,7 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
+    registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -426,9 +446,13 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
-    switchUserStatus(id: ID!): LogicalResult
+    switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    completeAdminRegister(
+      user: AdminConfirmInput!
+      token: String!
+    ): LogicalResult!
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -439,6 +463,14 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
+
+    "BusinessText Mutation"
+    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
+    deleteBusinessText(id: ID!): BusinessTextResult
+    updateBusinessText(
+      id: ID!
+      businessText: BusinessTextInput!
+    ): BusinessTextResult
 
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
