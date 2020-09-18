@@ -34,6 +34,10 @@ const {
   commentInput,
 } = require('./modules/comment/comment.graphql');
 const {
+  businessTextType,
+  businessTextInput,
+} = require('./modules/business-text/business-text.graphql');
+const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
@@ -51,6 +55,7 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${businessTextType}
   ${modelType}
   ${contactType}
   ${emailQuestionType}
@@ -210,6 +215,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union BusinessTextResult = BusinessText | Error
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
@@ -250,6 +256,10 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+
+    getAllBusinessTexts: [BusinessText]
+    getBusinessTextById(id: ID!): BusinessTextResult
+    getBusinessTextByCode(code: String!): BusinessTextResult
 
     getModelsByCategory(id: ID!): [Model]
 
@@ -299,6 +309,7 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${businessTextInput}
   ${adminConfirmInput}
   ${adminRegisterInput}
   ${modelInput}
@@ -452,6 +463,14 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
+
+    "BusinessText Mutation"
+    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
+    deleteBusinessText(id: ID!): BusinessTextResult
+    updateBusinessText(
+      id: ID!
+      businessText: BusinessTextInput!
+    ): BusinessTextResult
 
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult

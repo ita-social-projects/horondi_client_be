@@ -108,7 +108,7 @@ padding-top: 100px;
 `;
 };
 
-const adminConfirmationMessage = (token) => {
+const adminConfirmationMessage = token => {
   return `
 <div style="
 background-color:  #3F3F3F;
@@ -150,5 +150,5 @@ href=${process.env.ADMIN_BASE_URI}confirmation/${token}>Перейти за по
 module.exports = {
   confirmationMessage,
   recoveryMessage,
-  adminConfirmationMessage
+  adminConfirmationMessage,
 };
