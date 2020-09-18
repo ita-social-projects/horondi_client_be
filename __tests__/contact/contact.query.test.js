@@ -57,9 +57,10 @@ describe('Contacts queries', () => {
     const res = await client
       .query({
         query: gql`
-          query {
-            getContacts {
-              ... on Contact {
+          query($skip: Int, $limit: Int) {
+            getContacts(skip: $skip, limit: $limit) {
+              items {
+                _id
                 phoneNumber
                 openHours {
                   lang
@@ -71,19 +72,23 @@ describe('Contacts queries', () => {
                 }
                 email
                 images {
-                  medium
+                  value {
+                    medium
+                  }
                 }
                 link
               }
-              ... on Error {
-                message
-                statusCode
-              }
+              count
             }
           }
         `,
+        variables: {
+          skip: 1,
+          limit: 6,
+        },
       })
       .catch(e => e);
+
     expect(res.data.getContacts).toBeDefined();
     expect(res.data.getContacts).toContainEqual({
       __typename: 'Contact',
@@ -92,7 +97,18 @@ describe('Contacts queries', () => {
         { __typename: 'Language', lang: 'en', value: 'Street' },
       ],
       email: 'test@test.com',
-      images: { __typename: 'ImageSet', medium: null },
+      images: [
+        {
+          __typename: 'Language',
+          lang: 'uk',
+          value: { __typename: 'ImageSet', medium: null },
+        },
+        {
+          __typename: 'Language',
+          lang: 'en',
+          value: { __typename: 'ImageSet', medium: null },
+        },
+      ],
       link: 'https://testURL.com',
       openHours: [
         { __typename: 'Language', lang: 'uk', value: 'ПН ...' },
@@ -121,7 +137,9 @@ describe('Contacts queries', () => {
                   }
                   email
                   images {
-                    medium
+                    value {
+                      medium
+                    }
                   }
                   link
                 }
@@ -140,7 +158,7 @@ describe('Contacts queries', () => {
       expect(res.data.getContactById).toBeDefined();
       expect(res.data.getContactById).toHaveProperty(
         'phoneNumber',
-        '1241241242144',
+        '1241241242144'
       );
       expect(res.data.getContactById).toHaveProperty('openHours', [
         {
@@ -169,14 +187,22 @@ describe('Contacts queries', () => {
       ]);
       expect(res.data.getContactById.address).toBeInstanceOf(Object);
       expect(res.data.getContactById).toHaveProperty('email', 'test@test.com');
-      expect(res.data.getContactById).toHaveProperty('images', {
-        __typename: 'ImageSet',
-        medium: null,
-      });
-      expect(res.data.getContactById.images).toBeInstanceOf(Object);
+      expect(res.data.getContactById).toHaveProperty('images', [
+        {
+          __typename: 'Language',
+          lang: 'uk',
+          value: { __typename: 'ImageSet', medium: null },
+        },
+        {
+          __typename: 'Language',
+          lang: 'en',
+          value: { __typename: 'ImageSet', medium: null },
+        },
+      ]);
+      expect(res.data.getContactById.images).toBeInstanceOf(Array);
       expect(res.data.getContactById).toHaveProperty(
         'link',
-        'https://testURL.com',
+        'https://testURL.com'
       );
     } catch (e) {
       console.error(e);
@@ -201,7 +227,9 @@ describe('Contacts queries', () => {
                 }
                 email
                 images {
-                  medium
+                  value {
+                    medium
+                  }
                 }
                 link
               }
@@ -219,7 +247,7 @@ describe('Contacts queries', () => {
     expect(res.data.getContactById).toHaveProperty('statusCode', 404);
     expect(res.data.getContactById).toHaveProperty(
       'message',
-      CONTACT_NOT_FOUND,
+      CONTACT_NOT_FOUND
     );
   });
 });

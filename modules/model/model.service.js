@@ -34,6 +34,14 @@ class ModelsService {
     return Model.findByIdAndUpdate(id, newModel, { new: true });
   }
 
+  async getModelById(id) {
+    const model = await Model.findById(id);
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
+    return model;
+  }
+
   deleteModel(id) {
     return Model.findByIdAndDelete(id);
   }

@@ -12,6 +12,8 @@ const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
 const logger = require('./logger');
+const errorOutputPlugin = require('./plugins/error-output.plugin');
+const formatError = require('./utils/format-error');
 
 connectDB();
 require('dotenv').config();
@@ -43,6 +45,8 @@ const server = new ApolloServer({
       };
     }
   },
+  plugins: [errorOutputPlugin],
+  formatError,
   introspection: true,
   cors: { origin: '*' },
 });
@@ -56,7 +60,9 @@ app.get('/health', (req, res) => res.send('Health page!'));
 server.applyMiddleware({ app });
 
 app.listen(PORT, () => {
-  logger.info(
-    `apollo server started, port: ${PORT}, Graphql path: ${server.graphqlPath}`
+  console.log(
+    'apollo server started, port',
+    PORT,
+    `,Graphql path: ${server.graphqlPath}`
   );
 });

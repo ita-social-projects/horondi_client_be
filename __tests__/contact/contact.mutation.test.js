@@ -102,7 +102,9 @@ describe('Contacts mutations test', () => {
                 }
                 email
                 images {
-                  medium
+                  value {
+                    medium
+                  }
                 }
                 link
               }
@@ -118,13 +120,21 @@ describe('Contacts mutations test', () => {
       .catch(e => e);
     expect(res.data.updateContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com',
+      'updatedtest@updatedtest.com'
     );
-    expect(res.data.updateContact.images).toBeInstanceOf(Object);
-    expect(res.data.updateContact).toHaveProperty('images', {
-      __typename: 'ImageSet',
-      medium: null,
-    });
+    expect(res.data.updateContact.images).toBeInstanceOf(Array);
+    expect(res.data.updateContact).toHaveProperty('images', [
+      {
+        __typename: 'Language',
+        lang: 'uk',
+        value: { __typename: 'ImageSet', medium: null },
+      },
+      {
+        __typename: 'Language',
+        lang: 'en',
+        value: { __typename: 'ImageSet', medium: null },
+      },
+    ]);
     expect(res.data.updateContact).toHaveProperty('address', [
       { __typename: 'Language', lang: 'uk', value: 'updatedВулиця' },
       { __typename: 'Language', lang: 'en', value: 'updatedStreet' },
@@ -150,7 +160,9 @@ describe('Contacts mutations test', () => {
                 }
                 email
                 images {
-                  medium
+                  value {
+                    medium
+                  }
                 }
                 link
               }
@@ -187,7 +199,9 @@ describe('Contacts mutations test', () => {
               }
               email
               images {
-                medium
+                value {
+                  medium
+                }
               }
               link
             }
@@ -205,13 +219,21 @@ describe('Contacts mutations test', () => {
     expect(res.data.deleteContact.openHours).toBeInstanceOf(Array);
     expect(res.data.deleteContact).toHaveProperty(
       'email',
-      'updatedtest@updatedtest.com',
+      'updatedtest@updatedtest.com'
     );
-    expect(res.data.deleteContact.images).toBeInstanceOf(Object);
-    expect(res.data.deleteContact).toHaveProperty('images', {
-      __typename: 'ImageSet',
-      medium: null,
-    });
+    expect(res.data.deleteContact.images).toBeInstanceOf(Array);
+    expect(res.data.deleteContact).toHaveProperty('images', [
+      {
+        __typename: 'Language',
+        lang: 'uk',
+        value: { __typename: 'ImageSet', medium: null },
+      },
+      {
+        __typename: 'Language',
+        lang: 'en',
+        value: { __typename: 'ImageSet', medium: null },
+      },
+    ]);
   });
 
   test('#5 delete not existing contact should return error', async () => {
@@ -232,7 +254,9 @@ describe('Contacts mutations test', () => {
               }
               email
               images {
-                medium
+                value {
+                  medium
+                }
               }
               link
             }

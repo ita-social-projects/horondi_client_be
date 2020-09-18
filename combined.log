@@ -103,3 +103,5 @@
 {"message":"apollo server started, port: 5000, Graphql path: /graphql","level":"info","service":"user-service","timestamp":"2020-09-05T17:02:10.783Z"}
 {"message":"apollo server started, port: 5000, Graphql path: /graphql","level":"info","service":"user-service","timestamp":"2020-09-05T17:02:17.629Z"}
 {"message":"apollo server started, port: 5000, Graphql path: /graphql","level":"info","service":"user-service","timestamp":"2020-09-05T17:02:36.350Z"}
+{"message":"apollo server started, port: 5000, Graphql path: /graphql","level":"info","service":"user-service","timestamp":"2020-09-18T12:25:14.743Z"}
+{"message":"apollo server started, port: 5000, Graphql path: /graphql","level":"info","service":"user-service","timestamp":"2020-09-18T12:25:17.907Z"}

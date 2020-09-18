@@ -22,7 +22,6 @@ describe('Product queries', () => {
       variables: { category: newCategory },
     });
     categoryId = createCategory.data.addCategory._id;
-    categoryName = createCategory.data.addCategory.name;
 
     const createModel = await client.mutate({
       mutation: gql`
