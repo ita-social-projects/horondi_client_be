@@ -158,7 +158,7 @@ describe('Contacts queries', () => {
       expect(res.data.getContactById).toBeDefined();
       expect(res.data.getContactById).toHaveProperty(
         'phoneNumber',
-        '1241241242144',
+        '1241241242144'
       );
       expect(res.data.getContactById).toHaveProperty('openHours', [
         {
@@ -202,7 +202,7 @@ describe('Contacts queries', () => {
       expect(res.data.getContactById.images).toBeInstanceOf(Array);
       expect(res.data.getContactById).toHaveProperty(
         'link',
-        'https://testURL.com',
+        'https://testURL.com'
       );
     } catch (e) {
       console.error(e);
@@ -247,7 +247,7 @@ describe('Contacts queries', () => {
     expect(res.data.getContactById).toHaveProperty('statusCode', 404);
     expect(res.data.getContactById).toHaveProperty(
       'message',
-      CONTACT_NOT_FOUND,
+      CONTACT_NOT_FOUND
     );
   });
 });

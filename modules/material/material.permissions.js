@@ -1,5 +1,8 @@
 const { allow } = require('graphql-shield');
-const { isAuthorizedAdmin } = require('../../utils/rules');
+const { hasRoles } = require('../../utils/rules');
+const { roles } = require('../../consts');
+
+const { ADMIN } = roles;
 
 const materialPermissionsQuery = {
   getAllMaterials: allow,
@@ -7,9 +10,9 @@ const materialPermissionsQuery = {
 };
 
 const materialPermissionsMutations = {
-  addMaterial: isAuthorizedAdmin,
-  deleteMaterial: isAuthorizedAdmin,
-  updateMaterial: isAuthorizedAdmin,
+  addMaterial: hasRoles([ADMIN]),
+  deleteMaterial: hasRoles([ADMIN]),
+  updateMaterial: hasRoles([ADMIN]),
 };
 
 module.exports = { materialPermissionsMutations, materialPermissionsQuery };

@@ -87,6 +87,18 @@
       },
       {
         "kind": "UNION",
+        "name": "BusinessTextResult",
+        "possibleTypes": [
+          {
+            "name": "BusinessText"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
         "name": "LogicalResult",
         "possibleTypes": [
           {
@@ -115,6 +127,30 @@
         "possibleTypes": [
           {
             "name": "Contact"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "UserResult",
+        "possibleTypes": [
+          {
+            "name": "User"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "EmailQuestionResult",
+        "possibleTypes": [
+          {
+            "name": "EmailQuestion"
           },
           {
             "name": "Error"

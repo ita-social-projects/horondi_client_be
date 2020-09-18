@@ -4,8 +4,10 @@ const {
   CATEGORY_NOT_FOUND,
   CATEGORY_IS_NOT_MAIN,
   WRONG_CATEGORY_DATA,
+  IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
 const { validateCategoryInput } = require('../../utils/validate-category');
+const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 
 class CategoryService {
   async getAllCategories() {
@@ -20,21 +22,32 @@ class CategoryService {
     throw new Error(CATEGORY_NOT_FOUND);
   }
 
-  async updateCategory(id, category) {
-    const categoryToUpdate = await Category.findById(id);
-    if (!categoryToUpdate) {
-      throw new Error(CATEGORY_NOT_FOUND);
-    }
+  async updateCategory(id, category, upload) {
+    await this.getCategoryById(id);
     if (await this.checkCategoryExist(category, id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    if (upload) {
+      await deleteFiles(
+        Object.values(category.images).filter(
+          item => typeof item === 'string' && item
+        )
+      );
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      category.images = imageResults.fileNames;
     }
     return await Category.findByIdAndUpdate(id, category, {
       new: true,
     });
   }
 
-  async addCategory(data, parentId) {
+  async addCategory(data, parentId, upload) {
     await validateCategoryInput.validateAsync({ ...data, parentId });
+
+    if (!upload) {
+      throw new Error(IMAGES_NOT_PROVIDED);
+    }
 
     if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
@@ -55,12 +68,16 @@ class CategoryService {
       parentCategory.subcategories.push(savedCategory._id);
       await parentCategory.save();
     }
+
+    const uploadResult = await uploadFiles([upload]);
+    const imageResults = await uploadResult[0];
+    savedCategory.images = imageResults.fileNames;
+
     return await savedCategory.save();
   }
 
   async deleteCategory(id) {
-    const category = await Category.findByIdAndDelete(id);
-
+    const category = await Category.findByIdAndDelete(id).lean();
     if (!category.isMain) {
       const parentCategory = await Category.findOne({
         subcategories: { $in: [id] },
@@ -68,6 +85,12 @@ class CategoryService {
       await this.updateCategory(parentCategory._id, {
         $pull: { subcategories: { $in: [id] } },
       });
+    }
+    const images = Object.values(category.images).filter(
+      item => typeof item === 'string' && item
+    );
+    if (images.length) {
+      deleteFiles(images);
     }
     if (category) {
       return category;
