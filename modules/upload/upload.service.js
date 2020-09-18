@@ -43,8 +43,8 @@ class UploadService {
     });
   }
 
-  async uploadFiles(files) {
-    return files.map(async file => {
+  uploadFiles = async files =>
+    files.map(async file => {
       const { createReadStream, filename } = await file.promise;
 
       const inputStream = createReadStream();
@@ -87,7 +87,6 @@ class UploadService {
         },
       };
     });
-  }
 
   async deleteFiles(files) {
     return files.map(
@@ -98,9 +97,9 @@ class UploadService {
             fileName,
             (err, res) => {
               if (err) {
-                resolve(err);
+                reject(err);
               }
-              reject(res);
+              resolve(res);
             }
           )
         )
