@@ -16,7 +16,6 @@ const userPermissionsMutation = {
   loginAdmin: allow,
   deleteUser: hasRoles([SUPERADMIN]),
   updateUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
-  updateUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   confirmUserEmail: allow,
   recoverUser: allow,
   switchUserStatus: hasRoles([ADMIN, SUPERADMIN]),
