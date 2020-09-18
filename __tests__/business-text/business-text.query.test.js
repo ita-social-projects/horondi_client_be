@@ -2,38 +2,42 @@
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
-const { BUSINESS_TEXT_NOT_FOUND } = require('../../error-messages/business-text.messages');
-const { newBusinessText, notExistBusinessTextId } = require('./business-text.variables');
+const {
+  BUSINESS_TEXT_NOT_FOUND,
+} = require('../../error-messages/business-text.messages');
+const {
+  newBusinessText,
+  notExistBusinessTextId,
+} = require('./business-text.variables');
 
 let businessText = null;
-let businessTextId = '';
 
-describe('Contacts queries', () => {
+describe('Business page queries', () => {
   beforeAll(async () => {
     const res = await client
       .mutate({
         mutation: gql`
           mutation($businessText: BusinessTextInput!) {
-              addBusinessText(businessText: $businessText) {
-                  ... on BusinessText {
-                      _id
-                      code
-                      title {
-                          value
-                          lang
-                      }
-                      text {
-                          value
-                          lang
-                      }
-                  }
-                  ... on Error {
-                      message
-                      statusCode
-                  }
+            addBusinessText(businessText: $businessText) {
+              ... on BusinessText {
+                _id
+                code
+                title {
+                  value
+                  lang
+                }
+                text {
+                  value
+                  lang
+                }
               }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
           }
-      `,
+        `,
         variables: {
           businessText: newBusinessText,
         },
@@ -41,34 +45,34 @@ describe('Contacts queries', () => {
       .then(response => response)
       .catch(e => e);
 
-    businessTextId = res.data.addBusinessText._id;
+    businessText = res.data.addBusinessText;
   });
 
   afterAll(async () => {
     await client.mutate({
       mutation: gql`
-          mutation($id: ID!) {
-              deleteBusinessText(id: $id) {
-                  ... on BusinessText {
-                      _id
-                      code
-                      title {
-                          value
-                          lang
-                      }
-                      text {
-                          value
-                          lang
-                      }
-                  }
-                  ... on Error {
-                      message
-                      statusCode
-                  }
+        mutation($id: ID!) {
+          deleteBusinessText(id: $id) {
+            ... on BusinessText {
+              _id
+              code
+              title {
+                value
+                lang
               }
+              text {
+                value
+                lang
+              }
+            }
+            ... on Error {
+              message
+              statusCode
+            }
           }
+        }
       `,
-      variables: { id: businessTextId },
+      variables: { id: businessText._id },
     });
   });
 
@@ -77,19 +81,19 @@ describe('Contacts queries', () => {
       .query({
         query: gql`
           query {
-              getAllBusinessTexts {
-                  code
-                  title {
-                      value
-                      lang
-                  }
-                  text {
-                      lang
-                      value
-                  }
+            getAllBusinessTexts {
+              code
+              title {
+                value
+                lang
               }
+              text {
+                lang
+                value
+              }
+            }
           }
-      `,
+        `,
       })
       .catch(e => e);
 
@@ -99,31 +103,9 @@ describe('Contacts queries', () => {
     expect(allTexts).toBeDefined();
     expect(justAddedText).toEqual({
       __typename: 'BusinessText',
-      title: [
-        {
-          __typename: 'Language',
-          value: 'НоваБТ',
-          lang: 'uk',
-        },
-        {
-          __typename: 'Language',
-          value: 'NewBT',
-          lang: 'en',
-        },
-      ],
-      code: 'new-code',
-      text: [
-        {
-          __typename: 'Language',
-          value: 'Тут бізнес текст',
-          lang: 'uk',
-        },
-        {
-          __typename: 'Language',
-          value: 'Business text here',
-          lang: 'en',
-        },
-      ],
+      title: newBusinessText.title,
+      code: newBusinessText.code,
+      text: newBusinessText.text,
     });
   });
 
@@ -133,65 +115,37 @@ describe('Contacts queries', () => {
         .query({
           query: gql`
             query($id: ID!) {
-                getBusinessTextById(id: $id) {
-                    ... on BusinessText {
-                        code
-                        title {
-                            value
-                            lang
-                        }
-                        text {
-                            lang
-                            value
-                        }
-                    }
-                    ... on Error {
-                        statusCode
-                        message
-                    }
+              getBusinessTextById(id: $id) {
+                ... on BusinessText {
+                  code
+                  title {
+                    value
+                    lang
+                  }
+                  text {
+                    lang
+                    value
+                  }
                 }
+                ... on Error {
+                  statusCode
+                  message
+                }
+              }
             }
-        `,
-          variables: { id: businessTextId },
+          `,
+          variables: { id: businessText._id },
         })
         .catch(e => e);
 
-      businessText = res.data.getBusinessTextById
+      businessText = res.data.getBusinessTextById;
 
       expect(businessText).toBeDefined();
-      expect(businessText).toHaveProperty(
-        'code',
-        'new-code',
-      );
-      expect(businessText.title)
-        .toBeInstanceOf(Array);
-      expect(businessText)
-        .toHaveProperty('title', [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'НоваБТ',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'NewBT',
-          },
-        ]);
+      expect(businessText).toHaveProperty('code', newBusinessText.code);
+      expect(businessText.title).toBeInstanceOf(Array);
+      expect(businessText).toHaveProperty('title', newBusinessText.title);
       expect(businessText.text).toBeInstanceOf(Array);
-      expect(businessText)
-        .toHaveProperty('text', [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Тут бізнес текст',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Business text here',
-          },
-        ]);
+      expect(businessText).toHaveProperty('text', newBusinessText.text);
     } catch (e) {
       console.error(e);
     }
@@ -202,25 +156,25 @@ describe('Contacts queries', () => {
       .query({
         query: gql`
           query($id: ID!) {
-              getBusinessTextById(id: $id) {
-                  ... on BusinessText {
-                      code
-                      title {
-                          value
-                          lang
-                      }
-                      text {
-                          lang
-                          value
-                      }
-                  }
-                  ... on Error {
-                      statusCode
-                      message
-                  }
+            getBusinessTextById(id: $id) {
+              ... on BusinessText {
+                code
+                title {
+                  value
+                  lang
+                }
+                text {
+                  lang
+                  value
+                }
               }
+              ... on Error {
+                statusCode
+                message
+              }
+            }
           }
-      `,
+        `,
         variables: { id: notExistBusinessTextId },
       })
       .catch(e => e);
@@ -228,7 +182,7 @@ describe('Contacts queries', () => {
     expect(res.data.getBusinessTextById).toHaveProperty('statusCode', 404);
     expect(res.data.getBusinessTextById).toHaveProperty(
       'message',
-      BUSINESS_TEXT_NOT_FOUND,
+      BUSINESS_TEXT_NOT_FOUND
     );
   });
 
@@ -238,65 +192,77 @@ describe('Contacts queries', () => {
         .query({
           query: gql`
             query($code: String!) {
-                getBusinessTextByCode(code: $code) {
-                    ... on BusinessText {
-                        code
-                        title {
-                            value
-                            lang
-                        }
-                        text {
-                            lang
-                            value
-                        }
-                    }
-                    ... on Error {
-                        statusCode
-                        message
-                    }
+              getBusinessTextByCode(code: $code) {
+                ... on BusinessText {
+                  code
+                  title {
+                    value
+                    lang
+                  }
+                  text {
+                    lang
+                    value
+                  }
                 }
+                ... on Error {
+                  statusCode
+                  message
+                }
+              }
             }
-        `,
+          `,
           variables: { code: 'new-code' },
         })
         .catch(e => e);
 
-      businessText = res.data.getBusinessTextByCode
+      businessText = res.data.getBusinessTextByCode;
 
       expect(businessText).toBeDefined();
-      expect(businessText).toHaveProperty(
-        'code',
-        'new-code',
-      );
-      expect(businessText.title)
-        .toBeInstanceOf(Array);
-      expect(businessText)
-        .toHaveProperty('title', [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'НоваБТ',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'NewBT',
-          },
-        ]);
+      expect(businessText).toHaveProperty('code', newBusinessText.code);
+      expect(businessText.title).toBeInstanceOf(Array);
+      expect(businessText).toHaveProperty('title', newBusinessText.title);
       expect(businessText.text).toBeInstanceOf(Array);
-      expect(businessText)
-        .toHaveProperty('text', [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Тут бізнес текст',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Business text here',
-          },
-        ]);
+      expect(businessText).toHaveProperty('text', newBusinessText.text);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  test('#5 Should return error if page by code not found', async () => {
+    try {
+      const res = await client
+        .query({
+          query: gql`
+            query($code: String!) {
+              getBusinessTextByCode(code: $code) {
+                ... on BusinessText {
+                  code
+                  title {
+                    value
+                    lang
+                  }
+                  text {
+                    lang
+                    value
+                  }
+                }
+                ... on Error {
+                  statusCode
+                  message
+                }
+              }
+            }
+          `,
+          variables: { code: 'not-existing-code' },
+        })
+        .catch(e => e);
+
+      expect(res.data.getBusinessTextByCode).toBeDefined();
+      expect(res.data.getBusinessTextByCode).toHaveProperty('statusCode', 404);
+      expect(res.data.getBusinessTextByCode).toHaveProperty(
+        'message',
+        BUSINESS_TEXT_NOT_FOUND
+      );
     } catch (e) {
       console.error(e);
     }
