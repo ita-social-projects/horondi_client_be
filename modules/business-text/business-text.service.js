@@ -28,7 +28,7 @@ class BusinessTextService {
 
   async updateBusinessText(id, businessText) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
-    const currentPage = pages.find(el => el._id !== id);
+    const currentPage = pages.find(el => el._id.toString() !== id);
 
     if (pages.length && currentPage) {
       return {
