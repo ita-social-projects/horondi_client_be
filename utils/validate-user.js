@@ -1,4 +1,5 @@
 const Joi = require('@hapi/joi');
+const {availableForRegistrationRoles} = require('../consts')
 
 exports.validateRegisterInput = Joi.object({
   firstName: Joi.string()
@@ -52,3 +53,11 @@ exports.validateNewPassword = Joi.object({
     .max(20)
     .required(),
 });
+
+exports.validateAdminRegisterInput = Joi.object({
+  email: Joi.string().email({
+    minDomainSegments: 2,
+  }).required(),
+  role: Joi.string()
+  .valid(...availableForRegistrationRoles)
+})

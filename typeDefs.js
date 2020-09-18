@@ -5,15 +5,14 @@ const {
   userInput,
   userRegisterInput,
   LoginInput,
+  adminConfirmInput,
+  adminRegisterInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -38,6 +37,10 @@ const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
+const {
+  emailQuestionType,
+  emailQuestionInput,
+} = require('./modules/email-chat/email-question.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -50,10 +53,12 @@ const typeDefs = gql`
   ${commentType}
   ${modelType}
   ${contactType}
+  ${emailQuestionType}
 
   scalar Upload
 
   enum RoleEnum {
+    superadmin
     admin
     user
   }
@@ -173,6 +178,10 @@ const typeDefs = gql`
     items: [News]
     count: Int
   }
+  type PaginatedMaterials {
+    items: [Material]
+    count: Int
+  }
 
   type PaginatedContacts {
     items: [Contact]
@@ -188,6 +197,12 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+  type EmailAnswer {
+    admin: User!
+    date: String!
+    text: String!
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -198,6 +213,8 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union UserResult = User | Error
+  union EmailQuestionResult = EmailQuestion | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -207,7 +224,7 @@ const typeDefs = gql`
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
-    getAllMaterials: [Material!]!
+    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
     getAllPatterns: [Pattern!]!
@@ -219,6 +236,8 @@ const typeDefs = gql`
     getAllUsers: [User]
     getUserByToken: User
     getUserById(id: ID!): User
+
+    validateConfirmationToken(token: String!): LogicalResult!
 
     getProductById(id: ID!): ProductResult
     getProducts(
@@ -236,6 +255,9 @@ const typeDefs = gql`
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
+
+    getAllEmailQuestions: [EmailQuestion]
+    getEmailQuestionById(id: ID!): EmailQuestionResult
   }
 
   input SortInput {
@@ -277,8 +299,11 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${adminConfirmInput}
+  ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${emailQuestionInput}
 
   input LanguageInput {
     lang: String!
@@ -402,6 +427,7 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
+    registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
@@ -409,9 +435,13 @@ const typeDefs = gql`
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
-    switchUserStatus(id: ID!): LogicalResult
+    switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    completeAdminRegister(
+      user: AdminConfirmInput!
+      token: String!
+    ): LogicalResult!
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -435,6 +465,12 @@ const typeDefs = gql`
     addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
+
+    "EmailChat Mutation"
+    addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestion(id: ID!): EmailQuestionResult
+    makeQuestionSpam(questionId: ID!): EmailQuestionResult
+    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
 

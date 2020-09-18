@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
+const {INVALID_ADMIN_INVITATIONAL_TOKEN} = require('../../error-messages/user.messages')
 
 require('dotenv').config();
 
@@ -455,5 +456,60 @@ describe('Testing obtaining information restrictions', () => {
 
     expect(userInfo.firstName).toEqual(firstName);
     expect(userInfo.lastName).toEqual(lastName);
+  });
+
+  test("Should throw an error when validate invalid token",async () => {
+
+    const invalidAdminToken = 'y' + adminToken.slice(1);
+
+    const result = await client.query({
+      query: gql`
+        query($token: String!){
+          validateConfirmationToken(token: $token) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        token: invalidAdminToken
+      }
+    })
+    .catch(err => err);
+
+    const data = result.data.validateConfirmationToken;
+
+    expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
+
+  });
+
+  test("Should return successful response when token is valid",async () => {
+    const result = await client.query({
+      query: gql`
+        query($token: String!){
+          validateConfirmationToken(token: $token) {
+            ... on SuccessfulResponse {
+              isSuccess
+            }
+            ... on Error {
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        token: adminToken
+      }
+    })
+    .catch(err => err);
+
+    const data = result.data.validateConfirmationToken;
+
+    expect(data.isSuccess).toEqual(true);
+    
   });
 });

@@ -62,14 +62,18 @@ const commentsMutation = {
   },
   addRate: async (parent, args, context) => {
     try {
-      return await commentsService.addRate(args.product, args.userRate, context.user);
+      return await commentsService.addRate(
+        args.product,
+        args.userRate,
+        context.user
+      );
     } catch (error) {
       return {
         statusCode: 400,
         message: error.message,
       };
     }
-  }
+  },
 };
 
 module.exports = { commentsQuery, commentsMutation };
