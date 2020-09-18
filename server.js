@@ -14,6 +14,9 @@ const permissions = require('./permissions');
 const logger = require('./logger');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
+const {
+  INVALID_AUTHORIZATION_TOKEN,
+} = require('./error-messages/user.messages');
 
 connectDB();
 require('dotenv').config();
@@ -38,8 +41,8 @@ const server = new ApolloServer({
     });
     if (token) {
       const user = verifyUser(token);
-      if (!user) throw new AuthenticationError('Invalid authorization token');
-      logger.error({ level: 'error', message: 'Invalid authorization token' });
+      if (!user) throw new AuthenticationError(INVALID_AUTHORIZATION_TOKEN);
+      logger.error({ level: 'error', message: INVALID_AUTHORIZATION_TOKEN });
       return {
         user: await userService.getUserByFieldOrThrow('email', user.email),
       };

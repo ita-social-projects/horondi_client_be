@@ -4,6 +4,8 @@
 /.pnp
 .pnp.js
 package-lock.json
+ error.log
+ combined.log
 
 # testing
 /coverage

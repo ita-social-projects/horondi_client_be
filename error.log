@@ -1,1 +1,47 @@
 {"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-05T17:00:01.596Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:13.902Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:16.384Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.255Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.643Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.657Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.751Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.815Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.932Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:17.994Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T16:58:18.052Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:05.473Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:12.641Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:13.128Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:13.954Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:14.637Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:14.749Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:14.824Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:14.946Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:15.010Z"}
+{"level":"error","message":"Invalid authorization token","service":"user-service","timestamp":"2020-09-18T17:03:15.067Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:15:27.939Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:15:29.197Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:15:30.034Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:15:32.128Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:53.209Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:54.687Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.408Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.527Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.665Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.743Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.845Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.906Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:55.961Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:18:56.169Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:09.073Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:10.316Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:12.731Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:12.772Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:13.111Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:13.220Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:13.285Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:13.390Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:13.444Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:19:13.503Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:20:25.257Z"}
+{"level":"error","message":"INVALID_AUTHORIZATION_TOKEN","service":"user-service","timestamp":"2020-09-18T17:20:26.309Z"}
