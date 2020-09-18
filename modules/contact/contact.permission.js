@@ -1,5 +1,8 @@
-const { allow } = require('graphql-shield');
-const { isAuthorizedAdmin } = require('../../utils/rules');
+const { or, allow } = require('graphql-shield');
+const { isTheSameUser, hasRoles } = require('../../utils/rules');
+const { roles } = require('../../consts');
+
+const { ADMIN, SUPERADMIN } = roles;
 
 const contactPermissionsQuery = {
   getContacts: allow,
@@ -7,9 +10,9 @@ const contactPermissionsQuery = {
 };
 
 const contactPermissionsMutations = {
-  addContact: isAuthorizedAdmin,
-  deleteContact: isAuthorizedAdmin,
-  updateContact: isAuthorizedAdmin,
+  addContact: hasRoles([ADMIN, SUPERADMIN]),
+  deleteContact: hasRoles([ADMIN, SUPERADMIN]),
+  updateContact: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
 };
 
 module.exports = { contactPermissionsQuery, contactPermissionsMutations };
