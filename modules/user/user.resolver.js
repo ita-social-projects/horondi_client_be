@@ -4,6 +4,16 @@ const userQuery = {
   getAllUsers: () => userService.getAllUsers(),
   getUserByToken: (parent, args, context) => context.user,
   getUserById: (parent, args) => userService.getUser(args.id),
+  validateConfirmationToken: (parent, args) => {
+    try {
+      return userService.validateConfirmationToken(args.token);
+    } catch (err) {
+      return {
+        statusCode: 400,
+        message: err.message,
+      };
+    }
+  },
 };
 const userMutation = {
   registerUser: (parent, args) => userService.registerUser(args.user, args.language),
@@ -32,6 +42,26 @@ const userMutation = {
       return {
         statusCode: 400,
         message: e.message,
+      }
+    }
+  },
+  registerAdmin: async (parent, args) => {
+    try {
+      return await userService.registerAdmin(args.user);
+    } catch (err) {
+      return {
+        statusCode: 400,
+        message: err.message,
+      };
+    }
+  },
+  completeAdminRegister: async (parent, args) => {
+    try {
+      return await userService.completeAdminRegister(args.user, args.token);
+    } catch (err) {
+      return {
+        statusCode: 400,
+        message: err.message,
       };
     }
   },

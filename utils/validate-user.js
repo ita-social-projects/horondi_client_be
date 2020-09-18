@@ -1,6 +1,7 @@
 const Joi = require('@hapi/joi');
 const { UserInputError } = require('apollo-server');
 const { INPUT_NOT_VALID } = require('../error-messages/user.messages');
+const { availableForRegistrationRoles } = require('../consts');
 
 exports.validateRegisterInput = Joi.object({
   firstName: Joi.string()
@@ -68,3 +69,12 @@ exports.validateSendConfirmation = Joi.object({
     .integer()
     .min(0),
 }).error(new UserInputError(INPUT_NOT_VALID, { statusCode: 400 }));
+
+exports.validateAdminRegisterInput = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+    })
+    .required(),
+  role: Joi.string().valid(...availableForRegistrationRoles),
+});

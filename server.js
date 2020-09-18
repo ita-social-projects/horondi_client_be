@@ -8,6 +8,8 @@ const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
+const errorOutputPlugin = require('./plugins/error-output.plugin');
+const formatError = require('./utils/format-error');
 
 connectDB();
 require('dotenv').config();
@@ -34,6 +36,8 @@ const server = new ApolloServer({
       };
     }
   },
+  plugins: [errorOutputPlugin],
+  formatError,
   introspection: true,
   cors: { origin: '*' },
 });

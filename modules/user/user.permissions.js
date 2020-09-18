@@ -1,27 +1,30 @@
 const { or, allow } = require('graphql-shield');
-const {
-  isAuthorized,
-  isTheSameUser,
-  isAuthorizedAdmin,
-} = require('../../utils/rules');
+const { isAuthorized, isTheSameUser, hasRoles } = require('../../utils/rules');
+const { roles } = require('../../consts');
+
+const { ADMIN, SUPERADMIN } = roles;
 
 const userPermissionsQuery = {
-  getAllUsers: isAuthorizedAdmin,
-  getUserByToken: allow,
-  getUserById: or(isAuthorizedAdmin, isTheSameUser),
+  getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
+  getUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
+  getUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
+  validateConfirmationToken: allow,
 };
-const userPermissionsMutations = {
+const userPermissionsMutation = {
   registerUser: allow,
   loginUser: allow,
   loginAdmin: allow,
-  deleteUser: isAuthorizedAdmin,
-  updateUserById: or(isTheSameUser, isAuthorizedAdmin),
+  deleteUser: hasRoles([SUPERADMIN]),
+  updateUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
+  updateUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   confirmUserEmail: allow,
   recoverUser: allow,
-  switchUserStatus: isAuthorizedAdmin,
+  switchUserStatus: hasRoles([ADMIN, SUPERADMIN]),
   resetPassword: allow,
   checkIfTokenIsValid: allow,
   sendEmailConfirmation: isAuthorized,
+  registerAdmin: hasRoles([SUPERADMIN]),
+  completeAdminRegister: allow,
 };
 
-module.exports = { userPermissionsMutations, userPermissionsQuery };
+module.exports = { userPermissionsMutation, userPermissionsQuery };

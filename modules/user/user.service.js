@@ -8,12 +8,14 @@ const {
   validateUpdateInput,
   validateNewPassword,
   validateSendConfirmation,
+  validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const { sendEmail } = require('../../utils/sendGrid-email');
 const {
   confirmationMessage,
   recoveryMessage,
+  adminConfirmationMessage,
 } = require('../../utils/localization');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 
@@ -27,11 +29,12 @@ const {
   RESET_PASSWORD_TOKEN_NOT_VALID,
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
+  INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
-  user: 'user',
   admin: 'admin',
+  user: 'user',
 };
 
 const SOURCES = {
@@ -96,8 +99,8 @@ class UserService {
     if (upload) {
       await deleteFiles(
         Object.values(user.images).filter(
-          item => typeof item === 'string' && item
-        )
+          item => typeof item === 'string' && item,
+        ),
       );
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -126,7 +129,7 @@ class UserService {
         ...user._doc,
         ...updatedUser,
       },
-      { new: true }
+      { new: true },
     );
   }
 
@@ -144,7 +147,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
+      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass,
     );
 
     if (user.role === ROLES.user) {
@@ -158,9 +161,7 @@ class UserService {
     const token = generateToken(user._id, user.email);
 
     return {
-      user: {
-        ...user._doc,
-      },
+      ...user._doc,
       _id: user._id,
       token,
     };
@@ -183,7 +184,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass
+      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
     );
 
     if (!match) {
@@ -199,7 +200,9 @@ class UserService {
     };
   }
 
-  async registerUser({ firstName, lastName, email, password }, language) {
+  async registerUser({
+    firstName, lastName, email, password,
+  }, language) {
     await validateRegisterInput.validateAsync({
       firstName,
       lastName,
@@ -328,8 +331,7 @@ class UserService {
       });
     }
 
-    const dayHasPassed =
-      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
+    const dayHasPassed =      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
     if (dayHasPassed) {
       await User.findByIdAndUpdate(user._id, {
         recoveryAttempts: 0,
@@ -352,6 +354,104 @@ class UserService {
     };
     await User.findByIdAndUpdate(user._id, updates);
     return true;
+  }
+
+  async registerAdmin(userInput) {
+    const { email, role } = userInput;
+
+    try {
+      await validateAdminRegisterInput.validateAsync({ email, role });
+    } catch (err) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
+
+    const user = new User({
+      email,
+      role,
+    });
+
+    const savedUser = await user.save();
+    const invitationalToken = await generateToken(
+      savedUser._id,
+      savedUser.email,
+    );
+
+    if (process.env.NODE_ENV === 'test') {
+      return { ...savedUser._doc, invitationalToken };
+    }
+
+    const message = {
+      from: process.env.MAIL_USER,
+      to: savedUser.email,
+      subject: '[Horondi] Invitation to become an admin',
+      html: adminConfirmationMessage(invitationalToken),
+    };
+
+    await sendEmail(message);
+
+    return savedUser;
+  }
+
+  async completeAdminRegister(updatedUser, token) {
+    const { firstName, lastName, password } = updatedUser;
+    let decoded;
+
+    try {
+      await validateRegisterInput.validateAsync({
+        firstName,
+        lastName,
+        password,
+      });
+    } catch (err) {
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+
+    try {
+      decoded = jwt.verify(token, process.env.SECRET);
+    } catch (err) {
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
+        statusCode: 400,
+      });
+    }
+
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
+        statusCode: 400,
+      });
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 12);
+
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.credentials = [
+      {
+        source: 'horondi',
+        tokenPass: encryptedPassword,
+      },
+    ];
+    user.confirmed = true;
+
+    await user.save();
+
+    return { isSuccess: true };
+  }
+
+  validateConfirmationToken(token) {
+    try {
+      jwt.verify(token, process.env.SECRET);
+      return { isSuccess: true };
+    } catch (err) {
+      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
+        statusCode: 400,
+      });
+    }
   }
 }
 module.exports = new UserService();

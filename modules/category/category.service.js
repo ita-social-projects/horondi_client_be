@@ -30,8 +30,8 @@ class CategoryService {
     if (upload) {
       await deleteFiles(
         Object.values(category.images).filter(
-          item => typeof item === 'string' && item
-        )
+          item => typeof item === 'string' && item,
+        ),
       );
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -87,7 +87,7 @@ class CategoryService {
       });
     }
     const images = Object.values(category.images).filter(
-      item => typeof item === 'string' && item
+      item => typeof item === 'string' && item,
     );
     if (images.length) {
       deleteFiles(images);
