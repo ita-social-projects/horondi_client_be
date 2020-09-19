@@ -9,7 +9,39 @@ const imageTypeName = { __typename: 'ImageSet' };
 
 const testValue = 'test value';
 const updateValue = 'update value';
-const patternToAdd = {
+const mutationPatternToAdd = {
+  name: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  images: {
+    large: 'large_335nr4j5dkebkw5cy_test.jpg',
+    medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
+    small: 'small_335nr4j5dkebkw5cy_test.jpg',
+    thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
+  },
+  material: 'test',
+  handmade: false,
+  available: true,
+};
+
+const queryPatternToAdd = {
   name: [
     {
       lang: 'uk',
@@ -81,16 +113,15 @@ const patternAlreadyExist = {
   available: true,
 };
 module.exports = {
-  patternToAdd,
   patternToUpdate,
   patternAlreadyExist,
   patternDoesNotExistId,
-  testValue,
-  updateValue,
   skip,
   limit,
   wrongSkip,
   wrongLimit,
   languageTypeName,
   imageTypeName,
+  queryPatternToAdd,
+  mutationPatternToAdd,
 };

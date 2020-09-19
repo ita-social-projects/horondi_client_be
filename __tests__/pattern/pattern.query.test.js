@@ -10,43 +10,11 @@ const {
   wrongSkip,
   languageTypeName,
   imageTypeName,
-  testValue,
+  queryPatternToAdd,
 } = require('./pattern.variables');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
 let patternId;
-
-const patternToAdd = {
-  name: [
-    {
-      lang: 'uk',
-      value: testValue,
-    },
-    {
-      lang: 'en',
-      value: testValue,
-    },
-  ],
-  description: [
-    {
-      lang: 'uk',
-      value: testValue,
-    },
-    {
-      lang: 'en',
-      value: testValue,
-    },
-  ],
-  images: {
-    large: 'large_335nr4j5dkebkw5cy_test.jpg',
-    medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
-    small: 'small_335nr4j5dkebkw5cy_test.jpg',
-    thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
-  },
-  material: 'test',
-  handmade: false,
-  available: true,
-};
 
 describe('pattern query tests', () => {
   beforeAll(async () => {
@@ -66,7 +34,7 @@ describe('pattern query tests', () => {
           }
         `,
 
-        variables: { pattern: patternToAdd },
+        variables: { pattern: queryPatternToAdd },
       })
       .catch(e => e);
 
@@ -109,13 +77,16 @@ describe('pattern query tests', () => {
       expect(res.data.getAllPatterns).toBeDefined();
       expect(res.data.getAllPatterns.items).toContainEqual({
         __typename: 'Pattern',
-        name: patternToAdd.name.map(item => ({ ...languageTypeName, ...item })),
-        description: patternToAdd.description.map(item => ({
+        name: queryPatternToAdd.name.map(item => ({
           ...languageTypeName,
           ...item,
         })),
-        images: { ...imageTypeName, ...patternToAdd.images },
-        material: patternToAdd.material,
+        description: queryPatternToAdd.description.map(item => ({
+          ...languageTypeName,
+          ...item,
+        })),
+        images: { ...imageTypeName, ...queryPatternToAdd.images },
+        material: queryPatternToAdd.material,
         handmade: false,
         available: true,
       });
@@ -157,7 +128,7 @@ describe('pattern query tests', () => {
       expect(res.data.getPatternById.name).toBeInstanceOf(Array);
       expect(res.data.getPatternById).toHaveProperty(
         'name',
-        patternToAdd.name.map(item => ({
+        queryPatternToAdd.name.map(item => ({
           ...languageTypeName,
           ...item,
         }))
@@ -165,12 +136,12 @@ describe('pattern query tests', () => {
       expect(res.data.getPatternById.images).toBeInstanceOf(Object);
       expect(res.data.getPatternById).toHaveProperty('images', {
         ...imageTypeName,
-        ...patternToAdd.images,
+        ...queryPatternToAdd.images,
       });
       expect(res.data.getPatternById.images).toBeInstanceOf(Object);
       expect(res.data.getPatternById).toHaveProperty(
         'description',
-        ...patternToAdd.description.map(item => ({
+        ...queryPatternToAdd.description.map(item => ({
           ...languageTypeName,
           ...item,
         }))
@@ -178,15 +149,15 @@ describe('pattern query tests', () => {
       expect(res.data.getPatternById.description).toBeInstanceOf(Array);
       expect(res.data.getPatternById).toHaveProperty(
         'material',
-        patternToAdd.material
+        queryPatternToAdd.material
       );
       expect(res.data.getPatternById).toHaveProperty(
         'handmade',
-        patternToAdd.handmade
+        queryPatternToAdd.handmade
       );
       expect(res.data.getPatternById).toHaveProperty(
         'available',
-        patternToAdd.available
+        queryPatternToAdd.available
       );
     });
     test('#3 request not existing pattern should throw error', async () => {
