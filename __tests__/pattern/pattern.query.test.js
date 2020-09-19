@@ -10,12 +10,12 @@ const {
   wrongSkip,
   languageTypeName,
   imageTypeName,
+  testValue,
 } = require('./pattern.variables');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
 let patternId;
 
-const testValue = 't e s t new';
 const patternToAdd = {
   name: [
     {

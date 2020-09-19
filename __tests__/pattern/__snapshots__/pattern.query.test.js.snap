@@ -566,12 +566,12 @@ Object {
         Object {
           "__typename": "Language",
           "lang": "uk",
-          "value": "t e s t new",
+          "value": "test value",
         },
         Object {
           "__typename": "Language",
           "lang": "en",
-          "value": "t e s t new",
+          "value": "test value",
         },
       ],
       "handmade": false,
@@ -587,12 +587,12 @@ Object {
         Object {
           "__typename": "Language",
           "lang": "uk",
-          "value": "t e s t new",
+          "value": "test value",
         },
         Object {
           "__typename": "Language",
           "lang": "en",
-          "value": "t e s t new",
+          "value": "test value",
         },
       ],
     },
@@ -608,12 +608,12 @@ Object {
     Object {
       "__typename": "Language",
       "lang": "uk",
-      "value": "t e s t new",
+      "value": "test value",
     },
     Object {
       "__typename": "Language",
       "lang": "en",
-      "value": "t e s t new",
+      "value": "test value",
     },
   ],
   "handmade": false,
@@ -629,12 +629,12 @@ Object {
     Object {
       "__typename": "Language",
       "lang": "uk",
-      "value": "t e s t new",
+      "value": "test value",
     },
     Object {
       "__typename": "Language",
       "lang": "en",
-      "value": "t e s t new",
+      "value": "test value",
     },
   ],
 }
