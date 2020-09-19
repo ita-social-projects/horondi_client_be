@@ -145,10 +145,6 @@ describe('pattern query tests', () => {
                   handmade
                   available
                 }
-                ... on Error {
-                  statusCode
-                  message
-                }
               }
             }
           `,
@@ -162,7 +158,7 @@ describe('pattern query tests', () => {
       expect(res.data.getPatternById).toHaveProperty(
         'name',
         patternToAdd.name.map(item => ({
-          __typename: 'Language',
+          ...languageTypeName,
           ...item,
         }))
       );
@@ -175,7 +171,7 @@ describe('pattern query tests', () => {
       expect(res.data.getPatternById).toHaveProperty(
         'description',
         ...patternToAdd.description.map(item => ({
-          __typename: 'Language',
+          ...languageTypeName,
           ...item,
         }))
       );
@@ -184,24 +180,21 @@ describe('pattern query tests', () => {
         'material',
         patternToAdd.material
       );
-      expect(res.data.getPatternById.colors).toBeInstanceOf(String);
       expect(res.data.getPatternById).toHaveProperty(
         'handmade',
         patternToAdd.handmade
       );
-      expect(res.data.getPatternById.handmade).toBeInstanceOf(Boolean);
       expect(res.data.getPatternById).toHaveProperty(
         'available',
         patternToAdd.available
       );
-      expect(res.data.getPatternById.available).toBeInstanceOf(Boolean);
     });
     test('#3 request not existing pattern should throw error', async () => {
       const res = await client
         .query({
           query: gql`
             query($id: ID!) {
-              getPatternId(id: $id) {
+              getPatternById(id: $id) {
                 ... on Pattern {
                   name {
                     lang
@@ -231,8 +224,7 @@ describe('pattern query tests', () => {
           variables: { id: patternDoesNotExistId },
         })
         .catch(e => e);
-      console.log(res);
-      expect(res.data.getPatternById).toMatchSnapshot();
+
       expect(res.data.getPatternById).toBeDefined();
       expect(res.data.getPatternById).toHaveProperty('statusCode', 404);
       expect(res.data.getPatternById).toHaveProperty(
