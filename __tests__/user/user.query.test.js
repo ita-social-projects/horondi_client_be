@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const {INVALID_ADMIN_INVITATIONAL_TOKEN} = require('../../error-messages/user.messages')
+const {
+  INVALID_ADMIN_INVITATIONAL_TOKEN,
+} = require('../../error-messages/user.messages');
 
 require('dotenv').config();
 
@@ -176,11 +178,11 @@ describe('queries', () => {
     expect(res.data.getUserByToken).toHaveProperty('lastName', 'User');
     expect(res.data.getUserByToken).toHaveProperty(
       'email',
-      'test.email@gmail.com',
+      'test.email@gmail.com'
     );
     expect(res.data.getUserByToken).toHaveProperty(
       'phoneNumber',
-      '380666666666',
+      '380666666666'
     );
     expect(res.data.getUserByToken).toHaveProperty('role', 'user');
     expect(res.data.getUserByToken).toHaveProperty('address', {
@@ -234,7 +236,7 @@ describe('queries', () => {
     expect(res.data.getUserById).toHaveProperty('lastName', 'User');
     expect(res.data.getUserById).toHaveProperty(
       'email',
-      'test.email@gmail.com',
+      'test.email@gmail.com'
     );
     expect(res.data.getUserById).toHaveProperty('phoneNumber', '380666666666');
     expect(res.data.getUserById).toHaveProperty('role', 'user');
@@ -458,58 +460,57 @@ describe('Testing obtaining information restrictions', () => {
     expect(userInfo.lastName).toEqual(lastName);
   });
 
-  test("Should throw an error when validate invalid token",async () => {
-
+  test('Should throw an error when validate invalid token', async () => {
     const invalidAdminToken = 'y' + adminToken.slice(1);
 
-    const result = await client.query({
-      query: gql`
-        query($token: String!){
-          validateConfirmationToken(token: $token) {
-            ... on SuccessfulResponse {
-              isSuccess
-            }
-            ... on Error {
-              message
+    const result = await client
+      .query({
+        query: gql`
+          query($token: String!) {
+            validateConfirmationToken(token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+              }
             }
           }
-        }
-      `,
-      variables: {
-        token: invalidAdminToken
-      }
-    })
-    .catch(err => err);
+        `,
+        variables: {
+          token: invalidAdminToken,
+        },
+      })
+      .catch(err => err);
 
     const data = result.data.validateConfirmationToken;
 
     expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
-
   });
 
-  test("Should return successful response when token is valid",async () => {
-    const result = await client.query({
-      query: gql`
-        query($token: String!){
-          validateConfirmationToken(token: $token) {
-            ... on SuccessfulResponse {
-              isSuccess
-            }
-            ... on Error {
-              message
+  test('Should return successful response when token is valid', async () => {
+    const result = await client
+      .query({
+        query: gql`
+          query($token: String!) {
+            validateConfirmationToken(token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+              }
             }
           }
-        }
-      `,
-      variables: {
-        token: adminToken
-      }
-    })
-    .catch(err => err);
+        `,
+        variables: {
+          token: adminToken,
+        },
+      })
+      .catch(err => err);
 
     const data = result.data.validateConfirmationToken;
 
     expect(data.isSuccess).toEqual(true);
-    
   });
 });

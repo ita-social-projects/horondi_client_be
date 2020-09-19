@@ -84,6 +84,18 @@
             "name": "Error"
           }
         ]
+      },
+      {
+        "kind": "UNION",
+        "name": "UserResult",
+        "possibleTypes": [
+          {
+            "name": "User"
+          },
+          {
+            "name": "Error"
+          }
+        ]
       }
     ]
   }

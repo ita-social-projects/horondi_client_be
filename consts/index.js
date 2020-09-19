@@ -1,14 +1,12 @@
 const roles = {
-    USER: 'user',
-    ADMIN: 'admin',
-    SUPERADMIN: 'superadmin'
-}
+  USER: 'user',
+  ADMIN: 'admin',
+  SUPERADMIN: 'superadmin',
+};
 
-const availableForRegistrationRoles = [
-    roles.ADMIN
-]
+const availableForRegistrationRoles = [roles.ADMIN];
 
 module.exports = {
-    roles,
-    availableForRegistrationRoles
-}
+  roles,
+  availableForRegistrationRoles,
+};

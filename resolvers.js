@@ -41,6 +41,10 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const {
+  businessTextQuery,
+  businessTextMutation,
+} = require('./modules/business-text/business-text.resolver');
+const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
@@ -59,6 +63,7 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
@@ -83,6 +88,8 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...businessTextQuery,
 
     ...modelsQuery,
 
@@ -152,6 +159,8 @@ const resolvers = {
 
     ...commentsMutation,
 
+    ...businessTextMutation,
+
     ...modelsMutation,
 
     ...contactMutation,
@@ -212,6 +221,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.product) {
         return SCHEMA_NAMES.comment;
+      }
+      return 'Error';
+    },
+  },
+  BusinessTextResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.businessText;
       }
       return 'Error';
     },
