@@ -1,17 +1,17 @@
 const paymentType = `
   type Payment {
     paymentId: String
-    responseStatus: String
+    responseStatus: String!
     checkoutUrl: String
   }
 `
 
 const paymentInput = `
   input PaymentInput {
-      orderId: String
+      orderId: String!
       orderDesc: String
       currency: String
-      amount: Int
+      amount: Int!
   }
 `
 
