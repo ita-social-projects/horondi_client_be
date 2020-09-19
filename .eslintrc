@@ -1,5 +1,6 @@
 {
   "root": true,
+  "parser": "babel-eslint",
   "env": {
     "commonjs": true,
     "es6": true,
@@ -124,6 +125,6 @@
       }
     ],
     "no-confusing-arrow": 0,
-    "implicit-arrow-linebreak": ["error", "below"]
+  
   }
 }

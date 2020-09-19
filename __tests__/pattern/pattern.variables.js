@@ -8,8 +8,12 @@ const user = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASS,
 };
+const languageTypeName = { __typename: 'Language' };
+const imageTypeName = { __typename: 'ImageSet' };
+
 const testValue = 'test value';
 const updateValue = 'update value';
+
 const patternToAdd = {
   name: [
     {
@@ -93,4 +97,6 @@ module.exports = {
   limit,
   wrongSkip,
   wrongLimit,
+  languageTypeName,
+  imageTypeName,
 };

@@ -13,6 +13,12 @@ let modelId;
 let categoryName;
 let categoryId;
 
+require('dotenv').config();
+
+let modelId;
+let categoryName;
+let categoryId;
+
 describe('Product queries', () => {
   beforeAll(async () => {
     const createCategory = await client.mutate({

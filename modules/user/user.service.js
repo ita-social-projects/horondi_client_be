@@ -7,6 +7,7 @@ const {
   validateLoginInput,
   validateUpdateInput,
   validateNewPassword,
+  validateSendConfirmation,
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
@@ -16,6 +17,7 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -23,6 +25,10 @@ const {
   INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
+  PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
+  RESET_PASSWORD_TOKEN_NOT_VALID,
+  AUTHENTICATION_TOKEN_NOT_VALID,
+  USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 
@@ -38,7 +44,13 @@ const SOURCES = {
 class UserService {
   async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, process.env.SECRET);
-    await this.getUserByFieldOrThrow('email', decoded.email);
+    const user = await this.getUserByFieldOrThrow('email', decoded.email);
+
+    if (user.recoveryToken !== token) {
+      throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {
+        statusCode: 400,
+      });
+    }
     return true;
   }
 
@@ -62,7 +74,7 @@ class UserService {
     return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUserById(updatedUser, id) {
+  async updateUserById(updatedUser, id, upload) {
     const { firstName, lastName, email } = updatedUser;
 
     const { errors } = await validateUpdateInput.validateAsync({
@@ -75,20 +87,27 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await this.getUserByFieldOrThrow('_id', id);
+    const user = await User.findById(id).lean();
 
-    if (user._doc.email !== updatedUser.email) {
+    if (user.email !== updatedUser.email) {
       const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
 
-    return User.findByIdAndUpdate(
-      user._id,
-      { ...user._doc, ...updatedUser },
-      { new: true }
-    );
+    if (upload) {
+      await deleteFiles(
+        Object.values(user.images).filter(
+          item => typeof item === 'string' && item
+        )
+      );
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      updatedUser.images = imageResults.fileNames;
+    }
+
+    return User.findByIdAndUpdate(id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
@@ -182,17 +201,12 @@ class UserService {
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
-    const { errors } = await validateRegisterInput.validateAsync({
+    await validateRegisterInput.validateAsync({
       firstName,
       lastName,
       email,
       password,
     });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
-
     if (await User.findOne({ email })) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
@@ -212,12 +226,15 @@ class UserService {
     });
     const savedUser = await user.save();
     const token = await generateToken(savedUser._id, savedUser.email, {
-      EXPIRES_IN: undefined,
+      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: process.env.CONFIRMATION_SECRET,
     });
+    savedUser.confirmationToken = token;
+    await savedUser.save();
     const message = {
       from: process.env.MAIL_USER,
       to: savedUser.email,
-      subject: 'Confirm Email',
+      subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(firstName, token, language),
     };
 
@@ -228,16 +245,44 @@ class UserService {
     return savedUser;
   }
 
+  async sendConfirmationLetter(email, language) {
+    await validateSendConfirmation.validateAsync({ email, language });
+    const user = await this.getUserByFieldOrThrow('email', email);
+    if (user.confirmed) {
+      throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
+    }
+    const token = await generateToken(user._id, user.email, {
+      secret: process.env.CONFIRMATION_SECRET,
+      expiresIn: process.env.RECOVERY_EXPIRE,
+    });
+    user.confirmationToken = token;
+    await user.save();
+    const message = {
+      from: process.env.MAIL_USER,
+      to: user.email,
+      subject: '[HORONDI] Email confirmation',
+      html: confirmationMessage(user.firstName, token, language),
+    };
+    await sendEmail(message);
+    return true;
+  }
+
   async deleteUser(id) {
     const res = await User.findByIdAndDelete(id);
     return res || new Error(USER_NOT_FOUND);
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, process.env.SECRET);
-    const user = await this.getUserByFieldOrThrow('email', decoded.email);
-    user.confirmed = true;
-    await User.findByIdAndUpdate(user._id, user);
+    const decoded = jwt.verify(token, process.env.CONFIRMATION_SECRET);
+    const updates = {
+      $set: {
+        confirmed: true,
+      },
+      $unset: {
+        confirmationToken: '',
+      },
+    };
+    await User.findByIdAndUpdate(decoded.userId, updates);
     return true;
   }
 
@@ -246,16 +291,20 @@ class UserService {
     if (!user) {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
+
     const token = await generateToken(user._id, user.email, {
-      EXPIRES_IN: process.env.RECOVERY_EXPIRE,
+      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: process.env.SECRET,
     });
+    user.recoveryToken = token;
     const message = {
       from: process.env.MAIL_USER,
       to: email,
-      subject: 'Recovery Instructions',
+      subject: '[HORONDI] Instructions for password recovery',
       html: recoveryMessage(user.firstName, token, language),
     };
     await sendEmail(message);
+    await user.save();
     return true;
   }
 
@@ -270,21 +319,39 @@ class UserService {
   }
 
   async resetPassword(password, token) {
-    const { errors } = await validateNewPassword.validateAsync({
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
+    await validateNewPassword.validateAsync({ password });
     const decoded = jwt.verify(token, process.env.SECRET);
-    const user = await User.findOne({ email: decoded.email });
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
+    const user = await this.getUserByFieldOrThrow('email', decoded.email);
+
+    if (user.recoveryToken !== token) {
+      throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
+        statusCode: 400,
+      });
     }
 
-    user.credentials[0].tokenPass = await bcrypt.hash(password, 12);
-    await user.save();
+    const dayHasPassed =
+      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
+    if (dayHasPassed) {
+      await User.findByIdAndUpdate(user._id, {
+        recoveryAttempts: 0,
+        lastRecoveryDate: Date.now(),
+      });
+    }
+    if (user.recoveryAttempts >= 3) {
+      throw new UserInputError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
+        statusCode: 403,
+      });
+    }
+    const updates = {
+      $set: {
+        lastRecoveryDate: Date.now(),
+        recoveryAttempts: !user.recoveryAttempts ? 1 : ++user.recoveryAttempts,
+      },
+      $unset: {
+        recoveryToken: '',
+      },
+    };
+    await User.findByIdAndUpdate(user._id, updates);
     return true;
   }
 
