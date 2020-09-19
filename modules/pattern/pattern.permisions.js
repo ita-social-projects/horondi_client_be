@@ -1,14 +1,16 @@
 const { allow } = require('graphql-shield');
-const { isAuthorizedAdmin } = require('../../utils/rules');
+const { hasRoles } = require('../../utils/rules');
+const { roles } = require('../../consts');
 
+const { ADMIN } = roles;
 const patternPermissionsQuery = {
   getAllPatterns: allow,
   getPatternById: allow,
 };
 const patternPermissionsMutations = {
-  addPattern: isAuthorizedAdmin,
-  updatePattern: isAuthorizedAdmin,
-  deletePattern: isAuthorizedAdmin,
+  addPattern: hasRoles([ADMIN]),
+  updatePattern: hasRoles([ADMIN]),
+  deletePattern: hasRoles([ADMIN]),
 };
 
 module.exports = { patternPermissionsMutations, patternPermissionsQuery };

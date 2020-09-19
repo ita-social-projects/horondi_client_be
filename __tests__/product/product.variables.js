@@ -131,7 +131,7 @@ const getProductForUpdate = (
   categoryId,
   subcategoryId,
   modelId,
-  materialId,
+  materialId
 ) => ({
   model: modelId,
   name: [
@@ -257,7 +257,7 @@ const getSameNameForUpdate = (
   categoryId,
   subcategoryId,
   modelId,
-  materialId,
+  materialId
 ) => ({
   category: categoryId,
   subcategory: subcategoryId,
@@ -456,7 +456,6 @@ module.exports = {
   badProductId,
   newCategory,
   newModel,
-  newMaterial,
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,

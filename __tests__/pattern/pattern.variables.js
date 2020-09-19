@@ -8,9 +8,13 @@ const user = {
   email: process.env.ADMIN_EMAIL,
   password: process.env.ADMIN_PASS,
 };
+const languageTypeName = { __typename: 'Language' };
+const imageTypeName = { __typename: 'ImageSet' };
+
 const testValue = 'test value';
 const updateValue = 'update value';
-const patternToAdd = {
+
+const mutationPatternToAdd = {
   name: [
     {
       lang: 'uk',
@@ -31,12 +35,32 @@ const patternToAdd = {
       value: testValue,
     },
   ],
-  images: {
-    large: 'large_335nr4j5dkebkw5cy_test.jpg',
-    medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
-    small: 'small_335nr4j5dkebkw5cy_test.jpg',
-    thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
-  },
+  material: 'test',
+  handmade: false,
+  available: true,
+};
+
+const queryPatternToAdd = {
+  name: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
   material: 'test',
   handmade: false,
   available: true,
@@ -63,6 +87,15 @@ const patternToUpdate = {
       value: updateValue,
     },
   ],
+  images: {
+    large: 'update',
+    medium: 'update',
+    small: 'update',
+    thumbnail: 'update',
+  },
+  material: 'update',
+  available: true,
+  handmade: false,
 };
 
 const patternAlreadyExist = {
@@ -82,15 +115,16 @@ const patternAlreadyExist = {
   available: true,
 };
 module.exports = {
-  patternToAdd,
   patternToUpdate,
   patternAlreadyExist,
   patternDoesNotExistId,
   user,
-  testValue,
-  updateValue,
   skip,
   limit,
   wrongSkip,
   wrongLimit,
+  languageTypeName,
+  imageTypeName,
+  queryPatternToAdd,
+  mutationPatternToAdd,
 };
