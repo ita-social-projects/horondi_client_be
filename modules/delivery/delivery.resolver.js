@@ -1,56 +1,27 @@
 const deliveryService = require('./delivery.service')
 const { 
-    CITY_NOT_FOUND, 
-    WAREHOUSE_NOT_FOUND,
-    STREET_NOT_FOUND
+    ORDER_CREATION_FAILED,
 }= require('../../error-messages/delivery.message')
 
 const novaPoshtaQuery = {
-    getNovaPoshtaCities: async (parent, args) => {
-        const cities = await deliveryService.getNovaPoshtaCities(args.city);
-        if(cities.length) {
-            return cities
-        }
-        return [{
-            statusCode: 404,
-            message: CITY_NOT_FOUND,
-        }]
-    },
+    getNovaPoshtaCities: async (parent, args) => await deliveryService.getNovaPoshtaCities(args.city),
 
-    getNovaPoshtaStreet: async (parent, args) => {
-        const streets = await deliveryService.getNovaPoshtaStreet(args.cityRef, args.street);
-        if(streets.length) {
-            return streets
-        }
-        return [{
-            statusCode: 404,
-            message: STREET_NOT_FOUND,
-        }]
-    },
+    getNovaPoshtaStreets: async (parent, args) => await deliveryService.getNovaPoshtaStreets(args.cityRef, args.street),
 
-    getNovaPoshtaWarehouses: async (parent, args) => {
-        const cities = await deliveryService.getNovaPoshtaWarehouses(args.city);
-        if(cities.length) {
-            return cities
-        }
-        return [{
-            statusCode: 404,
-            message: WAREHOUSE_NOT_FOUND,
-        }]
-    },
+    getNovaPoshtaWarehouses: async (parent, args) => await deliveryService.getNovaPoshtaWarehouses(args.city),
 
-    getNovaPoshtaPrice: async (parent, args) => {
-        const price = await deliveryService.getNovaPoshtaPrice(args.data);
-        if(price.length) {
-            return price
-        }
-        return [{
-            statusCode: 404,
-            message: WAREHOUSE_NOT_FOUND,
-        }]
-    },
+    getNovaPoshtaPrices: async (parent, args) => await deliveryService.getNovaPoshtaPrices(args.data),
 
-    createNovaPoshtaOrder: async (parent, args) => await deliveryService.createNovaPoshtaOrder(args.data)
+    createNovaPoshtaOrder: async (parent, args) => {
+        try {
+            return await deliveryService.createNovaPoshtaOrder(args.data)
+        }catch (e) {
+            return {
+                statusCode: 400,
+                message: e.message,
+            };
+        };
+    }
 }
 
 const ukrPoshtaQuery = {

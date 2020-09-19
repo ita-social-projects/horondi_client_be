@@ -1,43 +1,43 @@
-const deliveryTypes = ` 
+const deliveryType = ` 
   type NovaPoshtaCity {
-    Description: String
-    Ref: String
-    CityID: String
+    description: String
+    ref: String
+    cityID: String
   }
 
   type NovaPoshtaStreet {
-    Description: String
-    Ref: String
-    StreetsTypeRef: String
-    StreetsType: String
+    description: String
+    ref: String
+    streetsTypeRef: String
+    streetsType: String
   }
 
   type NovaPoshtaWarehouse {
-    Description: String
-    ShortAddress: String
-    Number: Int
-    PlaceMaxWeightAllowed:  Int
-    TotalMaxWeightAllowed: Int
-    Phone: String
-    Ref: String
-    Schedule: WarehouseSchedule
+    description: String
+    shortAddress: String
+    number: Int
+    placeMaxWeightAllowed:  Int
+    totalMaxWeightAllowed: Int
+    phone: String
+    ref: String
+    schedule: WarehouseSchedule
   }
 
   type WarehouseSchedule {
-    Monday: String
-    Tuesday: String
-    Wednesday: String
-    Thursday: String
-    Friday: String
-    Saturday: String
-    Sunday: String
+    monday: String
+    tuesday: String
+    wednesday: String
+    thursday: String
+    friday: String
+    saturday: String
+    sunday: String
   }
 
   type NovaPoshtaPrice {
-      AssessedCost: Int
-      Cost: Int
-      CostRedelivery: Int
-      CostPack: Int
+      assessedCost: Int
+      cost: Int
+      costRedelivery: Int
+      costPack: Int
   }
 
   type UkrPoshtaRegion {
@@ -45,44 +45,44 @@ const deliveryTypes = `
   }
 
   type NovaPoshtaOrder {
-    Ref: String,
-    CostOnSite: Float,
-    IntDocNumber: String,
-    TypeDocument: String
+    ref: String,
+    costOnSite: Float,
+    intDocNumber: String,
+    typeDocument: String
   }
 ` 
 
-const deliveryInputs = ` 
+const deliveryInput = ` 
   input NovaPoshtaOrderInput {
-    CitySender: String,
-    Weight: Float,
-    PayerType: String,
-    PaymentMethod: String,
-    ServiceType: String,
-    Cost: Float,
-    CargoType: String,
-    SeatsAmount: Int,
-    Description: String,
-    RecipientCityName: String,
-    RecipientAddressName: String,
-    RecipientName: String,
-    RecipientType: String,
-    RecipientsPhone: String,
-    RecipientArea: String,
-    RecipientAreaRegions: String,
-    RecipientHouse: String,
-    RecipientFlat: String,
+    citySender: String,
+    weight: Float,
+    payerType: String,
+    paymentMethod: String,
+    serviceType: String,
+    cost: Float,
+    cargoType: String,
+    seatsAmount: Int,
+    description: String,
+    recipientCityName: String,
+    recipientAddressName: String,
+    recipientName: String,
+    recipientType: String,
+    recipientsPhone: String,
+    recipientArea: String,
+    recipientAreaRegions: String,
+    recipientHouse: String,
+    recipientFlat: String,
   }
 
   input NovaPoshtaPriceInput {
-    CitySender: String
-    CityRecipient: String
-    Weight: Float
-    ServiceType: String
-    Cost: Float
-    CargoType: String
-    SeatsAmount: Int
+    citySender: String
+    cityRecipient: String
+    weight: Float
+    serviceType: String
+    cost: Float
+    cargoType: String
+    seatsAmount: Int
   }
 ` 
 
-module.exports = { deliveryTypes, deliveryInputs };
+module.exports = { deliveryType, deliveryInput };

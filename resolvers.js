@@ -43,6 +43,10 @@ const {
   paymentQuery
 } = require('./modules/payment/payment.resolver');
 const {
+  businessTextQuery,
+  businessTextMutation,
+} = require('./modules/business-text/business-text.resolver');
+const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
@@ -61,14 +65,13 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
-  novaPoshtaCity: 'NovaPoshtaCity',
-  novaPoshtaStreet: 'NovaPoshtaStreet',
-  novaPoshtaWarehouse: 'NovaPoshtaWarehouse',
-  novaPoshtaPrice: 'NovaPoshtaPrice',
+  user: 'User',
   emailQuestion: 'EmailQuestion',
+  novaPoshtaOrder: 'NovaPoshtaOrder',
 };
 const resolvers = {
   Query: {
@@ -87,6 +90,8 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...businessTextQuery,
 
     ...modelsQuery,
 
@@ -160,6 +165,8 @@ const resolvers = {
 
     ...commentsMutation,
 
+    ...businessTextMutation,
+
     ...modelsMutation,
 
     ...contactMutation,
@@ -222,6 +229,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  BusinessTextResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.businessText;
+      }
+      return 'Error';
+    },
+  },
   LogicalResult: {
     __resolveType: obj => {
       if (obj.isSuccess) {
@@ -246,34 +261,10 @@ const resolvers = {
       return 'Error';
     },
   },
-  NovaPoshtaCityResult: {
+  UserResult: {
     __resolveType: obj => {
-      if (obj.Ref) {
-        return SCHEMA_NAMES.novaPoshtaCity;
-      }
-      return 'Error';
-    },
-  },
-  NovaPoshtaStreetResult: {
-    __resolveType: obj => {
-      if (obj.Ref) {
-        return SCHEMA_NAMES.novaPoshtaStreet;
-      }
-      return 'Error';
-    },
-  },
-  NovaPoshtaWarehouseResult: {
-    __resolveType: obj => {
-      if (obj.Ref) {
-        return SCHEMA_NAMES.novaPoshtaWarehouse;
-      }
-      return 'Error';
-    },
-  },
-  NovaPoshtaPriceResult: {
-    __resolveType: obj => {
-      if (obj.Cost) {
-        return SCHEMA_NAMES.novaPoshtaPrice;
+      if (obj.email) {
+        return SCHEMA_NAMES.user;
       }
       return 'Error';
     },
@@ -282,6 +273,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
+      }
+      return 'Error';
+    },
+  },
+  NovaPoshtaOrderResult: {
+    __resolveType: obj => {
+      if (obj.intDocNumber) {
+        return SCHEMA_NAMES.novaPoshtaOrder;
       }
       return 'Error';
     },

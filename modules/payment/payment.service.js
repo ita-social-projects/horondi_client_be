@@ -1,7 +1,6 @@
-const request = require('request');
-const util = require('util')
-const post = util.promisify(request.post)
+const axios = require('axios')
 const CloudIpsp = require('cloudipsp-node-js-sdk')
+const { RSA_NO_PADDING } = require('constants')
 const crypto = require('crypto')
 
 
@@ -19,8 +18,8 @@ class PaymentService {
 
     async getPaymentCheckout(data){  
        const {
-            order_id = 'Unique12',
-            order_desc = 'test order',
+            orderId = 'Unique12',
+            orderDesc = 'test order',
             currency = 'UAH',
             amount = 1
         } = data 
@@ -32,46 +31,54 @@ class PaymentService {
             }
           )
           const requestData = {
-            order_id,
-            order_desc,
+            order_id: orderId,
+            order_desc: orderDesc,
             currency,
             amount
           }
-          return await fondy.Checkout(requestData)
-          .then(res => res)
-          .catch((error) => error)
+
+          const res = await fondy.Checkout(requestData)
+            .then(res => res)
+            .catch((error) => error)
+          
+          return {
+            paymentId: res.payment_id,
+            responseStatus: res.response_status,
+            checkoutUrl: res.checkout_url
+          }
     }
 
     async getPaymentRefund({
-      order_id = 'Unique12',
+      orderId = 'Unique12',
       currency = 'UAH',
       amount = 1,
     }){  
       const data = {
-        order_id,
+        orderId,
         currency,
         amount,
-        merchant_id: process.env.PAYMENT_MERCHANT_ID
+        merchantId: process.env.PAYMENT_MERCHANT_ID
       }
       const sig = this.genSignature(data, process.env.PAYMENT_SECRET)
      
-      const res = await post(
+      const res = await axios.post(
           process.env.PAYMENT_API_LINK,
-          { 
-            json: true,
-            body: {
+          {
               request:{
-                order_id, 
+                order_id: orderId, 
                 currency,
                 amount,
                 merchant_id:process.env.PAYMENT_MERCHANT_ID,
                 signature: sig
               }
-            }
           },
       );
-
-      return res
+    
+      return {
+        paymentId: res.data.response.payment_id,
+        responseStatus: res.data.response.response_status,
+        checkoutUrl: res.data.response.checkout_url
+      }
   }
 }
 
