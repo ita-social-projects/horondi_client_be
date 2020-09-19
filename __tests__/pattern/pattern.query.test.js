@@ -48,51 +48,31 @@ const patternToAdd = {
   available: true,
 };
 
-beforeAll(async () => {
-  const res = await client
-    .mutate({
-      mutation: gql`
-        mutation($pattern: PatternInput!) {
-          addPattern(pattern: $pattern) {
-            ... on Pattern {
-              _id
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-
-      variables: { pattern: patternToAdd },
-    })
-    .catch(e => e);
-
-  patternId = res.data.addPattern._id;
-});
-afterAll(async () => {
-  await client
-    .mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deletePattern(id: $id) {
-            ... on Pattern {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: patternId },
-    })
-    .catch(e => e);
-});
-
 describe('pattern query tests', () => {
+  beforeAll(async () => {
+    const res = await client
+      .mutate({
+        mutation: gql`
+          mutation($pattern: PatternInput!) {
+            addPattern(pattern: $pattern) {
+              ... on Pattern {
+                _id
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+
+        variables: { pattern: patternToAdd },
+      })
+      .catch(e => e);
+
+    patternId = res.data.addPattern._id;
+  });
+
   describe('tests for all patterns and one pattern', () => {
     test('#1 Should receive all patterns', async () => {
       const res = await client
@@ -141,137 +121,126 @@ describe('pattern query tests', () => {
       });
     });
     test('#2 Should receive one pattern', async () => {
-      try {
-        const res = await client
-          .query({
-            query: gql`
-              query($id: ID!) {
-                getPatternId(id: $id) {
-                  ... on Pattern {
-                    title {
-                      lang
-                      value
-                    }
-                    text {
-                      lang
-                      value
-                    }
-                    images {
-                      primary {
-                        medium
-                      }
-                      additional {
-                        medium
-                      }
-                    }
-                    author {
-                      name {
-                        lang
-                        value
-                      }
-                    }
-                    date
+      const res = await client
+        .query({
+          query: gql`
+            query($id: ID!) {
+              getPatternById(id: $id) {
+                ... on Pattern {
+                  name {
+                    lang
+                    value
                   }
-                  ... on Error {
-                    statusCode
-                    message
+                  description {
+                    lang
+                    value
                   }
+                  images {
+                    large
+                    medium
+                    small
+                    thumbnail
+                  }
+                  material
+                  handmade
+                  available
+                }
+                ... on Error {
+                  statusCode
+                  message
                 }
               }
-            `,
-            variables: { id: patternId },
-          })
-          .catch(e => e);
+            }
+          `,
+          variables: { id: patternId },
+        })
+        .catch(e => e);
 
-        expect(res.data.getPatternById).toMatchSnapshot();
-        expect(res.data.getPatternById).toBeDefined();
-        expect(res.data.getPatternById.name).toBeInstanceOf(Array);
-        expect(res.data.getPatternById).toHaveProperty(
-          'name',
-          patternToAdd.name
-        );
-        expect(res.data.getPatternById.images).toBeInstanceOf(Object);
-        expect(res.data.getPatternById).toHaveProperty(
-          'images',
-          patternToAdd.images
-        );
-        expect(res.data.getPatternById.images).toBeInstanceOf(Object);
-        expect(res.data.getPatternById).toHaveProperty(
-          'description',
-          patternToAdd.description
-        );
-        expect(res.data.getPatternById.description).toBeInstanceOf(Array);
-        expect(res.data.getPatternById).toHaveProperty(
-          'material',
-          patternToAdd.material
-        );
-        expect(res.data.getPatternById.colors).toBeInstanceOf(String);
-        expect(res.data.getPatternById).toHaveProperty(
-          'handmade',
-          patternToAdd.handmade
-        );
-        expect(res.data.getPatternById.handmade).toBeInstanceOf(Boolean);
-        expect(res.data.getPatternById).toHaveProperty(
-          'available',
-          patternToAdd.available
-        );
-        expect(res.data.getPatternById.available).toBeInstanceOf(Boolean);
-      } catch (e) {
-        console.error(e);
-      }
+      expect(res.data.getPatternById).toMatchSnapshot();
+      expect(res.data.getPatternById).toBeDefined();
+      expect(res.data.getPatternById.name).toBeInstanceOf(Array);
+      expect(res.data.getPatternById).toHaveProperty(
+        'name',
+        patternToAdd.name.map(item => ({
+          __typename: 'Language',
+          ...item,
+        }))
+      );
+      expect(res.data.getPatternById.images).toBeInstanceOf(Object);
+      expect(res.data.getPatternById).toHaveProperty('images', {
+        ...imageTypeName,
+        ...patternToAdd.images,
+      });
+      expect(res.data.getPatternById.images).toBeInstanceOf(Object);
+      expect(res.data.getPatternById).toHaveProperty(
+        'description',
+        ...patternToAdd.description.map(item => ({
+          __typename: 'Language',
+          ...item,
+        }))
+      );
+      expect(res.data.getPatternById.description).toBeInstanceOf(Array);
+      expect(res.data.getPatternById).toHaveProperty(
+        'material',
+        patternToAdd.material
+      );
+      expect(res.data.getPatternById.colors).toBeInstanceOf(String);
+      expect(res.data.getPatternById).toHaveProperty(
+        'handmade',
+        patternToAdd.handmade
+      );
+      expect(res.data.getPatternById.handmade).toBeInstanceOf(Boolean);
+      expect(res.data.getPatternById).toHaveProperty(
+        'available',
+        patternToAdd.available
+      );
+      expect(res.data.getPatternById.available).toBeInstanceOf(Boolean);
     });
     test('#3 request not existing pattern should throw error', async () => {
-      try {
-        const res = await client
-          .query({
-            query: gql`
-              query($id: ID!) {
-                getPatternId(id: $id) {
-                  ... on Pattern {
-                    title {
-                      lang
-                      value
-                    }
-                    text {
-                      lang
-                      value
-                    }
-                    images {
-                      primary {
-                        medium
-                      }
-                      additional {
-                        medium
-                      }
-                    }
-                    author {
-                      name {
-                        lang
-                        value
-                      }
-                    }
-                    date
+      const res = await client
+        .query({
+          query: gql`
+            query($id: ID!) {
+              getPatternId(id: $id) {
+                ... on Pattern {
+                  name {
+                    lang
+                    value
                   }
-                  ... on Error {
-                    statusCode
-                    message
+                  description {
+                    lang
+                    value
                   }
+                  images {
+                    large
+                    medium
+                    small
+                    thumbnail
+                  }
+                  material
+                  handmade
+                  available
+                }
+                ... on Error {
+                  statusCode
+                  message
                 }
               }
-            `,
-            variables: { id: patternDoesNotExistId },
-          })
-          .catch(e => e);
-        expect(res.data.getPatternById).toBeDefined();
-        expect(res.data.getPatternById).toHaveProperty('statusCode', 404);
-        expect(res.data.getPatternById).toHaveProperty(
-          'message',
-          PATTERN_NOT_FOUND
-        );
-      } catch (e) {
-        console.error(e);
-      }
+            }
+          `,
+          variables: { id: patternDoesNotExistId },
+        })
+        .catch(e => e);
+      console.log(res);
+      expect(res.data.getPatternById).toMatchSnapshot();
+      expect(res.data.getPatternById).toBeDefined();
+      expect(res.data.getPatternById).toHaveProperty('statusCode', 404);
+      expect(res.data.getPatternById).toHaveProperty(
+        'message',
+        PATTERN_NOT_FOUND
+      );
     });
+
     test('pattern pagination test', async () => {
       const res = await client
         .query({
@@ -345,5 +314,25 @@ describe('pattern query tests', () => {
         'Skip value must be non-negative, but received: -5'
       );
     });
+  });
+  afterAll(async () => {
+    await client
+      .mutate({
+        mutation: gql`
+          mutation($id: ID!) {
+            deletePattern(id: $id) {
+              ... on Pattern {
+                _id
+              }
+              ... on Error {
+                statusCode
+                message
+              }
+            }
+          }
+        `,
+        variables: { id: patternId },
+      })
+      .catch(e => e);
   });
 });
