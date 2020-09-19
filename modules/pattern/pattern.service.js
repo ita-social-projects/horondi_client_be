@@ -5,8 +5,16 @@ const {
 } = require('../../error-messages/pattern.messages');
 
 class PatternsService {
-  async getAllPatterns() {
-    return await Pattern.find();
+  async getAllPatterns({ skip, limit }) {
+    const items = await Pattern.find()
+      .skip(skip)
+      .limit(limit);
+    const count = await Pattern.find().countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getPatternById(id) {

@@ -16,7 +16,7 @@ require('dotenv').config();
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
-  permissions,
+  permissions
 );
 
 const server = new ApolloServer({
@@ -53,6 +53,6 @@ app.listen(PORT, () => {
   console.log(
     'apollo server started, port',
     PORT,
-    `,Graphql path: ${server.graphqlPath}`,
+    `,Graphql path: ${server.graphqlPath}`
   );
 });

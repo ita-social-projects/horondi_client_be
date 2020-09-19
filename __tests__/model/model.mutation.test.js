@@ -5,6 +5,11 @@ const {
   newCategory,
   newModelMutation,
   newModelUpdated,
+} = require('./model.variables');
+require('dotenv').config();
+
+let modelId; let categoryName; let
+    categoryId;
   wrongId,
 } = require('./model.variables');
 require('dotenv').config();

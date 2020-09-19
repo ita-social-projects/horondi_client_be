@@ -29,8 +29,8 @@ const {
   materialInput,
 } = require('./modules/material/material.graphql');
 const {
-  patternsType,
-  patternsInput,
+  patternType,
+  patternInput,
 } = require('./modules/pattern/pattern.graphql');
 const {
   currencyType,
@@ -58,7 +58,7 @@ const typeDefs = gql`
   ${currencyType}
   ${materialType}
   ${newsType}
-  ${patternsType}
+  ${patternType}
   ${userType}
   ${productType}
   ${commentType}
@@ -187,6 +187,10 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedPatterns {
+    items: [Pattern]
+    count: Int
+  }
   type PaginatedNews {
     items: [News]
     count: Int
@@ -242,7 +246,7 @@ const typeDefs = gql`
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
-    getAllPatterns: [Pattern!]!
+    getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
     getAllOrders: [Order!]!
@@ -316,7 +320,7 @@ const typeDefs = gql`
   ${currencyInput}
   ${materialInput}
   ${newsInput}
-  ${patternsInput}
+  ${patternInput}
   ${userInput}
   ${productInput}
   ${commentInput}
