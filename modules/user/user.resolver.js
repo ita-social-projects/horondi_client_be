@@ -21,15 +21,6 @@ const userMutation = {
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
-  updateUserById: (parent, args, context) =>
-    context.user
-      ? userService.updateUserById(args.user, args.id)
-      : new UserInputError(USER_NOT_AUTHORIZED),
-  updateUserByToken: (parent, args, context) =>
-    context.user
-      ? userService.updateUserByToken(args.user, context.user)
-      : new UserInputError(USER_NOT_AUTHORIZED),
-  confirmUser: (parent, args) => userService.confirmUser(args.token),
   updateUserById: (parent, args) =>
     userService.updateUserById(args.user, args.id, args.upload),
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),

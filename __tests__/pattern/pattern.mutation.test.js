@@ -2,13 +2,13 @@
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 const {
-  patternToAdd,
   patternToUpdate,
   patternAlreadyExist,
   patternDoesNotExistId,
   user,
-  testValue,
-  updateValue,
+  mutationPatternToAdd,
+  languageTypeName,
+  imageTypeName,
 } = require('./pattern.variables');
 const {
   PATTERN_ALREADY_EXIST,
@@ -28,7 +28,7 @@ describe('pattern mutation tests', () => {
     const res = await client
       .mutate({
         context: { headers: { token } },
-        variables: { pattern: patternToAdd },
+        variables: { pattern: mutationPatternToAdd },
         mutation: gql`
           mutation($pattern: PatternInput!) {
             addPattern(pattern: $pattern) {
@@ -62,49 +62,37 @@ describe('pattern mutation tests', () => {
       })
       .catch(e => e);
     patternId = res.data.addPattern._id;
-    expect(res.data.addPattern).toHaveProperty('name', [
-      {
-        __typename: 'Language',
-        lang: 'uk',
-        value: testValue,
-      },
-      {
-        __typename: 'Language',
-        lang: 'en',
-        value: testValue,
-      },
-    ]);
-    expect(res.data.addPattern).toHaveProperty('description', [
-      {
-        __typename: 'Language',
-        lang: 'uk',
-        value: testValue,
-      },
-      {
-        __typename: 'Language',
-        lang: 'en',
-        value: testValue,
-      },
-    ]);
+    const addedPattern = res.data.addPattern;
 
-    expect(res.data.addPattern).toHaveProperty('images', {
-      __typename: 'ImageSet',
-      large: 'large_335nr4j5dkebkw5cy_test.jpg',
-      medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
-      small: 'small_335nr4j5dkebkw5cy_test.jpg',
-      thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
+    expect(addedPattern).toHaveProperty(
+      'name',
+      mutationPatternToAdd.name.map(item => ({
+        ...languageTypeName,
+        ...item,
+      }))
+    );
+    expect(addedPattern).toHaveProperty(
+      'description',
+      mutationPatternToAdd.description.map(item => ({
+        ...languageTypeName,
+        ...item,
+      }))
+    );
+    expect(addedPattern).toHaveProperty('images', {
+      ...imageTypeName,
+      ...mutationPatternToAdd.images,
     });
-    expect(res.data.addPattern).toHaveProperty(
+    expect(addedPattern).toHaveProperty(
       'handmade',
-      patternToAdd.handmade,
+      mutationPatternToAdd.handmade
     );
-    expect(res.data.addPattern).toHaveProperty(
+    expect(addedPattern).toHaveProperty(
       'available',
-      patternToAdd.available,
+      mutationPatternToAdd.available
     );
-    expect(res.data.addPattern).toHaveProperty(
+    expect(addedPattern).toHaveProperty(
       'material',
-      patternToAdd.material,
+      mutationPatternToAdd.material
     );
   });
   it('adding pattern that already exist should return error', async () => {
@@ -133,7 +121,7 @@ describe('pattern mutation tests', () => {
       .catch(e => e);
     expect(res.data.addPattern).toHaveProperty(
       'message',
-      PATTERN_ALREADY_EXIST,
+      PATTERN_ALREADY_EXIST
     );
     expect(res.data.addPattern).toHaveProperty('statusCode', 400);
   });
@@ -174,47 +162,33 @@ describe('pattern mutation tests', () => {
         `,
       })
       .catch(e => e);
+    const updatedPattern = res.data.updatePattern;
 
-    expect(res.data.updatePattern).toHaveProperty('name', [
-      {
-        __typename: 'Language',
-        lang: 'uk',
-        value: testValue,
-      },
-      {
-        __typename: 'Language',
-        lang: 'en',
-        value: testValue,
-      },
-    ]);
-    expect(res.data.updatePattern.name).toBeInstanceOf(Array);
-    expect(res.data.updatePattern).toHaveProperty('description', [
-      {
-        __typename: 'Language',
-        lang: 'uk',
-        value: updateValue,
-      },
-      {
-        __typename: 'Language',
-        lang: 'en',
-        value: updateValue,
-      },
-    ]);
-    expect(res.data.updatePattern.description).toBeInstanceOf(Array);
-    expect(res.data.updatePattern).toHaveProperty('images', {
-      __typename: 'ImageSet',
-      large: 'large_335nr4j5dkebkw5cy_test.jpg',
-      medium: 'medium_335nr4j5dkebkw5cy_test.jpg',
-      small: 'small_335nr4j5dkebkw5cy_test.jpg',
-      thumbnail: 'thumbnail_335nr4j5dkebkw5cy_test.jpg',
-    });
-    expect(res.data.updatePattern).toHaveProperty(
-      'handmade',
-      patternToAdd.handmade,
+    expect(updatedPattern).toHaveProperty(
+      'name',
+      patternToUpdate.name.map(item => ({
+        ...languageTypeName,
+        ...item,
+      }))
     );
-    expect(res.data.updatePattern).toHaveProperty(
+    expect(updatedPattern.name).toBeInstanceOf(Array);
+    expect(updatedPattern).toHaveProperty(
+      'description',
+      patternToUpdate.description.map(item => ({
+        ...languageTypeName,
+        ...item,
+      }))
+    );
+    expect(updatedPattern.description).toBeInstanceOf(Array);
+    expect(updatedPattern).toHaveProperty('images', {
+      ...imageTypeName,
+      ...patternToUpdate.images,
+    });
+
+    expect(updatedPattern).toHaveProperty('handmade', patternToUpdate.handmade);
+    expect(updatedPattern).toHaveProperty(
       'available',
-      patternToAdd.available,
+      patternToUpdate.available
     );
   });
 
@@ -298,7 +272,7 @@ describe('pattern mutation tests', () => {
     expect(res.data.updatePattern).toHaveProperty('statusCode', 400);
     expect(res.data.updatePattern).toHaveProperty(
       'message',
-      PATTERN_ALREADY_EXIST,
+      PATTERN_ALREADY_EXIST
     );
   });
 
