@@ -1,5 +1,6 @@
 {
   "root": true,
+  "parser": "babel-eslint",
   "env": {
     "commonjs": true,
     "es6": true,
@@ -134,6 +135,8 @@
         "avoidEscape": true,
         "allowTemplateLiterals": true
       }
-    ]
+    ],
+    "no-confusing-arrow": 0,
+  
   }
 }

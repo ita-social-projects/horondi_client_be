@@ -4,7 +4,7 @@ const azureStorage = require('azure-storage');
 const blobService = azureStorage.createBlobService(
   process.env.STORAGE_ACCOUNT,
   process.env.ACCESS_KEY,
-  process.env.AZURE_HOST,
+  process.env.AZURE_HOST
 );
 const containerName = 'images';
 const getStream = require('into-stream');
@@ -38,13 +38,13 @@ class UploadService {
             reject(err);
           }
           resolve(imageName);
-        },
+        }
       );
     });
   }
 
-  async uploadFiles(files) {
-    return files.map(async file => {
+  uploadFiles = async files =>
+    files.map(async file => {
       const { createReadStream, filename } = await file.promise;
 
       const inputStream = createReadStream();
@@ -87,20 +87,22 @@ class UploadService {
         },
       };
     });
-  }
 
   async deleteFiles(files) {
     return files.map(
-      async fileName => await new Promise((resolve, reject) => blobService.deleteBlobIfExists(
-        containerName,
-        fileName,
-        (err, res) => {
-          if (err) {
-            resolve(err);
-          }
-          reject(res);
-        },
-      )),
+      async fileName =>
+        await new Promise((resolve, reject) =>
+          blobService.deleteBlobIfExists(
+            containerName,
+            fileName,
+            (err, res) => {
+              if (err) {
+                reject(err);
+              }
+              resolve(res);
+            }
+          )
+        )
     );
   }
 }
