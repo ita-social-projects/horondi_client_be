@@ -2,22 +2,27 @@ const { gql } = require('apollo-boost');
 /* eslint-disable no-undef */
 const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
+const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
+const { adminLogin } = require('../helper-functions');
+
 const {
   patternDoesNotExistId,
   skip,
   limit,
   wrongLimit,
   wrongSkip,
+  user,
   languageTypeName,
   imageTypeName,
   queryPatternToAdd,
 } = require('./pattern.variables');
-const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 
+let token;
 let patternId;
 
 describe('pattern query tests', () => {
   beforeAll(async () => {
+    token = await adminLogin(user);
     const res = await client
       .mutate({
         mutation: gql`
@@ -35,9 +40,9 @@ describe('pattern query tests', () => {
         `,
 
         variables: { pattern: queryPatternToAdd },
+        context: { headers: { token } },
       })
       .catch(e => e);
-
     patternId = res.data.addPattern._id;
   });
 
@@ -295,7 +300,11 @@ describe('pattern query tests', () => {
           }
         `,
         variables: { id: patternId },
+        context: { headers: { token } },
       })
       .catch(e => e);
+    expect(res.graphQLErrors[0].message).toEqual(
+      'Skip value must be non-negative, but received: -5'
+    );
   });
 });

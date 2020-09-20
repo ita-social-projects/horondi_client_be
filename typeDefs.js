@@ -12,14 +12,8 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const {
-  orderTypes,
-  orderInputs,
-} = require('./modules/order/order.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
+const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -188,8 +182,8 @@ const typeDefs = gql`
   }
 
   type PaginatedPatterns {
-    items: [Pattern]
-    count: Int
+    items: [Pattern!]!
+    count: Int!
   }
   type PaginatedNews {
     items: [News]
@@ -430,9 +424,9 @@ const typeDefs = gql`
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!): PatternResult
+    addPattern(pattern: PatternInput!, image: Upload): PatternResult
     deletePattern(id: ID!): PatternResult
-    updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+    updatePattern(id: ID!, pattern: PatternInput!, image: Upload): PatternResult
 
     "Material Mutation"
     addMaterial(material: MaterialInput!): MaterialResult
@@ -469,6 +463,8 @@ const typeDefs = gql`
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!

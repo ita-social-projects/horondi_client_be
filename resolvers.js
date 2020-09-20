@@ -96,7 +96,7 @@ const resolvers = {
     ...contactQuery,
 
     ...ordersQuery,
-    
+
     ...emailChatQuestionQuery,
   },
   Comment: {
@@ -166,7 +166,7 @@ const resolvers = {
     ...contactMutation,
 
     ...ordersMutation,
-    
+
     ...emailChatQuestionMutation,
   },
   CategoryResult: {

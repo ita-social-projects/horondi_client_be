@@ -12,7 +12,7 @@ const ordersQuery = {
       message: ORDER_NOT_FOUND,
     };
   },
-  getAllOrders: async (parent, args) =>  await ordersService.getAllOrders(args)
+  getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
 };
 
 const ordersMutation = {

@@ -60,7 +60,7 @@ type OrderUser {
   email: String
   phoneNumber: String
 }
-`
+`;
 const orderInputs = ` 
 input OrderInput {
   status: Status
@@ -108,9 +108,9 @@ input OrderItemsInput {
   actualPrice: [CurrencySetInput]
   quantity: Int
 }
-`
+`;
 
 module.exports = {
-    orderInputs, 
-    orderTypes
-}
+  orderInputs,
+  orderTypes,
+};

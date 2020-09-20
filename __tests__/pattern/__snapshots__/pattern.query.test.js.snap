@@ -643,7 +643,7 @@ Object {
 exports[`pattern query tests tests for all patterns and one pattern pattern pagination test 1`] = `
 Object {
   "__typename": "PaginatedPatterns",
-  "count": 16,
+  "count": 15,
   "items": Array [
     Object {
       "__typename": "Pattern",

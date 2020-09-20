@@ -1,8 +1,12 @@
 const { shield } = require('graphql-shield');
 const {
-  userPermissionsMutation,
+  userPermissionsMutations,
   userPermissionsQuery,
 } = require('./modules/user/user.permissions');
+const {
+  patternPermissionsMutations,
+  patternPermissionsQuery,
+} = require('./modules/pattern/pattern.permisions');
 const {
   materialPermissionsQuery,
   materialPermissionsMutations,
@@ -12,10 +16,12 @@ const permissions = shield(
   {
     Query: {
       ...userPermissionsQuery,
+      ...patternPermissionsQuery,
       ...materialPermissionsQuery,
     },
     Mutation: {
-      ...userPermissionsMutation,
+      ...userPermissionsMutations,
+      ...patternPermissionsMutations,
       ...materialPermissionsMutations,
     },
   },
