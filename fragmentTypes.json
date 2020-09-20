@@ -135,6 +135,18 @@
       },
       {
         "kind": "UNION",
+        "name": "OrderResult",
+        "possibleTypes": [
+          {
+            "name": "Order"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
         "name": "UserResult",
         "possibleTypes": [
           {

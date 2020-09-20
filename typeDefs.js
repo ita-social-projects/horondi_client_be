@@ -12,6 +12,7 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
+const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
 const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
@@ -58,6 +59,7 @@ const typeDefs = gql`
   ${businessTextType}
   ${modelType}
   ${contactType}
+  ${orderTypes}
   ${emailQuestionType}
 
   scalar Upload
@@ -223,6 +225,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
 
@@ -239,6 +242,9 @@ const typeDefs = gql`
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
+
+    getAllOrders: [Order!]!
+    getOrderById(id: ID): OrderResult
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
@@ -303,6 +309,7 @@ const typeDefs = gql`
     name: [LanguageInput]
     image: ImageSetInput
   }
+
   ${categoryInput}
   ${currencyInput}
   ${materialInput}
@@ -318,6 +325,7 @@ const typeDefs = gql`
   ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${orderInputs}
   ${emailQuestionInput}
 
   input LanguageInput {
@@ -499,6 +507,10 @@ const typeDefs = gql`
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
 
+    "Order Mutation"
+    addOrder(order: OrderInput!): OrderResult
+    updateOrder(id: ID!, order: OrderInput!): OrderResult
+    deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult

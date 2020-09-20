@@ -13,7 +13,6 @@ const imageTypeName = { __typename: 'ImageSet' };
 
 const testValue = 'test value';
 const updateValue = 'update value';
-
 const mutationPatternToAdd = {
   name: [
     {

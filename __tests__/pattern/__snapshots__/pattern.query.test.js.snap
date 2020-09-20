@@ -559,6 +559,83 @@ Object {
         },
       ],
     },
+    Object {
+      "__typename": "Pattern",
+      "available": true,
+      "description": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "test value",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "test value",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "__typename": "ImageSet",
+        "large": "large_335nr4j5dkebkw5cy_test.jpg",
+        "medium": "medium_335nr4j5dkebkw5cy_test.jpg",
+        "small": "small_335nr4j5dkebkw5cy_test.jpg",
+        "thumbnail": "thumbnail_335nr4j5dkebkw5cy_test.jpg",
+      },
+      "material": "test",
+      "name": Array [
+        Object {
+          "__typename": "Language",
+          "lang": "uk",
+          "value": "test value",
+        },
+        Object {
+          "__typename": "Language",
+          "lang": "en",
+          "value": "test value",
+        },
+      ],
+    },
+  ],
+}
+`;
+
+exports[`pattern query tests tests for all patterns and one pattern #2 Should receive one pattern 1`] = `
+Object {
+  "__typename": "Pattern",
+  "available": true,
+  "description": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "test value",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "en",
+      "value": "test value",
+    },
+  ],
+  "handmade": false,
+  "images": Object {
+    "__typename": "ImageSet",
+    "large": "large_335nr4j5dkebkw5cy_test.jpg",
+    "medium": "medium_335nr4j5dkebkw5cy_test.jpg",
+    "small": "small_335nr4j5dkebkw5cy_test.jpg",
+    "thumbnail": "thumbnail_335nr4j5dkebkw5cy_test.jpg",
+  },
+  "material": "test",
+  "name": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "test value",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "en",
+      "value": "test value",
+    },
   ],
 }
 `;
