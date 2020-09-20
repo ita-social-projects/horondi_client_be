@@ -12,7 +12,14 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const { modelType, modelInput } = require('./modules/model/model.graphql');
+const {
+  orderTypes,
+  orderInputs,
+} = require('./modules/order/order.graphql');
+const {
+  modelType,
+  modelInput,
+} = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -22,8 +29,8 @@ const {
   materialInput,
 } = require('./modules/material/material.graphql');
 const {
-  patternsType,
-  patternsInput,
+  patternType,
+  patternInput,
 } = require('./modules/pattern/pattern.graphql');
 const {
   currencyType,
@@ -51,13 +58,14 @@ const typeDefs = gql`
   ${currencyType}
   ${materialType}
   ${newsType}
-  ${patternsType}
+  ${patternType}
   ${userType}
   ${productType}
   ${commentType}
   ${businessTextType}
   ${modelType}
   ${contactType}
+  ${orderTypes}
   ${emailQuestionType}
 
   scalar Upload
@@ -90,7 +98,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -179,6 +187,10 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedPatterns {
+    items: [Pattern]
+    count: Int
+  }
   type PaginatedNews {
     items: [News]
     count: Int
@@ -219,6 +231,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
 
@@ -233,14 +246,17 @@ const typeDefs = gql`
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
-    getAllPatterns: [Pattern!]!
+    getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
+
+    getAllOrders: [Order!]!
+    getOrderById(id: ID): OrderResult
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
-    getUserByToken: User
+    getUserByToken: UserResult
     getUserById(id: ID!): User
 
     validateConfirmationToken(token: String!): LogicalResult!
@@ -299,11 +315,12 @@ const typeDefs = gql`
     name: [LanguageInput]
     image: ImageSetInput
   }
+
   ${categoryInput}
   ${currencyInput}
   ${materialInput}
   ${newsInput}
-  ${patternsInput}
+  ${patternInput}
   ${userInput}
   ${productInput}
   ${commentInput}
@@ -314,6 +331,7 @@ const typeDefs = gql`
   ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${orderInputs}
   ${emailQuestionInput}
 
   input LanguageInput {
@@ -329,7 +347,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -422,9 +440,17 @@ const typeDefs = gql`
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
+    addCategory(
+      category: CategoryInput!
+      parentId: ID
+      upload: Upload
+    ): CategoryResult
     deleteCategory(id: ID!): CategoryResult
-    updateCategory(id: ID!, category: CategoryInput!): CategoryResult
+    updateCategory(
+      id: ID!
+      category: CategoryInput!
+      upload: Upload
+    ): CategoryResult
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult
@@ -442,13 +468,13 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
-    updateUserById(user: UserInput!, id: ID!): User
-    updateUserByToken(user: UserInput!): User
-    confirmUser(token: String!): Boolean
+    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    confirmUserEmail(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    sendEmailConfirmation(email: String!, language: Int!): Boolean
     completeAdminRegister(
       user: AdminConfirmInput!
       token: String!
@@ -485,6 +511,10 @@ const typeDefs = gql`
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
 
+    "Order Mutation"
+    addOrder(order: OrderInput!): OrderResult
+    updateOrder(id: ID!, order: OrderInput!): OrderResult
+    deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult

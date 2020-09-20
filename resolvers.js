@@ -6,6 +6,11 @@ const {
 } = require('./modules/product/product.resolver');
 
 const {
+  ordersQuery,
+  ordersMutation,
+} = require('./modules/order/order.resolver');
+
+const {
   commentsQuery,
   commentsMutation,
 } = require('./modules/comment/comment.resolver');
@@ -62,6 +67,7 @@ const SCHEMA_NAMES = {
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
+  order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
 };
@@ -89,6 +95,8 @@ const resolvers = {
 
     ...contactQuery,
 
+    ...ordersQuery,
+    
     ...emailChatQuestionQuery,
   },
   Comment: {
@@ -157,6 +165,8 @@ const resolvers = {
 
     ...contactMutation,
 
+    ...ordersMutation,
+    
     ...emailChatQuestionMutation,
   },
   CategoryResult: {
@@ -243,6 +253,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
+      }
+      return 'Error';
+    },
+  },
+  OrderResult: {
+    __resolveType: obj => {
+      if (obj.status) {
+        return SCHEMA_NAMES.order;
       }
       return 'Error';
     },
