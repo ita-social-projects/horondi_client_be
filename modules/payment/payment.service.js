@@ -5,23 +5,23 @@ const crypto = require('crypto')
 
 
 class PaymentService {
-  genSignature (data, secret) {
-    const ordered = {}
-    Object.keys(data).sort().forEach(function (key) {
-      if (data[key] !== '' && key !== 'signature' && key !== 'response_signature_string') {
-        ordered[key] = data[key]
-      }
-    })
-    const signString = secret + '|' + Object.values(ordered).join('|')
-    return crypto.createHash('sha1').update(signString).digest('hex')
-  }
+    genSignature (data, secret) {
+      const ordered = {}
+      Object.keys(data).sort().forEach(function (key) {
+        if (data[key] !== '' && key !== 'signature' && key !== 'response_signature_string') {
+          ordered[key] = data[key]
+        }
+      })
+      const signString = secret + '|' + Object.values(ordered).join('|')
+      return crypto.createHash('sha1').update(signString).digest('hex')
+    }
 
     async getPaymentCheckout(data){  
        const {
-            orderId = 'Unique12',
-            orderDesc = 'test order',
-            currency = 'UAH',
-            amount = 1
+            orderId,
+            orderDesc,
+            currency,
+            amount
         } = data 
 
         const fondy = new CloudIpsp(
@@ -49,9 +49,9 @@ class PaymentService {
     }
 
     async getPaymentRefund({
-      orderId = 'Unique12',
-      currency = 'UAH',
-      amount = 1,
+      orderId,
+      currency,
+      amount,
     }){  
       const data = {
         orderId,
