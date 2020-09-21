@@ -379,7 +379,7 @@ describe('Product mutations', () => {
           categoryId,
           subcategoryId,
           modelId,
-          materialId,
+          materialId
         ),
         id: productId,
       },
@@ -463,7 +463,7 @@ describe('Product mutations', () => {
           categoryId,
           subcategoryId,
           modelId,
-          materialId,
+          materialId
         ),
         id: badProductId,
       },
@@ -490,7 +490,7 @@ describe('Product mutations', () => {
           categoryId,
           subcategoryId,
           modelId,
-          materialId,
+          materialId
         ),
       },
     });
@@ -519,7 +519,7 @@ describe('Product mutations', () => {
           categoryId,
           subcategoryId,
           modelId,
-          materialId,
+          materialId
         ),
         id: productId,
       },
@@ -529,7 +529,7 @@ describe('Product mutations', () => {
     expect(productAfterUpdate).toHaveProperty('statusCode', 400);
     expect(productAfterUpdate).toHaveProperty(
       'message',
-      'PRODUCT_ALREADY_EXIST',
+      'PRODUCT_ALREADY_EXIST'
     );
     await client.mutate({
       mutation: gql`
