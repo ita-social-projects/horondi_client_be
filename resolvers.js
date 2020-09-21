@@ -6,6 +6,11 @@ const {
 } = require('./modules/product/product.resolver');
 
 const {
+  ordersQuery,
+  ordersMutation,
+} = require('./modules/order/order.resolver');
+
+const {
   commentsQuery,
   commentsMutation,
 } = require('./modules/comment/comment.resolver');
@@ -36,6 +41,10 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const {
+  businessTextQuery,
+  businessTextMutation,
+} = require('./modules/business-text/business-text.resolver');
+const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
@@ -54,9 +63,11 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   contact: 'Contact',
+  order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
 };
@@ -78,9 +89,13 @@ const resolvers = {
 
     ...commentsQuery,
 
+    ...businessTextQuery,
+
     ...modelsQuery,
 
     ...contactQuery,
+
+    ...ordersQuery,
 
     ...emailChatQuestionQuery,
   },
@@ -144,9 +159,13 @@ const resolvers = {
 
     ...commentsMutation,
 
+    ...businessTextMutation,
+
     ...modelsMutation,
 
     ...contactMutation,
+
+    ...ordersMutation,
 
     ...emailChatQuestionMutation,
   },
@@ -206,6 +225,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  BusinessTextResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.businessText;
+      }
+      return 'Error';
+    },
+  },
   LogicalResult: {
     __resolveType: obj => {
       if (obj.isSuccess) {
@@ -226,6 +253,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
+      }
+      return 'Error';
+    },
+  },
+  OrderResult: {
+    __resolveType: obj => {
+      if (obj.status) {
+        return SCHEMA_NAMES.order;
       }
       return 'Error';
     },
