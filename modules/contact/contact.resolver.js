@@ -3,9 +3,6 @@ const {
   CONTACT_NOT_FOUND,
   CONTACT_ALREADY_EXIST,
 } = require('../../error-messages/contact.messages');
-const Contact = require('./contact.model');
-
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 
 const contactQuery = {
   getContacts: (parent, args) => contactService.getContacts(args),
@@ -17,38 +14,23 @@ const contactQuery = {
 };
 
 const contactMutation = {
-  addContact: async (parent, args) => {
-    try {
-      return await contactService.addContact(args);
-    } catch (error) {
-      return {
-        statusCode: 400,
-        message: CONTACT_ALREADY_EXIST,
-      };
-    }
-  },
+  addContact: async (parent, args) =>
+    (await contactService.addContact(args)) || {
+      statusCode: 400,
+      message: CONTACT_ALREADY_EXIST,
+    },
 
-  deleteContact: async (parent, args) => {
-    try {
-      return await contactService.deleteContact(args.id);
-    } catch (error) {
-      return {
-        statusCode: 404,
-        message: error.message,
-      };
-    }
-  },
+  deleteContact: async (parent, args) =>
+    (await contactService.deleteContact(args.id)) || {
+      statusCode: 404,
+      message: CONTACT_NOT_FOUND,
+    },
 
-  updateContact: async (parent, args) => {
-    try {
-      return await contactService.updateContact(args);
-    } catch (e) {
-      return {
-        statusCode: e.message === CONTACT_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
-    }
-  },
+  updateContact: async (parent, args) =>
+    (await contactService.updateContact(args)) || {
+      statusCode: 404,
+      message: CONTACT_NOT_FOUND,
+    },
 };
 
 module.exports = { contactQuery, contactMutation };
