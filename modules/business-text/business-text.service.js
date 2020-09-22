@@ -39,21 +39,27 @@ class BusinessTextService {
       };
     }
 
+    const newPage = files.length
+      ? await this.pageImageReplaceHandler(businessText, files)
+      : businessText;
     const oldPage = await this.getBusinessTextById(id);
-    const oldImages = this.imageFinder(oldPage);
 
-    const updatedPage = await this.pageImageReplaceHandler(businessText, files);
-    const newImages = this.imageFinder(updatedPage);
+    if (oldPage) {
+      const newImages = this.imageFinder(newPage);
+      const oldImages = this.imageFinder(oldPage);
 
-    const imagesToDelete = oldImages.filter(
-      img => newImages.findIndex(newImg => newImg === img) === -1
-    );
+      const imagesToDelete = oldImages.filter(
+        img => newImages.findIndex(newImg => newImg === img) === -1
+      );
 
-    if (imagesToDelete.length) {
-      await this.deleteNoNeededImages(imagesToDelete);
+      if (imagesToDelete.length) {
+        await this.deleteNoNeededImages(imagesToDelete);
+      }
+    } else {
+      throw new Error(BUSINESS_TEXT_NOT_FOUND);
     }
 
-    const text = await BusinessText.findByIdAndUpdate(id, businessText, {
+    const text = await BusinessText.findByIdAndUpdate(id, newPage, {
       new: true,
     });
 
@@ -68,7 +74,6 @@ class BusinessTextService {
     }
 
     let newPage = '';
-
     if (files.length) {
       newPage = await this.pageImageReplaceHandler(businessText, files);
     }
@@ -77,11 +82,22 @@ class BusinessTextService {
   }
 
   async deleteBusinessText(id) {
+    const oldPage = await this.getBusinessTextById(id);
+
+    if (oldPage) {
+      const imagesToDelete = this.imageFinder(oldPage);
+
+      if (imagesToDelete.length) {
+        await this.deleteNoNeededImages(imagesToDelete);
+      }
+    } else {
+      throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    }
+
     const businessText = await BusinessText.findByIdAndDelete(id);
     if (businessText) {
       return businessText;
     }
-    throw new Error(BUSINESS_TEXT_NOT_FOUND);
   }
 
   async checkBusinessTextExistByCode(data) {
@@ -94,6 +110,7 @@ class BusinessTextService {
     const uploadResult = await uploadFiles(files);
     const imagesResults = await Promise.allSettled(uploadResult);
 
+    const updatedPage = page;
     let newUkText = '';
     let newEnText = '';
 
@@ -103,28 +120,17 @@ class BusinessTextService {
 
       newUkText = newUkText
         ? newUkText.replace(regExp, replacer)
-        : page.text[0].value.replace(regExp, replacer);
+        : updatedPage.text[0].value.replace(regExp, replacer);
+
       newEnText = newEnText
         ? newEnText.replace(regExp, replacer)
-        : page.text[1].value.replace(regExp, replacer);
+        : updatedPage.text[1].value.replace(regExp, replacer);
     });
 
-    //      ********* DIFFERENT VARIANT **************
-    // const updatedTexts = [page.text[0].value, page.text[1].value].map((_newText) => {
-    //   fileNames.forEach((name, i) => {
-    //     const regExp = new RegExp(`src=""(?=.*alt="${name}")`, 'g');
-    //     const replacer = `src="${imagesResults[i].value.prefixUrl}${imagesResults[i].value.fileNames.small}"`;
-    //
-    //     // eslint-disable-next-line no-param-reassign
-    //     _newText = _newText.replace(regExp, replacer)
-    //   })
-    //   return _newText
-    // })
+    updatedPage.text[0].value = newUkText || page.text[0].value;
+    updatedPage.text[1].value = newEnText || page.text[1].value;
 
-    page.text[0].value = newUkText || page.text[0].value;
-    page.text[1].value = newEnText || page.text[1].value;
-
-    return page;
+    return updatedPage;
   }
 
   async deleteNoNeededImages(images) {
@@ -144,9 +150,9 @@ class BusinessTextService {
   }
 
   imageFinder(page) {
-    const images = page.text.flatMap(({ value }) =>
-      value.match(/<img([\w\W]+?)>/g)
-    );
+    const images = page.text
+      .flatMap(({ value }) => value.match(/<img([\w\W]+?)>/g))
+      .filter(val => val);
     const uniqueImages = new Set([...images]);
     return [...uniqueImages];
   }
