@@ -12,6 +12,7 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
+const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
 const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
@@ -22,8 +23,8 @@ const {
   materialInput,
 } = require('./modules/material/material.graphql');
 const {
-  patternsType,
-  patternsInput,
+  patternType,
+  patternInput,
 } = require('./modules/pattern/pattern.graphql');
 const {
   currencyType,
@@ -51,13 +52,14 @@ const typeDefs = gql`
   ${currencyType}
   ${materialType}
   ${newsType}
-  ${patternsType}
+  ${patternType}
   ${userType}
   ${productType}
   ${commentType}
   ${businessTextType}
   ${modelType}
   ${contactType}
+  ${orderTypes}
   ${emailQuestionType}
 
   scalar Upload
@@ -179,6 +181,10 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedPatterns {
+    items: [Pattern!]!
+    count: Int!
+  }
   type PaginatedNews {
     items: [News]
     count: Int
@@ -219,6 +225,7 @@ const typeDefs = gql`
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
 
@@ -233,8 +240,11 @@ const typeDefs = gql`
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
-    getAllPatterns: [Pattern!]!
+    getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
+
+    getAllOrders: [Order!]!
+    getOrderById(id: ID): OrderResult
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
@@ -300,11 +310,12 @@ const typeDefs = gql`
     name: [LanguageInput]
     image: ImageSetInput
   }
+
   ${categoryInput}
   ${currencyInput}
   ${materialInput}
   ${newsInput}
-  ${patternsInput}
+  ${patternInput}
   ${userInput}
   ${productInput}
   ${commentInput}
@@ -315,6 +326,7 @@ const typeDefs = gql`
   ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${orderInputs}
   ${emailQuestionInput}
 
   input LanguageInput {
@@ -413,9 +425,9 @@ const typeDefs = gql`
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!): PatternResult
+    addPattern(pattern: PatternInput!, image: Upload): PatternResult
     deletePattern(id: ID!): PatternResult
-    updatePattern(id: ID!, pattern: PatternInput!): PatternResult
+    updatePattern(id: ID!, pattern: PatternInput!, image: Upload): PatternResult
 
     "Material Mutation"
     addMaterial(material: MaterialInput!): MaterialResult
@@ -452,6 +464,8 @@ const typeDefs = gql`
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
     updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    updateUserByToken(user: UserInput!): User
+    confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!
@@ -494,6 +508,10 @@ const typeDefs = gql`
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
 
+    "Order Mutation"
+    addOrder(order: OrderInput!): OrderResult
+    updateOrder(id: ID!, order: OrderInput!): OrderResult
+    deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
