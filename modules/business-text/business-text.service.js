@@ -4,6 +4,7 @@ const {
   BUSINESS_TEXT_ALREADY_EXIST,
   BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
 } = require('../../error-messages/business-text.messages');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
@@ -26,7 +27,7 @@ class BusinessTextService {
     throw new Error(BUSINESS_TEXT_NOT_FOUND);
   }
 
-  async updateBusinessText(id, businessText) {
+  async updateBusinessText(id, businessText, files) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const currentPage = pages.find(el => el._id.toString() !== id);
 
@@ -44,13 +45,44 @@ class BusinessTextService {
     return text || null;
   }
 
-  async addBusinessText(data) {
-    const pages = await this.checkBusinessTextExistByCode(data);
+  async addBusinessText(businessText, files) {
+    const existingPages = await this.checkBusinessTextExistByCode(businessText);
 
-    if (pages.length) {
+    if (existingPages.length) {
       throw new Error(BUSINESS_TEXT_ALREADY_EXIST);
     }
-    return new BusinessText(data).save();
+
+    if (files.length) {
+      const fileNames = files.map(({ file }) => file.filename);
+      console.log(fileNames);
+
+      const ukText = businessText.text[0].value;
+      const enText = businessText.text[1].value;
+
+      const uploadResult = await uploadFiles(files);
+      const imagesResults = await Promise.allSettled(uploadResult);
+
+      console.log(imagesResults[0].value);
+
+      const updatedText = [ukText, enText].map(text => {
+        let newText = '';
+        fileNames.forEach((name, i) => {
+          newText = text.replace(
+            new RegExp(`src=""(?= alt="${name}")`, 'g'),
+            `src="${imagesResults[i].value.prefixUrl}${imagesResults[i].value.fileNames.small}"`
+          );
+        });
+
+        return newText;
+      });
+
+      businessText.text[0].value = updatedText[0];
+      businessText.text[1].value = updatedText[1];
+
+      console.log(businessText.text);
+
+      return new BusinessText(businessText).save();
+    }
   }
 
   async deleteBusinessText(id) {

@@ -487,11 +487,15 @@ const typeDefs = gql`
     updateComment(id: ID!, comment: commentInput!): CommentResult
 
     "BusinessText Mutation"
-    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
+    addBusinessText(
+      businessText: BusinessTextInput!
+      files: [Upload]!
+    ): BusinessTextResult
     deleteBusinessText(id: ID!): BusinessTextResult
     updateBusinessText(
       id: ID!
       businessText: BusinessTextInput!
+      files: [Upload]!
     ): BusinessTextResult
 
     "Rate Mutation"
