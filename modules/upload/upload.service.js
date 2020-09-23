@@ -91,9 +91,9 @@ class UploadService {
             await new Promise((resolve, reject) =>
                 blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
                     if(err){
-                        resolve(err)
+                        reject(err)
                     }
-                    reject(res)
+                    resolve(res)
                 })
             )
         )

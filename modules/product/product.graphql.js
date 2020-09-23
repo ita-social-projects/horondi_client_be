@@ -43,7 +43,7 @@ patternImages: ImageSetInput
 closure: [LanguageInput]!
 closureColor: String
 basePrice: Int!
-available: Boolean!
+available: Boolean
 isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;

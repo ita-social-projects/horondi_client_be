@@ -102,14 +102,48 @@ class ProductsService {
 		};
 	}
 
-	async updateProduct(id, productData) {
-		const product = await Product.findById(id);
+	async calculatePrice(price) {
+		const { convertOptions } = await Currency.findOne();
+
+		return [
+			{
+				value: Math.round(price * convertOptions[0].exchangeRate * 100),
+				currency: 'UAH'
+			},
+			{
+				value: Math.round(price * 100),
+				currency: 'USD'
+			}
+		]
+	}
+
+	async updateProduct(id, productData, filesToUpload, primary) {
+		const product = await Product.findById(id).lean();
+		let newPrimary;
 		if (!product) {
 			throw new Error(PRODUCT_NOT_FOUND);
 		}
-		if (await this.checkProductExist(productData, id)) {
-			throw new Error(PRODUCT_ALREADY_EXIST);
+		if(primary) {
+			const deleteResults = await deleteFiles(Object.values(product.images.primary))
+			if(await Promise.allSettled(deleteResults)) {
+				const uploadResult = await uploadFiles(primary)
+				const imagesResults = await Promise.allSettled(uploadResult)
+				newPrimary = imagesResults[0].value.fileNames
+				console.log(newPrimary)
+				productData.images.primary = newPrimary
+			}
 		}
+		if(filesToUpload) {
+			const uploadResult = await uploadFiles(filesToUpload)
+			const imagesResults = await Promise.allSettled(uploadResult)
+			const additional = imagesResults.map(res => res.value.fileNames)
+			productData.images.additional = [
+				...product.images.additional,
+				...additional
+			]
+		}
+		const { basePrice } = productData
+		productData.basePrice = await this.calculatePrice(basePrice)
 		const model = await modelService.getModelById(productData.model);
 		productData.model = model.name;
 		return Product.findByIdAndUpdate(id, productData, { new: true });
@@ -125,18 +159,8 @@ class ProductsService {
 		const primary = imagesResults[0].value.fileNames
 		const additional = imagesResults.slice(1).map(res => res.value.fileNames)
 
-		const { convertOptions } = await Currency.findOne();
 		const { basePrice } = productData;
-		productData.basePrice = [
-			{
-				value: Math.round(basePrice * convertOptions[0].exchangeRate * 100),
-				currency: 'UAH'
-			},
-			{
-				value: Math.round(basePrice * 100),
-				currency: 'USD'
-			}
-		];
+		productData.basePrice = await this.calculatePrice(basePrice)
 
 		const model = await modelService.getModelById(productData.model);
 		productData.model = model.name;
@@ -148,7 +172,11 @@ class ProductsService {
 	}
 
 	async deleteProduct(id) {
-		const { images } = await Product.findById(id).lean();
+		const product = await Product.findById(id).lean();
+		if (!product) {
+			throw new Error(PRODUCT_NOT_FOUND);
+		}
+		const { images } = product
 		const { primary, additional } = images
 		const additionalImagesToDelete = Object.assign(...additional)
 		const deletedImages = await deleteFiles([
@@ -170,6 +198,23 @@ class ProductsService {
 			}
 		});
 		return modelCount > 0;
+	}
+
+	async deleteImages(id, imagesToDelete) {
+		const product = await Product.findById(id).lean()
+		const deleteResults = await deleteFiles(imagesToDelete)
+		if(await Promise.allSettled(deleteResults)) {
+			const newImages = product.images.additional.filter(
+				item => !(Object.values(item).filter(image => imagesToDelete.includes(image)).length)
+			)
+			const updatedProduct = await Product.findByIdAndUpdate(id, {
+				images: {
+					primary: product.images.primary,
+					additional: newImages
+				}
+			}, { new: true })
+			return updatedProduct.images
+		}
 	}
 }
 module.exports = new ProductsService();

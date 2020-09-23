@@ -398,7 +398,8 @@ const typeDefs = gql`
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
     deleteProduct(id: ID!): ProductResult
-    updateProduct(id: ID!, product: ProductInput!): ProductResult
+    updateProduct(id: ID!, product: ProductInput!, upload: Upload, primary: Upload): ProductResult
+    deleteImages(id: ID!, images: [String!]!): PrimaryImage
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult

@@ -49,7 +49,7 @@ const productsMutation = {
   },
   updateProduct: async (parent, args) => {
     try {
-      return await productsService.updateProduct(args.id, args.product);
+      return await productsService.updateProduct(args.id, args.product, args.upload, args.primary);
     } catch (e) {
       return {
         statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
@@ -57,6 +57,16 @@ const productsMutation = {
       };
     }
   },
+  deleteImages: async (parent, args) => {
+    try {
+      return await productsService.deleteImages(args.id, args.images)
+    } catch(e) {
+      return {
+        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
+        message: e.message,
+      };
+    }
+  }
 };
 
 module.exports = { productsQuery, productsMutation };
