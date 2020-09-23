@@ -4,7 +4,7 @@ const {
  } = require('../../error-messages/delivery.message')
 
 class NovaPoshtaService {
-  async apiNovaPoshtaRequest(properties, model, method){
+  async getNovaPoshtaRequest(properties, model, method){
     return await axios.post(
       process.env.NOVA_POSHTA_API_LINK,
       {
@@ -17,7 +17,7 @@ class NovaPoshtaService {
   }
 
   async getNovaPoshtaCities(city){  
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         FindByString: city
       }, 'Address', 'getCities')
       
@@ -31,7 +31,7 @@ class NovaPoshtaService {
   }
 
   async getNovaPoshtaStreets(cityRef, street) {
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         CityRef: cityRef,
         FindByString: street
       }, 'Address', 'getStreet')
@@ -47,7 +47,7 @@ class NovaPoshtaService {
   }
 
   async getNovaPoshtaWarehouses(city){  
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         CityName: city
       }, 'AddressGeneral', 'getWarehouses')
 
@@ -84,7 +84,7 @@ class NovaPoshtaService {
           seatsAmount = 1,
       } = data
 
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         CitySender: citySender,
         CityRecipient: cityRecipient,
         Weight: weight,
@@ -93,7 +93,7 @@ class NovaPoshtaService {
         CargoType: cargoType,
         SeatsAmount: seatsAmount,
       }, 'InternetDocument', 'getDocumentPrice')
-
+      
       return res.data.data.map(price => {
         return {
           assessedCost: price.AssessedCost,
@@ -132,7 +132,7 @@ class NovaPoshtaService {
       
       const contactSender = await this.getSenderContact(sender.Ref)
 
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         NewAddress:'1',
         CitySender: citySender,
         Weight: weight,
@@ -173,7 +173,7 @@ class NovaPoshtaService {
   }
 
   async getSenderCounterparty() {
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         CounterpartyProperty: 'Sender',
         Page: '1'
       }, 'Counterparty', 'getCounterparties')
@@ -186,7 +186,7 @@ class NovaPoshtaService {
       
       const street = await this.getNovaPoshtaStreets(cityRef, 'Литвиненка')
 
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
         CounterpartyRef: sender.Ref,
         StreetRef: street[0].ref,
         BuildingNumber: '8',
@@ -197,7 +197,7 @@ class NovaPoshtaService {
   }
 
   async getSenderContact(sender) {
-      const res = await this.apiNovaPoshtaRequest({
+      const res = await this.getNovaPoshtaRequest({
           Ref: sender,
           Page: '1'
       }, 'Counterparty', 'getCounterpartyContactPersons')

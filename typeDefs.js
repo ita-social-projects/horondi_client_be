@@ -85,7 +85,7 @@ const typeDefs = gql`
   }
   type CurrencySet {
     currency: String!
-    value: Int!
+    value: Float!
   }
   type ImageSet {
     large: String
@@ -360,7 +360,7 @@ const typeDefs = gql`
 
   input CurrencySetInput {
     currency: String!
-    value: Int!
+    value: Float!
   }
   input AddressInput {
     country: String
