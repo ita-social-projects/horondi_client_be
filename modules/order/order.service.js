@@ -74,8 +74,43 @@ class OrdersService {
       throw new Error(ORDER_NOT_FOUND);
     }
 
-    if (order.items) {
+    if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
+
+      
+      if(order.delivery.sentBy == "Nova Poshta") {
+        const weight = order.items.reduce((prev, currentItem) => prev + (currentItem.size.weightInKg * currentItem.quantity),0)
+        const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(order.address.city)
+        
+        const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
+          cityRecipient: cityRecipient[0].ref,
+          weight,
+          serviceType: order.delivery.byCourier?'WarehouseDoors':'WarehouseWarehouse',
+          cost: totalItemsPrice[0].value/100,
+        })
+
+        const currency = await Currency.findOne()
+
+        const cost = [
+          {
+            currency: 'UAH',
+            value: deliveryPrice[0].cost * 100,
+          },
+          {
+            currency: 'USD',
+            value: Math.round(deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate  * 100)
+          },
+        ]
+
+        order = {
+          ...order,
+          delivery: {
+            ...order.delivery,
+            cost,
+          }
+        }
+      }
+
 
       const totalPriceToPay = this.calculateTotalPriceToPay(
         order,
