@@ -51,7 +51,7 @@ class NovaPoshtaService {
         CityName: city
       }, 'AddressGeneral', 'getWarehouses')
 
-      return res.data.data.slice(0, 10).map(warehouse => {
+      return res.data.data.map(warehouse => {
         return {
           description: warehouse.Description,
           shortAddress: warehouse.ShortAddress,
