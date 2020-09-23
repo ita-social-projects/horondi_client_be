@@ -159,111 +159,106 @@ describe('querries', () => {
   });
 
   test('#2 Should receive one news', async () => {
-    try {
-      const res = await client
-        .query({
-          query: gql`
-            query($id: ID!) {
-              getNewsById(id: $id) {
-                ... on News {
-                  title {
+    const res = await client
+      .query({
+        query: gql`
+          query($id: ID!) {
+            getNewsById(id: $id) {
+              ... on News {
+                title {
+                  lang
+                  value
+                }
+                text {
+                  lang
+                  value
+                }
+                images {
+                  primary {
+                    medium
+                  }
+                  additional {
+                    medium
+                  }
+                }
+                author {
+                  name {
                     lang
                     value
                   }
-                  text {
-                    lang
-                    value
-                  }
-                  images {
-                    primary {
-                      medium
-                    }
-                    additional {
-                      medium
-                    }
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                  date
                 }
-                ... on Error {
-                  statusCode
-                  message
-                }
+                date
+              }
+              ... on Error {
+                statusCode
+                message
               }
             }
-          `,
-          variables: { id: newsId },
-        })
-        .catch(e => e);
+          }
+        `,
+        variables: { id: newsId },
+      })
+      .catch(e => e);
 
-      expect(res.data.getNewsById).toMatchSnapshot();
-      expect(res.data.getNewsById).toBeDefined();
-      expect(res.data.getNewsById).toHaveProperty('title', [
+    expect(res.data.getNewsById).toBeDefined();
+    expect(res.data.getNewsById).toHaveProperty('title', [
+      {
+        __typename: 'Language',
+        lang: 'uk',
+        value: 'aab',
+      },
+      {
+        __typename: 'Language',
+        lang: 'en',
+        value: 'aab',
+      },
+    ]);
+
+    expect(res.data.getNewsById.title).toBeInstanceOf(Array);
+    expect(res.data.getNewsById).toHaveProperty('text', [
+      {
+        __typename: 'Language',
+        lang: 'uk',
+        value: 'd a s d',
+      },
+      {
+        __typename: 'Language',
+        lang: 'en',
+        value: 'a s d',
+      },
+    ]);
+    expect(res.data.getNewsById.text).toBeInstanceOf(Array);
+    expect(res.data.getNewsById).toHaveProperty('author', {
+      __typename: 'Author',
+      name: [
         {
           __typename: 'Language',
           lang: 'uk',
-          value: 'aab',
+          value: 'a sd',
         },
         {
           __typename: 'Language',
           lang: 'en',
-          value: 'aab',
+          value: 'a sd',
         },
-      ]);
-
-      expect(res.data.getNewsById.title).toBeInstanceOf(Array);
-      expect(res.data.getNewsById).toHaveProperty('text', [
+      ],
+    });
+    expect(res.data.getNewsById.author).toBeInstanceOf(Object);
+    expect(res.data.getNewsById).toHaveProperty('images', {
+      __typename: 'PrimaryImage',
+      primary: {
+        __typename: 'ImageSet',
+        medium: 'ada s.jpg',
+      },
+      additional: [
         {
-          __typename: 'Language',
-          lang: 'uk',
-          value: 'd a s d',
-        },
-        {
-          __typename: 'Language',
-          lang: 'en',
-          value: 'a s d',
-        },
-      ]);
-      expect(res.data.getNewsById.text).toBeInstanceOf(Array);
-      expect(res.data.getNewsById).toHaveProperty('author', {
-        __typename: 'Author',
-        name: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'a sd',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'a sd',
-          },
-        ],
-      });
-      expect(res.data.getNewsById.author).toBeInstanceOf(Object);
-      expect(res.data.getNewsById).toHaveProperty('images', {
-        __typename: 'PrimaryImage',
-        primary: {
           __typename: 'ImageSet',
-          medium: 'ada s.jpg',
+          medium: 'as dasdsa.jpg',
         },
-        additional: [
-          {
-            __typename: 'ImageSet',
-            medium: 'as dasdsa.jpg',
-          },
-        ],
-      });
-      expect(res.data.getNewsById.images).toBeInstanceOf(Object);
-      expect(res.data.getNewsById).toHaveProperty('date', '1111118820047');
-    } catch (e) {
-      console.error(e);
-    }
+      ],
+    });
+    expect(res.data.getNewsById.images).toBeInstanceOf(Object);
+    expect(res.data.getNewsById).toHaveProperty('date', '1111118820047');
   });
 
   test('#3 Returning not existing news should return error message', async () => {

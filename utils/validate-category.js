@@ -1,5 +1,7 @@
 const Joi = require('@hapi/joi');
-const { CATEGORY_DATA_NOT_VALID } = require('../error-messages/category.messages')
+const {
+  CATEGORY_DATA_NOT_VALID,
+} = require('../error-messages/category.messages');
 
 exports.validateCategoryInput = Joi.object({
   name: Joi.array()
@@ -10,5 +12,9 @@ exports.validateCategoryInput = Joi.object({
   subcategories: Joi.array(),
   available: Joi.boolean(),
   isMain: Joi.boolean(),
-  parentId: Joi.when('isMain', { is: false, then: Joi.string().required(), otherwise: Joi.string().allow(null, '') }),
-}).error(new Error(CATEGORY_DATA_NOT_VALID))
+  parentId: Joi.when('isMain', {
+    is: false,
+    then: Joi.string().required(),
+    otherwise: Joi.string().allow(null, ''),
+  }),
+}).error(new Error(CATEGORY_DATA_NOT_VALID));
