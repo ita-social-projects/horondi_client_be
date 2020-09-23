@@ -2,6 +2,10 @@ const axios = require('axios')
 const { 
   ORDER_CREATION_FAILED,
  } = require('../../error-messages/delivery.message')
+const { 
+  horondiAddress, 
+  horondyCityRef 
+} = require('../../consts')
 
 class NovaPoshtaService {
   async getNovaPoshtaRequest(properties, model, method){
@@ -75,7 +79,7 @@ class NovaPoshtaService {
 
   async getNovaPoshtaPrices(data) {
       const {
-          citySender = 'db5c88f5-391c-11dd-90d9-001a92567626',
+          citySender = horondyCityRef,
           cityRecipient,
           weight,
           serviceType = 'WarehouseDoors',
@@ -106,7 +110,7 @@ class NovaPoshtaService {
   
   async createNovaPoshtaOrder(data) {
       const {
-          citySender = 'db5c88f5-391c-11dd-90d9-001a92567626',
+          citySender = horondyCityRef,
           weight,
           payerType = 'Sender',
           paymentMethod = 'Cash',
@@ -117,8 +121,8 @@ class NovaPoshtaService {
           description,
           recipientCityName,
           recipientAddressName,
-          recipientName = 'Тест Тест Тест',
-          recipientType = 'PrivatePerson',
+          recipientName,
+          recipientType,
           recipientsPhone,
           recipientArea = '',
           recipientAreaRegions = '',
@@ -184,13 +188,13 @@ class NovaPoshtaService {
   async getSenderAddress(cityRef) {
       const sender = await this.getSenderCounterparty()
       
-      const street = await this.getNovaPoshtaStreets(cityRef, 'Литвиненка')
+      const street = await this.getNovaPoshtaStreets(cityRef, horondiAddress.street)
 
       const res = await this.getNovaPoshtaRequest({
         CounterpartyRef: sender.Ref,
         StreetRef: street[0].ref,
-        BuildingNumber: '8',
-        Flat: '1', 
+        BuildingNumber: horondiAddress.buidingNumber,
+        Flat: horondiAddress.flat, 
       }, 'Address', 'save')
 
       return res.data.data[0]
