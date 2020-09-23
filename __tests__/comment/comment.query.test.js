@@ -9,6 +9,7 @@ const {
   validEmail,
   invalidEmail,
   productId,
+  wrongData,
 } = require('./comment.variables');
 
 let commentId = '';
@@ -122,6 +123,42 @@ describe('Comment queries', () => {
         `,
       });
 
+      expect(res.data.getAllCommentsByUser).toBeDefined();
+      expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
+      expect(res.data.getAllCommentsByUser).toHaveProperty(
+        'message',
+        COMMENT_NOT_FOUND
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  test('#3 Passing not email string should return error message', async () => {
+    try {
+      const res = await client.query({
+        variables: {
+          userEmail: wrongData,
+        },
+        query: gql`
+          query($userEmail: String) {
+            getAllCommentsByUser(userEmail: $userEmail) {
+              ... on Comment {
+                text
+                date
+                product {
+                  _id
+                }
+                show
+              }
+              ... on Error {
+                statusCode
+                message
+              }
+            }
+          }
+        `,
+      });
       expect(res.data.getAllCommentsByUser).toBeDefined();
       expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
       expect(res.data.getAllCommentsByUser).toHaveProperty(
