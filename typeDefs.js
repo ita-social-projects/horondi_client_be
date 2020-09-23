@@ -5,15 +5,14 @@ const {
   userInput,
   userRegisterInput,
   LoginInput,
+  adminConfirmInput,
+  adminRegisterInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -35,9 +34,17 @@ const {
   commentInput,
 } = require('./modules/comment/comment.graphql');
 const {
+  businessTextType,
+  businessTextInput,
+} = require('./modules/business-text/business-text.graphql');
+const {
   contactType,
   contactInput,
 } = require('./modules/contact/contact.graphql');
+const {
+  emailQuestionType,
+  emailQuestionInput,
+} = require('./modules/email-chat/email-question.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -48,12 +55,15 @@ const typeDefs = gql`
   ${userType}
   ${productType}
   ${commentType}
+  ${businessTextType}
   ${modelType}
   ${contactType}
+  ${emailQuestionType}
 
   scalar Upload
 
   enum RoleEnum {
+    superadmin
     admin
     user
   }
@@ -80,7 +90,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -173,6 +183,10 @@ const typeDefs = gql`
     items: [News]
     count: Int
   }
+  type PaginatedMaterials {
+    items: [Material]
+    count: Int
+  }
 
   type PaginatedContacts {
     items: [Contact]
@@ -193,6 +207,12 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+  type EmailAnswer {
+    admin: User!
+    date: String!
+    text: String!
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -200,9 +220,12 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Product | Error
   union CommentResult = Comment | Error
+  union BusinessTextResult = BusinessText | Error
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union ContactResult = Contact | Error
+  union UserResult = User | Error
+  union EmailQuestionResult = EmailQuestion | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -212,7 +235,7 @@ const typeDefs = gql`
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
-    getAllMaterials: [Material!]!
+    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
 
     getAllPatterns: [Pattern!]!
@@ -222,8 +245,10 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers: [User]
-    getUserByToken: User
+    getUserByToken: UserResult
     getUserById(id: ID!): User
+
+    validateConfirmationToken(token: String!): LogicalResult!
 
     getProductById(id: ID!): ProductResult
     getProducts(
@@ -236,13 +261,20 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
-    getAllCommentsByUser(userEmail: String!): [CommentResult]
+    getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
+
+    getAllBusinessTexts: [BusinessText]
+    getBusinessTextById(id: ID!): BusinessTextResult
+    getBusinessTextByCode(code: String!): BusinessTextResult
 
     getModelsByCategory(id: ID!): [Model]
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
+
+    getAllEmailQuestions: [EmailQuestion]
+    getEmailQuestionById(id: ID!): EmailQuestionResult
   }
 
   input SortInput {
@@ -284,8 +316,12 @@ const typeDefs = gql`
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
+  ${businessTextInput}
+  ${adminConfirmInput}
+  ${adminRegisterInput}
   ${modelInput}
   ${contactInput}
+  ${emailQuestionInput}
 
   input LanguageInput {
     lang: String!
@@ -300,7 +336,7 @@ const typeDefs = gql`
     country: String
     region: String
     city: String
-    zipcode: Int
+    zipcode: String
     street: String
     buildingNumber: String
     appartment: String
@@ -393,9 +429,17 @@ const typeDefs = gql`
     updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
 
     "Category Mutation"
-    addCategory(category: CategoryInput!, parentId: ID): CategoryResult
+    addCategory(
+      category: CategoryInput!
+      parentId: ID
+      upload: Upload
+    ): CategoryResult
     deleteCategory(id: ID!): CategoryResult
-    updateCategory(id: ID!, category: CategoryInput!): CategoryResult
+    updateCategory(
+      id: ID!
+      category: CategoryInput!
+      upload: Upload
+    ): CategoryResult
 
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult
@@ -409,16 +453,21 @@ const typeDefs = gql`
 
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
+    registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): User
-    updateUserById(user: UserInput!, id: ID!): User
-    updateUserByToken(user: UserInput!): User
-    confirmUser(token: String!): Boolean
+    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    confirmUserEmail(token: String!): Boolean
     recoverUser(email: String!, language: Int!): Boolean
-    switchUserStatus(id: ID!): LogicalResult
+    switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    sendEmailConfirmation(email: String!, language: Int!): Boolean
+    completeAdminRegister(
+      user: AdminConfirmInput!
+      token: String!
+    ): LogicalResult!
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -429,6 +478,14 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
+
+    "BusinessText Mutation"
+    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
+    deleteBusinessText(id: ID!): BusinessTextResult
+    updateBusinessText(
+      id: ID!
+      businessText: BusinessTextInput!
+    ): BusinessTextResult
 
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
@@ -442,6 +499,12 @@ const typeDefs = gql`
     addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(id: ID!, contact: contactInput!): ContactResult
+
+    "EmailChat Mutation"
+    addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestion(id: ID!): EmailQuestionResult
+    makeQuestionSpam(questionId: ID!): EmailQuestionResult
+    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
 

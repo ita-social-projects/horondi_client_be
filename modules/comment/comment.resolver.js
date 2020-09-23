@@ -27,16 +27,7 @@ const commentsQuery = {
   },
 
   getAllCommentsByUser: async (parent, args) => {
-    try {
-      return await commentsService.getAllCommentsByUser(args.userEmail);
-    } catch (error) {
-      return [
-        {
-          statusCode: 404,
-          message: error.message,
-        },
-      ];
-    }
+    return await commentsService.getAllCommentsByUser(args.userEmail);
   },
 
   getAllRecentComments: async (parent, args) =>
@@ -56,6 +47,7 @@ const commentsMutation = {
       ];
     }
   },
+
   deleteComment: async (parent, args) => {
     try {
       return await commentsService.deleteComment(args.id);
@@ -66,6 +58,7 @@ const commentsMutation = {
       };
     }
   },
+
   updateComment: async (parent, args) => {
     try {
       return await commentsService.updateComment(args.id, args.comment);
@@ -76,6 +69,7 @@ const commentsMutation = {
       };
     }
   },
+
   addRate: async (parent, args, context) => {
     try {
       return await commentsService.addRate(

@@ -10,6 +10,7 @@ type User{
     address: Address
     images: ImageSet
     token: String
+    invitationalToken: String
     credentials: [Credential]
     registrationDate: String
     wishlist: [ID]
@@ -22,6 +23,7 @@ type User{
 
 const userInput = `
 input UserInput {
+    _id:ID!
     firstName: String
     lastName: String
     password: String
@@ -51,9 +53,25 @@ input userRegisterInput {
     email: String!
 }`;
 
+const adminRegisterInput = `
+input AdminRegisterInput {
+    email: String!
+    role: String!
+}
+`;
+const adminConfirmInput = `
+input AdminConfirmInput {
+    firstName: String!
+    lastName: String!
+    password: String!
+}
+`;
+
 module.exports = {
   userType,
   userInput,
   userRegisterInput,
   LoginInput,
+  adminRegisterInput,
+  adminConfirmInput,
 };
