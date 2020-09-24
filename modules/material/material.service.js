@@ -2,7 +2,11 @@ const Material = require('./material.model');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
+  IMAGE_NOT_PROVIDED,
+  IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
+const { uploadFiles } = require('../upload/upload.service');
+const Currency = require('../currency/currency.model');
 
 class MaterialsService {
   async getAllMaterials({ skip, limit }) {
@@ -32,11 +36,46 @@ class MaterialsService {
     return await Material.findByIdAndUpdate(id, material, { new: true });
   }
 
-  async addMaterial(data) {
-    if (await this.checkMaterialExist(data)) {
+  async addMaterial({ material, images }) {
+    const { additionalPrice, ...rest } = material;
+
+    const currency = await Currency.findOne();
+
+    if (await this.checkMaterialExist(rest)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    return new Material(data).save();
+    if (!images) {
+      throw new Error(IMAGE_NOT_PROVIDED);
+    }
+
+    const uploadResult = await uploadFiles(images);
+    const imageResults = await Promise.allSettled(uploadResult);
+    const resizedImages = imageResults.map(item => item.value.fileNames);
+    if (!resizedImages) {
+      throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    }
+
+    const mappedColors = material.colors.map((item, index) => ({
+      ...item,
+      images: resizedImages[index],
+    }));
+
+    return new Material({
+      ...rest,
+      additionalPrice: [
+        {
+          currency: 'UAH',
+          value:
+            additionalPrice *
+            Math.round(currency.convertOptions[0].exchangeRate * 100),
+        },
+        {
+          currency: 'USD',
+          value: additionalPrice * 100,
+        },
+      ],
+      colors: mappedColors,
+    }).save();
   }
 
   async deleteMaterial(id) {

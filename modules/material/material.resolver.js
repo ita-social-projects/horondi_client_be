@@ -2,8 +2,6 @@ const materialService = require('./material.service');
 const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
-const { uploadFiles } = require('../upload/upload.service');
-const Currency = require('./material.model');
 
 const materialQuery = {
   getAllMaterials: async (parent, args) =>
@@ -22,69 +20,8 @@ const materialQuery = {
 
 const materialMutation = {
   addMaterial: async (parent, args) => {
-    const currency = Currency.findOne({});
-
-    const { additionalPrice, ...material } = args.material;
     try {
-      if (!args.upload) {
-        return await materialService.addMaterial({
-          ...material,
-          additionalPrice: [
-            {
-              currency: 'UAH',
-              value:
-                additionalPrice * currency.convertOptions[0].exchangeRate * 100,
-            },
-            {
-              currency: 'USD',
-              value: additionalPrice,
-            },
-          ],
-        });
-      }
-      const uploadResult = await uploadFiles([args.upload]);
-
-      const imageResults = await uploadResult;
-
-      const images = imageResults.fileNames;
-      if (!images) {
-        return await materialService.addMaterial({
-          ...material,
-          additionalPrice: [
-            {
-              currency: 'UAH',
-              value:
-                additionalPrice * currency.convertOptions[0].exchangeRate * 100,
-            },
-            {
-              currency: 'USD',
-              value: additionalPrice,
-            },
-          ],
-        });
-      }
-
-      const mappedColors = args.material.colors.map((item, index) => [
-        ...item,
-        images[index],
-      ]);
-      return await materialService.addMaterial({
-        ...{
-          ...material,
-          additionalPrice: [
-            {
-              currency: 'UAH',
-              value:
-                additionalPrice * currency.convertOptions[0].exchangeRate * 100,
-            },
-            {
-              currency: 'USD',
-              value: additionalPrice,
-            },
-          ],
-        },
-        colors: mappedColors,
-      });
+      return await materialService.addMaterial(args);
     } catch (e) {
       return {
         statusCode: 400,

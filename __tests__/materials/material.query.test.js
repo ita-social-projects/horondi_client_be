@@ -58,59 +58,58 @@ const material = {
   ],
 };
 
-beforeAll(async () => {
-  token = await adminLogin(user);
-
-  const res = await client
-    .mutate({
-      context: {
-        headers: {
-          token,
-        },
-      },
-      variables: { material },
-      mutation: gql`
-        mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
-            ... on Material {
-              _id
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-    })
-    .catch(e => e);
-
-  materialId = res.data.addMaterial._id;
-});
-
-afterAll(async () => {
-  await client
-    .mutate({
-      context: { headers: { token } },
-      variables: { id: materialId },
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteMaterial(id: $id) {
-            ... on Material {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-    })
-    .catch(e => e);
-});
-
 describe('material querries test', () => {
+  beforeAll(async () => {
+    token = await adminLogin(user);
+
+    const res = await client
+      .mutate({
+        context: {
+          headers: {
+            token,
+          },
+        },
+        variables: { material },
+        mutation: gql`
+          mutation($material: MaterialInput!) {
+            addMaterial(material: $material) {
+              ... on Material {
+                _id
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+
+    materialId = res.data.addMaterial._id;
+  });
+
+  afterAll(async () => {
+    await client
+      .mutate({
+        context: { headers: { token } },
+        variables: { id: materialId },
+        mutation: gql`
+          mutation($id: ID!) {
+            deleteMaterial(id: $id) {
+              ... on Material {
+                _id
+              }
+              ... on Error {
+                statusCode
+                message
+              }
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+  });
   describe('materials and one material test', () => {
     test('#1 Should receive all materials', async () => {
       const res = await client
@@ -265,7 +264,7 @@ describe('material querries test', () => {
         })
         .catch(e => e);
       const receivedMaterial = res.data.getMaterialById;
-
+      console.log(res);
       expect(receivedMaterial).toMatchSnapshot();
       expect(receivedMaterial).toBeDefined();
       expect(receivedMaterial).toHaveProperty(
