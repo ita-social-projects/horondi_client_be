@@ -67,10 +67,17 @@ input AdminConfirmInput {
 }
 `;
 
+const userFilterInput = `
+input UserFilterInput {
+    roles: [String]
+}
+`;
+
 module.exports = {
   userType,
   userInput,
   userRegisterInput,
+  userFilterInput,
   LoginInput,
   adminRegisterInput,
   adminConfirmInput,

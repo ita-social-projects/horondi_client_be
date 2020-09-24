@@ -1169,3 +1169,71 @@ describe('New admin login', () => {
     id = data._id;
   });
 });
+
+describe('User filtering', () => {
+  let superAdminToken;
+
+  beforeAll(async () => {
+    superAdminToken = await adminLogin(superAdminUser);
+  });
+
+  test('Should receive users via using filters for roles', async () => {
+    const role = 'user';
+
+    const result = await client
+      .query({
+        query: gql`
+          query($filter: UserFilterInput) {
+            getAllUsers(filter: $filter) {
+              role
+            }
+          }
+        `,
+        variables: {
+          filter: {
+            roles: [role],
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.every(item => item.role === role)).toEqual(true);
+  });
+
+  test('Should receive admins and superadmins via using filters for roles', async () => {
+    const roles = ['admin', 'superadmin'];
+
+    const result = await client
+      .query({
+        query: gql`
+          query($filter: UserFilterInput) {
+            getAllUsers(filter: $filter) {
+              role
+            }
+          }
+        `,
+        variables: {
+          filter: {
+            roles,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.every(item => roles.includes(item.role))).toEqual(true);
+  });
+});
