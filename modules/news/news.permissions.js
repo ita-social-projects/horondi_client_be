@@ -1,5 +1,7 @@
 const { allow } = require('graphql-shield');
-const { isAuthorizedAdmin } = require('../../utils/rules');
+const { hasRoles } = require('../../utils/rules');
+const { roles } = require('../../consts');
+const { ADMIN } = roles;
 
 const newsPermissionsQuery = {
   getAllNews: allow,
@@ -7,9 +9,9 @@ const newsPermissionsQuery = {
 };
 
 const newsPermissionsMutations = {
-  deleteNews: isAuthorizedAdmin,
-  addNews: isAuthorizedAdmin,
-  updateNews: isAuthorizedAdmin,
+  addNews: hasRoles([ADMIN]),
+  deleteNews: hasRoles([ADMIN]),
+  updateNews: hasRoles([ADMIN]),
 };
 
 module.exports = { newsPermissionsQuery, newsPermissionsMutations };

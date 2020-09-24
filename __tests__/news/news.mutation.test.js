@@ -3,15 +3,13 @@
 require('dotenv').config();
 const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
-const loginAdminOperation = require('../../utils/login-admin');
+const { user } = require('./news.variables');
+const { adminLogin } = require('../helper-functions');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
-const {
-  USER_NOT_AUTHORIZED,
-  UNAUTHENTICATED,
-} = require('../../error-messages/user.messages');
+const { USER_NOT_AUTHORIZED } = require('../../error-messages/user.messages');
 
 const news = {
   title: [
@@ -68,617 +66,366 @@ const existingNews = {
 let newsId = '';
 let token;
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
-const invalidToken =  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQ3NTMxYjVjNWYzMTJkMDhlYjdkZDUiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTYwMDA2NTE1AaaaAAaaAaaaAaAaAAA4AaAaaA.A9-aAAaaaaaa-D5ghd96IjsKq_r18tD97WhzI7QXfbA';
+const invalidToken =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQ3NTMxYjVjNWYzMTJkMDhlYjdkZDUiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTYwMDA2NTE1AaaaAAaaAaaaAaAaAAA4AaAaaA.A9-aAAaaaaaa-D5ghd96IjsKq_r18tD97WhzI7QXfbA';
 
-describe('Create news test', () => {
-  beforeAll(async () => {
-    token = await loginAdminOperation();
-  });
-  test('should add news to database', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($news: NewsInput!) {
-            addNews(news: $news) {
-              ... on News {
-                _id
-                title {
-                  lang
-                  value
-                }
-                text {
-                  lang
-                  value
-                }
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                }
-                images {
-                  primary {
-                    medium
-                  }
-                  additional {
-                    medium
-                  }
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        context: {
-          headers: {
-            token,
-          },
-        },
-        variables: { news },
-      })
-      .then(res => res)
-      .catch(e => e);
-    newsId = res.data.addNews._id;
-    expect(res.data.addNews.title).toBeInstanceOf(Array);
-    expect(res.data.addNews).toHaveProperty('title', [
-      { __typename: 'Language', lang: 'uk', value: 'bbb' },
-      { __typename: 'Language', lang: 'eng', value: 'bbb' },
-    ]);
-    expect(res.data.addNews.text).toBeInstanceOf(Array);
-    expect(res.data.addNews).toHaveProperty('text', [
-      { __typename: 'Language', lang: 'uk', value: ' d a s d' },
-      { __typename: 'Language', lang: 'eng', value: ' a s d' },
-    ]);
-    expect(res.data.addNews.author).toBeInstanceOf(Object);
-    expect(res.data.addNews).toHaveProperty('author', {
-      __typename: 'Author',
-      name: [
-        { __typename: 'Language', lang: 'uk', value: 'a sd' },
-        { __typename: 'Language', lang: 'eng', value: 'a sd' },
-      ],
+describe('News mutations tests', () => {
+  describe('Create news test', () => {
+    beforeAll(async () => {
+      token = await adminLogin(user);
     });
-    expect(res.data.addNews.images).toBeInstanceOf(Object);
-    expect(res.data.addNews).toHaveProperty('images', {
-      __typename: 'PrimaryImage',
-      primary: { __typename: 'ImageSet', medium: 'ada s.jpg' },
-      additional: [],
-    });
-  });
-
-  test('creating news with same title should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($news: NewsInput!) {
-            addNews(news: $news) {
-              ... on News {
-                _id
-                title {
-                  lang
-                  value
-                }
-                text {
-                  lang
-                  value
-                }
-                author {
-                  name {
+    test('should add news to database', async () => {
+      const res = await client
+        .mutate({
+          mutation: gql`
+            mutation($news: NewsInput!) {
+              addNews(news: $news) {
+                ... on News {
+                  _id
+                  title {
                     lang
                     value
                   }
+                  text {
+                    lang
+                    value
+                  }
+                  author {
+                    name {
+                      lang
+                      value
+                    }
+                  }
+                  images {
+                    primary {
+                      medium
+                    }
+                    additional {
+                      medium
+                    }
+                  }
+                }
+                ... on Error {
+                  message
+                  statusCode
                 }
               }
-              ... on Error {
-                message
-                statusCode
-              }
             }
-          }
-        `,
-        context: {
-          headers: {
-            token,
+          `,
+          context: {
+            headers: {
+              token,
+            },
           },
-        },
-        variables: { news },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.data.addNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
-    expect(res.data.addNews).toHaveProperty('statusCode', 400);
-  });
-
-  test('creating news without token should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($news: NewsInput!) {
-            addNews(news: $news) {
-              ... on News {
-                _id
-                title {
-                  lang
-                  value
-                }
-                text {
-                  lang
-                  value
-                }
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                }
-                images {
-                  primary {
-                    medium
-                  }
-                  additional {
-                    medium
-                  }
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: { news },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.graphQLErrors[0]).toHaveProperty('message', USER_NOT_AUTHORIZED);
-  });
-
-  test('creating news with invalid token should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($news: NewsInput!) {
-            addNews(news: $news) {
-              ... on News {
-                _id
-                title {
-                  lang
-                  value
-                }
-                text {
-                  lang
-                  value
-                }
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                }
-                images {
-                  primary {
-                    medium
-                  }
-                  additional {
-                    medium
-                  }
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        context: {
-          headers: {
-            token: invalidToken,
-          },
-        },
-        variables: { news },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.networkError.result.errors[0]).toHaveProperty(
-      'message',
-      'Context creation failed: Invalid authorization token',
-    );
-    expect(res.networkError.result.errors[0].extensions).toHaveProperty(
-      'code',
-      UNAUTHENTICATED,
-    );
-  });
-});
-
-describe('Update news test', () => {
-  test('update news', async () => {
-    const res = await client.mutate({
-      mutation: gql`
-        mutation($id: ID!, $news: NewsInput!) {
-          updateNews(id: $id, news: $news) {
-            ... on News {
-              _id
-              title {
-                lang
-                value
-              }
-              text {
-                lang
-                value
-              }
-              author {
-                name {
-                  lang
-                  value
-                }
-              }
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      context: {
-        headers: {
-          token,
-        },
-      },
-      variables: { id: newsId, news: newsUpdateData },
+          variables: { news },
+        })
+        .then(res => res)
+        .catch(e => e);
+      newsId = res.data.addNews._id;
+      expect(res.data.addNews.title).toBeInstanceOf(Array);
+      expect(res.data.addNews).toHaveProperty('title', [
+        { __typename: 'Language', lang: 'uk', value: 'bbb' },
+        { __typename: 'Language', lang: 'eng', value: 'bbb' },
+      ]);
+      expect(res.data.addNews.text).toBeInstanceOf(Array);
+      expect(res.data.addNews).toHaveProperty('text', [
+        { __typename: 'Language', lang: 'uk', value: ' d a s d' },
+        { __typename: 'Language', lang: 'eng', value: ' a s d' },
+      ]);
+      expect(res.data.addNews.author).toBeInstanceOf(Object);
+      expect(res.data.addNews).toHaveProperty('author', {
+        __typename: 'Author',
+        name: [
+          { __typename: 'Language', lang: 'uk', value: 'a sd' },
+          { __typename: 'Language', lang: 'eng', value: 'a sd' },
+        ],
+      });
+      expect(res.data.addNews.images).toBeInstanceOf(Object);
+      expect(res.data.addNews).toHaveProperty('images', {
+        __typename: 'PrimaryImage',
+        primary: { __typename: 'ImageSet', medium: 'ada s.jpg' },
+        additional: [],
+      });
     });
 
-    expect(res.data.updateNews.text).toBeInstanceOf(Array);
-    expect(res.data.updateNews).toHaveProperty('text', [
-      { __typename: 'Language', lang: 'uk', value: 'u p d a t e N1 d a s d' },
-      { __typename: 'Language', lang: 'eng', value: 'update dN1 a s d' },
-    ]);
-    expect(res.data.updateNews.author).toBeInstanceOf(Object);
-    expect(res.data.updateNews).toHaveProperty('author', {
-      __typename: 'Author',
-      name: [
-        { __typename: 'Language', lang: 'uk', value: 'updated sd' },
-        { __typename: 'Language', lang: 'eng', value: 'updated sd' },
-      ],
-    });
-  });
-
-  test('update not existing news should return error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $news: NewsInput!) {
-            updateNews(id: $id, news: $news) {
-              ... on News {
-                _id
-                text {
-                  lang
-                  value
-                }
-                title {
-                  lang
-                  value
-                }
-                author {
-                  name {
+    test('creating news with same title should throw error', async () => {
+      const res = await client
+        .mutate({
+          mutation: gql`
+            mutation($news: NewsInput!) {
+              addNews(news: $news) {
+                ... on News {
+                  _id
+                  title {
                     lang
                     value
                   }
+                  text {
+                    lang
+                    value
+                  }
+                  author {
+                    name {
+                      lang
+                      value
+                    }
+                  }
+                }
+                ... on Error {
+                  message
+                  statusCode
                 }
               }
-              ... on Error {
-                message
-                statusCode
-              }
             }
-          }
-        `,
-        context: {
-          headers: {
-            token,
+          `,
+          context: {
+            headers: {
+              token,
+            },
           },
-        },
-        variables: { id: newsDoesNotExistId, news: newsUpdateData },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
-    expect(res.data.updateNews).toHaveProperty('statusCode', 404);
-  });
-
-  test('update not existing news should return error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $news: NewsInput!) {
-            updateNews(id: $id, news: $news) {
-              ... on News {
-                _id
-                text {
-                  lang
-                  value
-                }
-                title {
-                  lang
-                  value
-                }
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        context: {
-          headers: {
-            token,
-          },
-        },
-        variables: { id: newsId, news: existingNews },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.data.updateNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
-    expect(res.data.updateNews).toHaveProperty('statusCode', 400);
-  });
-
-  test('updating news without token should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $news: NewsInput!) {
-            updateNews(id: $id, news: $news) {
-              ... on News {
-                _id
-                text {
-                  lang
-                  value
-                }
-                title {
-                  lang
-                  value
-                }
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: { id: newsId, news: existingNews },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.graphQLErrors[0]).toHaveProperty('message', USER_NOT_AUTHORIZED);
-  });
-
-  test('updating news with invalid token should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $news: NewsInput!) {
-            updateNews(id: $id, news: $news) {
-              ... on News {
-                _id
-                text {
-                  lang
-                  value
-                }
-                title {
-                  lang
-                  value
-                }
-                author {
-                  name {
-                    lang
-                    value
-                  }
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        context: {
-          headers: {
-            token: invalidToken,
-          },
-        },
-        variables: { id: newsId, news: existingNews },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.networkError.result.errors[0]).toHaveProperty(
-      'message',
-      'Context creation failed: Invalid authorization token',
-    );
-    expect(res.networkError.result.errors[0].extensions).toHaveProperty(
-      'code',
-      UNAUTHENTICATED,
-    );
-  });
-});
-
-describe('Delete news test', () => {
-  test('delete news', async () => {
-    const res = await client.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteNews(id: $id) {
-            ... on News {
-              text {
-                lang
-                value
-              }
-              author {
-                name {
-                  lang
-                  value
-                }
-              }
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      context: {
-        headers: {
-          token,
-        },
-      },
-      variables: { id: newsId },
+          variables: { news },
+        })
+        .then(res => res)
+        .catch(e => e);
+      expect(res.data.addNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
+      expect(res.data.addNews).toHaveProperty('statusCode', 400);
     });
-    expect(res.data.deleteNews).toBeDefined();
-    expect(res.data.deleteNews).not.toBeNull();
-    expect(res.data.deleteNews.text).toBeInstanceOf(Array);
-    expect(res.data.deleteNews).toHaveProperty('text', [
-      { __typename: 'Language', lang: 'uk', value: 'u p d a t e N1 d a s d' },
-      { __typename: 'Language', lang: 'eng', value: 'update dN1 a s d' },
-    ]);
-    expect(res.data.deleteNews.author).toBeInstanceOf(Object);
-    expect(res.data.deleteNews).toHaveProperty('author', {
-      __typename: 'Author',
-      name: [
-        { __typename: 'Language', lang: 'uk', value: 'updated sd' },
-        { __typename: 'Language', lang: 'eng', value: 'updated sd' },
-      ],
-    });
-  });
 
-  test('deleting news without token should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!) {
-            deleteNews(id: $id) {
-              ... on News {
-                text {
-                  lang
-                  value
-                }
-                author {
-                  name {
+    describe('Update news test', () => {
+      test('update news', async () => {
+        const res = await client.mutate({
+          mutation: gql`
+            mutation($id: ID!, $news: NewsInput!) {
+              updateNews(id: $id, news: $news) {
+                ... on News {
+                  _id
+                  title {
                     lang
                     value
                   }
-                }
-              }
-              ... on Error {
-                statusCode
-                message
-              }
-            }
-          }
-        `,
-        variables: { id: newsId },
-      })
-      .then(res => res)
-      .catch(e => e);
-    expect(res.graphQLErrors[0]).toHaveProperty('message', USER_NOT_AUTHORIZED);
-  });
-
-  test('deleting news with invalid token should throw error', async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!) {
-            deleteNews(id: $id) {
-              ... on News {
-                text {
-                  lang
-                  value
-                }
-                author {
-                  name {
+                  text {
                     lang
                     value
                   }
+                  author {
+                    name {
+                      lang
+                      value
+                    }
+                  }
+                }
+                ... on Error {
+                  message
                 }
               }
-              ... on Error {
-                statusCode
-                message
-              }
             }
-          }
-        `,
-        context: {
-          headers: {
-            token: invalidToken,
+          `,
+          context: {
+            headers: {
+              token,
+            },
           },
-        },
-        variables: { id: newsId },
-      })
-      .then(res => res)
-      .catch(e => e);
+          variables: { id: newsId, news: newsUpdateData },
+        });
 
-    expect(res.networkError.result.errors[0]).toHaveProperty(
-      'message',
-      'Context creation failed: Invalid authorization token',
-    );
-    expect(res.networkError.result.errors[0].extensions).toHaveProperty(
-      'code',
-      UNAUTHENTICATED,
-    );
-  });
+        expect(res.data.updateNews.text).toBeInstanceOf(Array);
+        expect(res.data.updateNews).toHaveProperty('text', [
+          {
+            __typename: 'Language',
+            lang: 'uk',
+            value: 'u p d a t e N1 d a s d',
+          },
+          { __typename: 'Language', lang: 'eng', value: 'update dN1 a s d' },
+        ]);
+        expect(res.data.updateNews.author).toBeInstanceOf(Object);
+        expect(res.data.updateNews).toHaveProperty('author', {
+          __typename: 'Author',
+          name: [
+            { __typename: 'Language', lang: 'uk', value: 'updated sd' },
+            { __typename: 'Language', lang: 'eng', value: 'updated sd' },
+          ],
+        });
+      });
 
-  test('delete not existing news should return error', async () => {
-    const res = await client.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteNews(id: $id) {
-            ... on News {
-              text {
-                lang
-                value
-              }
-              author {
-                name {
-                  lang
-                  value
+      test('update not existing news should return error', async () => {
+        const res = await client
+          .mutate({
+            mutation: gql`
+              mutation($id: ID!, $news: NewsInput!) {
+                updateNews(id: $id, news: $news) {
+                  ... on News {
+                    _id
+                    text {
+                      lang
+                      value
+                    }
+                    title {
+                      lang
+                      value
+                    }
+                    author {
+                      name {
+                        lang
+                        value
+                      }
+                    }
+                  }
+                  ... on Error {
+                    message
+                    statusCode
+                  }
                 }
               }
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      context: {
-        headers: {
-          token,
-        },
-      },
-      variables: { id: newsDoesNotExistId },
+            `,
+            context: {
+              headers: {
+                token,
+              },
+            },
+            variables: { id: newsDoesNotExistId, news: newsUpdateData },
+          })
+          .then(res => res)
+          .catch(e => e);
+        expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
+        expect(res.data.updateNews).toHaveProperty('statusCode', 404);
+      });
+
+      test('update not existing news should return error', async () => {
+        const res = await client
+          .mutate({
+            mutation: gql`
+              mutation($id: ID!, $news: NewsInput!) {
+                updateNews(id: $id, news: $news) {
+                  ... on News {
+                    _id
+                    text {
+                      lang
+                      value
+                    }
+                    title {
+                      lang
+                      value
+                    }
+                    author {
+                      name {
+                        lang
+                        value
+                      }
+                    }
+                  }
+                  ... on Error {
+                    message
+                    statusCode
+                  }
+                }
+              }
+            `,
+            context: {
+              headers: {
+                token,
+              },
+            },
+            variables: { id: newsId, news: existingNews },
+          })
+          .then(res => res)
+          .catch(e => e);
+        expect(res.data.updateNews).toHaveProperty(
+          'message',
+          NEWS_ALREADY_EXIST
+        );
+        expect(res.data.updateNews).toHaveProperty('statusCode', 400);
+      });
+
+      describe('Delete news test', () => {
+        test('delete news', async () => {
+          const res = await client.mutate({
+            mutation: gql`
+              mutation($id: ID!) {
+                deleteNews(id: $id) {
+                  ... on News {
+                    text {
+                      lang
+                      value
+                    }
+                    author {
+                      name {
+                        lang
+                        value
+                      }
+                    }
+                  }
+                  ... on Error {
+                    statusCode
+                    message
+                  }
+                }
+              }
+            `,
+            context: {
+              headers: {
+                token,
+              },
+            },
+            variables: { id: newsId },
+          });
+          expect(res.data.deleteNews).toBeDefined();
+          expect(res.data.deleteNews).not.toBeNull();
+          expect(res.data.deleteNews.text).toBeInstanceOf(Array);
+          expect(res.data.deleteNews).toHaveProperty('text', [
+            {
+              __typename: 'Language',
+              lang: 'uk',
+              value: 'u p d a t e N1 d a s d',
+            },
+            { __typename: 'Language', lang: 'eng', value: 'update dN1 a s d' },
+          ]);
+          expect(res.data.deleteNews.author).toBeInstanceOf(Object);
+          expect(res.data.deleteNews).toHaveProperty('author', {
+            __typename: 'Author',
+            name: [
+              { __typename: 'Language', lang: 'uk', value: 'updated sd' },
+              { __typename: 'Language', lang: 'eng', value: 'updated sd' },
+            ],
+          });
+        });
+
+        test('delete not existing news should return error', async () => {
+          const res = await client.mutate({
+            mutation: gql`
+              mutation($id: ID!) {
+                deleteNews(id: $id) {
+                  ... on News {
+                    text {
+                      lang
+                      value
+                    }
+                    author {
+                      name {
+                        lang
+                        value
+                      }
+                    }
+                  }
+                  ... on Error {
+                    statusCode
+                    message
+                  }
+                }
+              }
+            `,
+            context: {
+              headers: {
+                token,
+              },
+            },
+            variables: { id: newsDoesNotExistId },
+          });
+          expect(res.data.deleteNews).toBeDefined();
+          expect(res.data.deleteNews).not.toBeNull();
+          expect(res.data.deleteNews).toHaveProperty('statusCode', 404);
+          expect(res.data.deleteNews).toHaveProperty('message', NEWS_NOT_FOUND);
+        });
+      });
     });
-    expect(res.data.deleteNews).toBeDefined();
-    expect(res.data.deleteNews).not.toBeNull();
-    expect(res.data.deleteNews).toHaveProperty('statusCode', 404);
-    expect(res.data.deleteNews).toHaveProperty('message', NEWS_NOT_FOUND);
   });
 });

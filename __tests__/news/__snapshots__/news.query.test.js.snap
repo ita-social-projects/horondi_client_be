@@ -1,9 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Get news by ID Should receive one news 1`] = `
+exports[`News queries tests Get news by ID Should receive one news 1`] = `
 Object {
-  "__typename": "Error",
-  "message": "NEWS_NOT_FOUND",
-  "statusCode": 404,
+  "__typename": "News",
+  "author": Object {
+    "__typename": "Author",
+    "name": Array [
+      Object {
+        "__typename": "Language",
+        "lang": "uk",
+        "value": "a sd",
+      },
+      Object {
+        "__typename": "Language",
+        "lang": "en",
+        "value": "a sd",
+      },
+    ],
+  },
+  "date": "1111118820047",
+  "images": Object {
+    "__typename": "PrimaryImage",
+    "additional": Array [
+      Object {
+        "__typename": "ImageSet",
+        "medium": "as dasdsa.jpg",
+      },
+    ],
+    "primary": Object {
+      "__typename": "ImageSet",
+      "medium": "ada s.jpg",
+    },
+  },
+  "text": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "d a s d",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "en",
+      "value": "a s d",
+    },
+  ],
+  "title": Array [
+    Object {
+      "__typename": "Language",
+      "lang": "uk",
+      "value": "aab",
+    },
+    Object {
+      "__typename": "Language",
+      "lang": "en",
+      "value": "aab",
+    },
+  ],
 }
 `;
