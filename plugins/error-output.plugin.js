@@ -3,7 +3,7 @@ const errorOutputPlugin = {
     return {
       willSendResponse(context) {
         if (
-          context.errors &&
+          context.errors.length &&
           context.errors.some(
             item =>
               item.originalError && item.originalError.name === 'RuleError'
