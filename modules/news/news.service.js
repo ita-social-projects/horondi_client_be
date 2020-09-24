@@ -27,8 +27,8 @@ class NewsService {
   }
 
   async updateNews(id, news) {
-    const updatedNews = await News.findById(id);
-    if (!updatedNews) {
+    const foundNews = await News.findById(id);
+    if (!foundNews) {
       throw new Error(NEWS_NOT_FOUND);
     }
 

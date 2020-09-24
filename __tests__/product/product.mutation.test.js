@@ -13,7 +13,12 @@ const {
 
 require('dotenv').config();
 
-let productId, categoryId, subcategoryId, modelId, sameNameProductId, materialId;
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let sameNameProductId;
+let materialId;
 
 describe('Product mutations', () => {
   beforeAll(async () => {
@@ -112,7 +117,9 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId, materialId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
@@ -311,7 +318,9 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId, materialId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     const result = createProduct.data.addProduct;
     expect(result).toBeDefined();
@@ -366,7 +375,12 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getProductForUpdate(categoryId, subcategoryId, modelId, materialId),
+        product: getProductForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
         id: productId,
       },
     });
@@ -445,7 +459,12 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getProductForUpdate(categoryId, subcategoryId, modelId, materialId),
+        product: getProductForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
         id: badProductId,
       },
     });
@@ -466,7 +485,14 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { product: getSameNameForUpdate(categoryId, subcategoryId, modelId, materialId) },
+      variables: {
+        product: getSameNameForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
+      },
     });
     sameNameProductId = createProduct.data.addProduct._id;
 
@@ -489,7 +515,12 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getSameNameForUpdate(categoryId, subcategoryId, modelId, materialId),
+        product: getSameNameForUpdate(
+          categoryId,
+          subcategoryId,
+          modelId,
+          materialId
+        ),
         id: productId,
       },
     });
@@ -498,7 +529,7 @@ describe('Product mutations', () => {
     expect(productAfterUpdate).toHaveProperty('statusCode', 400);
     expect(productAfterUpdate).toHaveProperty(
       'message',
-      'PRODUCT_ALREADY_EXIST',
+      'PRODUCT_ALREADY_EXIST'
     );
     await client.mutate({
       mutation: gql`

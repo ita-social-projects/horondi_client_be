@@ -5,8 +5,16 @@ const {
 } = require('../../error-messages/material.messages');
 
 class MaterialsService {
-  async getAllMaterials() {
-    return await Material.find();
+  async getAllMaterials({ skip, limit }) {
+    const items = await Material.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Material.find().countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getMaterialById(id) {
@@ -21,7 +29,7 @@ class MaterialsService {
     if (await this.checkMaterialExist(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    return await Material.findByIdAndUpdate(id, material);
+    return await Material.findByIdAndUpdate(id, material, { new: true });
   }
 
   async addMaterial(data) {
