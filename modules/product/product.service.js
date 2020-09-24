@@ -119,19 +119,15 @@ class ProductsService {
 
 	async updateProduct(id, productData, filesToUpload, primary) {
 		const product = await Product.findById(id).lean();
-		let newPrimary;
+		productData.images = product.images
 		if (!product) {
 			throw new Error(PRODUCT_NOT_FOUND);
 		}
 		if(primary) {
-			const deleteResults = await deleteFiles(Object.values(product.images.primary))
-			if(await Promise.allSettled(deleteResults)) {
-				const uploadResult = await uploadFiles(primary)
-				const imagesResults = await Promise.allSettled(uploadResult)
-				newPrimary = imagesResults[0].value.fileNames
-				console.log(newPrimary)
-				productData.images.primary = newPrimary
-			}
+			await deleteFiles(Object.values(product.images.primary).filter(item => typeof item === 'string'))
+			const uploadResult = await uploadFiles(primary)
+			const imagesResults = await uploadResult[0]
+			productData.images.primary = imagesResults.fileNames
 		}
 		if(filesToUpload) {
 			const uploadResult = await uploadFiles(filesToUpload)
@@ -144,8 +140,10 @@ class ProductsService {
 		}
 		const { basePrice } = productData
 		productData.basePrice = await this.calculatePrice(basePrice)
-		const model = await modelService.getModelById(productData.model);
-		productData.model = model.name;
+		if(!Array.isArray(productData.model)) {
+			const model = await modelService.getModelById(productData.model);
+			productData.model = model.name;
+		}
 		return Product.findByIdAndUpdate(id, productData, { new: true });
 	}
 
