@@ -24,8 +24,6 @@ const productsQuery = {
   },
   getModelsByCategory: (parent, args) =>
     productsService.getModelsByCategory(args.id),
-  getModelsByCategory: (parent, args) =>
-    productsService.getModelsByCategory(args.id),
   getProductOptions: () => productsService.getProductOptions(),
 };
 

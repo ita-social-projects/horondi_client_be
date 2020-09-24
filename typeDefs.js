@@ -141,6 +141,11 @@ const typeDefs = gql`
     additionalPrice: [CurrencySet]
   }
 
+  type AllProductOptions {
+    sizes: [Size]
+    bottomMaterials: [Material]
+  }
+
   type Size {
     _id: ID!
     name: String
@@ -181,7 +186,10 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
-
+  type PaginatedPatterns {
+    items: [Pattern!]!
+    count: Int!
+  }
   type PaginatedNews {
     items: [News]
     count: Int
@@ -260,6 +268,7 @@ const typeDefs = gql`
       search: String
       sort: SortInput
     ): PaginatedProducts!
+    getProductOptions: AllProductOptions
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
@@ -312,7 +321,7 @@ const typeDefs = gql`
   ${currencyInput}
   ${materialInput}
   ${newsInput}
-  ${patternsInput}
+  ${patternInput}
   ${userInput}
   ${productInput}
   ${commentInput}

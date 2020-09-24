@@ -1,10 +1,8 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
-const modelService = require('../model/model.service');
-
 const Material = require('../material/material.model');
-const modelService = require('../../modules/model/model.service');
 const Currency = require('../currency/currency.model');
+const modelService = require('../model/model.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
@@ -22,6 +20,13 @@ class ProductsService {
 
   getModelsByCategory(id) {
     return Product.find({ category: id });
+  }
+
+  async getProductOptions() {
+    const sizes = await Size.find();
+    const bottomMaterials = await Material.find();
+
+    return { sizes, bottomMaterials };
   }
 
   filterItems(args = {}) {
