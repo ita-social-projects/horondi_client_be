@@ -12,7 +12,7 @@ const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 
 connectDB();
-require('dotenv').config();
+require('dotenv').config({ path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env' });
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
