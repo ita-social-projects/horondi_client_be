@@ -3,6 +3,7 @@ const {
   BUSINESS_TEXT_NOT_FOUND,
   BUSINESS_TEXT_ALREADY_EXIST,
   BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
+  IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 require('dotenv').config();
@@ -30,7 +31,12 @@ class BusinessTextService {
 
   async updateBusinessText(id, businessText, files) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
+    const oldPage = await this.getBusinessTextById(id);
     const currentPage = pages.find(el => el._id.toString() !== id);
+
+    if (!oldPage) {
+      throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    }
 
     if (pages.length && currentPage) {
       return {
@@ -40,30 +46,25 @@ class BusinessTextService {
     }
 
     const newPage = files.length
-      ? await this.pageImageReplaceHandler(businessText, files)
+      ? await this.replaceImageSourceToLink(businessText, files)
       : businessText;
-    const oldPage = await this.getBusinessTextById(id);
 
-    if (oldPage) {
-      const newImages = this.imageFinder(newPage);
-      const oldImages = this.imageFinder(oldPage);
+    const newImages = this.findImagesInText(newPage);
+    const oldImages = this.findImagesInText(oldPage);
 
-      const imagesToDelete = oldImages.filter(
-        img => newImages.findIndex(newImg => newImg === img) === -1
-      );
+    const imagesToDelete = oldImages.filter(
+      img => !newImages.find(newImg => newImg === img)
+    );
 
-      if (imagesToDelete.length) {
-        await this.deleteNoNeededImages(imagesToDelete);
-      }
-    } else {
-      throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    if (imagesToDelete.length) {
+      await this.deleteNoNeededImages(imagesToDelete);
     }
 
-    const text = await BusinessText.findByIdAndUpdate(id, newPage, {
+    const page = await BusinessText.findByIdAndUpdate(id, newPage, {
       new: true,
     });
 
-    return text || null;
+    return page || null;
   }
 
   async addBusinessText(businessText, files) {
@@ -75,7 +76,7 @@ class BusinessTextService {
 
     let newPage = '';
     if (files.length) {
-      newPage = await this.pageImageReplaceHandler(businessText, files);
+      newPage = await this.replaceImageSourceToLink(businessText, files);
     }
 
     return new BusinessText(newPage || businessText).save();
@@ -84,14 +85,14 @@ class BusinessTextService {
   async deleteBusinessText(id) {
     const oldPage = await this.getBusinessTextById(id);
 
-    if (oldPage) {
-      const imagesToDelete = this.imageFinder(oldPage);
-
-      if (imagesToDelete.length) {
-        await this.deleteNoNeededImages(imagesToDelete);
-      }
-    } else {
+    if (!oldPage) {
       throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    }
+
+    const imagesToDelete = this.findImagesInText(oldPage);
+
+    if (imagesToDelete.length) {
+      await this.deleteNoNeededImages(imagesToDelete);
     }
 
     const businessText = await BusinessText.findByIdAndDelete(id);
@@ -104,13 +105,13 @@ class BusinessTextService {
     return await BusinessText.find({ code: data.code });
   }
 
-  async pageImageReplaceHandler(page, files) {
+  async replaceImageSourceToLink(page, files) {
     const fileNames = files.map(({ file }) => file.filename);
 
     const uploadResult = await uploadFiles(files);
     const imagesResults = await Promise.allSettled(uploadResult);
 
-    const updatedPage = page;
+    const updatedPage = { ...page };
     let newUkText = '';
     let newEnText = '';
 
@@ -137,24 +138,37 @@ class BusinessTextService {
     const regExp = new RegExp(
       `(?<=src="${process.env.IMAGE_LINK}[a-z]+_).*?(?=")`
     );
-    const valuesToDelete = images
-      .flatMap(img => img.match(regExp))
-      .flatMap(id => [
+
+    const uniqueIds = images.map(img => img.match(regExp));
+    const valuesToDelete = uniqueIds
+      .map(id => [
         `large_${id}`,
         `medium_${id}`,
         `small_${id}`,
         `thumbnail_${id}`,
-      ]);
+      ])
+      .flat();
 
-    await Promise.allSettled(await deleteFiles(valuesToDelete));
+    const deleteResult = await Promise.allSettled(
+      await deleteFiles(valuesToDelete)
+    );
+    const isAllImagesDeleted = deleteResult.every(
+      res => res.status === 'fulfilled'
+    );
+
+    if (!isAllImagesDeleted) {
+      throw new Error(IMAGES_DELETING_FAILS);
+    }
   }
 
-  imageFinder(page) {
+  findImagesInText(page) {
     const images = page.text
-      .flatMap(({ value }) => value.match(/<img([\w\W]+?)>/g))
+      .map(({ value }) => value.match(/<img([\w\W]+?)>/g))
+      .flat()
       .filter(val => val);
     const uniqueImages = new Set([...images]);
     return [...uniqueImages];
   }
 }
+
 module.exports = new BusinessTextService();
