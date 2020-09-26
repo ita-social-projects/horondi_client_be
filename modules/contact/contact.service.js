@@ -52,12 +52,11 @@ class ContactService {
 
     if (!contact) return null;
 
-    return contact &&
-      contact.images &&
-      contact.images.length &&
-      this.deleteMapImages(contact)
-      ? await Contact.findByIdAndDelete(id)
-      : await Contact.findByIdAndDelete(id);
+    if (contact && contact.images && contact.images.length) {
+      if (this.deleteMapImages(contact)) {
+        return await Contact.findByIdAndDelete(id);
+      }
+    } else await Contact.findByIdAndDelete(id);
   }
 
   async uploadMapImages(data) {
