@@ -22,71 +22,42 @@ class ContactService {
   }
 
   async addContact(data) {
-    if (!data.mapImages.length) {
-      return new Contact(data.contact).save();
-    }
-
-    const uploadResult = await uploadFiles([
-      data.mapImages[0].image,
-      data.mapImages[1].image,
-    ]);
-    const images = await Promise.all(uploadResult).then(res => res);
-
-    if (!images) {
-      return await new Contact(data.contact).save();
-    }
+    const images = await this.uploadMapImages(data);
 
     return new Contact({
       ...data.contact,
       images: [
-        { lang: data.mapImages[0].lang, value: images[0].fileNames },
-        { lang: data.mapImages[1].lang, value: images[1].fileNames },
+        { lang: data.mapImages[0].lang, value: images[0] },
+        { lang: data.mapImages[1].lang, value: images[1] },
       ],
     }).save();
   }
 
   async updateContact(data) {
-    if (!data.mapImages.length) {
-      return await Contact.findByIdAndUpdate(data.id, data.contact, {
-        new: true,
-      });
-    }
+    const contact = await Contact.findById(data.id).lean();
 
-    const contactById = await Contact.findById(data.id).lean();
+    if (!contact) return null;
 
-    if (contactById.images.length) {
-      const deletedImages = await deleteFiles([
-        ...Object.values(contactById.images[0].value),
-        ...Object.values(contactById.images[1].value),
-      ]);
-
-      if (await Promise.allSettled(deletedImages)) {
-        return await this.uploadMapImages(data);
-      }
-    } else {
-      return this.uploadMapImages(data);
-    }
-
-    return null;
+    return contact.images.length === 2 &&
+      data.mapImages.length === 2 &&
+      this.deleteMapImages(contact)
+      ? await this.saveUpdatedContact(data)
+      : await Contact.findByIdAndUpdate(data.id, data.contact, {
+          new: true,
+        });
   }
 
   async deleteContact(id) {
-    const contactById = await Contact.findById(id).lean();
+    const contact = await Contact.findById(id).lean();
 
-    if (contactById.images && contactById.images.length) {
-      const deletedImages = await deleteFiles([
-        ...Object.values(contactById.images[0].value),
-        ...Object.values(contactById.images[1].value),
-      ]);
+    if (!contact) return null;
 
-      if (await Promise.allSettled(deletedImages)) {
-        return await Contact.findByIdAndDelete(id);
-      }
-    } else {
-      return await Contact.findByIdAndDelete(id);
-    }
-
-    return null;
+    return contact &&
+      contact.images &&
+      contact.images.length &&
+      this.deleteMapImages(contact)
+      ? await Contact.findByIdAndDelete(id)
+      : await Contact.findByIdAndDelete(id);
   }
 
   async uploadMapImages(data) {
@@ -94,27 +65,36 @@ class ContactService {
       data.mapImages[0].image,
       data.mapImages[1].image,
     ]);
-    const images = await Promise.all(uploadResult).then(res => res);
+    const imagesResult = await Promise.allSettled(uploadResult);
 
-    if (!images) {
-      return await Contact.findByIdAndUpdate(data.id, data.contact, {
-        new: true,
-      });
-    }
+    return imagesResult.map(item => item.value.fileNames);
+  }
+
+  async saveUpdatedContact(data) {
+    const images = await this.uploadMapImages(data);
 
     return await Contact.findByIdAndUpdate(
       data.id,
       {
         ...data.contact,
         images: [
-          { lang: data.mapImages[0].lang, value: images[0].fileNames },
-          { lang: data.mapImages[1].lang, value: images[1].fileNames },
+          { lang: data.mapImages[0].lang, value: images[0] },
+          { lang: data.mapImages[1].lang, value: images[1] },
         ],
       },
       {
         new: true,
       }
     );
+  }
+
+  async deleteMapImages(contact) {
+    const deletedImages = await deleteFiles([
+      ...Object.values(contact.images[0].value),
+      ...Object.values(contact.images[1].value),
+    ]);
+
+    return await Promise.allSettled(deletedImages);
   }
 }
 
