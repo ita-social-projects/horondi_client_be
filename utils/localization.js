@@ -17,7 +17,7 @@ padding-top: 100px;
     <p style="
     margin: 0px
     ">
-      Для відновлення паролю, будь ласка, перейдіть за посиланням нижче:
+      Для зміни чи відновлення паролю, будь ласка, перейдіть за посиланням нижче:
     </p>
     <a style="color: black; margin: 0px"  href=${process.env.FRONT_BASE_URI}recovery/${token}>Відновити пароль</a>
     <p style="margin-bottom: 45px">Якщо ви не подавали заявку на відновлення - проігноруйте це повідомлення.</p>
@@ -108,7 +108,47 @@ padding-top: 100px;
 `;
 };
 
+const adminConfirmationMessage = token => {
+  return `
+<div style="
+background-color:  #3F3F3F;
+height: 450px;
+padding-top: 100px;
+">
+<div style="
+background-color: white;
+width: 553px;
+height: 200px;
+margin: 28px 88px;
+padding: 22px 45px;
+font-family: Helvetica
+">
+<h2 style="
+margin: 20px 0
+">
+Реєстрація адміністратора.
+</h2>
+<p style="
+margin: 0px
+">
+Щоб зареєструватись як адміністратор, перейдіть за посиланням нижче:
+</p>
+<a style="color: white;
+text-decoration: none;
+background-color: gray;
+padding: 6px 12px;
+margin: 0px;
+display: inline-block;
+margin-top: 8px;margin-bottom: 40px"
+href=${process.env.ADMIN_BASE_URI}confirmation/${token}>Перейти за посиланням</a>
+<p>З найкращимим побажаннями, команда HORONDI.</p>
+</div>
+</div>
+`;
+};
+
 module.exports = {
   confirmationMessage,
   recoveryMessage,
+  adminConfirmationMessage,
 };

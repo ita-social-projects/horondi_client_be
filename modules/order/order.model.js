@@ -1,31 +1,59 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const CurrencySet = require('./CurrencySet').schema;
-const Address = require('../modules/common/Address').schema;
+const Language = require('../../models/Language').schema;
+const CurrencySet = require('../../models/CurrencySet').schema;
+const Address = require('../common/Address').schema;
 
 const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ['sent', 'pending', 'canceled'],
-    default: 'pending',
+    enum: [
+      'CREATED',
+      'CONFIRMED',
+      'CANCELLED',
+      'REFUNDED',
+      'SENT',
+      'DELIVERED',
+    ],
+    default: 'CREATED',
   },
   user: {
     firstName: String,
     lastName: String,
+    patronymicName: String,
     email: String,
     phoneNumber: Number,
-    address: Address,
   },
   dateOfCreation: {
     type: Date,
     default: Date.now,
   },
+  lastUpdatedDate: Date,
+  completed: {
+    type: Boolean,
+    default: false,
+  },
+  userComment: {
+    type: String,
+    default: '',
+  },
+  adminComment: {
+    type: String,
+    default: '',
+  },
+  cancellationReason: {
+    type: String,
+    default: '',
+  },
   delivery: {
     sentOn: Date,
     sentBy: String,
+    byCourier: Boolean,
+    courierOffice: Number,
     invoiceNumber: String,
+    cost: [CurrencySet],
   },
+  address: Address,
   items: [
     {
       category: [Language],
@@ -50,8 +78,17 @@ const orderSchema = new mongoose.Schema({
       quantity: Number,
     },
   ],
-  totalPrice: [CurrencySet],
-  paymentMethod: String,
+  totalItemsPrice: [CurrencySet],
+  totalPriceToPay: [CurrencySet],
+  paymentMethod: {
+    type: String,
+    required: true,
+    enum: ['CARD', 'CASH'],
+  },
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model('Order', orderSchema);

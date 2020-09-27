@@ -6,9 +6,19 @@ const {
 } = require('./modules/product/product.resolver');
 
 const {
+  ordersQuery,
+  ordersMutation,
+} = require('./modules/order/order.resolver');
+
+const {
   commentsQuery,
   commentsMutation,
 } = require('./modules/comment/comment.resolver');
+
+const {
+  contactQuery,
+  contactMutation,
+} = require('./modules/contact/contact.resolver');
 
 const {
   currencyQuery,
@@ -19,6 +29,10 @@ const {
   materialMutation,
 } = require('./modules/material/material.resolver');
 const {
+  modelsQuery,
+  modelsMutation,
+} = require('./modules/model/model.resolver');
+const {
   patternQuery,
   patternMutation,
 } = require('./modules/pattern/pattern.resolver');
@@ -26,12 +40,20 @@ const {
   categoryQuery,
   categoryMutation,
 } = require('./modules/category/category.resolver');
+const {
+  businessTextQuery,
+  businessTextMutation,
+} = require('./modules/business-text/business-text.resolver');
+const {
+  emailChatQuestionQuery,
+  emailChatQuestionMutation,
+} = require('./modules/email-chat/email-chat.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const productService = require('./modules/product/product.service');
+const { uploadMutation } = require('./modules/upload/upload.resolver');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -41,7 +63,13 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
+  model: 'Model',
+  contact: 'Contact',
+  order: 'Order',
+  user: 'User',
+  emailQuestion: 'EmailQuestion',
 };
 const resolvers = {
   Query: {
@@ -60,6 +88,16 @@ const resolvers = {
     ...productsQuery,
 
     ...commentsQuery,
+
+    ...businessTextQuery,
+
+    ...modelsQuery,
+
+    ...contactQuery,
+
+    ...ordersQuery,
+
+    ...emailChatQuestionQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -78,14 +116,33 @@ const resolvers = {
 
   ProductOptions: {
     size: parent => productsService.getSizeById(parent.size),
-    bottomMaterial: parent => materialsService.getMaterialById(parent.bottomMaterial),
+    bottomMaterial: parent => {
+      if (parent.bottomMaterial) {
+        return materialsService.getMaterialById(parent.bottomMaterial);
+      }
+      return null;
+    },
   },
 
   UserRate: {
-    user: parent => userService.getUserByFieldOrThrow(parent.user),
+    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
+  },
+
+  EmailQuestion: {
+    answer: parent => {
+      if (parent.answer.date) {
+        return parent.answer;
+      }
+      return null;
+    },
+  },
+  EmailAnswer: {
+    admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
 
   Mutation: {
+    ...uploadMutation,
+
     ...patternMutation,
 
     ...materialMutation,
@@ -101,6 +158,16 @@ const resolvers = {
     ...productsMutation,
 
     ...commentsMutation,
+
+    ...businessTextMutation,
+
+    ...modelsMutation,
+
+    ...contactMutation,
+
+    ...ordersMutation,
+
+    ...emailChatQuestionMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -158,10 +225,58 @@ const resolvers = {
       return 'Error';
     },
   },
+  BusinessTextResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.businessText;
+      }
+      return 'Error';
+    },
+  },
   LogicalResult: {
     __resolveType: obj => {
       if (obj.isSuccess) {
         return SCHEMA_NAMES.successfulResponse;
+      }
+      return 'Error';
+    },
+  },
+  ModelResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.model;
+      }
+      return 'Error';
+    },
+  },
+  ContactResult: {
+    __resolveType: obj => {
+      if (obj.address) {
+        return SCHEMA_NAMES.contact;
+      }
+      return 'Error';
+    },
+  },
+  OrderResult: {
+    __resolveType: obj => {
+      if (obj.status) {
+        return SCHEMA_NAMES.order;
+      }
+      return 'Error';
+    },
+  },
+  UserResult: {
+    __resolveType: obj => {
+      if (obj.email) {
+        return SCHEMA_NAMES.user;
+      }
+      return 'Error';
+    },
+  },
+  EmailQuestionResult: {
+    __resolveType: obj => {
+      if (obj.text) {
+        return SCHEMA_NAMES.emailQuestion;
       }
       return 'Error';
     },

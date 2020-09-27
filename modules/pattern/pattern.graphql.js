@@ -1,4 +1,4 @@
-const patternsType = `
+const patternType = `
     type Pattern {
     _id: ID!
     name: [Language]
@@ -10,15 +10,15 @@ const patternsType = `
     }
 `;
 
-const patternsInput = `
+const patternInput = `
     input PatternInput {
     name: [LanguageInput]
     description: [LanguageInput]
-    images: ImageSetInput
+    images:ImageSetInput
     material: String
     handmade: Boolean
     available: Boolean
     }
 `;
 
-module.exports = { patternsType, patternsInput };
+module.exports = { patternType, patternInput };

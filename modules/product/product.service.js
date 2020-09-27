@@ -1,6 +1,6 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
-const Model = require('../../models/Model');
+const modelService = require('../model/model.service');
 
 const {
   PRODUCT_ALREADY_EXIST,
@@ -17,13 +17,19 @@ class ProductsService {
   }
 
   getModelsByCategory(id) {
-    return Model.find({ category: id})
+    return Product.find({ category: id });
   }
 
   filterItems(args = {}) {
     const filter = {};
     const {
-      pattern, colors, price, category, isHotItem,
+      pattern,
+      colors,
+      price,
+      category,
+      isHotItem,
+      models,
+      currency,
     } = args;
 
     if (isHotItem) {
@@ -31,6 +37,13 @@ class ProductsService {
     }
     if (category && category.length) {
       filter.category = { $in: category };
+    }
+    if (models && models.length) {
+      filter.model = {
+        $elemMatch: {
+          value: { $in: models },
+        },
+      };
     }
     if (colors && colors.length) {
       filter.colors = {
@@ -51,23 +64,21 @@ class ProductsService {
       };
     }
     if (price && price.length) {
+      const currencySign = currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
       filter.basePrice = {
         $elemMatch: {
-          currency: "UAH",
+          currency: currencySign,
           value: {
             $gte: price[0],
             $lte: price[1],
-          }
-        }
-        
+          },
+        },
       };
     }
     return filter;
   }
 
-  async getProducts({
-    filter, skip, limit, sort, search,
-  }) {
+  async getProducts({ filter, skip, limit, sort, search }) {
     const filters = this.filterItems(filter);
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
@@ -101,6 +112,8 @@ class ProductsService {
     if (await this.checkProductExist(productData, id)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
+    const model = await modelService.getModelById(productData.model);
+    productData.model = model.name;
     return Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
@@ -108,6 +121,8 @@ class ProductsService {
     if (await this.checkProductExist(data)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
+    const model = await modelService.getModelById(data.model);
+    data.model = model.name;
     return new Product(data).save();
   }
 
@@ -116,7 +131,7 @@ class ProductsService {
   }
 
   async checkProductExist(data, id) {
-    const productCount = await Product.countDocuments({
+    const modelCount = await Product.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
@@ -124,7 +139,7 @@ class ProductsService {
         },
       },
     });
-    return productCount > 0;
+    return modelCount > 0;
   }
 }
 module.exports = new ProductsService();

@@ -2,7 +2,12 @@ const Category = require('./category.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
+  CATEGORY_IS_NOT_MAIN,
+  WRONG_CATEGORY_DATA,
+  IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
+const { validateCategoryInput } = require('../../utils/validate-category');
+const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 
 class CategoryService {
   async getAllCategories() {
@@ -17,28 +22,76 @@ class CategoryService {
     throw new Error(CATEGORY_NOT_FOUND);
   }
 
-  async updateCategory(id, category) {
-    const categoryToUpdate = await Category.findById(id);
-    if (!categoryToUpdate) {
-      throw new Error(CATEGORY_NOT_FOUND);
-    }
+  async updateCategory(id, category, upload) {
+    await this.getCategoryById(id);
     if (await this.checkCategoryExist(category, id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    if (upload) {
+      await deleteFiles(
+        Object.values(category.images).filter(
+          item => typeof item === 'string' && item
+        )
+      );
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      category.images = imageResults.fileNames;
     }
     return await Category.findByIdAndUpdate(id, category, {
       new: true,
     });
   }
 
-  async addCategory(data) {
+  async addCategory(data, parentId, upload) {
+    await validateCategoryInput.validateAsync({ ...data, parentId });
+
+    if (!upload) {
+      throw new Error(IMAGES_NOT_PROVIDED);
+    }
+
     if (await this.checkCategoryExist(data)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    return new Category(data).save();
+
+    const parentCategory = await Category.findById(parentId);
+    const savedCategory = await new Category(data).save();
+    if (parentCategory) {
+      if (!parentCategory.isMain) {
+        throw new Error(CATEGORY_IS_NOT_MAIN);
+      }
+      if (data.isMain) {
+        throw new Error(WRONG_CATEGORY_DATA);
+      }
+      if (!parentCategory.available) {
+        savedCategory.available = false;
+      }
+      parentCategory.subcategories.push(savedCategory._id);
+      await parentCategory.save();
+    }
+
+    const uploadResult = await uploadFiles([upload]);
+    const imageResults = await uploadResult[0];
+    savedCategory.images = imageResults.fileNames;
+
+    return await savedCategory.save();
   }
 
   async deleteCategory(id) {
-    const category = await Category.findByIdAndDelete(id);
+    const category = await Category.findByIdAndDelete(id).lean();
+    if (!category.isMain) {
+      const parentCategory = await Category.findOne({
+        subcategories: { $in: [id] },
+      });
+      await this.updateCategory(parentCategory._id, {
+        $pull: { subcategories: { $in: [id] } },
+      });
+    }
+    const images = Object.values(category.images).filter(
+      item => typeof item === 'string' && item
+    );
+    if (images.length) {
+      deleteFiles(images);
+    }
     if (category) {
       return category;
     }
@@ -46,15 +99,30 @@ class CategoryService {
   }
 
   async checkCategoryExist(data, id) {
+    if (!data.name.length) {
+      return false;
+    }
     const categoriesCount = await Category.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });
     return categoriesCount > 0;
   }
+
+  async getSubcategories(id) {
+    const category = await this.getCategoryById(id);
+    if (!category.isMain) {
+      return [];
+    }
+    if (!category.subcategories.length) {
+      return [];
+    }
+    return await Category.find({ _id: { $in: category.subcategories } });
+  }
 }
+
 module.exports = new CategoryService();

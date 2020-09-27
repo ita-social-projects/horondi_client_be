@@ -1,8 +1,6 @@
 const badProductId = '1a1111da11da1111111a111a';
 
-const newProduct = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
+const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   name: [
     { lang: 'en', value: 'Very Coool Baggy' },
     { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
@@ -11,6 +9,9 @@ const newProduct = {
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
   ],
+  subcategory: subcategoryId,
+  model: modelId,
+  category: categoryId,
   mainMaterial: [
     {
       lang: 'uk',
@@ -99,7 +100,7 @@ const newProduct = {
   options: [
     {
       size: '50288e8716e80d9569f64e2e',
-      bottomMaterial: 'dadba32060da96e40847166d',
+      bottomMaterial: materialId,
       description: [
         { lang: 'ua', value: 'Тканина Кордура' },
         { lang: 'en', value: 'Cordura fabric' },
@@ -124,19 +125,25 @@ const newProduct = {
       ],
     },
   ],
-};
+});
 
-const productForUpdate = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
+const getProductForUpdate = (
+  categoryId,
+  subcategoryId,
+  modelId,
+  materialId
+) => ({
+  model: modelId,
   name: [
     { lang: 'en', value: 'Bad Baggy' },
     { lang: 'ua', value: 'Жахливий Рюкзачечок' },
   ],
+  subcategory: subcategoryId,
   description: [
     { lang: 'en', value: 'Baggy is so bad' },
     { lang: 'ua', value: 'Рюкзачечок - не добрий))' },
   ],
+  category: categoryId,
   mainMaterial: [
     {
       lang: 'uk',
@@ -219,7 +226,7 @@ const productForUpdate = {
   options: [
     {
       size: '50288e8716e80d7569f64e2e',
-      bottomMaterial: 'dadba32080da96e40847166d',
+      bottomMaterial: materialId,
       description: [
         { lang: 'ua', value: 'Кордура' },
         { lang: 'en', value: 'Cordura' },
@@ -244,11 +251,17 @@ const productForUpdate = {
       ],
     },
   ],
-};
+});
 
-const sameNameForUpdate = {
-  category: 'ddc81f5dbac48c38d0403dd3',
-  subcategory: '688ded7be0c2621f2fb17b05',
+const getSameNameForUpdate = (
+  categoryId,
+  subcategoryId,
+  modelId,
+  materialId
+) => ({
+  category: categoryId,
+  subcategory: subcategoryId,
+  model: modelId,
   description: [
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
@@ -345,7 +358,7 @@ const sameNameForUpdate = {
   options: [
     {
       size: '50288e8716e80d9569f64e2e',
-      bottomMaterial: 'dadba32060da96e40847166d',
+      bottomMaterial: materialId,
       description: [
         { lang: 'ua', value: 'Тканина Кордура' },
         { lang: 'en', value: 'Cordura fabric' },
@@ -370,11 +383,80 @@ const sameNameForUpdate = {
       ],
     },
   ],
+});
+
+const newCategory = {
+  available: true,
+  name: [
+    {
+      value: 'Тестовенька категорія',
+      lang: 'uk',
+    },
+    {
+      value: 'Testy Category',
+      lang: 'en',
+    },
+  ],
+  code: 'new catyyy',
+  images: {
+    large: 'large_none',
+    medium: 'medium_none',
+    small: 'small_none',
+    thumbnail: 'thumbnail_none',
+  },
+};
+
+const newModel = {
+  name: [
+    { value: 'Тестова моделька', lang: 'uk' },
+    { value: 'Test modelyy', lang: 'en' },
+  ],
+  description: [
+    { value: 'Тест', lang: 'uk' },
+    { value: 'Test', lang: 'en' },
+  ],
+  images: {
+    large: 'large_new',
+    medium: 'medium_new',
+    small: 'small_new',
+    thumbnail: 'thumbnail_new',
+  },
+};
+
+const newMaterial = {
+  name: [
+    { lang: 'uk', value: 'Тестовий матеріальчик' },
+    { lang: 'en', value: 'Test Materialyy' },
+  ],
+  description: [
+    { lang: 'uk', value: 'Опис Тестового матеріальчика' },
+    { lang: 'en', value: 'Description for Test Materialyy' },
+  ],
+  purpose: 'bottomMaterial',
+  available: true,
+  additionalPrice: [
+    { currency: 'UAH', value: 0 },
+    { currency: 'USD', value: 0 },
+  ],
+  colors: {
+    code: 777,
+    name: [
+      { lang: 'uk', value: 'Тестовий колір' },
+      { lang: 'en', value: 'Test color' },
+    ],
+    available: true,
+    simpleName: [
+      { lang: 'uk', value: 'Проста назва матеріальчика' },
+      { lang: 'en', value: 'Simple Name for Test Materialyy' },
+    ],
+  },
 };
 
 module.exports = {
   badProductId,
-  newProduct,
-  productForUpdate,
-  sameNameForUpdate,
+  newCategory,
+  newModel,
+  getNewProduct,
+  getProductForUpdate,
+  getSameNameForUpdate,
 };
