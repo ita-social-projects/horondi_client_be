@@ -7,6 +7,8 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
+const { monthInMilliseconds } = require('../../consts');
+
 class CommentsService {
   getCommentById(id) {
     return Comment.findById(id);
@@ -26,7 +28,7 @@ class CommentsService {
 
   async getAllRecentComments({ skip, limit }) {
     const dateFrom = new Date().getTime();
-    const dateTo = dateFrom - 2592000000;
+    const dateTo = dateFrom - monthInMilliseconds;
 
     const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
       .sort({ date: -1 })
