@@ -4,7 +4,10 @@ const errorOutputPlugin = {
       willSendResponse(context) {
         if (
           context.errors &&
-          context.errors.some(item => item.originalError.name === 'RuleError')
+          context.errors.some(
+            item =>
+              item.originalError && item.originalError.name === 'RuleError'
+          )
         ) {
           const errors = context.errors.map(item => ({
             [item.path]: {
@@ -13,7 +16,10 @@ const errorOutputPlugin = {
             },
           }));
 
-          const data = Object.assign(context.response.data, ...errors);
+          const responseData = context.response.data
+            ? context.response.data
+            : {};
+          const data = Object.assign(responseData, ...errors);
 
           context.response.data = data;
 
