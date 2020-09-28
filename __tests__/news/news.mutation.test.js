@@ -1,7 +1,7 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-undef */
 require('dotenv').config();
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { user } = require('./news.variables');
 const { adminLogin } = require('../helper-functions');

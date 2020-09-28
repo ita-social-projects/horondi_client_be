@@ -1,12 +1,9 @@
-const { createHttpLink } = require('apollo-link-http');
-const {
-  InMemoryCache,
-  IntrospectionFragmentMatcher,
-} = require('apollo-cache-inmemory');
-const { ApolloClient } = require('apollo-boost');
+const { IntrospectionFragmentMatcher } = require('apollo-cache-inmemory');
+const { ApolloClient, InMemoryCache } = require('@apollo/client');
 require('dotenv').config();
-const fetch = require('node-fetch');
+const { createHttpLink } = require('apollo-link-http');
 const introspectionResult = require('../fragmentTypes.json');
+const fetch = require('node-fetch');
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData: introspectionResult,
