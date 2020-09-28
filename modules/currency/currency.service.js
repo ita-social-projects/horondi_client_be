@@ -5,7 +5,7 @@ const {
 } = require('../../error-messages/currency.messages');
 
 class CurrencyService {
-    constructor() {
+  constructor() {
     this.currencyTypes = {
       UAH: 'UAH',
       USD: 'USD',
@@ -51,8 +51,8 @@ class CurrencyService {
     }
     throw new Error(CURRENCY_NOT_FOUND);
   }
-  
-    async deleteAllCurrencies() {
+
+  async deleteAllCurrencies() {
     await Currency.deleteMany({});
   }
 

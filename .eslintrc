@@ -22,7 +22,7 @@
       {
         "vars": "all",
         "args": "none",
-        "ignoreSiblings": true,
+        "ignoreRestSiblings": true,
         "argsIgnorePattern": "res|next|^err"
       }
     ],
@@ -79,6 +79,18 @@
           "let": 2,
           "const": 3
         }
+      }
+    ],
+    "max-len": [
+      2,
+      {
+        "code": 200,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
       }
     ],
     "no-return-await": 0,
