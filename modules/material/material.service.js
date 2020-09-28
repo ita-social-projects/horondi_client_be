@@ -39,18 +39,20 @@ class MaterialsService {
   async addMaterial({ material, images }) {
     const { additionalPrice, ...rest } = material;
 
-    const currency = await Currency.findOne();
-
     if (await this.checkMaterialExist(rest)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
     if (!images) {
       throw new Error(IMAGE_NOT_PROVIDED);
     }
+    const currency = await Currency.findOne();
 
     const uploadResult = await uploadFiles(images);
+
     const imageResults = await Promise.allSettled(uploadResult);
+
     const resizedImages = imageResults.map(item => item.value.fileNames);
+
     if (!resizedImages) {
       throw new Error(IMAGES_WERE_NOT_CONVERTED);
     }
@@ -66,8 +68,7 @@ class MaterialsService {
         {
           currency: 'UAH',
           value:
-            additionalPrice *
-            Math.round(currency.convertOptions[0].exchangeRate * 100),
+            additionalPrice * Math.round(currency.convertOptions[0].exchangeRate * 100),
         },
         {
           currency: 'USD',

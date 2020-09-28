@@ -125,6 +125,6 @@
       }
     ],
     "no-confusing-arrow": 0,
-  
+    "linebreak-style": 0
   }
 }
