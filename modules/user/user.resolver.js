@@ -1,7 +1,7 @@
 const userService = require('./user.service');
 
 const userQuery = {
-  getAllUsers: () => userService.getAllUsers(),
+  getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUserByToken: (parent, args, context) => context.user,
   getUserById: (parent, args) => userService.getUser(args.id),
   validateConfirmationToken: (parent, args) => {

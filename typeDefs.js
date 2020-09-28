@@ -4,6 +4,7 @@ const {
   userType,
   userInput,
   userRegisterInput,
+  userFilterInput,
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
@@ -249,7 +250,7 @@ const typeDefs = gql`
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
-    getAllUsers: [User]
+    getAllUsers(filter: UserFilterInput): [User]
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -266,6 +267,7 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
+    getAllCommentsByUser(userEmail: String!): [Comment]
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
@@ -321,6 +323,7 @@ const typeDefs = gql`
   ${LoginInput}
   ${userRegisterInput}
   ${businessTextInput}
+  ${userFilterInput}
   ${adminConfirmInput}
   ${adminRegisterInput}
   ${modelInput}
