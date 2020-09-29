@@ -22,7 +22,7 @@ let materialId;
 const materialDoesNotExistId = '1f2ad410eb01783384e6111b';
 
 beforeAll(async () => {
-  token = await adminLogin(user);
+  token = await adminLogin();
 });
 describe('material mutations tests', () => {
   describe('test adding material', () => {

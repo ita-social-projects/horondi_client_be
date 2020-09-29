@@ -1,49 +1,9 @@
-const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
-const { applyMiddleware } = require('graphql-middleware');
+const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
-const typeDefs = require('./typeDefs');
-const resolvers = require('./resolvers');
-const connectDB = require('./config/db');
-const userService = require('./modules/user/user.service');
-const verifyUser = require('./utils/verify-user');
-const permissions = require('./permissions');
-const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
-const errorOutputPlugin = require('./plugins/error-output.plugin');
-const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
+const config = require('./app');
 
-connectDB();
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
-
-const schema = applyMiddleware(
-  makeExecutableSchema({ typeDefs, resolvers }),
-  permissions
-);
-
-const server = new ApolloServer({
-  schema,
-  context: async ({ req }) => {
-    const { token } = req.headers || '';
-    if (token) {
-      const user = verifyUser(token);
-      if (!user) {
-        return {
-          statusCode: 401,
-          message: INVALID_PERMISSIONS,
-        };
-      }
-      return {
-        user: await userService.getUserByFieldOrThrow('email', user.email),
-      };
-    }
-  },
-  plugins: [errorOutputPlugin],
-  formatError,
-  introspection: true,
-  cors: { origin: '*' },
-});
+const server = new ApolloServer(config);
 
 const PORT = process.env.PORT || 5000;
 
@@ -60,3 +20,5 @@ app.listen(PORT, () => {
     `,Graphql path: ${server.graphqlPath}`
   );
 });
+
+module.exports = config;

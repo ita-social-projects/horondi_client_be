@@ -1,5 +1,8 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
+
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 
 const connectDB = async () => {
   const db = process.env.MONGO_URL;
@@ -13,7 +16,7 @@ const connectDB = async () => {
     console.log('MongoDB Connected...');
   } catch (err) {
     console.error(err);
-    process.exit(1);
+    // process.exit(1);
   }
 };
 

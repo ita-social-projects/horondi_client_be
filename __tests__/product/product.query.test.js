@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const {
   newModel,
@@ -83,7 +83,6 @@ describe('Product queries', () => {
         product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
       },
     });
-    console.log('My created product', createProduct.data.addProduct);
     productId = createProduct.data.addProduct._id;
   });
   test('#1 Should receive all products', async () => {
@@ -128,7 +127,6 @@ describe('Product queries', () => {
           }
         `,
       });
-      console.log(products);
     const allProducts = products.data.getProducts.items;
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);

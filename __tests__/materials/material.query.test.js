@@ -59,7 +59,7 @@ const material = {
 };
 
 beforeAll(async () => {
-  token = await adminLogin(user);
+  token = await adminLogin();
 
   const res = await client
     .mutate({

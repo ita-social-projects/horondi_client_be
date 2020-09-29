@@ -1,8 +1,10 @@
 const { gql } = require('@apollo/client');
+const User = require('../modules/user/user.model');
+const { ApolloServer } = require('apollo-server-express');
 const client = require('../utils/apollo-test-client');
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
+const config = require('../app');
+const { createTestClient } = require('apollo-server-testing');
+const bcrypt = require('bcryptjs');
 
 const adminLogin = async user => {
   const result = await client.mutate({
@@ -23,4 +25,25 @@ const adminLogin = async user => {
   return result.data.loginAdmin.token;
   
 };
-module.exports = { adminLogin };
+
+const setupApp = async () => {
+  await User.deleteOne({ email: process.env.SUPER_ADMIN_EMAIL });
+  const admin = new User();
+  admin.firstName = 'Super admin';
+  admin.lastName = 'Super admin full';
+  admin.email = process.env.SUPER_ADMIN_EMAIL;
+  admin.role = 'admin';
+  admin.credentials = [
+      {
+          source: 'horondi',
+          tokenPass: await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 12)
+      }];
+  await admin.save();
+  const server = new ApolloServer({
+    ...config,
+    context: { user: admin }
+  });
+  return createTestClient(server)
+};
+
+module.exports = { adminLogin, setupApp };

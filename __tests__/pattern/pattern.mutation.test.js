@@ -13,74 +13,65 @@ const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
 } = require('../../error-messages/pattern.messages');
-require('dotenv').config();
-const { adminLogin } = require('../helper-functions');
+const { adminLogin, setupApp } = require('../helper-functions');
+jest.mock('../../modules/upload/upload.service');
 
 let patternId = '';
-let token = '';
+let operations;
 
 describe('pattern mutation tests', () => {
   beforeAll(async () => {
-    token = await adminLogin();
+    operations = await setupApp();
   });
-  it('#1 should add pattern to database', async () => {
-    console.log(token);
-    const res = await client
-      .mutate({
-        context: { headers: { token } },
-        variables: { pattern: mutationPatternToAdd },
-        mutation: gql`
-          mutation($pattern: PatternInput!) {
-            addPattern(pattern: $pattern) {
-              ... on Pattern {
-                _id
-                name {
-                  lang
-                  value
-                }
-                description {
-                  lang
-                  value
-                }
-                handmade
-                available
-                material
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
+  it('should add pattern to database', async () => {
+    const res = await operations.mutate({
+      mutation: gql`
+      mutation($pattern: PatternInput!) {
+        addPattern(pattern: $pattern) {
+          ... on Pattern {
+            _id
+            name {
+              lang
+              value
+            }
+            description {
+              lang
+              value
+            }
+            handmade
+            available
+            material
+            images {
+              large
+              medium
+              small
+              thumbnail
             }
           }
-        `,
-      })
-      .catch(e => e);
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { pattern: mutationPatternToAdd }
+    });
     patternId = res.data.addPattern._id;
     const addedPattern = res.data.addPattern;
     expect(addedPattern).toHaveProperty(
       'name',
       mutationPatternToAdd.name.map(item => ({
-        ...languageTypeName,
         ...item,
       }))
     );
     expect(addedPattern).toHaveProperty(
       'description',
       mutationPatternToAdd.description.map(item => ({
-        ...languageTypeName,
         ...item,
       }))
     );
-    expect(addedPattern).toHaveProperty('images', {
-      ...imageTypeName,
-      ...mutationPatternToAdd.images,
-    });
+    expect(addedPattern).toHaveProperty('images');
     expect(addedPattern).toHaveProperty(
       'handmade',
       mutationPatternToAdd.handmade
@@ -94,14 +85,10 @@ describe('pattern mutation tests', () => {
       mutationPatternToAdd.material
     );
   });
-  it('adding pattern that already exist should return error', async () => {
-    const res = await client
+
+  it('should return error if we try to create pattern with name that already exists', async () => {
+    const res = await operations
       .mutate({
-        context: {
-          headers: {
-            token,
-          },
-        },
         variables: { pattern: patternAlreadyExist },
         mutation: gql`
           mutation($pattern: PatternInput!) {
@@ -116,8 +103,8 @@ describe('pattern mutation tests', () => {
             }
           }
         `,
-      })
-      .catch(e => e);
+      });
+
     expect(res.data.addPattern).toHaveProperty(
       'message',
       PATTERN_ALREADY_EXIST
@@ -125,11 +112,10 @@ describe('pattern mutation tests', () => {
     expect(res.data.addPattern).toHaveProperty('statusCode', 400);
   });
 
-  test(' update pattern', async () => {
-    const res = await client
+  it('should update pattern', async () => {
+    const res = await operations
       .mutate({
         variables: { id: patternId, pattern: patternToUpdate },
-        context: { headers: { token } },
         mutation: gql`
           mutation($id: ID!, $pattern: PatternInput!) {
             updatePattern(id: $id, pattern: $pattern) {
@@ -159,30 +145,20 @@ describe('pattern mutation tests', () => {
             }
           }
         `,
-      })
-      .catch(e => e);
+      });
     const updatedPattern = res.data.updatePattern;
 
-    expect(updatedPattern).toHaveProperty(
-      'name',
-      patternToUpdate.name.map(item => ({
-        ...languageTypeName,
-        ...item,
-      }))
-    );
     expect(updatedPattern.name).toBeInstanceOf(Array);
     expect(updatedPattern).toHaveProperty(
+      'name',
+      patternToUpdate.name
+    );
+    expect(updatedPattern).toHaveProperty(
       'description',
-      patternToUpdate.description.map(item => ({
-        ...languageTypeName,
-        ...item,
-      }))
+      patternToUpdate.description
     );
     expect(updatedPattern.description).toBeInstanceOf(Array);
-    expect(updatedPattern).toHaveProperty('images', {
-      ...imageTypeName,
-      ...patternToUpdate.images,
-    });
+    expect(updatedPattern).toHaveProperty('images');
 
     expect(updatedPattern).toHaveProperty('handmade', patternToUpdate.handmade);
     expect(updatedPattern).toHaveProperty(
@@ -191,11 +167,10 @@ describe('pattern mutation tests', () => {
     );
   });
 
-  test(' update pattern with wrong id should return error', async () => {
-    const res = await client
+  it('should return error if we try to update pattern with wrong id', async () => {
+    const res = await operations
       .mutate({
         variables: { id: patternDoesNotExistId, pattern: patternToUpdate },
-        context: { headers: { token } },
         mutation: gql`
           mutation($id: ID!, $pattern: PatternInput!) {
             updatePattern(id: $id, pattern: $pattern) {
@@ -226,16 +201,15 @@ describe('pattern mutation tests', () => {
             }
           }
         `,
-      })
-      .catch(e => e);
+      });
     expect(res.data.updatePattern).toHaveProperty('statusCode', 404);
     expect(res.data.updatePattern).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
-  test(' update pattern with existing name should return error', async () => {
-    const res = await client
+
+  it('should return error if we try to update pattern with existing name ', async () => {
+    const res = await operations
       .mutate({
         variables: { id: patternId, pattern: patternAlreadyExist },
-        context: { headers: { token } },
         mutation: gql`
           mutation($id: ID!, $pattern: PatternInput!) {
             updatePattern(id: $id, pattern: $pattern) {
@@ -266,8 +240,7 @@ describe('pattern mutation tests', () => {
             }
           }
         `,
-      })
-      .catch(e => e);
+      });
     expect(res.data.updatePattern).toHaveProperty('statusCode', 400);
     expect(res.data.updatePattern).toHaveProperty(
       'message',
@@ -275,10 +248,9 @@ describe('pattern mutation tests', () => {
     );
   });
 
-  it(' should delete pattern from database', async () => {
-    await client
+  it('should delete pattern from database', async () => {
+    await operations
       .mutate({
-        context: { headers: { token } },
         variables: { id: patternId },
         mutation: gql`
           mutation($id: ID!) {
@@ -293,13 +265,11 @@ describe('pattern mutation tests', () => {
             }
           }
         `,
-      })
-      .catch(e => e);
+      });
   });
-  it('deleting not existing pattern should return error', async () => {
-    const res = await client
+  it('should return error if we try to delete not existing pattern', async () => {
+    const res = await operations
       .mutate({
-        context: { headers: { token } },
         variables: { id: patternDoesNotExistId },
         mutation: gql`
           mutation($id: ID!) {
@@ -314,8 +284,7 @@ describe('pattern mutation tests', () => {
             }
           }
         `,
-      })
-      .catch(e => e);
+      });
     expect(res.data.deletePattern).toHaveProperty('statusCode', 404);
     expect(res.data.deletePattern).toHaveProperty('message', PATTERN_NOT_FOUND);
   });

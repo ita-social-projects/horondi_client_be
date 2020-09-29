@@ -1,6 +1,7 @@
-require('dotenv').config();
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 const azureStorage = require('azure-storage');
-
 const blobService = azureStorage.createBlobService(
   process.env.STORAGE_ACCOUNT,
   process.env.ACCESS_KEY,

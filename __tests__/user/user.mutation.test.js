@@ -679,8 +679,6 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
-
-    console.log(result);
     const userInfo = result.data;
 
     expect(userInfo.loginUser).not.toEqual(null);

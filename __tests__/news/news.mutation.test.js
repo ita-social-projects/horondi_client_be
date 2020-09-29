@@ -72,7 +72,7 @@ const invalidToken =
 describe('News mutations tests', () => {
   describe('Create news test', () => {
     beforeAll(async () => {
-      token = await adminLogin(user);
+      token = await adminLogin();
     });
     test('should add news to database', async () => {
       const res = await client

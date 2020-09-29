@@ -18,6 +18,9 @@ const {
   adminConfirmationMessage,
 } = require('../../utils/localization');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 
 const {
   USER_ALREADY_EXIST,

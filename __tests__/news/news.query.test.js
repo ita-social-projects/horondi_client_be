@@ -13,7 +13,7 @@ const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
 describe('News queries tests', () => {
   describe('Get all news', () => {
     beforeAll(async () => {
-      token = await adminLogin(user);
+      token = await adminLogin();
 
       const res = await client
         .mutate({
