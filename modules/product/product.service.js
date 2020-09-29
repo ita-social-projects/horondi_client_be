@@ -163,10 +163,6 @@ class ProductsService {
   }
 
   async addProduct(productData, filesToUpload) {
-    if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
-    }
-
     const uploadResult = await uploadFiles(filesToUpload);
     const imagesResults = await Promise.allSettled(uploadResult);
     const primary = imagesResults[0].value.fileNames;
@@ -181,6 +177,7 @@ class ProductsService {
       primary,
       additional,
     };
+
     return new Product(productData).save();
   }
 
