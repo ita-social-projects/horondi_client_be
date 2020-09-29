@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
+const { gql } = require('apollo-boost');
 const client = require('../../utils/apollo-test-client');
 const {
   newModel,
@@ -83,55 +83,56 @@ describe('Product queries', () => {
         product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
       },
     });
+    console.log('My created product', createProduct.data.addProduct);
     productId = createProduct.data.addProduct._id;
   });
   test('#1 Should receive all products', async () => {
-    const products = await client.query({
-      query: gql`
-        query {
-          getProducts {
-            items {
-              category {
-                _id
+      const products = await client.query({
+        query: gql`
+          query {
+            getProducts {
+              items {
+                category {
+                  _id
+                }
+                subcategory {
+                  _id
+                }
+                name {
+                  value
+                }
+                description {
+                  value
+                }
+                mainMaterial {
+                  value
+                }
+                innerMaterial {
+                  value
+                }
+                strapLengthInCm
+                pattern {
+                  value
+                }
+                closureColor
+                basePrice {
+                  value
+                }
+                available
+                isHotItem
+                purchasedCount
+                rate
+                rateCount
               }
-              subcategory {
-                _id
-              }
-              name {
-                value
-              }
-              description {
-                value
-              }
-              mainMaterial {
-                value
-              }
-              innerMaterial {
-                value
-              }
-              strapLengthInCm
-              pattern {
-                value
-              }
-              closureColor
-              basePrice {
-                value
-              }
-              available
-              isHotItem
-              purchasedCount
-              rate
-              rateCount
             }
           }
-        }
-      `,
-    });
+        `,
+      });
+      console.log(products);
     const allProducts = products.data.getProducts.items;
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
     expect(allProducts[0].name).toBeInstanceOf(Array);
-    expect(allProducts).toMatchSnapshot();
   });
   test('#2 Should receive product by ID', async () => {
     const product = await client.query({

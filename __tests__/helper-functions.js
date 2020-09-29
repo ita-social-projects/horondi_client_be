@@ -1,6 +1,8 @@
 const { gql } = require('@apollo/client');
 const client = require('../utils/apollo-test-client');
-require('dotenv').config();
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 
 const adminLogin = async user => {
   const result = await client.mutate({
@@ -12,12 +14,13 @@ const adminLogin = async user => {
       }
     `,
     variables: {
-      user,
+      user: {
+        email: user ? user.email : process.env.SUPER_ADMIN_EMAIL,
+        password: user ? user.password : process.env.SUPER_ADMIN_PASSWORD
+      },
     },
   });
-
-  const { token } = result.data.loginAdmin;
-
-  return token;
+  return result.data.loginAdmin.token;
+  
 };
 module.exports = { adminLogin };

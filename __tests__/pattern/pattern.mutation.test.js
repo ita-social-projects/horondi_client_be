@@ -5,7 +5,6 @@ const {
   patternToUpdate,
   patternAlreadyExist,
   patternDoesNotExistId,
-  user,
   mutationPatternToAdd,
   languageTypeName,
   imageTypeName,
@@ -22,9 +21,10 @@ let token = '';
 
 describe('pattern mutation tests', () => {
   beforeAll(async () => {
-    token = await adminLogin(user);
+    token = await adminLogin();
   });
   it('#1 should add pattern to database', async () => {
+    console.log(token);
     const res = await client
       .mutate({
         context: { headers: { token } },

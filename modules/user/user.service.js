@@ -159,7 +159,6 @@ class UserService {
     }
 
     const user = await this.getUserByFieldOrThrow('email', email);
-
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass

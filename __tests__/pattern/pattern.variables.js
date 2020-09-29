@@ -5,8 +5,8 @@ const wrongLimit = -5;
 const limit = 5;
 
 const user = {
-  email: process.env.ADMIN_EMAIL,
-  password: process.env.ADMIN_PASS,
+  email: process.env.SUPER_ADMIN_EMAIL,
+  password: process.env.SUPER_ADMIN_PASSWORD,
 };
 const languageTypeName = { __typename: 'Language' };
 const imageTypeName = { __typename: 'ImageSet' };
