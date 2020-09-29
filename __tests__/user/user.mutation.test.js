@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { adminUser, superAdminUser, newAdmin } = require('./user.variables');
 const adminLogin = require('../helpers/admin-login');
