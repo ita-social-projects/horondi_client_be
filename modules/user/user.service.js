@@ -42,6 +42,17 @@ const SOURCES = {
 };
 
 class UserService {
+  filterItems(args = {}) {
+    const filter = {};
+    const { roles } = args;
+
+    if (roles) {
+      filter.role = { $in: roles };
+    }
+
+    return filter;
+  }
+
   async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, process.env.SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
@@ -66,8 +77,12 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers() {
-    return await User.find();
+  async getAllUsers({ filter }) {
+    const filters = this.filterItems(filter);
+
+    const items = await User.find(filters);
+
+    return items;
   }
 
   async getUser(id) {
@@ -99,8 +114,8 @@ class UserService {
     if (upload) {
       await deleteFiles(
         Object.values(user.images).filter(
-          item => typeof item === 'string' && item,
-        ),
+          item => typeof item === 'string' && item
+        )
       );
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -129,7 +144,7 @@ class UserService {
         ...user._doc,
         ...updatedUser,
       },
-      { new: true },
+      { new: true }
     );
   }
 
@@ -147,7 +162,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass,
+      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
     );
 
     if (user.role === ROLES.user) {
@@ -184,7 +199,7 @@ class UserService {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
+      user.credentials.find(cred => cred.source === 'horondi').tokenPass
     );
 
     if (!match) {
@@ -200,9 +215,7 @@ class UserService {
     };
   }
 
-  async registerUser({
-    firstName, lastName, email, password,
-  }, language) {
+  async registerUser({ firstName, lastName, email, password }, language) {
     await validateRegisterInput.validateAsync({
       firstName,
       lastName,
@@ -331,7 +344,8 @@ class UserService {
       });
     }
 
-    const dayHasPassed =      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
+    const dayHasPassed =
+      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
     if (dayHasPassed) {
       await User.findByIdAndUpdate(user._id, {
         recoveryAttempts: 0,
@@ -377,7 +391,7 @@ class UserService {
     const savedUser = await user.save();
     const invitationalToken = await generateToken(
       savedUser._id,
-      savedUser.email,
+      savedUser.email
     );
 
     if (process.env.NODE_ENV === 'test') {

@@ -1,7 +1,7 @@
 const userService = require('./user.service');
 
 const userQuery = {
-  getAllUsers: () => userService.getAllUsers(),
+  getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUserByToken: (parent, args, context) => context.user,
   getUserById: (parent, args) => userService.getUser(args.id),
   validateConfirmationToken: (parent, args) => {
@@ -21,9 +21,11 @@ const userMutation = {
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: (parent, args) => userService.deleteUser(args.id),
-  updateUserById: (parent, args) => userService.updateUserById(args.user, args.id, args.upload),
+  updateUserById: (parent, args) =>
+    userService.updateUserById(args.user, args.id, args.upload),
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
-  recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
+  recoverUser: (parent, args) =>
+    userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
     try {
       return await userService.switchUserStatus(args.id);
@@ -34,8 +36,10 @@ const userMutation = {
       };
     }
   },
-  resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
-  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
+  resetPassword: (parent, args) =>
+    userService.resetPassword(args.password, args.token),
+  checkIfTokenIsValid: (parent, args) =>
+    userService.checkIfTokenIsValid(args.token),
   sendEmailConfirmation: (parent, args) => {
     try {
       return userService.sendConfirmationLetter(args.email, args.language);
@@ -43,7 +47,7 @@ const userMutation = {
       return {
         statusCode: 400,
         message: e.message,
-      }
+      };
     }
   },
   registerAdmin: async (parent, args) => {

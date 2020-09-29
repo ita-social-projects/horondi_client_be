@@ -15,12 +15,12 @@ const logger = require('./logger');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
-const {
-  INVALID_AUTHORIZATION_TOKEN,
-} = require('./error-messages/user.messages');
+const { currencyWorker } = require('./currency.worker');
 
 connectDB();
-require('dotenv').config();
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
@@ -64,6 +64,7 @@ const server = new ApolloServer({
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+currencyWorker();
 
 app.get('/health', (req, res) => res.send('Health page!'));
 server.applyMiddleware({ app });
