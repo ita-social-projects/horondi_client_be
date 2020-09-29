@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const {

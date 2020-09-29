@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const {
   patternToUpdate,
