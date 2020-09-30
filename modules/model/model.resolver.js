@@ -3,6 +3,9 @@ const { MODEL_NOT_FOUND } = require('../../error-messages/model.messages');
 const modelService = require('./model.service');
 
 const modelsQuery = {
+  getAllModels: async (parent, args) =>
+    await modelsService.getAllModels(args),
+
   getModelsByCategory: async (parent, args) =>
     await modelsService.getModelsByCategory(args.id),
 };

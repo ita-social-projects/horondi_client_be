@@ -8,6 +8,18 @@ const {
 const CategoryService = require('../category/category.service');
 
 class ModelsService {
+  async getAllModels({ skip, limit }) {
+    const items = await Model.find()
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Model.find().countDocuments();
+    return {
+      items,
+      count,
+    };
+  }
+
   async getModelsByCategory(id) {
     if (!ObjectId.isValid(id)) {
       throw new Error(CATEGORY_NOT_VALID);

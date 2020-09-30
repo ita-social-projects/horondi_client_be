@@ -199,6 +199,10 @@ const typeDefs = gql`
     items: [Contact]
     count: Int
   }
+  type PaginatedModels {
+    items: [Model]
+    count: Int
+  }
 
   type LanguageImageSet {
     lang: String
@@ -273,6 +277,7 @@ const typeDefs = gql`
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
 
+    getAllModels(limit: Int, skip: Int): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
