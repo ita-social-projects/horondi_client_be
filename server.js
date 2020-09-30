@@ -1,8 +1,4 @@
-const {
-  ApolloServer,
-  makeExecutableSchema,
-  AuthenticationError,
-} = require('apollo-server-express');
+const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
 const { applyMiddleware } = require('graphql-middleware');
 const express = require('express');
 const typeDefs = require('./typeDefs');
@@ -16,6 +12,7 @@ const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
+const formatErrorForLogger = require('./utils/format-error-for-logger');
 
 connectDB();
 require('dotenv').config({
@@ -34,17 +31,20 @@ const server = new ApolloServer({
 
     logger.log({
       level: 'info',
-      message: `method: ${req.method}/baseUrl: ${req.baseUrl}/date:${
+      message: `method: ${req.method} | baseUrl: ${req.baseUrl} | date:${
         req.fresh
-      }/ request headers: ${JSON.stringify(req.headers)}/body: ${JSON.stringify(
-        req.body
-      )}`,
+      } | request headers: ${JSON.stringify(
+        req.headers
+      )} | body: ${JSON.stringify(req.body)}`,
     });
     if (token) {
       const user = verifyUser(token);
-      if (!user) throw new AuthenticationError(INVALID_AUTHORIZATION_TOKEN);
-      logger.error({ level: 'error', message: INVALID_AUTHORIZATION_TOKEN });
+
       if (!user) {
+        logger.error({
+          level: 'error',
+          message: formatErrorForLogger(INVALID_PERMISSIONS),
+        });
         return {
           statusCode: 401,
           message: INVALID_PERMISSIONS,
