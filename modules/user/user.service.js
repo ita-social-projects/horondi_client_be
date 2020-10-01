@@ -242,20 +242,24 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    const token = await generateToken(savedUser._id, savedUser.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.CONFIRMATION_SECRET,
-    });
-    savedUser.confirmationToken = token;
-    await savedUser.save();
-    const message = {
-      from: process.env.MAIL_USER,
-      to: savedUser.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(firstName, token, language),
-    };
 
     if (process.env.NODE_ENV !== 'test') {
+      const token = await generateToken(savedUser._id, savedUser.email, {
+        expiresIn: process.env.RECOVERY_EXPIRE,
+        secret: process.env.CONFIRMATION_SECRET,
+      });
+      savedUser.confirmationToken = token;
+    }
+
+    await savedUser.save();
+
+    if (process.env.NODE_ENV !== 'test') {
+      const message = {
+        from: process.env.MAIL_USER,
+        to: savedUser.email,
+        subject: '[HORONDI] Email confirmation',
+        html: confirmationMessage(firstName, token, language),
+      };
       await sendEmail(message);
     }
 
