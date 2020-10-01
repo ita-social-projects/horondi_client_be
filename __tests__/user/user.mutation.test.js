@@ -1,12 +1,20 @@
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
+const { adminUser, superAdminUser, newAdmin } = require('./user.variables');
+const adminLogin = require('../helpers/admin-login');
+const {
+  INPUT_NOT_VALID,
+  INVALID_ADMIN_INVITATIONAL_TOKEN,
+  USER_ALREADY_EXIST,
+} = require('../../error-messages/user.messages');
 
 require('dotenv').config();
 
 let userId;
 let token;
 let badId;
+let invitationalToken;
 
 const testUser = {
   firstName: 'Petro',
@@ -32,9 +40,7 @@ describe('mutations', () => {
   });
 
   test('should register user', async () => {
-    const {
-      firstName, lastName, email, password,
-    } = testUser;
+    const { firstName, lastName, email, password } = testUser;
 
     const res = await client.mutate({
       mutation: gql`
@@ -73,23 +79,21 @@ describe('mutations', () => {
     expect(typeof res.data.registerUser._id).toBe('string');
     expect(res.data.registerUser).toHaveProperty(
       'firstName',
-      testUser.firstName,
+      testUser.firstName
     );
     expect(res.data.registerUser).toHaveProperty('lastName', testUser.lastName);
     expect(res.data.registerUser).toHaveProperty('email', testUser.email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
     const date = new Date(
-      +res.data.registerUser.registrationDate,
+      +res.data.registerUser.registrationDate
     ).toDateString();
     const dateNow = new Date(Date.now()).toDateString();
     expect(dateNow).toBe(date);
   });
 
   test('should throw error User with provided email already exist', async () => {
-    const {
-      firstName, lastName, email, password,
-    } = testUser;
+    const { firstName, lastName, email, password } = testUser;
 
     const res = await client
       .mutate({
@@ -221,9 +225,7 @@ describe('mutations', () => {
       comments,
     } = testUser;
 
-    const {
-      country, city, street, buildingNumber,
-    } = address;
+    const { country, city, street, buildingNumber } = address;
 
     const res = await client.mutate({
       mutation: gql`
@@ -301,7 +303,7 @@ describe('mutations', () => {
     expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
     expect(res.data.updateUserById).toHaveProperty(
       'phoneNumber',
-      testUser.phoneNumber,
+      testUser.phoneNumber
     );
     expect(res.data.updateUserById).toHaveProperty('role', testUser.role);
     expect(res.data.updateUserById).toHaveProperty('address', {
@@ -313,12 +315,12 @@ describe('mutations', () => {
     });
     expect(res.data.updateUserById).toHaveProperty(
       'wishlist',
-      testUser.wishlist,
+      testUser.wishlist
     );
     expect(res.data.updateUserById).toHaveProperty('orders', testUser.orders);
     expect(res.data.updateUserById).toHaveProperty(
       'comments',
-      testUser.comments,
+      testUser.comments
     );
   });
 
@@ -333,9 +335,7 @@ describe('mutations', () => {
       comments,
     } = testUser;
 
-    const {
-      country, city, street, buildingNumber,
-    } = address;
+    const { country, city, street, buildingNumber } = address;
 
     const res = await client
       .mutate({
@@ -424,9 +424,7 @@ describe('mutations', () => {
       comments,
     } = testUser;
 
-    const {
-      country, city, street, buildingNumber,
-    } = address;
+    const { country, city, street, buildingNumber } = address;
 
     const res = await client.mutate({
       mutation: gql`
@@ -496,16 +494,16 @@ describe('mutations', () => {
 
     expect(res.data.updateUserByToken).toHaveProperty(
       'firstName',
-      'UpdatedByToken',
+      'UpdatedByToken'
     );
     expect(res.data.updateUserByToken).toHaveProperty(
       'lastName',
-      'UpdatedByToken',
+      'UpdatedByToken'
     );
     expect(res.data.updateUserByToken).toHaveProperty('email', testUser.email);
     expect(res.data.updateUserByToken).toHaveProperty(
       'phoneNumber',
-      testUser.phoneNumber,
+      testUser.phoneNumber
     );
     expect(res.data.updateUserByToken).toHaveProperty('role', 'user');
     expect(res.data.updateUserByToken).toHaveProperty('address', {
@@ -517,15 +515,15 @@ describe('mutations', () => {
     });
     expect(res.data.updateUserByToken).toHaveProperty(
       'wishlist',
-      testUser.wishlist,
+      testUser.wishlist
     );
     expect(res.data.updateUserByToken).toHaveProperty(
       'orders',
-      testUser.orders,
+      testUser.orders
     );
     expect(res.data.updateUserByToken).toHaveProperty(
       'comments',
-      testUser.comments,
+      testUser.comments
     );
   });
 
@@ -572,7 +570,7 @@ describe('mutations', () => {
       .catch(err => err);
 
     expect(res.networkError.result.errors[0].message).toBe(
-      'Context creation failed: Invalid authorization token',
+      'Context creation failed: Invalid authorization token'
     );
   });
 
@@ -681,8 +679,6 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
-
-    console.log(result);
     const userInfo = result.data;
 
     expect(userInfo.loginUser).not.toEqual(null);
@@ -764,5 +760,478 @@ describe('User`s mutation restictions tests', () => {
 
     expect(result.graphQLErrors.length).toBe(1);
     expect(result.graphQLErrors[0].message).toEqual('USER_NOT_AUTHORIZED');
+  });
+});
+
+describe('Register admin', () => {
+  let superAdminToken;
+  let role = 'admin';
+  let invalidEmail = 'invalid@com';
+  let adminEmail = adminUser.email;
+  let invalidRole = 'superadmin';
+
+  let { email: newAdminEmail } = newAdmin;
+
+  beforeAll(async () => {
+    superAdminToken = await adminLogin(superAdminUser);
+  });
+
+  test('Should throw an error when use already in-usage email while admin registration', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminRegisterInput!) {
+            registerAdmin(user: $user) {
+              ... on User {
+                email
+                token
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: adminEmail,
+            role,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.registerAdmin;
+
+    expect(data.message).toEqual(USER_ALREADY_EXIST);
+    expect(data.statusCode).toEqual(400);
+  });
+
+  test('Should throw an error when use invalid email while admin registration', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminRegisterInput!) {
+            registerAdmin(user: $user) {
+              ... on User {
+                email
+                token
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: newAdminEmail,
+            role: invalidRole,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.registerAdmin;
+
+    expect(data.message).toEqual(INPUT_NOT_VALID);
+    expect(data.statusCode).toEqual(400);
+  });
+
+  test('Should throw an error when use invalid role', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminRegisterInput!) {
+            registerAdmin(user: $user) {
+              ... on User {
+                email
+                token
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: invalidEmail,
+            role,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.registerAdmin;
+
+    expect(data.message).toEqual(INPUT_NOT_VALID);
+    expect(data.statusCode).toEqual(400);
+  });
+
+  test('Should create an user with custom role and generate a confirmation token', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminRegisterInput!) {
+            registerAdmin(user: $user) {
+              ... on User {
+                email
+                invitationalToken
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: newAdminEmail,
+            role,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.registerAdmin;
+
+    expect(data.email).toEqual(newAdminEmail);
+
+    invitationalToken = data.invitationalToken;
+  });
+});
+
+describe('Admin confirmation', () => {
+  let invalidFirstName = 'H';
+  let invalidLastName = 'O';
+  let invalidPassword = 'You';
+  let invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
+    VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
+    GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
+    5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
+  let {
+    password: newAdminPassword,
+    firstName: newAdminFirstName,
+    lastName: newAdminLastName,
+  } = newAdmin;
+
+  test('Should throw an error when use invalid lastname', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminConfirmInput!, $token: String!) {
+            completeAdminRegister(user: $user, token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          token: invitationalToken,
+          user: {
+            firstName: newAdminFirstName,
+            lastName: invalidLastName,
+            password: newAdminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.completeAdminRegister;
+
+    expect(data.message).toEqual(INPUT_NOT_VALID);
+    expect(data.statusCode).toEqual(400);
+  });
+
+  test('Should throw an error when use invalid firstname', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminConfirmInput!, $token: String!) {
+            completeAdminRegister(user: $user, token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          token: invitationalToken,
+          user: {
+            firstName: invalidFirstName,
+            lastName: newAdminLastName,
+            password: newAdminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.completeAdminRegister;
+
+    expect(data.message).toEqual(INPUT_NOT_VALID);
+    expect(data.statusCode).toEqual(400);
+  });
+
+  test('Should throw an error when use invalid password', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminConfirmInput!, $token: String!) {
+            completeAdminRegister(user: $user, token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          token: invitationalToken,
+          user: {
+            firstName: newAdminFirstName,
+            lastName: newAdminLastName,
+            password: invalidPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.completeAdminRegister;
+
+    expect(data.message).toEqual(INPUT_NOT_VALID);
+    expect(data.statusCode).toEqual(400);
+  });
+
+  test('Should throw an error when use invalid token', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminConfirmInput!, $token: String!) {
+            completeAdminRegister(user: $user, token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          token: invalidToken,
+          user: {
+            firstName: newAdminFirstName,
+            lastName: newAdminLastName,
+            password: newAdminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.completeAdminRegister;
+
+    expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
+  });
+
+  test('Should confirm user with a custom role', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: AdminConfirmInput!, $token: String!) {
+            completeAdminRegister(user: $user, token: $token) {
+              ... on SuccessfulResponse {
+                isSuccess
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: {
+          token: invitationalToken,
+          user: {
+            firstName: newAdminFirstName,
+            lastName: newAdminLastName,
+            password: newAdminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const { isSuccess } = result.data.completeAdminRegister;
+
+    expect(isSuccess).toEqual(true);
+  });
+});
+
+describe('New admin login', () => {
+  let id;
+  let {
+    firstName: newAdminFirstName,
+    lastName: newAdminLastName,
+    email: newAdminEmail,
+    password: newAdminPassword,
+  } = newAdmin;
+
+  beforeAll(async () => {
+    superAdminToken = await adminLogin(superAdminUser);
+  });
+
+  afterAll(async () => {
+    await client.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteUser(id: $id) {
+            firstName
+          }
+        }
+      `,
+      variables: {
+        id,
+      },
+      context: {
+        headers: {
+          token: superAdminToken,
+        },
+      },
+    });
+  });
+
+  test('Should successfully login as an admin', async () => {
+    const result = await client
+      .mutate({
+        mutation: gql`
+          mutation($user: LoginInput!) {
+            loginAdmin(loginInput: $user) {
+              firstName
+              lastName
+              _id
+              token
+            }
+          }
+        `,
+        variables: {
+          user: {
+            email: newAdminEmail,
+            password: newAdminPassword,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.loginAdmin;
+
+    expect(data.firstName).toEqual(newAdminFirstName);
+    expect(data.lastName).toEqual(newAdminLastName);
+
+    id = data._id;
+  });
+});
+
+describe('User filtering', () => {
+  let superAdminToken;
+
+  beforeAll(async () => {
+    superAdminToken = await adminLogin(superAdminUser);
+  });
+
+  test('Should receive users via using filters for roles', async () => {
+    const role = 'user';
+
+    const result = await client
+      .query({
+        query: gql`
+          query($filter: UserFilterInput) {
+            getAllUsers(filter: $filter) {
+              role
+            }
+          }
+        `,
+        variables: {
+          filter: {
+            roles: [role],
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.every(item => item.role === role)).toEqual(true);
+  });
+
+  test('Should receive admins and superadmins via using filters for roles', async () => {
+    const roles = ['admin', 'superadmin'];
+
+    const result = await client
+      .query({
+        query: gql`
+          query($filter: UserFilterInput) {
+            getAllUsers(filter: $filter) {
+              role
+            }
+          }
+        `,
+        variables: {
+          filter: {
+            roles,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.every(item => roles.includes(item.role))).toEqual(true);
   });
 });

@@ -1,10 +1,20 @@
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
-const { newModel, badProductId, newCategory, newMaterial, getNewProduct } = require('./product.variables');
+const {
+  newModel,
+  badProductId,
+  newCategory,
+  newMaterial,
+  getNewProduct,
+} = require('./product.variables');
 require('dotenv').config();
 
-let productId, categoryId, subcategoryId, modelId, materialId
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -42,7 +52,7 @@ describe('Product queries', () => {
     });
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
-    
+
     const createModel = await client.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
@@ -69,57 +79,58 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { product: getNewProduct(categoryId, subcategoryId, modelId, materialId) },
+      variables: {
+        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+      },
     });
     productId = createProduct.data.addProduct._id;
   });
   test('#1 Should receive all products', async () => {
-    const products = await client.query({
-      query: gql`
-        query {
-          getProducts {
-            items {
-              category {
-                _id
+      const products = await client.query({
+        query: gql`
+          query {
+            getProducts {
+              items {
+                category {
+                  _id
+                }
+                subcategory {
+                  _id
+                }
+                name {
+                  value
+                }
+                description {
+                  value
+                }
+                mainMaterial {
+                  value
+                }
+                innerMaterial {
+                  value
+                }
+                strapLengthInCm
+                pattern {
+                  value
+                }
+                closureColor
+                basePrice {
+                  value
+                }
+                available
+                isHotItem
+                purchasedCount
+                rate
+                rateCount
               }
-              subcategory {
-                _id
-              }
-              name {
-                value
-              }
-              description {
-                value
-              }
-              mainMaterial {
-                value
-              }
-              innerMaterial {
-                value
-              }
-              strapLengthInCm
-              pattern {
-                value
-              }
-              closureColor
-              basePrice {
-                value
-              }
-              available
-              isHotItem
-              purchasedCount
-              rate
-              rateCount
             }
           }
-        }
-      `,
-    });
+        `,
+      });
     const allProducts = products.data.getProducts.items;
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
     expect(allProducts[0].name).toBeInstanceOf(Array);
-    expect(allProducts).toMatchSnapshot();
   });
   test('#2 Should receive product by ID', async () => {
     const product = await client.query({
@@ -132,7 +143,7 @@ describe('Product queries', () => {
                 value
               }
               model {
-                  value
+                value
               }
               category {
                 _id
