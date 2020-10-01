@@ -3,11 +3,8 @@ const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const {
   patternToUpdate,
-  patternAlreadyExist,
   patternDoesNotExistId,
   mutationPatternToAdd,
-  languageTypeName,
-  imageTypeName,
 } = require('./pattern.variables');
 const {
   PATTERN_ALREADY_EXIST,
@@ -89,7 +86,7 @@ describe('pattern mutation tests', () => {
   it('should return error if we try to create pattern with name that already exists', async () => {
     const res = await operations
       .mutate({
-        variables: { pattern: patternAlreadyExist },
+        variables: { pattern: mutationPatternToAdd },
         mutation: gql`
           mutation($pattern: PatternInput!) {
             addPattern(pattern: $pattern) {
@@ -168,6 +165,9 @@ describe('pattern mutation tests', () => {
   });
 
   it('should return error if we try to update pattern with wrong id', async () => {
+    patternToUpdate.name[0].value = 'duplicated value';
+    patternToUpdate.name[1].value = 'duplicated value'; 
+
     const res = await operations
       .mutate({
         variables: { id: patternDoesNotExistId, pattern: patternToUpdate },
@@ -207,9 +207,44 @@ describe('pattern mutation tests', () => {
   });
 
   it('should return error if we try to update pattern with existing name ', async () => {
+    const duplicateRes = await operations.mutate({
+      mutation: gql`
+      mutation($pattern: PatternInput!) {
+        addPattern(pattern: $pattern) {
+          ... on Pattern {
+            _id
+            name {
+              lang
+              value
+            }
+            description {
+              lang
+              value
+            }
+            handmade
+            available
+            material
+            images {
+              large
+              medium
+              small
+              thumbnail
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { pattern: patternToUpdate }
+    });
+    duplicatedPatternId = duplicateRes.data.addPattern._id;
+
     const res = await operations
       .mutate({
-        variables: { id: patternId, pattern: patternAlreadyExist },
+        variables: { id: patternId, pattern: patternToUpdate },
         mutation: gql`
           mutation($id: ID!, $pattern: PatternInput!) {
             updatePattern(id: $id, pattern: $pattern) {
