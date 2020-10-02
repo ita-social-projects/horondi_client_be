@@ -1,13 +1,14 @@
 /* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const { adminUser, superAdminUser, newAdmin } = require('./user.variables');
-const adminLogin = require('../helpers/admin-login');
+const { adminLogin, setupApp } = require('../helper-functions');
 const {
   INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   USER_ALREADY_EXIST,
 } = require('../../error-messages/user.messages');
+
+const { gql } = require('@apollo/client');
+const client = require('../../utils/apollo-test-client');
 
 require('dotenv').config();
 
@@ -19,7 +20,7 @@ let invitationalToken;
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'tacjka34@gmail.com',
+  email: 'tacjka345@gmail.com',
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
@@ -36,14 +37,15 @@ const testUser = {
 };
 
 describe('mutations', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     badId = '9c031d62a3c4909b216e1d87';
+    operations = await setupApp();
   });
 
   test('should register user', async () => {
     const { firstName, lastName, email, password, language } = testUser;
 
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation(
           $firstName: String!
@@ -96,9 +98,9 @@ describe('mutations', () => {
   });
 
   test('should throw error User with provided email already exist', async () => {
-    const { firstName, lastName, email, password } = testUser;
+    const { firstName, lastName, email, password, language } = testUser;
 
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation(
@@ -106,6 +108,7 @@ describe('mutations', () => {
             $lastName: String!
             $email: String!
             $password: String!
+            $language: Int!
           ) {
             registerUser(
               user: {
@@ -114,6 +117,7 @@ describe('mutations', () => {
                 email: $email
                 password: $password
               }
+              language: $language
             ) {
               _id
               firstName
@@ -129,18 +133,19 @@ describe('mutations', () => {
           lastName,
           email,
           password,
+          language,
         },
       })
       .catch(err => err);
-
-    expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('USER_ALREADY_EXIST');
+    console.log(res);
+    expect(res.errors.length).toBe(1);
+    expect(res.errors[0].message).toBe('USER_ALREADY_EXIST');
   });
 
   test('should authorize and recive user token', async () => {
     const { email, password } = testUser;
 
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation($email: String!, $password: String!) {
           loginUser(loginInput: { email: $email, password: $password }) {
@@ -172,7 +177,7 @@ describe('mutations', () => {
   });
 
   test('should throw error User with provided email not found', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation {
@@ -196,7 +201,7 @@ describe('mutations', () => {
   });
 
   test('should throw error Wrong password', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($email: String!) {
@@ -230,7 +235,7 @@ describe('mutations', () => {
 
     const { country, city, street, buildingNumber } = address;
 
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation(
           $userId: ID!
@@ -340,7 +345,7 @@ describe('mutations', () => {
 
     const { country, city, street, buildingNumber } = address;
 
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation(
@@ -429,7 +434,7 @@ describe('mutations', () => {
 
     const { country, city, street, buildingNumber } = address;
 
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation(
           $email: String!
@@ -531,7 +536,7 @@ describe('mutations', () => {
   });
 
   test('should throw Invalid authorization token error', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation {
@@ -551,7 +556,7 @@ describe('mutations', () => {
   });
 
   test('should throw Invalid authorization token Error', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation {
@@ -578,7 +583,7 @@ describe('mutations', () => {
   });
 
   test('Should change user status', async () => {
-    const result = await client.mutate({
+    const result = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           switchUserStatus(id: $id) {
@@ -603,7 +608,7 @@ describe('mutations', () => {
   });
 
   test('should delete user', async () => {
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
@@ -620,7 +625,7 @@ describe('mutations', () => {
   });
 
   test('Should return error when switch status of non-existent user', async () => {
-    const result = await client.mutate({
+    const result = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           switchUserStatus(id: $id) {
@@ -664,7 +669,7 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('User must login', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: LoginInput!) {
@@ -690,7 +695,7 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('User doesn`t allowed to change another user`s data', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: UserInput!, $id: ID!) {
@@ -717,7 +722,7 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('User can change his own data', async () => {
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation($user: UserInput!, $id: ID!) {
           updateUserById(user: $user, id: $id) {
@@ -744,7 +749,7 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('Unknown user doesn`t allowed to change any data', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: UserInput!, $id: ID!) {
@@ -780,7 +785,7 @@ describe('Register admin', () => {
   });
 
   test('Should throw an error when use already in-usage email while admin registration', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
@@ -817,7 +822,7 @@ describe('Register admin', () => {
   });
 
   test('Should throw an error when use invalid email while admin registration', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
@@ -854,7 +859,7 @@ describe('Register admin', () => {
   });
 
   test('Should throw an error when use invalid role', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
@@ -891,7 +896,7 @@ describe('Register admin', () => {
   });
 
   test('Should create an user with custom role and generate a confirmation token', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
@@ -944,7 +949,7 @@ describe('Admin confirmation', () => {
   } = newAdmin;
 
   test('Should throw an error when use invalid lastname', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminConfirmInput!, $token: String!) {
@@ -977,7 +982,7 @@ describe('Admin confirmation', () => {
   });
 
   test('Should throw an error when use invalid firstname', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminConfirmInput!, $token: String!) {
@@ -1010,7 +1015,7 @@ describe('Admin confirmation', () => {
   });
 
   test('Should throw an error when use invalid password', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminConfirmInput!, $token: String!) {
@@ -1043,7 +1048,7 @@ describe('Admin confirmation', () => {
   });
 
   test('Should throw an error when use invalid token', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminConfirmInput!, $token: String!) {
@@ -1075,7 +1080,7 @@ describe('Admin confirmation', () => {
   });
 
   test('Should confirm user with a custom role', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminConfirmInput!, $token: String!) {
@@ -1121,7 +1126,7 @@ describe('New admin login', () => {
   });
 
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteUser(id: $id) {
@@ -1141,7 +1146,7 @@ describe('New admin login', () => {
   });
 
   test('Should successfully login as an admin', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: LoginInput!) {
@@ -1181,7 +1186,7 @@ describe('User filtering', () => {
   test('Should receive users via using filters for roles', async () => {
     const role = 'user';
 
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($filter: UserFilterInput) {
@@ -1211,7 +1216,7 @@ describe('User filtering', () => {
   test('Should receive admins and superadmins via using filters for roles', async () => {
     const roles = ['admin', 'superadmin'];
 
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($filter: UserFilterInput) {
