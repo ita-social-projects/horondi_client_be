@@ -196,8 +196,8 @@ describe('mutations', () => {
       })
       .catch(err => err);
 
-    expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('WRONG_CREDENTIALS');
+    expect(res.errors.length).toBe(1);
+    expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
   });
 
   test('should throw error Wrong password', async () => {
@@ -218,8 +218,8 @@ describe('mutations', () => {
       })
       .catch(err => err);
 
-    expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('WRONG_CREDENTIALS');
+    expect(res.errors.length).toBe(1);
+    expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
   });
 
   test('should update user by id', async () => {
@@ -418,8 +418,8 @@ describe('mutations', () => {
       })
       .catch(err => err);
 
-    expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('USER_NOT_FOUND');
+    expect(res.errors.length).toBe(1);
+    expect(res.errors[0].message).toBe('USER_NOT_FOUND');
   });
 
   test('should update user by token', async () => {
@@ -551,8 +551,8 @@ describe('mutations', () => {
       })
       .catch(err => err);
 
-    expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('USER_NOT_AUTHORIZED');
+    expect(res.errors.length).toBe(1);
+    expect(res.errors[0].message).toBe('USER_NOT_AUTHORIZED');
   });
 
   test('should throw Invalid authorization token Error', async () => {
@@ -717,8 +717,8 @@ describe('User`s mutation restictions tests', () => {
       })
       .catch(err => err);
 
-    expect(result.graphQLErrors.length).toBe(1);
-    expect(result.graphQLErrors[0].message).toEqual('WRONG_CREDENTIALS');
+    expect(result.errors.length).toBe(1);
+    expect(result.errors[0].message).toEqual('WRONG_CREDENTIALS');
   });
 
   test('User can change his own data', async () => {
@@ -766,8 +766,8 @@ describe('User`s mutation restictions tests', () => {
       })
       .catch(err => err);
 
-    expect(result.graphQLErrors.length).toBe(1);
-    expect(result.graphQLErrors[0].message).toEqual('USER_NOT_AUTHORIZED');
+    expect(result.errors.length).toBe(1);
+    expect(result.errors[0].message).toEqual('USER_NOT_AUTHORIZED');
   });
 });
 
