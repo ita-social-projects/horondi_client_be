@@ -22,7 +22,7 @@ describe('material mutations tests', () => {
     operations = await setupApp();
   });
 
-  it('#1 should add material to database', async () => {
+  it('should add material to database', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
@@ -77,20 +77,10 @@ describe('material mutations tests', () => {
     materialId = res.data.addMaterial._id;
     expect(addedMaterial).toBeDefined();
 
-    expect(addedMaterial).toHaveProperty(
-      'name',
-      material.name.map(item => ({
-        ...item,
-      }))
-    );
+    expect(addedMaterial).toHaveProperty('name', material.name);
     expect(addedMaterial.name).toBeInstanceOf(Array);
 
-    expect(addedMaterial).toHaveProperty(
-      'description',
-      material.description.map(item => ({
-        ...item,
-      }))
-    );
+    expect(addedMaterial).toHaveProperty('description', material.description);
     expect(addedMaterial.description).toBeInstanceOf(Array);
 
     expect(addedMaterial).toHaveProperty('purpose', material.purpose);
@@ -98,21 +88,15 @@ describe('material mutations tests', () => {
 
     expect(addedMaterial).toHaveProperty(
       'additionalPrice',
-      material.additionalPrice.map(item => ({
-        ...item,
-      }))
+      material.additionalPrice
     );
     expect(addedMaterial.additionalPrice).toBeInstanceOf(Array);
 
     expect(addedMaterial).toHaveProperty('colors', [
       {
         code: 777,
-        name: material.colors[0].name.map(item => ({
-          ...item,
-        })),
-        simpleName: material.colors[0].simpleName.map(item => ({
-          ...item,
-        })),
+        name: material.colors[0].name,
+        simpleName: material.colors[0].simpleName,
         available: true,
         images: {
           large: 'large_test',
@@ -125,7 +109,7 @@ describe('material mutations tests', () => {
     expect(addedMaterial.colors).toBeInstanceOf(Array);
   });
 
-  it('#2 should return error when adding material with the existing name', async () => {
+  it('should return error when adding material with the existing name', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
@@ -180,7 +164,7 @@ describe('material mutations tests', () => {
     expect(newMaterial).toHaveProperty('statusCode', 400);
   });
 
-  it('#3 should update material', async () => {
+  it('should update material', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $material: MaterialInput!) {
@@ -235,19 +219,12 @@ describe('material mutations tests', () => {
     const updatedMaterial = res.data.updateMaterial;
 
     expect(updatedMaterial).toBeDefined();
-    expect(updatedMaterial).toHaveProperty(
-      'name',
-      materialToUpdate.name.map(item => ({
-        ...item,
-      }))
-    );
+    expect(updatedMaterial).toHaveProperty('name', materialToUpdate.name);
     expect(updatedMaterial.name).toBeInstanceOf(Array);
 
     expect(updatedMaterial).toHaveProperty(
       'description',
-      materialToUpdate.description.map(item => ({
-        ...item,
-      }))
+      materialToUpdate.description
     );
     expect(updatedMaterial.name).toBeInstanceOf(Array);
 
@@ -258,21 +235,15 @@ describe('material mutations tests', () => {
     );
     expect(updatedMaterial).toHaveProperty(
       'additionalPrice',
-      materialToUpdate.additionalPrice.map(item => ({
-        ...item,
-      }))
+      materialToUpdate.additionalPrice
     );
     expect(updatedMaterial.name).toBeInstanceOf(Array);
 
     expect(updatedMaterial).toHaveProperty('colors', [
       {
         code: 777,
-        name: materialToUpdate.colors[0].name.map(item => ({
-          ...item,
-        })),
-        simpleName: materialToUpdate.colors[0].simpleName.map(item => ({
-          ...item,
-        })),
+        name: materialToUpdate.colors[0].name,
+        simpleName: materialToUpdate.colors[0].simpleName,
         available: true,
         images: {
           large: 'large_test update',
@@ -285,7 +256,7 @@ describe('material mutations tests', () => {
     expect(updatedMaterial.colors).toBeInstanceOf(Array);
   });
 
-  it('#4 should return error when update not existing material should return error', async () => {
+  it('should return error when update not existing material should return error', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $material: MaterialInput!) {
@@ -342,7 +313,7 @@ describe('material mutations tests', () => {
     expect(updatedMaterial).toHaveProperty('message', MATERIAL_NOT_FOUND);
   });
 
-  it('#5 should return error when update material with already existing name will ', async () => {
+  it('should return error when update material with already existing name will ', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $material: MaterialInput!) {
@@ -367,7 +338,7 @@ describe('material mutations tests', () => {
     );
   });
 
-  it('#6 should delete material', async () => {
+  it('should delete material', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -388,7 +359,7 @@ describe('material mutations tests', () => {
     expect(res.data.deleteMaterial).toHaveProperty('_id', materialId);
   });
 
-  it('#7 should return error when delete not existing material ', async () => {
+  it('should return error when delete not existing material ', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
