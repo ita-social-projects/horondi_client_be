@@ -48,13 +48,15 @@ const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
+const {
+  HomePageImagesMutation,
+} = require('./modules/homepage-images/home-page-images.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -168,6 +170,8 @@ const resolvers = {
     ...ordersMutation,
 
     ...emailChatQuestionMutation,
+
+    ...HomePageImagesMutation,
   },
   CategoryResult: {
     __resolveType: obj => {

@@ -214,6 +214,9 @@ const typeDefs = gql`
     date: String!
     text: String!
   }
+  type HomePageImages {
+    images: ImageSet
+  }
 
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
@@ -519,6 +522,9 @@ const typeDefs = gql`
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
+
+    "HomePageImages Mutation"
+    addImage(image: Upload): [HomePageImages]
   }
 `;
 
