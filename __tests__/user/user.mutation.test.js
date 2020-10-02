@@ -23,6 +23,7 @@ const testUser = {
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
+  language: 1,
   address: {
     country: 'Ukraine',
     city: 'Kiev',
@@ -40,7 +41,7 @@ describe('mutations', () => {
   });
 
   test('should register user', async () => {
-    const { firstName, lastName, email, password } = testUser;
+    const { firstName, lastName, email, password, language } = testUser;
 
     const res = await client.mutate({
       mutation: gql`
@@ -49,6 +50,7 @@ describe('mutations', () => {
           $lastName: String!
           $email: String!
           $password: String!
+          $language: Int!
         ) {
           registerUser(
             user: {
@@ -57,6 +59,7 @@ describe('mutations', () => {
               email: $email
               password: $password
             }
+            language: $language
           ) {
             _id
             firstName
@@ -72,10 +75,10 @@ describe('mutations', () => {
         lastName,
         email,
         password,
+        language,
       },
     });
     userId = res.data.registerUser._id;
-
     expect(typeof res.data.registerUser._id).toBe('string');
     expect(res.data.registerUser).toHaveProperty(
       'firstName',
