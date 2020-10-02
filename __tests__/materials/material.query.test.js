@@ -264,7 +264,6 @@ describe('material querries test', () => {
         })
         .catch(e => e);
       const receivedMaterial = res.data.getMaterialById;
-      console.log(res);
       expect(receivedMaterial).toMatchSnapshot();
       expect(receivedMaterial).toBeDefined();
       expect(receivedMaterial).toHaveProperty(

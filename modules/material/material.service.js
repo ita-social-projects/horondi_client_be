@@ -9,6 +9,12 @@ const { uploadFiles } = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
 
 class MaterialsService {
+  constructor() {
+    this.currencyTypes = {
+      UAH: 'UAH',
+      USD: 'USD',
+    };
+  }
   async getAllMaterials({ skip, limit }) {
     const items = await Material.find()
       .skip(skip)
@@ -66,12 +72,13 @@ class MaterialsService {
       ...rest,
       additionalPrice: [
         {
-          currency: 'UAH',
+          currency: this.currencyTypes.UAH,
           value:
-            additionalPrice * Math.round(currency.convertOptions[0].exchangeRate * 100),
+            additionalPrice *
+            Math.round(currency.convertOptions[0].exchangeRate * 100),
         },
         {
-          currency: 'USD',
+          currency: this.currencyTypes.USD,
           value: additionalPrice * 100,
         },
       ],
