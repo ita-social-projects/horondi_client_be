@@ -137,7 +137,7 @@ describe('mutations', () => {
         },
       })
       .catch(err => err);
-    console.log(res);
+
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe('USER_ALREADY_EXIST');
   });
@@ -688,7 +688,6 @@ describe('User`s mutation restictions tests', () => {
       })
       .catch(err => err);
     const userInfo = result.data;
-
     expect(userInfo.loginUser).not.toEqual(null);
 
     userToken = userInfo.loginUser.token;
@@ -1189,7 +1188,7 @@ describe('User filtering', () => {
     const result = await operations
       .query({
         query: gql`
-          query($filter: UserFilterInput) {
+          query($filter: UserFilterInput!) {
             getAllUsers(filter: $filter) {
               role
             }
@@ -1219,7 +1218,7 @@ describe('User filtering', () => {
     const result = await operations
       .query({
         query: gql`
-          query($filter: UserFilterInput) {
+          query($filter: UserFilterInput!) {
             getAllUsers(filter: $filter) {
               role
             }

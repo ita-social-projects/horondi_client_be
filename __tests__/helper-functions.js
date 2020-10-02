@@ -1,13 +1,13 @@
 const { gql } = require('@apollo/client');
 const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
-const client = require('../utils/apollo-test-client');
 const config = require('../app');
 const { createTestClient } = require('apollo-server-testing');
 const bcrypt = require('bcryptjs');
 
 const adminLogin = async user => {
-  const result = await client.mutate({
+  const operations = await setupApp();
+  const result = await operations.mutate({
     mutation: gql`
       mutation($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
@@ -18,12 +18,11 @@ const adminLogin = async user => {
     variables: {
       user: {
         email: user ? user.email : process.env.SUPER_ADMIN_EMAIL,
-        password: user ? user.password : process.env.SUPER_ADMIN_PASSWORD
+        password: user ? user.password : process.env.SUPER_ADMIN_PASSWORD,
       },
     },
   });
   return result.data.loginAdmin.token;
-  
 };
 
 const setupApp = async () => {
@@ -34,16 +33,17 @@ const setupApp = async () => {
   admin.email = process.env.SUPER_ADMIN_EMAIL;
   admin.role = 'admin';
   admin.credentials = [
-      {
-          source: 'horondi',
-          tokenPass: await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 12)
-      }];
+    {
+      source: 'horondi',
+      tokenPass: await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD, 12),
+    },
+  ];
   await admin.save();
   const server = new ApolloServer({
     ...config,
-    context: { user: admin }
+    context: { user: admin },
   });
-  return createTestClient(server)
+  return createTestClient(server);
 };
 
 module.exports = { adminLogin, setupApp };
