@@ -1,9 +1,10 @@
 const materialDoesNotExistId = '1f2ad410eb01783384e6111b';
+const graphqlErrorMessage = 'Skip value must be non-negative, but received: -5';
 
 const skip = 0;
 const wrongSkip = -5;
 const wrongLimit = -3;
-const limit = 5;
+const limit = 2;
 const limitZero = 0;
 
 const user = {
@@ -133,6 +134,7 @@ const materialWithExistingName = {
 
 module.exports = {
   materialDoesNotExistId,
+  graphqlErrorMessage,
   skip,
   wrongSkip,
   wrongLimit,
