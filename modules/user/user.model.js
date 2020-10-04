@@ -2,6 +2,13 @@ const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
 
+const { UserInputError } = require('apollo-server');
+
+const {
+  USER_NOT_FOUND,
+  SUPERADMIN_IS_IMMUTABLE,
+} = require('../../error-messages/user.messages');
+
 const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
@@ -63,6 +70,21 @@ const userSchema = new mongoose.Schema({
   },
   recoveryToken: String,
   confirmationToken: String,
+});
+
+userSchema.pre('findOneAndDelete', async function(next) {
+  const id = this.getQuery()['_id'];
+  const userRole = await this.model.findById(id);
+
+  if (!userRole) {
+    throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
+  }
+
+  if (userRole.role === 'superadmin') {
+    throw new UserInputError(SUPERADMIN_IS_IMMUTABLE, { statusCode: 403 });
+  }
+
+  next();
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -20,7 +20,16 @@ const userMutation = {
     userService.registerUser(args.user, args.language),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
-  deleteUser: (parent, args) => userService.deleteUser(args.id),
+  deleteUser: async (parent, args) => {
+    try {
+      return await userService.deleteUser(args.id);
+    } catch (err) {
+      return {
+        statusCode: err.statusCode,
+        message: err.message,
+      };
+    }
+  },
   updateUserById: (parent, args) =>
     userService.updateUserById(args.user, args.id, args.upload),
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
