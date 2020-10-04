@@ -243,23 +243,23 @@ class UserService {
     });
     const savedUser = await user.save();
 
-    if (process.env.NODE_ENV !== 'test') {
-      const token = await generateToken(savedUser._id, savedUser.email, {
-        expiresIn: process.env.RECOVERY_EXPIRE,
-        secret: process.env.CONFIRMATION_SECRET,
-      });
-      savedUser.confirmationToken = token;
+    const token = await generateToken(savedUser._id, savedUser.email, {
+      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: process.env.CONFIRMATION_SECRET,
+    });
 
-      await savedUser.save();
+    savedUser.confirmationToken = token;
 
-      const message = {
-        from: process.env.MAIL_USER,
-        to: savedUser.email,
-        subject: '[HORONDI] Email confirmation',
-        html: confirmationMessage(firstName, token, language),
-      };
-      await sendEmail(message);
-    }
+    await savedUser.save();
+
+    const message = {
+      from: process.env.MAIL_USER,
+      to: savedUser.email,
+      subject: '[HORONDI] Email confirmation',
+      html: confirmationMessage(firstName, token, language),
+    };
+
+    await sendEmail(message);
 
     return savedUser;
   }
@@ -472,4 +472,5 @@ class UserService {
     }
   }
 }
+
 module.exports = new UserService();

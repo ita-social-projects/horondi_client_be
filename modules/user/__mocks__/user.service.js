@@ -1,22 +1,41 @@
-class UserService {
-  registerUser = user => ({
-    ...user,
-  });
-  uploadFiles = async files =>
-    files.map(async (file, index) => {
-      const createName = sizeName => `${sizeName}_${index}_test-file`;
-      return {
-        prefixUrl: 'some prefix',
-        fileNames: {
-          large: createName('large'),
-          medium: createName('medium'),
-          small: createName('small'),
-          thumbnail: createName('thumbnail'),
-        },
-      };
-    });
+// const userService = require("../user.service");
+const bcrypt = require('bcryptjs');
+const { UserInputError } = require('apollo-server');
+const { validateRegisterInput } = require('../../../utils/validate-user');
+const User = require('../user.model');
 
-  async deleteFiles(files) {}
+class NewUserService {
+  async registerUser({ firstName, lastName, email, password }, language) {
+    await validateRegisterInput.validateAsync({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
+
+    console.log(
+      'fjkhksdjkfjdskfnlksdnjfsjklfjsdb2[o21u3092y n3el;wopjdomw;ndopjslmkcljs[ifdspkfposd'
+    );
+    const encryptedPassword = await bcrypt.hash(password, 12);
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      credentials: [
+        {
+          source: 'horondi',
+          tokenPass: encryptedPassword,
+        },
+      ],
+    });
+    const savedUser = await user.save();
+
+    return savedUser;
+  }
 }
 
-module.exports = new UserService();
+module.exports = new NewUserService();

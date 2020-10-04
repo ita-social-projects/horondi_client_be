@@ -10,6 +10,8 @@ const {
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 
+jest.mock('../../modules/user/user.service');
+
 require('dotenv').config();
 
 let userId;
@@ -80,6 +82,7 @@ describe('mutations', () => {
         language,
       },
     });
+    console.log(res);
     userId = res.data.registerUser._id;
     expect(typeof res.data.registerUser._id).toBe('string');
     expect(res.data.registerUser).toHaveProperty(
@@ -266,6 +269,7 @@ describe('mutations', () => {
               wishlist: $wishlist
               orders: $orders
               comments: $comments
+              _id: $userId
             }
             id: $userId
           ) {
@@ -305,7 +309,6 @@ describe('mutations', () => {
         comments,
       },
     });
-
     expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('lastName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
@@ -319,7 +322,6 @@ describe('mutations', () => {
       city: testUser.address.city,
       street: testUser.address.street,
       buildingNumber: testUser.address.buildingNumber,
-      __typename: 'Address',
     });
     expect(res.data.updateUserById).toHaveProperty(
       'wishlist',
@@ -377,6 +379,7 @@ describe('mutations', () => {
                 wishlist: $wishlist
                 orders: $orders
                 comments: $comments
+                _id: $userId
               }
               id: $userId
             ) {
@@ -417,7 +420,6 @@ describe('mutations', () => {
         },
       })
       .catch(err => err);
-
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe('USER_NOT_FOUND');
   });
@@ -437,6 +439,7 @@ describe('mutations', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation(
+          $userId: ID!
           $email: String!
           $phoneNumber: String!
           $country: String!
@@ -463,6 +466,7 @@ describe('mutations', () => {
               wishlist: $wishlist
               orders: $orders
               comments: $comments
+              _id: $userId
             }
           ) {
             firstName
@@ -497,9 +501,9 @@ describe('mutations', () => {
         wishlist,
         orders,
         comments,
+        userId,
       },
     });
-
     expect(res.data.updateUserByToken).toHaveProperty(
       'firstName',
       'UpdatedByToken'
@@ -550,7 +554,6 @@ describe('mutations', () => {
         `,
       })
       .catch(err => err);
-
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe('USER_NOT_AUTHORIZED');
   });
@@ -619,8 +622,13 @@ describe('mutations', () => {
       variables: {
         userId,
       },
+      context: {
+        headers: {
+          token,
+        },
+      },
     });
-
+    console.log(res);
     expect(res.data.deleteUser._id).toEqual(userId);
   });
 
