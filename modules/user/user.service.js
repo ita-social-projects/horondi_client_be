@@ -17,6 +17,7 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
+const confirmationEmailService = require('../confirm-email/confirmation.email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -252,14 +253,13 @@ class UserService {
 
     await savedUser.save();
 
-    const message = {
-      from: process.env.MAIL_USER,
-      to: savedUser.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(firstName, token, language),
-    };
-
-    await sendEmail(message);
+    await confirmationEmailService(
+      confirmationMessage,
+      sendEmail,
+      firstName,
+      token,
+      savedUser
+    );
 
     return savedUser;
   }
