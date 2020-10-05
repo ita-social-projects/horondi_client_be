@@ -49,6 +49,7 @@ const {
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
 const {
+  HomePageImagesQuery,
   HomePageImagesMutation,
 } = require('./modules/homepage-images/home-page-images.resolver');
 const categoryService = require('./modules/category/category.service');
@@ -100,6 +101,8 @@ const resolvers = {
     ...ordersQuery,
 
     ...emailChatQuestionQuery,
+
+    ...HomePageImagesQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),

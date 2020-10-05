@@ -1,9 +1,19 @@
 const homePageService = require('./home-page-images.service');
 
-const HomePageImagesMutation = {
-  addImage: async (parent, args) => {
-    return await homePageService.addImage(args.image);
+const HomePageImagesQuery = {
+  getAllImages: async () => {
+    return await homePageService.getAllImages();
   },
 };
 
-module.exports = { HomePageImagesMutation };
+const HomePageImagesMutation = {
+  addImage: async (parent, args) => {
+    try {
+      return await homePageService.addImage(args);
+    } catch (e) {
+      return { statusCode: 400, message: e.message };
+    }
+  },
+};
+
+module.exports = { HomePageImagesMutation, HomePageImagesQuery };

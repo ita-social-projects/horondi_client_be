@@ -283,6 +283,8 @@ const typeDefs = gql`
 
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
+
+    getAllImages: [ImageSet]
   }
 
   input SortInput {

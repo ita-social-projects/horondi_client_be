@@ -3,17 +3,22 @@ const {
   IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/home-page-messages');
 class HomePageImagesService {
-  async addImage({ images }) {
-    const uploadResult = await uploadFiles(images);
+  async getAllImages() {
+    let x = await HomePageImages.find();
+    console.log(x);
+    return x;
+  }
 
-    const imageResults = await Promise.allSettled(uploadResult);
+  async addImage({ image }) {
+    const uploadResult = await uploadFiles([image]);
 
-    const resizedImages = imageResults.map(item => item.value.fileNames);
+    const imageResults = await uploadResult[0];
+
+    const resizedImages = imageResults.fileNames;
 
     if (!resizedImages) {
       throw new Error(IMAGES_WERE_NOT_CONVERTED);
     }
-
     return new HomePageImages(resizedImages).save();
   }
 }
