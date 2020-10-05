@@ -6,7 +6,6 @@ const {
   contact,
   updatedContact,
   notExistContactId,
-  newContact,
 } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
@@ -19,7 +18,7 @@ describe('Contacts mutations test', () => {
     operations = await setupApp();
   });
 
-  it('#1 should add contact to database', async () => {
+  it('should add contact to database', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($contact: contactInput!) {
@@ -59,36 +58,30 @@ describe('Contacts mutations test', () => {
     expect(addedContact).toHaveProperty('phoneNumber', contact.phoneNumber);
     expect(addedContact).toHaveProperty(
       'openHours',
-      contact.openHours.map(item => ({
-        ...item,
-      }))
+      { lang: contact.openHours[0].lang, value: contact.openHours[0].value },
+      { lang: contact.openHours[1].lang, value: contact.openHours[1].value }
     );
     expect(addedContact.openHours).toBeInstanceOf(Array);
     expect(addedContact).toHaveProperty(
       'address',
-      contact.address.map(item => ({
-        ...item,
-      }))
+      { lang: contact.address[0].lang, value: contact.address[0].value },
+      { lang: contact.address[1].lang, value: contact.address[1].value }
     );
     expect(addedContact.address).toBeInstanceOf(Array);
     expect(addedContact).toHaveProperty('email', contact.email);
     expect(addedContact.images).toBeInstanceOf(Array);
     expect(addedContact).toHaveProperty('images', [
       {
-        value: {
-          medium: contact.images[0].value.medium,
-        },
+        value: { medium: contact.images[0].value.medium },
       },
       {
-        value: {
-          medium: contact.images[1].value.medium,
-        },
+        value: { medium: contact.images[1].value.medium },
       },
     ]);
-    expect(res.data.addContact).toHaveProperty('link', 'https://testURL.com');
+    expect(res.data.addContact).toHaveProperty('link', contact.link);
   });
 
-  it('#2 should update contact', async () => {
+  it('should update contact', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $contact: contactInput!) {
@@ -131,27 +124,28 @@ describe('Contacts mutations test', () => {
 
     expect(updatedContactRes).toHaveProperty('images', [
       {
-        value: {
-          medium: updatedContact.images[0].value.medium,
-        },
+        value: { medium: updatedContact.images[0].value.medium },
       },
       {
-        value: {
-          medium: updatedContact.images[1].value.medium,
-        },
+        value: { medium: updatedContact.images[1].value.medium },
       },
     ]);
 
     expect(updatedContactRes.images).toBeInstanceOf(Array);
     expect(updatedContactRes).toHaveProperty(
       'address',
-      updatedContact.address.map(item => ({
-        ...item,
-      }))
+      {
+        lang: updatedContact.address[0].lang,
+        value: updatedContact.address[0].value,
+      },
+      {
+        lang: updatedContact.address[1].lang,
+        value: updatedContact.address[1].value,
+      }
     );
   });
 
-  it('#3 should return error when update not existing contact', async () => {
+  it('should return error when update not existing contact', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $contact: contactInput!) {
@@ -184,11 +178,12 @@ describe('Contacts mutations test', () => {
       `,
       variables: { id: notExistContactId, contact: updatedContact },
     });
+
     expect(res.data.updateContact).toHaveProperty('message', CONTACT_NOT_FOUND);
     expect(res.data.updateContact).toHaveProperty('statusCode', 404);
   });
 
-  it('#4 should delete contact', async () => {
+  it('should delete contact', async () => {
     await operations.mutate({
       variables: { id: contactsId },
       mutation: gql`
@@ -223,7 +218,7 @@ describe('Contacts mutations test', () => {
     });
   });
 
-  test('#5 should return error when delete not existing contact ', async () => {
+  it('should return error when delete not existing contact ', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -256,6 +251,7 @@ describe('Contacts mutations test', () => {
       `,
       variables: { id: notExistContactId },
     });
+
     expect(res.data.deleteContact).toBeDefined();
     expect(res.data.deleteContact).not.toBeNull();
     expect(res.data.deleteContact).toHaveProperty('statusCode', 404);
