@@ -2,12 +2,18 @@
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { newOrderMutation, newOrderUpdated } = require('./order.variables');
+const { setupApp } = require('../helper-functions');
+jest.mock('../../modules/upload/upload.service');
 
-let orderId;
+let operations;
+let orderId = '';
 
 describe('Order mutations', () => {
-  test('Should create order', async () => {
-    const createOrder = await client.mutate({
+  beforeAll(async () => {
+    operations = await setupApp();
+  });
+  it('Should create order', async () => {
+    const res = await operations.mutate({
       mutation: gql`
         mutation($order: OrderInput!) {
           addOrder(order: $order) {
@@ -119,7 +125,7 @@ describe('Order mutations', () => {
       variables: { order: newOrderMutation },
     });
 
-    const order = createOrder.data.addOrder;
+    const order = res.data.addOrder;
     orderId = order._id;
 
     expect(order).toBeDefined();
@@ -283,7 +289,7 @@ describe('Order mutations', () => {
   });
 
   test('Should throw error ORDER_NOT_FOUND after try to delete', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!) {
@@ -307,7 +313,7 @@ describe('Order mutations', () => {
   });
 
   test('Should update order', async () => {
-    const order = await client.mutate({
+    const order = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $order: OrderInput!) {
           updateOrder(id: $id, order: $order) {
@@ -583,7 +589,7 @@ describe('Order mutations', () => {
   });
 
   test('Should throw error ORDER_NOT_FOUND after try to update', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!, $order: OrderInput!) {
@@ -702,7 +708,7 @@ describe('Order mutations', () => {
   });
 
   test('Should delete order', async () => {
-    const deleteOrder = await client.mutate({
+    const deleteOrder = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteOrder(id: $id) {
