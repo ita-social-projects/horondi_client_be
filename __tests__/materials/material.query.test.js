@@ -149,38 +149,63 @@ describe('material querries test', () => {
     const getAllMaterials = res.data.getAllMaterials;
     expect(getAllMaterials).toBeDefined();
     expect(getAllMaterials.items).toBeInstanceOf(Array);
+    console.log(getAllMaterials);
     expect(res.data.getAllMaterials.items).toContainEqual({
       name: [
-        { lang: 'uk', value: 'Тест' },
-        { lang: 'en', value: 'Test' },
+        { lang: material.name[0].lang, value: material.name[0].value },
+        { lang: material.name[1].lang, value: material.name[1].value },
       ],
       description: [
-        { lang: 'uk', value: 'Опис Тестового матеріальчика' },
-        { lang: 'en', value: 'Description for Test Materialyy' },
+        {
+          lang: material.description[0].lang,
+          value: material.description[0].value,
+        },
+        {
+          lang: material.description[1].lang,
+          value: material.description[1].value,
+        },
       ],
-      purpose: 'test',
-      available: true,
+      purpose: material.purpose,
+      available: material.available,
       additionalPrice: [
-        { currency: 'UAH', value: 0 },
-        { currency: 'USD', value: 0 },
+        {
+          currency: material.additionalPrice[0].currency,
+          value: material.additionalPrice[0].value,
+        },
+        {
+          currency: material.additionalPrice[1].currency,
+          value: material.additionalPrice[1].value,
+        },
       ],
       colors: [
         {
-          code: 777,
+          code: material.colors[0].code,
           name: [
-            { lang: 'uk', value: 'Тестовий колір' },
-            { lang: 'en', value: 'Test color' },
+            {
+              lang: material.colors[0].name[0].lang,
+              value: material.colors[0].name[0].value,
+            },
+            {
+              lang: material.colors[0].name[1].lang,
+              value: material.colors[0].name[1].value,
+            },
           ],
           images: {
-            large: 'large_test',
-            medium: 'medium_test',
-            small: 'small_test',
-            thumbnail: 'thumbnail_test',
+            large: material.colors[0].images.large,
+            medium: material.colors[0].images.medium,
+            small: material.colors[0].images.small,
+            thumbnail: material.colors[0].images.thumbnail,
           },
           available: true,
           simpleName: [
-            { lang: 'uk', value: 'проста назва кольору' },
-            { lang: 'en', value: 'simple color name' },
+            {
+              lang: material.colors[0].simpleName[0].lang,
+              value: material.colors[0].simpleName[0].value,
+            },
+            {
+              lang: material.colors[0].simpleName[1].lang,
+              value: material.colors[0].simpleName[1].value,
+            },
           ],
         },
       ],
@@ -265,10 +290,10 @@ describe('material querries test', () => {
         simpleName: material.colors[0].simpleName,
         available: true,
         images: {
-          large: 'large_test',
-          medium: 'medium_test',
-          small: 'small_test',
-          thumbnail: 'thumbnail_test',
+          large: material.colors[0].images.large,
+          medium: material.colors[0].images.medium,
+          small: material.colors[0].images.small,
+          thumbnail: material.colors[0].images.thumbnail,
         },
       },
     ]);
