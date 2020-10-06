@@ -1,243 +1,223 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
-require('dotenv').config();
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
-const { newContact } = require('./contact.variables');
-
-const notExistContactId = '5f311ec5f2983e390432a8c3';
+const { newContact, notExistContactId } = require('./contact.variables');
+const { setupApp } = require('../helper-functions');
+jest.mock('../../modules/upload/upload.service');
 
 let contactsId = '';
+let operations;
 
 describe('Contacts queries', () => {
   beforeAll(async () => {
-    const res = await client
-      .mutate({
-        mutation: gql`
-          mutation($contact: contactInput!) {
-            addContact(contact: $contact) {
-              ... on Contact {
-                _id
-              }
-              ... on Error {
-                message
-                statusCode
-              }
+    operations = await setupApp();
+  });
+
+  beforeAll(async () => {
+    const res = await operations.mutate({
+      mutation: gql`
+        mutation($contact: contactInput!) {
+          addContact(contact: $contact) {
+            ... on Contact {
+              _id
+            }
+            ... on Error {
+              message
+              statusCode
             }
           }
-        `,
-        variables: { contact: newContact },
-      })
-      .catch(e => e);
+        }
+      `,
+      variables: { contact: newContact },
+    });
+
     contactsId = res.data.addContact._id;
   });
 
   afterAll(async () => {
-    await client
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!) {
-            deleteContact(id: $id) {
-              ... on Contact {
-                _id
-              }
-              ... on Error {
-                statusCode
-                message
-              }
+    await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteContact(id: $id) {
+            ... on Contact {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
-        `,
-        variables: { id: contactsId },
-      })
-      .catch(e => e);
-  });
-
-  test('#1 Should receive all contacts', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query($skip: Int, $limit: Int) {
-            getContacts(skip: $skip, limit: $limit) {
-              items {
-                phoneNumber
-                openHours {
-                  lang
-                  value
-                }
-                address {
-                  lang
-                  value
-                }
-                email
-                images {
-                  value {
-                    medium
-                  }
-                }
-                link
-              }
-              count
-            }
-          }
-        `,
-        variables: {
-          skip: 1,
-          limit: 1,
-        },
-      })
-      .catch(e => e);
-
-    expect(res.data.getContacts).toBeDefined();
-    expect(res.data.getContacts.items).toContainEqual({
-      __typename: 'Contact',
-      address: [
-        { __typename: 'Language', lang: 'uk', value: 'Вулиця 4' },
-        { __typename: 'Language', lang: 'en', value: 'Street 4' },
-      ],
-      email: 'test@test.com',
-      images: [
-        {
-          __typename: 'LanguageImageSet',
-          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
-        },
-        {
-          __typename: 'LanguageImageSet',
-          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
-        },
-      ],
-      link: 'https://testURL.com',
-      openHours: [
-        { __typename: 'Language', lang: 'uk', value: 'ПН ...' },
-        { __typename: 'Language', lang: 'en', value: 'FR ...' },
-      ],
-      phoneNumber: '1241241242144',
+        }
+      `,
+      variables: { id: contactsId },
     });
   });
 
-  test('#2 Should receive selected contact', async () => {
-    try {
-      const res = await client
-        .query({
-          query: gql`
-            query($id: ID!) {
-              getContactById(id: $id) {
-                ... on Contact {
-                  phoneNumber
-                  openHours {
-                    lang
-                    value
-                  }
-                  address {
-                    lang
-                    value
-                  }
-                  email
-                  images {
-                    value {
-                      medium
-                    }
-                  }
-                  link
-                }
-                ... on Error {
-                  statusCode
-                  message
+  it('should receive all contacts', async () => {
+    const res = await operations.query({
+      query: gql`
+        query($skip: Int, $limit: Int) {
+          getContacts(skip: $skip, limit: $limit) {
+            items {
+              phoneNumber
+              openHours {
+                lang
+                value
+              }
+              address {
+                lang
+                value
+              }
+              email
+              images {
+                value {
+                  medium
                 }
               }
+              link
             }
-          `,
-          variables: { id: contactsId },
-        })
-        .catch(e => e);
+            count
+          }
+        }
+      `,
+      variables: {
+        skip: 1,
+        limit: 1,
+      },
+    });
+    const receivedContacts = res.data.getContacts;
 
-      expect(res.data.getContactById).toMatchSnapshot();
-      expect(res.data.getContactById).toBeDefined();
-      expect(res.data.getContactById).toHaveProperty(
-        'phoneNumber',
-        '1241241242144'
-      );
-      expect(res.data.getContactById).toHaveProperty('openHours', [
+    expect(receivedContacts).toBeDefined();
+    expect(receivedContacts.items).toContainEqual({
+      phoneNumber: newContact.phoneNumber,
+      openHours: [
         {
-          __typename: 'Language',
-          lang: 'uk',
-          value: 'ПН ...',
+          lang: newContact.openHours[0].lang,
+          value: newContact.openHours[0].value,
         },
         {
-          __typename: 'Language',
-          lang: 'en',
-          value: 'FR ...',
+          lang: newContact.openHours[1].lang,
+          value: newContact.openHours[1].value,
         },
-      ]);
-      expect(res.data.getContactById.openHours).toBeInstanceOf(Array);
-      expect(res.data.getContactById).toHaveProperty('address', [
+      ],
+      address: [
         {
-          __typename: 'Language',
-          lang: 'uk',
-          value: 'Вулиця 4',
+          lang: newContact.address[0].lang,
+          value: newContact.address[0].value,
         },
         {
-          __typename: 'Language',
-          lang: 'en',
-          value: 'Street 4',
+          lang: newContact.address[1].lang,
+          value: newContact.address[1].value,
         },
-      ]);
-      expect(res.data.getContactById.address).toBeInstanceOf(Object);
-      expect(res.data.getContactById).toHaveProperty('email', 'test@test.com');
-      expect(res.data.getContactById).toHaveProperty('images', [
-        {
-          __typename: 'LanguageImageSet',
-          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
-        },
-        {
-          __typename: 'LanguageImageSet',
-          value: { __typename: 'ImageSet', medium: 'medium.jpg' },
-        },
-      ]);
-      expect(res.data.getContactById.images).toBeInstanceOf(Array);
-      expect(res.data.getContactById).toHaveProperty(
-        'link',
-        'https://testURL.com'
-      );
-    } catch (e) {
-      console.error(e);
-    }
+      ],
+      email: 'test@test.com',
+      images: [
+        { value: newContact.images[0].value },
+        { value: newContact.images[1].value },
+      ],
+      link: newContact.link,
+    });
   });
 
-  test('#3 Returning not existing contact should return error message', async () => {
-    const res = await client
-      .query({
-        query: gql`
-          query($id: ID!) {
-            getContactById(id: $id) {
-              ... on Contact {
-                phoneNumber
-                openHours {
-                  lang
-                  value
-                }
-                address {
-                  lang
-                  value
-                }
-                email
-                images {
-                  value {
-                    medium
-                  }
-                }
-                link
+  test('should receive selected contact', async () => {
+    const res = await operations.query({
+      query: gql`
+        query($id: ID!) {
+          getContactById(id: $id) {
+            ... on Contact {
+              phoneNumber
+              openHours {
+                lang
+                value
               }
-              ... on Error {
-                statusCode
-                message
+              address {
+                lang
+                value
               }
+              email
+              images {
+                value {
+                  medium
+                }
+              }
+              link
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
-        `,
-        variables: { id: notExistContactId },
-      })
-      .catch(e => e);
+        }
+      `,
+      variables: { id: contactsId },
+    });
+
+    const receivedContact = res.data.getContactById;
+
+    expect(receivedContact).toMatchSnapshot();
+    expect(receivedContact).toBeDefined();
+    expect(receivedContact).toHaveProperty(
+      'phoneNumber',
+      newContact.phoneNumber
+    );
+    expect(receivedContact).toHaveProperty('openHours', [
+      {
+        lang: newContact.openHours[0].lang,
+        value: newContact.openHours[0].value,
+      },
+      {
+        lang: newContact.openHours[1].lang,
+        value: newContact.openHours[1].value,
+      },
+    ]);
+    expect(receivedContact.openHours).toBeInstanceOf(Array);
+    expect(receivedContact).toHaveProperty('address', [
+      { lang: newContact.address[0].lang, value: newContact.address[0].value },
+      { lang: newContact.address[1].lang, value: newContact.address[1].value },
+    ]);
+    expect(receivedContact.address).toBeInstanceOf(Object);
+    expect(receivedContact).toHaveProperty('email', newContact.email);
+    expect(receivedContact).toHaveProperty('images', [
+      { value: newContact.images[0].value },
+      { value: newContact.images[1].value },
+    ]);
+    expect(receivedContact.images).toBeInstanceOf(Array);
+    expect(receivedContact).toHaveProperty('link', newContact.link);
+  });
+
+  test('should return error message when returning not existing contact', async () => {
+    const res = await operations.query({
+      query: gql`
+        query($id: ID!) {
+          getContactById(id: $id) {
+            ... on Contact {
+              phoneNumber
+              openHours {
+                lang
+                value
+              }
+              address {
+                lang
+                value
+              }
+              email
+              images {
+                value {
+                  medium
+                }
+              }
+              link
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: notExistContactId },
+    });
+
     expect(res.data.getContactById).toBeDefined();
     expect(res.data.getContactById).toHaveProperty('statusCode', 404);
     expect(res.data.getContactById).toHaveProperty(
