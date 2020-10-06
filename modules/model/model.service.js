@@ -4,8 +4,10 @@ const {
   CATEGORY_NOT_VALID,
   MODEL_ALREADY_EXIST,
   MODEL_NOT_FOUND,
+  MODEL_NOT_VALID
 } = require('../../error-messages/model.messages');
-const CategoryService = require('../category/category.service');
+const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -20,42 +22,71 @@ class ModelsService {
     };
   }
 
+  async getModelById(id) {
+    if (!ObjectId.isValid(id)) {
+      throw new Error(MODEL_NOT_VALID);
+    }
+    const foundModel = await Model.findById(id);
+    if (foundModel) {
+      return foundModel;
+    }
+    throw new Error(MODEL_NOT_FOUND);
+  }
+
   async getModelsByCategory(id) {
     if (!ObjectId.isValid(id)) {
       throw new Error(CATEGORY_NOT_VALID);
     }
-    await CategoryService.getCategoryById(id);
     return Model.find({ category: id });
   }
 
-  async addModel(data) {
+  async addModel(data, upload) {
     if (await this.checkModelExist(data)) {
       throw new Error(MODEL_ALREADY_EXIST);
     }
+
+    if(upload) {
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      data.images = imageResults.fileNames;
+    }
+
     return await new Model(data).save();
   }
 
-  async updateModel(id, newModel) {
+  async updateModel(id, newModel, upload) {
+    
     const model = await Model.findById(id);
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
-    }
-    if (await this.checkModelExist(newModel)) {
-      throw new Error(MODEL_ALREADY_EXIST);
+    }   
+    
+    if (upload) {
+      console.log();
+      if(model.images) {
+        const images = Object.values(model.images).filter(
+          item => typeof item === 'string' && item
+        )
+        await deleteFiles(images);
+      }
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      newModel.images = imageResults.fileNames;
     }
     return Model.findByIdAndUpdate(id, newModel, { new: true });
   }
 
-  async getModelById(id) {
-    const model = await Model.findById(id);
-    if (!model) {
-      throw new Error(MODEL_NOT_FOUND);
+  async deleteModel(id) {
+    const model = await Model.findByIdAndDelete(id)
+    
+    const images = Object.values(model.images).filter(
+      item => typeof item === 'string' && item
+    );
+    if (images.length) {
+      deleteFiles(images);
     }
-    return model;
-  }
 
-  deleteModel(id) {
-    return Model.findByIdAndDelete(id);
+    return model;
   }
 
   async checkModelExist(data) {

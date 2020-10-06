@@ -8,12 +8,23 @@ const modelsQuery = {
 
   getModelsByCategory: async (parent, args) =>
     await modelsService.getModelsByCategory(args.id),
+
+  getModelById: async (parent, args) => {
+    try {
+      return await modelsService.getModelById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const modelsMutation = {
   addModel: async (parent, args) => {
     try {
-      return await modelsService.addModel(args.model);
+      return await modelsService.addModel(args.model, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
@@ -23,7 +34,7 @@ const modelsMutation = {
   },
   updateModel: async (parent, args) => {
     try {
-      return await modelService.updateModel(args.id, args.model);
+      return await modelService.updateModel(args.id, args.model, args.upload);
     } catch (e) {
       return {
         statusCode: e.message === MODEL_NOT_FOUND ? 404 : 400,
