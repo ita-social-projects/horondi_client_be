@@ -42,6 +42,17 @@ const SOURCES = {
 };
 
 class UserService {
+  filterItems(args = {}) {
+    const filter = {};
+    const { roles } = args;
+
+    if (roles) {
+      filter.role = { $in: roles };
+    }
+
+    return filter;
+  }
+
   async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, process.env.SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
@@ -66,8 +77,12 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers() {
-    return await User.find();
+  async getAllUsers({ filter }) {
+    const filters = this.filterItems(filter);
+
+    const items = await User.find(filters);
+
+    return items;
   }
 
   async getUser(id) {
