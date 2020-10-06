@@ -62,7 +62,6 @@ class ModelsService {
     }   
     
     if (upload) {
-      console.log();
       if(model.images) {
         const images = Object.values(model.images).filter(
           item => typeof item === 'string' && item
