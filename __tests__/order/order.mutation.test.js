@@ -124,7 +124,9 @@ describe('Order mutations', () => {
       `,
       variables: { order: newOrderMutation },
     });
-
+    console.log('====================================');
+    console.log(res);
+    console.log('====================================');
     const order = res.data.addOrder;
     orderId = order._id;
 
