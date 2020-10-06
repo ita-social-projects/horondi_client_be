@@ -1,9 +1,10 @@
 const { gql } = require('@apollo/client');
 /* eslint-disable no-undef */
-const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const { adminLogin } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
+jest.mock('../../modules/upload/upload.service');
 
 const {
   patternDoesNotExistId,
@@ -19,11 +20,15 @@ const {
 
 let token;
 let patternId;
+let operations;
 
-describe('pattern query tests', () => {
+describe('Pattern queries', () => {
   beforeAll(async () => {
-    token = await adminLogin(user);
-    const res = await client
+    operations = await setupApp();
+  });
+
+  beforeAll(async () => {
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($pattern: PatternInput!) {
@@ -40,7 +45,6 @@ describe('pattern query tests', () => {
         `,
 
         variables: { pattern: queryPatternToAdd },
-        context: { headers: { token } },
       })
       .catch(e => e);
     patternId = res.data.addPattern._id;
@@ -48,7 +52,7 @@ describe('pattern query tests', () => {
 
   describe('tests for all patterns and one pattern', () => {
     test('#1 Should receive all patterns', async () => {
-      const res = await client
+      const res = await operations
         .query({
           query: gql`
             query {
@@ -81,7 +85,6 @@ describe('pattern query tests', () => {
       expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns).toBeDefined();
       expect(res.data.getAllPatterns.items).toContainEqual({
-        __typename: 'Pattern',
         name: queryPatternToAdd.name.map(item => ({
           ...languageTypeName,
           ...item,
@@ -97,7 +100,7 @@ describe('pattern query tests', () => {
       });
     });
     test('#2 Should receive one pattern', async () => {
-      const res = await client
+      const res = await operations
         .query({
           query: gql`
             query($id: ID!) {
@@ -166,7 +169,7 @@ describe('pattern query tests', () => {
       );
     });
     test('#3 request not existing pattern should throw error', async () => {
-      const res = await client
+      const res = await operations
         .query({
           query: gql`
             query($id: ID!) {
@@ -210,7 +213,7 @@ describe('pattern query tests', () => {
     });
 
     test('pattern pagination test', async () => {
-      const res = await client
+      const res = await operations
         .query({
           variables: { skip, limit },
           query: gql`
@@ -247,7 +250,7 @@ describe('pattern query tests', () => {
       expect(res.data.getAllPatterns.count).toEqual(16);
     });
     test('pattern pagination test with wrong arguments', async () => {
-      const res = await client
+      const res = await operations
         .query({
           variables: { skip: wrongLimit, limit: wrongSkip },
           query: gql`
@@ -278,13 +281,13 @@ describe('pattern query tests', () => {
           `,
         })
         .catch(e => e);
-      expect(res.graphQLErrors[0].message).toEqual(
+      expect(res.errors[0].message).toEqual(
         'Skip value must be non-negative, but received: -5'
       );
     });
   });
   afterAll(async () => {
-    await client
+    await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!) {
@@ -300,10 +303,9 @@ describe('pattern query tests', () => {
           }
         `,
         variables: { id: patternId },
-        context: { headers: { token } },
       })
       .catch(e => e);
-    expect(res.graphQLErrors[0].message).toEqual(
+    expect(res.errors[0].message).toEqual(
       'Skip value must be non-negative, but received: -5'
     );
   });
