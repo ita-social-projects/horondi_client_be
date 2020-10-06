@@ -394,8 +394,8 @@ const typeDefs = gql`
   }
 
   input ProductOptionsInput {
-    size: ID!
-    bottomMaterial: ID!
+    size: ID
+    bottomMaterial: ID
     description: [LanguageInput!]
     bottomColor: [LanguageInput!]
     availableCount: Int
@@ -485,7 +485,7 @@ const typeDefs = gql`
     ): LogicalResult!
 
     "Product Mutation"
-    addProduct(product: ProductInput!, upload: Upload!): ProductResult
+    addProduct(product: ProductInput!, upload: [Upload]!): ProductResult
     deleteProduct(id: ID!): ProductResult
     updateProduct(
       id: ID!
