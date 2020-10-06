@@ -11,7 +11,7 @@ const newOrder = {
     country: 'Україна',
     region: 'Кіровоградська область',
     city: 'Новомиргород',
-    zipcode: 98908,
+    zipcode: '98908',
     street: 'Бульвар Марії Приймаченко',
     buildingNumber: '25',
     appartment: '97',

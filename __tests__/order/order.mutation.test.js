@@ -131,7 +131,6 @@ describe('Order mutations', () => {
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'SENT');
     expect(order).toHaveProperty('user', {
-      __typename: 'OrderUser',
       firstName: 'Test',
       lastName: 'Test',
       patronymicName: 'Test',
@@ -139,17 +138,15 @@ describe('Order mutations', () => {
       phoneNumber: '380953544271',
     });
     expect(order).toHaveProperty('address', {
-      __typename: 'Address',
       country: 'Україна',
       region: 'Кіровоградська область',
       city: 'Новомиргород',
-      zipcode: 98908,
+      zipcode: '98908',
       street: 'Бульвар Марії Приймаченко',
       buildingNumber: '25',
       appartment: '97',
     });
     expect(order).toHaveProperty('delivery', {
-      __typename: 'Delivery',
       sentBy: 'Nova Poshta',
       byCourier: true,
       courierOffice: 10,
@@ -158,51 +155,42 @@ describe('Order mutations', () => {
     });
     expect(order).toHaveProperty('items', [
       {
-        __typename: 'OrderItems',
         category: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумки',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bags',
           },
         ],
         subcategory: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумки',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bags',
           },
         ],
         model: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумка з гобеленом',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bag with a Pattern',
           },
         ],
         name: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумка з гобеленом синя',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bag with a Pattern Blue',
           },
@@ -210,12 +198,10 @@ describe('Order mutations', () => {
         colors: [
           [
             {
-              __typename: 'Language',
               lang: 'uk',
               value: 'Сталево-блакитний',
             },
             {
-              __typename: 'Language',
               lang: 'en',
               value: 'Steel-blue',
             },
@@ -223,12 +209,10 @@ describe('Order mutations', () => {
         ],
         pattern: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Олені',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Deers',
           },
@@ -236,7 +220,6 @@ describe('Order mutations', () => {
         closure: [],
         closureColor: '',
         size: {
-          __typename: 'Size',
           heightInCm: 38,
           widthInCm: 36,
           depthInCm: 10,
@@ -245,24 +228,20 @@ describe('Order mutations', () => {
         },
         bottomMaterial: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Тканина Кордура',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Cordura fabric',
           },
         ],
         bottomColor: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'чорний',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'black',
           },
@@ -270,12 +249,10 @@ describe('Order mutations', () => {
         additions: [],
         actualPrice: [
           {
-            __typename: 'CurrencySet',
             currency: 'UAH',
             value: 90000,
           },
           {
-            __typename: 'CurrencySet',
             currency: 'USD',
             value: 3246,
           },
@@ -309,7 +286,8 @@ describe('Order mutations', () => {
       .catch(err => err);
 
     const error = res;
-    expect(error.graphQLErrors[0].message).toBe('ORDER_NOT_FOUND');
+    console.log(error.errors[0].message);
+    expect(error.errors.message).toBeEqual('ORDER_NOT_FOUND');
   });
 
   test('Should update order', async () => {
@@ -328,7 +306,6 @@ describe('Order mutations', () => {
               }
               dateOfCreation
               delivery {
-                sentOn
                 sentBy
                 byCourier
                 invoiceNumber
@@ -427,162 +404,20 @@ describe('Order mutations', () => {
 
     const updatedOrder = order.data.updateOrder;
 
+    console.log(updatedOrder.delivery);
+
     expect(updatedOrder).toBeDefined();
     expect(updatedOrder).toBeDefined();
     expect(updatedOrder).toHaveProperty('status', 'SENT');
-    expect(updatedOrder).toHaveProperty('user', {
-      __typename: 'OrderUser',
-      firstName: 'Updated',
-      lastName: 'Updated',
-      email: 'test.updated@gmail.com',
-      phoneNumber: '380953544271',
-      patronymicName: 'Updated',
-    });
-    expect(updatedOrder).toHaveProperty('address', {
-      __typename: 'Address',
-      country: 'Україна',
-      region: 'Кіровоградська область',
-      city: 'Новомиргород',
-      zipcode: 98908,
-      street: 'Бульвар Марії Приймаченко',
-      buildingNumber: '25',
-      appartment: '97',
-    });
+    expect(updatedOrder).toHaveProperty('user', newOrderUpdated.user);
+    expect(updatedOrder).toHaveProperty('address', newOrderUpdated.address);
     expect(updatedOrder).toHaveProperty('delivery', {
-      __typename: 'Delivery',
-      sentBy: 'Nova Poshta',
       byCourier: true,
       courierOffice: 10,
       invoiceNumber: '6280260',
-      sentOn: null,
+      sentBy: 'Nova Poshta',
     });
-    expect(updatedOrder).toHaveProperty('items', [
-      {
-        __typename: 'OrderItems',
-        category: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        subcategory: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        model: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумка з гобеленом',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bag with a Pattern',
-          },
-        ],
-        name: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумка з гобеленом синя',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bag with a Pattern Blue',
-          },
-        ],
-        colors: [
-          [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Сталево-блакитний',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Steel-blue',
-            },
-          ],
-        ],
-        pattern: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Олені',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Deers',
-          },
-        ],
-        closure: [],
-        closureColor: '',
-        size: {
-          __typename: 'Size',
-          heightInCm: 38,
-          widthInCm: 36,
-          depthInCm: 10,
-          volumeInLiters: 0,
-          weightInKg: 0,
-        },
-        bottomMaterial: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Тканина Кордура',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Cordura fabric',
-          },
-        ],
-        bottomColor: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'чорний',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'black',
-          },
-        ],
-        additions: [],
-        actualPrice: [
-          {
-            __typename: 'CurrencySet',
-            currency: 'UAH',
-            value: 90000,
-          },
-          {
-            __typename: 'CurrencySet',
-            currency: 'USD',
-            value: 3246,
-          },
-        ],
-        quantity: 1,
-      },
-    ]);
+    expect(updatedOrder).toHaveProperty('items', newOrderUpdated.items);
     expect(updatedOrder).toHaveProperty('paymentMethod', 'CARD');
     expect(updatedOrder).toHaveProperty('totalItemsPrice');
     expect(updatedOrder).toHaveProperty('totalPriceToPay');
