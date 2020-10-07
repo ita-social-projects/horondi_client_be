@@ -36,7 +36,7 @@ class MaterialsService {
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
-    if (await this.checkMaterialExist(material, id)) {
+    if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
     return await Material.findByIdAndUpdate(id, material, { new: true });
@@ -45,7 +45,7 @@ class MaterialsService {
   async addMaterial({ material, images }) {
     const { additionalPrice, ...rest } = material;
 
-    if (await this.checkMaterialExist(rest)) {
+    if (await this.checkMaterialExistOrDuplicated(rest, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
     if (!images) {
@@ -94,7 +94,7 @@ class MaterialsService {
     throw new Error(MATERIAL_NOT_FOUND);
   }
 
-  async checkMaterialExist(data, id) {
+  async checkMaterialExistOrDuplicated(data, id) {
     const materialsCount = await Material.countDocuments({
       _id: { $ne: id },
       name: {
