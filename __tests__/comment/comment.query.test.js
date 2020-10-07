@@ -28,7 +28,6 @@ describe('Comment queries', () => {
               }
               ... on Error {
                 message
-                statusCode
               }
             }
           }
@@ -36,6 +35,7 @@ describe('Comment queries', () => {
         variables: { productId: productId, comment: newComment },
       })
       .catch(e => e);
+    expect(res.data.addComment).toMatchSnapshot();
     console.log(res);
     commentId = res.data.addComment._id;
   });
@@ -61,7 +61,7 @@ describe('Comment queries', () => {
       .catch(e => e);
   });
 
-  test('#1 Should receive all comments writen by selected user', async () => {
+  it(' Should receive all comments writen by selected user', async () => {
     const res = await operations
       .query({
         variables: {
@@ -83,6 +83,7 @@ describe('Comment queries', () => {
       .catch(e => e);
     console.log(res);
 
+    expect(res.data.getAllCommentsByUser).toMatchSnapshot();
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser).toContainEqual({
       __typename: 'Comment',
@@ -93,7 +94,7 @@ describe('Comment queries', () => {
     });
   });
 
-  test('#2 Passing unexisting email should return error message', async () => {
+  it(' should return error messagePassing unexisting email ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: invalidEmail,
@@ -126,7 +127,7 @@ describe('Comment queries', () => {
     );
   });
 
-  test('#3 Passing not email string should return error message', async () => {
+  it(' should return error message Passing not email string ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: wrongData,

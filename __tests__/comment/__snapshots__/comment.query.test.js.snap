@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+Object {
+  "message": null,
+}
+`;
+
+exports[`Comment queries  Should receive all comments writen by selected user 1`] = `Array []`;
+
+exports[`Comment queries #1 Should receive all comments writen by selected user 1`] = `Array []`;
