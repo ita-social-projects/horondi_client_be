@@ -3,11 +3,8 @@ const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const {
   patternToUpdate,
-  patternAlreadyExist,
   patternDoesNotExistId,
   mutationPatternToAdd,
-  languageTypeName,
-  imageTypeName,
 } = require('./pattern.variables');
 const {
   PATTERN_ALREADY_EXIST,
@@ -26,36 +23,36 @@ describe('pattern mutation tests', () => {
   it('should add pattern to database', async () => {
     const res = await operations.mutate({
       mutation: gql`
-      mutation($pattern: PatternInput!) {
-        addPattern(pattern: $pattern) {
-          ... on Pattern {
-            _id
-            name {
-              lang
-              value
+        mutation($pattern: PatternInput!) {
+          addPattern(pattern: $pattern) {
+            ... on Pattern {
+              _id
+              name {
+                lang
+                value
+              }
+              description {
+                lang
+                value
+              }
+              handmade
+              available
+              material
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
             }
-            description {
-              lang
-              value
+            ... on Error {
+              message
+              statusCode
             }
-            handmade
-            available
-            material
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
-          }
-          ... on Error {
-            message
-            statusCode
           }
         }
-      }
-    `,
-    variables: { pattern: mutationPatternToAdd }
+      `,
+      variables: { pattern: mutationPatternToAdd },
     });
     patternId = res.data.addPattern._id;
     const addedPattern = res.data.addPattern;
@@ -87,23 +84,22 @@ describe('pattern mutation tests', () => {
   });
 
   it('should return error if we try to create pattern with name that already exists', async () => {
-    const res = await operations
-      .mutate({
-        variables: { pattern: patternAlreadyExist },
-        mutation: gql`
-          mutation($pattern: PatternInput!) {
-            addPattern(pattern: $pattern) {
-              ... on Pattern {
-                _id
-              }
-              ... on Error {
-                message
-                statusCode
-              }
+    const res = await operations.mutate({
+      variables: { pattern: mutationPatternToAdd },
+      mutation: gql`
+        mutation($pattern: PatternInput!) {
+          addPattern(pattern: $pattern) {
+            ... on Pattern {
+              _id
+            }
+            ... on Error {
+              message
+              statusCode
             }
           }
-        `,
-      });
+        }
+      `,
+    });
 
     expect(res.data.addPattern).toHaveProperty(
       'message',
@@ -113,46 +109,42 @@ describe('pattern mutation tests', () => {
   });
 
   it('should update pattern', async () => {
-    const res = await operations
-      .mutate({
-        variables: { id: patternId, pattern: patternToUpdate },
-        mutation: gql`
-          mutation($id: ID!, $pattern: PatternInput!) {
-            updatePattern(id: $id, pattern: $pattern) {
-              ... on Pattern {
-                _id
-                name {
-                  lang
-                  value
-                }
-                description {
-                  lang
-                  value
-                }
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
-                material
-                handmade
-                available
+    const res = await operations.mutate({
+      variables: { id: patternId, pattern: patternToUpdate },
+      mutation: gql`
+        mutation($id: ID!, $pattern: PatternInput!) {
+          updatePattern(id: $id, pattern: $pattern) {
+            ... on Pattern {
+              _id
+              name {
+                lang
+                value
               }
-              ... on Error {
-                message
+              description {
+                lang
+                value
               }
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+              material
+              handmade
+              available
+            }
+            ... on Error {
+              message
             }
           }
-        `,
-      });
+        }
+      `,
+    });
     const updatedPattern = res.data.updatePattern;
 
     expect(updatedPattern.name).toBeInstanceOf(Array);
-    expect(updatedPattern).toHaveProperty(
-      'name',
-      patternToUpdate.name
-    );
+    expect(updatedPattern).toHaveProperty('name', patternToUpdate.name);
     expect(updatedPattern).toHaveProperty(
       'description',
       patternToUpdate.description
@@ -168,79 +160,115 @@ describe('pattern mutation tests', () => {
   });
 
   it('should return error if we try to update pattern with wrong id', async () => {
-    const res = await operations
-      .mutate({
-        variables: { id: patternDoesNotExistId, pattern: patternToUpdate },
-        mutation: gql`
-          mutation($id: ID!, $pattern: PatternInput!) {
-            updatePattern(id: $id, pattern: $pattern) {
-              ... on Pattern {
-                _id
-                name {
-                  lang
-                  value
-                }
-                description {
-                  lang
-                  value
-                }
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
-                material
-                handmade
-                available
+    patternToUpdate.name[0].value = 'duplicated value';
+    patternToUpdate.name[1].value = 'duplicated value';
+
+    const res = await operations.mutate({
+      variables: { id: patternDoesNotExistId, pattern: patternToUpdate },
+      mutation: gql`
+        mutation($id: ID!, $pattern: PatternInput!) {
+          updatePattern(id: $id, pattern: $pattern) {
+            ... on Pattern {
+              _id
+              name {
+                lang
+                value
               }
-              ... on Error {
-                message
-                statusCode
+              description {
+                lang
+                value
               }
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+              material
+              handmade
+              available
+            }
+            ... on Error {
+              message
+              statusCode
             }
           }
-        `,
-      });
+        }
+      `,
+    });
     expect(res.data.updatePattern).toHaveProperty('statusCode', 404);
     expect(res.data.updatePattern).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
 
   it('should return error if we try to update pattern with existing name ', async () => {
-    const res = await operations
-      .mutate({
-        variables: { id: patternId, pattern: patternAlreadyExist },
-        mutation: gql`
-          mutation($id: ID!, $pattern: PatternInput!) {
-            updatePattern(id: $id, pattern: $pattern) {
-              ... on Pattern {
-                _id
-                name {
-                  lang
-                  value
-                }
-                description {
-                  lang
-                  value
-                }
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
-                material
-                handmade
-                available
+    const duplicateRes = await operations.mutate({
+      mutation: gql`
+        mutation($pattern: PatternInput!) {
+          addPattern(pattern: $pattern) {
+            ... on Pattern {
+              _id
+              name {
+                lang
+                value
               }
-              ... on Error {
-                message
-                statusCode
+              description {
+                lang
+                value
+              }
+              handmade
+              available
+              material
+              images {
+                large
+                medium
+                small
+                thumbnail
               }
             }
+            ... on Error {
+              message
+              statusCode
+            }
           }
-        `,
-      });
+        }
+      `,
+      variables: { pattern: patternToUpdate },
+    });
+    duplicatedPatternId = duplicateRes.data.addPattern._id;
+
+    const res = await operations.mutate({
+      variables: { id: patternId, pattern: patternToUpdate },
+      mutation: gql`
+        mutation($id: ID!, $pattern: PatternInput!) {
+          updatePattern(id: $id, pattern: $pattern) {
+            ... on Pattern {
+              _id
+              name {
+                lang
+                value
+              }
+              description {
+                lang
+                value
+              }
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+              material
+              handmade
+              available
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+    });
     expect(res.data.updatePattern).toHaveProperty('statusCode', 400);
     expect(res.data.updatePattern).toHaveProperty(
       'message',
@@ -249,42 +277,40 @@ describe('pattern mutation tests', () => {
   });
 
   it('should delete pattern from database', async () => {
-    await operations
-      .mutate({
-        variables: { id: patternId },
-        mutation: gql`
-          mutation($id: ID!) {
-            deletePattern(id: $id) {
-              ... on Pattern {
-                _id
-              }
-              ... on Error {
-                statusCode
-                message
-              }
+    await operations.mutate({
+      variables: { id: patternId },
+      mutation: gql`
+        mutation($id: ID!) {
+          deletePattern(id: $id) {
+            ... on Pattern {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
-        `,
-      });
+        }
+      `,
+    });
   });
   it('should return error if we try to delete not existing pattern', async () => {
-    const res = await operations
-      .mutate({
-        variables: { id: patternDoesNotExistId },
-        mutation: gql`
-          mutation($id: ID!) {
-            deletePattern(id: $id) {
-              ... on Pattern {
-                _id
-              }
-              ... on Error {
-                statusCode
-                message
-              }
+    const res = await operations.mutate({
+      variables: { id: patternDoesNotExistId },
+      mutation: gql`
+        mutation($id: ID!) {
+          deletePattern(id: $id) {
+            ... on Pattern {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
-        `,
-      });
+        }
+      `,
+    });
     expect(res.data.deletePattern).toHaveProperty('statusCode', 404);
     expect(res.data.deletePattern).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
