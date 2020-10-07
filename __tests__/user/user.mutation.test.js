@@ -23,7 +23,7 @@ let operations;
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbbdbf@gmail.com',
+  email: 'f5dbbdnbf@gmail.com',
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
@@ -289,7 +289,6 @@ describe('mutations', () => {
               wishlist: $wishlist
               orders: $orders
               comments: $comments
-              _id: $userId
             }
             id: $userId
           ) {
@@ -487,6 +486,7 @@ describe('mutations', () => {
         },
       },
     });
+    console.log(res);
     expect(res.data.deleteUser.message).toEqual('INVALID_PERMISSIONS');
   });
 
@@ -529,7 +529,7 @@ describe('User`s mutation restictions tests', () => {
   beforeAll(async () => {
     firstName = 'Pepo';
     lastName = 'Markelo';
-    email = '1xamp1dle@gmail.com';
+    email = '1xamp1de111@gmail.com';
     password = 'qwertY123';
     adminId = '9c031d62a3c4909b216e1d86';
     language = 1;
@@ -632,6 +632,7 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
+    console.log(result);
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].message).toEqual('WRONG_CREDENTIALS');
   });
@@ -679,7 +680,7 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
-
+    console.log(result);
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].message).toEqual('USER_NOT_AUTHORIZED');
   });
