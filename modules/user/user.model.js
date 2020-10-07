@@ -5,8 +5,7 @@ const Address = require('../common/Address').schema;
 const { UserInputError } = require('apollo-server');
 
 const {
-  USER_NOT_FOUND,
-  SUPERADMIN_IS_IMMUTABLE,
+  SUPER_ADMIN_IS_IMMUTABLE,
 } = require('../../error-messages/user.messages');
 
 const userSchema = new mongoose.Schema({
@@ -73,15 +72,11 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('findOneAndDelete', async function(next) {
-  const id = this.getQuery()['_id'];
-  const userRole = await this.model.findById(id);
+  const query = this.getQuery();
+  const user = await this.model.findOne(query);
 
-  if (!userRole) {
-    throw new UserInputError(USER_NOT_FOUND, { statusCode: 400 });
-  }
-
-  if (userRole.role === 'superadmin') {
-    throw new UserInputError(SUPERADMIN_IS_IMMUTABLE, { statusCode: 403 });
+  if (user.role === 'superadmin') {
+    throw new UserInputError(SUPER_ADMIN_IS_IMMUTABLE, { statusCode: 403 });
   }
 
   next();
