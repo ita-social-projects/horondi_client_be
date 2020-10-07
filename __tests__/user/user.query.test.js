@@ -4,15 +4,18 @@ const client = require('../../utils/apollo-test-client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
+const { setupApp } = require('../helper-functions');
 
 require('dotenv').config();
 
 let token;
 let userId;
+let operations;
 
 describe('queries', () => {
   beforeAll(async () => {
-    const register = await client.mutate({
+    operations = await setupApp();
+    const register = await operations.mutate({
       mutation: gql`
         mutation {
           registerUser(
@@ -22,6 +25,7 @@ describe('queries', () => {
               email: "test.email@gmail.com"
               password: "12345678Te"
             }
+            language: 1
           ) {
             _id
             firstName
@@ -39,7 +43,7 @@ describe('queries', () => {
 
     userId = register.data.registerUser._id;
 
-    const authRes = await client.mutate({
+    const authRes = await operations.mutate({
       mutation: gql`
         mutation {
           loginUser(
@@ -55,9 +59,9 @@ describe('queries', () => {
     });
     token = authRes.data.loginUser.token;
 
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
-        mutation {
+        mutation($userId: ID!) {
           updateUserByToken(
             user: {
               firstName: "Test"
@@ -74,6 +78,7 @@ describe('queries', () => {
               wishlist: []
               orders: []
               comments: []
+              _id: $userId
             }
           ) {
             firstName
@@ -93,6 +98,9 @@ describe('queries', () => {
           }
         }
       `,
+      variables: {
+        userId,
+      },
       context: {
         headers: {
           token,
@@ -102,7 +110,7 @@ describe('queries', () => {
   });
 
   test('should recive all users', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query {
           getAllUsers {
@@ -146,7 +154,7 @@ describe('queries', () => {
   });
 
   test('should recive user by token', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query {
           getUserByToken {
@@ -199,7 +207,7 @@ describe('queries', () => {
   });
 
   test('should recive user by id', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query($userId: ID!) {
           getUserById(id: $userId) {
@@ -253,7 +261,7 @@ describe('queries', () => {
   });
 
   test('should throw Error User with provided _id not found', async () => {
-    const res = await client
+    const res = await operations
       .query({
         query: gql`
           query($userId: ID!) {
@@ -292,7 +300,7 @@ describe('queries', () => {
   });
 
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
@@ -328,7 +336,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('User must login', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: LoginInput!) {
@@ -355,7 +363,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Admin must login', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($admin: LoginInput!) {
@@ -382,7 +390,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Any user doesn`t allowed to obtain information about all users', async () => {
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           {
@@ -407,7 +415,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Admin can obtain all the information about users', async () => {
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           {
@@ -433,7 +441,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('User can obtain the information about himself', async () => {
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($id: ID!) {
@@ -463,7 +471,7 @@ describe('Testing obtaining information restrictions', () => {
   test('Should throw an error when validate invalid token', async () => {
     const invalidAdminToken = 'y' + adminToken.slice(1);
 
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($token: String!) {
@@ -489,7 +497,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Should return successful response when token is valid', async () => {
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($token: String!) {

@@ -23,7 +23,7 @@ type User{
 
 const userInput = `
 input UserInput {
-    _id:ID!
+    _id:ID
     firstName: String
     lastName: String
     password: String

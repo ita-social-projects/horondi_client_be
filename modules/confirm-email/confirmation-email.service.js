@@ -1,14 +1,15 @@
 class ConfirmationEmailService {
   async confirmEmail(
+    user,
     confirmationMessage,
     sendEmail,
     firstName,
     token,
-    savedUser
+    language
   ) {
     const message = {
       from: process.env.MAIL_USER,
-      to: savedUser.email,
+      to: user.email,
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(firstName, token, language),
     };

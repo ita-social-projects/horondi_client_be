@@ -17,7 +17,7 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
-const confirmationEmailService = require('../confirm-email/confirmation.email.service');
+const confirmationEmailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -108,6 +108,10 @@ class UserService {
 
     const user = await User.findById(id).lean();
 
+    if (!user) {
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
+    }
+
     if (user.email !== updatedUser.email) {
       const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
       if (user) {
@@ -125,13 +129,11 @@ class UserService {
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-
     return User.findByIdAndUpdate(id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
     const { firstName, lastName, email } = updatedUser;
-
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -253,14 +255,16 @@ class UserService {
 
     await savedUser.save();
 
-    await confirmationEmailService(
-      confirmationMessage,
-      sendEmail,
-      firstName,
-      token,
-      savedUser
-    );
+    // await confirmationEmailService.confirmEmail(
+    //   savedUser,
+    //   confirmationMessage,
+    //   sendEmail,
+    //   firstName,
+    //   token,
+    //   language
+    // );
 
+    await savedUser.save();
     return savedUser;
   }
 

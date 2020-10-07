@@ -10,7 +10,7 @@ const {
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 
-jest.mock('../../modules/user/user.service');
+jest.mock('../../modules/confirm-email/confirmation-email.service');
 
 require('dotenv').config();
 
@@ -18,11 +18,12 @@ let userId;
 let token;
 let badId;
 let invitationalToken;
+let operations;
 
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'tacjka345@gmail.com',
+  email: 'f5dbbdbf@gmail.com',
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
@@ -42,6 +43,25 @@ describe('mutations', () => {
   beforeAll(async () => {
     badId = '9c031d62a3c4909b216e1d87';
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+      context: {
+        headers: {
+          token,
+        },
+      },
+    });
   });
 
   test('should register user', async () => {
@@ -82,7 +102,7 @@ describe('mutations', () => {
         language,
       },
     });
-    console.log(res);
+
     userId = res.data.registerUser._id;
     expect(typeof res.data.registerUser._id).toBe('string');
     expect(res.data.registerUser).toHaveProperty(
@@ -309,6 +329,7 @@ describe('mutations', () => {
         comments,
       },
     });
+
     expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('lastName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
@@ -379,7 +400,6 @@ describe('mutations', () => {
                 wishlist: $wishlist
                 orders: $orders
                 comments: $comments
-                _id: $userId
               }
               id: $userId
             ) {
@@ -424,167 +444,6 @@ describe('mutations', () => {
     expect(res.errors[0].message).toBe('USER_NOT_FOUND');
   });
 
-  test('should update user by token', async () => {
-    const {
-      email,
-      phoneNumber,
-      address,
-      wishlist,
-      orders,
-      comments,
-    } = testUser;
-
-    const { country, city, street, buildingNumber } = address;
-
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation(
-          $userId: ID!
-          $email: String!
-          $phoneNumber: String!
-          $country: String!
-          $city: String!
-          $street: String!
-          $buildingNumber: String!
-          $wishlist: [ID!]!
-          $orders: [ID!]!
-          $comments: [ID!]!
-        ) {
-          updateUserByToken(
-            user: {
-              firstName: "UpdatedByToken"
-              lastName: "UpdatedByToken"
-              email: $email
-              phoneNumber: $phoneNumber
-              role: "user"
-              address: {
-                country: $country
-                city: $city
-                street: $street
-                buildingNumber: $buildingNumber
-              }
-              wishlist: $wishlist
-              orders: $orders
-              comments: $comments
-              _id: $userId
-            }
-          ) {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
-            }
-            wishlist
-            orders
-            comments
-          }
-        }
-      `,
-      context: {
-        headers: {
-          token,
-        },
-      },
-      variables: {
-        email,
-        phoneNumber,
-        country,
-        city,
-        street,
-        buildingNumber,
-        wishlist,
-        orders,
-        comments,
-        userId,
-      },
-    });
-    expect(res.data.updateUserByToken).toHaveProperty(
-      'firstName',
-      'UpdatedByToken'
-    );
-    expect(res.data.updateUserByToken).toHaveProperty(
-      'lastName',
-      'UpdatedByToken'
-    );
-    expect(res.data.updateUserByToken).toHaveProperty('email', testUser.email);
-    expect(res.data.updateUserByToken).toHaveProperty(
-      'phoneNumber',
-      testUser.phoneNumber
-    );
-    expect(res.data.updateUserByToken).toHaveProperty('role', 'user');
-    expect(res.data.updateUserByToken).toHaveProperty('address', {
-      country: testUser.address.country,
-      city: testUser.address.city,
-      street: testUser.address.street,
-      buildingNumber: testUser.address.buildingNumber,
-      __typename: 'Address',
-    });
-    expect(res.data.updateUserByToken).toHaveProperty(
-      'wishlist',
-      testUser.wishlist
-    );
-    expect(res.data.updateUserByToken).toHaveProperty(
-      'orders',
-      testUser.orders
-    );
-    expect(res.data.updateUserByToken).toHaveProperty(
-      'comments',
-      testUser.comments
-    );
-  });
-
-  test('should throw Invalid authorization token error', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation {
-            updateUserByToken(user: { firstName: "UpdatedByToken" }) {
-              firstName
-              lastName
-              email
-              role
-            }
-          }
-        `,
-      })
-      .catch(err => err);
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('USER_NOT_AUTHORIZED');
-  });
-
-  test('should throw Invalid authorization token Error', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation {
-            updateUserByToken(user: { firstName: "UpdatedByToken" }) {
-              firstName
-              lastName
-              email
-              role
-            }
-          }
-        `,
-        context: {
-          headers: {
-            token:
-              'eyJ3bGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjA4OWI4MTRjZDQzNDE0NjgzODkxNjAiLCJlbWFpbCI6InRhY2prYTMzNEBnbWFpbC5jb20iLCJpYXQiOjE1OTUwMTA4MTMsImV4cCI6MTU5NTAxNDQxM30.FKxZkqO1Jheij7pPHR3I7y9n3BT9_MK2-i4eCYjuivM',
-          },
-        },
-      })
-      .catch(err => err);
-
-    expect(res.networkError.result.errors[0].message).toBe(
-      'Context creation failed: Invalid authorization token'
-    );
-  });
-
   test('Should change user status', async () => {
     const result = await operations.mutate({
       mutation: gql`
@@ -610,7 +469,7 @@ describe('mutations', () => {
     expect(response.isSuccess).toEqual(true);
   });
 
-  test('should delete user', async () => {
+  test('should not delete user without super-admin role', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
@@ -628,8 +487,7 @@ describe('mutations', () => {
         },
       },
     });
-    console.log(res);
-    expect(res.data.deleteUser._id).toEqual(userId);
+    expect(res.data.deleteUser.message).toEqual('INVALID_PERMISSIONS');
   });
 
   test('Should return error when switch status of non-existent user', async () => {
@@ -666,14 +524,51 @@ describe('User`s mutation restictions tests', () => {
   let lastName;
   let email;
   let password;
+  let language;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     firstName = 'Pepo';
     lastName = 'Markelo';
-    email = 'example@gmail.com';
+    email = '1xamp1dle@gmail.com';
     password = 'qwertY123';
     adminId = '9c031d62a3c4909b216e1d86';
-    userId = '5f43af8522155b08109e0304';
+    language = 1;
+    const res = await operations.mutate({
+      mutation: gql`
+        mutation(
+          $firstName: String!
+          $lastName: String!
+          $email: String!
+          $password: String!
+          $language: Int!
+        ) {
+          registerUser(
+            user: {
+              firstName: $firstName
+              lastName: $lastName
+              email: $email
+              password: $password
+            }
+            language: $language
+          ) {
+            _id
+            firstName
+            lastName
+            email
+            role
+            registrationDate
+          }
+        }
+      `,
+      variables: {
+        firstName,
+        lastName,
+        email,
+        password,
+        language,
+      },
+    });
+    userId = res.data.registerUser._id;
   });
 
   test('User must login', async () => {
@@ -705,16 +600,30 @@ describe('User`s mutation restictions tests', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($user: UserInput!, $id: ID!) {
-            updateUserById(user: $user, id: $id) {
+          mutation(
+            $firstName: String!
+            $lastName: String!
+            $email: String!
+            $userId: ID!
+          ) {
+            updateUserById(
+              user: {
+                firstName: $firstName
+                lastName: $lastName
+                email: $email
+              }
+              id: $userId
+            ) {
               firstName
               lastName
             }
           }
         `,
         variables: {
-          user: { firstName, lastName, email },
-          id: adminId,
+          firstName,
+          lastName,
+          email,
+          userId,
         },
         context: {
           headers: {
@@ -723,7 +632,6 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
-
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].message).toEqual('WRONG_CREDENTIALS');
   });
@@ -748,7 +656,6 @@ describe('User`s mutation restictions tests', () => {
         },
       },
     });
-
     const userInfo = res.data.updateUserById;
 
     expect(userInfo.firstName).toBe(firstName);
@@ -983,7 +890,6 @@ describe('Admin confirmation', () => {
       .catch(err => err);
 
     const data = result.data.completeAdminRegister;
-
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
   });

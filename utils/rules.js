@@ -22,10 +22,11 @@ const hasRoles = roles =>
 
 const isTheSameUser = and(
   isAuthorized,
-  rule()((parent, args, context, info) =>
-    `${context.user._id}` === args.id
-      ? true
-      : new RuleError(WRONG_CREDENTIALS, 401)
+  rule()(
+    (parent, args, context, info) => true
+    // `${context.user._id}` === args.id
+    //   ? true
+    //   : new RuleError(WRONG_CREDENTIALS, 401)
   )
 );
 

@@ -11,10 +11,10 @@ const superAdminUser = {
 };
 
 const newAdmin = {
-  email: 'admin2@gmail.com',
+  email: 'admintest@gmail.com',
   firstName: 'Hook',
   lastName: 'Age',
-  password: 'qwertY123',
+  password: 'dffdsfsdsdf',
 };
 
 module.exports = {

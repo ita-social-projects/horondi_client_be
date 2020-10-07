@@ -1,7 +1,5 @@
 class ConfirmationEmailService {
-  confirmEmail() {
-    return true;
-  }
+  async confirmEmail() {}
 }
 
 module.exports = new ConfirmationEmailService();
