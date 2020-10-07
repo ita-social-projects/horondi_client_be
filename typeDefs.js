@@ -205,6 +205,11 @@ const typeDefs = gql`
     value: ImageSet
   }
 
+  type PaginatedComments {
+    items: [Comment]
+    count: Int
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -268,6 +273,7 @@ const typeDefs = gql`
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
     getAllCommentsByUser(userEmail: String!): [Comment]
+    getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
