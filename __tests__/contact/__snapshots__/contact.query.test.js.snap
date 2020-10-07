@@ -1,16 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Contacts queries #2 Should receive selected contact 1`] = `
+exports[`Contacts queries should receive selected contact 1`] = `
 Object {
-  "__typename": "Contact",
   "address": Array [
     Object {
-      "__typename": "Language",
       "lang": "uk",
       "value": "Вулиця 4",
     },
     Object {
-      "__typename": "Language",
       "lang": "en",
       "value": "Street 4",
     },
@@ -18,16 +15,12 @@ Object {
   "email": "test@test.com",
   "images": Array [
     Object {
-      "__typename": "LanguageImageSet",
       "value": Object {
-        "__typename": "ImageSet",
         "medium": "medium.jpg",
       },
     },
     Object {
-      "__typename": "LanguageImageSet",
       "value": Object {
-        "__typename": "ImageSet",
         "medium": "medium.jpg",
       },
     },
@@ -35,12 +28,10 @@ Object {
   "link": "https://testURL.com",
   "openHours": Array [
     Object {
-      "__typename": "Language",
       "lang": "uk",
       "value": "ПН ...",
     },
     Object {
-      "__typename": "Language",
       "lang": "en",
       "value": "FR ...",
     },

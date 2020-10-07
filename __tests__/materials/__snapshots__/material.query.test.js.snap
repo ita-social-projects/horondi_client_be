@@ -1,16 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`material querries test materials and one material test #2 Should receive one material 1`] = `
+exports[`material querries test should receive one material 1`] = `
 Object {
-  "__typename": "Material",
   "additionalPrice": Array [
     Object {
-      "__typename": "CurrencySet",
       "currency": "UAH",
       "value": 0,
     },
     Object {
-      "__typename": "CurrencySet",
       "currency": "USD",
       "value": 0,
     },
@@ -18,11 +15,9 @@ Object {
   "available": true,
   "colors": Array [
     Object {
-      "__typename": "Color",
       "available": true,
       "code": 777,
       "images": Object {
-        "__typename": "ImageSet",
         "large": "large_test",
         "medium": "medium_test",
         "small": "small_test",
@@ -30,24 +25,20 @@ Object {
       },
       "name": Array [
         Object {
-          "__typename": "Language",
           "lang": "uk",
           "value": "Тестовий колір",
         },
         Object {
-          "__typename": "Language",
           "lang": "en",
           "value": "Test color",
         },
       ],
       "simpleName": Array [
         Object {
-          "__typename": "Language",
           "lang": "uk",
           "value": "проста назва кольору",
         },
         Object {
-          "__typename": "Language",
           "lang": "en",
           "value": "simple color name",
         },
@@ -56,106 +47,20 @@ Object {
   ],
   "description": Array [
     Object {
-      "__typename": "Language",
       "lang": "uk",
       "value": "Опис Тестового матеріальчика",
     },
     Object {
-      "__typename": "Language",
       "lang": "en",
       "value": "Description for Test Materialyy",
     },
   ],
   "name": Array [
     Object {
-      "__typename": "Language",
       "lang": "uk",
       "value": "Тест",
     },
     Object {
-      "__typename": "Language",
-      "lang": "en",
-      "value": "Test",
-    },
-  ],
-  "purpose": "test",
-}
-`;
-
-exports[`querries #2 Should receive one material 1`] = `
-Object {
-  "__typename": "Material",
-  "additionalPrice": Array [
-    Object {
-      "__typename": "CurrencySet",
-      "currency": "UAH",
-      "value": 0,
-    },
-    Object {
-      "__typename": "CurrencySet",
-      "currency": "USD",
-      "value": 0,
-    },
-  ],
-  "available": true,
-  "colors": Array [
-    Object {
-      "__typename": "Color",
-      "available": true,
-      "code": 777,
-      "images": Object {
-        "__typename": "ImageSet",
-        "large": "large_test",
-        "medium": "medium_test",
-        "small": "small_test",
-        "thumbnail": "thumbnail_test",
-      },
-      "name": Array [
-        Object {
-          "__typename": "Language",
-          "lang": "uk",
-          "value": "Тестовий колір",
-        },
-        Object {
-          "__typename": "Language",
-          "lang": "en",
-          "value": "Test color",
-        },
-      ],
-      "simpleName": Array [
-        Object {
-          "__typename": "Language",
-          "lang": "uk",
-          "value": "проста назва кольору",
-        },
-        Object {
-          "__typename": "Language",
-          "lang": "en",
-          "value": "simple color name",
-        },
-      ],
-    },
-  ],
-  "description": Array [
-    Object {
-      "__typename": "Language",
-      "lang": "uk",
-      "value": "Опис Тестового матеріальчика",
-    },
-    Object {
-      "__typename": "Language",
-      "lang": "en",
-      "value": "Description for Test Materialyy",
-    },
-  ],
-  "name": Array [
-    Object {
-      "__typename": "Language",
-      "lang": "uk",
-      "value": "Тест",
-    },
-    Object {
-      "__typename": "Language",
       "lang": "en",
       "value": "Test",
     },

@@ -7,5 +7,3 @@ Object {
 `;
 
 exports[`Comment queries  Should receive all comments writen by selected user 1`] = `Array []`;
-
-exports[`Comment queries #1 Should receive all comments writen by selected user 1`] = `Array []`;

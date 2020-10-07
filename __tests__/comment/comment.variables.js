@@ -1,4 +1,4 @@
-const validEmail = 'TEST3123@gmail.com';
+const validEmail = 'vrjselkgm2@gmail.com';
 const invalidEmail = 'TESTqwerty123@gmail.com';
 const productId = 'be89b5471126f0fdef739755';
 const wrongData = '123siSTm#';
