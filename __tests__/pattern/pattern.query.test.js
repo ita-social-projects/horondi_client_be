@@ -82,24 +82,22 @@ describe('Pattern queries', () => {
         })
         .catch(e => e);
 
-      //expect(res.data.getAllPatterns).toMatchSnapshot();
+      expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns).toBeDefined();
-      expect(res.data.getAllPatterns.items).toEqual([
-        {
-          name: queryPatternToAdd.name.map(item => ({
-            ...languageTypeName,
-            ...item,
-          })),
-          description: queryPatternToAdd.description.map(item => ({
-            ...languageTypeName,
-            ...item,
-          })),
-          images: { ...imageTypeName },
-          material: queryPatternToAdd.material,
-          handmade: false,
-          available: true,
-        },
-      ]);
+      expect(res.data.getAllPatterns.items).toContainEqual({
+        name: queryPatternToAdd.name.map(item => ({
+          ...languageTypeName,
+          ...item,
+        })),
+        description: queryPatternToAdd.description.map(item => ({
+          ...languageTypeName,
+          ...item,
+        })),
+        images: { ...imageTypeName },
+        material: queryPatternToAdd.material,
+        handmade: false,
+        available: true,
+      });
     });
     test('#2 Should receive one pattern', async () => {
       const res = await operations
@@ -248,9 +246,9 @@ describe('Pattern queries', () => {
         })
         .catch(e => e);
 
-      //expect(res.data.getAllPatterns).toMatchSnapshot();
-      expect(res.data.getAllPatterns.items).toHaveLength(1);
-      expect(res.data.getAllPatterns.count).toEqual(1);
+      expect(res.data.getAllPatterns).toMatchSnapshot();
+      expect(res.data.getAllPatterns.items).toHaveLength(5);
+      expect(res.data.getAllPatterns.count).toEqual(17);
     });
     test('pattern pagination test with wrong arguments', async () => {
       const res = await operations
