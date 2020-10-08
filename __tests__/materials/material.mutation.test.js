@@ -21,10 +21,10 @@ let token;
 let materialId;
 const materialDoesNotExistId = '1f2ad410eb01783384e6111b';
 
-beforeAll(async () => {
-  token = await adminLogin(user);
-});
 describe('material mutations tests', () => {
+  beforeAll(async () => {
+    token = await adminLogin(user);
+  });
   describe('test adding material', () => {
     test('#1 should add material to database', async () => {
       const res = await client

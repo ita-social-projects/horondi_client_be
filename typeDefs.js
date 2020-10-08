@@ -438,14 +438,22 @@ const typeDefs = gql`
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!, image: Upload): PatternResult
+    addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
-    updatePattern(id: ID!, pattern: PatternInput!, image: Upload): PatternResult
+    updatePattern(
+      id: ID!
+      pattern: PatternInput!
+      image: Upload!
+    ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
-    updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
+    updateMaterial(
+      id: ID!
+      material: MaterialInput!
+      images: Upload!
+    ): MaterialResult
 
     "Category Mutation"
     addCategory(
