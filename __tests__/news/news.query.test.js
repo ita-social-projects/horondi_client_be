@@ -1,20 +1,20 @@
 /* eslint-disable no-undef */
+/* eslint-disable no-undef */
+require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { user } = require('./news.variables');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const { adminLogin } = require('../helper-functions');
 
-require('dotenv').config();
-
 let newsId = '';
 let token = '';
 const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
+
 describe('News queries tests', () => {
   describe('Get all news', () => {
     beforeAll(async () => {
-      token = await adminLogin();
-
+      token = await adminLogin(user);
       const res = await client
         .mutate({
           mutation: gql`
@@ -52,14 +52,9 @@ describe('News queries tests', () => {
               }
             }
           `,
-          context: {
-            headers: {
-              token,
-            },
-          },
+          context: { headers: { token } },
         })
         .catch(e => e);
-
       newsId = res.data.addNews._id;
     });
 
@@ -195,7 +190,6 @@ describe('News queries tests', () => {
         })
         .catch(e => e);
 
-      expect(res.data.getNewsById).toMatchSnapshot();
       expect(res.data.getNewsById).toBeDefined();
       expect(res.data.getNewsById).toHaveProperty('title', [
         {

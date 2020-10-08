@@ -23,7 +23,7 @@
     "preinstall": "npm i npm-force-resolutions && npx npm-force-resolutions",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "test-docker": "npm run docker-db-start && npm run test-full"
+    "test-docker": "npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",

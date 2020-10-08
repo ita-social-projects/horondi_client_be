@@ -1,25 +1,38 @@
 /* eslint-disable no-undef */
+require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
-const { newCategory, newModel } = require('./model.variables');
-require('dotenv').config();
+jest.mock('../../modules/upload/upload.service');
+
+const { newCategory, newModel, user } = require('./model.variables');
+
+const { setupApp, adminLogin } = require('../helper-functions');
 
 let modelId;
 let categoryId;
+let operations;
+let token;
 
 describe('Product queries', () => {
   beforeAll(async () => {
-    const createCategory = await client.mutate({
+    operations = await setupApp();
+    token = await adminLogin(user);
+    const createCategory = await operations.mutate({
       mutation: gql`
-        mutation($category: CategoryInput!) {
-          addCategory(category: $category) {
+        mutation($category: CategoryInput!, $upload: Upload) {
+          addCategory(category: $category, upload: $upload) {
             ... on Category {
               _id
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
         }
       `,
-      variables: { category: newCategory },
+      variables: { category: newCategory, upload: '__tests__/model/img.png' },
+      context: { headers: { token } },
     });
     categoryId = createCategory.data.addCategory._id;
 
@@ -37,6 +50,7 @@ describe('Product queries', () => {
         }
       `,
       variables: { model: { ...newModel, category: categoryId } },
+      context: { headers: { token } },
     });
     modelId = createModel.data.addModel._id;
   });
@@ -165,9 +179,7 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-
     const error = res;
-
     expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_FOUND');
   });
   afterAll(async () => {
@@ -186,6 +198,7 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: categoryId },
+      context: { headers: { token } },
     });
 
     await client.mutate({
@@ -203,6 +216,7 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: modelId },
+      context: { headers: { token } },
     });
   });
 });

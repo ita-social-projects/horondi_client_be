@@ -4,12 +4,14 @@ const connectDB = require('./config/db');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const permissions = require('./permissions');
-const errorOutputPlugin = require('./plugins/error-output.plugin')
+const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
-require('dotenv').config({
-    path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
+const userService = require('./modules/user/user.service');
+const verifyUser = require('./utils/verify-user');
 
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 connectDB();
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),

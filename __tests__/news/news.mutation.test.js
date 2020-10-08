@@ -3,76 +3,26 @@
 require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
-const { user } = require('./news.variables');
+const {
+  news,
+  user,
+  newsUpdateData,
+  existingNews,
+} = require('./news.variables');
 const { adminLogin } = require('../helper-functions');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
-const { USER_NOT_AUTHORIZED } = require('../../error-messages/user.messages');
-
-const news = {
-  title: [
-    { lang: 'uk', value: 'bbb' },
-    { lang: 'eng', value: 'bbb' },
-  ],
-  text: [
-    { lang: 'uk', value: ' d a s d' },
-    { lang: 'eng', value: ' a s d' },
-  ],
-  author: {
-    name: [
-      { lang: 'uk', value: 'a sd' },
-      { lang: 'eng', value: 'a sd' },
-    ],
-  },
-  images: {
-    primary: { medium: 'ada s.jpg' },
-    additional: [],
-  },
-  date: '1111118820047',
-};
-
-const newsUpdateData = {
-  title: [
-    { lang: 'uk', value: 'bbb' },
-    { lang: 'eng', value: 'bbb' },
-  ],
-  text: [
-    { lang: 'uk', value: 'u p d a t e N1 d a s d' },
-    { lang: 'eng', value: 'update dN1 a s d' },
-  ],
-  author: {
-    name: [
-      { lang: 'uk', value: 'updated sd' },
-      { lang: 'eng', value: 'updated sd' },
-    ],
-  },
-};
-const existingNews = {
-  title: [
-    {
-      lang: 'uk',
-      value: 'Аксесуар на пояс, зручна сумка, стильна штучка!',
-    },
-    {
-      lang: 'en',
-      value: 'Belt accessory, comfortable bag, stylish thingy!',
-    },
-  ],
-  date: '43432432432434',
-};
 
 let newsId = '';
 let token;
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
-const invalidToken =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjQ3NTMxYjVjNWYzMTJkMDhlYjdkZDUiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlhdCI6MTYwMDA2NTE1AaaaAAaaAaaaAaAaAAA4AaAaaA.A9-aAAaaaaaa-D5ghd96IjsKq_r18tD97WhzI7QXfbA';
 
 describe('News mutations tests', () => {
   describe('Create news test', () => {
     beforeAll(async () => {
-      token = await adminLogin();
+      token = await adminLogin(user);
     });
     test('should add news to database', async () => {
       const res = await client
@@ -121,6 +71,7 @@ describe('News mutations tests', () => {
         })
         .then(res => res)
         .catch(e => e);
+
       newsId = res.data.addNews._id;
       expect(res.data.addNews.title).toBeInstanceOf(Array);
       expect(res.data.addNews).toHaveProperty('title', [

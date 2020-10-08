@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { adminUser, superAdminUser, newAdmin } = require('./user.variables');
@@ -8,8 +9,6 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   USER_ALREADY_EXIST,
 } = require('../../error-messages/user.messages');
-
-require('dotenv').config();
 
 let userId;
 let token;
