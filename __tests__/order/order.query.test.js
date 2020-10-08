@@ -7,7 +7,7 @@ jest.mock('../../modules/upload/upload.service');
 let orderId;
 let operations;
 
-describe('Contacts queries', () => {
+describe('Pattern queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
