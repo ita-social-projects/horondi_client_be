@@ -500,6 +500,37 @@ Object {
       ],
     },
     Object {
+      "available": false,
+      "description": Array [
+        Object {
+          "lang": "uk",
+          "value": "dasdas",
+        },
+        Object {
+          "lang": "en",
+          "value": "dasd",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_99dpjeyckg16c1ix_gream.jpg",
+        "medium": "medium_99dpjeyckg16c1ix_gream.jpg",
+        "small": "small_99dpjeyckg16c1ix_gream.jpg",
+        "thumbnail": "thumbnail_99dpjeyckg16c1ix_gream.jpg",
+      },
+      "material": "dasdas",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "dasdasd",
+        },
+        Object {
+          "lang": "en",
+          "value": "dasdas",
+        },
+      ],
+    },
+    Object {
       "available": true,
       "description": Array [
         Object {
@@ -570,7 +601,7 @@ Object {
 
 exports[`Pattern queries tests for all patterns and one pattern pattern pagination test 1`] = `
 Object {
-  "count": 17,
+  "count": 18,
   "items": Array [
     Object {
       "available": true,

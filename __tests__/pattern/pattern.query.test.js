@@ -48,10 +48,8 @@ describe('Pattern queries', () => {
     patternId = res.data.addPattern._id;
   });
 
-  console.log(process.env.MONGO_URL, 'MONGO_URL');
-
   describe('tests for all patterns and one pattern', () => {
-    test('#1 Should receive all patterns', async () => {
+    test('Should receive all patterns', async () => {
       const res = await operations
         .query({
           query: gql`
@@ -99,7 +97,7 @@ describe('Pattern queries', () => {
         available: true,
       });
     });
-    test('#2 Should receive one pattern', async () => {
+    test('Should receive one pattern', async () => {
       const res = await operations
         .query({
           query: gql`
@@ -130,8 +128,6 @@ describe('Pattern queries', () => {
           variables: { id: patternId },
         })
         .catch(e => e);
-
-      console.log(res.data.getPatternById.images);
 
       expect(res.data.getPatternById).toMatchSnapshot();
       expect(res.data.getPatternById).toBeDefined();
@@ -169,7 +165,7 @@ describe('Pattern queries', () => {
         queryPatternToAdd.available
       );
     });
-    test('#3 request not existing pattern should throw error', async () => {
+    test('request not existing pattern should throw error', async () => {
       const res = await operations
         .query({
           query: gql`
@@ -248,7 +244,7 @@ describe('Pattern queries', () => {
 
       expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns.items).toHaveLength(5);
-      expect(res.data.getAllPatterns.count).toEqual(17);
+      expect(res.data.getAllPatterns.count).toEqual(18);
     });
     test('pattern pagination test with wrong arguments', async () => {
       const res = await operations
