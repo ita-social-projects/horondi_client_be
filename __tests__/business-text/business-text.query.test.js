@@ -9,12 +9,14 @@ const {
   newBusinessText,
   notExistBusinessTextId,
 } = require('./business-text.variables');
+const { adminLogin, setupApp } = require('../helper-functions');
 
 let businessText = null;
-
+let operations;
 describe('Business page queries', () => {
   beforeAll(async () => {
-    const res = await client
+    operations = await setupApp();
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($businessText: BusinessTextInput!) {
@@ -49,7 +51,7 @@ describe('Business page queries', () => {
   });
 
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteBusinessText(id: $id) {
@@ -77,7 +79,7 @@ describe('Business page queries', () => {
   });
 
   test('#1 Should receive all business texts', async () => {
-    const res = await client
+    const res = await operations
       .query({
         query: gql`
           query {
@@ -110,49 +112,49 @@ describe('Business page queries', () => {
   });
 
   test('#2 Should receive selected business text', async () => {
-    try {
-      const res = await client
-        .query({
-          query: gql`
-            query($id: ID!) {
-              getBusinessTextById(id: $id) {
-                ... on BusinessText {
-                  code
-                  title {
-                    value
-                    lang
-                  }
-                  text {
-                    lang
-                    value
-                  }
+    //  try {
+    const res = await operations
+      .query({
+        query: gql`
+          query($id: ID!) {
+            getBusinessTextById(id: $id) {
+              ... on BusinessText {
+                code
+                title {
+                  value
+                  lang
                 }
-                ... on Error {
-                  statusCode
-                  message
+                text {
+                  lang
+                  value
                 }
               }
+              ... on Error {
+                statusCode
+                message
+              }
             }
-          `,
-          variables: { id: businessText._id },
-        })
-        .catch(e => e);
+          }
+        `,
+        variables: { id: businessText._id },
+      })
+      .catch(e => e);
 
-      businessText = res.data.getBusinessTextById;
+    businessText = res.data.getBusinessTextById;
 
-      expect(businessText).toBeDefined();
-      expect(businessText).toHaveProperty('code', newBusinessText.code);
-      expect(businessText.title).toBeInstanceOf(Array);
-      expect(businessText).toHaveProperty('title', newBusinessText.title);
-      expect(businessText.text).toBeInstanceOf(Array);
-      expect(businessText).toHaveProperty('text', newBusinessText.text);
-    } catch (e) {
-      console.error(e);
-    }
+    expect(businessText).toBeDefined();
+    expect(businessText).toHaveProperty('code', newBusinessText.code);
+    expect(businessText.title).toBeInstanceOf(Array);
+    expect(businessText).toHaveProperty('title', newBusinessText.title);
+    expect(businessText.text).toBeInstanceOf(Array);
+    expect(businessText).toHaveProperty('text', newBusinessText.text);
+    // } catch (e) {
+    // console.error(e);
+    // }
   });
 
   test('#3 Returning not existing business text should return error message', async () => {
-    const res = await client
+    const res = await operations
       .query({
         query: gql`
           query($id: ID!) {
@@ -187,84 +189,84 @@ describe('Business page queries', () => {
   });
 
   test('#4 Should receive selected business text by code', async () => {
-    try {
-      const res = await client
-        .query({
-          query: gql`
-            query($code: String!) {
-              getBusinessTextByCode(code: $code) {
-                ... on BusinessText {
-                  code
-                  title {
-                    value
-                    lang
-                  }
-                  text {
-                    lang
-                    value
-                  }
+    ///try {
+    const res = await operations
+      .query({
+        query: gql`
+          query($code: String!) {
+            getBusinessTextByCode(code: $code) {
+              ... on BusinessText {
+                code
+                title {
+                  value
+                  lang
                 }
-                ... on Error {
-                  statusCode
-                  message
+                text {
+                  lang
+                  value
                 }
               }
+              ... on Error {
+                statusCode
+                message
+              }
             }
-          `,
-          variables: { code: 'new-code' },
-        })
-        .catch(e => e);
+          }
+        `,
+        variables: { code: 'new-code' },
+      })
+      .catch(e => e);
 
-      businessText = res.data.getBusinessTextByCode;
+    businessText = res.data.getBusinessTextByCode;
 
-      expect(businessText).toBeDefined();
-      expect(businessText).toHaveProperty('code', newBusinessText.code);
-      expect(businessText.title).toBeInstanceOf(Array);
-      expect(businessText).toHaveProperty('title', newBusinessText.title);
-      expect(businessText.text).toBeInstanceOf(Array);
-      expect(businessText).toHaveProperty('text', newBusinessText.text);
-    } catch (e) {
-      console.error(e);
-    }
+    expect(businessText).toBeDefined();
+    expect(businessText).toHaveProperty('code', newBusinessText.code);
+    expect(businessText.title).toBeInstanceOf(Array);
+    expect(businessText).toHaveProperty('title', newBusinessText.title);
+    expect(businessText.text).toBeInstanceOf(Array);
+    expect(businessText).toHaveProperty('text', newBusinessText.text);
+    //} catch (e) {
+    //  console.error(e);
+    /// }
   });
 
   test('#5 Should return error if page by code not found', async () => {
-    try {
-      const res = await client
-        .query({
-          query: gql`
-            query($code: String!) {
-              getBusinessTextByCode(code: $code) {
-                ... on BusinessText {
-                  code
-                  title {
-                    value
-                    lang
-                  }
-                  text {
-                    lang
-                    value
-                  }
+    // try {
+    const res = await operations
+      .query({
+        query: gql`
+          query($code: String!) {
+            getBusinessTextByCode(code: $code) {
+              ... on BusinessText {
+                code
+                title {
+                  value
+                  lang
                 }
-                ... on Error {
-                  statusCode
-                  message
+                text {
+                  lang
+                  value
                 }
               }
+              ... on Error {
+                statusCode
+                message
+              }
             }
-          `,
-          variables: { code: 'not-existing-code' },
-        })
-        .catch(e => e);
+          }
+        `,
+        variables: { code: 'not-existing-code' },
+      })
+      .catch(e => e);
 
-      expect(res.data.getBusinessTextByCode).toBeDefined();
-      expect(res.data.getBusinessTextByCode).toHaveProperty('statusCode', 404);
-      expect(res.data.getBusinessTextByCode).toHaveProperty(
-        'message',
-        BUSINESS_TEXT_NOT_FOUND
-      );
-    } catch (e) {
-      console.error(e);
-    }
+    expect(res.data.getBusinessTextByCode).toBeDefined();
+    expect(res.data.getBusinessTextByCode).toHaveProperty('statusCode', 404);
+    expect(res.data.getBusinessTextByCode).toHaveProperty(
+      'message',
+      BUSINESS_TEXT_NOT_FOUND
+    );
+    /// } catch (e) {
+    // //  console.error(e);
+    // }
   });
 });
