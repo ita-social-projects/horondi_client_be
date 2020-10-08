@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
+// require('dotenv').config({
+//   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+// });
+
 require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+  path: '.env.test',
 });
 
 const connectDB = async () => {

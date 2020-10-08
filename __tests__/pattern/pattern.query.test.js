@@ -46,6 +46,8 @@ describe('pattern query tests', () => {
     patternId = res.data.addPattern._id;
   });
 
+  console.log(patternId);
+
   describe('tests for all patterns and one pattern', () => {
     test('#1 Should receive all patterns', async () => {
       const res = await client
@@ -78,7 +80,9 @@ describe('pattern query tests', () => {
         })
         .catch(e => e);
 
-      expect(res.data.getAllPatterns).toMatchSnapshot();
+      //console.log(res.data.getAllPatterns.items.length);
+
+      //expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns).toBeDefined();
       expect(res.data.getAllPatterns.items).toContainEqual({
         __typename: 'Pattern',

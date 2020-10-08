@@ -124,9 +124,7 @@ describe('Order mutations', () => {
       `,
       variables: { order: newOrderMutation },
     });
-    console.log('====================================');
-    console.log(res);
-    console.log('====================================');
+
     const order = res.data.addOrder;
     orderId = order._id;
 
@@ -287,9 +285,7 @@ describe('Order mutations', () => {
       })
       .catch(err => err);
 
-    const error = res;
-    console.log(error.errors[0].message);
-    expect(error.errors.message).toBeEqual('ORDER_NOT_FOUND');
+    expect(res.errors[0].message).toBe('ORDER_NOT_FOUND');
   });
 
   test('Should update order', async () => {

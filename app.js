@@ -8,9 +8,16 @@ const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const verifyUser = require('./utils/verify-user');
 const userService = require('./modules/user/user.service');
+
+// require('dotenv').config({
+//   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+// });
+
 require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+  path: '.env.test',
 });
+
+console.log(process.env.MONGO_URL);
 
 connectDB();
 const schema = applyMiddleware(
