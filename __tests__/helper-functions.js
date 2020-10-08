@@ -25,10 +25,10 @@ const adminLogin = async user => {
   return result.data.loginAdmin.token;
 };
 
-const setupApp = async () => {
+const setupApp = async context => {
   await User.deleteOne({ email: process.env.SUPER_ADMIN_EMAIL });
   const admin = new User();
-  admin.firstName = 'Super admin';
+  admin.firstName = 'Super аdmin';
   admin.lastName = 'Super admin full';
   admin.email = process.env.SUPER_ADMIN_EMAIL;
   admin.role = 'admin';
@@ -41,7 +41,7 @@ const setupApp = async () => {
   await admin.save();
   const server = new ApolloServer({
     ...config,
-    context: { user: admin },
+    context: { user: context ? context : admin },
   });
   return createTestClient(server);
 };

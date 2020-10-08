@@ -255,14 +255,14 @@ class UserService {
 
     await savedUser.save();
 
-    // await confirmationEmailService.confirmEmail(
-    //   savedUser,
-    //   confirmationMessage,
-    //   sendEmail,
-    //   firstName,
-    //   token,
-    //   language
-    // );
+    await confirmationEmailService.confirmEmail(
+      savedUser,
+      confirmationMessage,
+      sendEmail,
+      firstName,
+      token,
+      language
+    );
 
     await savedUser.save();
     return savedUser;

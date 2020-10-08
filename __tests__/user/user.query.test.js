@@ -90,7 +90,7 @@ describe('queries', () => {
         password: '12345678Pt',
       },
     });
-    console.log(authRes.data.loginUser.token);
+    console.log(token);
     token = authRes.data.loginUser.token;
     await operations.mutate({
       mutation: gql`
@@ -185,8 +185,24 @@ describe('queries', () => {
   });
 
   test('should recive user by token', async () => {
-    const newToken = token;
-    const { email } = testUser;
+    const { email, role } = testUser;
+    operations = await setupApp({
+      firstName: 'Test',
+      lastName: 'User',
+      email,
+      phoneNumber: '380666666666',
+      address: {
+        country: 'Ukraine',
+        city: 'Kiev',
+        street: 'Shevchenka',
+        buildingNumber: '23',
+      },
+      role,
+      wishlist: [],
+      orders: [],
+      comments: [],
+      token,
+    });
     const res = await operations.query({
       query: gql`
         query {
@@ -215,13 +231,15 @@ describe('queries', () => {
       `,
       context: {
         headers: {
-          token: newToken,
+          token,
         },
       },
     });
+    console.log(token);
+    console.log(res);
     expect(res.data.getUserByToken).toHaveProperty('firstName', 'Test');
     expect(res.data.getUserByToken).toHaveProperty('lastName', 'User');
-    expect(res.data.getUserByToken).toHaveProperty('email', `${email}`);
+    expect(res.data.getUserByToken).toHaveProperty('email', email);
     expect(res.data.getUserByToken).toHaveProperty(
       'phoneNumber',
       '380666666666'
@@ -236,10 +254,11 @@ describe('queries', () => {
     expect(res.data.getUserByToken).toHaveProperty('wishlist', []);
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
     expect(res.data.getUserByToken).toHaveProperty('comments', []);
-    expect(res.data.getUserByToken).toMatchSnapshot();
   });
 
   test('should recive user by id', async () => {
+    const { email } = testUser;
+    operations = await setupApp();
     const res = await operations.query({
       query: gql`
         query($userId: ID!) {
@@ -275,10 +294,7 @@ describe('queries', () => {
     expect(res.data.getUserById).toHaveProperty('_id', userId);
     expect(res.data.getUserById).toHaveProperty('firstName', 'Test');
     expect(res.data.getUserById).toHaveProperty('lastName', 'User');
-    expect(res.data.getUserById).toHaveProperty(
-      'email',
-      'test.email@gmail.com'
-    );
+    expect(res.data.getUserById).toHaveProperty('email', email);
     expect(res.data.getUserById).toHaveProperty('phoneNumber', '380666666666');
     expect(res.data.getUserById).toHaveProperty('role', 'user');
     expect(res.data.getUserById).toHaveProperty('address', {
@@ -357,7 +373,7 @@ describe('Testing obtaining information restrictions', () => {
   let lastName;
   let adminToken;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
     adminLogin = 'admin@gmail.com';
@@ -365,6 +381,44 @@ describe('Testing obtaining information restrictions', () => {
     firstName = 'Pepo';
     lastName = 'Markelo';
     userId = '5f43af8522155b08109e0304';
+    await operations.mutate({
+      mutation: gql`
+        mutation(
+          $firstName: String!
+          $lastName: String!
+          $email: String!
+          $password: String!
+          $language: Int!
+        ) {
+          registerUser(
+            user: {
+              firstName: $firstName
+              lastName: $lastName
+              email: $email
+              password: $password
+            }
+            language: $language
+          ) {
+            _id
+            firstName
+            lastName
+            email
+            role
+            registrationDate
+            credentials {
+              tokenPass
+            }
+          }
+        }
+      `,
+      variables: {
+        firstName,
+        lastName,
+        email: userLogin,
+        password: userPassword,
+        language: 1,
+      },
+    });
   });
 
   test('User must login', async () => {
@@ -469,7 +523,7 @@ describe('Testing obtaining information restrictions', () => {
 
     const data = result.data.getAllUsers;
 
-    expect(data.length).toBeGreaterThan(3);
+    expect(data.length).toBeGreaterThanOrEqual(2);
   });
 
   test('User can obtain the information about himself', async () => {
