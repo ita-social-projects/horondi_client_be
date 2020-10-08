@@ -19,9 +19,6 @@ let operations;
 describe('pattern mutation tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    console.log('====================================');
-    console.log(operations);
-    console.log('====================================');
   });
   it('should add pattern to database', async () => {
     const res = await operations.mutate({

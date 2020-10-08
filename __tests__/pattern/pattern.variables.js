@@ -95,6 +95,13 @@ const patternToUpdate = {
   handmade: false,
 };
 
+const imageTypeName = {
+  large: 'large_0_test-file',
+  medium: 'medium_0_test-file',
+  small: 'small_0_test-file',
+  thumbnail: 'thumbnail_0_test-file',
+};
+
 module.exports = {
   patternToUpdate,
   patternDoesNotExistId,
@@ -105,4 +112,5 @@ module.exports = {
   wrongLimit,
   queryPatternToAdd,
   mutationPatternToAdd,
+  imageTypeName,
 };

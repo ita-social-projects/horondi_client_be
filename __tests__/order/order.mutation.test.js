@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const { newOrderMutation, newOrderUpdated } = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
@@ -124,7 +123,6 @@ describe('Order mutations', () => {
       `,
       variables: { order: newOrderMutation },
     });
-
     const order = res.data.addOrder;
     orderId = order._id;
 
@@ -285,7 +283,8 @@ describe('Order mutations', () => {
       })
       .catch(err => err);
 
-    expect(res.errors[0].message).toBe('ORDER_NOT_FOUND');
+    const error = res;
+    expect(error.errors[0].message).toEqual('ORDER_NOT_FOUND');
   });
 
   test('Should update order', async () => {
@@ -401,8 +400,6 @@ describe('Order mutations', () => {
     });
 
     const updatedOrder = order.data.updateOrder;
-
-    console.log(updatedOrder.delivery);
 
     expect(updatedOrder).toBeDefined();
     expect(updatedOrder).toBeDefined();
@@ -659,7 +656,6 @@ describe('Order mutations', () => {
     expect(orderDelete).toBeDefined();
     expect(orderDelete).toHaveProperty('status', 'SENT');
     expect(orderDelete).toHaveProperty('user', {
-      __typename: 'OrderUser',
       firstName: 'Updated',
       lastName: 'Updated',
       email: 'test.updated@gmail.com',
@@ -667,17 +663,15 @@ describe('Order mutations', () => {
       patronymicName: 'Updated',
     });
     expect(orderDelete).toHaveProperty('address', {
-      __typename: 'Address',
       country: 'Україна',
       region: 'Кіровоградська область',
       city: 'Новомиргород',
-      zipcode: 98908,
+      zipcode: '98908',
       street: 'Бульвар Марії Приймаченко',
       buildingNumber: '25',
       appartment: '97',
     });
     expect(orderDelete).toHaveProperty('delivery', {
-      __typename: 'Delivery',
       sentBy: 'Nova Poshta',
       byCourier: true,
       courierOffice: 10,
@@ -686,51 +680,42 @@ describe('Order mutations', () => {
     });
     expect(orderDelete).toHaveProperty('items', [
       {
-        __typename: 'OrderItems',
         category: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумки',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bags',
           },
         ],
         subcategory: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумки',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bags',
           },
         ],
         model: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумка з гобеленом',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bag with a Pattern',
           },
         ],
         name: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Сумка з гобеленом синя',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Bag with a Pattern Blue',
           },
@@ -738,12 +723,10 @@ describe('Order mutations', () => {
         colors: [
           [
             {
-              __typename: 'Language',
               lang: 'uk',
               value: 'Сталево-блакитний',
             },
             {
-              __typename: 'Language',
               lang: 'en',
               value: 'Steel-blue',
             },
@@ -751,12 +734,10 @@ describe('Order mutations', () => {
         ],
         pattern: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Олені',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Deers',
           },
@@ -764,7 +745,6 @@ describe('Order mutations', () => {
         closure: [],
         closureColor: '',
         size: {
-          __typename: 'Size',
           heightInCm: 38,
           widthInCm: 36,
           depthInCm: 10,
@@ -773,24 +753,20 @@ describe('Order mutations', () => {
         },
         bottomMaterial: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'Тканина Кордура',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'Cordura fabric',
           },
         ],
         bottomColor: [
           {
-            __typename: 'Language',
             lang: 'uk',
             value: 'чорний',
           },
           {
-            __typename: 'Language',
             lang: 'en',
             value: 'black',
           },
@@ -798,12 +774,10 @@ describe('Order mutations', () => {
         additions: [],
         actualPrice: [
           {
-            __typename: 'CurrencySet',
             currency: 'UAH',
             value: 90000,
           },
           {
-            __typename: 'CurrencySet',
             currency: 'USD',
             value: 3246,
           },
