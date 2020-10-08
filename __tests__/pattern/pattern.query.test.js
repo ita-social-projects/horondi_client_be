@@ -2,7 +2,6 @@ const { gql } = require('@apollo/client');
 /* eslint-disable no-undef */
 require('dotenv').config();
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
-const { adminLogin } = require('../helper-functions');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
@@ -18,7 +17,6 @@ const {
   queryPatternToAdd,
 } = require('./pattern.variables');
 
-let token;
 let patternId;
 let operations;
 
@@ -81,7 +79,6 @@ describe('Pattern queries', () => {
           `,
         })
         .catch(e => e);
-
       expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns).toBeDefined();
       expect(res.data.getAllPatterns.items).toContainEqual({
