@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const { mapToLanguages } = require('../../helpers/languages');
+const { randomDateSince } = require('../../helpers/dates');
+const { getObjectId } = require('mongo-seeding');
 
 const articlePath = path.join(__dirname, '..', '..', 'src');
 
@@ -104,5 +106,32 @@ const news = [
         languages: ['en']
     }
 ];
+
+
+// Additional dummy data for performance testing
+// const recordNumber = 100; 
+
+// for (let i = 0; i < recordNumber; i++) {
+//     news.push({
+//         title: mapToLanguages([getObjectId(i + '_uk').toHexString(), getObjectId(i + '_en').toHexString()]),
+//         text: mapToLanguages([fs.readFileSync(path.join(articlePath, 'article1UK.html'), 'utf8').split('\n').join(''),
+//                 fs.readFileSync(path.join(articlePath, 'article1EN.html'), 'utf8').split('\n').join('')]),
+//         images: {
+//             primary: { medium: 'image' + i + '.jpg' },
+//             additional: [
+//                 { medium: 'image' + i + '_1.jpg' },
+//                 { medium: 'image' + i + '_2.jpg' },
+//                 { medium: 'image' + i + '_3.jpg' }
+//             ]
+//         },
+//         author: {
+//             name: mapToLanguages(['Горонді', 'Horondi']),
+//             image: { small: 'https://scontent.fiev1-1.fna.fbcdn.net/v/t1.0-1/p148x148/70185999_2269139786546041_1214757974128459776_o.png?_nc_cat=109&_nc_sid=1eb0c7&_nc_ohc=yhpVEU0rep8AX8IyGUG&_nc_oc=AQlqGh37cAVcZbcz6VKWShS0nbnApzfMDKQtWrcKpBYGXoj20RumzX8zuL4p2C1lY5U&_nc_ht=scontent.fiev1-1.fna&oh=0c41615ad374c216c9a6188d2e4e67c8&oe=5F52785E' },
+//         },
+//         date: randomDateSince(new Date('January 01, 2010 00:00:00')),
+//         show: true,
+//         languages: ['uk', 'en']
+//     });
+// };
 
 module.exports = news;

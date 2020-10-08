@@ -205,22 +205,4 @@ function mapProduct(cat, subcat, name, i, product, descUK, descEN, price) {
     }
 }
 
-
-// const products = [{
-//     id: getObjectId('product' + 9),
-//     category: getObjectId('sub-fanny-packs'),
-//     name: mapToLanguages(['Бананка маленька', 'Fanny pack small']),
-//     description: mapToLanguages([fannyPackSmallDescUK, fannyPackSmallDescEN]),
-//     images: {
-//         primary: mapToImages('primary-fanny-pack-small'),
-//         additional: [
-//             mapToImages('additional-fanny-pack-small-1'),
-//             mapToImages('additional-fanny-pack-small-2'),
-//             mapToImages('additional-fanny-pack-small-3')
-//         ]
-//     },
-//     basePrice: 400,
-//     items: mapToItems('fanny-pack', [[10, 20]], 'malmo', 400, 10)
-// }];
-
 module.exports = products;
