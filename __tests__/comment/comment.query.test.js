@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
+
 require('dotenv').config();
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 const { adminLogin, setupApp } = require('../helper-functions');
@@ -100,20 +100,14 @@ describe('Comment queries', () => {
         userEmail: invalidEmail,
       },
       query: gql`
-        query($userEmail: String) {
+        query($userEmail: String!) {
           getAllCommentsByUser(userEmail: $userEmail) {
-            ... on Comment {
-              text
-              date
-              product {
-                _id
-              }
-              show
+            text
+            date
+            product {
+              _id
             }
-            ... on Error {
-              statusCode
-              message
-            }
+            show
           }
         }
       `,
@@ -133,20 +127,14 @@ describe('Comment queries', () => {
         userEmail: wrongData,
       },
       query: gql`
-        query($userEmail: String) {
+        query($userEmail: String!) {
           getAllCommentsByUser(userEmail: $userEmail) {
-            ... on Comment {
-              text
-              date
-              product {
-                _id
-              }
-              show
+            text
+            date
+            product {
+              _id
             }
-            ... on Error {
-              statusCode
-              message
-            }
+            show
           }
         }
       `,

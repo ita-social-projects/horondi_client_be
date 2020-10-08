@@ -21,7 +21,7 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userEmail) {
-    return Comment.find({ 'user.email': userEmail });
+    return await Comment.find({ 'user.email': userEmail });
   }
 
   async updateComment(id, comment) {

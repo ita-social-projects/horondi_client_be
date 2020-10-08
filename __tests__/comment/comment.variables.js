@@ -1,12 +1,12 @@
-const validEmail = 'TEST3123@gmail.com';
+const validEmail = '29gnewdfmk@ukr.net';
 const invalidEmail = 'TESTqwerty123@gmail.com';
-const productId = 'be89b5471126f0fdef739755';
+const productId = '018a5631de33999e751dbd52';
 const wrongData = '123siSTm#';
 
 const newComment = {
   text: 'Test text',
-  user: { email: 'TEST3123@gmail.com' },
-  product: 'be89b5471126f0fdef739755',
+  user: { email: '29gnewdfmk@ukr.net' },
+  product: '018a5631de33999e751dbd52',
   show: false,
 };
 
