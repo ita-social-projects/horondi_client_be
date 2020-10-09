@@ -1,4 +1,4 @@
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 
 module.exports = async user => {

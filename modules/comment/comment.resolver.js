@@ -25,6 +25,13 @@ const commentsQuery = {
       ];
     }
   },
+
+  getAllCommentsByUser: async (parent, args) => {
+    return await commentsService.getAllCommentsByUser(args.userEmail);
+  },
+
+  getAllRecentComments: async (parent, args) =>
+    commentsService.getAllRecentComments(args),
 };
 
 const commentsMutation = {
@@ -40,6 +47,7 @@ const commentsMutation = {
       ];
     }
   },
+
   deleteComment: async (parent, args) => {
     try {
       return await commentsService.deleteComment(args.id);
@@ -50,6 +58,7 @@ const commentsMutation = {
       };
     }
   },
+
   updateComment: async (parent, args) => {
     try {
       return await commentsService.updateComment(args.id, args.comment);
@@ -60,6 +69,7 @@ const commentsMutation = {
       };
     }
   },
+
   addRate: async (parent, args, context) => {
     try {
       return await commentsService.addRate(

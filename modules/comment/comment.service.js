@@ -1,10 +1,13 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
+
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
+
+const { monthInMilliseconds } = require('../../consts');
 
 class CommentsService {
   getCommentById(id) {
@@ -17,6 +20,29 @@ class CommentsService {
       throw new Error(COMMENT_NOT_FOUND);
     }
     return Comment.find({ product: id });
+  }
+
+  async getAllCommentsByUser(userEmail) {
+    return Comment.find({ 'user.email': userEmail });
+  }
+
+  async getAllRecentComments({ skip, limit }) {
+    const dateFrom = new Date().getTime();
+    const dateTo = dateFrom - monthInMilliseconds;
+
+    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Comment.find({
+      date: { $gt: dateTo, $lt: dateFrom },
+    }).countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async updateComment(id, comment) {

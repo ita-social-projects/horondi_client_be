@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const { gql } = require('apollo-boost');
+const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 const { adminUser, superAdminUser, newAdmin } = require('./user.variables');
 const adminLogin = require('../helpers/admin-login');
@@ -1167,5 +1167,73 @@ describe('New admin login', () => {
     expect(data.lastName).toEqual(newAdminLastName);
 
     id = data._id;
+  });
+});
+
+describe('User filtering', () => {
+  let superAdminToken;
+
+  beforeAll(async () => {
+    superAdminToken = await adminLogin(superAdminUser);
+  });
+
+  test('Should receive users via using filters for roles', async () => {
+    const role = 'user';
+
+    const result = await client
+      .query({
+        query: gql`
+          query($filter: UserFilterInput) {
+            getAllUsers(filter: $filter) {
+              role
+            }
+          }
+        `,
+        variables: {
+          filter: {
+            roles: [role],
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.every(item => item.role === role)).toEqual(true);
+  });
+
+  test('Should receive admins and superadmins via using filters for roles', async () => {
+    const roles = ['admin', 'superadmin'];
+
+    const result = await client
+      .query({
+        query: gql`
+          query($filter: UserFilterInput) {
+            getAllUsers(filter: $filter) {
+              role
+            }
+          }
+        `,
+        variables: {
+          filter: {
+            roles,
+          },
+        },
+        context: {
+          headers: {
+            token: superAdminToken,
+          },
+        },
+      })
+      .catch(err => err);
+
+    const data = result.data.getAllUsers;
+
+    expect(data.every(item => roles.includes(item.role))).toEqual(true);
   });
 });

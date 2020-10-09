@@ -23,7 +23,7 @@
       {
         "vars": "all",
         "args": "none",
-        "ignoreSiblings": true,
+        "ignoreRestSiblings": true,
         "argsIgnorePattern": "res|next|^err"
       }
     ],
@@ -82,6 +82,18 @@
         }
       }
     ],
+    "max-len": [
+      2,
+      {
+        "code": 200,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
     "no-return-await": 0,
     "camelcase": 0,
     "no-useless-return": 2,
@@ -126,6 +138,6 @@
       }
     ],
     "no-confusing-arrow": 0,
-
+    "linebreak-style": 0
   }
 }
