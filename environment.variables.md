@@ -1,6 +1,6 @@
 #### Environment variables
 
--IMAGE_LINK - path to place where images are stored\
+-##IMAGE_LINK - path to place where images are stored\
 -MONGO_URL - link for connecting to mongodb\
 -MAIL_USER - user email\
 -SECRET - secret string for hashing password\
