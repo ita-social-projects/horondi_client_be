@@ -30,7 +30,6 @@ const productsQuery = {
 const productsMutation = {
   addProduct: (parent, args) => {
     try {
-      console.log(args.upload);
       return productsService.addProduct(args.product, args.upload);
     } catch (e) {
       return {
