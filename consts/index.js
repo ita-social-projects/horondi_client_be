@@ -15,9 +15,12 @@ const horondiAddress = {
 
 const horondyCityRef = 'db5c88f5-391c-11dd-90d9-001a92567626'
 
+const monthInMilliseconds = 2592000000;
+
 module.exports = {
   roles,
   availableForRegistrationRoles,
   horondiAddress,
   horondyCityRef,
+  monthInMilliseconds,
 };
