@@ -483,7 +483,7 @@ const typeDefs = gql`
     registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
-    deleteUser(id: ID!): User
+    deleteUser(id: ID!): UserResult
     updateUserById(user: UserInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
