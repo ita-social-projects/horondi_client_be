@@ -179,7 +179,7 @@ Command `npm run generate` is used to run [graphql code generator](https://graph
 [![@vasylshpak](https://avatars1.githubusercontent.com/u/31392756?s=200&u=91a1fa03ab4def211eede6f469e26e9801812c29&v=4)](https://github.com/vasylshpak)
 [![@Iryna-Bzdyr](https://avatars1.githubusercontent.com/u/57641315?s=200&u=7d55e9b3cc8a73bd2ab4d1630a9860e409bbe73d&v=4)](https://github.com/Iryna-Bzdyr)
 [![@moran711](https://avatars1.githubusercontent.com/u/59802190?s=200&u=c937032a63ae775da998e0fe3ce066c3cda24d6e&v=4)](https://github.com/moran711)
-[![@VitalikVoicix](https://avatars0.githubusercontent.com/u/64539069?s=460&u=90288a9c4ce3bc30e1e7d2b4b8c7266b1d5a86b9&v=4)](https://github.com/VitalikVoicix)
+[![@VitalikVoicix](https://avatars0.githubusercontent.com/u/64539069?s=200&u=90288a9c4ce3bc30e1e7d2b4b8c7266b1d5a86b9&v=4)](https://github.com/VitalikVoicix)
 [![@koropalov](https://avatars3.githubusercontent.com/u/38702341?s=200&u=0e0aeb60e06240c840dd0852eb1f035f7ff8c88f&v=4)](https://github.com/koropalov)
 
 ### Quality control team
