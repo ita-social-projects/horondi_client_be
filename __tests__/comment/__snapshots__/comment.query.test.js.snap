@@ -2,19 +2,71 @@
 
 exports[` 1`] = `
 Object {
-  "_id": "5f7f188794a7be25a04e6fe7",
+  "_id": "5f8022930ade1216b0550d98",
 }
 `;
 
 exports[`Comment queries  Should receive all comments writen by selected user 1`] = `
 Array [
   Object {
-    "date": "1602164871576",
     "product": Object {
       "_id": "018a5631de33999e751dbd52",
     },
     "show": false,
     "text": "Test text",
+    "user": Object {
+      "email": "29gnewdfmk@ukr.net",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "29gnewdfmk@ukr.net",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "29gnewdfmk@ukr.net",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "29gnewdfmk@ukr.net",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "29gnewdfmk@ukr.net",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "29gnewdfmk@ukr.net",
+    },
   },
 ]
 `;

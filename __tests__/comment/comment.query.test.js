@@ -36,7 +36,7 @@ describe('Comment queries', () => {
       })
       .catch(e => e);
     expect(res.data.addComment).toMatchSnapshot();
-    console.log(res);
+    // console.log(res);
     commentId = res.data.addComment._id;
   });
 
@@ -71,30 +71,32 @@ describe('Comment queries', () => {
           query($userEmail: String!) {
             getAllCommentsByUser(userEmail: $userEmail) {
               text
-              date
               product {
                 _id
               }
               show
+              user {
+                email
+              }
             }
           }
         `,
       })
       .catch(e => e);
-    console.log(res);
 
     expect(res.data.getAllCommentsByUser).toMatchSnapshot();
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser).toContainEqual({
-      __typename: 'Comment',
+      product: {
+        _id: productId,
+      },
+      show: newComment.show,
       text: newComment.text,
       user: newComment.user,
-      product: productId,
-      show: true,
     });
   });
 
-  it(' should return error messagePassing unexisting email ', async () => {
+  it(' should return error message passing unexisting email ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: invalidEmail,
@@ -112,7 +114,7 @@ describe('Comment queries', () => {
         }
       `,
     });
-    console.log(res);
+    //console.log(res);
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
     expect(res.data.getAllCommentsByUser).toHaveProperty(
@@ -121,7 +123,7 @@ describe('Comment queries', () => {
     );
   });
 
-  it(' should return error message Passing not email string ', async () => {
+  it(' should return error message passing not email string ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: wrongData,
@@ -139,7 +141,7 @@ describe('Comment queries', () => {
         }
       `,
     });
-    console.log(res);
+    //console.log(res);
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
     expect(res.data.getAllCommentsByUser).toHaveProperty(

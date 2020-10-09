@@ -205,6 +205,11 @@ const typeDefs = gql`
     value: ImageSet
   }
 
+  type PaginatedComments {
+    items: [Comment]
+    count: Int
+  }
+
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -268,6 +273,7 @@ const typeDefs = gql`
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
     getAllCommentsByUser(userEmail: String!): [Comment]
+    getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
@@ -419,6 +425,11 @@ const typeDefs = gql`
     value: ImageSetInput
   }
 
+  input MapImage {
+    lang: String!
+    image: Upload!
+  }
+
   input UserRateInput {
     rate: Int!
   }
@@ -427,14 +438,22 @@ const typeDefs = gql`
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!, image: Upload): PatternResult
+    addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
-    updatePattern(id: ID!, pattern: PatternInput!, image: Upload): PatternResult
+    updatePattern(
+      id: ID!
+      pattern: PatternInput!
+      image: Upload!
+    ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
-    updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
+    updateMaterial(
+      id: ID!
+      material: MaterialInput!
+      images: Upload!
+    ): MaterialResult
 
     "Category Mutation"
     addCategory(
@@ -506,9 +525,13 @@ const typeDefs = gql`
     deleteModel(id: ID!): ModelResult
 
     "Contacts Mutation"
-    addContact(contact: contactInput!): ContactResult
+    addContact(contact: contactInput!, mapImages: [MapImage]!): ContactResult
     deleteContact(id: ID!): ContactResult
-    updateContact(id: ID!, contact: contactInput!): ContactResult
+    updateContact(
+      id: ID!
+      contact: contactInput!
+      mapImages: [MapImage]
+    ): ContactResult
 
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult

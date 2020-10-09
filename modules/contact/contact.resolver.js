@@ -15,7 +15,7 @@ const contactQuery = {
 
 const contactMutation = {
   addContact: async (parent, args) =>
-    (await contactService.addContact(args.contact)) || {
+    (await contactService.addContact(args)) || {
       statusCode: 400,
       message: CONTACT_ALREADY_EXIST,
     },
@@ -27,7 +27,7 @@ const contactMutation = {
     },
 
   updateContact: async (parent, args) =>
-    (await contactService.updateContact(args.id, args.contact)) || {
+    (await contactService.updateContact(args)) || {
       statusCode: 404,
       message: CONTACT_NOT_FOUND,
     },
