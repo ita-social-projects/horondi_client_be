@@ -27,7 +27,16 @@ const commentsQuery = {
   },
 
   getAllCommentsByUser: async (parent, args) => {
-    return await commentsService.getAllCommentsByUser(args.userEmail);
+    try {
+      return await commentsService.getAllCommentsByUser(args.userEmail);
+    } catch (error) {
+      return [
+        {
+          statusCode: 404,
+          message: error.message,
+        },
+      ];
+    }
   },
 };
 

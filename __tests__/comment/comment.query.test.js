@@ -27,6 +27,7 @@ describe('Comment queries', () => {
               }
               ... on Error {
                 message
+                statusCode
               }
             }
           }
@@ -58,7 +59,7 @@ describe('Comment queries', () => {
       .catch(e => e);
   });
 
-  it(' Should receive all comments writen by selected user', async () => {
+  it('1 Should receive all comments writen by selected user', async () => {
     const res = await operations
       .query({
         variables: {
@@ -67,14 +68,20 @@ describe('Comment queries', () => {
         query: gql`
           query($userEmail: String!) {
             getAllCommentsByUser(userEmail: $userEmail) {
-              text
+              ... on Comment {
+                text
 
-              product {
-                _id
+                product {
+                  _id
+                }
+                show
+                user {
+                  email
+                }
               }
-              show
-              user {
-                email
+              ... on Error {
+                message
+                statusCode
               }
             }
           }
@@ -93,57 +100,75 @@ describe('Comment queries', () => {
     });
   });
 
-  // it(' should return error messagePassing unexisting email ', async () => {
-  //   const res = await operations.query({
-  //     variables: {
-  //       userEmail: invalidEmail,
-  //     },
-  //     query: gql`
-  //       query($userEmail: String!) {
-  //         getAllCommentsByUser(userEmail: $userEmail) {
-  //           text
-  //           date
-  //           product {
-  //             _id
-  //           }
-  //           show
-  //         }
-  //       }
-  //     `,
-  //   });
-  //   console.log('second test', res);
-  //   expect(res.data.getAllCommentsByUser).toBeDefined();
-  //   expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
-  //   expect(res.data.getAllCommentsByUser).toHaveProperty(
-  //     'message',
-  //     COMMENT_NOT_FOUND
-  //   );
-  // });
+  it('2 should return error messagePassing unexisting email ', async () => {
+    const res = await operations.query({
+      variables: {
+        userEmail: invalidEmail,
+      },
+      query: gql`
+        query($userEmail: String!) {
+          getAllCommentsByUser(userEmail: $userEmail) {
+            ... on Comment {
+              text
 
-  // it(' should return error message Passing not email string ', async () => {
-  //   const res = await operations.query({
-  //     variables: {
-  //       userEmail: wrongData,
-  //     },
-  //     query: gql`
-  //       query($userEmail: String!) {
-  //         getAllCommentsByUser(userEmail: $userEmail) {
-  //           text
-  //           date
-  //           product {
-  //             _id
-  //           }
-  //           show
-  //         }
-  //       }
-  //     `,
-  //   });
-  //   console.log('third test', res);
-  //   expect(res.data.getAllCommentsByUser).toBeDefined();
-  //   expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
-  //   expect(res.data.getAllCommentsByUser).toHaveProperty(
-  //     'message',
-  //     COMMENT_NOT_FOUND
-  //   );
-  // });
+              product {
+                _id
+              }
+              show
+              user {
+                email
+              }
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+    });
+    console.log('second test', res);
+    expect(res.data.getAllCommentsByUser).toBeDefined();
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
+      'message',
+      COMMENT_NOT_FOUND
+    );
+  });
+
+  it('3 should return error message Passing not email string ', async () => {
+    const res = await operations.query({
+      variables: {
+        userEmail: wrongData,
+      },
+      query: gql`
+        query($userEmail: String!) {
+          getAllCommentsByUser(userEmail: $userEmail) {
+            ... on Comment {
+              text
+
+              product {
+                _id
+              }
+              show
+              user {
+                email
+              }
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+    });
+    console.log('third test', res);
+    expect(res.data.getAllCommentsByUser).toBeDefined();
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
+      'message',
+      COMMENT_NOT_FOUND
+    );
+  });
 });

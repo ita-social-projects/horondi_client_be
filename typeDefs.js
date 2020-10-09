@@ -267,7 +267,7 @@ const typeDefs = gql`
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
-    getAllCommentsByUser(userEmail: String!): [Comment]
+    getAllCommentsByUser(userEmail: String!): [CommentResult]
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult

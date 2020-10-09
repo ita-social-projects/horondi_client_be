@@ -21,7 +21,11 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userEmail) {
-    return Comment.find({ 'user.email': userEmail });
+    const comments = await Comment.find({ 'user.email': userEmail });
+    if (!comments.length) {
+      throw new Error(COMMENT_NOT_FOUND);
+    }
+    return comments;
   }
 
   async updateComment(id, comment) {

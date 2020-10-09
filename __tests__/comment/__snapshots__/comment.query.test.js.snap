@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Comment queries  Should receive all comments writen by selected user 1`] = `
+exports[`Comment queries 1 Should receive all comments writen by selected user 1`] = `
 Array [
   Object {
     "product": Object {
