@@ -20,9 +20,9 @@ class NovaPoshtaService {
   );
   }
 
-  async getNovaPoshtaCities(city){  
+  async getNovaPoshtaCities(cityName){  
       const res = await this.getNovaPoshtaRequest({
-        FindByString: city
+        FindByString: cityName
       }, 'Address', 'getCities')
       
       return res.data.data.slice(0, 10).map(city => {
@@ -34,10 +34,10 @@ class NovaPoshtaService {
       });
   }
 
-  async getNovaPoshtaStreets(cityRef, street) {
+  async getNovaPoshtaStreets(cityRef, streetName) {
       const res = await this.getNovaPoshtaRequest({
         CityRef: cityRef,
-        FindByString: street
+        FindByString: streetName
       }, 'Address', 'getStreet')
           
       return res.data.data.slice(0, 10).map(street => {

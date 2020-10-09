@@ -12,7 +12,7 @@ class PaymentService {
         }
       })
       const signString = secret + '|' + Object.values(ordered).join('|')
-      return crypto.createHash('sha1').update(signString).digest('hex')
+      return crypto.createHash(process.env.CRYPTO).update(signString).digest('hex')
     }
 
     async getPaymentCheckout(data){  
@@ -36,14 +36,14 @@ class PaymentService {
             amount
           }
 
-          const res = await fondy.Checkout(requestData)
+          const result = await fondy.Checkout(requestData)
             .then(res => res)
             .catch((error) => error)
           
           return {
-            paymentId: res.payment_id,
-            responseStatus: res.response_status,
-            checkoutUrl: res.checkout_url
+            paymentId: result.payment_id,
+            responseStatus: result.response_status,
+            checkoutUrl: result.checkout_url
           }
     }
 
