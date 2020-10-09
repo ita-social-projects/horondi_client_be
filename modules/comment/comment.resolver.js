@@ -27,9 +27,15 @@ const commentsQuery = {
   },
 
   getAllCommentsByUser: async (parent, args) => {
-    return await commentsService.getAllCommentsByUser(args.userEmail);
+    try {
+      return await commentsService.getAllCommentsByUser(args.userEmail);
+    } catch (e) {
+      return {
+        message: e.message,
+        statusCode: 404,
+      };
+    }
   },
-
   getAllRecentComments: async (parent, args) =>
     commentsService.getAllRecentComments(args),
 };

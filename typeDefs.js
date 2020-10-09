@@ -234,7 +234,6 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
-
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -271,8 +270,8 @@ const typeDefs = gql`
     ): PaginatedProducts!
 
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(productId: ID!): [CommentResult]
-    getAllCommentsByUser(userEmail: String!): [Comment]
+    getAllCommentsByProduct(productId: ID!): CommentResult
+    getAllCommentsByUser(userEmail: String!): CommentResult
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
     getAllBusinessTexts: [BusinessText]

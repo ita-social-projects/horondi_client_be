@@ -61,7 +61,7 @@ describe('Comment queries', () => {
       .catch(e => e);
   });
 
-  it(' Should receive all comments writen by selected user', async () => {
+  it('1 Should receive all comments writen by selected user', async () => {
     const res = await operations
       .query({
         variables: {
@@ -96,7 +96,7 @@ describe('Comment queries', () => {
     });
   });
 
-  it(' should return error message passing unexisting email ', async () => {
+  it(' 2 should return error message passing unexisting email ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: invalidEmail,
@@ -104,12 +104,18 @@ describe('Comment queries', () => {
       query: gql`
         query($userEmail: String!) {
           getAllCommentsByUser(userEmail: $userEmail) {
-            text
-            date
-            product {
-              _id
+            ... on Comment {
+              text
+              date
+              product {
+                _id
+              }
+              show
             }
-            show
+            ... on Error {
+              message
+              statusCode
+            }
           }
         }
       `,
@@ -123,7 +129,7 @@ describe('Comment queries', () => {
     );
   });
 
-  it(' should return error message passing not email string ', async () => {
+  it('3 should return error message passing not email string ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: wrongData,

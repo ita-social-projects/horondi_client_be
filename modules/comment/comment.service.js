@@ -23,7 +23,12 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userEmail) {
-    return await Comment.find({ 'user.email': userEmail });
+    const comments = await Comment.find({ 'user.email': userEmail });
+    if (comments.length) {
+      return comments;
+    }
+    console.log('inside comment by user');
+    throw new Error(COMMENT_NOT_FOUND);
   }
 
   async getAllRecentComments({ skip, limit }) {
