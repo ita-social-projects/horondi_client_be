@@ -477,7 +477,6 @@ describe('mutations', () => {
         userId,
       },
     });
-    console.log(res);
     expect(res.data.deleteUser.message).toEqual('INVALID_PERMISSIONS');
   });
 
@@ -521,7 +520,7 @@ describe('User`s mutation restictions tests', () => {
   beforeAll(async () => {
     firstName = 'Pepo';
     lastName = 'Markelo';
-    email = '1xamp1d2v1@gmail.com';
+    email = '1xamp31d2v1@gmail.com';
     password = 'qwertY123';
     adminId = '9c031d62a3c4909b216e1d86';
     language = 1;
@@ -563,6 +562,21 @@ describe('User`s mutation restictions tests', () => {
     userId = res.data.registerUser._id;
   });
 
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
+  });
+
   test('User must login', async () => {
     const result = await operations
       .mutate({
@@ -589,6 +603,32 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('User doesn`t allowed to change another user`s data', async () => {
+    const res = await operations.mutate({
+      mutation: gql`
+        mutation {
+          registerUser(
+            user: {
+              firstName: "One"
+              lastName: "User"
+              email: "secretEmail@sec.com"
+              password: "qwerty12345"
+            }
+            language: 1
+          ) {
+            _id
+            firstName
+            lastName
+            email
+            role
+            registrationDate
+            token
+          }
+        }
+      `,
+    });
+
+    operations = await setupApp({ ...res.data.registerUser });
+
     const result = await operations
       .mutate({
         mutation: gql`
@@ -617,18 +657,14 @@ describe('User`s mutation restictions tests', () => {
           email,
           userId,
         },
-        context: {
-          headers: {
-            token: userToken,
-          },
-        },
       })
       .catch(err => err);
-    expect(result.errors.length).toBe(1);
-    expect(result.errors[0].message).toEqual('WRONG_CREDENTIALS');
+    expect(result.data.updateUserById.message).toBeDefined();
+    expect(result.data.updateUserById.message).toEqual('WRONG_CREDENTIALS');
   });
 
   test('User can change his own data', async () => {
+    operations = await setupApp();
     const res = await operations.mutate({
       mutation: gql`
         mutation($user: UserInput!, $id: ID!) {
@@ -655,6 +691,7 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('Unknown user doesn`t allowed to change any data', async () => {
+    operations = await setupApp();
     const result = await operations
       .mutate({
         mutation: gql`
@@ -666,13 +703,29 @@ describe('User`s mutation restictions tests', () => {
           }
         `,
         variables: {
-          user: { firstName, lastName, email },
+          user: { firstName, lastName, email: 'dmdjjd@gmail.com' },
           id: userId,
         },
       })
       .catch(err => err);
-    expect(result.errors.length).toBe(1);
-    expect(result.errors[0].message).toEqual('USER_NOT_AUTHORIZED');
+    expect(result.errors[0].message).toBeDefined();
+    expect(result.errors[0].message).toEqual('USER_NOT_FOUND');
+  });
+
+  test('Admin can delete user', async () => {
+    const res = await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
+    expect(res.data.deleteUser._id).toBeDefined();
   });
 });
 
@@ -687,7 +740,6 @@ describe('Register admin', () => {
 
   beforeAll(async () => {
     superAdminToken = await adminLogin(superAdminUser);
-    console.log(superAdminToken);
   });
 
   test('Should throw an error when use already in-usage email while admin registration', async () => {
@@ -722,7 +774,6 @@ describe('Register admin', () => {
       .catch(err => err);
 
     const data = result.data.registerAdmin;
-    console.log(result);
     expect(data.message).toEqual(USER_ALREADY_EXIST);
     expect(data.statusCode).toEqual(400);
   });
