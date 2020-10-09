@@ -135,11 +135,6 @@ describe('queries', () => {
         userId,
         email,
       },
-      context: {
-        headers: {
-          token,
-        },
-      },
     });
   });
 
@@ -469,7 +464,6 @@ describe('Testing obtaining information restrictions', () => {
       .catch(err => err);
 
     const adminInfo = await result.data;
-    console.log(result);
     expect(adminInfo.loginAdmin).not.toEqual(null);
 
     adminToken = adminInfo.loginAdmin.token;

@@ -255,14 +255,14 @@ class UserService {
 
     await savedUser.save();
 
-    // await confirmationEmailService.confirmEmail(
-    //   savedUser,
-    //   confirmationMessage,
-    //   sendEmail,
-    //   firstName,
-    //   token,
-    //   language
-    // );
+    await confirmationEmailService.confirmEmail(
+      savedUser,
+      confirmationMessage,
+      sendEmail,
+      firstName,
+      token,
+      language
+    );
 
     await savedUser.save();
     return savedUser;
@@ -292,7 +292,6 @@ class UserService {
 
   async deleteUser(id) {
     const res = await User.findByIdAndDelete(id);
-    console.log(id);
     return res || new Error(USER_NOT_FOUND);
   }
 
