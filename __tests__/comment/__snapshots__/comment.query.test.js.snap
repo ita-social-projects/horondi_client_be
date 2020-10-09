@@ -1,9 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` 1`] = `
-Object {
-  "message": null,
-}
+exports[`Comment queries  Should receive all comments writen by selected user 1`] = `
+Array [
+  Object {
+    "product": Object {
+      "_id": "be89b5471126f0fdef739755",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "ermn7dyptp@yahoo.com",
+    },
+  },
+]
 `;
-
-exports[`Comment queries  Should receive all comments writen by selected user 1`] = `Array []`;

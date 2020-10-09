@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 require('dotenv').config();
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
-const { adminLogin, setupApp } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
 
 const {
   newComment,
@@ -35,8 +34,6 @@ describe('Comment queries', () => {
         variables: { productId: productId, comment: newComment },
       })
       .catch(e => e);
-    expect(res.data.addComment).toMatchSnapshot();
-    console.log(res);
     commentId = res.data.addComment._id;
   });
 
@@ -71,11 +68,14 @@ describe('Comment queries', () => {
           query($userEmail: String!) {
             getAllCommentsByUser(userEmail: $userEmail) {
               text
-              date
+
               product {
                 _id
               }
               show
+              user {
+                email
+              }
             }
           }
         `,
@@ -86,11 +86,10 @@ describe('Comment queries', () => {
     expect(res.data.getAllCommentsByUser).toMatchSnapshot();
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser).toContainEqual({
-      __typename: 'Comment',
+      product: { _id: productId },
       text: newComment.text,
       user: newComment.user,
-      product: productId,
-      show: true,
+      show: newComment.show,
     });
   });
 
