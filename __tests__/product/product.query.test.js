@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
+const { setupApp } = require('../helper-functions');
 const {
   newModel,
   badProductId,
@@ -15,10 +15,12 @@ let categoryId;
 let subcategoryId;
 let modelId;
 let materialId;
+let operations;
 
 describe('Product queries', () => {
   beforeAll(async () => {
-    const createMaterial = await client.mutate({
+    operations = await setupApp();
+    const createMaterial = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
           addMaterial(material: $material) {
@@ -35,7 +37,7 @@ describe('Product queries', () => {
     });
     materialId = createMaterial.data.addMaterial._id;
 
-    const createCategory = await client.mutate({
+    const createCategory = await operations.mutate({
       mutation: gql`
         mutation($category: CategoryInput!) {
           addCategory(category: $category) {
@@ -53,7 +55,7 @@ describe('Product queries', () => {
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
 
-    const createModel = await client.mutate({
+    const createModel = await operations.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
           addModel(model: $model) {
@@ -69,7 +71,7 @@ describe('Product queries', () => {
       variables: { model: { ...newModel, category: categoryId } },
     });
     modelId = createModel.data.addModel._id;
-    const createProduct = await client.mutate({
+    const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
           addProduct(product: $product) {
@@ -86,54 +88,54 @@ describe('Product queries', () => {
     productId = createProduct.data.addProduct._id;
   });
   test('#1 Should receive all products', async () => {
-      const products = await client.query({
-        query: gql`
-          query {
-            getProducts {
-              items {
-                category {
-                  _id
-                }
-                subcategory {
-                  _id
-                }
-                name {
-                  value
-                }
-                description {
-                  value
-                }
-                mainMaterial {
-                  value
-                }
-                innerMaterial {
-                  value
-                }
-                strapLengthInCm
-                pattern {
-                  value
-                }
-                closureColor
-                basePrice {
-                  value
-                }
-                available
-                isHotItem
-                purchasedCount
-                rate
-                rateCount
+    const products = await operations.query({
+      query: gql`
+        query {
+          getProducts {
+            items {
+              category {
+                _id
               }
+              subcategory {
+                _id
+              }
+              name {
+                value
+              }
+              description {
+                value
+              }
+              mainMaterial {
+                value
+              }
+              innerMaterial {
+                value
+              }
+              strapLengthInCm
+              pattern {
+                value
+              }
+              closureColor
+              basePrice {
+                value
+              }
+              available
+              isHotItem
+              purchasedCount
+              rate
+              rateCount
             }
           }
-        `,
-      });
+        }
+      `,
+    });
     const allProducts = products.data.getProducts.items;
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
     expect(allProducts[0].name).toBeInstanceOf(Array);
   });
   test('#2 Should receive product by ID', async () => {
-    const product = await client.query({
+    const product = await operations.query({
       query: gql`
         query($id: ID!) {
           getProductById(id: $id) {
@@ -251,7 +253,7 @@ describe('Product queries', () => {
     expect(resultProduct).toHaveProperty('rateCount', 0);
   });
   test('#3 Should receive error if product ID is wrong', async () => {
-    const getProduct = await client.query({
+    const getProduct = await operations.query({
       query: gql`
         query($id: ID!) {
           getProductById(id: $id) {
@@ -304,7 +306,7 @@ describe('Product queries', () => {
     expect(receivedError).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
   });
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteProduct(id: $id) {
@@ -320,7 +322,7 @@ describe('Product queries', () => {
       `,
       variables: { id: productId },
     });
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteCategory(id: $id) {
@@ -336,7 +338,7 @@ describe('Product queries', () => {
       `,
       variables: { id: categoryId },
     });
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteModel(id: $id) {
@@ -352,7 +354,7 @@ describe('Product queries', () => {
       `,
       variables: { id: modelId },
     });
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteMaterial(id: $id) {

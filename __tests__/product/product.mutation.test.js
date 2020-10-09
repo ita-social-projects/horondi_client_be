@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
+const { setupApp } = require('../helper-functions');
 const {
   newModel,
   newCategory,
@@ -19,10 +19,12 @@ let subcategoryId;
 let modelId;
 let sameNameProductId;
 let materialId;
+let operations;
 
 describe('Product mutations', () => {
   beforeAll(async () => {
-    const createMaterial = await client.mutate({
+    operations = await setupApp();
+    const createMaterial = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
           addMaterial(material: $material) {
@@ -39,7 +41,7 @@ describe('Product mutations', () => {
     });
     materialId = createMaterial.data.addMaterial._id;
 
-    const createCategory = await client.mutate({
+    const createCategory = await operations.mutate({
       mutation: gql`
         mutation($category: CategoryInput!) {
           addCategory(category: $category) {
@@ -57,7 +59,7 @@ describe('Product mutations', () => {
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
 
-    const createModel = await client.mutate({
+    const createModel = await operations.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
           addModel(model: $model) {
@@ -76,7 +78,7 @@ describe('Product mutations', () => {
   });
 
   test('#1 Should add new product', async () => {
-    const createProduct = await client.mutate({
+    const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
           addProduct(product: $product) {
@@ -188,7 +190,7 @@ describe('Product mutations', () => {
     expect(createdProduct).toHaveProperty('purchasedCount', 0);
     expect(createdProduct).toHaveProperty('rate', 0);
     expect(createdProduct).toHaveProperty('rateCount', 0);
-    const getProduct = await client.query({
+    const getProduct = await operations.query({
       query: gql`
         query($id: ID!) {
           getProductById(id: $id) {
@@ -304,7 +306,7 @@ describe('Product mutations', () => {
   });
 
   test('#2 AddProduct should return Error product already exist', async () => {
-    const createProduct = await client.mutate({
+    const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
           addProduct(product: $product) {
@@ -329,7 +331,7 @@ describe('Product mutations', () => {
   });
 
   test('#3 Should update new product', async () => {
-    const updateProduct = await client.mutate({
+    const updateProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!, $id: ID!) {
           updateProduct(id: $id, product: $product) {
@@ -440,7 +442,7 @@ describe('Product mutations', () => {
   });
 
   test('#4 UpdateProduct should return Error product not found', async () => {
-    const updateProduct = await client.mutate({
+    const updateProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!, $id: ID!) {
           updateProduct(id: $id, product: $product) {
@@ -475,7 +477,7 @@ describe('Product mutations', () => {
   });
 
   test('#5 UpdateProduct should return Error product already exist', async () => {
-    const createProduct = await client.mutate({
+    const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
           addProduct(product: $product) {
@@ -496,7 +498,7 @@ describe('Product mutations', () => {
     });
     sameNameProductId = createProduct.data.addProduct._id;
 
-    const updateProduct = await client.mutate({
+    const updateProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!, $id: ID!) {
           updateProduct(id: $id, product: $product) {
@@ -531,7 +533,7 @@ describe('Product mutations', () => {
       'message',
       'PRODUCT_ALREADY_EXIST'
     );
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteProduct(id: $id) {
@@ -550,7 +552,7 @@ describe('Product mutations', () => {
   });
 
   test('#6 deleteProduct should return add fields and delete product', async () => {
-    const deletedProduct = await client.mutate({
+    const deletedProduct = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteProduct(id: $id) {
@@ -654,7 +656,7 @@ describe('Product mutations', () => {
   });
 
   test('#7 deleteProduct should return error product not found', async () => {
-    const deletedProduct = await client.mutate({
+    const deletedProduct = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteProduct(id: $id) {
@@ -677,7 +679,7 @@ describe('Product mutations', () => {
   });
 
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteMaterial(id: $id) {
@@ -693,7 +695,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: materialId },
     });
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteProduct(id: $id) {
@@ -709,7 +711,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteCategory(id: $id) {
@@ -725,7 +727,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: categoryId },
     });
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteModel(id: $id) {
