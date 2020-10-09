@@ -31,7 +31,7 @@ const setupApp = async context => {
   admin.firstName = 'Super аdmin';
   admin.lastName = 'Super admin full';
   admin.email = process.env.SUPER_ADMIN_EMAIL;
-  admin.role = 'admin';
+  admin.role = 'superadmin';
   admin.credentials = [
     {
       source: 'horondi',

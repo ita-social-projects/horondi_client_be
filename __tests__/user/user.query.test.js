@@ -7,6 +7,8 @@ const {
 const { setupApp } = require('../helper-functions');
 const { getAllUsers } = require('../../modules/user/user.service');
 
+jest.mock('../../modules/confirm-email/confirmation-email.service');
+
 require('dotenv').config();
 
 let token;
@@ -16,7 +18,7 @@ let operations;
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbb1b21@gmail.com',
+  email: 'f5dbb1b213@gmail.com',
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'user',
@@ -74,7 +76,7 @@ describe('queries', () => {
         language,
       },
     });
-
+    console.log(register);
     userId = register.data.registerUser._id;
 
     const authRes = await operations.mutate({
@@ -86,13 +88,13 @@ describe('queries', () => {
         }
       `,
       variables: {
-        email: 'f5dbb1b21@gmail.com',
-        password: '12345678Pt',
+        email,
+        password,
       },
     });
     console.log(token);
     token = authRes.data.loginUser.token;
-    await operations.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!, $email: String!) {
           updateUserById(
@@ -140,6 +142,7 @@ describe('queries', () => {
         },
       },
     });
+    console.log(res);
   });
 
   test('should recive all users', async () => {
@@ -166,6 +169,7 @@ describe('queries', () => {
         }
       `,
     });
+    console.log(res.data.getAllUsers);
     expect(res.data.getAllUsers).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
@@ -495,7 +499,7 @@ describe('Testing obtaining information restrictions', () => {
         },
       })
       .catch(err => err);
-
+    console.log(result);
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].message).toBe('INVALID_PERMISSIONS');
   });
@@ -515,7 +519,7 @@ describe('Testing obtaining information restrictions', () => {
         `,
         context: {
           headers: {
-            token: adminToken,
+            token,
           },
         },
       })

@@ -23,7 +23,7 @@ let operations;
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbbdnbf@gmail.com',
+  email: 'f5dbbdnvf@gmail.com',
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
@@ -55,11 +55,6 @@ describe('mutations', () => {
       `,
       variables: {
         userId,
-      },
-      context: {
-        headers: {
-          token,
-        },
       },
     });
   });
@@ -469,6 +464,7 @@ describe('mutations', () => {
   });
 
   test('should not delete user without super-admin role', async () => {
+    operations = await setupApp({ token: 'jgjcdvjkbvdnfjlvdvlf' });
     const res = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
@@ -480,17 +476,13 @@ describe('mutations', () => {
       variables: {
         userId,
       },
-      context: {
-        headers: {
-          token,
-        },
-      },
     });
     console.log(res);
     expect(res.data.deleteUser.message).toEqual('INVALID_PERMISSIONS');
   });
 
   test('Should return error when switch status of non-existent user', async () => {
+    operations = await setupApp();
     const result = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -529,7 +521,7 @@ describe('User`s mutation restictions tests', () => {
   beforeAll(async () => {
     firstName = 'Pepo';
     lastName = 'Markelo';
-    email = '1xamp1de111@gmail.com';
+    email = '1xamp1d2v1@gmail.com';
     password = 'qwertY123';
     adminId = '9c031d62a3c4909b216e1d86';
     language = 1;
@@ -632,7 +624,6 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
-    console.log(result);
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].message).toEqual('WRONG_CREDENTIALS');
   });
@@ -680,7 +671,6 @@ describe('User`s mutation restictions tests', () => {
         },
       })
       .catch(err => err);
-    console.log(result);
     expect(result.errors.length).toBe(1);
     expect(result.errors[0].message).toEqual('USER_NOT_AUTHORIZED');
   });
@@ -697,6 +687,7 @@ describe('Register admin', () => {
 
   beforeAll(async () => {
     superAdminToken = await adminLogin(superAdminUser);
+    console.log(superAdminToken);
   });
 
   test('Should throw an error when use already in-usage email while admin registration', async () => {
@@ -731,7 +722,7 @@ describe('Register admin', () => {
       .catch(err => err);
 
     const data = result.data.registerAdmin;
-
+    console.log(result);
     expect(data.message).toEqual(USER_ALREADY_EXIST);
     expect(data.statusCode).toEqual(400);
   });
