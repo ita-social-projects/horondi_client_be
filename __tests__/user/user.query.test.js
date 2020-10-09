@@ -4,7 +4,8 @@ const client = require('../../utils/apollo-test-client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
-const { setupApp } = require('../helper-functions');
+const { superAdminUser } = require('./user.variables');
+const { adminLogin, setupApp } = require('../helper-functions');
 const { getAllUsers } = require('../../modules/user/user.service');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
@@ -18,7 +19,7 @@ let operations;
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbb1b213@gmail.com',
+  email: 'f513@gmail.com',
   password: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'user',
@@ -76,7 +77,6 @@ describe('queries', () => {
         language,
       },
     });
-    console.log(register);
     userId = register.data.registerUser._id;
 
     const authRes = await operations.mutate({
@@ -92,7 +92,6 @@ describe('queries', () => {
         password,
       },
     });
-    console.log(token);
     token = authRes.data.loginUser.token;
     const res = await operations.mutate({
       mutation: gql`
@@ -142,7 +141,6 @@ describe('queries', () => {
         },
       },
     });
-    console.log(res);
   });
 
   test('should recive all users', async () => {
@@ -169,7 +167,6 @@ describe('queries', () => {
         }
       `,
     });
-    console.log(res.data.getAllUsers);
     expect(res.data.getAllUsers).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
@@ -239,8 +236,6 @@ describe('queries', () => {
         },
       },
     });
-    console.log(token);
-    console.log(res);
     expect(res.data.getUserByToken).toHaveProperty('firstName', 'Test');
     expect(res.data.getUserByToken).toHaveProperty('lastName', 'User');
     expect(res.data.getUserByToken).toHaveProperty('email', email);
@@ -371,7 +366,7 @@ describe('Testing obtaining information restrictions', () => {
   let userToken;
   let userLogin;
   let userPassword;
-  let adminLogin;
+  let superAdminToken;
   let adminPassword;
   let firstName;
   let lastName;
@@ -380,11 +375,12 @@ describe('Testing obtaining information restrictions', () => {
   beforeAll(async () => {
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
-    adminLogin = 'admin@gmail.com';
-    adminPassword = 'qwertY123';
+    adminEmail = superAdminUser.email;
+    adminPassword = superAdminUser.password;
     firstName = 'Pepo';
     lastName = 'Markelo';
     userId = '5f43af8522155b08109e0304';
+    superAdminToken = await adminLogin(superAdminUser);
     await operations.mutate({
       mutation: gql`
         mutation(
@@ -456,16 +452,16 @@ describe('Testing obtaining information restrictions', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($admin: LoginInput!) {
-            loginAdmin(loginInput: $admin) {
+          mutation($user: LoginInput!) {
+            loginAdmin(loginInput: $user) {
               token
               _id
             }
           }
         `,
         variables: {
-          admin: {
-            email: adminLogin,
+          user: {
+            email: adminEmail,
             password: adminPassword,
           },
         },
@@ -473,13 +469,14 @@ describe('Testing obtaining information restrictions', () => {
       .catch(err => err);
 
     const adminInfo = await result.data;
-
+    console.log(result);
     expect(adminInfo.loginAdmin).not.toEqual(null);
 
     adminToken = adminInfo.loginAdmin.token;
   });
 
   test('Any user doesn`t allowed to obtain information about all users', async () => {
+    operations = await setupApp({ token: userToken });
     const result = await operations
       .query({
         query: gql`
@@ -499,12 +496,12 @@ describe('Testing obtaining information restrictions', () => {
         },
       })
       .catch(err => err);
-    console.log(result);
-    expect(result.errors.length).toBe(1);
-    expect(result.errors[0].message).toBe('INVALID_PERMISSIONS');
+    expect(result.data.getAllUsers.message).toBeDefined();
+    expect(result.data.getAllUsers.message).toBe('INVALID_PERMISSIONS');
   });
 
   test('Admin can obtain all the information about users', async () => {
+    operations = await setupApp();
     const result = await operations
       .query({
         query: gql`
@@ -531,6 +528,27 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('User can obtain the information about himself', async () => {
+    // operations = await setupApp({token: userToken, id: userId, email: userLogin, password: userPassword});
+    const userLoginInfo = await operations.mutate({
+      mutation: gql`
+        mutation($email: String!, $password: String!) {
+          loginUser(loginInput: { email: $email, password: $password }) {
+            _id
+            firstName
+            lastName
+            email
+            role
+            registrationDate
+            token
+          }
+        }
+      `,
+      variables: {
+        email: userLogin,
+        password: userPassword,
+      },
+    });
+
     const result = await operations
       .query({
         query: gql`
@@ -542,12 +560,7 @@ describe('Testing obtaining information restrictions', () => {
           }
         `,
         variables: {
-          id: userId,
-        },
-        context: {
-          headers: {
-            token: userToken,
-          },
+          id: userLoginInfo.data.loginUser._id,
         },
       })
       .catch(err => err);
