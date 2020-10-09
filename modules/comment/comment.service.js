@@ -24,30 +24,10 @@ class CommentsService {
 
   async getAllCommentsByUser(userEmail) {
     const comments = await Comment.find({ 'user.email': userEmail });
-    if (comments.length) {
-      return comments;
+    if (!comments.length) {
+      throw new Error(COMMENT_NOT_FOUND);
     }
-    console.log('inside comment by user');
-    throw new Error(COMMENT_NOT_FOUND);
-  }
-
-  async getAllRecentComments({ skip, limit }) {
-    const dateFrom = new Date().getTime();
-    const dateTo = dateFrom - monthInMilliseconds;
-
-    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const count = await Comment.find({
-      date: { $gt: dateTo, $lt: dateFrom },
-    }).countDocuments();
-
-    return {
-      items,
-      count,
-    };
+    return comments;
   }
 
   async updateComment(id, comment) {

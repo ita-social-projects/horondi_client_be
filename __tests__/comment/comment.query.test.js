@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-
 require('dotenv').config();
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
-const { adminLogin, setupApp } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
 
 const {
   newComment,
@@ -28,6 +27,7 @@ describe('Comment queries', () => {
               }
               ... on Error {
                 message
+                statusCode
               }
             }
           }
@@ -35,8 +35,6 @@ describe('Comment queries', () => {
         variables: { productId: productId, comment: newComment },
       })
       .catch(e => e);
-    expect(res.data.addComment).toMatchSnapshot();
-    // console.log(res);
     commentId = res.data.addComment._id;
   });
 
@@ -70,13 +68,20 @@ describe('Comment queries', () => {
         query: gql`
           query($userEmail: String!) {
             getAllCommentsByUser(userEmail: $userEmail) {
-              text
-              product {
-                _id
+              ... on Comment {
+                text
+
+                product {
+                  _id
+                }
+                show
+                user {
+                  email
+                }
               }
-              show
-              user {
-                email
+              ... on Error {
+                message
+                statusCode
               }
             }
           }
@@ -87,16 +92,14 @@ describe('Comment queries', () => {
     expect(res.data.getAllCommentsByUser).toMatchSnapshot();
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser).toContainEqual({
-      product: {
-        _id: productId,
-      },
-      show: newComment.show,
+      product: { _id: productId },
       text: newComment.text,
       user: newComment.user,
+      show: newComment.show,
     });
   });
 
-  it(' 2 should return error message passing unexisting email ', async () => {
+  it('2 should return error messagePassing unexisting email ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: invalidEmail,
@@ -106,11 +109,14 @@ describe('Comment queries', () => {
           getAllCommentsByUser(userEmail: $userEmail) {
             ... on Comment {
               text
-              date
+
               product {
                 _id
               }
               show
+              user {
+                email
+              }
             }
             ... on Error {
               message
@@ -120,16 +126,16 @@ describe('Comment queries', () => {
         }
       `,
     });
-    //console.log(res);
+    console.log('second test', res);
     expect(res.data.getAllCommentsByUser).toBeDefined();
-    expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
-    expect(res.data.getAllCommentsByUser).toHaveProperty(
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
       'message',
       COMMENT_NOT_FOUND
     );
   });
 
-  it('3 should return error message passing not email string ', async () => {
+  it('3 should return error message Passing not email string ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: wrongData,
@@ -137,20 +143,29 @@ describe('Comment queries', () => {
       query: gql`
         query($userEmail: String!) {
           getAllCommentsByUser(userEmail: $userEmail) {
-            text
-            date
-            product {
-              _id
+            ... on Comment {
+              text
+
+              product {
+                _id
+              }
+              show
+              user {
+                email
+              }
             }
-            show
+            ... on Error {
+              message
+              statusCode
+            }
           }
         }
       `,
     });
-    //console.log(res);
+    console.log('third test', res);
     expect(res.data.getAllCommentsByUser).toBeDefined();
-    expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
-    expect(res.data.getAllCommentsByUser).toHaveProperty(
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
       'message',
       COMMENT_NOT_FOUND
     );

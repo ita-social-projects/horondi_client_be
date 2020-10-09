@@ -1,3 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+<<<<<<< HEAD
 exports[`Contacts queries should receive selected contact 1`] = `null`;
+=======
+exports[`Contacts queries should receive selected contact 1`] = `
+Object {
+  "address": Array [
+    Object {
+      "lang": "uk",
+      "value": "Вулиця 4",
+    },
+    Object {
+      "lang": "en",
+      "value": "Street 4",
+    },
+  ],
+  "email": "test@test.com",
+  "images": Array [
+    Object {
+      "value": Object {
+        "medium": "medium.jpg",
+      },
+    },
+    Object {
+      "value": Object {
+        "medium": "medium.jpg",
+      },
+    },
+  ],
+  "link": "https://testURL.com",
+  "openHours": Array [
+    Object {
+      "lang": "uk",
+      "value": "ПН ...",
+    },
+    Object {
+      "lang": "en",
+      "value": "FR ...",
+    },
+  ],
+  "phoneNumber": "1241241242144",
+}
+`;
+>>>>>>> 3b71238500ba4094f699e33648dc80885ff5acce

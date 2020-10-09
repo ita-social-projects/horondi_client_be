@@ -29,11 +29,13 @@ const commentsQuery = {
   getAllCommentsByUser: async (parent, args) => {
     try {
       return await commentsService.getAllCommentsByUser(args.userEmail);
-    } catch (e) {
-      return {
-        message: e.message,
-        statusCode: 404,
-      };
+    } catch (error) {
+      return [
+        {
+          statusCode: 404,
+          message: error.message,
+        },
+      ];
     }
   },
   getAllRecentComments: async (parent, args) =>

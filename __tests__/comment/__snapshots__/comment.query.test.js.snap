@@ -1,7 +1,156 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[` 1`] = `
-Object {
-  "_id": "5f805a17d80ff62654f0057a",
-}
+exports[`Comment queries 1 Should receive all comments writen by selected user 1`] = `
+Array [
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "018a5631de33999e751dbd52",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+  Object {
+    "product": Object {
+      "_id": "be89b5471126f0fdef739755",
+    },
+    "show": false,
+    "text": "Test text",
+    "user": Object {
+      "email": "test@mail.com",
+    },
+  },
+]
 `;
