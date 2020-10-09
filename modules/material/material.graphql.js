@@ -17,7 +17,7 @@ const materialInput = `
     purpose: String
     colors: [ColorInput]
     available: Boolean
-    additionalPrice: [CurrencySetInput]
+    additionalPrice: Int
     }
 `;
 

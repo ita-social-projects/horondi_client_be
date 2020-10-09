@@ -193,7 +193,7 @@ const resolvers = {
   },
   CurrencyResult: {
     __resolveType: obj => {
-      if (obj.date) {
+      if (obj.lastUpdatedDate) {
         return SCHEMA_NAMES.currency;
       }
       return 'Error';
