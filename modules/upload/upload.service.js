@@ -45,7 +45,7 @@ class UploadService {
 
   uploadFiles = async files =>
     files.map(async file => {
-      const { createReadStream, filename } = await file;
+      const { createReadStream, filename } = await file.promise;
 
       const inputStream = createReadStream();
       let fileBuffer;
