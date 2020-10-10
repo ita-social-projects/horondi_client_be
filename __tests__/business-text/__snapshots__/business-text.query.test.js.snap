@@ -224,3 +224,29 @@ Array [
   },
 ]
 `;
+
+exports[`Business page queries #2 Should receive selected business text 1`] = `
+Object {
+  "code": "new-code",
+  "text": Array [
+    Object {
+      "lang": "uk",
+      "value": "Тут бізнес текст",
+    },
+    Object {
+      "lang": "en",
+      "value": "Business text here",
+    },
+  ],
+  "title": Array [
+    Object {
+      "lang": "uk",
+      "value": "НоваБТ",
+    },
+    Object {
+      "lang": "en",
+      "value": "NewBT",
+    },
+  ],
+}
+`;
