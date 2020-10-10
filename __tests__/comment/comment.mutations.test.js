@@ -4,16 +4,15 @@ const {
   newComment,
   updatedComment,
   productId,
-  commentToUpdate,
-  mutationCommentToAdd,
   productWrongId,
   commentWrongId,
+  rate,
 } = require('./comment.variables');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
+  RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
-
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
@@ -23,6 +22,7 @@ let operations;
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    console.log(operations);
   });
   it('1 should add a new comment', async () => {
     const res = await operations
@@ -172,24 +172,20 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
-
-  it('5 should  delete comment', async () => {
+  it('should add rate to the product', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
-          mutation($id: ID!) {
-            deleteComment(id: $id) {
-              ... on Comment {
-                _id
-                text
-                user {
-                  email
+          mutation($product: ID!, $userRate: UserRateInput!) {
+            addRate(product: $product, userRate: $userRate) {
+              ... on Product {
+                rate
+                rateCount
+                userRates {
+                  rate
                 }
-                product {
-                  _id
-                }
-                show
               }
+
               ... on Error {
                 message
                 statusCode
@@ -197,30 +193,32 @@ describe('Comment queries', () => {
             }
           }
         `,
-        variables: { id: commentId },
+        variables: { product: productId, userRate: { rate } },
       })
       .catch(e => e);
-    const receivedComment = res.data.deleteComment;
+    console.log(res);
+    const receivedComment = res.data.addRate;
+    expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('text', updatedComment.text);
-    expect(receivedComment).toHaveProperty('show', updatedComment.show);
-    expect(receivedComment).toHaveProperty('user', updatedComment.user);
-    expect(receivedComment).toHaveProperty(
-      'productId',
-      updatedComment.productId
-    );
+    expect(receivedComment).toHaveProperty('rate', 4.3);
+    expect(receivedComment).toHaveProperty('rateCount', 41);
+    expect(receivedComment.userRates.length).toEqual(receivedComment.rateCount);
   });
-
-  it('6 should  return error when delete not existed comment', async () => {
+  it('should return error if to add rate to not existing product', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
-          mutation($id: ID!) {
-            deleteComment(id: $id) {
-              ... on Comment {
-                _id
+          mutation($product: ID!, $userRate: UserRateInput!) {
+            addRate(product: $product, userRate: $userRate) {
+              ... on Product {
+                rate
+                rateCount
+                userRates {
+                  rate
+                }
               }
+
               ... on Error {
                 message
                 statusCode
@@ -228,13 +226,18 @@ describe('Comment queries', () => {
             }
           }
         `,
-        variables: { id: commentWrongId },
+        variables: { product: productWrongId, userRate: { rate } },
       })
       .catch(e => e);
-    const receivedComment = res.data.deleteComment;
+    console.log(res);
+    const receivedComment = res.data.addRate;
+    expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
+    expect(receivedComment).toHaveProperty(
+      'message',
+      RATE_FOR_NOT_EXISTING_PRODUCT
+    );
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
 });

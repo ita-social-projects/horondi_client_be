@@ -1,36 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Comment queries 1 Should receive all comments writen by selected user 1`] = `
+exports[`Comment queries 3 Should receive all comments for one product 1`] = `
 Array [
   Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": true,
-    "text": "дуже класна сумка",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": true,
-    "text": "дуже гарна сумка",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "be89b5471126f0fdef739755",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
+    "message": "COMMENT_NOT_FOUND",
+    "statusCode": 404,
   },
 ]
+`;
+
+exports[`Comment queries 6 should return error when find comment by wrong id 1`] = `
+Object {
+  "message": "COMMENT_NOT_FOUND",
+  "statusCode": 404,
+}
 `;

@@ -22,7 +22,7 @@ const businessTextQuery = {
       return await businessTextService.getBusinessTextByCode(args.code);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: e.message,
       };
     }
