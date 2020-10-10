@@ -3,12 +3,10 @@ const newBusinessText = {
     {
       value: 'НоваБТ',
       lang: 'uk',
-      __typename: 'Language',
     },
     {
       value: 'NewBT',
       lang: 'en',
-      __typename: 'Language',
     },
   ],
   code: 'new-code',
@@ -16,12 +14,10 @@ const newBusinessText = {
     {
       value: 'Тут бізнес текст',
       lang: 'uk',
-      __typename: 'Language',
     },
     {
       value: 'Business text here',
       lang: 'en',
-      __typename: 'Language',
     },
   ],
 };
