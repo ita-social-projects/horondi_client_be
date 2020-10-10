@@ -47,12 +47,10 @@ const commentsMutation = {
     try {
       return await commentsService.addComment(args.productId, args.comment);
     } catch (error) {
-      return [
-        {
-          statusCode: 404,
-          message: error.message,
-        },
-      ];
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
     }
   },
 

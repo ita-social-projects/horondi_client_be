@@ -6,8 +6,8 @@ Array [
     "product": Object {
       "_id": "018a5631de33999e751dbd52",
     },
-    "show": false,
-    "text": "Test text",
+    "show": true,
+    "text": "дуже класна сумка",
     "user": Object {
       "email": "test@mail.com",
     },
@@ -16,128 +16,8 @@ Array [
     "product": Object {
       "_id": "018a5631de33999e751dbd52",
     },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
-    "user": Object {
-      "email": "test@mail.com",
-    },
-  },
-  Object {
-    "product": Object {
-      "_id": "018a5631de33999e751dbd52",
-    },
-    "show": false,
-    "text": "Test text",
+    "show": true,
+    "text": "дуже гарна сумка",
     "user": Object {
       "email": "test@mail.com",
     },
