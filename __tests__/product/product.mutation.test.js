@@ -39,7 +39,6 @@ describe('Product mutations', () => {
       `,
       variables: { material: newMaterial },
     });
-    console.log(createMaterial);
     materialId = createMaterial.data.addMaterial._id;
 
     const createCategory = await operations.mutate({
@@ -60,7 +59,6 @@ describe('Product mutations', () => {
         upload: '../___test__/model/dog.img',
       },
     });
-    console.log(createCategory);
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
 
@@ -128,7 +126,6 @@ describe('Product mutations', () => {
         product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
       },
     });
-    console.log(categoryId, subcategoryId, modelId, materialId);
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
     expect(createdProduct).toBeDefined();

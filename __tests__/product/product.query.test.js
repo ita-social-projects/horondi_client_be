@@ -3,12 +3,13 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 const {
   newModel,
-  badProductId,
   newCategory,
   newMaterial,
+  badProductId,
   getNewProduct,
 } = require('./product.variables');
-require('dotenv').config();
+
+jest.mock('../../modules/upload/upload.service');
 
 let productId;
 let categoryId;
@@ -39,8 +40,8 @@ describe('Product queries', () => {
 
     const createCategory = await operations.mutate({
       mutation: gql`
-        mutation($category: CategoryInput!) {
-          addCategory(category: $category) {
+        mutation($category: CategoryInput!, $upload: Upload) {
+          addCategory(category: $category, upload: $upload) {
             ... on Category {
               _id
               name {
@@ -50,7 +51,10 @@ describe('Product queries', () => {
           }
         }
       `,
-      variables: { category: newCategory },
+      variables: {
+        category: newCategory,
+        upload: '../___test__/model/dog.img',
+      },
     });
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
@@ -71,6 +75,7 @@ describe('Product queries', () => {
       variables: { model: { ...newModel, category: categoryId } },
     });
     modelId = createModel.data.addModel._id;
+
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
@@ -188,61 +193,51 @@ describe('Product queries', () => {
     const resultProduct = product.data.getProductById;
     expect(resultProduct).toBeDefined();
     expect(resultProduct).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Very Coool Baggy' },
-      { __typename: 'Language', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+      { value: 'Very Coool Baggy' },
+      { value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
     ]);
     expect(resultProduct).toHaveProperty('description', [
-      { __typename: 'Language', value: 'Baggy is so cool' },
-      { __typename: 'Language', value: 'Рюкзачечок - супер кльовий))' },
+      { value: 'Baggy is so cool' },
+      { value: 'Рюкзачечок - супер кльовий))' },
     ]);
     expect(resultProduct).toHaveProperty('category', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(resultProduct).toHaveProperty('subcategory', {
-      __typename: 'Category',
       _id: subcategoryId,
     });
     expect(resultProduct).toHaveProperty('mainMaterial', [
       {
-        __typename: 'Language',
         value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
       },
       {
-        __typename: 'Language',
         value:
           'Canvas-400G padded with a layer of durable and water-resistant material',
       },
     ]);
     expect(resultProduct).toHaveProperty('innerMaterial', [
       {
-        __typename: 'Language',
         value: 'Oxford 135',
       },
       {
-        __typename: 'Language',
         value: 'Oxford 135',
       },
     ]);
     expect(resultProduct).toHaveProperty('strapLengthInCm', 100);
     expect(resultProduct).toHaveProperty('pattern', [
       {
-        __typename: 'Language',
         value: 'Вишивка',
       },
       {
-        __typename: 'Language',
         value: 'Embroidery',
       },
     ]);
     expect(resultProduct).toHaveProperty('closureColor', 'black');
     expect(resultProduct).toHaveProperty('basePrice', [
       {
-        __typename: 'CurrencySet',
         value: 145000,
       },
       {
-        __typename: 'CurrencySet',
         value: 5229,
       },
     ]);
@@ -309,6 +304,22 @@ describe('Product queries', () => {
     await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
+          deleteMaterial(id: $id) {
+            ... on Material {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: materialId },
+    });
+    await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
           deleteProduct(id: $id) {
             ... on Product {
               _id
@@ -353,22 +364,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: modelId },
-    });
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteMaterial(id: $id) {
-            ... on Material {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: materialId },
     });
   });
 });
