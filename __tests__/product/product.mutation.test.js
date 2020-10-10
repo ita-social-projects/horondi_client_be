@@ -11,7 +11,7 @@ const {
   getSameNameForUpdate,
 } = require('./product.variables');
 
-require('dotenv').config();
+jest.mock('../../modules/upload/upload.service');
 
 let productId;
 let categoryId;
@@ -39,12 +39,13 @@ describe('Product mutations', () => {
       `,
       variables: { material: newMaterial },
     });
+    console.log(createMaterial);
     materialId = createMaterial.data.addMaterial._id;
 
     const createCategory = await operations.mutate({
       mutation: gql`
-        mutation($category: CategoryInput!) {
-          addCategory(category: $category) {
+        mutation($category: CategoryInput!, $upload: Upload) {
+          addCategory(category: $category, upload: $upload) {
             ... on Category {
               _id
               name {
@@ -54,8 +55,12 @@ describe('Product mutations', () => {
           }
         }
       `,
-      variables: { category: newCategory },
+      variables: {
+        category: newCategory,
+        upload: '../___test__/model/dog.img',
+      },
     });
+    console.log(createCategory);
     categoryId = createCategory.data.addCategory._id;
     subcategoryId = createCategory.data.addCategory._id;
 
@@ -123,65 +128,56 @@ describe('Product mutations', () => {
         product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
       },
     });
+    console.log(categoryId, subcategoryId, modelId, materialId);
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
     expect(createdProduct).toBeDefined();
     expect(createdProduct).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Very Coool Baggy' },
-      { __typename: 'Language', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+      { value: 'Very Coool Baggy' },
+      { value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
     ]);
     expect(createdProduct).toHaveProperty('description', [
-      { __typename: 'Language', value: 'Baggy is so cool' },
-      { __typename: 'Language', value: 'Рюкзачечок - супер кльовий))' },
+      { value: 'Baggy is so cool' },
+      { value: 'Рюкзачечок - супер кльовий))' },
     ]);
     expect(createdProduct).toHaveProperty('category', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(createdProduct).toHaveProperty('subcategory', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(createdProduct).toHaveProperty('mainMaterial', [
       {
-        __typename: 'Language',
         value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
       },
       {
-        __typename: 'Language',
         value:
           'Canvas-400G padded with a layer of durable and water-resistant material',
       },
     ]);
     expect(createdProduct).toHaveProperty('innerMaterial', [
       {
-        __typename: 'Language',
         value: 'Oxford 135',
       },
       {
-        __typename: 'Language',
         value: 'Oxford 135',
       },
     ]);
     expect(createdProduct).toHaveProperty('strapLengthInCm', 100);
     expect(createdProduct).toHaveProperty('pattern', [
       {
-        __typename: 'Language',
         value: 'Вишивка',
       },
       {
-        __typename: 'Language',
         value: 'Embroidery',
       },
     ]);
     expect(createdProduct).toHaveProperty('closureColor', 'black');
     expect(createdProduct).toHaveProperty('basePrice', [
       {
-        __typename: 'CurrencySet',
         value: 145000,
       },
       {
-        __typename: 'CurrencySet',
         value: 5229,
       },
     ]);
@@ -240,61 +236,51 @@ describe('Product mutations', () => {
     const receivedProduct = getProduct.data.getProductById;
     expect(receivedProduct).toBeDefined();
     expect(receivedProduct).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Very Coool Baggy' },
-      { __typename: 'Language', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+      { value: 'Very Coool Baggy' },
+      { value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
     ]);
     expect(receivedProduct).toHaveProperty('description', [
-      { __typename: 'Language', value: 'Baggy is so cool' },
-      { __typename: 'Language', value: 'Рюкзачечок - супер кльовий))' },
+      { value: 'Baggy is so cool' },
+      { value: 'Рюкзачечок - супер кльовий))' },
     ]);
     expect(receivedProduct).toHaveProperty('category', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(receivedProduct).toHaveProperty('subcategory', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(receivedProduct).toHaveProperty('mainMaterial', [
       {
-        __typename: 'Language',
         value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
       },
       {
-        __typename: 'Language',
         value:
           'Canvas-400G padded with a layer of durable and water-resistant material',
       },
     ]);
     expect(receivedProduct).toHaveProperty('innerMaterial', [
       {
-        __typename: 'Language',
         value: 'Oxford 135',
       },
       {
-        __typename: 'Language',
         value: 'Oxford 135',
       },
     ]);
     expect(receivedProduct).toHaveProperty('strapLengthInCm', 100);
     expect(receivedProduct).toHaveProperty('pattern', [
       {
-        __typename: 'Language',
         value: 'Вишивка',
       },
       {
-        __typename: 'Language',
         value: 'Embroidery',
       },
     ]);
     expect(receivedProduct).toHaveProperty('closureColor', 'black');
     expect(receivedProduct).toHaveProperty('basePrice', [
       {
-        __typename: 'CurrencySet',
         value: 145000,
       },
       {
-        __typename: 'CurrencySet',
         value: 5229,
       },
     ]);
@@ -389,50 +375,44 @@ describe('Product mutations', () => {
     const productAfterUpdate = updateProduct.data.updateProduct;
     expect(productAfterUpdate).toBeDefined();
     expect(productAfterUpdate).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Bad Baggy' },
-      { __typename: 'Language', value: 'Жахливий Рюкзачечок' },
+      { value: 'Bad Baggy' },
+      { value: 'Жахливий Рюкзачечок' },
     ]);
     expect(productAfterUpdate).toHaveProperty('description', [
-      { value: 'Baggy is so bad', __typename: 'Language' },
-      { value: 'Рюкзачечок - не добрий))', __typename: 'Language' },
+      { value: 'Baggy is so bad' },
+      { value: 'Рюкзачечок - не добрий))' },
     ]);
     expect(productAfterUpdate).toHaveProperty('category', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(productAfterUpdate).toHaveProperty('subcategory', {
-      __typename: 'Category',
       _id: subcategoryId,
     });
     expect(productAfterUpdate).toHaveProperty('mainMaterial', [
       {
-        __typename: 'Language',
         value: 'Canvas-400QQ прошита без спеціального матеріалу',
       },
       {
-        __typename: 'Language',
         value: 'Canvas-400QQ padded without a layer water-resistant material',
       },
     ]);
     expect(productAfterUpdate).toHaveProperty('innerMaterial', [
       {
-        __typename: 'Language',
         value: 'Oxford 115',
       },
       {
-        __typename: 'Language',
         value: 'Oxford 115',
       },
     ]);
     expect(productAfterUpdate).toHaveProperty('strapLengthInCm', 90);
     expect(productAfterUpdate).toHaveProperty('pattern', [
-      { value: 'Вишивочка', __typename: 'Language' },
-      { value: 'Embroidery', __typename: 'Language' },
+      { value: 'Вишивочка' },
+      { value: 'Embroidery' },
     ]);
     expect(productAfterUpdate).toHaveProperty('closureColor', 'white');
     expect(productAfterUpdate).toHaveProperty('basePrice', [
-      { value: 777000, __typename: 'CurrencySet' },
-      { value: 7779, __typename: 'CurrencySet' },
+      { value: 777000 },
+      { value: 7779 },
     ]);
     expect(productAfterUpdate).toHaveProperty('available', false);
     expect(productAfterUpdate).toHaveProperty('isHotItem', true);
@@ -603,50 +583,44 @@ describe('Product mutations', () => {
     expect(result).toBeDefined();
     expect(result).toHaveProperty('_id', productId);
     expect(result).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Bad Baggy' },
-      { __typename: 'Language', value: 'Жахливий Рюкзачечок' },
+      { value: 'Bad Baggy' },
+      { value: 'Жахливий Рюкзачечок' },
     ]);
     expect(result).toHaveProperty('description', [
-      { value: 'Baggy is so bad', __typename: 'Language' },
-      { value: 'Рюкзачечок - не добрий))', __typename: 'Language' },
+      { value: 'Baggy is so bad' },
+      { value: 'Рюкзачечок - не добрий))' },
     ]);
     expect(result).toHaveProperty('category', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(result).toHaveProperty('subcategory', {
-      __typename: 'Category',
       _id: categoryId,
     });
     expect(result).toHaveProperty('mainMaterial', [
       {
-        __typename: 'Language',
         value: 'Canvas-400QQ прошита без спеціального матеріалу',
       },
       {
-        __typename: 'Language',
         value: 'Canvas-400QQ padded without a layer water-resistant material',
       },
     ]);
     expect(result).toHaveProperty('innerMaterial', [
       {
-        __typename: 'Language',
         value: 'Oxford 115',
       },
       {
-        __typename: 'Language',
         value: 'Oxford 115',
       },
     ]);
     expect(result).toHaveProperty('strapLengthInCm', 90);
     expect(result).toHaveProperty('pattern', [
-      { value: 'Вишивочка', __typename: 'Language' },
-      { value: 'Embroidery', __typename: 'Language' },
+      { value: 'Вишивочка' },
+      { value: 'Embroidery' },
     ]);
     expect(result).toHaveProperty('closureColor', 'white');
     expect(result).toHaveProperty('basePrice', [
-      { value: 777000, __typename: 'CurrencySet' },
-      { value: 7779, __typename: 'CurrencySet' },
+      { value: 777000 },
+      { value: 7779 },
     ]);
     expect(result).toHaveProperty('available', false);
     expect(result).toHaveProperty('isHotItem', true);

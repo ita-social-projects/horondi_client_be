@@ -456,6 +456,7 @@ module.exports = {
   badProductId,
   newCategory,
   newModel,
+  newMaterial,
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,
