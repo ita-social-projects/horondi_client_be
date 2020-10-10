@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-require('dotenv').config();
+
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 
@@ -88,7 +88,6 @@ describe('Comment queries', () => {
         `,
       })
       .catch(e => e);
-    console.log(res);
 
     expect(res.data.getAllCommentsByUser).toMatchSnapshot();
     expect(res.data.getAllCommentsByUser).toBeDefined();
@@ -127,7 +126,7 @@ describe('Comment queries', () => {
         }
       `,
     });
-    console.log('second test', res);
+
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
@@ -163,7 +162,7 @@ describe('Comment queries', () => {
         }
       `,
     });
-    console.log('third test', res);
+
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
