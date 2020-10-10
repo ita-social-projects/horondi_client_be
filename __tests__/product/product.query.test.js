@@ -37,7 +37,6 @@ describe('Product queries', () => {
       variables: { material: newMaterial },
     });
     materialId = createMaterial.data.addMaterial._id;
-
     const createCategory = await operations.mutate({
       mutation: gql`
         mutation($category: CategoryInput!, $upload: Upload) {
@@ -74,6 +73,7 @@ describe('Product queries', () => {
       `,
       variables: { model: { ...newModel, category: categoryId } },
     });
+
     modelId = createModel.data.addModel._id;
 
     const createProduct = await operations.mutate({
