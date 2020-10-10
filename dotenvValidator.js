@@ -6,6 +6,8 @@ const envSchema = joi.object({
   MONGO_URL: joi.string().required(),
 });
 
-const environment = envSchema.validate(process.env);
+const environment = envSchema.validate({
+  ...process.env,
+});
 
 if (environment.error) throw environment.error;
