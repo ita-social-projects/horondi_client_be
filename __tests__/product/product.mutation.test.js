@@ -312,7 +312,7 @@ describe('Product mutations', () => {
     expect(result).toHaveProperty('statusCode', 400);
     expect(result).toHaveProperty('message', 'PRODUCT_ALREADY_EXIST');
   });
-  console.log('tests');
+
   test('#3 Should update new product', async () => {
     const updateProduct = await operations.mutate({
       mutation: gql`
