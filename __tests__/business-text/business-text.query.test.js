@@ -126,7 +126,7 @@ describe('Business page queries', () => {
         variables: { id: businessText._id },
       })
       .catch(e => e);
-    businessText = res.data.getBusinessTextById;
+    const businessText = res.data.getBusinessTextById;
     expect(businessText).toBeDefined();
     expect(businessText).toHaveProperty('code', newBusinessText.code);
     expect(businessText.title).toBeInstanceOf(Array);

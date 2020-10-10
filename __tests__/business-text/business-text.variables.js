@@ -27,12 +27,10 @@ const updatedBusinessText = {
     {
       value: 'ОновленаБТ',
       lang: 'uk',
-      __typename: 'Language',
     },
     {
       value: 'UpdatedBT',
       lang: 'en',
-      __typename: 'Language',
     },
   ],
   code: 'updated-code',
@@ -40,12 +38,10 @@ const updatedBusinessText = {
     {
       value: 'Оновлений бізнес текст',
       lang: 'uk',
-      __typename: 'Language',
     },
     {
       value: 'Updated business text',
       lang: 'en',
-      __typename: 'Language',
     },
   ],
 };
