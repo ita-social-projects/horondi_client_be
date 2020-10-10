@@ -1,15 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Comment queries should add a new comment 1`] = `
+exports[`Comment queries should return error if to add comment to not existing product 1`] = `
 Object {
-  "_id": "5f816e7ff82ee118f439d2f3",
-  "product": Object {
-    "_id": "be89b5471126f0fdef739755",
-  },
-  "show": false,
-  "text": "Test text",
-  "user": Object {
-    "email": "ermn7dyptp@yahoo.com",
-  },
+  "message": "COMMENT_FOR_NOT_EXISTING_PRODUCT",
+  "statusCode": 404,
 }
 `;

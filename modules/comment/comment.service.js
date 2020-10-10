@@ -43,8 +43,7 @@ class CommentsService {
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
-    const comment = new Comment(data);
-    return comment.save();
+    return new Comment(data).save();
   }
 
   async deleteComment(id) {
