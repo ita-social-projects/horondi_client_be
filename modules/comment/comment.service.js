@@ -8,8 +8,12 @@ const {
 } = require('../../error-messages/comment.messages');
 
 class CommentsService {
-  getCommentById(id) {
-    return Comment.findById(id);
+  async getCommentById(id) {
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      throw new Error(COMMENT_NOT_FOUND);
+    }
+    return comment;
   }
 
   async getAllCommentsByProduct(id) {

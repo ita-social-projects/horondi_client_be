@@ -1,8 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Comment queries should return error if to add comment to not existing product 1`] = `
-Object {
-  "message": "COMMENT_FOR_NOT_EXISTING_PRODUCT",
-  "statusCode": 404,
-}
-`;
