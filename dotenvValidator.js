@@ -1,8 +1,11 @@
-const Joi = require('joi');
-const dotenv = require('dotenv');
+const joi = require('@hapi/joi');
+require('dotenv').config();
 
-function dotenvValidator() {}
+const envSchema = joi.object({
+  PAYMENT_MERCHANT_ID: joi.number().required(),
+  MONGO_URL: joi.string().required(),
+});
 
-console.log();
+const environment = envSchema.validate(process.env);
 
-module.exports = dotenv;
+if (environment.error) throw environment.error;
