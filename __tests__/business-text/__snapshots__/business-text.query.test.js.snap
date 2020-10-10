@@ -177,29 +177,6 @@ Array [
     ],
   },
   Object {
-    "code": "contacts",
-    "text": Array [
-      Object {
-        "lang": "uk",
-        "value": "Контакти очікуйте найближчим часом...",
-      },
-      Object {
-        "lang": "en",
-        "value": "Contacts will appear shortly...",
-      },
-    ],
-    "title": Array [
-      Object {
-        "lang": "uk",
-        "value": "Контакти",
-      },
-      Object {
-        "lang": "en",
-        "value": "Contacts",
-      },
-    ],
-  },
-  Object {
     "code": "new-code",
     "text": Array [
       Object {

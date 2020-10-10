@@ -82,7 +82,7 @@ const commentsMutation = {
       );
     } catch (error) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: error.message,
       };
     }

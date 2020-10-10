@@ -1,5 +1,4 @@
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 
 const {
   BUSINESS_TEXT_NOT_FOUND,
@@ -11,14 +10,18 @@ const {
   updatedBusinessText,
   notExistBusinessTextId,
 } = require('./business-text.variables');
-require('dotenv').config();
+const { setupApp } = require('../helper-functions');
 
 let businessText = null;
 let businessTextId = '';
+let operations;
 
-describe('Business text mutations test', () => {
+describe('Business page queries', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+  });
   test('#1 should add business text to database', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($businessText: BusinessTextInput!) {
@@ -60,7 +63,7 @@ describe('Business text mutations test', () => {
   });
 
   test('#2 adding a new page with existing code should return error', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($businessText: BusinessTextInput!) {
@@ -98,7 +101,7 @@ describe('Business text mutations test', () => {
   });
 
   test('#3 update business text', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!, $businessText: BusinessTextInput!) {
@@ -129,16 +132,25 @@ describe('Business text mutations test', () => {
       })
       .catch(e => e);
 
-    businessText = res.data.updateBusinessText;
+    const receivedBusinessText = res.data.updateBusinessText;
 
-    expect(businessText).toHaveProperty('code', updatedBusinessText.code);
-    expect(businessText.title).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('title', updatedBusinessText.title);
-    expect(businessText).toHaveProperty('text', updatedBusinessText.text);
+    expect(receivedBusinessText).toHaveProperty(
+      'code',
+      updatedBusinessText.code
+    );
+    expect(receivedBusinessText.title).toBeInstanceOf(Array);
+    expect(receivedBusinessText).toHaveProperty(
+      'title',
+      updatedBusinessText.title
+    );
+    expect(receivedBusinessText).toHaveProperty(
+      'text',
+      updatedBusinessText.text
+    );
   });
 
   test('#4 update not existing businessText should return error', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!, $businessText: BusinessTextInput!) {
@@ -177,7 +189,7 @@ describe('Business text mutations test', () => {
   });
 
   test('#5 update page with already existing code in data base should return error', async () => {
-    const res = await client
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!, $businessText: BusinessTextInput!) {
@@ -216,7 +228,7 @@ describe('Business text mutations test', () => {
   });
 
   test('#6 delete businessText', async () => {
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteBusinessText(id: $id) {
@@ -250,7 +262,7 @@ describe('Business text mutations test', () => {
   });
 
   test('#7 delete not existing business text should return error', async () => {
-    const res = await client.mutate({
+    const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteBusinessText(id: $id) {

@@ -3,7 +3,7 @@
 exports[`Comment queries should add rate to the product 1`] = `
 Object {
   "rate": 4.3,
-  "rateCount": 62,
+  "rateCount": 138,
   "userRates": Array [
     Object {
       "rate": 5,
@@ -191,13 +191,241 @@ Object {
     Object {
       "rate": 4,
     },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
+    Object {
+      "rate": 4,
+    },
   ],
 }
 `;
 
 exports[`Comment queries should return error if to add rate to not existing product 1`] = `
 Object {
-  "message": "Cannot destructure property 'userRates' of 'product' as it is null.",
-  "statusCode": 400,
+  "message": "RATE_FOR_NOT_EXISTING_PRODUCT",
+  "statusCode": 404,
 }
 `;

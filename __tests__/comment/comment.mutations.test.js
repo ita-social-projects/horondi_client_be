@@ -22,7 +22,6 @@ let operations;
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    console.log(operations);
   });
   it('should add a new comment', async () => {
     const res = await operations
@@ -195,7 +194,7 @@ describe('Comment queries', () => {
         variables: { product: productId, userRate: { rate } },
       })
       .catch(e => e);
-    console.log(res);
+
     const receivedComment = res.data.addRate;
     expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
