@@ -17,7 +17,11 @@ class ModulesService {
     return new this.ItemModule(data).save();
   }
 
-  async updateItems(id, data, errors) {
+  async getAllItems() {
+    return await this.ItemModule.find();
+  }
+
+  async updateItem(id, data, errors) {
     const item = await this.ItemModule.findById(id);
     if (!item) {
       throw new Error(errors[0]);
