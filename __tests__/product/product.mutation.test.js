@@ -13,6 +13,8 @@ const {
 
 jest.mock('../../modules/upload/upload.service');
 
+let product;
+let updatedProduct;
 let productId;
 let categoryId;
 let subcategoryId;
@@ -78,6 +80,13 @@ describe('Product mutations', () => {
       variables: { model: { ...newModel, category: categoryId } },
     });
     modelId = createModel.data.addModel._id;
+    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+    updatedProduct = getProductForUpdate(
+      categoryId,
+      subcategoryId,
+      modelId,
+      materialId
+    );
   });
 
   test('#1 Should add new product', async () => {
@@ -123,63 +132,49 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+        product,
       },
     });
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
     expect(createdProduct).toBeDefined();
     expect(createdProduct).toHaveProperty('name', [
-      { value: 'Very Coool Baggy' },
-      { value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+      { value: product.name[0].value },
+      { value: product.name[1].value },
     ]);
     expect(createdProduct).toHaveProperty('description', [
-      { value: 'Baggy is so cool' },
-      { value: 'Рюкзачечок - супер кльовий))' },
+      { value: product.description[0].value },
+      { value: product.description[1].value },
     ]);
     expect(createdProduct).toHaveProperty('category', {
-      _id: categoryId,
+      _id: product.category,
     });
     expect(createdProduct).toHaveProperty('subcategory', {
-      _id: categoryId,
+      _id: product.subcategory,
     });
     expect(createdProduct).toHaveProperty('mainMaterial', [
-      {
-        value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
-      },
-      {
-        value:
-          'Canvas-400G padded with a layer of durable and water-resistant material',
-      },
+      { value: product.mainMaterial[0].value },
+      { value: product.mainMaterial[1].value },
     ]);
     expect(createdProduct).toHaveProperty('innerMaterial', [
-      {
-        value: 'Oxford 135',
-      },
-      {
-        value: 'Oxford 135',
-      },
+      { value: product.innerMaterial[0].value },
+      { value: product.innerMaterial[1].value },
     ]);
-    expect(createdProduct).toHaveProperty('strapLengthInCm', 100);
+    expect(createdProduct).toHaveProperty(
+      'strapLengthInCm',
+      product.strapLengthInCm
+    );
     expect(createdProduct).toHaveProperty('pattern', [
-      {
-        value: 'Вишивка',
-      },
-      {
-        value: 'Embroidery',
-      },
+      { value: product.pattern[0].value },
+      { value: product.pattern[1].value },
     ]);
-    expect(createdProduct).toHaveProperty('closureColor', 'black');
+    expect(createdProduct).toHaveProperty('closureColor', product.closureColor);
     expect(createdProduct).toHaveProperty('basePrice', [
-      {
-        value: 145000,
-      },
-      {
-        value: 5229,
-      },
+      { value: product.basePrice[0].value },
+      { value: product.basePrice[1].value },
     ]);
-    expect(createdProduct).toHaveProperty('available', true);
-    expect(createdProduct).toHaveProperty('isHotItem', false);
+    expect(createdProduct).toHaveProperty('available', product.available);
+    expect(createdProduct).toHaveProperty('isHotItem', product.isHotItem);
     expect(createdProduct).toHaveProperty('purchasedCount', 0);
     expect(createdProduct).toHaveProperty('rate', 0);
     expect(createdProduct).toHaveProperty('rateCount', 0);
@@ -233,56 +228,45 @@ describe('Product mutations', () => {
     const receivedProduct = getProduct.data.getProductById;
     expect(receivedProduct).toBeDefined();
     expect(receivedProduct).toHaveProperty('name', [
-      { value: 'Very Coool Baggy' },
-      { value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+      { value: product.name[0].value },
+      { value: product.name[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('description', [
-      { value: 'Baggy is so cool' },
-      { value: 'Рюкзачечок - супер кльовий))' },
+      { value: product.description[0].value },
+      { value: product.description[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('category', {
-      _id: categoryId,
+      _id: product.category,
     });
     expect(receivedProduct).toHaveProperty('subcategory', {
-      _id: categoryId,
+      _id: product.subcategory,
     });
     expect(receivedProduct).toHaveProperty('mainMaterial', [
-      {
-        value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
-      },
-      {
-        value:
-          'Canvas-400G padded with a layer of durable and water-resistant material',
-      },
+      { value: product.mainMaterial[0].value },
+      { value: product.mainMaterial[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('innerMaterial', [
-      {
-        value: 'Oxford 135',
-      },
-      {
-        value: 'Oxford 135',
-      },
+      { value: product.innerMaterial[0].value },
+      { value: product.innerMaterial[1].value },
     ]);
-    expect(receivedProduct).toHaveProperty('strapLengthInCm', 100);
+    expect(receivedProduct).toHaveProperty(
+      'strapLengthInCm',
+      product.strapLengthInCm
+    );
     expect(receivedProduct).toHaveProperty('pattern', [
-      {
-        value: 'Вишивка',
-      },
-      {
-        value: 'Embroidery',
-      },
+      { value: product.pattern[0].value },
+      { value: product.pattern[1].value },
     ]);
-    expect(receivedProduct).toHaveProperty('closureColor', 'black');
+    expect(receivedProduct).toHaveProperty(
+      'closureColor',
+      product.closureColor
+    );
     expect(receivedProduct).toHaveProperty('basePrice', [
-      {
-        value: 145000,
-      },
-      {
-        value: 5229,
-      },
+      { value: product.basePrice[0].value },
+      { value: product.basePrice[1].value },
     ]);
-    expect(receivedProduct).toHaveProperty('available', true);
-    expect(receivedProduct).toHaveProperty('isHotItem', false);
+    expect(receivedProduct).toHaveProperty('available', product.available);
+    expect(receivedProduct).toHaveProperty('isHotItem', product.isHotItem);
     expect(receivedProduct).toHaveProperty('purchasedCount', 0);
     expect(receivedProduct).toHaveProperty('rate', 0);
     expect(receivedProduct).toHaveProperty('rateCount', 0);
@@ -360,59 +344,59 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getProductForUpdate(
-          categoryId,
-          subcategoryId,
-          modelId,
-          materialId
-        ),
+        product: updatedProduct,
         id: productId,
       },
     });
+
     const productAfterUpdate = updateProduct.data.updateProduct;
     expect(productAfterUpdate).toBeDefined();
     expect(productAfterUpdate).toHaveProperty('name', [
-      { value: 'Bad Baggy' },
-      { value: 'Жахливий Рюкзачечок' },
+      { value: updatedProduct.name[0].value },
+      { value: updatedProduct.name[1].value },
     ]);
     expect(productAfterUpdate).toHaveProperty('description', [
-      { value: 'Baggy is so bad' },
-      { value: 'Рюкзачечок - не добрий))' },
+      { value: updatedProduct.description[0].value },
+      { value: updatedProduct.description[1].value },
     ]);
     expect(productAfterUpdate).toHaveProperty('category', {
-      _id: categoryId,
+      _id: updatedProduct.category,
     });
     expect(productAfterUpdate).toHaveProperty('subcategory', {
-      _id: subcategoryId,
+      _id: updatedProduct.subcategory,
     });
     expect(productAfterUpdate).toHaveProperty('mainMaterial', [
-      {
-        value: 'Canvas-400QQ прошита без спеціального матеріалу',
-      },
-      {
-        value: 'Canvas-400QQ padded without a layer water-resistant material',
-      },
+      { value: updatedProduct.mainMaterial[0].value },
+      { value: updatedProduct.mainMaterial[1].value },
     ]);
     expect(productAfterUpdate).toHaveProperty('innerMaterial', [
-      {
-        value: 'Oxford 115',
-      },
-      {
-        value: 'Oxford 115',
-      },
+      { value: updatedProduct.innerMaterial[0].value },
+      { value: updatedProduct.innerMaterial[1].value },
     ]);
-    expect(productAfterUpdate).toHaveProperty('strapLengthInCm', 90);
+    expect(productAfterUpdate).toHaveProperty(
+      'strapLengthInCm',
+      updatedProduct.strapLengthInCm
+    );
     expect(productAfterUpdate).toHaveProperty('pattern', [
-      { value: 'Вишивочка' },
-      { value: 'Embroidery' },
+      { value: updatedProduct.pattern[0].value },
+      { value: updatedProduct.pattern[1].value },
     ]);
-    expect(productAfterUpdate).toHaveProperty('closureColor', 'white');
+    expect(productAfterUpdate).toHaveProperty(
+      'closureColor',
+      updatedProduct.closureColor
+    );
     expect(productAfterUpdate).toHaveProperty('basePrice', [
-      { value: 777000 },
-      { value: 7779 },
+      { value: updatedProduct.basePrice[0].value },
+      { value: updatedProduct.basePrice[1].value },
     ]);
-    expect(productAfterUpdate).toHaveProperty('available', false);
-    expect(productAfterUpdate).toHaveProperty('isHotItem', true);
+    expect(productAfterUpdate).toHaveProperty(
+      'available',
+      updatedProduct.available
+    );
+    expect(productAfterUpdate).toHaveProperty(
+      'isHotItem',
+      updatedProduct.isHotItem
+    );
     expect(productAfterUpdate).toHaveProperty('purchasedCount', 0);
     expect(productAfterUpdate).toHaveProperty('rate', 0);
     expect(productAfterUpdate).toHaveProperty('rateCount', 0);
@@ -578,49 +562,41 @@ describe('Product mutations', () => {
     });
     const result = deletedProduct.data.deleteProduct;
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('_id', productId);
     expect(result).toHaveProperty('name', [
-      { value: 'Bad Baggy' },
-      { value: 'Жахливий Рюкзачечок' },
+      { value: updatedProduct.name[0].value },
+      { value: updatedProduct.name[1].value },
     ]);
     expect(result).toHaveProperty('description', [
-      { value: 'Baggy is so bad' },
-      { value: 'Рюкзачечок - не добрий))' },
+      { value: updatedProduct.description[0].value },
+      { value: updatedProduct.description[1].value },
     ]);
-    expect(result).toHaveProperty('category', {
-      _id: categoryId,
-    });
+    expect(result).toHaveProperty('category', { _id: updatedProduct.category });
     expect(result).toHaveProperty('subcategory', {
-      _id: categoryId,
+      _id: updatedProduct.subcategory,
     });
     expect(result).toHaveProperty('mainMaterial', [
-      {
-        value: 'Canvas-400QQ прошита без спеціального матеріалу',
-      },
-      {
-        value: 'Canvas-400QQ padded without a layer water-resistant material',
-      },
+      { value: updatedProduct.mainMaterial[0].value },
+      { value: updatedProduct.mainMaterial[1].value },
     ]);
     expect(result).toHaveProperty('innerMaterial', [
-      {
-        value: 'Oxford 115',
-      },
-      {
-        value: 'Oxford 115',
-      },
+      { value: updatedProduct.innerMaterial[0].value },
+      { value: updatedProduct.innerMaterial[1].value },
     ]);
-    expect(result).toHaveProperty('strapLengthInCm', 90);
+    expect(result).toHaveProperty(
+      'strapLengthInCm',
+      updatedProduct.strapLengthInCm
+    );
     expect(result).toHaveProperty('pattern', [
-      { value: 'Вишивочка' },
-      { value: 'Embroidery' },
+      { value: updatedProduct.pattern[0].value },
+      { value: updatedProduct.pattern[1].value },
     ]);
-    expect(result).toHaveProperty('closureColor', 'white');
+    expect(result).toHaveProperty('closureColor', updatedProduct.closureColor);
     expect(result).toHaveProperty('basePrice', [
-      { value: 777000 },
-      { value: 7779 },
+      { value: updatedProduct.basePrice[0].value },
+      { value: updatedProduct.basePrice[1].value },
     ]);
-    expect(result).toHaveProperty('available', false);
-    expect(result).toHaveProperty('isHotItem', true);
+    expect(result).toHaveProperty('available', updatedProduct.available);
+    expect(result).toHaveProperty('isHotItem', updatedProduct.isHotItem);
     expect(result).toHaveProperty('purchasedCount', 0);
     expect(result).toHaveProperty('rate', 0);
     expect(result).toHaveProperty('rateCount', 0);
