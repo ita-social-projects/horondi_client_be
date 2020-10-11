@@ -5,25 +5,6 @@ const config = require('../app');
 const { createTestClient } = require('apollo-server-testing');
 const bcrypt = require('bcryptjs');
 
-const loginAdmin = async user => {
-  const operations = await setupApp();
-  const result = await operations.mutate({
-    mutation: gql`
-      mutation($user: LoginInput!) {
-        loginAdmin(loginInput: $user) {
-          token
-        }
-      }
-    `,
-    variables: {
-      user: {
-        email: user ? user.email : process.env.SUPER_ADMIN_EMAIL,
-        password: user ? user.password : process.env.SUPER_ADMIN_PASSWORD,
-      },
-    },
-  });
-};
-
 const setupApp = async user => {
   await User.deleteOne({ email: process.env.SUPER_ADMIN_EMAIL });
   const admin = new User();
