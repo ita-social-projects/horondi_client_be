@@ -8,6 +8,7 @@ const {
 } = require('../../error-messages/comment.messages');
 
 const { monthInMilliseconds } = require('../../consts');
+const { UserRate } = require('../../resolvers');
 
 class CommentsService {
   async getCommentById(id) {
@@ -62,6 +63,7 @@ class CommentsService {
 
   async addRate(id, data, user) {
     const product = await Product.findById(id);
+
     if (!product) {
       throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
     }
@@ -70,7 +72,8 @@ class CommentsService {
 
     const { rate } =
       userRates.find(rate => String(rate.user) === String(user._id)) || {};
-
+    console.log('userRate', userRates);
+    console.log('rate', rate);
     const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
     rateCount = rate ? rateCount : ++rateCount;
     const newRate = rateSum / rateCount;

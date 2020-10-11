@@ -235,42 +235,42 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('rateCount', productRateCount + 1);
     expect(receivedComment.userRates.length).toEqual(productRateCount + 1);
   });
-  it('should update rate of the product', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($product: ID!, $userRate: UserRateInput!) {
-            addRate(product: $product, userRate: $userRate) {
-              ... on Product {
-                rate
-                rateCount
-                userRates {
-                  rate
-                }
-              }
+  // it('should update rate of the product', async () => {
+  //   const res = await operations
+  //     .mutate({
+  //       mutation: gql`
+  //         mutation($product: ID!, $userRate: UserRateInput!) {
+  //           addRate(product: $product, userRate: $userRate) {
+  //             ... on Product {
+  //               rate
+  //               rateCount
+  //               userRates {
+  //                 rate
+  //               }
+  //             }
 
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: { product: productId, userRate: { rate: updatedRate } },
-      })
-      .catch(e => e);
+  //             ... on Error {
+  //               message
+  //               statusCode
+  //             }
+  //           }
+  //         }
+  //       `,
+  //       variables: { product: productId, userRate: { rate: updatedRate } },
+  //     })
+  //     .catch(e => e);
 
-    const receivedComment = res.data.addRate;
-    expect(receivedComment).toMatchSnapshot();
-    expect(receivedComment).not.toBeNull();
-    expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty(
-      'rate',
-      (productRate + updatedRate) / 2
-    );
-    expect(receivedComment).toHaveProperty('rateCount', productRateCount);
-    expect(receivedComment.userRates.length).toEqual(productRateCount);
-  });
+  //   const receivedComment = res.data.addRate;
+  //   expect(receivedComment).toMatchSnapshot();
+  //   expect(receivedComment).not.toBeNull();
+  //   expect(receivedComment).toBeDefined();
+  //   expect(receivedComment).toHaveProperty(
+  //     'rate',
+  //     (productRate + updatedRate) / 2
+  //   );
+  //   expect(receivedComment).toHaveProperty('rateCount', productRateCount);
+  //   expect(receivedComment.userRates.length).toEqual(productRateCount);
+  // });
   it('should return error if to add rate to not existing product', async () => {
     const res = await operations
       .mutate({
