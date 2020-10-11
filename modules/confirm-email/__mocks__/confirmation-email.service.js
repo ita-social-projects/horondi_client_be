@@ -1,5 +1,5 @@
-class ConfirmationEmailService {
-  async confirmEmail() {}
+class EmailService {
+  async sendEmail() {}
 }
 
-module.exports = new ConfirmationEmailService();
+module.exports = new EmailService();

@@ -17,7 +17,7 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
-const confirmationEmailService = require('../confirm-email/confirmation-email.service');
+const emailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -34,6 +34,7 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
+  ID_NOT_PROVIDED,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -104,6 +105,10 @@ class UserService {
 
     if (errors) {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    }
+
+    if (!id) {
+      throw new UserInputError(ID_NOT_PROVIDED, { statusCode: 400 });
     }
 
     const user = await User.findById(id).lean();
@@ -255,14 +260,15 @@ class UserService {
 
     await savedUser.save();
 
-    await confirmationEmailService.confirmEmail(
-      savedUser,
-      confirmationMessage,
+    const subject = '[HORONDI] Email confirmation';
+    const html = confirmationMessage(firstName, token, language);
+
+    await emailService.sendEmail({
+      user,
       sendEmail,
-      firstName,
-      token,
-      language
-    );
+      subject,
+      html,
+    });
 
     await savedUser.save();
     return savedUser;

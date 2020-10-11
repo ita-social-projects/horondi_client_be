@@ -17,8 +17,28 @@ const newAdmin = {
   password: 'dffdsfsdsdf',
 };
 
+const testUser = {
+  firstName: 'Petro',
+  lastName: 'Tatsenyak',
+  email: 'f5dbbdnvf@gmail.com',
+  password: '12345678Pt',
+  phoneNumber: '380666666666',
+  role: 'admin',
+  language: 1,
+  address: {
+    country: 'Ukraine',
+    city: 'Kiev',
+    street: 'Shevchenka',
+    buildingNumber: '23',
+  },
+  wishlist: [],
+  orders: [],
+  comments: [],
+};
+
 module.exports = {
   adminUser,
   newAdmin,
   superAdminUser,
+  testUser,
 };

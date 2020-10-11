@@ -31,12 +31,9 @@ const config = {
           message: INVALID_PERMISSIONS,
         };
       }
-      const userData = await userService.getUserByFieldOrThrow(
-        'email',
-        user.email
-      );
+
       return {
-        user: userData,
+        user: await userService.getUserByFieldOrThrow('email', user.email),
       };
     }
   },

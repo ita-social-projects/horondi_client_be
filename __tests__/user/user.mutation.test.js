@@ -1,14 +1,17 @@
 /* eslint-disable no-undef */
-const { adminUser, superAdminUser, newAdmin } = require('./user.variables');
+const { gql } = require('@apollo/client');
+let {
+  adminUser,
+  superAdminUser,
+  newAdmin,
+  testUser,
+} = require('./user.variables');
 const { adminLogin, setupApp } = require('../helper-functions');
 const {
   INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   USER_ALREADY_EXIST,
 } = require('../../error-messages/user.messages');
-
-const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
@@ -19,25 +22,6 @@ let token;
 let badId;
 let invitationalToken;
 let operations;
-
-const testUser = {
-  firstName: 'Petro',
-  lastName: 'Tatsenyak',
-  email: 'f5dbbdnvf@gmail.com',
-  password: '12345678Pt',
-  phoneNumber: '380666666666',
-  role: 'admin',
-  language: 1,
-  address: {
-    country: 'Ukraine',
-    city: 'Kiev',
-    street: 'Shevchenka',
-    buildingNumber: '23',
-  },
-  wishlist: [],
-  orders: [],
-  comments: [],
-};
 
 describe('mutations', () => {
   beforeAll(async () => {

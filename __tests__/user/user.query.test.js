@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
-const { superAdminUser } = require('./user.variables');
+let { superAdminUser, testUser } = require('./user.variables');
 const { adminLogin, setupApp } = require('../helper-functions');
 const { getAllUsers } = require('../../modules/user/user.service');
 
@@ -15,25 +14,6 @@ require('dotenv').config();
 let token;
 let userId;
 let operations;
-
-const testUser = {
-  firstName: 'Petro',
-  lastName: 'Tatsenyak',
-  email: 'f513@gmail.com',
-  password: '12345678Pt',
-  phoneNumber: '380666666666',
-  role: 'user',
-  language: 1,
-  address: {
-    country: 'Ukraine',
-    city: 'Kiev',
-    street: 'Shevchenka',
-    buildingNumber: '23',
-  },
-  wishlist: [],
-  orders: [],
-  comments: [],
-};
 
 describe('queries', () => {
   beforeAll(async () => {
