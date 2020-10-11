@@ -255,10 +255,6 @@ class UserService {
       html: confirmationMessage(firstName, token, language),
     };
 
-    if (process.env.NODE_ENV !== 'test') {
-      await sendEmail(message);
-    }
-
     return savedUser;
   }
 
