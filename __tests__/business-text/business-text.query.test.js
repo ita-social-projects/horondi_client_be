@@ -65,7 +65,6 @@ describe('Business page queries', () => {
         variables: { id: businessTextId },
       })
       .catch(e => e);
-    console.log('deleted', res);
   });
 
   test('#1 Should receive all business texts', async () => {
