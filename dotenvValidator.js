@@ -2,7 +2,10 @@ const joi = require('@hapi/joi');
 
 function dotenvValidator(processEnv) {
   const envSchema = joi.object({
-    MONGO_URL: joi.string().required(),
+    MONGO_URL: joi
+      .string()
+      .uri()
+      .required(),
     SECRET: joi.string().required(),
     EXPIRES_IN: joi.string().required(),
     BASE_URI: joi
