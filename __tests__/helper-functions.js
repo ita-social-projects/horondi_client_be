@@ -5,7 +5,7 @@ const config = require('../app');
 const { createTestClient } = require('apollo-server-testing');
 const bcrypt = require('bcryptjs');
 
-const adminLogin = async user => {
+const loginAdmin = async user => {
   const operations = await setupApp();
   const result = await operations.mutate({
     mutation: gql`
@@ -22,7 +22,6 @@ const adminLogin = async user => {
       },
     },
   });
-  return result.data.loginAdmin.token;
 };
 
 const setupApp = async user => {
@@ -46,4 +45,4 @@ const setupApp = async user => {
   return createTestClient(server);
 };
 
-module.exports = { adminLogin, setupApp };
+module.exports = { setupApp };

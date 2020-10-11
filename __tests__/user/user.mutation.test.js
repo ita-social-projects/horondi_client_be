@@ -1,12 +1,7 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-let {
-  adminUser,
-  superAdminUser,
-  newAdmin,
-  testUser,
-} = require('./user.variables');
-const { adminLogin, setupApp } = require('../helper-functions');
+let { adminUser, newAdmin, testUser } = require('./user.variables');
+const { setupApp } = require('../helper-functions');
 const {
   INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
@@ -714,17 +709,12 @@ describe('User`s mutation restictions tests', () => {
 });
 
 describe('Register admin', () => {
-  let superAdminToken;
   let role = 'admin';
   let invalidEmail = 'invalid@com';
   let adminEmail = adminUser.email;
   let invalidRole = 'superadmin';
 
   let { email: newAdminEmail } = newAdmin;
-
-  beforeAll(async () => {
-    superAdminToken = await adminLogin(superAdminUser);
-  });
 
   test('Should throw an error when use already in-usage email while admin registration', async () => {
     const result = await operations
@@ -747,11 +737,6 @@ describe('Register admin', () => {
           user: {
             email: adminEmail,
             role,
-          },
-        },
-        context: {
-          headers: {
-            token: superAdminToken,
           },
         },
       })
@@ -783,11 +768,6 @@ describe('Register admin', () => {
           user: {
             email: newAdminEmail,
             role: invalidRole,
-          },
-        },
-        context: {
-          headers: {
-            token: superAdminToken,
           },
         },
       })
@@ -822,11 +802,6 @@ describe('Register admin', () => {
             role,
           },
         },
-        context: {
-          headers: {
-            token: superAdminToken,
-          },
-        },
       })
       .catch(err => err);
 
@@ -857,11 +832,6 @@ describe('Register admin', () => {
           user: {
             email: newAdminEmail,
             role,
-          },
-        },
-        context: {
-          headers: {
-            token: superAdminToken,
           },
         },
       })
@@ -1061,10 +1031,6 @@ describe('New admin login', () => {
     password: newAdminPassword,
   } = newAdmin;
 
-  beforeAll(async () => {
-    superAdminToken = await adminLogin(superAdminUser);
-  });
-
   afterAll(async () => {
     await operations.mutate({
       mutation: gql`
@@ -1076,11 +1042,6 @@ describe('New admin login', () => {
       `,
       variables: {
         id,
-      },
-      context: {
-        headers: {
-          token: superAdminToken,
-        },
       },
     });
   });
@@ -1117,12 +1078,6 @@ describe('New admin login', () => {
 });
 
 describe('User filtering', () => {
-  let superAdminToken;
-
-  beforeAll(async () => {
-    superAdminToken = await adminLogin(superAdminUser);
-  });
-
   test('Should receive users via using filters for roles', async () => {
     const role = 'user';
 
@@ -1138,11 +1093,6 @@ describe('User filtering', () => {
         variables: {
           filter: {
             roles: [role],
-          },
-        },
-        context: {
-          headers: {
-            token: superAdminToken,
           },
         },
       })
@@ -1168,11 +1118,6 @@ describe('User filtering', () => {
         variables: {
           filter: {
             roles,
-          },
-        },
-        context: {
-          headers: {
-            token: superAdminToken,
           },
         },
       })

@@ -4,7 +4,7 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 let { superAdminUser, testUser } = require('./user.variables');
-const { adminLogin, setupApp } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
 const { getAllUsers } = require('../../modules/user/user.service');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
@@ -88,6 +88,7 @@ describe('queries', () => {
                 street: "Shevchenka"
                 buildingNumber: "23"
               }
+              role: "user"
               wishlist: []
               orders: []
               comments: []
@@ -173,7 +174,7 @@ describe('queries', () => {
         street: 'Shevchenka',
         buildingNumber: '23',
       },
-      role,
+      role: 'user',
       wishlist: [],
       orders: [],
       comments: [],
@@ -205,11 +206,6 @@ describe('queries', () => {
           }
         }
       `,
-      context: {
-        headers: {
-          token,
-        },
-      },
     });
     expect(res.data.getUserByToken).toHaveProperty('firstName', 'Test');
     expect(res.data.getUserByToken).toHaveProperty('lastName', 'User');
@@ -255,11 +251,6 @@ describe('queries', () => {
           }
         }
       `,
-      context: {
-        headers: {
-          token,
-        },
-      },
       variables: {
         userId,
       },
@@ -306,11 +297,6 @@ describe('queries', () => {
             }
           }
         `,
-        context: {
-          headers: {
-            token,
-          },
-        },
         variables: {
           userId: '23ee481430a0056b8e5cc015',
         },
@@ -341,7 +327,6 @@ describe('Testing obtaining information restrictions', () => {
   let userToken;
   let userLogin;
   let userPassword;
-  let superAdminToken;
   let adminPassword;
   let firstName;
   let lastName;
@@ -355,7 +340,6 @@ describe('Testing obtaining information restrictions', () => {
     firstName = 'Pepo';
     lastName = 'Markelo';
     userId = '5f43af8522155b08109e0304';
-    superAdminToken = await adminLogin(superAdminUser);
     await operations.mutate({
       mutation: gql`
         mutation(
