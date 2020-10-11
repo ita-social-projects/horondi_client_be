@@ -61,8 +61,10 @@ class CommentsService {
   }
 
   async addRate(id, data, user) {
-    console.log(user);
     const product = await Product.findById(id);
+    if (!product) {
+      throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
+    }
     const { userRates } = product;
     let { rateCount } = product;
 
@@ -90,9 +92,7 @@ class CommentsService {
       },
       { new: true }
     );
-
-    if (rateToAdd) return rateToAdd;
-    throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
+    return rateToAdd;
   }
 }
 module.exports = new CommentsService();

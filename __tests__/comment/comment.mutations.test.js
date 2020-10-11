@@ -7,6 +7,7 @@ const {
   productWrongId,
   commentWrongId,
   rate,
+  updatedRate,
 } = require('./comment.variables');
 const {
   COMMENT_NOT_FOUND,
@@ -18,11 +19,37 @@ jest.mock('../../modules/upload/upload.service');
 
 let commentId = '';
 let operations;
-
+let productRate;
+let productRateCount;
+let productUserRates;
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    console.log(operations);
+    const res = await operations
+      .query({
+        variables: { id: productId },
+        query: gql`
+          query($id: ID!) {
+            getProductById(id: $id) {
+              ... on Product {
+                rate
+                userRates {
+                  rate
+                }
+                rateCount
+              }
+              ... on Error {
+                message
+              }
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+    const receivedProduct = res.data.getProductById;
+    productRate = receivedProduct.rate;
+    productRateCount = receivedProduct.rateCount;
+    productUserRates = receivedProduct.userRates;
   });
   it('1 should add a new comment', async () => {
     const res = await operations
@@ -173,6 +200,9 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
   it('should add rate to the product', async () => {
+    console.log(productRate);
+    console.log(productUserRates.length);
+    console.log(productRateCount);
     const res = await operations
       .mutate({
         mutation: gql`
@@ -196,14 +226,50 @@ describe('Comment queries', () => {
         variables: { product: productId, userRate: { rate } },
       })
       .catch(e => e);
-    console.log(res);
+
     const receivedComment = res.data.addRate;
     expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('rate', 4.3);
-    expect(receivedComment).toHaveProperty('rateCount', 41);
-    expect(receivedComment.userRates.length).toEqual(receivedComment.rateCount);
+    expect(receivedComment).toHaveProperty('rate', productRate);
+    expect(receivedComment).toHaveProperty('rateCount', productRateCount + 1);
+    expect(receivedComment.userRates.length).toEqual(productRateCount + 1);
+  });
+  it('should update rate of the product', async () => {
+    const res = await operations
+      .mutate({
+        mutation: gql`
+          mutation($product: ID!, $userRate: UserRateInput!) {
+            addRate(product: $product, userRate: $userRate) {
+              ... on Product {
+                rate
+                rateCount
+                userRates {
+                  rate
+                }
+              }
+
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+        variables: { product: productId, userRate: { rate: updatedRate } },
+      })
+      .catch(e => e);
+
+    const receivedComment = res.data.addRate;
+    expect(receivedComment).toMatchSnapshot();
+    expect(receivedComment).not.toBeNull();
+    expect(receivedComment).toBeDefined();
+    expect(receivedComment).toHaveProperty(
+      'rate',
+      (productRate + updatedRate) / 2
+    );
+    expect(receivedComment).toHaveProperty('rateCount', productRateCount);
+    expect(receivedComment.userRates.length).toEqual(productRateCount);
   });
   it('should return error if to add rate to not existing product', async () => {
     const res = await operations
@@ -229,7 +295,7 @@ describe('Comment queries', () => {
         variables: { product: productWrongId, userRate: { rate } },
       })
       .catch(e => e);
-    console.log(res);
+
     const receivedComment = res.data.addRate;
     expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();

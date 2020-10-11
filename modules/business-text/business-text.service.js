@@ -27,21 +27,20 @@ class BusinessTextService {
   }
 
   async updateBusinessText(id, businessText) {
+    const foundBusinessText = await BusinessText.findById(id);
+    if (!foundBusinessText) {
+      throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    }
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const currentPage = pages.find(el => el._id.toString() !== id);
 
-    if (pages.length && currentPage) {
-      return {
-        message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
-        statusCode: 400,
-      };
+    if (!pages.length && !currentPage) {
+      return await BusinessText.findByIdAndUpdate(id, businessText, {
+        new: true,
+      });
     }
 
-    const text = await BusinessText.findByIdAndUpdate(id, businessText, {
-      new: true,
-    });
-
-    return text || null;
+    throw new Error(BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST);
   }
 
   async addBusinessText(data) {

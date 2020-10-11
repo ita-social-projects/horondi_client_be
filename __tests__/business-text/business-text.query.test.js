@@ -9,7 +9,7 @@ const {
 } = require('./business-text.variables');
 const { setupApp } = require('../helper-functions');
 
-let businessText;
+let businessTextId;
 let operations;
 describe('Business page queries', () => {
   beforeAll(async () => {
@@ -43,12 +43,11 @@ describe('Business page queries', () => {
         },
       })
       .catch(e => e);
-
-    businessText = res.data.addBusinessText;
+    businessTextId = res.data.addBusinessText._id;
   });
 
   afterAll(async () => {
-    await operations
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!) {
@@ -63,7 +62,7 @@ describe('Business page queries', () => {
             }
           }
         `,
-        variables: { id: businessText._id },
+        variables: { id: businessTextId },
       })
       .catch(e => e);
   });
@@ -123,16 +122,17 @@ describe('Business page queries', () => {
             }
           }
         `,
-        variables: { id: businessText._id },
+        variables: { id: businessTextId },
       })
       .catch(e => e);
-    const businessText = res.data.getBusinessTextById;
-    expect(businessText).toBeDefined();
-    expect(businessText).toHaveProperty('code', newBusinessText.code);
-    expect(businessText.title).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('title', newBusinessText.title);
-    expect(businessText.text).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('text', newBusinessText.text);
+    const receivedBusinessText = res.data.getBusinessTextById;
+    expect(receivedBusinessText).toMatchSnapshot();
+    expect(receivedBusinessText).toBeDefined();
+    expect(receivedBusinessText).toHaveProperty('code', newBusinessText.code);
+    expect(receivedBusinessText.title).toBeInstanceOf(Array);
+    expect(receivedBusinessText).toHaveProperty('title', newBusinessText.title);
+    expect(receivedBusinessText.text).toBeInstanceOf(Array);
+    expect(receivedBusinessText).toHaveProperty('text', newBusinessText.text);
   });
 
   test('#3 Returning not existing business text should return error message', async () => {

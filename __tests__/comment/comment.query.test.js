@@ -128,7 +128,6 @@ describe('Comment queries', () => {
       })
       .catch(e => e);
     const receivedComments = res.data.getAllCommentsByProduct;
-    console.log(res);
 
     expect(receivedComments).toBeDefined();
     expect(receivedComments).toContainEqual({

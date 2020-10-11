@@ -132,12 +132,21 @@ describe('Business page queries', () => {
       })
       .catch(e => e);
 
-    businessText = res.data.updateBusinessText;
+    const receivedBusinessText = res.data.updateBusinessText;
 
-    expect(businessText).toHaveProperty('code', updatedBusinessText.code);
-    expect(businessText.title).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('title', updatedBusinessText.title);
-    expect(businessText).toHaveProperty('text', updatedBusinessText.text);
+    expect(receivedBusinessText).toHaveProperty(
+      'code',
+      updatedBusinessText.code
+    );
+    expect(receivedBusinessText.title).toBeInstanceOf(Array);
+    expect(receivedBusinessText).toHaveProperty(
+      'title',
+      updatedBusinessText.title
+    );
+    expect(receivedBusinessText).toHaveProperty(
+      'text',
+      updatedBusinessText.text
+    );
   });
 
   test('#4 update not existing businessText should return error', async () => {

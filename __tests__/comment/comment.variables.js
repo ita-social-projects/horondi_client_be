@@ -5,6 +5,7 @@ const productWrongId = '111111111111111111111111';
 const commentWrongId = '111111171126f0fdef739755';
 const wrongData = '123siSTm#';
 const rate = 4;
+const updatedRate = 1;
 const newComment = {
   text: 'Test text',
   user: { email: 'test@mail.com' },
@@ -28,4 +29,5 @@ module.exports = {
   commentWrongId,
   productWrongId,
   rate,
+  updatedRate,
 };
