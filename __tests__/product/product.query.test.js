@@ -11,6 +11,7 @@ const {
 
 jest.mock('../../modules/upload/upload.service');
 
+let product;
 let productId;
 let categoryId;
 let subcategoryId;
@@ -76,6 +77,8 @@ describe('Product queries', () => {
 
     modelId = createModel.data.addModel._id;
 
+    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
@@ -87,7 +90,7 @@ describe('Product queries', () => {
         }
       `,
       variables: {
-        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+        product,
       },
     });
     productId = createProduct.data.addProduct._id;
@@ -140,7 +143,7 @@ describe('Product queries', () => {
     expect(allProducts[0].name).toBeInstanceOf(Array);
   });
   test('#2 Should receive product by ID', async () => {
-    const product = await operations.query({
+    const resevedProduct = await operations.query({
       query: gql`
         query($id: ID!) {
           getProductById(id: $id) {
@@ -190,59 +193,45 @@ describe('Product queries', () => {
       `,
       variables: { id: productId },
     });
-    const resultProduct = product.data.getProductById;
+    const resultProduct = resevedProduct.data.getProductById;
     expect(resultProduct).toBeDefined();
     expect(resultProduct).toHaveProperty('name', [
-      { value: 'Very Coool Baggy' },
-      { value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+      { value: product.name[0].value },
+      { value: product.name[1].value },
     ]);
     expect(resultProduct).toHaveProperty('description', [
-      { value: 'Baggy is so cool' },
-      { value: 'Рюкзачечок - супер кльовий))' },
+      { value: product.description[0].value },
+      { value: product.description[1].value },
     ]);
     expect(resultProduct).toHaveProperty('category', {
-      _id: categoryId,
+      _id: product.category,
     });
     expect(resultProduct).toHaveProperty('subcategory', {
-      _id: subcategoryId,
+      _id: product.subcategory,
     });
     expect(resultProduct).toHaveProperty('mainMaterial', [
-      {
-        value: 'Canvas-400G прошита додатковим шаром спеціального матеріалу',
-      },
-      {
-        value:
-          'Canvas-400G padded with a layer of durable and water-resistant material',
-      },
+      { value: product.mainMaterial[0].value },
+      { value: product.mainMaterial[1].value },
     ]);
     expect(resultProduct).toHaveProperty('innerMaterial', [
-      {
-        value: 'Oxford 135',
-      },
-      {
-        value: 'Oxford 135',
-      },
+      { value: product.innerMaterial[0].value },
+      { value: product.innerMaterial[1].value },
     ]);
-    expect(resultProduct).toHaveProperty('strapLengthInCm', 100);
+    expect(resultProduct).toHaveProperty(
+      'strapLengthInCm',
+      product.strapLengthInCm
+    );
     expect(resultProduct).toHaveProperty('pattern', [
-      {
-        value: 'Вишивка',
-      },
-      {
-        value: 'Embroidery',
-      },
+      { value: product.pattern[0].value },
+      { value: product.pattern[1].value },
     ]);
-    expect(resultProduct).toHaveProperty('closureColor', 'black');
+    expect(resultProduct).toHaveProperty('closureColor', product.closureColor);
     expect(resultProduct).toHaveProperty('basePrice', [
-      {
-        value: 145000,
-      },
-      {
-        value: 5229,
-      },
+      { value: product.basePrice[0].value },
+      { value: product.basePrice[1].value },
     ]);
-    expect(resultProduct).toHaveProperty('available', true);
-    expect(resultProduct).toHaveProperty('isHotItem', false);
+    expect(resultProduct).toHaveProperty('available', product.available);
+    expect(resultProduct).toHaveProperty('isHotItem', product.isHotItem);
     expect(resultProduct).toHaveProperty('purchasedCount', 0);
     expect(resultProduct).toHaveProperty('rate', 0);
     expect(resultProduct).toHaveProperty('rateCount', 0);
