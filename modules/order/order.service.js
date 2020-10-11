@@ -1,5 +1,5 @@
 const Order = require('./order.model');
-const User = require('../user/user.model');
+
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
