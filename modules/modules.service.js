@@ -1,8 +1,10 @@
 class ModulesService {
-  constructor() {}
+  constructor(ItemModule) {
+    this.ItemModule = ItemModule;
+  }
 
-  async deleteItem(id, ItemClass, ERROR_MESSAGE) {
-    const res = await ItemClass.findByIdAndDelete(id);
+  async deleteItem(id, ERROR_MESSAGE) {
+    const res = await this.ItemModule.findByIdAndDelete(id);
     return res || new Error(ERROR_MESSAGE);
   }
 
