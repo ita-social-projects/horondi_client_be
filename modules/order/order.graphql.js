@@ -89,7 +89,6 @@ input DeliveryInput {
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
-  cost: [CurrencySetInput]
 }
 
 input OrderItemsInput {
