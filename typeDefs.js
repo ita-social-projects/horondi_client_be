@@ -44,9 +44,17 @@ const {
   contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
+  deliveryType,
+  deliveryInput,
+} = require('./modules/delivery/delivery.graphql');
+const {
   emailQuestionType,
   emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
+const {
+  paymentType,
+  paymentInput,
+} = require('./modules/payment/payment.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -62,6 +70,8 @@ const typeDefs = gql`
   ${contactType}
   ${orderTypes}
   ${emailQuestionType}
+  ${deliveryType}
+  ${paymentType}
 
   scalar Upload
 
@@ -76,7 +86,7 @@ const typeDefs = gql`
   }
   type CurrencySet {
     currency: String!
-    value: Int!
+    value: Float!
   }
   type ImageSet {
     large: String
@@ -214,6 +224,7 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
+
   type EmailAnswer {
     admin: User!
     date: String!
@@ -234,6 +245,7 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
+  union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -285,6 +297,17 @@ const typeDefs = gql`
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
 
+    getNovaPoshtaCities(city: String):[NovaPoshtaCity]
+    getNovaPoshtaStreets(cityRef: String, street: String):[NovaPoshtaStreet]
+    getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
+    getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
+    createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
+
+    getUkrPoshtaRegion(region: String): UkrPoshtaRegion
+
+    getPaymentCheckout(data: PaymentInput): Payment
+    getPaymentRefund(data: PaymentInput): Payment
+    
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
   }
@@ -337,6 +360,8 @@ const typeDefs = gql`
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
+  ${deliveryInput}
+  ${paymentInput}
 
   input LanguageInput {
     lang: String!
@@ -345,7 +370,7 @@ const typeDefs = gql`
 
   input CurrencySetInput {
     currency: String!
-    value: Int!
+    value: Float!
   }
   input AddressInput {
     country: String
@@ -439,14 +464,22 @@ const typeDefs = gql`
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!, image: Upload): PatternResult
+    addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
-    updatePattern(id: ID!, pattern: PatternInput!, image: Upload): PatternResult
+    updatePattern(
+      id: ID!
+      pattern: PatternInput!
+      image: Upload!
+    ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
-    updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
+    updateMaterial(
+      id: ID!
+      material: MaterialInput!
+      images: Upload!
+    ): MaterialResult
 
     "Category Mutation"
     addCategory(
@@ -476,7 +509,7 @@ const typeDefs = gql`
     registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
-    deleteUser(id: ID!): User
+    deleteUser(id: ID!): UserResult
     updateUserById(user: UserInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean

@@ -21,7 +21,7 @@ const materialQuery = {
 const materialMutation = {
   addMaterial: async (parent, args) => {
     try {
-      return await materialService.addMaterial(args.material);
+      return await materialService.addMaterial(args);
     } catch (e) {
       return {
         statusCode: 400,

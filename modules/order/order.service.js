@@ -4,7 +4,9 @@ const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
+const NovaPoshtaService = require('../delivery/delivery.service');
 const ObjectId = require('mongoose').Types.ObjectId;
+const Currency = require('../currency/currency.model');
 
 class OrdersService {
   calculateTotalItemsPrice(items) {
@@ -73,8 +75,43 @@ class OrdersService {
       throw new Error(ORDER_NOT_FOUND);
     }
 
-    if (order.items) {
+    if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
+
+      
+      if(order.delivery.sentBy == "Nova Poshta") {
+        const weight = order.items.reduce((prev, currentItem) => prev + (currentItem.size.weightInKg * currentItem.quantity),0)
+        const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(order.address.city)
+        
+        const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
+          cityRecipient: cityRecipient[0].ref,
+          weight,
+          serviceType: order.delivery.byCourier?'WarehouseDoors':'WarehouseWarehouse',
+          cost: totalItemsPrice[0].value/100,
+        })
+
+        const currency = await Currency.findOne()
+
+        const cost = [
+          {
+            currency: 'UAH',
+            value: deliveryPrice[0].cost * 100,
+          },
+          {
+            currency: 'USD',
+            value: Math.round(deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate  * 100)
+          },
+        ]
+
+        order = {
+          ...order,
+          delivery: {
+            ...order.delivery,
+            cost,
+          }
+        }
+      }
+
 
       const totalPriceToPay = this.calculateTotalPriceToPay(
         order,
@@ -101,6 +138,39 @@ class OrdersService {
     const { items } = data;
 
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
+
+    if(data.delivery.sentBy == "Nova Poshta") {
+      const weight = data.items.reduce((prev, currentItem) => prev + (currentItem.size.weightInKg * currentItem.quantity),0)
+      const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(data.address.city)
+      
+      const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
+        cityRecipient: cityRecipient[0].ref,
+        weight,
+        serviceType: data.delivery.byCourier?'WarehouseDoors':'WarehouseWarehouse',
+        cost: totalItemsPrice[0].value/100,
+      })
+
+      const currency = await Currency.findOne()
+
+      const cost = [
+        {
+          currency: 'UAH',
+          value: deliveryPrice[0].cost * 100,
+        },
+        {
+          currency: 'USD',
+          value: Math.round(deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate  * 100)
+        },
+      ]
+
+      data = {
+        ...data,
+        delivery: {
+          ...data.delivery,
+          cost,
+        }
+      }
+    }
 
     const totalPriceToPay = this.calculateTotalPriceToPay(
       data,
