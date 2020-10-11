@@ -15,4 +15,11 @@
 `AZURE_HOST` - address of your account on azure\
 `CURRENCY_API_URL` - URL of currency API\
 `SENDGRID_API_KEY` - email service API key\
-`HEALTH_PORT`\
+`ADMIN_EMAIL` - admin email\
+`ADMIN_PASS` - admin password\
+`PAYMENT_SECRET` - secret for payment API\
+`PAYMENT_MERCHANT_ID` - \
+`NOVA_POSHTA_API_LINK` - delivery company API link\
+`NOVA_POSHTA_API_KEY` - delivery company API key\
+`PAYMENT_API_LINK` link to payment API\
+
