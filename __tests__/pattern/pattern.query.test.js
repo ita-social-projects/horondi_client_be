@@ -139,7 +139,7 @@ describe('Pattern queries', () => {
           ...item,
         }))
       );
-      //expect(res.data.getPatternById.images).toBeInstanceOf(Object);
+      expect(res.data.getPatternById.images).toBeInstanceOf(Object);
       expect(res.data.getPatternById).toHaveProperty('images', {
         ...imageTypeName,
         ...queryPatternToAdd.images,
@@ -246,7 +246,7 @@ describe('Pattern queries', () => {
       expect(res.data.getAllPatterns.items).toHaveLength(5);
       expect(res.data.getAllPatterns.count).toEqual(18);
     });
-    test('pattern pagination test with wrong arguments', async () => {
+    test('Expect negative values', async () => {
       const res = await operations
         .query({
           variables: { skip: wrongLimit, limit: wrongSkip },

@@ -1,13 +1,20 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const { newOrder } = require('./order.variables');
+const {
+  newOrder,
+  queryPattern,
+  userOrder,
+  adressOrder,
+  deliveryOrder,
+  itemsOrder,
+} = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
 let orderId;
 let operations;
 
-describe('Pattern queries', () => {
+describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
@@ -136,153 +143,7 @@ describe('Pattern queries', () => {
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders).toContainEqual({
-      user: {
-        email: 'test@gmail.com',
-        lastName: 'Test',
-        firstName: 'Test',
-        phoneNumber: '380953544271',
-        patronymicName: 'Test',
-      },
-      delivery: {
-        sentOn: null,
-        sentBy: 'Nova Poshta',
-        byCourier: true,
-        invoiceNumber: '6280260',
-        courierOffice: 10,
-      },
-      isPaid: false,
-      status: 'DELIVERED',
-      address: {
-        appartment: '97',
-        buildingNumber: '25',
-        region: 'Кіровоградська область',
-        street: 'Бульвар Марії Приймаченко',
-        city: 'Новомиргород',
-        country: 'Україна',
-        zipcode: '98908',
-      },
-      completed: false,
-      userComment: '',
-      cancellationReason: '',
-      adminComment: '',
-      items: [
-        {
-          category: [
-            {
-              lang: 'uk',
-              value: 'Сумки',
-            },
-            {
-              lang: 'en',
-              value: 'Bags',
-            },
-          ],
-          subcategory: [
-            {
-              lang: 'uk',
-              value: 'Сумки',
-            },
-            {
-              lang: 'en',
-              value: 'Bags',
-            },
-          ],
-          model: [
-            {
-              lang: 'uk',
-              value: 'Сумка з гобеленом',
-            },
-            {
-              lang: 'en',
-              value: 'Bag with a Pattern',
-            },
-          ],
-          name: [
-            {
-              lang: 'uk',
-              value: 'Сумка з гобеленом синя',
-            },
-            {
-              lang: 'en',
-              value: 'Bag with a Pattern Blue',
-            },
-          ],
-          colors: [
-            [
-              {
-                lang: 'uk',
-                value: 'Сталево-блакитний',
-              },
-              {
-                lang: 'en',
-                value: 'Steel-blue',
-              },
-            ],
-          ],
-          pattern: [
-            {
-              lang: 'uk',
-              value: 'Олені',
-            },
-            {
-              lang: 'en',
-              value: 'Deers',
-            },
-          ],
-          closure: [],
-          closureColor: '',
-          size: {
-            heightInCm: 38,
-            widthInCm: 36,
-            depthInCm: 10,
-            volumeInLiters: 0,
-            weightInKg: 0,
-          },
-          bottomMaterial: [
-            {
-              lang: 'uk',
-              value: 'Тканина Кордура',
-            },
-            {
-              lang: 'en',
-              value: 'Cordura fabric',
-            },
-          ],
-          bottomColor: [
-            {
-              lang: 'uk',
-              value: 'чорний',
-            },
-            {
-              lang: 'en',
-              value: 'black',
-            },
-          ],
-          additions: [],
-          actualPrice: [
-            {
-              currency: 'UAH',
-              value: 90000,
-            },
-            {
-              currency: 'USD',
-              value: 3246,
-            },
-          ],
-          quantity: 1,
-        },
-      ],
-      totalItemsPrice: [
-        { currency: 'UAH', value: 90000 },
-        { currency: 'USD', value: 3246 },
-      ],
-      totalPriceToPay: [
-        { currency: 'UAH', value: 97000 },
-        { currency: 'USD', value: 3486 },
-      ],
-      paymentMethod: 'CARD',
-    });
+    expect(orders).toContainEqual(queryPattern);
   });
 
   test('should recive order by id', async () => {
@@ -403,136 +264,10 @@ describe('Pattern queries', () => {
 
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'DELIVERED');
-    expect(order).toHaveProperty('user', {
-      firstName: 'Test',
-      lastName: 'Test',
-      patronymicName: 'Test',
-      email: 'test@gmail.com',
-      phoneNumber: '380953544271',
-    });
-    expect(order).toHaveProperty('address', {
-      country: 'Україна',
-      region: 'Кіровоградська область',
-      city: 'Новомиргород',
-      zipcode: '98908',
-      street: 'Бульвар Марії Приймаченко',
-      buildingNumber: '25',
-      appartment: '97',
-    });
-    expect(order).toHaveProperty('delivery', {
-      sentBy: 'Nova Poshta',
-      byCourier: true,
-      courierOffice: 10,
-      invoiceNumber: '6280260',
-      sentOn: null,
-    });
-    expect(order).toHaveProperty('items', [
-      {
-        category: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        subcategory: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        model: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern',
-          },
-        ],
-        name: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом синя',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern Blue',
-          },
-        ],
-        colors: [
-          [
-            {
-              lang: 'uk',
-              value: 'Сталево-блакитний',
-            },
-            {
-              lang: 'en',
-              value: 'Steel-blue',
-            },
-          ],
-        ],
-        pattern: [
-          {
-            lang: 'uk',
-            value: 'Олені',
-          },
-          {
-            lang: 'en',
-            value: 'Deers',
-          },
-        ],
-        closure: [],
-        closureColor: '',
-        size: {
-          heightInCm: 38,
-          widthInCm: 36,
-          depthInCm: 10,
-          volumeInLiters: 0,
-          weightInKg: 0,
-        },
-        bottomMaterial: [
-          {
-            lang: 'uk',
-            value: 'Тканина Кордура',
-          },
-          {
-            lang: 'en',
-            value: 'Cordura fabric',
-          },
-        ],
-        bottomColor: [
-          {
-            lang: 'uk',
-            value: 'чорний',
-          },
-          {
-            lang: 'en',
-            value: 'black',
-          },
-        ],
-        additions: [],
-        actualPrice: [
-          {
-            currency: 'UAH',
-            value: 90000,
-          },
-          {
-            currency: 'USD',
-            value: 3246,
-          },
-        ],
-        quantity: 1,
-      },
-    ]);
+    expect(order).toHaveProperty('user', userOrder);
+    expect(order).toHaveProperty('address', adressOrder);
+    expect(order).toHaveProperty('delivery', deliveryOrder);
+    expect(order).toHaveProperty('items', itemsOrder);
     expect(order).toHaveProperty('paymentMethod', 'CARD');
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
