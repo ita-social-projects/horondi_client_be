@@ -28,9 +28,9 @@ const productsQuery = {
 };
 
 const productsMutation = {
-  addProduct: (parent, args) => {
+  addProduct: async (parent, args) => {
     try {
-      return productsService.addProduct(args.product, args.upload);
+      return await productsService.addProduct(args.product, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
