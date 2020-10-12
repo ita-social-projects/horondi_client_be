@@ -21,6 +21,6 @@
 `SECRET` - secret string for hashing password\
 `SENDGRID_API_KEY` - email service API key\
 `STORAGE_ACCOUNT` - name of your storage account\
-`SUPER_ADMIN_EMAIL` - superadmin email
-`SUPER_ADMIN_PASSWORD` - superadmin email password
+`SUPER_ADMIN_EMAIL` - superadmin email\
+`SUPER_ADMIN_PASSWORD` - superadmin email password\
 
