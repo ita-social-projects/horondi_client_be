@@ -1,9 +1,6 @@
 /* eslint-disable no-undef */
 require('dotenv').config();
-const fs = require('fs');
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
-const util = require('util');
 jest.mock('../../modules/upload/upload.service');
 const { adminLogin, setupApp } = require('../helper-functions');
 
@@ -12,19 +9,17 @@ const {
   newModelMutation,
   newModelUpdated,
   wrongId,
-  user,
 } = require('./model.variables');
 
 let modelId;
 let categoryName;
 let categoryId;
 let uploadFile = null;
-let token;
+let operation;
 
 describe('Product queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    token = await adminLogin(user);
     const createCategory = await operations.mutate({
       mutation: gql`
         mutation($category: CategoryInput!, $upload: Upload) {
@@ -51,7 +46,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { category: newCategory, upload: '__tests__/model/img.png' },
-      context: { headers: { token } },
     });
     categoryName = createCategory.data.addCategory.name;
     categoryId = createCategory.data.addCategory._id;
@@ -89,21 +83,24 @@ describe('Product queries', () => {
         }
       `,
       variables: { model: { ...newModelMutation, category: categoryId } },
-      context: { headers: { token } },
     });
 
     const model = createModel.data.addModel;
     modelId = model._id;
 
     expect(model).toBeDefined();
-    expect(model).toHaveProperty('name', [
-      { value: 'Мутація', lang: 'uk' },
-      { value: 'Mutation', lang: 'en' },
-    ]);
-    expect(model).toHaveProperty('description', [
-      { value: 'Мутація', lang: 'uk' },
-      { value: 'Mutation', lang: 'en' },
-    ]);
+    expect(model).toHaveProperty(
+      'name',
+      newModelMutation.name.map(item => ({
+        ...item,
+      }))
+    );
+    expect(model).toHaveProperty(
+      'description',
+      newModelMutation.description.map(item => ({
+        ...item,
+      }))
+    );
     expect(model).toHaveProperty('images', {
       large: 'large_new',
       medium: 'medium_new',
@@ -151,7 +148,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { model: { ...newModelMutation, category: categoryId } },
-      context: { headers: { token } },
     });
 
     const error = res.data.addModel;
@@ -194,7 +190,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: wrongId },
-      context: { headers: { token } },
     });
 
     const error = res.data.deleteModel;
@@ -238,7 +233,6 @@ describe('Product queries', () => {
       `,
       variables: {
         model: { ...newModelUpdated, category: categoryId },
-        context: { headers: { token } },
         id: modelId,
       },
     });
@@ -246,14 +240,18 @@ describe('Product queries', () => {
     const modelUpdate = updateModel.data.updateModel;
 
     expect(modelUpdate).toBeDefined();
-    expect(modelUpdate).toHaveProperty('name', [
-      { value: 'Обновлено', lang: 'uk' },
-      { value: 'Updated', lang: 'en' },
-    ]);
-    expect(modelUpdate).toHaveProperty('description', [
-      { value: 'Обновлено', lang: 'uk' },
-      { value: 'Updated', lang: 'en' },
-    ]);
+    expect(modelUpdate).toHaveProperty(
+      'name',
+      newModelUpdated.name.map(item => ({
+        ...item,
+      }))
+    );
+    expect(modelUpdate).toHaveProperty(
+      'description',
+      newModelUpdated.description.map(item => ({
+        ...item,
+      }))
+    );
     expect(modelUpdate).toHaveProperty('images', {
       large: 'large_new',
       medium: 'medium_new',
@@ -299,20 +297,23 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: modelId },
-      context: { headers: { token } },
     });
 
     const modelDelete = deleteModel.data.deleteModel;
 
     expect(modelDelete).toBeDefined();
-    expect(modelDelete).toHaveProperty('name', [
-      { value: 'Обновлено', lang: 'uk' },
-      { value: 'Updated', lang: 'en' },
-    ]);
-    expect(modelDelete).toHaveProperty('description', [
-      { value: 'Обновлено', lang: 'uk' },
-      { value: 'Updated', lang: 'en' },
-    ]);
+    expect(modelDelete).toHaveProperty(
+      'name',
+      newModelUpdated.name.map(item => ({
+        ...item,
+      }))
+    );
+    expect(modelDelete).toHaveProperty(
+      'description',
+      newModelUpdated.description.map(item => ({
+        ...item,
+      }))
+    );
     expect(modelDelete).toHaveProperty('images', {
       large: 'large_new',
       medium: 'medium_new',
@@ -340,7 +341,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: categoryId },
-      context: { headers: { token } },
     });
 
     await operations.mutate({
@@ -358,7 +358,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: modelId },
-      context: { headers: { token } },
     });
   });
 });

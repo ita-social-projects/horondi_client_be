@@ -3,29 +3,24 @@
 require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
-const {
-  news,
-  user,
-  newsUpdateData,
-  existingNews,
-} = require('./news.variables');
-const { adminLogin } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
+const { news, newsUpdateData, existingNews } = require('./news.variables');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
 
 let newsId = '';
-let token;
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
+let operations;
 
 describe('News mutations tests', () => {
   describe('Create news test', () => {
     beforeAll(async () => {
-      token = await adminLogin(user);
+      operations = await setupApp();
     });
     test('should add news to database', async () => {
-      const res = await client
+      const res = await operations
         .mutate({
           mutation: gql`
             mutation($news: NewsInput!) {
@@ -62,11 +57,6 @@ describe('News mutations tests', () => {
               }
             }
           `,
-          context: {
-            headers: {
-              token,
-            },
-          },
           variables: { news },
         })
         .then(res => res)
@@ -74,33 +64,31 @@ describe('News mutations tests', () => {
 
       newsId = res.data.addNews._id;
       expect(res.data.addNews.title).toBeInstanceOf(Array);
-      expect(res.data.addNews).toHaveProperty('title', [
-        { __typename: 'Language', lang: 'uk', value: 'bbb' },
-        { __typename: 'Language', lang: 'eng', value: 'bbb' },
-      ]);
+      expect(res.data.addNews).toHaveProperty(
+        'title',
+        news.title.map(item => ({
+          ...item,
+        }))
+      );
       expect(res.data.addNews.text).toBeInstanceOf(Array);
-      expect(res.data.addNews).toHaveProperty('text', [
-        { __typename: 'Language', lang: 'uk', value: ' d a s d' },
-        { __typename: 'Language', lang: 'eng', value: ' a s d' },
-      ]);
-      expect(res.data.addNews.author).toBeInstanceOf(Object);
-      expect(res.data.addNews).toHaveProperty('author', {
-        __typename: 'Author',
-        name: [
-          { __typename: 'Language', lang: 'uk', value: 'a sd' },
-          { __typename: 'Language', lang: 'eng', value: 'a sd' },
-        ],
-      });
-      expect(res.data.addNews.images).toBeInstanceOf(Object);
-      expect(res.data.addNews).toHaveProperty('images', {
-        __typename: 'PrimaryImage',
-        primary: { __typename: 'ImageSet', medium: 'ada s.jpg' },
-        additional: [],
-      });
+      expect(res.data.addNews).toHaveProperty(
+        'text',
+        news.text.map(item => ({
+          ...item,
+        }))
+      );
+      expect(res.data.addNews.author).toHaveProperty(
+        'name',
+        news.author.name.map(item => ({
+          ...item,
+        }))
+      );
+      expect(res.data.addNews).toHaveProperty('images');
+      expect(res.data.addNews.images).toHaveProperty('primary');
     });
 
     test('creating news with same title should throw error', async () => {
-      const res = await client
+      const res = await operations
         .mutate({
           mutation: gql`
             mutation($news: NewsInput!) {
@@ -129,11 +117,7 @@ describe('News mutations tests', () => {
               }
             }
           `,
-          context: {
-            headers: {
-              token,
-            },
-          },
+
           variables: { news },
         })
         .then(res => res)
@@ -144,7 +128,7 @@ describe('News mutations tests', () => {
 
     describe('Update news test', () => {
       test('update news', async () => {
-        const res = await client.mutate({
+        const res = await operations.mutate({
           mutation: gql`
             mutation($id: ID!, $news: NewsInput!) {
               updateNews(id: $id, news: $news) {
@@ -171,35 +155,27 @@ describe('News mutations tests', () => {
               }
             }
           `,
-          context: {
-            headers: {
-              token,
-            },
-          },
           variables: { id: newsId, news: newsUpdateData },
         });
 
         expect(res.data.updateNews.text).toBeInstanceOf(Array);
-        expect(res.data.updateNews).toHaveProperty('text', [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'u p d a t e N1 d a s d',
-          },
-          { __typename: 'Language', lang: 'eng', value: 'update dN1 a s d' },
-        ]);
-        expect(res.data.updateNews.author).toBeInstanceOf(Object);
-        expect(res.data.updateNews).toHaveProperty('author', {
-          __typename: 'Author',
-          name: [
-            { __typename: 'Language', lang: 'uk', value: 'updated sd' },
-            { __typename: 'Language', lang: 'eng', value: 'updated sd' },
-          ],
-        });
+        expect(res.data.updateNews).toHaveProperty(
+          'text',
+          newsUpdateData.text.map(item => ({
+            ...item,
+          }))
+        );
+
+        expect(res.data.updateNews.author).toHaveProperty(
+          'name',
+          newsUpdateData.author.name.map(item => ({
+            ...item,
+          }))
+        );
       });
 
       test('update not existing news should return error', async () => {
-        const res = await client
+        const res = await operations
           .mutate({
             mutation: gql`
               mutation($id: ID!, $news: NewsInput!) {
@@ -228,11 +204,6 @@ describe('News mutations tests', () => {
                 }
               }
             `,
-            context: {
-              headers: {
-                token,
-              },
-            },
             variables: { id: newsDoesNotExistId, news: newsUpdateData },
           })
           .then(res => res)
@@ -242,7 +213,7 @@ describe('News mutations tests', () => {
       });
 
       test('update not existing news should return error', async () => {
-        const res = await client
+        const res = await operations
           .mutate({
             mutation: gql`
               mutation($id: ID!, $news: NewsInput!) {
@@ -271,11 +242,6 @@ describe('News mutations tests', () => {
                 }
               }
             `,
-            context: {
-              headers: {
-                token,
-              },
-            },
             variables: { id: newsId, news: existingNews },
           })
           .then(res => res)
@@ -289,7 +255,7 @@ describe('News mutations tests', () => {
 
       describe('Delete news test', () => {
         test('delete news', async () => {
-          const res = await client.mutate({
+          const res = await operations.mutate({
             mutation: gql`
               mutation($id: ID!) {
                 deleteNews(id: $id) {
@@ -312,36 +278,27 @@ describe('News mutations tests', () => {
                 }
               }
             `,
-            context: {
-              headers: {
-                token,
-              },
-            },
             variables: { id: newsId },
           });
           expect(res.data.deleteNews).toBeDefined();
           expect(res.data.deleteNews).not.toBeNull();
           expect(res.data.deleteNews.text).toBeInstanceOf(Array);
-          expect(res.data.deleteNews).toHaveProperty('text', [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'u p d a t e N1 d a s d',
-            },
-            { __typename: 'Language', lang: 'eng', value: 'update dN1 a s d' },
-          ]);
-          expect(res.data.deleteNews.author).toBeInstanceOf(Object);
-          expect(res.data.deleteNews).toHaveProperty('author', {
-            __typename: 'Author',
-            name: [
-              { __typename: 'Language', lang: 'uk', value: 'updated sd' },
-              { __typename: 'Language', lang: 'eng', value: 'updated sd' },
-            ],
-          });
+          expect(res.data.deleteNews).toHaveProperty(
+            'text',
+            newsUpdateData.text.map(item => ({
+              ...item,
+            }))
+          );
+          expect(res.data.deleteNews.author).toHaveProperty(
+            'name',
+            newsUpdateData.author.name.map(item => ({
+              ...item,
+            }))
+          );
         });
 
         test('delete not existing news should return error', async () => {
-          const res = await client.mutate({
+          const res = await operations.mutate({
             mutation: gql`
               mutation($id: ID!) {
                 deleteNews(id: $id) {
@@ -364,11 +321,6 @@ describe('News mutations tests', () => {
                 }
               }
             `,
-            context: {
-              headers: {
-                token,
-              },
-            },
             variables: { id: newsDoesNotExistId },
           });
           expect(res.data.deleteNews).toBeDefined();

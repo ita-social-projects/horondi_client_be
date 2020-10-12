@@ -3,20 +3,16 @@ require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 jest.mock('../../modules/upload/upload.service');
-
-const { newCategory, newModel, user } = require('./model.variables');
-
-const { setupApp, adminLogin } = require('../helper-functions');
+const { newCategory, newModel } = require('./model.variables');
+const { setupApp } = require('../helper-functions');
 
 let modelId;
 let categoryId;
 let operations;
-let token;
 
 describe('Product queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    token = await adminLogin(user);
     const createCategory = await operations.mutate({
       mutation: gql`
         mutation($category: CategoryInput!, $upload: Upload) {
@@ -32,11 +28,10 @@ describe('Product queries', () => {
         }
       `,
       variables: { category: newCategory, upload: '__tests__/model/img.png' },
-      context: { headers: { token } },
     });
     categoryId = createCategory.data.addCategory._id;
 
-    const createModel = await client.mutate({
+    const createModel = await operations.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
           addModel(model: $model) {
@@ -50,12 +45,11 @@ describe('Product queries', () => {
         }
       `,
       variables: { model: { ...newModel, category: categoryId } },
-      context: { headers: { token } },
     });
     modelId = createModel.data.addModel._id;
   });
   test('Should receive all models by category id', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query($category: ID!) {
           getModelsByCategory(id: $category) {
@@ -92,29 +86,25 @@ describe('Product queries', () => {
     expect(models.length).toBeGreaterThan(0);
     expect(models[0].name).toBeInstanceOf(Array);
     expect(models[0]).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Тест', lang: 'uk' },
-      { __typename: 'Language', value: 'Test', lang: 'en' },
+      { value: 'Тест', lang: 'uk' },
+      { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('description', [
-      { __typename: 'Language', value: 'Тест', lang: 'uk' },
-      { __typename: 'Language', value: 'Test', lang: 'en' },
+      { value: 'Тест', lang: 'uk' },
+      { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('images', {
-      __typename: 'ImageSet',
       large: 'large_new',
       medium: 'medium_new',
       small: 'small_new',
       thumbnail: 'thumbnail_new',
     });
     expect(models[0]).toHaveProperty('category', {
-      __typename: 'Category',
       name: [
         {
-          __typename: 'Language',
           value: 'Нова',
         },
         {
-          __typename: 'Language',
           value: 'New',
         },
       ],
@@ -183,7 +173,7 @@ describe('Product queries', () => {
     expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_FOUND');
   });
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteCategory(id: $id) {
@@ -198,10 +188,9 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: categoryId },
-      context: { headers: { token } },
     });
 
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteModel(id: $id) {
@@ -216,7 +205,6 @@ describe('Product queries', () => {
         }
       `,
       variables: { id: modelId },
-      context: { headers: { token } },
     });
   });
 });

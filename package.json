@@ -25,6 +25,7 @@
     "docker-db-stop": "cd ./docker && docker-compose down",
     "test-docker": "npm run docker-db-start && npm run test"
   },
+
   "author": "",
   "license": "ISC",
   "dependencies": {

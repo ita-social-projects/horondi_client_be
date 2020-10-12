@@ -1,8 +1,4 @@
 const wrongId = '56ade69dd46eafc5968e5390';
-const user = {
-  email: process.env.SUPER_ADMIN_EMAIL,
-  password: process.env.SUPER_ADMIN_PASSWORD,
-};
 const newCategory = {
   available: true,
   name: [
@@ -80,5 +76,4 @@ module.exports = {
   newModelMutation,
   newModelUpdated,
   wrongId,
-  user,
 };
