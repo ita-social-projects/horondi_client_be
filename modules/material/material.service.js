@@ -31,13 +31,34 @@ class MaterialsService {
     return Material.findById(id);
   }
 
-  async updateMaterial(id, material) {
+  async updateMaterial(id, material, images) {
+    const { additionalPrice, ...rest } = material;
+
     const materialToUpdate = await Material.findById(id);
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
+
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
+    }
+    const currency = await Currency.findOne();
+    if (!images) {
+      return await Material.findByIdAndUpdate(id, {
+        ...rest,
+        additionalPrice: [
+          {
+            currency: this.currencyTypes.UAH,
+            value:
+              additionalPrice *
+              Math.round(currency.convertOptions[0].exchangeRate * 100),
+          },
+          {
+            currency: this.currencyTypes.USD,
+            value: additionalPrice * 100,
+          },
+        ],
+      });
     }
     return await Material.findByIdAndUpdate(id, material, { new: true });
   }
