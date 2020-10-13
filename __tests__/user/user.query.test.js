@@ -73,7 +73,7 @@ describe('queries', () => {
       },
     });
     token = authRes.data.loginUser.token;
-    const res = await operations.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($userId: ID!, $email: String!) {
           updateUserById(
@@ -162,7 +162,7 @@ describe('queries', () => {
   });
 
   test('should recive user by token', async () => {
-    const { email, role } = testUser;
+    const { email } = testUser;
     operations = await setupApp({
       firstName: 'Test',
       lastName: 'User',
@@ -331,6 +331,7 @@ describe('Testing obtaining information restrictions', () => {
   let firstName;
   let lastName;
   let adminToken;
+  let adminEmail;
 
   beforeAll(async () => {
     userLogin = 'example@gmail.com';
