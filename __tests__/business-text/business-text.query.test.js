@@ -67,7 +67,7 @@ describe('Business page queries', () => {
       .catch(e => e);
   });
 
-  test('#1 Should receive all business texts', async () => {
+  test(' Should receive all business texts', async () => {
     const res = await operations
       .query({
         query: gql`
@@ -98,7 +98,7 @@ describe('Business page queries', () => {
     });
   });
 
-  test('#2 Should receive selected business text', async () => {
+  test(' Should receive selected business text', async () => {
     const res = await operations
       .query({
         query: gql`
@@ -135,7 +135,7 @@ describe('Business page queries', () => {
     expect(receivedBusinessText).toHaveProperty('text', newBusinessText.text);
   });
 
-  test('#3 Returning not existing business text should return error message', async () => {
+  test(' Returning not existing business text should return error message', async () => {
     const res = await operations
       .query({
         query: gql`
@@ -170,7 +170,7 @@ describe('Business page queries', () => {
     );
   });
 
-  test('#4 Should receive selected business text by code', async () => {
+  test(' Should receive selected business text by code', async () => {
     const res = await operations
       .query({
         query: gql`
@@ -208,7 +208,7 @@ describe('Business page queries', () => {
     expect(businessText).toHaveProperty('text', newBusinessText.text);
   });
 
-  test('#5 Should return error if page by code not found', async () => {
+  test(' Should return error if page by code not found', async () => {
     const res = await operations
       .query({
         query: gql`

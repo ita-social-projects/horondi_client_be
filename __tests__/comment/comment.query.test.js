@@ -61,7 +61,7 @@ describe('Comment queries', () => {
       .catch(e => e);
   });
 
-  it('1 Should receive all comments writen by selected user', async () => {
+  it(' Should receive all comments writen by selected user', async () => {
     const res = await operations
       .query({
         variables: {
@@ -99,7 +99,7 @@ describe('Comment queries', () => {
       show: newComment.show,
     });
   });
-  it('2 Should receive all comments for one product', async () => {
+  it(' Should receive all comments for one product', async () => {
     const res = await operations
       .query({
         variables: {
@@ -137,7 +137,7 @@ describe('Comment queries', () => {
       show: newComment.show,
     });
   });
-  it('3 Should receive all comments for one product', async () => {
+  it(' Should receive all comments for one product', async () => {
     const res = await operations
       .query({
         variables: {
@@ -173,7 +173,7 @@ describe('Comment queries', () => {
     expect(receivedComments[0]).toHaveProperty('message', COMMENT_NOT_FOUND);
   });
 
-  it('3 should return error messagePassing unexisting email ', async () => {
+  it(' should return error messagePassing unexisting email ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: invalidEmail,
@@ -209,7 +209,7 @@ describe('Comment queries', () => {
     );
   });
 
-  it('4 should return error message Passing not email string ', async () => {
+  it('should return error message Passing not email string ', async () => {
     const res = await operations.query({
       variables: {
         userEmail: wrongData,
@@ -244,7 +244,7 @@ describe('Comment queries', () => {
       COMMENT_NOT_FOUND
     );
   });
-  it('5 should return one comment', async () => {
+  it(' should return one comment', async () => {
     const res = await operations
       .query({
         variables: {
@@ -283,7 +283,7 @@ describe('Comment queries', () => {
       show: newComment.show,
     });
   });
-  it('6 should return error when find comment by wrong id', async () => {
+  it(' should return error when find comment by wrong id', async () => {
     const res = await operations
       .query({
         variables: {

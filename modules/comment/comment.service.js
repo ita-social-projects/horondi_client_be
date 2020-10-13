@@ -78,11 +78,11 @@ class CommentsService {
     const newRate = rateSum / rateCount;
 
     const newUserRates = rate
-      ? userRates.map(item => {
-          return String(item.user) === String(user._id)
+      ? userRates.map(item =>
+          String(item.user) === String(user._id)
             ? { user: item.user, rate: data.rate }
-            : item;
-        })
+            : item
+        )
       : [...userRates, { ...data, user: user._id }];
 
     const rateToAdd = await Product.findByIdAndUpdate(

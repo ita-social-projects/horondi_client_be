@@ -51,7 +51,7 @@ describe('Comment queries', () => {
     productRateCount = receivedProduct.rateCount;
     productUserRates = receivedProduct.userRates;
   });
-  it('1 should add a new comment', async () => {
+  it(' should add a new comment', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -88,7 +88,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('user', newComment.user);
     expect(receivedComment).toHaveProperty('productId', newComment.productId);
   });
-  it('2 should return error if to add comment to not existing product', async () => {
+  it(' should return error if to add comment to not existing product', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -126,7 +126,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
 
-  it(' 3 should update comment', async () => {
+  it('  should update comment', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -166,7 +166,7 @@ describe('Comment queries', () => {
     );
   });
 
-  it('4 should return error if id of comment to update is not correct', async () => {
+  it(' should return error if id of comment to update is not correct', async () => {
     const res = await operations
       .mutate({
         mutation: gql`

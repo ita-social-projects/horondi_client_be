@@ -20,7 +20,7 @@ describe('Business page queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
-  test('#1 should add business text to database', async () => {
+  test(' should add business text to database', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -62,7 +62,7 @@ describe('Business page queries', () => {
     expect(businessText.code).isPrototypeOf(String);
   });
 
-  test('#2 adding a new page with existing code should return error', async () => {
+  test(' adding a new page with existing code should return error', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -100,7 +100,7 @@ describe('Business page queries', () => {
     expect(res.data.addBusinessText).toHaveProperty('statusCode', 400);
   });
 
-  test('#3 update business text', async () => {
+  test(' update business text', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -188,7 +188,7 @@ describe('Business page queries', () => {
     expect(res.data.updateBusinessText).toHaveProperty('statusCode', 404);
   });
 
-  test('#5 update page with already existing code in data base should return error', async () => {
+  test(' update page with already existing code in data base should return error', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -227,7 +227,7 @@ describe('Business page queries', () => {
     expect(res.data.updateBusinessText).toHaveProperty('statusCode', 400);
   });
 
-  test('#6 delete businessText', async () => {
+  test(' delete businessText', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -261,7 +261,7 @@ describe('Business page queries', () => {
     expect(businessText).toHaveProperty('text', updatedBusinessText.text);
   });
 
-  test('#7 delete not existing business text should return error', async () => {
+  test(' delete not existing business text should return error', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
