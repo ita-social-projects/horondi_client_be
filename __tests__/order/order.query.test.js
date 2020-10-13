@@ -1,13 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const {
-  newOrder,
-  queryPattern,
-  userOrder,
-  adressOrder,
-  deliveryOrder,
-  itemsOrder,
-} = require('./order.variables');
+const { newOrder, deliveryOrder } = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
@@ -143,7 +136,7 @@ describe('Order queries', () => {
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders).toContainEqual(queryPattern);
+    expect(orders).toContainEqual(newOrder);
   });
 
   test('should recive order by id', async () => {
@@ -264,10 +257,10 @@ describe('Order queries', () => {
 
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'DELIVERED');
-    expect(order).toHaveProperty('user', userOrder);
-    expect(order).toHaveProperty('address', adressOrder);
+    expect(order).toHaveProperty('user', newOrder.user);
+    expect(order).toHaveProperty('address', newOrder.address);
     expect(order).toHaveProperty('delivery', deliveryOrder);
-    expect(order).toHaveProperty('items', itemsOrder);
+    expect(order).toHaveProperty('items', newOrder.items);
     expect(order).toHaveProperty('paymentMethod', 'CARD');
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
