@@ -12,10 +12,6 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
-    TEST_BASE_URI: joi
-      .string()
-      .uri()
-      .required(),
     KEY_VAULTS_URI: joi
       .string()
       .uri()
@@ -76,7 +72,6 @@ function dotenvValidator(processEnv) {
       .uri()
       .required(),
     CONFIRMATION_SECRET: joi.string().required(),
-    RECOVERY_EXPIRE: joi.string().required(),
     SENDGRID_API_KEY: joi.string().required(),
   });
 
