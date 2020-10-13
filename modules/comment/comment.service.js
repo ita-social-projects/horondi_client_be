@@ -1,6 +1,6 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
-
+const User = require('../user/user.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -9,6 +9,7 @@ const {
 
 const { monthInMilliseconds } = require('../../consts');
 const { UserRate } = require('../../resolvers');
+const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 
 class CommentsService {
   async getCommentById(id) {
@@ -28,11 +29,12 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userEmail) {
-    const comments = await Comment.find({ 'user.email': userEmail });
-    if (!comments.length) {
-      throw new Error(COMMENT_NOT_FOUND);
+    const user = await User.find({ email: userEmail });
+
+    if (!user.length) {
+      throw new Error(USER_NOT_FOUND);
     }
-    return comments;
+    return await Comment.find({ 'user.email': userEmail });
   }
 
   async updateComment(id, comment) {

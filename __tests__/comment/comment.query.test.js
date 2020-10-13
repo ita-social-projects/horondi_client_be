@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-
+const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 
@@ -205,7 +205,7 @@ describe('Comment queries', () => {
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
       'message',
-      COMMENT_NOT_FOUND
+      USER_NOT_FOUND
     );
   });
 
@@ -241,7 +241,7 @@ describe('Comment queries', () => {
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
     expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
       'message',
-      COMMENT_NOT_FOUND
+      USER_NOT_FOUND
     );
   });
   it(' should return one comment', async () => {
