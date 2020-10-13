@@ -130,7 +130,6 @@ class ProductsService {
 
   async updateProduct(id, productData, filesToUpload, primary) {
     const product = await Product.findById(id).lean();
-    productData.images = product.images;
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -178,7 +177,8 @@ class ProductsService {
       additional,
     };
 
-    return new Product(productData).save();
+    const newProduct = await new Product(productData).save();
+    if (newProduct) return newProduct;
   }
 
   async deleteProduct(id) {
@@ -234,4 +234,5 @@ class ProductsService {
     }
   }
 }
+
 module.exports = new ProductsService();

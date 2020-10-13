@@ -40,6 +40,7 @@ strapLengthInCm: Int!
 colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
+images: PrimaryImageInput
 closure: [LanguageInput]!
 closureColor: String
 basePrice: Int!
@@ -49,6 +50,6 @@ options:[ProductOptionsInput]
 }`;
 
 module.exports = {
-	productType,
-	productInput
+  productType,
+  productInput,
 };
