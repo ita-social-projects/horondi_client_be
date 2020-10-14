@@ -19,7 +19,6 @@ class EmailChatService {
       .sort('-date');
 
     const count = await EmailChat.find(filters).countDocuments();
-    const paginatedCount = this.getPendingEmailQuestionsCount();
 
     return {
       questions,
