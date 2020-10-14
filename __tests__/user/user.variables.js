@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const adminUser = {
-  email: 'admin@gmail.com',
+  email: 'admin2@gmail.com',
   password: 'qwertY123',
 };
 

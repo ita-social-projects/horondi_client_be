@@ -1,4 +1,5 @@
 const Order = require('./order.model');
+
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
@@ -195,6 +196,12 @@ class OrdersService {
       return foundOrder;
     }
     throw new Error(ORDER_NOT_FOUND);
+  }
+
+  async getUserOrders(user) {
+    const { orders } = user;
+
+    return await Order.find({ _id: orders });
   }
 }
 module.exports = new OrdersService();

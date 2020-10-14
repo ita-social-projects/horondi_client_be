@@ -267,6 +267,7 @@ const typeDefs = gql`
 
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
+    getUserOrders: [Order!]
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
