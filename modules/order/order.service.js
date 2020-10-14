@@ -78,19 +78,26 @@ class OrdersService {
     if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
 
-      
-      if(order.delivery.sentBy == "Nova Poshta") {
-        const weight = order.items.reduce((prev, currentItem) => prev + (currentItem.size.weightInKg * currentItem.quantity),0)
-        const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(order.address.city)
-        
+      if (order.delivery.sentBy == 'Nova Poshta') {
+        const weight = order.items.reduce(
+          (prev, currentItem) =>
+            prev + currentItem.size.weightInKg * currentItem.quantity,
+          0
+        );
+        const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
+          order.address.city
+        );
+
         const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
           cityRecipient: cityRecipient[0].ref,
           weight,
-          serviceType: order.delivery.byCourier?'WarehouseDoors':'WarehouseWarehouse',
-          cost: totalItemsPrice[0].value/100,
-        })
+          serviceType: order.delivery.byCourier
+            ? 'WarehouseDoors'
+            : 'WarehouseWarehouse',
+          cost: totalItemsPrice[0].value / 100,
+        });
 
-        const currency = await Currency.findOne()
+        const currency = await Currency.findOne();
 
         const cost = [
           {
@@ -99,19 +106,22 @@ class OrdersService {
           },
           {
             currency: 'USD',
-            value: Math.round(deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate  * 100)
+            value: Math.round(
+              (deliveryPrice[0].cost /
+                currency.convertOptions[0].exchangeRate) *
+                100
+            ),
           },
-        ]
+        ];
 
         order = {
           ...order,
           delivery: {
             ...order.delivery,
             cost,
-          }
-        }
+          },
+        };
       }
-
 
       const totalPriceToPay = this.calculateTotalPriceToPay(
         order,
@@ -139,18 +149,26 @@ class OrdersService {
 
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
-    if(data.delivery.sentBy == "Nova Poshta") {
-      const weight = data.items.reduce((prev, currentItem) => prev + (currentItem.size.weightInKg * currentItem.quantity),0)
-      const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(data.address.city)
-      
+    if (data.delivery.sentBy == 'Nova Poshta') {
+      const weight = data.items.reduce(
+        (prev, currentItem) =>
+          prev + currentItem.size.weightInKg * currentItem.quantity,
+        0
+      );
+      const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
+        data.address.city
+      );
+
       const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
         cityRecipient: cityRecipient[0].ref,
         weight,
-        serviceType: data.delivery.byCourier?'WarehouseDoors':'WarehouseWarehouse',
-        cost: totalItemsPrice[0].value/100,
-      })
+        serviceType: data.delivery.byCourier
+          ? 'WarehouseDoors'
+          : 'WarehouseWarehouse',
+        cost: totalItemsPrice[0].value / 100,
+      });
 
-      const currency = await Currency.findOne()
+      const currency = await Currency.findOne();
 
       const cost = [
         {
@@ -159,17 +177,20 @@ class OrdersService {
         },
         {
           currency: 'USD',
-          value: Math.round(deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate  * 100)
+          value: Math.round(
+            (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
+              100
+          ),
         },
-      ]
+      ];
 
       data = {
         ...data,
         delivery: {
           ...data.delivery,
           cost,
-        }
-      }
+        },
+      };
     }
 
     const totalPriceToPay = this.calculateTotalPriceToPay(

@@ -228,7 +228,6 @@ const typeDefs = gql`
     isSuccess: Boolean
   }
 
-
   type EmailAnswer {
     admin: User!
     date: String!
@@ -303,8 +302,8 @@ const typeDefs = gql`
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
 
-    getNovaPoshtaCities(city: String):[NovaPoshtaCity]
-    getNovaPoshtaStreets(cityRef: String, street: String):[NovaPoshtaStreet]
+    getNovaPoshtaCities(city: String): [NovaPoshtaCity]
+    getNovaPoshtaStreets(cityRef: String, street: String): [NovaPoshtaStreet]
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
@@ -313,7 +312,7 @@ const typeDefs = gql`
 
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
-    
+
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
   }

@@ -4,7 +4,7 @@ const paymentType = `
     responseStatus: String!
     checkoutUrl: String
   }
-`
+`;
 
 const paymentInput = `
   input PaymentInput {
@@ -13,6 +13,6 @@ const paymentInput = `
       currency: String
       amount: Int!
   }
-`
+`;
 
 module.exports = { paymentType, paymentInput };

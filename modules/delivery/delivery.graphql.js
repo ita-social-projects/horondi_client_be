@@ -50,7 +50,7 @@ const deliveryType = `
     intDocNumber: String,
     typeDocument: String
   }
-` 
+`;
 
 const deliveryInput = ` 
   input NovaPoshtaOrderInput {
@@ -83,6 +83,6 @@ const deliveryInput = `
     cargoType: String
     seatsAmount: Int
   }
-` 
+`;
 
 module.exports = { deliveryType, deliveryInput };
