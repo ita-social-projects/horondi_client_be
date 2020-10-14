@@ -209,6 +209,10 @@ const typeDefs = gql`
     items: [Contact]
     count: Int
   }
+  type PaginatedModels {
+    items: [Model]
+    count: Int
+  }
 
   type LanguageImageSet {
     lang: String
@@ -262,6 +266,7 @@ const typeDefs = gql`
 
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
+    getUserOrders: [Order!]
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
@@ -290,7 +295,9 @@ const typeDefs = gql`
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
 
+    getAllModels(limit: Int, skip: Int): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
+    getModelById(id: ID!): ModelResult
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
@@ -544,8 +551,8 @@ const typeDefs = gql`
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 
     "Model Mutation"
-    addModel(model: ModelInput!): ModelResult
-    updateModel(id: ID!, model: ModelInput!): ModelResult
+    addModel(model: ModelInput!, upload: Upload): ModelResult
+    updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult
     deleteModel(id: ID!): ModelResult
 
     "Contacts Mutation"

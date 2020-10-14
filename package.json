@@ -24,7 +24,7 @@
     "test-full": "start-server-and-test test-server http://localhost:5000/health test",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "test-docker": "npm run docker-db-start && npm run test-full"
+    "test-docker": "npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",
