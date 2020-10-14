@@ -41,7 +41,7 @@ describe('Comment queries', () => {
   });
 
   afterAll(async () => {
-    const res = await operations
+    await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!) {
