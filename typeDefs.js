@@ -151,6 +151,11 @@ const typeDefs = gql`
     additionalPrice: [CurrencySet]
   }
 
+  type AllProductOptions {
+    sizes: [Size]
+    bottomMaterials: [Material]
+  }
+
   type Size {
     _id: ID!
     name: String
@@ -191,7 +196,6 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
-
   type PaginatedPatterns {
     items: [Pattern!]!
     count: Int!
@@ -285,6 +289,7 @@ const typeDefs = gql`
       search: String
       sort: SortInput
     ): PaginatedProducts!
+    getProductOptions: AllProductOptions
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
@@ -426,8 +431,8 @@ const typeDefs = gql`
   }
 
   input ProductOptionsInput {
-    size: ID!
-    bottomMaterial: ID!
+    size: ID
+    bottomMaterial: ID
     description: [LanguageInput!]
     bottomColor: [LanguageInput!]
     availableCount: Int
@@ -530,9 +535,15 @@ const typeDefs = gql`
     ): LogicalResult!
 
     "Product Mutation"
-    addProduct(product: ProductInput!): ProductResult
+    addProduct(product: ProductInput!, upload: Upload!): ProductResult
     deleteProduct(id: ID!): ProductResult
-    updateProduct(id: ID!, product: ProductInput!): ProductResult
+    updateProduct(
+      id: ID!
+      product: ProductInput!
+      upload: Upload
+      primary: Upload
+    ): ProductResult
+    deleteImages(id: ID!, images: [String!]!): PrimaryImage
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult

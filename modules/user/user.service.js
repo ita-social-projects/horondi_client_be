@@ -110,7 +110,7 @@ class UserService {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
-
+    if (!user.images) user.images = [];
     if (upload) {
       await deleteFiles(
         Object.values(user.images).filter(

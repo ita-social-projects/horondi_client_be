@@ -1,7 +1,9 @@
 const Product = require('./product.model');
 const Size = require('../../models/Size');
+const Material = require('../material/material.model');
+const Currency = require('../currency/currency.model');
 const modelService = require('../model/model.service');
-
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -18,6 +20,13 @@ class ProductsService {
 
   getModelsByCategory(id) {
     return Product.find({ category: id });
+  }
+
+  async getProductOptions() {
+    const sizes = await Size.find();
+    const bottomMaterials = await Material.find();
+
+    return { sizes, bottomMaterials };
   }
 
   filterItems(args = {}) {
@@ -104,30 +113,90 @@ class ProductsService {
     };
   }
 
-  async updateProduct(id, productData) {
-    const product = await Product.findById(id);
+  async calculatePrice(price) {
+    const { convertOptions } = await Currency.findOne();
+
+    return [
+      {
+        value: Math.round(price * convertOptions[0].exchangeRate * 100),
+        currency: 'UAH',
+      },
+      {
+        value: Math.round(price * 100),
+        currency: 'USD',
+      },
+    ];
+  }
+
+  async updateProduct(id, productData, filesToUpload, primary) {
+    const product = await Product.findById(id).lean();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
-    if (await this.checkProductExist(productData, id)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+    if (primary) {
+      await deleteFiles(
+        Object.values(product.images.primary).filter(
+          item => typeof item === 'string'
+        )
+      );
+      const uploadResult = await uploadFiles(primary);
+      const imagesResults = await uploadResult[0];
+      productData.images.primary = imagesResults.fileNames;
     }
-    const model = await modelService.getModelById(productData.model);
-    productData.model = model.name;
+    if (filesToUpload) {
+      const uploadResult = await uploadFiles(filesToUpload);
+      const imagesResults = await Promise.allSettled(uploadResult);
+      const additional = imagesResults.map(res => res.value.fileNames);
+      productData.images.additional = [
+        ...product.images.additional,
+        ...additional,
+      ];
+    }
+    const { basePrice } = productData;
+    productData.basePrice = await this.calculatePrice(basePrice);
+    if (!Array.isArray(productData.model)) {
+      const model = await modelService.getModelById(productData.model);
+      productData.model = model.name;
+    }
     return Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
-  async addProduct(data) {
-    if (await this.checkProductExist(data)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
-    }
-    const model = await modelService.getModelById(data.model);
-    data.model = model.name;
-    return new Product(data).save();
+  async addProduct(productData, filesToUpload) {
+    const uploadResult = await uploadFiles(filesToUpload);
+    const imagesResults = await Promise.allSettled(uploadResult);
+    const primary = imagesResults[0].value.fileNames;
+    const additional = imagesResults.slice(1).map(res => res.value.fileNames);
+
+    const { basePrice } = productData;
+    productData.basePrice = await this.calculatePrice(basePrice);
+
+    const model = await modelService.getModelById(productData.model);
+    productData.model = model.name;
+    productData.images = {
+      primary,
+      additional,
+    };
+
+    const newProduct = await new Product(productData).save();
+    if (newProduct) return newProduct;
   }
 
-  deleteProduct(id) {
-    return Product.findByIdAndDelete(id);
+  async deleteProduct(id) {
+    const product = await Product.findById(id).lean();
+    if (!product) {
+      throw new Error(PRODUCT_NOT_FOUND);
+    }
+    const { images } = product;
+    const { primary, additional } = images;
+    const additionalImagesToDelete = Object.assign(...additional);
+    const deletedImages = await deleteFiles([
+      ...Object.values(primary),
+      ...Object.values(additionalImagesToDelete),
+    ]);
+
+    if (await Promise.allSettled(deletedImages)) {
+      return Product.findByIdAndDelete(id);
+    }
   }
 
   async checkProductExist(data, id) {
@@ -141,5 +210,29 @@ class ProductsService {
     });
     return modelCount > 0;
   }
+
+  async deleteImages(id, imagesToDelete) {
+    const product = await Product.findById(id).lean();
+    const deleteResults = await deleteFiles(imagesToDelete);
+    if (await Promise.allSettled(deleteResults)) {
+      const newImages = product.images.additional.filter(
+        item =>
+          !Object.values(item).filter(image => imagesToDelete.includes(image))
+            .length
+      );
+      const updatedProduct = await Product.findByIdAndUpdate(
+        id,
+        {
+          images: {
+            primary: product.images.primary,
+            additional: newImages,
+          },
+        },
+        { new: true }
+      );
+      return updatedProduct.images;
+    }
+  }
 }
+
 module.exports = new ProductsService();
