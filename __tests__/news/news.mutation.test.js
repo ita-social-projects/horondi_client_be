@@ -1,8 +1,6 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-undef */
-require('dotenv').config();
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const { setupApp } = require('../helper-functions');
 const { news, newsUpdateData, existingNews } = require('./news.variables');
 const {

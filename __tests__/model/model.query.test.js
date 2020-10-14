@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-require('dotenv').config();
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
 jest.mock('../../modules/upload/upload.service');

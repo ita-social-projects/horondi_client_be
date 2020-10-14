@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-undef */
-require('dotenv').config();
 const { gql } = require('@apollo/client');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const { setupApp } = require('../helper-functions');

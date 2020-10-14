@@ -82,6 +82,75 @@ Object {
 }
 `;
 
+exports[`material querries test should receive one material 1`] = `
+Object {
+  "additionalPrice": Array [
+    Object {
+      "currency": "UAH",
+      "value": 0,
+    },
+    Object {
+      "currency": "USD",
+      "value": 0,
+    },
+  ],
+  "available": true,
+  "colors": Array [
+    Object {
+      "available": true,
+      "code": 777,
+      "images": Object {
+        "large": "large_test",
+        "medium": "medium_test",
+        "small": "small_test",
+        "thumbnail": "thumbnail_test",
+      },
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Тестовий колір",
+        },
+        Object {
+          "lang": "en",
+          "value": "Test color",
+        },
+      ],
+      "simpleName": Array [
+        Object {
+          "lang": "uk",
+          "value": "проста назва кольору",
+        },
+        Object {
+          "lang": "en",
+          "value": "simple color name",
+        },
+      ],
+    },
+  ],
+  "description": Array [
+    Object {
+      "lang": "uk",
+      "value": "Опис Тестового матеріальчика",
+    },
+    Object {
+      "lang": "en",
+      "value": "Description for Test Materialyy",
+    },
+  ],
+  "name": Array [
+    Object {
+      "lang": "uk",
+      "value": "Тест",
+    },
+    Object {
+      "lang": "en",
+      "value": "Test",
+    },
+  ],
+  "purpose": "test",
+}
+`;
+
 exports[`querries #2 Should receive one material 1`] = `
 Object {
   "__typename": "Material",
