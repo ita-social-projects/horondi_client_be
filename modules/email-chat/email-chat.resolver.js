@@ -6,6 +6,8 @@ const {
 const emailChatQuestionQuery = {
   getAllEmailQuestions: (parent, args) =>
     emailChatService.getAllEmailQuestions(args),
+  getPendingEmailQuestionsCount: (parent, args) =>
+    emailChatService.getPendingEmailQuestionsCount(),
   getEmailQuestionById: async (parent, args) => {
     const question = await emailChatService.getEmailQuestionById(args.id);
     if (question) {
@@ -21,12 +23,9 @@ const emailChatQuestionQuery = {
 const emailChatQuestionMutation = {
   addEmailQuestion: async (parent, args) =>
     await emailChatService.addEmailQuestion(args.question),
-  makeQuestionSpam: async (parent, args, context) => {
+  makeQuestionSpam: async (parent, args) => {
     try {
-      return await emailChatService.sendEmailQuestionToSpam(
-        args.questionId,
-        context.user
-      );
+      return await emailChatService.makeQuestionSpam(args);
     } catch (error) {
       return {
         statusCode: 404,
@@ -34,9 +33,9 @@ const emailChatQuestionMutation = {
       };
     }
   },
-  answerEmailQuestion: async (parent, args, context) => {
+  answerEmailQuestion: async (parent, args) => {
     try {
-      return await emailChatService.giveAnswer(args, context.user);
+      return await emailChatService.answerEmailQuestion(args);
     } catch (error) {
       return {
         statusCode: 404,

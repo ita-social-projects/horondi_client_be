@@ -323,6 +323,7 @@ const typeDefs = gql`
       skip: Int
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
+    getPendingEmailQuestionsCount: Int
   }
 
   input SortInput {
@@ -580,7 +581,7 @@ const typeDefs = gql`
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
-    makeQuestionSpam(questionId: ID!): EmailQuestionResult
+    makeQuestionSpam(questionId: ID!, adminId: ID!): EmailQuestionResult
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
