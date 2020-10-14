@@ -5,8 +5,23 @@ const {
 } = require('../../error-messages/email-chat.messages');
 
 class EmailChatService {
-  getAllEmailQuestions() {
-    return EmailChat.find();
+  async getAllEmailQuestions({ filter = {}, skip }) {
+    const { emailQuestionStatus } = filter;
+
+    const filters = emailQuestionStatus
+      ? { status: { $in: emailQuestionStatus } }
+      : {};
+
+    const questions = await EmailChat.find(filters)
+      .skip(skip || 0)
+      .limit(10)
+      .sort('-date');
+
+    const count = await EmailChat.find(filters).countDocuments();
+    return {
+      questions,
+      count,
+    };
   }
 
   getEmailQuestionById(id) {

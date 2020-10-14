@@ -5,7 +5,7 @@ const {
 
 const emailChatQuestionQuery = {
   getAllEmailQuestions: (parent, args) =>
-    emailChatService.getAllEmailQuestions(),
+    emailChatService.getAllEmailQuestions(args),
   getEmailQuestionById: async (parent, args) => {
     const question = await emailChatService.getEmailQuestionById(args.id);
     if (question) {

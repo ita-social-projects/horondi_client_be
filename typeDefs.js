@@ -214,6 +214,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedEmailQuestion {
+    questions: [EmailQuestion]
+    count: Int
+  }
+
   type LanguageImageSet {
     lang: String
     value: ImageSet
@@ -313,7 +318,10 @@ const typeDefs = gql`
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
 
-    getAllEmailQuestions: [EmailQuestion]
+    getAllEmailQuestions(
+      filter: FilterInput
+      skip: Int
+    ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
   }
 
@@ -334,6 +342,7 @@ const typeDefs = gql`
     isHotItem: Boolean
     models: [String]
     currency: Int
+    emailQuestionStatus: [String]
   }
   input RoleEnumInput {
     role: String
