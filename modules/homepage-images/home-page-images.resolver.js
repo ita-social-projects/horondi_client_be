@@ -1,13 +1,13 @@
 const homePageService = require('./home-page-images.service');
 
 const HomePageImagesQuery = {
-  getAllImages: async () => {
-    return await homePageService.getAllImages();
+  getHomePageLooksImages: async () => {
+    return await homePageService.getHomePageLooksImages();
   },
 };
 
 const HomePageImagesMutation = {
-  addImage: async (parent, args) => {
+  updateHomePageLooksImage: async (parent, args) => {
     try {
       return await homePageService.addImage(args);
     } catch (e) {

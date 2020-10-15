@@ -3,7 +3,7 @@ const {
   IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/home-page-messages');
 class HomePageImagesService {
-  async getAllImages() {
+  async getHomePageLooksImages() {
     let x = await HomePageImages.find();
     console.log(x);
     return x;
@@ -21,5 +21,7 @@ class HomePageImagesService {
     }
     return new HomePageImages(resizedImages).save();
   }
+
+  async updateHomePageLooksImage() {}
 }
 module.exports = new HomePageImagesService();

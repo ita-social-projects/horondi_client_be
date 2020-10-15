@@ -70,20 +70,24 @@ const typeDefs = gql`
     admin
     user
   }
+
   type Language {
     lang: String!
     value: String
   }
+
   type CurrencySet {
     currency: String!
     value: Int!
   }
+
   type ImageSet {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   type Credential {
     source: String
     tokenPass: String
@@ -98,14 +102,17 @@ const typeDefs = gql`
     buildingNumber: String
     appartment: String
   }
+
   type PrimaryImage {
     primary: ImageSet
     additional: [ImageSet]
   }
+
   type ConvertOption {
     name: String
     exchangeRate: Float
   }
+
   type Subcategory {
     _id: ID!
     categoryCode: String
@@ -113,10 +120,12 @@ const typeDefs = gql`
     images: ImageSet
     available: Boolean
   }
+
   type Author {
     name: [Language]
     image: ImageSet
   }
+
   type Color {
     code: Int
     name: [Language]
@@ -214,6 +223,7 @@ const typeDefs = gql`
     date: String!
     text: String!
   }
+
   type HomePageImages {
     images: ImageSet
   }
@@ -284,7 +294,7 @@ const typeDefs = gql`
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
 
-    getAllImages: [ImageSet]
+    getHomePageLooksImages: [ImageSet]
   }
 
   input SortInput {
@@ -305,13 +315,16 @@ const typeDefs = gql`
     models: [String]
     currency: Int
   }
+
   input RoleEnumInput {
     role: String
   }
+
   input PrimaryImageInput {
     primary: ImageSetInput!
     additional: [ImageSetInput!]
   }
+
   input AuthorInput {
     name: [LanguageInput]
     image: ImageSetInput
@@ -345,6 +358,7 @@ const typeDefs = gql`
     currency: String!
     value: Int!
   }
+
   input AddressInput {
     country: String
     region: String
@@ -360,12 +374,14 @@ const typeDefs = gql`
     images: ImageSetInput
     isAdmin: Boolean
   }
+
   input ImageSetInput {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   input ColorInput {
     code: Int!
     name: [LanguageInput!]
@@ -373,16 +389,19 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
+
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
   }
+
   input SubcategoryInput {
     categoryCode: String!
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
   }
+
   input CredentialInput {
     source: String
     tokenPass: String
@@ -412,6 +431,7 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   input ProductOptionsAdditonalsInput {
     name: [LanguageInput!]
     description: [LanguageInput!]
@@ -526,7 +546,7 @@ const typeDefs = gql`
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
 
     "HomePageImages Mutation"
-    addImage(image: Upload): [HomePageImages]
+    updateHomePageLooksImage(images: Upload): [HomePageImages]
   }
 `;
 
