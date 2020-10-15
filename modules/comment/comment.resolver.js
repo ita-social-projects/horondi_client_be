@@ -29,6 +29,9 @@ const commentsQuery = {
   getAllCommentsByUser: async (parent, args) => {
     return await commentsService.getAllCommentsByUser(args.userEmail);
   },
+
+  getAllRecentComments: async (parent, args) =>
+    commentsService.getAllRecentComments(args),
 };
 
 const commentsMutation = {

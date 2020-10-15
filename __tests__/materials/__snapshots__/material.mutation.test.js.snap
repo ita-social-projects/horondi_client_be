@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`material mutations tests delete material tests #7 deleting not existing material should return error 1`] = `
-Object {
-  "__typename": "Error",
-  "message": "MATERIAL_NOT_FOUND",
-  "statusCode": 404,
-}
-`;

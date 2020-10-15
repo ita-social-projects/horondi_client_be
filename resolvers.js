@@ -41,6 +41,11 @@ const {
   categoryMutation,
 } = require('./modules/category/category.resolver');
 const {
+  novaPoshtaQuery,
+  ukrPoshtaQuery,
+} = require('./modules/delivery/delivery.resolver');
+const { paymentQuery } = require('./modules/payment/payment.resolver');
+const {
   businessTextQuery,
   businessTextMutation,
 } = require('./modules/business-text/business-text.resolver');
@@ -73,6 +78,7 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
+  novaPoshtaOrder: 'NovaPoshtaOrder',
 };
 const resolvers = {
   Query: {
@@ -97,6 +103,12 @@ const resolvers = {
     ...modelsQuery,
 
     ...contactQuery,
+
+    ...novaPoshtaQuery,
+
+    ...ukrPoshtaQuery,
+
+    ...paymentQuery,
 
     ...ordersQuery,
 
@@ -284,6 +296,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
+      }
+      return 'Error';
+    },
+  },
+  NovaPoshtaOrderResult: {
+    __resolveType: obj => {
+      if (obj.intDocNumber) {
+        return SCHEMA_NAMES.novaPoshtaOrder;
       }
       return 'Error';
     },

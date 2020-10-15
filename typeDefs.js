@@ -44,9 +44,17 @@ const {
   contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
+  deliveryType,
+  deliveryInput,
+} = require('./modules/delivery/delivery.graphql');
+const {
   emailQuestionType,
   emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
+const {
+  paymentType,
+  paymentInput,
+} = require('./modules/payment/payment.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -62,6 +70,8 @@ const typeDefs = gql`
   ${contactType}
   ${orderTypes}
   ${emailQuestionType}
+  ${deliveryType}
+  ${paymentType}
 
   scalar Upload
 
@@ -78,7 +88,7 @@ const typeDefs = gql`
 
   type CurrencySet {
     currency: String!
-    value: Int!
+    value: Float!
   }
 
   type ImageSet {
@@ -150,6 +160,11 @@ const typeDefs = gql`
     additionalPrice: [CurrencySet]
   }
 
+  type AllProductOptions {
+    sizes: [Size]
+    bottomMaterials: [Material]
+  }
+
   type Size {
     _id: ID!
     name: String
@@ -190,7 +205,6 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
-
   type PaginatedPatterns {
     items: [Pattern!]!
     count: Int!
@@ -208,10 +222,19 @@ const typeDefs = gql`
     items: [Contact]
     count: Int
   }
+  type PaginatedModels {
+    items: [Model]
+    count: Int
+  }
 
   type LanguageImageSet {
     lang: String
     value: ImageSet
+  }
+
+  type PaginatedComments {
+    items: [Comment]
+    count: Int
   }
 
   type SuccessfulResponse {
@@ -242,6 +265,7 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
+  union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -259,6 +283,7 @@ const typeDefs = gql`
 
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
+    getUserOrders: [Order!]
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
@@ -277,19 +302,34 @@ const typeDefs = gql`
       search: String
       sort: SortInput
     ): PaginatedProducts!
+    getProductOptions: AllProductOptions
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
     getAllCommentsByUser(userEmail: String!): [Comment]
+    getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
 
+    getAllModels(limit: Int, skip: Int): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
+    getModelById(id: ID!): ModelResult
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
+
+    getNovaPoshtaCities(city: String): [NovaPoshtaCity]
+    getNovaPoshtaStreets(cityRef: String, street: String): [NovaPoshtaStreet]
+    getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
+    getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
+    createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
+
+    getUkrPoshtaRegion(region: String): UkrPoshtaRegion
+
+    getPaymentCheckout(data: PaymentInput): Payment
+    getPaymentRefund(data: PaymentInput): Payment
 
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
@@ -348,6 +388,8 @@ const typeDefs = gql`
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
+  ${deliveryInput}
+  ${paymentInput}
 
   input LanguageInput {
     lang: String!
@@ -356,7 +398,7 @@ const typeDefs = gql`
 
   input CurrencySetInput {
     currency: String!
-    value: Int!
+    value: Float!
   }
 
   input AddressInput {
@@ -413,8 +455,8 @@ const typeDefs = gql`
   }
 
   input ProductOptionsInput {
-    size: ID!
-    bottomMaterial: ID!
+    size: ID
+    bottomMaterial: ID
     description: [LanguageInput!]
     bottomColor: [LanguageInput!]
     availableCount: Int
@@ -444,6 +486,11 @@ const typeDefs = gql`
     value: ImageSetInput
   }
 
+  input MapImage {
+    lang: String!
+    image: Upload!
+  }
+
   input UserRateInput {
     rate: Int!
   }
@@ -452,14 +499,22 @@ const typeDefs = gql`
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
-    addPattern(pattern: PatternInput!, image: Upload): PatternResult
+    addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
-    updatePattern(id: ID!, pattern: PatternInput!, image: Upload): PatternResult
+    updatePattern(
+      id: ID!
+      pattern: PatternInput!
+      image: Upload!
+    ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
-    updateMaterial(id: ID!, material: MaterialInput!): MaterialResult
+    updateMaterial(
+      id: ID!
+      material: MaterialInput!
+      images: Upload!
+    ): MaterialResult
 
     "Category Mutation"
     addCategory(
@@ -489,7 +544,7 @@ const typeDefs = gql`
     registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
-    deleteUser(id: ID!): User
+    deleteUser(id: ID!): UserResult
     updateUserById(user: UserInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
@@ -505,9 +560,15 @@ const typeDefs = gql`
     ): LogicalResult!
 
     "Product Mutation"
-    addProduct(product: ProductInput!): ProductResult
+    addProduct(product: ProductInput!, upload: Upload!): ProductResult
     deleteProduct(id: ID!): ProductResult
-    updateProduct(id: ID!, product: ProductInput!): ProductResult
+    updateProduct(
+      id: ID!
+      product: ProductInput!
+      upload: Upload
+      primary: Upload
+    ): ProductResult
+    deleteImages(id: ID!, images: [String!]!): PrimaryImage
 
     "Comment Mutation"
     addComment(productId: ID!, comment: commentInput!): CommentResult
@@ -526,14 +587,18 @@ const typeDefs = gql`
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 
     "Model Mutation"
-    addModel(model: ModelInput!): ModelResult
-    updateModel(id: ID!, model: ModelInput!): ModelResult
+    addModel(model: ModelInput!, upload: Upload): ModelResult
+    updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult
     deleteModel(id: ID!): ModelResult
 
     "Contacts Mutation"
-    addContact(contact: contactInput!): ContactResult
+    addContact(contact: contactInput!, mapImages: [MapImage]!): ContactResult
     deleteContact(id: ID!): ContactResult
-    updateContact(id: ID!, contact: contactInput!): ContactResult
+    updateContact(
+      id: ID!
+      contact: contactInput!
+      mapImages: [MapImage]
+    ): ContactResult
 
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
