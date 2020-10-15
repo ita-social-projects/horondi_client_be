@@ -43,19 +43,24 @@ class EmailChatService {
     return emailChat.save();
   }
 
-  async makeQuestionSpam({ questionId, adminId }) {
-    const question = await EmailChat.findById(questionId);
+  async makeEmailQuestionsSpam({ questionsToSpam, adminId }) {
     const admin = await userService.getUserByFieldOrThrow('_id', adminId);
 
-    if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
-    }
+    const result = questionsToSpam.map(async id => {
+      const question = await EmailChat.findById(id);
 
-    question.status = 'SPAM';
-    question.answer.admin = admin;
-    question.answer.text = '';
-    question.answer.date = Date.now();
-    return EmailChat.findByIdAndUpdate(questionId, question, { new: true });
+      question.status = 'SPAM';
+      question.answer.admin = admin;
+      question.answer.text = '';
+      question.answer.date = Date.now();
+
+      return await EmailChat.findByIdAndUpdate(id, question, { new: true });
+    });
+
+    const updatedQuestions = await Promise.allSettled(result);
+    return updatedQuestions.map(item => ({
+      ...item.value._doc,
+    }));
   }
 
   async answerEmailQuestion({ questionId, adminId, text }) {

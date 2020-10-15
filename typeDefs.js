@@ -581,7 +581,10 @@ const typeDefs = gql`
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
-    makeQuestionSpam(questionId: ID!, adminId: ID!): EmailQuestionResult
+    makeEmailQuestionsSpam(
+      questionsToSpam: [String]
+      adminId: ID!
+    ): [EmailQuestion]
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
   }
 `;
