@@ -238,6 +238,21 @@ const typeDefs = gql`
     text: String!
   }
 
+  type CategoryStat {
+    relation: Int
+    purchasedCount: Int
+  }
+
+  type PopularCategory {
+    name: [Language!]
+    stats: CategoryStat
+  }
+
+  type PopularCategories {
+    categories: [PopularCategory!]
+    other: CategoryStat
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -253,12 +268,14 @@ const typeDefs = gql`
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
+  union PopularCategoriesResult = PopularCategories | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
+    getPopularCategories: PopularCategoriesResult
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 

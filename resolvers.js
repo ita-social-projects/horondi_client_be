@@ -76,6 +76,7 @@ const SCHEMA_NAMES = {
   user: 'User',
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
+  popularCategories: 'PopularCategories',
 };
 const resolvers = {
   Query: {
@@ -297,6 +298,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.intDocNumber) {
         return SCHEMA_NAMES.novaPoshtaOrder;
+      }
+      return 'Error';
+    },
+  },
+  PopularCategoriesResult: {
+    __resolveType: obj => {
+      if (obj.categories.length) {
+        return SCHEMA_NAMES.popularCategories;
       }
       return 'Error';
     },

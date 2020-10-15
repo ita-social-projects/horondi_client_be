@@ -123,6 +123,44 @@ class CategoryService {
     }
     return await Category.find({ _id: { $in: category.subcategories } });
   }
+
+  getCategoriesStats(categories, total) {
+    let popularSum = 0;
+    const newCategories = categories
+      .filter(({ isMain }) => isMain)
+      .slice(0, 3)
+      .map(({ name, purchasedCount }) => {
+        const relation = Math.round((purchasedCount * 100) / total);
+        popularSum += relation;
+
+        return {
+          name,
+          stats: { relation, purchasedCount },
+        };
+      });
+
+    const otherRelation = 100 - popularSum;
+    const otherCount = Math.round((otherRelation * total) / 100);
+
+    return {
+      categories: newCategories,
+      other: { relation: otherRelation, purchasedCount: otherCount },
+    };
+  }
+
+  async getPopularCategories() {
+    let total = 0;
+    const categories = await Category.find({}, (e, categories) => {
+      if (e) {
+        throw new Error(CATEGORY_NOT_FOUND);
+      }
+      categories.forEach(({ purchasedCount }) => (total += purchasedCount));
+    })
+      .sort({ purchasedCount: -1 })
+      .lean();
+
+    return this.getCategoriesStats(categories, total);
+  }
 }
 
 module.exports = new CategoryService();
