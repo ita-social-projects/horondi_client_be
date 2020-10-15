@@ -29,6 +29,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+     "graphql-upload": "^11.0.0",
     "@apollo/client": "^3.2.1",
     "@azure/identity": "^1.0.3",
     "@azure/keyvault-secrets": "^4.0.4",
