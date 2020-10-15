@@ -2,31 +2,27 @@ const path = require('path');
 process.env.DEBUG = 'mongo-seeding';
 const { Seeder } = require('mongo-seeding');
 
-const config = {
-  database: {
-    host: '127.0.0.1',
-    port: 27017,
-    name: 'horondi',
-    username: 'root',
-    password: 'root',
-    options: {
-      authSource: 'admin',
-      readPreference: 'primary',
-      appname: 'MongoDB',
-      ssl: false
-    }
-  },
-  dropDatabase: true,
-};
-
 // const config = {
 //   database: {
 //     host: '127.0.0.1',
 //     port: 27017,
-//     name: 'horondi',
+//     name: 'horondi-2',
+//     username: 'root',
+//     password: 'root',
+//     options: {
+//       authSource: 'admin',
+//       readPreference: 'primary',
+//       appname: 'MongoDB',
+//       ssl: false
+//     }
 //   },
 //   dropDatabase: true,
 // };
+
+const config = {
+  database: '',
+  dropDatabase: false,
+};
 
 const seeder = new Seeder(config);
 const collections = seeder.readCollectionsFromPath(

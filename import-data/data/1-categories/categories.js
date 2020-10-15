@@ -22,7 +22,8 @@ function mapToCategories(code, name, image, subCodes){
     images: (image.length === 0) ? mapToImages(code) : { large: image },
     subcategories: getObjectIds(subCodes),
     isMain: (subCodes.length === 0) ? false : true,
-    available: (code === 'sub-laptop-cases') ? false : true
+    available: (code === 'sub-laptop-cases') ? false : true,
+    purchasedCount: Math.floor(Math.random()*40)
   })
 }
 

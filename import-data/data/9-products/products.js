@@ -16,6 +16,7 @@ for(let i = 0; i < productsNumber; i++) {
     products[i]['rate'] = rate;
     products[i]['userRates'] = ratesPerProduct[i];
     products[i]['available'] = true;
+    products[i]['availableCount'] = Math.floor((Math.random() * (50 - 10)));
     products[i]['isHotItem'] = true;
     products[i]['purchasedCount'] = Math.floor((Math.random() * (50 - 10) + 10));
 }
