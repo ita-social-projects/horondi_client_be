@@ -580,7 +580,7 @@ const typeDefs = gql`
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
-    deleteEmailQuestion(id: ID!): EmailQuestionResult
+    deleteEmailQuestions(questionsToDelete: [String]): [EmailQuestion]
     makeEmailQuestionsSpam(
       questionsToSpam: [String]
       adminId: ID!

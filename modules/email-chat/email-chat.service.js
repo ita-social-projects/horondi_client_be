@@ -57,6 +57,9 @@ class EmailChatService {
       return await EmailChat.findByIdAndUpdate(id, question, { new: true });
     });
 
+    console.log('resulte');
+    console.log(result);
+
     const updatedQuestions = await Promise.allSettled(result);
     return updatedQuestions.map(item => ({
       ...item.value._doc,
@@ -79,12 +82,19 @@ class EmailChatService {
     });
   }
 
-  async deleteEmailQuestion(id) {
-    const deletedChat = await EmailChat.findByIdAndDelete(id);
-    if (!deletedChat) {
+  async deleteEmailQuestions(questionsToDelete) {
+    try {
+      const result = questionsToDelete.map(
+        async id => await EmailChat.findByIdAndDelete(id)
+      );
+
+      const deletedQuestions = await Promise.allSettled(result);
+      return deletedQuestions.map(item => ({
+        ...item.value._doc,
+      }));
+    } catch (e) {
       throw new Error(CHAT_NOT_FOUND);
     }
-    return deletedChat;
   }
 }
 

@@ -26,10 +26,8 @@ const emailChatQuestionMutation = {
 
   makeEmailQuestionsSpam: async (parent, args) => {
     try {
-      const gg = await emailChatService.makeEmailQuestionsSpam(args);
-      console.log('====================');
-      console.log(gg);
-      return gg;
+      console.log(args);
+      return await emailChatService.makeEmailQuestionsSpam(args);
     } catch (error) {
       return {
         statusCode: 404,
@@ -48,9 +46,11 @@ const emailChatQuestionMutation = {
       };
     }
   },
-  deleteEmailQuestion: async (parent, args) => {
+  deleteEmailQuestions: async (parent, args) => {
     try {
-      return await emailChatService.deleteEmailQuestion(args.id);
+      return await emailChatService.deleteEmailQuestions(
+        args.questionsToDelete
+      );
     } catch (error) {
       return {
         statusCode: 404,
