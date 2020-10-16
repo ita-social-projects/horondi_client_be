@@ -244,13 +244,12 @@ const typeDefs = gql`
   }
 
   type PopularCategory {
-    name: [Language!]
+    name: String
     stats: CategoryStat
   }
 
   type PopularCategories {
     categories: [PopularCategory!]
-    other: CategoryStat
   }
 
   union CategoryResult = Category | Error

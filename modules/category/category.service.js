@@ -8,6 +8,7 @@ const {
 } = require('../../error-messages/category.messages');
 const { validateCategoryInput } = require('../../utils/validate-category');
 const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const { OTHERS } = require('../../consts');
 
 class CategoryService {
   async getAllCategories() {
@@ -121,7 +122,9 @@ class CategoryService {
     if (!category.subcategories.length) {
       return [];
     }
-    return await Category.find({ _id: { $in: category.subcategories } });
+    return await Category.find({
+      _id: { $in: category.subcategories },
+    });
   }
 
   getCategoriesStats(categories, total) {
@@ -134,7 +137,7 @@ class CategoryService {
         popularSum += relation;
 
         return {
-          name,
+          name: name[0].value,
           stats: { relation, purchasedCount },
         };
       });
@@ -143,8 +146,16 @@ class CategoryService {
     const otherCount = Math.round((otherRelation * total) / 100);
 
     return {
-      categories: newCategories,
-      other: { relation: otherRelation, purchasedCount: otherCount },
+      categories: [
+        ...newCategories,
+        {
+          stats: {
+            relation: otherRelation,
+            purchasedCount: otherCount,
+          },
+          name: OTHERS,
+        },
+      ],
     };
   }
 
