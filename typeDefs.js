@@ -257,7 +257,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
-    getUsersForStatistic(filter: UserForStatisticsInput): [UserStatistic]
+    getUsersForStatistic(filter: UserForStatisticsInput): UserStatistic
     getUserByToken: UserResult
     getUserById(id: ID!): User
 

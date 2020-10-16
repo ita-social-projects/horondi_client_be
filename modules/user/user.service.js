@@ -118,17 +118,25 @@ class UserService {
           })
       )
     );
+
     const data = Object.values(
       items
-        .map(el => new Date(el.registrationDate).getDate())
-        .sort((a, b) => a - b)
-        .filter((el, i, arr) => {
-          if (el !== arr[i + 1]) {
-            return el;
-          }
+        .map(
+          el =>
+            `${new Date(el.registrationDate).getDate()}.${new Date(
+              el.registrationDate
+            ).getMonth()}`
+        )
+        .sort((a, b) => {
+          a.split('.')[0] - b;
         })
+        .reduce((acc, el) => {
+          acc[el] = (acc[el] || 0) + 1;
+          return acc;
+        }, {})
     );
 
+    console.log(labels.length, data.length);
     return { labels, data };
   }
 
