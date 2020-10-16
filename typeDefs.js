@@ -8,6 +8,7 @@ const {
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
+  UserForStatisticsInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -251,6 +252,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
+    getUsersForStatistic(filter: UserForStatisticsInput): [User]
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -330,6 +332,7 @@ const typeDefs = gql`
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
+  ${UserForStatisticsInput}
 
   input LanguageInput {
     lang: String!

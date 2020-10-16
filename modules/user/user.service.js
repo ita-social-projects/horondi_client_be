@@ -44,10 +44,26 @@ const SOURCES = {
 class UserService {
   filterItems(args = {}) {
     const filter = {};
-    const { roles } = args;
+    const { roles, days } = args;
 
     if (roles) {
       filter.role = { $in: roles };
+    }
+
+    if (days) {
+      filter.registrationDate = {
+        $gte: removeDaysFromData(days, Date.now()),
+        $lte: removeDaysFromData(0, Date.now()),
+      };
+    }
+
+    function removeDaysFromData(days, currentDate) {
+      const currentDay = new Date(Date.now()).getDate();
+      const timeFewDaysAgo = new Date(currentDate).setDate(currentDay - days);
+      return `
+        ${new Date(timeFewDaysAgo).getFullYear()}-${new Date(
+        timeFewDaysAgo
+      ).getMonth() + 1}-${new Date(timeFewDaysAgo).getDate()}`;
     }
 
     return filter;
@@ -82,6 +98,36 @@ class UserService {
 
     const items = await User.find(filters);
 
+    return items;
+  }
+
+  async getUsersForStatistic({ filter }) {
+    const filters = this.filterItems(filter);
+    const items = await User.find(filters);
+    const labels = Array.from(
+      new Set(
+        items
+          .map(
+            el =>
+              `${new Date(el.registrationDate).getDate()}.${new Date(
+                el.registrationDate
+              ).getMonth()}`
+          )
+          .sort((a, b) => {
+            a.split('.')[0] - b;
+          })
+      )
+    );
+    const data = Object.values(
+      items
+        .map(el => new Date(el.registrationDate).getDate())
+        .sort((a, b) => a - b)
+        .reduce((acc, el) => {
+          acc[el] = (acc[el] || 0) + 1;
+          return acc;
+        }, {})
+    );
+    console.log(labels.length, data.length);
     return items;
   }
 
@@ -240,22 +286,22 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    const token = await generateToken(savedUser._id, savedUser.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.CONFIRMATION_SECRET,
-    });
-    savedUser.confirmationToken = token;
-    await savedUser.save();
-    const message = {
-      from: process.env.MAIL_USER,
-      to: savedUser.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(firstName, token, language),
-    };
+    // const token = await generateToken(savedUser._id, savedUser.email, {
+    //   expiresIn: process.env.RECOVERY_EXPIRE,
+    //   secret: process.env.CONFIRMATION_SECRET,
+    // });
+    // savedUser.confirmationToken = token;
+    // await savedUser.save();
+    // const message = {
+    //   from: process.env.MAIL_USER,
+    //   to: savedUser.email,
+    //   subject: '[HORONDI] Email confirmation',
+    //   html: confirmationMessage(firstName, token, language),
+    // };
 
-    if (process.env.NODE_ENV !== 'test') {
-      await sendEmail(message);
-    }
+    // if (process.env.NODE_ENV !== 'test') {
+    //   await sendEmail(message);
+    // }
 
     return savedUser;
   }
