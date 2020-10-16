@@ -585,7 +585,11 @@ const typeDefs = gql`
       questionsToSpam: [String]
       adminId: ID!
     ): [EmailQuestion]
-    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
+    answerEmailQuestion(
+      questionId: ID!
+      adminId: ID!
+      text: String!
+    ): EmailQuestionResult
   }
 `;
 

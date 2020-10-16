@@ -40,6 +40,7 @@ const emailChatQuestionMutation = {
     try {
       return await emailChatService.answerEmailQuestion(args);
     } catch (error) {
+      console.log(error);
       return {
         statusCode: 404,
         message: error.message,

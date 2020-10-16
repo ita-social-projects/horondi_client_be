@@ -4,6 +4,8 @@ const {
   CHAT_NOT_FOUND,
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
+const { sendEmail } = require('../../utils/sendGrid-email');
+const { emailQuestionAnswerMessage } = require('../../utils/localization');
 
 class EmailChatService {
   async getAllEmailQuestions({ filter = {}, skip }) {
@@ -57,9 +59,6 @@ class EmailChatService {
       return await EmailChat.findByIdAndUpdate(id, question, { new: true });
     });
 
-    console.log('resulte');
-    console.log(result);
-
     const updatedQuestions = await Promise.allSettled(result);
     return updatedQuestions.map(item => ({
       ...item.value._doc,
@@ -73,13 +72,32 @@ class EmailChatService {
     if (!question) {
       throw new Error(QUESTION_NOT_FOUND);
     }
+
     question.status = 'ANSWERED';
     question.answer.admin = admin;
     question.answer.text = text;
     question.answer.date = Date.now();
-    return EmailChat.findByIdAndUpdate(questionId, question, {
-      new: true,
-    });
+    const updatedQuestion = await EmailChat.findByIdAndUpdate(
+      questionId,
+      question,
+      {
+        new: true,
+      }
+    );
+
+    const language = question.language;
+    const subject = `[HORONDI] ${
+      !language ? 'відповідь на запитання' : 'question answer'
+    }`;
+    const message = {
+      from: process.env.MAIL_USER,
+      to: question.email,
+      subject,
+      html: emailQuestionAnswerMessage(updatedQuestion, language),
+    };
+    await sendEmail(message);
+
+    return updatedQuestion;
   }
 
   async deleteEmailQuestions(questionsToDelete) {
