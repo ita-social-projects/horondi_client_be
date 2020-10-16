@@ -122,13 +122,14 @@ class UserService {
       items
         .map(el => new Date(el.registrationDate).getDate())
         .sort((a, b) => a - b)
-        .reduce((acc, el) => {
-          acc[el] = (acc[el] || 0) + 1;
-          return acc;
-        }, {})
+        .filter((el, i, arr) => {
+          if (el !== arr[i + 1]) {
+            return el;
+          }
+        })
     );
-    console.log(labels.length, data.length);
-    return items;
+
+    return { labels, data };
   }
 
   async getUser(id) {

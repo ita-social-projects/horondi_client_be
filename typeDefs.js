@@ -216,6 +216,11 @@ const typeDefs = gql`
     text: String!
   }
 
+  type UserStatistic {
+    data: [Int]
+    labels: [String]
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -252,7 +257,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
-    getUsersForStatistic(filter: UserForStatisticsInput): [User]
+    getUsersForStatistic(filter: UserForStatisticsInput): [UserStatistic]
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
