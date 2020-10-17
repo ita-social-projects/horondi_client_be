@@ -26,7 +26,6 @@ const emailChatQuestionMutation = {
 
   makeEmailQuestionsSpam: async (parent, args) => {
     try {
-      console.log(args);
       return await emailChatService.makeEmailQuestionsSpam(args);
     } catch (error) {
       return {
