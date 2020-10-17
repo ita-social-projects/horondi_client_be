@@ -129,16 +129,18 @@ class CategoryService {
 
   getCategoriesStats(categories, total) {
     let popularSum = 0;
-    const newCategories = categories
+    let res = { names: [], counts: [], relations: [] };
+
+    categories
       .filter(({ isMain }) => isMain)
       .slice(0, 3)
-      .map(({ name, purchasedCount }) => {
+      .forEach(({ name, purchasedCount }) => {
         const relation = Math.round((purchasedCount * 100) / total);
         popularSum += relation;
-
-        return {
-          name: name[0].value,
-          stats: { relation, purchasedCount },
+        res = {
+          names: [...res.names, name[0].value],
+          counts: [...res.counts, purchasedCount],
+          relations: [...res.relations, relation],
         };
       });
 
@@ -146,16 +148,9 @@ class CategoryService {
     const otherCount = Math.round((otherRelation * total) / 100);
 
     return {
-      categories: [
-        ...newCategories,
-        {
-          stats: {
-            relation: otherRelation,
-            purchasedCount: otherCount,
-          },
-          name: OTHERS,
-        },
-      ],
+      names: [...res.names, OTHERS],
+      counts: [...res.counts, otherCount],
+      relations: [...res.relations, otherRelation],
     };
   }
 

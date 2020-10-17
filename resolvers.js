@@ -304,7 +304,7 @@ const resolvers = {
   },
   PopularCategoriesResult: {
     __resolveType: obj => {
-      if (obj.categories.length) {
+      if (obj.names) {
         return SCHEMA_NAMES.popularCategories;
       }
       return 'Error';

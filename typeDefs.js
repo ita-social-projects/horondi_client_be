@@ -238,18 +238,10 @@ const typeDefs = gql`
     text: String!
   }
 
-  type CategoryStat {
-    relation: Int
-    purchasedCount: Int
-  }
-
-  type PopularCategory {
-    name: String
-    stats: CategoryStat
-  }
-
   type PopularCategories {
-    categories: [PopularCategory!]
+    names: [String!]
+    counts: [Int!]
+    relations: [Int!]
   }
 
   union CategoryResult = Category | Error
