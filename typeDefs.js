@@ -55,6 +55,10 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
+const {
+  headerType,
+  headerInput,
+} = require('./modules/header/header.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -72,6 +76,7 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${headerType}
 
   scalar Upload
 
@@ -253,6 +258,7 @@ const typeDefs = gql`
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
+  union HeaderResult = Header | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -320,6 +326,9 @@ const typeDefs = gql`
 
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
+
+    getAllHeaders: [Header!]!
+    getHeaderById(id: ID): HeaderResult
   }
 
   input SortInput {
@@ -372,6 +381,7 @@ const typeDefs = gql`
   ${emailQuestionInput}
   ${deliveryInput}
   ${paymentInput}
+  ${headerInput}
 
   input LanguageInput {
     lang: String!
@@ -584,6 +594,11 @@ const typeDefs = gql`
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
+
+    "Header Mutation"
+    addHeader(header: HeaderInput!): HeaderResult
+    deleteHeader(id: ID!): HeaderResult
+    updateHeader(id: ID!, header: HeaderInput!): HeaderResult
   }
 `;
 
