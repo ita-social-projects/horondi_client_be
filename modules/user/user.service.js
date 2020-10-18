@@ -104,7 +104,6 @@ class UserService {
 
     const data = countItemsCreatedAtUniqueDate(items);
 
-    console.log(labels, data);
     return { labels, data };
   }
 
