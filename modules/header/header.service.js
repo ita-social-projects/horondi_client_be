@@ -18,12 +18,13 @@ class HeadersService {
   }
 
   async updateHeader({ id, header }) {
-    if (await this.checkHeaderExist(header, id)) {
-      throw new Error(HEADER_ALREADY_EXIST);
-    }
-    const headerToUpdate = await Header.findById(id);
+    const headerToUpdate = await Header.findById(id).lean();
     if (!headerToUpdate) {
       throw new Error(HEADER_NOT_FOUND);
+    }
+
+    if (await this.checkHeaderExist(header, id)) {
+      throw new Error(HEADER_ALREADY_EXIST);
     }
 
     return await Header.findByIdAndUpdate(

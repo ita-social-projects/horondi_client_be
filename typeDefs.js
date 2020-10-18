@@ -328,7 +328,7 @@ const typeDefs = gql`
     getEmailQuestionById(id: ID!): EmailQuestionResult
 
     getAllHeaders: [Header!]!
-    getHeaderById(id: ID): HeaderResult
+    getHeaderById(id: ID!): HeaderResult
   }
 
   input SortInput {
