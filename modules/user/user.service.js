@@ -20,8 +20,8 @@ const {
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   removeDaysFromData,
-  countItemsCreatedAtUniqueDate,
-  changeItemToUniqueDate,
+  countItemsOccurency,
+  changeDataFormat,
 } = require('../helper-functions');
 
 const {
@@ -99,11 +99,17 @@ class UserService {
 
   async getUsersForStatistic({ filter }) {
     const filters = this.filterItems(filter);
-    const items = await User.find(filters);
-    const labels = changeItemToUniqueDate(items);
-    const data = countItemsCreatedAtUniqueDate(items);
-
-    return { labels, data };
+    const users = await User.find(filters)
+      .sort({ registrationDate: 1 })
+      .lean();
+    const formatedData = users.map(el =>
+      changeDataFormat(el.registrationDate, { month: 'short', day: 'numeric' })
+    );
+    const userOccurency = countItemsOccurency(formatedData);
+    return {
+      labels: Object.keys(userOccurency),
+      data: Object.values(userOccurency),
+    };
   }
 
   async getUser(id) {
@@ -485,4 +491,5 @@ class UserService {
     }
   }
 }
+
 module.exports = new UserService();
