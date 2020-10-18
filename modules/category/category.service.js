@@ -137,11 +137,10 @@ class CategoryService {
       .forEach(({ name, purchasedCount }) => {
         const relation = Math.round((purchasedCount * 100) / total);
         popularSum += relation;
-        res = {
-          names: [...res.names, name[0].value],
-          counts: [...res.counts, purchasedCount],
-          relations: [...res.relations, relation],
-        };
+
+        res.names.push(name[0].value);
+        res.counts.push(purchasedCount);
+        res.relations.push(relation);
       });
 
     const otherRelation = 100 - popularSum;
