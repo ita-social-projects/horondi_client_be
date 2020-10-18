@@ -244,6 +244,11 @@ const typeDefs = gql`
     relations: [Int!]
   }
 
+  type PopularProducts {
+    labels: [String!]
+    counts: [Int!]
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -259,14 +264,13 @@ const typeDefs = gql`
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
-  union PopularCategoriesResult = PopularCategories | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
-    getPopularCategories: PopularCategoriesResult
+    getPopularCategories: PopularCategories!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -298,6 +302,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
+    getPopularProducts: PopularProducts!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]

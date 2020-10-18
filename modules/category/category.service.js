@@ -156,14 +156,11 @@ class CategoryService {
 
   async getPopularCategories() {
     let total = 0;
-    const categories = await Category.find({}, (e, categories) => {
-      if (e) {
-        throw new Error(CATEGORY_NOT_FOUND);
-      }
-      categories.forEach(({ purchasedCount }) => (total += purchasedCount));
-    })
+    const categories = await Category.find()
       .sort({ purchasedCount: -1 })
       .lean();
+
+    categories.forEach(({ purchasedCount }) => (total += purchasedCount));
 
     return this.getCategoriesStats(categories, total);
   }
