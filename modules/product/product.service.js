@@ -235,19 +235,18 @@ class ProductsService {
   }
 
   async getPopularProducts() {
-    let labels = [];
-    let counts = [];
     const products = await Product.find()
       .sort({ purchasedCount: -1 })
       .limit(10)
       .lean();
 
-    products.forEach(({ purchasedCount, name }) => {
-      labels.push(name[0].value);
-      counts.push(purchasedCount);
-    });
-
-    return { labels, counts };
+    return products.reduce(
+      (prev, curr) => ({
+        labels: [...prev.labels, curr.name[0].value],
+        counts: [...prev.counts, curr.purchasedCount],
+      }),
+      { labels: [], counts: [] }
+    );
   }
 }
 
