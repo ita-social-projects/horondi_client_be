@@ -109,9 +109,9 @@ class UserService {
         items
           .map(
             el =>
-              `${new Date(el.registrationDate).getDate()}.${new Date(
-                el.registrationDate
-              ).getMonth()}`
+              `${new Date(el.registrationDate).getDate()} ${monthNumToStr(
+                new Date(el.registrationDate).getMonth()
+              )}`
           )
           .sort((a, b) => {
             a.split('.')[0] - b;
@@ -124,8 +124,8 @@ class UserService {
         .map(
           el =>
             `${new Date(el.registrationDate).getDate()}.${new Date(
-              el.registrationDate
-            ).getMonth()}`
+              el.registrationDate.getMonth()
+            )}`
         )
         .sort((a, b) => {
           a.split('.')[0] - b;
@@ -136,7 +136,38 @@ class UserService {
         }, {})
     );
 
-    console.log(labels.length, data.length);
+    function monthNumToStr(num) {
+      switch (+num) {
+        case 0:
+          return 'Jan';
+        case 1:
+          return 'Feb';
+        case 2:
+          return 'Mar';
+        case 3:
+          return 'Apr';
+        case 4:
+          return 'May';
+        case 5:
+          return 'Jun';
+        case 6:
+          return 'Jul';
+        case 7:
+          return 'Aug';
+        case 8:
+          return 'Sep';
+        case 9:
+          return 'Oct';
+        case 10:
+          return 'Nov';
+        case 11:
+          return 'Dec';
+        default:
+          return '';
+      }
+    }
+
+    console.log(labels, data);
     return { labels, data };
   }
 
@@ -295,22 +326,22 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
-    // const token = await generateToken(savedUser._id, savedUser.email, {
-    //   expiresIn: process.env.RECOVERY_EXPIRE,
-    //   secret: process.env.CONFIRMATION_SECRET,
-    // });
-    // savedUser.confirmationToken = token;
-    // await savedUser.save();
-    // const message = {
-    //   from: process.env.MAIL_USER,
-    //   to: savedUser.email,
-    //   subject: '[HORONDI] Email confirmation',
-    //   html: confirmationMessage(firstName, token, language),
-    // };
+    const token = await generateToken(savedUser._id, savedUser.email, {
+      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: process.env.CONFIRMATION_SECRET,
+    });
+    savedUser.confirmationToken = token;
+    await savedUser.save();
+    const message = {
+      from: process.env.MAIL_USER,
+      to: savedUser.email,
+      subject: '[HORONDI] Email confirmation',
+      html: confirmationMessage(firstName, token, language),
+    };
 
-    // if (process.env.NODE_ENV !== 'test') {
-    //   await sendEmail(message);
-    // }
+    if (process.env.NODE_ENV !== 'test') {
+      await sendEmail(message);
+    }
 
     return savedUser;
   }
