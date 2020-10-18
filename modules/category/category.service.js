@@ -132,8 +132,7 @@ class CategoryService {
     let res = { names: [], counts: [], relations: [] };
 
     categories
-      .filter(({ isMain }) => isMain)
-      .slice(0, 3)
+      .filter(({ isMain }, idx) => isMain && idx < 3)
       .forEach(({ name, purchasedCount }) => {
         const relation = Math.round((purchasedCount * 100) / total);
         popularSum += relation;
