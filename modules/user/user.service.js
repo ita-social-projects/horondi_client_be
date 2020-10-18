@@ -106,9 +106,11 @@ class UserService {
       changeDataFormat(el.registrationDate, { month: 'short', day: 'numeric' })
     );
     const userOccurency = countItemsOccurency(formatedData);
+
     return {
       labels: Object.keys(userOccurency),
       data: Object.values(userOccurency),
+      count: users.length,
     };
   }
 

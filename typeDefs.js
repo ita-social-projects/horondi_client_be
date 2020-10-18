@@ -242,6 +242,7 @@ const typeDefs = gql`
   type UserStatistic {
     data: [Int]
     labels: [String]
+    count: Int
   }
 
   union CategoryResult = Category | Error
