@@ -48,9 +48,7 @@ function changeItemToUniqueDate(items) {
               new Date(el.registrationDate).getMonth()
             )}`
         )
-        .sort((a, b) => {
-          a.split('.')[0] - b;
-        })
+        .sort((a, b) => a.split('.')[0] - b)
     )
   );
 }
@@ -59,9 +57,7 @@ function countItemsCreatedAtUniqueDate(items) {
   return Object.values(
     items
       .map(el => new Date(el.registrationDate).getDate())
-      .sort((a, b) => {
-        a - b;
-      })
+      .sort((a, b) => a - b)
       .reduce((acc, el) => {
         acc[el] = (acc[el] || 0) + 1;
         return acc;

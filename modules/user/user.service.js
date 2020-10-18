@@ -101,7 +101,6 @@ class UserService {
     const filters = this.filterItems(filter);
     const items = await User.find(filters);
     const labels = changeItemToUniqueDate(items);
-
     const data = countItemsCreatedAtUniqueDate(items);
 
     return { labels, data };
