@@ -11,4 +11,4 @@ COPY . .
 
 CMD ["npm", "start"]
 EXPOSE 2222 80
-RUN /usr/sbin/sshd -p 2222
+CMD ["/usr/sbin/sshd", "-D", "-p", "2222"]
