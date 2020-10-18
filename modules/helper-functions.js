@@ -30,12 +30,7 @@ function monthNumToStr(num) {
 }
 
 function removeDaysFromData(days, currentDate) {
-  const currentDay = new Date(Date.now()).getDate();
-  const timeFewDaysAgo = new Date(currentDate).setDate(currentDay - days);
-  return `
-		${new Date(timeFewDaysAgo).getFullYear()}-${new Date(
-    timeFewDaysAgo
-  ).getMonth() + 1}-${new Date(timeFewDaysAgo).getDate()}`;
+  return currentDate - days * 86400000;
 }
 
 function changeItemToUniqueDate(items) {
