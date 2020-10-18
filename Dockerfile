@@ -8,3 +8,4 @@ RUN npm install @szmarczak/http-timer
 COPY . .
 
 CMD ["npm", "start"]
+EXPOSE 2222 80
