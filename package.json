@@ -24,11 +24,12 @@
     "test-full": "start-server-and-test test-server http://localhost:5000/health test",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "test-docker": "npm run docker-db-start && npm run test-full"
+    "test-docker": "npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+     "graphql-upload": "^11.0.0",
     "@apollo/client": "^3.2.1",
     "@azure/identity": "^1.0.3",
     "@azure/keyvault-secrets": "^4.0.4",
@@ -46,9 +47,11 @@
     "azure": "^2.3.1-preview",
     "azure-storage": "^2.10.3",
     "bcryptjs": "^2.4.3",
+    "cloudipsp-node-js-sdk": "^1.0.5",
     "config": "^3.2.5",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
+    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.3.0",

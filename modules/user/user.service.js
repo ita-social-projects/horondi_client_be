@@ -131,7 +131,7 @@ class UserService {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
-
+    if (!user.images) user.images = [];
     if (upload) {
       await deleteFiles(
         Object.values(user.images).filter(
@@ -273,10 +273,6 @@ class UserService {
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(firstName, token, language),
     };
-
-    if (process.env.NODE_ENV !== 'test') {
-      await sendEmail(message);
-    }
 
     return savedUser;
   }

@@ -24,12 +24,13 @@ const productsQuery = {
   },
   getModelsByCategory: (parent, args) =>
     productsService.getModelsByCategory(args.id),
+  getProductOptions: () => productsService.getProductOptions(),
 };
 
 const productsMutation = {
-  addProduct: async (parent, args) => {
+  addProduct: (parent, args) => {
     try {
-      return await productsService.addProduct(args.product);
+      return productsService.addProduct(args.product, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
@@ -49,7 +50,22 @@ const productsMutation = {
   },
   updateProduct: async (parent, args) => {
     try {
-      return await productsService.updateProduct(args.id, args.product);
+      return await productsService.updateProduct(
+        args.id,
+        args.product,
+        args.upload,
+        args.primary
+      );
+    } catch (e) {
+      return {
+        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
+        message: e.message,
+      };
+    }
+  },
+  deleteImages: async (parent, args) => {
+    try {
+      return await productsService.deleteImages(args.id, args.images);
     } catch (e) {
       return {
         statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
