@@ -76,8 +76,6 @@ const SCHEMA_NAMES = {
   user: 'User',
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
-  popularCategories: 'PopularCategories',
-  popularProducts: 'PopularProducts',
 };
 const resolvers = {
   Query: {
