@@ -5,16 +5,7 @@ const {
 
 const categoryQuery = {
   getAllCategories: (parent, args) => categoryService.getAllCategories(),
-  getPopularCategories: () => {
-    try {
-      return categoryService.getPopularCategories();
-    } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
-    }
-  },
+  getPopularCategories: () => categoryService.getPopularCategories(),
   getCategoryById: async (parent, args) => {
     try {
       return await categoryService.getCategoryById(args.id);
