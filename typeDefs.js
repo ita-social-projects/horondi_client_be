@@ -240,7 +240,6 @@ const typeDefs = gql`
   }
 
   type UserStatistic {
-    data: [Int]
     labels: [String]
     count: Int
   }

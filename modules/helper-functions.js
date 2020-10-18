@@ -1,4 +1,5 @@
-const removeDaysFromData = (days, currentDate) => currentDate - days * 86400000;
+const removeDaysFromData = (days, currentDate) =>
+  currentDate - days * dayInMiliseconds;
 
 const changeDataFormat = (data, options) =>
   new Date(data).toLocaleString('en-US', options);

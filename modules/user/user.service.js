@@ -37,6 +37,8 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 
+const { userDateFormat } = require('../../consts');
+
 const ROLES = {
   admin: 'admin',
   user: 'user',
@@ -103,14 +105,13 @@ class UserService {
       .sort({ registrationDate: 1 })
       .lean();
     const formatedData = users.map(el =>
-      changeDataFormat(el.registrationDate, { month: 'short', day: 'numeric' })
+      changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurency = countItemsOccurency(formatedData);
 
     return {
       labels: Object.keys(userOccurency),
       data: Object.values(userOccurency),
-      count: users.length,
     };
   }
 
