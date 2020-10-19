@@ -18,6 +18,11 @@ const {
   adminConfirmationMessage,
 } = require('../../utils/localization');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const {
+  removeDaysFromData,
+  countItemsOccurency,
+  changeDataFormat,
+} = require('../helper-functions');
 
 const {
   USER_ALREADY_EXIST,
@@ -32,6 +37,8 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 
+const { userDateFormat } = require('../../consts');
+
 const ROLES = {
   admin: 'admin',
   user: 'user',
@@ -44,10 +51,17 @@ const SOURCES = {
 class UserService {
   filterItems(args = {}) {
     const filter = {};
-    const { roles } = args;
+    const { roles, days } = args;
 
     if (roles) {
       filter.role = { $in: roles };
+    }
+
+    if (days) {
+      filter.registrationDate = {
+        $gte: removeDaysFromData(days, Date.now()),
+        $lte: removeDaysFromData(0, Date.now()),
+      };
     }
 
     return filter;
@@ -83,6 +97,22 @@ class UserService {
     const items = await User.find(filters);
 
     return items;
+  }
+
+  async getUsersForStatistic({ filter }) {
+    const filters = this.filterItems(filter);
+    const users = await User.find(filters)
+      .sort({ registrationDate: 1 })
+      .lean();
+    const formatedData = users.map(el =>
+      changeDataFormat(el.registrationDate, userDateFormat)
+    );
+    const userOccurency = countItemsOccurency(formatedData);
+
+    return {
+      labels: Object.keys(userOccurency),
+      data: Object.values(userOccurency),
+    };
   }
 
   async getUser(id) {
@@ -464,4 +494,5 @@ class UserService {
     }
   }
 }
+
 module.exports = new UserService();

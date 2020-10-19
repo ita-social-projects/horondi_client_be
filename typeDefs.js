@@ -8,6 +8,7 @@ const {
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
+  UserForStatisticsInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -245,6 +246,10 @@ const typeDefs = gql`
     text: String!
   }
 
+  type UserStatistic {
+    labels: [String]
+    count: Int
+
   type PopularCategories {
     names: [String!]
     counts: [Int!]
@@ -296,6 +301,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
+    getUsersForStatistic(filter: UserForStatisticsInput): UserStatistic
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -400,6 +406,7 @@ const typeDefs = gql`
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
+  ${UserForStatisticsInput}
   ${deliveryInput}
   ${paymentInput}
   ${headerInput}
