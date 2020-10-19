@@ -15,6 +15,7 @@ class MaterialsService {
       USD: 'USD',
     };
   }
+
   async getAllMaterials({ skip, limit }) {
     const items = await Material.find()
       .skip(skip)
@@ -29,6 +30,15 @@ class MaterialsService {
 
   async getMaterialById(id) {
     return Material.findById(id);
+  }
+
+  async getMaterialColorByCode(code) {
+    const color = await Material.find({ colors: { $elemMatch: { code } } });
+    //console.log(color)
+    if (!color) {
+      throw new Error('Color not found');
+    }
+    return color;
   }
 
   async updateMaterial(id, material, images) {

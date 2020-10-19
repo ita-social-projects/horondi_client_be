@@ -245,6 +245,7 @@ const typeDefs = gql`
 
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
+    getMaterialColorByCode(code: Int): Color
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult

@@ -16,6 +16,14 @@ const materialQuery = {
       message: MATERIAL_NOT_FOUND,
     };
   },
+  getMaterialColorByCode: async (parent, args) => {
+    return await materialService.getMaterialColorByCode(args.code);
+
+    // return {
+    //   statusCode: 404,
+    //   message: MATERIAL_NOT_FOUND,
+    // };
+  },
 };
 
 const materialMutation = {
