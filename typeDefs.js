@@ -55,10 +55,7 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
-const {
-  headerType,
-  headerInput,
-} = require('./modules/header/header.graphql');
+const { headerType, headerInput } = require('./modules/header/header.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -223,6 +220,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedEmailQuestion {
+    questions: [EmailQuestion]
+    count: Int
+  }
+
   type LanguageImageSet {
     lang: String
     value: ImageSet
@@ -324,8 +326,12 @@ const typeDefs = gql`
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
 
-    getAllEmailQuestions: [EmailQuestion]
+    getAllEmailQuestions(
+      filter: FilterInput
+      skip: Int
+    ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
+    getPendingEmailQuestionsCount: Int
 
     getAllHeaders: [Header!]!
     getHeaderById(id: ID!): HeaderResult
@@ -348,6 +354,7 @@ const typeDefs = gql`
     isHotItem: Boolean
     models: [String]
     currency: Int
+    emailQuestionStatus: [String]
   }
   input RoleEnumInput {
     role: String
@@ -591,6 +598,16 @@ const typeDefs = gql`
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestions(questionsToDelete: [String]): [EmailQuestion]
+    makeEmailQuestionsSpam(
+      questionsToSpam: [String]
+      adminId: ID!
+    ): [EmailQuestion]
+    answerEmailQuestion(
+      questionId: ID!
+      adminId: ID!
+      text: String!
+    ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult

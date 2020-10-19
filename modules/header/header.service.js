@@ -6,7 +6,7 @@ const {
 
 class HeadersService {
   async getAllHeaders() {
-    return await Header.find()
+    return await Header.find();
   }
 
   async getHeaderById(id) {
@@ -27,13 +27,9 @@ class HeadersService {
       throw new Error(HEADER_ALREADY_EXIST);
     }
 
-    return await Header.findByIdAndUpdate(
-      id,
-      header,
-      {
-        new: true,
-      }
-    );
+    return await Header.findByIdAndUpdate(id, header, {
+      new: true,
+    });
   }
 
   async addHeader({ header }) {
@@ -45,11 +41,11 @@ class HeadersService {
 
   async deleteHeader(id) {
     const foundHeader = await Header.findByIdAndDelete(id).lean();
-  
+
     if (!foundHeader) {
       throw new Error(HEADER_NOT_FOUND);
     }
-    
+
     return foundHeader;
   }
 
