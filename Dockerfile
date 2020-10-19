@@ -1,8 +1,6 @@
 FROM node:alpine
 RUN apk add openssh \
      && echo "root:Docker!" | chpasswd 
-COPY sshd_config /etc/ssh/
-RUN cat /etc/ssh/sshd_config 
 WORKDIR /usr/app
 
 COPY package*.json ./
@@ -12,4 +10,4 @@ COPY . .
 
 CMD ["npm", "start"]
 EXPOSE 2222 80
-CMD ["/usr/sbin/sshd"]
+CMD ["/usr/sbin/sshd", "-p", "2222"]
