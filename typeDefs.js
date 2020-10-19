@@ -245,6 +245,17 @@ const typeDefs = gql`
     text: String!
   }
 
+  type PopularCategories {
+    names: [String!]
+    counts: [Int!]
+    relations: [Int!]
+  }
+
+  type PopularProducts {
+    labels: [String!]
+    counts: [Int!]
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -267,6 +278,7 @@ const typeDefs = gql`
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
+    getPopularCategories: PopularCategories!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -298,6 +310,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
+    getPopularProducts: PopularProducts!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
