@@ -4,10 +4,9 @@ const {
   CATEGORY_NOT_VALID,
   MODEL_ALREADY_EXIST,
   MODEL_NOT_FOUND,
-  MODEL_NOT_VALID
+  MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
 const { deleteFiles, uploadFiles } = require('../upload/upload.service');
-
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -45,7 +44,7 @@ class ModelsService {
       throw new Error(MODEL_ALREADY_EXIST);
     }
 
-    if(upload) {
+    if (upload) {
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       data.images = imageResults.fileNames;
@@ -55,17 +54,16 @@ class ModelsService {
   }
 
   async updateModel(id, newModel, upload) {
-    
     const model = await Model.findById(id);
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
-    }   
-    
+    }
+
     if (upload) {
-      if(model.images) {
+      if (model.images) {
         const images = Object.values(model.images).filter(
           item => typeof item === 'string' && item
-        )
+        );
         await deleteFiles(images);
       }
       const uploadResult = await uploadFiles([upload]);
@@ -76,8 +74,8 @@ class ModelsService {
   }
 
   async deleteModel(id) {
-    const model = await Model.findByIdAndDelete(id)
-    
+    const model = await Model.findByIdAndDelete(id);
+
     const images = Object.values(model.images).filter(
       item => typeof item === 'string' && item
     );
