@@ -111,7 +111,7 @@ class UserService {
 
     return {
       labels: Object.keys(userOccurency),
-      data: Object.values(userOccurency),
+      counts: Object.values(userOccurency),
     };
   }
 

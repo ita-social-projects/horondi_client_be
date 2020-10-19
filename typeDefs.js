@@ -56,6 +56,7 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
+const { headerType, headerInput } = require('./modules/header/header.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -73,6 +74,7 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${headerType}
 
   scalar Upload
 
@@ -219,6 +221,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedEmailQuestion {
+    questions: [EmailQuestion]
+    count: Int
+  }
+
   type LanguageImageSet {
     lang: String
     value: ImageSet
@@ -245,11 +252,6 @@ const typeDefs = gql`
     relations: [Int!]
   }
 
-  type UserStatistic {
-    labels: [String]
-    count: Int
-  }
-
   type BarStatistic {
     labels: [String!]
     counts: [Int!]
@@ -270,6 +272,7 @@ const typeDefs = gql`
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
+  union HeaderResult = Header | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -296,7 +299,7 @@ const typeDefs = gql`
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
-    getUsersForStatistic(filter: UserForStatisticsInput): UserStatistic
+    getUsersForStatistic(filter: UserForStatisticsInput): BarStatistic!
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -340,8 +343,15 @@ const typeDefs = gql`
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
 
-    getAllEmailQuestions: [EmailQuestion]
+    getAllEmailQuestions(
+      filter: FilterInput
+      skip: Int
+    ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
+    getPendingEmailQuestionsCount: Int
+
+    getAllHeaders: [Header!]!
+    getHeaderById(id: ID!): HeaderResult
   }
 
   input SortInput {
@@ -361,6 +371,7 @@ const typeDefs = gql`
     isHotItem: Boolean
     models: [String]
     currency: Int
+    emailQuestionStatus: [String]
   }
   input RoleEnumInput {
     role: String
@@ -395,6 +406,7 @@ const typeDefs = gql`
   ${UserForStatisticsInput}
   ${deliveryInput}
   ${paymentInput}
+  ${headerInput}
 
   input LanguageInput {
     lang: String!
@@ -574,11 +586,15 @@ const typeDefs = gql`
     updateComment(id: ID!, comment: commentInput!): CommentResult
 
     "BusinessText Mutation"
-    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
+    addBusinessText(
+      businessText: BusinessTextInput!
+      files: [Upload]!
+    ): BusinessTextResult
     deleteBusinessText(id: ID!): BusinessTextResult
     updateBusinessText(
       id: ID!
       businessText: BusinessTextInput!
+      files: [Upload]!
     ): BusinessTextResult
 
     "Rate Mutation"
@@ -604,9 +620,23 @@ const typeDefs = gql`
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestions(questionsToDelete: [String]): [EmailQuestion]
+    makeEmailQuestionsSpam(
+      questionsToSpam: [String]
+      adminId: ID!
+    ): [EmailQuestion]
+    answerEmailQuestion(
+      questionId: ID!
+      adminId: ID!
+      text: String!
+    ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
-    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
+
+    "Header Mutation"
+    addHeader(header: HeaderInput!): HeaderResult
+    deleteHeader(id: ID!): HeaderResult
+    updateHeader(id: ID!, header: HeaderInput!): HeaderResult
   }
 `;
 
