@@ -13,7 +13,7 @@ let operations;
 describe('News queries tests', () => {
   describe('Get all news', () => {
     beforeAll(async () => {
-      operations = await setupApp();
+      const operations = await setupApp();
       const res = await operations
         .mutate({
           mutation: gql`

@@ -18,7 +18,7 @@ let operation;
 
 describe('Product queries', () => {
   beforeAll(async () => {
-    operations = await setupApp();
+    const operations = await setupApp();
     const createCategory = await operations.mutate({
       mutation: gql`
         mutation($category: CategoryInput!, $upload: Upload) {
