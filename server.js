@@ -13,11 +13,14 @@ const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
+const dotenvValidator = require('./dotenvValidator');
 
 connectDB();
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
+
+dotenvValidator(process.env);
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),

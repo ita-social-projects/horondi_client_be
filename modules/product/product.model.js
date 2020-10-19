@@ -55,6 +55,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  availableCount: {
+    type: Number,
+    default: 0,
+  },
   rate: {
     type: Number,
     default: 0,

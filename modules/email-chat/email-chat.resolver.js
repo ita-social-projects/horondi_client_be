@@ -5,7 +5,9 @@ const {
 
 const emailChatQuestionQuery = {
   getAllEmailQuestions: (parent, args) =>
-    emailChatService.getAllEmailQuestions(),
+    emailChatService.getAllEmailQuestions(args),
+  getPendingEmailQuestionsCount: (parent, args) =>
+    emailChatService.getPendingEmailQuestionsCount(),
   getEmailQuestionById: async (parent, args) => {
     const question = await emailChatService.getEmailQuestionById(args.id);
     if (question) {
@@ -21,32 +23,34 @@ const emailChatQuestionQuery = {
 const emailChatQuestionMutation = {
   addEmailQuestion: async (parent, args) =>
     await emailChatService.addEmailQuestion(args.question),
-  makeQuestionSpam: async (parent, args, context) => {
+
+  makeEmailQuestionsSpam: async (parent, args) => {
     try {
-      return await emailChatService.sendEmailQuestionToSpam(
-        args.questionId,
-        context.user
+      return await emailChatService.makeEmailQuestionsSpam(args);
+    } catch (error) {
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
+    }
+  },
+
+  answerEmailQuestion: async (parent, args) => {
+    try {
+      return await emailChatService.answerEmailQuestion(args);
+    } catch (error) {
+      console.log(error);
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
+    }
+  },
+  deleteEmailQuestions: async (parent, args) => {
+    try {
+      return await emailChatService.deleteEmailQuestions(
+        args.questionsToDelete
       );
-    } catch (error) {
-      return {
-        statusCode: 404,
-        message: error.message,
-      };
-    }
-  },
-  answerEmailQuestion: async (parent, args, context) => {
-    try {
-      return await emailChatService.giveAnswer(args, context.user);
-    } catch (error) {
-      return {
-        statusCode: 404,
-        message: error.message,
-      };
-    }
-  },
-  deleteEmailQuestion: async (parent, args) => {
-    try {
-      return await emailChatService.deleteEmailQuestion(args.id);
     } catch (error) {
       return {
         statusCode: 404,
