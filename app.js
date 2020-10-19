@@ -9,6 +9,7 @@ const formatError = require('./utils/format-error');
 const verifyUser = require('./utils/verify-user');
 const userService = require('./modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
+
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
