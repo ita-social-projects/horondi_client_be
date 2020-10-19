@@ -15,7 +15,7 @@ let operations;
 describe('News mutations tests', () => {
   describe('Create news test', () => {
     beforeAll(async () => {
-      const operations = await setupApp();
+      operations = await setupApp();
     });
     test('should add news to database', async () => {
       const res = await operations
