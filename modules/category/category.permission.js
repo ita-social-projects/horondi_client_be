@@ -10,7 +10,7 @@ const categoryPermissionsQuery = {
 
 const categoryPermissionsMutations = {
   addCategory: hasRoles([ADMIN]),
-  addCategory: hasRoles([ADMIN]),
+  editCategory: hasRoles([ADMIN]),
   deleteCategory: hasRoles([ADMIN]),
 };
 
