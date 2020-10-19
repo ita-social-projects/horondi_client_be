@@ -14,7 +14,7 @@ let modelId;
 let categoryName;
 let categoryId;
 let uploadFile = null;
-let operation;
+let operations;
 
 describe('Product queries', () => {
   beforeAll(async () => {
