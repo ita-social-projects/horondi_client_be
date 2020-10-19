@@ -19,6 +19,7 @@ const dayInMiliseconds = 86400000;
 const monthInMilliseconds = 2592000000;
 
 const userDateFormat = { month: 'short', day: 'numeric' };
+const OTHERS = 'Інші';
 
 module.exports = {
   roles,
@@ -28,4 +29,5 @@ module.exports = {
   monthInMilliseconds,
   dayInMiliseconds,
   userDateFormat,
+  OTHERS,
 };

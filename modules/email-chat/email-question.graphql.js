@@ -4,8 +4,9 @@ type EmailQuestion {
   senderName: String!
   text: String!
   date: String!
-  email: String!
+  email: String!  
   status: String!
+  language: Int!
   answer: EmailAnswer
 }
 `;
@@ -15,6 +16,7 @@ input EmailQuestionInput {
   senderName: String!
   text: String!
   email: String!
+  language: Int!
 }`;
 
 module.exports = {

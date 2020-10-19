@@ -15,6 +15,7 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "linebreak-style": 0,
     "semi": "off",
     "no-var": "warn",
     "no-unused-vars": [
