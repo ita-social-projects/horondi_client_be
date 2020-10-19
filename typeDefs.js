@@ -8,6 +8,7 @@ const {
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
+  UserForStatisticsInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -238,13 +239,18 @@ const typeDefs = gql`
     text: String!
   }
 
-  type PopularCategories {
+  type DoughnutStatistic {
     names: [String!]
     counts: [Int!]
     relations: [Int!]
   }
 
-  type PopularProducts {
+  type UserStatistic {
+    labels: [String]
+    count: Int
+  }
+
+  type BarStatistic {
     labels: [String!]
     counts: [Int!]
   }
@@ -270,7 +276,7 @@ const typeDefs = gql`
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
-    getPopularCategories: PopularCategories!
+    getPopularCategories: DoughnutStatistic!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -283,11 +289,14 @@ const typeDefs = gql`
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
+    getOrdersStatistic(date: Int!): DoughnutStatistic!
+    getPaidOrdersStatistic(date: Int!): BarStatistic!
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
+    getUsersForStatistic(filter: UserForStatisticsInput): UserStatistic
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -302,7 +311,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
-    getPopularProducts: PopularProducts!
+    getPopularProducts: BarStatistic!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
@@ -383,6 +392,7 @@ const typeDefs = gql`
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
+  ${UserForStatisticsInput}
   ${deliveryInput}
   ${paymentInput}
 
