@@ -24,7 +24,7 @@
     "test-full": "start-server-and-test test-server http://localhost:5000/health test",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "test-docker": "npm run docker-db-start && npm run test-full"
+    "test-docker": "npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",
@@ -51,6 +51,7 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "crypto": "^1.0.1",
+    "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
