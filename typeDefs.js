@@ -246,17 +246,13 @@ const typeDefs = gql`
     text: String!
   }
 
-  type UserStatistic {
-    labels: [String]
-    count: Int
-
-  type PopularCategories {
+  type StatisticDoughnut {
     names: [String!]
     counts: [Int!]
     relations: [Int!]
   }
 
-  type PopularProducts {
+  type StatisticBar {
     labels: [String!]
     counts: [Int!]
   }
@@ -283,7 +279,7 @@ const typeDefs = gql`
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
-    getPopularCategories: PopularCategories!
+    getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -296,12 +292,14 @@ const typeDefs = gql`
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
+    getOrdersStatistic(date: Int!): StatisticDoughnut!
+    getPaidOrdersStatistic(date: Int!): StatisticBar!
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
-    getUsersForStatistic(filter: UserForStatisticsInput): UserStatistic
+    getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -316,7 +314,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
-    getPopularProducts: PopularProducts!
+    getPopularProducts: StatisticBar!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
@@ -345,7 +343,6 @@ const typeDefs = gql`
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
 
-    getAllEmailQuestions: [EmailQuestion]
     getAllEmailQuestions(
       filter: FilterInput
       skip: Int
@@ -635,7 +632,6 @@ const typeDefs = gql`
     ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
-    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult

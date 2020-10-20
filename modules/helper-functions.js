@@ -1,3 +1,5 @@
+const { dayInMiliseconds } = require('../consts/');
+
 const removeDaysFromData = (days, currentDate) =>
   currentDate - days * dayInMiliseconds;
 
