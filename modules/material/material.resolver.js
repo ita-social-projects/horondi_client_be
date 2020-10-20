@@ -17,12 +17,14 @@ const materialQuery = {
     };
   },
   getMaterialColorByCode: async (parent, args) => {
-    return await materialService.getMaterialColorByCode(args.code);
-
-    // return {
-    //   statusCode: 404,
-    //   message: MATERIAL_NOT_FOUND,
-    // };
+    const material = await materialService.getMaterialColorByCode(args.code);
+    if (material[0].colors[0]) {
+      return material[0].colors[0];
+    }
+    return {
+      statusCode: 404,
+      message: COLOR_NOT_FOUND,
+    };
   },
 };
 

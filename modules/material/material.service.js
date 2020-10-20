@@ -33,12 +33,7 @@ class MaterialsService {
   }
 
   async getMaterialColorByCode(code) {
-    const color = await Material.find({ colors: { $elemMatch: { code } } });
-    //console.log(color)
-    if (!color) {
-      throw new Error('Color not found');
-    }
-    return color;
+    return Material.find({ colors: { $elemMatch: { code } } });
   }
 
   async updateMaterial(id, material, images) {
