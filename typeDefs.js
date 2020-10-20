@@ -55,6 +55,9 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
+const {
+  homePageImagesType,
+} = require('./modules/homepage-images/home-page-images.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -72,6 +75,7 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${homePageImagesType}
 
   scalar Upload
 
@@ -205,14 +209,17 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
+
   type PaginatedPatterns {
     items: [Pattern!]!
     count: Int!
   }
+
   type PaginatedNews {
     items: [News]
     count: Int
   }
+
   type PaginatedMaterials {
     items: [Material]
     count: Int
@@ -222,6 +229,7 @@ const typeDefs = gql`
     items: [Contact]
     count: Int
   }
+
   type PaginatedModels {
     items: [Model]
     count: Int
@@ -245,10 +253,6 @@ const typeDefs = gql`
     admin: User!
     date: String!
     text: String!
-  }
-
-  type HomePageImages {
-    images: ImageSet
   }
 
   union CategoryResult = Category | Error
@@ -334,7 +338,7 @@ const typeDefs = gql`
     getAllEmailQuestions: [EmailQuestion]
     getEmailQuestionById(id: ID!): EmailQuestionResult
 
-    getHomePageLooksImages: [ImageSet]
+    getHomePageLooksImages: [HomePageImages]
   }
 
   input SortInput {
@@ -498,6 +502,7 @@ const typeDefs = gql`
   type Mutation {
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
+
     "Pattern Mutations"
     addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
@@ -604,6 +609,7 @@ const typeDefs = gql`
     addOrder(order: OrderInput!): OrderResult
     updateOrder(id: ID!, order: OrderInput!): OrderResult
     deleteOrder(id: ID!): OrderResult
+
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestion(id: ID!): EmailQuestionResult
@@ -611,7 +617,7 @@ const typeDefs = gql`
     answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
 
     "HomePageImages Mutation"
-    updateHomePageLooksImage(images: Upload): [HomePageImages]
+    updateHomePageLooksImage(id: [ID!], images: Upload): HomePageImages
   }
 `;
 

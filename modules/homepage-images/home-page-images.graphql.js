@@ -1,7 +1,8 @@
-const homePageLooksImagesType = `
-  type homePageLooksImages {
-    images: [ImageSet!]
+const homePageImagesType = `
+  type HomePageImages {
+    _id: ID!
+    images: ImageSet
   }
 `;
 
-module.exports = { homePageLooksImagesType };
+module.exports = { homePageImagesType };

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 
 const HomePageImagesSchema = new mongoose.Schema({
-  images: [ImageSet],
+  images: ImageSet,
 });
 
-module.exports = mongoose.model('HomePageImages', HomePageImagesSchema);
+module.exports = mongoose.model('LooksImages', HomePageImagesSchema);

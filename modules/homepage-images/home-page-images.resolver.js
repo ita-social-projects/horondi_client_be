@@ -9,7 +9,7 @@ const HomePageImagesQuery = {
 const HomePageImagesMutation = {
   updateHomePageLooksImage: async (parent, args) => {
     try {
-      return await homePageService.addImage(args);
+      return await homePageService.updateHomePageLooksImage(args);
     } catch (e) {
       return { statusCode: 400, message: e.message };
     }
