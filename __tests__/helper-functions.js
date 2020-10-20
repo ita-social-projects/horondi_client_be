@@ -19,6 +19,7 @@ const setupApp = async user => {
     },
   ];
   await admin.save();
+
   const server = new ApolloServer({
     ...config,
     context: { user: user || admin },
