@@ -20,7 +20,7 @@ const createModel = async (newMaterial, newCategory, newModel) => {
     `,
     variables: { material: newMaterial },
   });
-  materialId = createMaterial.data.addMaterial._id;
+  const materialId = createMaterial.data.addMaterial._id;
 
   const createCategory = await operations.mutate({
     mutation: gql`
@@ -40,8 +40,8 @@ const createModel = async (newMaterial, newCategory, newModel) => {
       upload: '../___test__/model/dog.img',
     },
   });
-  categoryId = createCategory.data.addCategory._id;
-  subcategoryId = createCategory.data.addCategory._id;
+  const categoryId = createCategory.data.addCategory._id;
+  const subcategoryId = createCategory.data.addCategory._id;
 
   const createModel = await operations.mutate({
     mutation: gql`
@@ -58,7 +58,7 @@ const createModel = async (newMaterial, newCategory, newModel) => {
     `,
     variables: { model: { ...newModel, category: categoryId } },
   });
-  modelId = createModel.data.addModel._id;
+  const modelId = createModel.data.addModel._id;
 
   return {
     categoryId,

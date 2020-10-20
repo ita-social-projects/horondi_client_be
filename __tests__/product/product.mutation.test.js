@@ -17,11 +17,7 @@ jest.mock('../../modules/upload/upload.service');
 let product;
 let updatedProduct;
 let productId;
-let categoryId;
-let subcategoryId;
-let modelId;
 let sameNameProductId;
-let materialId;
 let operations;
 
 describe('Product mutations', () => {

@@ -14,9 +14,6 @@ jest.mock('../../modules/upload/upload.service');
 
 let product;
 let productId;
-let categoryId;
-let modelId;
-let materialId;
 let operations;
 
 describe('Product queries', () => {
