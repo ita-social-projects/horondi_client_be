@@ -51,8 +51,15 @@ class OrdersService {
     ];
   }
 
-  async getAllOrders() {
-    return await Order.find();
+  async getAllOrders({ skip, limit }) {
+    const items = await Order.find()
+      .skip(skip)
+      .limit(limit);
+    const count = await Order.find().countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getOrderById(id) {

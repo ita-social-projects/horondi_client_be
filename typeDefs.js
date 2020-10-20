@@ -55,10 +55,7 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
-const {
-  headerType,
-  headerInput,
-} = require('./modules/header/header.graphql');
+const { headerType, headerInput } = require('./modules/header/header.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -205,6 +202,10 @@ const typeDefs = gql`
     items: [Pattern!]!
     count: Int!
   }
+  type PaginatedOrders {
+    items: [Order!]!
+    count: Int!
+  }
   type PaginatedNews {
     items: [News]
     count: Int
@@ -274,7 +275,7 @@ const typeDefs = gql`
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
-    getAllOrders: [Order!]!
+    getAllOrders(limit: Int, skip: Int): PaginatedOrders
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
 
