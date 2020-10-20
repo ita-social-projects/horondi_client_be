@@ -253,6 +253,7 @@ const typeDefs = gql`
   type UserStatistic {
     labels: [String]
     count: Int
+  }
 
   type PopularCategories {
     names: [String!]
@@ -349,7 +350,6 @@ const typeDefs = gql`
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
 
-    getAllEmailQuestions: [EmailQuestion]
     getAllEmailQuestions(
       filter: FilterInput
       skip: Int
@@ -639,7 +639,6 @@ const typeDefs = gql`
     ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
-    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult

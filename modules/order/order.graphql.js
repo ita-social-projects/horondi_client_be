@@ -8,7 +8,6 @@ type Order {
   adminComment: String
   userComment: String
   cancellationReason:  String
-  completed: Boolean
   delivery: Delivery
   address: Address
   items: [OrderItems]
