@@ -3,7 +3,7 @@ const { setupApp } = require('../helper-functions');
 
 const badProductId = '1a1111da11da1111111a111a';
 
-const createModel = async (newMaterial, newCategory, newModel) => {
+const createModel = async (material, category, model) => {
   const operations = await setupApp();
   const createMaterial = await operations.mutate({
     mutation: gql`
@@ -18,7 +18,7 @@ const createModel = async (newMaterial, newCategory, newModel) => {
         }
       }
     `,
-    variables: { material: newMaterial },
+    variables: { material },
   });
   const materialId = createMaterial.data.addMaterial._id;
 
@@ -36,14 +36,14 @@ const createModel = async (newMaterial, newCategory, newModel) => {
       }
     `,
     variables: {
-      category: newCategory,
+      category,
       upload: '../___test__/model/dog.img',
     },
   });
   const categoryId = createCategory.data.addCategory._id;
   const subcategoryId = createCategory.data.addCategory._id;
 
-  const createModel = await operations.mutate({
+  const createModelData = await operations.mutate({
     mutation: gql`
       mutation($model: ModelInput!) {
         addModel(model: $model) {
@@ -56,9 +56,9 @@ const createModel = async (newMaterial, newCategory, newModel) => {
         }
       }
     `,
-    variables: { model: { ...newModel, category: categoryId } },
+    variables: { model: { ...model, category: categoryId } },
   });
-  const modelId = createModel.data.addModel._id;
+  const modelId = createModelData.data.addModel._id;
 
   return {
     categoryId,
