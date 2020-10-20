@@ -19,16 +19,20 @@ let updatedProduct;
 let productId;
 let sameNameProductId;
 let operations;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
 
 describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const {
-      categoryId,
-      subcategoryId,
-      modelId,
-      materialId,
-    } = await createModel(newMaterial, newCategory, newModel);
+    const itemsId = await createModel(newMaterial, newCategory, newModel);
+
+    categoryId = itemsId.categoryId;
+    subcategoryId = itemsId.subcategoryId;
+    modelId = itemsId.modelId;
+    materialId = itemsId.materialId;
 
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
     updatedProduct = getProductForUpdate(
@@ -175,48 +179,55 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
+    const currentProduct = product;
     const receivedProduct = getProduct.data.getProductById;
     expect(receivedProduct).toBeDefined();
     expect(receivedProduct).toHaveProperty('name', [
-      { value: product.name[0].value },
-      { value: product.name[1].value },
+      { value: currentProduct.name[0].value },
+      { value: currentProduct.name[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('description', [
-      { value: product.description[0].value },
-      { value: product.description[1].value },
+      { value: currentProduct.description[0].value },
+      { value: currentProduct.description[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('category', {
-      _id: product.category,
+      _id: currentProduct.category,
     });
     expect(receivedProduct).toHaveProperty('subcategory', {
-      _id: product.subcategory,
+      _id: currentProduct.subcategory,
     });
     expect(receivedProduct).toHaveProperty('mainMaterial', [
-      { value: product.mainMaterial[0].value },
-      { value: product.mainMaterial[1].value },
+      { value: currentProduct.mainMaterial[0].value },
+      { value: currentProduct.mainMaterial[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('innerMaterial', [
-      { value: product.innerMaterial[0].value },
-      { value: product.innerMaterial[1].value },
+      { value: currentProduct.innerMaterial[0].value },
+      { value: currentProduct.innerMaterial[1].value },
     ]);
     expect(receivedProduct).toHaveProperty(
       'strapLengthInCm',
-      product.strapLengthInCm
+      currentProduct.strapLengthInCm
     );
     expect(receivedProduct).toHaveProperty('pattern', [
-      { value: product.pattern[0].value },
-      { value: product.pattern[1].value },
+      { value: currentProduct.pattern[0].value },
+      { value: currentProduct.pattern[1].value },
     ]);
     expect(receivedProduct).toHaveProperty(
       'closureColor',
-      product.closureColor
+      currentProduct.closureColor
     );
     expect(receivedProduct).toHaveProperty('basePrice', [
-      { value: product.basePrice[0].value },
-      { value: product.basePrice[1].value },
+      { value: currentProduct.basePrice[0].value },
+      { value: currentProduct.basePrice[1].value },
     ]);
-    expect(receivedProduct).toHaveProperty('available', product.available);
-    expect(receivedProduct).toHaveProperty('isHotItem', product.isHotItem);
+    expect(receivedProduct).toHaveProperty(
+      'available',
+      currentProduct.available
+    );
+    expect(receivedProduct).toHaveProperty(
+      'isHotItem',
+      currentProduct.isHotItem
+    );
     expect(receivedProduct).toHaveProperty('purchasedCount', 0);
     expect(receivedProduct).toHaveProperty('rate', 0);
     expect(receivedProduct).toHaveProperty('rateCount', 0);

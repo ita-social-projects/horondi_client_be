@@ -19,12 +19,11 @@ let operations;
 describe('Product queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const {
-      categoryId,
-      subcategoryId,
-      modelId,
-      materialId,
-    } = await createModel(newMaterial, newCategory, newModel);
+    let { categoryId, subcategoryId, modelId, materialId } = await createModel(
+      newMaterial,
+      newCategory,
+      newModel
+    );
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
 
     const createProduct = await operations.mutate({
