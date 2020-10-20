@@ -17,6 +17,7 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
+const emailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
@@ -33,6 +34,7 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
+  ID_NOT_PROVIDED,
 } = require('../../error-messages/user.messages');
 
 const ROLES = {
@@ -105,7 +107,15 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
+    if (!id) {
+      throw new UserInputError(ID_NOT_PROVIDED, { statusCode: 400 });
+    }
+
     const user = await User.findById(id).lean();
+
+    if (!user) {
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
+    }
 
     if (user.email !== updatedUser.email) {
       const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
@@ -124,13 +134,11 @@ class UserService {
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-
     return User.findByIdAndUpdate(id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
     const { firstName, lastName, email } = updatedUser;
-
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -242,23 +250,27 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
+
     const token = await generateToken(savedUser._id, savedUser.email, {
       expiresIn: process.env.RECOVERY_EXPIRE,
       secret: process.env.CONFIRMATION_SECRET,
     });
+
     savedUser.confirmationToken = token;
+
     await savedUser.save();
-    const message = {
-      from: process.env.MAIL_USER,
-      to: savedUser.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(firstName, token, language),
-    };
 
-    if (process.env.NODE_ENV !== 'test') {
-      await sendEmail(message);
-    }
+    const subject = '[HORONDI] Email confirmation';
+    const html = confirmationMessage(firstName, token, language);
 
+    await emailService.sendEmail({
+      user,
+      sendEmail,
+      subject,
+      html,
+    });
+
+    await savedUser.save();
     return savedUser;
   }
 
@@ -470,4 +482,5 @@ class UserService {
     }
   }
 }
+
 module.exports = new UserService();
