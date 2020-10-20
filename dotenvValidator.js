@@ -16,10 +16,6 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
-    TEST_MONGO: joi
-      .string()
-      .uri()
-      .required(),
     IMAGE_LINK: joi
       .string()
       .uri()
