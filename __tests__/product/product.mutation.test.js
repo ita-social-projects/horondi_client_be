@@ -9,6 +9,7 @@ const {
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,
+  createModel,
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -26,60 +27,13 @@ let operations;
 describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const createMaterial = await operations.mutate({
-      mutation: gql`
-        mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
-            ... on Material {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: { material: newMaterial },
-    });
-    materialId = createMaterial.data.addMaterial._id;
+    const {
+      categoryId,
+      subcategoryId,
+      modelId,
+      materialId,
+    } = await createModel(newMaterial, newCategory, newModel);
 
-    const createCategory = await operations.mutate({
-      mutation: gql`
-        mutation($category: CategoryInput!, $upload: Upload) {
-          addCategory(category: $category, upload: $upload) {
-            ... on Category {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: {
-        category: newCategory,
-        upload: '../___test__/model/dog.img',
-      },
-    });
-    categoryId = createCategory.data.addCategory._id;
-    subcategoryId = createCategory.data.addCategory._id;
-
-    const createModel = await operations.mutate({
-      mutation: gql`
-        mutation($model: ModelInput!) {
-          addModel(model: $model) {
-            ... on Model {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: { model: { ...newModel, category: categoryId } },
-    });
-    modelId = createModel.data.addModel._id;
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
     updatedProduct = getProductForUpdate(
       categoryId,
@@ -226,54 +180,47 @@ describe('Product mutations', () => {
       variables: { id: productId },
     });
     const receivedProduct = getProduct.data.getProductById;
-    const currentProduct = product;
     expect(receivedProduct).toBeDefined();
     expect(receivedProduct).toHaveProperty('name', [
-      { value: currentProduct.name[0].value },
-      { value: currentProduct.name[1].value },
+      { value: product.name[0].value },
+      { value: product.name[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('description', [
-      { value: currentProduct.description[0].value },
-      { value: currentProduct.description[1].value },
+      { value: product.description[0].value },
+      { value: product.description[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('category', {
-      _id: currentProduct.category,
+      _id: product.category,
     });
     expect(receivedProduct).toHaveProperty('subcategory', {
-      _id: currentProduct.subcategory,
+      _id: product.subcategory,
     });
     expect(receivedProduct).toHaveProperty('mainMaterial', [
-      { value: currentProduct.mainMaterial[0].value },
-      { value: currentProduct.mainMaterial[1].value },
+      { value: product.mainMaterial[0].value },
+      { value: product.mainMaterial[1].value },
     ]);
     expect(receivedProduct).toHaveProperty('innerMaterial', [
-      { value: currentProduct.innerMaterial[0].value },
-      { value: currentProduct.innerMaterial[1].value },
+      { value: product.innerMaterial[0].value },
+      { value: product.innerMaterial[1].value },
     ]);
     expect(receivedProduct).toHaveProperty(
       'strapLengthInCm',
-      currentProduct.strapLengthInCm
+      product.strapLengthInCm
     );
     expect(receivedProduct).toHaveProperty('pattern', [
-      { value: currentProduct.pattern[0].value },
-      { value: currentProduct.pattern[1].value },
+      { value: product.pattern[0].value },
+      { value: product.pattern[1].value },
     ]);
     expect(receivedProduct).toHaveProperty(
       'closureColor',
-      currentProduct.closureColor
+      product.closureColor
     );
     expect(receivedProduct).toHaveProperty('basePrice', [
-      { value: currentProduct.basePrice[0].value },
-      { value: currentProduct.basePrice[1].value },
+      { value: product.basePrice[0].value },
+      { value: product.basePrice[1].value },
     ]);
-    expect(receivedProduct).toHaveProperty(
-      'available',
-      currentProduct.available
-    );
-    expect(receivedProduct).toHaveProperty(
-      'isHotItem',
-      currentProduct.isHotItem
-    );
+    expect(receivedProduct).toHaveProperty('available', product.available);
+    expect(receivedProduct).toHaveProperty('isHotItem', product.isHotItem);
     expect(receivedProduct).toHaveProperty('purchasedCount', 0);
     expect(receivedProduct).toHaveProperty('rate', 0);
     expect(receivedProduct).toHaveProperty('rateCount', 0);

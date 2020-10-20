@@ -5,6 +5,7 @@ const {
   newModel,
   newCategory,
   newMaterial,
+  createModel,
   badProductId,
   getNewProduct,
 } = require('./product.variables');
@@ -14,7 +15,6 @@ jest.mock('../../modules/upload/upload.service');
 let product;
 let productId;
 let categoryId;
-let subcategoryId;
 let modelId;
 let materialId;
 let operations;
@@ -22,61 +22,12 @@ let operations;
 describe('Product queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const createMaterial = await operations.mutate({
-      mutation: gql`
-        mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
-            ... on Material {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: { material: newMaterial },
-    });
-    materialId = createMaterial.data.addMaterial._id;
-    const createCategory = await operations.mutate({
-      mutation: gql`
-        mutation($category: CategoryInput!, $upload: Upload) {
-          addCategory(category: $category, upload: $upload) {
-            ... on Category {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: {
-        category: newCategory,
-        upload: '../___test__/model/dog.img',
-      },
-    });
-    categoryId = createCategory.data.addCategory._id;
-    subcategoryId = createCategory.data.addCategory._id;
-
-    const createModel = await operations.mutate({
-      mutation: gql`
-        mutation($model: ModelInput!) {
-          addModel(model: $model) {
-            ... on Model {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: { model: { ...newModel, category: categoryId } },
-    });
-
-    modelId = createModel.data.addModel._id;
-
+    const {
+      categoryId,
+      subcategoryId,
+      modelId,
+      materialId,
+    } = await createModel(newMaterial, newCategory, newModel);
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
 
     const createProduct = await operations.mutate({

@@ -1,4 +1,72 @@
+const { gql } = require('@apollo/client');
+const { setupApp } = require('../helper-functions');
+
 const badProductId = '1a1111da11da1111111a111a';
+
+const createModel = async (newMaterial, newCategory, newModel) => {
+  const operations = await setupApp();
+  const createMaterial = await operations.mutate({
+    mutation: gql`
+      mutation($material: MaterialInput!) {
+        addMaterial(material: $material) {
+          ... on Material {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: { material: newMaterial },
+  });
+  materialId = createMaterial.data.addMaterial._id;
+
+  const createCategory = await operations.mutate({
+    mutation: gql`
+      mutation($category: CategoryInput!, $upload: Upload) {
+        addCategory(category: $category, upload: $upload) {
+          ... on Category {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      category: newCategory,
+      upload: '../___test__/model/dog.img',
+    },
+  });
+  categoryId = createCategory.data.addCategory._id;
+  subcategoryId = createCategory.data.addCategory._id;
+
+  const createModel = await operations.mutate({
+    mutation: gql`
+      mutation($model: ModelInput!) {
+        addModel(model: $model) {
+          ... on Model {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: { model: { ...newModel, category: categoryId } },
+  });
+  modelId = createModel.data.addModel._id;
+
+  return {
+    categoryId,
+    subcategoryId,
+    modelId,
+    materialId,
+  };
+};
 
 const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   name: [
@@ -460,4 +528,5 @@ module.exports = {
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,
+  createModel,
 };
