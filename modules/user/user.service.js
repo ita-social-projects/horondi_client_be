@@ -493,6 +493,23 @@ class UserService {
       });
     }
   }
+
+  async updateWishlist(id, newWishlist) {
+    const { wishlist } = await User.findByIdAndUpdate(id, {
+      wishlist: newWishlist,
+    });
+    return wishlist;
+  }
+
+  addProductToWishlist(productId, user) {
+    const newWishlist = [...user.wishlist, productId];
+    return this.updateWishlist(user._id, newWishlist);
+  }
+
+  removeProductFromWishlist(productId, user) {
+    const newWishlist = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateWishlist(user._id, newWishlist);
+  }
 }
 
 module.exports = new UserService();
