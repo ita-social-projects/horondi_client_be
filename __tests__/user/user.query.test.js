@@ -17,7 +17,7 @@ let operations;
 
 describe('queries', () => {
   beforeAll(async () => {
-    const { firstName, lastName, email, password, language } = testUser;
+    const { firstName, lastName, email, pass, language } = testUser;
     operations = await setupApp();
     const register = await operations.mutate({
       mutation: gql`
@@ -53,7 +53,7 @@ describe('queries', () => {
         firstName,
         lastName,
         email,
-        password,
+        password: pass,
         language,
       },
     });
@@ -69,7 +69,7 @@ describe('queries', () => {
       `,
       variables: {
         email,
-        password,
+        password: pass,
       },
     });
     token = authRes.data.loginUser.token;

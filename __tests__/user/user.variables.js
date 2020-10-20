@@ -11,17 +11,17 @@ const superAdminUser = {
 };
 
 const newAdmin = {
-  email: 'admintest@gmail.com',
+  email: 'admintest4@gmail.com',
   firstName: 'Hook',
   lastName: 'Age',
-  password: 'dffdsfsdsdf',
+  pass: 'dffdsfsdsdf',
 };
 
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbbdnvf@gmail.com',
-  password: '12345678Pt',
+  email: 'f5dbbdnvf1@gmail.com',
+  pass: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
   language: 1,

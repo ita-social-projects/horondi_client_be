@@ -39,7 +39,7 @@ describe('mutations', () => {
   });
 
   test('should register user', async () => {
-    const { firstName, lastName, email, password, language } = testUser;
+    const { firstName, lastName, email, pass, language } = testUser;
 
     const res = await operations.mutate({
       mutation: gql`
@@ -72,7 +72,7 @@ describe('mutations', () => {
         firstName,
         lastName,
         email,
-        password,
+        password: pass,
         language,
       },
     });
@@ -95,7 +95,7 @@ describe('mutations', () => {
   });
 
   test('should throw error User with provided email already exist', async () => {
-    const { firstName, lastName, email, password, language } = testUser;
+    const { firstName, lastName, email, pass, language } = testUser;
 
     const res = await operations
       .mutate({
@@ -129,7 +129,7 @@ describe('mutations', () => {
           firstName,
           lastName,
           email,
-          password,
+          password: pass,
           language,
         },
       })
@@ -140,7 +140,7 @@ describe('mutations', () => {
   });
 
   test('should authorize and recive user token', async () => {
-    const { email, password } = testUser;
+    const { email, pass } = testUser;
 
     const res = await operations.mutate({
       mutation: gql`
@@ -158,7 +158,7 @@ describe('mutations', () => {
       `,
       variables: {
         email,
-        password,
+        password: pass,
       },
     });
 
@@ -854,7 +854,7 @@ describe('Admin confirmation', () => {
     GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
     5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
   let {
-    password: newAdminPassword,
+    pass: newAdminPassword,
     firstName: newAdminFirstName,
     lastName: newAdminLastName,
   } = newAdmin;
@@ -1028,7 +1028,7 @@ describe('New admin login', () => {
     firstName: newAdminFirstName,
     lastName: newAdminLastName,
     email: newAdminEmail,
-    password: newAdminPassword,
+    pass: newAdminPassword,
   } = newAdmin;
 
   afterAll(async () => {
