@@ -16,10 +16,6 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
-    TEST_MONGO: joi
-      .string()
-      .uri()
-      .required(),
     IMAGE_LINK: joi
       .string()
       .uri()
@@ -43,15 +39,6 @@ function dotenvValidator(processEnv) {
     MAIL_USER: joi
       .string()
       .email()
-      .required(),
-    MAIL_PASS: joi.string().required(),
-    MAIL_HOST: joi
-      .string()
-      .hostname()
-      .required(),
-    MAIL_PORT: joi
-      .number()
-      .port()
       .required(),
     RECOVERY_EXPIRE: joi.string().required(),
     FRONT_BASE_URI: joi
