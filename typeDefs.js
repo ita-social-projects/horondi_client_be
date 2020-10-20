@@ -291,6 +291,7 @@ const typeDefs = gql`
     getBusinessTextByCode(code: String!): BusinessTextResult
 
     getModelsByCategory(id: ID!): [Model]
+    getModelById(id: ID!): ModelResult
 
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult

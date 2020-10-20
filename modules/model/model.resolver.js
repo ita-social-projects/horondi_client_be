@@ -5,6 +5,17 @@ const modelService = require('./model.service');
 const modelsQuery = {
   getModelsByCategory: async (parent, args) =>
     await modelsService.getModelsByCategory(args.id),
+
+  getModelById: async (parent, args) => {
+    try {
+      return await modelService.getModelById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const modelsMutation = {
@@ -18,6 +29,7 @@ const modelsMutation = {
       };
     }
   },
+
   updateModel: async (parent, args) => {
     try {
       return await modelService.updateModel(args.id, args.model);
@@ -28,6 +40,7 @@ const modelsMutation = {
       };
     }
   },
+
   deleteModel: async (parent, args) => {
     const deletedModel = await modelsService.deleteModel(args.id);
     if (deletedModel) {
@@ -39,5 +52,4 @@ const modelsMutation = {
     };
   },
 };
-
 module.exports = { modelsQuery, modelsMutation };
