@@ -8,6 +8,7 @@ const {
 } = require('../../error-messages/category.messages');
 const { validateCategoryInput } = require('../../utils/validate-category');
 const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const { OTHERS } = require('../../consts');
 
 class CategoryService {
   async getAllCategories() {
@@ -121,7 +122,45 @@ class CategoryService {
     if (!category.subcategories.length) {
       return [];
     }
-    return await Category.find({ _id: { $in: category.subcategories } });
+    return await Category.find({
+      _id: { $in: category.subcategories },
+    });
+  }
+
+  getCategoriesStats(categories, total) {
+    let popularSum = 0;
+    let res = { names: [], counts: [], relations: [] };
+
+    categories
+      .filter(({ isMain }, idx) => isMain && idx < 3)
+      .forEach(({ name, purchasedCount }) => {
+        const relation = Math.round((purchasedCount * 100) / total);
+        popularSum += relation;
+
+        res.names.push(name[0].value);
+        res.counts.push(purchasedCount);
+        res.relations.push(relation);
+      });
+
+    const otherRelation = 100 - popularSum;
+    const otherCount = Math.round((otherRelation * total) / 100);
+
+    return {
+      names: [...res.names, OTHERS],
+      counts: [...res.counts, otherCount],
+      relations: [...res.relations, otherRelation],
+    };
+  }
+
+  async getPopularCategories() {
+    let total = 0;
+    const categories = await Category.find()
+      .sort({ purchasedCount: -1 })
+      .lean();
+
+    categories.forEach(({ purchasedCount }) => (total += purchasedCount));
+
+    return this.getCategoriesStats(categories, total);
   }
 }
 

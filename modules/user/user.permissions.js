@@ -6,6 +6,7 @@ const { ADMIN, SUPERADMIN } = roles;
 
 const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
+  getUsersForStatistic: hasRoles([ADMIN, SUPERADMIN]),
   getUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   getUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   validateConfirmationToken: allow,

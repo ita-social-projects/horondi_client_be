@@ -1,12 +1,31 @@
 const EmailChat = require('./email-chat.model');
+const userService = require('../user/user.service');
 const {
   CHAT_NOT_FOUND,
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
+const { sendEmail } = require('../../utils/sendGrid-email');
+const { emailQuestionAnswerMessage } = require('../../utils/localization');
 
 class EmailChatService {
-  getAllEmailQuestions() {
-    return EmailChat.find();
+  async getAllEmailQuestions({ filter = {}, skip }) {
+    const { emailQuestionStatus } = filter;
+
+    const filters = emailQuestionStatus
+      ? { status: { $in: emailQuestionStatus } }
+      : {};
+
+    const questions = await EmailChat.find(filters)
+      .skip(skip || 0)
+      .limit(10)
+      .sort('-date');
+
+    const count = await EmailChat.find(filters).countDocuments();
+
+    return {
+      questions,
+      count,
+    };
   }
 
   getEmailQuestionById(id) {
@@ -17,43 +36,84 @@ class EmailChatService {
     return question;
   }
 
+  async getPendingEmailQuestionsCount() {
+    return await EmailChat.find({ status: 'PENDING' }).countDocuments();
+  }
+
   addEmailQuestion(data) {
     const emailChat = new EmailChat(data);
     return emailChat.save();
   }
 
-  async makeQuestionSpam(questionId, adminId) {
-    const question = await EmailChat.findById(questionId);
-    if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
-    }
-    question.answer.admin = adminId;
-    question.status = 'SPAM';
-    question.answer.text = '';
-    question.answer.date = Date.now();
-    return EmailChat.findByIdAndUpdate(questionId, question, { new: true });
-  }
+  async makeEmailQuestionsSpam({ questionsToSpam, adminId }) {
+    const admin = await userService.getUserByFieldOrThrow('_id', adminId);
 
-  async answerEmailQuestion(args, adminId) {
-    const question = await this.getEmailQuestionById(args.questionId);
-    if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
-    }
-    question.status = 'ANSWERED';
-    question.answer.admin = adminId;
-    question.answer.text = args.text;
-    question.answer.date = Date.now();
-    return EmailChat.findByIdAndUpdate(args.questionId, question, {
-      new: true,
+    const result = questionsToSpam.map(async id => {
+      const question = await EmailChat.findById(id);
+
+      question.status = 'SPAM';
+      question.answer.admin = admin;
+      question.answer.text = '';
+      question.answer.date = Date.now();
+
+      return await EmailChat.findByIdAndUpdate(id, question, { new: true });
     });
+
+    const updatedQuestions = await Promise.allSettled(result);
+    return updatedQuestions.map(item => ({
+      ...item.value._doc,
+    }));
   }
 
-  async deleteEmailQuestion(id) {
-    const deletedChat = await EmailChat.findByIdAndDelete(id);
-    if (!deletedChat) {
+  async answerEmailQuestion({ questionId, adminId, text }) {
+    const question = await this.getEmailQuestionById(questionId);
+    const admin = await userService.getUserByFieldOrThrow('_id', adminId);
+
+    if (!question) {
+      throw new Error(QUESTION_NOT_FOUND);
+    }
+
+    question.status = 'ANSWERED';
+    question.answer.admin = admin;
+    question.answer.text = text;
+    question.answer.date = Date.now();
+    const updatedQuestion = await EmailChat.findByIdAndUpdate(
+      questionId,
+      question,
+      {
+        new: true,
+      }
+    );
+
+    const language = question.language;
+    const subject = `[HORONDI] ${
+      !language ? 'відповідь на запитання' : 'question answer'
+    }`;
+    const message = {
+      from: process.env.MAIL_USER,
+      to: question.email,
+      subject,
+      html: emailQuestionAnswerMessage(updatedQuestion, language),
+    };
+    await sendEmail(message);
+
+    return updatedQuestion;
+  }
+
+  async deleteEmailQuestions(questionsToDelete) {
+    try {
+      const result = questionsToDelete.map(
+        async id => await EmailChat.findByIdAndDelete(id)
+      );
+
+      const deletedQuestions = await Promise.allSettled(result);
+      return deletedQuestions.map(item => ({
+        ...item.value._doc,
+      }));
+    } catch (e) {
       throw new Error(CHAT_NOT_FOUND);
     }
-    return deletedChat;
   }
 }
+
 module.exports = new EmailChatService();
