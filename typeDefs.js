@@ -246,13 +246,13 @@ const typeDefs = gql`
     text: String!
   }
 
-  type DoughnutStatistic {
+  type StatisticDoughnut {
     names: [String!]
     counts: [Int!]
     relations: [Int!]
   }
 
-  type BarStatistic {
+  type StatisticBar {
     labels: [String!]
     counts: [Int!]
   }
@@ -279,7 +279,7 @@ const typeDefs = gql`
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
-    getPopularCategories: DoughnutStatistic!
+    getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -292,14 +292,14 @@ const typeDefs = gql`
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
-    getOrdersStatistic(date: Int!): DoughnutStatistic!
-    getPaidOrdersStatistic(date: Int!): BarStatistic!
+    getOrdersStatistic(date: Int!): StatisticDoughnut!
+    getPaidOrdersStatistic(date: Int!): StatisticBar!
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
-    getUsersForStatistic(filter: UserForStatisticsInput): BarStatistic!
+    getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -314,7 +314,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
-    getPopularProducts: BarStatistic!
+    getPopularProducts: StatisticBar!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
