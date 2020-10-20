@@ -140,45 +140,49 @@ describe('Product queries', () => {
       `,
       variables: { id: productId },
     });
+    const curProduct = product;
     const resultProduct = resevedProduct.data.getProductById;
     expect(resultProduct).toBeDefined();
     expect(resultProduct).toHaveProperty('name', [
-      { value: product.name[0].value },
-      { value: product.name[1].value },
+      { value: curProduct.name[0].value },
+      { value: curProduct.name[1].value },
     ]);
     expect(resultProduct).toHaveProperty('description', [
-      { value: product.description[0].value },
-      { value: product.description[1].value },
+      { value: curProduct.description[0].value },
+      { value: curProduct.description[1].value },
     ]);
     expect(resultProduct).toHaveProperty('category', {
-      _id: product.category,
+      _id: curProduct.category,
     });
     expect(resultProduct).toHaveProperty('subcategory', {
-      _id: product.subcategory,
+      _id: curProduct.subcategory,
     });
     expect(resultProduct).toHaveProperty('mainMaterial', [
-      { value: product.mainMaterial[0].value },
-      { value: product.mainMaterial[1].value },
+      { value: curProduct.mainMaterial[0].value },
+      { value: curProduct.mainMaterial[1].value },
     ]);
     expect(resultProduct).toHaveProperty('innerMaterial', [
-      { value: product.innerMaterial[0].value },
-      { value: product.innerMaterial[1].value },
+      { value: curProduct.innerMaterial[0].value },
+      { value: curProduct.innerMaterial[1].value },
     ]);
     expect(resultProduct).toHaveProperty(
       'strapLengthInCm',
-      product.strapLengthInCm
+      curProduct.strapLengthInCm
     );
     expect(resultProduct).toHaveProperty('pattern', [
-      { value: product.pattern[0].value },
-      { value: product.pattern[1].value },
+      { value: curProduct.pattern[0].value },
+      { value: curProduct.pattern[1].value },
     ]);
-    expect(resultProduct).toHaveProperty('closureColor', product.closureColor);
+    expect(resultProduct).toHaveProperty(
+      'closureColor',
+      curProduct.closureColor
+    );
     expect(resultProduct).toHaveProperty('basePrice', [
-      { value: product.basePrice[0].value },
-      { value: product.basePrice[1].value },
+      { value: curProduct.basePrice[0].value },
+      { value: curProduct.basePrice[1].value },
     ]);
-    expect(resultProduct).toHaveProperty('available', product.available);
-    expect(resultProduct).toHaveProperty('isHotItem', product.isHotItem);
+    expect(resultProduct).toHaveProperty('available', curProduct.available);
+    expect(resultProduct).toHaveProperty('isHotItem', curProduct.isHotItem);
     expect(resultProduct).toHaveProperty('purchasedCount', 0);
     expect(resultProduct).toHaveProperty('rate', 0);
     expect(resultProduct).toHaveProperty('rateCount', 0);
