@@ -24,6 +24,7 @@ enum PaymentEnum {
 enum Status {
   CREATED
   CONFIRMED 
+  PRODUCED
   CANCELLED 
   REFUNDED 
   SENT

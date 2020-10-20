@@ -297,7 +297,7 @@ const typeDefs = gql`
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
-    getAllOrders(limit: Int, skip: Int): PaginatedOrders
+    getAllOrders(limit: Int, skip: Int): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
 
