@@ -3,6 +3,43 @@ const { setupApp } = require('../helper-functions');
 
 const badProductId = '1a1111da11da1111111a111a';
 
+const getProductData = product => ({
+  available: product.available,
+  basePrice: [
+    { value: product.basePrice[0].value },
+    { value: product.basePrice[1].value },
+  ],
+  category: {
+    _id: product.category,
+  },
+  closureColor: product.closureColor,
+  description: [
+    { value: product.description[0].value },
+    { value: product.description[1].value },
+  ],
+  innerMaterial: [
+    { value: product.innerMaterial[0].value },
+    { value: product.innerMaterial[1].value },
+  ],
+  isHotItem: product.isHotItem,
+  mainMaterial: [
+    { value: product.mainMaterial[0].value },
+    { value: product.mainMaterial[1].value },
+  ],
+  name: [{ value: product.name[0].value }, { value: product.name[1].value }],
+  pattern: [
+    { value: product.pattern[0].value },
+    { value: product.pattern[1].value },
+  ],
+  strapLengthInCm: product.strapLengthInCm,
+  subcategory: {
+    _id: product.subcategory,
+  },
+  purchasedCount: 0,
+  rate: 0,
+  rateCount: 0,
+});
+
 const createModel = async (material, category, model) => {
   const operations = await setupApp();
   const createMaterial = await operations.mutate({
@@ -529,4 +566,5 @@ module.exports = {
   getProductForUpdate,
   getSameNameForUpdate,
   createModel,
+  getProductData,
 };

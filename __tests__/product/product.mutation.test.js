@@ -10,6 +10,7 @@ const {
   getProductForUpdate,
   getSameNameForUpdate,
   createModel,
+  getProductData,
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -23,6 +24,8 @@ let categoryId;
 let subcategoryId;
 let modelId;
 let materialId;
+let currentProduct = {};
+let updatedProductData = {};
 
 describe('Product mutations', () => {
   beforeAll(async () => {
@@ -41,6 +44,9 @@ describe('Product mutations', () => {
       modelId,
       materialId
     );
+    updatedProductData = getProductData(updatedProduct);
+
+    currentProduct = getProductData(product);
   });
 
   test('#1 Should add new product', async () => {
@@ -89,49 +95,14 @@ describe('Product mutations', () => {
         product,
       },
     });
+
     productId = createProduct.data.addProduct._id;
     const createdProduct = createProduct.data.addProduct;
     expect(createdProduct).toBeDefined();
-    expect(createdProduct).toHaveProperty('name', [
-      { value: product.name[0].value },
-      { value: product.name[1].value },
-    ]);
-    expect(createdProduct).toHaveProperty('description', [
-      { value: product.description[0].value },
-      { value: product.description[1].value },
-    ]);
-    expect(createdProduct).toHaveProperty('category', {
-      _id: product.category,
+    expect(createProduct.data.addProduct).toEqual({
+      ...currentProduct,
+      _id: productId,
     });
-    expect(createdProduct).toHaveProperty('subcategory', {
-      _id: product.subcategory,
-    });
-    expect(createdProduct).toHaveProperty('mainMaterial', [
-      { value: product.mainMaterial[0].value },
-      { value: product.mainMaterial[1].value },
-    ]);
-    expect(createdProduct).toHaveProperty('innerMaterial', [
-      { value: product.innerMaterial[0].value },
-      { value: product.innerMaterial[1].value },
-    ]);
-    expect(createdProduct).toHaveProperty(
-      'strapLengthInCm',
-      product.strapLengthInCm
-    );
-    expect(createdProduct).toHaveProperty('pattern', [
-      { value: product.pattern[0].value },
-      { value: product.pattern[1].value },
-    ]);
-    expect(createdProduct).toHaveProperty('closureColor', product.closureColor);
-    expect(createdProduct).toHaveProperty('basePrice', [
-      { value: product.basePrice[0].value },
-      { value: product.basePrice[1].value },
-    ]);
-    expect(createdProduct).toHaveProperty('available', product.available);
-    expect(createdProduct).toHaveProperty('isHotItem', product.isHotItem);
-    expect(createdProduct).toHaveProperty('purchasedCount', 0);
-    expect(createdProduct).toHaveProperty('rate', 0);
-    expect(createdProduct).toHaveProperty('rateCount', 0);
     const getProduct = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -179,58 +150,12 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
-    const currentProduct = product;
     const receivedProduct = getProduct.data.getProductById;
     expect(receivedProduct).toBeDefined();
-    expect(receivedProduct).toHaveProperty('name', [
-      { value: currentProduct.name[0].value },
-      { value: currentProduct.name[1].value },
-    ]);
-    expect(receivedProduct).toHaveProperty('description', [
-      { value: currentProduct.description[0].value },
-      { value: currentProduct.description[1].value },
-    ]);
-    expect(receivedProduct).toHaveProperty('category', {
-      _id: currentProduct.category,
+    expect(createProduct.data.addProduct).toEqual({
+      ...currentProduct,
+      _id: productId,
     });
-    expect(receivedProduct).toHaveProperty('subcategory', {
-      _id: currentProduct.subcategory,
-    });
-    expect(receivedProduct).toHaveProperty('mainMaterial', [
-      { value: currentProduct.mainMaterial[0].value },
-      { value: currentProduct.mainMaterial[1].value },
-    ]);
-    expect(receivedProduct).toHaveProperty('innerMaterial', [
-      { value: currentProduct.innerMaterial[0].value },
-      { value: currentProduct.innerMaterial[1].value },
-    ]);
-    expect(receivedProduct).toHaveProperty(
-      'strapLengthInCm',
-      currentProduct.strapLengthInCm
-    );
-    expect(receivedProduct).toHaveProperty('pattern', [
-      { value: currentProduct.pattern[0].value },
-      { value: currentProduct.pattern[1].value },
-    ]);
-    expect(receivedProduct).toHaveProperty(
-      'closureColor',
-      currentProduct.closureColor
-    );
-    expect(receivedProduct).toHaveProperty('basePrice', [
-      { value: currentProduct.basePrice[0].value },
-      { value: currentProduct.basePrice[1].value },
-    ]);
-    expect(receivedProduct).toHaveProperty(
-      'available',
-      currentProduct.available
-    );
-    expect(receivedProduct).toHaveProperty(
-      'isHotItem',
-      currentProduct.isHotItem
-    );
-    expect(receivedProduct).toHaveProperty('purchasedCount', 0);
-    expect(receivedProduct).toHaveProperty('rate', 0);
-    expect(receivedProduct).toHaveProperty('rateCount', 0);
   });
 
   test('#2 AddProduct should return Error product already exist', async () => {
@@ -312,55 +237,10 @@ describe('Product mutations', () => {
 
     const productAfterUpdate = updateProduct.data.updateProduct;
     expect(productAfterUpdate).toBeDefined();
-    expect(productAfterUpdate).toHaveProperty('name', [
-      { value: updatedProduct.name[0].value },
-      { value: updatedProduct.name[1].value },
-    ]);
-    expect(productAfterUpdate).toHaveProperty('description', [
-      { value: updatedProduct.description[0].value },
-      { value: updatedProduct.description[1].value },
-    ]);
-    expect(productAfterUpdate).toHaveProperty('category', {
-      _id: updatedProduct.category,
+    expect(productAfterUpdate).toEqual({
+      ...updatedProductData,
+      _id: productId,
     });
-    expect(productAfterUpdate).toHaveProperty('subcategory', {
-      _id: updatedProduct.subcategory,
-    });
-    expect(productAfterUpdate).toHaveProperty('mainMaterial', [
-      { value: updatedProduct.mainMaterial[0].value },
-      { value: updatedProduct.mainMaterial[1].value },
-    ]);
-    expect(productAfterUpdate).toHaveProperty('innerMaterial', [
-      { value: updatedProduct.innerMaterial[0].value },
-      { value: updatedProduct.innerMaterial[1].value },
-    ]);
-    expect(productAfterUpdate).toHaveProperty(
-      'strapLengthInCm',
-      updatedProduct.strapLengthInCm
-    );
-    expect(productAfterUpdate).toHaveProperty('pattern', [
-      { value: updatedProduct.pattern[0].value },
-      { value: updatedProduct.pattern[1].value },
-    ]);
-    expect(productAfterUpdate).toHaveProperty(
-      'closureColor',
-      updatedProduct.closureColor
-    );
-    expect(productAfterUpdate).toHaveProperty('basePrice', [
-      { value: updatedProduct.basePrice[0].value },
-      { value: updatedProduct.basePrice[1].value },
-    ]);
-    expect(productAfterUpdate).toHaveProperty(
-      'available',
-      updatedProduct.available
-    );
-    expect(productAfterUpdate).toHaveProperty(
-      'isHotItem',
-      updatedProduct.isHotItem
-    );
-    expect(productAfterUpdate).toHaveProperty('purchasedCount', 0);
-    expect(productAfterUpdate).toHaveProperty('rate', 0);
-    expect(productAfterUpdate).toHaveProperty('rateCount', 0);
   });
 
   test('#4 UpdateProduct should return Error product not found', async () => {

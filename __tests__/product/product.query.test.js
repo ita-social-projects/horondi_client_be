@@ -8,6 +8,7 @@ const {
   createModel,
   badProductId,
   getNewProduct,
+  getProductData,
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -15,6 +16,7 @@ jest.mock('../../modules/upload/upload.service');
 let product;
 let productId;
 let operations;
+let currentProduct;
 
 describe('Product queries', () => {
   beforeAll(async () => {
@@ -25,6 +27,7 @@ describe('Product queries', () => {
       newModel
     );
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+    currentProduct = getProductData(product);
 
     const createProduct = await operations.mutate({
       mutation: gql`
@@ -143,49 +146,10 @@ describe('Product queries', () => {
     const curProduct = product;
     const resultProduct = resevedProduct.data.getProductById;
     expect(resultProduct).toBeDefined();
-    expect(resultProduct).toHaveProperty('name', [
-      { value: curProduct.name[0].value },
-      { value: curProduct.name[1].value },
-    ]);
-    expect(resultProduct).toHaveProperty('description', [
-      { value: curProduct.description[0].value },
-      { value: curProduct.description[1].value },
-    ]);
-    expect(resultProduct).toHaveProperty('category', {
-      _id: curProduct.category,
+    expect(createProduct.data.addProduct).toEqual({
+      ...currentProduct,
+      _id: productId,
     });
-    expect(resultProduct).toHaveProperty('subcategory', {
-      _id: curProduct.subcategory,
-    });
-    expect(resultProduct).toHaveProperty('mainMaterial', [
-      { value: curProduct.mainMaterial[0].value },
-      { value: curProduct.mainMaterial[1].value },
-    ]);
-    expect(resultProduct).toHaveProperty('innerMaterial', [
-      { value: curProduct.innerMaterial[0].value },
-      { value: curProduct.innerMaterial[1].value },
-    ]);
-    expect(resultProduct).toHaveProperty(
-      'strapLengthInCm',
-      curProduct.strapLengthInCm
-    );
-    expect(resultProduct).toHaveProperty('pattern', [
-      { value: curProduct.pattern[0].value },
-      { value: curProduct.pattern[1].value },
-    ]);
-    expect(resultProduct).toHaveProperty(
-      'closureColor',
-      curProduct.closureColor
-    );
-    expect(resultProduct).toHaveProperty('basePrice', [
-      { value: curProduct.basePrice[0].value },
-      { value: curProduct.basePrice[1].value },
-    ]);
-    expect(resultProduct).toHaveProperty('available', curProduct.available);
-    expect(resultProduct).toHaveProperty('isHotItem', curProduct.isHotItem);
-    expect(resultProduct).toHaveProperty('purchasedCount', 0);
-    expect(resultProduct).toHaveProperty('rate', 0);
-    expect(resultProduct).toHaveProperty('rateCount', 0);
   });
   test('#3 Should receive error if product ID is wrong', async () => {
     const getProduct = await operations.query({
