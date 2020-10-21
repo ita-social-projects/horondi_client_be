@@ -13,7 +13,7 @@ type User{
     invitationalToken: String
     credentials: [Credential]
     registrationDate: String
-    wishlist: [ID]
+    wishlist: [Product]
     orders:[ID]
     purchasedProducts: [ID]
     comments: [ID]

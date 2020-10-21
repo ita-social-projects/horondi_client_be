@@ -120,6 +120,11 @@ const resolvers = {
 
     ...headerQuery,
   },
+
+  User: {
+    wishlist: parent => productsService.getProductsForWishlist(parent._id),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
   },
