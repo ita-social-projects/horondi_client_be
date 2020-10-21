@@ -168,6 +168,18 @@
             "name": "Error"
           }
         ]
+      },
+      {
+        "kind": "UNION",
+        "name": "NovaPoshtaOrderResult",
+        "possibleTypes": [
+          {
+            "name": "NovaPoshtaOrder"
+          },
+          {
+            "name": "Error"
+          }
+        ]
       }
     ]
   }

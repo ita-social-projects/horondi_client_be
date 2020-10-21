@@ -233,6 +233,21 @@ class ProductsService {
       return updatedProduct.images;
     }
   }
+
+  async getPopularProducts() {
+    const products = await Product.find()
+      .sort({ purchasedCount: -1 })
+      .limit(10)
+      .lean();
+
+    return products.reduce(
+      (prev, curr) => ({
+        labels: [...prev.labels, curr.name[0].value],
+        counts: [...prev.counts, curr.purchasedCount],
+      }),
+      { labels: [], counts: [] }
+    );
+  }
 }
 
 module.exports = new ProductsService();

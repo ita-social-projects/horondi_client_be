@@ -20,6 +20,7 @@ options: [ProductOptions]!
 available: Boolean!
 isHotItem: Boolean
 purchasedCount: Int
+availableCount: Int
 rate: Float
 rateCount: Int
 userRates: [UserRate]
@@ -43,6 +44,7 @@ patternImages: ImageSetInput
 images: PrimaryImageInput
 closure: [LanguageInput]!
 closureColor: String
+availableCount: Int
 basePrice: Int!
 available: Boolean
 isHotItem: Boolean

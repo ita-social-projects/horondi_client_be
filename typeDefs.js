@@ -8,6 +8,7 @@ const {
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
+  UserForStatisticsInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -58,6 +59,7 @@ const {
 const {
   homePageImagesType,
 } = require('./modules/homepage-images/home-page-images.graphql');
+const { headerType, headerInput } = require('./modules/header/header.graphql');
 
 const typeDefs = gql`
   ${categoryType}
@@ -76,6 +78,7 @@ const typeDefs = gql`
   ${deliveryType}
   ${paymentType}
   ${homePageImagesType}
+  ${headerType}
 
   scalar Upload
 
@@ -235,6 +238,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedEmailQuestion {
+    questions: [EmailQuestion]
+    count: Int
+  }
+
   type LanguageImageSet {
     lang: String
     value: ImageSet
@@ -255,6 +263,17 @@ const typeDefs = gql`
     text: String!
   }
 
+  type StatisticDoughnut {
+    names: [String!]
+    counts: [Int!]
+    relations: [Int!]
+  }
+
+  type StatisticBar {
+    labels: [String!]
+    counts: [Int!]
+  }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -270,12 +289,14 @@ const typeDefs = gql`
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
+  union HeaderResult = Header | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
+    getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -288,11 +309,14 @@ const typeDefs = gql`
     getAllOrders: [Order!]!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
+    getOrdersStatistic(date: Int!): StatisticDoughnut!
+    getPaidOrdersStatistic(date: Int!): StatisticBar!
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
+    getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -307,6 +331,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
+    getPopularProducts: StatisticBar!
 
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(productId: ID!): [CommentResult]
@@ -335,10 +360,18 @@ const typeDefs = gql`
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentRefund(data: PaymentInput): Payment
 
-    getAllEmailQuestions: [EmailQuestion]
+    getAllEmailQuestions(
+      filter: FilterInput
+      skip: Int
+    ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
 
     getHomePageLooksImages: [HomePageImages]
+
+    getPendingEmailQuestionsCount: Int
+
+    getAllHeaders: [Header!]!
+    getHeaderById(id: ID!): HeaderResult
   }
 
   input SortInput {
@@ -358,6 +391,7 @@ const typeDefs = gql`
     isHotItem: Boolean
     models: [String]
     currency: Int
+    emailQuestionStatus: [String]
   }
 
   input RoleEnumInput {
@@ -392,8 +426,10 @@ const typeDefs = gql`
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
+  ${UserForStatisticsInput}
   ${deliveryInput}
   ${paymentInput}
+  ${headerInput}
 
   input LanguageInput {
     lang: String!
@@ -581,11 +617,15 @@ const typeDefs = gql`
     updateComment(id: ID!, comment: commentInput!): CommentResult
 
     "BusinessText Mutation"
-    addBusinessText(businessText: BusinessTextInput!): BusinessTextResult
+    addBusinessText(
+      businessText: BusinessTextInput!
+      files: [Upload]!
+    ): BusinessTextResult
     deleteBusinessText(id: ID!): BusinessTextResult
     updateBusinessText(
       id: ID!
       businessText: BusinessTextInput!
+      files: [Upload]!
     ): BusinessTextResult
 
     "Rate Mutation"
@@ -612,12 +652,26 @@ const typeDefs = gql`
 
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
+    deleteEmailQuestions(questionsToDelete: [String]): [EmailQuestion]
+    makeEmailQuestionsSpam(
+      questionsToSpam: [String]
+      adminId: ID!
+    ): [EmailQuestion]
+    answerEmailQuestion(
+      questionId: ID!
+      adminId: ID!
+      text: String!
+    ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
-    answerEmailQuestion(questionId: ID!, text: String!): EmailQuestionResult
 
     "HomePageImages Mutation"
     updateHomePageLooksImage(id: [ID!], images: Upload): HomePageImages
+
+    "Header Mutation"
+    addHeader(header: HeaderInput!): HeaderResult
+    deleteHeader(id: ID!): HeaderResult
+    updateHeader(id: ID!, header: HeaderInput!): HeaderResult
   }
 `;
 

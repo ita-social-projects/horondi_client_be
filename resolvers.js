@@ -53,10 +53,17 @@ const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
+
 const {
   HomePageImagesQuery,
   HomePageImagesMutation,
 } = require('./modules/homepage-images/home-page-images.resolver');
+
+const {
+  headerQuery,
+  headerMutation,
+} = require('./modules/header/header.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -79,6 +86,7 @@ const SCHEMA_NAMES = {
   user: 'User',
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
+  header: 'Header',
 };
 const resolvers = {
   Query: {
@@ -115,6 +123,8 @@ const resolvers = {
     ...emailChatQuestionQuery,
 
     ...HomePageImagesQuery,
+
+    ...headerQuery,
   },
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -187,6 +197,8 @@ const resolvers = {
     ...emailChatQuestionMutation,
 
     ...HomePageImagesMutation,
+
+    ...headerMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -304,6 +316,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.intDocNumber) {
         return SCHEMA_NAMES.novaPoshtaOrder;
+      }
+      return 'Error';
+    },
+  },
+  HeaderResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.header;
       }
       return 'Error';
     },
