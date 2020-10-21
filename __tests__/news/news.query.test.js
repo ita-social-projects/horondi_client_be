@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const { setupApp } = require('../helper-functions');
@@ -93,27 +94,27 @@ describe('News queries tests', () => {
         .catch(e => e);
 
       expect(res.data.getAllNews).toBeDefined();
-      // expect(res.data.getAllNews.items).toContainEqual({
-      //   title: [
-      //     { lang: 'uk', value: 'bbb' },
-      //     { lang: 'eng', value: 'bbb' },
-      //   ],
-      //   text: [
-      //     { lang: 'uk', value: ' d a s d' },
-      //     { lang: 'eng', value: ' a s d' },
-      //   ],
-      //   author: {
-      //     name: [
-      //       { lang: 'uk', value: 'a sd' },
-      //       { lang: 'eng', value: 'a sd' },
-      //     ],
-      //   },
-      //   images: {
-      //     primary: { medium: 'ada s.jpg' },
-      //     additional: [],
-      //   },
-      //   date: '1111118820047',
-      // });
+      expect(res.data.getAllNews.items).toContainEqual({
+        title: [
+          { lang: 'uk', value: 'bbb' },
+          { lang: 'eng', value: 'bbb' },
+        ],
+        text: [
+          { lang: 'uk', value: ' d a s d' },
+          { lang: 'eng', value: ' a s d' },
+        ],
+        author: {
+          name: [
+            { lang: 'uk', value: 'a sd' },
+            { lang: 'eng', value: 'a sd' },
+          ],
+        },
+        images: {
+          primary: { medium: 'ada s.jpg' },
+          additional: [],
+        },
+        date: '1111118820047',
+      });
     });
   });
 
@@ -159,33 +160,33 @@ describe('News queries tests', () => {
           variables: { id: newsId },
         })
         .catch(e => e);
-      console.log(res);
-      expect(res.data.getNewsById).toBeDefined();
-      expect(res.data.getNewsById).toHaveProperty(
+      const receivedNews = res.data.getNewsById;
+      expect(receivedNews).toBeDefined();
+      expect(receivedNews).toHaveProperty(
         'title',
         news.title.map(item => ({
           ...item,
         }))
       );
 
-      expect(res.data.getNewsById.title).toBeInstanceOf(Array);
-      expect(res.data.getNewsById).toHaveProperty(
+      expect(receivedNews.title).toBeInstanceOf(Array);
+      expect(receivedNews).toHaveProperty(
         'text',
         news.text.map(item => ({
           ...item,
         }))
       );
-      expect(res.data.getNewsById.author).toBeDefined();
-      expect(res.data.getNewsById.author).toHaveProperty(
+      expect(receivedNews.author).toBeDefined();
+      expect(receivedNews.author).toHaveProperty(
         'name',
         news.author.name.map(item => ({
           ...item,
         }))
       );
-      expect(res.data.getNewsById.text).toBeInstanceOf(Array);
-      expect(res.data.getNewsById).toHaveProperty('images');
-      expect(res.data.getNewsById.images).toHaveProperty('primary');
-      expect(res.data.getNewsById).toHaveProperty('date', '1111118820047');
+      expect(receivedNews.text).toBeInstanceOf(Array);
+      expect(receivedNews).toHaveProperty('images');
+      expect(receivedNews.images).toHaveProperty('primary');
+      expect(receivedNews).toHaveProperty('date', '1111118820047');
     });
 
     test('Returning not existing news should return error message', async () => {
