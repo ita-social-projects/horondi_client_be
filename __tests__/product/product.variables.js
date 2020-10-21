@@ -1,4 +1,186 @@
+const { gql } = require('@apollo/client');
+const { setupApp } = require('../helper-functions');
+
 const badProductId = '1a1111da11da1111111a111a';
+
+const model = [
+  {
+    value: 'Тестова моделька',
+  },
+  {
+    value: 'Test modelyy',
+  },
+];
+
+const deleteAll = async (materialId, productId, categoryId, modelId) => {
+  const operations = await setupApp();
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteMaterial(id: $id) {
+          ... on Material {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: materialId },
+  });
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteProduct(id: $id) {
+          ... on Product {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: productId },
+  });
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteCategory(id: $id) {
+          ... on Category {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: categoryId },
+  });
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteModel(id: $id) {
+          ... on Model {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: modelId },
+  });
+};
+
+const getProductData = product => ({
+  available: product.available,
+  basePrice: [
+    { value: product.basePrice[0].value },
+    { value: product.basePrice[1].value },
+  ],
+  category: {
+    _id: product.category,
+  },
+  closureColor: product.closureColor,
+  description: [
+    { value: product.description[0].value },
+    { value: product.description[1].value },
+  ],
+  innerMaterial: [
+    { value: product.innerMaterial[0].value },
+    { value: product.innerMaterial[1].value },
+  ],
+  isHotItem: product.isHotItem,
+  mainMaterial: [
+    { value: product.mainMaterial[0].value },
+    { value: product.mainMaterial[1].value },
+  ],
+  name: [{ value: product.name[0].value }, { value: product.name[1].value }],
+  pattern: [
+    { value: product.pattern[0].value },
+    { value: product.pattern[1].value },
+  ],
+  strapLengthInCm: product.strapLengthInCm,
+  subcategory: {
+    _id: product.subcategory,
+  },
+  purchasedCount: 0,
+  rate: 0,
+  rateCount: 0,
+});
+
+const createModel = async (material, category, model) => {
+  const operations = await setupApp();
+  const createMaterial = await operations.mutate({
+    mutation: gql`
+      mutation($material: MaterialInput!) {
+        addMaterial(material: $material) {
+          ... on Material {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: { material },
+  });
+  const materialId = createMaterial.data.addMaterial._id;
+
+  const createCategory = await operations.mutate({
+    mutation: gql`
+      mutation($category: CategoryInput!, $upload: Upload) {
+        addCategory(category: $category, upload: $upload) {
+          ... on Category {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      category,
+      upload: '../___test__/model/dog.img',
+    },
+  });
+  const categoryId = createCategory.data.addCategory._id;
+  const subcategoryId = createCategory.data.addCategory._id;
+
+  const createModelData = await operations.mutate({
+    mutation: gql`
+      mutation($model: ModelInput!) {
+        addModel(model: $model) {
+          ... on Model {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: { model: { ...model, category: categoryId } },
+  });
+  const modelId = createModelData.data.addModel._id;
+
+  return {
+    categoryId,
+    subcategoryId,
+    modelId,
+    materialId,
+  };
+};
 
 const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   name: [
@@ -456,7 +638,12 @@ module.exports = {
   badProductId,
   newCategory,
   newModel,
+  newMaterial,
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,
+  createModel,
+  getProductData,
+  deleteAll,
+  model,
 };
