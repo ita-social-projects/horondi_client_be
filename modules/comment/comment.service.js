@@ -19,7 +19,7 @@ class CommentsService {
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    return Comment.find({ product: id });
+    return Comment.find({ product: id }).sort({ date: -1 });
   }
 
   async getAllCommentsByUser(userEmail) {
