@@ -143,7 +143,7 @@ describe('Product queries', () => {
       `,
       variables: { id: productId },
     });
-    const curProduct = product;
+
     const resultProduct = resevedProduct.data.getProductById;
     expect(resultProduct).toBeDefined();
     expect(createProduct.data.addProduct).toEqual({
