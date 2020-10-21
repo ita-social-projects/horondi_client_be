@@ -10,6 +10,7 @@ const {
   getNewProduct,
   getProductData,
   deleteAll,
+  model,
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -150,14 +151,7 @@ describe('Product queries', () => {
     expect(resultProduct).toEqual({
       ...currentProduct,
       _id: productId,
-      model: [
-        {
-          value: 'Тестова моделька',
-        },
-        {
-          value: 'Test modelyy',
-        },
-      ],
+      model,
     });
   });
   test('#3 Should receive error if product ID is wrong', async () => {

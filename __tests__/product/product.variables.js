@@ -3,6 +3,15 @@ const { setupApp } = require('../helper-functions');
 
 const badProductId = '1a1111da11da1111111a111a';
 
+const model = [
+  {
+    value: 'Тестова моделька',
+  },
+  {
+    value: 'Test modelyy',
+  },
+];
+
 const deleteAll = async (materialId, productId, categoryId, modelId) => {
   const operations = await setupApp();
   await operations.mutate({
@@ -636,4 +645,5 @@ module.exports = {
   createModel,
   getProductData,
   deleteAll,
+  model,
 };
