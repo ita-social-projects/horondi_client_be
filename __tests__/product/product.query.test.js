@@ -9,6 +9,7 @@ const {
   badProductId,
   getNewProduct,
   getProductData,
+  deleteAll,
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -213,69 +214,6 @@ describe('Product queries', () => {
     expect(receivedError).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
   });
   afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteMaterial(id: $id) {
-            ... on Material {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: materialId },
-    });
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteProduct(id: $id) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: productId },
-    });
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteCategory(id: $id) {
-            ... on Category {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: categoryId },
-    });
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteModel(id: $id) {
-            ... on Model {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: modelId },
-    });
+    await deleteAll(materialId, productId, categoryId, modelId);
   });
 });

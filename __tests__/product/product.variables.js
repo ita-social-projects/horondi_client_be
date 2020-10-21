@@ -3,6 +3,74 @@ const { setupApp } = require('../helper-functions');
 
 const badProductId = '1a1111da11da1111111a111a';
 
+const deleteAll = async (materialId, productId, categoryId, modelId) => {
+  const operations = await setupApp();
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteMaterial(id: $id) {
+          ... on Material {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: materialId },
+  });
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteProduct(id: $id) {
+          ... on Product {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: productId },
+  });
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteCategory(id: $id) {
+          ... on Category {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: categoryId },
+  });
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteModel(id: $id) {
+          ... on Model {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: modelId },
+  });
+};
+
 const getProductData = product => ({
   available: product.available,
   basePrice: [
@@ -567,4 +635,5 @@ module.exports = {
   getSameNameForUpdate,
   createModel,
   getProductData,
+  deleteAll,
 };
