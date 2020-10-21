@@ -146,9 +146,17 @@ describe('Product queries', () => {
 
     const resultProduct = resevedProduct.data.getProductById;
     expect(resultProduct).toBeDefined();
-    expect(createProduct.data.addProduct).toEqual({
+    expect(resultProduct).toEqual({
       ...currentProduct,
       _id: productId,
+      model: [
+        {
+          value: 'Тестова моделька',
+        },
+        {
+          value: 'Test modelyy',
+        },
+      ],
     });
   });
   test('#3 Should receive error if product ID is wrong', async () => {
