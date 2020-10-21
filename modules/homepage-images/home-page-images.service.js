@@ -4,11 +4,16 @@ const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 
 const {
   IMAGES_WERE_NOT_CONVERTED,
+  IMAGE_NOT_FOUND,
 } = require('../../error-messages/home-page-messages');
 
 class HomePageImagesService {
   async getHomePageLooksImages() {
-    return await LooksImages.find();
+    const looksImages = await LooksImages.find();
+
+    if (!looksImages) throw new Error(IMAGE_NOT_FOUND);
+
+    return looksImages;
   }
 
   async updateHomePageLooksImage(data) {
@@ -19,9 +24,8 @@ class HomePageImagesService {
     const looksImages = (await Promise.allSettled(imagesToUpdate)).map(
       el => el.value.images
     );
-    const isHoleless = looksImages.every(el => el._id);
 
-    if (!looksImages || !isHoleless) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    if (!looksImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
 
     return (
       looksImages.length &&
