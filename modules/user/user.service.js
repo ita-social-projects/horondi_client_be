@@ -49,12 +49,20 @@ const SOURCES = {
 };
 
 class UserService {
-  filterItems(args = {}) {
+  filterItems(args = {}, searchString = '') {
     const filter = {};
-    const { roles, days } = args;
+    const { roles, days, banned } = args;
 
     if (roles) {
       filter.role = { $in: roles };
+    }
+
+    if (banned) {
+      filter.banned = { $in: banned };
+    }
+
+    if (searchString.trim()) {
+      filter.$or = this.searchItems(searchString);
     }
 
     if (days) {
@@ -65,6 +73,37 @@ class UserService {
     }
 
     return filter;
+  }
+
+  searchItems(searchString) {
+    return [
+      { name: { $regex: new RegExp(searchString, 'i') } },
+      { phoneNumber: { $regex: new RegExp(searchString) } },
+      { email: { $regex: new RegExp(searchString, 'i') } },
+    ];
+  }
+
+  aggregateItems(filters = {}, pagination = {}, sort = {}) {
+    let aggItems = [];
+
+    aggItems.push({ $match: filters });
+
+    if (pagination.skip !== undefined && pagination.limit) {
+      aggItems.push({
+        $skip: pagination.skip,
+      });
+      aggItems.push({
+        $limit: pagination.limit,
+      });
+    }
+
+    if (Object.keys(sort).length) {
+      aggItems.push({
+        $sort: sort,
+      });
+    }
+
+    return aggItems;
   }
 
   async checkIfTokenIsValid(token) {
@@ -91,12 +130,35 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers({ filter }) {
-    const filters = this.filterItems(filter);
+  async getAllUsers({ filter, search, pagination, sort }) {
+    let filteredItems = this.filterItems(filter, search);
+    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
 
-    const items = await User.find(filters);
+    const users = await User.aggregate([
+      {
+        $addFields: {
+          name: { $concat: ['$firstName', ' ', '$lastName'] },
+        },
+      },
+    ])
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filteredItems }, { $count: 'count' }],
+      })
+      .then(data => data[0]);
 
-    return items;
+    const { items, calculations } = users;
+    let usersCount;
+
+    if (calculations && calculations.length) {
+      usersCount = calculations[0].count;
+    }
+
+    return {
+      items,
+      count: usersCount || 0,
+    };
   }
 
   async getUsersForStatistic({ filter }) {

@@ -5,10 +5,12 @@ const {
   userInput,
   userRegisterInput,
   userFilterInput,
+  userSortInput,
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
   UserForStatisticsInput,
+  paginatedUsersType,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -57,6 +59,9 @@ const {
   paymentInput,
 } = require('./modules/payment/payment.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
+const { defaultPaginationParams } = require('./consts');
+
+const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
   ${categoryType}
@@ -65,6 +70,7 @@ const typeDefs = gql`
   ${newsType}
   ${patternType}
   ${userType}
+  ${paginatedUsersType}
   ${productType}
   ${commentType}
   ${businessTextType}
@@ -239,7 +245,7 @@ const typeDefs = gql`
   type SuccessfulResponse {
     isSuccess: Boolean
   }
-
+  
   type EmailAnswer {
     admin: User!
     date: String!
@@ -298,7 +304,12 @@ const typeDefs = gql`
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
-    getAllUsers(filter: UserFilterInput): [User]
+    getAllUsers(
+      filter: UserFilterInput
+      search: String
+      pagination: Pagination
+      sort: UserSortInput
+    ): PaginatedUsersType!
     getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
@@ -354,6 +365,11 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
   }
 
+  input Pagination {
+      skip: Int = ${skip}
+      limit: Int = ${limit}
+  }
+
   input SortInput {
     purchasedCount: Int
     basePrice: Int
@@ -397,6 +413,7 @@ const typeDefs = gql`
   ${userRegisterInput}
   ${businessTextInput}
   ${userFilterInput}
+  ${userSortInput}
   ${adminConfirmInput}
   ${adminRegisterInput}
   ${modelInput}
