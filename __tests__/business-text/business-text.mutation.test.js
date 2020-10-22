@@ -149,7 +149,7 @@ describe('Business page queries', () => {
     );
   });
 
-  test('#4 update not existing businessText should return error', async () => {
+  test(' update not existing businessText should return error', async () => {
     const res = await operations
       .mutate({
         mutation: gql`
