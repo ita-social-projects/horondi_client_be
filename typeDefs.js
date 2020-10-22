@@ -666,7 +666,7 @@ const typeDefs = gql`
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
 
     "HomePageImages Mutation"
-    updateHomePageLooksImage(id: [ID!], images: Upload): HomePageImages
+    updateHomePageLooksImage(id: ID!, images: Upload): HomePageImages
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult

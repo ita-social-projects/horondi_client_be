@@ -17,21 +17,13 @@ class HomePageImagesService {
   }
 
   async updateHomePageLooksImage(data) {
-    const imagesToUpdate = data.id.map(async id => {
-      return await LooksImages.findById(id).lean();
-    });
+    const imagesToUpdate = await LooksImages.findById(data.id).lean();
 
-    const looksImages = (await Promise.allSettled(imagesToUpdate)).map(
-      el => el.value.images
-    );
-
-    if (!looksImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
-
+    if (!imagesToUpdate) throw new Error(IMAGES_WERE_NOT_CONVERTED);
     return (
-      looksImages.length &&
-      data.images.length &&
-      this.deleteImages(looksImages) &&
-      data.id.map((id, i) => this.saveUpdatedLooksImages(id, data.images[i]))
+      data.images &&
+      this.deleteImages(imagesToUpdate.images) &&
+      this.saveUpdatedLooksImages(data.id, data.images)
     );
   }
 
@@ -58,7 +50,7 @@ class HomePageImagesService {
   }
 
   async deleteImages(imagesToDelete) {
-    const deletedImages = await deleteFiles(imagesToDelete);
+    const deletedImages = await deleteFiles([imagesToDelete]);
 
     return await Promise.allSettled(deletedImages);
   }
