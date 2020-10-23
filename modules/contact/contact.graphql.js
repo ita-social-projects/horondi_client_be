@@ -5,7 +5,7 @@ const contactType = `
     openHours: [Language]!
     address: [Language]!
     email: String!
-    images: ImageSet!
+    images: [LanguageImageSet]
     link: String!
   }
 `;
@@ -16,7 +16,7 @@ input contactInput {
   openHours: [LanguageInput]!
   address: [LanguageInput]!
   email: String!
-  images: ImageSetInput!
+  images: [LanguageImageSetInput]
   link: String!
 }`;
 

@@ -4,6 +4,8 @@
 /.pnp
 .pnp.js
 package-lock.json
+error.log
+combined.log
 
 # testing
 /coverage
@@ -16,6 +18,7 @@ package-lock.json
 .idea
 .DS_Store
 .env
+.env.test
 .env.local
 .env.development.local
 .env.test.local

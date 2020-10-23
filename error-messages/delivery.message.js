@@ -1,0 +1,5 @@
+const ORDER_CREATION_FAILED = 'ORDER_CREATION_FAILED';
+
+module.exports = {
+  ORDER_CREATION_FAILED,
+};

@@ -1,13 +1,12 @@
 {
   "root": true,
+  "parser": "babel-eslint",
   "env": {
     "commonjs": true,
     "es6": true,
     "node": true
   },
-  "extends": [
-    "airbnb-base"
-  ],
+  "extends": ["airbnb-base"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,6 +15,7 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "linebreak-style": 0,
     "semi": "off",
     "no-var": "warn",
     "no-unused-vars": [
@@ -23,7 +23,7 @@
       {
         "vars": "all",
         "args": "none",
-        "ignoreSiblings": true,
+        "ignoreRestSiblings": true,
         "argsIgnorePattern": "res|next|^err"
       }
     ],
@@ -31,10 +31,7 @@
     "no-alert": 0,
     "no-use-before-define": "off",
     "no-await-in-loop": 0,
-    "no-return-assign": [
-      "error",
-      "except-parens"
-    ],
+    "no-return-assign": ["error", "except-parens"],
     "no-restricted-syntax": [
       2,
       "ForInStatement",
@@ -48,18 +45,12 @@
       }
     ],
     "arrow-parens": 0,
-    "arrow-body-style": [
-      2,
-      "as-needed"
-    ],
+    "arrow-body-style": [2, "as-needed"],
     "no-unused-expressions": 0,
     "no-console": [
       0,
       {
-        "allow": [
-          "warn",
-          "error"
-        ]
+        "allow": ["warn", "error"]
       }
     ],
     "no-plusplus": 0,
@@ -76,10 +67,7 @@
     "no-case-declarations": 0,
     "lines-around-comment": 1,
     "no-multiple-empty-lines": 2,
-    "lines-between-class-members": [
-      1,
-      "always"
-    ],
+    "lines-between-class-members": [1, "always"],
     "consistent-return": 0,
     "no-this-before-super": 2,
     "indent": [
@@ -94,15 +82,24 @@
         }
       }
     ],
+    "max-len": [
+      2,
+      {
+        "code": 200,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
     "no-return-await": 0,
     "camelcase": 0,
     "no-useless-return": 2,
     "no-multi-str": 2,
     "no-constant-condition": 1,
-    "no-extra-parens": [
-      1,
-      "functions"
-    ],
+    "no-extra-parens": [1, "functions"],
     "no-param-reassign": [
       2,
       {
@@ -118,6 +115,18 @@
         }
       }
     ],
+    "max-len": [
+      2,
+      {
+        "code": 200,
+        "ignoreComments": true,
+        "ignoreTrailingComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
     "radix": 0,
     "no-shadow": 0,
     "quotes": [
@@ -127,6 +136,8 @@
         "avoidEscape": true,
         "allowTemplateLiterals": true
       }
-    ]
+    ],
+    "no-confusing-arrow": 0,
+    "linebreak-style": 0
   }
 }
