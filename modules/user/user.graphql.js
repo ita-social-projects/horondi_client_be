@@ -67,6 +67,12 @@ input AdminConfirmInput {
 }
 `;
 
+const UserForStatisticsInput = `
+input UserForStatisticsInput {
+    days: Int!
+}
+`;
+
 const userFilterInput = `
 input UserFilterInput {
     roles: [String]
@@ -81,4 +87,5 @@ module.exports = {
   LoginInput,
   adminRegisterInput,
   adminConfirmInput,
+  UserForStatisticsInput,
 };

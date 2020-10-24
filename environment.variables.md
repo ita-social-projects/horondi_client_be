@@ -1,11 +1,11 @@
 #### Environment variables
-
 `ACCESS_KEY` - access key for azure\
 `ADMIN_EMAIL` - admin email\
 `ADMIN_PASS` - admin password\
 `AZURE_HOST` - address of your account on azure\
 `BASE_URI` - base URI of your server\
 `CONFIRMATION_SECRET` - secret for user confirmation\
+`CRYPTO` - variable necessarry for fondy payment system\
 `CURRENCY_API_URL` - URL of currency API\
 `EXPIRES_IN` - expire time for token, eq '1h'\
 `FRONT_BASE_URI` - base URI of your front(for example `http://localhost:3000`)\
