@@ -292,7 +292,11 @@ const typeDefs = gql`
     getProductOptions: AllProductOptions
 
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(productId: ID!): [CommentResult]
+    getAllCommentsByProduct(
+      productId: ID!
+      skip: Int
+      limit: Int
+    ): PaginatedComments!
     getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 

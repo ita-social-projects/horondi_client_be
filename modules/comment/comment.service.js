@@ -14,12 +14,18 @@ class CommentsService {
     return Comment.findById(id);
   }
 
-  async getAllCommentsByProduct(id) {
-    const product = await Product.findById(id);
+  async getAllCommentsByProduct({ productId, skip, limit }) {
+    const product = await Product.findById(productId);
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    return Comment.find({ product: id });
+    const comments = await Comment.find({ product: productId })
+      .skip(skip)
+      .limit(limit)
+      .sort('-date');
+    // console.log(comments)
+    const count = await Comment.find({ product: productId }).countDocuments();
+    return { items: comments, count };
   }
 
   async getAllCommentsByUser(userEmail) {
