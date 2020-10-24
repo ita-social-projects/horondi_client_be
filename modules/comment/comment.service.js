@@ -23,7 +23,6 @@ class CommentsService {
       .skip(skip)
       .limit(limit)
       .sort('-date');
-    // console.log(comments)
     const count = await Comment.find({ product: productId }).countDocuments();
     return { items: comments, count };
   }
