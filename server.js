@@ -48,10 +48,7 @@ const server = new ApolloServer({
           level: 'error',
           message: formatErrorForLogger(INVALID_PERMISSIONS),
         });
-        return {
-          statusCode: 401,
-          message: INVALID_PERMISSIONS,
-        };
+        return null;
       }
       return {
         user: await userService.getUserByFieldOrThrow('email', user.email),
