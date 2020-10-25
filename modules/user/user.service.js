@@ -49,20 +49,20 @@ const SOURCES = {
 };
 
 class UserService {
-  filterItems(args = {}, searchString = '') {
+  filterItems(args = {}) {
     const filter = {};
-    const { roles, days, banned } = args;
+    const { roles, days, banned, search } = args;
 
-    if (roles) {
+    if (roles && roles.length) {
       filter.role = { $in: roles };
     }
 
-    if (banned) {
+    if (banned && banned.length) {
       filter.banned = { $in: banned };
     }
 
-    if (searchString.trim()) {
-      filter.$or = this.searchItems(searchString);
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search);
     }
 
     if (days) {
@@ -86,6 +86,12 @@ class UserService {
   aggregateItems(filters = {}, pagination = {}, sort = {}) {
     let aggItems = [];
 
+    if (Object.keys(sort).length) {
+      aggItems.push({
+        $sort: sort,
+      });
+    }
+
     aggItems.push({ $match: filters });
 
     if (pagination.skip !== undefined && pagination.limit) {
@@ -94,12 +100,6 @@ class UserService {
       });
       aggItems.push({
         $limit: pagination.limit,
-      });
-    }
-
-    if (Object.keys(sort).length) {
-      aggItems.push({
-        $sort: sort,
       });
     }
 
@@ -130,8 +130,8 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers({ filter, search, pagination, sort }) {
-    let filteredItems = this.filterItems(filter, search);
+  async getAllUsers({ filter, pagination, sort }) {
+    let filteredItems = this.filterItems(filter);
     let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
 
     const users = await User.aggregate([

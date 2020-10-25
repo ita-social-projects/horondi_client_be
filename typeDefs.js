@@ -306,7 +306,6 @@ const typeDefs = gql`
 
     getAllUsers(
       filter: UserFilterInput
-      search: String
       pagination: Pagination
       sort: UserSortInput
     ): PaginatedUsersType!

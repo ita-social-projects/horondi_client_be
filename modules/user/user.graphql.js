@@ -84,6 +84,7 @@ const userFilterInput = `
 input UserFilterInput {
     roles: [String!]
     banned: [Boolean!]
+    search: String
 }
 `;
 
@@ -91,7 +92,6 @@ const userSortInput = `
 input UserSortInput {
   name: Int
   email: Int
-  banned: Int
 }
 `;
 
