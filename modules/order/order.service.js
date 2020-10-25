@@ -269,7 +269,7 @@ class OrdersService {
     );
     const { names, counts } = this.getOrdersStats(formattedDate);
     const total = counts.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
+      (orderTotal, orderCount) => orderTotal + orderCount,
       0
     );
     return { labels: names, counts, total };

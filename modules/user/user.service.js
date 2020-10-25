@@ -110,7 +110,7 @@ class UserService {
     const userOccurency = countItemsOccurency(formatedData);
     const counts = Object.values(userOccurency);
     const total = counts.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
+      (userTotal, userCount) => userTotal + userCount,
       0
     );
     return {
