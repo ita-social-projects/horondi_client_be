@@ -147,7 +147,7 @@ Command `npm run generate` is used to run [graphql code generator](https://graph
 
 ## Contributing
 
-You're encouraged to contribute to our project if you've found any issues or missing functionality that you would want to see. Here you can see [the list of issues](https://github.com/ita-social-projects/horondi_client_fe/issues) and here you can create [a new issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose).
+You're encouraged to contribute to our project if you've found any issues or missing functionality that you would want to see. Here you can see [the list of issues](https://github.com/ita-social-projects/horondi_client_be/issues) and here you can create [a new issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose).
 
 Before sending any pull request, please discuss requirements/changes to be implemented using an existing issue or by creating a new one. All pull requests should be done into `development` branch.
 
@@ -166,7 +166,7 @@ We have **master** , **development** and **feature** branches.
 All **feature** branches must be merged into [development](https://github.com/ita-social-projects/horondi_client_be/tree/development) branch!!!
 Only the release should merge into the main branch!!!
 
-![Github flow](<https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1312>)
+[!Github flow](<https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1312>)
 
 #### Step 1
 
@@ -184,7 +184,7 @@ Only the release should merge into the main branch!!!
 
 #### Step 3
 
-- 🔃 Create a new pull request using <a href="https://github.com/ita-social-projects/horondi_client_fe/compare/" target="_blank">github.com/ita-social-projects/horondi_client_be</a>.
+- 🔃 Create a new pull request using <a href="https://github.com/ita-social-projects/horondi_client_be/compare/" target="_blank">github.com/ita-social-projects/horondi_client_be</a>.
 
 ---
 
@@ -192,11 +192,11 @@ Only the release should merge into the main branch!!!
 
 #### Step 1
 
--go to [!issues](https://github.com/ita-social-projects/horondi_client_fe/issues) and click `New issue` button
+-go to [issues](https://github.com/ita-social-projects/horondi_client_be/issues) and click `New issue` button
 
 #### Step 2
 
-when creating [!issue](https://github.com/ita-social-projects/horondi_client_fe/issues/new/choose) you should add name of the issue, description, choose assignee, label, project. If issue is a `User Story` you should link it with corresponding tasks, and corresponding tasks should be linked to issue.
+when creating [issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose) you should add name of the issue, description, choose assignee, label, project. If issue is a `User Story` you should link it with corresponding tasks, and corresponding tasks should be linked to issue.
 
 #### Step 3
 
