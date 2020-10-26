@@ -147,28 +147,60 @@ Command `npm run generate` is used to run [graphql code generator](https://graph
 
 ## Contributing
 
+You're encouraged to contribute to our project if you've found any issues or missing functionality that you would want to see. Here you can see [the list of issues](https://github.com/ita-social-projects/horondi_client_fe/issues) and here you can create [a new issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose).
+
+Before sending any pull request, please discuss requirements/changes to be implemented using an existing issue or by creating a new one. All pull requests should be done into `development` branch.
+
+There are three GitHub projects: [horondi_client_fe](https://github.com/ita-social-projects/horondi_client_fe) for frontend part, [horondi_client_be](https://github.com/ita-social-projects/horondi_client_be) for backend part and [horondi_admin](https://github.com/ita-social-projects/horondi_admin). Every project has it's own issues.
+
+Every pull request should be linked to an issue. So if you make changes on frontend, backend or admin parts you should create an issue with a link to corresponding requirement (story, task or epic).
+
+All Pull Requests should start from prefix _#xxx-yyy_ where _xxx_ - task number and and _yyy_ - short description
+e.g. #020-createAdminPanel
+
+---
+
 ### Git flow
 
-> To get started...
+We have **master** , **development** and **feature** branches.  
+All **feature** branches must be merged into [development](https://github.com/ita-social-projects/horondi_client_be/tree/development) branch!!!
+Only the release should merge into the main branch!!!
+
+![Github flow](<https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1312>)
 
 #### Step 1
 
 - **Option 1**
 
-  - 🍴 Fork this repo!
+  - 👯 Clone this repo to your local machine using `https://github.com/ita-social-projects/horondi_client_be.git`
 
 - **Option 2**
-  - 👯 Clone this repo to your local machine using `https://github.com/ita-social-projects/horondi_client_be.git`
+
+  - create new branch from development branch
 
 #### Step 2
 
-- **HACK AWAY!** 🔨🔨🔨
+- add some commits to your new branch
 
 #### Step 3
 
-- 🔃 Create a new pull request using <a href="https://github.com/ita-social-projects/horondi_client_be/compare/" target="_blank">github.com/ita-social-projects/horondi_client_be</a>.
+- 🔃 Create a new pull request using <a href="https://github.com/ita-social-projects/horondi_client_fe/compare/" target="_blank">github.com/ita-social-projects/horondi_client_be</a>.
+
+---
 
 ### Issue flow
+
+#### Step 1
+
+-go to [!issues](https://github.com/ita-social-projects/horondi_client_fe/issues) and click `New issue` button
+
+#### Step 2
+
+when creating [!issue](https://github.com/ita-social-projects/horondi_client_fe/issues/new/choose) you should add name of the issue, description, choose assignee, label, project. If issue is a `User Story` you should link it with corresponding tasks, and corresponding tasks should be linked to issue.
+
+#### Step 3
+
+if issue is in work it should be placed in proper column on dashboard according to its status.
 
 ---
 
