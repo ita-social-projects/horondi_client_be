@@ -135,7 +135,7 @@ class UserService {
     const user = await User.findById(id).lean();
 
     if (user.email !== updatedUser.email) {
-      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
+      const user = await User.findOne({ email: updatedUser.email });
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
