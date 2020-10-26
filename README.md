@@ -166,7 +166,7 @@ We have **master** , **development** and **feature** branches.
 All **feature** branches must be merged into [development](https://github.com/ita-social-projects/horondi_client_be/tree/development) branch!!!
 Only the release should merge into the main branch!!!
 
-[!Github flow](https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1312)
+![Github flow](<https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1312>)
 
 #### Step 1
 
