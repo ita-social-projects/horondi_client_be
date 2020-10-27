@@ -51,10 +51,19 @@ class CategoryService {
       .filter(category => category.isMain)
       .map(async category => {
         const products = await Product.find({ category: category._id });
-        const models = products.map(product => ({
-          name: [...product.model],
-          _id: product._id,
-        }));
+        const uniqueModels = [];
+        const models = products
+          .map(product => ({
+            name: [...product.model],
+            _id: product._id,
+          }))
+          .filter(({ name }) => {
+            if (!uniqueModels.includes(name[0].value)) {
+              uniqueModels.push(name[0].value);
+              return true;
+            }
+            return false;
+          });
         return {
           category: {
             name: [...category.name],
