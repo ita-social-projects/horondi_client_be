@@ -121,17 +121,17 @@ const typeDefs = gql`
     exchangeRate: Float
   }
   type ModelsMenu {
-    model: [Menu]
+    model: [Menu!]
   }
   type Menu {
-    _id: ID
-    name: [Language]
+    _id: ID!
+    name: [Language!]
   }
 
   type BurgerMenu {
-    _id: ID
-    category: Menu
-    models: [Menu]
+    _id: ID!
+    category: Menu!
+    models: [Menu!]
   }
   type Subcategory {
     _id: ID!
