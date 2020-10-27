@@ -223,6 +223,7 @@ const typeDefs = gql`
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
+  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -375,6 +376,12 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
+  input ColorInputTest {
+    code: Int!
+    name: [LanguageInput!]
+    available: Boolean!
+    simpleName: [LanguageInput!]
+  }
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
@@ -455,6 +462,12 @@ const typeDefs = gql`
       material: MaterialInput!
       images: Upload
     ): MaterialResult
+    addMaterialColor(
+      id: ID
+      color: ColorInputTest
+      image: Upload
+    ): MaterialColorResult
+    deleteMaterialColor(id: ID, code: Int): MaterialResult
 
     "Category Mutation"
     addCategory(

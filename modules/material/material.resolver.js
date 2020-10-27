@@ -39,9 +39,36 @@ const materialMutation = {
       };
     }
   },
+
+  addMaterialColor: async (parent, args) => {
+    args.color.images = args.image;
+    try {
+      return await materialService.addMaterialColor(
+        args.id,
+        args.color,
+        args.image
+      );
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
+
   deleteMaterial: async (parent, args) => {
     try {
       return await materialService.deleteMaterial(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
+  deleteMaterialColor: async (parent, args) => {
+    try {
+      return await materialService.deleteMaterialColor(args.id, args.code);
     } catch (e) {
       return {
         statusCode: 404,

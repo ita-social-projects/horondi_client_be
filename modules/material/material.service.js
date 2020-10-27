@@ -112,6 +112,20 @@ class MaterialsService {
     }).save();
   }
 
+  async addMaterialColor(id, color, image) {
+    const uploadResult = await uploadFiles(image);
+    const imageResults = await Promise.allSettled(uploadResult);
+    const resizedImages = imageResults.map(item => item.value.fileNames);
+    if (!resizedImages) {
+      throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    }
+    const mappedColors = Object.assign(color, { images: resizedImages[0] });
+    return Material.update(
+      { _id: id },
+      { $addToSet: { colors: [mappedColors] } }
+    );
+  }
+
   async deleteMaterial(id) {
     const foundMaterial = await Material.findByIdAndDelete(id);
     if (foundMaterial) {
@@ -130,6 +144,10 @@ class MaterialsService {
       },
     });
     return materialsCount > 0;
+  }
+
+  async deleteMaterialColor(id, code) {
+    return Material.update({ _id: id }, { $pull: { colors: { code: code } } });
   }
 }
 

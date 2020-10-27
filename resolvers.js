@@ -201,6 +201,15 @@ const resolvers = {
       return 'Error';
     },
   },
+  MaterialColorResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.material;
+      }
+      return 'Error';
+    },
+  },
+
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {
