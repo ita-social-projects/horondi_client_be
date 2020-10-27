@@ -1,16 +1,15 @@
 const commentsService = require('./comment.service');
-const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
 
 const commentsQuery = {
   getCommentById: async (parent, args) => {
-    const comment = await commentsService.getCommentById(args.id);
-    if (comment) {
-      return comment;
+    try {
+      return await commentsService.getCommentById(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: COMMENT_NOT_FOUND,
-    };
   },
 
   getAllCommentsByProduct: async (parent, args) => {
@@ -27,14 +26,8 @@ const commentsQuery = {
   },
 
   getAllCommentsByUser: async (parent, args) => {
-    return await commentsService.getAllCommentsByUser(args.userEmail);
-  },
-};
-
-const commentsMutation = {
-  addComment: async (parent, args) => {
     try {
-      return await commentsService.addComment(args.productId, args.comment);
+      return await commentsService.getAllCommentsByUser(args.userEmail);
     } catch (error) {
       return [
         {
@@ -42,6 +35,21 @@ const commentsMutation = {
           message: error.message,
         },
       ];
+    }
+  },
+  getAllRecentComments: async (parent, args) =>
+    commentsService.getAllRecentComments(args),
+};
+
+const commentsMutation = {
+  addComment: async (parent, args) => {
+    try {
+      return await commentsService.addComment(args.productId, args.comment);
+    } catch (error) {
+      return {
+        statusCode: 404,
+        message: error.message,
+      };
     }
   },
 
@@ -76,7 +84,7 @@ const commentsMutation = {
       );
     } catch (error) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: error.message,
       };
     }

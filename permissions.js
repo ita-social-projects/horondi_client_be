@@ -15,6 +15,11 @@ const {
 } = require('./modules/material/material.permissions');
 
 const {
+  contactPermissionsQuery,
+  contactPermissionsMutations,
+} = require('./modules/contact/contact.permission');
+
+const {
   newsPermissionsQuery,
   newsPermissionsMutations,
 } = require('./modules/news/news.permissions');
@@ -35,6 +40,7 @@ const permissions = shield(
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
+      ...contactPermissionsQuery,
       ...newsPermissionsQuery,
       ...categoryPermissionsQuery,
       ...modelPermissionsQuery,
@@ -43,6 +49,7 @@ const permissions = shield(
       ...userPermissionsMutation,
       ...patternPermissionsMutations,
       ...materialPermissionsMutations,
+      ...contactPermissionsMutations,
       ...newsPermissionsMutations,
       ...categoryPermissionsMutations,
       ...modelPermissionsMutations,

@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const {
   patternToUpdate,
   patternDoesNotExistId,
@@ -10,7 +9,7 @@ const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
 } = require('../../error-messages/pattern.messages');
-const { adminLogin, setupApp } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
 let patternId = '';

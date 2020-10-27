@@ -1,13 +1,22 @@
-const validEmail = 'TEST3123@gmail.com';
-const invalidEmail = 'TESTqwerty123@gmail.com';
-const productId = '264677d549443a6816da3d09';
+const validEmail = 'test@mail.com';
+const invalidEmail = 'resttestqwerty123@gmail.com';
+const productId = 'be89b5471126f0fdef739755';
+const productWrongId = '111111111111111111111111';
+const commentWrongId = '111111171126f0fdef739755';
 const wrongData = '123siSTm#';
-
+const rate = 4;
+const updatedRate = 1;
 const newComment = {
   text: 'Test text',
-  user: { email: 'TEST3123@gmail.com' },
-  product: '264677d549443a6816da3d09',
+  user: { email: 'test@mail.com' },
+  product: 'be89b5471126f0fdef739755',
   show: false,
+};
+const updatedComment = {
+  text: 'updated text',
+  user: { email: 'ermn7dyptp@yahoo.com' },
+  product: 'be89b5471126f0fdef739755',
+  show: true,
 };
 
 module.exports = {
@@ -16,4 +25,9 @@ module.exports = {
   productId,
   newComment,
   wrongData,
+  updatedComment,
+  commentWrongId,
+  productWrongId,
+  rate,
+  updatedRate,
 };

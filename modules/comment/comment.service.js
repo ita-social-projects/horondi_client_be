@@ -1,15 +1,23 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
-
+const User = require('../user/user.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
+const { monthInMilliseconds } = require('../../consts');
+const { UserRate } = require('../../resolvers');
+const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
+
 class CommentsService {
-  getCommentById(id) {
-    return Comment.findById(id);
+  async getCommentById(id) {
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      throw new Error(COMMENT_NOT_FOUND);
+    }
+    return comment;
   }
 
   async getAllCommentsByProduct(id) {
@@ -21,7 +29,12 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userEmail) {
-    return Comment.find({ 'user.email': userEmail });
+    const user = await User.find({ email: userEmail });
+
+    if (!user.length) {
+      throw new Error(USER_NOT_FOUND);
+    }
+    return await Comment.find({ 'user.email': userEmail });
   }
 
   async updateComment(id, comment) {
@@ -39,8 +52,7 @@ class CommentsService {
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
-    const comment = new Comment(data);
-    return comment.save();
+    return new Comment(data).save();
   }
 
   async deleteComment(id) {
@@ -53,8 +65,13 @@ class CommentsService {
 
   async addRate(id, data, user) {
     const product = await Product.findById(id);
+
+    if (!product) {
+      throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
+    }
     const { userRates } = product;
     let { rateCount } = product;
+
     const { rate } =
       userRates.find(rate => String(rate.user) === String(user._id)) || {};
 
@@ -79,9 +96,7 @@ class CommentsService {
       },
       { new: true }
     );
-
-    if (rateToAdd) return rateToAdd;
-    throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
+    return rateToAdd;
   }
 }
 module.exports = new CommentsService();

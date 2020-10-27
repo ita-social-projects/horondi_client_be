@@ -13,7 +13,6 @@ const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
-
 connectDB();
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
