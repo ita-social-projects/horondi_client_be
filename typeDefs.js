@@ -463,11 +463,11 @@ const typeDefs = gql`
       images: Upload
     ): MaterialResult
     addMaterialColor(
-      id: ID
+      id: ID!
       color: MaterialColorInput
       image: Upload
     ): MaterialColorResult
-    deleteMaterialColor(id: ID, code: Int): MaterialResult
+    deleteMaterialColor(id: ID!, code: Int): MaterialResult
 
     "Category Mutation"
     addCategory(
