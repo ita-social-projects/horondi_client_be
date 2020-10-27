@@ -376,7 +376,7 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
-  input ColorInputTest {
+  input MaterialColorInput {
     code: Int!
     name: [LanguageInput!]
     available: Boolean!
@@ -464,7 +464,7 @@ const typeDefs = gql`
     ): MaterialResult
     addMaterialColor(
       id: ID
-      color: ColorInputTest
+      color: MaterialColorInput
       image: Upload
     ): MaterialColorResult
     deleteMaterialColor(id: ID, code: Int): MaterialResult

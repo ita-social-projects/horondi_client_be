@@ -5,7 +5,7 @@ const {
   IMAGE_NOT_PROVIDED,
   IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
-const { uploadFiles } = require('../upload/upload.service');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
 
 class MaterialsService {
@@ -147,7 +147,20 @@ class MaterialsService {
   }
 
   async deleteMaterialColor(id, code) {
-    return Material.update({ _id: id }, { $pull: { colors: { code: code } } });
+    const material = await Material.find({ colors: { $elemMatch: { code } } });
+    const images = material[0].colors[0].images;
+    const deletedImages = await deleteFiles([
+      images.large,
+      images.medium,
+      images.small,
+      images.thumbnail,
+    ]);
+    if (await Promise.allSettled(deletedImages)) {
+      return Material.update(
+        { _id: id },
+        { $pull: { colors: { code: code } } }
+      );
+    }
   }
 }
 
