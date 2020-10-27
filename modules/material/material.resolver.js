@@ -41,7 +41,6 @@ const materialMutation = {
   },
 
   addMaterialColor: async (parent, args) => {
-    args.color.images = args.image;
     try {
       return await materialService.addMaterialColor(
         args.id,
