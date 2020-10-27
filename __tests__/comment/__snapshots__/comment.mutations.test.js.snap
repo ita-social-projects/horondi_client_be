@@ -2,9 +2,12 @@
 
 exports[`Comment queries should add rate to the product 1`] = `
 Object {
-  "rate": 1.8,
-  "rateCount": 4,
+  "rate": 1.7,
+  "rateCount": 5,
   "userRates": Array [
+    Object {
+      "rate": 1,
+    },
     Object {
       "rate": 1,
     },
@@ -31,8 +34,11 @@ Object {
 exports[`Comment queries should update rate of the product 1`] = `
 Object {
   "rate": 1.1,
-  "rateCount": 4,
+  "rateCount": 5,
   "userRates": Array [
+    Object {
+      "rate": 1,
+    },
     Object {
       "rate": 1,
     },
