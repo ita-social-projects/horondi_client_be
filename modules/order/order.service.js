@@ -7,6 +7,14 @@ const NovaPoshtaService = require('../delivery/delivery.service');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Currency = require('../currency/currency.model');
 
+const {
+  removeDaysFromData,
+  countItemsOccurency,
+  changeDataFormat,
+} = require('../helper-functions');
+
+const { userDateFormat } = require('../../consts');
+
 class OrdersService {
   calculateTotalItemsPrice(items) {
     return items.reduce(
@@ -229,6 +237,57 @@ class OrdersService {
     const { orders } = user;
 
     return await Order.find({ _id: orders });
+  }
+
+  filterOrders({ days, isPaid }) {
+    const filter = {};
+
+    if (days) {
+      const currentDate = Date.now();
+      filter.dateOfCreation = {
+        $gte: removeDaysFromData(days, currentDate),
+        $lte: removeDaysFromData(0, currentDate),
+      };
+    }
+
+    if (isPaid) {
+      filter.isPaid = isPaid;
+    }
+
+    return filter;
+  }
+
+  getOrdersStats(orders) {
+    const ordersOccurency = countItemsOccurency(orders);
+    const counts = Object.values(ordersOccurency);
+    const names = Object.keys(ordersOccurency);
+
+    return { counts, names };
+  }
+
+  async getPaidOrdersStatistic(days) {
+    const filter = this.filterOrders({ days, isPaid: true });
+    const orders = await Order.find(filter)
+      .sort({ dateOfCreation: 1 })
+      .lean();
+    const formattedDate = orders.map(({ dateOfCreation }) =>
+      changeDataFormat(dateOfCreation, userDateFormat)
+    );
+    const { names, counts } = this.getOrdersStats(formattedDate);
+
+    return { labels: names, counts };
+  }
+
+  async getOrdersStatistic(days) {
+    const filter = this.filterOrders({ days });
+    const orders = await Order.find(filter).lean();
+    const statuses = orders.map(({ status }) => status);
+    const { names, counts } = this.getOrdersStats(statuses);
+    const relations = counts.map(count =>
+      Math.round((count * 100) / orders.length)
+    );
+
+    return { names, counts, relations };
   }
 }
 module.exports = new OrdersService();

@@ -13,18 +13,8 @@ const commentsQuery = {
     };
   },
 
-  getAllCommentsByProduct: async (parent, args) => {
-    try {
-      return await commentsService.getAllCommentsByProduct(args.productId);
-    } catch (error) {
-      return [
-        {
-          statusCode: 404,
-          message: error.message,
-        },
-      ];
-    }
-  },
+  getAllCommentsByProduct: async (parent, args) =>
+    commentsService.getAllCommentsByProduct(args),
 
   getAllCommentsByUser: async (parent, args) => {
     return await commentsService.getAllCommentsByUser(args.userEmail);

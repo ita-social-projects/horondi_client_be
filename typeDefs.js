@@ -3,6 +3,7 @@ const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
   userInput,
+  userUpdateInput,
   userRegisterInput,
   userFilterInput,
   LoginInput,
@@ -252,18 +253,13 @@ const typeDefs = gql`
     text: String!
   }
 
-  type UserStatistic {
-    labels: [String]
-    count: Int
-  }
-
-  type PopularCategories {
+  type StatisticDoughnut {
     names: [String!]
     counts: [Int!]
     relations: [Int!]
   }
 
-  type PopularProducts {
+  type StatisticBar {
     labels: [String!]
     counts: [Int!]
   }
@@ -290,7 +286,7 @@ const typeDefs = gql`
     getCurrencyById(id: ID): CurrencyResult
 
     getAllCategories: [Category]
-    getPopularCategories: PopularCategories!
+    getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
 
@@ -303,12 +299,14 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
+    getOrdersStatistic(date: Int!): StatisticDoughnut!
+    getPaidOrdersStatistic(date: Int!): StatisticBar!
 
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
     getAllUsers(filter: UserFilterInput): [User]
-    getUsersForStatistic(filter: UserForStatisticsInput): UserStatistic
+    getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
 
@@ -323,10 +321,14 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getProductOptions: AllProductOptions
-    getPopularProducts: PopularProducts!
+    getPopularProducts: StatisticBar!
 
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(productId: ID!): [CommentResult]
+    getAllCommentsByProduct(
+      productId: ID!
+      skip: Int
+      limit: Int
+    ): PaginatedComments!
     getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
@@ -400,6 +402,7 @@ const typeDefs = gql`
   ${newsInput}
   ${patternInput}
   ${userInput}
+  ${userUpdateInput}
   ${productInput}
   ${commentInput}
   ${LoginInput}
@@ -564,7 +567,7 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult
-    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): Boolean
