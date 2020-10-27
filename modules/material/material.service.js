@@ -33,7 +33,8 @@ class MaterialsService {
   }
 
   async getMaterialColorByCode(code) {
-    return Material.find({ colors: { $elemMatch: { code } } });
+    const material = Material.find({ colors: { $elemMatch: { code } } });
+    return material[0].colors[0];
   }
 
   async updateMaterial(id, material, images) {
