@@ -47,15 +47,22 @@ class CategoryService {
   async getCategoriesForBurgerMenu() {
     const categories = await this.getAllCategories();
 
-    const data = categories.map(async category => {
-      const products = await Product.find({ category: category._id });
-      const models = products.map(el => ({ model: el.model }));
-
-      return {
-        category: category.name,
-        models,
-      };
-    });
+    const data = categories
+      .filter(category => category.isMain)
+      .map(async category => {
+        const products = await Product.find({ category: category._id });
+        const models = products.map(product => ({
+          name: [...product.model],
+          _id: product._id,
+        }));
+        return {
+          category: {
+            name: [...category.name],
+            _id: category._id,
+          },
+          models,
+        };
+      });
 
     return data;
   }
