@@ -78,6 +78,8 @@ const typeDefs = gql`
 
   scalar Upload
 
+  scalar Date
+
   enum RoleEnum {
     superadmin
     admin
