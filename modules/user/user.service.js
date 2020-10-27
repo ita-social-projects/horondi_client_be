@@ -197,7 +197,7 @@ class UserService {
     const user = await User.findById(id).lean();
 
     if (user.email !== updatedUser.email) {
-      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
+      const user = await User.findOne({ email: updatedUser.email });
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
@@ -344,6 +344,8 @@ class UserService {
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(firstName, token, language),
     };
+
+    if (process.env.NODE_ENV !== 'test') await sendEmail(message);
 
     return savedUser;
   }

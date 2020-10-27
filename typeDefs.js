@@ -3,6 +3,7 @@ const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
   userInput,
+  userUpdateInput,
   userRegisterInput,
   userFilterInput,
   userSortInput,
@@ -327,7 +328,11 @@ const typeDefs = gql`
     getPopularProducts: StatisticBar!
 
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(productId: ID!): [CommentResult]
+    getAllCommentsByProduct(
+      productId: ID!
+      skip: Int
+      limit: Int
+    ): PaginatedComments!
     getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
@@ -406,6 +411,7 @@ const typeDefs = gql`
   ${newsInput}
   ${patternInput}
   ${userInput}
+  ${userUpdateInput}
   ${productInput}
   ${commentInput}
   ${LoginInput}
@@ -571,7 +577,7 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult
-    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): Boolean
