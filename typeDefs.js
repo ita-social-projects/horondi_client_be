@@ -120,6 +120,13 @@ const typeDefs = gql`
     name: String
     exchangeRate: Float
   }
+  type ModelMenu {
+    model: [Language]
+  }
+  type BurgerMenu {
+    category: [Language]
+    models: [ModelMenu]
+  }
   type Subcategory {
     _id: ID!
     categoryCode: String
@@ -283,6 +290,7 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
+    getCategoriesForBurgerMenu: [BurgerMenu]
 
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
