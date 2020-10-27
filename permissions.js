@@ -3,10 +3,12 @@ const {
   userPermissionsMutation,
   userPermissionsQuery,
 } = require('./modules/user/user.permissions');
+
 const {
   patternPermissionsMutations,
   patternPermissionsQuery,
 } = require('./modules/pattern/pattern.permisions');
+
 const {
   materialPermissionsQuery,
   materialPermissionsMutations,
@@ -22,6 +24,16 @@ const {
   newsPermissionsMutations,
 } = require('./modules/news/news.permissions');
 
+const {
+  categoryPermissionsMutations,
+  categoryPermissionsQuery,
+} = require('./modules/category/category.permission');
+
+const {
+  modelPermissionsMutations,
+  modelPermissionsQuery,
+} = require('./modules/model/model.permission');
+
 const permissions = shield(
   {
     Query: {
@@ -30,6 +42,8 @@ const permissions = shield(
       ...materialPermissionsQuery,
       ...contactPermissionsQuery,
       ...newsPermissionsQuery,
+      ...categoryPermissionsQuery,
+      ...modelPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -37,6 +51,8 @@ const permissions = shield(
       ...materialPermissionsMutations,
       ...contactPermissionsMutations,
       ...newsPermissionsMutations,
+      ...categoryPermissionsMutations,
+      ...modelPermissionsMutations,
     },
   },
   {

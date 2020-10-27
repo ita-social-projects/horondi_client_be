@@ -1,27 +1,41 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
+let { superAdminUser, testUser } = require('./user.variables');
+const { setupApp } = require('../helper-functions');
+const { getAllUsers } = require('../../modules/user/user.service');
+
+jest.mock('../../modules/confirm-email/confirmation-email.service');
 
 require('dotenv').config();
 
 let token;
 let userId;
+let operations;
 
 describe('queries', () => {
   beforeAll(async () => {
-    const register = await client.mutate({
+    const { firstName, lastName, email, pass, language } = testUser;
+    operations = await setupApp();
+    const register = await operations.mutate({
       mutation: gql`
-        mutation {
+        mutation(
+          $firstName: String!
+          $lastName: String!
+          $email: String!
+          $password: String!
+          $language: Int!
+        ) {
           registerUser(
             user: {
-              firstName: "Test"
-              lastName: "User"
-              email: "test.email@gmail.com"
-              password: "12345678Te"
+              firstName: $firstName
+              lastName: $lastName
+              email: $email
+              password: $password
             }
+            language: $language
           ) {
             _id
             firstName
@@ -35,46 +49,51 @@ describe('queries', () => {
           }
         }
       `,
+      variables: {
+        firstName,
+        lastName,
+        email,
+        password: pass,
+        language,
+      },
     });
-
     userId = register.data.registerUser._id;
 
-    const authRes = await client.mutate({
+    const authRes = await operations.mutate({
       mutation: gql`
-        mutation {
-          loginUser(
-            loginInput: {
-              email: "test.email@gmail.com"
-              password: "12345678Te"
-            }
-          ) {
+        mutation($email: String!, $password: String!) {
+          loginUser(loginInput: { email: $email, password: $password }) {
             token
           }
         }
       `,
+      variables: {
+        email,
+        password: pass,
+      },
     });
     token = authRes.data.loginUser.token;
-
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
-        mutation {
-          updateUserByToken(
+        mutation($userId: ID!, $email: String!) {
+          updateUserById(
             user: {
               firstName: "Test"
               lastName: "User"
-              email: "test.email@gmail.com"
+              email: $email
               phoneNumber: "380666666666"
-              role: "user"
               address: {
                 country: "Ukraine"
                 city: "Kiev"
                 street: "Shevchenka"
                 buildingNumber: "23"
               }
+              role: "user"
               wishlist: []
               orders: []
               comments: []
             }
+            id: $userId
           ) {
             firstName
             lastName
@@ -93,16 +112,16 @@ describe('queries', () => {
           }
         }
       `,
-      context: {
-        headers: {
-          token,
-        },
+      variables: {
+        userId,
+        email,
       },
     });
   });
 
   test('should recive all users', async () => {
-    const res = await client.query({
+    const { email } = testUser;
+    const res = await operations.query({
       query: gql`
         query {
           getAllUsers {
@@ -124,11 +143,10 @@ describe('queries', () => {
         }
       `,
     });
-
     expect(res.data.getAllUsers).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
-      email: 'test.email@gmail.com',
+      email,
       phoneNumber: '380666666666',
       role: 'user',
       address: {
@@ -136,50 +154,62 @@ describe('queries', () => {
         city: 'Kiev',
         street: 'Shevchenka',
         buildingNumber: '23',
-        __typename: 'Address',
       },
       wishlist: [],
       orders: [],
       comments: [],
-      __typename: 'User',
     });
   });
 
   test('should recive user by token', async () => {
-    const res = await client.query({
+    const { email } = testUser;
+    operations = await setupApp({
+      firstName: 'Test',
+      lastName: 'User',
+      email,
+      phoneNumber: '380666666666',
+      address: {
+        country: 'Ukraine',
+        city: 'Kiev',
+        street: 'Shevchenka',
+        buildingNumber: '23',
+      },
+      role: 'user',
+      wishlist: [],
+      orders: [],
+      comments: [],
+      token,
+    });
+    const res = await operations.query({
       query: gql`
         query {
           getUserByToken {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
+            ... on User {
+              firstName
+              lastName
+              email
+              phoneNumber
+              role
+              address {
+                country
+                city
+                street
+                buildingNumber
+              }
+              wishlist
+              orders
+              comments
             }
-            wishlist
-            orders
-            comments
+            ... on Error {
+              message
+            }
           }
         }
       `,
-      context: {
-        headers: {
-          token,
-        },
-      },
     });
-
     expect(res.data.getUserByToken).toHaveProperty('firstName', 'Test');
     expect(res.data.getUserByToken).toHaveProperty('lastName', 'User');
-    expect(res.data.getUserByToken).toHaveProperty(
-      'email',
-      'test.email@gmail.com'
-    );
+    expect(res.data.getUserByToken).toHaveProperty('email', email);
     expect(res.data.getUserByToken).toHaveProperty(
       'phoneNumber',
       '380666666666'
@@ -190,16 +220,16 @@ describe('queries', () => {
       city: 'Kiev',
       street: 'Shevchenka',
       buildingNumber: '23',
-      __typename: 'Address',
     });
     expect(res.data.getUserByToken).toHaveProperty('wishlist', []);
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
     expect(res.data.getUserByToken).toHaveProperty('comments', []);
-    expect(res.data.getUserByToken).toMatchSnapshot();
   });
 
   test('should recive user by id', async () => {
-    const res = await client.query({
+    const { email } = testUser;
+    operations = await setupApp();
+    const res = await operations.query({
       query: gql`
         query($userId: ID!) {
           getUserById(id: $userId) {
@@ -221,11 +251,6 @@ describe('queries', () => {
           }
         }
       `,
-      context: {
-        headers: {
-          token,
-        },
-      },
       variables: {
         userId,
       },
@@ -234,10 +259,7 @@ describe('queries', () => {
     expect(res.data.getUserById).toHaveProperty('_id', userId);
     expect(res.data.getUserById).toHaveProperty('firstName', 'Test');
     expect(res.data.getUserById).toHaveProperty('lastName', 'User');
-    expect(res.data.getUserById).toHaveProperty(
-      'email',
-      'test.email@gmail.com'
-    );
+    expect(res.data.getUserById).toHaveProperty('email', email);
     expect(res.data.getUserById).toHaveProperty('phoneNumber', '380666666666');
     expect(res.data.getUserById).toHaveProperty('role', 'user');
     expect(res.data.getUserById).toHaveProperty('address', {
@@ -245,7 +267,6 @@ describe('queries', () => {
       city: 'Kiev',
       street: 'Shevchenka',
       buildingNumber: '23',
-      __typename: 'Address',
     });
     expect(res.data.getUserById).toHaveProperty('wishlist', []);
     expect(res.data.getUserById).toHaveProperty('orders', []);
@@ -253,7 +274,7 @@ describe('queries', () => {
   });
 
   test('should throw Error User with provided _id not found', async () => {
-    const res = await client
+    const res = await operations
       .query({
         query: gql`
           query($userId: ID!) {
@@ -276,23 +297,18 @@ describe('queries', () => {
             }
           }
         `,
-        context: {
-          headers: {
-            token,
-          },
-        },
         variables: {
           userId: '23ee481430a0056b8e5cc015',
         },
       })
       .catch(err => err);
 
-    expect(res.graphQLErrors.length).toBe(1);
-    expect(res.graphQLErrors[0].message).toBe('USER_NOT_FOUND');
+    expect(res.errors.length).toBe(1);
+    expect(res.errors[0].message).toBe('USER_NOT_FOUND');
   });
 
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
@@ -311,24 +327,62 @@ describe('Testing obtaining information restrictions', () => {
   let userToken;
   let userLogin;
   let userPassword;
-  let adminLogin;
   let adminPassword;
   let firstName;
   let lastName;
   let adminToken;
+  let adminEmail;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
-    adminLogin = 'admin@gmail.com';
-    adminPassword = 'qwertY123';
+    adminEmail = superAdminUser.email;
+    adminPassword = superAdminUser.password;
     firstName = 'Pepo';
     lastName = 'Markelo';
     userId = '5f43af8522155b08109e0304';
+    await operations.mutate({
+      mutation: gql`
+        mutation(
+          $firstName: String!
+          $lastName: String!
+          $email: String!
+          $password: String!
+          $language: Int!
+        ) {
+          registerUser(
+            user: {
+              firstName: $firstName
+              lastName: $lastName
+              email: $email
+              password: $password
+            }
+            language: $language
+          ) {
+            _id
+            firstName
+            lastName
+            email
+            role
+            registrationDate
+            credentials {
+              tokenPass
+            }
+          }
+        }
+      `,
+      variables: {
+        firstName,
+        lastName,
+        email: userLogin,
+        password: userPassword,
+        language: 1,
+      },
+    });
   });
 
   test('User must login', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: LoginInput!) {
@@ -355,19 +409,19 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Admin must login', async () => {
-    const result = await client
+    const result = await operations
       .mutate({
         mutation: gql`
-          mutation($admin: LoginInput!) {
-            loginAdmin(loginInput: $admin) {
+          mutation($user: LoginInput!) {
+            loginAdmin(loginInput: $user) {
               token
               _id
             }
           }
         `,
         variables: {
-          admin: {
-            email: adminLogin,
+          user: {
+            email: adminEmail,
             password: adminPassword,
           },
         },
@@ -375,14 +429,14 @@ describe('Testing obtaining information restrictions', () => {
       .catch(err => err);
 
     const adminInfo = await result.data;
-
     expect(adminInfo.loginAdmin).not.toEqual(null);
 
     adminToken = adminInfo.loginAdmin.token;
   });
 
   test('Any user doesn`t allowed to obtain information about all users', async () => {
-    const result = await client
+    operations = await setupApp({ token: userToken });
+    const result = await operations
       .query({
         query: gql`
           {
@@ -401,13 +455,13 @@ describe('Testing obtaining information restrictions', () => {
         },
       })
       .catch(err => err);
-
-    expect(result.graphQLErrors.length).toBe(1);
-    expect(result.graphQLErrors[0].message).toBe('INVALID_PERMISSIONS');
+    expect(result.data.getAllUsers.message).toBeDefined();
+    expect(result.data.getAllUsers.message).toBe('INVALID_PERMISSIONS');
   });
 
   test('Admin can obtain all the information about users', async () => {
-    const result = await client
+    operations = await setupApp();
+    const result = await operations
       .query({
         query: gql`
           {
@@ -421,7 +475,7 @@ describe('Testing obtaining information restrictions', () => {
         `,
         context: {
           headers: {
-            token: adminToken,
+            token,
           },
         },
       })
@@ -429,11 +483,32 @@ describe('Testing obtaining information restrictions', () => {
 
     const data = result.data.getAllUsers;
 
-    expect(data.length).toBeGreaterThan(3);
+    expect(data.length).toBeGreaterThanOrEqual(2);
   });
 
   test('User can obtain the information about himself', async () => {
-    const result = await client
+    // operations = await setupApp({token: userToken, id: userId, email: userLogin, password: userPassword});
+    const userLoginInfo = await operations.mutate({
+      mutation: gql`
+        mutation($email: String!, $password: String!) {
+          loginUser(loginInput: { email: $email, password: $password }) {
+            _id
+            firstName
+            lastName
+            email
+            role
+            registrationDate
+            token
+          }
+        }
+      `,
+      variables: {
+        email: userLogin,
+        password: userPassword,
+      },
+    });
+
+    const result = await operations
       .query({
         query: gql`
           query($id: ID!) {
@@ -444,12 +519,7 @@ describe('Testing obtaining information restrictions', () => {
           }
         `,
         variables: {
-          id: userId,
-        },
-        context: {
-          headers: {
-            token: userToken,
-          },
+          id: userLoginInfo.data.loginUser._id,
         },
       })
       .catch(err => err);
@@ -463,7 +533,7 @@ describe('Testing obtaining information restrictions', () => {
   test('Should throw an error when validate invalid token', async () => {
     const invalidAdminToken = 'y' + adminToken.slice(1);
 
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($token: String!) {
@@ -489,7 +559,7 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Should return successful response when token is valid', async () => {
-    const result = await client
+    const result = await operations
       .query({
         query: gql`
           query($token: String!) {
