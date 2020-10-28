@@ -7,10 +7,8 @@ services:
       build: 
         context: .
         dockerfile: Dockerfiletest
-      depends_on: 
-        - database
-      networks:
-        - mynet
+      environment:
+        WAIT_HOSTS: database:27017
 
     database:
         image: mongo
@@ -21,9 +19,3 @@ services:
           MONGO_INITDB_DATABASE: horondi
         expose:
             - 27017
-        networks:
-          - mynet
-
-networks:   
-  mynet:
-    driver: bridge
