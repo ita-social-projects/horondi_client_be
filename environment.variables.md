@@ -1,5 +1,4 @@
 #### Environment variables
-
 `ACCESS_KEY` - access key for azure\
 `ADMIN_EMAIL` - admin email\
 `ADMIN_PASS` - admin password\
@@ -24,4 +23,3 @@
 `STORAGE_ACCOUNT` - name of your storage account\
 `SUPER_ADMIN_EMAIL` - superadmin email\
 `SUPER_ADMIN_PASSWORD` - superadmin email password
-

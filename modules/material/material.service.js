@@ -5,7 +5,7 @@ const {
   IMAGE_NOT_PROVIDED,
   IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
-const { uploadFiles } = require('../upload/upload.service');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
 
 class MaterialsService {
@@ -15,6 +15,7 @@ class MaterialsService {
       USD: 'USD',
     };
   }
+
   async getAllMaterials({ skip, limit }) {
     const items = await Material.find()
       .skip(skip)
@@ -31,13 +32,39 @@ class MaterialsService {
     return Material.findById(id);
   }
 
-  async updateMaterial(id, material) {
+  async getMaterialColorByCode(code) {
+    const material = await Material.find({ colors: { $elemMatch: { code } } });
+    return material[0].colors[0];
+  }
+
+  async updateMaterial(id, material, images) {
+    const { additionalPrice, ...rest } = material;
+
     const materialToUpdate = await Material.findById(id);
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
+
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
+    }
+    const currency = await Currency.findOne();
+    if (!images) {
+      return await Material.findByIdAndUpdate(id, {
+        ...rest,
+        additionalPrice: [
+          {
+            currency: this.currencyTypes.UAH,
+            value:
+              additionalPrice *
+              Math.round(currency.convertOptions[0].exchangeRate * 100),
+          },
+          {
+            currency: this.currencyTypes.USD,
+            value: additionalPrice * 100,
+          },
+        ],
+      });
     }
     return await Material.findByIdAndUpdate(id, material, { new: true });
   }
@@ -86,6 +113,20 @@ class MaterialsService {
     }).save();
   }
 
+  async addMaterialColor(id, color, image) {
+    const uploadResult = await uploadFiles(image);
+    const imageResults = await Promise.allSettled(uploadResult);
+    const resizedImages = imageResults.map(item => item.value.fileNames);
+    if (!resizedImages) {
+      throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    }
+    const mappedColors = Object.assign(color, { images: resizedImages[0] });
+    return Material.update(
+      { _id: id },
+      { $addToSet: { colors: [mappedColors] } }
+    );
+  }
+
   async deleteMaterial(id) {
     const foundMaterial = await Material.findByIdAndDelete(id);
     if (foundMaterial) {
@@ -104,6 +145,23 @@ class MaterialsService {
       },
     });
     return materialsCount > 0;
+  }
+
+  async deleteMaterialColor(id, code) {
+    const material = await Material.find({ colors: { $elemMatch: { code } } });
+    const images = material[0].colors[0].images;
+    const deletedImages = await deleteFiles([
+      images.large,
+      images.medium,
+      images.small,
+      images.thumbnail,
+    ]);
+    if (await Promise.allSettled(deletedImages)) {
+      return Material.update(
+        { _id: id },
+        { $pull: { colors: { code: code } } }
+      );
+    }
   }
 }
 

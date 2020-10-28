@@ -3,12 +3,15 @@ const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
   userInput,
+  userUpdateInput,
   userRegisterInput,
   userFilterInput,
+  userSortInput,
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
   UserForStatisticsInput,
+  paginatedUsersType,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -56,7 +59,13 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
+const {
+  homePageImagesType,
+} = require('./modules/homepage-images/home-page-images.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
+const { defaultPaginationParams } = require('./consts');
+
+const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
   ${categoryType}
@@ -65,6 +74,7 @@ const typeDefs = gql`
   ${newsType}
   ${patternType}
   ${userType}
+  ${paginatedUsersType}
   ${productType}
   ${commentType}
   ${businessTextType}
@@ -74,29 +84,36 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${homePageImagesType}
   ${headerType}
 
   scalar Upload
+
+  scalar Date
 
   enum RoleEnum {
     superadmin
     admin
     user
   }
+
   type Language {
     lang: String!
     value: String
   }
+
   type CurrencySet {
     currency: String!
     value: Float!
   }
+
   type ImageSet {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   type Credential {
     source: String
     tokenPass: String
@@ -111,14 +128,32 @@ const typeDefs = gql`
     buildingNumber: String
     appartment: String
   }
+
   type PrimaryImage {
     primary: ImageSet
     additional: [ImageSet]
   }
+
   type ConvertOption {
     name: String
     exchangeRate: Float
   }
+
+  type ModelsMenu {
+    model: [Menu!]
+  }
+
+  type Menu {
+    _id: ID!
+    name: [Language!]
+  }
+
+  type BurgerMenu {
+    _id: ID!
+    category: Menu!
+    models: [Menu!]
+  }
+
   type Subcategory {
     _id: ID!
     categoryCode: String
@@ -126,10 +161,12 @@ const typeDefs = gql`
     images: ImageSet
     available: Boolean
   }
+
   type Author {
     name: [Language]
     image: ImageSet
   }
+
   type Color {
     code: Int
     name: [Language]
@@ -199,14 +236,22 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
+
   type PaginatedPatterns {
     items: [Pattern!]!
     count: Int!
   }
+
+  type PaginatedOrders {
+    items: [Order!]!
+    count: Int!
+  }
+
   type PaginatedNews {
     items: [News]
     count: Int
   }
+
   type PaginatedMaterials {
     items: [Material]
     count: Int
@@ -216,6 +261,7 @@ const typeDefs = gql`
     items: [Contact]
     count: Int
   }
+
   type PaginatedModels {
     items: [Model]
     count: Int
@@ -239,7 +285,7 @@ const typeDefs = gql`
   type SuccessfulResponse {
     isSuccess: Boolean
   }
-
+  
   type EmailAnswer {
     admin: User!
     date: String!
@@ -255,11 +301,13 @@ const typeDefs = gql`
   type StatisticBar {
     labels: [String!]
     counts: [Int!]
+    total: Int!
   }
 
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
+  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -282,14 +330,16 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
+    getCategoriesForBurgerMenu: [BurgerMenu]
 
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
+    getMaterialColorByCode(code: Int): Color
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
-    getAllOrders: [Order!]!
+    getAllOrders(limit: Int, skip: Int): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
     getOrdersStatistic(date: Int!): StatisticDoughnut!
@@ -298,7 +348,11 @@ const typeDefs = gql`
     getAllNews(limit: Int, skip: Int): PaginatedNews!
     getNewsById(id: ID): NewsResult
 
-    getAllUsers(filter: UserFilterInput): [User]
+    getAllUsers(
+      filter: UserFilterInput
+      pagination: Pagination
+      sort: UserSortInput
+    ): PaginatedUsersType!
     getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
@@ -317,7 +371,11 @@ const typeDefs = gql`
     getPopularProducts: StatisticBar!
 
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(productId: ID!): [CommentResult]
+    getAllCommentsByProduct(
+      productId: ID!
+      skip: Int
+      limit: Int
+    ): PaginatedComments!
     getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
 
@@ -348,10 +406,18 @@ const typeDefs = gql`
       skip: Int
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
+
+    getHomePageLooksImages: [HomePageImages]
+
     getPendingEmailQuestionsCount: Int
 
     getAllHeaders: [Header!]!
     getHeaderById(id: ID!): HeaderResult
+  }
+
+  input Pagination {
+      skip: Int = ${skip}
+      limit: Int = ${limit}
   }
 
   input SortInput {
@@ -373,13 +439,16 @@ const typeDefs = gql`
     currency: Int
     emailQuestionStatus: [String]
   }
+
   input RoleEnumInput {
     role: String
   }
+
   input PrimaryImageInput {
     primary: ImageSetInput!
     additional: [ImageSetInput!]
   }
+
   input AuthorInput {
     name: [LanguageInput]
     image: ImageSetInput
@@ -391,12 +460,14 @@ const typeDefs = gql`
   ${newsInput}
   ${patternInput}
   ${userInput}
+  ${userUpdateInput}
   ${productInput}
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
   ${businessTextInput}
   ${userFilterInput}
+  ${userSortInput}
   ${adminConfirmInput}
   ${adminRegisterInput}
   ${modelInput}
@@ -417,6 +488,7 @@ const typeDefs = gql`
     currency: String!
     value: Float!
   }
+
   input AddressInput {
     country: String
     region: String
@@ -432,12 +504,14 @@ const typeDefs = gql`
     images: ImageSetInput
     isAdmin: Boolean
   }
+
   input ImageSetInput {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   input ColorInput {
     code: Int!
     name: [LanguageInput!]
@@ -445,16 +519,26 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
+
+  input MaterialColorInput {
+    code: Int!
+    name: [LanguageInput!]
+    available: Boolean!
+    simpleName: [LanguageInput!]
+  }
+
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
   }
+
   input SubcategoryInput {
     categoryCode: String!
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
   }
+
   input CredentialInput {
     source: String
     tokenPass: String
@@ -484,6 +568,7 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   input ProductOptionsAdditonalsInput {
     name: [LanguageInput!]
     description: [LanguageInput!]
@@ -508,6 +593,7 @@ const typeDefs = gql`
   type Mutation {
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
+
     "Pattern Mutations"
     addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
@@ -518,13 +604,19 @@ const typeDefs = gql`
     ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload!
+      images: Upload
     ): MaterialResult
+    addMaterialColor(
+      id: ID!
+      color: MaterialColorInput
+      image: Upload
+    ): MaterialColorResult
+    deleteMaterialColor(id: ID!, code: Int): MaterialResult
 
     "Category Mutation"
     addCategory(
@@ -555,7 +647,7 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult
-    updateUserById(user: UserInput!, id: ID!, upload: Upload): User
+    updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): Boolean
@@ -620,6 +712,7 @@ const typeDefs = gql`
     addOrder(order: OrderInput!): OrderResult
     updateOrder(id: ID!, order: OrderInput!): OrderResult
     deleteOrder(id: ID!): OrderResult
+
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestions(questionsToDelete: [String]): [EmailQuestion]
@@ -634,6 +727,9 @@ const typeDefs = gql`
     ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
+
+    "HomePageImages Mutation"
+    updateHomePageLooksImage(id: ID!, images: Upload): HomePageImages
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult

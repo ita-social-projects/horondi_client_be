@@ -245,8 +245,9 @@ class ProductsService {
       (prev, curr) => ({
         labels: [...prev.labels, curr.name[0].value],
         counts: [...prev.counts, curr.purchasedCount],
+        total: prev.total + curr.purchasedCount,
       }),
-      { labels: [], counts: [] }
+      { labels: [], counts: [], total: 0 }
     );
   }
 

@@ -55,6 +55,11 @@ const {
 } = require('./modules/email-chat/email-chat.resolver');
 
 const {
+  HomePageImagesQuery,
+  HomePageImagesMutation,
+} = require('./modules/homepage-images/home-page-images.resolver');
+
+const {
   headerQuery,
   headerMutation,
 } = require('./modules/header/header.resolver');
@@ -65,7 +70,6 @@ const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -118,6 +122,8 @@ const resolvers = {
 
     ...emailChatQuestionQuery,
 
+    ...HomePageImagesQuery,
+
     ...headerQuery,
   },
 
@@ -132,7 +138,8 @@ const resolvers = {
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
-    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
+    comments: parent =>
+      commentsService.getAllCommentsByProduct({ productId: parent._id }),
   },
 
   Model: {
@@ -195,6 +202,8 @@ const resolvers = {
 
     ...emailChatQuestionMutation,
 
+    ...HomePageImagesMutation,
+
     ...headerMutation,
   },
   CategoryResult: {
@@ -229,6 +238,15 @@ const resolvers = {
       return 'Error';
     },
   },
+  MaterialColorResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.material;
+      }
+      return 'Error';
+    },
+  },
+
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {

@@ -52,10 +52,18 @@ const SOURCES = {
 class UserService {
   filterItems(args = {}) {
     const filter = {};
-    const { roles, days } = args;
+    const { roles, days, banned, search } = args;
 
-    if (roles) {
+    if (roles && roles.length) {
       filter.role = { $in: roles };
+    }
+
+    if (banned && banned.length) {
+      filter.banned = { $in: banned };
+    }
+
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search.trim());
     }
 
     if (days) {
@@ -66,6 +74,37 @@ class UserService {
     }
 
     return filter;
+  }
+
+  searchItems(searchString) {
+    return [
+      { name: { $regex: new RegExp(searchString, 'i') } },
+      { phoneNumber: { $regex: new RegExp(searchString) } },
+      { email: { $regex: new RegExp(searchString, 'i') } },
+    ];
+  }
+
+  aggregateItems(filters = {}, pagination = {}, sort = {}) {
+    let aggregationItems = [];
+
+    if (Object.keys(sort).length) {
+      aggregationItems.push({
+        $sort: sort,
+      });
+    }
+
+    aggregationItems.push({ $match: filters });
+
+    if (pagination.skip !== undefined && pagination.limit) {
+      aggregationItems.push({
+        $skip: pagination.skip,
+      });
+      aggregationItems.push({
+        $limit: pagination.limit,
+      });
+    }
+
+    return aggregationItems;
   }
 
   async checkIfTokenIsValid(token) {
@@ -92,12 +131,37 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers({ filter }) {
-    const filters = this.filterItems(filter);
+  async getAllUsers({ filter, pagination, sort }) {
+    let filteredItems = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
 
-    const items = await User.find(filters);
+    const [users] = await User.aggregate([
+      {
+        $addFields: {
+          name: { $concat: ['$firstName', ' ', '$lastName'] },
+        },
+      },
+    ])
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filteredItems }, { $count: 'count' }],
+      });
+    let userCount;
 
-    return items;
+    const {
+      items,
+      calculations: [calculations],
+    } = users;
+
+    if (calculations) {
+      userCount = calculations.count;
+    }
+
+    return {
+      items,
+      count: userCount || 0,
+    };
   }
 
   async getUsersForStatistic({ filter }) {
@@ -109,10 +173,15 @@ class UserService {
       changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurency = countItemsOccurency(formatedData);
-
+    const counts = Object.values(userOccurency);
+    const total = counts.reduce(
+      (userTotal, userCount) => userTotal + userCount,
+      0
+    );
     return {
       labels: Object.keys(userOccurency),
-      counts: Object.values(userOccurency),
+      counts,
+      total,
     };
   }
 
@@ -136,7 +205,7 @@ class UserService {
     const user = await User.findById(id).lean();
 
     if (user.email !== updatedUser.email) {
-      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
+      const user = await User.findOne({ email: updatedUser.email });
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
@@ -283,6 +352,8 @@ class UserService {
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(firstName, token, language),
     };
+
+    if (process.env.NODE_ENV !== 'test') await sendEmail(message);
 
     return savedUser;
   }

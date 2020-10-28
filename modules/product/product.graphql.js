@@ -24,7 +24,7 @@ availableCount: Int
 rate: Float
 rateCount: Int
 userRates: [UserRate]
-comments: [Comment]
+comments: PaginatedComments!
 }
 `;
 
