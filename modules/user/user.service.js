@@ -146,15 +146,20 @@ class UserService {
         items: aggregatedItems,
         calculations: [{ $match: filteredItems }, { $count: 'count' }],
       });
+    let userCount;
 
     const {
       items,
       calculations: [calculations],
     } = users;
 
+    if (calculations) {
+      userCount = calculations.count;
+    }
+
     return {
       items,
-      count: calculations.count || 0,
+      count: userCount || 0,
     };
   }
 
