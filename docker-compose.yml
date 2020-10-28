@@ -3,17 +3,27 @@ version: '3'
 services: 
     testenv:
       image: backtest
+      container_name: backend
       build: 
         context: .
         dockerfile: Dockerfiletest
       depends_on: 
         - database
+      networks:
+        - mynet
+
     database:
         image: mongo
+        container_name: db
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: root
           MONGO_INITDB_DATABASE: horondi
         expose:
             - 27017
-    
+        networks:
+          - mynet
+
+networks:   
+  mynet:
+    driver: bridge
