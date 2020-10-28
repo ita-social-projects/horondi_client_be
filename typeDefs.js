@@ -660,6 +660,8 @@ const typeDefs = gql`
       user: AdminConfirmInput!
       token: String!
     ): LogicalResult!
+    addProductToWishlist(id: ID!, productId: ID!): Product!
+    removeProductFromWishlist(id: ID!, productId: ID!): Product!
 
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult

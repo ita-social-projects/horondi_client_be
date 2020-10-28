@@ -23,6 +23,7 @@ const {
   countItemsOccurency,
   changeDataFormat,
 } = require('../helper-functions');
+const productService = require('../product/product.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -563,6 +564,21 @@ class UserService {
         statusCode: 400,
       });
     }
+  }
+
+  async updateWishlist(userId, wishlist, productId) {
+    await User.findByIdAndUpdate(userId, { wishlist });
+    return productService.getProductById(productId);
+  }
+
+  addProductToWishlist(productId, user) {
+    const newWishlist = [...user.wishlist, productId];
+    return this.updateWishlist(user._id, newWishlist, productId);
+  }
+
+  removeProductFromWishlist(productId, user) {
+    const newWishlist = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateWishlist(user._id, newWishlist, productId);
   }
 }
 

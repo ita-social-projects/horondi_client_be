@@ -126,6 +126,11 @@ const resolvers = {
 
     ...headerQuery,
   },
+
+  User: {
+    wishlist: parent => productsService.getProductsForWishlist(parent._id),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
   },
@@ -133,7 +138,8 @@ const resolvers = {
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
-    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
+    comments: parent =>
+      commentsService.getAllCommentsByProduct({ productId: parent._id }),
   },
 
   Model: {

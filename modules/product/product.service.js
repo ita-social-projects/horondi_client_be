@@ -2,6 +2,7 @@ const Product = require('./product.model');
 const Size = require('../../models/Size');
 const Material = require('../material/material.model');
 const Currency = require('../currency/currency.model');
+const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
@@ -248,6 +249,12 @@ class ProductsService {
       }),
       { labels: [], counts: [], total: 0 }
     );
+  }
+
+  async getProductsForWishlist(userId) {
+    const { wishlist } = await User.findById(userId);
+    const userWishfulProducts = await Product.find({ _id: { $in: wishlist } });
+    return userWishfulProducts;
   }
 }
 
