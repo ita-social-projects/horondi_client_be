@@ -57,6 +57,9 @@ const {
   paymentType,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
+const {
+  homePageImagesType,
+} = require('./modules/homepage-images/home-page-images.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 
 const typeDefs = gql`
@@ -75,6 +78,7 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${homePageImagesType}
   ${headerType}
 
   scalar Upload
@@ -86,20 +90,24 @@ const typeDefs = gql`
     admin
     user
   }
+
   type Language {
     lang: String!
     value: String
   }
+
   type CurrencySet {
     currency: String!
     value: Float!
   }
+
   type ImageSet {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   type Credential {
     source: String
     tokenPass: String
@@ -114,14 +122,32 @@ const typeDefs = gql`
     buildingNumber: String
     appartment: String
   }
+
   type PrimaryImage {
     primary: ImageSet
     additional: [ImageSet]
   }
+
   type ConvertOption {
     name: String
     exchangeRate: Float
   }
+
+  type ModelsMenu {
+    model: [Menu!]
+  }
+
+  type Menu {
+    _id: ID!
+    name: [Language!]
+  }
+
+  type BurgerMenu {
+    _id: ID!
+    category: Menu!
+    models: [Menu!]
+  }
+
   type Subcategory {
     _id: ID!
     categoryCode: String
@@ -129,10 +155,12 @@ const typeDefs = gql`
     images: ImageSet
     available: Boolean
   }
+
   type Author {
     name: [Language]
     image: ImageSet
   }
+
   type Color {
     code: Int
     name: [Language]
@@ -202,18 +230,22 @@ const typeDefs = gql`
     items: [Product]
     count: Int
   }
+
   type PaginatedPatterns {
     items: [Pattern!]!
     count: Int!
   }
+
   type PaginatedOrders {
     items: [Order!]!
     count: Int!
   }
+
   type PaginatedNews {
     items: [News]
     count: Int
   }
+
   type PaginatedMaterials {
     items: [Material]
     count: Int
@@ -223,6 +255,7 @@ const typeDefs = gql`
     items: [Contact]
     count: Int
   }
+
   type PaginatedModels {
     items: [Model]
     count: Int
@@ -262,11 +295,13 @@ const typeDefs = gql`
   type StatisticBar {
     labels: [String!]
     counts: [Int!]
+    total: Int!
   }
 
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
+  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -289,9 +324,11 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
+    getCategoriesForBurgerMenu: [BurgerMenu]
 
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
+    getMaterialColorByCode(code: Int): Color
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
@@ -359,6 +396,9 @@ const typeDefs = gql`
       skip: Int
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
+
+    getHomePageLooksImages: [HomePageImages]
+
     getPendingEmailQuestionsCount: Int
 
     getAllHeaders: [Header!]!
@@ -384,13 +424,16 @@ const typeDefs = gql`
     currency: Int
     emailQuestionStatus: [String]
   }
+
   input RoleEnumInput {
     role: String
   }
+
   input PrimaryImageInput {
     primary: ImageSetInput!
     additional: [ImageSetInput!]
   }
+
   input AuthorInput {
     name: [LanguageInput]
     image: ImageSetInput
@@ -429,6 +472,7 @@ const typeDefs = gql`
     currency: String!
     value: Float!
   }
+
   input AddressInput {
     country: String
     region: String
@@ -444,12 +488,14 @@ const typeDefs = gql`
     images: ImageSetInput
     isAdmin: Boolean
   }
+
   input ImageSetInput {
     large: String
     medium: String
     small: String
     thumbnail: String
   }
+
   input ColorInput {
     code: Int!
     name: [LanguageInput!]
@@ -457,16 +503,26 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
+
+  input MaterialColorInput {
+    code: Int!
+    name: [LanguageInput!]
+    available: Boolean!
+    simpleName: [LanguageInput!]
+  }
+
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
   }
+
   input SubcategoryInput {
     categoryCode: String!
     name: [LanguageInput!]
     images: ImageSetInput
     available: Boolean!
   }
+
   input CredentialInput {
     source: String
     tokenPass: String
@@ -496,6 +552,7 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: Int
   }
+
   input ProductOptionsAdditonalsInput {
     name: [LanguageInput!]
     description: [LanguageInput!]
@@ -520,6 +577,7 @@ const typeDefs = gql`
   type Mutation {
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
+
     "Pattern Mutations"
     addPattern(pattern: PatternInput!, image: Upload!): PatternResult
     deletePattern(id: ID!): PatternResult
@@ -530,13 +588,19 @@ const typeDefs = gql`
     ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload!
+      images: Upload
     ): MaterialResult
+    addMaterialColor(
+      id: ID!
+      color: MaterialColorInput
+      image: Upload
+    ): MaterialColorResult
+    deleteMaterialColor(id: ID!, code: Int): MaterialResult
 
     "Category Mutation"
     addCategory(
@@ -630,6 +694,7 @@ const typeDefs = gql`
     addOrder(order: OrderInput!): OrderResult
     updateOrder(id: ID!, order: OrderInput!): OrderResult
     deleteOrder(id: ID!): OrderResult
+
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
     deleteEmailQuestions(questionsToDelete: [String]): [EmailQuestion]
@@ -644,6 +709,9 @@ const typeDefs = gql`
     ): EmailQuestionResult
     deleteEmailQuestion(id: ID!): EmailQuestionResult
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
+
+    "HomePageImages Mutation"
+    updateHomePageLooksImage(id: ID!, images: Upload): HomePageImages
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult

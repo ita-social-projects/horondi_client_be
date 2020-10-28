@@ -274,8 +274,11 @@ class OrdersService {
       changeDataFormat(dateOfCreation, userDateFormat)
     );
     const { names, counts } = this.getOrdersStats(formattedDate);
-
-    return { labels: names, counts };
+    const total = counts.reduce(
+      (orderTotal, orderCount) => orderTotal + orderCount,
+      0
+    );
+    return { labels: names, counts, total };
   }
 
   async getOrdersStatistic(days) {
