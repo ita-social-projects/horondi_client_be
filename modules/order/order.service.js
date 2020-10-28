@@ -1,5 +1,4 @@
 const Order = require('./order.model');
-
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
@@ -59,8 +58,15 @@ class OrdersService {
     ];
   }
 
-  async getAllOrders() {
-    return await Order.find();
+  async getAllOrders({ skip, limit }) {
+    const items = await Order.find()
+      .skip(skip)
+      .limit(limit);
+    const count = await Order.find().countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getOrderById(id) {
@@ -86,7 +92,7 @@ class OrdersService {
     if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
 
-      if (order.delivery.sentBy == 'Nova Poshta') {
+      if (order.delivery.sentBy === 'Nova Poshta') {
         const weight = order.items.reduce(
           (prev, currentItem) =>
             prev + currentItem.size.weightInKg * currentItem.quantity,
@@ -157,7 +163,7 @@ class OrdersService {
 
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
-    if (data.delivery.sentBy == 'Nova Poshta') {
+    if (data.delivery.sentBy === 'Nova Poshta') {
       const weight = data.items.reduce(
         (prev, currentItem) =>
           prev + currentItem.size.weightInKg * currentItem.quantity,

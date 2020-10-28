@@ -83,6 +83,8 @@ const typeDefs = gql`
 
   scalar Upload
 
+  scalar Date
+
   enum RoleEnum {
     superadmin
     admin
@@ -234,6 +236,11 @@ const typeDefs = gql`
     count: Int!
   }
 
+  type PaginatedOrders {
+    items: [Order!]!
+    count: Int!
+  }
+
   type PaginatedNews {
     items: [News]
     count: Int
@@ -326,7 +333,7 @@ const typeDefs = gql`
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
-    getAllOrders: [Order!]!
+    getAllOrders(limit: Int, skip: Int): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
     getOrdersStatistic(date: Int!): StatisticDoughnut!
