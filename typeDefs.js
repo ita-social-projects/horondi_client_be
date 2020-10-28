@@ -131,6 +131,21 @@ const typeDefs = gql`
     exchangeRate: Float
   }
 
+  type ModelsMenu {
+    model: [Menu!]
+  }
+
+  type Menu {
+    _id: ID!
+    name: [Language!]
+  }
+
+  type BurgerMenu {
+    _id: ID!
+    category: Menu!
+    models: [Menu!]
+  }
+
   type Subcategory {
     _id: ID!
     categoryCode: String
@@ -273,11 +288,13 @@ const typeDefs = gql`
   type StatisticBar {
     labels: [String!]
     counts: [Int!]
+    total: Int!
   }
 
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
+  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -300,9 +317,11 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getSubcategories(parentCategoryId: ID!): [Category]
+    getCategoriesForBurgerMenu: [BurgerMenu]
 
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
+    getMaterialColorByCode(code: Int): Color
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
@@ -478,6 +497,13 @@ const typeDefs = gql`
     simpleName: [LanguageInput!]
   }
 
+  input MaterialColorInput {
+    code: Int!
+    name: [LanguageInput!]
+    available: Boolean!
+    simpleName: [LanguageInput!]
+  }
+
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
@@ -555,13 +581,19 @@ const typeDefs = gql`
     ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload!
+      images: Upload
     ): MaterialResult
+    addMaterialColor(
+      id: ID!
+      color: MaterialColorInput
+      image: Upload
+    ): MaterialColorResult
+    deleteMaterialColor(id: ID!, code: Int): MaterialResult
 
     "Category Mutation"
     addCategory(
