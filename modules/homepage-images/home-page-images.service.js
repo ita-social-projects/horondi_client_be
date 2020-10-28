@@ -19,7 +19,8 @@ class HomePageImagesService {
   async updateHomePageLooksImage(data) {
     const imagesToUpdate = await LooksImages.findById(data.id).lean();
 
-    if (!imagesToUpdate) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    if (!imagesToUpdate) throw new Error(IMAGE_NOT_FOUND);
+
     return (
       data.images &&
       this.deleteImages(imagesToUpdate.images) &&
