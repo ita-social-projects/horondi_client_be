@@ -262,6 +262,7 @@ const typeDefs = gql`
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
+  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -287,6 +288,7 @@ const typeDefs = gql`
 
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
+    getMaterialColorByCode(code: Int): Color
 
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
@@ -452,6 +454,12 @@ const typeDefs = gql`
     available: Boolean!
     simpleName: [LanguageInput!]
   }
+  input MaterialColorInput {
+    code: Int!
+    name: [LanguageInput!]
+    available: Boolean!
+    simpleName: [LanguageInput!]
+  }
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
@@ -525,13 +533,19 @@ const typeDefs = gql`
     ): PatternResult
 
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload): MaterialResult
+    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload!
+      images: Upload
     ): MaterialResult
+    addMaterialColor(
+      id: ID!
+      color: MaterialColorInput
+      image: Upload
+    ): MaterialColorResult
+    deleteMaterialColor(id: ID!, code: Int): MaterialResult
 
     "Category Mutation"
     addCategory(
