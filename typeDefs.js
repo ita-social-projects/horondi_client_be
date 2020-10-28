@@ -256,6 +256,7 @@ const typeDefs = gql`
   type StatisticBar {
     labels: [String!]
     counts: [Int!]
+    total: Int!
   }
 
   union CategoryResult = Category | Error
