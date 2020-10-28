@@ -21,6 +21,13 @@ type User{
     confirmed: Boolean
 }`;
 
+const paginatedUsersType = `
+type PaginatedUsersType {
+    items: [User!]
+    count: Int!
+}
+`;
+
 const userInput = `
 input UserInput {
     _id:ID!
@@ -90,7 +97,16 @@ input UserForStatisticsInput {
 
 const userFilterInput = `
 input UserFilterInput {
-    roles: [String]
+    roles: [String!]
+    banned: [Boolean!]
+    search: String
+}
+`;
+
+const userSortInput = `
+input UserSortInput {
+  name: Int
+  email: Int
 }
 `;
 
@@ -104,4 +120,6 @@ module.exports = {
   adminRegisterInput,
   adminConfirmInput,
   UserForStatisticsInput,
+  paginatedUsersType,
+  userSortInput,
 };
