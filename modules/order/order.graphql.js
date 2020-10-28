@@ -8,7 +8,6 @@ type Order {
   adminComment: String
   userComment: String
   cancellationReason:  String
-  completed: Boolean
   delivery: Delivery
   address: Address
   items: [OrderItems]
@@ -24,6 +23,7 @@ enum PaymentEnum {
 enum Status {
   CREATED
   CONFIRMED 
+  PRODUCED
   CANCELLED 
   REFUNDED 
   SENT
@@ -63,6 +63,7 @@ type OrderUser {
 `;
 const orderInputs = ` 
 input OrderInput {
+  _id:ID
   status: Status
   user: OrderUserInput,
   delivery: DeliveryInput,
@@ -71,8 +72,12 @@ input OrderInput {
   userComment: String
   adminComment: String
   cancellationReason: String
-  completed: Boolean
   address: AddressInput
+  dateOfCreation: Date
+  lastUpdatedDate: Date
+  totalItemsPrice: [CurrencyInputSet]
+  totalPriceToPay: [CurrencyInputSet]
+  isPaid: Boolean
 }
 
 input OrderUserInput {
@@ -83,12 +88,18 @@ input OrderUserInput {
   patronymicName: String
 }
 
+input CurrencyInputSet {
+  currency: String!
+  value: Float!
+}
+
 input DeliveryInput {
   sentOn: String
   sentBy: String
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
+  cost: [CurrencyInputSet]!
 }
 
 input OrderItemsInput {

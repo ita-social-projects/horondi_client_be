@@ -172,10 +172,15 @@ class UserService {
       changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurency = countItemsOccurency(formatedData);
-
+    const counts = Object.values(userOccurency);
+    const total = counts.reduce(
+      (userTotal, userCount) => userTotal + userCount,
+      0
+    );
     return {
       labels: Object.keys(userOccurency),
-      counts: Object.values(userOccurency),
+      counts,
+      total,
     };
   }
 
