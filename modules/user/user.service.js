@@ -62,7 +62,7 @@ class UserService {
     }
 
     if (search && search.trim()) {
-      filter.$or = this.searchItems(search);
+      filter.$or = this.searchItems(search.trim());
     }
 
     if (days) {
@@ -134,7 +134,7 @@ class UserService {
     let filteredItems = this.filterItems(filter);
     let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
 
-    const users = await User.aggregate([
+    const [users] = await User.aggregate([
       {
         $addFields: {
           name: { $concat: ['$firstName', ' ', '$lastName'] },
@@ -145,19 +145,16 @@ class UserService {
       .facet({
         items: aggregatedItems,
         calculations: [{ $match: filteredItems }, { $count: 'count' }],
-      })
-      .then(data => data[0]);
+      });
 
-    const { items, calculations } = users;
-    let usersCount;
-
-    if (calculations && calculations.length) {
-      usersCount = calculations[0].count;
-    }
+    const {
+      items,
+      calculations: [calculations],
+    } = users;
 
     return {
       items,
-      count: usersCount || 0,
+      count: calculations.count || 0,
     };
   }
 
