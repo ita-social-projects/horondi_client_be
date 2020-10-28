@@ -84,26 +84,26 @@ class UserService {
   }
 
   aggregateItems(filters = {}, pagination = {}, sort = {}) {
-    let aggItems = [];
+    let aggregationItems = [];
 
     if (Object.keys(sort).length) {
-      aggItems.push({
+      aggregationItems.push({
         $sort: sort,
       });
     }
 
-    aggItems.push({ $match: filters });
+    aggregationItems.push({ $match: filters });
 
     if (pagination.skip !== undefined && pagination.limit) {
-      aggItems.push({
+      aggregationItems.push({
         $skip: pagination.skip,
       });
-      aggItems.push({
+      aggregationItems.push({
         $limit: pagination.limit,
       });
     }
 
-    return aggItems;
+    return aggregationItems;
   }
 
   async checkIfTokenIsValid(token) {
