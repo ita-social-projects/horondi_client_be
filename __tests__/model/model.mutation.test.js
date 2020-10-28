@@ -12,6 +12,7 @@ require('dotenv').config();
 let modelId;
 let categoryName;
 let categoryId;
+jest.mock('../../modules/upload/__mocks__/upload.service.js');
 
 describe('Product queries', () => {
   beforeAll(async () => {
