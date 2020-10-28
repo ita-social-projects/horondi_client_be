@@ -1,0 +1,19 @@
+version: '3'
+
+services: 
+    testenv:
+      image: backtest
+      build: 
+        context: .
+        dockerfile: Dockerfiletest
+      depends_on: 
+        - database
+    database:
+        image: mongo
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: root
+          MONGO_INITDB_DATABASE: horondi
+        expose:
+            - 27017
+    
