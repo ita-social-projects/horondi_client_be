@@ -39,6 +39,21 @@ input UserInput {
     banned: Boolean
     confirmed: Boolean
 }`;
+const userUpdateInput = `
+input UserUpdateInput {
+    firstName: String
+    lastName: String
+    password: String
+    email: String
+    phoneNumber: String
+    address: AddressInput
+    images: ImageSetInput
+    wishlist: [ID]
+    orders:[ID]
+    purchasedProducts: [ID]
+    comments: [ID]
+    confirmed: Boolean
+}`;
 const LoginInput = `
 input LoginInput {
     password: String!
@@ -82,6 +97,7 @@ input UserFilterInput {
 module.exports = {
   userType,
   userInput,
+  userUpdateInput,
   userRegisterInput,
   userFilterInput,
   LoginInput,
