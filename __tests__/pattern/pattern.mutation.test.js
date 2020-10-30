@@ -200,7 +200,7 @@ describe('pattern mutation tests', () => {
   });
 
   it('should return error if we try to update pattern with existing name ', async () => {
-    const duplicateRes = await operations.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($pattern: PatternInput!) {
           addPattern(pattern: $pattern) {
