@@ -149,7 +149,6 @@ const typeDefs = gql`
   }
 
   type BurgerMenu {
-    _id: ID!
     category: Menu!
     models: [Menu!]
   }
