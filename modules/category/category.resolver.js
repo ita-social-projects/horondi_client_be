@@ -5,7 +5,9 @@ const {
 
 const categoryQuery = {
   getAllCategories: (parent, args) => categoryService.getAllCategories(),
-
+  getCategoriesForBurgerMenu: (parent, args) =>
+    categoryService.getCategoriesForBurgerMenu(),
+  getPopularCategories: () => categoryService.getPopularCategories(),
   getCategoryById: async (parent, args) => {
     try {
       return await categoryService.getCategoryById(args.id);

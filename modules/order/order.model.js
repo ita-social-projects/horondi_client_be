@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema({
     enum: [
       'CREATED',
       'CONFIRMED',
+      'PRODUCED',
       'CANCELLED',
       'REFUNDED',
       'SENT',
@@ -29,10 +30,6 @@ const orderSchema = new mongoose.Schema({
     default: Date.now,
   },
   lastUpdatedDate: Date,
-  completed: {
-    type: Boolean,
-    default: false,
-  },
   userComment: {
     type: String,
     default: '',

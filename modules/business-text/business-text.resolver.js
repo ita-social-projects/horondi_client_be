@@ -4,12 +4,11 @@ const {
 } = require('../../error-messages/business-text.messages');
 
 const businessTextQuery = {
-  getAllBusinessTexts: (parent, args) =>
-    businessTextService.getAllBusinessTexts(),
+  getAllBusinessTexts: () => businessTextService.getAllBusinessTexts(),
 
-  getBusinessTextById: async (parent, args) => {
+  getBusinessTextById: async (_, { id }) => {
     try {
-      return await businessTextService.getBusinessTextById(args.id);
+      return await businessTextService.getBusinessTextById(id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -17,9 +16,9 @@ const businessTextQuery = {
       };
     }
   },
-  getBusinessTextByCode: async (parent, args) => {
+  getBusinessTextByCode: async (_, { code }) => {
     try {
-      return await businessTextService.getBusinessTextByCode(args.code);
+      return await businessTextService.getBusinessTextByCode(code);
     } catch (e) {
       return {
         statusCode: 404,
@@ -30,9 +29,9 @@ const businessTextQuery = {
 };
 
 const businessTextMutation = {
-  addBusinessText: async (parent, args) => {
+  addBusinessText: async (parent, { businessText, files }) => {
     try {
-      return await businessTextService.addBusinessText(args.businessText);
+      return await businessTextService.addBusinessText(businessText, files);
     } catch (e) {
       return {
         statusCode: 400,
@@ -40,6 +39,7 @@ const businessTextMutation = {
       };
     }
   },
+
   deleteBusinessText: async (parent, args) => {
     try {
       return await businessTextService.deleteBusinessText(args.id);

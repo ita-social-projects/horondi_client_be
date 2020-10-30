@@ -6,6 +6,7 @@ const { ADMIN, SUPERADMIN } = roles;
 
 const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
+  getUsersForStatistic: hasRoles([ADMIN, SUPERADMIN]),
   getUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   getUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   validateConfirmationToken: allow,
@@ -26,6 +27,8 @@ const userPermissionsMutation = {
   sendEmailConfirmation: isAuthorized,
   registerAdmin: hasRoles([SUPERADMIN]),
   completeAdminRegister: allow,
+  addProductToWishlist: isTheSameUser,
+  removeProductFromWishlist: isTheSameUser,
 };
 
 module.exports = { userPermissionsMutation, userPermissionsQuery };

@@ -15,6 +15,7 @@ let categoryName;
 let categoryId;
 let uploadFile = null;
 let operations;
+jest.mock('../../modules/upload/__mocks__/upload.service.js');
 
 describe('Product queries', () => {
   beforeAll(async () => {

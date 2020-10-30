@@ -20,9 +20,11 @@
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
     "test": "jest --coverage --detectOpenHandles --verbose",
     "generate": "graphql-codegen",
-    "preinstall": "npm i npm-force-resolutions && npx npm-force-resolutions",
+    "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
+    "test-full": "start-server-and-test test-server http://localhost:5000/health test",
     "docker-db-start": "cd ./docker && docker-compose up -d",
-    "docker-db-stop": "cd ./docker && docker-compose down"
+    "docker-db-stop": "cd ./docker && docker-compose down",
+    "test-docker": "npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",
@@ -50,12 +52,12 @@
     "cross-env": "^7.0.2",
     "crypto": "^1.0.1",
     "docker-compose": "^0.23.5",
+    "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
     "graphql-middleware": "^4.0.2",
     "graphql-shield": "^7.3.5",
-    "graphql-upload": "^11.0.0",
     "into-stream": "^5.1.1",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^8.5.1",
@@ -72,7 +74,8 @@
     "rotating-file-stream": "^2.0.2",
     "start-server-and-test": "^1.11.3",
     "uniqid": "^5.2.0",
-    "util": "^0.12.3"
+    "util": "^0.12.3",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",

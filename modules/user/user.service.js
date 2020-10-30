@@ -22,6 +22,12 @@ const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
+const {
+  removeDaysFromData,
+  countItemsOccurency,
+  changeDataFormat,
+} = require('../helper-functions');
+const productService = require('../product/product.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -37,6 +43,8 @@ const {
   ID_NOT_PROVIDED,
 } = require('../../error-messages/user.messages');
 
+const { userDateFormat } = require('../../consts');
+
 const ROLES = {
   admin: 'admin',
   user: 'user',
@@ -49,13 +57,59 @@ const SOURCES = {
 class UserService {
   filterItems(args = {}) {
     const filter = {};
-    const { roles } = args;
+    const { roles, days, banned, search } = args;
 
-    if (roles) {
+    if (roles && roles.length) {
       filter.role = { $in: roles };
     }
 
+    if (banned && banned.length) {
+      filter.banned = { $in: banned };
+    }
+
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search.trim());
+    }
+
+    if (days) {
+      filter.registrationDate = {
+        $gte: removeDaysFromData(days, Date.now()),
+        $lte: removeDaysFromData(0, Date.now()),
+      };
+    }
+
     return filter;
+  }
+
+  searchItems(searchString) {
+    return [
+      { name: { $regex: new RegExp(searchString, 'i') } },
+      { phoneNumber: { $regex: new RegExp(searchString) } },
+      { email: { $regex: new RegExp(searchString, 'i') } },
+    ];
+  }
+
+  aggregateItems(filters = {}, pagination = {}, sort = {}) {
+    let aggregationItems = [];
+
+    if (Object.keys(sort).length) {
+      aggregationItems.push({
+        $sort: sort,
+      });
+    }
+
+    aggregationItems.push({ $match: filters });
+
+    if (pagination.skip !== undefined && pagination.limit) {
+      aggregationItems.push({
+        $skip: pagination.skip,
+      });
+      aggregationItems.push({
+        $limit: pagination.limit,
+      });
+    }
+
+    return aggregationItems;
   }
 
   async checkIfTokenIsValid(token) {
@@ -82,12 +136,58 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers({ filter }) {
+  async getAllUsers({ filter, pagination, sort }) {
+    let filteredItems = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
+
+    const [users] = await User.aggregate([
+      {
+        $addFields: {
+          name: { $concat: ['$firstName', ' ', '$lastName'] },
+        },
+      },
+    ])
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filteredItems }, { $count: 'count' }],
+      });
+    let userCount;
+
+    const {
+      items,
+      calculations: [calculations],
+    } = users;
+
+    if (calculations) {
+      userCount = calculations.count;
+    }
+
+    return {
+      items,
+      count: userCount || 0,
+    };
+  }
+
+  async getUsersForStatistic({ filter }) {
     const filters = this.filterItems(filter);
-
-    const items = await User.find(filters);
-
-    return items;
+    const users = await User.find(filters)
+      .sort({ registrationDate: 1 })
+      .lean();
+    const formatedData = users.map(el =>
+      changeDataFormat(el.registrationDate, userDateFormat)
+    );
+    const userOccurency = countItemsOccurency(formatedData);
+    const counts = Object.values(userOccurency);
+    const total = counts.reduce(
+      (userTotal, userCount) => userTotal + userCount,
+      0
+    );
+    return {
+      labels: Object.keys(userOccurency),
+      counts,
+      total,
+    };
   }
 
   async getUser(id) {
@@ -118,12 +218,12 @@ class UserService {
     }
 
     if (user.email !== updatedUser.email) {
-      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
-      if (user) {
+      const existingUser = await User.findOne({ email: updatedUser.email });
+      if (existingUser) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
-
+    if (!user.images) user.images = [];
     if (upload) {
       await deleteFiles(
         Object.values(user.images).filter(
@@ -271,6 +371,7 @@ class UserService {
     });
 
     await savedUser.save();
+
     return savedUser;
   }
 
@@ -480,6 +581,21 @@ class UserService {
         statusCode: 400,
       });
     }
+  }
+
+  async updateWishlist(userId, wishlist, productId) {
+    await User.findByIdAndUpdate(userId, { wishlist });
+    return productService.getProductById(productId);
+  }
+
+  addProductToWishlist(productId, user) {
+    const newWishlist = [...user.wishlist, productId];
+    return this.updateWishlist(user._id, newWishlist, productId);
+  }
+
+  removeProductFromWishlist(productId, user) {
+    const newWishlist = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateWishlist(user._id, newWishlist, productId);
   }
 }
 

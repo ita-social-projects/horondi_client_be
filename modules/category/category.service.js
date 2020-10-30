@@ -1,4 +1,5 @@
 const Category = require('./category.model');
+const Product = require('../product/product.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
@@ -8,6 +9,7 @@ const {
 } = require('../../error-messages/category.messages');
 const { validateCategoryInput } = require('../../utils/validate-category');
 const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const { OTHERS } = require('../../consts');
 
 class CategoryService {
   async getAllCategories() {
@@ -40,6 +42,38 @@ class CategoryService {
     return await Category.findByIdAndUpdate(id, category, {
       new: true,
     });
+  }
+
+  async getCategoriesForBurgerMenu() {
+    const categories = await this.getAllCategories();
+
+    const data = categories
+      .filter(category => category.isMain)
+      .map(async category => {
+        const products = await Product.find({ category: category._id });
+        const uniqueModels = [];
+        const models = products
+          .map(product => ({
+            name: [...product.model],
+            _id: product._id,
+          }))
+          .filter(({ name }) => {
+            if (!uniqueModels.includes(name[0].value)) {
+              uniqueModels.push(name[0].value);
+              return true;
+            }
+            return false;
+          });
+        return {
+          category: {
+            name: [...category.name],
+            _id: category._id,
+          },
+          models,
+        };
+      });
+
+    return data;
   }
 
   async addCategory(data, parentId, upload) {
@@ -121,7 +155,45 @@ class CategoryService {
     if (!category.subcategories.length) {
       return [];
     }
-    return await Category.find({ _id: { $in: category.subcategories } });
+    return await Category.find({
+      _id: { $in: category.subcategories },
+    });
+  }
+
+  getCategoriesStats(categories, total) {
+    let popularSum = 0;
+    let res = { names: [], counts: [], relations: [] };
+
+    categories
+      .filter(({ isMain }, idx) => isMain && idx < 3)
+      .forEach(({ name, purchasedCount }) => {
+        const relation = Math.round((purchasedCount * 100) / total);
+        popularSum += relation;
+
+        res.names.push(name[0].value);
+        res.counts.push(purchasedCount);
+        res.relations.push(relation);
+      });
+
+    const otherRelation = 100 - popularSum;
+    const otherCount = Math.round((otherRelation * total) / 100);
+
+    return {
+      names: [...res.names, OTHERS],
+      counts: [...res.counts, otherCount],
+      relations: [...res.relations, otherRelation],
+    };
+  }
+
+  async getPopularCategories() {
+    let total = 0;
+    const categories = await Category.find()
+      .sort({ purchasedCount: -1 })
+      .lean();
+
+    categories.forEach(({ purchasedCount }) => (total += purchasedCount));
+
+    return this.getCategoriesStats(categories, total);
   }
 }
 

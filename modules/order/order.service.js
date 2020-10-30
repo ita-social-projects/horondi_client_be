@@ -7,6 +7,14 @@ const NovaPoshtaService = require('../delivery/delivery.service');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Currency = require('../currency/currency.model');
 
+const {
+  removeDaysFromData,
+  countItemsOccurency,
+  changeDataFormat,
+} = require('../helper-functions');
+
+const { userDateFormat } = require('../../consts');
+
 class OrdersService {
   calculateTotalItemsPrice(items) {
     return items.reduce(
@@ -50,8 +58,15 @@ class OrdersService {
     ];
   }
 
-  async getAllOrders() {
-    return await Order.find();
+  async getAllOrders({ skip, limit }) {
+    const items = await Order.find()
+      .skip(skip)
+      .limit(limit);
+    const count = await Order.find().countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getOrderById(id) {
@@ -77,7 +92,7 @@ class OrdersService {
     if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
 
-      if (order.delivery.sentBy == 'Nova Poshta') {
+      if (order.delivery.sentBy === 'Nova Poshta') {
         const weight = order.items.reduce(
           (prev, currentItem) =>
             prev + currentItem.size.weightInKg * currentItem.quantity,
@@ -148,7 +163,7 @@ class OrdersService {
 
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
-    if (data.delivery.sentBy == 'Nova Poshta') {
+    if (data.delivery.sentBy === 'Nova Poshta') {
       const weight = data.items.reduce(
         (prev, currentItem) =>
           prev + currentItem.size.weightInKg * currentItem.quantity,
@@ -216,6 +231,66 @@ class OrdersService {
       return foundOrder;
     }
     throw new Error(ORDER_NOT_FOUND);
+  }
+
+  async getUserOrders(user) {
+    const { orders } = user;
+
+    return await Order.find({ _id: orders });
+  }
+
+  filterOrders({ days, isPaid }) {
+    const filter = {};
+
+    if (days) {
+      const currentDate = Date.now();
+      filter.dateOfCreation = {
+        $gte: removeDaysFromData(days, currentDate),
+        $lte: removeDaysFromData(0, currentDate),
+      };
+    }
+
+    if (isPaid) {
+      filter.isPaid = isPaid;
+    }
+
+    return filter;
+  }
+
+  getOrdersStats(orders) {
+    const ordersOccurency = countItemsOccurency(orders);
+    const counts = Object.values(ordersOccurency);
+    const names = Object.keys(ordersOccurency);
+
+    return { counts, names };
+  }
+
+  async getPaidOrdersStatistic(days) {
+    const filter = this.filterOrders({ days, isPaid: true });
+    const orders = await Order.find(filter)
+      .sort({ dateOfCreation: 1 })
+      .lean();
+    const formattedDate = orders.map(({ dateOfCreation }) =>
+      changeDataFormat(dateOfCreation, userDateFormat)
+    );
+    const { names, counts } = this.getOrdersStats(formattedDate);
+    const total = counts.reduce(
+      (orderTotal, orderCount) => orderTotal + orderCount,
+      0
+    );
+    return { labels: names, counts, total };
+  }
+
+  async getOrdersStatistic(days) {
+    const filter = this.filterOrders({ days });
+    const orders = await Order.find(filter).lean();
+    const statuses = orders.map(({ status }) => status);
+    const { names, counts } = this.getOrdersStats(statuses);
+    const relations = counts.map(count =>
+      Math.round((count * 100) / orders.length)
+    );
+
+    return { names, counts, relations };
   }
 }
 module.exports = new OrdersService();

@@ -2,6 +2,8 @@ const userService = require('./user.service');
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(args),
+  getUsersForStatistic: (parent, args, context) =>
+    userService.getUsersForStatistic(args),
   getUserByToken: (parent, args, context) => context.user,
   getUserById: (parent, args) => userService.getUser(args.id),
   validateConfirmationToken: (parent, args) => {
@@ -79,6 +81,10 @@ const userMutation = {
       };
     }
   },
+  addProductToWishlist: (parent, args, context) =>
+    userService.addProductToWishlist(args.productId, context.user),
+  removeProductFromWishlist: (parent, args, context) =>
+    userService.removeProductFromWishlist(args.productId, context.user),
 };
 
 module.exports = {

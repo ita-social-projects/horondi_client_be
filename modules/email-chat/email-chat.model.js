@@ -3,6 +3,12 @@ const mongoose = require('mongoose');
 const EmailChatSchema = new mongoose.Schema({
   text: String,
   senderName: String,
+  language: {
+    type: Number,
+    enum: [0, 1],
+    default: 0,
+    required: true,
+  },
   date: {
     type: Date,
     default: Date.now,

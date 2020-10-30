@@ -16,6 +16,16 @@ const materialQuery = {
       message: MATERIAL_NOT_FOUND,
     };
   },
+  getMaterialColorByCode: async (parent, args) => {
+    try {
+      await materialService.getMaterialColorByCode(args.code);
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const materialMutation = {
@@ -29,9 +39,35 @@ const materialMutation = {
       };
     }
   },
+
+  addMaterialColor: async (parent, args) => {
+    try {
+      return await materialService.addMaterialColor(
+        args.id,
+        args.color,
+        args.image
+      );
+    } catch (e) {
+      return {
+        statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
+
   deleteMaterial: async (parent, args) => {
     try {
       return await materialService.deleteMaterial(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
+  deleteMaterialColor: async (parent, args) => {
+    try {
+      return await materialService.deleteMaterialColor(args.id, args.code);
     } catch (e) {
       return {
         statusCode: 404,

@@ -9,7 +9,7 @@ description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
 strapLengthInCm: Int!
-images: PrimaryImage!
+images: PrimaryImage
 colors: [Color]!
 pattern: [Language]
 patternImages: ImageSet
@@ -18,12 +18,13 @@ closureColor: String
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
-isHotItem: Boolean!
+isHotItem: Boolean
 purchasedCount: Int
+availableCount: Int
 rate: Float
 rateCount: Int
 userRates: [UserRate]
-comments: [Comment]
+comments: PaginatedComments!
 }
 `;
 
@@ -37,14 +38,15 @@ description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
-images: PrimaryImageInput!
 colors: [ColorInput]! 
 pattern: [LanguageInput]
 patternImages: ImageSetInput
+images: PrimaryImageInput
 closure: [LanguageInput]!
 closureColor: String
-basePrice: [CurrencySetInput]!
-available: Boolean!
+availableCount: Int
+basePrice: Int!
+available: Boolean
 isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;

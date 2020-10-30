@@ -53,13 +53,23 @@ const {
   emailChatQuestionQuery,
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.resolver');
+
+const {
+  HomePageImagesQuery,
+  HomePageImagesMutation,
+} = require('./modules/homepage-images/home-page-images.resolver');
+
+const {
+  headerQuery,
+  headerMutation,
+} = require('./modules/header/header.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -76,6 +86,7 @@ const SCHEMA_NAMES = {
   user: 'User',
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
+  header: 'Header',
 };
 const resolvers = {
   Query: {
@@ -110,7 +121,16 @@ const resolvers = {
     ...ordersQuery,
 
     ...emailChatQuestionQuery,
+
+    ...HomePageImagesQuery,
+
+    ...headerQuery,
   },
+
+  User: {
+    wishlist: parent => productsService.getProductsForWishlist(parent._id),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
   },
@@ -118,7 +138,8 @@ const resolvers = {
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
-    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
+    comments: parent =>
+      commentsService.getAllCommentsByProduct({ productId: parent._id }),
   },
 
   Model: {
@@ -180,6 +201,10 @@ const resolvers = {
     ...ordersMutation,
 
     ...emailChatQuestionMutation,
+
+    ...HomePageImagesMutation,
+
+    ...headerMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -213,6 +238,15 @@ const resolvers = {
       return 'Error';
     },
   },
+  MaterialColorResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.material;
+      }
+      return 'Error';
+    },
+  },
+
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {
@@ -297,6 +331,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.intDocNumber) {
         return SCHEMA_NAMES.novaPoshtaOrder;
+      }
+      return 'Error';
+    },
+  },
+  HeaderResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.header;
       }
       return 'Error';
     },
