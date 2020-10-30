@@ -81,10 +81,18 @@ const userMutation = {
       };
     }
   },
-  addProductToWishlist: (parent, args, context) =>
-    userService.addProductToWishlist(args.productId, context.user),
-  removeProductFromWishlist: (parent, args, context) =>
-    userService.removeProductFromWishlist(args.productId, context.user),
+  addProductToCartOrWishlist: (parent, args, context) =>
+    userService.addProductToCartOrWishlist(
+      args.productId,
+      args.key,
+      context.user
+    ),
+  removeProductFromCartOrWishlist: (parent, args, context) =>
+    userService.removeProductFromCartOrWishlist(
+      args.productId,
+      args.key,
+      context.user
+    ),
 };
 
 module.exports = {

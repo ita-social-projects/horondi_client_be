@@ -27,8 +27,8 @@ const userPermissionsMutation = {
   sendEmailConfirmation: isAuthorized,
   registerAdmin: hasRoles([SUPERADMIN]),
   completeAdminRegister: allow,
-  addProductToWishlist: isTheSameUser,
-  removeProductFromWishlist: isTheSameUser,
+  addProductToCartOrWishlist: isTheSameUser,
+  removeProductFromCartOrWishlist: isTheSameUser,
 };
 
 module.exports = { userPermissionsMutation, userPermissionsQuery };

@@ -566,19 +566,19 @@ class UserService {
     }
   }
 
-  async updateWishlist(userId, wishlist, productId) {
-    await User.findByIdAndUpdate(userId, { wishlist });
+  async updateCartOrWishlist(userId, key, list, productId) {
+    await User.findByIdAndUpdate(userId, { [key]: list });
     return productService.getProductById(productId);
   }
 
-  addProductToWishlist(productId, user) {
-    const newWishlist = [...user.wishlist, productId];
-    return this.updateWishlist(user._id, newWishlist, productId);
+  addProductToCartOrWishlist(productId, key, user) {
+    const newList = [...user[key], productId];
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
   }
 
-  removeProductFromWishlist(productId, user) {
-    const newWishlist = user.wishlist.filter(id => String(id) !== productId);
-    return this.updateWishlist(user._id, newWishlist, productId);
+  removeProductFromCartOrWishlist(productId, key, user) {
+    const newList = user[key].filter(id => String(id) !== productId);
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
   }
 }
 
