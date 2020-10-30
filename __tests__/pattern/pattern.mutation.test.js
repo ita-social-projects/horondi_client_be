@@ -233,7 +233,6 @@ describe('pattern mutation tests', () => {
       `,
       variables: { pattern: patternToUpdate },
     });
-    duplicatedPatternId = duplicateRes.data.addPattern._id;
 
     const res = await operations.mutate({
       variables: { id: patternId, pattern: patternToUpdate },

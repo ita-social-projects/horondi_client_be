@@ -117,7 +117,7 @@ const getProductData = product => ({
   rateCount: 0,
 });
 
-const createModel = async (material, category, model) => {
+const createModel = async (material, category, modelToCreate) => {
   const operations = await setupApp();
   const createMaterial = await operations.mutate({
     mutation: gql`
@@ -170,7 +170,7 @@ const createModel = async (material, category, model) => {
         }
       }
     `,
-    variables: { model: { ...model, category: categoryId } },
+    variables: { model: { ...modelToCreate, category: categoryId } },
   });
   const modelId = createModelData.data.addModel._id;
 
