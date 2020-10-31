@@ -58,7 +58,7 @@ name: [Language]
 bagBottom: CartProductBagBottom
 dimensions: CartProductDimensions
 image: String
-totalPrice: Int
+totalPrice: [CurrencySet]
 quantity: Int
 selectedSize: String
 sidePocket: Boolean
@@ -72,7 +72,7 @@ name: [LanguageInput]
 bagBottom: CartProductBagBottomInput
 dimensions: CartProductDimensionsInput
 image: String
-totalPrice: Int
+totalPrice: [CurrencySetInput]
 quantity: Int
 selectedSize: String
 sidePocket: Boolean
