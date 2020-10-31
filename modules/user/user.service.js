@@ -571,14 +571,37 @@ class UserService {
     return productService.getProductById(productId);
   }
 
-  addProductToCartOrWishlist(productId, key, user) {
-    const newList = [...user[key], productId];
+  addProductToWishlist(productId, key, user) {
+    const newList = [...user.wishlist, productId];
     return this.updateCartOrWishlist(user._id, key, newList, productId);
   }
 
-  removeProductFromCartOrWishlist(productId, key, user) {
-    const newList = user[key].filter(id => String(id) !== productId);
+  removeProductFromWishlist(productId, key, user) {
+    const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  addProductToCart(product, key, user) {
+    const newList = [...user.cart, product];
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  removeProductFromCart(product, key, user) {
+    const newList = user.cart.filter(
+      ({ _id, selectedSize }) =>
+        String(_id) !== product._id ||
+        (String(_id) === product._id && selectedSize !== product.selectedSize)
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  changeCartProductQuantity(product, key, user) {
+    const newList = user.cart.map(item =>
+      String(item._id) === product._id ? product : item
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
   }
 }
 
