@@ -1,6 +1,5 @@
 const axios = require('axios');
 const Agenda = require('agenda');
-require('dotenv').config();
 const currencyService = require('./modules/currency/currency.service');
 
 const currencyWorker = () => {

@@ -1,7 +1,5 @@
-const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 
-dotenv.config();
 const verifyUser = token => {
   if (!token) return;
   try {

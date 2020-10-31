@@ -30,7 +30,6 @@ type PaginatedUsersType {
 
 const userInput = `
 input UserInput {
-    _id:ID!
     firstName: String
     lastName: String
     password: String

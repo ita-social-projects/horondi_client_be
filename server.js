@@ -1,5 +1,4 @@
-const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
-const { applyMiddleware } = require('graphql-middleware');
+const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
@@ -66,7 +65,6 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 currencyWorker();
 
-app.get('/health', (req, res) => res.send('Health page!'));
 server.applyMiddleware({ app });
 
 app.listen(PORT, () => {
