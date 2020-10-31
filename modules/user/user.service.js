@@ -598,7 +598,10 @@ class UserService {
 
   changeCartProductQuantity(product, key, user) {
     const newList = user.cart.map(item =>
-      String(item._id) === product._id ? product : item
+      String(item._id) === product._id &&
+      item.selectedSize === product.selectedSize
+        ? product
+        : item
     );
 
     return this.updateCartOrWishlist(user._id, key, newList, product._id);

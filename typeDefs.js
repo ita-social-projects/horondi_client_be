@@ -595,7 +595,7 @@ const typeDefs = gql`
   }
 
   input CartProductBagBottomInput {
-      name: [LanguageInput]!
+      name: [LanguageInput]
       value: String
   }
 

@@ -129,7 +129,6 @@ const resolvers = {
 
   User: {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
-    cart: parent => productsService.getProductsForCart(parent._id),
   },
 
   Comment: {

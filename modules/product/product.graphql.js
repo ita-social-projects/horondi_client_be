@@ -54,7 +54,7 @@ options:[ProductOptionsInput]
 const cartProductType = `
 type CartProduct {
 _id: ID!
-name: [Language]!
+name: [Language]
 bagBottom: CartProductBagBottom
 dimensions: CartProductDimensions
 image: String
@@ -68,7 +68,7 @@ sidePocket: Boolean
 const cartProductInput = `
 input CartProductInput {
 _id: ID!
-name: [LanguageInput]!
+name: [LanguageInput]
 bagBottom: CartProductBagBottomInput
 dimensions: CartProductDimensionsInput
 image: String
