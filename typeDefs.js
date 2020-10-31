@@ -297,7 +297,7 @@ const typeDefs = gql`
   type SuccessfulResponse {
     isSuccess: Boolean
   }
-  
+
   type EmailAnswer {
     admin: User!
     date: String!
@@ -390,6 +390,8 @@ const typeDefs = gql`
     ): PaginatedComments!
     getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
+    getAllCommentsByProduct(productId: ID!): [CommentResult]
+    getAllCommentsByUser(userEmail: String!): [CommentResult]
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult

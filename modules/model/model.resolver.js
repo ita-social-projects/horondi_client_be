@@ -10,10 +10,10 @@ const modelsQuery = {
 
   getModelById: async (parent, args) => {
     try {
-      return await modelsService.getModelById(args.id);
+      return await modelService.getModelById(args.id);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: 404,
         message: e.message,
       };
     }
@@ -31,6 +31,7 @@ const modelsMutation = {
       };
     }
   },
+
   updateModel: async (parent, args) => {
     try {
       return await modelService.updateModel(args.id, args.model, args.upload);
@@ -41,6 +42,7 @@ const modelsMutation = {
       };
     }
   },
+
   deleteModel: async (parent, args) => {
     const deletedModel = await modelsService.deleteModel(args.id);
     if (deletedModel) {
@@ -52,5 +54,4 @@ const modelsMutation = {
     };
   },
 };
-
 module.exports = { modelsQuery, modelsMutation };

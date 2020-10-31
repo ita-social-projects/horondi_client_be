@@ -11,7 +11,7 @@ const newOrder = {
     country: 'Україна',
     region: 'Кіровоградська область',
     city: 'Новомиргород',
-    zipcode: 98908,
+    zipcode: '98908',
     street: 'Бульвар Марії Приймаченко',
     buildingNumber: '25',
     appartment: '97',
@@ -157,6 +157,13 @@ const updatedData = {
   },
 };
 
+const deliveryOrder = {
+  sentBy: 'Nova Poshta',
+  byCourier: true,
+  courierOffice: 10,
+  invoiceNumber: '6280260',
+  sentOn: null,
+};
 const newOrderUpdated = {
   ...newOrderMutation,
   ...updatedData,
@@ -166,4 +173,5 @@ module.exports = {
   newOrder,
   newOrderUpdated,
   newOrderMutation,
+  deliveryOrder,
 };

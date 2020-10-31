@@ -5,11 +5,9 @@ const wrongLimit = -5;
 const limit = 5;
 
 const user = {
-  email: process.env.ADMIN_EMAIL,
-  password: process.env.ADMIN_PASS,
+  email: process.env.SUPER_ADMIN_EMAIL,
+  password: process.env.SUPER_ADMIN_PASSWORD,
 };
-const languageTypeName = { __typename: 'Language' };
-const imageTypeName = { __typename: 'ImageSet' };
 
 const testValue = 'test value';
 const updateValue = 'update value';
@@ -69,11 +67,11 @@ const patternToUpdate = {
   name: [
     {
       lang: 'uk',
-      value: testValue,
+      value: updateValue,
     },
     {
       lang: 'en',
-      value: testValue,
+      value: updateValue,
     },
   ],
   description: [
@@ -97,33 +95,22 @@ const patternToUpdate = {
   handmade: false,
 };
 
-const patternAlreadyExist = {
-  name: [
-    {
-      lang: 'uk',
-      value: 'Синій',
-    },
-    {
-      lang: 'en',
-      value: 'Blue',
-    },
-  ],
-
-  material: 'Cordura',
-  handmade: true,
-  available: true,
+const imageTypeName = {
+  large: 'large_0_test-file',
+  medium: 'medium_0_test-file',
+  small: 'small_0_test-file',
+  thumbnail: 'thumbnail_0_test-file',
 };
+
 module.exports = {
   patternToUpdate,
-  patternAlreadyExist,
   patternDoesNotExistId,
   user,
   skip,
   limit,
   wrongSkip,
   wrongLimit,
-  languageTypeName,
-  imageTypeName,
   queryPatternToAdd,
   mutationPatternToAdd,
+  imageTypeName,
 };
