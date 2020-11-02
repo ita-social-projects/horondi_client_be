@@ -62,6 +62,10 @@ const {
 const {
   homePageImagesType,
 } = require('./modules/homepage-images/home-page-images.graphql');
+const {
+  homePageSlideType,
+  homePageSlideInput
+} = require('./modules/homepage-slider/homepage-slider.graphql')
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 
@@ -86,6 +90,7 @@ const typeDefs = gql`
   ${paymentType}
   ${homePageImagesType}
   ${headerType}
+  ${homePageSlideType}
 
   scalar Upload
 
@@ -302,7 +307,12 @@ const typeDefs = gql`
     counts: [Int!]
     total: Int!
   }
-
+  
+  type PaginatedHomePageSlides {
+      items: [HomePageSlide]
+      count: Int
+  }
+  
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -320,6 +330,7 @@ const typeDefs = gql`
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
   union HeaderResult = Header | Error
+  union HomePageSlideResult = HomePageSlide | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -412,6 +423,9 @@ const typeDefs = gql`
 
     getAllHeaders: [Header!]!
     getHeaderById(id: ID!): HeaderResult
+      
+    getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
+    getSlideById(id: ID!): HomePageSlideResult  
   }
 
   input Pagination {
@@ -477,6 +491,7 @@ const typeDefs = gql`
   ${deliveryInput}
   ${paymentInput}
   ${headerInput}
+  ${homePageSlideInput}
 
   input LanguageInput {
     lang: String!
@@ -734,6 +749,10 @@ const typeDefs = gql`
     addHeader(header: HeaderInput!): HeaderResult
     deleteHeader(id: ID!): HeaderResult
     updateHeader(id: ID!, header: HeaderInput!): HeaderResult
+
+    "HomePageSlide Mutation"
+    addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
+    deleteSlide(id: ID!): HomePageSlideResult  
   }
 `;
 
