@@ -11,4 +11,4 @@ const HomePageSlideSchema = new mongoose.Schema({
   show: Boolean,
 });
 
-module.exports = mongoose.model('HomePageSlider', HomePageSlideSchema);
+module.exports = mongoose.model('HomePageSlide', HomePageSlideSchema);
