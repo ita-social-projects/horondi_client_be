@@ -75,6 +75,7 @@ const mapToUsers = (recordNumber) => {
             registrationDate: randomDateSince(new Date('January 01, 2010 00:00:00')),
             wishlist: [backpacks[Math.floor((Math.random() * backpacksNumber))]],
             orders: [],
+            cart: [],
             purchasedProducts: [],
             comments: commentsOfUser,
             banned: false,
