@@ -351,7 +351,7 @@ const typeDefs = gql`
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
-    getAllOrders(limit: Int, skip: Int): PaginatedOrders!
+    getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
     getOrdersStatistic(date: Int!): StatisticDoughnut!
@@ -450,6 +450,7 @@ const typeDefs = gql`
     models: [String]
     currency: Int
     emailQuestionStatus: [String]
+    orderStatus: [String]
   }
 
   input RoleEnumInput {
