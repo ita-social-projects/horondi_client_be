@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Comment queries  Should receive all comments for one product 1`] = `
+Array [
+  Object {
+    "message": "COMMENT_NOT_FOUND",
+    "statusCode": 404,
+  },
+]
+`;
+
+exports[`Comment queries  should return error when find comment by wrong id 1`] = `
+Object {
+  "message": "COMMENT_NOT_FOUND",
+  "statusCode": 404,
+}
+`;

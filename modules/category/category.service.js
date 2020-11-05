@@ -1,4 +1,5 @@
 const Category = require('./category.model');
+const Product = require('../product/product.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
@@ -41,6 +42,38 @@ class CategoryService {
     return await Category.findByIdAndUpdate(id, category, {
       new: true,
     });
+  }
+
+  async getCategoriesForBurgerMenu() {
+    const categories = await this.getAllCategories();
+
+    const data = categories
+      .filter(category => category.isMain)
+      .map(async category => {
+        const products = await Product.find({ category: category._id });
+        const uniqueModels = [];
+        const models = products
+          .map(product => ({
+            name: [...product.model],
+            _id: product._id,
+          }))
+          .filter(({ name }) => {
+            if (!uniqueModels.includes(name[0].value)) {
+              uniqueModels.push(name[0].value);
+              return true;
+            }
+            return false;
+          });
+        return {
+          category: {
+            name: [...category.name],
+            _id: category._id,
+          },
+          models,
+        };
+      });
+
+    return data;
   }
 
   async addCategory(data, parentId, upload) {

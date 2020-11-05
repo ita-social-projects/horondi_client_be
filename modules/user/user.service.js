@@ -17,7 +17,17 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
+const emailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
+const {
+  removeDaysFromData,
+  countItemsOccurency,
+  changeDataFormat,
+} = require('../helper-functions');
+const productService = require('../product/product.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -30,7 +40,10 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
+  ID_NOT_PROVIDED,
 } = require('../../error-messages/user.messages');
+
+const { userDateFormat } = require('../../consts');
 
 const ROLES = {
   admin: 'admin',
@@ -44,13 +57,59 @@ const SOURCES = {
 class UserService {
   filterItems(args = {}) {
     const filter = {};
-    const { roles } = args;
+    const { roles, days, banned, search } = args;
 
-    if (roles) {
+    if (roles && roles.length) {
       filter.role = { $in: roles };
     }
 
+    if (banned && banned.length) {
+      filter.banned = { $in: banned };
+    }
+
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search.trim());
+    }
+
+    if (days) {
+      filter.registrationDate = {
+        $gte: removeDaysFromData(days, Date.now()),
+        $lte: removeDaysFromData(0, Date.now()),
+      };
+    }
+
     return filter;
+  }
+
+  searchItems(searchString) {
+    return [
+      { name: { $regex: new RegExp(searchString, 'i') } },
+      { phoneNumber: { $regex: new RegExp(searchString) } },
+      { email: { $regex: new RegExp(searchString, 'i') } },
+    ];
+  }
+
+  aggregateItems(filters = {}, pagination = {}, sort = {}) {
+    let aggregationItems = [];
+
+    if (Object.keys(sort).length) {
+      aggregationItems.push({
+        $sort: sort,
+      });
+    }
+
+    aggregationItems.push({ $match: filters });
+
+    if (pagination.skip !== undefined && pagination.limit) {
+      aggregationItems.push({
+        $skip: pagination.skip,
+      });
+      aggregationItems.push({
+        $limit: pagination.limit,
+      });
+    }
+
+    return aggregationItems;
   }
 
   async checkIfTokenIsValid(token) {
@@ -77,12 +136,58 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers({ filter }) {
+  async getAllUsers({ filter, pagination, sort }) {
+    let filteredItems = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
+
+    const [users] = await User.aggregate([
+      {
+        $addFields: {
+          name: { $concat: ['$firstName', ' ', '$lastName'] },
+        },
+      },
+    ])
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filteredItems }, { $count: 'count' }],
+      });
+    let userCount;
+
+    const {
+      items,
+      calculations: [calculations],
+    } = users;
+
+    if (calculations) {
+      userCount = calculations.count;
+    }
+
+    return {
+      items,
+      count: userCount || 0,
+    };
+  }
+
+  async getUsersForStatistic({ filter }) {
     const filters = this.filterItems(filter);
-
-    const items = await User.find(filters);
-
-    return items;
+    const users = await User.find(filters)
+      .sort({ registrationDate: 1 })
+      .lean();
+    const formatedData = users.map(el =>
+      changeDataFormat(el.registrationDate, userDateFormat)
+    );
+    const userOccurency = countItemsOccurency(formatedData);
+    const counts = Object.values(userOccurency);
+    const total = counts.reduce(
+      (userTotal, userCount) => userTotal + userCount,
+      0
+    );
+    return {
+      labels: Object.keys(userOccurency),
+      counts,
+      total,
+    };
   }
 
   async getUser(id) {
@@ -102,11 +207,19 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
+    if (!id) {
+      throw new UserInputError(ID_NOT_PROVIDED, { statusCode: 400 });
+    }
+
     const user = await User.findById(id).lean();
 
+    if (!user) {
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
+    }
+
     if (user.email !== updatedUser.email) {
-      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
-      if (user) {
+      const existingUser = await User.findOne({ email: updatedUser.email });
+      if (existingUser) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
@@ -121,13 +234,11 @@ class UserService {
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-
     return User.findByIdAndUpdate(id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
     const { firstName, lastName, email } = updatedUser;
-
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -159,7 +270,6 @@ class UserService {
     }
 
     const user = await this.getUserByFieldOrThrow('email', email);
-
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
@@ -240,18 +350,27 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
+
     const token = await generateToken(savedUser._id, savedUser.email, {
       expiresIn: process.env.RECOVERY_EXPIRE,
       secret: process.env.CONFIRMATION_SECRET,
     });
+
     savedUser.confirmationToken = token;
+
     await savedUser.save();
-    const message = {
-      from: process.env.MAIL_USER,
-      to: savedUser.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(firstName, token, language),
-    };
+
+    const subject = '[HORONDI] Email confirmation';
+    const html = confirmationMessage(firstName, token, language);
+
+    await emailService.sendEmail({
+      user,
+      sendEmail,
+      subject,
+      html,
+    });
+
+    await savedUser.save();
 
     return savedUser;
   }
@@ -463,5 +582,47 @@ class UserService {
       });
     }
   }
+
+  async updateCartOrWishlist(userId, key, list, productId) {
+    await User.findByIdAndUpdate(userId, { [key]: list });
+    return productService.getProductById(productId);
+  }
+
+  addProductToWishlist(productId, key, user) {
+    const newList = [...user.wishlist, productId];
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  removeProductFromWishlist(productId, key, user) {
+    const newList = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  addProductToCart(product, key, user) {
+    const newList = [...user.cart, product];
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  removeProductFromCart(product, key, user) {
+    const newList = user.cart.filter(
+      ({ _id, selectedSize }) =>
+        String(_id) !== product._id ||
+        (String(_id) === product._id && selectedSize !== product.selectedSize)
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  changeCartProductQuantity(product, key, user) {
+    const newList = user.cart.map(item =>
+      String(item._id) === product._id &&
+      item.selectedSize === product.selectedSize
+        ? product
+        : item
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
 }
+
 module.exports = new UserService();

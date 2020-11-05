@@ -13,10 +13,17 @@ const horondiAddress = {
   flat: '1',
 };
 
+const defaultPaginationParams = {
+  skip: 0,
+  limit: 10,
+};
+
 const horondyCityRef = 'db5c88f5-391c-11dd-90d9-001a92567626';
 
+const dayInMiliseconds = 86400000;
 const monthInMilliseconds = 2592000000;
 
+const userDateFormat = { month: 'short', day: 'numeric' };
 const OTHERS = 'Інші';
 
 module.exports = {
@@ -25,5 +32,8 @@ module.exports = {
   horondiAddress,
   horondyCityRef,
   monthInMilliseconds,
+  dayInMiliseconds,
+  userDateFormat,
+  defaultPaginationParams,
   OTHERS,
 };

@@ -11,7 +11,6 @@ const newCategory = {
       lang: 'en',
     },
   ],
-  categoryCode: null,
   images: {
     large: 'large_none',
     medium: 'medium_none',

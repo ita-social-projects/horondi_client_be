@@ -2,6 +2,7 @@ const Product = require('./product.model');
 const Size = require('../../models/Size');
 const Material = require('../material/material.model');
 const Currency = require('../currency/currency.model');
+const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
@@ -244,9 +245,20 @@ class ProductsService {
       (prev, curr) => ({
         labels: [...prev.labels, curr.name[0].value],
         counts: [...prev.counts, curr.purchasedCount],
+        total: prev.total + curr.purchasedCount,
       }),
-      { labels: [], counts: [] }
+      { labels: [], counts: [], total: 0 }
     );
+  }
+
+  async getProductsForWishlist(userId) {
+    const { wishlist } = await User.findById(userId);
+    return await Product.find({ _id: { $in: wishlist } });
+  }
+
+  async getProductsForCart(userId) {
+    const { cart } = await User.findById(userId);
+    return await Product.find({ _id: { $in: cart } });
   }
 }
 

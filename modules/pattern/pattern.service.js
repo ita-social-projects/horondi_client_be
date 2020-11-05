@@ -28,16 +28,17 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }) {
-    if (await this.checkPatternExist(pattern, id)) {
-      throw new Error(PATTERN_ALREADY_EXIST);
-    }
     const patternToUpdate = await Pattern.findById(id);
     if (!patternToUpdate) {
       throw new Error(PATTERN_NOT_FOUND);
     }
 
+    if (await this.checkPatternExist(pattern, id)) {
+      throw new Error(PATTERN_ALREADY_EXIST);
+    }
+
     if (!image) {
-      return await Pattern.findByIdAndUpdate(id, pattern);
+      return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
     }
     const uploadResult = await uploadFiles([image]);
 
@@ -67,6 +68,7 @@ class PatternsService {
     if (await this.checkPatternExist(pattern)) {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
+
     const uploadResult = await uploadFiles([image]);
 
     const imageResults = await uploadResult[0];

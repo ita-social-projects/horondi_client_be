@@ -1,22 +1,25 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
-require('dotenv').config();
+const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
+const { setupApp } = require('../helper-functions');
 
 const {
   newComment,
+  commentWrongId,
   validEmail,
   invalidEmail,
   productId,
+  productWrongId,
   wrongData,
 } = require('./comment.variables');
 
 let commentId = '';
-
+let operations;
 describe('Comment queries', () => {
   beforeAll(async () => {
-    const res = await client
+    operations = await setupApp();
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($productId: ID!, $comment: commentInput!) {
@@ -38,7 +41,7 @@ describe('Comment queries', () => {
   });
 
   afterAll(async () => {
-    await client
+    await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!) {
@@ -58,115 +61,261 @@ describe('Comment queries', () => {
       .catch(e => e);
   });
 
-  test('#1 Should receive all comments writen by selected user', async () => {
-    try {
-      const res = await client.query({
+  it(' Should receive all comments writen by selected user', async () => {
+    const res = await operations
+      .query({
         variables: {
           userEmail: validEmail,
         },
         query: gql`
-          query($userEmail: String) {
+          query($userEmail: String!) {
             getAllCommentsByUser(userEmail: $userEmail) {
               ... on Comment {
                 text
-                date
+
                 product {
                   _id
                 }
                 show
+                user {
+                  email
+                }
               }
               ... on Error {
-                statusCode
                 message
+                statusCode
               }
             }
           }
         `,
-      });
+      })
+      .catch(e => e);
 
-      expect(res.data.getAllCommentsByUser).toBeDefined();
-      expect(res.data.getAllCommentsByUser).toContainEqual({
-        __typename: 'Comment',
-        text: newComment.text,
-        user: newComment.user,
-        product: productId,
-        show: true,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    expect(res.data.getAllCommentsByUser).toBeDefined();
+    expect(res.data.getAllCommentsByUser).toContainEqual({
+      product: { _id: productId },
+      text: newComment.text,
+      user: newComment.user,
+      show: newComment.show,
+    });
   });
-
-  test('#2 Passing unexisting email should return error message', async () => {
-    try {
-      const res = await client.query({
+  it(' Should receive all comments for one product', async () => {
+    const res = await operations
+      .query({
         variables: {
-          userEmail: invalidEmail,
+          productId,
         },
         query: gql`
-          query($userEmail: String) {
-            getAllCommentsByUser(userEmail: $userEmail) {
+          query($productId: ID!) {
+            getAllCommentsByProduct(productId: $productId) {
               ... on Comment {
                 text
-                date
                 product {
                   _id
                 }
                 show
+                user {
+                  email
+                }
               }
               ... on Error {
-                statusCode
                 message
+                statusCode
               }
             }
           }
         `,
-      });
+      })
+      .catch(e => e);
+    const receivedComments = res.data.getAllCommentsByProduct;
 
-      expect(res.data.getAllCommentsByUser).toBeDefined();
-      expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
-      expect(res.data.getAllCommentsByUser).toHaveProperty(
-        'message',
-        COMMENT_NOT_FOUND
-      );
-    } catch (e) {
-      console.error(e);
-    }
+    expect(receivedComments).toBeDefined();
+    expect(receivedComments).toContainEqual({
+      product: { _id: productId },
+      text: newComment.text,
+      user: newComment.user,
+      show: newComment.show,
+    });
   });
-
-  test('#3 Passing not email string should return error message', async () => {
-    try {
-      const res = await client.query({
+  it(' Should receive all comments for one product', async () => {
+    const res = await operations
+      .query({
         variables: {
-          userEmail: wrongData,
+          productId: productWrongId,
         },
         query: gql`
-          query($userEmail: String) {
-            getAllCommentsByUser(userEmail: $userEmail) {
+          query($productId: ID!) {
+            getAllCommentsByProduct(productId: $productId) {
               ... on Comment {
                 text
-                date
                 product {
                   _id
                 }
                 show
+                user {
+                  email
+                }
               }
               ... on Error {
-                statusCode
                 message
+                statusCode
               }
             }
           }
         `,
-      });
-      expect(res.data.getAllCommentsByUser).toBeDefined();
-      expect(res.data.getAllCommentsByUser).toHaveProperty('statusCode', 404);
-      expect(res.data.getAllCommentsByUser).toHaveProperty(
-        'message',
-        COMMENT_NOT_FOUND
-      );
-    } catch (e) {
-      console.error(e);
-    }
+      })
+      .catch(e => e);
+    const receivedComments = res.data.getAllCommentsByProduct;
+
+    expect(receivedComments).toMatchSnapshot();
+    expect(receivedComments).toBeDefined();
+    expect(receivedComments[0]).toHaveProperty('statusCode', 404);
+    expect(receivedComments[0]).toHaveProperty('message', COMMENT_NOT_FOUND);
+  });
+
+  it(' should return error messagePassing unexisting email ', async () => {
+    const res = await operations.query({
+      variables: {
+        userEmail: invalidEmail,
+      },
+      query: gql`
+        query($userEmail: String!) {
+          getAllCommentsByUser(userEmail: $userEmail) {
+            ... on Comment {
+              text
+
+              product {
+                _id
+              }
+              show
+              user {
+                email
+              }
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+    });
+
+    expect(res.data.getAllCommentsByUser).toBeDefined();
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
+      'message',
+      USER_NOT_FOUND
+    );
+  });
+
+  it('should return error message Passing not email string ', async () => {
+    const res = await operations.query({
+      variables: {
+        userEmail: wrongData,
+      },
+      query: gql`
+        query($userEmail: String!) {
+          getAllCommentsByUser(userEmail: $userEmail) {
+            ... on Comment {
+              text
+
+              product {
+                _id
+              }
+              show
+              user {
+                email
+              }
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+    });
+
+    expect(res.data.getAllCommentsByUser).toBeDefined();
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty('statusCode', 404);
+    expect(res.data.getAllCommentsByUser[0]).toHaveProperty(
+      'message',
+      USER_NOT_FOUND
+    );
+  });
+  it(' should return one comment', async () => {
+    const res = await operations
+      .query({
+        variables: {
+          id: commentId,
+        },
+        query: gql`
+          query($id: ID!) {
+            getCommentById(id: $id) {
+              ... on Comment {
+                text
+                product {
+                  _id
+                }
+                show
+                user {
+                  email
+                }
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+    const receivedComment = res.data.getCommentById;
+    expect(receivedComment).toBeDefined();
+
+    expect(receivedComment).toBeDefined();
+    expect(receivedComment).toEqual({
+      product: { _id: productId },
+      text: newComment.text,
+      user: newComment.user,
+      show: newComment.show,
+    });
+  });
+  it(' should return error when find comment by wrong id', async () => {
+    const res = await operations
+      .query({
+        variables: {
+          id: commentWrongId,
+        },
+        query: gql`
+          query($id: ID!) {
+            getCommentById(id: $id) {
+              ... on Comment {
+                text
+                product {
+                  _id
+                }
+                show
+                user {
+                  email
+                }
+              }
+              ... on Error {
+                message
+                statusCode
+              }
+            }
+          }
+        `,
+      })
+      .catch(e => e);
+    const receivedComment = res.data.getCommentById;
+    expect(receivedComment).toBeDefined();
+    expect(receivedComment).toMatchSnapshot();
+    expect(receivedComment).toBeDefined();
+    expect(receivedComment).toHaveProperty('statusCode', 404);
+    expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
   });
 });
