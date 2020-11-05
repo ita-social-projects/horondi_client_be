@@ -50,12 +50,20 @@ const businessTextMutation = {
       };
     }
   },
-
-  updateBusinessText: async (parent, { id, businessText, files }) =>
-    (await businessTextService.updateBusinessText(id, businessText, files)) || {
-      statusCode: 404,
-      message: BUSINESS_TEXT_NOT_FOUND,
-    },
+  updateBusinessText: async (parent, args) => {
+    try {
+      return await businessTextService.updateBusinessText(
+        args.id,
+        args.businessText,
+        args.files
+      );
+    } catch (e) {
+      return {
+        statusCode: e.message === BUSINESS_TEXT_NOT_FOUND ? 404 : 400,
+        message: e.message,
+      };
+    }
+  },
 };
 
 module.exports = { businessTextQuery, businessTextMutation };
