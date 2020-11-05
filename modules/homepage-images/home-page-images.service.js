@@ -16,9 +16,26 @@ class HomePageImagesService {
     return looksImages;
   }
 
+  async addHomePageLooksImage(data) {
+    const ResizedImage = await this.uploadImages([data.images]);
+
+    return new LooksImages({ images: ResizedImage[0] }).save();
+  }
+
+  async deleteHomePageLooksImage(data) {
+    const looksImage = await LooksImages.findById(data.id).lean();
+
+    if (!looksImage) throw new Error(IMAGE_NOT_FOUND);
+
+    if (looksImage && looksImage.images) {
+      this.deleteImages(looksImage.images);
+    }
+
+    return await LooksImages.findByIdAndDelete(id);
+  }
+
   async updateHomePageLooksImage(data) {
     const imagesToUpdate = await LooksImages.findById(data.id).lean();
-
     if (!imagesToUpdate) throw new Error(IMAGE_NOT_FOUND);
 
     return (

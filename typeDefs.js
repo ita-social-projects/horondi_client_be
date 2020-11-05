@@ -757,6 +757,8 @@ const typeDefs = gql`
 
     "HomePageImages Mutation"
     updateHomePageLooksImage(id: ID!, images: Upload): HomePageImages
+    addHomePageLooksImage(images: Upload!): HomePageImages
+    deleteHomePageLooksImage(id: ID!): HomePageImages
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult
