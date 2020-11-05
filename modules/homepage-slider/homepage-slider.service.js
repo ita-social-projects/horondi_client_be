@@ -4,12 +4,13 @@ const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 const {
   SLIDE_NOT_FOUND,
   SLIDE_ALREADY_EXIST,
-  SLIDE_NOT_VALID
+  SLIDE_NOT_VALID,
 } = require('../../error-messages/home-page-slider.messages');
 
 class HomePageSliderService {
   async getAllSlides({ skip, limit }) {
     const items = await HomePageSlider.find()
+      .sort({ order: -1 })
       .skip(skip)
       .limit(limit);
 
