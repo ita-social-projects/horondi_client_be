@@ -29,11 +29,7 @@ class BusinessTextService {
     throw new Error(BUSINESS_TEXT_NOT_FOUND);
   }
 
-  async updateBusinessText(id, businessText) {
-    const foundBusinessText = await BusinessText.findById(id);
-    if (!foundBusinessText) {
-      throw new Error(BUSINESS_TEXT_NOT_FOUND);
-    }
+  async updateBusinessText(id, businessText, files) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
     const currentPage = pages.find(el => el._id.toString() !== id);

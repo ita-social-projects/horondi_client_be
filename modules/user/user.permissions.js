@@ -29,6 +29,9 @@ const userPermissionsMutation = {
   completeAdminRegister: allow,
   addProductToWishlist: isTheSameUser,
   removeProductFromWishlist: isTheSameUser,
+  addProductToCart: isTheSameUser,
+  removeProductFromCart: isTheSameUser,
+  changeCartProductQuantity: isTheSameUser,
 };
 
 module.exports = { userPermissionsMutation, userPermissionsQuery };
