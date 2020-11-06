@@ -125,25 +125,28 @@ describe('queries', () => {
       query: gql`
         query {
           getAllUsers {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
+            items {
+              firstName
+              lastName
+              email
+              phoneNumber
+              role
+              address {
+                country
+                city
+                street
+                buildingNumber
+              }
+              orders
+              comments
             }
-            wishlist
-            orders
-            comments
+            count
           }
         }
       `,
     });
-    expect(res.data.getAllUsers).toContainEqual({
+    console.log(res.data.getAllUsers.count);
+    expect(res.data.getAllUsers.items).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
       email,
@@ -155,7 +158,6 @@ describe('queries', () => {
         street: 'Shevchenka',
         buildingNumber: '23',
       },
-      wishlist: [],
       orders: [],
       comments: [],
     });

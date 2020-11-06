@@ -4,7 +4,6 @@ const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const { newContact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
-let a = 1;
 let contactsId = '';
 let operations;
 

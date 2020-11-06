@@ -20,7 +20,7 @@ const newAdmin = {
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbbdnvf1@gmail.com',
+  email: 'qwerdsd223@gmail.com',
   pass: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
