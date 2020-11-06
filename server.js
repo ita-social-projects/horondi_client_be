@@ -19,7 +19,10 @@ connectDB();
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
-
+Object.entries(process.env).forEach(([key, val]) => {
+  //console.log(JSON.stringify({key,value:val}))
+  logger.log('info', JSON.stringify({ key, value: val }));
+});
 dotenvValidator(process.env);
 
 const schema = applyMiddleware(
@@ -32,14 +35,6 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const { token } = req.headers || '';
 
-    logger.log({
-      level: 'info',
-      message: `method: ${req.method} | baseUrl: ${req.baseUrl} | date:${
-        req.fresh
-      } | request headers: ${JSON.stringify(
-        req.headers
-      )} | body: ${JSON.stringify(req.body)}`,
-    });
     if (token) {
       const user = verifyUser(token);
 
