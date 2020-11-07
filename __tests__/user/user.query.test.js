@@ -88,7 +88,6 @@ describe('queries', () => {
                 street: "Shevchenka"
                 buildingNumber: "23"
               }
-              role: "user"
               wishlist: []
               orders: []
               comments: []
@@ -106,7 +105,6 @@ describe('queries', () => {
               street
               buildingNumber
             }
-            wishlist
             orders
             comments
           }
@@ -145,7 +143,6 @@ describe('queries', () => {
         }
       `,
     });
-    console.log(res.data.getAllUsers.count);
     expect(res.data.getAllUsers.items).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
@@ -198,7 +195,6 @@ describe('queries', () => {
                 street
                 buildingNumber
               }
-              wishlist
               orders
               comments
             }
@@ -223,7 +219,6 @@ describe('queries', () => {
       street: 'Shevchenka',
       buildingNumber: '23',
     });
-    expect(res.data.getUserByToken).toHaveProperty('wishlist', []);
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
     expect(res.data.getUserByToken).toHaveProperty('comments', []);
   });
@@ -247,7 +242,6 @@ describe('queries', () => {
               street
               buildingNumber
             }
-            wishlist
             orders
             comments
           }
@@ -270,7 +264,6 @@ describe('queries', () => {
       street: 'Shevchenka',
       buildingNumber: '23',
     });
-    expect(res.data.getUserById).toHaveProperty('wishlist', []);
     expect(res.data.getUserById).toHaveProperty('orders', []);
     expect(res.data.getUserById).toHaveProperty('comments', []);
   });
@@ -293,7 +286,6 @@ describe('queries', () => {
                 street
                 buildingNumber
               }
-              wishlist
               orders
               comments
             }
@@ -443,10 +435,12 @@ describe('Testing obtaining information restrictions', () => {
         query: gql`
           {
             getAllUsers {
-              _id
-              firstName
-              lastName
-              email
+              items {
+                _id
+                firstName
+                lastName
+                email
+              }
             }
           }
         `,
@@ -468,10 +462,12 @@ describe('Testing obtaining information restrictions', () => {
         query: gql`
           {
             getAllUsers {
-              _id
-              firstName
-              lastName
-              email
+              items {
+                _id
+                firstName
+                lastName
+                email
+              }
             }
           }
         `,
@@ -482,8 +478,7 @@ describe('Testing obtaining information restrictions', () => {
         },
       })
       .catch(err => err);
-
-    const data = result.data.getAllUsers;
+    const data = result.data.getAllUsers.items;
 
     expect(data.length).toBeGreaterThanOrEqual(2);
   });

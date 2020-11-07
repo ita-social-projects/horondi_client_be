@@ -18,13 +18,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
-    "test": "npm run docker-db-stop && npm run docker-db-start &&  jest --coverage --detectOpenHandles --verbose",
+    "test": "jest --coverage --detectOpenHandles --verbose",
     "generate": "graphql-codegen",
     "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
     "test-full": "start-server-and-test test-server http://localhost:5000/health test",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "test-docker": "npm run docker-db-start && npm run test"
+    "test-docker": "npm run docker-db-stop && npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",
