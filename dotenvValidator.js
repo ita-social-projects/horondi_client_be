@@ -1,4 +1,7 @@
 const joi = require('@hapi/joi');
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 
 function dotenvValidator(processEnv) {
   const envSchema = joi.object({
@@ -66,7 +69,7 @@ function dotenvValidator(processEnv) {
 
   if (environment.error) throw environment.error;
 
-  return environment;
+  return { ...environment.value };
 }
 
-module.exports = dotenvValidator;
+module.exports = dotenvValidator(process.env);

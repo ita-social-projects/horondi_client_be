@@ -1,11 +1,14 @@
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
+const {
+  STORAGE_ACCOUNT,
+  ACCESS_KEY,
+  AZURE_HOST,
+  IMAGE_LINK,
+} = require('../../dotenvValidator');
 const azureStorage = require('azure-storage');
 const blobService = azureStorage.createBlobService(
-  process.env.STORAGE_ACCOUNT,
-  process.env.ACCESS_KEY,
-  process.env.AZURE_HOST
+  STORAGE_ACCOUNT,
+  ACCESS_KEY,
+  AZURE_HOST
 );
 const containerName = 'images';
 const getStream = require('into-stream');
@@ -78,7 +81,7 @@ class UploadService {
       this.uploadResizedImage(128, createName('thumbnail'), image);
 
       return {
-        prefixUrl: process.env.IMAGE_LINK,
+        prefixUrl: IMAGE_LINK,
         fileNames: {
           large: createName('large'),
           medium: createName('medium'),

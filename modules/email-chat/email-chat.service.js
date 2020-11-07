@@ -6,7 +6,7 @@ const {
 } = require('../../error-messages/email-chat.messages');
 const { sendEmail } = require('../../utils/sendGrid-email');
 const { emailQuestionAnswerMessage } = require('../../utils/localization');
-
+const { MAIL_USER } = require('../../dotenvValidator');
 class EmailChatService {
   async getAllEmailQuestions({ filter = {}, skip }) {
     const { emailQuestionStatus } = filter;
@@ -90,7 +90,7 @@ class EmailChatService {
       !language ? 'відповідь на запитання' : 'question answer'
     }`;
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: question.email,
       subject,
       html: emailQuestionAnswerMessage(updatedQuestion, language),
