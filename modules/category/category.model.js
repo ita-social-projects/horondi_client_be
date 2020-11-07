@@ -18,33 +18,4 @@ const CategorySchema = new mongoose.Schema({
   available: Boolean,
 });
 
-CategorySchema.pre('findOneAndDelete', async function(next) {
-  const query = this.getQuery();
-  const thisCategory = await this.model.findOne(query);
-  const noneCategory = await this.model.findOne({ code: 'none' });
-
-  const updateFilter = {
-    category: query._id,
-  };
-
-  const updateSettings = {
-    $set: { category: mongoose.Types.ObjectId(noneCategory._id) },
-  };
-
-  if (!thisCategory.isMain) {
-    const parentCategory = await this.model.findOne({
-      subcategories: { $in: [id] },
-    });
-    await this.model.updateById(parentCategory._id, {
-      $pull: { subcategories: { $in: [id] } },
-    });
-  }
-
-  await Product.updateMany(updateFilter, updateSettings);
-
-  await Model.updateMany(updateFilter, updateSettings);
-
-  next();
-});
-
 module.exports = mongoose.model('Category', CategorySchema);
