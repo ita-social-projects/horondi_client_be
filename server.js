@@ -19,7 +19,7 @@ connectDB();
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
-console.log(process.env.NODE_ENV);
+
 dotenvValidator(process.env);
 
 const schema = applyMiddleware(
