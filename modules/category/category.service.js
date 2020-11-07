@@ -135,7 +135,7 @@ class CategoryService {
     };
 
     const updateSettings = {
-      $set: { category: mongoose.Types.ObjectId(switchCategory._id) },
+      $set: { category: switchCategory._id },
     };
 
     await this.cascadeUpdateRelatives(filter, updateSettings);
