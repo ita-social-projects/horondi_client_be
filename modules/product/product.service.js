@@ -253,8 +253,12 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId);
-    const userWishfulProducts = await Product.find({ _id: { $in: wishlist } });
-    return userWishfulProducts;
+    return await Product.find({ _id: { $in: wishlist } });
+  }
+
+  async getProductsForCart(userId) {
+    const { cart } = await User.findById(userId);
+    return await Product.find({ _id: { $in: cart } });
   }
 }
 

@@ -1,4 +1,5 @@
 const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
+const { applyMiddleware } = require('graphql-middleware');
 const express = require('express');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
