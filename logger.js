@@ -6,8 +6,8 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ message, timestamp }) => {
-      const winstonMessage = JSON.parse(message);
-      return `Date=${timestamp} value=${winstonMessage.value} key=${winstonMessage.key}`;
+      const winstonMessage = JSON.parse(message + '');
+      return `Date=${timestamp} key=${winstonMessage.key} value=${winstonMessage.value} `;
     })
   ),
   transports: [new winston.transports.Console()],

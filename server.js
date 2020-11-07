@@ -14,17 +14,44 @@ const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const dotenvValidator = require('./dotenvValidator');
-
+const dotenvVariables = [
+  'MONGO_URL',
+  'SECRET',
+  'EXPIRES_IN',
+  'BASE_URI',
+  'TEST_BASE_URI',
+  'KEY_VAULTS_URI',
+  'IMAGE_LINK',
+  'STORAGE_ACCOUNT',
+  'ACCESS_KEY',
+  'AZURE_HOST',
+  'PAYMENT_SECRET',
+  'PAYMENT_MERCHANT_ID',
+  'NOVA_POSHTA_API_LINK',
+  'NOVA_POSHTA_API_KEY',
+  'PAYMENT_API_LINK',
+  'MAIL_USER',
+  'MAIL_PASS',
+  'MAIL_HOST',
+  'MAIL_PORT',
+  'RECOVERY_EXPIRE',
+  'FRONT_BASE_URI',
+  'TEST_BASE_URI',
+  'CURRENCY_API_URL',
+  'CONFIRMATION_SECRET',
+  'RECOVERY_EXPIRE',
+  'SUPER_ADMIN_EMAIL',
+  'SUPER_ADMIN_PASSWORD',
+  'SENDGRID_API_KEY',
+];
 connectDB();
 require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
-Object.entries(process.env).forEach(([key, val]) => {
-  //console.log(JSON.stringify({key,value:val}))
-  logger.log('info', JSON.stringify({ key, value: val }));
+dotenvVariables.forEach(key => {
+  logger.log('info', JSON.stringify({ key, value: process.env[key] }));
 });
 dotenvValidator(process.env);
-
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions
