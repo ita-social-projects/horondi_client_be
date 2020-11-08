@@ -15,6 +15,7 @@ const {
   languageTypeName,
   imageTypeName,
   queryPatternToAdd,
+  testImages,
 } = require('./pattern.variables');
 
 let patternId;
@@ -30,7 +31,7 @@ describe('Pattern queries', () => {
       .mutate({
         mutation: gql`
           mutation($pattern: PatternInput!) {
-            addPattern(pattern: $pattern) {
+            addPattern(pattern: $pattern, image: []) {
               ... on Pattern {
                 _id
               }
@@ -131,7 +132,7 @@ describe('Pattern queries', () => {
 
       expect(res.data.getPatternById).toMatchSnapshot();
       expect(res.data.getPatternById).toBeDefined();
-      expect(res.data.getPatternById.name).toBeInstanceOf(Array);
+      expect(res.data.getPatternById).toHaveProperty('images', testImages);
       expect(res.data.getPatternById).toHaveProperty(
         'name',
         queryPatternToAdd.name.map(item => ({
@@ -139,7 +140,6 @@ describe('Pattern queries', () => {
           ...item,
         }))
       );
-      expect(res.data.getPatternById.images).toBeInstanceOf(Object);
       expect(res.data.getPatternById).toHaveProperty('images', {
         ...imageTypeName,
         ...queryPatternToAdd.images,
@@ -243,8 +243,8 @@ describe('Pattern queries', () => {
         .catch(e => e);
 
       expect(res.data.getAllPatterns).toMatchSnapshot();
-      expect(res.data.getAllPatterns.items).toHaveLength(5);
-      expect(res.data.getAllPatterns.count).toEqual(18);
+      expect(res.data.getAllPatterns.items).toHaveLength(1);
+      expect(res.data.getAllPatterns.count).toEqual(1);
     });
     test('Expect negative values', async () => {
       const res = await operations

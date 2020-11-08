@@ -134,7 +134,6 @@ const createModel = async (material, category, modelToCreate) => {
     `,
     variables: { material },
   });
-  console.log(createMaterial);
   const materialId = createMaterial.data.addMaterial._id;
 
   const createCategory = await operations.mutate({

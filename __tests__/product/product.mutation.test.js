@@ -32,7 +32,6 @@ describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
-    console.log(itemsId);
     categoryId = itemsId.categoryId;
     subcategoryId = itemsId.subcategoryId;
     modelId = itemsId.modelId;

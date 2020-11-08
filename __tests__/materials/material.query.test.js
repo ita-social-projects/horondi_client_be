@@ -149,7 +149,7 @@ describe('material querries test', () => {
     const getAllMaterials = res.data.getAllMaterials;
     expect(getAllMaterials).toBeDefined();
     expect(getAllMaterials.items).toBeInstanceOf(Array);
-    console.log(getAllMaterials);
+
     expect(res.data.getAllMaterials.items).toContainEqual({
       name: [
         { lang: material.name[0].lang, value: material.name[0].value },
