@@ -122,18 +122,19 @@ const createModel = async (material, category, modelToCreate) => {
   const createMaterial = await operations.mutate({
     mutation: gql`
       mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
+        addMaterial(material: $material, images: []) {
           ... on Material {
             _id
-            name {
-              value
-            }
+          }
+          ... on Error {
+            message
           }
         }
       }
     `,
     variables: { material },
   });
+  console.log(createMaterial);
   const materialId = createMaterial.data.addMaterial._id;
 
   const createCategory = await operations.mutate({
@@ -616,10 +617,7 @@ const newMaterial = {
   ],
   purpose: 'bottomMaterial',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 79,
   colors: {
     code: 777,
     name: [

@@ -32,7 +32,7 @@ describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
-
+    console.log(itemsId);
     categoryId = itemsId.categoryId;
     subcategoryId = itemsId.subcategoryId;
     modelId = itemsId.modelId;
@@ -54,7 +54,7 @@ describe('Product mutations', () => {
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
-          addProduct(product: $product) {
+          addProduct(upload: [], product: $product) {
             ... on Product {
               _id
               category {

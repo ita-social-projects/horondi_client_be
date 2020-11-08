@@ -34,7 +34,7 @@ describe('Product queries', () => {
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
-          addProduct(product: $product) {
+          addProduct(upload: [], product: $product) {
             ... on Product {
               _id
             }

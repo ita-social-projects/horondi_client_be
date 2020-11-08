@@ -1,7 +1,7 @@
 const { allow } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
-const { ADMIN } = roles;
+const { ADMIN, SUPERADMIN } = roles;
 
 const categoryPermissionsQuery = {
   getAllCategories: allow,
@@ -9,9 +9,9 @@ const categoryPermissionsQuery = {
 };
 
 const categoryPermissionsMutations = {
-  addCategory: hasRoles([ADMIN]),
-  updateCategory: hasRoles([ADMIN]),
-  deleteCategory: hasRoles([ADMIN]),
+  addCategory: hasRoles([ADMIN, SUPERADMIN]),
+  updateCategory: hasRoles([ADMIN, SUPERADMIN]),
+  deleteCategory: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = { categoryPermissionsQuery, categoryPermissionsMutations };
