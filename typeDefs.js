@@ -628,7 +628,7 @@ const typeDefs = gql`
 
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
-    updateOrder(id: ID!, order: OrderInput!): OrderResult
+    updateOrder(order: OrderInput!): OrderResult
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion

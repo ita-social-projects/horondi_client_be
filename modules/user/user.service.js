@@ -119,7 +119,7 @@ class UserService {
     return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUserById(updatedUser, id, upload) {
+  async updateUserById(updatedUser, user, upload) {
     const { firstName, lastName, email } = updatedUser;
 
     const { errors } = await validateUpdateInput.validateAsync({
@@ -132,9 +132,7 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await User.findById(id).lean();
-
-    if (user.email !== updatedUser.email) {
+    if (user.email !== email) {
       const user = await User.findOne({ email: updatedUser.email });
       if (user) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
@@ -142,17 +140,18 @@ class UserService {
     }
     if (!user.images) user.images = [];
     if (upload) {
-      await deleteFiles(
-        Object.values(user.images).filter(
-          item => typeof item === 'string' && item
-        )
-      );
+      if(user.images.length) {
+        await deleteFiles(
+          Object.values(user.images).filter(
+            item => typeof item === 'string' && item
+          )
+        );
+      }
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-
-    return User.findByIdAndUpdate(id, updatedUser, { new: true });
+    return User.findByIdAndUpdate(user._id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {

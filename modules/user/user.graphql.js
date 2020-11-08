@@ -41,6 +41,7 @@ input UserInput {
 }`;
 const userUpdateInput = `
 input UserUpdateInput {
+    _id: ID
     firstName: String
     lastName: String
     password: String

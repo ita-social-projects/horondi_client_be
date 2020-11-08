@@ -32,8 +32,8 @@ const userMutation = {
       };
     }
   },
-  updateUserById: (parent, args) =>
-    userService.updateUserById(args.user, args.id, args.upload),
+  updateUserById: (parent, args, context) =>
+    userService.updateUserById(args.user, context.user, args.upload),
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) =>
     userService.recoverUser(args.email, args.language),
