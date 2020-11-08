@@ -1,7 +1,6 @@
 /* eslint-disable no-return-await */
 const { DefaultAzureCredential } = require('@azure/identity');
 const { SecretClient } = require('@azure/keyvault-secrets');
-require('dotenv').config();
 
 const keyVaultsUri = process.env.KEY_VAULTS_URI;
 const credential = new DefaultAzureCredential();

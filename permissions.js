@@ -3,10 +3,12 @@ const {
   userPermissionsMutation,
   userPermissionsQuery,
 } = require('./modules/user/user.permissions');
+
 const {
   patternPermissionsMutations,
   patternPermissionsQuery,
 } = require('./modules/pattern/pattern.permisions');
+
 const {
   materialPermissionsQuery,
   materialPermissionsMutations,
@@ -23,9 +25,24 @@ const {
 } = require('./modules/news/news.permissions');
 
 const {
+  categoryPermissionsMutations,
+  categoryPermissionsQuery,
+} = require('./modules/category/category.permission');
+
+const {
+  modelPermissionsMutations,
+  modelPermissionsQuery,
+} = require('./modules/model/model.permission');
+
+const {
   headerPermissionsMutations,
   headerPermissionsQuery,
 } = require('./modules/header/header.permisions');
+
+const {
+  homePageImagesPermissionsMutations,
+  homePageImagesPermissionsQuery,
+} = require('./modules/homepage-images/home-page-images.permissions');
 
 const permissions = shield(
   {
@@ -35,7 +52,10 @@ const permissions = shield(
       ...materialPermissionsQuery,
       ...contactPermissionsQuery,
       ...newsPermissionsQuery,
+      ...categoryPermissionsQuery,
+      ...modelPermissionsQuery,
       ...headerPermissionsQuery,
+      ...homePageImagesPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -43,7 +63,10 @@ const permissions = shield(
       ...materialPermissionsMutations,
       ...contactPermissionsMutations,
       ...newsPermissionsMutations,
+      ...categoryPermissionsMutations,
+      ...modelPermissionsMutations,
       ...headerPermissionsMutations,
+      ...homePageImagesPermissionsMutations,
     },
   },
   {

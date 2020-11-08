@@ -58,11 +58,17 @@ class OrdersService {
     ];
   }
 
-  async getAllOrders({ skip, limit }) {
-    const items = await Order.find()
+  async getAllOrders({ skip, limit, filter = {} }) {
+    const { orderStatus } = filter;
+
+    const filters = orderStatus ? { status: { $in: orderStatus } } : {};
+
+    const items = await Order.find(filters)
+      .sort({ dateOfCreation: -1 })
       .skip(skip)
       .limit(limit);
-    const count = await Order.find().countDocuments();
+
+    const count = await Order.find(filters).countDocuments();
     return {
       items,
       count,
@@ -274,8 +280,11 @@ class OrdersService {
       changeDataFormat(dateOfCreation, userDateFormat)
     );
     const { names, counts } = this.getOrdersStats(formattedDate);
-
-    return { labels: names, counts };
+    const total = counts.reduce(
+      (orderTotal, orderCount) => orderTotal + orderCount,
+      0
+    );
+    return { labels: names, counts, total };
   }
 
   async getOrdersStatistic(days) {

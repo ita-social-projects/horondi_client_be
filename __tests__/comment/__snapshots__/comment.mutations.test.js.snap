@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Comment queries should add rate to the product 1`] = `
+Object {
+  "rate": 1.7,
+  "rateCount": 5,
+  "userRates": Array [
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 4,
+    },
+  ],
+}
+`;
+
+exports[`Comment queries should return error if to add rate to not existing product 1`] = `
+Object {
+  "message": "RATE_FOR_NOT_EXISTING_PRODUCT",
+  "statusCode": 404,
+}
+`;
+
+exports[`Comment queries should update rate of the product 1`] = `
+Object {
+  "rate": 1.1,
+  "rateCount": 5,
+  "userRates": Array [
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+    Object {
+      "rate": 1,
+    },
+  ],
+}
+`;
