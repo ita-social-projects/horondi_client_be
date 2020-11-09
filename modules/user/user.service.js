@@ -161,9 +161,6 @@ class UserService {
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-    console.log(
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
-    );
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === 'horondi').tokenPass,
@@ -188,13 +185,13 @@ class UserService {
       idToken: id_token,
       audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
     });
-    const payload = ticket.getPayload();
-    const userid = payload.sub;
-    if (!(await User.findOne({ email: payload.email }))) {
+    const userData = ticket.getPayload();
+    const userid = userData.sub;
+    if (!(await User.findOne({ email: userData.email }))) {
       await this.registerGoogleUser({
-        firstName: payload.given_name,
-        lastName: payload.family_name,
-        email: payload.email,
+        firstName: userData.given_name,
+        lastName: userData.family_name,
+        email: userData.email,
         credentials: [
           {
             source: 'google',
@@ -204,7 +201,7 @@ class UserService {
       });
     }
     return this.loginGoogleUser({
-      email: payload.email,
+      email: userData.email,
     });
   }
 
