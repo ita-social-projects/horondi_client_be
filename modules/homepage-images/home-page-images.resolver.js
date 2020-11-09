@@ -1,12 +1,12 @@
 const homePageService = require('./home-page-images.service');
 
-const HomePageImagesQuery = {
+const homePageImagesQuery = {
   getHomePageLooksImages: async () => {
     return await homePageService.getHomePageLooksImages();
   },
 };
 
-const HomePageImagesMutation = {
+const homePageImagesMutation = {
   updateHomePageLooksImage: async (parent, args) => {
     try {
       return await homePageService.updateHomePageLooksImage(args);
@@ -32,4 +32,4 @@ const HomePageImagesMutation = {
   },
 };
 
-module.exports = { HomePageImagesMutation, HomePageImagesQuery };
+module.exports = { homePageImagesMutation, homePageImagesQuery };

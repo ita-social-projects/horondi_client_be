@@ -333,6 +333,7 @@ const typeDefs = gql`
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
   union HeaderResult = Header | Error
+  union HomepageImagesResult = HomePageImages | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -756,9 +757,9 @@ const typeDefs = gql`
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
 
     "HomePageImages Mutation"
-    updateHomePageLooksImage(id: ID!, images: Upload): HomePageImages
-    addHomePageLooksImage(images: Upload!): HomePageImages
-    deleteHomePageLooksImage(id: ID!): HomePageImages
+    updateHomePageLooksImage(id: ID!, images: Upload): HomepageImagesResult
+    addHomePageLooksImage(images: Upload): HomepageImagesResult
+    deleteHomePageLooksImage(id: ID!): HomepageImagesResult
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult

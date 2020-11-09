@@ -17,9 +17,11 @@ class HomePageImagesService {
   }
 
   async addHomePageLooksImage(data) {
-    const ResizedImage = await this.uploadImages([data.images]);
+    const resizedImage = await this.uploadImages([data.images]);
 
-    return new LooksImages({ images: ResizedImage[0] }).save();
+    if (!resizedImage) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+
+    return await new LooksImages({ images: resizedImage[0] }).save();
   }
 
   async deleteHomePageLooksImage(data) {
@@ -69,6 +71,8 @@ class HomePageImagesService {
 
   async deleteImages(imagesToDelete) {
     const deletedImages = await deleteFiles([imagesToDelete]);
+
+    if (!deletedImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
 
     return await Promise.allSettled(deletedImages);
   }

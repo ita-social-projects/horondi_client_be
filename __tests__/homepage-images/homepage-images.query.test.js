@@ -10,19 +10,23 @@ let operations;
 describe('Homepage looks images queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-  });
 
-  beforeAll(async () => {
     const res = await operations.mutate({
       mutation: gql`
-        mutation($images: Upload!) {
+        mutation($images: Upload) {
           addHomePageLooksImage(images: $images) {
-            _id
-            images {
-              large
-              medium
-              small
-              thumbnail
+            ... on HomePageImages {
+              _id
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
         }
@@ -38,9 +42,18 @@ describe('Homepage looks images queries', () => {
       mutation: gql`
         mutation($id: ID!) {
           deleteHomePageLooksImage(id: $id) {
-            _id
-            images {
-              small
+            ... on HomePageImages {
+              _id
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
         }

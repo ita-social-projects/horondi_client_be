@@ -16,7 +16,7 @@ const updatedLooksImage = {
   },
 };
 
-const invalidId = '5fa3e9ca2189e62308315e0n';
+const invalidId = '5f9ab9acc1446000240e9f6a';
 
 module.exports = {
   looksImage,
