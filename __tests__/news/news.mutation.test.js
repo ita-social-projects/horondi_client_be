@@ -240,15 +240,12 @@ describe('News mutations tests', () => {
                 }
               }
             `,
-            variables: { id: newsId, news: existingNews },
+            variables: { id: '5fa8f2ad0785350940d8953e', news: existingNews },
           })
           .then(res => res)
           .catch(e => e);
-        expect(res.data.updateNews).toHaveProperty(
-          'message',
-          NEWS_ALREADY_EXIST
-        );
-        expect(res.data.updateNews).toHaveProperty('statusCode', 400);
+        expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
+        expect(res.data.updateNews).toHaveProperty('statusCode', 404);
       });
 
       describe('Delete news test', () => {

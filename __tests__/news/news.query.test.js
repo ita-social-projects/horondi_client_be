@@ -94,7 +94,7 @@ describe('News queries tests', () => {
         .catch(e => e);
 
       expect(res.data.getAllNews).toBeDefined();
-      expect(res.data.getAllNews.items).toContainEqual({ news });
+      expect(res.data.getAllNews.items).toContainEqual({ ...news });
     });
   });
 
