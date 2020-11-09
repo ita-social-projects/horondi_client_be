@@ -3,6 +3,8 @@ const { gql } = require('@apollo/client');
 const { newOrder, deliveryOrder } = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/delivery/delivery.service.js');
 
 let orderId;
 let operations;
@@ -20,11 +22,15 @@ describe('Order queries', () => {
             ... on Order {
               _id
             }
+            ... on Error {
+              message
+            }
           }
         }
       `,
       variables: { order: newOrder },
     });
+    console.log(createOrder);
     orderId = createOrder.data.addOrder._id;
   });
 
@@ -41,6 +47,7 @@ describe('Order queries', () => {
                 phoneNumber
                 patronymicName
               }
+              dateOfCreation
               delivery {
                 sentOn
                 sentBy
@@ -60,6 +67,7 @@ describe('Order queries', () => {
                 zipcode
               }
               userComment
+              lastUpdatedDate
               cancellationReason
               adminComment
               items {
@@ -131,13 +139,15 @@ describe('Order queries', () => {
         }
       `,
     });
-
+    console.log(res);
     const orders = res.data.getAllOrders.items;
 
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders).toContainEqual(newOrder);
+    expect(orders[0]).toHaveProperty('user', newOrder.user);
+    expect(orders[0]).toHaveProperty('category', newOrder.category);
+    expect(orders[0]).toHaveProperty('pattern', newOrder.pattern);
   });
 
   test('should recive order by id', async () => {
@@ -252,7 +262,7 @@ describe('Order queries', () => {
         id: orderId,
       },
     });
-
+    console.log(res);
     const order = res.data.getOrderById;
 
     expect(order).toBeDefined();
