@@ -9,6 +9,10 @@ const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
 } = require('../../error-messages/products.messages');
+const {
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
+const { Error } = require('mongoose');
 
 class ProductsService {
   getProductById(id) {
@@ -19,8 +23,14 @@ class ProductsService {
     return Size.findById(id);
   }
 
-  getModelsByCategory(id) {
-    return Product.find({ category: id });
+  async getModelsByCategory(id) {
+    const product = await Product.find({ category: id });
+
+    if (product.length === 0) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
+
+    return product;
   }
 
   async getProductOptions() {

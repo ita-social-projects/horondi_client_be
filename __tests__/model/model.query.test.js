@@ -33,7 +33,7 @@ describe('Product queries', () => {
     const createModel = await operations.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
-          addModel(model: $model) {
+          addModel(model: $model, upload: []) {
             ... on Model {
               _id
               name {
@@ -93,10 +93,10 @@ describe('Product queries', () => {
       { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('images', {
-      large: 'large_new',
-      medium: 'medium_new',
-      small: 'small_new',
-      thumbnail: 'thumbnail_new',
+      large: 'large_0_test-file',
+      medium: 'medium_0_test-file',
+      small: 'small_0_test-file',
+      thumbnail: 'thumbnail_0_test-file',
     });
     expect(models[0]).toHaveProperty('category', {
       name: [
@@ -138,8 +138,7 @@ describe('Product queries', () => {
       .catch(err => err);
 
     const error = res;
-
-    expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_VALID');
+    expect(error.message).toBe('CATEGORY_NOT_VALID');
   });
   test('Should throw error CATEGORY_NOT_FOUND', async () => {
     const res = await client
@@ -168,8 +167,8 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-    const error = res;
-    expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_FOUND');
+    const error = res.errors[0];
+    expect(error.message).toBe('CATEGORY_NOT_FOUND');
   });
   afterAll(async () => {
     await operations.mutate({
