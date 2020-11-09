@@ -10,10 +10,7 @@ const {
   productType,
   productInput,
 } = require('./modules/product/product.graphql');
-const {
-  modelType,
-  modelInput,
-} = require('./modules/model/model.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -323,7 +320,7 @@ const typeDefs = gql`
   }
 
   type File {
-    fileNames: ImageSet! 
+    fileNames: ImageSet!
     prefixUrl: String!
   }
 
@@ -396,6 +393,7 @@ const typeDefs = gql`
     switchUserStatus(id: ID!): LogicalResult
     resetPassword(password: String!, token: String!): Boolean
     checkIfTokenIsValid(token: String!): Boolean
+    googleUser(id_token: String!): User
 
     "Product Mutation"
     addProduct(product: ProductInput!): ProductResult
@@ -406,7 +404,7 @@ const typeDefs = gql`
     addComment(productId: ID!, comment: commentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
     updateComment(id: ID!, comment: commentInput!): CommentResult
-    
+
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult
 

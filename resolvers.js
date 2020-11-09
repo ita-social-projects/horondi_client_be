@@ -40,9 +40,7 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const {
-  uploadMutation
-} = require('./modules/upload/upload.resolver');
+const { uploadMutation } = require('./modules/upload/upload.resolver');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -75,7 +73,7 @@ const resolvers = {
     ...commentsQuery,
 
     ...modelsQuery,
-    
+
     ...contactQuery,
   },
   Comment: {
@@ -122,7 +120,7 @@ const resolvers = {
     ...commentsMutation,
 
     ...modelsMutation,
-    
+
     ...contactMutation,
   },
   CategoryResult: {
@@ -195,7 +193,7 @@ const resolvers = {
         return SCHEMA_NAMES.model;
       }
       return 'Error';
-    }
+    },
   },
   ContactResult: {
     __resolveType: obj => {
