@@ -3,7 +3,6 @@ const HomePageSlider = require('./homepage-slider.model');
 const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 const {
   SLIDE_NOT_FOUND,
-  SLIDE_ALREADY_EXIST,
   SLIDE_NOT_VALID,
   IMAGE_NOT_PROVIDED
 } = require('../../error-messages/home-page-slider.messages');
@@ -33,9 +32,6 @@ class HomePageSliderService {
   }
 
   async addSlide(data, upload) {
-    if (await this.checkSlideExist(data)) {
-      throw new Error(SLIDE_ALREADY_EXIST);
-    }
     if (upload) {
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -90,16 +86,6 @@ class HomePageSliderService {
     if (await Promise.allSettled(deletedImages)) {
       return foundSlide;
     }
-  }
-  async checkSlideExist(data) {
-    const modelCount = await HomePageSlider.countDocuments({
-      title: {
-        $elemMatch: {
-          $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
-        },
-      },
-    });
-    return modelCount > 0;
   }
 }
 

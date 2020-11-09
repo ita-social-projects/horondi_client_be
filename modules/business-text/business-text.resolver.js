@@ -54,7 +54,8 @@ const businessTextMutation = {
     try {
       return await businessTextService.updateBusinessText(
         args.id,
-        args.businessText
+        args.businessText,
+        args.files
       );
     } catch (e) {
       return {

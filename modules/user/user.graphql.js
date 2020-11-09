@@ -14,6 +14,7 @@ type User{
     credentials: [Credential]
     registrationDate: String
     wishlist: [Product]
+    cart: [CartProduct]
     orders:[ID]
     purchasedProducts: [ID]
     comments: [ID]
@@ -39,6 +40,7 @@ input UserInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
+    cart: [CartProductInput]
     orders:[ID]
     purchasedProducts: [ID]
     comments: [ID]
@@ -55,6 +57,7 @@ input UserUpdateInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
+    cart: [CartProductInput]
     orders:[ID]
     purchasedProducts: [ID]
     comments: [ID]

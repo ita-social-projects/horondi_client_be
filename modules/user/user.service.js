@@ -583,19 +583,45 @@ class UserService {
     }
   }
 
-  async updateWishlist(userId, wishlist, productId) {
-    await User.findByIdAndUpdate(userId, { wishlist });
+  async updateCartOrWishlist(userId, key, list, productId) {
+    await User.findByIdAndUpdate(userId, { [key]: list });
     return productService.getProductById(productId);
   }
 
-  addProductToWishlist(productId, user) {
-    const newWishlist = [...user.wishlist, productId];
-    return this.updateWishlist(user._id, newWishlist, productId);
+  addProductToWishlist(productId, key, user) {
+    const newList = [...user.wishlist, productId];
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
   }
 
-  removeProductFromWishlist(productId, user) {
-    const newWishlist = user.wishlist.filter(id => String(id) !== productId);
-    return this.updateWishlist(user._id, newWishlist, productId);
+  removeProductFromWishlist(productId, key, user) {
+    const newList = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  addProductToCart(product, key, user) {
+    const newList = [...user.cart, product];
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  removeProductFromCart(product, key, user) {
+    const newList = user.cart.filter(
+      ({ _id, selectedSize }) =>
+        String(_id) !== product._id ||
+        (String(_id) === product._id && selectedSize !== product.selectedSize)
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  changeCartProductQuantity(product, key, user) {
+    const newList = user.cart.map(item =>
+      String(item._id) === product._id &&
+      item.selectedSize === product.selectedSize
+        ? product
+        : item
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
   }
 }
 
