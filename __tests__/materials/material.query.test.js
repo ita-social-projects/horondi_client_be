@@ -16,6 +16,7 @@ const {
 
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
 
 let materialId = '';
 let operations;
@@ -132,10 +133,6 @@ describe('material querries test', () => {
                   thumbnail
                 }
               }
-              additionalPrice {
-                currency
-                value
-              }
               available
             }
           }
@@ -164,16 +161,6 @@ describe('material querries test', () => {
       ],
       purpose: material.purpose,
       available: material.available,
-      additionalPrice: [
-        {
-          currency: material.additionalPrice[0].currency,
-          value: material.additionalPrice[0].value,
-        },
-        {
-          currency: material.additionalPrice[1].currency,
-          value: material.additionalPrice[1].value,
-        },
-      ],
       colors: [
         {
           code: material.colors[0].code,
@@ -187,12 +174,7 @@ describe('material querries test', () => {
               value: material.colors[0].name[1].value,
             },
           ],
-          images: {
-            large: material.colors[0].images.large,
-            medium: material.colors[0].images.medium,
-            small: material.colors[0].images.small,
-            thumbnail: material.colors[0].images.thumbnail,
-          },
+          images: null,
           available: true,
           simpleName: [
             {
@@ -242,10 +224,6 @@ describe('material querries test', () => {
                   thumbnail
                 }
               }
-              additionalPrice {
-                currency
-                value
-              }
               available
             }
             ... on Error {
@@ -274,24 +252,13 @@ describe('material querries test', () => {
     expect(receivedMaterial).toHaveProperty('purpose', material.purpose);
     expect(receivedMaterial).toHaveProperty('available', material.available);
 
-    expect(receivedMaterial).toHaveProperty(
-      'additionalPrice',
-      material.additionalPrice
-    );
-    expect(receivedMaterial.additionalPrice).toBeInstanceOf(Array);
-
     expect(receivedMaterial).toHaveProperty('colors', [
       {
         code: 777,
         name: material.colors[0].name,
         simpleName: material.colors[0].simpleName,
         available: true,
-        images: {
-          large: material.colors[0].images.large,
-          medium: material.colors[0].images.medium,
-          small: material.colors[0].images.small,
-          thumbnail: material.colors[0].images.thumbnail,
-        },
+        images: null,
       },
     ]);
     expect(receivedMaterial.colors).toBeInstanceOf(Array);
@@ -330,9 +297,6 @@ describe('material querries test', () => {
                   thumbnail
                 }
               }
-              additionalPrice {
-                value
-              }
               available
             }
             ... on Error {
@@ -351,7 +315,7 @@ describe('material querries test', () => {
     expect(receivedMaterial).toHaveProperty('message', MATERIAL_NOT_FOUND);
   });
 
-  it('Should receive 2 materials', async () => {
+  it('Should receive 1 material', async () => {
     const res = await operations.query({
       variables: { skip, limit },
       query: gql`
@@ -385,10 +349,6 @@ describe('material querries test', () => {
                   thumbnail
                 }
               }
-              additionalPrice {
-                currency
-                value
-              }
               available
             }
             count
@@ -398,9 +358,9 @@ describe('material querries test', () => {
     });
 
     const { items, count } = res.data.getAllMaterials;
-    expect(items).toHaveLength(2);
+    expect(items).toHaveLength(1);
     expect(count).not.toBeNull();
-    expect(count).toEqual(3);
+    expect(count).toEqual(1);
   });
 
   it('should receive error if skip is negative', async () => {
@@ -499,8 +459,8 @@ describe('material querries test', () => {
     });
 
     const { items, count } = res.data.getAllMaterials;
-    expect(items).toHaveLength(3);
-    expect(count).toEqual(3);
+    expect(items).toHaveLength(1);
+    expect(count).toEqual(1);
     expect(items).not.toBeNull();
   });
 
@@ -551,8 +511,8 @@ describe('material querries test', () => {
     });
 
     const { items, count } = res.data.getAllMaterials;
-    expect(items).toHaveLength(3);
-    expect(count).toEqual(3);
+    expect(items).toHaveLength(1);
+    expect(count).toEqual(1);
     expect(items).not.toBeNull();
   });
 });

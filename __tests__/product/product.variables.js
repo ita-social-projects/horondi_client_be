@@ -82,10 +82,6 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
 
 const getProductData = product => ({
   available: product.available,
-  basePrice: [
-    { value: product.basePrice[0].value },
-    { value: product.basePrice[1].value },
-  ],
   category: {
     _id: product.category,
   },
@@ -225,10 +221,7 @@ const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
+  basePrice: 1,
   available: true,
   isHotItem: false,
   images: {
@@ -355,10 +348,7 @@ const getProductForUpdate = (
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'white',
-  basePrice: [
-    { currency: 'UAH', value: 777000 },
-    { currency: 'USD', value: 7779 },
-  ],
+  basePrice: 22,
   available: false,
   isHotItem: true,
   images: {
@@ -483,10 +473,7 @@ const getSameNameForUpdate = (
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
+  basePrice: 2,
   available: true,
   isHotItem: false,
   images: {

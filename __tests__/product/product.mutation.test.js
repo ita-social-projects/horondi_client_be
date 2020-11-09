@@ -15,6 +15,8 @@ const {
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/product/product.service.js');
 
 let product;
 let updatedProduct;
@@ -79,9 +81,6 @@ describe('Product mutations', () => {
                 value
               }
               closureColor
-              basePrice {
-                value
-              }
               available
               isHotItem
               purchasedCount
@@ -132,9 +131,6 @@ describe('Product mutations', () => {
                 value
               }
               closureColor
-              basePrice {
-                value
-              }
               available
               isHotItem
               purchasedCount
@@ -162,7 +158,7 @@ describe('Product mutations', () => {
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
-          addProduct(product: $product) {
+          addProduct(upload: [], product: $product) {
             ... on Product {
               _id
             }
@@ -177,10 +173,9 @@ describe('Product mutations', () => {
         product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
       },
     });
-    const result = createProduct.data.addProduct;
-    expect(result).toBeDefined();
-    expect(result).toHaveProperty('statusCode', 400);
-    expect(result).toHaveProperty('message', 'PRODUCT_ALREADY_EXIST');
+    const error = createProduct.errors[0].message;
+    expect(error).toBeDefined();
+    expect(error).toEqual('PRODUCT_ALREADY_EXIST');
   });
 
   test('#3 Should update new product', async () => {
@@ -213,9 +208,6 @@ describe('Product mutations', () => {
                 value
               }
               closureColor
-              basePrice {
-                value
-              }
               available
               isHotItem
               purchasedCount
@@ -234,7 +226,6 @@ describe('Product mutations', () => {
         id: productId,
       },
     });
-
     const productAfterUpdate = updateProduct.data.updateProduct;
     expect(productAfterUpdate).toBeDefined();
     expect(productAfterUpdate).toEqual({
@@ -282,7 +273,7 @@ describe('Product mutations', () => {
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
-          addProduct(product: $product) {
+          addProduct(upload: [], product: $product) {
             ... on Product {
               _id
             }
@@ -298,6 +289,7 @@ describe('Product mutations', () => {
         ),
       },
     });
+    console.log(createProduct);
     sameNameProductId = createProduct.data.addProduct._id;
 
     const updateProduct = await operations.mutate({
@@ -401,6 +393,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
+    console.log(deletedProduct);
     const result = deletedProduct.data.deleteProduct;
     expect(result).toBeDefined();
     expect(result).toHaveProperty('name', [
@@ -460,6 +453,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
+    console.log(deletedProduct);
     const result = deletedProduct.data.deleteProduct;
     expect(result).toBeDefined();
     expect(result).toHaveProperty('statusCode', 404);

@@ -14,6 +14,8 @@ const {
 } = require('./product.variables');
 
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/product/product.service.js');
 
 let product;
 let productId;
@@ -37,6 +39,9 @@ describe('Product queries', () => {
           addProduct(upload: [], product: $product) {
             ... on Product {
               _id
+            }
+            ... on Error {
+              message
             }
           }
         }
@@ -124,9 +129,6 @@ describe('Product queries', () => {
               }
               strapLengthInCm
               pattern {
-                value
-              }
-              basePrice {
                 value
               }
               available

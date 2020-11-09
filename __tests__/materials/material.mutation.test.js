@@ -13,6 +13,7 @@ const {
 
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
 
 let operations;
 let materialId = '';
@@ -98,12 +99,7 @@ describe('material mutations tests', () => {
         name: material.colors[0].name,
         simpleName: material.colors[0].simpleName,
         available: true,
-        images: {
-          large: 'large_test',
-          medium: 'medium_test',
-          small: 'small_test',
-          thumbnail: 'thumbnail_test',
-        },
+        images: null,
       },
     ]);
     expect(addedMaterial.colors).toBeInstanceOf(Array);
