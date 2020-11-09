@@ -79,6 +79,7 @@ class HomePageSliderService {
       }
     );
   }
+
   async deleteSlide(id) {
     const foundSlide = await HomePageSlider.findByIdAndDelete(id).lean();
     if (!foundSlide) {
