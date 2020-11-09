@@ -9,7 +9,6 @@ const {
 } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
-
 let operations;
 let contactsId = '';
 
@@ -22,7 +21,7 @@ describe('Contacts mutations test', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($contact: contactInput!) {
-          addContact(contact: $contact) {
+          addContact(contact: $contact, mapImages: []) {
             ... on Contact {
               _id
               phoneNumber

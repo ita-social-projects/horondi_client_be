@@ -16,7 +16,7 @@ describe('Contacts queries', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($contact: contactInput!) {
-          addContact(contact: $contact) {
+          addContact(contact: $contact, mapImages: []) {
             ... on Contact {
               _id
             }
@@ -29,7 +29,6 @@ describe('Contacts queries', () => {
       `,
       variables: { contact: newContact },
     });
-
     contactsId = res.data.addContact._id;
   });
 

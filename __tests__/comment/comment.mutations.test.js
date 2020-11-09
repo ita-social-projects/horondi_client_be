@@ -3,7 +3,6 @@ const { gql } = require('@apollo/client');
 const {
   newComment,
   updatedComment,
-  productId,
   productWrongId,
   commentWrongId,
   rate,

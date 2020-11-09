@@ -31,10 +31,7 @@ const material = {
   ],
   purpose: 'test',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 58,
   colors: [
     {
       code: 777,
@@ -66,7 +63,7 @@ describe('material querries test', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
+          addMaterial(material: $material, images: []) {
             ... on Material {
               _id
             }

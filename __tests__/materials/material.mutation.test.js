@@ -26,7 +26,7 @@ describe('material mutations tests', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
+          addMaterial(material: $material, images: []) {
             ... on Material {
               _id
               name {
