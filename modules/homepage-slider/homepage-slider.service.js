@@ -4,7 +4,8 @@ const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 const {
   SLIDE_NOT_FOUND,
   SLIDE_ALREADY_EXIST,
-  SLIDE_NOT_VALID
+  SLIDE_NOT_VALID,
+  IMAGE_NOT_PROVIDED
 } = require('../../error-messages/home-page-slider.messages');
 
 class HomePageSliderService {
@@ -40,21 +41,55 @@ class HomePageSliderService {
       const imageResults = await uploadResult[0];
       data.images = imageResults.fileNames;
     }
+    if (!upload) {
+      throw new Error(IMAGE_NOT_PROVIDED);
+    }
     return await new HomePageSlider(data).save();
   }
 
-  async deleteSlide(id) {
-    const slide = await HomePageSlider.findByIdAndDelete(id);
-
-    const images = Object.values(model.images).filter(
-      item => typeof item === 'string' && item
-    );
-    if (images.length) {
-      deleteFiles(images);
+  async updateSlide({id, slide, upload}) {
+    const slideToUpdate = await HomePageSlider.findById(id);
+    if (!slideToUpdate) {
+      throw new Error(SLIDE_NOT_FOUND);
     }
-    return slide;
-  }
 
+    if (!upload) {
+      return await HomePageSlider.findByIdAndUpdate(id, slide, { new: true });
+    }
+    const uploadResult = await uploadFiles([upload]);
+
+    const imageResults = await uploadResult[0];
+
+    const images = imageResults.fileNames;
+
+    if (!images) {
+      return await HomePageSlider.findByIdAndUpdate(id, slide);
+    }
+    const foundSlide = await HomePageSlider.findById(id).lean();
+    deleteFiles(Object.values(foundSlide.images));
+
+    return await HomePageSlider.findByIdAndUpdate(
+      id,
+      {
+        ...slide,
+        images,
+      },
+      {
+        new: true,
+      }
+    );
+  }
+  async deleteSlide(id) {
+    const foundSlide = await HomePageSlider.findByIdAndDelete(id).lean();
+    if (!foundSlide) {
+      throw new Error(SLIDE_NOT_FOUND);
+    }
+
+    const deletedImages = await deleteFiles(Object.values(foundSlide.images));
+    if (await Promise.allSettled(deletedImages)) {
+      return foundSlide;
+    }
+  }
   async checkSlideExist(data) {
     const modelCount = await HomePageSlider.countDocuments({
       title: {

@@ -1,4 +1,5 @@
-const  homePageSliderService = require('./homepage-slider.service')
+const homePageSliderService = require('./homepage-slider.service');
+const { SLIDE_NOT_FOUND } = require('../../error-messages/home-page-slider.messages');
 
 const homePageSlideQuery = {
   getAllSlides: (parent, args) => homePageSliderService.getAllSlides(args),
@@ -17,10 +18,20 @@ const homePageSlideQuery = {
 const homePageSlideMutation = {
   addSlide: async (parent, args) => {
     try {
-      return await homePageSliderService.addSlide(args.slide);
+      return await homePageSliderService.addSlide(args.slide,args.upload);
     } catch (e) {
       return {
         statusCode: 400,
+        message: e.message,
+      };
+    }
+  },
+  updateSlide: async (parent, args) => {
+    try {
+      return await homePageSliderService.updateSlide(args);
+    } catch (e) {
+      return {
+        statusCode: e.message === SLIDE_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
     }
@@ -35,6 +46,6 @@ const homePageSlideMutation = {
       };
     }
   },
-}
+};
 module.exports = { homePageSlideQuery, homePageSlideMutation };
 
