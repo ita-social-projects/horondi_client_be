@@ -33,105 +33,106 @@ describe('Order queries', () => {
       query: gql`
         query {
           getAllOrders {
-            user {
-              email
-              lastName
-              firstName
-              phoneNumber
-              patronymicName
-            }
-            delivery {
-              sentOn
-              sentBy
-              byCourier
-              invoiceNumber
-              courierOffice
-            }
-            isPaid
-            status
-            address {
-              appartment
-              buildingNumber
-              region
-              street
-              city
-              country
-              zipcode
-            }
-            completed
-            userComment
-            cancellationReason
-            adminComment
             items {
-              bottomColor {
-                lang
-                value
+              user {
+                email
+                lastName
+                firstName
+                phoneNumber
+                patronymicName
               }
-              closure {
-                lang
-                value
+              delivery {
+                sentOn
+                sentBy
+                byCourier
+                invoiceNumber
+                courierOffice
               }
-              model {
-                lang
-                value
+              isPaid
+              status
+              address {
+                appartment
+                buildingNumber
+                region
+                street
+                city
+                country
+                zipcode
               }
-              closureColor
-              size {
-                widthInCm
-                weightInKg
-                heightInCm
-                volumeInLiters
-                depthInCm
+              userComment
+              cancellationReason
+              adminComment
+              items {
+                bottomColor {
+                  lang
+                  value
+                }
+                closure {
+                  lang
+                  value
+                }
+                model {
+                  lang
+                  value
+                }
+                closureColor
+                size {
+                  widthInCm
+                  weightInKg
+                  heightInCm
+                  volumeInLiters
+                  depthInCm
+                }
+                additions {
+                  lang
+                  value
+                }
+                actualPrice {
+                  currency
+                  value
+                }
+                name {
+                  lang
+                  value
+                }
+                pattern {
+                  lang
+                  value
+                }
+                category {
+                  lang
+                  value
+                }
+                quantity
+                colors {
+                  lang
+                  value
+                }
+                subcategory {
+                  lang
+                  value
+                }
+                bottomMaterial {
+                  lang
+                  value
+                }
               }
-              additions {
-                lang
-                value
-              }
-              actualPrice {
+              totalItemsPrice {
                 currency
                 value
               }
-              name {
-                lang
+              totalPriceToPay {
+                currency
                 value
               }
-              pattern {
-                lang
-                value
-              }
-              category {
-                lang
-                value
-              }
-              quantity
-              colors {
-                lang
-                value
-              }
-              subcategory {
-                lang
-                value
-              }
-              bottomMaterial {
-                lang
-                value
-              }
+              paymentMethod
             }
-            totalItemsPrice {
-              currency
-              value
-            }
-            totalPriceToPay {
-              currency
-              value
-            }
-            paymentMethod
           }
         }
       `,
     });
 
-    const orders = res.data.getAllOrders;
+    const orders = res.data.getAllOrders.items;
 
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
@@ -171,7 +172,6 @@ describe('Order queries', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -300,7 +300,6 @@ describe('Order queries', () => {
                   country
                   zipcode
                 }
-                completed
                 userComment
                 lastUpdatedDate
                 cancellationReason

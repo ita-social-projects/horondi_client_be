@@ -44,7 +44,6 @@ describe('Order mutations', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -319,7 +318,6 @@ describe('Order mutations', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -452,7 +450,6 @@ describe('Order mutations', () => {
                   country
                   zipcode
                 }
-                completed
                 userComment
                 lastUpdatedDate
                 cancellationReason
@@ -570,7 +567,6 @@ describe('Order mutations', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
