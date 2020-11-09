@@ -10,6 +10,7 @@ const {
 class HomePageSliderService {
   async getAllSlides({ skip, limit }) {
     const items = await HomePageSlider.find()
+      .sort({show: -1,  order: 1})
       .skip(skip)
       .limit(limit);
 
