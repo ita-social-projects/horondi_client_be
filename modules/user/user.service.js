@@ -1,6 +1,7 @@
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('./user.model');
 const {
   validateRegisterInput,
@@ -9,7 +10,7 @@ const {
   validateNewPassword,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendGrid-email')
+const { sendEmail } = require('../../utils/sendGrid-email');
 const {
   confirmationMessage,
   recoveryMessage,
@@ -156,12 +157,13 @@ class UserService {
     if (errors) {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
-
     const user = await User.findOne({ email });
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-
+    console.log(
+      user.credentials.find(cred => cred.source === 'horondi').tokenPass,
+    );
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === 'horondi').tokenPass,
@@ -178,6 +180,63 @@ class UserService {
       _id: user._id,
       token,
     };
+  }
+
+  async googleUser(id_token) {
+    const client = new OAuth2Client();
+    const ticket = await client.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const userid = payload.sub;
+    if (!(await User.findOne({ email: payload.email }))) {
+      await this.registerGoogleUser({
+        firstName: payload.given_name,
+        lastName: payload.family_name,
+        email: payload.email,
+        credentials: [
+          {
+            source: 'google',
+            tokenPass: userid,
+          },
+        ],
+      });
+    }
+    return this.loginGoogleUser({
+      email: payload.email,
+    });
+  }
+
+  async loginGoogleUser({ email }) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
+    const token = generateToken(user._id, user.email);
+    return {
+      ...user._doc,
+      _id: user._id,
+      token,
+    };
+  }
+
+  async registerGoogleUser({
+    firstName, lastName, email, credentials,
+  }) {
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      credentials,
+    });
+    const savedUser = await user.save();
+
+    return savedUser;
   }
 
   async registerUser({
