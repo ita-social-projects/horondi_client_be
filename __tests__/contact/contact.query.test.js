@@ -4,12 +4,15 @@ const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const { newContact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/contact/contact.utils.js');
+
 let contactsId = '';
 let operations;
 
 describe('Contacts queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
+    done();
   });
 
   beforeAll(async done => {
@@ -69,11 +72,6 @@ describe('Contacts queries', () => {
                 value
               }
               email
-              images {
-                value {
-                  medium
-                }
-              }
               link
             }
             count
@@ -111,10 +109,6 @@ describe('Contacts queries', () => {
         },
       ],
       email: 'test@test.com',
-      images: [
-        { value: newContact.images[0].value },
-        { value: newContact.images[1].value },
-      ],
       link: newContact.link,
     });
     done();
@@ -136,11 +130,6 @@ describe('Contacts queries', () => {
                 value
               }
               email
-              images {
-                value {
-                  medium
-                }
-              }
               link
             }
             ... on Error {
@@ -178,11 +167,6 @@ describe('Contacts queries', () => {
     ]);
     expect(receivedContact.address).toBeInstanceOf(Object);
     expect(receivedContact).toHaveProperty('email', newContact.email);
-    expect(receivedContact).toHaveProperty('images', [
-      { value: newContact.images[0].value },
-      { value: newContact.images[1].value },
-    ]);
-    expect(receivedContact.images).toBeInstanceOf(Array);
     expect(receivedContact).toHaveProperty('link', newContact.link);
     done();
   });

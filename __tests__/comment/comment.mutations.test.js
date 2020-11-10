@@ -360,8 +360,7 @@ describe('Comment queries', () => {
     done();
   });
   afterAll(async done => {
-    const deleteD = await deleteAll(materialId, productId, categoryId, modelId);
-    console.log(deleteD);
+    await deleteAll(materialId, productId, categoryId, modelId);
     done();
   });
 });

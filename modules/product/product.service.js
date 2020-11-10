@@ -170,7 +170,7 @@ class ProductsService {
       const model = await modelService.getModelById(productData.model);
       productData.model = model.name;
     }
-    return Product.findByIdAndUpdate(id, productData, { new: true });
+    return await Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(productData, filesToUpload) {

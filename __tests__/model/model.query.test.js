@@ -136,11 +136,10 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-
     const error = res;
-    expect(error.message).toBe('CATEGORY_NOT_VALID');
+    expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_VALID');
   });
-  test('Should throw error CATEGORY_NOT_FOUND', async () => {
+  test('Should return empty array when category isnt exist', async () => {
     const res = await client
       .query({
         query: gql`
@@ -167,9 +166,9 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-
-    const error = res.errors[0];
-    expect(error.message).toBe('CATEGORY_NOT_FOUND');
+    const getModelsByCategory = res.data.getModelsByCategory;
+    expect(getModelsByCategory.length).toBe(0);
+    expect(getModelsByCategory).toBeInstanceOf(Array);
   });
   afterAll(async () => {
     await operations.mutate({
