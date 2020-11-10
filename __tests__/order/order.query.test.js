@@ -30,7 +30,6 @@ describe('Order queries', () => {
       `,
       variables: { order: newOrder },
     });
-    console.log(createOrder);
     orderId = createOrder.data.addOrder._id;
   });
 
@@ -139,7 +138,6 @@ describe('Order queries', () => {
         }
       `,
     });
-    console.log(res);
     const orders = res.data.getAllOrders.items;
 
     expect(orders).toBeDefined();
@@ -262,7 +260,6 @@ describe('Order queries', () => {
         id: orderId,
       },
     });
-    console.log(res);
     const order = res.data.getOrderById;
 
     expect(order).toBeDefined();

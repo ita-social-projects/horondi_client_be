@@ -27,10 +27,7 @@ const material = {
   ],
   purpose: 'test',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 2,
   colors: [
     {
       code: 777,
@@ -63,10 +60,7 @@ const materialToUpdate = {
   ],
   purpose: 'test update',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 2,
   colors: [
     {
       code: 777,
@@ -106,10 +100,7 @@ const materialWithExistingName = {
   ],
   purpose: 'test update',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 2,
   colors: [
     {
       code: 777,

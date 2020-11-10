@@ -7,6 +7,11 @@ const {
   commentWrongId,
   rate,
   updatedRate,
+  createModel,
+  newCategory,
+  newModel,
+  newMaterial,
+  getNewProduct,
 } = require('./comment.variables');
 const {
   COMMENT_NOT_FOUND,
@@ -15,15 +20,49 @@ const {
 } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/product/product.service.js');
 
 let commentId = '';
 let operations;
 let productRate;
 let productRateCount;
 let productUserRates;
+let product;
+let productId;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
+
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    const itemsId = await createModel(newMaterial, newCategory, newModel);
+    categoryId = itemsId.categoryId;
+    subcategoryId = itemsId.subcategoryId;
+    modelId = itemsId.modelId;
+    materialId = itemsId.materialId;
+
+    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+    const createProduct = await operations.mutate({
+      mutation: gql`
+        mutation($product: ProductInput!) {
+          addProduct(upload: [], product: $product) {
+            ... on Product {
+              _id
+            }
+            ... on Error {
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        product,
+      },
+    });
+    productId = createProduct.data.addProduct._id;
     const res = await operations
       .query({
         variables: { id: productId },
@@ -74,7 +113,10 @@ describe('Comment queries', () => {
             }
           }
         `,
-        variables: { productId, comment: newComment },
+        variables: {
+          productId,
+          comment: { ...newComment, product: productId },
+        },
       })
       .catch(e => e);
     commentId = res.data.addComment._id;
@@ -111,7 +153,10 @@ describe('Comment queries', () => {
             }
           }
         `,
-        variables: { productId: productWrongId, comment: newComment },
+        variables: {
+          productId: productWrongId,
+          comment: { product: productWrongId, ...newComment },
+        },
       })
       .catch(e => e);
     const receivedComment = res.data.addComment;
@@ -149,7 +194,10 @@ describe('Comment queries', () => {
             }
           }
         `,
-        variables: { id: commentId, comment: updatedComment },
+        variables: {
+          id: commentId,
+          comment: { product: productId, ...updatedComment },
+        },
       })
       .catch(e => e);
     const receivedComment = res.data.updateComment;
@@ -189,7 +237,10 @@ describe('Comment queries', () => {
             }
           }
         `,
-        variables: { id: commentWrongId, comment: updatedComment },
+        variables: {
+          id: commentWrongId,
+          comment: { product: productId, ...updatedComment },
+        },
       })
       .catch(e => e);
     const receivedComment = res.data.updateComment;
@@ -222,14 +273,13 @@ describe('Comment queries', () => {
         variables: { product: productId, userRate: { rate } },
       })
       .catch(e => e);
-
     const receivedComment = res.data.addRate;
     expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('rate', rate);
-    expect(receivedComment).toHaveProperty('rateCount', productRateCount);
-    expect(receivedComment.userRates.length).toEqual(productRateCount);
+    expect(receivedComment).toHaveProperty('rateCount', 1);
+    expect(receivedComment.userRates.length).toEqual(1);
   });
   it('should update rate of the product', async () => {
     const res = await operations
@@ -255,14 +305,13 @@ describe('Comment queries', () => {
         variables: { product: productId, userRate: { rate: updatedRate } },
       })
       .catch(e => e);
-
     const receivedComment = res.data.addRate;
     expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('rate', updatedRate);
-    expect(receivedComment).toHaveProperty('rateCount', productRateCount);
-    expect(receivedComment.userRates.length).toEqual(productRateCount);
+    expect(receivedComment).toHaveProperty('rateCount', 1);
+    expect(receivedComment.userRates.length).toEqual(1);
   });
   it('should return error if to add rate to not existing product', async () => {
     const res = await operations
@@ -298,5 +347,8 @@ describe('Comment queries', () => {
       RATE_FOR_NOT_EXISTING_PRODUCT
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
+  });
+  afterAll(async () => {
+    await deleteAll(materialId, productId, categoryId, modelId);
   });
 });

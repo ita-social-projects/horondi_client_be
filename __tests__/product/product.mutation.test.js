@@ -289,7 +289,7 @@ describe('Product mutations', () => {
         ),
       },
     });
-    console.log(createProduct);
+
     sameNameProductId = createProduct.data.addProduct._id;
 
     const updateProduct = await operations.mutate({
@@ -393,7 +393,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
-    console.log(deletedProduct);
+
     const result = deletedProduct.data.deleteProduct;
     expect(result).toBeDefined();
     expect(result).toHaveProperty('name', [
@@ -453,7 +453,7 @@ describe('Product mutations', () => {
       `,
       variables: { id: productId },
     });
-    console.log(deletedProduct);
+
     const result = deletedProduct.data.deleteProduct;
     expect(result).toBeDefined();
     expect(result).toHaveProperty('statusCode', 404);

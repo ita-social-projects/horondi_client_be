@@ -167,7 +167,7 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-    console.log(res);
+
     const error = res.errors[0];
     expect(error.message).toBe('CATEGORY_NOT_FOUND');
   });

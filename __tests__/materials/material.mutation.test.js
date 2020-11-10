@@ -58,10 +58,6 @@ describe('material mutations tests', () => {
                   thumbnail
                 }
               }
-              additionalPrice {
-                currency
-                value
-              }
               available
             }
             ... on Error {
@@ -87,12 +83,6 @@ describe('material mutations tests', () => {
     expect(addedMaterial).toHaveProperty('purpose', material.purpose);
     expect(addedMaterial).toHaveProperty('available', material.available);
 
-    expect(addedMaterial).toHaveProperty(
-      'additionalPrice',
-      material.additionalPrice
-    );
-    expect(addedMaterial.additionalPrice).toBeInstanceOf(Array);
-
     expect(addedMaterial).toHaveProperty('colors', [
       {
         code: 777,
@@ -109,7 +99,7 @@ describe('material mutations tests', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
+          addMaterial(material: $material, images: []) {
             ... on Material {
               name {
                 lang
