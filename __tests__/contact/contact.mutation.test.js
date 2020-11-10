@@ -50,7 +50,6 @@ describe('Contacts mutations test', () => {
       `,
       variables: { contact },
     });
-    console.log(res);
     contactsId = res.data.addContact._id;
     const addedContact = res.data.addContact;
 

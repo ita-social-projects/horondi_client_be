@@ -29,7 +29,6 @@ describe('Contacts queries', () => {
       `,
       variables: { contact: newContact },
     });
-    console.log(res);
     contactsId = res.data.addContact._id;
     done();
   });
