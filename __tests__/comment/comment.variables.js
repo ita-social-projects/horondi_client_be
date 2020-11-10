@@ -157,7 +157,7 @@ const newCategory = {
   available: true,
   name: [
     {
-      value: 'Тестовенька категорія',
+      value: 'Тестовенька категорія123',
       lang: 'uk',
     },
     {
@@ -176,12 +176,12 @@ const newCategory = {
 
 const newModel = {
   name: [
-    { value: 'Тестова моделька', lang: 'uk' },
-    { value: 'Test modelyy', lang: 'en' },
+    { value: 'Тестова модель', lang: 'uk' },
+    { value: 'Test model', lang: 'en' },
   ],
   description: [
-    { value: 'Тест', lang: 'uk' },
-    { value: 'Test', lang: 'en' },
+    { value: 'Тест1', lang: 'uk' },
+    { value: 'Test1', lang: 'en' },
   ],
   images: {
     large: 'large_new',
@@ -193,8 +193,8 @@ const newModel = {
 
 const newMaterial = {
   name: [
-    { lang: 'uk', value: 'Тестовий матеріальчик' },
-    { lang: 'en', value: 'Test Materialyy' },
+    { lang: 'uk', value: 'Тестовий матеріальчик2' },
+    { lang: 'en', value: 'Test Materialyy2' },
   ],
   description: [
     { lang: 'uk', value: 'Опис Тестового матеріальчика' },
@@ -219,8 +219,8 @@ const newMaterial = {
 
 const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   name: [
-    { lang: 'en', value: 'Very Coool Baggy' },
-    { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
+    { lang: 'en', value: 'Very Coool Baggy123' },
+    { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок123' },
   ],
   description: [
     { lang: 'en', value: 'Baggy is so cool' },
