@@ -54,6 +54,9 @@ const materialToUpdate = {
     { lang: 'uk', value: 'Тест mu ta tion' },
     { lang: 'en', value: 'Test mu ta tion' },
   ],
+  ...materialData,
+};
+const materialData = {
   description: [
     { lang: 'uk', value: 'Опис update' },
     { lang: 'en', value: 'Description update' },
@@ -82,7 +85,6 @@ const materialToUpdate = {
     },
   ],
 };
-
 const materialWithExistingName = {
   name: [
     {
@@ -94,33 +96,7 @@ const materialWithExistingName = {
       value: 'Malmo',
     },
   ],
-  description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
-  ],
-  purpose: 'test update',
-  available: true,
-  additionalPrice: 2,
-  colors: [
-    {
-      code: 777,
-      name: [
-        { lang: 'uk', value: 'Тестовий колір update' },
-        { lang: 'en', value: 'Test color update' },
-      ],
-      images: {
-        large: 'large_test update',
-        medium: 'medium_test update',
-        small: 'small_test update',
-        thumbnail: 'thumbnail_test update',
-      },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'проста назва кольору update' },
-        { lang: 'en', value: 'simple color name update' },
-      ],
-    },
-  ],
+  ...materialData,
 };
 
 module.exports = {

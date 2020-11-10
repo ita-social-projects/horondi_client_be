@@ -26,23 +26,24 @@ jest.mock('../../modules/product/product.utils.js');
 
 let commentId = '';
 let operations;
+let modelId;
+let materialId;
 let product;
 let productId;
 let categoryId;
 let subcategoryId;
-let modelId;
-let materialId;
 
 describe('Comment queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
-    categoryId = itemsId.categoryId;
-    subcategoryId = itemsId.subcategoryId;
     modelId = itemsId.modelId;
     materialId = itemsId.materialId;
+    categoryId = itemsId.categoryId;
+    subcategoryId = itemsId.subcategoryId;
 
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {
@@ -60,7 +61,9 @@ describe('Comment queries', () => {
         product,
       },
     });
+
     productId = createProduct.data.addProduct._id;
+
     const res = await operations
       .mutate({
         mutation: gql`
