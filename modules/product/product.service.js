@@ -13,6 +13,7 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { Error } = require('mongoose');
+const { uploadProductImages } = require('./product.utils');
 
 class ProductsService {
   getProductById(id) {
@@ -173,10 +174,7 @@ class ProductsService {
   }
 
   async addProduct(productData, filesToUpload) {
-    const uploadResult = await uploadFiles(filesToUpload);
-    const imagesResults = await Promise.allSettled(uploadResult);
-    const primary = imagesResults[0].value.fileNames;
-    const additional = imagesResults.slice(1).map(res => res.value.fileNames);
+    const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
     productData.basePrice = await this.calculatePrice(basePrice);

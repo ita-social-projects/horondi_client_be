@@ -15,21 +15,25 @@ const {
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
-jest.mock('../../modules/product/product.service.js');
+jest.mock('../../modules/product/product.utils.js');
 
 let product;
 let productId;
 let operations;
 let currentProduct;
+let categoryId;
+let subcategoryId;
+let modelId;
+let materialId;
 
 describe('Product queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
-    let { categoryId, subcategoryId, modelId, materialId } = await createModel(
-      newMaterial,
-      newCategory,
-      newModel
-    );
+    const model = await createModel(newMaterial, newCategory, newModel);
+    categoryId = model.categoryId;
+    subcategoryId = model.subcategoryId;
+    modelId = model.modelId;
+    materialId = model.materialId;
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
     currentProduct = getProductData(product);
 
@@ -51,8 +55,9 @@ describe('Product queries', () => {
       },
     });
     productId = createProduct.data.addProduct._id;
+    done();
   });
-  test('#1 Should receive all products', async () => {
+  test('#1 Should receive all products', async done => {
     const products = await operations.query({
       query: gql`
         query {
@@ -98,8 +103,9 @@ describe('Product queries', () => {
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
     expect(allProducts[0].name).toBeInstanceOf(Array);
+    done();
   });
-  test('#2 Should receive product by ID', async () => {
+  test('#2 Should receive product by ID', async done => {
     const resevedProduct = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -155,8 +161,9 @@ describe('Product queries', () => {
       _id: productId,
       model,
     });
+    done();
   });
-  test('#3 Should receive error if product ID is wrong', async () => {
+  test('#3 Should receive error if product ID is wrong', async done => {
     const getProduct = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -208,8 +215,10 @@ describe('Product queries', () => {
     expect(receivedError).toBeDefined();
     expect(receivedError).toHaveProperty('statusCode', 404);
     expect(receivedError).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
+    done();
   });
-  afterAll(async () => {
-    await deleteAll(materialId, productId, categoryId, modelId);
+  afterAll(async done => {
+    const deleted = await deleteAll(materialId, productId, categoryId, modelId);
+    done();
   });
 });

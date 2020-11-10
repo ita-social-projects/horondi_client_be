@@ -14,7 +14,7 @@ const model = [
 
 const deleteAll = async (materialId, productId, categoryId, modelId) => {
   const operations = await setupApp();
-  await operations.mutate({
+  const deleteMaterial = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteMaterial(id: $id) {
@@ -30,7 +30,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: materialId },
   });
-  await operations.mutate({
+  const deleteProduct = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteProduct(id: $id) {
@@ -46,7 +46,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: productId },
   });
-  await operations.mutate({
+  const deleteCategory = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteCategory(id: $id) {
@@ -62,7 +62,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: categoryId },
   });
-  await operations.mutate({
+  const deleteModel = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteModel(id: $id) {
@@ -78,6 +78,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: modelId },
   });
+  return { deleteProduct, deleteMaterial, deleteCategory, deleteModel };
 };
 
 const getProductData = product => ({

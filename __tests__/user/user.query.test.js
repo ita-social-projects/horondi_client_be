@@ -302,11 +302,13 @@ describe('queries', () => {
   });
 
   afterAll(async () => {
-    await operations.mutate({
+    const id = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
-            _id
+            ... on User {
+              _id
+            }
           }
         }
       `,
@@ -314,6 +316,7 @@ describe('queries', () => {
         userId,
       },
     });
+    console.log(id);
   });
 });
 
@@ -354,14 +357,6 @@ describe('Testing obtaining information restrictions', () => {
             language: $language
           ) {
             _id
-            firstName
-            lastName
-            email
-            role
-            registrationDate
-            credentials {
-              tokenPass
-            }
           }
         }
       `,
@@ -484,7 +479,6 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('User can obtain the information about himself', async () => {
-    // operations = await setupApp({token: userToken, id: userId, email: userLogin, password: userPassword});
     const userLoginInfo = await operations.mutate({
       mutation: gql`
         mutation($email: String!, $password: String!) {

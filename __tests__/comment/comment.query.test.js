@@ -21,7 +21,7 @@ const {
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
-jest.mock('../../modules/product/product.service.js');
+jest.mock('../../modules/product/product.utils.js');
 
 let commentId = '';
 let operations;
