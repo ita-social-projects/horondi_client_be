@@ -689,6 +689,7 @@ const typeDefs = gql`
       addProductToCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
       removeProductFromCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
       changeCartProductQuantity(id: ID!, key: String!, product: CartProductInput!): CartProduct!
+       googleUser(id_token: String!): User
 
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
