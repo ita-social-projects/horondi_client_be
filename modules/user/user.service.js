@@ -325,7 +325,6 @@ class UserService {
       token,
     };
   }
-
   async googleUser(id_token) {
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
