@@ -24,7 +24,7 @@ describe('mutations', () => {
     operations = await setupApp();
   });
   afterAll(async () => {
-    const id = await operations.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {

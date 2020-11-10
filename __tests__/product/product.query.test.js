@@ -29,11 +29,11 @@ let materialId;
 describe('Product queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    const model = await createModel(newMaterial, newCategory, newModel);
-    categoryId = model.categoryId;
-    subcategoryId = model.subcategoryId;
-    modelId = model.modelId;
-    materialId = model.materialId;
+    const itemsId = await createModel(newMaterial, newCategory, newModel);
+    modelId = itemsId.modelId;
+    materialId = itemsId.materialId;
+    categoryId = itemsId.categoryId;
+    subcategoryId = itemsId.subcategoryId;
     product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
     currentProduct = getProductData(product);
 
