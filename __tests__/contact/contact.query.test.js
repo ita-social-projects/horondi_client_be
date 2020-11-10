@@ -12,7 +12,7 @@ describe('Contacts queries', () => {
     operations = await setupApp();
   });
 
-  beforeAll(async () => {
+  beforeAll(async done => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($contact: contactInput!) {
@@ -29,10 +29,12 @@ describe('Contacts queries', () => {
       `,
       variables: { contact: newContact },
     });
+    console.log(res);
     contactsId = res.data.addContact._id;
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -49,9 +51,10 @@ describe('Contacts queries', () => {
       `,
       variables: { id: contactsId },
     });
+    done();
   });
 
-  it('should receive all contacts', async () => {
+  it('should receive all contacts', async done => {
     const res = await operations.query({
       query: gql`
         query($skip: Int, $limit: Int) {
@@ -115,9 +118,10 @@ describe('Contacts queries', () => {
       ],
       link: newContact.link,
     });
+    done();
   });
 
-  test('should receive selected contact', async () => {
+  test('should receive selected contact', async done => {
     const res = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -181,9 +185,10 @@ describe('Contacts queries', () => {
     ]);
     expect(receivedContact.images).toBeInstanceOf(Array);
     expect(receivedContact).toHaveProperty('link', newContact.link);
+    done();
   });
 
-  test('should return error message when returning not existing contact', async () => {
+  test('should return error message when returning not existing contact', async done => {
     const res = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -222,5 +227,6 @@ describe('Contacts queries', () => {
       'message',
       CONTACT_NOT_FOUND
     );
+    done();
   });
 });

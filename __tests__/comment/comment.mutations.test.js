@@ -14,6 +14,7 @@ const {
   newModel,
   newMaterial,
   getNewProduct,
+  deleteAll,
 } = require('../product/product.variables');
 const {
   COMMENT_NOT_FOUND,
@@ -38,7 +39,7 @@ let modelId;
 let materialId;
 
 describe('Comment queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
     categoryId = itemsId.categoryId;
@@ -90,8 +91,9 @@ describe('Comment queries', () => {
     productRate = receivedProduct.rate;
     productRateCount = receivedProduct.rateCount;
     productUserRates = receivedProduct.userRates;
+    done();
   });
-  it(' should add a new comment', async () => {
+  it(' should add a new comment', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -130,8 +132,9 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('show', newComment.show);
     expect(receivedComment).toHaveProperty('user', newComment.user);
     expect(receivedComment).toHaveProperty('productId', newComment.productId);
+    done();
   });
-  it(' should return error if to add comment to not existing product', async () => {
+  it(' should return error if to add comment to not existing product', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -170,9 +173,10 @@ describe('Comment queries', () => {
       COMMENT_FOR_NOT_EXISTING_PRODUCT
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
+    done();
   });
 
-  it('  should update comment', async () => {
+  it('  should update comment', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -213,9 +217,10 @@ describe('Comment queries', () => {
       'productId',
       updatedComment.productId
     );
+    done();
   });
 
-  it(' should return error if id of comment to update is not correct', async () => {
+  it(' should return error if id of comment to update is not correct', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -250,8 +255,9 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
     expect(receivedComment).toHaveProperty('statusCode', 404);
+    done();
   });
-  it('should add rate to the product', async () => {
+  it('should add rate to the product', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -282,8 +288,9 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('rate', rate);
     expect(receivedComment).toHaveProperty('rateCount', 1);
     expect(receivedComment.userRates.length).toEqual(1);
+    done();
   });
-  it('should update rate of the product', async () => {
+  it('should update rate of the product', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -314,8 +321,9 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('rate', updatedRate);
     expect(receivedComment).toHaveProperty('rateCount', 1);
     expect(receivedComment.userRates.length).toEqual(1);
+    done();
   });
-  it('should return error if to add rate to not existing product', async () => {
+  it('should return error if to add rate to not existing product', async done => {
     const res = await operations
       .mutate({
         mutation: gql`
@@ -349,8 +357,11 @@ describe('Comment queries', () => {
       RATE_FOR_NOT_EXISTING_PRODUCT
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
+    done();
   });
-  afterAll(async () => {
-    await deleteAll(materialId, productId, categoryId, modelId);
+  afterAll(async done => {
+    const deleteD = await deleteAll(materialId, productId, categoryId, modelId);
+    console.log(deleteD);
+    done();
   });
 });

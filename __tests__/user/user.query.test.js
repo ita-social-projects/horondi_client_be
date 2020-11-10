@@ -302,7 +302,7 @@ describe('queries', () => {
   });
 
   afterAll(async () => {
-    const id = await operations.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
@@ -316,7 +316,6 @@ describe('queries', () => {
         userId,
       },
     });
-    console.log(id);
   });
 });
 
@@ -337,8 +336,7 @@ describe('Testing obtaining information restrictions', () => {
     adminPassword = superAdminUser.password;
     firstName = 'Pepo';
     lastName = 'Markelo';
-    userId = '5f43af8522155b08109e0304';
-    await operations.mutate({
+    const register = await operations.mutate({
       mutation: gql`
         mutation(
           $firstName: String!
@@ -368,6 +366,7 @@ describe('Testing obtaining information restrictions', () => {
         language: 1,
       },
     });
+    userId = register.data.registerUser._id;
   });
 
   test('User must login', async () => {
@@ -573,5 +572,21 @@ describe('Testing obtaining information restrictions', () => {
     const data = result.data.validateConfirmationToken;
 
     expect(data.isSuccess).toEqual(true);
+  });
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            ... on User {
+              _id
+            }
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
   });
 });

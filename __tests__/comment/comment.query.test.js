@@ -17,6 +17,7 @@ const {
   newModel,
   newMaterial,
   getNewProduct,
+  deleteAll,
 } = require('../product/product.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -33,7 +34,7 @@ let modelId;
 let materialId;
 
 describe('Comment queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
     categoryId = itemsId.categoryId;
@@ -82,9 +83,10 @@ describe('Comment queries', () => {
       })
       .catch(e => e);
     commentId = res.data.addComment._id;
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteAll(materialId, productId, categoryId, modelId);
     await operations
       .mutate({
@@ -104,9 +106,10 @@ describe('Comment queries', () => {
         variables: { id: commentId },
       })
       .catch(e => e);
+    done();
   });
 
-  it(' Should receive all comments writen by selected user', async () => {
+  it(' Should receive all comments writen by selected user', async done => {
     const res = await operations
       .query({
         variables: {
@@ -139,8 +142,9 @@ describe('Comment queries', () => {
       user: newComment.user,
       show: newComment.show,
     });
+    done();
   });
-  it(' Should receive all comments for one product', async () => {
+  it(' Should receive all comments for one product', async done => {
     const res = await operations
       .query({
         variables: {
@@ -172,8 +176,9 @@ describe('Comment queries', () => {
       user: newComment.user,
       show: newComment.show,
     });
+    done();
   });
-  it(' Should receive all comments for one product', async () => {
+  it(' Should receive all comments for one product', async done => {
     const res = await operations
       .query({
         variables: {
@@ -201,9 +206,10 @@ describe('Comment queries', () => {
 
     expect(error).toBeDefined();
     expect(error).toBe(COMMENT_NOT_FOUND);
+    done();
   });
 
-  it(' should return empty array of comments for unexisting email ', async () => {
+  it(' should return empty array of comments for unexisting email ', async done => {
     const res = await operations.query({
       variables: {
         userEmail: invalidEmail,
@@ -229,9 +235,10 @@ describe('Comment queries', () => {
     expect(res.data.getAllCommentsByUser).toBeDefined();
     expect(res.data.getAllCommentsByUser.length).toBe(0);
     expect(res.data.getAllCommentsByUser).toBeInstanceOf(Array);
+    done();
   });
 
-  it(' should return one comment', async () => {
+  it(' should return one comment', async done => {
     const res = await operations
       .query({
         variables: {
@@ -269,8 +276,9 @@ describe('Comment queries', () => {
       user: newComment.user,
       show: newComment.show,
     });
+    done();
   });
-  it(' should return error when find comment by wrong id', async () => {
+  it(' should return error when find comment by wrong id', async done => {
     const res = await operations
       .query({
         variables: {
@@ -304,5 +312,6 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('statusCode', 404);
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
+    done();
   });
 });

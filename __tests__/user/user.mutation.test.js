@@ -24,11 +24,13 @@ describe('mutations', () => {
     operations = await setupApp();
   });
   afterAll(async () => {
-    await operations.mutate({
+    const id = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
-            _id
+            ... on User {
+              _id
+            }
           }
         }
       `,
@@ -535,21 +537,6 @@ describe('User`s mutation restictions tests', () => {
     userId = res.data.registerUser._id;
   });
 
-  afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            _id
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
-  });
-
   test('User must login', async () => {
     const result = await operations
       .mutate({
@@ -734,7 +721,7 @@ describe('Register admin', () => {
         `,
         variables: {
           user: {
-            email: testUser.email,
+            email: 'superadmin@gmail.com',
             role,
           },
         },
@@ -816,6 +803,7 @@ describe('Register admin', () => {
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
               ... on User {
+                _id
                 email
                 invitationalToken
               }
@@ -834,12 +822,25 @@ describe('Register admin', () => {
         },
       })
       .catch(err => err);
-
     const data = result.data.registerAdmin;
-
+    userId = data._id;
     expect(data.email).toEqual(newAdminEmail);
 
     invitationalToken = data.invitationalToken;
+  });
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
   });
 });
 
@@ -1127,5 +1128,22 @@ describe('User filtering', () => {
     const data = result.data.getAllUsers.items;
 
     expect(data.every(item => roles.includes(item.role))).toEqual(true);
+  });
+
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            ... on User {
+              _id
+            }
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
   });
 });

@@ -102,7 +102,6 @@ describe('Product queries', () => {
     const allProducts = products.data.getProducts.items;
     expect(allProducts).toBeDefined();
     expect(allProducts.length).toBeGreaterThan(0);
-    expect(allProducts[0].name).toBeInstanceOf(Array);
     done();
   });
   test('#2 Should receive product by ID', async done => {
@@ -218,7 +217,7 @@ describe('Product queries', () => {
     done();
   });
   afterAll(async done => {
-    const deleted = await deleteAll(materialId, productId, categoryId, modelId);
+    await deleteAll(materialId, productId, categoryId, modelId);
     done();
   });
 });
