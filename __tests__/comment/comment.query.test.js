@@ -9,12 +9,15 @@ const {
   validEmail,
   invalidEmail,
   productWrongId,
+} = require('./comment.variables');
+
+const {
   createModel,
   newCategory,
   newModel,
   newMaterial,
   getNewProduct,
-} = require('./comment.variables');
+} = require('../product/product.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');

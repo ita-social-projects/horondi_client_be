@@ -7,12 +7,14 @@ const {
   commentWrongId,
   rate,
   updatedRate,
+} = require('./comment.variables');
+const {
   createModel,
   newCategory,
   newModel,
   newMaterial,
   getNewProduct,
-} = require('./comment.variables');
+} = require('../product/product.variables');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
