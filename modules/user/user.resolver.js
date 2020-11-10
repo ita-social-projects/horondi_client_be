@@ -20,6 +20,7 @@ const userQuery = {
 const userMutation = {
   registerUser: (parent, args) =>
     userService.registerUser(args.user, args.language),
+  googleUser: (parent, args) => userService.googleUser(args.id_token),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: async (parent, args) => {
