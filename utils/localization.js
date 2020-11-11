@@ -1,5 +1,5 @@
 const { getTime } = require('./getTime');
-const { FRONT_BASE_URI } = require('../dotenvValidator');
+const { FRONT_BASE_URI, ADMIN_BASE_URI } = require('../dotenvValidator');
 
 const recoveryMessage = (firstName, token, language) => {
   if (language === 0) {
