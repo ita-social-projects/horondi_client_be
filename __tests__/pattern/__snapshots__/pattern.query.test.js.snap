@@ -607,6 +607,130 @@ Object {
       "description": Array [
         Object {
           "lang": "uk",
+          "value": "Фабричний гобелен із зображенням рожевої хвильки",
+        },
+        Object {
+          "lang": "en",
+          "value": "Manufactured tapestry with pink wave pattern",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_335nr4j5dkebkw5cy_pink-wave.jpg",
+        "medium": "medium_335nr4j5dkebkw5cy_pink-wave.jpg",
+        "small": "small_335nr4j5dkebkw5cy_pink-wave.jpg",
+        "thumbnail": "thumbnail_335nr4j5dkebkw5cy_pink-wave.jpg",
+      },
+      "material": "Cotton",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Рожева хвилька",
+        },
+        Object {
+          "lang": "en",
+          "value": "Pink wave",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "description": Array [
+        Object {
+          "lang": "uk",
+          "value": "Фабричний гобелен із зображенням синьої хвильки",
+        },
+        Object {
+          "lang": "en",
+          "value": "Manufactured tapestry with blue wave pattern",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_335nr4j5dkebkvle7_blue-wave.jpg",
+        "medium": "medium_335nr4j5dkebkvle7_blue-wave.jpg",
+        "small": "small_335nr4j5dkebkvle7_blue-wave.jpg",
+        "thumbnail": "thumbnail_335nr4j5dkebkvle7_blue-wave.jpg",
+      },
+      "material": "Cotton",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Синя хвилька",
+        },
+        Object {
+          "lang": "en",
+          "value": "Blue wave",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "description": Array [
+        Object {
+          "lang": "uk",
+          "value": "Фабричний гобелен із зображенням синьо-рожевої хвильки",
+        },
+        Object {
+          "lang": "en",
+          "value": "Manufactured tapestry with blue-pink wave pattern",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_335nr431gkebp19ht_blue-pink.jpg",
+        "medium": "medium_335nr431gkebp19ht_blue-pink.jpg",
+        "small": "small_335nr431gkebp19ht_blue-pink.jpg",
+        "thumbnail": "thumbnail_335nr431gkebp19ht_blue-pink.jpg",
+      },
+      "material": "Cotton",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Синьо-рожева хвилька",
+        },
+        Object {
+          "lang": "en",
+          "value": "Blue-pink wave",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "description": Array [
+        Object {
+          "lang": "uk",
+          "value": "Фабричний гобелен із зображенням стрілок",
+        },
+        Object {
+          "lang": "en",
+          "value": "Manufactured tapestry with arrow pattern",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_335nr4j5dkebkv6hj_arrows.jpg",
+        "medium": "medium_335nr4j5dkebkv6hj_arrows.jpg",
+        "small": "small_335nr4j5dkebkv6hj_arrows.jpg",
+        "thumbnail": "thumbnail_335nr4j5dkebkv6hj_arrows.jpg",
+      },
+      "material": "Cotton",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Стрілки",
+        },
+        Object {
+          "lang": "en",
+          "value": "Arrows",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "description": Array [
+        Object {
+          "lang": "uk",
           "value": "Фабричний гобелен із синім визерунком",
         },
         Object {
@@ -630,99 +754,6 @@ Object {
         Object {
           "lang": "en",
           "value": "Blue",
-        },
-      ],
-    },
-    Object {
-      "available": true,
-      "description": Array [
-        Object {
-          "lang": "uk",
-          "value": "Фабричний гобелен із зображенням оленів",
-        },
-        Object {
-          "lang": "en",
-          "value": "Manufactured tapestry with deer pattern",
-        },
-      ],
-      "handmade": false,
-      "images": Object {
-        "large": "large_335nr4j5dkebkvleg_deers.jpg",
-        "medium": "medium_335nr4j5dkebkvleg_deers.jpg",
-        "small": "small_335nr4j5dkebkvleg_deers.jpg",
-        "thumbnail": "thumbnail_335nr4j5dkebkvleg_deers.jpg",
-      },
-      "material": "Cotton",
-      "name": Array [
-        Object {
-          "lang": "uk",
-          "value": "Олені",
-        },
-        Object {
-          "lang": "en",
-          "value": "Deers",
-        },
-      ],
-    },
-    Object {
-      "available": true,
-      "description": Array [
-        Object {
-          "lang": "uk",
-          "value": "Фабричний гобелен із зображенням сірих ромбів",
-        },
-        Object {
-          "lang": "en",
-          "value": "Manufactured tapestry with grey diamond pattern",
-        },
-      ],
-      "handmade": false,
-      "images": Object {
-        "large": "large_335nr435lkebp4pbv_grey-diamonds.jpg",
-        "medium": "medium_335nr435lkebp4pbv_grey-diamonds.jpg",
-        "small": "small_335nr435lkebp4pbv_grey-diamonds.jpg",
-        "thumbnail": "thumbnail_335nr435lkebp4pbv_grey-diamonds.jpg",
-      },
-      "material": "Cotton",
-      "name": Array [
-        Object {
-          "lang": "uk",
-          "value": "Сірі ромби",
-        },
-        Object {
-          "lang": "en",
-          "value": "Grey diamonds",
-        },
-      ],
-    },
-    Object {
-      "available": true,
-      "description": Array [
-        Object {
-          "lang": "uk",
-          "value": "Фабричний гобелен із зображенням людей",
-        },
-        Object {
-          "lang": "en",
-          "value": "Manufactured tapestry with people pattern",
-        },
-      ],
-      "handmade": false,
-      "images": Object {
-        "large": "large_335nr4j5dkebkvzrt_people.jpg",
-        "medium": "medium_335nr4j5dkebkvzrt_people.jpg",
-        "small": "small_335nr4j5dkebkvzrt_people.jpg",
-        "thumbnail": "thumbnail_335nr4j5dkebkvzrt_people.jpg",
-      },
-      "material": "Cotton",
-      "name": Array [
-        Object {
-          "lang": "uk",
-          "value": "Люди",
-        },
-        Object {
-          "lang": "en",
-          "value": "People",
         },
       ],
     },
@@ -793,29 +824,29 @@ Object {
       "description": Array [
         Object {
           "lang": "uk",
-          "value": "Фабричний гобелен із зображенням синьої хвильки",
+          "value": "Фабричний гобелен із зображенням вишивки",
         },
         Object {
           "lang": "en",
-          "value": "Manufactured tapestry with blue wave pattern",
+          "value": "Manufactured tapestry with embroidery pattern",
         },
       ],
       "handmade": false,
       "images": Object {
-        "large": "large_335nr4j5dkebkvle7_blue-wave.jpg",
-        "medium": "medium_335nr4j5dkebkvle7_blue-wave.jpg",
-        "small": "small_335nr4j5dkebkvle7_blue-wave.jpg",
-        "thumbnail": "thumbnail_335nr4j5dkebkvle7_blue-wave.jpg",
+        "large": "large_335nr435lkebp2r7d_embroidery.jpg",
+        "medium": "medium_335nr435lkebp2r7d_embroidery.jpg",
+        "small": "small_335nr435lkebp2r7d_embroidery.jpg",
+        "thumbnail": "thumbnail_335nr435lkebp2r7d_embroidery.jpg",
       },
       "material": "Cotton",
       "name": Array [
         Object {
           "lang": "uk",
-          "value": "Синя хвилька",
+          "value": "Вишивка",
         },
         Object {
           "lang": "en",
-          "value": "Blue wave",
+          "value": "Embroidery",
         },
       ],
     },
@@ -824,29 +855,29 @@ Object {
       "description": Array [
         Object {
           "lang": "uk",
-          "value": "Фабричний гобелен із зображенням рожевої хвильки",
+          "value": "Фабричний гобелен із зображенням оленів",
         },
         Object {
           "lang": "en",
-          "value": "Manufactured tapestry with pink wave pattern",
+          "value": "Manufactured tapestry with deer pattern",
         },
       ],
       "handmade": false,
       "images": Object {
-        "large": "large_335nr4j5dkebkw5cy_pink-wave.jpg",
-        "medium": "medium_335nr4j5dkebkw5cy_pink-wave.jpg",
-        "small": "small_335nr4j5dkebkw5cy_pink-wave.jpg",
-        "thumbnail": "thumbnail_335nr4j5dkebkw5cy_pink-wave.jpg",
+        "large": "large_335nr4j5dkebkvleg_deers.jpg",
+        "medium": "medium_335nr4j5dkebkvleg_deers.jpg",
+        "small": "small_335nr4j5dkebkvleg_deers.jpg",
+        "thumbnail": "thumbnail_335nr4j5dkebkvleg_deers.jpg",
       },
       "material": "Cotton",
       "name": Array [
         Object {
           "lang": "uk",
-          "value": "Рожева хвилька",
+          "value": "Олені",
         },
         Object {
           "lang": "en",
-          "value": "Pink wave",
+          "value": "Deers",
         },
       ],
     },
@@ -855,60 +886,29 @@ Object {
       "description": Array [
         Object {
           "lang": "uk",
-          "value": "Фабричний гобелен із зображенням синьо-рожевої хвильки",
+          "value": "Фабричний гобелен із зображенням людей",
         },
         Object {
           "lang": "en",
-          "value": "Manufactured tapestry with blue-pink wave pattern",
+          "value": "Manufactured tapestry with people pattern",
         },
       ],
       "handmade": false,
       "images": Object {
-        "large": "large_335nr431gkebp19ht_blue-pink.jpg",
-        "medium": "medium_335nr431gkebp19ht_blue-pink.jpg",
-        "small": "small_335nr431gkebp19ht_blue-pink.jpg",
-        "thumbnail": "thumbnail_335nr431gkebp19ht_blue-pink.jpg",
+        "large": "large_335nr4j5dkebkvzrt_people.jpg",
+        "medium": "medium_335nr4j5dkebkvzrt_people.jpg",
+        "small": "small_335nr4j5dkebkvzrt_people.jpg",
+        "thumbnail": "thumbnail_335nr4j5dkebkvzrt_people.jpg",
       },
       "material": "Cotton",
       "name": Array [
         Object {
           "lang": "uk",
-          "value": "Синьо-рожева хвилька",
+          "value": "Люди",
         },
         Object {
           "lang": "en",
-          "value": "Blue-pink wave",
-        },
-      ],
-    },
-    Object {
-      "available": true,
-      "description": Array [
-        Object {
-          "lang": "uk",
-          "value": "Фабричний гобелен із зображенням зелених ромбів",
-        },
-        Object {
-          "lang": "en",
-          "value": "Manufactured tapestry with green diamond pattern",
-        },
-      ],
-      "handmade": false,
-      "images": Object {
-        "large": "large_335nr435lkebp3yc5_green-diamonds.jpg",
-        "medium": "medium_335nr435lkebp3yc5_green-diamonds.jpg",
-        "small": "small_335nr435lkebp3yc5_green-diamonds.jpg",
-        "thumbnail": "thumbnail_335nr435lkebp3yc5_green-diamonds.jpg",
-      },
-      "material": "Cotton",
-      "name": Array [
-        Object {
-          "lang": "uk",
-          "value": "Зелені ромби",
-        },
-        Object {
-          "lang": "en",
-          "value": "Green diamonds",
+          "value": "People",
         },
       ],
     },
@@ -940,6 +940,68 @@ Object {
         Object {
           "lang": "en",
           "value": "Flowers",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "description": Array [
+        Object {
+          "lang": "uk",
+          "value": "Фабричний гобелен із зображенням сірих ромбів",
+        },
+        Object {
+          "lang": "en",
+          "value": "Manufactured tapestry with grey diamond pattern",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_335nr435lkebp4pbv_grey-diamonds.jpg",
+        "medium": "medium_335nr435lkebp4pbv_grey-diamonds.jpg",
+        "small": "small_335nr435lkebp4pbv_grey-diamonds.jpg",
+        "thumbnail": "thumbnail_335nr435lkebp4pbv_grey-diamonds.jpg",
+      },
+      "material": "Cotton",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Сірі ромби",
+        },
+        Object {
+          "lang": "en",
+          "value": "Grey diamonds",
+        },
+      ],
+    },
+    Object {
+      "available": true,
+      "description": Array [
+        Object {
+          "lang": "uk",
+          "value": "Фабричний гобелен із зображенням зелених ромбів",
+        },
+        Object {
+          "lang": "en",
+          "value": "Manufactured tapestry with green diamond pattern",
+        },
+      ],
+      "handmade": false,
+      "images": Object {
+        "large": "large_335nr435lkebp3yc5_green-diamonds.jpg",
+        "medium": "medium_335nr435lkebp3yc5_green-diamonds.jpg",
+        "small": "small_335nr435lkebp3yc5_green-diamonds.jpg",
+        "thumbnail": "thumbnail_335nr435lkebp3yc5_green-diamonds.jpg",
+      },
+      "material": "Cotton",
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Зелені ромби",
+        },
+        Object {
+          "lang": "en",
+          "value": "Green diamonds",
         },
       ],
     },
@@ -1002,68 +1064,6 @@ Object {
         Object {
           "lang": "en",
           "value": "Blue diamonds",
-        },
-      ],
-    },
-    Object {
-      "available": true,
-      "description": Array [
-        Object {
-          "lang": "uk",
-          "value": "Фабричний гобелен із зображенням стрілок",
-        },
-        Object {
-          "lang": "en",
-          "value": "Manufactured tapestry with arrow pattern",
-        },
-      ],
-      "handmade": false,
-      "images": Object {
-        "large": "large_335nr4j5dkebkv6hj_arrows.jpg",
-        "medium": "medium_335nr4j5dkebkv6hj_arrows.jpg",
-        "small": "small_335nr4j5dkebkv6hj_arrows.jpg",
-        "thumbnail": "thumbnail_335nr4j5dkebkv6hj_arrows.jpg",
-      },
-      "material": "Cotton",
-      "name": Array [
-        Object {
-          "lang": "uk",
-          "value": "Стрілки",
-        },
-        Object {
-          "lang": "en",
-          "value": "Arrows",
-        },
-      ],
-    },
-    Object {
-      "available": true,
-      "description": Array [
-        Object {
-          "lang": "uk",
-          "value": "Фабричний гобелен із зображенням вишивки",
-        },
-        Object {
-          "lang": "en",
-          "value": "Manufactured tapestry with embroidery pattern",
-        },
-      ],
-      "handmade": false,
-      "images": Object {
-        "large": "large_335nr435lkebp2r7d_embroidery.jpg",
-        "medium": "medium_335nr435lkebp2r7d_embroidery.jpg",
-        "small": "small_335nr435lkebp2r7d_embroidery.jpg",
-        "thumbnail": "thumbnail_335nr435lkebp2r7d_embroidery.jpg",
-      },
-      "material": "Cotton",
-      "name": Array [
-        Object {
-          "lang": "uk",
-          "value": "Вишивка",
-        },
-        Object {
-          "lang": "en",
-          "value": "Embroidery",
         },
       ],
     },
