@@ -1,4 +1,7 @@
-require('dotenv').config();
+const {
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASSWORD,
+} = require('../../dotenvValidator');
 
 const adminUser = {
   email: 'admin2123@gmail.com',
@@ -6,8 +9,8 @@ const adminUser = {
 };
 
 const superAdminUser = {
-  email: process.env.SUPER_ADMIN_EMAIL,
-  password: process.env.SUPER_ADMIN_PASSWORD,
+  email: SUPER_ADMIN_EMAIL,
+  password: SUPER_ADMIN_PASSWORD,
 };
 
 const newAdmin = {

@@ -1,6 +1,11 @@
+const {
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASSWORD,
+} = require('../../dotenvValidator');
+
 const user = {
-  email: process.env.SUPER_ADMIN_EMAIL,
-  password: process.env.SUPER_ADMIN_PASSWORD,
+  email: SUPER_ADMIN_EMAIL,
+  password: SUPER_ADMIN_PASSWORD,
 };
 
 const news = {

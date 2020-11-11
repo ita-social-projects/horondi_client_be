@@ -1,3 +1,8 @@
+const {
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASSWORD,
+} = require('../../dotenvValidator');
+
 const materialDoesNotExistId = '1f2ad410eb01783384e6111b';
 const graphqlErrorMessage = 'Skip value must be non-negative, but received: -5';
 
@@ -8,8 +13,8 @@ const limit = 2;
 const limitZero = 0;
 
 const user = {
-  email: process.env.SUPER_ADMIN_EMAIL,
-  password: process.env.SUPER_ADMIN_PASSWORD,
+  email: SUPER_ADMIN_EMAIL,
+  password: SUPER_ADMIN_PASSWORD,
 };
 
 const languageTypeName = { __typename: 'Language' };

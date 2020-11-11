@@ -9,8 +9,6 @@ const { getAllUsers } = require('../../modules/user/user.service');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
-require('dotenv').config();
-
 let token;
 let userId;
 let operations;

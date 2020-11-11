@@ -1,6 +1,5 @@
 const { gql } = require('@apollo/client');
 /* eslint-disable no-undef */
-require('dotenv').config();
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');

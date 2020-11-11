@@ -6,7 +6,7 @@ const {
   IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
-require('dotenv').config();
+const { IMAGE_LINK } = require('../../dotenvValidator');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
@@ -134,9 +134,7 @@ class BusinessTextService {
   }
 
   async deleteNoNeededImages(images) {
-    const regExp = new RegExp(
-      `(?<=src="${process.env.IMAGE_LINK}[a-z]+_).*?(?=")`
-    );
+    const regExp = new RegExp(`(?<=src="${IMAGE_LINK}[a-z]+_).*?(?=")`);
 
     const uniqueIds = images.map(img => img.match(regExp));
     const valuesToDelete = uniqueIds

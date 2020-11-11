@@ -1,3 +1,8 @@
+const {
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASSWORD,
+} = require('../../dotenvValidator');
+
 const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
 const skip = 0;
 const wrongSkip = -1;
@@ -5,8 +10,8 @@ const wrongLimit = -5;
 const limit = 5;
 
 const user = {
-  email: process.env.SUPER_ADMIN_EMAIL,
-  password: process.env.SUPER_ADMIN_PASSWORD,
+  email: SUPER_ADMIN_EMAIL,
+  password: SUPER_ADMIN_PASSWORD,
 };
 
 const testImages = {

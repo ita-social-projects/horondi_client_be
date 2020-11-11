@@ -10,8 +10,6 @@ const {
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
-require('dotenv').config();
-
 let userId;
 let token;
 let badId;
