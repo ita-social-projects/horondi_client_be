@@ -30,4 +30,8 @@ const setupApp = async user => {
   return createTestClient(server);
 };
 
-module.exports = { setupApp };
+const chooseOnlyUsers = arr => {
+  return arr.filter(user => user.role === CNST.roles.USER);
+};
+
+module.exports = { setupApp, chooseOnlyUsers };

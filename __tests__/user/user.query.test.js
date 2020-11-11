@@ -1,11 +1,15 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
+const client = require('../../utils/apollo-test-client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
-let { superAdminUser, testUser } = require('./user.variables');
-const { setupApp } = require('../helper-functions');
-const { getAllUsers } = require('../../modules/user/user.service');
+let { superAdminUser, testUser, testUsersSet } = require('./user.variables');
+const { setupApp, chooseOnlyUsers } = require('../helper-functions');
+const loginAdmin = require('../helpers/admin-login');
+const createUser = require('../helpers/create-user');
+const getAllUsers = require('../helpers/get-all-users');
+
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
@@ -580,5 +584,168 @@ describe('Testing obtaining information restrictions', () => {
     const data = result.data.validateConfirmationToken;
 
     expect(data.isSuccess).toEqual(true);
+  });
+});
+
+describe('Filter users', () => {
+  let adminToken;
+  let usersId;
+
+  beforeAll(async () => {
+    await testUsersSet.map(user => createUser(user).catch(e => e));
+    adminToken = await loginAdmin(superAdminUser);
+
+    const users = await getAllUsers(adminToken).then(res =>
+      chooseOnlyUsers(res)
+    );
+    usersId = await users.map(user => user._id);
+
+    await users.forEach(async user => {
+      if (
+        testUsersSet.some(el => el.firstName === user.firstName && el.banned)
+      ) {
+        await client.mutate({
+          mutation: gql`
+            mutation($id: ID!) {
+              switchUserStatus(id: $id) {
+                ... on SuccessfulResponse {
+                  isSuccess
+                }
+                ... on Error {
+                  statusCode
+                }
+              }
+            }
+          `,
+          variables: {
+            id: user._id,
+          },
+          context: {
+            headers: {
+              token: adminToken,
+            },
+          },
+        });
+      }
+    });
+  });
+
+  test('should sort by name from a to z', async () => {
+    const compareResult = testUsersSet.map(user => user.firstName).sort();
+
+    const users = await getAllUsers(adminToken, { name: 1 }).then(res =>
+      chooseOnlyUsers(res)
+    );
+
+    expect(users).toBeDefined();
+    expect(users.map(user => user.firstName)).toEqual(compareResult);
+  });
+
+  test('should sort by name from z to a', async () => {
+    const compareResult = testUsersSet
+      .map(user => user.firstName)
+      .sort()
+      .reverse();
+
+    const users = await getAllUsers(adminToken, { name: -1 }).then(res =>
+      chooseOnlyUsers(res)
+    );
+
+    expect(users).toBeDefined();
+    expect(users.map(user => user.firstName)).toEqual(compareResult);
+  });
+
+  test('should sort by email from a to z', async () => {
+    const compareResult = testUsersSet.map(user => user.email).sort();
+
+    const users = await getAllUsers(adminToken, { email: 1 }).then(res =>
+      chooseOnlyUsers(res)
+    );
+
+    expect(users).toBeDefined();
+    expect(users.map(user => user.email)).toEqual(compareResult);
+  });
+
+  test('should sort by emaill from z to a', async () => {
+    const compareResult = testUsersSet
+      .map(user => user.email)
+      .sort()
+      .reverse();
+
+    const users = await getAllUsers(adminToken, { email: -1 }).then(res =>
+      chooseOnlyUsers(res)
+    );
+
+    expect(users).toBeDefined();
+    expect(users.map(user => user.email)).toEqual(compareResult);
+  });
+
+  test('should show only banned users', async () => {
+    const compareResult = testUsersSet
+      .filter(user => user.banned)
+      .map(user => ({ firstName: user.firstName, banned: user.banned }));
+
+    const users = await getAllUsers(adminToken, {}, { banned: true }).then(
+      res =>
+        chooseOnlyUsers(res).map(user => ({
+          firstName: user.firstName,
+          banned: user.banned,
+        }))
+    );
+
+    expect(users).toBeDefined();
+    users.forEach(user => {
+      expect(user).toEqual(
+        compareResult.filter(el => el.firstName === user.firstName)[0]
+      );
+    });
+  });
+
+  test('should show only not banned users', async () => {
+    const compareResult = testUsersSet
+      .filter(user => !user.banned)
+      .map(user => ({ firstName: user.firstName, banned: user.banned }));
+
+    const users = await getAllUsers(adminToken, {}, { banned: false }).then(
+      res =>
+        chooseOnlyUsers(res).map(user => ({
+          firstName: user.firstName,
+          banned: user.banned,
+        }))
+    );
+
+    expect(users).toBeDefined();
+    users.forEach(user => {
+      expect(user).toEqual(
+        compareResult.filter(el => el.firstName === user.firstName)[0]
+      );
+    });
+  });
+
+  afterAll(async () => {
+    await usersId.forEach(async id => {
+      await client.mutate({
+        mutation: gql`
+          mutation($id: ID!) {
+            deleteUser(id: $id) {
+              ... on User {
+                _id
+              }
+              ... on Error {
+                message
+              }
+            }
+          }
+        `,
+        variables: {
+          id,
+        },
+        context: {
+          headers: {
+            token: adminToken,
+          },
+        },
+      });
+    });
   });
 });
