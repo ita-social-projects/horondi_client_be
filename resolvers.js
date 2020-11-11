@@ -64,6 +64,11 @@ const {
   headerMutation,
 } = require('./modules/header/header.resolver');
 
+const {
+  homePageSlideQuery,
+  homePageSlideMutation,
+} = require('./modules/homepage-slider/homepage-slider.resolves');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -88,6 +93,7 @@ const SCHEMA_NAMES = {
   novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
   homePageImages: 'HomePageImages',
+  homePageSlide: 'HomePageSlide',
 };
 const resolvers = {
   Query: {
@@ -126,6 +132,8 @@ const resolvers = {
     ...homePageImagesQuery,
 
     ...headerQuery,
+
+    ...homePageSlideQuery
   },
 
   User: {
@@ -206,6 +214,8 @@ const resolvers = {
     ...homePageImagesMutation,
 
     ...headerMutation,
+
+    ...homePageSlideMutation
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -348,6 +358,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.homePageImages;
+      }
+      return 'Error';
+    },
+  },
+  HomePageSlideResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.homePageSlide;
       }
       return 'Error';
     },
