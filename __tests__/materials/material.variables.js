@@ -81,22 +81,8 @@ const material = {
 };
 const materialToUpdate = {
   name: [
-    { lang: 'uk', value: 'Тест mu ta tion' },
-    { lang: 'en', value: 'Test mu ta tion' },
-  ],
-  ...materialData,
-};
-
-const materialWithExistingName = {
-  name: [
-    {
-      lang: 'uk',
-      value: 'Мальмо',
-    },
-    {
-      lang: 'en',
-      value: 'Malmo',
-    },
+    { lang: 'uk', value: 'Тест updated' },
+    { lang: 'en', value: 'Test updated' },
   ],
   ...materialData,
 };
@@ -115,5 +101,4 @@ module.exports = {
   imageTypeName,
   material,
   materialToUpdate,
-  materialWithExistingName,
 };

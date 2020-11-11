@@ -79,10 +79,11 @@ describe('Contacts queries', () => {
         }
       `,
       variables: {
-        skip: 1,
+        skip: 0,
         limit: 1,
       },
     });
+
     const receivedContacts = res.data.getContacts;
 
     expect(receivedContacts).toBeDefined();

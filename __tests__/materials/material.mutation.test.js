@@ -8,7 +8,6 @@ const {
   materialDoesNotExistId,
   material,
   materialToUpdate,
-  materialWithExistingName,
 } = require('./material.variables');
 
 const { setupApp } = require('../helper-functions');
@@ -201,7 +200,6 @@ describe('material mutations tests', () => {
         material: materialToUpdate,
       },
     });
-
     const updatedMaterial = res.data.updateMaterial;
 
     expect(updatedMaterial).toBeDefined();
@@ -218,10 +216,6 @@ describe('material mutations tests', () => {
     expect(updatedMaterial).toHaveProperty(
       'available',
       materialToUpdate.available
-    );
-    expect(updatedMaterial).toHaveProperty(
-      'additionalPrice',
-      materialToUpdate.additionalPrice
     );
     expect(updatedMaterial.name).toBeInstanceOf(Array);
 
@@ -314,7 +308,7 @@ describe('material mutations tests', () => {
           }
         }
       `,
-      variables: { id: materialId, material: materialWithExistingName },
+      variables: { id: materialId, material: materialToUpdate },
     });
 
     expect(res.data.updateMaterial).toHaveProperty('statusCode', 400);

@@ -50,21 +50,25 @@ class MaterialsService {
     }
     const currency = await Currency.findOne();
     if (!images) {
-      return await Material.findByIdAndUpdate(id, {
-        ...rest,
-        additionalPrice: [
-          {
-            currency: this.currencyTypes.UAH,
-            value:
-              additionalPrice *
-              Math.round(currency.convertOptions[0].exchangeRate * 100),
-          },
-          {
-            currency: this.currencyTypes.USD,
-            value: additionalPrice * 100,
-          },
-        ],
-      });
+      return await Material.findByIdAndUpdate(
+        id,
+        {
+          ...rest,
+          additionalPrice: [
+            {
+              currency: this.currencyTypes.UAH,
+              value:
+                additionalPrice *
+                Math.round(currency.convertOptions[0].exchangeRate * 100),
+            },
+            {
+              currency: this.currencyTypes.USD,
+              value: additionalPrice * 100,
+            },
+          ],
+        },
+        { new: true }
+      );
     }
     return await Material.findByIdAndUpdate(id, material, { new: true });
   }
@@ -136,8 +140,20 @@ class MaterialsService {
   }
 
   async checkMaterialExistOrDuplicated(data, id) {
-    const materialsCount = await Material.countDocuments({
-      _id: { $ne: id },
+    let materialsCount;
+    if (!id) {
+      materialsCount = await Material.countDocuments({
+        _id: { $ne: id },
+        name: {
+          $elemMatch: {
+            $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          },
+        },
+      });
+      return materialsCount > 0;
+    }
+    materialsCount = await Material.countDocuments({
+      _id: { $eq: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
