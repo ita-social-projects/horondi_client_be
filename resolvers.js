@@ -55,8 +55,8 @@ const {
 } = require('./modules/email-chat/email-chat.resolver');
 
 const {
-  HomePageImagesQuery,
-  HomePageImagesMutation,
+  homePageImagesMutation,
+  homePageImagesQuery,
 } = require('./modules/homepage-images/home-page-images.resolver');
 
 const {
@@ -87,6 +87,7 @@ const SCHEMA_NAMES = {
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
+  homePageImages: 'HomePageImages',
 };
 const resolvers = {
   Query: {
@@ -122,7 +123,7 @@ const resolvers = {
 
     ...emailChatQuestionQuery,
 
-    ...HomePageImagesQuery,
+    ...homePageImagesQuery,
 
     ...headerQuery,
   },
@@ -202,7 +203,7 @@ const resolvers = {
 
     ...emailChatQuestionMutation,
 
-    ...HomePageImagesMutation,
+    ...homePageImagesMutation,
 
     ...headerMutation,
   },
@@ -339,6 +340,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.header;
+      }
+      return 'Error';
+    },
+  },
+  HomepageImagesResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.homePageImages;
       }
       return 'Error';
     },
