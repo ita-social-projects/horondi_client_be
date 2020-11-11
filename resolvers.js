@@ -55,14 +55,19 @@ const {
 } = require('./modules/email-chat/email-chat.resolver');
 
 const {
-  HomePageImagesQuery,
-  HomePageImagesMutation,
+  homePageImagesMutation,
+  homePageImagesQuery,
 } = require('./modules/homepage-images/home-page-images.resolver');
 
 const {
   headerQuery,
   headerMutation,
 } = require('./modules/header/header.resolver');
+
+const {
+  homePageSlideQuery,
+  homePageSlideMutation,
+} = require('./modules/homepage-slider/homepage-slider.resolves');
 
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
@@ -87,6 +92,8 @@ const SCHEMA_NAMES = {
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
+  homePageImages: 'HomePageImages',
+  homePageSlide: 'HomePageSlide',
 };
 const resolvers = {
   Query: {
@@ -122,9 +129,11 @@ const resolvers = {
 
     ...emailChatQuestionQuery,
 
-    ...HomePageImagesQuery,
+    ...homePageImagesQuery,
 
     ...headerQuery,
+
+    ...homePageSlideQuery
   },
 
   User: {
@@ -202,9 +211,11 @@ const resolvers = {
 
     ...emailChatQuestionMutation,
 
-    ...HomePageImagesMutation,
+    ...homePageImagesMutation,
 
     ...headerMutation,
+
+    ...homePageSlideMutation
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -339,6 +350,22 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.header;
+      }
+      return 'Error';
+    },
+  },
+  HomepageImagesResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.homePageImages;
+      }
+      return 'Error';
+    },
+  },
+  HomePageSlideResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.homePageSlide;
       }
       return 'Error';
     },
