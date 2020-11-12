@@ -86,7 +86,6 @@ describe('queries', () => {
                 street: "Shevchenka"
                 buildingNumber: "23"
               }
-              role: "user"
               wishlist: []
               orders: []
               comments: []
@@ -104,7 +103,6 @@ describe('queries', () => {
               street
               buildingNumber
             }
-            wishlist
             orders
             comments
           }
@@ -123,25 +121,27 @@ describe('queries', () => {
       query: gql`
         query {
           getAllUsers {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
+            items {
+              firstName
+              lastName
+              email
+              phoneNumber
+              role
+              address {
+                country
+                city
+                street
+                buildingNumber
+              }
+              orders
+              comments
             }
-            wishlist
-            orders
-            comments
+            count
           }
         }
       `,
     });
-    expect(res.data.getAllUsers).toContainEqual({
+    expect(res.data.getAllUsers.items).toContainEqual({
       firstName: 'Test',
       lastName: 'User',
       email,
@@ -153,7 +153,6 @@ describe('queries', () => {
         street: 'Shevchenka',
         buildingNumber: '23',
       },
-      wishlist: [],
       orders: [],
       comments: [],
     });
@@ -194,7 +193,6 @@ describe('queries', () => {
                 street
                 buildingNumber
               }
-              wishlist
               orders
               comments
             }
@@ -219,7 +217,6 @@ describe('queries', () => {
       street: 'Shevchenka',
       buildingNumber: '23',
     });
-    expect(res.data.getUserByToken).toHaveProperty('wishlist', []);
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
     expect(res.data.getUserByToken).toHaveProperty('comments', []);
   });
@@ -243,7 +240,6 @@ describe('queries', () => {
               street
               buildingNumber
             }
-            wishlist
             orders
             comments
           }
@@ -266,7 +262,6 @@ describe('queries', () => {
       street: 'Shevchenka',
       buildingNumber: '23',
     });
-    expect(res.data.getUserById).toHaveProperty('wishlist', []);
     expect(res.data.getUserById).toHaveProperty('orders', []);
     expect(res.data.getUserById).toHaveProperty('comments', []);
   });
@@ -289,7 +284,6 @@ describe('queries', () => {
                 street
                 buildingNumber
               }
-              wishlist
               orders
               comments
             }
@@ -310,7 +304,9 @@ describe('queries', () => {
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
-            _id
+            ... on User {
+              _id
+            }
           }
         }
       `,
@@ -338,8 +334,7 @@ describe('Testing obtaining information restrictions', () => {
     adminPassword = superAdminUser.password;
     firstName = 'Pepo';
     lastName = 'Markelo';
-    userId = '5f43af8522155b08109e0304';
-    await operations.mutate({
+    const register = await operations.mutate({
       mutation: gql`
         mutation(
           $firstName: String!
@@ -358,14 +353,6 @@ describe('Testing obtaining information restrictions', () => {
             language: $language
           ) {
             _id
-            firstName
-            lastName
-            email
-            role
-            registrationDate
-            credentials {
-              tokenPass
-            }
           }
         }
       `,
@@ -377,6 +364,7 @@ describe('Testing obtaining information restrictions', () => {
         language: 1,
       },
     });
+    userId = register.data.registerUser._id;
   });
 
   test('User must login', async () => {
@@ -439,10 +427,12 @@ describe('Testing obtaining information restrictions', () => {
         query: gql`
           {
             getAllUsers {
-              _id
-              firstName
-              lastName
-              email
+              items {
+                _id
+                firstName
+                lastName
+                email
+              }
             }
           }
         `,
@@ -464,10 +454,12 @@ describe('Testing obtaining information restrictions', () => {
         query: gql`
           {
             getAllUsers {
-              _id
-              firstName
-              lastName
-              email
+              items {
+                _id
+                firstName
+                lastName
+                email
+              }
             }
           }
         `,
@@ -478,14 +470,12 @@ describe('Testing obtaining information restrictions', () => {
         },
       })
       .catch(err => err);
-
-    const data = result.data.getAllUsers;
+    const data = result.data.getAllUsers.items;
 
     expect(data.length).toBeGreaterThanOrEqual(2);
   });
 
   test('User can obtain the information about himself', async () => {
-    // operations = await setupApp({token: userToken, id: userId, email: userLogin, password: userPassword});
     const userLoginInfo = await operations.mutate({
       mutation: gql`
         mutation($email: String!, $password: String!) {
@@ -580,5 +570,21 @@ describe('Testing obtaining information restrictions', () => {
     const data = result.data.validateConfirmationToken;
 
     expect(data.isSuccess).toEqual(true);
+  });
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            ... on User {
+              _id
+            }
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
   });
 });

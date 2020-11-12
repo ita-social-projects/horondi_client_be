@@ -14,7 +14,7 @@ const model = [
 
 const deleteAll = async (materialId, productId, categoryId, modelId) => {
   const operations = await setupApp();
-  await operations.mutate({
+  const deleteMaterial = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteMaterial(id: $id) {
@@ -30,7 +30,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: materialId },
   });
-  await operations.mutate({
+  const deleteProduct = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteProduct(id: $id) {
@@ -46,7 +46,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: productId },
   });
-  await operations.mutate({
+  const deleteCategory = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteCategory(id: $id) {
@@ -62,7 +62,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: categoryId },
   });
-  await operations.mutate({
+  const deleteModel = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteModel(id: $id) {
@@ -78,14 +78,11 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: modelId },
   });
+  return { deleteProduct, deleteMaterial, deleteCategory, deleteModel };
 };
 
 const getProductData = product => ({
   available: product.available,
-  basePrice: [
-    { value: product.basePrice[0].value },
-    { value: product.basePrice[1].value },
-  ],
   category: {
     _id: product.category,
   },
@@ -122,12 +119,12 @@ const createModel = async (material, category, modelToCreate) => {
   const createMaterial = await operations.mutate({
     mutation: gql`
       mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
+        addMaterial(material: $material, images: []) {
           ... on Material {
             _id
-            name {
-              value
-            }
+          }
+          ... on Error {
+            message
           }
         }
       }
@@ -225,10 +222,7 @@ const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
+  basePrice: 1,
   available: true,
   isHotItem: false,
   images: {
@@ -355,10 +349,7 @@ const getProductForUpdate = (
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'white',
-  basePrice: [
-    { currency: 'UAH', value: 777000 },
-    { currency: 'USD', value: 7779 },
-  ],
+  basePrice: 22,
   available: false,
   isHotItem: true,
   images: {
@@ -483,10 +474,7 @@ const getSameNameForUpdate = (
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
+  basePrice: 2,
   available: true,
   isHotItem: false,
   images: {
@@ -616,10 +604,7 @@ const newMaterial = {
   ],
   purpose: 'bottomMaterial',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 79,
   colors: {
     code: 777,
     name: [

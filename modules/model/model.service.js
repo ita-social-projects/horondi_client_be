@@ -76,6 +76,10 @@ class ModelsService {
   async deleteModel(id) {
     const model = await Model.findByIdAndDelete(id);
 
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
+
     const images = Object.values(model.images).filter(
       item => typeof item === 'string' && item
     );

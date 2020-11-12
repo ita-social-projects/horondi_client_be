@@ -13,7 +13,9 @@ class UploadService {
       };
     });
 
-  async deleteFiles(files) {}
+  async deleteFiles(files) {
+    return [true, true];
+  }
 }
 
 module.exports = new UploadService();

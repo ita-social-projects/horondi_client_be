@@ -133,7 +133,7 @@ const resolvers = {
 
     ...headerQuery,
 
-    ...homePageSlideQuery
+    ...homePageSlideQuery,
   },
 
   User: {
@@ -215,7 +215,7 @@ const resolvers = {
 
     ...headerMutation,
 
-    ...homePageSlideMutation
+    ...homePageSlideMutation,
   },
   CategoryResult: {
     __resolveType: obj => {

@@ -3,7 +3,8 @@ const { gql } = require('@apollo/client');
 const { newOrderMutation, newOrderUpdated } = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
-
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/delivery/delivery.service.js');
 let operations;
 let orderId = '';
 
@@ -44,7 +45,6 @@ describe('Order mutations', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -125,7 +125,6 @@ describe('Order mutations', () => {
     });
     const order = res.data.addOrder;
     orderId = order._id;
-
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'SENT');
     expect(order).toHaveProperty('user', {
@@ -319,7 +318,6 @@ describe('Order mutations', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -452,7 +450,6 @@ describe('Order mutations', () => {
                   country
                   zipcode
                 }
-                completed
                 userComment
                 lastUpdatedDate
                 cancellationReason
@@ -570,7 +567,6 @@ describe('Order mutations', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason

@@ -4,13 +4,13 @@ const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 const {
   SLIDE_NOT_FOUND,
   SLIDE_NOT_VALID,
-  IMAGE_NOT_PROVIDED
+  IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/home-page-slider.messages');
 
 class HomePageSliderService {
   async getAllSlides({ skip, limit }) {
     const items = await HomePageSlider.find()
-      .sort({show: -1,  order: 1})
+      .sort({ show: -1, order: 1 })
       .skip(skip)
       .limit(limit);
 
@@ -44,7 +44,7 @@ class HomePageSliderService {
     return await new HomePageSlider(data).save();
   }
 
-  async updateSlide({id, slide, upload}) {
+  async updateSlide({ id, slide, upload }) {
     const slideToUpdate = await HomePageSlider.findById(id);
     if (!slideToUpdate) {
       throw new Error(SLIDE_NOT_FOUND);

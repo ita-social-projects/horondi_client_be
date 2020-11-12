@@ -8,6 +8,8 @@ const user = {
   password: SUPER_ADMIN_PASSWORD,
 };
 
+const wrongId = '5fa8f2ad0785350940d8953e';
+
 const news = {
   title: [
     { lang: 'uk', value: 'bbb' },
@@ -66,4 +68,5 @@ module.exports = {
   news,
   newsUpdateData,
   existingNews,
+  wrongId,
 };

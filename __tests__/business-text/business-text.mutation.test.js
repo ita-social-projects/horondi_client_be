@@ -25,7 +25,7 @@ describe('Business page queries', () => {
       .mutate({
         mutation: gql`
           mutation($businessText: BusinessTextInput!) {
-            addBusinessText(businessText: $businessText) {
+            addBusinessText(businessText: $businessText, files: []) {
               ... on BusinessText {
                 _id
                 code
@@ -67,7 +67,7 @@ describe('Business page queries', () => {
       .mutate({
         mutation: gql`
           mutation($businessText: BusinessTextInput!) {
-            addBusinessText(businessText: $businessText) {
+            addBusinessText(businessText: $businessText, files: []) {
               ... on BusinessText {
                 _id
                 code
@@ -105,7 +105,11 @@ describe('Business page queries', () => {
       .mutate({
         mutation: gql`
           mutation($id: ID!, $businessText: BusinessTextInput!) {
-            updateBusinessText(id: $id, businessText: $businessText) {
+            updateBusinessText(
+              id: $id
+              businessText: $businessText
+              files: []
+            ) {
               ... on BusinessText {
                 _id
                 code
@@ -154,7 +158,11 @@ describe('Business page queries', () => {
       .mutate({
         mutation: gql`
           mutation($id: ID!, $businessText: BusinessTextInput!) {
-            updateBusinessText(id: $id, businessText: $businessText) {
+            updateBusinessText(
+              id: $id
+              businessText: $businessText
+              files: []
+            ) {
               ... on BusinessText {
                 _id
                 code
@@ -193,7 +201,11 @@ describe('Business page queries', () => {
       .mutate({
         mutation: gql`
           mutation($id: ID!, $businessText: BusinessTextInput!) {
-            updateBusinessText(id: $id, businessText: $businessText) {
+            updateBusinessText(
+              id: $id
+              businessText: $businessText
+              files: []
+            ) {
               ... on BusinessText {
                 _id
                 code

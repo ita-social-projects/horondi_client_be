@@ -4,7 +4,7 @@ const {
 } = require('../../dotenvValidator');
 
 const adminUser = {
-  email: 'admin2@gmail.com',
+  email: 'admin2123@gmail.com',
   password: 'qwertY123',
 };
 
@@ -23,7 +23,7 @@ const newAdmin = {
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
-  email: 'f5dbbdnvf1@gmail.com',
+  email: 'qwerdsd223@gmail.com',
   pass: '12345678Pt',
   phoneNumber: '380666666666',
   role: 'admin',
