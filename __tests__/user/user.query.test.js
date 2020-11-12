@@ -598,7 +598,7 @@ describe('Filter users', () => {
   let usersId;
 
   beforeAll(async () => {
-    await testUsersSet.map(user => createUser(user).catch(e => e));
+    testUsersSet.map(user => createUser(user).catch(e => e));
     adminToken = await loginAdmin(superAdminUser);
 
     let users = await getAllUsers(adminToken);
