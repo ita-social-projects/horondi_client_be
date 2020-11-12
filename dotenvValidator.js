@@ -103,7 +103,5 @@ function dotenvValidator(processEnv) {
   return { ...environment.value };
 }
 
-module.exports = { dotenvValidator, dotenvVariables };
 dotenvValidator(process.env);
-
-module.exports = { ...process.env };
+module.exports = { ...process.env, dotenvVariables };

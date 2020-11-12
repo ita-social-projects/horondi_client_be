@@ -16,15 +16,10 @@ const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { dotenvValidator, dotenvVariables } = require('./dotenvValidator');
 
 connectDB();
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
+
 dotenvVariables.forEach(key => {
   logger.log('info', JSON.stringify({ key, value: process.env[key] }));
 });
-dotenvValidator(process.env);
-
-connectDB();
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
