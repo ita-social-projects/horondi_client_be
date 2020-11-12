@@ -1,5 +1,5 @@
 const winston = require('winston');
-const loggerInFile = winston.createLogger({
+const loggerHttp = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -13,4 +13,4 @@ const loggerInFile = winston.createLogger({
   ],
 });
 
-module.exports = loggerInFile;
+module.exports = loggerHttp;

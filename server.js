@@ -7,8 +7,8 @@ const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
-const logger = require('./loggerEnv');
-const loggerInFile = require('./loggerInFile');
+const logger = require('./logger');
+const loggerHttp = require('./loggerHttp');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
@@ -32,7 +32,7 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const { token } = req.headers || '';
 
-    loggerInFile.log({
+    loggerHttp.log({
       level: 'info',
       message: `method: ${req.method}/baseUrl: ${req.baseUrl}/date:${req.fresh}/`,
     });
