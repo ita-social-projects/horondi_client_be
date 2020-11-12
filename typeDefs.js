@@ -676,7 +676,6 @@ const typeDefs = gql`
     addHeader(header: HeaderInput!): HeaderResult
     deleteHeader(id: ID!): HeaderResult
     updateHeader(id: ID!, header: HeaderInput!): HeaderResult
-
     "HomePageSlide Mutation"
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
