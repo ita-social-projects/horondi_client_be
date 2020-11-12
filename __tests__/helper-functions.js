@@ -1,9 +1,7 @@
-const { gql } = require('@apollo/client');
 const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
 const config = require('../app');
 const { createTestClient } = require('apollo-server-testing');
-const CNST = require('../consts/index');
 const bcrypt = require('bcryptjs');
 const {
   SUPER_ADMIN_EMAIL,

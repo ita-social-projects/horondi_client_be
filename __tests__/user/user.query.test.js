@@ -588,6 +588,12 @@ describe('Testing obtaining information restrictions', () => {
 });
 
 describe('Filter users', () => {
+  const ACTIVE = { banned: false };
+  const BANNED = { banned: true };
+  const SORT = {
+    byName: { asc: { name: 1 }, desc: { name: -1 } },
+    byEmail: { asc: { email: 1 }, desc: { email: -1 } }
+  };
   let adminToken;
   let usersId;
 
@@ -595,10 +601,10 @@ describe('Filter users', () => {
     await testUsersSet.map(user => createUser(user).catch(e => e));
     adminToken = await loginAdmin(superAdminUser);
 
-    const users = await getAllUsers(adminToken).then(res =>
-      chooseOnlyUsers(res)
-    );
-    usersId = await users.map(user => user._id);
+    let users = await getAllUsers(adminToken);
+
+    users = chooseOnlyUsers(users);
+    usersId = users.map(user => user._id);
 
     await users.forEach(async user => {
       if (
@@ -633,10 +639,9 @@ describe('Filter users', () => {
   test('should sort by name from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.firstName).sort();
 
-    const users = await getAllUsers(adminToken, { name: 1 }).then(res =>
-      chooseOnlyUsers(res)
-    );
+    let users = await getAllUsers(adminToken, SORT.byName.asc);
 
+    users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
     expect(users.map(user => user.firstName)).toEqual(compareResult);
   });
@@ -647,10 +652,9 @@ describe('Filter users', () => {
       .sort()
       .reverse();
 
-    const users = await getAllUsers(adminToken, { name: -1 }).then(res =>
-      chooseOnlyUsers(res)
-    );
+    let users = await getAllUsers(adminToken, SORT.byName.desc);
 
+    users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
     expect(users.map(user => user.firstName)).toEqual(compareResult);
   });
@@ -658,10 +662,9 @@ describe('Filter users', () => {
   test('should sort by email from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.email).sort();
 
-    const users = await getAllUsers(adminToken, { email: 1 }).then(res =>
-      chooseOnlyUsers(res)
-    );
+    let users = await getAllUsers(adminToken, SORT.byEmail.asc);
 
+    users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
     expect(users.map(user => user.email)).toEqual(compareResult);
   });
@@ -672,10 +675,9 @@ describe('Filter users', () => {
       .sort()
       .reverse();
 
-    const users = await getAllUsers(adminToken, { email: -1 }).then(res =>
-      chooseOnlyUsers(res)
-    );
+    let users = await getAllUsers(adminToken, SORT.byEmail.desc);
 
+    users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
     expect(users.map(user => user.email)).toEqual(compareResult);
   });
@@ -685,18 +687,16 @@ describe('Filter users', () => {
       .filter(user => user.banned)
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
-    const users = await getAllUsers(adminToken, {}, { banned: true }).then(
-      res =>
-        chooseOnlyUsers(res).map(user => ({
-          firstName: user.firstName,
-          banned: user.banned,
-        }))
-    );
+    let users = await getAllUsers(adminToken, {}, BANNED);
 
+    users = chooseOnlyUsers(users).map(user => ({
+      firstName: user.firstName,
+      banned: user.banned,
+    }));
     expect(users).toBeDefined();
     users.forEach(user => {
       expect(user).toEqual(
-        compareResult.filter(el => el.firstName === user.firstName)[0]
+        compareResult.find(el => el.firstName === user.firstName)
       );
     });
   });
@@ -706,18 +706,17 @@ describe('Filter users', () => {
       .filter(user => !user.banned)
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
-    const users = await getAllUsers(adminToken, {}, { banned: false }).then(
-      res =>
-        chooseOnlyUsers(res).map(user => ({
-          firstName: user.firstName,
-          banned: user.banned,
-        }))
-    );
+    let users = await getAllUsers(adminToken, {}, ACTIVE);
+
+    users = chooseOnlyUsers(users).map(user => ({
+      firstName: user.firstName,
+      banned: user.banned,
+    }));
 
     expect(users).toBeDefined();
     users.forEach(user => {
       expect(user).toEqual(
-        compareResult.filter(el => el.firstName === user.firstName)[0]
+        compareResult.find(el => el.firstName === user.firstName)
       );
     });
   });
