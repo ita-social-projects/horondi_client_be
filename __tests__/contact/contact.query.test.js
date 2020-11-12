@@ -12,10 +12,6 @@ let operations;
 describe('Contacts queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    done();
-  });
-
-  beforeAll(async done => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($contact: contactInput!) {
