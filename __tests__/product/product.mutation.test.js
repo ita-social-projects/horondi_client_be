@@ -238,7 +238,7 @@ describe('Product mutations', () => {
     done();
   });
 
-  test.skip('#4 UpdateProduct should return Error product not found', async done => {
+  test('#4 UpdateProduct should return Error product not found', async done => {
     const updateProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!, $id: ID!) {
