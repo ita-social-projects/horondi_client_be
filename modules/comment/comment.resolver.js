@@ -27,6 +27,7 @@ const commentsQuery = {
       ];
     }
   },
+
   getAllRecentComments: async (parent, args) =>
     commentsService.getAllRecentComments(args),
 };
