@@ -20,9 +20,13 @@ const {
 } = require('../../utils/localization');
 const emailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
+const {
+  SECRET,
+  RECOVERY_EXPIRE,
+  CONFIRMATION_SECRET,
+  MAIL_USER,
+  NODE_ENV,
+} = require('../../dotenvValidator');
 const {
   removeDaysFromData,
   countItemsOccurency,
@@ -114,7 +118,7 @@ class UserService {
   }
 
   async checkIfTokenIsValid(token) {
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -407,8 +411,8 @@ class UserService {
     const savedUser = await user.save();
 
     const token = await generateToken(savedUser._id, savedUser.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.CONFIRMATION_SECRET,
+      expiresIn: RECOVERY_EXPIRE,
+      secret: CONFIRMATION_SECRET,
     });
 
     savedUser.confirmationToken = token;
@@ -437,13 +441,13 @@ class UserService {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
     const token = await generateToken(user._id, user.email, {
-      secret: process.env.CONFIRMATION_SECRET,
-      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: CONFIRMATION_SECRET,
+      expiresIn: RECOVERY_EXPIRE,
     });
     user.confirmationToken = token;
     await user.save();
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: user.email,
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(user.firstName, token, language),
@@ -458,7 +462,7 @@ class UserService {
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, process.env.CONFIRMATION_SECRET);
+    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
     const updates = {
       $set: {
         confirmed: true,
@@ -478,12 +482,12 @@ class UserService {
     }
 
     const token = await generateToken(user._id, user.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.SECRET,
+      expiresIn: RECOVERY_EXPIRE,
+      secret: SECRET,
     });
     user.recoveryToken = token;
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: email,
       subject: '[HORONDI] Instructions for password recovery',
       html: recoveryMessage(user.firstName, token, language),
@@ -505,7 +509,7 @@ class UserService {
 
   async resetPassword(password, token) {
     await validateNewPassword.validateAsync({ password });
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -564,12 +568,12 @@ class UserService {
       savedUser.email
     );
 
-    if (process.env.NODE_ENV === 'test') {
+    if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
 
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: savedUser.email,
       subject: '[Horondi] Invitation to become an admin',
       html: adminConfirmationMessage(invitationalToken),
@@ -595,7 +599,7 @@ class UserService {
     }
 
     try {
-      decoded = jwt.verify(token, process.env.SECRET);
+      decoded = jwt.verify(token, SECRET);
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
         statusCode: 400,
@@ -629,7 +633,7 @@ class UserService {
 
   validateConfirmationToken(token) {
     try {
-      jwt.verify(token, process.env.SECRET);
+      jwt.verify(token, SECRET);
       return { isSuccess: true };
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {

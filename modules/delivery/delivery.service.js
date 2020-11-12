@@ -3,14 +3,17 @@ const {
   ORDER_CREATION_FAILED,
 } = require('../../error-messages/delivery.message');
 const { horondiAddress, horondyCityRef } = require('../../consts');
-
+const {
+  NOVA_POSHTA_API_LINK,
+  NOVA_POSHTA_API_KEY,
+} = require('../../dotenvValidator');
 class NovaPoshtaService {
   async getNovaPoshtaRequest(properties, model, method) {
-    return await axios.post(process.env.NOVA_POSHTA_API_LINK, {
+    return await axios.post(NOVA_POSHTA_API_LINK, {
       modelName: model,
       calledMethod: method,
       methodProperties: properties,
-      apiKey: process.env.NOVA_POSHTA_API_KEY,
+      apiKey: NOVA_POSHTA_API_KEY,
     });
   }
 
