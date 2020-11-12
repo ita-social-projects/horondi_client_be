@@ -5,10 +5,10 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 let { superAdminUser, testUser, testUsersSet } = require('./user.variables');
-const { setupApp, chooseOnlyUsers } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
 const loginAdmin = require('../helpers/admin-login');
-const createUser = require('../helpers/create-user');
-const getAllUsers = require('../helpers/get-all-users');
+const { createUser, getAllUsers, chooseOnlyUsers } = require('../helpers/users');
+
 
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
