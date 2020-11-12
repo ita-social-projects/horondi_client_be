@@ -1,7 +1,9 @@
+const { MAIL_USER } = require('../../dotenvValidator');
+
 class EmailService {
   async sendEmail({ user, sendEmail, subject, html }) {
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: user.email,
       subject,
       html,

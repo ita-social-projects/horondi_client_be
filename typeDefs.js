@@ -16,6 +16,8 @@ const {
 const {
   productType,
   productInput,
+  cartProductType,
+  cartProductInput,
 } = require('./modules/product/product.graphql');
 const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
 const { modelType, modelInput } = require('./modules/model/model.graphql');
@@ -62,6 +64,10 @@ const {
 const {
   homePageImagesType,
 } = require('./modules/homepage-images/home-page-images.graphql');
+const {
+  homePageSlideType,
+  homePageSlideInput,
+} = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 
@@ -76,6 +82,7 @@ const typeDefs = gql`
   ${userType}
   ${paginatedUsersType}
   ${productType}
+  ${cartProductType}
   ${commentType}
   ${businessTextType}
   ${modelType}
@@ -86,6 +93,7 @@ const typeDefs = gql`
   ${paymentType}
   ${homePageImagesType}
   ${headerType}
+  ${homePageSlideType}
 
   scalar Upload
 
@@ -188,6 +196,16 @@ const typeDefs = gql`
     description: [Language]
     available: Boolean
     additionalPrice: [CurrencySet]
+  }
+
+  type CartProductBagBottom {
+      name: [Language]
+      value: String
+  }
+
+  type CartProductDimensions {
+      volumeInLiters: Int
+      weightInKg: Float
   }
 
   type AllProductOptions {
@@ -302,7 +320,12 @@ const typeDefs = gql`
     counts: [Int!]
     total: Int!
   }
-
+  
+  type PaginatedHomePageSlides {
+      items: [HomePageSlide]
+      count: Int
+  }
+  
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -320,6 +343,8 @@ const typeDefs = gql`
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
   union HeaderResult = Header | Error
+  union HomepageImagesResult = HomePageImages | Error
+  union HomePageSlideResult = HomePageSlide | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -338,7 +363,7 @@ const typeDefs = gql`
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
 
-    getAllOrders(limit: Int, skip: Int): PaginatedOrders!
+    getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
     getOrdersStatistic(date: Int!): StatisticDoughnut!
@@ -375,8 +400,8 @@ const typeDefs = gql`
       skip: Int
       limit: Int
     ): PaginatedComments!
-    getAllCommentsByUser(userEmail: String!): [Comment]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
+    getAllCommentsByUser(userEmail: String!): [Comment]
 
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
@@ -412,6 +437,9 @@ const typeDefs = gql`
 
     getAllHeaders: [Header!]!
     getHeaderById(id: ID!): HeaderResult
+      
+    getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
+    getSlideById(id: ID!): HomePageSlideResult  
   }
 
   input Pagination {
@@ -437,6 +465,7 @@ const typeDefs = gql`
     models: [String]
     currency: Int
     emailQuestionStatus: [String]
+    orderStatus: [String]
   }
 
   input RoleEnumInput {
@@ -461,6 +490,7 @@ const typeDefs = gql`
   ${userInput}
   ${userUpdateInput}
   ${productInput}
+  ${cartProductInput}
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
@@ -477,6 +507,7 @@ const typeDefs = gql`
   ${deliveryInput}
   ${paymentInput}
   ${headerInput}
+  ${homePageSlideInput}
 
   input LanguageInput {
     lang: String!
@@ -575,6 +606,16 @@ const typeDefs = gql`
     additionalPrice: [CurrencySetInput]
   }
 
+  input CartProductDimensionsInput {
+      volumeInLiters: Int
+      weightInKg: Float
+  }
+
+  input CartProductBagBottomInput {
+      name: [LanguageInput]
+      value: String
+  }
+
   input LanguageImageSetInput {
     lang: String!
     value: ImageSetInput
@@ -659,8 +700,11 @@ const typeDefs = gql`
       user: AdminConfirmInput!
       token: String!
     ): LogicalResult!
-    addProductToWishlist(id: ID!, productId: ID!): Product!
-    removeProductFromWishlist(id: ID!, productId: ID!): Product!
+      addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
+      removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
+      addProductToCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
+      removeProductFromCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
+      changeCartProductQuantity(id: ID!, key: String!, product: CartProductInput!): CartProduct!
 
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
@@ -728,12 +772,19 @@ const typeDefs = gql`
     makeQuestionSpam(questionId: ID!): EmailQuestionResult
 
     "HomePageImages Mutation"
-    updateHomePageLooksImage(id: ID!, images: Upload): HomePageImages
+    updateHomePageLooksImage(id: ID!, images: Upload): HomepageImagesResult
+    addHomePageLooksImage(images: Upload): HomepageImagesResult
+    deleteHomePageLooksImage(id: ID!): HomepageImagesResult
 
     "Header Mutation"
     addHeader(header: HeaderInput!): HeaderResult
     deleteHeader(id: ID!): HeaderResult
     updateHeader(id: ID!, header: HeaderInput!): HeaderResult
+
+    "HomePageSlide Mutation"
+    addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
+    updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
+    deleteSlide(id: ID!): HomePageSlideResult  
   }
 `;
 

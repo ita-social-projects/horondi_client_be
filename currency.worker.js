@@ -1,12 +1,13 @@
 const axios = require('axios');
 const Agenda = require('agenda');
 const currencyService = require('./modules/currency/currency.service');
+const { MONGO_URL, CURRENCY_API_URL } = require('./dotenvValidator');
 
 const currencyWorker = () => {
-  const agenda = new Agenda({ db: { address: process.env.MONGO_URL } });
+  const agenda = new Agenda({ db: { address: MONGO_URL } });
   agenda.define('set currency to database', async job => {
     try {
-      const currency = await axios.get(process.env.CURRENCY_API_URL);
+      const currency = await axios.get(CURRENCY_API_URL);
 
       const currencyRate = {
         lastUpdatedDate: Date.now(),

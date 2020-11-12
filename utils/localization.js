@@ -1,4 +1,5 @@
 const { getTime } = require('./getTime');
+const { FRONT_BASE_URI, ADMIN_BASE_URI } = require('../dotenvValidator');
 
 const recoveryMessage = (firstName, token, language) => {
   if (language === 0) {
@@ -21,7 +22,7 @@ padding-top: 100px;
     ">
       Для зміни чи відновлення паролю, будь ласка, перейдіть за посиланням нижче:
     </p>
-    <a style="color: black; margin: 0px"  href=${process.env.FRONT_BASE_URI}recovery/${token}>Відновити пароль</a>
+    <a style="color: black; margin: 0px"  href=${FRONT_BASE_URI}recovery/${token}>Відновити пароль</a>
     <p style="margin-bottom: 45px">Якщо ви не подавали заявку на відновлення - проігноруйте це повідомлення.</p>
     <p>З найкращимим побажаннями, команда HORONDI.</p>
   </div>
@@ -47,7 +48,7 @@ padding-top: 100px;
     ">
       To reset your password, please follow the link below:
     </p>
-    <a style="color: black; margin: 0px"  href=${process.env.FRONT_BASE_URI}recovery/${token}>Reset password</a>
+    <a style="color: black; margin: 0px"  href=${FRONT_BASE_URI}recovery/${token}>Reset password</a>
     <p style="margin-bottom: 45px">If you did not request a password reset, please ignore this message.</p>
     <p>Best regards, HORONDI team.</p>
   </div>
@@ -76,7 +77,7 @@ padding-top: 100px;
     ">
       Для завершення реєстрації, будь ласка, перейдіть за посиланням нижче:
     </p>
-    <a style="color: black; margin: 0px"  href=${process.env.FRONT_BASE_URI}confirmation/${token}>Підтвердити електронну пошту</a>
+    <a style="color: black; margin: 0px"  href=${FRONT_BASE_URI}confirmation/${token}>Підтвердити електронну пошту</a>
     <p style="margin-bottom: 45px">Якщо ви не реєструвались - проігноруйте це повідомлення.</p>
     <p>З найкращими побажаннями, команда HORONDI</p>
   </div>
@@ -103,7 +104,7 @@ padding-top: 100px;
     ">
       To complete the registration, please follow the link below:
     </p>
-    <a style="color: black; margin: 0px" href=${process.env.FRONT_BASE_URI}confirmation/${token}>Confirm email</a> 
+    <a style="color: black; margin: 0px" href=${FRONT_BASE_URI}confirmation/${token}>Confirm email</a> 
     <p style="margin-bottom: 45px">If you did not register - ignore this message</p>
     <p>Best regards, HORONDI team.</p>
   </div>
@@ -142,7 +143,7 @@ padding: 6px 12px;
 margin: 0px;
 display: inline-block;
 margin-top: 8px;margin-bottom: 40px"
-href=${process.env.ADMIN_BASE_URI}confirmation/${token}>Перейти за посиланням</a>
+href=${ADMIN_BASE_URI}confirmation/${token}>Перейти за посиланням</a>
 <p>З найкращимим побажаннями, команда HORONDI.</p>
 </div>
 </div>

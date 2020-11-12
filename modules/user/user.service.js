@@ -19,9 +19,13 @@ const {
 } = require('../../utils/localization');
 const emailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
-require('dotenv').config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
-});
+const {
+  SECRET,
+  RECOVERY_EXPIRE,
+  CONFIRMATION_SECRET,
+  MAIL_USER,
+  NODE_ENV,
+} = require('../../dotenvValidator');
 const {
   removeDaysFromData,
   countItemsOccurency,
@@ -113,7 +117,7 @@ class UserService {
   }
 
   async checkIfTokenIsValid(token) {
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -352,8 +356,8 @@ class UserService {
     const savedUser = await user.save();
 
     const token = await generateToken(savedUser._id, savedUser.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.CONFIRMATION_SECRET,
+      expiresIn: RECOVERY_EXPIRE,
+      secret: CONFIRMATION_SECRET,
     });
 
     savedUser.confirmationToken = token;
@@ -382,13 +386,13 @@ class UserService {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
     const token = await generateToken(user._id, user.email, {
-      secret: process.env.CONFIRMATION_SECRET,
-      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: CONFIRMATION_SECRET,
+      expiresIn: RECOVERY_EXPIRE,
     });
     user.confirmationToken = token;
     await user.save();
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: user.email,
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(user.firstName, token, language),
@@ -403,7 +407,7 @@ class UserService {
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, process.env.CONFIRMATION_SECRET);
+    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
     const updates = {
       $set: {
         confirmed: true,
@@ -423,12 +427,12 @@ class UserService {
     }
 
     const token = await generateToken(user._id, user.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.SECRET,
+      expiresIn: RECOVERY_EXPIRE,
+      secret: SECRET,
     });
     user.recoveryToken = token;
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: email,
       subject: '[HORONDI] Instructions for password recovery',
       html: recoveryMessage(user.firstName, token, language),
@@ -450,7 +454,7 @@ class UserService {
 
   async resetPassword(password, token) {
     await validateNewPassword.validateAsync({ password });
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -509,12 +513,12 @@ class UserService {
       savedUser.email
     );
 
-    if (process.env.NODE_ENV === 'test') {
+    if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
 
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: savedUser.email,
       subject: '[Horondi] Invitation to become an admin',
       html: adminConfirmationMessage(invitationalToken),
@@ -540,7 +544,7 @@ class UserService {
     }
 
     try {
-      decoded = jwt.verify(token, process.env.SECRET);
+      decoded = jwt.verify(token, SECRET);
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
         statusCode: 400,
@@ -574,7 +578,7 @@ class UserService {
 
   validateConfirmationToken(token) {
     try {
-      jwt.verify(token, process.env.SECRET);
+      jwt.verify(token, SECRET);
       return { isSuccess: true };
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
@@ -583,19 +587,45 @@ class UserService {
     }
   }
 
-  async updateWishlist(userId, wishlist, productId) {
-    await User.findByIdAndUpdate(userId, { wishlist });
+  async updateCartOrWishlist(userId, key, list, productId) {
+    await User.findByIdAndUpdate(userId, { [key]: list });
     return productService.getProductById(productId);
   }
 
-  addProductToWishlist(productId, user) {
-    const newWishlist = [...user.wishlist, productId];
-    return this.updateWishlist(user._id, newWishlist, productId);
+  addProductToWishlist(productId, key, user) {
+    const newList = [...user.wishlist, productId];
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
   }
 
-  removeProductFromWishlist(productId, user) {
-    const newWishlist = user.wishlist.filter(id => String(id) !== productId);
-    return this.updateWishlist(user._id, newWishlist, productId);
+  removeProductFromWishlist(productId, key, user) {
+    const newList = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  addProductToCart(product, key, user) {
+    const newList = [...user.cart, product];
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  removeProductFromCart(product, key, user) {
+    const newList = user.cart.filter(
+      ({ _id, selectedSize }) =>
+        String(_id) !== product._id ||
+        (String(_id) === product._id && selectedSize !== product.selectedSize)
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  changeCartProductQuantity(product, key, user) {
+    const newList = user.cart.map(item =>
+      String(item._id) === product._id &&
+      item.selectedSize === product.selectedSize
+        ? product
+        : item
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
   }
 }
 
