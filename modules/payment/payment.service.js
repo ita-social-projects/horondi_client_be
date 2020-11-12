@@ -1,7 +1,11 @@
 const axios = require('axios');
 const CloudIpsp = require('cloudipsp-node-js-sdk');
 const crypto = require('crypto');
-
+const {
+  CRYPTO,
+  PAYMENT_MERCHANT_ID,
+  PAYMENT_SECRET,
+} = require('../../dotenvValidator');
 class PaymentService {
   genSignature(data, secret) {
     const ordered = {};
@@ -18,7 +22,7 @@ class PaymentService {
       });
     const signString = secret + '|' + Object.values(ordered).join('|');
     return crypto
-      .createHash(process.env.CRYPTO)
+      .createHash(CRYPTO)
       .update(signString)
       .digest('hex');
   }
@@ -27,8 +31,8 @@ class PaymentService {
     const { orderId, orderDesc, currency, amount } = data;
 
     const fondy = new CloudIpsp({
-      merchantId: process.env.PAYMENT_MERCHANT_ID,
-      secretKey: process.env.PAYMENT_SECRET,
+      merchantId: PAYMENT_MERCHANT_ID,
+      secretKey: PAYMENT_SECRET,
     });
     const requestData = {
       order_id: orderId,
@@ -54,16 +58,16 @@ class PaymentService {
       orderId,
       currency,
       amount,
-      merchantId: process.env.PAYMENT_MERCHANT_ID,
+      merchantId: PAYMENT_MERCHANT_ID,
     };
-    const sig = this.genSignature(data, process.env.PAYMENT_SECRET);
+    const sig = this.genSignature(data, PAYMENT_SECRET);
 
-    const res = await axios.post(process.env.PAYMENT_API_LINK, {
+    const res = await axios.post(PAYMENT_API_LINK, {
       request: {
         order_id: orderId,
         currency,
         amount,
-        merchant_id: process.env.PAYMENT_MERCHANT_ID,
+        merchant_id: PAYMENT_MERCHANT_ID,
         signature: sig,
       },
     });

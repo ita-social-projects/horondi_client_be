@@ -1,4 +1,7 @@
 const joi = require('@hapi/joi');
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+});
 
 const dotenvVariables = [
   'MONGO_URL',
@@ -97,7 +100,10 @@ function dotenvValidator(processEnv) {
 
   if (environment.error) throw environment.error;
 
-  return environment;
+  return { ...environment.value };
 }
 
 module.exports = { dotenvValidator, dotenvVariables };
+dotenvValidator(process.env);
+
+module.exports = { ...process.env };

@@ -23,6 +23,9 @@ dotenvVariables.forEach(key => {
   logger.log('info', JSON.stringify({ key, value: process.env[key] }));
 });
 dotenvValidator(process.env);
+
+connectDB();
+
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions
