@@ -63,7 +63,7 @@ type OrderUser {
 `;
 const orderInputs = ` 
 input OrderInput {
-  _id:ID
+  _id:ID!
   status: Status
   user: OrderUserInput,
   delivery: DeliveryInput,

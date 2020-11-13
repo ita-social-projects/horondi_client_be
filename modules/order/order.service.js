@@ -86,11 +86,11 @@ class OrdersService {
     throw new Error(ORDER_NOT_FOUND);
   }
 
-  async updateOrder(id, order) {
-    if (!ObjectId.isValid(id)) {
+  async updateOrder(order) {
+    if (!ObjectId.isValid(order._id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const orderToUpdate = await Order.findById(id);
+    const orderToUpdate = await Order.findById(order._id);
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
     }
@@ -98,7 +98,7 @@ class OrdersService {
     if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
 
-      if (order.delivery.sentBy === 'Nova Poshta') {
+      if (orderToUpdate.delivery.sentBy !== 'Nova Poshta' && order.delivery.sentBy === 'Nova Poshta') {
         const weight = order.items.reduce(
           (prev, currentItem) =>
             prev + currentItem.size.weightInKg * currentItem.quantity,
@@ -156,7 +156,7 @@ class OrdersService {
     }
 
     return await Order.findByIdAndUpdate(
-      id,
+      order._id,
       { ...order, lastUpdatedDate: Date.now() },
       {
         new: true,
