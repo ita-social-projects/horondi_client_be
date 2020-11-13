@@ -7,8 +7,7 @@ const {
 let { superAdminUser, testUser, testUsersSet } = require('./user.variables');
 const { setupApp } = require('../helper-functions');
 const loginAdmin = require('../helpers/admin-login');
-const { createUser, getAllUsers, chooseOnlyUsers } = require('../helpers/users');
-
+const { createUser, getAllUsersQuery, chooseOnlyUsers } = require('../helpers/users');
 
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
@@ -607,7 +606,7 @@ describe('Filter users', () => {
     testUsersSet.forEach(user => createUser(user).catch(e => e));
     adminToken = await loginAdmin(superAdminUser);
 
-    let users = await getAllUsers(adminToken);
+    let users = await getAllUsersQuery(adminToken);
 
     users = chooseOnlyUsers(users);
     usersId = users.map(user => user._id);
@@ -645,7 +644,7 @@ describe('Filter users', () => {
   test('should sort by name from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.firstName).sort();
 
-    let users = await getAllUsers(adminToken, SORT.byName.asc);
+    let users = await getAllUsersQuery(adminToken, SORT.byName.asc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -658,7 +657,7 @@ describe('Filter users', () => {
       .sort()
       .reverse();
 
-    let users = await getAllUsers(adminToken, SORT.byName.desc);
+    let users = await getAllUsersQuery(adminToken, SORT.byName.desc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -668,7 +667,7 @@ describe('Filter users', () => {
   test('should sort by email from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.email).sort();
 
-    let users = await getAllUsers(adminToken, SORT.byEmail.asc);
+    let users = await getAllUsersQuery(adminToken, SORT.byEmail.asc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -681,7 +680,7 @@ describe('Filter users', () => {
       .sort()
       .reverse();
 
-    let users = await getAllUsers(adminToken, SORT.byEmail.desc);
+    let users = await getAllUsersQuery(adminToken, SORT.byEmail.desc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -693,7 +692,7 @@ describe('Filter users', () => {
       .filter(user => user.banned)
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
-    let users = await getAllUsers(adminToken, {}, BANNED);
+    let users = await getAllUsersQuery(adminToken, {}, BANNED);
 
     users = chooseOnlyUsers(users).map(user => ({
       firstName: user.firstName,
@@ -712,7 +711,7 @@ describe('Filter users', () => {
       .filter(user => !user.banned)
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
-    let users = await getAllUsers(adminToken, {}, ACTIVE);
+    let users = await getAllUsersQuery(adminToken, {}, ACTIVE);
 
     users = chooseOnlyUsers(users).map(user => ({
       firstName: user.firstName,

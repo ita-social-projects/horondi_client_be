@@ -43,7 +43,7 @@ const createUser = async ({ firstName, lastName, email, password, language }) =>
   });
 };
 
-const getAllUsers = async (token = null, sort = {}, filter = {}) => {
+const getAllUsersQuery = async (token = null, sort = {}, filter = {}) => {
   const result = await client.query({
     query: gql`
       query($sort: UserSortInput, $filter: UserFilterInput) {
@@ -79,6 +79,6 @@ const chooseOnlyUsers = (arr) => {
 
 module.exports = {
   createUser,
-  getAllUsers,
+  getAllUsersQuery,
   chooseOnlyUsers
 }
