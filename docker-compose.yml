@@ -7,8 +7,8 @@ services:
       build: 
         context: .
         dockerfile: Dockerfiletest
-      depends_on: 
-        - database
+      environment:
+        WAIT_HOSTS: database:27017
 
     database:
         image: mongo
