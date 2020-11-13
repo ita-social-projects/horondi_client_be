@@ -4,20 +4,18 @@ const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const { newContact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
-let a = 1;
+jest.mock('../../modules/contact/contact.utils.js');
+
 let contactsId = '';
 let operations;
 
 describe('Contacts queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
-  });
-
-  beforeAll(async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($contact: contactInput!) {
-          addContact(contact: $contact) {
+          addContact(contact: $contact, mapImages: []) {
             ... on Contact {
               _id
             }
@@ -30,11 +28,11 @@ describe('Contacts queries', () => {
       `,
       variables: { contact: newContact },
     });
-
     contactsId = res.data.addContact._id;
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -51,9 +49,10 @@ describe('Contacts queries', () => {
       `,
       variables: { id: contactsId },
     });
+    done();
   });
 
-  it('should receive all contacts', async () => {
+  it('should receive all contacts', async done => {
     const res = await operations.query({
       query: gql`
         query($skip: Int, $limit: Int) {
@@ -69,11 +68,6 @@ describe('Contacts queries', () => {
                 value
               }
               email
-              images {
-                value {
-                  medium
-                }
-              }
               link
             }
             count
@@ -81,10 +75,11 @@ describe('Contacts queries', () => {
         }
       `,
       variables: {
-        skip: 1,
+        skip: 0,
         limit: 1,
       },
     });
+
     const receivedContacts = res.data.getContacts;
 
     expect(receivedContacts).toBeDefined();
@@ -111,15 +106,12 @@ describe('Contacts queries', () => {
         },
       ],
       email: 'test@test.com',
-      images: [
-        { value: newContact.images[0].value },
-        { value: newContact.images[1].value },
-      ],
       link: newContact.link,
     });
+    done();
   });
 
-  test('should receive selected contact', async () => {
+  test('should receive selected contact', async done => {
     const res = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -135,11 +127,6 @@ describe('Contacts queries', () => {
                 value
               }
               email
-              images {
-                value {
-                  medium
-                }
-              }
               link
             }
             ... on Error {
@@ -177,15 +164,11 @@ describe('Contacts queries', () => {
     ]);
     expect(receivedContact.address).toBeInstanceOf(Object);
     expect(receivedContact).toHaveProperty('email', newContact.email);
-    expect(receivedContact).toHaveProperty('images', [
-      { value: newContact.images[0].value },
-      { value: newContact.images[1].value },
-    ]);
-    expect(receivedContact.images).toBeInstanceOf(Array);
     expect(receivedContact).toHaveProperty('link', newContact.link);
+    done();
   });
 
-  test('should return error message when returning not existing contact', async () => {
+  test('should return error message when returning not existing contact', async done => {
     const res = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -224,5 +207,6 @@ describe('Contacts queries', () => {
       'message',
       CONTACT_NOT_FOUND
     );
+    done();
   });
 });

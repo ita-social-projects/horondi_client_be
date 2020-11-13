@@ -8,11 +8,11 @@ const {
   materialDoesNotExistId,
   material,
   materialToUpdate,
-  materialWithExistingName,
 } = require('./material.variables');
 
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
 
 let operations;
 let materialId = '';
@@ -26,7 +26,7 @@ describe('material mutations tests', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
+          addMaterial(material: $material, images: []) {
             ... on Material {
               _id
               name {
@@ -57,10 +57,6 @@ describe('material mutations tests', () => {
                   thumbnail
                 }
               }
-              additionalPrice {
-                currency
-                value
-              }
               available
             }
             ... on Error {
@@ -86,24 +82,13 @@ describe('material mutations tests', () => {
     expect(addedMaterial).toHaveProperty('purpose', material.purpose);
     expect(addedMaterial).toHaveProperty('available', material.available);
 
-    expect(addedMaterial).toHaveProperty(
-      'additionalPrice',
-      material.additionalPrice
-    );
-    expect(addedMaterial.additionalPrice).toBeInstanceOf(Array);
-
     expect(addedMaterial).toHaveProperty('colors', [
       {
         code: 777,
         name: material.colors[0].name,
         simpleName: material.colors[0].simpleName,
         available: true,
-        images: {
-          large: 'large_test',
-          medium: 'medium_test',
-          small: 'small_test',
-          thumbnail: 'thumbnail_test',
-        },
+        images: null,
       },
     ]);
     expect(addedMaterial.colors).toBeInstanceOf(Array);
@@ -113,7 +98,7 @@ describe('material mutations tests', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material) {
+          addMaterial(material: $material, images: []) {
             ... on Material {
               name {
                 lang
@@ -215,7 +200,6 @@ describe('material mutations tests', () => {
         material: materialToUpdate,
       },
     });
-
     const updatedMaterial = res.data.updateMaterial;
 
     expect(updatedMaterial).toBeDefined();
@@ -232,10 +216,6 @@ describe('material mutations tests', () => {
     expect(updatedMaterial).toHaveProperty(
       'available',
       materialToUpdate.available
-    );
-    expect(updatedMaterial).toHaveProperty(
-      'additionalPrice',
-      materialToUpdate.additionalPrice
     );
     expect(updatedMaterial.name).toBeInstanceOf(Array);
 
@@ -328,7 +308,7 @@ describe('material mutations tests', () => {
           }
         }
       `,
-      variables: { id: materialId, material: materialWithExistingName },
+      variables: { id: materialId, material: materialToUpdate },
     });
 
     expect(res.data.updateMaterial).toHaveProperty('statusCode', 400);

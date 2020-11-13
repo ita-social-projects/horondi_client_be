@@ -23,7 +23,7 @@ describe('pattern mutation tests', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($pattern: PatternInput!) {
-          addPattern(pattern: $pattern) {
+          addPattern(pattern: $pattern, image: []) {
             ... on Pattern {
               _id
               name {
@@ -53,6 +53,7 @@ describe('pattern mutation tests', () => {
       `,
       variables: { pattern: mutationPatternToAdd },
     });
+
     patternId = res.data.addPattern._id;
     const addedPattern = res.data.addPattern;
     expect(addedPattern).toHaveProperty(
@@ -87,7 +88,7 @@ describe('pattern mutation tests', () => {
       variables: { pattern: mutationPatternToAdd },
       mutation: gql`
         mutation($pattern: PatternInput!) {
-          addPattern(pattern: $pattern) {
+          addPattern(pattern: $pattern, image: []) {
             ... on Pattern {
               _id
             }
@@ -112,7 +113,7 @@ describe('pattern mutation tests', () => {
       variables: { id: patternId, pattern: patternToUpdate },
       mutation: gql`
         mutation($id: ID!, $pattern: PatternInput!) {
-          updatePattern(id: $id, pattern: $pattern) {
+          updatePattern(id: $id, pattern: $pattern, image: []) {
             ... on Pattern {
               _id
               name {
@@ -166,7 +167,7 @@ describe('pattern mutation tests', () => {
       variables: { id: patternDoesNotExistId, pattern: patternToUpdate },
       mutation: gql`
         mutation($id: ID!, $pattern: PatternInput!) {
-          updatePattern(id: $id, pattern: $pattern) {
+          updatePattern(id: $id, pattern: $pattern, image: []) {
             ... on Pattern {
               _id
               name {
@@ -203,7 +204,7 @@ describe('pattern mutation tests', () => {
     await operations.mutate({
       mutation: gql`
         mutation($pattern: PatternInput!) {
-          addPattern(pattern: $pattern) {
+          addPattern(pattern: $pattern, image: []) {
             ... on Pattern {
               _id
               name {
@@ -238,7 +239,7 @@ describe('pattern mutation tests', () => {
       variables: { id: patternId, pattern: patternToUpdate },
       mutation: gql`
         mutation($id: ID!, $pattern: PatternInput!) {
-          updatePattern(id: $id, pattern: $pattern) {
+          updatePattern(id: $id, pattern: $pattern, image: []) {
             ... on Pattern {
               _id
               name {
@@ -267,6 +268,7 @@ describe('pattern mutation tests', () => {
         }
       `,
     });
+
     expect(res.data.updatePattern).toHaveProperty('statusCode', 400);
     expect(res.data.updatePattern).toHaveProperty(
       'message',

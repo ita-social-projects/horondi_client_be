@@ -3,6 +3,8 @@ const { gql } = require('@apollo/client');
 const { newOrder, deliveryOrder } = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/delivery/delivery.service.js');
 
 let orderId;
 let operations;
@@ -20,6 +22,9 @@ describe('Order queries', () => {
             ... on Order {
               _id
             }
+            ... on Error {
+              message
+            }
           }
         }
       `,
@@ -33,110 +38,114 @@ describe('Order queries', () => {
       query: gql`
         query {
           getAllOrders {
-            user {
-              email
-              lastName
-              firstName
-              phoneNumber
-              patronymicName
-            }
-            delivery {
-              sentOn
-              sentBy
-              byCourier
-              invoiceNumber
-              courierOffice
-            }
-            isPaid
-            status
-            address {
-              appartment
-              buildingNumber
-              region
-              street
-              city
-              country
-              zipcode
-            }
-            completed
-            userComment
-            cancellationReason
-            adminComment
             items {
-              bottomColor {
-                lang
-                value
+              user {
+                email
+                lastName
+                firstName
+                phoneNumber
+                patronymicName
               }
-              closure {
-                lang
-                value
+              dateOfCreation
+              delivery {
+                sentOn
+                sentBy
+                byCourier
+                invoiceNumber
+                courierOffice
               }
-              model {
-                lang
-                value
+              isPaid
+              status
+              address {
+                appartment
+                buildingNumber
+                region
+                street
+                city
+                country
+                zipcode
               }
-              closureColor
-              size {
-                widthInCm
-                weightInKg
-                heightInCm
-                volumeInLiters
-                depthInCm
+              userComment
+              lastUpdatedDate
+              cancellationReason
+              adminComment
+              items {
+                bottomColor {
+                  lang
+                  value
+                }
+                closure {
+                  lang
+                  value
+                }
+                model {
+                  lang
+                  value
+                }
+                closureColor
+                size {
+                  widthInCm
+                  weightInKg
+                  heightInCm
+                  volumeInLiters
+                  depthInCm
+                }
+                additions {
+                  lang
+                  value
+                }
+                actualPrice {
+                  currency
+                  value
+                }
+                name {
+                  lang
+                  value
+                }
+                pattern {
+                  lang
+                  value
+                }
+                category {
+                  lang
+                  value
+                }
+                quantity
+                colors {
+                  lang
+                  value
+                }
+                subcategory {
+                  lang
+                  value
+                }
+                bottomMaterial {
+                  lang
+                  value
+                }
               }
-              additions {
-                lang
-                value
-              }
-              actualPrice {
+              totalItemsPrice {
                 currency
                 value
               }
-              name {
-                lang
+              totalPriceToPay {
+                currency
                 value
               }
-              pattern {
-                lang
-                value
-              }
-              category {
-                lang
-                value
-              }
-              quantity
-              colors {
-                lang
-                value
-              }
-              subcategory {
-                lang
-                value
-              }
-              bottomMaterial {
-                lang
-                value
-              }
+              paymentMethod
             }
-            totalItemsPrice {
-              currency
-              value
-            }
-            totalPriceToPay {
-              currency
-              value
-            }
-            paymentMethod
           }
         }
       `,
     });
-
-    const orders = res.data.getAllOrders;
+    const orders = res.data.getAllOrders.items;
 
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders).toContainEqual(newOrder);
+    expect(orders[0]).toHaveProperty('user', newOrder.user);
+    expect(orders[0]).toHaveProperty('category', newOrder.category);
+    expect(orders[0]).toHaveProperty('pattern', newOrder.pattern);
   });
 
   test('should recive order by id', async () => {
@@ -171,7 +180,6 @@ describe('Order queries', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -252,7 +260,6 @@ describe('Order queries', () => {
         id: orderId,
       },
     });
-
     const order = res.data.getOrderById;
 
     expect(order).toBeDefined();
@@ -300,7 +307,6 @@ describe('Order queries', () => {
                   country
                   zipcode
                 }
-                completed
                 userComment
                 lastUpdatedDate
                 cancellationReason

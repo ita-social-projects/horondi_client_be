@@ -166,7 +166,6 @@ class OrdersService {
 
   async addOrder(data) {
     const { items } = data;
-
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
     if (data.delivery.sentBy === 'Nova Poshta') {
@@ -224,7 +223,6 @@ class OrdersService {
       totalPriceToPay,
       lastUpdatedDate: Date.now(),
     };
-
     return new Order(order).save();
   }
 
