@@ -66,8 +66,8 @@ const {
 } = require('./modules/homepage-images/home-page-images.graphql');
 const {
   homePageSlideType,
-  homePageSlideInput
-} = require('./modules/homepage-slider/homepage-slider.graphql')
+  homePageSlideInput,
+} = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 

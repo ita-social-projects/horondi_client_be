@@ -14,6 +14,13 @@ const user = {
   password: SUPER_ADMIN_PASSWORD,
 };
 
+const testImages = {
+  large: 'large_0_test-file',
+  medium: 'medium_0_test-file',
+  small: 'small_0_test-file',
+  thumbnail: 'thumbnail_0_test-file',
+};
+
 const testValue = 'test value';
 const updateValue = 'update value';
 const mutationPatternToAdd = {
@@ -118,4 +125,5 @@ module.exports = {
   queryPatternToAdd,
   mutationPatternToAdd,
   imageTypeName,
+  testImages,
 };

@@ -1,12 +1,12 @@
 const Contact = require('./contact.model');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const { uploadContactImages } = require('./contact.utils');
 
 class ContactService {
   async getContacts({ skip, limit }) {
     const items = await Contact.find()
       .skip(skip)
       .limit(limit);
-
     const count = await Contact.find().countDocuments();
 
     return {
@@ -22,14 +22,11 @@ class ContactService {
   }
 
   async addContact(data) {
-    const images = await this.uploadMapImages(data);
+    const images = await uploadContactImages(data);
 
-    return new Contact({
+    return await new Contact({
       ...data.contact,
-      images: [
-        { lang: data.mapImages[0].lang, value: images[0] },
-        { lang: data.mapImages[1].lang, value: images[1] },
-      ],
+      images,
     }).save();
   }
 
@@ -65,7 +62,6 @@ class ContactService {
       data.mapImages[1].image,
     ]);
     const imagesResult = await Promise.allSettled(uploadResult);
-
     return imagesResult.map(item => item.value.fileNames);
   }
 

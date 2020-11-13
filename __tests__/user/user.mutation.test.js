@@ -26,7 +26,9 @@ describe('mutations', () => {
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
-            _id
+            ... on User {
+              _id
+            }
           }
         }
       `,
@@ -236,7 +238,6 @@ describe('mutations', () => {
           $userId: ID!
           $email: String!
           $phoneNumber: String!
-          $role: String!
           $country: String!
           $city: String!
           $street: String!
@@ -251,7 +252,6 @@ describe('mutations', () => {
               lastName: "Updated"
               email: $email
               phoneNumber: $phoneNumber
-              role: $role
               address: {
                 country: $country
                 city: $city
@@ -275,7 +275,6 @@ describe('mutations', () => {
               street
               buildingNumber
             }
-            wishlist
             orders
             comments
           }
@@ -300,7 +299,6 @@ describe('mutations', () => {
         comments,
       },
     });
-
     expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('lastName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
@@ -308,17 +306,13 @@ describe('mutations', () => {
       'phoneNumber',
       testUser.phoneNumber
     );
-    expect(res.data.updateUserById).toHaveProperty('role', testUser.role);
+    expect(res.data.updateUserById).toHaveProperty('role', 'user');
     expect(res.data.updateUserById).toHaveProperty('address', {
       country: testUser.address.country,
       city: testUser.address.city,
       street: testUser.address.street,
       buildingNumber: testUser.address.buildingNumber,
     });
-    expect(res.data.updateUserById).toHaveProperty(
-      'wishlist',
-      testUser.wishlist
-    );
     expect(res.data.updateUserById).toHaveProperty('orders', testUser.orders);
     expect(res.data.updateUserById).toHaveProperty(
       'comments',
@@ -346,7 +340,6 @@ describe('mutations', () => {
             $userId: ID!
             $email: String!
             $phoneNumber: String!
-            $role: String!
             $country: String!
             $city: String!
             $street: String!
@@ -361,7 +354,6 @@ describe('mutations', () => {
                 lastName: "Updated"
                 email: $email
                 phoneNumber: $phoneNumber
-                role: $role
                 address: {
                   country: $country
                   city: $city
@@ -385,7 +377,6 @@ describe('mutations', () => {
                 street
                 buildingNumber
               }
-              wishlist
               orders
               comments
             }
@@ -446,7 +437,12 @@ describe('mutations', () => {
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
-            _id
+            ... on User {
+              _id
+            }
+            ... on Error {
+              message
+            }
           }
         }
       `,
@@ -539,21 +535,6 @@ describe('User`s mutation restictions tests', () => {
     userId = res.data.registerUser._id;
   });
 
-  afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            _id
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
-  });
-
   test('User must login', async () => {
     const result = await operations
       .mutate({
@@ -644,7 +625,7 @@ describe('User`s mutation restictions tests', () => {
     operations = await setupApp();
     const res = await operations.mutate({
       mutation: gql`
-        mutation($user: UserInput!, $id: ID!) {
+        mutation($user: UserUpdateInput!, $id: ID!) {
           updateUserById(user: $user, id: $id) {
             firstName
             lastName
@@ -672,7 +653,7 @@ describe('User`s mutation restictions tests', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($user: UserInput!, $id: ID!) {
+          mutation($user: UserUpdateInput!, $id: ID!) {
             updateUserById(user: $user, id: $id) {
               firstName
               lastName
@@ -680,11 +661,12 @@ describe('User`s mutation restictions tests', () => {
           }
         `,
         variables: {
-          user: { firstName, lastName, email: 'dmdjjd@gmail.com' },
-          id: userId,
+          user: { firstName, lastName, email: 'dmdjjdfg@gmail.com' },
+          id: '5fa6ee68100c9724a093e3a8',
         },
       })
       .catch(err => err);
+
     expect(result.errors[0].message).toBeDefined();
     expect(result.errors[0].message).toEqual('USER_NOT_FOUND');
   });
@@ -694,7 +676,12 @@ describe('User`s mutation restictions tests', () => {
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
-            _id
+            ... on User {
+              _id
+            }
+            ... on Error {
+              message
+            }
           }
         }
       `,
@@ -709,7 +696,6 @@ describe('User`s mutation restictions tests', () => {
 describe('Register admin', () => {
   let role = 'admin';
   let invalidEmail = 'invalid@com';
-  let adminEmail = adminUser.email;
   let invalidRole = 'superadmin';
 
   let { email: newAdminEmail } = newAdmin;
@@ -733,7 +719,7 @@ describe('Register admin', () => {
         `,
         variables: {
           user: {
-            email: adminEmail,
+            email: 'superadmin@gmail.com',
             role,
           },
         },
@@ -770,7 +756,6 @@ describe('Register admin', () => {
         },
       })
       .catch(err => err);
-
     const data = result.data.registerAdmin;
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
@@ -816,6 +801,7 @@ describe('Register admin', () => {
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
               ... on User {
+                _id
                 email
                 invitationalToken
               }
@@ -834,12 +820,25 @@ describe('Register admin', () => {
         },
       })
       .catch(err => err);
-
     const data = result.data.registerAdmin;
-
+    userId = data._id;
     expect(data.email).toEqual(newAdminEmail);
 
     invitationalToken = data.invitationalToken;
+  });
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            _id
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
   });
 });
 
@@ -1084,7 +1083,9 @@ describe('User filtering', () => {
         query: gql`
           query($filter: UserFilterInput!) {
             getAllUsers(filter: $filter) {
-              role
+              items {
+                role
+              }
             }
           }
         `,
@@ -1095,8 +1096,7 @@ describe('User filtering', () => {
         },
       })
       .catch(err => err);
-
-    const data = result.data.getAllUsers;
+    const data = result.data.getAllUsers.items;
 
     expect(data.every(item => item.role === role)).toEqual(true);
   });
@@ -1109,7 +1109,9 @@ describe('User filtering', () => {
         query: gql`
           query($filter: UserFilterInput!) {
             getAllUsers(filter: $filter) {
-              role
+              items {
+                role
+              }
             }
           }
         `,
@@ -1121,8 +1123,25 @@ describe('User filtering', () => {
       })
       .catch(err => err);
 
-    const data = result.data.getAllUsers;
+    const data = result.data.getAllUsers.items;
 
     expect(data.every(item => roles.includes(item.role))).toEqual(true);
+  });
+
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            ... on User {
+              _id
+            }
+          }
+        }
+      `,
+      variables: {
+        userId,
+      },
+    });
   });
 });

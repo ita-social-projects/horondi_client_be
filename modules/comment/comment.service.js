@@ -34,12 +34,26 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userEmail) {
-    const user = await User.find({ email: userEmail });
-
-    if (!user.length) {
-      throw new Error(USER_NOT_FOUND);
-    }
     return await Comment.find({ 'user.email': userEmail });
+  }
+
+  async getAllRecentComments({ skip, limit }) {
+    const dateFrom = new Date().getTime();
+    const dateTo = dateFrom - monthInMilliseconds;
+
+    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Comment.find({
+      date: { $gt: dateTo, $lt: dateFrom },
+    }).countDocuments();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async updateComment(id, comment) {
