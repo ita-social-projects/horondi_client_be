@@ -49,7 +49,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
   const deleteCategory = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
-        deleteCategory(id: $id) {
+        deleteCategory(deleteId: $id, switchId: $id) {
           ... on Category {
             _id
           }
