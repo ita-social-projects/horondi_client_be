@@ -47,7 +47,7 @@ const categoryMutation = {
   },
   deleteCategory: async (parent, args) => {
     try {
-      return await categoryService.deleteCategory(args.id);
+      return await categoryService.deleteCategory(args);
     } catch (e) {
       return {
         statusCode: 404,

@@ -11,6 +11,7 @@ const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 class ModelsService {
   async getAllModels({ skip, limit }) {
     const items = await Model.find()
+      .populate('categories')
       .skip(skip)
       .limit(limit);
 

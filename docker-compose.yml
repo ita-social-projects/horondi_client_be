@@ -7,8 +7,9 @@ services:
       build: 
         context: .
         dockerfile: Dockerfiletest
-      environment:
-        WAIT_HOSTS: database:27017
+      depends_on:
+        database:
+           condition: service_healthy
 
     database:
         image: mongo
@@ -18,3 +19,9 @@ services:
           MONGO_INITDB_DATABASE: horondi
         expose:
             - 27017
+        healthcheck:
+          test: ["CMD", "mongo"]
+          interval: 30s
+          timeout: 10s
+          retries: 5
+
