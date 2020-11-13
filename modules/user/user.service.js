@@ -2,6 +2,7 @@ const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
+const { OAuth2Client } = require('google-auth-library');
 const {
   validateRegisterInput,
   validateLoginInput,
@@ -198,7 +199,7 @@ class UserService {
     return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUserById(updatedUser, id, upload) {
+  async updateUserById(updatedUser, user, upload) {
     const { firstName, lastName, email } = updatedUser;
 
     const { errors } = await validateUpdateInput.validateAsync({
@@ -211,16 +212,6 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    if (!id) {
-      throw new UserInputError(ID_NOT_PROVIDED, { statusCode: 400 });
-    }
-
-    const user = await User.findById(id).lean();
-
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
-    }
-
     if (user.email !== updatedUser.email) {
       const existingUser = await User.findOne({ email: updatedUser.email });
       if (existingUser) {
@@ -229,16 +220,18 @@ class UserService {
     }
     if (!user.images) user.images = [];
     if (upload) {
-      await deleteFiles(
-        Object.values(user.images).filter(
-          item => typeof item === 'string' && item
-        )
-      );
+      if (user.images.length) {
+        await deleteFiles(
+          Object.values(user.images).filter(
+            item => typeof item === 'string' && item
+          )
+        );
+      }
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-    return User.findByIdAndUpdate(id, updatedUser, { new: true });
+    return User.findByIdAndUpdate(user._id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
@@ -327,6 +320,60 @@ class UserService {
       _id: user._id,
       token,
     };
+  }
+  async googleUser(id_token) {
+    const client = new OAuth2Client();
+    const ticket = await client.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    });
+    const dataUser = ticket.getPayload();
+    const userid = dataUser.sub;
+    if (!(await User.findOne({ email: dataUser.email }))) {
+      await this.registerGoogleUser({
+        firstName: dataUser.given_name,
+        lastName: dataUser.family_name,
+        email: dataUser.email,
+        credentials: [
+          {
+            source: 'google',
+            tokenPass: userid,
+          },
+        ],
+      });
+    }
+    return this.loginGoogleUser({
+      email: dataUser.email,
+    });
+  }
+
+  async loginGoogleUser({ email }) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
+    const token = generateToken(user._id, user.email);
+    return {
+      ...user._doc,
+      _id: user._id,
+      token,
+    };
+  }
+
+  async registerGoogleUser({ firstName, lastName, email, credentials }) {
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      credentials,
+    });
+    const savedUser = await user.save();
+
+    return savedUser;
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {

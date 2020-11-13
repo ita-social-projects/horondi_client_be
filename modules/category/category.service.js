@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const Category = require('./category.model');
 const Product = require('../product/product.model');
+const Model = require('../model/model.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
@@ -110,25 +112,50 @@ class CategoryService {
     return await savedCategory.save();
   }
 
-  async deleteCategory(id) {
-    const category = await Category.findByIdAndDelete(id).lean();
+  async cascadeUpdateRelatives(filter, updateData) {
+    await Product.updateMany(filter, updateData);
+    await Model.updateMany(filter, updateData);
+  }
+
+  async clearSubcategoryField(id) {
+    const parentCategory = await Category.findOne({
+      subcategories: { $in: [id] },
+    });
+    await this.updateCategory(parentCategory._id, {
+      $pull: { subcategories: { $in: [id] } },
+    });
+  }
+
+  async deleteCategory({ deleteId, switchId }) {
+    const category = await Category.findByIdAndDelete(deleteId).lean();
+    const switchCategory = await Category.findById(switchId);
+
+    const filter = {
+      category: deleteId,
+    };
+
+    const updateSettings = {
+      $set: { category: switchCategory._id },
+    };
+
+    await this.cascadeUpdateRelatives(filter, updateSettings);
+
     if (!category.isMain) {
-      const parentCategory = await Category.findOne({
-        subcategories: { $in: [id] },
-      });
-      await this.updateCategory(parentCategory._id, {
-        $pull: { subcategories: { $in: [id] } },
-      });
+      await this.clearSubcategoryField(deleteId);
     }
+
     const images = Object.values(category.images).filter(
       item => typeof item === 'string' && item
     );
+
     if (images.length) {
-      deleteFiles(images);
+      await deleteFiles(images);
     }
+
     if (category) {
       return category;
     }
+
     throw new Error(CATEGORY_NOT_FOUND);
   }
 

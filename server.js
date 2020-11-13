@@ -14,7 +14,7 @@ const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
-const { dotenvValidator, dotenvVariables } = require('./dotenvValidator');
+const { dotenvVariables } = require('./dotenvValidator');
 
 connectDB();
 
