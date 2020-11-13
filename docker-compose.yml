@@ -7,8 +7,6 @@ services:
       build: 
         context: .
         dockerfile: Dockerfiletest
-      environment:
-        WAIT_HOSTS: database:27017
       depends_on: 
         - database
 
