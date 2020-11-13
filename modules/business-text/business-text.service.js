@@ -32,13 +32,13 @@ class BusinessTextService {
   async updateBusinessText(id, businessText, files) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
-    const currentPage = pages.find(el => el._id.toString() !== id);
+    const existingPage = pages.find(el => el._id.toString() !== id);
 
     if (!oldPage) {
       throw new Error(BUSINESS_TEXT_NOT_FOUND);
     }
 
-    if (pages.length && currentPage) {
+    if (pages.length && existingPage) {
       return {
         message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
         statusCode: 400,

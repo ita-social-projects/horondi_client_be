@@ -9,6 +9,11 @@ const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
 } = require('../../error-messages/products.messages');
+const {
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
+const { Error } = require('mongoose');
+const { uploadProductImages } = require('./product.utils');
 
 class ProductsService {
   getProductById(id) {
@@ -19,8 +24,14 @@ class ProductsService {
     return Size.findById(id);
   }
 
-  getModelsByCategory(id) {
-    return Product.find({ category: id });
+  async getModelsByCategory(id) {
+    const product = await Product.find({ category: id });
+
+    if (product.length === 0) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
+
+    return product;
   }
 
   async getProductOptions() {
@@ -159,14 +170,11 @@ class ProductsService {
       const model = await modelService.getModelById(productData.model);
       productData.model = model.name;
     }
-    return Product.findByIdAndUpdate(id, productData, { new: true });
+    return await Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(productData, filesToUpload) {
-    const uploadResult = await uploadFiles(filesToUpload);
-    const imagesResults = await Promise.allSettled(uploadResult);
-    const primary = imagesResults[0].value.fileNames;
-    const additional = imagesResults.slice(1).map(res => res.value.fileNames);
+    const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
     productData.basePrice = await this.calculatePrice(basePrice);

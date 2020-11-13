@@ -21,6 +21,36 @@ const languageTypeName = { __typename: 'Language' };
 const currencyTypeName = { __typename: 'CurrencySet' };
 const imageTypeName = { __typename: 'ImageSet' };
 
+const materialData = {
+  description: [
+    { lang: 'uk', value: 'Опис update' },
+    { lang: 'en', value: 'Description update' },
+  ],
+  purpose: 'test update',
+  available: true,
+  additionalPrice: 2,
+  colors: [
+    {
+      code: 777,
+      name: [
+        { lang: 'uk', value: 'Тестовий колір update' },
+        { lang: 'en', value: 'Test color update' },
+      ],
+      images: {
+        large: 'large_test update',
+        medium: 'medium_test update',
+        small: 'small_test update',
+        thumbnail: 'thumbnail_test update',
+      },
+      available: true,
+      simpleName: [
+        { lang: 'uk', value: 'проста назва кольору update' },
+        { lang: 'en', value: 'simple color name update' },
+      ],
+    },
+  ],
+};
+
 const material = {
   name: [
     { lang: 'uk', value: 'Тест mutation' },
@@ -32,10 +62,7 @@ const material = {
   ],
   purpose: 'test',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 2,
   colors: [
     {
       code: 777,
@@ -59,82 +86,10 @@ const material = {
 };
 const materialToUpdate = {
   name: [
-    { lang: 'uk', value: 'Тест mu ta tion' },
-    { lang: 'en', value: 'Test mu ta tion' },
+    { lang: 'uk', value: 'Тест updated' },
+    { lang: 'en', value: 'Test updated' },
   ],
-  description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
-  ],
-  purpose: 'test update',
-  available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
-  colors: [
-    {
-      code: 777,
-      name: [
-        { lang: 'uk', value: 'Тестовий колір update' },
-        { lang: 'en', value: 'Test color update' },
-      ],
-      images: {
-        large: 'large_test update',
-        medium: 'medium_test update',
-        small: 'small_test update',
-        thumbnail: 'thumbnail_test update',
-      },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'проста назва кольору update' },
-        { lang: 'en', value: 'simple color name update' },
-      ],
-    },
-  ],
-};
-
-const materialWithExistingName = {
-  name: [
-    {
-      lang: 'uk',
-      value: 'Мальмо',
-    },
-    {
-      lang: 'en',
-      value: 'Malmo',
-    },
-  ],
-  description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
-  ],
-  purpose: 'test update',
-  available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
-  colors: [
-    {
-      code: 777,
-      name: [
-        { lang: 'uk', value: 'Тестовий колір update' },
-        { lang: 'en', value: 'Test color update' },
-      ],
-      images: {
-        large: 'large_test update',
-        medium: 'medium_test update',
-        small: 'small_test update',
-        thumbnail: 'thumbnail_test update',
-      },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'проста назва кольору update' },
-        { lang: 'en', value: 'simple color name update' },
-      ],
-    },
-  ],
+  ...materialData,
 };
 
 module.exports = {
@@ -151,5 +106,4 @@ module.exports = {
   imageTypeName,
   material,
   materialToUpdate,
-  materialWithExistingName,
 };

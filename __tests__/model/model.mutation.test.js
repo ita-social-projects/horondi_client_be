@@ -192,9 +192,8 @@ describe('Product queries', () => {
       variables: { id: wrongId },
     });
 
-    const error = res.data.deleteModel;
+    const error = res.errors[0];
     expect(error).toBeDefined();
-    expect(error).toHaveProperty('statusCode', 404);
     expect(error).toHaveProperty('message', 'MODEL_NOT_FOUND');
   });
   test('Should update model', async () => {
