@@ -664,7 +664,10 @@ const typeDefs = gql`
       parentId: ID
       upload: Upload
     ): CategoryResult
-    deleteCategory(id: ID!): CategoryResult
+    deleteCategory(
+        deleteId: ID!
+        switchId: ID!
+    ): CategoryResult
     updateCategory(
       id: ID!
       category: CategoryInput!
