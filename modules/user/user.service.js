@@ -2,6 +2,7 @@ const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
+const { OAuth2Client } = require('google-auth-library');
 const {
   validateRegisterInput,
   validateLoginInput,
@@ -319,6 +320,60 @@ class UserService {
       _id: user._id,
       token,
     };
+  }
+  async googleUser(id_token) {
+    const client = new OAuth2Client();
+    const ticket = await client.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    });
+    const dataUser = ticket.getPayload();
+    const userid = dataUser.sub;
+    if (!(await User.findOne({ email: dataUser.email }))) {
+      await this.registerGoogleUser({
+        firstName: dataUser.given_name,
+        lastName: dataUser.family_name,
+        email: dataUser.email,
+        credentials: [
+          {
+            source: 'google',
+            tokenPass: userid,
+          },
+        ],
+      });
+    }
+    return this.loginGoogleUser({
+      email: dataUser.email,
+    });
+  }
+
+  async loginGoogleUser({ email }) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
+    const token = generateToken(user._id, user.email);
+    return {
+      ...user._doc,
+      _id: user._id,
+      token,
+    };
+  }
+
+  async registerGoogleUser({ firstName, lastName, email, credentials }) {
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      credentials,
+    });
+    const savedUser = await user.save();
+
+    return savedUser;
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
