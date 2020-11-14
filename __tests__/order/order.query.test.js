@@ -30,7 +30,6 @@ describe('Order queries', () => {
       `,
       variables: { order: newOrder },
     });
-    console.log(createOrder);
     orderId = createOrder.data.addOrder._id;
   });
 
