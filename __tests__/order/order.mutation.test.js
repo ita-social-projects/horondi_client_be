@@ -289,8 +289,8 @@ describe('Order mutations', () => {
   test('Should update order', async () => {
     const order = await operations.mutate({
       mutation: gql`
-        mutation($id: ID!, $order: OrderInput!) {
-          updateOrder(id: $id, order: $order) {
+        mutation($order: OrderInput!) {
+          updateOrder(order: $order) {
             ... on Order {
               _id
               user {
@@ -394,9 +394,8 @@ describe('Order mutations', () => {
           }
         }
       `,
-      variables: { order: newOrderUpdated, id: orderId },
+      variables: { order: { _id: orderId, ...newOrderUpdated } },
     });
-
     const updatedOrder = order.data.updateOrder;
 
     expect(updatedOrder).toBeDefined();
@@ -420,8 +419,8 @@ describe('Order mutations', () => {
     const res = await operations
       .mutate({
         mutation: gql`
-          mutation($id: ID!, $order: OrderInput!) {
-            updateOrder(id: $id, order: $order) {
+          mutation($order: OrderInput!) {
+            updateOrder(order: $order) {
               ... on Order {
                 _id
                 user {
@@ -526,7 +525,9 @@ describe('Order mutations', () => {
             }
           }
         `,
-        variables: { order: newOrderUpdated, id: '5f46a8ac90e86913ed0a95d8' },
+        variables: {
+          order: { _id: '5f46a8ac90e86913ed0a95d8', ...newOrderUpdated },
+        },
       })
       .catch(err => err);
 
