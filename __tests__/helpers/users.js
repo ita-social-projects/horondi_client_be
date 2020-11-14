@@ -1,8 +1,10 @@
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
-const { roles: { USER } } = require('../../consts/index');
+const {
+  roles: { USER },
+} = require('../../consts/index');
 
-const createUser = async ({ firstName, lastName, email, password, language }) => {
+const createUser = async ({ firstName, lastName, email, pass, language }) => {
   await client.mutate({
     mutation: gql`
       mutation(
@@ -37,7 +39,7 @@ const createUser = async ({ firstName, lastName, email, password, language }) =>
       firstName,
       lastName,
       email,
-      password,
+      password: pass,
       language,
     },
   });
@@ -72,13 +74,12 @@ const getAllUsersQuery = async (token = null, sort = {}, filter = {}) => {
   return result.data.getAllUsers.items;
 };
 
-const chooseOnlyUsers = (arr) => {
+const chooseOnlyUsers = arr => {
   return arr.filter(user => user.role === USER);
 };
-
 
 module.exports = {
   createUser,
   getAllUsersQuery,
-  chooseOnlyUsers
-}
+  chooseOnlyUsers,
+};
