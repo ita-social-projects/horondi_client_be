@@ -196,49 +196,6 @@ describe('Business page queries', () => {
     expect(res.data.updateBusinessText).toHaveProperty('statusCode', 404);
   });
 
-  test(' update page with already existing code in data base should return error', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $businessText: BusinessTextInput!) {
-            updateBusinessText(
-              id: $id
-              businessText: $businessText
-              files: []
-            ) {
-              ... on BusinessText {
-                _id
-                code
-                title {
-                  value
-                  lang
-                }
-                text {
-                  value
-                  lang
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          id: businessTextId,
-          businessText: updatedBusinessText,
-        },
-      })
-      .catch(e => e);
-
-    expect(res.data.updateBusinessText).toHaveProperty(
-      'message',
-      BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST
-    );
-    expect(res.data.updateBusinessText).toHaveProperty('statusCode', 400);
-  });
-
   test(' delete businessText', async () => {
     const res = await operations.mutate({
       mutation: gql`

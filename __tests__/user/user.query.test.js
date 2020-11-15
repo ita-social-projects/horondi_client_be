@@ -15,6 +15,7 @@ jest.mock('../../modules/confirm-email/confirmation-email.service');
 let token;
 let userId;
 let operations;
+let loginedUser;
 
 describe('queries', () => {
   beforeAll(async () => {
@@ -65,6 +66,39 @@ describe('queries', () => {
         mutation($email: String!, $password: String!) {
           loginUser(loginInput: { email: $email, password: $password }) {
             token
+            firstName
+            lastName
+            comments
+            _id
+            email
+            password
+            phoneNumber
+            address {
+              zipcode
+              buildingNumber
+              region
+              street
+              city
+              appartment
+              country
+            }
+            registrationDate
+            cart {
+              dimensions {
+                volumeInLiters
+              }
+              _id
+              sidePocket
+              selectedSize
+            }
+            wishlist {
+              _id
+            }
+            credentials {
+              source
+              tokenPass
+            }
+            purchasedProducts
           }
         }
       `,
@@ -73,7 +107,9 @@ describe('queries', () => {
         password: pass,
       },
     });
-    token = authRes.data.loginUser.token;
+    loginedUser = authRes.data.loginUser;
+    token = loginedUser.token;
+    operations = await setupApp(loginedUser);
     await operations.mutate({
       mutation: gql`
         mutation($userId: ID!, $email: String!) {
@@ -116,6 +152,7 @@ describe('queries', () => {
         email,
       },
     });
+    operations = await setupApp();
   });
 
   test('should recive all users', async () => {

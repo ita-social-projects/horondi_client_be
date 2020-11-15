@@ -15,6 +15,7 @@ let token;
 let badId;
 let invitationalToken;
 let operations;
+let loginedUser;
 
 describe('mutations', () => {
   beforeAll(async () => {
@@ -146,13 +147,41 @@ describe('mutations', () => {
       mutation: gql`
         mutation($email: String!, $password: String!) {
           loginUser(loginInput: { email: $email, password: $password }) {
-            _id
+            token
             firstName
             lastName
+            comments
+            _id
             email
-            role
+            password
+            phoneNumber
+            address {
+              zipcode
+              buildingNumber
+              region
+              street
+              city
+              appartment
+              country
+            }
             registrationDate
-            token
+            cart {
+              dimensions {
+                volumeInLiters
+              }
+              _id
+              sidePocket
+              selectedSize
+            }
+            wishlist {
+              _id
+            }
+            role
+            credentials {
+              source
+              tokenPass
+            }
+            purchasedProducts
           }
         }
       `,
@@ -161,7 +190,7 @@ describe('mutations', () => {
         password: pass,
       },
     });
-
+    loginedUser = res.data.loginUser;
     expect(res.data.loginUser).toHaveProperty('token');
     expect(typeof res.data.loginUser.token).toBe('string');
     expect(res.data.loginUser).toHaveProperty('firstName', testUser.firstName);
@@ -229,7 +258,7 @@ describe('mutations', () => {
       orders,
       comments,
     } = testUser;
-
+    operations = await setupApp(loginedUser);
     const { country, city, street, buildingNumber } = address;
 
     const res = await operations.mutate({
@@ -320,93 +349,8 @@ describe('mutations', () => {
     );
   });
 
-  test('should throw error user with provided id not found', async () => {
-    const {
-      email,
-      role,
-      phoneNumber,
-      address,
-      wishlist,
-      orders,
-      comments,
-    } = testUser;
-
-    const { country, city, street, buildingNumber } = address;
-
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation(
-            $userId: ID!
-            $email: String!
-            $phoneNumber: String!
-            $country: String!
-            $city: String!
-            $street: String!
-            $buildingNumber: String!
-            $wishlist: [ID!]!
-            $orders: [ID!]!
-            $comments: [ID!]!
-          ) {
-            updateUserById(
-              user: {
-                firstName: "Updated"
-                lastName: "Updated"
-                email: $email
-                phoneNumber: $phoneNumber
-                address: {
-                  country: $country
-                  city: $city
-                  street: $street
-                  buildingNumber: $buildingNumber
-                }
-                wishlist: $wishlist
-                orders: $orders
-                comments: $comments
-              }
-              id: $userId
-            ) {
-              firstName
-              lastName
-              email
-              phoneNumber
-              role
-              address {
-                country
-                city
-                street
-                buildingNumber
-              }
-              orders
-              comments
-            }
-          }
-        `,
-        context: {
-          headers: {
-            token,
-          },
-        },
-        variables: {
-          userId: '23ee481430a0056b8e5cc015',
-          email,
-          role,
-          phoneNumber,
-          country,
-          city,
-          street,
-          buildingNumber,
-          wishlist,
-          orders,
-          comments,
-        },
-      })
-      .catch(err => err);
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('USER_NOT_FOUND');
-  });
-
   test('Should change user status', async () => {
+    operations = await setupApp();
     const result = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -542,7 +486,39 @@ describe('User`s mutation restictions tests', () => {
           mutation($user: LoginInput!) {
             loginUser(loginInput: $user) {
               token
+              firstName
+              lastName
+              comments
               _id
+              email
+              password
+              phoneNumber
+              address {
+                zipcode
+                buildingNumber
+                region
+                street
+                city
+                appartment
+                country
+              }
+              registrationDate
+              cart {
+                dimensions {
+                  volumeInLiters
+                }
+                _id
+                sidePocket
+                selectedSize
+              }
+              wishlist {
+                _id
+              }
+              credentials {
+                source
+                tokenPass
+              }
+              purchasedProducts
             }
           }
         `,
@@ -555,9 +531,10 @@ describe('User`s mutation restictions tests', () => {
       })
       .catch(err => err);
     const userInfo = result.data;
+    loginedUser = userInfo.loginUser;
     expect(userInfo.loginUser).not.toEqual(null);
 
-    userToken = userInfo.loginUser.token;
+    userToken = loginedUser.token;
   });
 
   test('User doesn`t allowed to change another user`s data', async () => {
@@ -622,7 +599,7 @@ describe('User`s mutation restictions tests', () => {
   });
 
   test('User can change his own data', async () => {
-    operations = await setupApp();
+    operations = await setupApp({ ...loginedUser, token: userToken });
     const res = await operations.mutate({
       mutation: gql`
         mutation($user: UserUpdateInput!, $id: ID!) {
@@ -636,11 +613,6 @@ describe('User`s mutation restictions tests', () => {
         user: { firstName, lastName, email },
         id: userId,
       },
-      context: {
-        headers: {
-          token: userToken,
-        },
-      },
     });
     const userInfo = res.data.updateUserById;
 
@@ -648,30 +620,8 @@ describe('User`s mutation restictions tests', () => {
     expect(userInfo.lastName).toBe(lastName);
   });
 
-  test('Unknown user doesn`t allowed to change any data', async () => {
-    operations = await setupApp();
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: UserUpdateInput!, $id: ID!) {
-            updateUserById(user: $user, id: $id) {
-              firstName
-              lastName
-            }
-          }
-        `,
-        variables: {
-          user: { firstName, lastName, email: 'dmdjjdfg@gmail.com' },
-          id: '5fa6ee68100c9724a093e3a8',
-        },
-      })
-      .catch(err => err);
-
-    expect(result.errors[0].message).toBeDefined();
-    expect(result.errors[0].message).toEqual('USER_NOT_FOUND');
-  });
-
   test('Admin can delete user', async () => {
+    operations = await setupApp();
     const res = await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
