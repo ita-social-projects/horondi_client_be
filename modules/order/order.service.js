@@ -98,7 +98,10 @@ class OrdersService {
     if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
 
-      if (orderToUpdate.delivery.sentBy !== 'Nova Poshta' && order.delivery.sentBy === 'Nova Poshta') {
+      if (
+        orderToUpdate.delivery.sentBy !== 'Nova Poshta' &&
+        order.delivery.sentBy === 'Nova Poshta'
+      ) {
         const weight = order.items.reduce(
           (prev, currentItem) =>
             prev + currentItem.size.weightInKg * currentItem.quantity,

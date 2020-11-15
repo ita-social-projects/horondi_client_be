@@ -220,7 +220,7 @@ class UserService {
     }
     if (!user.images) user.images = [];
     if (upload) {
-      if(user.images.length) {
+      if (user.images.length) {
         await deleteFiles(
           Object.values(user.images).filter(
             item => typeof item === 'string' && item
