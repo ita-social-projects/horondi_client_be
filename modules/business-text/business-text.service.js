@@ -38,7 +38,7 @@ class BusinessTextService {
       throw new Error(BUSINESS_TEXT_NOT_FOUND);
     }
 
-    if (pages.length && existingPage) {
+    if (existingPage) {
       return {
         message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
         statusCode: 400,
