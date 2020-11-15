@@ -1,5 +1,4 @@
 const Order = require('./order.model');
-
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
@@ -59,8 +58,21 @@ class OrdersService {
     ];
   }
 
-  async getAllOrders() {
-    return await Order.find();
+  async getAllOrders({ skip, limit, filter = {} }) {
+    const { orderStatus } = filter;
+
+    const filters = orderStatus ? { status: { $in: orderStatus } } : {};
+
+    const items = await Order.find(filters)
+      .sort({ dateOfCreation: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const count = await Order.find(filters).countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getOrderById(id) {
@@ -74,11 +86,11 @@ class OrdersService {
     throw new Error(ORDER_NOT_FOUND);
   }
 
-  async updateOrder(id, order) {
-    if (!ObjectId.isValid(id)) {
+  async updateOrder(order) {
+    if (!ObjectId.isValid(order._id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const orderToUpdate = await Order.findById(id);
+    const orderToUpdate = await Order.findById(order._id);
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
     }
@@ -86,7 +98,10 @@ class OrdersService {
     if (order.items || order.delivery || order.address) {
       const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
 
-      if (order.delivery.sentBy == 'Nova Poshta') {
+      if (
+        orderToUpdate.delivery.sentBy !== 'Nova Poshta' &&
+        order.delivery.sentBy === 'Nova Poshta'
+      ) {
         const weight = order.items.reduce(
           (prev, currentItem) =>
             prev + currentItem.size.weightInKg * currentItem.quantity,
@@ -144,7 +159,7 @@ class OrdersService {
     }
 
     return await Order.findByIdAndUpdate(
-      id,
+      order._id,
       { ...order, lastUpdatedDate: Date.now() },
       {
         new: true,
@@ -154,10 +169,9 @@ class OrdersService {
 
   async addOrder(data) {
     const { items } = data;
-
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
-    if (data.delivery.sentBy == 'Nova Poshta') {
+    if (data.delivery.sentBy === 'Nova Poshta') {
       const weight = data.items.reduce(
         (prev, currentItem) =>
           prev + currentItem.size.weightInKg * currentItem.quantity,
@@ -212,7 +226,6 @@ class OrdersService {
       totalPriceToPay,
       lastUpdatedDate: Date.now(),
     };
-
     return new Order(order).save();
   }
 
@@ -268,8 +281,11 @@ class OrdersService {
       changeDataFormat(dateOfCreation, userDateFormat)
     );
     const { names, counts } = this.getOrdersStats(formattedDate);
-
-    return { labels: names, counts };
+    const total = counts.reduce(
+      (orderTotal, orderCount) => orderTotal + orderCount,
+      0
+    );
+    return { labels: names, counts, total };
   }
 
   async getOrdersStatistic(days) {

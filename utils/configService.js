@@ -1,9 +1,9 @@
 /* eslint-disable no-return-await */
 const { DefaultAzureCredential } = require('@azure/identity');
 const { SecretClient } = require('@azure/keyvault-secrets');
-require('dotenv').config();
+const { KEY_VAULTS_URI } = require('../dotenvValidator');
 
-const keyVaultsUri = process.env.KEY_VAULTS_URI;
+const keyVaultsUri = KEY_VAULTS_URI;
 const credential = new DefaultAzureCredential();
 class ConfigService {
   async getSecret(key) {

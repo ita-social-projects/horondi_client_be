@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`material querries test should receive one material 1`] = `
+Object {
+  "available": true,
+  "colors": Array [
+    Object {
+      "available": true,
+      "code": 777,
+      "images": null,
+      "name": Array [
+        Object {
+          "lang": "uk",
+          "value": "Тестовий колір",
+        },
+        Object {
+          "lang": "en",
+          "value": "Test color",
+        },
+      ],
+      "simpleName": Array [
+        Object {
+          "lang": "uk",
+          "value": "проста назва кольору",
+        },
+        Object {
+          "lang": "en",
+          "value": "simple color name",
+        },
+      ],
+    },
+  ],
+  "description": Array [
+    Object {
+      "lang": "uk",
+      "value": "Опис Тестового матеріальчика",
+    },
+    Object {
+      "lang": "en",
+      "value": "Description for Test Materialyy",
+    },
+  ],
+  "name": Array [
+    Object {
+      "lang": "uk",
+      "value": "Тест",
+    },
+    Object {
+      "lang": "en",
+      "value": "Test",
+    },
+  ],
+  "purpose": "test",
+}
+`;

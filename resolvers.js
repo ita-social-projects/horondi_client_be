@@ -55,9 +55,19 @@ const {
 } = require('./modules/email-chat/email-chat.resolver');
 
 const {
+  homePageImagesMutation,
+  homePageImagesQuery,
+} = require('./modules/homepage-images/home-page-images.resolver');
+
+const {
   headerQuery,
   headerMutation,
 } = require('./modules/header/header.resolver');
+
+const {
+  homePageSlideQuery,
+  homePageSlideMutation,
+} = require('./modules/homepage-slider/homepage-slider.resolves');
 
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
@@ -65,7 +75,6 @@ const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -83,6 +92,8 @@ const SCHEMA_NAMES = {
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
+  homePageImages: 'HomePageImages',
+  homePageSlide: 'HomePageSlide',
 };
 const resolvers = {
   Query: {
@@ -118,8 +129,17 @@ const resolvers = {
 
     ...emailChatQuestionQuery,
 
+    ...homePageImagesQuery,
+
     ...headerQuery,
+
+    ...homePageSlideQuery,
   },
+
+  User: {
+    wishlist: parent => productsService.getProductsForWishlist(parent._id),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
   },
@@ -127,7 +147,8 @@ const resolvers = {
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
-    comments: parent => commentsService.getAllCommentsByProduct(parent._id),
+    comments: parent =>
+      commentsService.getAllCommentsByProduct({ productId: parent._id }),
   },
 
   Model: {
@@ -190,7 +211,11 @@ const resolvers = {
 
     ...emailChatQuestionMutation,
 
+    ...homePageImagesMutation,
+
     ...headerMutation,
+
+    ...homePageSlideMutation,
   },
   CategoryResult: {
     __resolveType: obj => {
@@ -224,6 +249,15 @@ const resolvers = {
       return 'Error';
     },
   },
+  MaterialColorResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.material;
+      }
+      return 'Error';
+    },
+  },
+
   PatternResult: {
     __resolveType: obj => {
       if (obj.name) {
@@ -316,6 +350,22 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.header;
+      }
+      return 'Error';
+    },
+  },
+  HomepageImagesResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.homePageImages;
+      }
+      return 'Error';
+    },
+  },
+  HomePageSlideResult: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.homePageSlide;
       }
       return 'Error';
     },

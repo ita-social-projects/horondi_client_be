@@ -1,11 +1,9 @@
-const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-
-dotenv.config();
+const { SECRET } = require('../dotenvValidator');
 const verifyUser = token => {
   if (!token) return;
   try {
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     return decoded;
   } catch (err) {
     return false;

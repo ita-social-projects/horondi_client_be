@@ -1,18 +1,29 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
-const { newOrder } = require('./order.variables');
+const { newOrder, deliveryOrder } = require('./order.variables');
+const { setupApp } = require('../helper-functions');
+jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/delivery/delivery.service.js');
 
 let orderId;
+let operations;
 
 describe('Order queries', () => {
   beforeAll(async () => {
-    const createOrder = await client.mutate({
+    operations = await setupApp();
+  });
+
+  beforeAll(async () => {
+    const createOrder = await operations.mutate({
       mutation: gql`
         mutation($order: OrderInput!) {
           addOrder(order: $order) {
             ... on Order {
               _id
+            }
+            ... on Error {
+              message
             }
           }
         }
@@ -23,288 +34,122 @@ describe('Order queries', () => {
   });
 
   test('Should receive all orders', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query {
           getAllOrders {
-            user {
-              email
-              lastName
-              firstName
-              phoneNumber
-              patronymicName
-            }
-            delivery {
-              sentOn
-              sentBy
-              byCourier
-              invoiceNumber
-              courierOffice
-            }
-            isPaid
-            status
-            address {
-              appartment
-              buildingNumber
-              region
-              street
-              city
-              country
-              zipcode
-            }
-            completed
-            userComment
-            cancellationReason
-            adminComment
             items {
-              bottomColor {
-                lang
-                value
+              user {
+                email
+                lastName
+                firstName
+                phoneNumber
+                patronymicName
               }
-              closure {
-                lang
-                value
+              dateOfCreation
+              delivery {
+                sentOn
+                sentBy
+                byCourier
+                invoiceNumber
+                courierOffice
               }
-              model {
-                lang
-                value
+              isPaid
+              status
+              address {
+                appartment
+                buildingNumber
+                region
+                street
+                city
+                country
+                zipcode
               }
-              closureColor
-              size {
-                widthInCm
-                weightInKg
-                heightInCm
-                volumeInLiters
-                depthInCm
+              userComment
+              lastUpdatedDate
+              cancellationReason
+              adminComment
+              items {
+                bottomColor {
+                  lang
+                  value
+                }
+                closure {
+                  lang
+                  value
+                }
+                model {
+                  lang
+                  value
+                }
+                closureColor
+                size {
+                  widthInCm
+                  weightInKg
+                  heightInCm
+                  volumeInLiters
+                  depthInCm
+                }
+                additions {
+                  lang
+                  value
+                }
+                actualPrice {
+                  currency
+                  value
+                }
+                name {
+                  lang
+                  value
+                }
+                pattern {
+                  lang
+                  value
+                }
+                category {
+                  lang
+                  value
+                }
+                quantity
+                colors {
+                  lang
+                  value
+                }
+                subcategory {
+                  lang
+                  value
+                }
+                bottomMaterial {
+                  lang
+                  value
+                }
               }
-              additions {
-                lang
-                value
-              }
-              actualPrice {
+              totalItemsPrice {
                 currency
                 value
               }
-              name {
-                lang
+              totalPriceToPay {
+                currency
                 value
               }
-              pattern {
-                lang
-                value
-              }
-              category {
-                lang
-                value
-              }
-              quantity
-              colors {
-                lang
-                value
-              }
-              subcategory {
-                lang
-                value
-              }
-              bottomMaterial {
-                lang
-                value
-              }
+              paymentMethod
             }
-            totalItemsPrice {
-              currency
-              value
-            }
-            totalPriceToPay {
-              currency
-              value
-            }
-            paymentMethod
           }
         }
       `,
     });
-
-    const orders = res.data.getAllOrders;
+    const orders = res.data.getAllOrders.items;
 
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders).toContainEqual({
-      user: {
-        email: 'test@gmail.com',
-        lastName: 'Test',
-        firstName: 'Test',
-        phoneNumber: '380953544271',
-        patronymicName: 'Test',
-        __typename: 'OrderUser',
-      },
-      delivery: {
-        sentOn: null,
-        sentBy: 'Nova Poshta',
-        byCourier: true,
-        invoiceNumber: '6280260',
-        courierOffice: 10,
-        __typename: 'Delivery',
-      },
-      isPaid: false,
-      status: 'DELIVERED',
-      address: {
-        appartment: '97',
-        buildingNumber: '25',
-        region: 'Кіровоградська область',
-        street: 'Бульвар Марії Приймаченко',
-        city: 'Новомиргород',
-        country: 'Україна',
-        zipcode: 98908,
-        __typename: 'Address',
-      },
-      completed: false,
-      userComment: '',
-      cancellationReason: '',
-      adminComment: '',
-      items: [
-        {
-          __typename: 'OrderItems',
-          category: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Сумки',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Bags',
-            },
-          ],
-          subcategory: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Сумки',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Bags',
-            },
-          ],
-          model: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Сумка з гобеленом',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Bag with a Pattern',
-            },
-          ],
-          name: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Сумка з гобеленом синя',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Bag with a Pattern Blue',
-            },
-          ],
-          colors: [
-            [
-              {
-                __typename: 'Language',
-                lang: 'uk',
-                value: 'Сталево-блакитний',
-              },
-              {
-                __typename: 'Language',
-                lang: 'en',
-                value: 'Steel-blue',
-              },
-            ],
-          ],
-          pattern: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Олені',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Deers',
-            },
-          ],
-          closure: [],
-          closureColor: '',
-          size: {
-            __typename: 'Size',
-            heightInCm: 38,
-            widthInCm: 36,
-            depthInCm: 10,
-            volumeInLiters: 0,
-            weightInKg: 0,
-          },
-          bottomMaterial: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Тканина Кордура',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Cordura fabric',
-            },
-          ],
-          bottomColor: [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'чорний',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'black',
-            },
-          ],
-          additions: [],
-          actualPrice: [
-            {
-              __typename: 'CurrencySet',
-              currency: 'UAH',
-              value: 90000,
-            },
-            {
-              __typename: 'CurrencySet',
-              currency: 'USD',
-              value: 3246,
-            },
-          ],
-          quantity: 1,
-        },
-      ],
-      totalItemsPrice: [
-        { currency: 'UAH', value: 90000, __typename: 'CurrencySet' },
-        { currency: 'USD', value: 3246, __typename: 'CurrencySet' },
-      ],
-      totalPriceToPay: [
-        { currency: 'UAH', value: 97000, __typename: 'CurrencySet' },
-        { currency: 'USD', value: 3486, __typename: 'CurrencySet' },
-      ],
-      paymentMethod: 'CARD',
-      __typename: 'Order',
-    });
+    expect(orders[0]).toHaveProperty('user', newOrder.user);
+    expect(orders[0]).toHaveProperty('category', newOrder.category);
+    expect(orders[0]).toHaveProperty('pattern', newOrder.pattern);
   });
 
   test('should recive order by id', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query($id: ID!) {
           getOrderById(id: $id) {
@@ -335,7 +180,6 @@ describe('Order queries', () => {
                 country
                 zipcode
               }
-              completed
               userComment
               lastUpdatedDate
               cancellationReason
@@ -416,171 +260,21 @@ describe('Order queries', () => {
         id: orderId,
       },
     });
-
     const order = res.data.getOrderById;
 
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'DELIVERED');
-    expect(order).toHaveProperty('user', {
-      __typename: 'OrderUser',
-      firstName: 'Test',
-      lastName: 'Test',
-      patronymicName: 'Test',
-      email: 'test@gmail.com',
-      phoneNumber: '380953544271',
-    });
-    expect(order).toHaveProperty('address', {
-      __typename: 'Address',
-      country: 'Україна',
-      region: 'Кіровоградська область',
-      city: 'Новомиргород',
-      zipcode: 98908,
-      street: 'Бульвар Марії Приймаченко',
-      buildingNumber: '25',
-      appartment: '97',
-    });
-    expect(order).toHaveProperty('delivery', {
-      __typename: 'Delivery',
-      sentBy: 'Nova Poshta',
-      byCourier: true,
-      courierOffice: 10,
-      invoiceNumber: '6280260',
-      sentOn: null,
-    });
-    expect(order).toHaveProperty('items', [
-      {
-        __typename: 'OrderItems',
-        category: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        subcategory: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        model: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумка з гобеленом',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bag with a Pattern',
-          },
-        ],
-        name: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Сумка з гобеленом синя',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Bag with a Pattern Blue',
-          },
-        ],
-        colors: [
-          [
-            {
-              __typename: 'Language',
-              lang: 'uk',
-              value: 'Сталево-блакитний',
-            },
-            {
-              __typename: 'Language',
-              lang: 'en',
-              value: 'Steel-blue',
-            },
-          ],
-        ],
-        pattern: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Олені',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Deers',
-          },
-        ],
-        closure: [],
-        closureColor: '',
-        size: {
-          __typename: 'Size',
-          heightInCm: 38,
-          widthInCm: 36,
-          depthInCm: 10,
-          volumeInLiters: 0,
-          weightInKg: 0,
-        },
-        bottomMaterial: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'Тканина Кордура',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'Cordura fabric',
-          },
-        ],
-        bottomColor: [
-          {
-            __typename: 'Language',
-            lang: 'uk',
-            value: 'чорний',
-          },
-          {
-            __typename: 'Language',
-            lang: 'en',
-            value: 'black',
-          },
-        ],
-        additions: [],
-        actualPrice: [
-          {
-            __typename: 'CurrencySet',
-            currency: 'UAH',
-            value: 90000,
-          },
-          {
-            __typename: 'CurrencySet',
-            currency: 'USD',
-            value: 3246,
-          },
-        ],
-        quantity: 1,
-      },
-    ]);
+    expect(order).toHaveProperty('user', newOrder.user);
+    expect(order).toHaveProperty('address', newOrder.address);
+    expect(order).toHaveProperty('delivery', deliveryOrder);
+    expect(order).toHaveProperty('items', newOrder.items);
     expect(order).toHaveProperty('paymentMethod', 'CARD');
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
   });
 
   test('Should throw error ORDER_NOT_FOUND', async () => {
-    const res = await client
+    const res = await operations
       .query({
         query: gql`
           query($id: ID!) {
@@ -613,7 +307,6 @@ describe('Order queries', () => {
                   country
                   zipcode
                 }
-                completed
                 userComment
                 lastUpdatedDate
                 cancellationReason
@@ -697,12 +390,11 @@ describe('Order queries', () => {
       .catch(err => err);
 
     const error = res;
-
-    expect(error.graphQLErrors[0].message).toBe('ORDER_NOT_FOUND');
+    expect(error.errors[0].message).toEqual('ORDER_NOT_FOUND');
   });
 
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteOrder(id: $id) {

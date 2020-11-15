@@ -13,7 +13,8 @@ type User{
     invitationalToken: String
     credentials: [Credential]
     registrationDate: String
-    wishlist: [ID]
+    wishlist: [Product]
+    cart: [CartProduct]
     orders:[ID]
     purchasedProducts: [ID]
     comments: [ID]
@@ -21,9 +22,15 @@ type User{
     confirmed: Boolean
 }`;
 
+const paginatedUsersType = `
+type PaginatedUsersType {
+    items: [User!]
+    count: Int!
+}
+`;
+
 const userInput = `
 input UserInput {
-    _id:ID!
     firstName: String
     lastName: String
     password: String
@@ -33,10 +40,28 @@ input UserInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
+    cart: [CartProductInput]
     orders:[ID]
     purchasedProducts: [ID]
     comments: [ID]
     banned: Boolean
+    confirmed: Boolean
+}`;
+const userUpdateInput = `
+input UserUpdateInput {
+    _id: ID
+    firstName: String
+    lastName: String
+    password: String
+    email: String
+    phoneNumber: String
+    address: AddressInput
+    images: ImageSetInput
+    wishlist: [ID]
+    cart: [CartProductInput]
+    orders:[ID]
+    purchasedProducts: [ID]
+    comments: [ID]
     confirmed: Boolean
 }`;
 const LoginInput = `
@@ -75,17 +100,29 @@ input UserForStatisticsInput {
 
 const userFilterInput = `
 input UserFilterInput {
-    roles: [String]
+    roles: [String!]
+    banned: [Boolean!]
+    search: String
+}
+`;
+
+const userSortInput = `
+input UserSortInput {
+  name: Int
+  email: Int
 }
 `;
 
 module.exports = {
   userType,
   userInput,
+  userUpdateInput,
   userRegisterInput,
   userFilterInput,
   LoginInput,
   adminRegisterInput,
   adminConfirmInput,
   UserForStatisticsInput,
+  paginatedUsersType,
+  userSortInput,
 };

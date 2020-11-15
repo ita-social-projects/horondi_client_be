@@ -1,4 +1,183 @@
+const { gql } = require('@apollo/client');
+const { setupApp } = require('../helper-functions');
+
 const badProductId = '1a1111da11da1111111a111a';
+
+const model = [
+  {
+    value: 'Тестова моделька',
+  },
+  {
+    value: 'Test modelyy',
+  },
+];
+
+const deleteAll = async (materialId, productId, categoryId, modelId) => {
+  const operations = await setupApp();
+  const deleteMaterial = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteMaterial(id: $id) {
+          ... on Material {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: materialId },
+  });
+  const deleteProduct = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteProduct(id: $id) {
+          ... on Product {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: productId },
+  });
+  const deleteCategory = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteCategory(deleteId: $id, switchId: $id) {
+          ... on Category {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: categoryId },
+  });
+  const deleteModel = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteModel(id: $id) {
+          ... on Model {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: modelId },
+  });
+  return { deleteProduct, deleteMaterial, deleteCategory, deleteModel };
+};
+
+const getProductData = product => ({
+  available: product.available,
+  category: {
+    _id: product.category,
+  },
+  closureColor: product.closureColor,
+  description: [
+    { value: product.description[0].value },
+    { value: product.description[1].value },
+  ],
+  innerMaterial: [
+    { value: product.innerMaterial[0].value },
+    { value: product.innerMaterial[1].value },
+  ],
+  isHotItem: product.isHotItem,
+  mainMaterial: [
+    { value: product.mainMaterial[0].value },
+    { value: product.mainMaterial[1].value },
+  ],
+  name: [{ value: product.name[0].value }, { value: product.name[1].value }],
+  pattern: [
+    { value: product.pattern[0].value },
+    { value: product.pattern[1].value },
+  ],
+  strapLengthInCm: product.strapLengthInCm,
+  subcategory: {
+    _id: product.subcategory,
+  },
+  purchasedCount: 0,
+  rate: 0,
+  rateCount: 0,
+});
+
+const createModel = async (material, category, modelToCreate) => {
+  const operations = await setupApp();
+  const createMaterial = await operations.mutate({
+    mutation: gql`
+      mutation($material: MaterialInput!) {
+        addMaterial(material: $material, images: []) {
+          ... on Material {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: { material },
+  });
+  const materialId = createMaterial.data.addMaterial._id;
+
+  const createCategory = await operations.mutate({
+    mutation: gql`
+      mutation($category: CategoryInput!, $upload: Upload) {
+        addCategory(category: $category, upload: $upload) {
+          ... on Category {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      category,
+      upload: '../___test__/model/dog.img',
+    },
+  });
+  const categoryId = createCategory.data.addCategory._id;
+  const subcategoryId = createCategory.data.addCategory._id;
+
+  const createModelData = await operations.mutate({
+    mutation: gql`
+      mutation($model: ModelInput!) {
+        addModel(model: $model) {
+          ... on Model {
+            _id
+            name {
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: { model: { ...modelToCreate, category: categoryId } },
+  });
+  const modelId = createModelData.data.addModel._id;
+
+  return {
+    categoryId,
+    subcategoryId,
+    modelId,
+    materialId,
+  };
+};
 
 const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   name: [
@@ -43,10 +222,7 @@ const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
+  basePrice: 1,
   available: true,
   isHotItem: false,
   images: {
@@ -173,10 +349,7 @@ const getProductForUpdate = (
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'white',
-  basePrice: [
-    { currency: 'UAH', value: 777000 },
-    { currency: 'USD', value: 7779 },
-  ],
+  basePrice: 22,
   available: false,
   isHotItem: true,
   images: {
@@ -301,10 +474,7 @@ const getSameNameForUpdate = (
     { lang: 'en', value: 'Plastic closure' },
   ],
   closureColor: 'black',
-  basePrice: [
-    { currency: 'UAH', value: 145000 },
-    { currency: 'USD', value: 5229 },
-  ],
+  basePrice: 2,
   available: true,
   isHotItem: false,
   images: {
@@ -434,10 +604,7 @@ const newMaterial = {
   ],
   purpose: 'bottomMaterial',
   available: true,
-  additionalPrice: [
-    { currency: 'UAH', value: 0 },
-    { currency: 'USD', value: 0 },
-  ],
+  additionalPrice: 79,
   colors: {
     code: 777,
     name: [
@@ -456,7 +623,12 @@ module.exports = {
   badProductId,
   newCategory,
   newModel,
+  newMaterial,
   getNewProduct,
   getProductForUpdate,
   getSameNameForUpdate,
+  createModel,
+  getProductData,
+  deleteAll,
+  model,
 };

@@ -24,7 +24,7 @@ availableCount: Int
 rate: Float
 rateCount: Int
 userRates: [UserRate]
-comments: [Comment]
+comments: PaginatedComments!
 }
 `;
 
@@ -51,7 +51,36 @@ isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;
 
+const cartProductType = `
+type CartProduct {
+_id: ID!
+name: [Language]
+bagBottom: CartProductBagBottom
+dimensions: CartProductDimensions
+image: String
+totalPrice: [CurrencySet]
+quantity: Int
+selectedSize: String
+sidePocket: Boolean
+}
+`;
+
+const cartProductInput = `
+input CartProductInput {
+_id: ID!
+name: [LanguageInput]
+bagBottom: CartProductBagBottomInput
+dimensions: CartProductDimensionsInput
+image: String
+totalPrice: [CurrencySetInput]
+quantity: Int
+selectedSize: String
+sidePocket: Boolean
+}`;
+
 module.exports = {
   productType,
   productInput,
+  cartProductType,
+  cartProductInput,
 };

@@ -1,32 +1,39 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
 const client = require('../../utils/apollo-test-client');
+jest.mock('../../modules/upload/upload.service');
 const { newCategory, newModel } = require('./model.variables');
-require('dotenv').config();
+const { setupApp } = require('../helper-functions');
 
 let modelId;
 let categoryId;
+let operations;
 
 describe('Product queries', () => {
   beforeAll(async () => {
-    const createCategory = await client.mutate({
+    operations = await setupApp();
+    const createCategory = await operations.mutate({
       mutation: gql`
-        mutation($category: CategoryInput!) {
-          addCategory(category: $category) {
+        mutation($category: CategoryInput!, $upload: Upload) {
+          addCategory(category: $category, upload: $upload) {
             ... on Category {
               _id
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
         }
       `,
-      variables: { category: newCategory },
+      variables: { category: newCategory, upload: '__tests__/model/img.png' },
     });
     categoryId = createCategory.data.addCategory._id;
 
-    const createModel = await client.mutate({
+    const createModel = await operations.mutate({
       mutation: gql`
         mutation($model: ModelInput!) {
-          addModel(model: $model) {
+          addModel(model: $model, upload: []) {
             ... on Model {
               _id
               name {
@@ -41,7 +48,7 @@ describe('Product queries', () => {
     modelId = createModel.data.addModel._id;
   });
   test('Should receive all models by category id', async () => {
-    const res = await client.query({
+    const res = await operations.query({
       query: gql`
         query($category: ID!) {
           getModelsByCategory(id: $category) {
@@ -78,29 +85,25 @@ describe('Product queries', () => {
     expect(models.length).toBeGreaterThan(0);
     expect(models[0].name).toBeInstanceOf(Array);
     expect(models[0]).toHaveProperty('name', [
-      { __typename: 'Language', value: 'Тест', lang: 'uk' },
-      { __typename: 'Language', value: 'Test', lang: 'en' },
+      { value: 'Тест', lang: 'uk' },
+      { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('description', [
-      { __typename: 'Language', value: 'Тест', lang: 'uk' },
-      { __typename: 'Language', value: 'Test', lang: 'en' },
+      { value: 'Тест', lang: 'uk' },
+      { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('images', {
-      __typename: 'ImageSet',
-      large: 'large_new',
-      medium: 'medium_new',
-      small: 'small_new',
-      thumbnail: 'thumbnail_new',
+      large: 'large_0_test-file',
+      medium: 'medium_0_test-file',
+      small: 'small_0_test-file',
+      thumbnail: 'thumbnail_0_test-file',
     });
     expect(models[0]).toHaveProperty('category', {
-      __typename: 'Category',
       name: [
         {
-          __typename: 'Language',
           value: 'Нова',
         },
         {
-          __typename: 'Language',
           value: 'New',
         },
       ],
@@ -133,12 +136,10 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-
     const error = res;
-
     expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_VALID');
   });
-  test('Should throw error CATEGORY_NOT_FOUND', async () => {
+  test('Should return empty array when category isnt exist', async () => {
     const res = await client
       .query({
         query: gql`
@@ -165,16 +166,15 @@ describe('Product queries', () => {
         `,
       })
       .catch(err => err);
-
-    const error = res;
-
-    expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_FOUND');
+    const getModelsByCategory = res.data.getModelsByCategory;
+    expect(getModelsByCategory.length).toBe(0);
+    expect(getModelsByCategory).toBeInstanceOf(Array);
   });
   afterAll(async () => {
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
-          deleteCategory(id: $id) {
+          deleteCategory(deleteId: $id, switchId: $id) {
             ... on Category {
               _id
             }
@@ -188,7 +188,7 @@ describe('Product queries', () => {
       variables: { id: categoryId },
     });
 
-    await client.mutate({
+    await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteModel(id: $id) {

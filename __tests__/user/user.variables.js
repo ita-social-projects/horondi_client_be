@@ -1,24 +1,47 @@
-require('dotenv').config();
+const {
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASSWORD,
+} = require('../../dotenvValidator');
 
 const adminUser = {
-  email: 'admin2@gmail.com',
+  email: 'admin2123@gmail.com',
   password: 'qwertY123',
 };
 
 const superAdminUser = {
-  email: process.env.SUPER_ADMIN_EMAIL,
-  password: process.env.SUPER_ADMIN_PASSWORD,
+  email: SUPER_ADMIN_EMAIL,
+  password: SUPER_ADMIN_PASSWORD,
 };
 
 const newAdmin = {
-  email: 'admin2@gmail.com',
+  email: 'admintest4@gmail.com',
   firstName: 'Hook',
   lastName: 'Age',
-  password: 'qwertY123',
+  pass: 'dffdsfsdsdf',
+};
+
+const testUser = {
+  firstName: 'Petro',
+  lastName: 'Tatsenyak',
+  email: 'qwerdsd223@gmail.com',
+  pass: '12345678Pt',
+  phoneNumber: '380666666666',
+  role: 'admin',
+  language: 1,
+  address: {
+    country: 'Ukraine',
+    city: 'Kiev',
+    street: 'Shevchenka',
+    buildingNumber: '23',
+  },
+  wishlist: [],
+  orders: [],
+  comments: [],
 };
 
 module.exports = {
   adminUser,
   newAdmin,
   superAdminUser,
+  testUser,
 };

@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const { EXPIRES_IN, SECRET } = require('../dotenvValidator');
 
 const defaultParams = {
-  expiresIn: process.env.EXPIRES_IN,
-  secret: process.env.SECRET,
+  expiresIn: EXPIRES_IN,
+  secret: SECRET,
 };
 
 const generateToken = async (userId, email, params = defaultParams) => {

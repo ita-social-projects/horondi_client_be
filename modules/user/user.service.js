@@ -2,6 +2,7 @@ const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
+const { OAuth2Client } = require('google-auth-library');
 const {
   validateRegisterInput,
   validateLoginInput,
@@ -17,12 +18,21 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
+const emailService = require('../confirm-email/confirmation-email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const {
+  SECRET,
+  RECOVERY_EXPIRE,
+  CONFIRMATION_SECRET,
+  MAIL_USER,
+  NODE_ENV,
+} = require('../../dotenvValidator');
 const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
 } = require('../helper-functions');
+const productService = require('../product/product.service');
 
 const {
   USER_ALREADY_EXIST,
@@ -35,6 +45,7 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
+  ID_NOT_PROVIDED,
 } = require('../../error-messages/user.messages');
 
 const { userDateFormat } = require('../../consts');
@@ -51,10 +62,18 @@ const SOURCES = {
 class UserService {
   filterItems(args = {}) {
     const filter = {};
-    const { roles, days } = args;
+    const { roles, days, banned, search } = args;
 
-    if (roles) {
+    if (roles && roles.length) {
       filter.role = { $in: roles };
+    }
+
+    if (banned && banned.length) {
+      filter.banned = { $in: banned };
+    }
+
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search.trim());
     }
 
     if (days) {
@@ -67,8 +86,39 @@ class UserService {
     return filter;
   }
 
+  searchItems(searchString) {
+    return [
+      { name: { $regex: new RegExp(searchString, 'i') } },
+      { phoneNumber: { $regex: new RegExp(searchString) } },
+      { email: { $regex: new RegExp(searchString, 'i') } },
+    ];
+  }
+
+  aggregateItems(filters = {}, pagination = {}, sort = {}) {
+    let aggregationItems = [];
+
+    if (Object.keys(sort).length) {
+      aggregationItems.push({
+        $sort: sort,
+      });
+    }
+
+    aggregationItems.push({ $match: filters });
+
+    if (pagination.skip !== undefined && pagination.limit) {
+      aggregationItems.push({
+        $skip: pagination.skip,
+      });
+      aggregationItems.push({
+        $limit: pagination.limit,
+      });
+    }
+
+    return aggregationItems;
+  }
+
   async checkIfTokenIsValid(token) {
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -91,12 +141,37 @@ class UserService {
     return checkedUser;
   }
 
-  async getAllUsers({ filter }) {
-    const filters = this.filterItems(filter);
+  async getAllUsers({ filter, pagination, sort }) {
+    let filteredItems = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
 
-    const items = await User.find(filters);
+    const [users] = await User.aggregate([
+      {
+        $addFields: {
+          name: { $concat: ['$firstName', ' ', '$lastName'] },
+        },
+      },
+    ])
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filteredItems }, { $count: 'count' }],
+      });
+    let userCount;
 
-    return items;
+    const {
+      items,
+      calculations: [calculations],
+    } = users;
+
+    if (calculations) {
+      userCount = calculations.count;
+    }
+
+    return {
+      items,
+      count: userCount || 0,
+    };
   }
 
   async getUsersForStatistic({ filter }) {
@@ -108,10 +183,15 @@ class UserService {
       changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurency = countItemsOccurency(formatedData);
-
+    const counts = Object.values(userOccurency);
+    const total = counts.reduce(
+      (userTotal, userCount) => userTotal + userCount,
+      0
+    );
     return {
       labels: Object.keys(userOccurency),
-      counts: Object.values(userOccurency),
+      counts,
+      total,
     };
   }
 
@@ -119,7 +199,7 @@ class UserService {
     return this.getUserByFieldOrThrow('_id', id);
   }
 
-  async updateUserById(updatedUser, id, upload) {
+  async updateUserById(updatedUser, user, upload) {
     const { firstName, lastName, email } = updatedUser;
 
     const { errors } = await validateUpdateInput.validateAsync({
@@ -132,32 +212,30 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await User.findById(id).lean();
-
     if (user.email !== updatedUser.email) {
-      const user = await this.getUserByFieldOrThrow('email', updatedUser.email);
-      if (user) {
+      const existingUser = await User.findOne({ email: updatedUser.email });
+      if (existingUser) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
     }
     if (!user.images) user.images = [];
     if (upload) {
-      await deleteFiles(
-        Object.values(user.images).filter(
-          item => typeof item === 'string' && item
-        )
-      );
+      if (user.images.length) {
+        await deleteFiles(
+          Object.values(user.images).filter(
+            item => typeof item === 'string' && item
+          )
+        );
+      }
       const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-
-    return User.findByIdAndUpdate(id, updatedUser, { new: true });
+    return User.findByIdAndUpdate(user._id, updatedUser, { new: true });
   }
 
   async updateUserByToken(updatedUser, user) {
     const { firstName, lastName, email } = updatedUser;
-
     const { errors } = await validateUpdateInput.validateAsync({
       firstName,
       lastName,
@@ -189,7 +267,6 @@ class UserService {
     }
 
     const user = await this.getUserByFieldOrThrow('email', email);
-
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
@@ -244,6 +321,60 @@ class UserService {
       token,
     };
   }
+  async googleUser(id_token) {
+    const client = new OAuth2Client();
+    const ticket = await client.verifyIdToken({
+      idToken: id_token,
+      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    });
+    const dataUser = ticket.getPayload();
+    const userid = dataUser.sub;
+    if (!(await User.findOne({ email: dataUser.email }))) {
+      await this.registerGoogleUser({
+        firstName: dataUser.given_name,
+        lastName: dataUser.family_name,
+        email: dataUser.email,
+        credentials: [
+          {
+            source: 'google',
+            tokenPass: userid,
+          },
+        ],
+      });
+    }
+    return this.loginGoogleUser({
+      email: dataUser.email,
+    });
+  }
+
+  async loginGoogleUser({ email }) {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+    }
+    const token = generateToken(user._id, user.email);
+    return {
+      ...user._doc,
+      _id: user._id,
+      token,
+    };
+  }
+
+  async registerGoogleUser({ firstName, lastName, email, credentials }) {
+    if (await User.findOne({ email })) {
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    }
+
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      credentials,
+    });
+    const savedUser = await user.save();
+
+    return savedUser;
+  }
 
   async registerUser({ firstName, lastName, email, password }, language) {
     await validateRegisterInput.validateAsync({
@@ -270,18 +401,27 @@ class UserService {
       ],
     });
     const savedUser = await user.save();
+
     const token = await generateToken(savedUser._id, savedUser.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.CONFIRMATION_SECRET,
+      expiresIn: RECOVERY_EXPIRE,
+      secret: CONFIRMATION_SECRET,
     });
+
     savedUser.confirmationToken = token;
+
     await savedUser.save();
-    const message = {
-      from: process.env.MAIL_USER,
-      to: savedUser.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(firstName, token, language),
-    };
+
+    const subject = '[HORONDI] Email confirmation';
+    const html = confirmationMessage(firstName, token, language);
+
+    await emailService.sendEmail({
+      user,
+      sendEmail,
+      subject,
+      html,
+    });
+
+    await savedUser.save();
 
     return savedUser;
   }
@@ -293,13 +433,13 @@ class UserService {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
     const token = await generateToken(user._id, user.email, {
-      secret: process.env.CONFIRMATION_SECRET,
-      expiresIn: process.env.RECOVERY_EXPIRE,
+      secret: CONFIRMATION_SECRET,
+      expiresIn: RECOVERY_EXPIRE,
     });
     user.confirmationToken = token;
     await user.save();
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: user.email,
       subject: '[HORONDI] Email confirmation',
       html: confirmationMessage(user.firstName, token, language),
@@ -314,7 +454,7 @@ class UserService {
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, process.env.CONFIRMATION_SECRET);
+    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
     const updates = {
       $set: {
         confirmed: true,
@@ -334,12 +474,12 @@ class UserService {
     }
 
     const token = await generateToken(user._id, user.email, {
-      expiresIn: process.env.RECOVERY_EXPIRE,
-      secret: process.env.SECRET,
+      expiresIn: RECOVERY_EXPIRE,
+      secret: SECRET,
     });
     user.recoveryToken = token;
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: email,
       subject: '[HORONDI] Instructions for password recovery',
       html: recoveryMessage(user.firstName, token, language),
@@ -361,7 +501,7 @@ class UserService {
 
   async resetPassword(password, token) {
     await validateNewPassword.validateAsync({ password });
-    const decoded = jwt.verify(token, process.env.SECRET);
+    const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -420,12 +560,12 @@ class UserService {
       savedUser.email
     );
 
-    if (process.env.NODE_ENV === 'test') {
+    if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
 
     const message = {
-      from: process.env.MAIL_USER,
+      from: MAIL_USER,
       to: savedUser.email,
       subject: '[Horondi] Invitation to become an admin',
       html: adminConfirmationMessage(invitationalToken),
@@ -451,7 +591,7 @@ class UserService {
     }
 
     try {
-      decoded = jwt.verify(token, process.env.SECRET);
+      decoded = jwt.verify(token, SECRET);
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
         statusCode: 400,
@@ -485,13 +625,54 @@ class UserService {
 
   validateConfirmationToken(token) {
     try {
-      jwt.verify(token, process.env.SECRET);
+      jwt.verify(token, SECRET);
       return { isSuccess: true };
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
         statusCode: 400,
       });
     }
+  }
+
+  async updateCartOrWishlist(userId, key, list, productId) {
+    await User.findByIdAndUpdate(userId, { [key]: list });
+    return productService.getProductById(productId);
+  }
+
+  addProductToWishlist(productId, key, user) {
+    const newList = [...user.wishlist, productId];
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  removeProductFromWishlist(productId, key, user) {
+    const newList = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  addProductToCart(product, key, user) {
+    const newList = [...user.cart, product];
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  removeProductFromCart(product, key, user) {
+    const newList = user.cart.filter(
+      ({ _id, selectedSize }) =>
+        String(_id) !== product._id ||
+        (String(_id) === product._id && selectedSize !== product.selectedSize)
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
+  }
+
+  changeCartProductQuantity(product, key, user) {
+    const newList = user.cart.map(item =>
+      String(item._id) === product._id &&
+      item.selectedSize === product.selectedSize
+        ? product
+        : item
+    );
+
+    return this.updateCartOrWishlist(user._id, key, newList, product._id);
   }
 }
 

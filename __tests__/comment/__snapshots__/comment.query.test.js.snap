@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Comment queries  should return error when find comment by wrong id 1`] = `
+Object {
+  "message": "COMMENT_NOT_FOUND",
+  "statusCode": 404,
+}
+`;

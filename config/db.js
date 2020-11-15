@@ -1,8 +1,8 @@
-require('dotenv').config();
 const mongoose = require('mongoose');
+const { MONGO_URL } = require('../dotenvValidator');
 
 const connectDB = async () => {
-  const db = process.env.MONGO_URL;
+  const db = MONGO_URL;
   try {
     await mongoose.connect(db, {
       useNewUrlParser: true,
@@ -13,7 +13,7 @@ const connectDB = async () => {
     console.log('MongoDB Connected...');
   } catch (err) {
     console.error(err);
-    process.exit(1);
+    // process.exit(1);
   }
 };
 

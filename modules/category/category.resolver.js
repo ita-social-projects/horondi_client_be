@@ -5,6 +5,8 @@ const {
 
 const categoryQuery = {
   getAllCategories: (parent, args) => categoryService.getAllCategories(),
+  getCategoriesForBurgerMenu: (parent, args) =>
+    categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),
   getCategoryById: async (parent, args) => {
     try {
@@ -45,7 +47,7 @@ const categoryMutation = {
   },
   deleteCategory: async (parent, args) => {
     try {
-      return await categoryService.deleteCategory(args.id);
+      return await categoryService.deleteCategory(args);
     } catch (e) {
       return {
         statusCode: 404,

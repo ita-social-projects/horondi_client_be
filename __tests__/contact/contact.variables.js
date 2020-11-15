@@ -1,3 +1,4 @@
+const notExistContactId = '5f311ec5f2983e390432a8c3';
 const contact = {
   phoneNumber: '1241241242144',
   openHours: [
@@ -51,8 +52,6 @@ const newContact = {
   ],
   link: 'https://testURL.com',
 };
-
-const notExistContactId = '5f311ec5f2983e390432a8c3';
 
 module.exports = {
   contact,

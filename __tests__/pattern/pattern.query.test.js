@@ -1,9 +1,8 @@
 const { gql } = require('@apollo/client');
 /* eslint-disable no-undef */
-const client = require('../../utils/apollo-test-client');
-require('dotenv').config();
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
-const { adminLogin } = require('../helper-functions');
+const { setupApp } = require('../helper-functions');
+jest.mock('../../modules/upload/upload.service');
 
 const {
   patternDoesNotExistId,
@@ -15,19 +14,23 @@ const {
   languageTypeName,
   imageTypeName,
   queryPatternToAdd,
+  testImages,
 } = require('./pattern.variables');
 
-let token;
 let patternId;
+let operations;
 
-describe('pattern query tests', () => {
+describe('Pattern queries', () => {
   beforeAll(async () => {
-    token = await adminLogin(user);
-    const res = await client
+    operations = await setupApp();
+  });
+
+  beforeAll(async () => {
+    const res = await operations
       .mutate({
         mutation: gql`
           mutation($pattern: PatternInput!) {
-            addPattern(pattern: $pattern) {
+            addPattern(pattern: $pattern, image: []) {
               ... on Pattern {
                 _id
               }
@@ -40,15 +43,14 @@ describe('pattern query tests', () => {
         `,
 
         variables: { pattern: queryPatternToAdd },
-        context: { headers: { token } },
       })
       .catch(e => e);
     patternId = res.data.addPattern._id;
   });
 
   describe('tests for all patterns and one pattern', () => {
-    test('#1 Should receive all patterns', async () => {
-      const res = await client
+    test('Should receive all patterns', async () => {
+      const res = await operations
         .query({
           query: gql`
             query {
@@ -81,7 +83,6 @@ describe('pattern query tests', () => {
       expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns).toBeDefined();
       expect(res.data.getAllPatterns.items).toContainEqual({
-        __typename: 'Pattern',
         name: queryPatternToAdd.name.map(item => ({
           ...languageTypeName,
           ...item,
@@ -90,14 +91,14 @@ describe('pattern query tests', () => {
           ...languageTypeName,
           ...item,
         })),
-        images: { ...imageTypeName, ...queryPatternToAdd.images },
+        images: { ...imageTypeName },
         material: queryPatternToAdd.material,
         handmade: false,
         available: true,
       });
     });
-    test('#2 Should receive one pattern', async () => {
-      const res = await client
+    test('Should receive one pattern', async () => {
+      const res = await operations
         .query({
           query: gql`
             query($id: ID!) {
@@ -130,7 +131,7 @@ describe('pattern query tests', () => {
 
       expect(res.data.getPatternById).toMatchSnapshot();
       expect(res.data.getPatternById).toBeDefined();
-      expect(res.data.getPatternById.name).toBeInstanceOf(Array);
+      expect(res.data.getPatternById).toHaveProperty('images', testImages);
       expect(res.data.getPatternById).toHaveProperty(
         'name',
         queryPatternToAdd.name.map(item => ({
@@ -138,12 +139,10 @@ describe('pattern query tests', () => {
           ...item,
         }))
       );
-      expect(res.data.getPatternById.images).toBeInstanceOf(Object);
       expect(res.data.getPatternById).toHaveProperty('images', {
         ...imageTypeName,
         ...queryPatternToAdd.images,
       });
-      expect(res.data.getPatternById.images).toBeInstanceOf(Object);
       expect(res.data.getPatternById).toHaveProperty(
         'description',
         ...queryPatternToAdd.description.map(item => ({
@@ -165,8 +164,8 @@ describe('pattern query tests', () => {
         queryPatternToAdd.available
       );
     });
-    test('#3 request not existing pattern should throw error', async () => {
-      const res = await client
+    test('request not existing pattern should throw error', async () => {
+      const res = await operations
         .query({
           query: gql`
             query($id: ID!) {
@@ -210,7 +209,7 @@ describe('pattern query tests', () => {
     });
 
     test('pattern pagination test', async () => {
-      const res = await client
+      const res = await operations
         .query({
           variables: { skip, limit },
           query: gql`
@@ -243,11 +242,11 @@ describe('pattern query tests', () => {
         .catch(e => e);
 
       expect(res.data.getAllPatterns).toMatchSnapshot();
-      expect(res.data.getAllPatterns.items).toHaveLength(5);
-      expect(res.data.getAllPatterns.count).toEqual(16);
+      expect(res.data.getAllPatterns.items).toHaveLength(1);
+      expect(res.data.getAllPatterns.count).toEqual(1);
     });
-    test('pattern pagination test with wrong arguments', async () => {
-      const res = await client
+    test('Expect negative values', async () => {
+      const res = await operations
         .query({
           variables: { skip: wrongLimit, limit: wrongSkip },
           query: gql`
@@ -278,13 +277,13 @@ describe('pattern query tests', () => {
           `,
         })
         .catch(e => e);
-      expect(res.graphQLErrors[0].message).toEqual(
+      expect(res.errors[0].message).toEqual(
         'Skip value must be non-negative, but received: -5'
       );
     });
   });
   afterAll(async () => {
-    await client
+    await operations
       .mutate({
         mutation: gql`
           mutation($id: ID!) {
@@ -300,10 +299,9 @@ describe('pattern query tests', () => {
           }
         `,
         variables: { id: patternId },
-        context: { headers: { token } },
       })
       .catch(e => e);
-    expect(res.graphQLErrors[0].message).toEqual(
+    expect(res.errors[0].message).toEqual(
       'Skip value must be non-negative, but received: -5'
     );
   });

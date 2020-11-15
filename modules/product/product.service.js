@@ -2,12 +2,18 @@ const Product = require('./product.model');
 const Size = require('../../models/Size');
 const Material = require('../material/material.model');
 const Currency = require('../currency/currency.model');
+const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
 } = require('../../error-messages/products.messages');
+const {
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
+const { Error } = require('mongoose');
+const { uploadProductImages } = require('./product.utils');
 
 class ProductsService {
   getProductById(id) {
@@ -18,8 +24,14 @@ class ProductsService {
     return Size.findById(id);
   }
 
-  getModelsByCategory(id) {
-    return Product.find({ category: id });
+  async getModelsByCategory(id) {
+    const product = await Product.find({ category: id });
+
+    if (product.length === 0) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
+
+    return product;
   }
 
   async getProductOptions() {
@@ -158,14 +170,11 @@ class ProductsService {
       const model = await modelService.getModelById(productData.model);
       productData.model = model.name;
     }
-    return Product.findByIdAndUpdate(id, productData, { new: true });
+    return await Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(productData, filesToUpload) {
-    const uploadResult = await uploadFiles(filesToUpload);
-    const imagesResults = await Promise.allSettled(uploadResult);
-    const primary = imagesResults[0].value.fileNames;
-    const additional = imagesResults.slice(1).map(res => res.value.fileNames);
+    const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
     productData.basePrice = await this.calculatePrice(basePrice);
@@ -244,9 +253,20 @@ class ProductsService {
       (prev, curr) => ({
         labels: [...prev.labels, curr.name[0].value],
         counts: [...prev.counts, curr.purchasedCount],
+        total: prev.total + curr.purchasedCount,
       }),
-      { labels: [], counts: [] }
+      { labels: [], counts: [], total: 0 }
     );
+  }
+
+  async getProductsForWishlist(userId) {
+    const { wishlist } = await User.findById(userId);
+    return await Product.find({ _id: { $in: wishlist } });
+  }
+
+  async getProductsForCart(userId) {
+    const { cart } = await User.findById(userId);
+    return await Product.find({ _id: { $in: cart } });
   }
 }
 

@@ -6,7 +6,7 @@ const {
   IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
-require('dotenv').config();
+const { IMAGE_LINK } = require('../../dotenvValidator');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
@@ -32,13 +32,13 @@ class BusinessTextService {
   async updateBusinessText(id, businessText, files) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
-    const currentPage = pages.find(el => el._id.toString() !== id);
+    const existingPage = pages.find(el => el._id.toString() !== id);
 
     if (!oldPage) {
       throw new Error(BUSINESS_TEXT_NOT_FOUND);
     }
 
-    if (pages.length && currentPage) {
+    if (existingPage) {
       return {
         message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
         statusCode: 400,
@@ -135,9 +135,7 @@ class BusinessTextService {
   }
 
   async deleteNoNeededImages(images) {
-    const regExp = new RegExp(
-      `(?<=src="${process.env.IMAGE_LINK}[a-z]+_).*?(?=")`
-    );
+    const regExp = new RegExp(`(?<=src="${IMAGE_LINK}[a-z]+_).*?(?=")`);
 
     const uniqueIds = images.map(img => img.match(regExp));
     const valuesToDelete = uniqueIds

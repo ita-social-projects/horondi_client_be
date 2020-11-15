@@ -20,6 +20,7 @@ const userQuery = {
 const userMutation = {
   registerUser: (parent, args) =>
     userService.registerUser(args.user, args.language),
+  googleUser: (parent, args) => userService.googleUser(args.id_token),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: async (parent, args) => {
@@ -32,8 +33,8 @@ const userMutation = {
       };
     }
   },
-  updateUserById: (parent, args) =>
-    userService.updateUserById(args.user, args.id, args.upload),
+  updateUserById: (parent, args, context) =>
+    userService.updateUserById(args.user, context.user, args.upload),
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) =>
     userService.recoverUser(args.email, args.language),
@@ -81,6 +82,21 @@ const userMutation = {
       };
     }
   },
+  addProductToWishlist: (parent, args, context) =>
+    userService.addProductToWishlist(args.productId, args.key, context.user),
+  removeProductFromWishlist: (parent, args, context) =>
+    userService.removeProductFromWishlist(
+      args.productId,
+      args.key,
+      context.user
+    ),
+
+  addProductToCart: (parent, args, context) =>
+    userService.addProductToCart(args.product, args.key, context.user),
+  removeProductFromCart: (parent, args, context) =>
+    userService.removeProductFromCart(args.product, args.key, context.user),
+  changeCartProductQuantity: (parent, args, context) =>
+    userService.changeCartProductQuantity(args.product, args.key, context.user),
 };
 
 module.exports = {

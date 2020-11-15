@@ -1,7 +1,7 @@
 const sgMail = require('@sendgrid/mail');
-require('dotenv').config();
+const { SENDGRID_API_KEY } = require('../dotenvValidator');
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(SENDGRID_API_KEY);
 const sendEmail = msg => sgMail.send(msg);
 
 module.exports = {

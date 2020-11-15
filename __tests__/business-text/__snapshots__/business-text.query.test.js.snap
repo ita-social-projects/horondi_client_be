@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Business page queries  Should receive all business texts 1`] = `
+Array [
+  Object {
+    "code": "new-code",
+    "text": Array [
+      Object {
+        "lang": "uk",
+        "value": "Тут бізнес текст",
+      },
+      Object {
+        "lang": "en",
+        "value": "Business text here",
+      },
+    ],
+    "title": Array [
+      Object {
+        "lang": "uk",
+        "value": "НоваБТ",
+      },
+      Object {
+        "lang": "en",
+        "value": "NewBT",
+      },
+    ],
+  },
+]
+`;
+
+exports[`Business page queries  Should receive selected business text 1`] = `
+Object {
+  "code": "new-code",
+  "text": Array [
+    Object {
+      "lang": "uk",
+      "value": "Тут бізнес текст",
+    },
+    Object {
+      "lang": "en",
+      "value": "Business text here",
+    },
+  ],
+  "title": Array [
+    Object {
+      "lang": "uk",
+      "value": "НоваБТ",
+    },
+    Object {
+      "lang": "en",
+      "value": "NewBT",
+    },
+  ],
+}
+`;
