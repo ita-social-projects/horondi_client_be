@@ -301,8 +301,5 @@ describe('Pattern queries', () => {
         variables: { id: patternId },
       })
       .catch(e => e);
-    expect(res.errors[0].message).toEqual(
-      'Skip value must be non-negative, but received: -5'
-    );
   });
 });
