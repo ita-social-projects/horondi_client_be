@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`mutations should register user 1`] = `[Error: secretOrPrivateKey must have a value]`;
