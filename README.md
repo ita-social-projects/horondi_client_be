@@ -7,6 +7,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 [![GitHub issues](https://img.shields.io/github/issues/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/horondi_client_be?style=flat-square)](https://github.com/ita-social-projects/Horondi_client_be/pulls)
 [![GitHub stars](https://img.shields.io/github/stars/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/stargazers)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=horondi_horondi_client_be&metric=alert_status)](https://sonarcloud.io/dashboard?id=horondi_horondi_client_be)
 [![GitHub license](https://img.shields.io/github/license/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/blob/master/LICENSE)
 
 ---
@@ -147,28 +148,60 @@ Command `npm run generate` is used to run [graphql code generator](https://graph
 
 ## Contributing
 
+You're encouraged to contribute to our project if you've found any issues or missing functionality that you would want to see. Here you can see [the list of issues](https://github.com/ita-social-projects/horondi_client_be/issues) and here you can create [a new issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose).
+
+Before sending any pull request, please discuss requirements/changes to be implemented using an existing issue or by creating a new one. All pull requests should be done into `development` branch.
+
+There are three GitHub projects: [horondi_client_fe](https://github.com/ita-social-projects/horondi_client_fe) for frontend part, [horondi_client_be](https://github.com/ita-social-projects/horondi_client_be) for backend part and [horondi_admin](https://github.com/ita-social-projects/horondi_admin). Every project has it's own issues.
+
+Every pull request should be linked to an issue. So if you make changes on frontend, backend or admin parts you should create an issue with a link to corresponding requirement (story, task or epic).
+
+All Pull Requests should start from prefix _#xxx-yyy_ where _xxx_ - task number and and _yyy_ - short description
+e.g. #020-createAdminPanel
+
+---
+
 ### Git flow
 
-> To get started...
+We have **master** , **development** and **feature** branches.  
+All **feature** branches must be merged into [development](https://github.com/ita-social-projects/horondi_client_be/tree/development) branch!!!
+Only the release should merge into the main branch!!!
+
+![Github flow](<https://wac-cdn.atlassian.com/dam/jcr:b5259cce-6245-49f2-b89b-9871f9ee3fa4/03%20(2).svg?cdnVersion=1312>)
 
 #### Step 1
 
 - **Option 1**
 
-  - 🍴 Fork this repo!
+  - 👯 Clone this repo to your local machine using `https://github.com/ita-social-projects/horondi_client_be.git`
 
 - **Option 2**
-  - 👯 Clone this repo to your local machine using `https://github.com/ita-social-projects/horondi_client_be.git`
+
+  - create new branch from development branch
 
 #### Step 2
 
-- **HACK AWAY!** 🔨🔨🔨
+- add some commits to your new branch
 
 #### Step 3
 
 - 🔃 Create a new pull request using <a href="https://github.com/ita-social-projects/horondi_client_be/compare/" target="_blank">github.com/ita-social-projects/horondi_client_be</a>.
 
+---
+
 ### Issue flow
+
+#### Step 1
+
+-go to [issues](https://github.com/ita-social-projects/horondi_client_be/issues) and click `New issue` button
+
+#### Step 2
+
+when creating [issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose) you should add name of the issue, description, choose assignee, label, project. If issue is a `User Story` you should link it with corresponding tasks, and corresponding tasks should be linked to issue.
+
+#### Step 3
+
+if issue is in work it should be placed in proper column on dashboard according to its status.
 
 ---
 
@@ -193,6 +226,10 @@ Command `npm run generate` is used to run [graphql code generator](https://graph
 [![@moran711](https://avatars1.githubusercontent.com/u/59802190?s=200&u=c937032a63ae775da998e0fe3ce066c3cda24d6e&v=4)](https://github.com/moran711)
 [![@VitalikVoicix](https://avatars0.githubusercontent.com/u/64539069?s=200&u=90288a9c4ce3bc30e1e7d2b4b8c7266b1d5a86b9&v=4)](https://github.com/VitalikVoicix)
 [![@koropalov](https://avatars3.githubusercontent.com/u/38702341?s=200&u=0e0aeb60e06240c840dd0852eb1f035f7ff8c88f&v=4)](https://github.com/koropalov)
+[![@dieie32](https://avatars0.githubusercontent.com/u/46137635?s=200&u=78cae47953349c5ca60e0add5dea36bd1b033efa&v=4)](https://github.com/dieie32)
+[![@kapoliub](https://avatars1.githubusercontent.com/u/56438696?s=200&u=be8c7bba587c6df08accc16d42868293f3c3705b&v=4)](https://github.com/kapoliub)
+[![@NikitaDenysenko](https://avatars0.githubusercontent.com/u/53399334?s=200&u=66fced143733258460a0058d26ccc83a1b3fa174&v=4)](https://github.com/NikitaDenysenko)
+[![@ivan-bonk](https://avatars3.githubusercontent.com/u/44017234?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/ivan-bonk)
 
 ### Quality control team
 
