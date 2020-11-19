@@ -7,8 +7,11 @@ const {
 let { superAdminUser, testUser, testUsersSet } = require('./user.variables');
 const { setupApp } = require('../helper-functions');
 const loginAdmin = require('../helpers/admin-login');
-const { createUser, getAllUsersQuery, chooseOnlyUsers } = require('../helpers/users');
-
+const {
+  createUser,
+  getAllUsersQuery,
+  chooseOnlyUsers,
+} = require('../helpers/users');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
@@ -634,14 +637,14 @@ describe('Filter users', () => {
   const BANNED = { banned: true };
   const SORT = {
     byName: { asc: { name: 1 }, desc: { name: -1 } },
-    byEmail: { asc: { email: 1 }, desc: { email: -1 } }
+    byEmail: { asc: { email: 1 }, desc: { email: -1 } },
   };
   let adminToken;
   let usersId;
 
   beforeAll(async () => {
+    operations = await setupApp();
     testUsersSet.forEach(user => createUser(user).catch(e => e));
-    adminToken = await loginAdmin(superAdminUser);
 
     let users = await getAllUsersQuery(adminToken);
 
@@ -652,7 +655,7 @@ describe('Filter users', () => {
       if (
         testUsersSet.some(el => el.firstName === user.firstName && el.banned)
       ) {
-        await client.mutate({
+        await operations.mutate({
           mutation: gql`
             mutation($id: ID!) {
               switchUserStatus(id: $id) {
@@ -667,11 +670,6 @@ describe('Filter users', () => {
           `,
           variables: {
             id: user._id,
-          },
-          context: {
-            headers: {
-              token: adminToken,
-            },
           },
         });
       }
@@ -730,7 +728,7 @@ describe('Filter users', () => {
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
     let users = await getAllUsersQuery(adminToken, {}, BANNED);
-
+    console.log(compareResult);
     users = chooseOnlyUsers(users).map(user => ({
       firstName: user.firstName,
       banned: user.banned,
@@ -754,7 +752,7 @@ describe('Filter users', () => {
       firstName: user.firstName,
       banned: user.banned,
     }));
-
+    console.log(compareResult);
     expect(users).toBeDefined();
     users.forEach(user => {
       expect(user).toEqual(
@@ -765,7 +763,7 @@ describe('Filter users', () => {
 
   afterAll(async () => {
     await usersId.forEach(async id => {
-      await client.mutate({
+      await operations.mutate({
         mutation: gql`
           mutation($id: ID!) {
             deleteUser(id: $id) {
@@ -780,11 +778,6 @@ describe('Filter users', () => {
         `,
         variables: {
           id,
-        },
-        context: {
-          headers: {
-            token: adminToken,
-          },
         },
       });
     });
