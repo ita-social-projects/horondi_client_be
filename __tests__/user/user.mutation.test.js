@@ -596,12 +596,18 @@ describe('User`s mutation restictions tests', () => {
       .catch(err => err);
     expect(result.data.updateUserById.message).toBeDefined();
     expect(result.data.updateUserById.message).toEqual('WRONG_CREDENTIALS');
+
+    operations = await setupApp();
+
     await operations.mutate({
       mutation: gql`
         mutation($userId: ID!) {
           deleteUser(id: $userId) {
             ... on User {
               _id
+            }
+            ... on Error {
+              message
             }
           }
         }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="E:\horondi\horondi_client_be\__tests__\user\user.query.test.js">
+    <testCase name="queries should recive all users" duration="15"/>
+    <testCase name="queries should recive user by token" duration="452"/>
+    <testCase name="queries should recive user by id" duration="472"/>
+    <testCase name="queries should throw Error User with provided _id not found" duration="37"/>
+    <testCase name="Testing obtaining information restrictions User must login" duration="382"/>
+    <testCase name="Testing obtaining information restrictions Admin must login" duration="385"/>
+    <testCase name="Testing obtaining information restrictions Any user doesn`t allowed to obtain information about all users" duration="455"/>
+    <testCase name="Testing obtaining information restrictions Admin can obtain all the information about users" duration="448"/>
+    <testCase name="Testing obtaining information restrictions User can obtain the information about himself" duration="395"/>
+    <testCase name="Testing obtaining information restrictions Should throw an error when validate invalid token" duration="4"/>
+    <testCase name="Testing obtaining information restrictions Should return successful response when token is valid" duration="4"/>
+    <testCase name="Filter users should sort by name from a to z" duration="7"/>
+    <testCase name="Filter users should sort by name from z to a" duration="8"/>
+    <testCase name="Filter users should sort by email from a to z" duration="8"/>
+    <testCase name="Filter users should sort by emaill from z to a" duration="7"/>
+    <testCase name="Filter users should show only banned users" duration="7"/>
+    <testCase name="Filter users should show only not banned users" duration="7"/>
+  </file>
+</testExecutions>

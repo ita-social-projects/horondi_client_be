@@ -38,9 +38,9 @@ const testUsersSet = [
     banned: false,
   },
   {
-    firstName: 'Bob',
+    firstName: 'Zelda',
     lastName: 'Evense',
-    email: 'evenseB@gmail.com',
+    email: 'zeldaB@gmail.com',
     pass: 'qwertY125',
     language: 1,
     banned: false,

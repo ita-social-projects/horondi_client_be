@@ -1,12 +1,14 @@
 const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
+
 const {
   roles: { USER },
 } = require('../../consts/index');
-let operations;
-const createUser = async ({ firstName, lastName, email, pass, language }) => {
-  operations = await setupApp();
-  await operations.mutate({
+
+const createUser = async (
+  operations,
+  { firstName, lastName, email, pass, language }
+) => {
+  const register = await operations.mutate({
     mutation: gql`
       mutation(
         $firstName: String!
@@ -44,10 +46,10 @@ const createUser = async ({ firstName, lastName, email, pass, language }) => {
       language,
     },
   });
+  return register.data.registerUser._id;
 };
 
-const getAllUsersQuery = async (token = null, sort = {}, filter = {}) => {
-  operations = await setupApp();
+const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
   const result = await operations.query({
     query: gql`
       query($sort: UserSortInput, $filter: UserFilterInput) {
@@ -66,13 +68,7 @@ const getAllUsersQuery = async (token = null, sort = {}, filter = {}) => {
       sort,
       filter,
     },
-    context: {
-      headers: {
-        token: token,
-      },
-    },
   });
-
   return result.data.getAllUsers.items;
 };
 
