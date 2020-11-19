@@ -758,8 +758,8 @@ describe('Filter users', () => {
     });
   });
 
-  afterAll(async () => {
-    await usersId.forEach(async id => {
+  afterAll(() => {
+    usersId.forEach(async id => {
       await operations.mutate({
         mutation: gql`
           mutation($id: ID!) {
