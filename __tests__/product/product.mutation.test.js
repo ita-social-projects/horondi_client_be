@@ -8,7 +8,6 @@ const {
   badProductId,
   getNewProduct,
   getProductForUpdate,
-  getSameNameForUpdate,
   createModel,
   getProductData,
   deleteAll,
@@ -21,10 +20,8 @@ jest.mock('../../modules/product/product.utils.js');
 let product;
 let updatedProduct;
 let productId;
-let sameNameProductId;
 let operations;
 let categoryId;
-let subcategoryId;
 let modelId;
 let materialId;
 let currentProduct = {};
@@ -35,17 +32,11 @@ describe('Product mutations', () => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
     categoryId = itemsId.categoryId;
-    subcategoryId = itemsId.subcategoryId;
     modelId = itemsId.modelId;
     materialId = itemsId.materialId;
 
-    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
-    updatedProduct = getProductForUpdate(
-      categoryId,
-      subcategoryId,
-      modelId,
-      materialId
-    );
+    product = getNewProduct(categoryId, modelId, materialId);
+    updatedProduct = getProductForUpdate(categoryId, modelId, materialId);
     updatedProductData = getProductData(updatedProduct);
 
     currentProduct = getProductData(product);
@@ -60,9 +51,6 @@ describe('Product mutations', () => {
             ... on Product {
               _id
               category {
-                _id
-              }
-              subcategory {
                 _id
               }
               name {
@@ -110,9 +98,6 @@ describe('Product mutations', () => {
             ... on Product {
               _id
               category {
-                _id
-              }
-              subcategory {
                 _id
               }
               name {
@@ -172,7 +157,7 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getNewProduct(categoryId, subcategoryId, modelId, materialId),
+        product: getNewProduct(categoryId, modelId, materialId),
       },
     });
     const error = createProduct.errors[0].message;
@@ -189,9 +174,6 @@ describe('Product mutations', () => {
             ... on Product {
               _id
               category {
-                _id
-              }
-              subcategory {
                 _id
               }
               name {
@@ -258,12 +240,7 @@ describe('Product mutations', () => {
         }
       `,
       variables: {
-        product: getProductForUpdate(
-          categoryId,
-          subcategoryId,
-          modelId,
-          materialId
-        ),
+        product: getProductForUpdate(categoryId, modelId, materialId),
         id: badProductId,
       },
     });

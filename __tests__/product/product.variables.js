@@ -30,6 +30,7 @@ const deleteAll = async (materialId, productId, categoryId, modelId) => {
     `,
     variables: { id: materialId },
   });
+
   const deleteProduct = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
@@ -106,9 +107,6 @@ const getProductData = product => ({
     { value: product.pattern[1].value },
   ],
   strapLengthInCm: product.strapLengthInCm,
-  subcategory: {
-    _id: product.subcategory,
-  },
   purchasedCount: 0,
   rate: 0,
   rateCount: 0,
@@ -152,7 +150,6 @@ const createModel = async (material, category, modelToCreate) => {
     },
   });
   const categoryId = createCategory.data.addCategory._id;
-  const subcategoryId = createCategory.data.addCategory._id;
 
   const createModelData = await operations.mutate({
     mutation: gql`
@@ -173,13 +170,12 @@ const createModel = async (material, category, modelToCreate) => {
 
   return {
     categoryId,
-    subcategoryId,
     modelId,
     materialId,
   };
 };
 
-const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
+const getNewProduct = (categoryId, modelId, materialId) => ({
   name: [
     { lang: 'en', value: 'Very Coool Baggy' },
     { lang: 'ua', value: 'ДУЖЕ СУПЕРСЬКИЙ Рюкзачечок' },
@@ -188,7 +184,6 @@ const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
     { lang: 'en', value: 'Baggy is so cool' },
     { lang: 'ua', value: 'Рюкзачечок - супер кльовий))' },
   ],
-  subcategory: subcategoryId,
   model: modelId,
   category: categoryId,
   mainMaterial: [
@@ -303,18 +298,12 @@ const getNewProduct = (categoryId, subcategoryId, modelId, materialId) => ({
   ],
 });
 
-const getProductForUpdate = (
-  categoryId,
-  subcategoryId,
-  modelId,
-  materialId
-) => ({
+const getProductForUpdate = (categoryId, modelId, materialId) => ({
   model: modelId,
   name: [
     { lang: 'en', value: 'Bad Baggy' },
     { lang: 'ua', value: 'Жахливий Рюкзачечок' },
   ],
-  subcategory: subcategoryId,
   description: [
     { lang: 'en', value: 'Baggy is so bad' },
     { lang: 'ua', value: 'Рюкзачечок - не добрий))' },
@@ -426,14 +415,8 @@ const getProductForUpdate = (
   ],
 });
 
-const getSameNameForUpdate = (
-  categoryId,
-  subcategoryId,
-  modelId,
-  materialId
-) => ({
+const getSameNameForUpdate = (categoryId, modelId, materialId) => ({
   category: categoryId,
-  subcategory: subcategoryId,
   model: modelId,
   description: [
     { lang: 'en', value: 'Baggy is so cool' },

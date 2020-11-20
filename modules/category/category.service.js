@@ -91,6 +91,7 @@ class CategoryService {
 
     const parentCategory = await Category.findById(parentId);
     const savedCategory = await new Category(data).save();
+
     if (parentCategory) {
       if (!parentCategory.isMain) {
         throw new Error(CATEGORY_IS_NOT_MAIN);
