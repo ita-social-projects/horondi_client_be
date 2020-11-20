@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="E:\horondi\horondi_client_be\__tests__\user\user.query.test.js">
+    <testCase name="queries should recive all users" duration="19"/>
+    <testCase name="queries should recive user by token" duration="537"/>
+    <testCase name="queries should recive user by id" duration="615"/>
+    <testCase name="queries should throw Error User with provided _id not found" duration="67"/>
+    <testCase name="Testing obtaining information restrictions User must login" duration="532"/>
+    <testCase name="Testing obtaining information restrictions Admin must login" duration="463"/>
+    <testCase name="Testing obtaining information restrictions Any user doesn`t allowed to obtain information about all users" duration="592"/>
+    <testCase name="Testing obtaining information restrictions Admin can obtain all the information about users" duration="549"/>
+    <testCase name="Testing obtaining information restrictions User can obtain the information about himself" duration="467"/>
+    <testCase name="Testing obtaining information restrictions Should throw an error when validate invalid token" duration="5"/>
+    <testCase name="Testing obtaining information restrictions Should return successful response when token is valid" duration="4"/>
+    <testCase name="Filter users should sort by name from a to z" duration="20"/>
+    <testCase name="Filter users should sort by name from z to a" duration="16"/>
+    <testCase name="Filter users should sort by email from a to z" duration="9"/>
+    <testCase name="Filter users should sort by emaill from z to a" duration="13"/>
+    <testCase name="Filter users should show only banned users" duration="14"/>
+    <testCase name="Filter users should show only not banned users" duration="12"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\news\news.query.test.js">
+    <testCase name="News queries tests Get all news Should receive all news" duration="29"/>
+    <testCase name="News queries tests Get news by ID Should receive one news" duration="23"/>
+    <testCase name="News queries tests Get news by ID Returning not existing news should return error message" duration="32"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\pattern\pattern.query.test.js">
+    <testCase name="Pattern queries tests for all patterns and one pattern Should receive all patterns" duration="35"/>
+    <testCase name="Pattern queries tests for all patterns and one pattern Should receive one pattern" duration="14"/>
+    <testCase name="Pattern queries tests for all patterns and one pattern request not existing pattern should throw error" duration="20"/>
+    <testCase name="Pattern queries tests for all patterns and one pattern pattern pagination test" duration="21"/>
+    <testCase name="Pattern queries tests for all patterns and one pattern Expect negative values" duration="20"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\user\user.mutation.test.js">
+    <testCase name="mutations should register user" duration="569"/>
+    <testCase name="mutations should throw error User with provided email already exist" duration="55"/>
+    <testCase name="mutations should authorize and recive user token" duration="532"/>
+    <testCase name="mutations should throw error User with provided email not found" duration="13"/>
+    <testCase name="mutations should throw error Wrong password" duration="464"/>
+    <testCase name="mutations should update user by id" duration="652"/>
+    <testCase name="mutations Should change user status" duration="667"/>
+    <testCase name="mutations should not delete user without super-admin role" duration="711"/>
+    <testCase name="mutations Should return error when switch status of non-existent user" duration="583"/>
+    <testCase name="User`s mutation restictions tests User must login" duration="485"/>
+    <testCase name="User`s mutation restictions tests User doesn`t allowed to change another user`s data" duration="1606"/>
+    <testCase name="User`s mutation restictions tests User can change his own data" duration="609"/>
+    <testCase name="User`s mutation restictions tests Admin can delete user" duration="584"/>
+    <testCase name="Register admin Should throw an error when use already in-usage email while admin registration" duration="16"/>
+    <testCase name="Register admin Should throw an error when use invalid email while admin registration" duration="6"/>
+    <testCase name="Register admin Should throw an error when use invalid role" duration="4"/>
+    <testCase name="Register admin Should create an user with custom role and generate a confirmation token" duration="24"/>
+    <testCase name="Admin confirmation Should throw an error when use invalid lastname" duration="6"/>
+    <testCase name="Admin confirmation Should throw an error when use invalid firstname" duration="3"/>
+    <testCase name="Admin confirmation Should throw an error when use invalid password" duration="3"/>
+    <testCase name="Admin confirmation Should throw an error when use invalid token" duration="3"/>
+    <testCase name="Admin confirmation Should confirm user with a custom role" duration="514"/>
+    <testCase name="New admin login Should successfully login as an admin" duration="465"/>
+    <testCase name="User filtering Should receive users via using filters for roles" duration="15"/>
+    <testCase name="User filtering Should receive admins and superadmins via using filters for roles" duration="6"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\business-text\business-text.query.test.js">
+    <testCase name="Business page queries  Should receive all business texts" duration="22"/>
+    <testCase name="Business page queries  Should receive selected business text" duration="23"/>
+    <testCase name="Business page queries  Returning not existing business text should return error message" duration="9"/>
+    <testCase name="Business page queries  Should receive selected business text by code" duration="16"/>
+    <testCase name="Business page queries  Should return error if page by code not found" duration="13"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\comment\comment.query.test.js">
+    <testCase name="Comment queries  Should receive all comments writen by selected user" duration="38"/>
+    <testCase name="Comment queries  Should receive all comments for one product" duration="72"/>
+    <testCase name="Comment queries  Should receive all comments for one product" duration="43"/>
+    <testCase name="Comment queries  should return empty array of comments for unexisting email " duration="13"/>
+    <testCase name="Comment queries  should return one comment" duration="47"/>
+    <testCase name="Comment queries  should return error when find comment by wrong id" duration="9"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\product\product.query.test.js">
+    <testCase name="Product queries #1 Should receive all products" duration="78"/>
+    <testCase name="Product queries #2 Should receive product by ID" duration="56"/>
+    <testCase name="Product queries #3 Should receive error if product ID is wrong" duration="25"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\comment\comment.mutations.test.js">
+    <testCase name="Comment queries  should add a new comment" duration="64"/>
+    <testCase name="Comment queries  should return error if to add comment to not existing product" duration="17"/>
+    <testCase name="Comment queries   should update comment" duration="52"/>
+    <testCase name="Comment queries  should return error if id of comment to update is not correct" duration="15"/>
+    <testCase name="Comment queries should add rate to the product" duration="42"/>
+    <testCase name="Comment queries should update rate of the product" duration="51"/>
+    <testCase name="Comment queries should return error if to add rate to not existing product" duration="16"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\product\product.mutation.test.js">
+    <testCase name="Product mutations #1 Should add new product" duration="274"/>
+    <testCase name="Product mutations #2 AddProduct should return Error product already exist" duration="0"/>
+    <testCase name="Product mutations #3 Should update new product" duration="74"/>
+    <testCase name="Product mutations #4 UpdateProduct should return Error product not found" duration="15"/>
+    <testCase name="Product mutations #5 deleteProduct should return add fields and delete product" duration="23"/>
+    <testCase name="Product mutations #6 deleteProduct should return error product not found" duration="45"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\pattern\pattern.mutation.test.js">
+    <testCase name="pattern mutation tests should add pattern to database" duration="55"/>
+    <testCase name="pattern mutation tests should return error if we try to create pattern with name that already exists" duration="9"/>
+    <testCase name="pattern mutation tests should update pattern" duration="49"/>
+    <testCase name="pattern mutation tests should return error if we try to update pattern with wrong id" duration="19"/>
+    <testCase name="pattern mutation tests should return error if we try to update pattern with existing name " duration="59"/>
+    <testCase name="pattern mutation tests should delete pattern from database" duration="27"/>
+    <testCase name="pattern mutation tests should return error if we try to delete not existing pattern" duration="12"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\order\order.mutation.test.js">
+    <testCase name="Order mutations Should create order" duration="176"/>
+    <testCase name="Order mutations Should throw error ORDER_NOT_FOUND after try to delete" duration="44"/>
+    <testCase name="Order mutations Should update order" duration="120"/>
+    <testCase name="Order mutations Should throw error ORDER_NOT_FOUND after try to update" duration="35"/>
+    <testCase name="Order mutations Should delete order" duration="37"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\model\model.query.test.js">
+    <testCase name="Product queries Should receive all models by category id" duration="30"/>
+    <testCase name="Product queries Should throw error CATEGORY_NOT_VALID" duration="32"/>
+    <testCase name="Product queries Should return empty array when category isnt exist" duration="28"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\news\news.mutation.test.js">
+    <testCase name="News mutations tests Create news test should add news to database" duration="55"/>
+    <testCase name="News mutations tests Create news test creating news with same title should throw error" duration="15"/>
+    <testCase name="News mutations tests Create news test Update news test update news" duration="33"/>
+    <testCase name="News mutations tests Create news test Update news test update not existing news should return error" duration="16"/>
+    <testCase name="News mutations tests Create news test Update news test update not existing news should return error" duration="13"/>
+    <testCase name="News mutations tests Create news test Update news test Delete news test delete news" duration="15"/>
+    <testCase name="News mutations tests Create news test Update news test Delete news test delete not existing news should return error" duration="6"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\order\order.query.test.js">
+    <testCase name="Order queries Should receive all orders" duration="67"/>
+    <testCase name="Order queries should recive order by id" duration="45"/>
+    <testCase name="Order queries Should throw error ORDER_NOT_FOUND" duration="62"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\model\model.mutation.test.js">
+    <testCase name="Product queries Should create model" duration="59"/>
+    <testCase name="Product queries Should throw error MODEL_ALREADY_EXIST" duration="15"/>
+    <testCase name="Product queries Should throw error MODEL_NOT_FOUND" duration="44"/>
+    <testCase name="Product queries Should update model" duration="37"/>
+    <testCase name="Product queries Should delete model" duration="27"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\business-text\business-text.mutation.test.js">
+    <testCase name="Business page queries  should add business text to database" duration="46"/>
+    <testCase name="Business page queries  adding a new page with existing code should return error" duration="22"/>
+    <testCase name="Business page queries  update business text" duration="39"/>
+    <testCase name="Business page queries  update not existing businessText should return error" duration="14"/>
+    <testCase name="Business page queries  delete businessText" duration="37"/>
+    <testCase name="Business page queries  delete not existing business text should return error" duration="12"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\materials\material.mutation.test.js">
+    <testCase name="material mutations tests should add material to database" duration="101"/>
+    <testCase name="material mutations tests should return error when adding material with the existing name" duration="34"/>
+    <testCase name="material mutations tests should update material" duration="99"/>
+    <testCase name="material mutations tests should return error when update not existing material should return error" duration="30"/>
+    <testCase name="material mutations tests should return error when update material with already existing name will " duration="41"/>
+    <testCase name="material mutations tests should delete material" duration="21"/>
+    <testCase name="material mutations tests should return error when delete not existing material " duration="6"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\contact\contact.query.test.js">
+    <testCase name="Contacts queries should receive all contacts" duration="35"/>
+    <testCase name="Contacts queries should receive selected contact" duration="20"/>
+    <testCase name="Contacts queries should return error message when returning not existing contact" duration="12"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\homepage-images\homepage-images.query.test.js">
+    <testCase name="Homepage looks images queries Should receive all looks images" duration="33"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\homepage-images\homepage-images.mutation.test.js">
+    <testCase name="Homepage looks images mutations Passing invalid ID should return error" duration="14"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\contact\contact.mutation.test.js">
+    <testCase name="Contacts mutations test should add contact to database" duration="61"/>
+    <testCase name="Contacts mutations test should return error when update not existing contact" duration="26"/>
+    <testCase name="Contacts mutations test should delete contact" duration="23"/>
+    <testCase name="Contacts mutations test should return error when delete not existing contact " duration="27"/>
+  </file>
+  <file path="E:\horondi\horondi_client_be\__tests__\materials\material.query.test.js">
+    <testCase name="material querries test should receive all materials" duration="40"/>
+    <testCase name="material querries test should receive one material" duration="24"/>
+    <testCase name="material querries test should return error message when return not existing material" duration="16"/>
+    <testCase name="material querries test Should receive 1 material" duration="41"/>
+    <testCase name="material querries test should receive error if skip is negative" duration="51"/>
+    <testCase name="material querries test should receive 3 materials if limit is -3" duration="20"/>
+    <testCase name="material querries test should receive all materials if skip is 0 and limit is 0" duration="28"/>
+  </file>
+</testExecutions>
