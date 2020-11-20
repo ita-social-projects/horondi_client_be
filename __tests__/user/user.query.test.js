@@ -1,14 +1,15 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
 } = require('../../error-messages/user.messages');
 let { superAdminUser, testUser, testUsersSet } = require('./user.variables');
 const { setupApp } = require('../helper-functions');
-const loginAdmin = require('../helpers/admin-login');
-const { createUser, getAllUsersQuery, chooseOnlyUsers } = require('../helpers/users');
-
+const {
+  createUser,
+  getAllUsersQuery,
+  chooseOnlyUsers,
+} = require('../helpers/users');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
@@ -634,25 +635,26 @@ describe('Filter users', () => {
   const BANNED = { banned: true };
   const SORT = {
     byName: { asc: { name: 1 }, desc: { name: -1 } },
-    byEmail: { asc: { email: 1 }, desc: { email: -1 } }
+    byEmail: { asc: { email: 1 }, desc: { email: -1 } },
   };
-  let adminToken;
-  let usersId;
+  let usersId = [];
 
   beforeAll(async () => {
-    testUsersSet.forEach(user => createUser(user).catch(e => e));
-    adminToken = await loginAdmin(superAdminUser);
+    operations = await setupApp();
 
-    let users = await getAllUsersQuery(adminToken);
+    for (let i = 0; i < testUsersSet.length; i++) {
+      usersId.push(await createUser(operations, testUsersSet[i]));
+    }
 
-    users = chooseOnlyUsers(users);
-    usersId = users.map(user => user._id);
+    let users = await getAllUsersQuery(operations);
 
-    await users.forEach(async user => {
+    for (let i = 0; i < users.length; i++) {
       if (
-        testUsersSet.some(el => el.firstName === user.firstName && el.banned)
+        testUsersSet.some(
+          el => el.firstName === users[i].firstName && el.banned
+        )
       ) {
-        await client.mutate({
+        await operations.mutate({
           mutation: gql`
             mutation($id: ID!) {
               switchUserStatus(id: $id) {
@@ -666,22 +668,17 @@ describe('Filter users', () => {
             }
           `,
           variables: {
-            id: user._id,
-          },
-          context: {
-            headers: {
-              token: adminToken,
-            },
+            id: users[i]._id,
           },
         });
       }
-    });
+    }
   });
 
   test('should sort by name from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.firstName).sort();
 
-    let users = await getAllUsersQuery(adminToken, SORT.byName.asc);
+    let users = await getAllUsersQuery(operations, SORT.byName.asc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -694,7 +691,7 @@ describe('Filter users', () => {
       .sort()
       .reverse();
 
-    let users = await getAllUsersQuery(adminToken, SORT.byName.desc);
+    let users = await getAllUsersQuery(operations, SORT.byName.desc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -704,7 +701,7 @@ describe('Filter users', () => {
   test('should sort by email from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.email).sort();
 
-    let users = await getAllUsersQuery(adminToken, SORT.byEmail.asc);
+    let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -717,7 +714,7 @@ describe('Filter users', () => {
       .sort()
       .reverse();
 
-    let users = await getAllUsersQuery(adminToken, SORT.byEmail.desc);
+    let users = await getAllUsersQuery(operations, SORT.byEmail.desc);
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
@@ -729,8 +726,7 @@ describe('Filter users', () => {
       .filter(user => user.banned)
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
-    let users = await getAllUsersQuery(adminToken, {}, BANNED);
-
+    let users = await getAllUsersQuery(operations, {}, BANNED);
     users = chooseOnlyUsers(users).map(user => ({
       firstName: user.firstName,
       banned: user.banned,
@@ -748,13 +744,12 @@ describe('Filter users', () => {
       .filter(user => !user.banned)
       .map(user => ({ firstName: user.firstName, banned: user.banned }));
 
-    let users = await getAllUsersQuery(adminToken, {}, ACTIVE);
+    let users = await getAllUsersQuery(operations, {}, ACTIVE);
 
     users = chooseOnlyUsers(users).map(user => ({
       firstName: user.firstName,
       banned: user.banned,
     }));
-
     expect(users).toBeDefined();
     users.forEach(user => {
       expect(user).toEqual(
@@ -763,9 +758,9 @@ describe('Filter users', () => {
     });
   });
 
-  afterAll(async () => {
-    await usersId.forEach(async id => {
-      await client.mutate({
+  afterAll(() => {
+    usersId.forEach(async id => {
+      await operations.mutate({
         mutation: gql`
           mutation($id: ID!) {
             deleteUser(id: $id) {
@@ -780,11 +775,6 @@ describe('Filter users', () => {
         `,
         variables: {
           id,
-        },
-        context: {
-          headers: {
-            token: adminToken,
-          },
         },
       });
     });
