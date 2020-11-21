@@ -29,7 +29,7 @@ stages:
      - task: DockerCompose@0
        inputs:
          containerregistrytype: 'Container Registry'
-         dockerComposeFile: '**/docker-compose.yaml'
+         dockerComposeFile: 'docker/docker-compose.yaml'
          action: 'Run a Docker Compose command'
          dockerComposeCommand: 'up -d'
      - task: Bash@3
