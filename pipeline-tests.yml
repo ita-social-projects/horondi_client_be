@@ -1,0 +1,47 @@
+pr:
+- development
+
+resources:
+- repo: self
+
+variables:
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: tests
+  displayName: testing
+  jobs:
+  - job: tests
+    displayName: tests
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+     - task: DownloadSecureFile@1
+       name: env
+       inputs:
+         secureFile: 'backend-test-env'
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: 'mv $(env.secureFilePath) .env.test && npm i'
+
+     - task: DockerCompose@0
+       inputs:
+         containerregistrytype: 'Container Registry'
+         dockerComposeFile: 'docker/docker-compose.yaml'
+         action: 'Run a Docker Compose command'
+         dockerComposeCommand: 'up -d'
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: 'npm run test'
+     - task: SonarCloudPrepare@1
+       inputs:
+         SonarCloud: 'sonar-v2'
+         organization: 'ita-social-projects'
+         scannerMode: 'CLI'
+         configMode: 'file'
+
+     - task: SonarCloudAnalyze@1
+     
