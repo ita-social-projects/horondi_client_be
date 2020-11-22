@@ -1,5 +1,8 @@
+trigger: none
+
 pr:
 - development
+- master
 
 resources:
 - repo: self
