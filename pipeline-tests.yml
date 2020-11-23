@@ -43,29 +43,12 @@ stages:
        inputs:
          targetType: 'inline'
          script: 'ls'
+    
      - task: SonarCloudPrepare@1
        inputs:
          SonarCloud: 'sonar-v2'
          organization: 'ita-social-projects'
          scannerMode: 'CLI'
-         configMode: 'manual'
-         cliProjectKey: 'ita-social-projects-horondi-client-be'
-         cliSources: '.'
-           extraProperties: |
-             sonar.sources=.  \
-             sonar.exclusions=__tests__/**, node_modules/**
-             sonar.language=js 
-             sonar.tests=./__tests__  \
-             sonar.javascript.lcov.reportPaths=./coverage/lcov.info
-             sonar.testExecutionReportPaths=./test-report.xml  
-             sonar.sourceEncoding=UTF-8   
-             sonar.host.url=https://sonarcloud.io
-#     - task: SonarCloudPrepare@1
-#       inputs:
-#         SonarCloud: 'sonar-v2'
-#         organization: 'ita-social-projects'
-#         scannerMode: 'CLI'
-#         configMode: 'file'
-
+         configMode: 'file'
      - task: SonarCloudAnalyze@1
      
