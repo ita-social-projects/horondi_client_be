@@ -44,7 +44,7 @@ describe('Comment queries', () => {
     categoryId = itemsId.categoryId;
     modelId = itemsId.modelId;
     materialId = itemsId.materialId;
-    console.log(1);
+
     product = getNewProduct(categoryId, modelId, materialId);
     const createProduct = await operations.mutate({
       mutation: gql`
