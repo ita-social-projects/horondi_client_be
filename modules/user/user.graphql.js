@@ -10,6 +10,7 @@ type User{
     address: Address
     images: ImageSet
     token: String
+    refreshToken: String
     invitationalToken: String
     credentials: [Credential]
     registrationDate: String
@@ -68,6 +69,7 @@ const LoginInput = `
 input LoginInput {
     password: String!
     email: String!
+    staySignedIn: Boolean
 }`;
 
 const userRegisterInput = `
@@ -113,6 +115,14 @@ input UserSortInput {
 }
 `;
 
+const tokenType = `
+type Token {
+  token: String
+  refreshToken: String
+  accessToken: String
+}
+`;
+
 module.exports = {
   userType,
   userInput,
@@ -125,4 +135,5 @@ module.exports = {
   UserForStatisticsInput,
   paginatedUsersType,
   userSortInput,
+  tokenType,
 };

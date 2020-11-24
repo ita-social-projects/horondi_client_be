@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-const { EXPIRES_IN, SECRET } = require('../dotenvValidator');
+const { TOKEN_EXPIRES_IN, SECRET } = require('../dotenvValidator');
 
 const defaultParams = {
-  expiresIn: EXPIRES_IN,
+  expiresIn: TOKEN_EXPIRES_IN,
   secret: SECRET,
 };
 

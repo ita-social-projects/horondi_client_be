@@ -1,3 +1,4 @@
+const { generateRefreshToken } = require('../../utils/token');
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -46,6 +47,8 @@ const {
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   ID_NOT_PROVIDED,
+  SESSION_TIMEOUT,
+  INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
 
 const { userDateFormat } = require('../../consts');
@@ -280,7 +283,7 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = generateToken(user._id, user.email);
+    const token = await generateToken(user._id, user.email);
 
     return {
       ...user._doc,
@@ -289,7 +292,9 @@ class UserService {
     };
   }
 
-  async loginUser({ email, password }) {
+  async loginUser({ email, password, staySignedIn }) {
+    let refreshToken;
+
     const { errors } = await validateLoginInput.validateAsync({
       email,
       password,
@@ -300,6 +305,7 @@ class UserService {
     }
 
     const user = await User.findOne({ email });
+
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
@@ -313,18 +319,46 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = generateToken(user._id, user.email);
+    const token = await generateToken(user._id, user.email);
+
+    if (staySignedIn) {
+      refreshToken = generateRefreshToken(user);
+    }
 
     return {
       ...user._doc,
       _id: user._id,
+      refreshToken,
       token,
     };
   }
-  async googleUser(id_token) {
+
+  async regenerateAccessToken(refreshToken) {
+    let decoded;
+
+    try {
+      decoded = jwt.verify(refreshToken, SECRET);
+    } catch (err) {
+      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+    }
+
+    if (!decoded.isRefreshToken) {
+      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: 400 });
+    }
+
+    await this.getUserByFieldOrThrow('email', decoded.email);
+
+    const token = await generateToken(decoded.userId, decoded.email);
+
+    return {
+      token,
+    };
+  }
+
+  async googleUser(idToken, staySignedIn) {
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
-      idToken: id_token,
+      idToken: idToken,
       audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
@@ -344,19 +378,30 @@ class UserService {
     }
     return this.loginGoogleUser({
       email: dataUser.email,
+      staySignedIn,
     });
   }
 
-  async loginGoogleUser({ email }) {
+  async loginGoogleUser({ email, staySignedIn }) {
+    let refreshToken;
+
     const user = await User.findOne({ email });
+
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-    const token = generateToken(user._id, user.email);
+
+    const token = await generateToken(user._id, user.email);
+
+    if (staySignedIn) {
+      refreshToken = generateRefreshToken(user);
+    }
+
     return {
       ...user._doc,
       _id: user._id,
       token,
+      refreshToken,
     };
   }
 
