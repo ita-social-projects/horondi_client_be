@@ -58,7 +58,7 @@ stages:
          configMode: 'file'
      - task: SonarCloudAnalyze@1
 - stage: Build
-  condition: eq(variables['Build.Reason'])
+  condition: eq(variables['Build.Reason'], 'IndividualCI')
   displayName: Build and push stage
   jobs:
   - job: Build
