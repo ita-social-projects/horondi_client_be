@@ -37,7 +37,7 @@ class BusinessTextService {
     if (!oldPage) {
       throw new Error(BUSINESS_TEXT_NOT_FOUND);
     }
-
+    console.log(1223);
     if (existingPage) {
       return {
         message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
