@@ -90,7 +90,7 @@ stages:
           azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
           action: 'Push an image'
 
-- stage: Release Production
+- stage: ReleaseProduction
   condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: Release Production
   jobs:
@@ -109,7 +109,7 @@ stages:
          DockerRepository: 'ita-social-projects/horondi_client_be'
          DockerImageTag: '$(Build.BuildId)'
 
-- stage: Release Staging
+- stage: ReleaseStaging
   condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
   displayName: Release Staging
   jobs:
