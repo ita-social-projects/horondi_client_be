@@ -105,7 +105,7 @@ stages:
 
 - stage: ReleaseProduction
   dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: Release Production
   jobs:
   - job: Release
