@@ -3,24 +3,62 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- development
+  - development
+  - master
+
+pr:
+  - master
+  - development
 
 resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '9ae19595-312c-46d6-ae08-bcb195cad64c'
-  imageRepository: 'horondi_client_back'
-  containerRegistry: 'horondi.azurecr.io'
-  dockerfilePath: '**/Dockerfile'
-  tag: '$(Build.BuildId)'
-
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
+- stage: tests
+  displayName: testing
+  jobs:
+  - job: tests
+    displayName: tests
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+     - task: DownloadSecureFile@1
+       name: env
+       inputs:
+        secureFile: 'backend-test-env'
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: 'mv $(env.secureFilePath) .env.test && npm i'
+
+     - task: DockerCompose@0
+       inputs:
+         containerregistrytype: 'Container Registry'
+         dockerComposeFile: 'docker/docker-compose.yaml'
+         action: 'Run a Docker Compose command'
+         dockerComposeCommand: 'up -d'
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: 'npm run test'
+     - task: Bash@3
+       inputs:
+         targetType: 'inline'
+         script: 'ls'
+    
+     - task: SonarCloudPrepare@1
+       inputs:
+         SonarCloud: 'sonar-v2'
+         organization: 'ita-social-projects'
+         scannerMode: 'CLI'
+         configMode: 'file'
+     - task: SonarCloudAnalyze@1
 - stage: Build
+  condition: eq(variables['Build.Reason'], 'IndividualCI')
   displayName: Build and push stage
   jobs:
   - job: Build
@@ -28,12 +66,65 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+      - task: DownloadSecureFile@1
+        name: env1
+        inputs:
+          secureFile: 'backend-env'
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'mv $(env1.secureFilePath) .env'
+      
+      - task: Docker@0
+        inputs:
+         containerregistrytype: 'Azure Container Registry'
+         azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+         azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
+         action: 'Build an image'
+         dockerFile: '**/Dockerfile'
+         imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+      - task: Docker@0
+        displayName: 'Push an image'
+        inputs:
+          azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+          azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
+          action: 'Push an image'
+
+- stage: ReleaseProduction
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  displayName: Release Production
+  jobs:
+  - job: Release
+    displayName: Release
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+     - task: AzureRmWebAppDeployment@4
+       inputs:
+         ConnectionType: 'AzureRM'
+         azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+         appType: 'webAppContainer'
+         WebAppName: 'horondi-back'
+         DockerNamespace: 'horondi.azurecr.io'
+         DockerRepository: 'ita-social-projects/horondi_client_be'
+         DockerImageTag: '$(Build.BuildId)'
+
+- stage: ReleaseStaging
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
+  displayName: Release Staging
+  jobs:
+  - job: Release
+    displayName: Release
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+     - task: AzureRmWebAppDeployment@4
+       inputs:
+         ConnectionType: 'AzureRM'
+         azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+         appType: 'webAppContainer'
+         WebAppName: 'horondi-back-staging'
+         DockerNamespace: 'horondistaging.azurecr.io'
+         DockerRepository: 'ita-social-projects/horondi_client_be'
+         DockerImageTag: '$(Build.BuildId)'
+    
