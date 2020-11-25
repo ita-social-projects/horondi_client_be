@@ -89,7 +89,7 @@ stages:
           action: 'Push an image'
 
  
-  - job: Release
+  - job: ReleaseProduction
     displayName: Release
     dependsOn: Build
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -106,7 +106,7 @@ stages:
          DockerRepository: 'ita-social-projects/horondi_client_be'
          DockerImageTag: '$(Build.BuildId)'
 
-  - job: Release
+  - job: ReleaseStaging
     displayName: Release Staging
     dependsOn: Build
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
