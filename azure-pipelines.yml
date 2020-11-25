@@ -64,7 +64,6 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-     
       - task: DownloadSecureFile@1
         name: env1
         inputs:
@@ -78,6 +77,26 @@ stages:
           targetType: 'inline'
           script: 'echo $(Build.BuildId)'
       - task: Docker@0
+        name: stagingBuild
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        inputs:
+         containerregistrytype: 'Azure Container Registry'
+         azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+         azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
+         action: 'Build an image'
+         dockerFile: '**/Dockerfile'
+         imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+      - task: Docker@0
+        name: deployedStaging
+        displayName: 'Push an image'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        inputs:
+          azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+          azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
+          action: 'Push an image'
+      - task: Docker@0
+        name: productionBuild
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         inputs:
          containerregistrytype: 'Azure Container Registry'
          azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
@@ -86,8 +105,9 @@ stages:
          dockerFile: '**/Dockerfile'
          imageName: '$(Build.Repository.Name):$(Build.BuildId)'
       - task: Docker@0
-        name: deployed
+        name: deployedProduction
         displayName: 'Push an image'
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         inputs:
           azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
           azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
