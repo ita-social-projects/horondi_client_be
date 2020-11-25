@@ -18,6 +18,19 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
+- stage: conditiontest
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  displayName: ifelse
+  jobs:
+  - job: stuff
+    displayName: stuff
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'echo ''Hello world'''
 - stage: tests
   displayName: testing
   jobs:
@@ -91,7 +104,8 @@ stages:
           action: 'Push an image'
 
 - stage: ReleaseProduction
-  condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')
   displayName: Release Production
   jobs:
   - job: Release
