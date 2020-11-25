@@ -69,7 +69,7 @@ stages:
       - task: DownloadSecureFile@1
         name:
         inputs:
-          secureFile: 'env-back'
+          secureFile: 'backend-test'
       - task: Bash@3
         inputs:
           targetType: 'inline'
