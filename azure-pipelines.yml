@@ -71,8 +71,9 @@ stages:
          configMode: 'file'
      - task: SonarCloudAnalyze@1
 - stage: Build
-  condition: eq(variables['Build.Reason'], 'IndividualCI')
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'))
   displayName: Build and push stage
+  dependsOn: tests
   jobs:
   - job: Build
     displayName: Build
@@ -124,7 +125,8 @@ stages:
          DockerImageTag: '$(Build.BuildId)'
 
 - stage: ReleaseStaging
-  condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
   displayName: Release Staging
   jobs:
   - job: Release
