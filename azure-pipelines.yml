@@ -18,21 +18,8 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: conditiontest
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  displayName: ifelse
-  jobs:
-  - job: stuff
-    displayName: stuff
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: 'echo ''Hello world'''
-- stage: tests
-  displayName: testing
+- stage: Main
+  displayName: Main
   jobs:
   - job: tests
     displayName: tests
@@ -70,13 +57,10 @@ stages:
          scannerMode: 'CLI'
          configMode: 'file'
      - task: SonarCloudAnalyze@1
-- stage: Build
-  condition: and(succeeded(), eq(variables['Build.Reason'], 'IndividualCI'))
-  displayName: Build and push stage
-  dependsOn: tests
-  jobs:
+
   - job: Build
     displayName: Build
+    condition: in(variables['Build.Reason'], 'IndividualCI')  
     pool:
       vmImage: $(vmImageName)
     steps:
@@ -104,13 +88,11 @@ stages:
           azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
           action: 'Push an image'
 
-- stage: ReleaseProduction
-  dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  displayName: Release Production
-  jobs:
+ 
   - job: Release
     displayName: Release
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     pool:
       vmImage: $(vmImageName)
     steps:
