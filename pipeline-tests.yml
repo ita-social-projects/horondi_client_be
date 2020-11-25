@@ -1,7 +1,4 @@
-trigger:
-  - development
-  - master
-
+trigger: none
 pr:
 - development
 - master
