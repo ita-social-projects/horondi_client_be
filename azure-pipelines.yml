@@ -64,6 +64,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+     
       - task: DownloadSecureFile@1
         name: env1
         inputs:
@@ -72,7 +73,10 @@ stages:
         inputs:
           targetType: 'inline'
           script: 'mv $(env1.secureFilePath) .env'
-      
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'echo $(Build.BuildId)'
       - task: Docker@0
         inputs:
          containerregistrytype: 'Azure Container Registry'
