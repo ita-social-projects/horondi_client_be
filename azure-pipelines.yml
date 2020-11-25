@@ -106,13 +106,10 @@ stages:
          DockerRepository: 'ita-social-projects/horondi_client_be'
          DockerImageTag: '$(Build.BuildId)'
 
-- stage: ReleaseStaging
-  dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
-  displayName: Release Staging
-  jobs:
   - job: Release
-    displayName: Release
+    displayName: Release Staging
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
     pool:
       vmImage: $(vmImageName)
     steps:
