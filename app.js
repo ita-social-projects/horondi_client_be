@@ -11,6 +11,7 @@ const userService = require('./modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 
 connectDB();
+
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions
