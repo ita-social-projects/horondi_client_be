@@ -20,11 +20,11 @@ class UploadService {
     const resizedImage = image.resize(size, Jimp.AUTO);
 
     const buffer = await new Promise((resolve, reject) => {
-      resizedImage.getBuffer(resizedImage.getMIME(), (err, buffer) => {
+      resizedImage.getBuffer(resizedImage.getMIME(), (err, buff) => {
         if (err) {
           reject(err);
         }
-        resolve(buffer);
+        resolve(buff);
       });
     });
 

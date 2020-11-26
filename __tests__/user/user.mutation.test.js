@@ -426,7 +426,6 @@ describe('mutations', () => {
 });
 
 describe('User`s mutation restictions tests', () => {
-  let adminId;
   let userToken;
   let firstName;
   let lastName;
@@ -439,7 +438,6 @@ describe('User`s mutation restictions tests', () => {
     lastName = 'Markelo';
     email = '1xamp31d2v1@gmail.com';
     password = 'qwertY123';
-    adminId = '9c031d62a3c4909b216e1d86';
     language = 1;
     const res = await operations.mutate({
       mutation: gql`
