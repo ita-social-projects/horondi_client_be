@@ -24,7 +24,7 @@ const newUser = {
   firstName: 'Pepo',
   lastName: 'Markelo',
   email: '1xamp31d2v1@gmail.com',
-  password: 'qwertY123',
+  pass: 'qwertY123',
   language: 1,
 };
 

@@ -427,7 +427,7 @@ describe('mutations', () => {
 
 describe('User`s mutation restictions tests', () => {
   let userToken;
-  let { firstName, lastName, email, password, language } = newUser;
+  let { firstName, lastName, email, pass, language } = newUser;
 
   beforeAll(async () => {
     const res = await operations.mutate({
@@ -461,7 +461,7 @@ describe('User`s mutation restictions tests', () => {
         firstName,
         lastName,
         email,
-        password,
+        password: pass,
         language,
       },
     });
@@ -514,7 +514,7 @@ describe('User`s mutation restictions tests', () => {
         variables: {
           user: {
             email,
-            password,
+            password: pass,
           },
         },
       })
