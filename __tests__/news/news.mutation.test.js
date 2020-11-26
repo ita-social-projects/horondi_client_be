@@ -12,7 +12,6 @@ const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
-const { response } = require('express');
 
 let newsId = '';
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
