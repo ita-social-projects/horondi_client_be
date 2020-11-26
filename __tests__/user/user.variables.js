@@ -20,6 +20,14 @@ const newAdmin = {
   pass: 'dffdsfsdsdf',
 };
 
+const newUser = {
+  firstName: 'Pepo',
+  lastName: 'Markelo',
+  email: '1xamp31d2v1@gmail.com',
+  password: 'qwertY123',
+  language: 1,
+};
+
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
@@ -44,4 +52,5 @@ module.exports = {
   newAdmin,
   superAdminUser,
   testUser,
+  newUser,
 };

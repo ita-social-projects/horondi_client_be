@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-let { adminUser, newAdmin, testUser } = require('./user.variables');
+let { adminUser, newAdmin, testUser, newUser } = require('./user.variables');
 const { setupApp } = require('../helper-functions');
 const {
   INPUT_NOT_VALID,
@@ -427,18 +427,9 @@ describe('mutations', () => {
 
 describe('User`s mutation restictions tests', () => {
   let userToken;
-  let firstName;
-  let lastName;
-  let email;
-  let password;
-  let language;
+  let { firstName, lastName, email, password, language } = newUser;
 
   beforeAll(async () => {
-    firstName = 'Pepo';
-    lastName = 'Markelo';
-    email = '1xamp31d2v1@gmail.com';
-    password = 'qwertY123';
-    language = 1;
     const res = await operations.mutate({
       mutation: gql`
         mutation(
