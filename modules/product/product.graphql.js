@@ -2,7 +2,6 @@ const productType = `
 type Product {
 _id: ID!
 category: Category!
-subcategory: Category!
 model: [Language]!
 name: [Language]!
 description: [Language]!
@@ -31,7 +30,6 @@ comments: PaginatedComments!
 const productInput = `
 input ProductInput {
 category: ID!
-subcategory: ID!
 model: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!

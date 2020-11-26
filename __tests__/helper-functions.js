@@ -1,4 +1,3 @@
-const { gql } = require('@apollo/client');
 const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
 const config = require('../app');
@@ -29,5 +28,6 @@ const setupApp = async user => {
   });
   return createTestClient(server);
 };
+
 
 module.exports = { setupApp };

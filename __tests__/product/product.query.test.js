@@ -22,7 +22,6 @@ let productId;
 let operations;
 let currentProduct;
 let categoryId;
-let subcategoryId;
 let modelId;
 let materialId;
 
@@ -33,8 +32,7 @@ describe('Product queries', () => {
     modelId = itemsId.modelId;
     materialId = itemsId.materialId;
     categoryId = itemsId.categoryId;
-    subcategoryId = itemsId.subcategoryId;
-    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+    product = getNewProduct(categoryId, modelId, materialId);
     currentProduct = getProductData(product);
 
     const createProduct = await operations.mutate({
@@ -64,9 +62,6 @@ describe('Product queries', () => {
           getProducts {
             items {
               category {
-                _id
-              }
-              subcategory {
                 _id
               }
               name {
@@ -120,9 +115,6 @@ describe('Product queries', () => {
               category {
                 _id
               }
-              subcategory {
-                _id
-              }
               mainMaterial {
                 value
               }
@@ -170,9 +162,6 @@ describe('Product queries', () => {
             ... on Product {
               _id
               category {
-                _id
-              }
-              subcategory {
                 _id
               }
               name {

@@ -20,6 +20,49 @@ const newAdmin = {
   pass: 'dffdsfsdsdf',
 };
 
+const testUsersSet = [
+  {
+    firstName: 'Albina',
+    lastName: 'Todoriyk',
+    email: 'albinaT@gmail.com',
+    pass: 'qwertY123',
+    language: 1,
+    banned: true,
+  },
+  {
+    firstName: 'Denis',
+    lastName: 'Babarin',
+    email: 'denisBB@gmail.com',
+    pass: 'qwertY124',
+    language: 1,
+    banned: false,
+  },
+  {
+    firstName: 'Zelda',
+    lastName: 'Evense',
+    email: 'zeldaB@gmail.com',
+    pass: 'qwertY125',
+    language: 1,
+    banned: false,
+  },
+  {
+    firstName: 'Pepo',
+    lastName: 'Markelo',
+    email: 'example@gmail.com',
+    pass: 'qwertY123',
+    language: 1,
+    banned: true,
+  },
+  {
+    firstName: 'Petro',
+    lastName: 'Tatsenyak',
+    email: 'f5dbbdnvf1@gmail.com',
+    pass: '12345678Pt',
+    language: 1,
+    banned: true,
+  },
+];
+
 const testUser = {
   firstName: 'Petro',
   lastName: 'Tatsenyak',
@@ -44,4 +87,5 @@ module.exports = {
   newAdmin,
   superAdminUser,
   testUser,
+  testUsersSet,
 };

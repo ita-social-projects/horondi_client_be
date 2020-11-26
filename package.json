@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
-    "test": "jest --coverage --detectOpenHandles --verbose",
+    "test": "jest --coverage --detectOpenHandles --verbose --forceExit",
     "generate": "graphql-codegen",
     "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
     "docker-db-start": "cd ./docker && docker-compose up -d",
@@ -91,6 +91,7 @@
     "graphql-log": "^0.1.3",
     "husky": "^4.2.5",
     "jest": "^26.3.0",
+    "jest-sonar-reporter": "^2.0.0",
     "lint-staged": "^10.2.9",
     "nodemon": "^2.0.4",
     "prettier": "^1.19.1"
