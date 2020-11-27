@@ -1,6 +1,6 @@
 const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
-const config = require('../app');
+const config = require('./config.test.app');
 const { createTestClient } = require('apollo-server-testing');
 const bcrypt = require('bcryptjs');
 const {

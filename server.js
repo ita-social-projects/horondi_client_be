@@ -20,7 +20,9 @@ const {
   SUPER_ADMIN_PASSWORD,
   NODE_ENV,
 } = require('./dotenvValidator');
-const { registerAdmin } = require('./__tests__/helper-functions');
+const { registerAdmin } = require('./tests/helper-functions');
+
+connectDB();
 
 if (NODE_ENV === 'test') {
   registerAdmin(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
