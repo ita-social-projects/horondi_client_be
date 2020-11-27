@@ -78,9 +78,8 @@ class CategoryService {
     return data;
   }
 
-  async addCategory(data, parentId, upload) {
-    await validateCategoryInput.validateAsync({ ...data, parentId });
-
+  async addCategory(data, upload) {
+    console.log(data, upload);
     if (!upload) {
       throw new Error(IMAGES_NOT_PROVIDED);
     }
@@ -89,22 +88,7 @@ class CategoryService {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
-    const parentCategory = await Category.findById(parentId);
     const savedCategory = await new Category(data).save();
-
-    if (parentCategory) {
-      if (!parentCategory.isMain) {
-        throw new Error(CATEGORY_IS_NOT_MAIN);
-      }
-      if (data.isMain) {
-        throw new Error(WRONG_CATEGORY_DATA);
-      }
-      if (!parentCategory.available) {
-        savedCategory.available = false;
-      }
-      parentCategory.subcategories.push(savedCategory._id);
-      await parentCategory.save();
-    }
 
     const uploadResult = await uploadFiles([upload]);
     const imageResults = await uploadResult[0];
@@ -127,24 +111,8 @@ class CategoryService {
     });
   }
 
-  async deleteCategory({ deleteId, switchId }) {
-    const category = await Category.findByIdAndDelete(deleteId).lean();
-    const switchCategory = await Category.findById(switchId);
-
-    const filter = {
-      category: deleteId,
-    };
-
-    const updateSettings = {
-      $set: { category: switchCategory._id },
-    };
-
-    await this.cascadeUpdateRelatives(filter, updateSettings);
-
-    if (!category.isMain) {
-      await this.clearSubcategoryField(deleteId);
-    }
-
+  async deleteCategory({ id }) {
+    const category = await Category.findByIdAndDelete(id).lean();
     const images = Object.values(category.images).filter(
       item => typeof item === 'string' && item
     );

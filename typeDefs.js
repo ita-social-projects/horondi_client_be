@@ -569,12 +569,10 @@ const typeDefs = gql`
     "Category Mutation"
     addCategory(
       category: CategoryInput!
-      parentId: ID
       upload: Upload
     ): CategoryResult
     deleteCategory(
-        deleteId: ID!
-        switchId: ID!
+        id: ID!
     ): CategoryResult
     updateCategory(
       id: ID!

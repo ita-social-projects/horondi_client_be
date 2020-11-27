@@ -33,11 +33,7 @@ const categoryQuery = {
 const categoryMutation = {
   addCategory: async (parent, args) => {
     try {
-      return await categoryService.addCategory(
-        args.category,
-        args.parentId,
-        args.upload
-      );
+      return await categoryService.addCategory(args.category, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
