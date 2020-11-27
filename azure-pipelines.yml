@@ -27,13 +27,13 @@ stages:
       vmImage: $(vmImageName)
     steps:
      - task: DownloadSecureFile@1
-       name: env
+       name: test
        inputs:
-        secureFile: 'backend-test-env'
+        secureFile: 'env-back-test'
      - task: Bash@3
        inputs:
          targetType: 'inline'
-         script: 'mv $(env.secureFilePath) .env.test && npm i'
+         script: 'mv $(test.secureFilePath) .env.test && npm i'
 
      - task: DockerCompose@0
        inputs:
@@ -61,13 +61,27 @@ stages:
       vmImage: $(vmImageName)
     steps:
       - task: DownloadSecureFile@1
-        name: env1
+        name: envprod
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         inputs:
-          secureFile: 'backend-env'
+          secureFile: 'env-back'
       - task: Bash@3
+        name: prodfile
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         inputs:
           targetType: 'inline'
-          script: 'mv $(env1.secureFilePath) .env'
+          script: 'mv $(envprod.secureFilePath) .env'
+      - task: DownloadSecureFile@1
+        name: envdev
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        inputs:
+          secureFile: 'env-back-staging'
+      - task: Bash@3
+        name: devfile
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        inputs:
+          targetType: 'inline'
+          script: 'mv $(envdev.secureFilePath) .env'
       - task: Bash@3
         inputs:
           targetType: 'inline'
