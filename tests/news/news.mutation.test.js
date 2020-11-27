@@ -62,7 +62,6 @@ describe('News mutations tests', () => {
           `,
           variables: { news },
         })
-        .then(res => res)
         .catch(e => e);
 
       newsId = res.data.addNews._id;
@@ -123,7 +122,6 @@ describe('News mutations tests', () => {
 
           variables: { news },
         })
-        .then(res => res)
         .catch(e => e);
       expect(res.data.addNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
       expect(res.data.addNews).toHaveProperty('statusCode', 400);
@@ -209,7 +207,6 @@ describe('News mutations tests', () => {
             `,
             variables: { id: newsDoesNotExistId, news: newsUpdateData },
           })
-          .then(res => res)
           .catch(e => e);
         expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
         expect(res.data.updateNews).toHaveProperty('statusCode', 404);
@@ -247,7 +244,6 @@ describe('News mutations tests', () => {
             `,
             variables: { id: wrongId, news: existingNews },
           })
-          .then(res => res)
           .catch(e => e);
         expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
         expect(res.data.updateNews).toHaveProperty('statusCode', 404);

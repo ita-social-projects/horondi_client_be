@@ -3,11 +3,6 @@ const {
   SUPER_ADMIN_PASSWORD,
 } = require('../../dotenvValidator');
 
-const adminUser = {
-  email: 'admin2123@gmail.com',
-  password: 'qwertY123',
-};
-
 const superAdminUser = {
   email: SUPER_ADMIN_EMAIL,
   password: SUPER_ADMIN_PASSWORD,
@@ -82,10 +77,18 @@ const testUser = {
   comments: [],
 };
 
+export const user = {
+  firstName: 'Pepo',
+  lastName: 'Markelo',
+  email: '1xamp31d2v1@gmail.com',
+  pass: 'qwertY123',
+  language: 1,
+};
+
 module.exports = {
-  adminUser,
   newAdmin,
   superAdminUser,
   testUser,
   testUsersSet,
+  user,
 };

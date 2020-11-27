@@ -198,7 +198,7 @@ describe('Business page queries', () => {
       })
       .catch(e => e);
 
-    businessText = res.data.getBusinessTextByCode;
+    const businessText = res.data.getBusinessTextByCode;
 
     expect(businessText).toBeDefined();
     expect(businessText).toHaveProperty('code', newBusinessText.code);

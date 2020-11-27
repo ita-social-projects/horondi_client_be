@@ -1,6 +1,10 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const { newOrderMutation, newOrderUpdated } = require('./order.variables');
+const {
+  newOrderMutation,
+  newOrderUpdated,
+  newOrder,
+} = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -127,137 +131,11 @@ describe('Order mutations', () => {
     orderId = order._id;
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'SENT');
-    expect(order).toHaveProperty('user', {
-      firstName: 'Test',
-      lastName: 'Test',
-      patronymicName: 'Test',
-      email: 'test@gmail.com',
-      phoneNumber: '380953544271',
-    });
-    expect(order).toHaveProperty('address', {
-      country: 'Україна',
-      region: 'Кіровоградська область',
-      city: 'Новомиргород',
-      zipcode: '98908',
-      street: 'Бульвар Марії Приймаченко',
-      buildingNumber: '25',
-      appartment: '97',
-    });
-    expect(order).toHaveProperty('delivery', {
-      sentBy: 'Nova Poshta',
-      byCourier: true,
-      courierOffice: 10,
-      invoiceNumber: '6280260',
-      sentOn: null,
-    });
-    expect(order).toHaveProperty('items', [
-      {
-        category: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        subcategory: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        model: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern',
-          },
-        ],
-        name: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом синя',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern Blue',
-          },
-        ],
-        colors: [
-          [
-            {
-              lang: 'uk',
-              value: 'Сталево-блакитний',
-            },
-            {
-              lang: 'en',
-              value: 'Steel-blue',
-            },
-          ],
-        ],
-        pattern: [
-          {
-            lang: 'uk',
-            value: 'Олені',
-          },
-          {
-            lang: 'en',
-            value: 'Deers',
-          },
-        ],
-        closure: [],
-        closureColor: '',
-        size: {
-          heightInCm: 38,
-          widthInCm: 36,
-          depthInCm: 10,
-          volumeInLiters: 0,
-          weightInKg: 0,
-        },
-        bottomMaterial: [
-          {
-            lang: 'uk',
-            value: 'Тканина Кордура',
-          },
-          {
-            lang: 'en',
-            value: 'Cordura fabric',
-          },
-        ],
-        bottomColor: [
-          {
-            lang: 'uk',
-            value: 'чорний',
-          },
-          {
-            lang: 'en',
-            value: 'black',
-          },
-        ],
-        additions: [],
-        actualPrice: [
-          {
-            currency: 'UAH',
-            value: 90000,
-          },
-          {
-            currency: 'USD',
-            value: 3246,
-          },
-        ],
-        quantity: 1,
-      },
-    ]);
-    expect(order).toHaveProperty('paymentMethod', 'CARD');
+    expect(order).toHaveProperty('user', newOrder.user);
+    expect(order).toHaveProperty('address', newOrder.address);
+    expect(order).toHaveProperty('delivery', newOrder.delivery);
+    expect(order).toHaveProperty('items', newOrder.items);
+    expect(order).toHaveProperty('paymentMethod', newOrder.paymentMethod);
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
   });
