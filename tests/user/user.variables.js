@@ -77,7 +77,7 @@ const testUser = {
   comments: [],
 };
 
-export const user = {
+const user = {
   firstName: 'Pepo',
   lastName: 'Markelo',
   email: '1xamp31d2v1@gmail.com',

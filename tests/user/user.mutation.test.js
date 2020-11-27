@@ -1,6 +1,4 @@
 /* eslint-disable no-undef */
-import { user } from './user.variables';
-
 const { gql } = require('@apollo/client');
 let { newAdmin, testUser, user } = require('./user.variables');
 const { setupApp } = require('../helper-functions');
@@ -441,7 +439,6 @@ describe('User`s mutation restictions tests', () => {
     email = user.email;
     password = user.pass;
     language = user.language;
-    user;
     const res = await operations.mutate({
       mutation: gql`
         mutation(
