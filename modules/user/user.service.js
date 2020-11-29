@@ -283,7 +283,7 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = await generateToken(user._id, user.email);
+    const token = generateToken(user._id, user.email);
 
     return {
       ...user._doc,
@@ -319,7 +319,7 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = await generateToken(user._id, user.email);
+    const token = generateToken(user._id, user.email);
 
     if (staySignedIn) {
       refreshToken = generateRefreshToken(user);
@@ -348,7 +348,7 @@ class UserService {
 
     await this.getUserByFieldOrThrow('email', decoded.email);
 
-    const token = await generateToken(decoded.userId, decoded.email);
+    const token = generateToken(decoded.userId, decoded.email);
 
     return {
       token,
@@ -391,7 +391,7 @@ class UserService {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = await generateToken(user._id, user.email);
+    const token = generateToken(user._id, user.email);
 
     if (staySignedIn) {
       refreshToken = generateRefreshToken(user);
@@ -447,7 +447,7 @@ class UserService {
     });
     const savedUser = await user.save();
 
-    const token = await generateToken(savedUser._id, savedUser.email, {
+    const token = generateToken(savedUser._id, savedUser.email, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
@@ -477,7 +477,7 @@ class UserService {
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const token = await generateToken(user._id, user.email, {
+    const token = generateToken(user._id, user.email, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
@@ -518,7 +518,7 @@ class UserService {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
 
-    const token = await generateToken(user._id, user.email, {
+    const token = generateToken(user._id, user.email, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
@@ -600,10 +600,7 @@ class UserService {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = await generateToken(
-      savedUser._id,
-      savedUser.email
-    );
+    const invitationalToken = generateToken(savedUser._id, savedUser.email);
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };

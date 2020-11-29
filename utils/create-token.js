@@ -6,7 +6,7 @@ const defaultParams = {
   secret: SECRET,
 };
 
-const generateToken = async (userId, email, params = defaultParams) => {
+const generateToken = (userId, email, params = defaultParams) => {
   const options = {
     expiresIn: params.expiresIn,
   };
