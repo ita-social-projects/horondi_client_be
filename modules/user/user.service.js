@@ -31,6 +31,7 @@ const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
+  reduceByMonths,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
 
@@ -184,12 +185,19 @@ class UserService {
     );
     const userOccurency = countItemsOccurency(formatedData);
     const counts = Object.values(userOccurency);
+    const labels = Object.keys(userOccurency);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
       0
     );
+
+    if (filter.days === 365) {
+      const { names, counts: count } = reduceByMonths(labels, counts);
+      return { labels: names, counts: count, total };
+    }
+
     return {
-      labels: Object.keys(userOccurency),
+      labels,
       counts,
       total,
     };

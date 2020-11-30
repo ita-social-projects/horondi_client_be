@@ -251,7 +251,7 @@ class ProductsService {
 
     return products.reduce(
       (prev, curr) => ({
-        labels: [...prev.labels, curr.name[0].value],
+        labels: [...prev.labels, String(curr.name[0].value)],
         counts: [...prev.counts, curr.purchasedCount],
         total: prev.total + curr.purchasedCount,
       }),

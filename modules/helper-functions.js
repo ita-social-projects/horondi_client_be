@@ -12,7 +12,26 @@ const countItemsOccurency = items =>
     return acc;
   }, {});
 
+const reduceByMonths = (names, count) => {
+  const newNames = names.map(name => name.split(' ')[0]);
+  const result = {};
+
+  for (let i = 0; i < newNames.length; i++) {
+    if (result[newNames[i]] === undefined) {
+      result[newNames[i]] = count[i];
+    } else {
+      result[newNames[i]] += count[i];
+    }
+  }
+
+  return {
+    names: Object.keys(result),
+    counts: Object.values(result),
+  };
+};
+
 module.exports = {
+  reduceByMonths,
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,

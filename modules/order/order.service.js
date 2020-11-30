@@ -11,6 +11,7 @@ const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
+  reduceByMonths,
 } = require('../helper-functions');
 
 const { userDateFormat } = require('../../consts');
@@ -285,6 +286,10 @@ class OrdersService {
       (orderTotal, orderCount) => orderTotal + orderCount,
       0
     );
+    if (days === 365) {
+      const { names: labels, counts: count } = reduceByMonths(names, counts);
+      return { labels, counts: count, total };
+    }
     return { labels: names, counts, total };
   }
 
