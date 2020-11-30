@@ -28,7 +28,6 @@ class CategoryService {
 
   async updateCategory({ id, category, upload }) {
     const categoryToUpdate = await Category.findById(id);
-    console.log(categoryToUpdate);
     if (!categoryToUpdate) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -117,7 +116,6 @@ class CategoryService {
   }
 
   async addCategory(data, upload) {
-    console.log(data, upload);
     if (!upload) {
       throw new Error(IMAGES_NOT_PROVIDED);
     }
