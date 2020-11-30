@@ -26,25 +26,63 @@ class CategoryService {
     throw new Error(CATEGORY_NOT_FOUND);
   }
 
-  async updateCategory(id, category, upload) {
-    await this.getCategoryById(id);
+  async updateCategory({ id, category, upload }) {
+    const categoryToUpdate = await Category.findById(id);
+    console.log(categoryToUpdate);
+    if (!categoryToUpdate) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
+
     if (await this.checkCategoryExist(category, id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    if (upload) {
-      await deleteFiles(
-        Object.values(category.images).filter(
-          item => typeof item === 'string' && item
-        )
-      );
-      const uploadResult = await uploadFiles([upload]);
-      const imageResults = await uploadResult[0];
-      category.images = imageResults.fileNames;
+
+    if (!!upload) {
+      return await Category.findByIdAndUpdate(id, category, { new: true });
     }
-    return await Category.findByIdAndUpdate(id, category, {
-      new: true,
-    });
+    const uploadResult = await uploadFiles([upload]);
+
+    const uploadResults = await uploadResult[0];
+
+    const images = uploadResults.fileNames;
+
+    if (!images) {
+      return await Category.findByIdAndUpdate(id, category);
+    }
+    const foundCategory = await Category.findById(id).lean();
+    deleteFiles(Object.values(foundCategory.images));
+
+    return await Category.findByIdAndUpdate(
+      id,
+      {
+        ...category,
+        images,
+      },
+      {
+        new: true,
+      }
+    );
   }
+
+  // async updateCategory(id, category, upload) {
+  //   await this.getCategoryById(id);
+  //   if (await this.checkCategoryExist(category, id)) {
+  //     throw new Error(CATEGORY_ALREADY_EXIST);
+  //   }
+  //   if (upload) {
+  //     await deleteFiles(
+  //       Object.values(category.images).filter(
+  //         item => typeof item === 'string' && item
+  //       )
+  //     );
+  //     const uploadResult = await uploadFiles([upload]);
+  //     const imageResults = await uploadResult[0];
+  //     category.images = imageResults.fileNames;
+  //   }
+  //   return await Category.findByIdAndUpdate(id, category, {
+  //     new: true,
+  //   });
+  // }
 
   async getCategoriesForBurgerMenu() {
     const categories = await this.getAllCategories();

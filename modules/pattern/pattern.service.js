@@ -37,7 +37,7 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
 
-    if (!image) {
+    if (!!image) {
       return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
     }
     const uploadResult = await uploadFiles([image]);

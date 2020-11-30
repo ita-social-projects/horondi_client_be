@@ -53,11 +53,7 @@ const categoryMutation = {
   },
   updateCategory: async (parent, args) => {
     try {
-      return await categoryService.updateCategory(
-        args.id,
-        args.category,
-        args.upload
-      );
+      return await categoryService.updateCategory(args);
     } catch (e) {
       return {
         statusCode: e.message === CATEGORY_NOT_FOUND ? 404 : 400,
