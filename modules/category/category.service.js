@@ -63,25 +63,25 @@ class CategoryService {
     );
   }
 
-  // async updateCategory(id, category, upload) {
-  //   await this.getCategoryById(id);
-  //   if (await this.checkCategoryExist(category, id)) {
-  //     throw new Error(CATEGORY_ALREADY_EXIST);
-  //   }
-  //   if (upload) {
-  //     await deleteFiles(
-  //       Object.values(category.images).filter(
-  //         item => typeof item === 'string' && item
-  //       )
-  //     );
-  //     const uploadResult = await uploadFiles([upload]);
-  //     const imageResults = await uploadResult[0];
-  //     category.images = imageResults.fileNames;
-  //   }
-  //   return await Category.findByIdAndUpdate(id, category, {
-  //     new: true,
-  //   });
-  // }
+  async updateCategory(id, category, upload) {
+    await this.getCategoryById(id);
+    if (await this.checkCategoryExist(category, id)) {
+      throw new Error(CATEGORY_ALREADY_EXIST);
+    }
+    if (upload) {
+      await deleteFiles(
+        Object.values(category.images).filter(
+          item => typeof item === 'string' && item
+        )
+      );
+      const uploadResult = await uploadFiles([upload]);
+      const imageResults = await uploadResult[0];
+      category.images = imageResults.fileNames;
+    }
+    return await Category.findByIdAndUpdate(id, category, {
+      new: true,
+    });
+  }
 
   async getCategoriesForBurgerMenu() {
     const categories = await this.getAllCategories();
