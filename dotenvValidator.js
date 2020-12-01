@@ -3,6 +3,38 @@ require('dotenv').config({
   path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
 
+const dotenvVariables = [
+  'MONGO_URL',
+  'SECRET',
+  'EXPIRES_IN',
+  'BASE_URI',
+  'TEST_BASE_URI',
+  'KEY_VAULTS_URI',
+  'IMAGE_LINK',
+  'STORAGE_ACCOUNT',
+  'ACCESS_KEY',
+  'AZURE_HOST',
+  'PAYMENT_SECRET',
+  'PAYMENT_MERCHANT_ID',
+  'NOVA_POSHTA_API_LINK',
+  'NOVA_POSHTA_API_KEY',
+  'PAYMENT_API_LINK',
+  'MAIL_USER',
+  'MAIL_PASS',
+  'MAIL_HOST',
+  'MAIL_PORT',
+  'RECOVERY_EXPIRE',
+  'FRONT_BASE_URI',
+  'TEST_BASE_URI',
+  'CURRENCY_API_URL',
+  'CONFIRMATION_SECRET',
+  'RECOVERY_EXPIRE',
+  'SUPER_ADMIN_EMAIL',
+  'SUPER_ADMIN_PASSWORD',
+  'SENDGRID_API_KEY',
+  'REACT_APP_GOOGLE_CLIENT_ID',
+];
+
 function dotenvValidator(processEnv) {
   const envSchema = joi.object({
     MONGO_URL: joi
@@ -63,6 +95,7 @@ function dotenvValidator(processEnv) {
       .required(),
     CONFIRMATION_SECRET: joi.string().required(),
     SENDGRID_API_KEY: joi.string().required(),
+    REACT_APP_GOOGLE_CLIENT_ID: joi.string().required(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });
@@ -73,5 +106,4 @@ function dotenvValidator(processEnv) {
 }
 
 dotenvValidator(process.env);
-
-module.exports = { ...process.env };
+module.exports = { ...process.env, dotenvVariables };

@@ -26,6 +26,7 @@ const {
   CONFIRMATION_SECRET,
   MAIL_USER,
   NODE_ENV,
+  REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
 const {
   removeDaysFromData,
@@ -220,7 +221,7 @@ class UserService {
     }
     if (!user.images) user.images = [];
     if (upload) {
-      if(user.images.length) {
+      if (user.images.length) {
         await deleteFiles(
           Object.values(user.images).filter(
             item => typeof item === 'string' && item
@@ -325,7 +326,7 @@ class UserService {
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
       idToken: id_token,
-      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      audience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
