@@ -52,9 +52,12 @@ const userMutation = {
     userService.resetPassword(args.password, args.token),
   checkIfTokenIsValid: (parent, args) =>
     userService.checkIfTokenIsValid(args.token),
-  sendEmailConfirmation: (parent, args) => {
+  sendEmailConfirmation: async (parent, args) => {
     try {
-      return userService.sendConfirmationLetter(args.email, args.language);
+      return await userService.sendConfirmationLetter(
+        args.email,
+        args.language
+      );
     } catch (e) {
       return {
         statusCode: 400,
