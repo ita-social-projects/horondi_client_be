@@ -468,7 +468,7 @@ describe('User`s mutation restictions tests', () => {
         firstName,
         lastName,
         email,
-        password: pass,
+        password,
         language,
       },
     });
@@ -521,7 +521,7 @@ describe('User`s mutation restictions tests', () => {
         variables: {
           user: {
             email,
-            password: pass,
+            password,
           },
         },
       })
