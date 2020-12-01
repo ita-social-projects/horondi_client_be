@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const client = require('../../utils/apollo-test-client');
 jest.mock('../../modules/upload/upload.service');
 const { newCategory, newModel } = require('./model.variables');
 const { setupApp } = require('../helper-functions');
@@ -10,7 +9,7 @@ let categoryId;
 let operations;
 
 describe('Product queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const createCategory = await operations.mutate({
       mutation: gql`
@@ -46,8 +45,9 @@ describe('Product queries', () => {
       variables: { model: { ...newModel, category: categoryId } },
     });
     modelId = createModel.data.addModel._id;
+    done();
   });
-  test('Should receive all models by category id', async () => {
+  test('Should receive all models by category id', async done => {
     const res = await operations.query({
       query: gql`
         query($category: ID!) {
@@ -108,9 +108,10 @@ describe('Product queries', () => {
         },
       ],
     });
+    done();
   });
-  test('Should throw error CATEGORY_NOT_VALID', async () => {
-    const res = await client
+  test('Should throw error CATEGORY_NOT_VALID', async done => {
+    const res = await operations
       .query({
         query: gql`
           query {
@@ -137,10 +138,11 @@ describe('Product queries', () => {
       })
       .catch(err => err);
     const error = res;
-    expect(error.graphQLErrors[0].message).toBe('CATEGORY_NOT_VALID');
+    expect(error.errors[0].message).toBe('CATEGORY_NOT_VALID');
+    done();
   });
-  test('Should return empty array when category isnt exist', async () => {
-    const res = await client
+  test('Should return empty array when category isnt exist', async done => {
+    const res = await operations
       .query({
         query: gql`
           query {
@@ -169,8 +171,9 @@ describe('Product queries', () => {
     const getModelsByCategory = res.data.getModelsByCategory;
     expect(getModelsByCategory.length).toBe(0);
     expect(getModelsByCategory).toBeInstanceOf(Array);
+    done();
   });
-  afterAll(async () => {
+  afterAll(async done => {
     await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -204,5 +207,6 @@ describe('Product queries', () => {
       `,
       variables: { id: modelId },
     });
+    done();
   });
 });

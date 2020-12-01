@@ -13,6 +13,7 @@ const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
 let patternId = '';
+let secondPatternId = '';
 let operations;
 
 describe('pattern mutation tests', () => {
@@ -201,7 +202,7 @@ describe('pattern mutation tests', () => {
   });
 
   it('should return error if we try to update pattern with existing name ', async () => {
-    await operations.mutate({
+    const addPattern = await operations.mutate({
       mutation: gql`
         mutation($pattern: PatternInput!) {
           addPattern(pattern: $pattern, image: []) {
@@ -234,7 +235,7 @@ describe('pattern mutation tests', () => {
       `,
       variables: { pattern: patternToUpdate },
     });
-
+    secondPatternId = addPattern.data.addPattern._id;
     const res = await operations.mutate({
       variables: { id: patternId, pattern: patternToUpdate },
       mutation: gql`
@@ -284,6 +285,28 @@ describe('pattern mutation tests', () => {
           deletePattern(id: $id) {
             ... on Pattern {
               _id
+              name {
+                value
+              }
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+    });
+    await operations.mutate({
+      variables: { id: secondPatternId },
+      mutation: gql`
+        mutation($id: ID!) {
+          deletePattern(id: $id) {
+            ... on Pattern {
+              _id
+              name {
+                value
+              }
             }
             ... on Error {
               statusCode

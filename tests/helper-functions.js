@@ -1,27 +1,30 @@
-const { gql } = require('@apollo/client');
 const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
-const config = require('../app');
+const config = require('./config.test.app');
 const { createTestClient } = require('apollo-server-testing');
 const bcrypt = require('bcryptjs');
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
 } = require('../dotenvValidator');
-const setupApp = async user => {
-  await User.deleteOne({ email: SUPER_ADMIN_EMAIL });
+const registerAdmin = async (email, password) => {
+  await User.deleteOne({ email: email });
   const admin = new User();
   admin.firstName = 'Super аdmin';
   admin.lastName = 'Super admin full';
-  admin.email = SUPER_ADMIN_EMAIL;
+  admin.email = email;
   admin.role = 'superadmin';
   admin.credentials = [
     {
       source: 'horondi',
-      tokenPass: await bcrypt.hash(SUPER_ADMIN_PASSWORD, 12),
+      tokenPass: await bcrypt.hash(password, 12),
     },
   ];
   await admin.save();
+  return admin;
+};
+const setupApp = async user => {
+  const admin = await registerAdmin(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
 
   const server = new ApolloServer({
     ...config,
@@ -30,4 +33,4 @@ const setupApp = async user => {
   return createTestClient(server);
 };
 
-module.exports = { setupApp };
+module.exports = { setupApp, registerAdmin };

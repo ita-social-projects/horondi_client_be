@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-let { adminUser, newAdmin, testUser, newUser } = require('./user.variables');
+
+let { newAdmin, testUser, user } = require('./user.variables');
+
 const { setupApp } = require('../helper-functions');
 const {
   INPUT_NOT_VALID,
@@ -427,9 +429,14 @@ describe('mutations', () => {
 
 describe('User`s mutation restictions tests', () => {
   let userToken;
-  let { firstName, lastName, email, pass, language } = newUser;
 
   beforeAll(async () => {
+    firstName = user.firstName;
+    lastName = user.lastName;
+    email = user.email;
+    password = user.pass;
+    language = user.language;
+
     const res = await operations.mutate({
       mutation: gql`
         mutation(
@@ -585,6 +592,26 @@ describe('User`s mutation restictions tests', () => {
       .catch(err => err);
     expect(result.data.updateUserById.message).toBeDefined();
     expect(result.data.updateUserById.message).toEqual('WRONG_CREDENTIALS');
+
+    operations = await setupApp();
+
+    await operations.mutate({
+      mutation: gql`
+        mutation($userId: ID!) {
+          deleteUser(id: $userId) {
+            ... on User {
+              _id
+            }
+            ... on Error {
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        userId: res.data.registerUser._id,
+      },
+    });
   });
 
   test('User can change his own data', async () => {

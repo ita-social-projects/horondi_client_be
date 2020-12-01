@@ -146,7 +146,6 @@ const resolvers = {
 
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
-    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
     comments: parent =>
       commentsService.getAllCommentsByProduct({ productId: parent._id }),
   },
