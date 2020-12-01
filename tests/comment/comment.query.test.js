@@ -31,7 +31,6 @@ let materialId;
 let product;
 let productId;
 let categoryId;
-let subcategoryId;
 
 describe('Comment queries', () => {
   beforeAll(async done => {
@@ -40,9 +39,8 @@ describe('Comment queries', () => {
     modelId = itemsId.modelId;
     materialId = itemsId.materialId;
     categoryId = itemsId.categoryId;
-    subcategoryId = itemsId.subcategoryId;
 
-    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+    product = getNewProduct(categoryId, modelId, materialId);
 
     const createProduct = await operations.mutate({
       mutation: gql`

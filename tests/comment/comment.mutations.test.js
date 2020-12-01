@@ -34,7 +34,6 @@ let productUserRates;
 let product;
 let productId;
 let categoryId;
-let subcategoryId;
 let modelId;
 let materialId;
 
@@ -43,11 +42,10 @@ describe('Comment queries', () => {
     operations = await setupApp();
     const itemsId = await createModel(newMaterial, newCategory, newModel);
     categoryId = itemsId.categoryId;
-    subcategoryId = itemsId.subcategoryId;
     modelId = itemsId.modelId;
     materialId = itemsId.materialId;
 
-    product = getNewProduct(categoryId, subcategoryId, modelId, materialId);
+    product = getNewProduct(categoryId, modelId, materialId);
     const createProduct = await operations.mutate({
       mutation: gql`
         mutation($product: ProductInput!) {

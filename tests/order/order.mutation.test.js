@@ -1,6 +1,10 @@
 /* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-const { newOrderMutation, newOrderUpdated } = require('./order.variables');
+const {
+  newOrderMutation,
+  newOrderUpdated,
+  newOrder,
+} = require('./order.variables');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -127,141 +131,20 @@ describe('Order mutations', () => {
     orderId = order._id;
     expect(order).toBeDefined();
     expect(order).toHaveProperty('status', 'SENT');
-    expect(order).toHaveProperty('user', {
-      firstName: 'Test',
-      lastName: 'Test',
-      patronymicName: 'Test',
-      email: 'test@gmail.com',
-      phoneNumber: '380953544271',
-    });
-    expect(order).toHaveProperty('address', {
-      country: 'Україна',
-      region: 'Кіровоградська область',
-      city: 'Новомиргород',
-      zipcode: '98908',
-      street: 'Бульвар Марії Приймаченко',
-      buildingNumber: '25',
-      appartment: '97',
-    });
+    expect(order).toHaveProperty('user', newOrder.user);
+    expect(order).toHaveProperty('address', newOrder.address);
     expect(order).toHaveProperty('delivery', {
-      sentBy: 'Nova Poshta',
-      byCourier: true,
-      courierOffice: 10,
-      invoiceNumber: '6280260',
+      byCourier: newOrder.delivery.byCourier,
+      invoiceNumber: newOrder.delivery.invoiceNumber,
+      courierOffice: newOrder.delivery.courierOffice,
+      sentBy: newOrder.delivery.sentBy,
       sentOn: null,
     });
-    expect(order).toHaveProperty('items', [
-      {
-        category: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        subcategory: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        model: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern',
-          },
-        ],
-        name: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом синя',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern Blue',
-          },
-        ],
-        colors: [
-          [
-            {
-              lang: 'uk',
-              value: 'Сталево-блакитний',
-            },
-            {
-              lang: 'en',
-              value: 'Steel-blue',
-            },
-          ],
-        ],
-        pattern: [
-          {
-            lang: 'uk',
-            value: 'Олені',
-          },
-          {
-            lang: 'en',
-            value: 'Deers',
-          },
-        ],
-        closure: [],
-        closureColor: '',
-        size: {
-          heightInCm: 38,
-          widthInCm: 36,
-          depthInCm: 10,
-          volumeInLiters: 0,
-          weightInKg: 0,
-        },
-        bottomMaterial: [
-          {
-            lang: 'uk',
-            value: 'Тканина Кордура',
-          },
-          {
-            lang: 'en',
-            value: 'Cordura fabric',
-          },
-        ],
-        bottomColor: [
-          {
-            lang: 'uk',
-            value: 'чорний',
-          },
-          {
-            lang: 'en',
-            value: 'black',
-          },
-        ],
-        additions: [],
-        actualPrice: [
-          {
-            currency: 'UAH',
-            value: 90000,
-          },
-          {
-            currency: 'USD',
-            value: 3246,
-          },
-        ],
-        quantity: 1,
-      },
-    ]);
-    expect(order).toHaveProperty('paymentMethod', 'CARD');
+    expect(order).toHaveProperty('items', newOrder.items);
+    expect(order).toHaveProperty('paymentMethod', newOrder.paymentMethod);
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
   });
-
   test('Should throw error ORDER_NOT_FOUND after try to delete', async () => {
     const res = await operations
       .mutate({
@@ -400,17 +283,20 @@ describe('Order mutations', () => {
 
     expect(updatedOrder).toBeDefined();
     expect(updatedOrder).toBeDefined();
-    expect(updatedOrder).toHaveProperty('status', 'SENT');
+    expect(updatedOrder).toHaveProperty('status', newOrderUpdated.status);
     expect(updatedOrder).toHaveProperty('user', newOrderUpdated.user);
     expect(updatedOrder).toHaveProperty('address', newOrderUpdated.address);
     expect(updatedOrder).toHaveProperty('delivery', {
-      byCourier: true,
-      courierOffice: 10,
-      invoiceNumber: '6280260',
-      sentBy: 'Nova Poshta',
+      byCourier: newOrder.delivery.byCourier,
+      invoiceNumber: newOrder.delivery.invoiceNumber,
+      courierOffice: newOrder.delivery.courierOffice,
+      sentBy: newOrder.delivery.sentBy,
     });
     expect(updatedOrder).toHaveProperty('items', newOrderUpdated.items);
-    expect(updatedOrder).toHaveProperty('paymentMethod', 'CARD');
+    expect(updatedOrder).toHaveProperty(
+      'paymentMethod',
+      newOrderUpdated.paymentMethod
+    );
     expect(updatedOrder).toHaveProperty('totalItemsPrice');
     expect(updatedOrder).toHaveProperty('totalPriceToPay');
   });
@@ -651,138 +537,21 @@ describe('Order mutations', () => {
 
     expect(orderDelete).toBeDefined();
     expect(orderDelete).toBeDefined();
-    expect(orderDelete).toHaveProperty('status', 'SENT');
-    expect(orderDelete).toHaveProperty('user', {
-      firstName: 'Updated',
-      lastName: 'Updated',
-      email: 'test.updated@gmail.com',
-      phoneNumber: '380953544271',
-      patronymicName: 'Updated',
-    });
-    expect(orderDelete).toHaveProperty('address', {
-      country: 'Україна',
-      region: 'Кіровоградська область',
-      city: 'Новомиргород',
-      zipcode: '98908',
-      street: 'Бульвар Марії Приймаченко',
-      buildingNumber: '25',
-      appartment: '97',
-    });
+    expect(orderDelete).toHaveProperty('status', newOrderUpdated.status);
+    expect(orderDelete).toHaveProperty('user', newOrderUpdated.user);
+    expect(orderDelete).toHaveProperty('address', newOrderUpdated.address);
     expect(orderDelete).toHaveProperty('delivery', {
-      sentBy: 'Nova Poshta',
-      byCourier: true,
-      courierOffice: 10,
-      invoiceNumber: '6280260',
+      byCourier: newOrderUpdated.delivery.byCourier,
+      invoiceNumber: newOrderUpdated.delivery.invoiceNumber,
+      courierOffice: newOrderUpdated.delivery.courierOffice,
+      sentBy: newOrderUpdated.delivery.sentBy,
       sentOn: null,
     });
-    expect(orderDelete).toHaveProperty('items', [
-      {
-        category: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        subcategory: [
-          {
-            lang: 'uk',
-            value: 'Сумки',
-          },
-          {
-            lang: 'en',
-            value: 'Bags',
-          },
-        ],
-        model: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern',
-          },
-        ],
-        name: [
-          {
-            lang: 'uk',
-            value: 'Сумка з гобеленом синя',
-          },
-          {
-            lang: 'en',
-            value: 'Bag with a Pattern Blue',
-          },
-        ],
-        colors: [
-          [
-            {
-              lang: 'uk',
-              value: 'Сталево-блакитний',
-            },
-            {
-              lang: 'en',
-              value: 'Steel-blue',
-            },
-          ],
-        ],
-        pattern: [
-          {
-            lang: 'uk',
-            value: 'Олені',
-          },
-          {
-            lang: 'en',
-            value: 'Deers',
-          },
-        ],
-        closure: [],
-        closureColor: '',
-        size: {
-          heightInCm: 38,
-          widthInCm: 36,
-          depthInCm: 10,
-          volumeInLiters: 0,
-          weightInKg: 0,
-        },
-        bottomMaterial: [
-          {
-            lang: 'uk',
-            value: 'Тканина Кордура',
-          },
-          {
-            lang: 'en',
-            value: 'Cordura fabric',
-          },
-        ],
-        bottomColor: [
-          {
-            lang: 'uk',
-            value: 'чорний',
-          },
-          {
-            lang: 'en',
-            value: 'black',
-          },
-        ],
-        additions: [],
-        actualPrice: [
-          {
-            currency: 'UAH',
-            value: 90000,
-          },
-          {
-            currency: 'USD',
-            value: 3246,
-          },
-        ],
-        quantity: 1,
-      },
-    ]);
-    expect(orderDelete).toHaveProperty('paymentMethod', 'CARD');
+    expect(orderDelete).toHaveProperty('items', newOrderUpdated.items);
+    expect(orderDelete).toHaveProperty(
+      'paymentMethod',
+      newOrderUpdated.paymentMethod
+    );
     expect(orderDelete).toHaveProperty('totalItemsPrice');
     expect(orderDelete).toHaveProperty('totalPriceToPay');
   });
