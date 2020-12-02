@@ -4,6 +4,10 @@ const CurrencySet = require('./CurrencySet').schema;
 const Address = require('../modules/common/Address').schema;
 
 const orderSchema = new mongoose.Schema({
+  orderId:{
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
     required: true,

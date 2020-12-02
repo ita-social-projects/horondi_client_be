@@ -6,7 +6,7 @@ const { Seeder } = require('mongo-seeding');
 //   database: {
 //     host: '127.0.0.1',
 //     port: 27017,
-//     name: 'horondi-2',
+//     name: 'horondi-25',
 //     username: 'root',
 //     password: 'root',
 //     options: {
@@ -20,8 +20,8 @@ const { Seeder } = require('mongo-seeding');
 // };
 
 const config = {
-  database: '',
-  dropDatabase: false,
+  database: 'mongodb://127.0.0.1:27017/mydatabase',
+  dropDatabase: true,
 };
 
 const seeder = new Seeder(config);

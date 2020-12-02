@@ -52,6 +52,7 @@
     "into-stream": "^5.1.1",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.3",
     "mongoose": "^5.9.18",
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
@@ -61,6 +62,7 @@
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
     "rotating-file-stream": "^2.0.2",
+    "seed": "^0.4.4",
     "start-server-and-test": "^1.11.3",
     "uniqid": "^5.2.0",
     "util": "^0.12.3"
@@ -78,7 +80,8 @@
     "husky": "^4.2.5",
     "jest": "^26.3.0",
     "lint-staged": "^10.2.9",
-    "mongo-seeding": "^3.4.1",
+    "mongo-seeding": "^3.5.0",
+    "mongo-seeding-cli": "^3.5.0",
     "nodemon": "^2.0.4",
     "prettier": "^1.19.1"
   },
