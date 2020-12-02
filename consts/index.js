@@ -25,6 +25,11 @@ const monthInMilliseconds = 2592000000;
 
 const userDateFormat = { month: 'short', day: 'numeric' };
 const OTHERS = 'Інші';
+const YEAR = 365;
+const QUARTER = 90;
+const MONTH = 30;
+const WEEK = 7;
+const THREE_DAYS = 3;
 
 module.exports = {
   roles,
@@ -36,4 +41,9 @@ module.exports = {
   userDateFormat,
   defaultPaginationParams,
   OTHERS,
+  YEAR,
+  QUARTER,
+  MONTH,
+  WEEK,
+  THREE_DAYS,
 };

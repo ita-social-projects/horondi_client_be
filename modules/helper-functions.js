@@ -1,4 +1,12 @@
-const { dayInMiliseconds } = require('../consts/');
+const {
+  dayInMiliseconds,
+  userDateFormat,
+  YEAR,
+  QUARTER,
+  MONTH,
+  WEEK,
+  THREE_DAYS,
+} = require('../consts/');
 
 const removeDaysFromData = (days, currentDate) =>
   currentDate - days * dayInMiliseconds;
@@ -12,26 +20,115 @@ const countItemsOccurency = items =>
     return acc;
   }, {});
 
-const reduceByMonths = (names, count) => {
-  const newNames = names.map(name => name.split(' ')[0]);
-  const result = {};
+const setCalendar = (names, counts, days) => {
+  const calendar = [];
 
-  for (let i = 0; i < newNames.length; i++) {
-    if (result[newNames[i]] === undefined) {
-      result[newNames[i]] = count[i];
+  for (let i = days; i >= 0; i--) {
+    const today = Date.now();
+    const chartDate = changeDataFormat(
+      removeDaysFromData(i, today),
+      userDateFormat
+    );
+    const countIndex = names.findIndex(day => day === chartDate);
+
+    calendar.push({
+      range: chartDate,
+      counts: countIndex === -1 ? 0 : counts[countIndex],
+    });
+  }
+  return calendar;
+};
+
+const transformLabel = (days, dateSet) => {
+  const startMonth = dateSet[0].range;
+  const endMonth = dateSet[dateSet.length - 1].range;
+
+  if (days === YEAR) {
+    return startMonth.slice(0, 3);
+  } else {
+    if (startMonth.slice(0, 3) === endMonth.slice(0, 3)) {
+      return `${startMonth}-${endMonth.slice(4)}`;
     } else {
-      result[newNames[i]] += count[i];
+      return `${startMonth}-${endMonth}`;
+    }
+  }
+};
+
+const reduceByYear = (days, calendar) => {
+  const year = [];
+  let month = [];
+
+  while (calendar.length) {
+    if (
+      calendar[1] &&
+      calendar[0].range.slice(0, 3) === calendar[1].range.slice(0, 3)
+    ) {
+      month.push(calendar.shift());
+    } else {
+      month.push(calendar.shift());
+      year.push(month);
+      month = [];
     }
   }
 
-  return {
-    names: Object.keys(result),
-    counts: Object.values(result),
-  };
+  return year.map(item => reduceDatesObjectArr(days, item));
+};
+
+const reduceByMonths = (days, calendar, range) => {
+  const months = [];
+  for (let i = 0; i < days / range; i++) {
+    months.push(reduceDatesObjectArr(days, calendar.splice(0, range)));
+  }
+  return months;
+};
+
+const reduceDatesObjectArr = (days, item) => {
+  return item.reduce(
+    (acc, curr) => ({
+      range: acc.range,
+      counts: acc.counts + curr.counts,
+    }),
+    {
+      range: transformLabel(days, item),
+      counts: 0,
+    }
+  );
+};
+
+const reduceByDaysCount = (names, counts, days) => {
+  if (names.length && counts.length) {
+    const calendar = setCalendar(names, counts, days);
+    let result = [];
+
+    switch (days) {
+      case YEAR: {
+        result = reduceByYear(days, calendar);
+        break;
+      }
+      case QUARTER: {
+        result = reduceByMonths(days, calendar, WEEK);
+        break;
+      }
+      case MONTH: {
+        result = reduceByMonths(days, calendar, THREE_DAYS);
+        break;
+      }
+      default: {
+        return { labels: names, count: counts };
+      }
+    }
+
+    return {
+      labels: result.map(el => el.range),
+      count: result.map(el => el.counts),
+    };
+  } else {
+    return { labels: [], count: [] };
+  }
 };
 
 module.exports = {
-  reduceByMonths,
+  reduceByDaysCount,
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
