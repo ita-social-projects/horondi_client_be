@@ -70,17 +70,17 @@ class PaymentService {
       order_id: orderId,
     };
 
-    const res = await fondy
+    const result = await fondy
       .Status(req)
       .then(res => res)
       .catch(error => error);
 
     return {
-      orderId: res.order_id,
-      orderStatus: res.order_status,
-      orderTime: res.order_time,
-      amount: res.amount,
-      currency: res.currency,
+      orderId: result.order_id,
+      orderStatus: result.order_status,
+      orderTime: result.order_time,
+      amount: result.amount,
+      currency: result.currency,
     };
   }
 }
