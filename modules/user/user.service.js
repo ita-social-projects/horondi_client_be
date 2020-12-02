@@ -396,7 +396,6 @@ class UserService {
     if (staySignedIn) {
       refreshToken = generateRefreshToken(user);
     }
-
     return {
       ...user._doc,
       _id: user._id,
