@@ -2,7 +2,6 @@ const axios = require('axios');
 const CloudIpsp = require('cloudipsp-node-js-sdk');
 const crypto = require('crypto');
 const {
-  // CRYPTO,
   PAYMENT_MERCHANT_ID,
   PAYMENT_SECRET,
 } = require('../../dotenvValidator');
