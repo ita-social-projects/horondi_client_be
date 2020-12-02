@@ -10,12 +10,13 @@ const { getObjectId } = require('mongo-seeding');
 
 const servedUsersNumber = 1000;
 let orders = [];
+let orderId =' ';
 const usersNumber = users.length;
 const productsNumber = products.length;
 let successfulPurchases = [];
 let placedOrders = [];
 
-for (let i = 0; i < servedUsersNumber; i++) {
+for (let i = 0; i < servedUsersNumber; i++) {  
     const numberOfOrders = Math.floor((Math.random() * (3 - 1) + 1));
     if (i < usersNumber) {
         for (let m = 0; m < numberOfOrders; m++) {
@@ -50,6 +51,7 @@ function mapOrderOfUser(i, m, userStatus) {
             phoneNumber: generatePhoneNumber(),
         };
         address = (byCourier) ? generateAddress('private') : generateAddress('organization');
+        
     };
     
     const sentOn = addDays(dateOfCreation, Math.floor((Math.random() * (5 - 1) + 1)));
@@ -60,11 +62,13 @@ function mapOrderOfUser(i, m, userStatus) {
 
     let items = [];
     for (let k = 0; k < numberOfItems; k++) {
+
         items.push(mapOrderItem(i, dateOfCreation, orderStatus, userStatus));
     }
 
     const order = {
         id: getObjectId('order' + i + '_' + m),
+        orderId:orderId,
         status: orderStatus,
         user: user,
         dateOfCreation: dateOfCreation,
@@ -115,6 +119,17 @@ function mapOrderOfUser(i, m, userStatus) {
 }
 
 function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
+    if (digits_count(i)==1){
+        orderId ="00000";
+    }
+    else if (digits_count(i)==2){
+        orderId ="0000";
+    }
+    else if (digits_count(i)==3){
+        orderId ="000";
+    }
+    orderId+=i;
+
     const productCount = Math.floor((Math.random() * productsNumber));
     const product = products[productCount];
     const option = product.options[Math.floor((Math.random() * product.options.length))];
@@ -160,6 +175,17 @@ function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
         quantity: 1,
     }
 };
+function digits_count(n) {
+    var count = 0;
+    if (n >= 1) ++count;
+  
+    while (n / 10 >= 1) {
+      n /= 10;
+      ++count;
+    }
+  
+    return count;
+  };
 
 module.exports = {
     orders,

@@ -6,7 +6,7 @@ const { Seeder } = require('mongo-seeding');
 //   database: {
 //     host: '127.0.0.1',
 //     port: 27017,
-//     name: 'horondi-2',
+//     name: 'horondi-25',
 //     username: 'root',
 //     password: 'root',
 //     options: {
