@@ -20,8 +20,8 @@ const { Seeder } = require('mongo-seeding');
 // };
 
 const config = {
-  database: '',
-  dropDatabase: false,
+  database: 'mongodb://127.0.0.1:27017/mydatabase',
+  dropDatabase: true,
 };
 
 const seeder = new Seeder(config);

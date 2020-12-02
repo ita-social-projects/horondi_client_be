@@ -13,7 +13,6 @@ const orderSchema = new mongoose.Schema({
   user: {
     firstName: String,
     lastName: String,
-    patronymicName: String,
     email: String,
     phoneNumber: Number,
   },

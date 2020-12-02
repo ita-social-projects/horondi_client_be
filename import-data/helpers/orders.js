@@ -37,7 +37,6 @@ function mapOrderOfUser(i, m, userStatus) {
         user = {
             firstName: users[i].firstName,
             lastName: users[i].lastName,
-            patronymicName: 'Іванович',
             email: users[i].email,
             phoneNumber: users[i].phoneNumber,
         };
@@ -47,7 +46,6 @@ function mapOrderOfUser(i, m, userStatus) {
         user = {
             firstName: generateFirstName(),
             lastName: generateLastName(),
-            patronymicName: 'Іванович',
             email: generateEmail(),
             phoneNumber: generatePhoneNumber(),
         };
