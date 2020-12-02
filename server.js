@@ -70,6 +70,7 @@ const server = new ApolloServer({
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+app.disable('x-powered-by');
 currencyWorker();
 
 server.applyMiddleware({ app });

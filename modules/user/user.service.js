@@ -26,6 +26,7 @@ const {
   CONFIRMATION_SECRET,
   MAIL_USER,
   NODE_ENV,
+  REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
 const {
   removeDaysFromData,
@@ -33,6 +34,7 @@ const {
   changeDataFormat,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
+const { generateRefreshToken } = require('../../utils/token');
 
 const {
   USER_ALREADY_EXIST,
@@ -46,6 +48,8 @@ const {
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   ID_NOT_PROVIDED,
+  SESSION_TIMEOUT,
+  INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
 
 const { userDateFormat } = require('../../consts');
@@ -289,7 +293,9 @@ class UserService {
     };
   }
 
-  async loginUser({ email, password }) {
+  async loginUser({ email, password, staySignedIn }) {
+    let refreshToken;
+
     const { errors } = await validateLoginInput.validateAsync({
       email,
       password,
@@ -300,6 +306,7 @@ class UserService {
     }
 
     const user = await User.findOne({ email });
+
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
@@ -315,17 +322,45 @@ class UserService {
 
     const token = generateToken(user._id, user.email);
 
+    if (staySignedIn) {
+      refreshToken = generateRefreshToken(user);
+    }
+
     return {
       ...user._doc,
       _id: user._id,
+      refreshToken,
       token,
     };
   }
-  async googleUser(id_token) {
+
+  async regenerateAccessToken(refreshToken) {
+    let decoded;
+
+    try {
+      decoded = jwt.verify(refreshToken, SECRET);
+    } catch (err) {
+      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+    }
+
+    if (!decoded.isRefreshToken) {
+      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: 400 });
+    }
+
+    await this.getUserByFieldOrThrow('email', decoded.email);
+
+    const token = generateToken(decoded.userId, decoded.email);
+
+    return {
+      token,
+    };
+  }
+
+  async googleUser(idToken, staySignedIn) {
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
-      idToken: id_token,
-      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      idToken,
+      audience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
@@ -344,19 +379,28 @@ class UserService {
     }
     return this.loginGoogleUser({
       email: dataUser.email,
+      staySignedIn,
     });
   }
 
-  async loginGoogleUser({ email }) {
+  async loginGoogleUser({ email, staySignedIn }) {
+    let refreshToken;
+
     const user = await User.findOne({ email });
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
+
     const token = generateToken(user._id, user.email);
+
+    if (staySignedIn) {
+      refreshToken = generateRefreshToken(user);
+    }
     return {
       ...user._doc,
       _id: user._id,
       token,
+      refreshToken,
     };
   }
 
@@ -402,7 +446,7 @@ class UserService {
     });
     const savedUser = await user.save();
 
-    const token = await generateToken(savedUser._id, savedUser.email, {
+    const token = generateToken(savedUser._id, savedUser.email, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
@@ -432,7 +476,7 @@ class UserService {
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const token = await generateToken(user._id, user.email, {
+    const token = generateToken(user._id, user.email, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
@@ -473,7 +517,7 @@ class UserService {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
 
-    const token = await generateToken(user._id, user.email, {
+    const token = generateToken(user._id, user.email, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
@@ -555,10 +599,7 @@ class UserService {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = await generateToken(
-      savedUser._id,
-      savedUser.email
-    );
+    const invitationalToken = generateToken(savedUser._id, savedUser.email);
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
