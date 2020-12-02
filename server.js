@@ -69,12 +69,12 @@ const server = new ApolloServer({
 
 const PORT = process.env.PORT || 5000;
 
-const expressApp = express();
+const app1 = express();
 currencyWorker();
 
-server.applyMiddleware({ app: expressApp });
+server.applyMiddleware({ app: app1 });
 
-expressApp.listen(PORT, () => {
+app1.listen(PORT, () => {
   console.log(
     'apollo server started, port',
     PORT,
