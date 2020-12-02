@@ -94,6 +94,7 @@ const SCHEMA_NAMES = {
   header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
+  token: 'Token',
 };
 const resolvers = {
   Query: {
@@ -146,7 +147,6 @@ const resolvers = {
 
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
-    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
     comments: parent =>
       commentsService.getAllCommentsByProduct({ productId: parent._id }),
   },
@@ -216,6 +216,14 @@ const resolvers = {
     ...headerMutation,
 
     ...homePageSlideMutation,
+  },
+  TokenResult: {
+    __resolveType: obj => {
+      if (obj.token || obj.accessToken || obj.refreshToken) {
+        return SCHEMA_NAMES.token;
+      }
+      return 'Error';
+    },
   },
   CategoryResult: {
     __resolveType: obj => {

@@ -6,7 +6,8 @@ require('dotenv').config({
 const dotenvVariables = [
   'MONGO_URL',
   'SECRET',
-  'EXPIRES_IN',
+  'TOKEN_EXPIRES_IN',
+  'REFRESH_TOKEN_EXPIRES_IN',
   'BASE_URI',
   'TEST_BASE_URI',
   'KEY_VAULTS_URI',
@@ -42,7 +43,8 @@ function dotenvValidator(processEnv) {
       .uri()
       .required(),
     SECRET: joi.string().required(),
-    EXPIRES_IN: joi.string().required(),
+    TOKEN_EXPIRES_IN: joi.string().required(),
+    REFRESH_TOKEN_EXPIRES_IN: joi.string().required(),
     BASE_URI: joi
       .string()
       .uri()
