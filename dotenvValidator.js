@@ -6,6 +6,7 @@ require('dotenv').config({
 const dotenvVariables = [
   'MONGO_URL',
   'SECRET',
+
   'TOKEN_EXPIRES_IN',
   'REFRESH_TOKEN_EXPIRES_IN',
   'BASE_URI',
