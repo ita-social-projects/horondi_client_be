@@ -1,4 +1,3 @@
-const { generateRefreshToken } = require('../../utils/token');
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -27,6 +26,7 @@ const {
   CONFIRMATION_SECRET,
   MAIL_USER,
   NODE_ENV,
+  REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
 const {
   removeDaysFromData,
@@ -34,6 +34,7 @@ const {
   changeDataFormat,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
+const { generateRefreshToken } = require('../../utils/token');
 
 const {
   USER_ALREADY_EXIST,
@@ -358,8 +359,8 @@ class UserService {
   async googleUser(idToken, staySignedIn) {
     const client = new OAuth2Client();
     const ticket = await client.verifyIdToken({
-      idToken: idToken,
-      audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      idToken,
+      audience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
@@ -386,7 +387,6 @@ class UserService {
     let refreshToken;
 
     const user = await User.findOne({ email });
-
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
@@ -396,7 +396,6 @@ class UserService {
     if (staySignedIn) {
       refreshToken = generateRefreshToken(user);
     }
-
     return {
       ...user._doc,
       _id: user._id,
