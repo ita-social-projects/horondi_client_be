@@ -36,7 +36,7 @@ class CategoryService {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
-    if (!!upload) {
+    if (!upload) {
       return await Category.findByIdAndUpdate(id, category, { new: true });
     }
     const uploadResult = await uploadFiles([upload]);
@@ -44,7 +44,6 @@ class CategoryService {
     const uploadResults = await uploadResult[0];
 
     const images = uploadResults.fileNames;
-
     if (!images) {
       return await Category.findByIdAndUpdate(id, category);
     }
@@ -63,54 +62,32 @@ class CategoryService {
     );
   }
 
-  async updateCategory(id, category, upload) {
-    await this.getCategoryById(id);
-    if (await this.checkCategoryExist(category, id)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
-    }
-    if (upload) {
-      await deleteFiles(
-        Object.values(category.images).filter(
-          item => typeof item === 'string' && item
-        )
-      );
-      const uploadResult = await uploadFiles([upload]);
-      const imageResults = await uploadResult[0];
-      category.images = imageResults.fileNames;
-    }
-    return await Category.findByIdAndUpdate(id, category, {
-      new: true,
-    });
-  }
-
   async getCategoriesForBurgerMenu() {
     const categories = await this.getAllCategories();
 
-    const data = categories
-      .filter(category => category.isMain)
-      .map(async category => {
-        const products = await Product.find({ category: category._id });
-        const uniqueModels = [];
-        const models = products
-          .map(product => ({
-            name: [...product.model],
-            _id: product._id,
-          }))
-          .filter(({ name }) => {
-            if (!uniqueModels.includes(name[0].value)) {
-              uniqueModels.push(name[0].value);
-              return true;
-            }
-            return false;
-          });
-        return {
-          category: {
-            name: [...category.name],
-            _id: category._id,
-          },
-          models,
-        };
-      });
+    const data = categories.map(async category => {
+      const products = await Product.find({ category: category._id });
+      const uniqueModels = [];
+      const models = products
+        .map(product => ({
+          name: [...product.model],
+          _id: product._id,
+        }))
+        .filter(({ name }) => {
+          if (!uniqueModels.includes(name[0].value)) {
+            uniqueModels.push(name[0].value);
+            return true;
+          }
+          return false;
+        });
+      return {
+        category: {
+          name: [...category.name],
+          _id: category._id,
+        },
+        models,
+      };
+    });
 
     return data;
   }
