@@ -30,6 +30,7 @@ const QUARTER = 90;
 const MONTH = 30;
 const WEEK = 7;
 const THREE_DAYS = 3;
+const TWO_WEEKS = 14;
 
 module.exports = {
   roles,
@@ -46,4 +47,5 @@ module.exports = {
   MONTH,
   WEEK,
   THREE_DAYS,
+  TWO_WEEKS,
 };

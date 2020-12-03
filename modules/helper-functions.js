@@ -6,6 +6,7 @@ const {
   MONTH,
   WEEK,
   THREE_DAYS,
+  TWO_WEEKS,
 } = require('../consts/');
 
 const removeDaysFromData = (days, currentDate) =>
@@ -22,9 +23,9 @@ const countItemsOccurency = items =>
 
 const setCalendar = (names, counts, days) => {
   const calendar = [];
+  const today = Date.now();
 
-  for (let i = days; i >= 0; i--) {
-    const today = Date.now();
+  for (let i = days - 1; i >= 0; i--) {
     const chartDate = changeDataFormat(
       removeDaysFromData(i, today),
       userDateFormat
@@ -111,6 +112,11 @@ const reduceByDaysCount = (names, counts, days) => {
       }
       case MONTH: {
         result = reduceByMonths(days, calendar, THREE_DAYS);
+        break;
+      }
+      case TWO_WEEKS:
+      case WEEK: {
+        result = setCalendar(names, counts, days);
         break;
       }
       default: {
