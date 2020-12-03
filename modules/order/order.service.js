@@ -11,6 +11,7 @@ const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
+  reduceByDaysCount,
 } = require('../helper-functions');
 
 const { userDateFormat } = require('../../consts');
@@ -285,7 +286,9 @@ class OrdersService {
       (orderTotal, orderCount) => orderTotal + orderCount,
       0
     );
-    return { labels: names, counts, total };
+    const { labels, count } = reduceByDaysCount(names, counts, days);
+
+    return { labels, counts: count, total };
   }
 
   async getOrdersStatistic(days) {

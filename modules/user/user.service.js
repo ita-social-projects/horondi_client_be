@@ -32,6 +32,7 @@ const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
+  reduceByDaysCount,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
 const { generateRefreshToken } = require('../../utils/token');
@@ -188,15 +189,15 @@ class UserService {
     );
     const userOccurency = countItemsOccurency(formatedData);
     const counts = Object.values(userOccurency);
+    const names = Object.keys(userOccurency);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
       0
     );
-    return {
-      labels: Object.keys(userOccurency),
-      counts,
-      total,
-    };
+
+    const { labels, count } = reduceByDaysCount(names, counts, filter.days);
+
+    return { labels, counts: count, total };
   }
 
   async getUser(id) {

@@ -60,6 +60,7 @@ const {
 } = require('./modules/email-chat/email-question.graphql');
 const {
   paymentType,
+  paymentStatus,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
 const {
@@ -92,6 +93,7 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${paymentStatus}
   ${homePageImagesType}
   ${headerType}
   ${homePageSlideType}
@@ -370,6 +372,7 @@ const typeDefs = gql`
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
     getUkrPoshtaRegion(region: String): UkrPoshtaRegion
     getPaymentCheckout(data: PaymentInput): Payment
+    getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: FilterInput
