@@ -44,14 +44,10 @@ class PaymentService {
       amount,
     };
 
-    console.log(requestData);
-
     const result = await fondy
       .Checkout(requestData)
       .then(res => res)
       .catch(error => error);
-
-    console.log(result);
 
     return {
       paymentId: result.payment_id,

@@ -367,7 +367,7 @@ const typeDefs = gql`
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
     getUkrPoshtaRegion(region: String): UkrPoshtaRegion
     getPaymentCheckout(data: PaymentInput): Payment
-    getPaymentStatus(orderId: String): PaymentStatus
+    getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: FilterInput
