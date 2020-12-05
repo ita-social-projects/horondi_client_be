@@ -12,6 +12,7 @@ const {
   adminRegisterInput,
   UserForStatisticsInput,
   paginatedUsersType,
+  tokenType,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -59,6 +60,7 @@ const {
 } = require('./modules/email-chat/email-question.graphql');
 const {
   paymentType,
+  paymentStatus,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
 const {
@@ -91,9 +93,12 @@ const typeDefs = gql`
   ${emailQuestionType}
   ${deliveryType}
   ${paymentType}
+  ${paymentStatus}
   ${homePageImagesType}
   ${headerType}
   ${homePageSlideType}
+  ${tokenType}
+  
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -303,6 +308,8 @@ const typeDefs = gql`
   union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
+  union TokenResult = Token | Error
+  
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -365,6 +372,7 @@ const typeDefs = gql`
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
     getUkrPoshtaRegion(region: String): UkrPoshtaRegion
     getPaymentCheckout(data: PaymentInput): Payment
+    getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: FilterInput
@@ -613,7 +621,8 @@ const typeDefs = gql`
       addProductToCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
       removeProductFromCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
       changeCartProductQuantity(id: ID!, key: String!, product: CartProductInput!): CartProduct!
-       googleUser(id_token: String!): User
+       googleUser(idToken: String!, staySignedIn: Boolean): User
+    regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
     deleteProduct(id: ID!): ProductResult

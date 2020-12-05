@@ -1,16 +1,17 @@
 const { makeExecutableSchema } = require('apollo-server-express');
 const { applyMiddleware } = require('graphql-middleware');
-const connectDB = require('./config/db');
-const typeDefs = require('./typeDefs');
-const resolvers = require('./resolvers');
-const permissions = require('./permissions');
-const errorOutputPlugin = require('./plugins/error-output.plugin');
-const formatError = require('./utils/format-error');
-const verifyUser = require('./utils/verify-user');
-const userService = require('./modules/user/user.service');
-const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
+const connectDB = require('../config/db');
+const typeDefs = require('../typeDefs');
+const resolvers = require('../resolvers');
+const permissions = require('../permissions');
+const errorOutputPlugin = require('../plugins/error-output.plugin');
+const formatError = require('../utils/format-error');
+const verifyUser = require('../utils/verify-user');
+const userService = require('../modules/user/user.service');
+const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
 
 connectDB();
+
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions

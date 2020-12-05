@@ -18,6 +18,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test-server": "cross-env NODE_ENV=test nodemon server.js",
+    "test-server-db": "npm run docker-db-stop && npm run docker-db-start && npm run test-server",
     "test": "jest --coverage --detectOpenHandles --verbose --forceExit",
     "generate": "graphql-codegen",
     "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
