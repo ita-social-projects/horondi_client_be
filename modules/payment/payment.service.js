@@ -1,14 +1,15 @@
-const axios = require('axios');
 const CloudIpsp = require('cloudipsp-node-js-sdk');
 const crypto = require('crypto');
+
 const {
-  CRYPTO,
   PAYMENT_MERCHANT_ID,
   PAYMENT_SECRET,
 } = require('../../dotenvValidator');
+
 class PaymentService {
   genSignature(data, secret) {
     const ordered = {};
+
     Object.keys(data)
       .sort()
       .forEach(function(key) {
@@ -21,8 +22,9 @@ class PaymentService {
         }
       });
     const signString = secret + '|' + Object.values(ordered).join('|');
+
     return crypto
-      .createHash(CRYPTO)
+      .createHash('sha1')
       .update(signString)
       .digest('hex');
   }
@@ -34,6 +36,7 @@ class PaymentService {
       merchantId: PAYMENT_MERCHANT_ID,
       secretKey: PAYMENT_SECRET,
     });
+
     const requestData = {
       order_id: orderId,
       order_desc: orderDesc,
@@ -53,29 +56,27 @@ class PaymentService {
     };
   }
 
-  async getPaymentRefund({ orderId, currency, amount }) {
-    const data = {
-      orderId,
-      currency,
-      amount,
+  async getPaymentStatus(orderId) {
+    const fondy = new CloudIpsp({
       merchantId: PAYMENT_MERCHANT_ID,
-    };
-    const sig = this.genSignature(data, PAYMENT_SECRET);
-
-    const res = await axios.post(PAYMENT_API_LINK, {
-      request: {
-        order_id: orderId,
-        currency,
-        amount,
-        merchant_id: PAYMENT_MERCHANT_ID,
-        signature: sig,
-      },
+      secretKey: PAYMENT_SECRET,
     });
 
+    const req = {
+      order_id: orderId,
+    };
+
+    const result = await fondy
+      .Status(req)
+      .then(res => res)
+      .catch(error => error);
+
     return {
-      paymentId: res.data.response.payment_id,
-      responseStatus: res.data.response.response_status,
-      checkoutUrl: res.data.response.checkout_url,
+      orderId: result.order_id,
+      orderStatus: result.order_status,
+      orderTime: result.order_time,
+      amount: result.amount,
+      currency: result.currency,
     };
   }
 }

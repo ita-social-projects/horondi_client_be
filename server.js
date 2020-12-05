@@ -15,8 +15,18 @@ const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { dotenvVariables } = require('./dotenvValidator');
+const {
+  SUPER_ADMIN_EMAIL,
+  SUPER_ADMIN_PASSWORD,
+  NODE_ENV,
+} = require('./dotenvValidator');
+const { registerAdmin } = require('./tests/helper-functions');
 
 connectDB();
+
+if (NODE_ENV === 'test') {
+  registerAdmin(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
+}
 
 dotenvVariables.forEach(key => {
   logger.log('info', JSON.stringify({ key, value: process.env[key] }));
@@ -60,6 +70,7 @@ const server = new ApolloServer({
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+app.disable('x-powered-by');
 currencyWorker();
 
 server.applyMiddleware({ app });
