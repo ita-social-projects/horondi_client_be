@@ -36,7 +36,7 @@ class CategoryService {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
-    if (!upload) {
+    if (!upload || !Object.keys(upload).length) {
       return await Category.findByIdAndUpdate(id, category, { new: true });
     }
     const uploadResult = await uploadFiles([upload]);
@@ -124,8 +124,20 @@ class CategoryService {
     });
   }
 
-  async deleteCategory({ id }) {
-    const category = await Category.findByIdAndDelete(id).lean();
+  async deleteCategory({ deleteId, switchId }) {
+    const category = await Category.findByIdAndDelete(deleteId).lean();
+    const switchCategory = await Category.findById(switchId);
+
+    const filter = {
+      category: deleteId,
+    };
+
+    const updateSettings = {
+      $set: { category: switchCategory._id },
+    };
+
+    await this.cascadeUpdateRelatives(filter, updateSettings);
+
     const images = Object.values(category.images).filter(
       item => typeof item === 'string' && item
     );

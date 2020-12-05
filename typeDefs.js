@@ -580,7 +580,8 @@ const typeDefs = gql`
       upload: Upload
     ): CategoryResult
     deleteCategory(
-        id: ID!
+        deleteId: ID!
+        switchId: ID!
     ): CategoryResult
     updateCategory(
       id: ID!
