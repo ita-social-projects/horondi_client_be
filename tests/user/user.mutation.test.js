@@ -431,11 +431,11 @@ describe('User`s mutation restictions tests', () => {
   let userToken;
 
   beforeAll(async () => {
-    firstName = user.firstName;
-    lastName = user.lastName;
-    email = user.email;
-    password = user.pass;
-    language = user.language;
+    const firstName = user.firstName;
+    const lastName = user.lastName;
+    const email = user.email;
+    const password = user.pass;
+    const language = user.language;
 
     const res = await operations.mutate({
       mutation: gql`
