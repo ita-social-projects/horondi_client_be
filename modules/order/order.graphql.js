@@ -1,20 +1,20 @@
 const orderTypes = `
 type Order {
   _id: ID!
-  status: Status,
-  user: OrderUser
-  dateOfCreation: String
+  status: Status!
+  user: OrderUser!
+  dateOfCreation: String!
   lastUpdatedDate: String
   adminComment: String
   userComment: String
   cancellationReason:  String
   delivery: Delivery
   address: Address
-  items: [OrderItems]
-  totalItemsPrice: [CurrencySet]
-  totalPriceToPay: [CurrencySet]
-  isPaid: Boolean
-  paymentMethod: PaymentEnum
+  items: [OrderItems]!
+  totalItemsPrice: [CurrencySet]!
+  totalPriceToPay: [CurrencySet]!
+  isPaid: Boolean!
+  paymentMethod: PaymentEnum!
 }
 enum PaymentEnum {
   CARD
@@ -30,17 +30,8 @@ enum Status {
   DELIVERED
 }
 type OrderItems {
-  category: [Language]
-  subcategory: [Language]
-  model: [Language]
-  name: [Language]
-  colors: [[Language]]
-  pattern: [Language]
-  closure: [Language]
-  closureColor: String
+  productId: String!
   size: Size,
-  bottomMaterial: [Language]
-  bottomColor: [Language]
   additions: [[Language]]
   actualPrice: [CurrencySet]
   quantity: Int
@@ -103,17 +94,8 @@ input DeliveryInput {
 }
 
 input OrderItemsInput {
-  category: [LanguageInput]
-  subcategory: [LanguageInput]
-  model: [LanguageInput]
-  name: [LanguageInput]
-  colors: [[LanguageInput]]
-  pattern: [LanguageInput]
-  closure: [LanguageInput]
-  closureColor: String
+  productId: String!
   size: SizeInput,
-  bottomMaterial: [LanguageInput]
-  bottomColor: [LanguageInput]
   additions: [[LanguageInput]]
   actualPrice: [CurrencySetInput]
   quantity: Int

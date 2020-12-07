@@ -53,20 +53,13 @@ const orderSchema = new mongoose.Schema({
   address: Address,
   items: [
     {
-      category: [Language],
-      subcategory: [Language],
-      model: [Language],
-      name: [Language],
-      colors: [[Language]],
+      id: String,
+      color: [Language],
       pattern: [Language],
       closure: [Language],
       closureColor: String,
       size: {
-        heightInCm: Number,
-        widthInCm: Number,
-        depthInCm: Number,
-        volumeInLiters: Number,
-        weightInKg: Number,
+        id: String,
       },
       bottomMaterial: [Language],
       bottomColor: [Language],
