@@ -11,50 +11,13 @@ const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
+  calculateTotalItemsPrice,
+  calculateTotalPriceToPay,
 } = require('../helper-functions');
 
 const { userDateFormat } = require('../../consts');
 
 class OrdersService {
-  calculateTotalItemsPrice(items) {
-    let USD = 0;
-    let UAN = 0;
-
-    for (const item of items) {
-      const { quantity, actualPrice } = item;
-
-      UAN +=
-        actualPrice[0].currency === 'UAN'
-          ? actualPrice[0].value * quantity
-          : actualPrice[1].value * quantity;
-      USD +=
-        actualPrice[0].currency === 'USD'
-          ? actualPrice[0].value * quantity
-          : actualPrice[1].value * quantity;
-    }
-
-    const result = [
-      { value: UAN, currency: 'UAN' },
-      { value: USD, currency: 'USD' },
-    ];
-
-    console.log(result);
-    return result;
-  }
-
-  calculateTotalPriceToPay({ delivery }, totalItemsPrice) {
-    return [
-      {
-        currency: 'UAH',
-        value: totalItemsPrice[0].value + delivery.cost[0].value,
-      },
-      {
-        currency: 'USD',
-        value: totalItemsPrice[1].value + delivery.cost[1].value,
-      },
-    ];
-  }
-
   async getAllOrders({ skip, limit, filter = {} }) {
     const { orderStatus } = filter;
 
@@ -93,7 +56,7 @@ class OrdersService {
     }
 
     if (order.items || order.delivery || order.address) {
-      const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
+      const totalItemsPrice = calculateTotalItemsPrice(order.items);
 
       if (
         orderToUpdate.delivery.sentBy !== 'Nova Poshta' &&
@@ -143,10 +106,7 @@ class OrdersService {
         };
       }
 
-      const totalPriceToPay = this.calculateTotalPriceToPay(
-        order,
-        totalItemsPrice
-      );
+      const totalPriceToPay = calculateTotalPriceToPay(order, totalItemsPrice);
 
       order = {
         ...order,
@@ -166,64 +126,22 @@ class OrdersService {
 
   async addOrder(data) {
     const { items } = data;
-    const totalItemsPrice = this.calculateTotalItemsPrice(items);
+    const totalItemsPrice = calculateTotalItemsPrice(items);
+    const status = 'CREATED';
+    const dateOfCreation = Date.now();
+    const lastUpdatedDate = Date.now();
+    const isPaid = false;
 
-    // if (data.delivery.sentBy === 'Nova Poshta') {
-    //   const weight = data.items.reduce(
-    //     (prev, currentItem) =>
-    //       prev + currentItem.size.weightInKg * currentItem.quantity,
-    //     0
-    //   );
-    //   const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
-    //     data.address.city
-    //   );
-    //
-    //   console.log(cityRecipient)
-    //
-    //   const deliveryPrice = 0;
-    //   const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
-    //     cityRecipient: cityRecipient[0].ref,
-    //     weight,
-    //     serviceType: data.delivery.byCourier
-    //       ? 'WarehouseDoors'
-    //       : 'WarehouseWarehouse',
-    //     cost: totalItemsPrice[0].value / 100,
-    //   });
-    //
-    //   const currency = await Currency.findOne();
-    //
-    //   const cost = [
-    //     {
-    //       currency: 'UAH',
-    //       value: deliveryPrice[0].cost * 100,
-    //     },
-    //     {
-    //       currency: 'USD',
-    //       value: Math.round(
-    //         (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
-    //           100
-    //       ),
-    //     },
-    //   ];
-    //
-    //   data = {
-    //     ...data,
-    //     delivery: {
-    //       ...data.delivery,
-    //       cost,
-    //     },
-    //   };
-    // }
-
-    // const totalPriceToPay = this.calculateTotalPriceToPay(
-    //   data,
-    //   totalItemsPrice
-    // );
+    const totalPriceToPay = calculateTotalPriceToPay(data, totalItemsPrice);
 
     const order = {
       ...data,
+      status,
       totalItemsPrice,
-      lastUpdatedDate: Date.now(),
+      totalPriceToPay,
+      dateOfCreation,
+      isPaid,
+      lastUpdatedDate,
     };
 
     console.log(order);
