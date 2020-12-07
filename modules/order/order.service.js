@@ -17,32 +17,29 @@ const { userDateFormat } = require('../../consts');
 
 class OrdersService {
   calculateTotalItemsPrice(items) {
-    return items.reduce(
-      (previousPrice, currentItem) => {
-        const { actualPrice, quantity } = currentItem;
+    let USD = 0;
+    let UAN = 0;
 
-        return [
-          {
-            currency: 'UAH',
-            value: actualPrice[0].value * quantity + previousPrice[0].value,
-          },
-          {
-            currency: 'USD',
-            value: actualPrice[1].value * quantity + previousPrice[1].value,
-          },
-        ];
-      },
-      [
-        {
-          currency: 'UAH',
-          value: 0,
-        },
-        {
-          currency: 'USD',
-          value: 0,
-        },
-      ]
-    );
+    for (const item of items) {
+      const { quantity, actualPrice } = item;
+
+      UAN +=
+        actualPrice[0].currency === 'UAN'
+          ? actualPrice[0].value * quantity
+          : actualPrice[1].value * quantity;
+      USD +=
+        actualPrice[0].currency === 'USD'
+          ? actualPrice[0].value * quantity
+          : actualPrice[1].value * quantity;
+    }
+
+    const result = [
+      { value: UAN, currency: 'UAN' },
+      { value: USD, currency: 'USD' },
+    ];
+
+    console.log(result);
+    return result;
   }
 
   calculateTotalPriceToPay({ delivery }, totalItemsPrice) {
@@ -171,61 +168,66 @@ class OrdersService {
     const { items } = data;
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
-    if (data.delivery.sentBy === 'Nova Poshta') {
-      const weight = data.items.reduce(
-        (prev, currentItem) =>
-          prev + currentItem.size.weightInKg * currentItem.quantity,
-        0
-      );
-      const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
-        data.address.city
-      );
+    // if (data.delivery.sentBy === 'Nova Poshta') {
+    //   const weight = data.items.reduce(
+    //     (prev, currentItem) =>
+    //       prev + currentItem.size.weightInKg * currentItem.quantity,
+    //     0
+    //   );
+    //   const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
+    //     data.address.city
+    //   );
+    //
+    //   console.log(cityRecipient)
+    //
+    //   const deliveryPrice = 0;
+    //   const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
+    //     cityRecipient: cityRecipient[0].ref,
+    //     weight,
+    //     serviceType: data.delivery.byCourier
+    //       ? 'WarehouseDoors'
+    //       : 'WarehouseWarehouse',
+    //     cost: totalItemsPrice[0].value / 100,
+    //   });
+    //
+    //   const currency = await Currency.findOne();
+    //
+    //   const cost = [
+    //     {
+    //       currency: 'UAH',
+    //       value: deliveryPrice[0].cost * 100,
+    //     },
+    //     {
+    //       currency: 'USD',
+    //       value: Math.round(
+    //         (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
+    //           100
+    //       ),
+    //     },
+    //   ];
+    //
+    //   data = {
+    //     ...data,
+    //     delivery: {
+    //       ...data.delivery,
+    //       cost,
+    //     },
+    //   };
+    // }
 
-      const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
-        cityRecipient: cityRecipient[0].ref,
-        weight,
-        serviceType: data.delivery.byCourier
-          ? 'WarehouseDoors'
-          : 'WarehouseWarehouse',
-        cost: totalItemsPrice[0].value / 100,
-      });
-
-      const currency = await Currency.findOne();
-
-      const cost = [
-        {
-          currency: 'UAH',
-          value: deliveryPrice[0].cost * 100,
-        },
-        {
-          currency: 'USD',
-          value: Math.round(
-            (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
-              100
-          ),
-        },
-      ];
-
-      data = {
-        ...data,
-        delivery: {
-          ...data.delivery,
-          cost,
-        },
-      };
-    }
-
-    const totalPriceToPay = this.calculateTotalPriceToPay(
-      data,
-      totalItemsPrice
-    );
+    // const totalPriceToPay = this.calculateTotalPriceToPay(
+    //   data,
+    //   totalItemsPrice
+    // );
 
     const order = {
       ...data,
       totalItemsPrice,
-      totalPriceToPay,
       lastUpdatedDate: Date.now(),
     };
+
+    console.log(order);
+
     return new Order(order).save();
   }
 
