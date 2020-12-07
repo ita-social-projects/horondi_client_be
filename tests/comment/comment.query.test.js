@@ -121,7 +121,6 @@ describe('Comment queries', () => {
             getAllCommentsByUser(userEmail: $userEmail) {
               ... on Comment {
                 text
-
                 product {
                   _id
                 }
@@ -220,7 +219,6 @@ describe('Comment queries', () => {
           getAllCommentsByUser(userEmail: $userEmail) {
             ... on Comment {
               text
-
               product {
                 _id
               }
