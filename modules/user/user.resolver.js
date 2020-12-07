@@ -20,7 +20,8 @@ const userQuery = {
 const userMutation = {
   registerUser: (parent, args) =>
     userService.registerUser(args.user, args.language),
-  googleUser: (parent, args) => userService.googleUser(args.id_token),
+  googleUser: (parent, args) =>
+    userService.googleUser(args.idToken, args.staySignedIn),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
   loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
   deleteUser: async (parent, args) => {
@@ -35,6 +36,16 @@ const userMutation = {
   },
   updateUserById: (parent, args, context) =>
     userService.updateUserById(args.user, context.user, args.upload),
+  regenerateAccessToken: async (parent, args) => {
+    try {
+      return await userService.regenerateAccessToken(args.refreshToken);
+    } catch (err) {
+      return {
+        statusCode: err.statusCode,
+        message: err.message,
+      };
+    }
+  },
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
   recoverUser: (parent, args) =>
     userService.recoverUser(args.email, args.language),
@@ -52,9 +63,12 @@ const userMutation = {
     userService.resetPassword(args.password, args.token),
   checkIfTokenIsValid: (parent, args) =>
     userService.checkIfTokenIsValid(args.token),
-  sendEmailConfirmation: (parent, args) => {
+  sendEmailConfirmation: async (parent, args) => {
     try {
-      return userService.sendConfirmationLetter(args.email, args.language);
+      return await userService.sendConfirmationLetter(
+        args.email,
+        args.language
+      );
     } catch (e) {
       return {
         statusCode: 400,

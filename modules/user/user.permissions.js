@@ -18,6 +18,7 @@ const userPermissionsMutation = {
   deleteUser: hasRoles([SUPERADMIN]),
   updateUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   updateUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
+  regenerateAccessToken: allow,
   confirmUser: allow,
   confirmUserEmail: allow,
   recoverUser: allow,

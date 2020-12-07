@@ -29,10 +29,10 @@ const newModel = {
     { value: 'Test', lang: 'en' },
   ],
   images: {
-    large: 'large_new',
-    medium: 'medium_new',
     small: 'small_new',
     thumbnail: 'thumbnail_new',
+    large: 'large_new',
+    medium: 'medium_new',
   },
 };
 
