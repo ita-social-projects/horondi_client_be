@@ -55,9 +55,7 @@ const orderSchema = new mongoose.Schema({
   items: [
     {
       productId: String,
-      size: {
-        id: String,
-      },
+      size: String,
       bottomMaterial: [Language],
       additions: [[Language]],
       actualPrice: [CurrencySet],

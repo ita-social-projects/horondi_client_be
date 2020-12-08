@@ -10,6 +10,8 @@ const {
   TWO_WEEKS,
 } = require('../consts/');
 
+const { ORDER_ITEM_NOT_VALID } = require('../error-messages/orders.messages');
+
 const removeDaysFromData = (days, currentDate) =>
   currentDate - days * dayInMiliseconds;
 
@@ -140,7 +142,6 @@ function calculateTotalItemsPrice(items) {
 
   for (const item of items) {
     const { quantity, actualPrice } = item;
-
     UAN +=
       actualPrice[0].currency === 'UAN'
         ? actualPrice[0].value * quantity
@@ -157,55 +158,69 @@ function calculateTotalItemsPrice(items) {
   ];
 }
 
-async function calculateDeliveryPrice(data) {
-  if (data.delivery.sentBy === 'Nova Poshta') {
-    const weight = data.items.reduce(
-      (prev, currentItem) =>
-        prev + currentItem.size.weightInKg * currentItem.quantity,
-      0
-    );
-    const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
-      data.address.city
-    );
+function novaPoshtaDeliveryPrice(data) {
+  // need backend for sizes
+  // this method should return totalItemsPrice + nova poshta delivery price
+  // const weight = data.items.reduce(
+  //   (prev, currentItem) =>
+  //     prev + currentItem.size.weightInKg * currentItem.quantity,
+  //   0,
+  // );
+  // const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
+  //   data.address.city,
+  // );
+  //
+  // const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
+  //   cityRecipient: cityRecipient[0].ref,
+  //   weight,
+  //   serviceType: data.delivery.byCourier
+  //     ? 'WarehouseDoors'
+  //     : 'WarehouseWarehouse',
+  //   cost: totalItemsPrice[0].value / 100,
+  // });
+  //
+  // const currency = await Currency.findOne();
+  //
+  // return [
+  //   {
+  //     currency: 'UAH',
+  //     value: deliveryPrice[0].cost * 100,
+  //   },
+  //   {
+  //     currency: 'USD',
+  //     value: Math.round(
+  //       (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
+  //       100,
+  //     ),
+  //   },
+  // ];
+}
 
-    const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
-      cityRecipient: cityRecipient[0].ref,
-      weight,
-      serviceType: data.delivery.byCourier
-        ? 'WarehouseDoors'
-        : 'WarehouseWarehouse',
-      cost: totalItemsPrice[0].value / 100,
-    });
+function ukrPoshtaDeliveryPrice(data) {
+  // need backend for sizes
+  // this method should return totalItemsPrice + ukr poshta delivery price
+}
 
-    const currency = await Currency.findOne();
+function calculateTotalPriceToPay(data) {
+  switch (data.delivery.sentBy) {
+    case 'Nova Poshta':
+      return novaPoshtaDeliveryPrice();
 
-    return [
-      {
-        currency: 'UAH',
-        value: deliveryPrice[0].cost * 100,
-      },
-      {
-        currency: 'USD',
-        value: Math.round(
-          (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
-            100
-        ),
-      },
-    ];
+    case 'Ukr Poshta':
+      return ukrPoshtaDeliveryPrice();
+
+    default: {
+      return data.totalItemsPrice;
+    }
   }
 }
 
-function calculateTotalPriceToPay({ delivery }, totalItemsPrice) {
-  return [
-    {
-      currency: 'UAH',
-      value: totalItemsPrice[0].value + delivery.cost[0].value,
-    },
-    {
-      currency: 'USD',
-      value: totalItemsPrice[1].value + delivery.cost[1].value,
-    },
-  ];
+function validateOrderData(data) {
+  const { items } = data;
+  for (const item of items) {
+    if (item.productId || item.size || item.actualPrice || item.quantity)
+      throw new Error(ORDER_ITEM_NOT_VALID);
+  }
 }
 
 module.exports = {
@@ -214,6 +229,6 @@ module.exports = {
   changeDataFormat,
   countItemsOccurency,
   calculateTotalItemsPrice,
-  calculateDeliveryPrice,
   calculateTotalPriceToPay,
+  validateOrderData,
 };

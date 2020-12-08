@@ -32,7 +32,7 @@ enum Status {
 }
 type OrderItems {
   productId: String!
-  size: Size
+  size: String
   bottomMaterial: [Language]
   additions: [[Language]]
   actualPrice: [CurrencySet]
@@ -97,7 +97,7 @@ input DeliveryInput {
 
 input OrderItemsInput {
   productId: String!
-  size: SizeInput,
+  size: String,
   additions: [[LanguageInput]]
   actualPrice: [CurrencySetInput]
   quantity: Int

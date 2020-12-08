@@ -133,32 +133,32 @@ class OrdersService {
     const lastUpdatedDate = Date.now();
     const isPaid = false;
 
-    const totalPriceToPay = calculateTotalPriceToPay(data, totalItemsPrice);
-
     const order = {
       ...data,
       status,
       totalItemsPrice,
-      totalPriceToPay,
       dateOfCreation,
       isPaid,
       lastUpdatedDate,
     };
 
-    console.log(order);
+    const totalPriceToPay = calculateTotalPriceToPay(order);
 
-    return new Order(order).save();
+    const _order = {
+      ...order,
+      totalPriceToPay,
+    };
+
+    return new Order(_order).save();
   }
 
   async deleteOrder(id) {
-    if (!ObjectId.isValid(id)) {
-      throw new Error(ORDER_NOT_VALID);
-    }
+    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+
     const foundOrder = await Order.findByIdAndDelete(id);
-    if (foundOrder) {
-      return foundOrder;
-    }
-    throw new Error(ORDER_NOT_FOUND);
+
+    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+    return foundOrder;
   }
 
   async getUserOrders(user) {
