@@ -119,35 +119,18 @@ function mapOrderOfUser(i, m, userStatus) {
 }
 
 function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
-    if (digits_count(i)==1){
-        orderId ="00000";
-    }
-    else if (digits_count(i)==2){
-        orderId ="0000";
-    }
-    else if (digits_count(i)==3){
-        orderId ="000";
-    }
-    orderId+=i;
+    orderId = Math.floor(Math.random() * (100_000_000 - 1_000_000) + 1_000_000).toString();
 
     const productCount = Math.floor((Math.random() * productsNumber));
     const product = products[productCount];
     const option = product.options[Math.floor((Math.random() * product.options.length))];
 
-    const productId = product.id;
-    const categoryPick = categories.find(el => el.id.toHexString() == product.category);
-    const subcategoryPick = categories.find(el => el.id.toHexString() == product.subcategory);
-    const materialPick = (option.bottomMaterial == null) ? null : materials.find(el => el.id.toHexString() == option.bottomMaterial);
+    const productId = product.id;const materialPick = (option.bottomMaterial == null) ? null : materials.find(el => el.id.toHexString() == option.bottomMaterial);
     const sizePick = sizes.find(el => el.id.toHexString() == option.size);
 
     let actualPrice = product.basePrice[0].value + sizePick.additionalPrice[0].value;
     actualPrice = (materialPick == null) ? actualPrice : actualPrice + materialPick.additionalPrice[0].value;
     actualPrice = (option.additions.length === 0) ? actualPrice : actualPrice + option.additions[0].additionalPrice[0].value;
-
-    let colors = [];
-    for (let j = 0; j < product.colors.length; j++) {
-        colors.push(product.colors[j].name);
-    }
 
     if (userStatus === 'registered' && orderStatus === 'DELIVERED') {
         successfulPurchases.push([users[i].id, productCount, dateOfCreation]);
@@ -155,24 +138,13 @@ function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
 
     return {
         productId: productId,
-        size: sizePick,
+        size: sizePick.id,
         bottomMaterial: (materialPick == null) ? [] : materialPick.name,
         additions: (option.additions.length === 0) ? [] : [option.additions[0].name],
         actualPrice: mapToCurrencies(actualPrice),
         quantity: 1,
     }
-};
-function digits_count(n) {
-    var count = 0;
-    if (n >= 1) ++count;
-
-    while (n / 10 >= 1) {
-      n /= 10;
-      ++count;
-    }
-
-    return count;
-  };
+}
 
 module.exports = {
     orders,
