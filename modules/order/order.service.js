@@ -12,10 +12,13 @@ const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
-  calculateTotalItemsPrice,
-  calculateTotalPriceToPay,
   reduceByDaysCount,
 } = require('../helper-functions');
+
+const {
+  calculateTotalItemsPrice,
+  calculateTotalPriceToPay,
+} = require('../../utils/order.utils');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {} }) {
@@ -78,10 +81,14 @@ class OrdersService {
     const dateOfCreation = Date.now();
     const lastUpdatedDate = Date.now();
     const isPaid = false;
+    const orderId = Math.floor(
+      Math.random() * (100_000_000 - 1_000_000) + 1_000_000
+    );
 
     const order = {
       ...data,
       status,
+      orderId,
       totalItemsPrice,
       dateOfCreation,
       isPaid,
