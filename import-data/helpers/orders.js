@@ -134,7 +134,7 @@ function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
     const product = products[productCount];
     const option = product.options[Math.floor((Math.random() * product.options.length))];
 
-    const productId = product._id;
+    const productId = product.id;
     const categoryPick = categories.find(el => el.id.toHexString() == product.category);
     const subcategoryPick = categories.find(el => el.id.toHexString() == product.subcategory);
     const materialPick = (option.bottomMaterial == null) ? null : materials.find(el => el.id.toHexString() == option.bottomMaterial);
