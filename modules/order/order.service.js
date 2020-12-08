@@ -1,11 +1,12 @@
 const Order = require('./order.model');
+const ObjectId = require('mongoose').Types.ObjectId;
+
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
-const NovaPoshtaService = require('../delivery/delivery.service');
-const ObjectId = require('mongoose').Types.ObjectId;
-const Currency = require('../currency/currency.model');
+
+const { userDateFormat } = require('../../consts');
 
 const {
   removeDaysFromData,
@@ -15,8 +16,6 @@ const {
   calculateTotalPriceToPay,
   reduceByDaysCount,
 } = require('../helper-functions');
-
-const { userDateFormat } = require('../../consts');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {} }) {
@@ -170,4 +169,5 @@ class OrdersService {
     return { names, counts, relations };
   }
 }
+
 module.exports = new OrdersService();
