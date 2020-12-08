@@ -4,6 +4,7 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const Address = require('../common/Address').schema;
 
 const orderSchema = new mongoose.Schema({
+  orderId: String,
   status: {
     type: String,
     required: true,
@@ -53,16 +54,11 @@ const orderSchema = new mongoose.Schema({
   address: Address,
   items: [
     {
-      id: String,
-      color: [Language],
-      pattern: [Language],
-      closure: [Language],
-      closureColor: String,
+      productId: String,
       size: {
         id: String,
       },
       bottomMaterial: [Language],
-      bottomColor: [Language],
       additions: [[Language]],
       actualPrice: [CurrencySet],
       quantity: Number,

@@ -2,6 +2,7 @@ const orderTypes = `
 type Order {
   _id: ID!
   status: Status!
+  orderId: String
   user: OrderUser!
   dateOfCreation: String!
   lastUpdatedDate: String
@@ -31,7 +32,8 @@ enum Status {
 }
 type OrderItems {
   productId: String!
-  size: Size,
+  size: Size
+  bottomMaterial: [Language]
   additions: [[Language]]
   actualPrice: [CurrencySet]
   quantity: Int
