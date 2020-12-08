@@ -18,6 +18,7 @@ const {
 const {
   calculateTotalItemsPrice,
   calculateTotalPriceToPay,
+  generateOrderId,
 } = require('../../utils/order.utils');
 
 class OrdersService {
@@ -81,9 +82,7 @@ class OrdersService {
     const dateOfCreation = Date.now();
     const lastUpdatedDate = Date.now();
     const isPaid = false;
-    const orderId = Math.floor(
-      Math.random() * (100_000_000 - 1_000_000) + 1_000_000
-    );
+    const orderId = generateOrderId();
 
     const order = {
       ...data,

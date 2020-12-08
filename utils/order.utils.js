@@ -46,7 +46,12 @@ function calculateTotalPriceToPay(data) {
   }
 }
 
+function generateOrderId() {
+  return Math.floor(Math.random() * (100_000_000 - 1_000_000) + 1_000_000);
+}
+
 module.exports = {
   calculateTotalItemsPrice,
   calculateTotalPriceToPay,
+  generateOrderId,
 };
