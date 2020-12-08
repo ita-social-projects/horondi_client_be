@@ -37,91 +37,38 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id)) {
-      throw new Error(ORDER_NOT_VALID);
-    }
+    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+
     const foundOrder = await Order.findById(id);
-    if (foundOrder) {
-      return foundOrder;
-    }
-    throw new Error(ORDER_NOT_FOUND);
+    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+
+    return foundOrder;
   }
 
   async updateOrder(order) {
-    if (!ObjectId.isValid(order._id)) {
-      throw new Error(ORDER_NOT_VALID);
-    }
+    if (!ObjectId.isValid(order._id)) throw new Error(ORDER_NOT_VALID);
+
     const orderToUpdate = await Order.findById(order._id);
-    if (!orderToUpdate) {
-      throw new Error(ORDER_NOT_FOUND);
-    }
 
-    if (order.items || order.delivery || order.address) {
-      const totalItemsPrice = calculateTotalItemsPrice(order.items);
+    if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
 
-      if (
-        orderToUpdate.delivery.sentBy !== 'Nova Poshta' &&
-        order.delivery.sentBy === 'Nova Poshta'
-      ) {
-        const weight = order.items.reduce(
-          (prev, currentItem) =>
-            prev + currentItem.size.weightInKg * currentItem.quantity,
-          0
-        );
-        const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
-          order.address.city
-        );
+    const { items } = order;
 
-        const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
-          cityRecipient: cityRecipient[0].ref,
-          weight,
-          serviceType: order.delivery.byCourier
-            ? 'WarehouseDoors'
-            : 'WarehouseWarehouse',
-          cost: totalItemsPrice[0].value / 100,
-        });
+    const lastUpdatedDate = Date.now();
+    const totalItemsPrice = calculateTotalItemsPrice(items);
+    const totalPriceToPay = calculateTotalPriceToPay(order);
 
-        const currency = await Currency.findOne();
-
-        const cost = [
-          {
-            currency: 'UAH',
-            value: deliveryPrice[0].cost * 100,
-          },
-          {
-            currency: 'USD',
-            value: Math.round(
-              (deliveryPrice[0].cost /
-                currency.convertOptions[0].exchangeRate) *
-                100
-            ),
-          },
-        ];
-
-        order = {
-          ...order,
-          delivery: {
-            ...order.delivery,
-            cost,
-          },
-        };
-      }
-
-      const totalPriceToPay = calculateTotalPriceToPay(order, totalItemsPrice);
-
-      order = {
-        ...order,
-        totalItemsPrice,
-        totalPriceToPay,
-      };
-    }
+    const updatedOrder = {
+      ...order,
+      lastUpdatedDate,
+      totalItemsPrice,
+      totalPriceToPay,
+    };
 
     return await Order.findByIdAndUpdate(
       order._id,
-      { ...order, lastUpdatedDate: Date.now() },
-      {
-        new: true,
-      }
+      { updatedOrder },
+      { new: true }
     );
   }
 
