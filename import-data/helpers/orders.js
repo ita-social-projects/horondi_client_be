@@ -16,7 +16,7 @@ const productsNumber = products.length;
 let successfulPurchases = [];
 let placedOrders = [];
 
-for (let i = 0; i < servedUsersNumber; i++) {  
+for (let i = 0; i < servedUsersNumber; i++) {
     const numberOfOrders = Math.floor((Math.random() * (3 - 1) + 1));
     if (i < usersNumber) {
         for (let m = 0; m < numberOfOrders; m++) {
@@ -51,9 +51,9 @@ function mapOrderOfUser(i, m, userStatus) {
             phoneNumber: generatePhoneNumber(),
         };
         address = (byCourier) ? generateAddress('private') : generateAddress('organization');
-        
+
     };
-    
+
     const sentOn = addDays(dateOfCreation, Math.floor((Math.random() * (5 - 1) + 1)));
     const lastUpdatedDate = addDays(sentOn, Math.floor((Math.random() * (5 - 1) + 1)));
     const numberOfItems = Math.floor((Math.random() * (3 - 1) + 1));
@@ -102,7 +102,7 @@ function mapOrderOfUser(i, m, userStatus) {
     if (userStatus === 'registered') {
         placedOrders.push([users[i].id, order.id]);
     }
-    
+
     if (orderStatus === 'CANCELLED') {
         order['cancellationReason'] = 'Передумав купляти';
     }
@@ -133,7 +133,8 @@ function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
     const productCount = Math.floor((Math.random() * productsNumber));
     const product = products[productCount];
     const option = product.options[Math.floor((Math.random() * product.options.length))];
-    
+
+    const productId = product._id;
     const categoryPick = categories.find(el => el.id.toHexString() == product.category);
     const subcategoryPick = categories.find(el => el.id.toHexString() == product.subcategory);
     const materialPick = (option.bottomMaterial == null) ? null : materials.find(el => el.id.toHexString() == option.bottomMaterial);
@@ -153,23 +154,9 @@ function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
     }
 
     return {
-        category: categoryPick.name,
-        subcategory: subcategoryPick.name,
-        model: product.model,
-        name: product.name,
-        colors: colors,
-        pattern: product.pattern,
-        closure: product.closure,
-        closureColor: product.closureColor,
-        size: {
-            heightInCm: sizePick.heightInCm,
-            widthInCm: sizePick.widthInCm,
-            depthInCm: sizePick.depthInCm,
-            volumeInLiters: sizePick.volumeInLiters,
-            weightInKg: sizePick.weightInKg
-        },
+        productId: productId,
+        size: sizePick,
         bottomMaterial: (materialPick == null) ? [] : materialPick.name,
-        bottomColor: option.bottomColor,
         additions: (option.additions.length === 0) ? [] : [option.additions[0].name],
         actualPrice: mapToCurrencies(actualPrice),
         quantity: 1,
@@ -178,12 +165,12 @@ function mapOrderItem(i, dateOfCreation, orderStatus, userStatus) {
 function digits_count(n) {
     var count = 0;
     if (n >= 1) ++count;
-  
+
     while (n / 10 >= 1) {
       n /= 10;
       ++count;
     }
-  
+
     return count;
   };
 
