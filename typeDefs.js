@@ -72,6 +72,7 @@ const {
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
+const { sizesType } = require('./modules/sizes/sizes.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -98,7 +99,8 @@ const typeDefs = gql`
   ${headerType}
   ${homePageSlideType}
   ${tokenType}
-  
+  ${sizesType}
+
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -384,7 +386,9 @@ const typeDefs = gql`
     getAllHeaders: [Header!]!
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
-    getSlideById(id: ID!): HomePageSlideResult  
+    getSlideById(id: ID!): HomePageSlideResult
+    getAllSizes: [Sizes]  
+    getSizeById(id: ID!): Sizes
   }
   input Pagination {
       skip: Int = ${skip}
