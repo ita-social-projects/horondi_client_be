@@ -1,4 +1,3 @@
-const { dayInMiliseconds } = require('../consts/');
 const NovaPoshtaService = require('./delivery/delivery.service');
 const {
   dayInMiliseconds,
