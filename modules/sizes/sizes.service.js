@@ -5,13 +5,13 @@ class SizesService {
   async getAllSizes() {
     return await Sizes.find();
   }
-  async getBusinessTextById(id) {
-    const sizes = await Sizes.findById(id);
-    if (sizes) {
-      return sizes;
+  async getSizeById(id) {
+    const size = await Sizes.findById(id);
+    if (size) {
+      return size;
     }
     throw new Error(SIZES_NOT_FOUND);
   }
 }
 
-module.exports = new BusinessTextService();
+module.exports = new SizesService();

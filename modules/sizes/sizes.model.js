@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const CurrencySet = require('../../models/CurrencySet').schema;
 
 const sizesSchema = new mongoose.Schema({
   name: String,
