@@ -6,13 +6,6 @@ const CategorySchema = new mongoose.Schema({
   code: String,
   name: [Language],
   images: ImageSet,
-  subcategories: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-    },
-  ],
-  isMain: Boolean,
   available: Boolean,
 });
 
