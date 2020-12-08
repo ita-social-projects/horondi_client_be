@@ -577,7 +577,6 @@ const typeDefs = gql`
     "Category Mutation"
     addCategory(
       category: CategoryInput!
-      parentId: ID
       upload: Upload
     ): CategoryResult
     deleteCategory(
