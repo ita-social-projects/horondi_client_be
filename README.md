@@ -148,6 +148,14 @@ Command `npm run generate` is used to run [graphql code generator](https://graph
 
 ---
 
+## Project Deploy
+
+#### Deploy Сlient part: https://horondi-front.azurewebsites.net/
+
+#### Deploy Admin Part: https://horondi-admin.azurewebsites.net/
+
+---
+
 ## Contributing
 
 You're encouraged to contribute to our project if you've found any issues or missing functionality that you would want to see. Here you can see [the list of issues](https://github.com/ita-social-projects/horondi_client_be/issues) and here you can create [a new issue](https://github.com/ita-social-projects/horondi_client_be/issues/new/choose).
