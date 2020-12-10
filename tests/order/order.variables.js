@@ -1,145 +1,45 @@
 const newOrder = {
-  status: 'DELIVERED',
   user: {
-    firstName: 'Test',
-    lastName: 'Test',
-    patronymicName: 'Test',
-    email: 'test@gmail.com',
-    phoneNumber: '380953544271',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    email: 'email@gmail.com',
+    phoneNumber: '380983529807',
+  },
+  adminComment: '',
+  userComment: '',
+  cancellationReason: '',
+  delivery: {
+    sentOn: '',
+    sentBy: 'Poshta',
   },
   address: {
-    country: 'Україна',
-    region: 'Кіровоградська область',
-    city: 'Новомиргород',
-    zipcode: '98908',
-    street: 'Бульвар Марії Приймаченко',
-    buildingNumber: '25',
-    appartment: '97',
-  },
-  delivery: {
-    sentBy: 'Nova Poshta',
-    byCourier: true,
-    courierOffice: 10,
-    invoiceNumber: '6280260',
-    cost: [
-      {
-        currency: 'UAH',
-        value: 7000,
-      },
-      {
-        currency: 'USD',
-        value: 240,
-      },
-    ],
+    country: 'Ukraine',
+    region: 'Lviv',
+    city: 'Lviv',
+    zipcode: 76009,
+    street: 'street',
   },
   items: [
     {
-      category: [
-        {
-          lang: 'uk',
-          value: 'Сумки',
-        },
-        {
-          lang: 'en',
-          value: 'Bags',
-        },
-      ],
-      subcategory: [
-        {
-          lang: 'uk',
-          value: 'Сумки',
-        },
-        {
-          lang: 'en',
-          value: 'Bags',
-        },
-      ],
-      model: [
-        {
-          lang: 'uk',
-          value: 'Сумка з гобеленом',
-        },
-        {
-          lang: 'en',
-          value: 'Bag with a Pattern',
-        },
-      ],
-      name: [
-        {
-          lang: 'uk',
-          value: 'Сумка з гобеленом синя',
-        },
-        {
-          lang: 'en',
-          value: 'Bag with a Pattern Blue',
-        },
-      ],
-      colors: [
-        [
-          {
-            lang: 'uk',
-            value: 'Сталево-блакитний',
-          },
-          {
-            lang: 'en',
-            value: 'Steel-blue',
-          },
-        ],
-      ],
-      pattern: [
-        {
-          lang: 'uk',
-          value: 'Олені',
-        },
-        {
-          lang: 'en',
-          value: 'Deers',
-        },
-      ],
-      closure: [],
-      closureColor: '',
-      size: {
-        heightInCm: 38,
-        widthInCm: 36,
-        depthInCm: 10,
-        volumeInLiters: 0,
-        weightInKg: 0,
-      },
-      bottomMaterial: [
-        {
-          lang: 'uk',
-          value: 'Тканина Кордура',
-        },
-        {
-          lang: 'en',
-          value: 'Cordura fabric',
-        },
-      ],
-      bottomColor: [
-        {
-          lang: 'uk',
-          value: 'чорний',
-        },
-        {
-          lang: 'en',
-          value: 'black',
-        },
-      ],
-      additions: [],
+      productId: 'c4889ff34ec751301a6683',
+      size: '4cfa353a881b9fc17b3dce4f',
       actualPrice: [
-        {
-          currency: 'UAH',
-          value: 90000,
-        },
-        {
-          currency: 'USD',
-          value: 3246,
-        },
+        { value: 100, currency: 'USD' },
+        { value: 1100, currency: 'UAN' },
       ],
       quantity: 1,
     },
+    {
+      productId: '00c4889ff34ec751301a6683',
+      size: '4cfa353a881b9fc17b3dce4f',
+      actualPrice: [
+        { value: 120, currency: 'USD' },
+        { value: 1400, currency: 'UAN' },
+      ],
+      quantity: 2,
+    },
   ],
-  paymentMethod: 'CARD',
+  paymentMethod: 'CASH',
 };
 
 const newOrderMutation = {
