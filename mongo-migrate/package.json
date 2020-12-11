@@ -1,0 +1,59 @@
+{
+  "name": "migrate-mongo",
+  "version": "8.1.4",
+  "description": "A database migration tool for MongoDB in Node",
+  "main": "lib/migrate-mongo.js",
+  "bin": {
+    "migrate-mongo": "bin/migrate-mongo.js"
+  },
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha --recursive",
+    "test-coverage": "nyc --reporter=text-lcov mocha --recursive | coveralls",
+    "lint": "eslint lib/ test/"
+  },
+  "author": "Sebastian Van Sande",
+  "license": "MIT",
+  "keywords": [
+    "migrate mongo mongodb migrations database"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seppevs/migrate-mongo.git"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "cli-table3": "^0.6.0",
+    "commander": "^6.1.0",
+    "date-fns": "^2.16.1",
+    "fn-args": "^5.0.0",
+    "fs-extra": "^9.0.1",
+    "lodash": "^4.17.20",
+    "mongodb": "^3.6.2",
+    "p-each-series": "^2.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "coveralls": "^3.1.0",
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-mocha": "^8.0.0",
+    "mocha": "^8.2.0",
+    "nyc": "^15.1.0",
+    "proxyquire": "^2.1.3",
+    "sinon": "^9.2.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "airbnb-base",
+      "prettier"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2018
+    }
+  }
+}
