@@ -318,7 +318,6 @@ const typeDefs = gql`
     getAllCategories: [Category]
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
-    getSubcategories(parentCategoryId: ID!): [Category]
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult

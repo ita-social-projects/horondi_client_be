@@ -114,16 +114,6 @@ class CategoryService {
     await Product.updateMany(filter, updateData);
     await Model.updateMany(filter, updateData);
   }
-
-  async clearSubcategoryField(id) {
-    const parentCategory = await Category.findOne({
-      subcategories: { $in: [id] },
-    });
-    await this.updateCategory(parentCategory._id, {
-      $pull: { subcategories: { $in: [id] } },
-    });
-  }
-
   async deleteCategory({ deleteId, switchId }) {
     const category = await Category.findByIdAndDelete(deleteId).lean();
     const switchCategory = await Category.findById(switchId);
@@ -168,25 +158,12 @@ class CategoryService {
     return categoriesCount > 0;
   }
 
-  async getSubcategories(id) {
-    const category = await this.getCategoryById(id);
-    if (!category.isMain) {
-      return [];
-    }
-    if (!category.subcategories.length) {
-      return [];
-    }
-    return await Category.find({
-      _id: { $in: category.subcategories },
-    });
-  }
-
   getCategoriesStats(categories, total) {
     let popularSum = 0;
     let res = { names: [], counts: [], relations: [] };
 
     categories
-      .filter(({ isMain }, idx) => isMain && idx < 3)
+      .filter((_, idx) => idx < 3)
       .forEach(({ name, purchasedCount }) => {
         const relation = Math.round((purchasedCount * 100) / total);
         popularSum += relation;
