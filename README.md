@@ -60,11 +60,11 @@ $ npm install
 
 ### How to run Docker
 
-download and install [Docker Desctop](https://www.docker.com/products/docker-desktop)
+download and install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 open terminal and run `npm run docker-db-start`
 
-next launch `Docker Desctop` and ensure your container is there and it is running
+next launch `Docker Desktop` and ensure your container is there and it is running
 
 now you can use docker
 
