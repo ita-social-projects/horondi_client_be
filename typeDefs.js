@@ -72,7 +72,7 @@ const {
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
-const { sizesType } = require('./modules/sizes/sizes.graphql');
+const { sizeType } = require('./modules/size/size.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -99,7 +99,7 @@ const typeDefs = gql`
   ${headerType}
   ${homePageSlideType}
   ${tokenType}
-  ${sizesType}
+  ${sizeType}
 
   scalar Upload
   scalar Date
@@ -197,17 +197,6 @@ const typeDefs = gql`
   type AllProductOptions {
     sizes: [Size]
     bottomMaterials: [Material]
-  }
-  type Size {
-    _id: ID!
-    name: String
-    heightInCm: Int
-    widthInCm: Int
-    depthInCm: Int
-    volumeInLiters: Int
-    weightInKg: Float
-    available: Boolean
-    additionalPrice: [CurrencySet]
   }
   type UserForComment {
     email: String!
@@ -387,8 +376,8 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes: [Sizes]  
-    getSizeById(id: ID!): Sizes
+    getAllSizes: [Size]  
+    getSizeById(id: ID!): Size
   }
   input Pagination {
       skip: Int = ${skip}

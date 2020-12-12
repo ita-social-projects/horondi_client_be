@@ -1,12 +1,12 @@
-const Sizes = require('./sizes.model');
+const Size = require('./size.model');
 const { SIZES_NOT_FOUND } = require('../../error-messages/sizes.messages');
 
-class SizesService {
+class SizeService {
   async getAllSizes() {
-    return await Sizes.find();
+    return await Size.find();
   }
   async getSizeById(id) {
-    const size = await Sizes.findById(id);
+    const size = await Size.findById(id);
     if (size) {
       return size;
     }
@@ -14,4 +14,4 @@ class SizesService {
   }
 }
 
-module.exports = new SizesService();
+module.exports = new SizeService();

@@ -1,5 +1,5 @@
 const Product = require('./product.model');
-const Size = require('../../models/Size');
+const sizesService = require('../size/size.service');
 const Material = require('../material/material.model');
 const Currency = require('../currency/currency.model');
 const User = require('../user/user.model');
@@ -20,10 +20,6 @@ class ProductsService {
     return Product.findById(id);
   }
 
-  getSizeById(id) {
-    return Size.findById(id);
-  }
-
   async getModelsByCategory(id) {
     const product = await Product.find({ category: id });
 
@@ -35,7 +31,7 @@ class ProductsService {
   }
 
   async getProductOptions() {
-    const sizes = await Size.find();
+    const sizes = await sizesService.getAllSizes();
     const bottomMaterials = await Material.find();
 
     return { sizes, bottomMaterials };
