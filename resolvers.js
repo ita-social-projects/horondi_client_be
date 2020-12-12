@@ -74,6 +74,7 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
+const sizesService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery } = require('./modules/size/size.resolver');
 const SCHEMA_NAMES = {
@@ -170,7 +171,7 @@ const resolvers = {
   },
 
   ProductOptions: {
-    size: parent => productsService.getSizeById(parent.size),
+    size: parent => sizesService.getSizeById(parent.size),
     bottomMaterial: parent => {
       if (parent.bottomMaterial) {
         return materialsService.getMaterialById(parent.bottomMaterial);
