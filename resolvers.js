@@ -75,7 +75,7 @@ const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-const { sizeQuery } = require('./modules/sizes/sizes.resolver');
+const { sizeQuery, sizeMutation } = require('./modules/sizes/sizes.resolver');
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -139,15 +139,6 @@ const resolvers = {
     ...sizeQuery,
 
     ...homePageSlideQuery,
-  },
-
-  Sizes: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.sizes;
-      }
-      return 'Error';
-    },
   },
 
   User: {
@@ -227,6 +218,8 @@ const resolvers = {
     ...homePageImagesMutation,
 
     ...headerMutation,
+
+    ...sizeMutation,
 
     ...homePageSlideMutation,
   },
@@ -387,6 +380,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.homePageSlide;
+      }
+      return 'Error';
+    },
+  },
+  SizeResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.sizes;
       }
       return 'Error';
     },
