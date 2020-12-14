@@ -60,7 +60,7 @@ class ModelsService {
       throw new Error(MODEL_NOT_FOUND);
     }
 
-    if (Object.keys(upload).length) {
+    if (upload) {
       if (model.images) {
         const images = Object.values(model.images).filter(
           item => typeof item === 'string' && item

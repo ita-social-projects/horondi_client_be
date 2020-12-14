@@ -562,7 +562,7 @@ const typeDefs = gql`
     updatePattern(
       id: ID!
       pattern: PatternInput!
-      image: Upload!
+      image: Upload
     ): PatternResult
     "Material Mutation"
     addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
