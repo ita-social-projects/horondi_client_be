@@ -307,7 +307,6 @@ const typeDefs = gql`
     getAllCategories: [Category]
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
-    getSubcategories(parentCategoryId: ID!): [Category]
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
@@ -570,7 +569,6 @@ const typeDefs = gql`
     "Category Mutation"
     addCategory(
       category: CategoryInput!
-      parentId: ID
       upload: Upload
     ): CategoryResult
     deleteCategory(

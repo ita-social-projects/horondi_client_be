@@ -4,8 +4,6 @@ const categoryType = `
     code: String!
     name: [Language]
     images: ImageSet
-    subcategories: [ID]
-    isMain: Boolean
     available: Boolean
 }
 `;
@@ -15,8 +13,6 @@ const categoryInput = `
     code: String
     name: [LanguageInput]
     images: ImageSetInput
-    subcategories: [ID]
-    isMain: Boolean
     available: Boolean
     }`;
 
