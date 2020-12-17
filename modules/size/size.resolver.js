@@ -1,4 +1,4 @@
-const sizesService = require('./sizes.service');
+const sizesService = require('./size.service');
 
 const sizeQuery = {
   getAllSizes: () => sizesService.getAllSizes(),

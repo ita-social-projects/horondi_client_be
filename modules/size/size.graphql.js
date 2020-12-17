@@ -1,5 +1,5 @@
-const sizesType = `
-  type Sizes {
+const sizeType = `
+  type Size {
     _id: ID!
     name: String!
     heightInCm: Int!
@@ -13,5 +13,5 @@ const sizesType = `
 `;
 
 module.exports = {
-  sizesType,
+  sizeType,
 };

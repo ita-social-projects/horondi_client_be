@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const CurrencySet = require('./CurrencySet').schema;
+const CurrencySet = require('../../models/CurrencySet').schema;
 
-const SizeSchema = new mongoose.Schema({
+const sizeSchema = new mongoose.Schema({
   name: String,
   heightInCm: Number,
   widthInCm: Number,
@@ -12,4 +12,4 @@ const SizeSchema = new mongoose.Schema({
   additionalPrice: [CurrencySet],
 });
 
-module.exports = mongoose.model('Size', SizeSchema);
+module.exports = mongoose.model('Size', sizeSchema);
