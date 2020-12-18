@@ -16,12 +16,10 @@ const productSchema = new mongoose.Schema({
   innerMaterial: [Language],
   strapLengthInCm: Number,
   images: PrimaryImage,
-  colors: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Color',
-    },
-  ],
+  color: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Color',
+  },
   pattern: [Language],
   patternImages: ImageSet,
   closure: [Language],
