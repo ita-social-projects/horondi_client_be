@@ -47,13 +47,15 @@ stages:
          script: 'npm run test'
  
      - task: SonarCloudPrepare@1
+       condition: always()
        inputs:
          SonarCloud: 'sonar-v2'
          organization: 'ita-social-projects'
          scannerMode: 'CLI'
          configMode: 'file'
      - task: SonarCloudAnalyze@1
-
+       condition: always()
+       
   - job: Build
     displayName: BuildandDeploy
     condition: in(variables['Build.Reason'], 'IndividualCI', 'Manual')  

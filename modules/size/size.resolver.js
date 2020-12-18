@@ -1,11 +1,11 @@
-const sizesService = require('./sizes.service');
+const sizeService = require('./size.service');
 
 const sizeQuery = {
-  getAllSizes: () => sizesService.getAllSizes(),
+  getAllSizes: () => sizeService.getAllSizes(),
 
   getSizeById: async (_, { id }) => {
     try {
-      return await sizesService.getSizeById(id);
+      return await sizeService.getSizeById(id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -18,7 +18,7 @@ const sizeQuery = {
 const sizeMutation = {
   addSize: async (_, { data }) => {
     try {
-      return await sizesService.addSize(data);
+      return await sizeService.addSize(data);
     } catch (e) {
       return {
         statusCode: 404,
@@ -29,7 +29,7 @@ const sizeMutation = {
 
   deleteSize: async (_, { id }) => {
     try {
-      return await sizesService.deleteSize(id);
+      return await sizeService.deleteSize(id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -40,7 +40,7 @@ const sizeMutation = {
 
   updateSize: async (_, { id, size }) => {
     try {
-      return await sizesService.updateSize(id, size);
+      return await sizeService.updateSize(id, size);
     } catch (e) {
       return {
         statusCode: 404,

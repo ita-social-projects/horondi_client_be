@@ -72,8 +72,9 @@ const {
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
-const { sizesType, sizesInput } = require('./modules/sizes/sizes.graphql');
+const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
+
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
@@ -99,8 +100,9 @@ const typeDefs = gql`
   ${headerType}
   ${homePageSlideType}
   ${tokenType}
-  ${sizesType}
+  ${sizeType}
   ${colorType}
+
 
   scalar Upload
   scalar Date
@@ -189,19 +191,8 @@ const typeDefs = gql`
       weightInKg: Float
   }
   type AllProductOptions {
-    sizes: [Size]
+    size: [Size]
     bottomMaterials: [Material]
-  }
-  type Size {
-    _id: ID!
-    name: String
-    heightInCm: Int
-    widthInCm: Int
-    depthInCm: Int
-    volumeInLiters: Int
-    weightInKg: Float
-    available: Boolean
-    additionalPrice: [CurrencySet]
   }
   type UserForComment {
     email: String!
@@ -304,7 +295,7 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
-  union SizeResult = Sizes | Error
+  union SizeResult = Size | Error
   union ColorResult = Color | Error
 
   type Query {
@@ -313,7 +304,6 @@ const typeDefs = gql`
     getAllCategories: [Category]
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
-    getSubcategories(parentCategoryId: ID!): [Category]
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
@@ -381,7 +371,7 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes: [Sizes]
+    getAllSizes: [Size]
     getSizeById(id: ID!): SizeResult
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
@@ -445,7 +435,7 @@ const typeDefs = gql`
   ${deliveryInput}
   ${paymentInput}
   ${headerInput}
-  ${sizesInput}
+  ${sizeInput}
   ${homePageSlideInput}
   ${colorInput}
 
@@ -504,16 +494,6 @@ const typeDefs = gql`
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
   }
-  input SizeInput {
-    name: String
-    heightInCm: Int
-    widthInCm: Int
-    depthInCm: Int
-    volumeInLiters: Int
-    weightInKg: Float
-    available: Boolean
-    additionalPrice: Int
-  }
   input ProductOptionsAdditonalsInput {
     name: [LanguageInput!]
     description: [LanguageInput!]
@@ -548,7 +528,7 @@ const typeDefs = gql`
     updatePattern(
       id: ID!
       pattern: PatternInput!
-      image: Upload!
+      image: Upload
     ): PatternResult
     "Material Mutation"
     addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
@@ -561,7 +541,6 @@ const typeDefs = gql`
     "Category Mutation"
     addCategory(
       category: CategoryInput!
-      parentId: ID
       upload: Upload
     ): CategoryResult
     deleteCategory(
@@ -677,9 +656,9 @@ const typeDefs = gql`
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
     "Sizes Mutation"
-    addSize(data: SizesInput!): SizeResult!
+    addSize(data: SizeInput!): SizeResult!
     deleteSize(id: ID!): SizeResult!
-    updateSize(id: ID!, size: SizesInput!): SizeResult!
+    updateSize(id: ID!, size: SizeInput!): SizeResult!
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorResult!

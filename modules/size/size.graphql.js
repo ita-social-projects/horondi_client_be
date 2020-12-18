@@ -1,5 +1,5 @@
-const sizesType = `
-  type Sizes {
+const sizeType = `
+  type Size {
     _id: ID!
     name: String!
     heightInCm: Int!
@@ -12,8 +12,8 @@ const sizesType = `
   }
 `;
 
-const sizesInput = `
-  input SizesInput {
+const sizeInput = `
+  input SizeInput {
     name: String!
     heightInCm: Int!
     widthInCm: Int!
@@ -26,6 +26,6 @@ const sizesInput = `
 `;
 
 module.exports = {
-  sizesType,
-  sizesInput,
+  sizeType,
+  sizeInput,
 };
