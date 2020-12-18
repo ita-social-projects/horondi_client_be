@@ -72,7 +72,7 @@ const {
 const {
   constructorBottomMutation,
   constructorBottomQuery,
-} = require('./modules/constructor-bottom/constructor-bottom.resolver');
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
 
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');

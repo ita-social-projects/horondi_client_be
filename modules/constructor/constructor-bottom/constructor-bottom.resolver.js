@@ -1,7 +1,7 @@
 const constructorBottomService = require('./constructor-bottom.service');
 const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
-} = require('../../error-messages/constructor-bottom.messages');
+} = require('../../../error-messages/constructor-bottom.messages');
 
 const constructorBottomQuery = {
   getConstructorBottomById: async (parent, args) => {

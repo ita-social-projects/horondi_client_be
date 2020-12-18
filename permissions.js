@@ -47,7 +47,7 @@ const {
 const {
   сonstructorBottomPermissionsQuery,
   сonstructorBottomPermissionsMutations,
-} = require('./modules/constructor-bottom/constructor-bottom.permissions');
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
 
 const permissions = shield(
   {

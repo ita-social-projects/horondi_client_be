@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const Language = require('../../models/Language').schema;
-const CurrencySet = require('../../models/CurrencySet').schema;
-const ImageSet = require('../common/ImageSet').schema;
+const Language = require('../../../models/Language').schema;
+const CurrencySet = require('../../../models/CurrencySet').schema;
+const ImageSet = require('../../common/ImageSet').schema;
 
 const constructorBottomSchema = new mongoose.Schema({
   name: [Language],

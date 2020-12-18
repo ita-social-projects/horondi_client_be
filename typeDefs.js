@@ -73,7 +73,7 @@ const {
 const {
   constructorBottomInput,
   constructorBottomType,
-} = require('./modules/constructor-bottom/constructor-bottom.graphql');
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType } = require('./modules/size/size.graphql');

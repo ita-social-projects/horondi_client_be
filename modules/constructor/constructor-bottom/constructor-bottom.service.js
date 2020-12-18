@@ -1,12 +1,12 @@
 const ConstructorBottom = require('./constructor-bottom.model');
-const Currency = require('../currency/currency.model');
-const Material = require('../material/material.service');
+const Currency = require('../../currency/currency.model');
+const Material = require('../../material/material.service');
 const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
   IMAGE_NOT_FOUND,
   CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
-} = require('../../error-messages/constructor-bottom.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+} = require('../../../error-messages/constructor-bottom.messages');
+const { uploadFiles, deleteFiles } = require('../../upload/upload.service');
 
 class ConstructorBottomService {
   async getConstructorBottomById(id) {
@@ -30,15 +30,10 @@ class ConstructorBottomService {
     if (!upload) {
       throw new Error(IMAGE_NOT_FOUND);
     }
-    // const uploadResult = await uploadFiles([upload]);
-    // const imageResults = await uploadResult[0];
-    // data.image = imageResults.fileNames;
-    data.image = {
-      large: '',
-      medium: '',
-      small: '',
-      thumbnail: '',
-    };
+    const uploadResult = await uploadFiles([upload]);
+    const imageResults = await uploadResult[0];
+    data.image = imageResults.fileNames;
+
     data.basePrice = await this.calculatePrice(data.basePrice);
     data.material = await Material.getMaterialById(data.material);
     return await new ConstructorBottom(data).save();
