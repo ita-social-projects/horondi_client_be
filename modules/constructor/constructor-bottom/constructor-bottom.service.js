@@ -95,8 +95,9 @@ class ConstructorBottomService {
   }
 
   async checkConstructorBottomExist(data, id) {
+    let constructorBottomCount;
     if (id) {
-      const constructorBottomCount = await ConstructorBottom.countDocuments({
+      constructorBottomCount = await ConstructorBottom.countDocuments({
         _id: { $ne: id },
         name: {
           $elemMatch: {
@@ -106,7 +107,7 @@ class ConstructorBottomService {
       });
       return constructorBottomCount > 0;
     }
-    const constructorBottomCount = await ConstructorBottom.countDocuments({
+    constructorBottomCount = await ConstructorBottom.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
