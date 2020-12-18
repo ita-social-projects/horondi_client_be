@@ -73,7 +73,7 @@ const {
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizesType, sizesInput } = require('./modules/sizes/sizes.graphql');
-
+const { colorType, colorInput } = require('./modules/color/color.graphql');
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
@@ -100,6 +100,7 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizesType}
+  ${colorType}
 
   scalar Upload
   scalar Date
@@ -164,13 +165,6 @@ const typeDefs = gql`
   type Author {
     name: [Language]
     image: ImageSet
-  }
-  type Color {
-    code: Int
-    name: [Language]
-    images: ImageSet
-    available: Boolean
-    simpleName: [Language]
   }
   type ProductOptions {
     size: Size
@@ -294,7 +288,6 @@ const typeDefs = gql`
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
-  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -312,7 +305,8 @@ const typeDefs = gql`
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
   union SizeResult = Sizes | Error
-  
+  union ColorResult = Color | Error
+
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -323,7 +317,6 @@ const typeDefs = gql`
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
-    getMaterialColorByCode(code: Int): Color
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
@@ -390,6 +383,8 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes: [Sizes]
     getSizeById(id: ID!): SizeResult
+    getAllColors: [Color]
+    getColorById(id: ID!): ColorResult!
   }
   input Pagination {
       skip: Int = ${skip}
@@ -452,6 +447,8 @@ const typeDefs = gql`
   ${headerInput}
   ${sizesInput}
   ${homePageSlideInput}
+  ${colorInput}
+
   input LanguageInput {
     lang: String!
     value: String
@@ -480,19 +477,6 @@ const typeDefs = gql`
     medium: String
     small: String
     thumbnail: String
-  }
-  input ColorInput {
-    code: Int!
-    name: [LanguageInput!]
-    images: ImageSetInput
-    available: Boolean!
-    simpleName: [LanguageInput!]
-  }
-  input MaterialColorInput {
-    code: Int!
-    name: [LanguageInput!]
-    available: Boolean!
-    simpleName: [LanguageInput!]
   }
   input ConvertOptionInput {
     name: String!
@@ -574,12 +558,6 @@ const typeDefs = gql`
       material: MaterialInput!
       images: Upload
     ): MaterialResult
-    addMaterialColor(
-      id: ID!
-      color: MaterialColorInput
-      image: Upload
-    ): MaterialColorResult
-    deleteMaterialColor(id: ID!, code: Int): MaterialResult
     "Category Mutation"
     addCategory(
       category: CategoryInput!
@@ -699,9 +677,13 @@ const typeDefs = gql`
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
     "Sizes Mutation"
-    addSize(data: SizesInput!): SizeResult
-    deleteSize(id: ID!): SizeResult
-    updateSize(id: ID!, size: SizesInput!): SizeResult
+    addSize(data: SizesInput!): SizeResult!
+    deleteSize(id: ID!): SizeResult!
+    updateSize(id: ID!, size: SizesInput!): SizeResult!
+    "Color Mutation"
+    addColor(data: ColorInput!): ColorResult!
+    deleteColor(id: ID!): ColorResult!
+    updateColor(id: ID!, color: ColorInput!): ColorResult!
   }
 `;
 

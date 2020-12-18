@@ -64,6 +64,8 @@ const {
   headerMutation,
 } = require('./modules/header/header.resolver');
 
+const { colorQuery, colorMutation } = require('./modules/color/color.resolver');
+
 const {
   homePageSlideQuery,
   homePageSlideMutation,
@@ -97,6 +99,7 @@ const SCHEMA_NAMES = {
   homePageSlide: 'HomePageSlide',
   token: 'Token',
   sizes: 'Sizes',
+  color: 'Color',
 };
 const resolvers = {
   Query: {
@@ -139,6 +142,8 @@ const resolvers = {
     ...sizeQuery,
 
     ...homePageSlideQuery,
+
+    ...colorQuery,
   },
 
   User: {
@@ -222,6 +227,8 @@ const resolvers = {
     ...sizeMutation,
 
     ...homePageSlideMutation,
+
+    ...colorMutation,
   },
   TokenResult: {
     __resolveType: obj => {
@@ -256,14 +263,6 @@ const resolvers = {
     },
   },
   MaterialResult: {
-    __resolveType: obj => {
-      if (obj.name) {
-        return SCHEMA_NAMES.material;
-      }
-      return 'Error';
-    },
-  },
-  MaterialColorResult: {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.material;
@@ -388,6 +387,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.sizes;
+      }
+      return 'Error';
+    },
+  },
+  ColorResult: {
+    __resolveType: obj => {
+      if (obj.colorHex) {
+        return SCHEMA_NAMES.color;
       }
       return 'Error';
     },

@@ -5,7 +5,7 @@ const {
   IMAGE_NOT_PROVIDED,
   IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const { uploadFiles } = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
 
 class MaterialsService {
@@ -30,11 +30,6 @@ class MaterialsService {
 
   async getMaterialById(id) {
     return Material.findById(id);
-  }
-
-  async getMaterialColorByCode(code) {
-    const material = await Material.find({ colors: { $elemMatch: { code } } });
-    return material[0].colors[0];
   }
 
   async updateMaterial(id, material, images) {
@@ -94,11 +89,6 @@ class MaterialsService {
       throw new Error(IMAGES_WERE_NOT_CONVERTED);
     }
 
-    const mappedColors = material.colors.map((item, index) => ({
-      ...item,
-      images: resizedImages[index],
-    }));
-
     return new Material({
       ...rest,
       additionalPrice: [
@@ -113,22 +103,7 @@ class MaterialsService {
           value: additionalPrice * 100,
         },
       ],
-      colors: mappedColors,
     }).save();
-  }
-
-  async addMaterialColor(id, color, image) {
-    const uploadResult = await uploadFiles(image);
-    const imageResults = await Promise.allSettled(uploadResult);
-    const resizedImages = imageResults.map(item => item.value.fileNames);
-    if (!resizedImages) {
-      throw new Error(IMAGES_WERE_NOT_CONVERTED);
-    }
-    const mappedColors = Object.assign(color, { images: resizedImages[0] });
-    return Material.update(
-      { _id: id },
-      { $addToSet: { colors: [mappedColors] } }
-    );
   }
 
   async deleteMaterial(id) {
@@ -161,23 +136,6 @@ class MaterialsService {
       },
     });
     return materialsCount > 0;
-  }
-
-  async deleteMaterialColor(id, code) {
-    const material = await Material.find({ colors: { $elemMatch: { code } } });
-    const images = material[0].colors[0].images;
-    const deletedImages = await deleteFiles([
-      images.large,
-      images.medium,
-      images.small,
-      images.thumbnail,
-    ]);
-    if (await Promise.allSettled(deletedImages)) {
-      return Material.update(
-        { _id: id },
-        { $pull: { colors: { code: code } } }
-      );
-    }
   }
 }
 

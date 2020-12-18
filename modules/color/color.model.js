@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
-const Language = require('./Language').schema;
-const ImageSet = require('../modules/common/ImageSet').schema;
+const Language = require('../../models/Language').schema;
 
 const ColorSchema = new mongoose.Schema({
-  code: Number,
   name: [Language],
-  simpleName: [Language],
-  images: ImageSet,
+  colorHex: String,
   available: Boolean,
+  simpleName: [Language],
 });
 
 module.exports = mongoose.model('Color', ColorSchema);
