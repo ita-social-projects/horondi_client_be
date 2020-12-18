@@ -17,11 +17,18 @@ const productSchema = new mongoose.Schema({
   innerMaterial: [Language],
   strapLengthInCm: Number,
   images: PrimaryImage,
-  colors: [Color],
-  pattern: [Language],
-  patternImages: ImageSet,
-  closure: [Language],
-  closureColor: String,
+  colors: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Colors',
+  },
+  pattern: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pattern',
+  },
+  closure: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Closures',
+  },
   basePrice: [CurrencySet],
   options: [
     {
@@ -33,7 +40,10 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Material',
       },
-      bottomColor: [Language],
+      bottomColor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Color',
+      },
       additions: [
         {
           name: [Language],
