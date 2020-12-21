@@ -15,6 +15,7 @@ const {
 } = require('../helper-functions');
 
 const { userDateFormat } = require('../../consts');
+const { formatError } = require('../../utils/format-error');
 
 class OrdersService {
   calculateTotalItemsPrice(items) {
@@ -89,11 +90,11 @@ class OrdersService {
 
   async updateOrder(order) {
     if (!ObjectId.isValid(order._id)) {
-      throw new Error(ORDER_NOT_VALID);
+      return formatError(ORDER_NOT_VALID);
     }
     const orderToUpdate = await Order.findById(order._id);
     if (!orderToUpdate) {
-      throw new Error(ORDER_NOT_FOUND);
+      return formatError(ORDER_NOT_FOUND);
     }
 
     if (order.items || order.delivery || order.address) {

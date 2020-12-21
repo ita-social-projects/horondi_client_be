@@ -1,14 +1,14 @@
-const formatError = err => {
-  const { originalError } = err;
-
-  if (originalError && originalError.name === 'RuleError') {
-    return {
-      message: originalError.message,
-      statusCode: originalError.statusCode,
-    };
+const formatError = message => {
+  let statusCode = 400;
+  if (message.endsWith('NOT_FOUND')) {
+    statusCode = 404;
   }
-
-  return err;
+  return {
+    message,
+    statusCode,
+  };
 };
 
-module.exports = formatError;
+module.exports = {
+  formatError,
+};

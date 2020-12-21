@@ -43,14 +43,7 @@ const ordersMutation = {
     };
   },
   updateOrder: async (parent, args) => {
-    try {
-      return await ordersService.updateOrder(args.order);
-    } catch (e) {
-      return {
-        statusCode: e.message === ORDER_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
-    }
+    return await ordersService.updateOrder(args.order);
   },
 };
 
