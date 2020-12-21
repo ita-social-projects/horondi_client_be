@@ -47,12 +47,6 @@ const userSchema = new mongoose.Schema({
       ref: 'Order',
     },
   ],
-  purchasedProducts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-    },
-  ],
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
