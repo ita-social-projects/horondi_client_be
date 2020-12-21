@@ -17,11 +17,19 @@ const { uploadProductImages } = require('./product.utils');
 
 class ProductsService {
   getProductById(id) {
-    return Product.findById(id);
+    return Product.findById(id)
+      .populate('category')
+      .populate('colors')
+      .populate('pattern')
+      .populate('closure');
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id });
+    const product = await Product.find({ category: id })
+      .populate('category')
+      .populate('colors')
+      .populate('pattern')
+      .populate('closure');
 
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);

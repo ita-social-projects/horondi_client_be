@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
+const Category = require('../category/category.model');
+
+// Category.findById(id).populate('category')
 
 const productSchema = new mongoose.Schema({
   category: {
@@ -15,10 +18,12 @@ const productSchema = new mongoose.Schema({
   innerMaterial: [Language],
   strapLengthInCm: Number,
   images: PrimaryImage,
-  colors: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Colors',
-  },
+  colors: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Colors',
+    },
+  ],
   pattern: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Pattern',
