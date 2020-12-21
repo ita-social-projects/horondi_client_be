@@ -17,7 +17,6 @@ type User{
     wishlist: [Product]
     cart: [CartProduct]
     orders:[ID]
-    purchasedProducts: [ID]
     comments: [ID]
     banned: Boolean
     confirmed: Boolean
@@ -43,7 +42,6 @@ input UserInput {
     wishlist: [ID]
     cart: [CartProductInput]
     orders:[ID]
-    purchasedProducts: [ID]
     comments: [ID]
     banned: Boolean
     confirmed: Boolean
@@ -61,7 +59,6 @@ input UserUpdateInput {
     wishlist: [ID]
     cart: [CartProductInput]
     orders:[ID]
-    purchasedProducts: [ID]
     comments: [ID]
     confirmed: Boolean
 }`;
