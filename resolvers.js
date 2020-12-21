@@ -69,6 +69,16 @@ const {
   homePageSlideMutation,
 } = require('./modules/homepage-slider/homepage-slider.resolves');
 
+const {
+  constructorBasicQuery,
+  constructorBasicMutation,
+} = require('./modules/constructor/constructor-basic/constructor-basic.resolves');
+
+const {
+  constructorFrontPocketQuery,
+  constructorFrontPocketMutation,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves')
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -98,6 +108,8 @@ const SCHEMA_NAMES = {
   homePageSlide: 'HomePageSlide',
   token: 'Token',
   size: 'Size',
+  constructorBasic: 'ConstructorBasic',
+  constructorFrontPocket: 'ConstructorFrontPocket',
 };
 const resolvers = {
   Query: {
@@ -140,6 +152,10 @@ const resolvers = {
     ...sizeQuery,
 
     ...homePageSlideQuery,
+
+    ...constructorBasicQuery,
+
+    ...constructorFrontPocketQuery,
   },
 
   Size: {
@@ -230,6 +246,10 @@ const resolvers = {
     ...headerMutation,
 
     ...homePageSlideMutation,
+
+    ...constructorBasicMutation,
+
+    ...constructorFrontPocketMutation
   },
   TokenResult: {
     __resolveType: obj => {
@@ -388,6 +408,24 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.homePageSlide;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorBasicResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorBasic;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorFrontPocketResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorFrontPocket;
       }
       return 'Error';
     },
