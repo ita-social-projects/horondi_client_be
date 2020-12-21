@@ -19,7 +19,7 @@ class ColorService {
 
   async addColor(colorData) {
     const hex = await this.isHexExist(colorData.colorHex);
-    if (hex) {
+    if (hex.length) {
       throw new Error(COLOR_ALREADY_EXIST);
     }
     return new Color(colorData).save();
@@ -39,7 +39,7 @@ class ColorService {
       throw new Error(COLOR_NOT_FOUND);
     } else {
       const hex = await this.isHexExist(input.colorHex);
-      if (hex) {
+      if (hex.length && !hex[0]._id.equals(id)) {
         throw new Error(COLOR_ALREADY_EXIST);
       }
     }
@@ -47,7 +47,7 @@ class ColorService {
   }
 
   async isHexExist(hex) {
-    return (await Color.find({ colorHex: hex })).length;
+    return await Color.find({ colorHex: hex });
   }
 }
 

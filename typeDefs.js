@@ -531,12 +531,11 @@ const typeDefs = gql`
       image: Upload
     ): PatternResult
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload
     ): MaterialResult
     "Category Mutation"
     addCategory(

@@ -32,7 +32,7 @@ class MaterialsService {
     return Material.findById(id);
   }
 
-  async updateMaterial(id, material, images) {
+  async updateMaterial(id, material) {
     const { additionalPrice, ...rest } = material;
 
     const materialToUpdate = await Material.findById(id);
@@ -44,50 +44,34 @@ class MaterialsService {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
     const currency = await Currency.findOne();
-    if (!images) {
-      return await Material.findByIdAndUpdate(
-        id,
-        {
-          ...rest,
-          additionalPrice: [
-            {
-              currency: this.currencyTypes.UAH,
-              value:
-                additionalPrice *
-                Math.round(currency.convertOptions[0].exchangeRate * 100),
-            },
-            {
-              currency: this.currencyTypes.USD,
-              value: additionalPrice * 100,
-            },
-          ],
-        },
-        { new: true }
-      );
-    }
-    return await Material.findByIdAndUpdate(id, material, { new: true });
+    return await Material.findByIdAndUpdate(
+      id,
+      {
+        ...rest,
+        additionalPrice: [
+          {
+            currency: this.currencyTypes.UAH,
+            value:
+              additionalPrice *
+              Math.round(currency.convertOptions[0].exchangeRate * 100),
+          },
+          {
+            currency: this.currencyTypes.USD,
+            value: additionalPrice * 100,
+          },
+        ],
+      },
+      { new: true }
+    );
   }
 
-  async addMaterial({ material, images }) {
+  async addMaterial({ material }) {
     const { additionalPrice, ...rest } = material;
 
     if (await this.checkMaterialExistOrDuplicated(rest, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    if (!images) {
-      throw new Error(IMAGE_NOT_PROVIDED);
-    }
     const currency = await Currency.findOne();
-
-    const uploadResult = await uploadFiles(images);
-
-    const imageResults = await Promise.allSettled(uploadResult);
-
-    const resizedImages = imageResults.map(item => item.value.fileNames);
-
-    if (!resizedImages) {
-      throw new Error(IMAGES_WERE_NOT_CONVERTED);
-    }
 
     return new Material({
       ...rest,
