@@ -111,7 +111,7 @@ class MaterialsService {
       return materialsCount > 0;
     }
     materialsCount = await Material.countDocuments({
-      _id: { $eq: id },
+      _id: { $ne: id },
       color: { $eq: data.color },
       name: {
         $elemMatch: {
