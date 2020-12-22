@@ -63,12 +63,10 @@ class ConstructorFrontPocketService {
 
 
   async updateConstructorFrontPocket({ id, pocket, upload }) {
-    const basicToUpdate = await ConstructorFrontPocket.findById(id).populate(
+    const constructorFrontPocketToUpdate = await ConstructorFrontPocket.findById(id).populate(
       'material',
     );
-    console.log(basicToUpdate)
-    console.log(pocket)
-    if (!basicToUpdate) {
+    if (!constructorFrontPocketToUpdate) {
       throw new Error(FRONT_POCKET_NOT_FOUND);
     }
     pocket.basePrice = await this.calculatePrice(pocket.basePrice);
@@ -85,8 +83,8 @@ class ConstructorFrontPocketService {
         { new: true },
       );
     }
-    const foundBasic = await ConstructorFrontPocket.findById(id).lean();
-    deleteFiles(Object.values(foundBasic.images));
+    const foundConstructorFrontPocket = await ConstructorFrontPocket.findById(id).lean();
+    deleteFiles(Object.values(foundConstructorFrontPocket.images));
     pocket.images = images
     return await ConstructorFrontPocket.findByIdAndUpdate(
       id, pocket,
@@ -106,8 +104,9 @@ class ConstructorFrontPocketService {
   }
 
   async checkConstructorFrontPocketExist(data, id) {
+    let constructorFrontPocketCount;
     if (id) {
-      const constructorFrontPocketCount = await ConstructorFrontPocket.countDocuments({
+      constructorFrontPocketCount = await ConstructorFrontPocket.countDocuments({
         _id: { $ne: id },
         name: {
           $elemMatch: {
@@ -117,7 +116,7 @@ class ConstructorFrontPocketService {
       });
       return constructorFrontPocketCount > 0;
     }
-    const constructorFrontPocketCount = await ConstructorFrontPocket.countDocuments({
+    constructorFrontPocketCount = await ConstructorFrontPocket.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

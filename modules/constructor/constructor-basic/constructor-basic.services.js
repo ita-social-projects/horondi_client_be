@@ -104,8 +104,9 @@ class ConstructorBasicService {
   }
 
   async checkConstructorBasicExist(data, id) {
+    let constructorBasicCount;
     if (id) {
-      const constructorBasicCount = await ConstructorBasic.countDocuments({
+      constructorBasicCount = await ConstructorBasic.countDocuments({
         _id: { $ne: id },
         name: {
           $elemMatch: {
@@ -115,7 +116,7 @@ class ConstructorBasicService {
       });
       return constructorBasicCount > 0;
     }
-    const constructorBasicCount = await ConstructorBasic.countDocuments({
+    constructorBasicCount = await ConstructorBasic.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
