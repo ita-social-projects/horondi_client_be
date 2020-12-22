@@ -73,6 +73,14 @@ const {
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType } = require('./modules/size/size.graphql');
+const {
+  constructorBasicType,
+  constructorBasicInput,
+} = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
+const {
+  constructorFrontPocketType,
+  constructorFrontPocketInput,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -100,7 +108,9 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
-
+  ${constructorBasicType}
+  ${constructorFrontPocketType}
+  
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -280,6 +290,14 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
+  type PaginatedConstructorBasics {
+      items: [ConstructorBasic]
+      count: Int
+  }
+  type PaginatedConstructorFrontPocket {
+      items: [ConstructorFrontPocket]
+      count: Int
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -300,6 +318,8 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
+  union ConstructorBasicResult = ConstructorBasic | Error
+  union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   
   type Query {
     getAllCurrencies: [Currency!]!
@@ -377,6 +397,10 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes: [Size]  
     getSizeById(id: ID!): Size
+    getAllBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
+    getBasicById(id: ID!): ConstructorBasicResult
+    getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
+    getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
   }
   input Pagination {
       skip: Int = ${skip}
@@ -438,6 +462,9 @@ const typeDefs = gql`
   ${paymentInput}
   ${headerInput}
   ${homePageSlideInput}
+  ${constructorBasicInput}
+  ${constructorFrontPocketInput}
+  
   input LanguageInput {
     lang: String!
     value: String
@@ -682,6 +709,13 @@ const typeDefs = gql`
     "HomePageSlide Mutation"
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
+    deleteSlide(id: ID!): HomePageSlideResult 
+    addBasic(basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
+    updateBasic(id: ID!, basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
+    deleteBasic(id: ID!): ConstructorBasicResult
+    addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
+    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult  
     deleteSlide(id: ID!): HomePageSlideResult
     addModelConstructorBottom(id:ID!, basicID:ID!):ModelResult  
   }
