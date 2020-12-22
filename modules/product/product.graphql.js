@@ -8,12 +8,10 @@ description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
 strapLengthInCm: Int!
-images: PrimaryImage
+images: [Images]
 colors: [Color]!
-pattern: [Language]
-patternImages: ImageSet
-closure: [Language]!
-closureColor: String
+pattern: Pattern
+closure: [Closure]!
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
@@ -36,32 +34,16 @@ description: [LanguageInput]!
 mainMaterial: [LanguageInput]!
 innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
-colors: [ColorInput]! 
-pattern: [LanguageInput]
-patternImages: ImageSetInput
-images: PrimaryImageInput
-closure: [LanguageInput]!
-closureColor: String
+colors: [ID]! 
+pattern: ID
+images: [ImageInput]
+closure: [ID]!
 availableCount: Int
 basePrice: Int!
 available: Boolean
 isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;
-
-const cartProductType = `
-type CartProduct {
-_id: ID!
-name: [Language]
-bagBottom: CartProductBagBottom
-dimensions: CartProductDimensions
-image: String
-totalPrice: [CurrencySet]
-quantity: Int
-selectedSize: String
-sidePocket: Boolean
-}
-`;
 
 const cartProductInput = `
 input CartProductInput {
@@ -79,6 +61,5 @@ sidePocket: Boolean
 module.exports = {
   productType,
   productInput,
-  cartProductType,
   cartProductInput,
 };
