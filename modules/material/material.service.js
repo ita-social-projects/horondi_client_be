@@ -2,10 +2,7 @@ const Material = require('./material.model');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
-  IMAGE_NOT_PROVIDED,
-  IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
-const { uploadFiles } = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
 
 class MaterialsService {
@@ -18,6 +15,7 @@ class MaterialsService {
 
   async getAllMaterials({ skip, limit }) {
     const items = await Material.find()
+      .populate('color')
       .skip(skip)
       .limit(limit);
 
@@ -29,7 +27,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id);
+    return Material.findById(id).populate('color');
   }
 
   async updateMaterial(id, material) {
@@ -103,6 +101,7 @@ class MaterialsService {
     if (!id) {
       materialsCount = await Material.countDocuments({
         _id: { $ne: id },
+        color: { $eq: data.color },
         name: {
           $elemMatch: {
             $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
@@ -113,6 +112,7 @@ class MaterialsService {
     }
     materialsCount = await Material.countDocuments({
       _id: { $eq: id },
+      color: { $eq: data.color },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
