@@ -54,8 +54,43 @@ const modelsMutation = {
     };
   },
 
-  addModelConstructorBottom: async (parent, args) => {
-    return await modelsService.addModelConstructorBottom(args.id, args.basicID);
+  addModelConstructorBasic: async (parent, args) => {
+    return await modelsService.addModelConstructorBasic(args.id, args.basicID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
+  deleteModelConstructorBasic: async (parent, args) => {
+    return await modelsService.deleteModelConstructorBasic(args.id, args.basicID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
+  addModelConstructorPattern: async (parent, args) => {
+    return await modelsService.addModelConstructorPattern(args.id, args.patternID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
+  deleteModelConstructorPattern: async (parent, args) => {
+    return await modelsService.deleteModelConstructorPattern(args.id, args.patternID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
+  addModelConstructorFrontPocket: async (parent, args) => {
+    return await modelsService.addModelConstructorFrontPocket(args.id, args.frontPocketID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
+  deleteModelConstructorFrontPocket: async (parent, args) => {
+    return await modelsService.deleteModelConstructorFrontPocket(args.id, args.frontPocketID);
     return {
       statusCode: 404,
       message: MODEL_NOT_FOUND,

@@ -15,7 +15,6 @@ const modelSchema = new mongoose.Schema({
   availableForConstructor: Boolean,
   constructorBasic: [{ type:mongoose.Schema.Types.ObjectId, ref: 'ConstructorBasic'}],
   constructorPattern: [{ type:mongoose.Schema.Types.ObjectId, ref: 'Pattern'}],
-  constructorBottom: [{ type:mongoose.Schema.Types.ObjectId, ref: 'ConstructorBottom'}],
   constructorFrontPocket: [{ type:mongoose.Schema.Types.ObjectId, ref: 'ConstructorFrontPocket'}],
 });
 

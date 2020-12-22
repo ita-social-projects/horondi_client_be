@@ -182,8 +182,7 @@ const resolvers = {
   },
 
   Model: {
-    category: parent => categoryService.getCategoryById(parent.category),
-    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
+    category: parent => categoryService.getCategoryById(parent.category)
   },
 
   ProductOptions: {

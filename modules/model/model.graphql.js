@@ -10,7 +10,6 @@ type Model {
     availableForConstructor: Boolean,
     constructorBasic:[ConstructorBasic],
     constructorPattern:[Pattern],
-    constructorBottom:[ConstructorBottom],
     constructorFrontPocket:[ConstructorFrontPocket]
   }
 `;
@@ -26,7 +25,6 @@ input ModelInput {
     availableForConstructor: Boolean,
     constructorBasic:[ID],
     constructorPattern:[ID],
-    constructorBottom:[ID],
     constructorFrontPocket:[ID]
   }`;
 

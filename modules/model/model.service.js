@@ -26,7 +26,34 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new Error(MODEL_NOT_VALID);
     }
-    const foundModel = await Model.findById(id);
+
+    const foundModel = await Model.findById(id).populate({
+      path: 'constructorBasic',
+      model: 'ConstructorBasic',
+      populate: {
+        path: 'material',
+        model: 'Material',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
+    }).populate({
+      path: 'constructorPattern',
+      model: 'Pattern',
+    }).populate({
+      path: 'constructorFrontPocket',
+      model: 'ConstructorFrontPocket',
+      populate: {
+        path: 'material',
+        model: 'Material',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
+    });
+
     if (foundModel) {
       return foundModel;
     }
@@ -63,7 +90,7 @@ class ModelsService {
     if (upload) {
       if (model.images) {
         const images = Object.values(model.images).filter(
-          item => typeof item === 'string' && item
+          item => typeof item === 'string' && item,
         );
         await deleteFiles(images);
       }
@@ -82,7 +109,7 @@ class ModelsService {
     }
 
     const images = Object.values(model.images).filter(
-      item => typeof item === 'string' && item
+      item => typeof item === 'string' && item,
     );
     if (images.length) {
       deleteFiles(images);
@@ -91,10 +118,48 @@ class ModelsService {
     return model;
   }
 
-  async addModelConstructorBottom(id, basicID) {
-    return Model.update(
+  async addModelConstructorBasic(id, basicID) {
+    return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorBasic: [basicID] } }
+      { $addToSet: { constructorBasic: [basicID] } },
+    );
+  }
+
+  async deleteModelConstructorBasic(id, basicID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorBasic: basicID } },
+      { safe: true, upsert: true },
+    );
+  }
+
+  async addModelConstructorPattern(id, patternID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorPattern: [patternID] } },
+    );
+  }
+
+  async deleteModelConstructorPattern(id, patternID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorPattern: patternID } },
+      { safe: true, upsert: true },
+    );
+  }
+
+  async addModelConstructorFrontPocket(id, frontPocketID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorFrontPocket: [frontPocketID] } },
+    );
+  }
+
+  async deleteModelConstructorFrontPocket(id, frontPocketID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorFrontPocket: frontPocketID } },
+      { safe: true, upsert: true },
     );
   }
 
@@ -109,4 +174,5 @@ class ModelsService {
     return modelCount > 0;
   }
 }
+
 module.exports = new ModelsService();
