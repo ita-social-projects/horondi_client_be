@@ -55,7 +55,7 @@ const orderSchema = new mongoose.Schema({
     sentOn: Date,
     sentBy: {
       type: String,
-      required: true, // винести енами окремо
+      required: true,
       enum: ['NOVA-POST', 'UKR-POST', 'SELF-PICKUP'],
       default: 'SELF-PICKUP',
     },
