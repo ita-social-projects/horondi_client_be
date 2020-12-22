@@ -83,7 +83,7 @@ class ConstructorBottomService {
     let constructorBottomCount = await ConstructorBottom.countDocuments({
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });
