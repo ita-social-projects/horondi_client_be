@@ -40,7 +40,7 @@ class ProductsService {
 
   async getProductOptions() {
     const sizes = await sizesService.getAllSizes();
-    const bottomMaterials = await Material.find();
+    const bottomMaterials = await Material.find().populate('bottomMaterial');
 
     return { sizes, bottomMaterials };
   }

@@ -4,8 +4,6 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
 const Category = require('../category/category.model');
 
-// Category.findById(id).populate('category')
-
 const productSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
