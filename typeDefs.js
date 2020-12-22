@@ -17,7 +17,6 @@ const {
 const {
   productType,
   productInput,
-  cartProductType,
   cartProductInput,
 } = require('./modules/product/product.graphql');
 const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
@@ -85,7 +84,6 @@ const typeDefs = gql`
   ${userType}
   ${paginatedUsersType}
   ${productType}
-  ${cartProductType}
   ${commentType}
   ${businessTextType}
   ${modelType}

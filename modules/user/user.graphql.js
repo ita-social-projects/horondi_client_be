@@ -40,7 +40,6 @@ input UserInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
-    cart: [CartProductInput]
     orders:[ID]
     comments: [ID]
     banned: Boolean
@@ -57,7 +56,6 @@ input UserUpdateInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
-    cart: [CartProductInput]
     orders:[ID]
     comments: [ID]
     confirmed: Boolean
