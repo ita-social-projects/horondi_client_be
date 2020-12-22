@@ -221,7 +221,7 @@ if issue is in work it should be placed in proper column on dashboard according 
 ### Development team
 
 [![@VolodymyrTrach](https://avatars2.githubusercontent.com/u/50409925?s=200&u=cc5eae94f38151d613308da12c0d8f1f84fb1777&v=4)](https://github.com/VolodymyrTrach)
-[![@bandvov](https://avatars2.githubusercontent.com/u/48312647?s=200&u=e63ba5607d222194799c4d04a59a2b2b21131aef&v=4)](https://github.com/bandvov)
+[![@bandvov](https://avatars0.githubusercontent.com/u/48312647?s=200&u=0a8915fc55a44ac1e3ad34968dbe53291d1e4b24&v=4)](https://github.com/bandvov)
 [![@YarkoSumyk](https://avatars3.githubusercontent.com/u/40059484?s=200&u=c1252af7060ce2e61f1836d8a7904d098c9519d3&v=4)](https://github.com/YarkoSumyk)
 [![@INR4GE](https://avatars3.githubusercontent.com/u/29551153?s=200&u=64b5922801512d6a92a6005239996bc6a6f49400&v=4)](https://github.com/INR4GE)
 [![@Crash1212](https://avatars0.githubusercontent.com/u/39312657?s=200&u=6f9768ca1cf96e2f1452913b769820120991ce02&v=4)](https://github.com/Crash1212)
