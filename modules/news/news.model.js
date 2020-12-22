@@ -5,7 +5,7 @@ const ImageSet = require('../common/ImageSet').schema;
 const NewsSchema = new mongoose.Schema({
   title: [Language],
   text: [Language],
-  images: ImageSet,
+  images: String,
   author: {
     name: {
       type: Array,
