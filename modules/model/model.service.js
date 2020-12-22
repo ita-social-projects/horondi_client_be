@@ -91,6 +91,13 @@ class ModelsService {
     return model;
   }
 
+  async addModelConstructorBottom(id, basicID) {
+    return Model.update(
+      { _id: id },
+      { $addToSet: { constructorBasic: [basicID] } }
+    );
+  }
+
   async checkModelExist(data) {
     const modelCount = await Model.countDocuments({
       name: {
