@@ -1,20 +1,12 @@
-const mongoose = require('mongoose');
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
-  CATEGORY_IS_NOT_MAIN,
-  WRONG_CATEGORY_DATA,
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
-const { validateCategoryInput } = require('../../utils/validate-category');
-const {
-  deleteFiles,
-  uploadFiles,
-  uploadFile,
-} = require('../upload/upload.service');
+const { deleteFiles, uploadFile } = require('../upload/upload.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
