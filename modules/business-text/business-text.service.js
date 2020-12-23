@@ -5,7 +5,7 @@ const {
   BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
   IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 
 class BusinessTextService {
@@ -108,7 +108,7 @@ class BusinessTextService {
   async replaceImageSourceToLink(page, files) {
     const fileNames = files.map(({ file }) => file.filename);
 
-    const uploadResult = await uploadFiles(files);
+    const uploadResult = await uploadService.uploadFiles(files);
     const imagesResults = await Promise.allSettled(uploadResult);
 
     const updatedPage = { ...page };
@@ -148,7 +148,7 @@ class BusinessTextService {
       .flat();
 
     const deleteResult = await Promise.allSettled(
-      await deleteFiles(valuesToDelete)
+      await uploadService.deleteFiles(valuesToDelete)
     );
     const isAllImagesDeleted = deleteResult.every(
       res => res.status === 'fulfilled'

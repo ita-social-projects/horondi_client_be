@@ -48,9 +48,11 @@ class UploadService {
     });
   }
 
-  uploadFiles = async files => files.map(async file => this.uploadFile(file));
+  async uploadFiles(files) {
+    return files.map(async file => this.uploadFile(file));
+  }
 
-  uploadFile = async (file, sizes) => {
+  async uploadFile(file, sizes) {
     const { createReadStream, filename } = await file.promise;
     const inputStream = createReadStream();
     let fileBuffer;
@@ -102,13 +104,14 @@ class UploadService {
         thumbnail: createName('thumbnail'),
       },
     };
-  };
+  }
 
-  deleteFiles = async files =>
-    files.map(async fileName => this.deleteFile(fileName));
+  async deleteFiles(files) {
+    return files.map(async fileName => this.deleteFile(fileName));
+  }
 
-  deleteFile = async fileName =>
-    await new Promise((resolve, reject) =>
+  async deleteFile(fileName) {
+    return await new Promise((resolve, reject) =>
       blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
         if (err) {
           reject(err);
@@ -116,6 +119,7 @@ class UploadService {
         resolve(res);
       })
     );
+  }
 }
 
 module.exports = new UploadService();

@@ -4,7 +4,7 @@ const Material = require('../material/material.model');
 const Currency = require('../currency/currency.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -142,17 +142,17 @@ class ProductsService {
       throw new Error(PRODUCT_NOT_FOUND);
     }
     if (primary) {
-      await deleteFiles(
+      await uploadService.deleteFiles(
         Object.values(product.images.primary).filter(
           item => typeof item === 'string'
         )
       );
-      const uploadResult = await uploadFiles(primary);
+      const uploadResult = await uploadService.uploadFiles(primary);
       const imagesResults = await uploadResult[0];
       productData.images.primary = imagesResults.fileNames;
     }
     if (filesToUpload) {
-      const uploadResult = await uploadFiles(filesToUpload);
+      const uploadResult = await uploadService.uploadFiles(filesToUpload);
       const imagesResults = await Promise.allSettled(uploadResult);
       const additional = imagesResults.map(res => res.value.fileNames);
       productData.images.additional = [
@@ -194,7 +194,7 @@ class ProductsService {
     const { images } = product;
     const { primary, additional } = images;
     const additionalImagesToDelete = Object.assign(...additional);
-    const deletedImages = await deleteFiles([
+    const deletedImages = await uploadService.deleteFiles([
       ...Object.values(primary),
       ...Object.values(additionalImagesToDelete),
     ]);
@@ -218,7 +218,7 @@ class ProductsService {
 
   async deleteImages(id, imagesToDelete) {
     const product = await Product.findById(id).lean();
-    const deleteResults = await deleteFiles(imagesToDelete);
+    const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
         item =>

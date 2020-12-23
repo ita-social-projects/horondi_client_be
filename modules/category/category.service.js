@@ -6,7 +6,7 @@ const {
   CATEGORY_NOT_FOUND,
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
-const { deleteFiles, uploadFile } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
@@ -35,14 +35,14 @@ class CategoryService {
     if (!upload || !Object.keys(upload).length) {
       return await Category.findByIdAndUpdate(id, category, { new: true });
     }
-    const uploadResult = await uploadFile(upload);
+    const uploadResult = await uploadService.uploadFile(upload);
 
     const images = uploadResult.fileNames;
     if (!images) {
       return await Category.findByIdAndUpdate(id, category);
     }
     const foundCategory = await Category.findById(id).lean();
-    deleteFiles(Object.values(foundCategory.images));
+    uploadService.deleteFiles(Object.values(foundCategory.images));
 
     return await Category.findByIdAndUpdate(
       id,
@@ -97,7 +97,7 @@ class CategoryService {
 
     const savedCategory = await new Category(data).save();
 
-    const uploadResult = await uploadFile(upload);
+    const uploadResult = await uploadService.uploadFile(upload);
 
     savedCategory.images = uploadResult.fileNames;
 
@@ -127,7 +127,7 @@ class CategoryService {
     );
 
     if (images.length) {
-      await deleteFiles(images);
+      await uploadService.deleteFiles(images);
     }
 
     if (category) {
