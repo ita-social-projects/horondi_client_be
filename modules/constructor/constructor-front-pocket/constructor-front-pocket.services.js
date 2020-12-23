@@ -1,12 +1,11 @@
-const { ObjectId } = require('mongoose').Types;
 const ConstructorFrontPocket = require('./constructor-front-pocket.model');
-const Currency = require('../../currency/currency.model');
 const { deleteFiles, uploadFiles } = require('../../upload/upload.service');
 const {
   FRONT_POCKET_NOT_FOUND,
   FRONT_POCKET_ALREADY_EXIST,
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-front-pocket-messages');
+const {calculatePrice} = require('../../../utils/calculate-price');
 
 class ConstructorFrontPocketService {
   async getAllConstructorFrontPocket({ skip, limit }) {
@@ -33,20 +32,6 @@ class ConstructorFrontPocketService {
     throw new Error(FRONT_POCKET_NOT_FOUND);
   }
 
-  async calculatePrice(price) {
-    const { convertOptions } = await Currency.findOne();
-    return [
-      {
-        value: Math.round(price * convertOptions[0].exchangeRate * 100),
-        currency: 'UAH',
-      },
-      {
-        value: Math.round(price * 100),
-        currency: 'USD',
-      },
-    ];
-  }
-
   async addConstructorFrontPocket(data, upload) {
     if (await this.checkConstructorFrontPocketExist(data)) {
       throw new Error(FRONT_POCKET_ALREADY_EXIST);
@@ -57,10 +42,9 @@ class ConstructorFrontPocketService {
     const uploadResult = await uploadFiles([upload]);
     const imageResults = await uploadResult[0];
     data.images = imageResults.fileNames;
-    data.basePrice = await this.calculatePrice(data.basePrice);
+    data.basePrice = await calculatePrice(data.basePrice);
     return await new ConstructorFrontPocket(data).save()
   }
-
 
   async updateConstructorFrontPocket({ id, pocket, upload }) {
     const constructorFrontPocketToUpdate = await ConstructorFrontPocket.findById(id).populate(
@@ -69,7 +53,7 @@ class ConstructorFrontPocketService {
     if (!constructorFrontPocketToUpdate) {
       throw new Error(FRONT_POCKET_NOT_FOUND);
     }
-    pocket.basePrice = await this.calculatePrice(pocket.basePrice);
+    pocket.basePrice = await calculatePrice(pocket.basePrice);
     if (!upload) {
       return await ConstructorFrontPocket.findByIdAndUpdate(id, pocket,
         { new: true },
@@ -78,11 +62,6 @@ class ConstructorFrontPocketService {
     const uploadResult = await uploadFiles([upload]);
     const imageResults = await uploadResult[0];
     const images = imageResults.fileNames;
-    if (!images) {
-      return await ConstructorFrontPocket.findByIdAndUpdate(id, pocket,
-        { new: true },
-      );
-    }
     const foundConstructorFrontPocket = await ConstructorFrontPocket.findById(id).lean();
     deleteFiles(Object.values(foundConstructorFrontPocket.images));
     pocket.images = images

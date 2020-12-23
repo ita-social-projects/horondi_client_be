@@ -397,8 +397,8 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes: [Size]  
     getSizeById(id: ID!): Size
-    getAllBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
-    getBasicById(id: ID!): ConstructorBasicResult
+    getAllConstructorBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
+    getConstructorBasicById(id: ID!): ConstructorBasicResult
     getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
   }
@@ -710,9 +710,9 @@ const typeDefs = gql`
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult 
-    addBasic(basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
-    updateBasic(id: ID!, basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
-    deleteBasic(id: ID!): ConstructorBasicResult
+    addConstructorBasic(basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
+    deleteConstructorBasic(id: ID!): ConstructorBasicResult
     addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
     updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
     deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult  

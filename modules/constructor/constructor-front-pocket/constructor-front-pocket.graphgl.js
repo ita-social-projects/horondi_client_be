@@ -2,7 +2,7 @@ const constructorFrontPocketType = `
 type ConstructorFrontPocket {
     _id: ID!
     name: [Language],
-    material:Material!,
+    material:Material,
     images:ImageSet,
     basePrice: [CurrencySet]
     available: Boolean,
@@ -12,7 +12,7 @@ type ConstructorFrontPocket {
 const constructorFrontPocketInput = `  
 input ConstructorFrontPocketInput {
     name: [LanguageInput],
-    material: ID!,
+    material: ID,
     images:ImageSetInput,
     basePrice: Int
     available: Boolean,

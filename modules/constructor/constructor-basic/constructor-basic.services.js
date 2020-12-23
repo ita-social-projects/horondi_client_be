@@ -1,14 +1,14 @@
 const ConstructorBasic = require('./constructor-basic.model');
-const Currency = require('../../currency/currency.model');
 const { deleteFiles, uploadFiles } = require('../../upload/upload.service');
 const {
   BASIC_NOT_FOUND,
   BASIC_ALREADY_EXIST,
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-basic-messages');
+const {calculatePrice} = require('../../../utils/calculate-price');
 
 class ConstructorBasicService {
-  async getAllBasics({ skip, limit }) {
+  async getAllConstructorBasics({ skip, limit }) {
     const items = await ConstructorBasic.find().populate(
       'material',
     )
@@ -22,7 +22,7 @@ class ConstructorBasicService {
     };
   }
 
-  async getBasicById(id) {
+  async getConstructorBasicById(id) {
     const foundBasic = await ConstructorBasic.findById(id).populate(
       'material',
     );
@@ -32,22 +32,7 @@ class ConstructorBasicService {
     throw new Error(BASIC_NOT_FOUND);
   }
 
-  async calculatePrice(price) {
-    const { convertOptions } = await Currency.findOne();
-
-    return [
-      {
-        value: Math.round(price * convertOptions[0].exchangeRate * 100),
-        currency: 'UAH',
-      },
-      {
-        value: Math.round(price * 100),
-        currency: 'USD',
-      },
-    ];
-  }
-
-  async addBasic(data, upload) {
+  async addConstructorBasic(data, upload) {
     if (await this.checkConstructorBasicExist(data)) {
       throw new Error(BASIC_ALREADY_EXIST);
     }
@@ -57,19 +42,19 @@ class ConstructorBasicService {
     const uploadResult = await uploadFiles([upload]);
     const imageResults = await uploadResult[0];
     data.images = imageResults.fileNames;
-    data.basePrice = await this.calculatePrice(data.basePrice);
+    data.basePrice = await calculatePrice(data.basePrice);
     return await new ConstructorBasic(data).save()
   }
 
 
-  async updateBasic({ id, basic, upload }) {
+  async updateConstructorBasic({ id, basic, upload }) {
     const basicToUpdate = await ConstructorBasic.findById(id).populate(
       'material',
     );
     if (!basicToUpdate) {
       throw new Error(BASIC_NOT_FOUND);
     }
-    basic.basePrice = await this.calculatePrice(basic.basePrice);
+    basic.basePrice = await calculatePrice(basic.basePrice);
     if (!upload) {
       return await ConstructorBasic.findByIdAndUpdate(id, basic,
         { new: true },
@@ -78,11 +63,6 @@ class ConstructorBasicService {
     const uploadResult = await uploadFiles([upload]);
     const imageResults = await uploadResult[0];
     const images = imageResults.fileNames;
-    if (!images) {
-      return await ConstructorBasic.findByIdAndUpdate(id, basic,
-        { new: true },
-      );
-    }
     const foundBasic = await ConstructorBasic.findById(id).lean();
     deleteFiles(Object.values(foundBasic.images));
     basic.images = images
@@ -92,7 +72,7 @@ class ConstructorBasicService {
     );
   }
 
-  async deleteBasic(id) {
+  async deleteConstructorBasic(id) {
     const foundBasic = await ConstructorBasic.findByIdAndDelete(id).lean();
     if (!foundBasic) {
       throw new Error(BASIC_NOT_FOUND);
