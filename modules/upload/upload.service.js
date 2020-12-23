@@ -14,6 +14,7 @@ const containerName = 'images';
 const getStream = require('into-stream');
 const Jimp = require('jimp');
 const uniqid = require('uniqid');
+const { imageQualities } = require('../../consts');
 
 class UploadService {
   async uploadResizedImage(size, imageName, image) {
@@ -47,67 +48,74 @@ class UploadService {
     });
   }
 
-  uploadFiles = async files =>
-    files.map(async file => {
-      const { createReadStream, filename } = await file.promise;
-      const inputStream = createReadStream();
-      let fileBuffer;
-      const id = uniqid();
+  uploadFiles = async files => files.map(async file => this.uploadFile(file));
 
-      const inputBuffer = await new Promise((resolve, reject) => {
-        const chunks = [];
-        inputStream.once('error', err => reject(err));
+  uploadFile = async (file, sizes) => {
+    const { createReadStream, filename } = await file.promise;
+    const inputStream = createReadStream();
+    let fileBuffer;
+    const id = uniqid();
+    const inputBuffer = await new Promise((resolve, reject) => {
+      const chunks = [];
+      inputStream.once('error', err => reject(err));
 
-        inputStream.once('end', () => {
-          fileBuffer = Buffer.concat(chunks);
-          return resolve(fileBuffer);
-        });
-
-        inputStream.on('data', chunk => {
-          chunks.push(chunk);
-        });
+      inputStream.once('end', () => {
+        fileBuffer = Buffer.concat(chunks);
+        return resolve(fileBuffer);
       });
 
-      const image = await Jimp.read(inputBuffer);
-
-      const createName = sizeName => `${sizeName}_${id}_${filename}`;
-
-      this.uploadResizedImage(1920, createName('large'), image);
-
-      this.uploadResizedImage(1080, createName('medium'), image);
-
-      this.uploadResizedImage(768, createName('small'), image);
-
-      this.uploadResizedImage(128, createName('thumbnail'), image);
-
-      return {
-        prefixUrl: IMAGE_LINK,
-        fileNames: {
-          large: createName('large'),
-          medium: createName('medium'),
-          small: createName('small'),
-          thumbnail: createName('thumbnail'),
-        },
-      };
+      inputStream.on('data', chunk => {
+        chunks.push(chunk);
+      });
     });
 
-  async deleteFiles(files) {
-    return files.map(
-      async fileName =>
-        await new Promise((resolve, reject) =>
-          blobService.deleteBlobIfExists(
-            containerName,
-            fileName,
-            (err, res) => {
-              if (err) {
-                reject(err);
-              }
-              resolve(res);
-            }
-          )
-        )
+    const image = await Jimp.read(inputBuffer);
+
+    const createName = sizeName => `${sizeName}_${id}_${filename}`;
+    if (Array.isArray(sizes)) {
+      sizes.forEach(function(size) {
+        this.uploadResizedImage(imageQualities[size], createName(size), image);
+      });
+      const fileNames = sizes.reduce(
+        (acc, size) => (acc[size] = createName(size)),
+        {}
+      );
+      return {
+        prefixUrl: IMAGE_LINK,
+        fileNames,
+      };
+    }
+    this.uploadResizedImage(1920, createName('large'), image);
+
+    this.uploadResizedImage(1080, createName('medium'), image);
+
+    this.uploadResizedImage(768, createName('small'), image);
+
+    this.uploadResizedImage(128, createName('thumbnail'), image);
+
+    return {
+      prefixUrl: IMAGE_LINK,
+      fileNames: {
+        large: createName('large'),
+        medium: createName('medium'),
+        small: createName('small'),
+        thumbnail: createName('thumbnail'),
+      },
+    };
+  };
+
+  deleteFiles = async files =>
+    files.map(async fileName => this.deleteFile(fileName));
+
+  deleteFile = async fileName =>
+    await new Promise((resolve, reject) =>
+      blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(res);
+      })
     );
-  }
 }
 
 module.exports = new UploadService();
