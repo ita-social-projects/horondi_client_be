@@ -5,7 +5,7 @@ const {
   IMAGE_NOT_FOUND,
   CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
 } = require('../../../error-messages/constructor-bottom.messages');
-const { uploadFiles, deleteFiles } = require('../../upload/upload.service');
+const uploadService = require('../../upload/upload.service');
 const { calculatePrice } = require('../../currency/currency.utils');
 
 class ConstructorBottomService {
@@ -30,7 +30,7 @@ class ConstructorBottomService {
     if (!upload) {
       throw new Error(IMAGE_NOT_FOUND);
     }
-    const uploadResult = await uploadFiles([upload]);
+    const uploadResult = await uploadService.uploadFiles([upload]);
     const imageResults = await uploadResult[0];
     data.image = imageResults.fileNames;
 
@@ -49,9 +49,9 @@ class ConstructorBottomService {
 
     if (upload) {
       if (constructorBottom.image) {
-        await deleteFiles([constructorBottom.image]);
+        await uploadService.deleteFiles([constructorBottom.image]);
       }
-      const uploadResult = await uploadFiles([upload]);
+      const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       newConstructorBottom.image = imageResults.fileNames;
     }
@@ -73,7 +73,7 @@ class ConstructorBottomService {
     }
 
     if (constructorBottom.image) {
-      deleteFiles([constructorBottom.image]);
+      uploadService.deleteFiles([constructorBottom.image]);
     }
 
     return constructorBottom;
