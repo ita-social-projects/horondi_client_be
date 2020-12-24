@@ -3,7 +3,7 @@ const sizeService = require('./size.service');
 const sizeQuery = {
   getAllSizes: () => sizeService.getAllSizes(),
 
-  getSizeById: async (_, { id }) => {
+  getSizeById: async (parent, { id }) => {
     try {
       return await sizeService.getSizeById(id);
     } catch (e) {
@@ -16,7 +16,7 @@ const sizeQuery = {
 };
 
 const sizeMutation = {
-  addSize: async (_, { data }) => {
+  addSize: async (parent_, { data }) => {
     try {
       return await sizeService.addSize(data);
     } catch (e) {
@@ -27,7 +27,7 @@ const sizeMutation = {
     }
   },
 
-  deleteSize: async (_, { id }) => {
+  deleteSize: async (parent, { id }) => {
     try {
       return await sizeService.deleteSize(id);
     } catch (e) {
@@ -38,7 +38,7 @@ const sizeMutation = {
     }
   },
 
-  updateSize: async (_, { id, size }) => {
+  updateSize: async (parent, { id, size }) => {
     try {
       return await sizeService.updateSize(id, size);
     } catch (e) {

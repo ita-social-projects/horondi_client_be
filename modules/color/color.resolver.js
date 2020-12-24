@@ -3,7 +3,7 @@ const colorService = require('./color.service');
 const colorQuery = {
   getAllColors: async () => colorService.getAllColors(),
 
-  getColorById: async (_, { id }) => {
+  getColorById: async (parent, { id }) => {
     try {
       return await colorService.getColorById(id);
     } catch (e) {
@@ -16,7 +16,7 @@ const colorQuery = {
 };
 
 const colorMutation = {
-  addColor: async (_, { data }) => {
+  addColor: async (parent, { data }) => {
     try {
       return await colorService.addColor(data);
     } catch (e) {
@@ -27,7 +27,7 @@ const colorMutation = {
     }
   },
 
-  deleteColor: async (_, { id }) => {
+  deleteColor: async (parent, { id }) => {
     try {
       return await colorService.deleteColor(id);
     } catch (e) {

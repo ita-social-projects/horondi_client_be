@@ -13,8 +13,21 @@ class MaterialsService {
     };
   }
 
-  async getAllMaterials({ skip, limit }) {
-    const items = await Material.find()
+  filterItems(filterInput) {
+    const filter = {};
+    const { colors } = filterInput;
+
+    if (colors && colors.length) {
+      filter.color = { $in: colors };
+    }
+
+    return filter;
+  }
+
+  async getAllMaterials({ filter, skip, limit }) {
+    const filters = this.filterItems(filter);
+
+    const items = await Material.find(filters)
       .populate('color')
       .skip(skip)
       .limit(limit);

@@ -29,6 +29,7 @@ const {
 const {
   materialType,
   materialInput,
+  materialFilterInput,
 } = require('./modules/material/material.graphql');
 const {
   patternType,
@@ -309,7 +310,11 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getCategoriesForBurgerMenu: [BurgerMenu]
-    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
+    getAllMaterials(
+      filter: MaterialFilterInput,
+      limit: Int, 
+      skip: Int
+    ): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
@@ -442,6 +447,7 @@ const typeDefs = gql`
   ${sizeInput}
   ${homePageSlideInput}
   ${colorInput}
+  ${materialFilterInput}
 
   input LanguageInput {
     lang: String!
