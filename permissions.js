@@ -54,6 +54,11 @@ const {
   colorPermissionsQuery,
 } = require('./modules/color/color.permissions');
 
+const {
+  сonstructorBottomPermissionsQuery,
+  сonstructorBottomPermissionsMutations,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -68,6 +73,7 @@ const permissions = shield(
       ...homePageImagesPermissionsQuery,
       ...sizePermissionsQuery,
       ...colorPermissionsQuery,
+      ...сonstructorBottomPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -81,6 +87,7 @@ const permissions = shield(
       ...homePageImagesPermissionsMutations,
       ...sizePermissionsMutations,
       ...colorPermissionsMutations,
+      ...сonstructorBottomPermissionsMutations,
     },
   },
   {

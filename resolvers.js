@@ -71,6 +71,11 @@ const {
   homePageSlideMutation,
 } = require('./modules/homepage-slider/homepage-slider.resolves');
 
+const {
+  constructorBottomMutation,
+  constructorBottomQuery,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -103,6 +108,7 @@ const SCHEMA_NAMES = {
   token: 'Token',
   size: 'Size',
   color: 'Color',
+  constructorBottom: 'ConstructorBottom',
 };
 const resolvers = {
   Query: {
@@ -146,7 +152,18 @@ const resolvers = {
 
     ...homePageSlideQuery,
 
+    ...constructorBottomQuery,
+
     ...colorQuery,
+  },
+
+  ConstructorBottom: {
+    __resolveType: obj => {
+      if (obj.title) {
+        return SCHEMA_NAMES.constructorBottom;
+      }
+      return 'Error';
+    },
   },
 
   User: {
@@ -232,6 +249,8 @@ const resolvers = {
     ...homePageSlideMutation,
 
     ...colorMutation,
+
+    ...constructorBottomMutation,
   },
   TokenResult: {
     __resolveType: obj => {
@@ -286,6 +305,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.product;
+      }
+      return 'Error';
+    },
+  },
+  ConstructorBottomResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorBottom;
       }
       return 'Error';
     },

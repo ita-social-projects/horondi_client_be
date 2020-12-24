@@ -71,6 +71,10 @@ const {
   homePageSlideType,
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
+const {
+  constructorBottomInput,
+  constructorBottomType,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
@@ -103,8 +107,7 @@ const typeDefs = gql`
   ${tokenType}
   ${sizeType}
   ${colorType}
-
-
+  ${constructorBottomType}
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -167,7 +170,7 @@ const typeDefs = gql`
   }
   type Author {
     name: [Language]
-    image: ImageSet
+    image: String
   }
   type ProductOptions {
     size: Size
@@ -302,7 +305,7 @@ const typeDefs = gql`
   union SizeResult = Size | Error
   union ColorResult = Color | Error
   union ColorDeletingResult = Color | Materials | Error
-
+  union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -384,6 +387,8 @@ const typeDefs = gql`
     getSizeById(id: ID!): SizeResult
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
+    getConstructorBottomById(id: ID!): ConstructorBottomResult  
+    getAllConstructorBottom: [ConstructorBottomResult]
   }
   input Pagination {
       skip: Int = ${skip}
@@ -417,7 +422,7 @@ const typeDefs = gql`
   }
   input AuthorInput {
     name: [LanguageInput]
-    image: ImageSetInput
+    image: String
   }
   ${categoryInput}
   ${currencyInput}
@@ -448,7 +453,7 @@ const typeDefs = gql`
   ${homePageSlideInput}
   ${colorInput}
   ${materialFilterInput}
-
+  ${constructorBottomInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -671,6 +676,11 @@ const typeDefs = gql`
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
+    "ConstructorBottom Mutation"
+    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    deleteConstructorBottom(id: ID!): ConstructorBottomResult
+
   }
 `;
 
