@@ -1,8 +1,10 @@
 const Color = require('./color.model');
+const Material = require('../material/material.model');
 const {
   COLOR_ALREADY_EXIST,
   COLOR_NOT_FOUND,
 } = require('../../error-messages/color.massage');
+const { findByIdAndDelete } = require('../material/material.model');
 
 class ColorService {
   async getAllColors() {
@@ -18,7 +20,7 @@ class ColorService {
   }
 
   async addColor(colorData) {
-    const hex = await this.isHexExist(colorData.colorHex);
+    const hex = await Color.find({ colorHex: colorData.colorHex });
     if (hex.length) {
       throw new Error(COLOR_ALREADY_EXIST);
     }
@@ -26,28 +28,17 @@ class ColorService {
   }
 
   async deleteColor(id) {
-    const color = await Color.findByIdAndDelete(id);
-    if (!color) {
-      throw new Error(COLOR_NOT_FOUND);
-    }
-    return color;
-  }
-
-  async updateColor(id, input) {
     const color = await Color.findById(id);
     if (!color) {
       throw new Error(COLOR_NOT_FOUND);
-    } else {
-      const hex = await this.isHexExist(input.colorHex);
-      if (hex.length && !hex[0]._id.equals(id)) {
-        throw new Error(COLOR_ALREADY_EXIST);
-      }
     }
-    return await Color.findByIdAndUpdate(id, input);
-  }
+    const materials = await Material.find({ color: id });
 
-  async isHexExist(hex) {
-    return await Color.find({ colorHex: hex });
+    if (materials.length) {
+      return { items: materials };
+    }
+
+    return await Color.findByIdAndDelete(id);
   }
 }
 

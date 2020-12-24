@@ -37,17 +37,6 @@ const colorMutation = {
       };
     }
   },
-
-  updateColor: async (_, { id, color }) => {
-    try {
-      return await colorService.updateColor(id, color);
-    } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
-    }
-  },
 };
 
 module.exports = { colorQuery, colorMutation };

@@ -9,7 +9,6 @@ const colorPermissionsQuery = {
 };
 const colorPermissionsMutations = {
   addColor: hasRoles([ADMIN, SUPERADMIN]),
-  updateColor: hasRoles([ADMIN, SUPERADMIN]),
   deleteColor: hasRoles([ADMIN, SUPERADMIN]),
 };
 

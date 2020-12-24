@@ -276,6 +276,9 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
+  type Materials {
+    items: [Material]
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -297,6 +300,7 @@ const typeDefs = gql`
   union TokenResult = Token | Error
   union SizeResult = Size | Error
   union ColorResult = Color | Error
+  union ColorDeletingResult = Color | Materials | Error
 
   type Query {
     getAllCurrencies: [Currency!]!
@@ -660,8 +664,7 @@ const typeDefs = gql`
     updateSize(id: ID!, size: SizeInput!): SizeResult!
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
-    deleteColor(id: ID!): ColorResult!
-    updateColor(id: ID!, color: ColorInput!): ColorResult!
+    deleteColor(id: ID!): ColorDeletingResult!
   }
 `;
 

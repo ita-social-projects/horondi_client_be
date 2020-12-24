@@ -85,6 +85,7 @@ const SCHEMA_NAMES = {
   news: 'News',
   pattern: 'Pattern',
   material: 'Material',
+  materials: 'Materials',
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
@@ -397,6 +398,17 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.colorHex) {
         return SCHEMA_NAMES.color;
+      }
+      return 'Error';
+    },
+  },
+
+  ColorDeletingResult: {
+    __resolveType: obj => {
+      if (obj.colorHex) {
+        return SCHEMA_NAMES.color;
+      } else if (obj.items) {
+        return SCHEMA_NAMES.materials;
       }
       return 'Error';
     },
