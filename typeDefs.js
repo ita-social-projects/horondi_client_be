@@ -163,7 +163,7 @@ const typeDefs = gql`
   }
   type Author {
     name: [Language]
-    image: ImageSet
+    image: String
   }
   type Color {
     code: Int
@@ -410,7 +410,7 @@ const typeDefs = gql`
   }
   input AuthorInput {
     name: [LanguageInput]
-    image: ImageSetInput
+    image: String
   }
   ${categoryInput}
   ${currencyInput}
