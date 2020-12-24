@@ -45,6 +45,19 @@ input UserInput {
     banned: Boolean
     confirmed: Boolean
 }`;
+const cartProductType = `
+type CartProduct {
+_id: ID!
+name: [Language]
+bagBottom: CartProductBagBottom
+dimensions: CartProductDimensions
+image: String
+totalPrice: [CurrencySet]
+quantity: Int
+selectedSize: String
+sidePocket: Boolean
+}
+`;
 const userUpdateInput = `
 input UserUpdateInput {
     _id: ID
@@ -117,6 +130,11 @@ type Token {
   accessToken: String
 }
 `;
+const purchasedProductsType = `
+    type PurchasedProduct {
+        _id: ID!
+    }
+`;
 
 module.exports = {
   userType,
@@ -131,4 +149,6 @@ module.exports = {
   paginatedUsersType,
   userSortInput,
   tokenType,
+  purchasedProductsType,
+  cartProductType,
 };

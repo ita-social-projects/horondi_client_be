@@ -13,6 +13,8 @@ const {
   UserForStatisticsInput,
   paginatedUsersType,
   tokenType,
+  purchasedProductsType,
+  cartProductType,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -98,7 +100,8 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
-
+  ${purchasedProductsType}
+  ${cartProductType}
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -323,6 +326,7 @@ const typeDefs = gql`
       pagination: Pagination
       sort: UserSortInput
     ): PaginatedUsersType!
+    getPurchasedProducts(id: ID!): [PurchasedProduct]
     getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
@@ -607,9 +611,6 @@ const typeDefs = gql`
     ): LogicalResult!
       addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
       removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
-      addProductToCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
-      removeProductFromCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
-      changeCartProductQuantity(id: ID!, key: String!, product: CartProductInput!): CartProduct!
        googleUser(idToken: String!, staySignedIn: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
