@@ -70,6 +70,10 @@ const {
   homePageSlideType,
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
+const {
+  constructorBottomInput,
+  constructorBottomType,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType } = require('./modules/size/size.graphql');
@@ -100,7 +104,7 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
-
+  ${constructorBottomType}
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -163,7 +167,7 @@ const typeDefs = gql`
   }
   type Author {
     name: [Language]
-    image: ImageSet
+    image: String
   }
   type Color {
     code: Int
@@ -300,7 +304,7 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
-  
+  union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -377,6 +381,8 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes: [Size]  
     getSizeById(id: ID!): Size
+    getConstructorBottomById(id: ID!): ConstructorBottomResult  
+    getAllConstructorBottom: [ConstructorBottomResult]
   }
   input Pagination {
       skip: Int = ${skip}
@@ -410,7 +416,7 @@ const typeDefs = gql`
   }
   input AuthorInput {
     name: [LanguageInput]
-    image: ImageSetInput
+    image: String
   }
   ${categoryInput}
   ${currencyInput}
@@ -438,6 +444,7 @@ const typeDefs = gql`
   ${paymentInput}
   ${headerInput}
   ${homePageSlideInput}
+  ${constructorBottomInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -682,7 +689,11 @@ const typeDefs = gql`
     "HomePageSlide Mutation"
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
-    deleteSlide(id: ID!): HomePageSlideResult  
+    deleteSlide(id: ID!): HomePageSlideResult
+    "ConstructorBottom Mutation"
+    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    deleteConstructorBottom(id: ID!): ConstructorBottomResult
   }
 `;
 
