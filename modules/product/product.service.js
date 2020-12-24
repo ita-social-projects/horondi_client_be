@@ -1,7 +1,6 @@
 const Product = require('./product.model');
 const sizesService = require('../size/size.service');
 const Material = require('../material/material.model');
-const Currency = require('../currency/currency.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
@@ -14,6 +13,7 @@ const {
 } = require('../../error-messages/category.messages');
 const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
+const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   getProductById(id) {
@@ -121,21 +121,6 @@ class ProductsService {
     };
   }
 
-  async calculatePrice(price) {
-    const { convertOptions } = await Currency.findOne();
-
-    return [
-      {
-        value: Math.round(price * convertOptions[0].exchangeRate * 100),
-        currency: 'UAH',
-      },
-      {
-        value: Math.round(price * 100),
-        currency: 'USD',
-      },
-    ];
-  }
-
   async updateProduct(id, productData, filesToUpload, primary) {
     const product = await Product.findById(id).lean();
     if (!product) {
@@ -161,7 +146,7 @@ class ProductsService {
       ];
     }
     const { basePrice } = productData;
-    productData.basePrice = await this.calculatePrice(basePrice);
+    productData.basePrice = await calculatePrice(basePrice);
     if (!Array.isArray(productData.model)) {
       const model = await modelService.getModelById(productData.model);
       productData.model = model.name;
@@ -173,7 +158,7 @@ class ProductsService {
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
-    productData.basePrice = await this.calculatePrice(basePrice);
+    productData.basePrice = await calculatePrice(basePrice);
 
     const model = await modelService.getModelById(productData.model);
     productData.model = model.name;
