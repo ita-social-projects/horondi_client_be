@@ -720,16 +720,16 @@ const typeDefs = gql`
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult 
     "ConstructorBasic Mutation"  
-    addConstructorBasic(basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
-    updateConstructorBasic(id: ID!, basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
+    addConstructorBasic(basic: ConstructorBasicInput!): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, basic: ConstructorBasicInput!): ConstructorBasicResult
     deleteConstructorBasic(id: ID!): ConstructorBasicResult
     "ConstructorFrontPocket Mutation"  
-    addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
-    updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
+    addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
     deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
     "ConstructorBottom Mutation"
-    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
-    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    addConstructorBottom(constructorBottom: ConstructorBottomInput!): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
   }
 `;

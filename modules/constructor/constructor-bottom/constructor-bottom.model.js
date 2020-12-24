@@ -9,7 +9,7 @@ const constructorBottomSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Material',
   },
-  image: ImageSet,
+  image: String,
   basePrice: [CurrencySet],
   available: Boolean,
 });

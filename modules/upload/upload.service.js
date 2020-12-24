@@ -8,7 +8,7 @@ const azureStorage = require('azure-storage');
 const blobService = azureStorage.createBlobService(
   STORAGE_ACCOUNT,
   ACCESS_KEY,
-  AZURE_HOST
+  AZURE_HOST,
 );
 const containerName = 'images';
 const getStream = require('into-stream');
@@ -43,7 +43,7 @@ class UploadService {
             reject(err);
           }
           resolve(imageName);
-        }
+        },
       );
     });
   }
@@ -75,13 +75,13 @@ class UploadService {
 
     const createName = sizeName => `${sizeName}_${id}_${filename}`;
     if (Array.isArray(sizes)) {
-      sizes.forEach(function(size) {
+      sizes.foregroundColor(size => {
         this.uploadResizedImage(imageQualities[size], createName(size), image);
       });
-      const fileNames = sizes.reduce(
-        (acc, size) => (acc[size] = createName(size)),
-        {}
-      );
+      const fileNames = sizes.reduce((acc, size) => {
+        acc[size] = createName(size);
+        return acc;
+      }, {});
       return {
         prefixUrl: IMAGE_LINK,
         fileNames,
@@ -117,7 +117,7 @@ class UploadService {
           reject(err);
         }
         resolve(res);
-      })
+      }),
     );
   }
 }

@@ -9,7 +9,7 @@ const constructorFrontPocketSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Material',
   },
-  images: ImageSet,
+  image: String,
   basePrice: [CurrencySet],
   available: Boolean
 });

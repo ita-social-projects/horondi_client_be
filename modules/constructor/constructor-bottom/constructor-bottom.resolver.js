@@ -16,15 +16,14 @@ const constructorBottomQuery = {
   },
 
   getAllConstructorBottom: async () =>
-    await constructorBottomService.getAllConstructorBottom(),
+    await constructorBottomService.getAllConstructorBottom()
 };
 
 const constructorBottomMutation = {
   addConstructorBottom: async (parent, args) => {
     try {
       return await constructorBottomService.addConstructorBottom(
-        args.constructorBottom,
-        args.upload
+        args.constructorBottom
       );
     } catch (e) {
       return {
@@ -38,8 +37,7 @@ const constructorBottomMutation = {
     try {
       return await constructorBottomService.updateConstructorBottom(
         args.id,
-        args.constructorBottom,
-        args.upload
+        args.constructorBottom
       );
     } catch (e) {
       return {
