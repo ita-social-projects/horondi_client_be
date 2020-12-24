@@ -3,7 +3,7 @@ const Language = require('../../../models/Language').schema;
 const CurrencySet = require('../../../models/CurrencySet').schema;
 const ImageSet = require('../../common/ImageSet').schema;
 
-const constructorBasicSchema = new mongoose.Schema({
+const constructorBottomSchema = new mongoose.Schema({
   name: [Language],
   material: {
     type: mongoose.Schema.Types.ObjectId,
@@ -11,7 +11,6 @@ const constructorBasicSchema = new mongoose.Schema({
   },
   image: String,
   basePrice: [CurrencySet],
-  available: Boolean
+  available: Boolean,
 });
-
-module.exports = mongoose.model('ConstructorBasic', constructorBasicSchema);
+module.exports = mongoose.model('ConstructorBottom', constructorBottomSchema);

@@ -1,14 +1,12 @@
 const ConstructorBasic = require('./constructor-basic.model');
-const Currency = require('../../currency/currency.model');
-const { deleteFiles, uploadFiles } = require('../../upload/upload.service');
 const {
   BASIC_NOT_FOUND,
-  BASIC_ALREADY_EXIST,
-  IMAGE_NOT_PROVIDED,
+  BASIC_ALREADY_EXIST
 } = require('../../../error-messages/constructor-basic-messages');
+const {calculatePrice} = require('../../../utils/calculate-price');
 
 class ConstructorBasicService {
-  async getAllBasics({ skip, limit }) {
+  async getAllConstructorBasics({ skip, limit }) {
     const items = await ConstructorBasic.find().populate(
       'material',
     )
@@ -22,7 +20,7 @@ class ConstructorBasicService {
     };
   }
 
-  async getBasicById(id) {
+  async getConstructorBasicById(id) {
     const foundBasic = await ConstructorBasic.findById(id).populate(
       'material',
     );
@@ -32,94 +30,42 @@ class ConstructorBasicService {
     throw new Error(BASIC_NOT_FOUND);
   }
 
-  async calculatePrice(price) {
-    const { convertOptions } = await Currency.findOne();
-
-    return [
-      {
-        value: Math.round(price * convertOptions[0].exchangeRate * 100),
-        currency: 'UAH',
-      },
-      {
-        value: Math.round(price * 100),
-        currency: 'USD',
-      },
-    ];
-  }
-
-  async addBasic(data, upload) {
+  async addConstructorBasic(data) {
     if (await this.checkConstructorBasicExist(data)) {
       throw new Error(BASIC_ALREADY_EXIST);
     }
-    if (!upload) {
-      throw new Error(IMAGE_NOT_PROVIDED);
-    }
-    const uploadResult = await uploadFiles([upload]);
-    const imageResults = await uploadResult[0];
-    data.images = imageResults.fileNames;
-    data.basePrice = await this.calculatePrice(data.basePrice);
-    return await new ConstructorBasic(data).save()
+    data.basePrice = await calculatePrice(data.basePrice);
+    return  await new ConstructorBasic(data).save()
   }
 
 
-  async updateBasic({ id, basic, upload }) {
-    const basicToUpdate = await ConstructorBasic.findById(id).populate(
+  async updateConstructorBasic({ id, basic }) {
+    const constructorBasic = await ConstructorBasic.findById(id).populate(
       'material',
     );
-    if (!basicToUpdate) {
+    if (!constructorBasic) {
       throw new Error(BASIC_NOT_FOUND);
     }
-    basic.basePrice = await this.calculatePrice(basic.basePrice);
-    if (!upload) {
-      return await ConstructorBasic.findByIdAndUpdate(id, basic,
-        { new: true },
-      );
-    }
-    const uploadResult = await uploadFiles([upload]);
-    const imageResults = await uploadResult[0];
-    const images = imageResults.fileNames;
-    if (!images) {
-      return await ConstructorBasic.findByIdAndUpdate(id, basic,
-        { new: true },
-      );
-    }
-    const foundBasic = await ConstructorBasic.findById(id).lean();
-    deleteFiles(Object.values(foundBasic.images));
-    basic.images = images
+    basic.basePrice = await calculatePrice(basic.basePrice);
     return await ConstructorBasic.findByIdAndUpdate(
       id, basic,
       { new: true},
     );
   }
 
-  async deleteBasic(id) {
-    const foundBasic = await ConstructorBasic.findByIdAndDelete(id).lean();
-    if (!foundBasic) {
+  async deleteConstructorBasic(id) {
+    const constructorBasic = await ConstructorBasic.findByIdAndDelete(id);
+    if (!constructorBasic) {
       throw new Error(BASIC_NOT_FOUND);
     }
-    const deletedImages = await deleteFiles(Object.values(foundBasic.images));
-    if (await Promise.allSettled(deletedImages)) {
-      return foundBasic;
-    }
+    return constructorBasic;
   }
 
-  async checkConstructorBasicExist(data, id) {
-    let constructorBasicCount;
-    if (id) {
-      constructorBasicCount = await ConstructorBasic.countDocuments({
-        _id: { $ne: id },
-        name: {
-          $elemMatch: {
-            $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-          },
-        },
-      });
-      return constructorBasicCount > 0;
-    }
-    constructorBasicCount = await ConstructorBasic.countDocuments({
+  async checkConstructorBasicExist(data) {
+    let constructorBasicCount = await ConstructorBasic.countDocuments({
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });

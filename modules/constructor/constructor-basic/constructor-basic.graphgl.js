@@ -2,8 +2,8 @@ const constructorBasicType = `
 type ConstructorBasic {
     _id: ID!
     name: [Language],
-    material:Material!,
-    images:ImageSet,
+    material:Material,
+    image:String,
     basePrice: [CurrencySet]
     available: Boolean,
   }
@@ -12,8 +12,8 @@ type ConstructorBasic {
 const constructorBasicInput = `  
 input ConstructorBasicInput {
     name: [LanguageInput],
-    material: ID!,
-    images:ImageSetInput,
+    material: ID,
+    image:String,
     basePrice: Int
     available: Boolean,
   }

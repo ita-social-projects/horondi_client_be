@@ -4,10 +4,10 @@ const {
 } = require('../../../error-messages/constructor-basic-messages');
 
 const constructorBasicQuery = {
-  getAllBasics: (parent, args) => constructorBasicService.getAllBasics(args),
-  getBasicById: async (parent, args) => {
+  getAllConstructorBasics: (parent, args) => constructorBasicService.getAllConstructorBasics(args),
+  getConstructorBasicById: async (parent, args) => {
     try {
-      return await constructorBasicService.getBasicById(args.id);
+      return await constructorBasicService.getConstructorBasicById(args.id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -18,9 +18,9 @@ const constructorBasicQuery = {
 }
 
 const constructorBasicMutation = {
-  addBasic: async (parent, args) => {
+  addConstructorBasic: async (parent, args) => {
     try {
-      return await constructorBasicService.addBasic(args.basic, args.upload);
+     return await constructorBasicService.addConstructorBasic(args.basic);
     } catch (e) {
       return {
         statusCode: 400,
@@ -29,9 +29,9 @@ const constructorBasicMutation = {
     }
   },
 
-  updateBasic: async (parent, args) => {
+  updateConstructorBasic: async (parent, args) => {
     try {
-      return await constructorBasicService.updateBasic(args);
+      return await constructorBasicService.updateConstructorBasic(args);
     } catch (e) {
       return {
         statusCode: e.message === BASIC_NOT_FOUND ? 404 : 400,
@@ -39,9 +39,9 @@ const constructorBasicMutation = {
       };
     }
   },
-  deleteBasic: async (parent, args) => {
+  deleteConstructorBasic: async (parent, args) => {
     try {
-      return await constructorBasicService.deleteBasic(args.id);
+      return await constructorBasicService.deleteConstructorBasic(args.id);
     } catch (e) {
       return {
         statusCode: 404,
