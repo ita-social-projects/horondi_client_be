@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 const HomePageSlider = require('./homepage-slider.model');
-const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const {
   SLIDE_NOT_FOUND,
   SLIDE_NOT_VALID,
@@ -34,7 +34,7 @@ class HomePageSliderService {
 
   async addSlide(data, upload) {
     if (upload) {
-      const uploadResult = await uploadFiles([upload]);
+      const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       data.images = imageResults.fileNames;
     }
@@ -53,7 +53,7 @@ class HomePageSliderService {
     if (!upload) {
       return await HomePageSlider.findByIdAndUpdate(id, slide, { new: true });
     }
-    const uploadResult = await uploadFiles([upload]);
+    const uploadResult = await uploadService.uploadFiles([upload]);
 
     const imageResults = await uploadResult[0];
 
@@ -63,7 +63,7 @@ class HomePageSliderService {
       return await HomePageSlider.findByIdAndUpdate(id, slide);
     }
     const foundSlide = await HomePageSlider.findById(id).lean();
-    deleteFiles(Object.values(foundSlide.images));
+    uploadService.deleteFiles(Object.values(foundSlide.images));
 
     return await HomePageSlider.findByIdAndUpdate(
       id,
@@ -83,7 +83,9 @@ class HomePageSliderService {
       throw new Error(SLIDE_NOT_FOUND);
     }
 
-    const deletedImages = await deleteFiles(Object.values(foundSlide.images));
+    const deletedImages = await uploadService.deleteFiles(
+      Object.values(foundSlide.images)
+    );
     if (await Promise.allSettled(deletedImages)) {
       return foundSlide;
     }

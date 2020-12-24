@@ -37,6 +37,7 @@ const schema = applyMiddleware(
   permissions
 );
 
+
 const server = new ApolloServer({
   schema,
   context: async ({ req }) => {

@@ -1,6 +1,5 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
-const User = require('../user/user.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -8,8 +7,6 @@ const {
 } = require('../../error-messages/comment.messages');
 
 const { monthInMilliseconds } = require('../../consts');
-const { UserRate } = require('../../resolvers');
-const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 
 class CommentsService {
   async getCommentById(id) {

@@ -70,6 +70,10 @@ const {
   homePageSlideType,
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
+const {
+  constructorBottomInput,
+  constructorBottomType,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType } = require('./modules/size/size.graphql');
@@ -111,6 +115,7 @@ const typeDefs = gql`
   ${constructorBasicType}
   ${constructorFrontPocketType}
   
+  ${constructorBottomType}
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -173,7 +178,7 @@ const typeDefs = gql`
   }
   type Author {
     name: [Language]
-    image: ImageSet
+    image: String
   }
   type Color {
     code: Int
@@ -321,6 +326,7 @@ const typeDefs = gql`
   union ConstructorBasicResult = ConstructorBasic | Error
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   
+  union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -401,6 +407,8 @@ const typeDefs = gql`
     getConstructorBasicById(id: ID!): ConstructorBasicResult
     getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
+    getConstructorBottomById(id: ID!): ConstructorBottomResult  
+    getAllConstructorBottom: [ConstructorBottomResult]
   }
   input Pagination {
       skip: Int = ${skip}
@@ -434,7 +442,7 @@ const typeDefs = gql`
   }
   input AuthorInput {
     name: [LanguageInput]
-    image: ImageSetInput
+    image: String
   }
   ${categoryInput}
   ${currencyInput}
@@ -465,6 +473,7 @@ const typeDefs = gql`
   ${constructorBasicInput}
   ${constructorFrontPocketInput}
   
+  ${constructorBottomInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -716,6 +725,11 @@ const typeDefs = gql`
     addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
     updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
     deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult  
+    deleteSlide(id: ID!): HomePageSlideResult
+    "ConstructorBottom Mutation"
+    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    deleteConstructorBottom(id: ID!): ConstructorBottomResult
   }
 `;
 

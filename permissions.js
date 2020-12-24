@@ -55,6 +55,11 @@ const {
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.permission');
 
 
+const {
+  сonstructorBottomPermissionsQuery,
+  сonstructorBottomPermissionsMutations,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -67,6 +72,7 @@ const permissions = shield(
       ...modelPermissionsQuery,
       ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
+      ...сonstructorBottomPermissionsQuery,
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
     },
@@ -80,6 +86,7 @@ const permissions = shield(
       ...modelPermissionsMutations,
       ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
+      ...сonstructorBottomPermissionsMutations,
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
     },
