@@ -2,34 +2,44 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
-const Category = require('../category/category.model');
 
 const productSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
-  model: [Language],
+  model: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Model',
+  },
   name: [Language],
   description: [Language],
-  mainMaterial: [Language],
-  innerMaterial: [Language],
+  mainMaterial: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Material',
+  },
+  innerMaterial: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Material',
+  },
   strapLengthInCm: Number,
   images: PrimaryImage,
   colors: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Colors',
+      ref: 'Color',
     },
   ],
   pattern: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Pattern',
   },
-  closure: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Closures',
-  },
+  closure: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Closure',
+    },
+  ],
   basePrice: [CurrencySet],
   options: [
     {

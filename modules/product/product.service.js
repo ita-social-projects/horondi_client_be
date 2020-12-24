@@ -21,7 +21,12 @@ class ProductsService {
       .populate('category')
       .populate('colors')
       .populate('pattern')
-      .populate('closure');
+      .populate('closure')
+      .populate('size')
+      .populate('bottomMaterial')
+      .populate('bottomColor')
+      .populate('user')
+      .populate('type');
   }
 
   async getModelsByCategory(id) {
@@ -29,7 +34,12 @@ class ProductsService {
       .populate('category')
       .populate('colors')
       .populate('pattern')
-      .populate('closure');
+      .populate('closure')
+      .populate('size')
+      .populate('bottomMaterial')
+      .populate('bottomColor')
+      .populate('user')
+      .populate('type');
 
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);

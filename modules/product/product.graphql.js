@@ -8,10 +8,10 @@ description: [Language]!
 mainMaterial: [Language]!
 innerMaterial: [Language]!
 strapLengthInCm: Int!
-images: [Images]
+images: [ImageSet]
 colors: [Color]!
 pattern: Pattern
-closure: [Closure]!
+
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
@@ -36,13 +36,26 @@ innerMaterial: [LanguageInput]!
 strapLengthInCm: Int!
 colors: [ID]! 
 pattern: ID
-images: [ImageInput]
+images: [Upload]
 closure: [ID]!
 availableCount: Int
 basePrice: Int!
 available: Boolean
 isHotItem: Boolean
 options:[ProductOptionsInput]
+}`;
+
+const cartProductType = `
+type CartProduct{
+  _id: ID!
+  name: [Language]
+  bagBottom: CartProductBagBottom
+  dimension: CartProductDimensions
+  image: String
+  totalPrice: [CurrencySet]
+  quantity: Int
+  selectedSize: String
+  sidePocket: Boolean
 }`;
 
 const cartProductInput = `
@@ -61,5 +74,6 @@ sidePocket: Boolean
 module.exports = {
   productType,
   productInput,
+  cartProductType,
   cartProductInput,
 };
