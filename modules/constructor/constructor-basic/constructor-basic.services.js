@@ -1,5 +1,5 @@
 const ConstructorBasic = require('./constructor-basic.model');
-const { deleteFiles, uploadFiles } = require('../../upload/upload.service');
+const uploadService = require('../../upload/upload.service');
 const {
   BASIC_NOT_FOUND,
   BASIC_ALREADY_EXIST,
@@ -39,19 +39,19 @@ class ConstructorBasicService {
     if (!upload) {
       throw new Error(IMAGE_NOT_PROVIDED);
     }
-    const uploadResult = await uploadFiles([upload]);
+    const uploadResult = await uploadService.uploadFiles([upload]);
     const imageResults = await uploadResult[0];
-    data.images = imageResults.fileNames;
+    data.image = imageResults.fileNames;
     data.basePrice = await calculatePrice(data.basePrice);
     return await new ConstructorBasic(data).save()
   }
 
 
   async updateConstructorBasic({ id, basic, upload }) {
-    const basicToUpdate = await ConstructorBasic.findById(id).populate(
+    const constructorBasic = await ConstructorBasic.findById(id).populate(
       'material',
     );
-    if (!basicToUpdate) {
+    if (!constructorBasic) {
       throw new Error(BASIC_NOT_FOUND);
     }
     basic.basePrice = await calculatePrice(basic.basePrice);
@@ -60,12 +60,13 @@ class ConstructorBasicService {
         { new: true },
       );
     }
-    const uploadResult = await uploadFiles([upload]);
+    if (constructorBasic.image) {
+      await uploadService.deleteFiles([constructorBasic.image]);
+    }
+    const uploadResult = await uploadService.uploadFiles([upload]);
     const imageResults = await uploadResult[0];
-    const images = imageResults.fileNames;
-    const foundBasic = await ConstructorBasic.findById(id).lean();
-    deleteFiles(Object.values(foundBasic.images));
-    basic.images = images
+    basic.images = imageResults.fileNames;
+
     return await ConstructorBasic.findByIdAndUpdate(
       id, basic,
       { new: true},
@@ -73,33 +74,21 @@ class ConstructorBasicService {
   }
 
   async deleteConstructorBasic(id) {
-    const foundBasic = await ConstructorBasic.findByIdAndDelete(id).lean();
-    if (!foundBasic) {
+    const constructorBasic = await ConstructorBasic.findByIdAndDelete(id);
+    if (!constructorBasic) {
       throw new Error(BASIC_NOT_FOUND);
     }
-    const deletedImages = await deleteFiles(Object.values(foundBasic.images));
-    if (await Promise.allSettled(deletedImages)) {
-      return foundBasic;
+    if (constructorBasic.image) {
+      await uploadService.deleteFiles([constructorBasic.image]);
     }
+    return constructorBasic;
   }
 
-  async checkConstructorBasicExist(data, id) {
-    let constructorBasicCount;
-    if (id) {
-      constructorBasicCount = await ConstructorBasic.countDocuments({
-        _id: { $ne: id },
-        name: {
-          $elemMatch: {
-            $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-          },
-        },
-      });
-      return constructorBasicCount > 0;
-    }
-    constructorBasicCount = await ConstructorBasic.countDocuments({
+  async checkConstructorBasicExist(data) {
+    let constructorBasicCount = await ConstructorBasic.countDocuments({
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });

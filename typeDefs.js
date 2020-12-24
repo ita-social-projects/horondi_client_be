@@ -719,13 +719,14 @@ const typeDefs = gql`
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult 
+    "ConstructorBasic Mutation"  
     addConstructorBasic(basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
     updateConstructorBasic(id: ID!, basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
     deleteConstructorBasic(id: ID!): ConstructorBasicResult
+    "ConstructorFrontPocket Mutation"  
     addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
     updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
-    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult  
-    deleteSlide(id: ID!): HomePageSlideResult
+    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
     "ConstructorBottom Mutation"
     addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
     updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult

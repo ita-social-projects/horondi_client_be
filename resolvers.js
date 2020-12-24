@@ -266,7 +266,7 @@ const resolvers = {
 
     ...constructorBasicMutation,
 
-    ...constructorFrontPocketMutation
+    ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
   },
