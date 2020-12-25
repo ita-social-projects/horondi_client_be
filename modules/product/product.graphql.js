@@ -2,16 +2,16 @@ const productType = `
 type Product {
 _id: ID!
 category: Category!
-model: [Language]!
+model: Model!
 name: [Language]!
 description: [Language]!
-mainMaterial: [Language]!
-innerMaterial: [Language]!
+mainMaterial: [ID]!
+innerMaterial: [ID]!
 strapLengthInCm: Int!
 images: [ImageSet]
 colors: [Color]!
 pattern: Pattern
-
+closure: [Closure]!
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
@@ -31,8 +31,8 @@ category: ID!
 model: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
-mainMaterial: [LanguageInput]!
-innerMaterial: [LanguageInput]!
+mainMaterial: [ID]!
+innerMaterial: [ID]!
 strapLengthInCm: Int!
 colors: [ID]! 
 pattern: ID

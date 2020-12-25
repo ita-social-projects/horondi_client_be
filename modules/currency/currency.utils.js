@@ -1,7 +1,7 @@
-const currencyService = require('./currency.service');
+const Currency = require('./currency.model');
 
 const calculatePrice = async price => {
-  const { convertOptions } = await currencyService.findOne();
+  const { convertOptions } = await Currency.findOne();
 
   return [
     {

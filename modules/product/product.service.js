@@ -17,16 +17,7 @@ const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   getProductById(id) {
-    return Product.findById(id)
-      .populate('category')
-      .populate('colors')
-      .populate('pattern')
-      .populate('closure')
-      .populate('size')
-      .populate('bottomMaterial')
-      .populate('bottomColor')
-      .populate('user')
-      .populate('type');
+    return Product.findById(id).populate('category');
   }
 
   async getModelsByCategory(id) {
@@ -144,6 +135,9 @@ class ProductsService {
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
+    if (await this.checkProductExist(productData)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
     if (primary) {
       await uploadService.deleteFiles(
         Object.values(product.images.primary).filter(
@@ -173,13 +167,16 @@ class ProductsService {
   }
 
   async addProduct(productData, filesToUpload) {
+    if (await this.checkProductExist(productData)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
 
     const model = await modelService.getModelById(productData.model);
-    productData.model = model.name;
+    productData.model = model;
     productData.images = {
       primary,
       additional,
@@ -207,16 +204,15 @@ class ProductsService {
     }
   }
 
-  async checkProductExist(data, id) {
-    const modelCount = await Product.countDocuments({
-      _id: { $ne: id },
+  async checkProductExist(data) {
+    let productCount = await Product.countDocuments({
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
     });
-    return modelCount > 0;
+    return productCount > 0;
   }
 
   async deleteImages(id, imagesToDelete) {
