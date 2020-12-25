@@ -75,7 +75,7 @@ class UploadService {
 
     const createName = sizeName => `${sizeName}_${id}_${filename}`;
     if (Array.isArray(sizes)) {
-      sizes.foregroundColor(size => {
+      sizes.forEach(size => {
         this.uploadResizedImage(imageQualities[size], createName(size), image);
       });
       const fileNames = sizes.reduce((acc, size) => {
