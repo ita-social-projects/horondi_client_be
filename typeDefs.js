@@ -416,7 +416,7 @@ const typeDefs = gql`
   }
   input AuthorInput {
     name: [LanguageInput]
-    image: String
+    image: Upload
   }
   ${categoryInput}
   ${currencyInput}
@@ -592,9 +592,9 @@ const typeDefs = gql`
     deleteCurrency(id: ID!): CurrencyResult
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
     "News Mutation"
-    addNews(news: NewsInput!): NewsResult
+    addNews(news: NewsInput!, upload: Upload): NewsResult
     deleteNews(id: ID!): NewsResult
-    updateNews(id: ID!, news: NewsInput!): NewsResult
+    updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
     registerAdmin(user: AdminRegisterInput!): UserResult
