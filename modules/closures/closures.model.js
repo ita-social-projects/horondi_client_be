@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const CurrencySet = require('../../models/CurrencySet');
-const Language = require('../../models/Language');
+const Language = require('../../models/Language').schema;
+const CurrencySet = require('../../models/CurrencySet').schema;
 
-const ClosureSchema = new mongoose.Schema({
+const closureSchema = new mongoose.Schema({
   name: [Language],
   material: {
     type: mongoose.Schema.Types.ObjectId,
@@ -13,4 +13,4 @@ const ClosureSchema = new mongoose.Schema({
   available: Boolean,
 });
 
-module.exports = mongoose.model('Closure', ClosureSchema);
+module.exports = mongoose.model('Closure', closureSchema);

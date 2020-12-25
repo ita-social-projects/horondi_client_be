@@ -1,11 +1,11 @@
-const closureService = require('./closures.service');
-const { CLOSURE_NOT_FOUND } = require('../../error-messages/closure.messages');
+const ClosureService = require('./closures.service');
+const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 
 const closureQuery = {
-  getAllClosure: (parent, args) => closureService.getAllClosures(args),
+  getAllClosure: (parent, args) => ClosureService.getAllClosures(args),
   getClosureById: async (parent, args) => {
     try {
-      return await closureService.getClosureById(args.id);
+      return await ClosureService.getClosureById(args.id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -18,7 +18,7 @@ const closureQuery = {
 const closureMutation = {
   addClosure: async (parent, args) => {
     try {
-      return await closureService.addClosure(args.closure);
+      return await ClosureService.addClosure(args.closure, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
@@ -28,7 +28,11 @@ const closureMutation = {
   },
   updateClosure: async (parent, args) => {
     try {
-      return await closureService.updateClosure(args);
+      return await ClosureService.updateClosure(
+        args.id,
+        args.closure,
+        args.upload
+      );
     } catch (e) {
       return {
         statusCode: e.message === CLOSURE_NOT_FOUND ? 404 : 400,
@@ -38,7 +42,7 @@ const closureMutation = {
   },
   deleteClosure: async (parent, args) => {
     try {
-      return await closureService.deleteClosure(args.id);
+      return await ClosureService.deleteClosure(args.id);
     } catch (e) {
       return {
         statusCode: 404,

@@ -1,11 +1,12 @@
-const Closure = require('./closure.model');
+const Closure = require('./closures.model');
 const {
   CLOSURE_NOT_FOUND,
   CLOSURE_ALREADY_EXIST,
-} = require('../../error-messages/closure.messages');
+} = require('../../error-messages/closures.messages');
+const uploadService = require('../upload/upload.service');
 
 class ClosureService {
-  async getAllClosures({ skip, limit }) {
+  async getAllClosure({ skip, limit }) {
     const items = await Closure.find()
       .populate('material')
       .skip(skip)
@@ -19,23 +20,33 @@ class ClosureService {
   }
 
   async getClosureById(id) {
-    const found = await Closure.findById(id).populate('material');
-    if (found) {
-      return found;
+    const foundClosure = await Closure.findById(id).populate('material');
+    if (foundClosure) {
+      return foundClosure;
     }
     throw new Error(CLOSURE_NOT_FOUND);
   }
 
-  async addClosure(data) {
+  async addClosure(data, upload) {
+    if (upload) {
+      const uploadImage = await uploadService.uploadFile(upload, ['large']);
+      data.image = uploadImage.fileNames.large;
+    }
+
     if (await this.checkClosureExist(data)) {
       throw new Error(CLOSURE_ALREADY_EXIST);
     }
     return await new Closure(data).save();
   }
 
-  async updateClosure({ id, closure }) {
-    const closure = await Closure.findById(id).populate('material');
-    if (!closure) {
+  async updateClosure(id, closure, upload) {
+    if (upload) {
+      const uploadImage = await uploadService.uploadFile(upload, ['large']);
+      data.image = uploadImage.fileNames.large;
+    }
+
+    const closureMaterial = await Closure.findById(id).populate('material');
+    if (!closureMaterial) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
     return await Closure.findByIdAndUpdate(id, closure, { new: true });

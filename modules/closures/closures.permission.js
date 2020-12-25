@@ -5,7 +5,7 @@ const { ADMIN, SUPERADMIN } = roles;
 
 const closurePermissionsQuery = {
   getAllClosure: allow,
-  getAllClosureById: allow,
+  getClosureById: allow,
 };
 
 const closurePermissionsMutations = {

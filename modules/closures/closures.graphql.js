@@ -1,20 +1,20 @@
 const closureType = `
   type Closure {
-    _id: ID!
-    name: [Language]!
+    _id: ID
+    name: [Language]
     material: Material
     image: String
     additionalPrice: [CurrencySet]
-    available: Boolean!
+    available: Boolean
   }
 `;
 const closureInput = `
-  input Closure {
-    name: [LanguageInput]!
-    material: ID!
-    image: String
-    additionalPrice: Int!
-    available: Boolean!
+  input ClosureInput {
+    name: [LanguageInput]
+    material: ID
+    image: Upload
+    additionalPrice: [CurrencySetInput]
+    available: Boolean
   }
 `;
 module.exports = {
