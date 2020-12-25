@@ -4,6 +4,7 @@ const {
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
 const uploadService = require('../upload/upload.service');
+const { uploadLargeImage } = require('../upload/upload.utils');
 
 class NewsService {
   async getAllNews({ skip, limit }) {
@@ -32,25 +33,14 @@ class NewsService {
     if (!foundNews) {
       throw new Error(NEWS_NOT_FOUND);
     }
+
     if (upload[0] && upload[1]) {
-      const uploadResultAuthor = await uploadService.uploadFile(upload[0], [
-        'large',
-      ]);
-      const uploadResultNews = await uploadService.uploadFile(upload[1], [
-        'large',
-      ]);
-      news.author.image = uploadResultAuthor.fileNames.large;
-      news.image = uploadResultNews.fileNames.large;
+      news.author.image = await uploadLargeImage(upload[0]);
+      news.image = await uploadLargeImage(upload[1]);
     } else if (upload[0]) {
-      const uploadResultAuthor = await uploadService.uploadFile(upload[0], [
-        'large',
-      ]);
-      news.author.image = uploadResultAuthor.fileNames.large;
+      news.author.image = await uploadLargeImage(upload[0]);
     } else if (upload[1]) {
-      const uploadResultNews = await uploadService.uploadFile(upload[1], [
-        'large',
-      ]);
-      news.image = uploadResultNews.fileNames.large;
+      news.image = await uploadLargeImage(upload[1]);
     }
 
     if (await this.checkNewsExist(news, id)) {
@@ -63,26 +53,9 @@ class NewsService {
     if (await this.checkNewsExist(data)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    if (upload[0] && upload[1]) {
-      const uploadResultAuthor = await uploadService.uploadFile(upload[0], [
-        'large',
-      ]);
-      const uploadResultNews = await uploadService.uploadFile(upload[1], [
-        'large',
-      ]);
-      data.author.image = uploadResultAuthor.fileNames.large;
-      data.image = uploadResultNews.fileNames.large;
-    } else if (upload[0]) {
-      const uploadResultAuthor = await uploadService.uploadFile(upload[0], [
-        'large',
-      ]);
-      data.author.image = uploadResultAuthor.fileNames.large;
-    } else if (upload[1]) {
-      const uploadResultNews = await uploadService.uploadFile(upload[1], [
-        'large',
-      ]);
-      data.image = uploadResultNews.fileNames.large;
-    }
+
+    data.author.image = await uploadLargeImage(upload[0]);
+    data.image = await uploadLargeImage(upload[1]);
 
     return new News(data).save();
   }
