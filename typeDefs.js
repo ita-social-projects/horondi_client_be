@@ -71,6 +71,10 @@ const {
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
+const {
+  closureType,
+  closureInput,
+} = require('./modules/closures/closures.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType } = require('./modules/size/size.graphql');
 
@@ -100,6 +104,7 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
+  ${closureType}
 
   scalar Upload
   scalar Date
@@ -280,6 +285,10 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
+  type PaginatedClosure {
+      items: [Closure]
+      count: Int
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -300,6 +309,7 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
+  union ClosureResult = Closure | Error
   
   type Query {
     getAllCurrencies: [Currency!]!
@@ -377,6 +387,8 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes: [Size]  
     getSizeById(id: ID!): Size
+    getAllClosure(limit: Int, skip: Int): PaginatedClosure!
+    getClosureById(id: ID!): ClosureResult!
   }
   input Pagination {
       skip: Int = ${skip}
@@ -438,6 +450,7 @@ const typeDefs = gql`
   ${paymentInput}
   ${headerInput}
   ${homePageSlideInput}
+  ${closureInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -683,6 +696,10 @@ const typeDefs = gql`
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
+    "Closure Mutation"
+    addClosure(closure: ClosureInput!, upload: Upload): ClosureResult
+    updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
+    deleteClosure(id: ID!): ClosureResult  
   }
 `;
 

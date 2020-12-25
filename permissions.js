@@ -44,6 +44,11 @@ const {
   homePageImagesPermissionsQuery,
 } = require('./modules/homepage-images/home-page-images.permissions');
 
+const {
+  closurePermissionsMutations,
+  closurePermissionsQuery,
+} = require('./modules/closures/closures.permission');
+
 const permissions = shield(
   {
     Query: {
@@ -56,6 +61,7 @@ const permissions = shield(
       ...modelPermissionsQuery,
       ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
+      ...closurePermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -67,6 +73,7 @@ const permissions = shield(
       ...modelPermissionsMutations,
       ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
+      ...closurePermissionsMutations,
     },
   },
   {

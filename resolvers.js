@@ -69,6 +69,11 @@ const {
   homePageSlideMutation,
 } = require('./modules/homepage-slider/homepage-slider.resolves');
 
+const {
+  closureQuery,
+  closureMutation,
+} = require('./modules/closures/closures.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -98,6 +103,7 @@ const SCHEMA_NAMES = {
   homePageSlide: 'HomePageSlide',
   token: 'Token',
   size: 'Size',
+  closure: 'Closure',
 };
 const resolvers = {
   Query: {
@@ -140,6 +146,8 @@ const resolvers = {
     ...sizeQuery,
 
     ...homePageSlideQuery,
+
+    ...closureQuery,
   },
 
   Size: {
@@ -230,6 +238,8 @@ const resolvers = {
     ...headerMutation,
 
     ...homePageSlideMutation,
+
+    ...closureMutation,
   },
   TokenResult: {
     __resolveType: obj => {
@@ -388,6 +398,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.homePageSlide;
+      }
+      return 'Error';
+    },
+  },
+  ClosureResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.closure;
       }
       return 'Error';
     },
