@@ -731,18 +731,15 @@ const typeDefs = gql`
     addConstructorBottom(constructorBottom: ConstructorBottomInput!): ConstructorBottomResult
     updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
-    addBasic(basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
-    updateBasic(id: ID!, basic: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
-    deleteBasic(id: ID!): ConstructorBasicResult
-    addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
-    updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
-    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
+    "Change model constructor details"  
     addModelConstructorBasic(id:ID!, basicID:ID!):ModelResult
     deleteModelConstructorBasic(id:ID!, basicID:ID!):ModelResult
     addModelConstructorPattern(id:ID!, patternID:ID!):ModelResult
     deleteModelConstructorPattern(id:ID!, patternID:ID!):ModelResult
     addModelConstructorFrontPocket(id:ID!, frontPocketID:ID!):ModelResult
-    deleteModelConstructorFrontPocket(id:ID!, frontPocketID:ID!):ModelResult 
+    deleteModelConstructorFrontPocket(id:ID!, frontPocketID:ID!):ModelResult
+    addModelConstructorBottom(id:ID!, bottomID:ID!):ModelResult
+    deleteModelConstructorBottom(id:ID!, bottomID:ID!):ModelResult 
   }
 `;
 

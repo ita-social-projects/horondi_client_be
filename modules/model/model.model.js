@@ -16,6 +16,7 @@ const modelSchema = new mongoose.Schema({
   constructorBasic: [{ type:mongoose.Schema.Types.ObjectId, ref: 'ConstructorBasic'}],
   constructorPattern: [{ type:mongoose.Schema.Types.ObjectId, ref: 'Pattern'}],
   constructorFrontPocket: [{ type:mongoose.Schema.Types.ObjectId, ref: 'ConstructorFrontPocket'}],
+  constructorBottom: [{ type:mongoose.Schema.Types.ObjectId, ref: 'ConstructorBottom'}],
 });
 
 module.exports = mongoose.model('Model', modelSchema);

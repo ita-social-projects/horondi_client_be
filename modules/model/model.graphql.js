@@ -10,7 +10,8 @@ type Model {
     availableForConstructor: Boolean,
     constructorBasic:[ConstructorBasic],
     constructorPattern:[Pattern],
-    constructorFrontPocket:[ConstructorFrontPocket]
+    constructorFrontPocket:[ConstructorFrontPocket],
+    constructorBottom:[ConstructorBottom]
   }
 `;
 
@@ -25,7 +26,7 @@ input ModelInput {
     availableForConstructor: Boolean,
     constructorBasic:[ID],
     constructorPattern:[ID],
-    constructorFrontPocket:[ID]
+    constructorBottom:[ID]
   }`;
 
 module.exports = {

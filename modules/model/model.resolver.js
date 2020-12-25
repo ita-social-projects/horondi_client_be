@@ -96,6 +96,20 @@ const modelsMutation = {
       message: MODEL_NOT_FOUND,
     };
   },
+  addModelConstructorBottom: async (parent, args) => {
+    return await modelsService.addModelConstructorBottom(args.id, args.bottomID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
+  deleteModelConstructorBottom: async (parent, args) => {
+    return await modelsService.deleteModelConstructorBottom(args.id, args.bottomID);
+    return {
+      statusCode: 404,
+      message: MODEL_NOT_FOUND,
+    };
+  },
 };
 
 module.exports = { modelsQuery, modelsMutation };

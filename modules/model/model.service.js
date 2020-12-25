@@ -52,6 +52,17 @@ class ModelsService {
           model: 'Color',
         },
       },
+    }).populate({
+      path: 'constructorBottom',
+      model: 'ConstructorBottom',
+      populate: {
+        path: 'material',
+        model: 'Material',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
     });
 
     if (foundModel) {
@@ -159,6 +170,21 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorFrontPocket: frontPocketID } },
+      { safe: true, upsert: true },
+    );
+  }
+
+  async addModelConstructorBottom(id, bottomID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorBottom: [bottomID] } },
+    );
+  }
+
+  async deleteModelConstructorBottom(id, bottomID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorBottom: bottomID } },
       { safe: true, upsert: true },
     );
   }
