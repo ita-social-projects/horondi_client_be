@@ -16,33 +16,49 @@ const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
-  getProductById(id) {
-    return Product.findById(id).populate('category');
+  async getProductById(id) {
+    const product = await Product.findById(id)
+      .populate('category')
+      .populate('colors')
+      .populate('model')
+      .populate({
+        path: 'innerMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      })
+      .populate({
+        path: 'mainMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      });
+    return product;
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id })
-      .populate('category')
-      .populate('colors')
-      .populate('pattern')
-      .populate('closure')
-      .populate('size')
-      .populate('bottomMaterial')
-      .populate('bottomColor')
-      .populate('user')
-      .populate('type');
-
+    const product = await Product.find({ category: id }).populate({
+      path: 'model',
+      populate: {
+        path: 'category',
+      },
+    });
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
+    console.log(product);
 
     return product;
   }
 
   async getProductOptions() {
     const sizes = await sizesService.getAllSizes();
-    const bottomMaterials = await Material.find().populate('bottomMaterial');
-
+    const bottomMaterials = await Material.find().populate({
+      path: 'color',
+      model: 'Color',
+    });
     return { sizes, bottomMaterials };
   }
 
