@@ -178,7 +178,7 @@ const typeDefs = gql`
   }
   type Author {
     name: [Language]
-    image: ImageSet
+    image: String
   }
   type Color {
     code: Int
