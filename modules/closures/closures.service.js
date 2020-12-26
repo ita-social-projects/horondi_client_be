@@ -40,6 +40,9 @@ class ClosureService {
   }
 
   async updateClosure(id, closure, upload) {
+    if (await this.checkClosureExist(closure)) {
+      throw new Error(CLOSURE_ALREADY_EXIST);
+    }
     if (upload) {
       const uploadImage = await uploadService.uploadFile(upload, ['large']);
       data.image = uploadImage.fileNames.large;
