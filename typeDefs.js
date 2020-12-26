@@ -106,9 +106,9 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
-  ${colorType}
   ${purchasedProductsType}
   ${cartProductType}
+  ${colorType}
   ${constructorBottomType}
 
   scalar Upload
