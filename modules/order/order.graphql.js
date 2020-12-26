@@ -2,7 +2,7 @@ const orderTypes = `
 type Order {
   _id: ID!
   status: Status!
-  orderId: String
+  orderNumber: String
   user: OrderUser!
   dateOfCreation: String!
   lastUpdatedDate: String
@@ -15,9 +15,18 @@ type Order {
   totalItemsPrice: [CurrencySet]!
   totalPriceToPay: [CurrencySet]!
   isPaid: Boolean!
-  paymentMethod: PaymentEnum!
+  paymentMethod: PaymentTypesEnum!
+  paymentStatus: PaymentStatusEnum
 }
-enum PaymentEnum {
+enum PaymentStatusEnum {
+  CREATED
+  EXPIRED
+  APPROVED
+  DECLINED
+  REVERSED
+  PROCESSING
+}
+enum PaymentTypesEnum {
   CARD
   CASH
 }
@@ -30,55 +39,53 @@ enum Status {
   SENT
   DELIVERED
 }
+enum DeliveryOptions {
+  NOVAPOST
+  UKRPOST
+  SELFPICKUP
+}
 type OrderItems {
   productId: String!
-  size: String
-  bottomMaterial: [Language]
+  sizeId: String
   additions: [[Language]]
   actualPrice: [CurrencySet]
-  quantity: Int
+  quantity: Int!
 }
 type Delivery {
   sentOn: String
-  sentBy: String
+  sentBy: DeliveryOptions!
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
   cost: [CurrencySet]
 }
 type OrderUser {
+  userId: String
   firstName: String
   lastName: String
-  patronymicName: String
   email: String
   phoneNumber: String
 }
 `;
 const orderInputs = ` 
 input OrderInput {
-  _id:ID
-  status: Status
-  user: OrderUserInput,
-  delivery: DeliveryInput,
-  items: [OrderItemsInput],
-  paymentMethod: PaymentEnum
+  user: OrderUserInput!,
   userComment: String
   adminComment: String
   cancellationReason: String
+  delivery: DeliveryInput!,
   address: AddressInput
-  dateOfCreation: Date
-  lastUpdatedDate: Date
-  totalItemsPrice: [CurrencyInputSet]
-  totalPriceToPay: [CurrencyInputSet]
-  isPaid: Boolean
+  items: [OrderItemsInput]!,
+  paymentMethod: PaymentTypesEnum!
+  totalItemsPrice: [CurrencyInputSet]!
 }
 
 input OrderUserInput {
-  firstName: String
-  lastName: String
-  email: String
-  phoneNumber: String
-  patronymicName: String
+  userId: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String!
 }
 
 input CurrencyInputSet {
@@ -88,7 +95,7 @@ input CurrencyInputSet {
 
 input DeliveryInput {
   sentOn: String
-  sentBy: String
+  sentBy: DeliveryOptions!
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
@@ -97,10 +104,10 @@ input DeliveryInput {
 
 input OrderItemsInput {
   productId: String!
-  size: String,
+  sizeId: String!,
   additions: [[LanguageInput]]
-  actualPrice: [CurrencySetInput]
-  quantity: Int
+  actualPrice: [CurrencySetInput]!
+  quantity: Int!
 }
 `;
 

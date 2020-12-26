@@ -26,7 +26,6 @@ const orderSchema = new mongoose.Schema({
     },
     firstName: String,
     lastName: String,
-    patronymicName: String,
     email: String,
     phoneNumber: Number,
   },
@@ -56,7 +55,7 @@ const orderSchema = new mongoose.Schema({
     sentBy: {
       type: String,
       required: true,
-      enum: ['NOVA-POST', 'UKR-POST', 'SELF-PICKUP'],
+      enum: ['NOVAPOST', 'UKRPOST', 'SELFPICKUP'],
       default: 'SELF-PICKUP',
     },
     byCourier: Boolean,
@@ -76,13 +75,13 @@ const orderSchema = new mongoose.Schema({
       },
       sizeId: {
         type: String,
-        required: true,
       },
       additions: [[Language]],
       actualPrice: [CurrencySet],
       quantity: {
         type: Number,
         required: true,
+        default: 1,
       },
     },
   ],
