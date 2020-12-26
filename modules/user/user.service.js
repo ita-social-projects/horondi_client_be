@@ -146,6 +146,18 @@ class UserService {
     return checkedUser;
   }
 
+  async getPurchasedProducts(id) {
+    const user = await User.findOne({
+      _id: id,
+    }).populate('orders');
+    const paidOrders = user.orders.filter(order => order.isPaid);
+    const purchasedProducts = paidOrders.reduce((acc, order) => {
+      acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
+      return acc;
+    }, []);
+    return purchasedProducts;
+  }
+
   async getAllUsers({ filter, pagination, sort }) {
     let filteredItems = this.filterItems(filter);
     let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
@@ -689,32 +701,6 @@ class UserService {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
-  }
-
-  addProductToCart(product, key, user) {
-    const newList = [...user.cart, product];
-    return this.updateCartOrWishlist(user._id, key, newList, product._id);
-  }
-
-  removeProductFromCart(product, key, user) {
-    const newList = user.cart.filter(
-      ({ _id, selectedSize }) =>
-        String(_id) !== product._id ||
-        (String(_id) === product._id && selectedSize !== product.selectedSize)
-    );
-
-    return this.updateCartOrWishlist(user._id, key, newList, product._id);
-  }
-
-  changeCartProductQuantity(product, key, user) {
-    const newList = user.cart.map(item =>
-      String(item._id) === product._id &&
-      item.selectedSize === product.selectedSize
-        ? product
-        : item
-    );
-
-    return this.updateCartOrWishlist(user._id, key, newList, product._id);
   }
 }
 
