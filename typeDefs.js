@@ -29,6 +29,7 @@ const {
 const {
   materialType,
   materialInput,
+  materialFilterInput,
 } = require('./modules/material/material.graphql');
 const {
   patternType,
@@ -76,7 +77,8 @@ const {
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
-const { sizeType } = require('./modules/size/size.graphql');
+const { sizeType, sizeInput } = require('./modules/size/size.graphql');
+const { colorType, colorInput } = require('./modules/color/color.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -104,6 +106,7 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
+  ${colorType}
   ${constructorBottomType}
   scalar Upload
   scalar Date
@@ -169,13 +172,6 @@ const typeDefs = gql`
     name: [Language]
     image: String
   }
-  type Color {
-    code: Int
-    name: [Language]
-    images: ImageSet
-    available: Boolean
-    simpleName: [Language]
-  }
   type ProductOptions {
     size: Size
     bottomMaterial: Material
@@ -199,7 +195,7 @@ const typeDefs = gql`
       weightInKg: Float
   }
   type AllProductOptions {
-    sizes: [Size]
+    size: [Size]
     bottomMaterials: [Material]
   }
   type UserForComment {
@@ -284,10 +280,12 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
+  type Materials {
+    items: [Material]
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
-  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -304,6 +302,9 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
+  union SizeResult = Size | Error
+  union ColorResult = Color | Error
+  union ColorDeletingResult = Color | Materials | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
@@ -312,9 +313,12 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getCategoriesForBurgerMenu: [BurgerMenu]
-    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
+    getAllMaterials(
+      filter: MaterialFilterInput,
+      limit: Int, 
+      skip: Int
+    ): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
-    getMaterialColorByCode(code: Int): Color
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
@@ -379,8 +383,10 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes: [Size]  
-    getSizeById(id: ID!): Size
+    getAllSizes: [Size]
+    getSizeById(id: ID!): SizeResult
+    getAllColors: [Color]
+    getColorById(id: ID!): ColorResult!
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
     getAllConstructorBottom: [ConstructorBottomResult]
   }
@@ -443,7 +449,10 @@ const typeDefs = gql`
   ${deliveryInput}
   ${paymentInput}
   ${headerInput}
+  ${sizeInput}
   ${homePageSlideInput}
+  ${colorInput}
+  ${materialFilterInput}
   ${constructorBottomInput}
   input LanguageInput {
     lang: String!
@@ -474,19 +483,6 @@ const typeDefs = gql`
     small: String
     thumbnail: String
   }
-  input ColorInput {
-    code: Int!
-    name: [LanguageInput!]
-    images: ImageSetInput
-    available: Boolean!
-    simpleName: [LanguageInput!]
-  }
-  input MaterialColorInput {
-    code: Int!
-    name: [LanguageInput!]
-    available: Boolean!
-    simpleName: [LanguageInput!]
-  }
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
@@ -512,16 +508,6 @@ const typeDefs = gql`
     bottomColor: [LanguageInput!]
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
-  }
-  input SizeInput {
-    name: String
-    heightInCm: Int
-    widthInCm: Int
-    depthInCm: Int
-    volumeInLiters: Int
-    weightInKg: Float
-    available: Boolean
-    additionalPrice: Int
   }
   input ProductOptionsAdditonalsInput {
     name: [LanguageInput!]
@@ -560,19 +546,12 @@ const typeDefs = gql`
       image: Upload
     ): PatternResult
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload
     ): MaterialResult
-    addMaterialColor(
-      id: ID!
-      color: MaterialColorInput
-      image: Upload
-    ): MaterialColorResult
-    deleteMaterialColor(id: ID!, code: Int): MaterialResult
     "Category Mutation"
     addCategory(
       category: CategoryInput!
@@ -689,11 +668,19 @@ const typeDefs = gql`
     "HomePageSlide Mutation"
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
-    deleteSlide(id: ID!): HomePageSlideResult
+    deleteSlide(id: ID!): HomePageSlideResult  
+    "Sizes Mutation"
+    addSize(data: SizeInput!): SizeResult!
+    deleteSize(id: ID!): SizeResult!
+    updateSize(id: ID!, size: SizeInput!): SizeResult!
+    "Color Mutation"
+    addColor(data: ColorInput!): ColorResult!
+    deleteColor(id: ID!): ColorDeletingResult!
     "ConstructorBottom Mutation"
     addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
     updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
+
   }
 `;
 

@@ -64,6 +64,8 @@ const {
   headerMutation,
 } = require('./modules/header/header.resolver');
 
+const { colorQuery, colorMutation } = require('./modules/color/color.resolver');
+
 const {
   homePageSlideQuery,
   homePageSlideMutation,
@@ -79,14 +81,16 @@ const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
-const sizesService = require('./modules/size/size.service.js');
+const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-const { sizeQuery } = require('./modules/size/size.resolver');
+const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
+
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
   material: 'Material',
+  materials: 'Materials',
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
@@ -103,6 +107,7 @@ const SCHEMA_NAMES = {
   homePageSlide: 'HomePageSlide',
   token: 'Token',
   size: 'Size',
+  color: 'Color',
   constructorBottom: 'ConstructorBottom',
 };
 const resolvers = {
@@ -148,15 +153,8 @@ const resolvers = {
     ...homePageSlideQuery,
 
     ...constructorBottomQuery,
-  },
 
-  Size: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.sizes;
-      }
-      return 'Error';
-    },
+    ...colorQuery,
   },
 
   ConstructorBottom: {
@@ -188,7 +186,7 @@ const resolvers = {
   },
 
   ProductOptions: {
-    size: parent => sizesService.getSizeById(parent.size),
+    size: parent => sizeService.getSizeById(parent.size),
     bottomMaterial: parent => {
       if (parent.bottomMaterial) {
         return materialsService.getMaterialById(parent.bottomMaterial);
@@ -246,7 +244,11 @@ const resolvers = {
 
     ...headerMutation,
 
+    ...sizeMutation,
+
     ...homePageSlideMutation,
+
+    ...colorMutation,
 
     ...constructorBottomMutation,
   },
@@ -283,14 +285,6 @@ const resolvers = {
     },
   },
   MaterialResult: {
-    __resolveType: obj => {
-      if (obj.name) {
-        return SCHEMA_NAMES.material;
-      }
-      return 'Error';
-    },
-  },
-  MaterialColorResult: {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.material;
@@ -415,6 +409,33 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.homePageSlide;
+      }
+      return 'Error';
+    },
+  },
+  SizeResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.size;
+      }
+      return 'Error';
+    },
+  },
+  ColorResult: {
+    __resolveType: obj => {
+      if (obj.colorHex) {
+        return SCHEMA_NAMES.color;
+      }
+      return 'Error';
+    },
+  },
+
+  ColorDeletingResult: {
+    __resolveType: obj => {
+      if (obj.colorHex) {
+        return SCHEMA_NAMES.color;
+      } else if (obj.items) {
+        return SCHEMA_NAMES.materials;
       }
       return 'Error';
     },
