@@ -14,7 +14,7 @@ const newsInput = `
 input NewsInput {
 title: [LanguageInput]
 text: [LanguageInput]
-image: String
+image: Upload
 author: AuthorInput
 date: String
 show: Boolean
