@@ -1,7 +1,7 @@
-const { uploadFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 
 const uploadContactImages = async data => {
-  const uploadResult = await uploadFiles([
+  const uploadResult = await uploadService.uploadFiles([
     data.mapImages[0].image,
     data.mapImages[1].image,
   ]);

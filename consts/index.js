@@ -32,7 +32,15 @@ const WEEK = 7;
 const THREE_DAYS = 3;
 const TWO_WEEKS = 14;
 
+const imageQualities = {
+  large: 1920,
+  medium: 1080,
+  small: 768,
+  thumbnail: 128,
+};
+
 module.exports = {
+  imageQualities,
   roles,
   availableForRegistrationRoles,
   horondiAddress,

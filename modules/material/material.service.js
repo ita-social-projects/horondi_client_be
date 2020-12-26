@@ -5,7 +5,7 @@ const {
   IMAGE_NOT_PROVIDED,
   IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
 
 class MaterialsService {
@@ -84,7 +84,7 @@ class MaterialsService {
     }
     const currency = await Currency.findOne();
 
-    const uploadResult = await uploadFiles(images);
+    const uploadResult = await uploadService.uploadFiles(images);
 
     const imageResults = await Promise.allSettled(uploadResult);
 
@@ -118,7 +118,7 @@ class MaterialsService {
   }
 
   async addMaterialColor(id, color, image) {
-    const uploadResult = await uploadFiles(image);
+    const uploadResult = await uploadService.uploadFiles(image);
     const imageResults = await Promise.allSettled(uploadResult);
     const resizedImages = imageResults.map(item => item.value.fileNames);
     if (!resizedImages) {
@@ -166,7 +166,7 @@ class MaterialsService {
   async deleteMaterialColor(id, code) {
     const material = await Material.find({ colors: { $elemMatch: { code } } });
     const images = material[0].colors[0].images;
-    const deletedImages = await deleteFiles([
+    const deletedImages = await uploadService.deleteFiles([
       images.large,
       images.medium,
       images.small,
