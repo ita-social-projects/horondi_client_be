@@ -36,7 +36,6 @@ class PatternsService {
     if (await this.checkPatternExist(pattern, id)) {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
-
     if (!image) {
       return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
     }

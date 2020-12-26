@@ -4,7 +4,7 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const Address = require('../common/Address').schema;
 
 const orderSchema = new mongoose.Schema({
-  orderId: String,
+  orderNumber: String,
   status: {
     type: String,
     required: true,
@@ -20,6 +20,10 @@ const orderSchema = new mongoose.Schema({
     default: 'CREATED',
   },
   user: {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
     firstName: String,
     lastName: String,
     patronymicName: String,
@@ -27,10 +31,14 @@ const orderSchema = new mongoose.Schema({
     phoneNumber: Number,
   },
   dateOfCreation: {
+    required: true,
     type: Date,
     default: Date.now,
   },
-  lastUpdatedDate: Date,
+  lastUpdatedDate: {
+    type: Date,
+    default: Date.now,
+  },
   userComment: {
     type: String,
     default: '',
@@ -45,21 +53,37 @@ const orderSchema = new mongoose.Schema({
   },
   delivery: {
     sentOn: Date,
-    sentBy: String,
+    sentBy: {
+      type: String,
+      required: true,
+      enum: ['NOVA-POST', 'UKR-POST', 'SELF-PICKUP'],
+      default: 'SELF-PICKUP',
+    },
     byCourier: Boolean,
     courierOffice: Number,
     invoiceNumber: String,
-    cost: [CurrencySet],
+    cost: {
+      type: [CurrencySet],
+      required: true,
+    },
   },
   address: Address,
   items: [
     {
-      productId: String,
-      sizeId: String,
-      bottomMaterial: [Language],
+      productId: {
+        type: String,
+        required: true,
+      },
+      sizeId: {
+        type: String,
+        required: true,
+      },
       additions: [[Language]],
       actualPrice: [CurrencySet],
-      quantity: Number,
+      quantity: {
+        type: Number,
+        required: true,
+      },
     },
   ],
   totalItemsPrice: [CurrencySet],
@@ -72,6 +96,17 @@ const orderSchema = new mongoose.Schema({
   isPaid: {
     type: Boolean,
     default: false,
+  },
+  paymentStatus: {
+    type: String,
+    enum: [
+      'CREATED',
+      'EXPIRED',
+      'APPROVED',
+      'DECLINED',
+      'REVERSED',
+      'PROCESSING',
+    ],
   },
 });
 
