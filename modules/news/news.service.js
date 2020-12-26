@@ -2,9 +2,8 @@ const News = require('./news.model');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
-  PHOTOS_ALREADY_EXIST,
+  PHOTO_NOT_FOUND,
 } = require('../../error-messages/news.messages');
-const uploadService = require('../upload/upload.service');
 const { uploadLargeImage } = require('../upload/upload.utils');
 const { deleteFiles } = require('../upload/upload.service');
 
@@ -60,8 +59,8 @@ class NewsService {
       throw new Error(NEWS_ALREADY_EXIST);
     }
 
-    if (await this.checkPhotosExist(data.author.image, data.image)) {
-      throw new Error(PHOTOS_ALREADY_EXIST);
+    if (!upload[0] && !upload[1]) {
+      throw new Error(PHOTO_NOT_FOUND);
     }
 
     data.author.image = await uploadLargeImage(upload[0]);
@@ -76,19 +75,6 @@ class NewsService {
       return foundNews;
     }
     throw new Error(NEWS_NOT_FOUND);
-  }
-
-  async checkPhotosExist(authorImage, newsImage) {
-    const newsCount = await News.countDocuments({
-      image: { $ne: newsImage },
-      author: {
-        $elemMatch: {
-          image: { $ne: authorImage },
-        },
-      },
-    });
-
-    return newsCount > 0;
   }
 
   async checkNewsExist(data, id) {
