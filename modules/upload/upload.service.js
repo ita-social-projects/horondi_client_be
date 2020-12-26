@@ -75,13 +75,13 @@ class UploadService {
 
     const createName = sizeName => `${sizeName}_${id}_${filename}`;
     if (Array.isArray(sizes)) {
-      sizes.forEach(size => {
+      sizes.forEach(function(size) {
         this.uploadResizedImage(imageQualities[size], createName(size), image);
       });
-      const fileNames = sizes.reduce((acc, size) => {
-        acc[size] = createName(size);
-        return acc;
-      }, {});
+      const fileNames = sizes.reduce(
+        (acc, size) => (acc[size] = createName(size)),
+        {}
+      );
       return {
         prefixUrl: IMAGE_LINK,
         fileNames,

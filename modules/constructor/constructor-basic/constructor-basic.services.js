@@ -3,7 +3,7 @@ const {
   BASIC_NOT_FOUND,
   BASIC_ALREADY_EXIST
 } = require('../../../error-messages/constructor-basic-messages');
-const {calculatePrice} = require('../../../utils/calculate-price');
+const {calculatePrice} = require('../../currency/currency.utils');
 
 class ConstructorBasicService {
   async getAllConstructorBasics({ skip, limit }) {

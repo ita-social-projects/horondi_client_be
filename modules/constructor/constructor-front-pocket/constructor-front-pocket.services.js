@@ -5,7 +5,7 @@ const {
   FRONT_POCKET_ALREADY_EXIST,
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-front-pocket-messages');
-const {calculatePrice} = require('../../../utils/calculate-price');
+const {calculatePrice} = require('../../currency/currency.utils');
 
 class ConstructorFrontPocketService {
   async getAllConstructorFrontPocket({ skip, limit }) {

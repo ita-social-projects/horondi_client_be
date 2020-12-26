@@ -3,7 +3,7 @@ const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
   CONSTRUCTOR_BOTTOM_ALREADY_EXIST
 } = require('../../../error-messages/constructor-bottom.messages');
-const {calculatePrice} = require('../../../utils/calculate-price');
+const {calculatePrice} = require('../../currency/currency.utils');
 
 class ConstructorBottomService {
   async getConstructorBottomById(id) {
