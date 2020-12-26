@@ -183,7 +183,6 @@ describe('mutations', () => {
               source
               tokenPass
             }
-            purchasedProducts
           }
         }
       `,
@@ -513,7 +512,6 @@ describe('User`s mutation restictions tests', () => {
                 source
                 tokenPass
               }
-              purchasedProducts
             }
           }
         `,
