@@ -72,6 +72,7 @@ const {
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
+const { sizeType } = require('./modules/size/size.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -98,7 +99,8 @@ const typeDefs = gql`
   ${headerType}
   ${homePageSlideType}
   ${tokenType}
-  
+  ${sizeType}
+
   scalar Upload
   scalar Date
   enum RoleEnum {
@@ -195,17 +197,6 @@ const typeDefs = gql`
   type AllProductOptions {
     sizes: [Size]
     bottomMaterials: [Material]
-  }
-  type Size {
-    _id: ID!
-    name: String
-    heightInCm: Int
-    widthInCm: Int
-    depthInCm: Int
-    volumeInLiters: Int
-    weightInKg: Float
-    available: Boolean
-    additionalPrice: [CurrencySet]
   }
   type UserForComment {
     email: String!
@@ -316,7 +307,6 @@ const typeDefs = gql`
     getAllCategories: [Category]
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
-    getSubcategories(parentCategoryId: ID!): [Category]
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
@@ -384,7 +374,9 @@ const typeDefs = gql`
     getAllHeaders: [Header!]!
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
-    getSlideById(id: ID!): HomePageSlideResult  
+    getSlideById(id: ID!): HomePageSlideResult
+    getAllSizes: [Size]  
+    getSizeById(id: ID!): Size
   }
   input Pagination {
       skip: Int = ${skip}
@@ -558,7 +550,7 @@ const typeDefs = gql`
     updatePattern(
       id: ID!
       pattern: PatternInput!
-      image: Upload!
+      image: Upload
     ): PatternResult
     "Material Mutation"
     addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
@@ -577,7 +569,6 @@ const typeDefs = gql`
     "Category Mutation"
     addCategory(
       category: CategoryInput!
-      parentId: ID
       upload: Upload
     ): CategoryResult
     deleteCategory(
