@@ -77,6 +77,10 @@ const {
   constructorBottomType,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
+const {
+  closureType,
+  closureInput,
+} = require('./modules/closures/closures.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
@@ -106,6 +110,7 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
+  ${closureType}
   ${purchasedProductsType}
   ${cartProductType}
   ${colorType}
@@ -283,9 +288,16 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
+
+  type PaginatedClosure {
+      items: [Closure]
+      count: Int
+  }
+
   type Materials {
     items: [Material]
   }
+
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -305,6 +317,7 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
+  union ClosureResult = Closure | Error
   union SizeResult = Size | Error
   union ColorResult = Color | Error
   union ColorDeletingResult = Color | Materials | Error
@@ -387,12 +400,15 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes: [Size]
-    getSizeById(id: ID!): SizeResult
+    getAllSizes: [Size]  
+    getSizeById(id: ID!): Size
+    getAllClosure(limit: Int, skip: Int): PaginatedClosure!
+    getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
     getAllConstructorBottom: [ConstructorBottomResult]
+
   }
   input Pagination {
       skip: Int = ${skip}
@@ -455,6 +471,7 @@ const typeDefs = gql`
   ${headerInput}
   ${sizeInput}
   ${homePageSlideInput}
+  ${closureInput}
   ${colorInput}
   ${materialFilterInput}
   ${constructorBottomInput}
@@ -670,6 +687,10 @@ const typeDefs = gql`
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
+    "Closure Mutation"
+    addClosure(closure: ClosureInput!, upload: Upload): ClosureResult
+    updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
+    deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
     addSize(data: SizeInput!): SizeResult!
     deleteSize(id: ID!): SizeResult!
@@ -681,7 +702,6 @@ const typeDefs = gql`
     addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
     updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
-
   }
 `;
 

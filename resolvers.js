@@ -72,6 +72,11 @@ const {
 } = require('./modules/homepage-slider/homepage-slider.resolves');
 
 const {
+  closureQuery,
+  closureMutation,
+} = require('./modules/closures/closures.resolver');
+
+const {
   constructorBottomMutation,
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
@@ -107,9 +112,11 @@ const SCHEMA_NAMES = {
   homePageSlide: 'HomePageSlide',
   token: 'Token',
   size: 'Size',
+  closure: 'Closure',
   color: 'Color',
   constructorBottom: 'ConstructorBottom',
 };
+
 const resolvers = {
   Query: {
     ...currencyQuery,
@@ -151,6 +158,8 @@ const resolvers = {
     ...sizeQuery,
 
     ...homePageSlideQuery,
+
+    ...closureQuery,
 
     ...constructorBottomQuery,
 
@@ -247,6 +256,8 @@ const resolvers = {
     ...sizeMutation,
 
     ...homePageSlideMutation,
+
+    ...closureMutation,
 
     ...colorMutation,
 
@@ -413,6 +424,14 @@ const resolvers = {
       return 'Error';
     },
   },
+  ClosureResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.closure;
+      }
+      return 'Error';
+    },
+  },
   SizeResult: {
     __resolveType: obj => {
       if (obj.name) {
@@ -429,7 +448,6 @@ const resolvers = {
       return 'Error';
     },
   },
-
   ColorDeletingResult: {
     __resolveType: obj => {
       if (obj.colorHex) {
