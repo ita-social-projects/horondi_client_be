@@ -8,7 +8,6 @@ const {
 } = require('../../error-messages/category.messages');
 const uploadService = require('../upload/upload.service');
 const { OTHERS } = require('../../consts');
-const modelService = require('../model/model.service');
 
 class CategoryService {
   async getAllCategories() {
