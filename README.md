@@ -58,8 +58,8 @@ $ npm install
 ### How to run local
 
 1. Open terminal.
-2. Run `npm run start` to start application.
-3. Open http://localhost:5000/graphql to view it in the browser.<sup>[*](#footnote)</sup>
+2. Run `npm run start` to start application.<sup>[*](#footnote)</sup>
+3. Open http://localhost:5000/graphql to view it in the browser.
 
 ###### <a name="footnote">*</a> - to run the project you need an `.env` file in root folder
 
