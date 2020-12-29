@@ -59,9 +59,9 @@ $ npm install
 
 1. Open terminal.
 2. Run `npm run start` to start application.
-3. Open http://localhost:3000 to view it in the browser.<sup>[1](#footnote)</sup>
+3. Open http://localhost:5000/graphql to view it in the browser.<sup>[*](#footnote)</sup>
 
-###### <a name="footnote">1</a> - to run the project you need an `.env` file
+###### <a name="footnote">*</a> - to run the project you need an `.env` file in root folder
 
 
 ### How to run Docker
