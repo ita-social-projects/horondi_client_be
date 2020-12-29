@@ -60,26 +60,19 @@ class CategoryService {
     const categories = await this.getAllCategories();
 
     const data = categories.map(async category => {
-      const products = await Product.find({ category: category._id });
-      const uniqueModels = [];
-      const models = products
-        .map(product => ({
-          name: [...product.model],
-          _id: product._id,
-        }))
-        .filter(({ name }) => {
-          if (!uniqueModels.includes(name[0].value)) {
-            uniqueModels.push(name[0].value);
-            return true;
-          }
-          return false;
-        });
+      const models = await Model.find({ category: category._id });
+      const modelsFields = models.map(async model => {
+        return {
+          name: model.name,
+          _id: model._id,
+        };
+      });
       return {
         category: {
           name: [...category.name],
           _id: category._id,
         },
-        models,
+        models: modelsFields,
       };
     });
 

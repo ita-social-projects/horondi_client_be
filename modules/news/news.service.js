@@ -5,7 +5,6 @@ const {
   PHOTO_NOT_FOUND,
 } = require('../../error-messages/news.messages');
 const { uploadLargeImage } = require('../upload/upload.utils');
-const { deleteFiles } = require('../upload/upload.service');
 
 class NewsService {
   async getAllNews({ skip, limit }) {
@@ -36,15 +35,11 @@ class NewsService {
     }
 
     if (upload[0] && upload[1]) {
-      deleteFiles(news.author.image);
-      deleteFiles(news.image);
       news.author.image = await uploadLargeImage(upload[0]);
       news.image = await uploadLargeImage(upload[1]);
     } else if (upload[0]) {
-      deleteFiles(news.author.image);
       news.author.image = await uploadLargeImage(upload[0]);
     } else if (upload[1]) {
-      deleteFiles(news.image);
       news.image = await uploadLargeImage(upload[1]);
     }
 
