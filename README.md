@@ -23,7 +23,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
   - [How to run Docker](#How-to-run-Docker)
 - [Usage](#Usage)
   - [How to run tests](#How-to-run-tests)
-- [Documentation](#Documentation))
+- [Documentation](#Documentation)
   - [Rules and guidelines](#Rules-and-guidelines)
   - [Testing](#Testing)
   - [Generator](#Generator)
@@ -59,7 +59,10 @@ $ npm install
 
 1. Open terminal.
 2. Run `npm run start` to start application.
-3. Open http://localhost:3000 to view it in the browser.
+3. Open http://localhost:3000 to view it in the browser.<sup>[1](#footnote)</sup>
+
+<a name="footnote">*</a>: to run the project you need an `.env` file
+
 
 ### How to run Docker
 
