@@ -61,7 +61,7 @@ $ npm install
 2. Run `npm run start` to start application.
 3. Open http://localhost:3000 to view it in the browser.<sup>[1](#footnote)</sup>
 
-<a name="footnote">*</a>: to run the project you need an `.env` file
+######<a name="footnote">1</a> - to run the project you need an `.env` file
 
 
 ### How to run Docker
