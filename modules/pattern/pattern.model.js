@@ -6,6 +6,7 @@ const patternSchema = new mongoose.Schema({
   name: [Language],
   description: [Language],
   images: ImageSet,
+  constructorImg: String,
   material: String,
   handmade: Boolean,
   available: Boolean,
