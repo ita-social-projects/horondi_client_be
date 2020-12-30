@@ -1,7 +1,7 @@
-const deliveryService = require('./delivery.service');
+const deliveryService = require('./nova-poshta.service');
 const {
   ORDER_CREATION_FAILED,
-} = require('../../error-messages/delivery.message');
+} = require('../../../error-messages/delivery.message');
 
 const novaPoshtaQuery = {
   getNovaPoshtaCities: async (parent, args) =>
@@ -28,9 +28,4 @@ const novaPoshtaQuery = {
   },
 };
 
-const ukrPoshtaQuery = {
-  getUkrPoshtaRegion: async (parent, args) =>
-    await deliveryService.getUkrPoshtaRegion(args.region),
-};
-
-module.exports = { novaPoshtaQuery, ukrPoshtaQuery };
+module.exports = { novaPoshtaQuery };

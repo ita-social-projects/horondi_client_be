@@ -53,7 +53,7 @@ const {
 const {
   deliveryType,
   deliveryInput,
-} = require('./modules/delivery/delivery.graphql');
+} = require('./modules/delivery/nova-poshta/nova-poshta.graphql');
 const {
   emailQuestionType,
   emailQuestionInput,
@@ -360,7 +360,6 @@ const typeDefs = gql`
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
-    getUkrPoshtaRegion(region: String): UkrPoshtaRegion
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment

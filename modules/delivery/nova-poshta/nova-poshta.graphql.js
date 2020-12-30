@@ -40,10 +40,6 @@ const deliveryType = `
       costPack: Int
   }
 
-  type UkrPoshtaRegion {
-     res: String
-  }
-
   type NovaPoshtaOrder {
     ref: String,
     costOnSite: Float,

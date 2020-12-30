@@ -34,6 +34,10 @@ const dotenvVariables = [
   'SUPER_ADMIN_PASSWORD',
   'SENDGRID_API_KEY',
   'REACT_APP_GOOGLE_CLIENT_ID',
+  'UKR_POSHTA_API_LINK',
+  'UKR_POSHTA_API_KEY',
+  'UKR_POSHTA_STATUS_KEY',
+  'UKR_POSHTA_COUNTERPARTY_KEY',
 ];
 
 function dotenvValidator(processEnv) {
@@ -98,6 +102,13 @@ function dotenvValidator(processEnv) {
     CONFIRMATION_SECRET: joi.string().required(),
     SENDGRID_API_KEY: joi.string().required(),
     REACT_APP_GOOGLE_CLIENT_ID: joi.string().required(),
+    UKR_POSHTA_API_LINK: joi
+      .string()
+      .uri()
+      .required(),
+    UKR_POSHTA_API_KEY: joi.string().required(),
+    UKR_POSHTA_STATUS_KEY: joi.string().required(),
+    UKR_POSHTA_COUNTERPARTY_KEY: joi.string().required(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });

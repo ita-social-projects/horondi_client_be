@@ -3,7 +3,7 @@ const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
-const NovaPoshtaService = require('../delivery/delivery.service');
+const NovaPoshtaService = require('../delivery/nova-poshta/nova-poshta.service');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Currency = require('../currency/currency.model');
 

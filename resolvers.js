@@ -42,8 +42,7 @@ const {
 } = require('./modules/category/category.resolver');
 const {
   novaPoshtaQuery,
-  ukrPoshtaQuery,
-} = require('./modules/delivery/delivery.resolver');
+} = require('./modules/delivery/nova-poshta/nova-poshta.resolver');
 const { paymentQuery } = require('./modules/payment/payment.resolver');
 const {
   businessTextQuery,
@@ -124,8 +123,6 @@ const resolvers = {
     ...contactQuery,
 
     ...novaPoshtaQuery,
-
-    ...ukrPoshtaQuery,
 
     ...paymentQuery,
 
