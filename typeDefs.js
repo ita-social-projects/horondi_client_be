@@ -51,8 +51,8 @@ const {
   contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
-  deliveryType,
-  deliveryInput,
+  novaPoshtaType,
+  novaPoshtaInput,
 } = require('./modules/delivery/nova-poshta/nova-poshta.graphql');
 const {
   emailQuestionType,
@@ -73,6 +73,11 @@ const {
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType } = require('./modules/size/size.graphql');
+const {
+  ukrPoshtaEnum,
+  ukrPostaType,
+  ukrPoshtaInput,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -92,7 +97,8 @@ const typeDefs = gql`
   ${contactType}
   ${orderTypes}
   ${emailQuestionType}
-  ${deliveryType}
+  ${novaPoshtaType}
+  ${ukrPostaType}
   ${paymentType}
   ${paymentStatus}
   ${homePageImagesType}
@@ -108,6 +114,7 @@ const typeDefs = gql`
     admin
     user
   }
+  ${ukrPoshtaEnum}
   type Language {
     lang: String!
     value: String
@@ -296,6 +303,7 @@ const typeDefs = gql`
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
   union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
+  union UkrPoshtaOrderResult = UkrPoshtaOrder | Error
   union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
@@ -360,6 +368,7 @@ const typeDefs = gql`
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
+    createUkrPoshtaOrder(client: UkrPoshtaClientInput,order:UkrPoshtaOrderInput): UkrPoshtaOrderResult
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
@@ -433,7 +442,8 @@ const typeDefs = gql`
   ${orderInputs}
   ${emailQuestionInput}
   ${UserForStatisticsInput}
-  ${deliveryInput}
+  ${novaPoshtaInput}
+  ${ukrPoshtaInput}
   ${paymentInput}
   ${headerInput}
   ${homePageSlideInput}

@@ -76,6 +76,9 @@ const commentsService = require('./modules/comment/comment.service');
 const sizesService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery } = require('./modules/size/size.resolver');
+const {
+  ukrPoshtaQuery,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -92,6 +95,7 @@ const SCHEMA_NAMES = {
   user: 'User',
   emailQuestion: 'EmailQuestion',
   novaPoshtaOrder: 'NovaPoshtaOrder',
+  ukrPoshtaOrder: 'UkrPoshtaOrder',
   header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
@@ -123,6 +127,8 @@ const resolvers = {
     ...contactQuery,
 
     ...novaPoshtaQuery,
+
+    ...ukrPoshtaQuery,
 
     ...paymentQuery,
 
@@ -361,6 +367,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.intDocNumber) {
         return SCHEMA_NAMES.novaPoshtaOrder;
+      }
+      return 'Error';
+    },
+  },
+  UkrPoshtaOrderResult: {
+    __resolveType: obj => {
+      if (obj.intDocNumber) {
+        return SCHEMA_NAMES.ukrPoshtaOrder;
       }
       return 'Error';
     },

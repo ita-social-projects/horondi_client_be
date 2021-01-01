@@ -1,4 +1,4 @@
-const deliveryType = ` 
+const novaPoshtaType = ` 
   type NovaPoshtaCity {
     description: String
     ref: String
@@ -48,7 +48,7 @@ const deliveryType = `
   }
 `;
 
-const deliveryInput = ` 
+const novaPoshtaInput = ` 
   input NovaPoshtaOrderInput {
     citySender: String,
     weight: Float,
@@ -81,4 +81,4 @@ const deliveryInput = `
   }
 `;
 
-module.exports = { deliveryType, deliveryInput };
+module.exports = { novaPoshtaType, novaPoshtaInput };

@@ -37,7 +37,8 @@ const dotenvVariables = [
   'UKR_POSHTA_API_LINK',
   'UKR_POSHTA_API_KEY',
   'UKR_POSHTA_STATUS_KEY',
-  'UKR_POSHTA_COUNTERPARTY_KEY',
+  'UKR_POSHTA_COUNTERPARTY_TOKEN',
+  'UKR_POSHTA_COUNTERPARTY_UUID',
 ];
 
 function dotenvValidator(processEnv) {
@@ -108,7 +109,8 @@ function dotenvValidator(processEnv) {
       .required(),
     UKR_POSHTA_API_KEY: joi.string().required(),
     UKR_POSHTA_STATUS_KEY: joi.string().required(),
-    UKR_POSHTA_COUNTERPARTY_KEY: joi.string().required(),
+    UKR_POSHTA_COUNTERPARTY_TOKEN: joi.string().required(),
+    UKR_POSHTA_COUNTERPARTY_UUID: joi.string().required(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });
