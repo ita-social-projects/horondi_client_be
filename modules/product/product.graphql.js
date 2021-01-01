@@ -11,7 +11,6 @@ strapLengthInCm: Int!
 images: [ImageSet]
 colors: [Color]!
 pattern: Pattern
-closure: [Closure]!
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
@@ -37,7 +36,6 @@ strapLengthInCm: Int!
 colors: [ID]! 
 pattern: ID
 images: [Upload]
-closure: [ID]!
 availableCount: Int
 basePrice: Int!
 available: Boolean

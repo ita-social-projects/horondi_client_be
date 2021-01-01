@@ -35,6 +35,7 @@ class ProductsService {
           model: 'Color',
         },
       });
+    console.log(product);
     return product;
   }
 
