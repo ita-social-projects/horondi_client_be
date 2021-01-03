@@ -68,6 +68,10 @@ const orderSchema = new mongoose.Schema({
         volumeInLiters: Number,
         weightInKg: Number,
       },
+      productId: {
+        type: String,
+        required: true,
+      },
       bottomMaterial: [Language],
       bottomColor: [Language],
       additions: [[Language]],
