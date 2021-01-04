@@ -1,0 +1,70 @@
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ development ]
+  pull_request:
+    branches: [ development  ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Run DB for test
+        run: docker-compose up -d ./docker/docker-compose.yaml
+
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+      - run: npm install
+      - run: npm run test
+        env:
+          MONGO_URL: ${{secrets.MONGO_URL}}
+          MAIL_USER: ${{secrets.MAIL_USER}}
+          MAIL_PASS: ${{secrets.MAIL_PASS}}
+          MAIL_HOST: ${{secrets.MAIL_HOST}}
+          MAIL_PORT: ${{secrets.MAIL_PORT}}
+          SECRET: ${{secrets.SECRET}}
+          CONFIRMATION_SECRET: ${{secrets.CONFIRMATION_SECRET}}
+          EXPIRES_IN: ${{secrets.EXPIRES_IN}}
+          TOKEN_EXPIRES_IN: ${{secrets.TOKEN_EXPIRES_IN}}
+          REFRESH_TOKEN_EXPIRES_IN: ${{secrets.REFRESH_TOKEN_EXPIRES_IN}}
+          RECOVERY_EXPIRE: ${{secrets.RECOVERY_EXPIRE}}
+          FRONT_BASE_URI: ${{secrets.FRONT_BASE_URI}}
+          TEST_BASE_URI: ${{secrets.TEST_BASE_URI}}
+          IMAGE_LINK: ${{secrets.IMAGE_LINK}}
+          STORAGE_ACCOUNT: ${{secrets.STORAGE_ACCOUNT}}
+          AZURE_HOST: ${{secrets.AZURE_HOST}}
+          SENDGRID_API_KEY: ${{secrets.SENDGRID_API_KEY}}
+          CURRENCY_API_URL: ${{secrets.CURRENCY_API_URL}}
+          ACCESS_KEY: ${{secrets.ACCESS_KEY}}
+          SUPER_ADMIN_EMAIL: ${{secrets.SUPER_ADMIN_EMAIL}}
+          SUPER_ADMIN_PASSWORD: ${{secrets.SUPER_ADMIN_PASSWORD}}
+          PAYMENT_SECRET: ${{secrets.PAYMENT_SECRET}}
+          PAYMENT_MERCHANT_ID: ${{secrets.PAYMENT_MERCHANT_ID}}
+          NOVA_POSHTA_API_LINK: ${{secrets.NOVA_POSHTA_API_LINK}}
+          NOVA_POSHTA_API_KEY: ${{secrets.NOVA_POSHTA_API_KEY}}
+          PAYMENT_API_LINK: ${{secrets.PAYMENT_API_LINK}}
+          REACT_APP_GOOGLE_CLIENT_ID: ${{secrets.REACT_APP_GOOGLE_CLIENT_ID}}
+ 
+      # - name: fix code coverage paths
+      #   run: | 
+      #     sed -i 's/\/home\/runner\/work\/horondi_client_be\/horondi_client_be\//\/github\/workspace\//g' test-report.xml
+      #     sed -i 's/\/home\/runner\/work\/horondi_client_be\/horondi_client_be\//\/github\/workspace\//g' coverage/lcov.info
+      
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
+          CI: true
