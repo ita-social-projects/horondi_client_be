@@ -369,6 +369,10 @@ const typeDefs = gql`
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
     createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
     createUkrPoshtaOrder(client: UkrPoshtaClientInput,order:UkrPoshtaOrderInput): UkrPoshtaOrderResult
+    getUkrPoshtaRegions: [UkrPoshtaRegion]
+    getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
+    getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
+    getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment

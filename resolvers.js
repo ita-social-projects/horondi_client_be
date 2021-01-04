@@ -373,7 +373,7 @@ const resolvers = {
   },
   UkrPoshtaOrderResult: {
     __resolveType: obj => {
-      if (obj.intDocNumber) {
+      if (obj.uuid) {
         return SCHEMA_NAMES.ukrPoshtaOrder;
       }
       return 'Error';

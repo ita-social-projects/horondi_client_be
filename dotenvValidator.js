@@ -39,6 +39,7 @@ const dotenvVariables = [
   'UKR_POSHTA_STATUS_KEY',
   'UKR_POSHTA_COUNTERPARTY_TOKEN',
   'UKR_POSHTA_COUNTERPARTY_UUID',
+  'UKR_POSHTA_ADDRESS_API_LINK',
 ];
 
 function dotenvValidator(processEnv) {
@@ -104,6 +105,10 @@ function dotenvValidator(processEnv) {
     SENDGRID_API_KEY: joi.string().required(),
     REACT_APP_GOOGLE_CLIENT_ID: joi.string().required(),
     UKR_POSHTA_API_LINK: joi
+      .string()
+      .uri()
+      .required(),
+    UKR_POSHTA_ADDRESS_API_LINK: joi
       .string()
       .uri()
       .required(),
