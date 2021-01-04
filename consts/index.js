@@ -37,8 +37,13 @@ const getUkrPoshtaDistrictsByRegionIdUrl = `get_districts_by_region_id_and_distr
 const getUkrPoshtaCitiesByDistrictIdUrl = `get_city_by_region_id_and_district_id_and_city_ua?district_id=`;
 const getUkrPoshtaPostofficesCityIdUrl = `get_postoffices_by_postcode_cityid_cityvpzid?city_id=`;
 
+const POST = 'POST';
+const GET = 'GET';
+
 module.exports = {
   getUkrPoshtaRegionsUrl,
+  POST,
+  GET,
   getUkrPoshtaDistrictsByRegionIdUrl,
   getUkrPoshtaCitiesByDistrictIdUrl,
   getUkrPoshtaPostofficesCityIdUrl,

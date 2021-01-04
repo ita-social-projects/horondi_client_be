@@ -4,6 +4,8 @@ const {
   getUkrPoshtaDistrictsByRegionIdUrl,
   getUkrPoshtaCitiesByDistrictIdUrl,
   getUkrPoshtaPostofficesCityIdUrl,
+  GET,
+  POST,
 } = require('../../../consts');
 const {
   UKR_POSHTA_API_LINK,
@@ -31,7 +33,7 @@ class UkrPoshtaService {
   }
   async getUkrPoshtaAddressRequest(urlParams) {
     return await axios({
-      method: 'GET',
+      method: GET,
       url: encodeURI(UKR_POSHTA_ADDRESS_API_LINK + urlParams),
       headers: {
         Authorization: `Bearer ${UKR_POSHTA_API_KEY}`,
@@ -57,7 +59,7 @@ class UkrPoshtaService {
     const createdAddress = await this.createUkrPoshtaAddress(address);
     const createdClient = await this.getUkrPoshtaRequest(
       `clients?token=${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
-      'post',
+      POST,
       {
         firstName,
         lastName,
@@ -73,7 +75,7 @@ class UkrPoshtaService {
     const createdClient = await this.createUkrPoshtaClient(client);
     const createdOrder = await this.getUkrPoshtaRequest(
       `shipments?token=${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
-      'post',
+      POST,
       {
         ...order,
         sender: {
