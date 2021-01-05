@@ -84,7 +84,7 @@ const {
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
-const { sizeType } = require('./modules/size/size.graphql');
+//const { sizeType } = require('./modules/size/size.graphql');
 const {
   constructorBasicType,
   constructorBasicInput,
@@ -125,7 +125,6 @@ const typeDefs = gql`
   ${colorType}
   ${constructorBasicType}
   ${constructorFrontPocketType}
-  
   ${constructorBottomType}
 
   scalar Upload
@@ -728,28 +727,27 @@ const typeDefs = gql`
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
-    deleteSlide(id: ID!): HomePageSlideResult 
     "ConstructorBasic Mutation"  
-    addConstructorBasic(basic: ConstructorBasicInput!): ConstructorBasicResult
-    updateConstructorBasic(id: ID!, basic: ConstructorBasicInput!): ConstructorBasicResult
+    addConstructorBasic(constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, constructorElement: ConstructorBasicInput!): ConstructorBasicResult
     deleteConstructorBasic(id: ID!): ConstructorBasicResult
     "ConstructorFrontPocket Mutation"  
-    addConstructorFrontPocket(pocket: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
-    updateConstructorFrontPocket(id: ID!, pocket: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    addConstructorFrontPocket(constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
     deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
     "ConstructorBottom Mutation"
-    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
-    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    addConstructorBottom(constructorElement: ConstructorBottomInput!): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorElement: ConstructorBottomInput!): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
     "Change model constructor details"  
-    addModelConstructorBasic(id:ID!, basicID:ID!):ModelResult
-    deleteModelConstructorBasic(id:ID!, basicID:ID!):ModelResult
-    addModelConstructorPattern(id:ID!, patternID:ID!):ModelResult
-    deleteModelConstructorPattern(id:ID!, patternID:ID!):ModelResult
-    addModelConstructorFrontPocket(id:ID!, frontPocketID:ID!):ModelResult
-    deleteModelConstructorFrontPocket(id:ID!, frontPocketID:ID!):ModelResult
-    addModelConstructorBottom(id:ID!, bottomID:ID!):ModelResult
-    deleteModelConstructorBottom(id:ID!, bottomID:ID!):ModelResult 
+    addModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
   }
 `;
 

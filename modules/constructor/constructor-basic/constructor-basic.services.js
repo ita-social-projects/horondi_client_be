@@ -39,16 +39,16 @@ class ConstructorBasicService {
   }
 
 
-  async updateConstructorBasic({ id, basic }) {
+  async updateConstructorBasic({ id, constructorElement }) {
     const constructorBasic = await ConstructorBasic.findById(id).populate(
       'material',
     );
     if (!constructorBasic) {
       throw new Error(BASIC_NOT_FOUND);
     }
-    basic.basePrice = await calculatePrice(basic.basePrice);
+    basic.basePrice = await calculatePrice(constructorElement.basePrice);
     return await ConstructorBasic.findByIdAndUpdate(
-      id, basic,
+      id, constructorElement,
       { new: true},
     );
   }

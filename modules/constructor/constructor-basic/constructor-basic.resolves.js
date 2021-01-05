@@ -20,7 +20,7 @@ const constructorBasicQuery = {
 const constructorBasicMutation = {
   addConstructorBasic: async (parent, args) => {
     try {
-     return await constructorBasicService.addConstructorBasic(args.basic);
+     return await constructorBasicService.addConstructorBasic(args.constructorElement);
     } catch (e) {
       return {
         statusCode: 400,
