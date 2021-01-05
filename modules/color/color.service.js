@@ -4,7 +4,6 @@ const {
   COLOR_ALREADY_EXIST,
   COLOR_NOT_FOUND,
 } = require('../../error-messages/color.massage');
-const { findByIdAndDelete } = require('../material/material.model');
 
 class ColorService {
   async getAllColors() {
