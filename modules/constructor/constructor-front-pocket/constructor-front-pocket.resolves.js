@@ -20,7 +20,7 @@ const constructorFrontPocketQuery = {
 const constructorFrontPocketMutation = {
   addConstructorFrontPocket: async (parent, args) => {
     try {
-      return await constructorFrontPocketService.addConstructorFrontPocket(args.pocket);
+      return await constructorFrontPocketService.addConstructorFrontPocket(args.constructorElement);
     } catch (e) {
       return {
         statusCode: 400,

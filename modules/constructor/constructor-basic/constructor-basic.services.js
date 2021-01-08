@@ -3,7 +3,7 @@ const {
   BASIC_NOT_FOUND,
   BASIC_ALREADY_EXIST
 } = require('../../../error-messages/constructor-basic-messages');
-const {calculatePrice} = require('../../../utils/calculate-price');
+const {calculatePrice} = require('../../currency/currency.utils');
 
 class ConstructorBasicService {
   async getAllConstructorBasics({ skip, limit }) {
@@ -21,9 +21,14 @@ class ConstructorBasicService {
   }
 
   async getConstructorBasicById(id) {
-    const foundBasic = await ConstructorBasic.findById(id).populate(
-      'material',
-    );
+    const foundBasic = await ConstructorBasic.findById(id).populate({
+      path: 'material',
+      model: 'Material',
+      populate: {
+        path: 'color',
+        model: 'Color',
+      },
+    });
     if (foundBasic) {
       return foundBasic;
     }
@@ -35,22 +40,35 @@ class ConstructorBasicService {
       throw new Error(BASIC_ALREADY_EXIST);
     }
     data.basePrice = await calculatePrice(data.basePrice);
-    return  await new ConstructorBasic(data).save()
+    const basic = await new ConstructorBasic(data).save()
+    return await  ConstructorBasic.findById(basic._id).populate({
+      path: 'material',
+      model: 'Material',
+      populate: {
+        path: 'color',
+        model: 'Color',
+      },
+    });
   }
 
 
   async updateConstructorBasic({ id, constructorElement }) {
-    const constructorBasic = await ConstructorBasic.findById(id).populate(
-      'material',
-    );
+    const constructorBasic = await ConstructorBasic.findById(id)
     if (!constructorBasic) {
       throw new Error(BASIC_NOT_FOUND);
     }
-    basic.basePrice = await calculatePrice(constructorElement.basePrice);
-    return await ConstructorBasic.findByIdAndUpdate(
+    constructorElement.basePrice = await calculatePrice(constructorElement.basePrice);
+   return await ConstructorBasic.findByIdAndUpdate(
       id, constructorElement,
       { new: true},
-    );
+    ).populate({
+      path: 'material',
+      model: 'Material',
+      populate: {
+        path: 'color',
+        model: 'Color',
+      },
+    });
   }
 
   async deleteConstructorBasic(id) {

@@ -2,10 +2,9 @@ const ConstructorFrontPocket = require('./constructor-front-pocket.model');
 const uploadService = require('../../upload/upload.service');
 const {
   FRONT_POCKET_NOT_FOUND,
-  FRONT_POCKET_ALREADY_EXIST,
-  IMAGE_NOT_PROVIDED,
+  FRONT_POCKET_ALREADY_EXIST
 } = require('../../../error-messages/constructor-front-pocket-messages');
-const {calculatePrice} = require('../../../utils/calculate-price');
+const {calculatePrice} = require('../../currency/currency.utils');
 
 class ConstructorFrontPocketService {
   async getAllConstructorFrontPocket({ skip, limit }) {
@@ -23,9 +22,14 @@ class ConstructorFrontPocketService {
   }
 
   async getConstructorFrontPocketById(id) {
-    const foundConstructorFrontPocket = await ConstructorFrontPocket.findById(id).populate(
-      'material',
-    );
+    const foundConstructorFrontPocket = await ConstructorFrontPocket.findById(id).populate({
+      path: 'material',
+      model: 'Material',
+      populate: {
+        path: 'color',
+        model: 'Color',
+      },
+    });
     if (foundConstructorFrontPocket) {
       return foundConstructorFrontPocket;
     }
@@ -37,21 +41,34 @@ class ConstructorFrontPocketService {
       throw new Error(FRONT_POCKET_ALREADY_EXIST);
     }
     data.basePrice = await calculatePrice(data.basePrice);
-    return await new ConstructorFrontPocket(data).save();
+    const constructorPocket = await new ConstructorFrontPocket(data).save();
+    return await  ConstructorFrontPocket.findById(constructorPocket._id).populate({
+      path: 'material',
+      model: 'Material',
+      populate: {
+        path: 'color',
+        model: 'Color',
+      },
+    });
   }
 
-  async updateConstructorFrontPocket({ id, pocket }) {
-    const constructorFrontPocket = await ConstructorFrontPocket.findById(id).populate(
-      'material',
-    );
+  async updateConstructorFrontPocket({ id, constructorElement }) {
+    const constructorFrontPocket = await ConstructorFrontPocket.findById(id)
     if (!constructorFrontPocket) {
       throw new Error(FRONT_POCKET_NOT_FOUND);
     }
-    pocket.basePrice = await calculatePrice(pocket.basePrice);
+    constructorElement.basePrice = await calculatePrice(constructorElement.basePrice);
     return await ConstructorFrontPocket.findByIdAndUpdate(
-      id, pocket,
+      id, constructorElement,
       { new: true},
-    );
+    ).populate({
+      path: 'material',
+      model: 'Material',
+      populate: {
+        path: 'color',
+        model: 'Color',
+      },
+    });
   }
 
   async deleteConstructorFrontPocket(id) {

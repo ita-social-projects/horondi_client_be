@@ -23,7 +23,7 @@ const constructorBottomMutation = {
   addConstructorBottom: async (parent, args) => {
     try {
       return await constructorBottomService.addConstructorBottom(
-        args.constructorBottom
+        args.constructorElement
       );
     } catch (e) {
       return {
@@ -37,7 +37,7 @@ const constructorBottomMutation = {
     try {
       return await constructorBottomService.updateConstructorBottom(
         args.id,
-        args.constructorBottom
+        args.constructorElement
       );
     } catch (e) {
       return {

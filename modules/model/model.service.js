@@ -117,7 +117,6 @@ class ModelsService {
 
   async deleteModel(id) {
     const model = await Model.findByIdAndDelete(id);
-    console.log(model)
     model.constructorBasic.forEach(async basic=> {
       await ConstructorBasic.findByIdAndDelete(basic)
     });
