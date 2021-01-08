@@ -8,7 +8,7 @@ const azureStorage = require('azure-storage');
 const blobService = azureStorage.createBlobService(
   STORAGE_ACCOUNT,
   ACCESS_KEY,
-  AZURE_HOST,
+  AZURE_HOST
 );
 const containerName = 'images';
 const getStream = require('into-stream');
@@ -43,7 +43,7 @@ class UploadService {
             reject(err);
           }
           resolve(imageName);
-        },
+        }
       );
     });
   }
@@ -117,7 +117,7 @@ class UploadService {
           reject(err);
         }
         resolve(res);
-      }),
+      })
     );
   }
 }
