@@ -263,7 +263,7 @@ class ProductsService {
     if (await this.checkProductExist(productData)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    // const { primary, additional } = await uploadProductImages(filesToUpload);
+    const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
@@ -271,10 +271,10 @@ class ProductsService {
     const model = await modelService.getModelById(productData.model);
     productData.model = model;
 
-    // productData.images = {
-    //   primary,
-    //   additional,
-    // };
+    productData.images = {
+      primary,
+      additional,
+    };
 
     const newProduct = await new Product(productData).save();
 
