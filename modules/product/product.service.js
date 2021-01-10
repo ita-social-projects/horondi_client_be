@@ -17,26 +17,59 @@ const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id)
-      .populate('category')
-      .populate('colors')
-      .populate('model')
-      .populate('closure')
-      .populate('pattern')
-      .populate({
+    return await Product.findById(id).populate([
+      {
+        path: 'category',
+        model: 'Category',
+      },
+      {
+        path: 'model',
+        model: 'Model',
+      },
+      {
+        path: 'colors',
+        model: 'Color',
+      },
+      {
+        path: 'closure',
+        model: 'Closure',
+      },
+      {
+        path: 'pattern',
+        model: 'Pattern',
+      },
+      {
         path: 'innerMaterial',
         populate: {
           path: 'color',
           model: 'Color',
         },
-      })
-      .populate({
+      },
+      {
         path: 'mainMaterial',
         populate: {
           path: 'color',
           model: 'Color',
         },
-      });
+      },
+      {
+        path: 'options',
+        populate: [
+          {
+            path: 'size',
+            model: 'Size',
+          },
+          {
+            path: 'bottomMaterial',
+            model: 'Material',
+          },
+          {
+            path: 'bottomColor',
+            model: 'Color',
+          },
+        ],
+      },
+    ]);
   }
 
   async getModelsByCategory(id) {
@@ -126,25 +159,59 @@ class ProductsService {
       ];
     }
     const items = await Product.find(filters)
-      .populate('category')
-      .populate('colors')
-      .populate('model')
-      .populate('closure')
-      .populate('pattern')
-      .populate({
-        path: 'innerMaterial',
-        populate: {
-          path: 'color',
+      .populate([
+        {
+          path: 'category',
+          model: 'Category',
+        },
+        {
+          path: 'model',
+          model: 'Model',
+        },
+        {
+          path: 'colors',
           model: 'Color',
         },
-      })
-      .populate({
-        path: 'mainMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
+        {
+          path: 'closure',
+          model: 'Closure',
         },
-      })
+        {
+          path: 'pattern',
+          model: 'Pattern',
+        },
+        {
+          path: 'innerMaterial',
+          populate: {
+            path: 'color',
+            model: 'Color',
+          },
+        },
+        {
+          path: 'mainMaterial',
+          populate: {
+            path: 'color',
+            model: 'Color',
+          },
+        },
+        {
+          path: 'options',
+          populate: [
+            {
+              path: 'size',
+              model: 'Size',
+            },
+            {
+              path: 'bottomMaterial',
+              model: 'Material',
+            },
+            {
+              path: 'bottomColor',
+              model: 'Color',
+            },
+          ],
+        },
+      ])
       .skip(skip)
       .limit(limit)
       .sort(sort);
@@ -196,7 +263,7 @@ class ProductsService {
     if (await this.checkProductExist(productData)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
-    const { primary, additional } = await uploadProductImages(filesToUpload);
+    // const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
@@ -204,10 +271,10 @@ class ProductsService {
     const model = await modelService.getModelById(productData.model);
     productData.model = model;
 
-    productData.images = {
-      primary,
-      additional,
-    };
+    // productData.images = {
+    //   primary,
+    //   additional,
+    // };
 
     const newProduct = await new Product(productData).save();
 
@@ -284,12 +351,116 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId);
-    return await Product.find({ _id: { $in: wishlist } });
+    return await Product.find({ _id: { $in: wishlist } }).populate([
+      {
+        path: 'category',
+        model: 'Category',
+      },
+      {
+        path: 'model',
+        model: 'Model',
+      },
+      {
+        path: 'colors',
+        model: 'Color',
+      },
+      {
+        path: 'closure',
+        model: 'Closure',
+      },
+      {
+        path: 'pattern',
+        model: 'Pattern',
+      },
+      {
+        path: 'innerMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
+      {
+        path: 'mainMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
+      {
+        path: 'options',
+        populate: [
+          {
+            path: 'size',
+            model: 'Size',
+          },
+          {
+            path: 'bottomMaterial',
+            model: 'Material',
+          },
+          {
+            path: 'bottomColor',
+            model: 'Color',
+          },
+        ],
+      },
+    ]);
   }
 
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId);
-    return await Product.find({ _id: { $in: cart } });
+    return await Product.find({ _id: { $in: cart } }).populate([
+      {
+        path: 'category',
+        model: 'Category',
+      },
+      {
+        path: 'model',
+        model: 'Model',
+      },
+      {
+        path: 'colors',
+        model: 'Color',
+      },
+      {
+        path: 'closure',
+        model: 'Closure',
+      },
+      {
+        path: 'pattern',
+        model: 'Pattern',
+      },
+      {
+        path: 'innerMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
+      {
+        path: 'mainMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      },
+      {
+        path: 'options',
+        populate: [
+          {
+            path: 'size',
+            model: 'Size',
+          },
+          {
+            path: 'bottomMaterial',
+            model: 'Material',
+          },
+          {
+            path: 'bottomColor',
+            model: 'Color',
+          },
+        ],
+      },
+    ]);
   }
 }
 

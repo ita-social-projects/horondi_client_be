@@ -184,7 +184,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: [Language]
+    bottomColor: ID
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -526,7 +526,7 @@ const typeDefs = gql`
     size: ID
     bottomMaterial: ID
     description: [LanguageInput!]
-    bottomColor: [LanguageInput!]
+    bottomColor: ID!
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
   }
