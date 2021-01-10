@@ -12,64 +12,12 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { Error } = require('mongoose');
-const { uploadProductImages } = require('./product.utils');
+const { uploadProductImages, populateProduct } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id).populate([
-      {
-        path: 'category',
-        model: 'Category',
-      },
-      {
-        path: 'model',
-        model: 'Model',
-      },
-      {
-        path: 'colors',
-        model: 'Color',
-      },
-      {
-        path: 'closure',
-        model: 'Closure',
-      },
-      {
-        path: 'pattern',
-        model: 'Pattern',
-      },
-      {
-        path: 'innerMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
-      {
-        path: 'mainMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
-      {
-        path: 'options',
-        populate: [
-          {
-            path: 'size',
-            model: 'Size',
-          },
-          {
-            path: 'bottomMaterial',
-            model: 'Material',
-          },
-          {
-            path: 'bottomColor',
-            model: 'Color',
-          },
-        ],
-      },
-    ]);
+    return await populateProduct(Product.findById(id));
   }
 
   async getModelsByCategory(id) {
@@ -158,60 +106,7 @@ class ProductsService {
         },
       ];
     }
-    const items = await Product.find(filters)
-      .populate([
-        {
-          path: 'category',
-          model: 'Category',
-        },
-        {
-          path: 'model',
-          model: 'Model',
-        },
-        {
-          path: 'colors',
-          model: 'Color',
-        },
-        {
-          path: 'closure',
-          model: 'Closure',
-        },
-        {
-          path: 'pattern',
-          model: 'Pattern',
-        },
-        {
-          path: 'innerMaterial',
-          populate: {
-            path: 'color',
-            model: 'Color',
-          },
-        },
-        {
-          path: 'mainMaterial',
-          populate: {
-            path: 'color',
-            model: 'Color',
-          },
-        },
-        {
-          path: 'options',
-          populate: [
-            {
-              path: 'size',
-              model: 'Size',
-            },
-            {
-              path: 'bottomMaterial',
-              model: 'Material',
-            },
-            {
-              path: 'bottomColor',
-              model: 'Color',
-            },
-          ],
-        },
-      ])
+    const items = await populateProduct(Product.find(filters))
       .skip(skip)
       .limit(limit)
       .sort(sort);
@@ -351,116 +246,12 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId);
-    return await Product.find({ _id: { $in: wishlist } }).populate([
-      {
-        path: 'category',
-        model: 'Category',
-      },
-      {
-        path: 'model',
-        model: 'Model',
-      },
-      {
-        path: 'colors',
-        model: 'Color',
-      },
-      {
-        path: 'closure',
-        model: 'Closure',
-      },
-      {
-        path: 'pattern',
-        model: 'Pattern',
-      },
-      {
-        path: 'innerMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
-      {
-        path: 'mainMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
-      {
-        path: 'options',
-        populate: [
-          {
-            path: 'size',
-            model: 'Size',
-          },
-          {
-            path: 'bottomMaterial',
-            model: 'Material',
-          },
-          {
-            path: 'bottomColor',
-            model: 'Color',
-          },
-        ],
-      },
-    ]);
+    return await populateProduct(Product.find({ _id: { $in: wishlist } }));
   }
 
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId);
-    return await Product.find({ _id: { $in: cart } }).populate([
-      {
-        path: 'category',
-        model: 'Category',
-      },
-      {
-        path: 'model',
-        model: 'Model',
-      },
-      {
-        path: 'colors',
-        model: 'Color',
-      },
-      {
-        path: 'closure',
-        model: 'Closure',
-      },
-      {
-        path: 'pattern',
-        model: 'Pattern',
-      },
-      {
-        path: 'innerMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
-      {
-        path: 'mainMaterial',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
-      {
-        path: 'options',
-        populate: [
-          {
-            path: 'size',
-            model: 'Size',
-          },
-          {
-            path: 'bottomMaterial',
-            model: 'Material',
-          },
-          {
-            path: 'bottomColor',
-            model: 'Color',
-          },
-        ],
-      },
-    ]);
+    return await populateProduct(Product.find({ _id: { $in: cart } }));
   }
 }
 
