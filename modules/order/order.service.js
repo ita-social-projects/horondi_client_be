@@ -16,10 +16,11 @@ const {
 } = require('../helper-functions');
 
 const {
-  calculateTotalItemsPrice,
   calculateTotalPriceToPay,
   generateOrderId,
 } = require('../../utils/order.utils');
+
+const { calculateTotalItemsPrice } = require('../currency/currency.utils');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {} }) {

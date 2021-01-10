@@ -1,26 +1,5 @@
 const { ORDER_ITEM_NOT_VALID } = require('../error-messages/orders.messages');
-
-function calculateTotalItemsPrice(items) {
-  let USD = 0;
-  let UAN = 0;
-
-  for (const item of items) {
-    const { quantity, actualPrice } = item;
-    UAN +=
-      actualPrice[0].currency === 'UAN'
-        ? actualPrice[0].value * quantity
-        : actualPrice[1].value * quantity;
-    USD +=
-      actualPrice[0].currency === 'USD'
-        ? actualPrice[0].value * quantity
-        : actualPrice[1].value * quantity;
-  }
-
-  return [
-    { value: UAN, currency: 'UAN' },
-    { value: USD, currency: 'USD' },
-  ];
-}
+const crypto = require('crypto');
 
 // this method should return totalItemsPrice + nova poshta delivery price
 function novaPoshtaDeliveryPrice(data) {
@@ -47,11 +26,10 @@ function calculateTotalPriceToPay(data) {
 }
 
 function generateOrderId() {
-  return Math.floor(Math.random() * (100_000_000 - 1_000_000) + 1_000_000);
+  return crypto.randomInt(100000000);
 }
 
 module.exports = {
-  calculateTotalItemsPrice,
   calculateTotalPriceToPay,
   generateOrderId,
 };
