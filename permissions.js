@@ -44,6 +44,26 @@ const {
   homePageImagesPermissionsQuery,
 } = require('./modules/homepage-images/home-page-images.permissions');
 
+const {
+  closurePermissionsMutations,
+  closurePermissionsQuery,
+} = require('./modules/closures/closures.permission');
+
+const {
+  sizePermissionsMutations,
+  sizePermissionsQuery,
+} = require('./modules/size/size.permissions');
+
+const {
+  colorPermissionsMutations,
+  colorPermissionsQuery,
+} = require('./modules/color/color.permissions');
+
+const {
+  сonstructorBottomPermissionsQuery,
+  сonstructorBottomPermissionsMutations,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -56,6 +76,10 @@ const permissions = shield(
       ...modelPermissionsQuery,
       ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
+      ...closurePermissionsQuery,
+      ...sizePermissionsQuery,
+      ...colorPermissionsQuery,
+      ...сonstructorBottomPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -67,6 +91,10 @@ const permissions = shield(
       ...modelPermissionsMutations,
       ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
+      ...closurePermissionsMutations,
+      ...sizePermissionsMutations,
+      ...colorPermissionsMutations,
+      ...сonstructorBottomPermissionsMutations,
     },
   },
   {
