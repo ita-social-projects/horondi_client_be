@@ -6,7 +6,7 @@ const {
   MODEL_NOT_FOUND,
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
-const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -46,7 +46,7 @@ class ModelsService {
     }
 
     if (upload) {
-      const uploadResult = await uploadFiles([upload]);
+      const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       data.images = imageResults.fileNames;
     }
@@ -65,9 +65,9 @@ class ModelsService {
         const images = Object.values(model.images).filter(
           item => typeof item === 'string' && item
         );
-        await deleteFiles(images);
+        await uploadService.deleteFiles(images);
       }
-      const uploadResult = await uploadFiles([upload]);
+      const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       newModel.images = imageResults.fileNames;
     }
@@ -85,7 +85,7 @@ class ModelsService {
       item => typeof item === 'string' && item
     );
     if (images.length) {
-      deleteFiles(images);
+      uploadService.deleteFiles(images);
     }
 
     return model;

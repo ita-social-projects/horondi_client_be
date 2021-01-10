@@ -4,7 +4,7 @@ const {
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 
 class PatternsService {
   async getAllPatterns({ skip, limit }) {
@@ -39,7 +39,7 @@ class PatternsService {
     if (!image) {
       return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
     }
-    const uploadResult = await uploadFiles([image]);
+    const uploadResult = await uploadService.uploadFiles([image]);
 
     const imageResults = await uploadResult[0];
 
@@ -49,7 +49,7 @@ class PatternsService {
       return await Pattern.findByIdAndUpdate(id, pattern);
     }
     const foundPattern = await Pattern.findById(id).lean();
-    deleteFiles(Object.values(foundPattern.images));
+    uploadService.deleteFiles(Object.values(foundPattern.images));
 
     return await Pattern.findByIdAndUpdate(
       id,
@@ -68,7 +68,7 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
 
-    const uploadResult = await uploadFiles([image]);
+    const uploadResult = await uploadService.uploadFiles([image]);
 
     const imageResults = await uploadResult[0];
 
@@ -85,7 +85,9 @@ class PatternsService {
       throw new Error(PATTERN_NOT_FOUND);
     }
 
-    const deletedImages = await deleteFiles(Object.values(foundPattern.images));
+    const deletedImages = await uploadService.deleteFiles(
+      Object.values(foundPattern.images)
+    );
     if (await Promise.allSettled(deletedImages)) {
       return foundPattern;
     }
