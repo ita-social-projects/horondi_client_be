@@ -2,7 +2,9 @@ const News = require('./news.model');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
+  PHOTO_NOT_FOUND,
 } = require('../../error-messages/news.messages');
+const { uploadLargeImage } = require('../upload/upload.utils');
 
 class NewsService {
   async getAllNews({ skip, limit }) {
@@ -26,10 +28,19 @@ class NewsService {
     throw new Error(NEWS_NOT_FOUND);
   }
 
-  async updateNews(id, news) {
+  async updateNews(id, news, upload) {
     const foundNews = await News.findById(id);
     if (!foundNews) {
       throw new Error(NEWS_NOT_FOUND);
+    }
+
+    if (upload[0] && upload[1]) {
+      news.author.image = await uploadLargeImage(upload[0]);
+      news.image = await uploadLargeImage(upload[1]);
+    } else if (upload[0]) {
+      news.author.image = await uploadLargeImage(upload[0]);
+    } else if (upload[1]) {
+      news.image = await uploadLargeImage(upload[1]);
     }
 
     if (await this.checkNewsExist(news, id)) {
@@ -38,10 +49,18 @@ class NewsService {
     return await News.findByIdAndUpdate(id, news, { new: true });
   }
 
-  async addNews(data) {
+  async addNews(data, upload) {
     if (await this.checkNewsExist(data)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
+
+    if (!upload[0] && !upload[1]) {
+      throw new Error(PHOTO_NOT_FOUND);
+    }
+
+    data.author.image = await uploadLargeImage(upload[0]);
+    data.image = await uploadLargeImage(upload[1]);
+
     return new News(data).save();
   }
 

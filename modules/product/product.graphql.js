@@ -55,7 +55,6 @@ type CartProduct{
   selectedSize: String
   sidePocket: Boolean
 }`;
-
 const cartProductInput = `
 input CartProductInput {
 _id: ID!
@@ -72,6 +71,6 @@ sidePocket: Boolean
 module.exports = {
   productType,
   productInput,
-  cartProductType,
   cartProductInput,
+  cartProductType,
 };
