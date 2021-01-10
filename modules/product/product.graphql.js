@@ -9,6 +9,7 @@ mainMaterial: [ID]!
 innerMaterial: [ID]!
 strapLengthInCm: Int!
 images: [ImageSet]
+closure: Closure
 colors: [Color]!
 pattern: Pattern
 basePrice: [CurrencySet]!
@@ -35,6 +36,7 @@ innerMaterial: [ID]!
 strapLengthInCm: Int!
 colors: [ID]! 
 pattern: ID
+closure: ID
 images: [Upload]
 availableCount: Int
 basePrice: Int!

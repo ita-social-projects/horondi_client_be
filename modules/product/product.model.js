@@ -14,14 +14,18 @@ const productSchema = new mongoose.Schema({
   },
   name: [Language],
   description: [Language],
-  mainMaterial: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Material',
-  },
-  innerMaterial: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Material',
-  },
+  mainMaterial: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+  ],
+  innerMaterial: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+  ],
   strapLengthInCm: Number,
   images: PrimaryImage,
   colors: [

@@ -17,10 +17,12 @@ const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    const product = await Product.findById(id)
+    return await Product.findById(id)
       .populate('category')
       .populate('colors')
       .populate('model')
+      .populate('closure')
+      .populate('pattern')
       .populate({
         path: 'innerMaterial',
         populate: {
@@ -35,31 +37,19 @@ class ProductsService {
           model: 'Color',
         },
       });
-    console.log(product);
-    return product;
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id }).populate({
-      path: 'model',
-      populate: {
-        path: 'category',
-      },
-    });
+    const product = await Product.find({ category: id }).populate('category');
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
-    console.log(product);
-
     return product;
   }
 
   async getProductOptions() {
     const sizes = await sizesService.getAllSizes();
-    const bottomMaterials = await Material.find().populate({
-      path: 'color',
-      model: 'Color',
-    });
+    const bottomMaterials = await Material.find().populate('color');
     return { sizes, bottomMaterials };
   }
 
@@ -136,6 +126,25 @@ class ProductsService {
       ];
     }
     const items = await Product.find(filters)
+      .populate('category')
+      .populate('colors')
+      .populate('model')
+      .populate('closure')
+      .populate('pattern')
+      .populate({
+        path: 'innerMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      })
+      .populate({
+        path: 'mainMaterial',
+        populate: {
+          path: 'color',
+          model: 'Color',
+        },
+      })
       .skip(skip)
       .limit(limit)
       .sort(sort);
@@ -194,12 +203,14 @@ class ProductsService {
 
     const model = await modelService.getModelById(productData.model);
     productData.model = model;
+
     productData.images = {
       primary,
       additional,
     };
 
     const newProduct = await new Product(productData).save();
+
     if (newProduct) return newProduct;
   }
 
