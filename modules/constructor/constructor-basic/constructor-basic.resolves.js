@@ -1,13 +1,15 @@
-const constructorBasicService = require('./constructor-basic.services');
+const constructorService = require('../constructor.services');
 const {
   BASIC_NOT_FOUND,
+  BASIC_ALREADY_EXIST
 } = require('../../../error-messages/constructor-basic-messages');
+const ConstructorBasic = require('./constructor-basic.model');
 
 const constructorBasicQuery = {
-  getAllConstructorBasics: (parent, args) => constructorBasicService.getAllConstructorBasics(args),
+  getAllConstructorBasics: (parent, args) => constructorService.getAllConstructorElements(args, ConstructorBasic),
   getConstructorBasicById: async (parent, args) => {
     try {
-      return await constructorBasicService.getConstructorBasicById(args.id);
+      return await constructorService.getConstructorElementById(args.id, ConstructorBasic);
     } catch (e) {
       return {
         statusCode: 404,
@@ -20,7 +22,7 @@ const constructorBasicQuery = {
 const constructorBasicMutation = {
   addConstructorBasic: async (parent, args) => {
     try {
-     return await constructorBasicService.addConstructorBasic(args.constructorElement);
+      return await constructorService.addConstructorElement(args.constructorElement, ConstructorBasic, BASIC_ALREADY_EXIST);
     } catch (e) {
       return {
         statusCode: 400,
@@ -31,7 +33,7 @@ const constructorBasicMutation = {
 
   updateConstructorBasic: async (parent, args) => {
     try {
-      return await constructorBasicService.updateConstructorBasic(args);
+      return await constructorService.updateConstructorElement( args, ConstructorBasic, BASIC_NOT_FOUND);
     } catch (e) {
       return {
         statusCode: e.message === BASIC_NOT_FOUND ? 404 : 400,
@@ -41,7 +43,7 @@ const constructorBasicMutation = {
   },
   deleteConstructorBasic: async (parent, args) => {
     try {
-      return await constructorBasicService.deleteConstructorBasic(args.id);
+      return await constructorService.deleteConstructorElement(args.id, ConstructorBasic, BASIC_NOT_FOUND);
     } catch (e) {
       return {
         statusCode: 404,

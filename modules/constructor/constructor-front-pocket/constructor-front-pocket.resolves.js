@@ -1,13 +1,15 @@
-const constructorFrontPocketService = require('./constructor-front-pocket.services');
+const constructorService = require('../constructor.services');
 const {
-  FRONT_POCKET_NOT_FOUND
+  FRONT_POCKET_NOT_FOUND,
+  FRONT_POCKET_ALREADY_EXIST
 } = require('../../../error-messages/constructor-front-pocket-messages');
+const ConstructorFrontPocket = require('./constructor-front-pocket.model');
 
 const constructorFrontPocketQuery = {
-  getAllConstructorFrontPocket: (parent, args) => constructorFrontPocketService.getAllConstructorFrontPocket(args),
+  getAllConstructorFrontPocket: (parent, args) => constructorService.getAllConstructorElements(args, ConstructorFrontPocket),
   getConstructorFrontPocketById: async (parent, args) => {
     try {
-      return await constructorFrontPocketService.getConstructorFrontPocketById(args.id);
+      return await constructorService.getConstructorElementById(args.id, ConstructorFrontPocket, FRONT_POCKET_NOT_FOUND);
     } catch (e) {
       return {
         statusCode: 404,
@@ -20,7 +22,7 @@ const constructorFrontPocketQuery = {
 const constructorFrontPocketMutation = {
   addConstructorFrontPocket: async (parent, args) => {
     try {
-      return await constructorFrontPocketService.addConstructorFrontPocket(args.constructorElement);
+      return await constructorService.addConstructorElement(args.constructorElement, ConstructorFrontPocket, FRONT_POCKET_ALREADY_EXIST);
     } catch (e) {
       return {
         statusCode: 400,
@@ -31,7 +33,7 @@ const constructorFrontPocketMutation = {
 
   updateConstructorFrontPocket: async (parent, args) => {
     try {
-      return await constructorFrontPocketService.updateConstructorFrontPocket(args);
+      return await constructorService.updateConstructorElement(args, ConstructorFrontPocket, FRONT_POCKET_NOT_FOUND);
     } catch (e) {
       return {
         statusCode: e.message === FRONT_POCKET_NOT_FOUND ? 404 : 400,
@@ -41,7 +43,7 @@ const constructorFrontPocketMutation = {
   },
   deleteConstructorFrontPocket: async (parent, args) => {
     try {
-      return await constructorFrontPocketService.deleteConstructorFrontPocket(args.id);
+      return await constructorService.deleteConstructorElement(args.id, ConstructorFrontPocket, FRONT_POCKET_NOT_FOUND);
     } catch (e) {
       return {
         statusCode: 404,
