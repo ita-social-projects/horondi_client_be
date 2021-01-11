@@ -33,6 +33,7 @@ const dotenvVariables = [
   'SUPER_ADMIN_PASSWORD',
   'SENDGRID_API_KEY',
   'REACT_APP_GOOGLE_CLIENT_ID',
+  'CONTRIBUTING',
 ];
 
 function dotenvValidator(processEnv) {
@@ -93,6 +94,7 @@ function dotenvValidator(processEnv) {
     CONFIRMATION_SECRET: joi.string().required(),
     SENDGRID_API_KEY: joi.string().required(),
     REACT_APP_GOOGLE_CLIENT_ID: joi.string().required(),
+    CONTRIBUTING: joi.boolean(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });
