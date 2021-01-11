@@ -107,8 +107,7 @@ class UploadService {
   }
 
   async deleteFiles(files) {
-    const uploadService = new UploadService();
-    return files.map(async fileName => uploadService.deleteFile(fileName));
+    return files.map(async fileName => this.deleteFile(fileName));
   }
 
   async deleteFile(fileName) {
