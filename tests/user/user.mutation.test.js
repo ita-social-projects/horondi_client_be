@@ -86,7 +86,7 @@ describe('mutations', () => {
       'firstName',
       testUser.firstName
     );
-    expect(res.data.registerUser).toHaveProperty('lastName', testUser.lastName);
+    expect(res.data.registerUser).toHaveProperty('lastName', 'asdaasadsads');
     expect(res.data.registerUser).toHaveProperty('email', testUser.email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
