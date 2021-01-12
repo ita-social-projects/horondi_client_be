@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [ development ]
+    branches: [ contributing-prep ]
   pull_request:
-    branches: [ development ]
+    branches: [ contributing-prep ]
   workflow_dispatch:
 jobs:
   CI:
