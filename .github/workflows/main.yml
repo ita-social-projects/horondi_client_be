@@ -59,3 +59,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
           CI: true
+        with:
+          scannerOptions: -X  
