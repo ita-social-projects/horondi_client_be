@@ -60,10 +60,20 @@ const {
 } = require('./modules/color/color.permissions');
 
 const {
+  constructorBasicPermissionsQuery,
+  constructorBasicPermissionsMutations,
+} = require('./modules/constructor/constructor-basic/constructor-basic.permission');
+
+const {
+  constructorFrontPocketPermissionsQuery,
+  constructorFrontPocketPermissionsMutations,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.permission');
+
+
+const {
   сonstructorBottomPermissionsQuery,
   сonstructorBottomPermissionsMutations,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
-
 
 const permissions = shield(
   {
@@ -81,6 +91,8 @@ const permissions = shield(
       ...sizePermissionsQuery,
       ...colorPermissionsQuery,
       ...сonstructorBottomPermissionsQuery,
+      ...constructorBasicPermissionsQuery,
+      ...constructorFrontPocketPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -96,6 +108,8 @@ const permissions = shield(
       ...sizePermissionsMutations,
       ...colorPermissionsMutations,
       ...сonstructorBottomPermissionsMutations,
+      ...constructorBasicPermissionsMutations,
+      ...constructorFrontPocketPermissionsMutations,
     },
   },
   {
