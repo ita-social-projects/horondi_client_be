@@ -5,17 +5,20 @@ const {
   IMAGE_LINK,
   CONTRIBUTING,
 } = require('../../dotenvValidator');
+const azureStorage = require('azure-storage');
+const getStream = require('into-stream');
+const Jimp = require('jimp');
+const uniqid = require('uniqid');
+
+let blobService;
+let containerName;
 if (!CONTRIBUTING) {
-  const azureStorage = require('azure-storage');
-  const blobService = azureStorage.createBlobService(
+  blobService = azureStorage.createBlobService(
     STORAGE_ACCOUNT,
     ACCESS_KEY,
     AZURE_HOST
   );
-  const containerName = 'images';
-  const getStream = require('into-stream');
-  const Jimp = require('jimp');
-  const uniqid = require('uniqid');
+  containerName = 'images';
 }
 class UploadService {
   async uploadResizedImage(size, imageName, image) {
