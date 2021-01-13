@@ -2,18 +2,16 @@ const productType = `
 type Product {
 _id: ID!
 category: Category!
-model: [Language]!
+model: Model!
 name: [Language]!
 description: [Language]!
-mainMaterial: [Language]!
-innerMaterial: [Language]!
+mainMaterial: [ID]!
+innerMaterial: [ID]!
 strapLengthInCm: Int!
-images: PrimaryImage
-colors: [ID]!
-pattern: [Language]
-patternImages: ImageSet
-closure: [Language]!
-closureColor: String
+images: [ImageSet]
+closure: Closure
+colors: [Color]!
+pattern: Pattern
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
 available: Boolean!
@@ -33,15 +31,13 @@ category: ID!
 model: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
-mainMaterial: [LanguageInput]!
-innerMaterial: [LanguageInput]!
+mainMaterial: [ID]!
+innerMaterial: [ID]!
 strapLengthInCm: Int!
 colors: [ID]! 
-pattern: [LanguageInput]
-patternImages: ImageSetInput
-images: PrimaryImageInput
-closure: [LanguageInput]!
-closureColor: String
+pattern: ID
+closure: ID
+images: [Upload]
 availableCount: Int
 basePrice: Int!
 available: Boolean
@@ -49,6 +45,18 @@ isHotItem: Boolean
 options:[ProductOptionsInput]
 }`;
 
+const cartProductType = `
+type CartProduct{
+  _id: ID!
+  name: [Language]
+  bagBottom: CartProductBagBottom
+  dimension: CartProductDimensions
+  image: String
+  totalPrice: [CurrencySet]
+  quantity: Int
+  selectedSize: String
+  sidePocket: Boolean
+}`;
 const cartProductInput = `
 input CartProductInput {
 _id: ID!
@@ -66,4 +74,5 @@ module.exports = {
   productType,
   productInput,
   cartProductInput,
+  cartProductType,
 };
