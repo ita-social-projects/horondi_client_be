@@ -53,11 +53,8 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
-    STORAGE_ACCOUNT: joi.string().required(),
-    AZURE_HOST: joi
-      .string()
-      .uri()
-      .required(),
+    STORAGE_ACCOUNT: joi.string(),
+    AZURE_HOST: joi.string().uri(),
     PAYMENT_SECRET: joi.string().required(),
     PAYMENT_MERCHANT_ID: joi.number().required(),
     NOVA_POSHTA_API_LINK: joi
