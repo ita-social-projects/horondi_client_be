@@ -10,7 +10,6 @@ const dotenvVariables = [
   'REFRESH_TOKEN_EXPIRES_IN',
   'BASE_URI',
   'TEST_BASE_URI',
-  'KEY_VAULTS_URI',
   'IMAGE_LINK',
   'STORAGE_ACCOUNT',
   'ACCESS_KEY',
@@ -46,10 +45,6 @@ function dotenvValidator(processEnv) {
     TOKEN_EXPIRES_IN: joi.string().required(),
     REFRESH_TOKEN_EXPIRES_IN: joi.string().required(),
     BASE_URI: joi
-      .string()
-      .uri()
-      .required(),
-    KEY_VAULTS_URI: joi
       .string()
       .uri()
       .required(),

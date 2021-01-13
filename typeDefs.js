@@ -84,6 +84,15 @@ const {
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
+//const { sizeType } = require('./modules/size/size.graphql');
+const {
+  constructorBasicType,
+  constructorBasicInput,
+} = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
+const {
+  constructorFrontPocketType,
+  constructorFrontPocketInput,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -114,6 +123,8 @@ const typeDefs = gql`
   ${purchasedProductsType}
   ${cartProductType}
   ${colorType}
+  ${constructorBasicType}
+  ${constructorFrontPocketType}
   ${constructorBottomType}
 
   scalar Upload
@@ -184,7 +195,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: [Language]
+    bottomColor: ID
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -298,6 +309,14 @@ const typeDefs = gql`
     items: [Material]
   }
 
+  type PaginatedConstructorBasics {
+      items: [ConstructorBasic]
+      count: Int
+  }
+  type PaginatedConstructorFrontPocket {
+      items: [ConstructorFrontPocket]
+      count: Int
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -321,6 +340,9 @@ const typeDefs = gql`
   union SizeResult = Size | Error
   union ColorResult = Color | Error
   union ColorDeletingResult = Color | Materials | Error
+  union ConstructorBasicResult = ConstructorBasic | Error
+  union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
+  
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
@@ -406,6 +428,10 @@ const typeDefs = gql`
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
+    getAllConstructorBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
+    getConstructorBasicById(id: ID!): ConstructorBasicResult
+    getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
+    getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
     getAllConstructorBottom: [ConstructorBottomResult]
 
@@ -474,6 +500,9 @@ const typeDefs = gql`
   ${closureInput}
   ${colorInput}
   ${materialFilterInput}
+  ${constructorBasicInput}
+  ${constructorFrontPocketInput}
+  
   ${constructorBottomInput}
   input LanguageInput {
     lang: String!
@@ -526,7 +555,7 @@ const typeDefs = gql`
     size: ID
     bottomMaterial: ID
     description: [LanguageInput!]
-    bottomColor: [LanguageInput!]
+    bottomColor: ID!
     availableCount: Int
     additions: [ProductOptionsAdditonalsInput]
   }
@@ -698,10 +727,27 @@ const typeDefs = gql`
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
+    "ConstructorBasic Mutation"  
+    addConstructorBasic(constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    deleteConstructorBasic(id: ID!): ConstructorBasicResult
+    "ConstructorFrontPocket Mutation"  
+    addConstructorFrontPocket(constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
     "ConstructorBottom Mutation"
-    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
-    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    addConstructorBottom(constructorElement: ConstructorBottomInput!): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorElement: ConstructorBottomInput!): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
+    "Change model constructor details"  
+    addModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
   }
 `;
 
