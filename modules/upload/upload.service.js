@@ -3,18 +3,23 @@ const {
   ACCESS_KEY,
   AZURE_HOST,
   IMAGE_LINK,
+  CONTRIBUTING,
 } = require('../../dotenvValidator');
 const azureStorage = require('azure-storage');
-const blobService = azureStorage.createBlobService(
-  STORAGE_ACCOUNT,
-  ACCESS_KEY,
-  AZURE_HOST
-);
-const containerName = 'images';
 const getStream = require('into-stream');
 const Jimp = require('jimp');
 const uniqid = require('uniqid');
 
+let blobService;
+let containerName;
+if (!CONTRIBUTING) {
+  blobService = azureStorage.createBlobService(
+    STORAGE_ACCOUNT,
+    ACCESS_KEY,
+    AZURE_HOST
+  );
+  containerName = 'images';
+}
 class UploadService {
   async uploadResizedImage(size, imageName, image) {
     const resizedImage = image.resize(size, Jimp.AUTO);
@@ -49,6 +54,17 @@ class UploadService {
 
   uploadFiles = async files =>
     files.map(async file => {
+      if (CONTRIBUTING) {
+        return {
+          prefixUrl: 'some prefix',
+          fileNames: {
+            large: 'large_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
+            medium: 'medium_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
+            small: 'small_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
+            thumbnail: 'thumbnail_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
+          },
+        };
+      }
       const { createReadStream, filename } = await file.promise;
       const inputStream = createReadStream();
       let fileBuffer;
@@ -92,6 +108,9 @@ class UploadService {
     });
 
   async deleteFiles(files) {
+    if (CONTRIBUTING) {
+      return true;
+    }
     return files.map(
       async fileName =>
         await new Promise((resolve, reject) =>
