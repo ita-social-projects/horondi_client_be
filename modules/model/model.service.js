@@ -33,39 +33,36 @@ class ModelsService {
     const foundModel = await Model.findById(id).populate({
       path: 'constructorBasic',
       model: 'ConstructorBasic',
-      populate: {
+      populate:[{
         path: 'material',
-        model: 'Material',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
+        model: 'Material'
+      }, {
+        path: 'color',
+        model: 'Color'
+      }]
     }).populate({
       path: 'constructorPattern',
       model: 'Pattern',
     }).populate({
       path: 'constructorFrontPocket',
       model: 'ConstructorFrontPocket',
-      populate: {
+      populate:[{
         path: 'material',
-        model: 'Material',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
+        model: 'Material'
+      }, {
+        path: 'color',
+        model: 'Color'
+      }]
     }).populate({
       path: 'constructorBottom',
       model: 'ConstructorBottom',
-      populate: {
+      populate:[{
         path: 'material',
-        model: 'Material',
-        populate: {
-          path: 'color',
-          model: 'Color',
-        },
-      },
+        model: 'Material'
+      }, {
+        path: 'color',
+        model: 'Color'
+      }]
     });
 
     if (foundModel) {
@@ -136,7 +133,6 @@ class ModelsService {
     if (images.length) {
       uploadService.deleteFiles(images);
     }
-
     return model;
   }
 
