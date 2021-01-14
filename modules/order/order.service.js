@@ -50,11 +50,13 @@ class OrdersService {
     return [
       {
         currency: 'UAH',
-        value: totalItemsPrice[0].value + delivery.cost[0].value,
+        // value: totalItemsPrice[0].value + delivery.cost[0].value,
+        value: 10000,
       },
       {
         currency: 'USD',
-        value: totalItemsPrice[1].value + delivery.cost[1].value,
+        // value: totalItemsPrice[1].value + delivery.cost[1].value,
+        value: 1000,
       },
     ];
   }
@@ -82,6 +84,7 @@ class OrdersService {
     }
     const foundOrder = await Order.findById(id);
     if (foundOrder) {
+      console.log(foundOrder);
       return foundOrder;
     }
     throw new Error(ORDER_NOT_FOUND);
@@ -172,49 +175,49 @@ class OrdersService {
     const { items } = data;
     const totalItemsPrice = this.calculateTotalItemsPrice(items);
 
-    if (data.delivery.sentBy === 'Nova Poshta') {
-      const weight = data.items.reduce(
-        (prev, currentItem) =>
-          prev + currentItem.size.weightInKg * currentItem.quantity,
-        0
-      );
-      const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
-        data.address.city
-      );
+    // if (data.delivery.sentBy === 'Nova Poshta') {
+    //   const weight = data.items.reduce(
+    //     (prev, currentItem) =>
+    //       prev + currentItem.size.weightInKg * currentItem.quantity,
+    //     0
+    //   );
+    //   const cityRecipient = await NovaPoshtaService.getNovaPoshtaCities(
+    //     data.address.city
+    //   );
 
-      const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
-        cityRecipient: cityRecipient[0].ref,
-        weight,
-        serviceType: data.delivery.byCourier
-          ? 'WarehouseDoors'
-          : 'WarehouseWarehouse',
-        cost: totalItemsPrice[0].value / 100,
-      });
+    //   const deliveryPrice = await NovaPoshtaService.getNovaPoshtaPrices({
+    //     cityRecipient: cityRecipient[0].ref,
+    //     weight,
+    //     serviceType: data.delivery.byCourier
+    //       ? 'WarehouseDoors'
+    //       : 'WarehouseWarehouse',
+    //     cost: totalItemsPrice[0].value / 100,
+    //   });
 
-      const currency = await Currency.findOne();
+    //   const currency = await Currency.findOne();
 
-      const cost = [
-        {
-          currency: 'UAH',
-          value: deliveryPrice[0].cost * 100,
-        },
-        {
-          currency: 'USD',
-          value: Math.round(
-            (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
-              100
-          ),
-        },
-      ];
+    //   const cost = [
+    //     {
+    //       currency: 'UAH',
+    //       value: deliveryPrice[0].cost * 100,
+    //     },
+    //     {
+    //       currency: 'USD',
+    //       value: Math.round(
+    //         (deliveryPrice[0].cost / currency.convertOptions[0].exchangeRate) *
+    //           100
+    //       ),
+    //     },
+    //   ];
 
-      data = {
-        ...data,
-        delivery: {
-          ...data.delivery,
-          cost,
-        },
-      };
-    }
+    //   data = {
+    //     ...data,
+    //     delivery: {
+    //       ...data.delivery,
+    //       cost,
+    //     },
+    //   };
+    // }
 
     const totalPriceToPay = this.calculateTotalPriceToPay(
       data,

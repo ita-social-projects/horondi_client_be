@@ -1,21 +1,31 @@
 const orderTypes = `
 type Order {
   _id: ID!
+  orderNumber: String
   status: Status,
   user: OrderUser
   dateOfCreation: String
   lastUpdatedDate: String
-  adminComment: String
   userComment: String
   cancellationReason:  String
   delivery: Delivery
-  address: Address
-  items: [OrderItems]
+  items: [OrderItem]
   totalItemsPrice: [CurrencySet]
   totalPriceToPay: [CurrencySet]
   isPaid: Boolean
   paymentMethod: PaymentEnum
+  paymentStatus: PaymentStatusEnum
 }
+
+enum PaymentStatusEnum {
+  CREATED
+  EXPIRED
+  APPROVED
+  DECLINED
+  REVERSED
+  PROCESSING
+}
+
 enum PaymentEnum {
   CARD
   CASH
@@ -29,21 +39,18 @@ enum Status {
   SENT
   DELIVERED
 }
-type OrderItems {
-  category: [Language]
-  subcategory: [Language]
-  model: [Language]
-  name: [Language]
-  colors: [[Language]]
-  pattern: [Language]
-  closure: [Language]
-  closureColor: String
-  size: Size,
-  bottomMaterial: [Language]
-  bottomColor: [Language]
+type OrderItem {
+  productId: Product
+  category: Category
   additions: [[Language]]
   actualPrice: [CurrencySet]
   quantity: Int
+  isFromConstructor: Boolean
+  options: ItemOptions
+  constructorBasic:[ConstructorBasic]
+  constructorPattern:[Pattern]
+  constructorFrontPocket:[ConstructorFrontPocket]
+  constructorBottom:[ConstructorBottom]
 }
 type Delivery {
   sentOn: String
@@ -60,24 +67,23 @@ type OrderUser {
   email: String
   phoneNumber: String
 }
+type ItemOptions{
+  size: Size
+  sidePocket: Boolean
+}
 `;
 const orderInputs = ` 
 input OrderInput {
-  _id:ID
   status: Status
   user: OrderUserInput,
   delivery: DeliveryInput,
-  items: [OrderItemsInput],
+  items: [OrderItemInput],
   paymentMethod: PaymentEnum
   userComment: String
-  adminComment: String
-  cancellationReason: String
-  address: AddressInput
-  dateOfCreation: Date
-  lastUpdatedDate: Date
   totalItemsPrice: [CurrencyInputSet]
   totalPriceToPay: [CurrencyInputSet]
   isPaid: Boolean
+  paymentStatus: PaymentStatusEnum
 }
 
 input OrderUserInput {
@@ -89,8 +95,8 @@ input OrderUserInput {
 }
 
 input CurrencyInputSet {
-  currency: String!
-  value: Float!
+  currency: String
+  value: Float
 }
 
 input DeliveryInput {
@@ -99,24 +105,24 @@ input DeliveryInput {
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
-  cost: [CurrencyInputSet]!
+  cost: [CurrencyInputSet]
 }
 
-input OrderItemsInput {
-  category: [LanguageInput]
-  subcategory: [LanguageInput]
-  model: [LanguageInput]
-  name: [LanguageInput]
-  colors: [[LanguageInput]]
-  pattern: [LanguageInput]
-  closure: [LanguageInput]
-  closureColor: String
-  size: SizeInput,
-  bottomMaterial: [LanguageInput]
-  bottomColor: [LanguageInput]
-  additions: [[LanguageInput]]
-  actualPrice: [CurrencySetInput]
-  quantity: Int
+input OrderItemInput {
+  productId: ID
+  modelId: ID
+  constructorBasics: ID
+  constructorBottom: ID
+  constructorFrontPocket: ID
+  constructorPattern: ID
+  actualPrice: [CurrencyInputSet!]
+  quantity: Int!
+  isFromConstructor: Boolean
+  options: ItemOptionsInput
+}
+input ItemOptionsInput{
+  size: ID
+  sidePocket: Boolean
 }
 `;
 
