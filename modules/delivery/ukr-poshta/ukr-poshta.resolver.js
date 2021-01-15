@@ -10,7 +10,6 @@ const ukrPoshtaQuery = {
         args.client,
         args.order
       );
-      console.log(order);
       return order;
     } catch (e) {
       return {
