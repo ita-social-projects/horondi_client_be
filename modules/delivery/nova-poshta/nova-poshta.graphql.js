@@ -39,13 +39,6 @@ const novaPoshtaType = `
       costRedelivery: Int
       costPack: Int
   }
-
-  type NovaPoshtaOrder {
-    ref: String,
-    costOnSite: Float,
-    intDocNumber: String,
-    typeDocument: String
-  }
 `;
 
 const novaPoshtaInput = ` 

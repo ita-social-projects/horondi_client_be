@@ -1,8 +1,4 @@
 const ukrPostaType = `
-  type UkrPoshtaOrder {
-    uuid: String
-    deliveryPrice: Int
-  }
   
   type UkrPoshtaRegion {
     REGION_ID: String
@@ -81,45 +77,6 @@ const ukrPostaType = `
   }
 `;
 
-const ukrPoshtaInput = `
-  input UkrPoshtaClientInput {
-    address: UkrPoshtaAddressInput!
-    firstName: String
-    lastName: String
-    phoneNumber: String
-    type: UkrPoshtaTypeEnum
-  }
-  input UkrPoshtaAddressInput {
-    postcode: Int!
-    country: String
-    region: String
-    city: String
-    district: String
-    street: String
-    houseNumber: Int
-    apartmentInt: Int
-  }
-  input UkrPoshtaOrderInput {
-    weight: Int,
-    length: Int,
-    width: Int,
-    height: Int,
-    postPay: Int,
-    recommended: Boolean,
-    sms: Boolean,
-    paidByRecipient: Boolean,
-    description: String,
-    parcels: [UkrPoshtaParcerInput]
-  }
-
-  input UkrPoshtaParcerInput {
-    name: String,
-    weight: Int,
-    length: Int,
-    declaredPrice: Int
-  }
-`;
-
 const ukrPoshtaEnum = `
   enum UkrPoshtaTypeEnum {
     INDIVIDUAL
@@ -131,6 +88,5 @@ const ukrPoshtaEnum = `
 
 module.exports = {
   ukrPoshtaEnum,
-  ukrPoshtaInput,
   ukrPostaType,
 };

@@ -94,8 +94,6 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
-  novaPoshtaOrder: 'NovaPoshtaOrder',
-  ukrPoshtaOrder: 'UkrPoshtaOrder',
   header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
@@ -359,22 +357,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
-      }
-      return 'Error';
-    },
-  },
-  NovaPoshtaOrderResult: {
-    __resolveType: obj => {
-      if (obj.intDocNumber) {
-        return SCHEMA_NAMES.novaPoshtaOrder;
-      }
-      return 'Error';
-    },
-  },
-  UkrPoshtaOrderResult: {
-    __resolveType: obj => {
-      if (obj.uuid) {
-        return SCHEMA_NAMES.ukrPoshtaOrder;
       }
       return 'Error';
     },

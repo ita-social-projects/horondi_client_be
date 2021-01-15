@@ -15,17 +15,6 @@ const novaPoshtaQuery = {
 
   getNovaPoshtaPrices: async (parent, args) =>
     await deliveryService.getNovaPoshtaPrices(args.data),
-
-  createNovaPoshtaOrder: async (parent, args) => {
-    try {
-      return await deliveryService.createNovaPoshtaOrder(args.data);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
-    }
-  },
 };
 
 module.exports = { novaPoshtaQuery };

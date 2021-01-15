@@ -76,7 +76,6 @@ const { sizeType } = require('./modules/size/size.graphql');
 const {
   ukrPoshtaEnum,
   ukrPostaType,
-  ukrPoshtaInput,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 
 const { skip, limit } = defaultPaginationParams;
@@ -302,8 +301,6 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
-  union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
-  union UkrPoshtaOrderResult = UkrPoshtaOrder | Error
   union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
@@ -367,8 +364,6 @@ const typeDefs = gql`
     getNovaPoshtaStreets(cityRef: String, street: String): [NovaPoshtaStreet]
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
-    createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
-    createUkrPoshtaOrder(client: UkrPoshtaClientInput,order:UkrPoshtaOrderInput): UkrPoshtaOrderResult
     getUkrPoshtaRegions: [UkrPoshtaRegion]
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
@@ -447,7 +442,6 @@ const typeDefs = gql`
   ${emailQuestionInput}
   ${UserForStatisticsInput}
   ${novaPoshtaInput}
-  ${ukrPoshtaInput}
   ${paymentInput}
   ${headerInput}
   ${homePageSlideInput}
