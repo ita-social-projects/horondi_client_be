@@ -9,3 +9,6 @@ services:
       MONGO_INITDB_DATABASE: horondi
     ports:
       - '27017:27017'
+    volumes:
+      - ../dump:/dump
+    
