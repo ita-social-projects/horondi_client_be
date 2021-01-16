@@ -8,6 +8,7 @@ type Model {
     images: ImageSet,
     priority: Int,
     show: Boolean,
+    sizes: [Size]
   }
 `;
 
@@ -20,6 +21,7 @@ input ModelInput {
     images: ImageSetInput,
     priority: Int,
     show: Boolean,
+    sizes: [SizeInput]
   }`;
 
 module.exports = {

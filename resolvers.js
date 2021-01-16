@@ -192,6 +192,10 @@ const resolvers = {
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     subcategory: parent => categoryService.getCategoryById(parent.subcategory),
+    sizes: parent =>
+      parent.sizes.map((size, index) =>
+        sizeService.getSizeById(parent.sizes[index])
+      ),
   },
 
   ProductOptions: {
