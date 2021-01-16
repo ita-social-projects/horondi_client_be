@@ -31,7 +31,11 @@ class ColorService {
     if (!color) {
       throw new Error(COLOR_NOT_FOUND);
     }
-    const materials = await Material.find({ color: id });
+    const materials = await Material.find({
+      colors: {
+        $in: id,
+      },
+    });
 
     if (materials.length) {
       return { items: materials };
