@@ -6,7 +6,7 @@ class DuplicationService {
   async checkItemExist(data, type, field, id) {
     if (data[field]) {
       if (type === 'LanguageSet') {
-        return countDuplicationLanguageSet(data, field, id);
+        return this.countDuplicationLanguageSet(data, field, id);
       }
     }
     throw new Error('Please provide data with field');
