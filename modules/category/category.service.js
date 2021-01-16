@@ -1,19 +1,20 @@
-const mongoose = require('mongoose');
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
-  CATEGORY_IS_NOT_MAIN,
-  WRONG_CATEGORY_DATA,
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
-const { validateCategoryInput } = require('../../utils/validate-category');
 const { deleteFiles, uploadFiles } = require('../upload/upload.service');
 const { OTHERS } = require('../../consts');
+const DuplicationService = require('../duplication/duplication.service');
 
-class CategoryService {
+class CategoryService extends DuplicationService {
+  constructor() {
+    super(Category);
+  }
+
   async getAllCategories() {
     return await Category.find();
   }
@@ -32,7 +33,7 @@ class CategoryService {
       throw new Error(CATEGORY_NOT_FOUND);
     }
 
-    if (await this.checkCategoryExist(category, id)) {
+    if (await this.checkItemExist(category, 'LanguageSet', 'name', id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
@@ -97,7 +98,7 @@ class CategoryService {
       throw new Error(IMAGES_NOT_PROVIDED);
     }
 
-    if (await this.checkCategoryExist(data)) {
+    if (await this.checkItemExist(data, 'LanguageSet', 'name')) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
@@ -141,21 +142,6 @@ class CategoryService {
     }
 
     throw new Error(CATEGORY_NOT_FOUND);
-  }
-
-  async checkCategoryExist(data, id) {
-    if (!data.name.length) {
-      return false;
-    }
-    const categoriesCount = await Category.countDocuments({
-      _id: { $ne: id },
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    });
-    return categoriesCount > 0;
   }
 
   getCategoriesStats(categories, total) {
