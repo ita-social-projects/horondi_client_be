@@ -14,7 +14,8 @@ const constructorBasicSchema = new mongoose.Schema({
   },
   image: String,
   basePrice: [CurrencySet],
-  available: Boolean
+  available: Boolean,
+  default:Boolean,
 });
 
 module.exports = mongoose.model('ConstructorBasic', constructorBasicSchema);
