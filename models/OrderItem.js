@@ -3,9 +3,12 @@ const CurrencySet = require('./CurrencySet').schema;
 
 const orderItemSchema = new mongoose.Schema({
   _id: false,
-  productId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
+  product: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+    },
+    fixedPrice: [CurrencySet],
   },
   modelId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -22,8 +25,11 @@ const orderItemSchema = new mongoose.Schema({
   },
   options: {
     size: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Size',
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Size',
+      },
+      fixedPrice: [CurrencySet],
     },
     sidePocket: {
       type: Boolean,
@@ -31,20 +37,29 @@ const orderItemSchema = new mongoose.Schema({
     },
   },
   constructorBasics: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorBasics',
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'constructorBasics',
+    },
+    fixedPrice: [CurrencySet],
   },
   constructorBottom: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorBottom',
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'constructorBottom',
+    },
+    fixedPrice: [CurrencySet],
   },
-  constructorBasics: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorBasics',
+  constructorFrontPocket: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'constructorFrontPocket',
+    },
+    fixedPrice: [CurrencySet],
   },
-  constructorBasics: {
+  constructorPattern: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorBasics',
+    ref: 'Pattern',
   },
 });
 

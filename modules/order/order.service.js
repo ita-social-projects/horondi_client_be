@@ -6,6 +6,11 @@ const {
 const NovaPoshtaService = require('../delivery/delivery.service');
 const ObjectId = require('mongoose').Types.ObjectId;
 const Currency = require('../currency/currency.model');
+const Product = require('../product/product.model');
+const ConstructorBasic = require('../constructor/constructor-basic/constructor-basic.model');
+const ConstructorFrontPocket = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
+const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
+const Size = require('../size/size.model');
 
 const {
   removeDaysFromData,
@@ -17,21 +22,81 @@ const {
 const { userDateFormat } = require('../../consts');
 
 class OrdersService {
-  calculateTotalItemsPrice(items) {
+  async calculateOrderPrice(items) {
     return items.reduce(
-      (previousPrice, currentItem) => {
-        const { actualPrice, quantity } = currentItem;
-
-        return [
-          {
-            currency: 'UAH',
-            value: actualPrice[0].value * quantity + previousPrice[0].value,
-          },
-          {
-            currency: 'USD',
-            value: actualPrice[1].value * quantity + previousPrice[1].value,
-          },
-        ];
+      async (prev, item) => {
+        const sum = await prev;
+        const { quantity } = item;
+        const { additionalPrice } = await Size.findById(item.options.size._id);
+        item.options.size.fixedPrice = additionalPrice;
+        if (item.isFromConstructor) {
+          const constructorBasics = await ConstructorBasic.findById(
+            item.constructorBasics._id
+          );
+          const constructorFrontPocket = await ConstructorFrontPocket.findById(
+            item.constructorFrontPocket._id
+          );
+          const constructorBottom = await ConstructorBottom.findById(
+            item.constructorBottom._id
+          );
+          item.constructorBasics.fixedPrice = constructorBasics.basePrice;
+          item.constructorFrontPocket.fixedPrice =
+            constructorFrontPocket.basePrice;
+          item.constructorBottom.fixedPrice = constructorBottom.basePrice;
+          item.actualPrice = [
+            {
+              currency: 'UAH',
+              value:
+                (constructorBasics.basePrice[0].value +
+                  constructorFrontPocket.basePrice[0].value +
+                  constructorBottom.basePrice[0].value +
+                  additionalPrice[0].value) *
+                quantity,
+            },
+            {
+              currency: 'USD',
+              value:
+                (constructorBasics.basePrice[1].value +
+                  constructorFrontPocket.basePrice[1].value +
+                  constructorBottom.basePrice[1].value +
+                  additionalPrice[1].value) *
+                quantity,
+            },
+          ];
+          return [
+            {
+              currency: 'UAH',
+              value: item.actualPrice[0].value + sum[0].value,
+            },
+            {
+              currency: 'USD',
+              value: item.actualPrice[1].value + sum[1].value,
+            },
+          ];
+        } else {
+          const { basePrice } = await Product.findById(item.product._id);
+          item.product.fixedPrice = basePrice;
+          item.actualPrice = [
+            {
+              currency: 'UAH',
+              value: (basePrice[0].value + additionalPrice[0].value) * quantity,
+            },
+            {
+              currency: 'USD',
+              value: (basePrice[1].value + additionalPrice[1].value) * quantity,
+            },
+          ];
+          return [
+            {
+              currency: 'UAH',
+              value: item.actualPrice[0].value + sum[0].value,
+            },
+            {
+              currency: 'USD',
+              value: item.actualPrice[0].value + sum[1].value,
+            },
+          ];
+        }
       },
       [
         {
@@ -46,7 +111,7 @@ class OrdersService {
     );
   }
 
-  calculateTotalPriceToPay({ delivery }, totalItemsPrice) {
+  async calculateTotalPriceToPay({ delivery }, totalItemsPrice) {
     return [
       {
         currency: 'UAH',
@@ -65,6 +130,13 @@ class OrdersService {
     const filters = orderStatus ? { status: { $in: orderStatus } } : {};
 
     const items = await Order.find(filters)
+      .populate({
+        path: 'items',
+        populate: {
+          path: 'productId',
+          model: 'Product',
+        },
+      })
       .sort({ dateOfCreation: -1 })
       .skip(skip)
       .limit(limit);
@@ -80,7 +152,10 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await Order.findById(id);
+    const foundOrder = await Order.findById(id).populate({
+      path: 'constructorPattern',
+      model: 'Pattern',
+    });
     if (foundOrder) {
       console.log(foundOrder);
       return foundOrder;
@@ -88,17 +163,17 @@ class OrdersService {
     throw new Error(ORDER_NOT_FOUND);
   }
 
-  async updateOrder(order) {
-    if (!ObjectId.isValid(order._id)) {
+  async updateOrder(order, id) {
+    if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const orderToUpdate = await Order.findById(order._id);
+    const orderToUpdate = await Order.findById(id);
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
     }
 
     if (order.items || order.delivery || order.address) {
-      const totalItemsPrice = this.calculateTotalItemsPrice(order.items);
+      const totalItemsPrice = await this.calculateOrderPrice(order.items);
 
       if (
         orderToUpdate.delivery.sentBy !== 'Nova Poshta' &&
@@ -161,7 +236,7 @@ class OrdersService {
     }
 
     return await Order.findByIdAndUpdate(
-      order._id,
+      id,
       { ...order, lastUpdatedDate: Date.now() },
       {
         new: true,
@@ -171,7 +246,7 @@ class OrdersService {
 
   async addOrder(data) {
     const { items } = data;
-    const totalItemsPrice = this.calculateTotalItemsPrice(items);
+    const totalItemsPrice = await this.calculateOrderPrice(items);
 
     if (data.delivery.sentBy === 'Nova Poshta') {
       const weight = data.items.reduce(

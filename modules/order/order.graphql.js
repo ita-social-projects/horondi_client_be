@@ -40,17 +40,16 @@ enum Status {
   DELIVERED
 }
 type OrderItem {
-  productId: Product
-  category: Category
-  additions: [[Language]]
+  product: ProductItem
+  modelId: Model
   actualPrice: [CurrencySet]
   quantity: Int
   isFromConstructor: Boolean
   options: ItemOptions
-  constructorBasic:[ConstructorBasic]
-  constructorPattern:[Pattern]
-  constructorFrontPocket:[ConstructorFrontPocket]
-  constructorBottom:[ConstructorBottom]
+  constructorBasic: ConstructorBasicItem
+  constructorPattern: Pattern
+  constructorFrontPocket: ConstructorFrontPocketItem
+  constructorBottom: ConstructorBottomItem
 }
 type Delivery {
   sentOn: String
@@ -70,6 +69,23 @@ type OrderUser {
 type ItemOptions{
   size: Size
   sidePocket: Boolean
+}
+type ProductItem {
+  _id: Product
+  fixedPrice: [CurrencySet]
+}
+type ConstructorBasicItem {
+  _id: ConstructorBasic,
+  fixedPrice: [CurrencySet]
+}
+
+type ConstructorFrontPocketItem {
+  _id: ConstructorFrontPocket,
+  fixedPrice: [CurrencySet]
+}
+type ConstructorBottomItem {
+  _id: ConstructorBottom,
+  fixedPrice: [CurrencySet]
 }
 `;
 const orderInputs = ` 
@@ -109,20 +125,35 @@ input DeliveryInput {
 }
 
 input OrderItemInput {
-  productId: ID
+  product: ProductItemInput
   modelId: ID
-  constructorBasics: ID
-  constructorBottom: ID
-  constructorFrontPocket: ID
+  constructorBasics: ConstructorBasicItemInput
+  constructorBottom: ConstructorBottomItemInput
+  constructorFrontPocket: ConstructorFrontPocketItemInput
   constructorPattern: ID
-  actualPrice: [CurrencyInputSet!]
+  actualPrice: [CurrencyInputSet]
   quantity: Int!
   isFromConstructor: Boolean
   options: ItemOptionsInput
 }
 input ItemOptionsInput{
-  size: ID
+  size: sizeInput!
   sidePocket: Boolean
+}
+input sizeInput{
+  _id: ID!
+}
+input ProductItemInput{
+  _id: ID!
+}
+input ConstructorBasicItemInput {
+  _id: ID!
+}
+input ConstructorFrontPocketItemInput {
+  _id: ID!
+}
+input ConstructorBottomItemInput {
+  _id: ID!
 }
 `;
 
