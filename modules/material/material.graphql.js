@@ -4,7 +4,7 @@ const materialType = `
       name: [Language]
       description: [Language]
       purpose: String
-      color: Color
+      colors: [Color]
       available: Boolean
       additionalPrice: [CurrencySet]
     }
@@ -15,7 +15,7 @@ const materialInput = `
       name: [LanguageInput]
       description: [LanguageInput]
       purpose: String
-      color: ID!
+      colors: [ID!]
       available: Boolean
       additionalPrice: Int
     }

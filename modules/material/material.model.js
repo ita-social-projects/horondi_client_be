@@ -6,10 +6,12 @@ const materialSchema = new mongoose.Schema({
   name: [Language],
   description: [Language],
   purpose: String,
-  color: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Color',
-  },
+  colors: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Color',
+    },
+  ],
   available: Boolean,
   additionalPrice: [CurrencySet],
 });

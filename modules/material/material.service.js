@@ -18,7 +18,7 @@ class MaterialsService {
     const { colors } = filterInput;
 
     if (colors && colors.length) {
-      filter.color = { $in: colors };
+      filter.colors = { $in: colors };
     }
 
     return filter;
@@ -28,7 +28,7 @@ class MaterialsService {
     const filters = this.filterItems(filter);
 
     const items = await Material.find(filters)
-      .populate('color')
+      .populate('colors')
       .skip(skip)
       .limit(limit);
 
@@ -40,7 +40,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id).populate('color');
+    return Material.findById(id).populate('colors');
   }
 
   async updateMaterial(id, material) {
@@ -114,7 +114,6 @@ class MaterialsService {
     if (!id) {
       materialsCount = await Material.countDocuments({
         _id: { $ne: id },
-        color: { $eq: data.color },
         name: {
           $elemMatch: {
             $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
@@ -125,7 +124,6 @@ class MaterialsService {
     }
     materialsCount = await Material.countDocuments({
       _id: { $ne: id },
-      color: { $eq: data.color },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
