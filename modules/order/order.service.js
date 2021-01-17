@@ -11,6 +11,7 @@ const ConstructorBasic = require('../constructor/constructor-basic/constructor-b
 const ConstructorFrontPocket = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../size/size.model');
+const { populateOrder } = require('./order.utils');
 
 const {
   removeDaysFromData,
@@ -27,23 +28,18 @@ class OrdersService {
       async (prev, item) => {
         const sum = await prev;
         const { quantity } = item;
-        const { additionalPrice } = await Size.findById(item.options.size._id);
-        item.options.size.fixedPrice = additionalPrice;
+        const { additionalPrice } = await Size.findById(item.options.size);
         if (item.isFromConstructor) {
           const constructorBasics = await ConstructorBasic.findById(
-            item.constructorBasics._id
+            item.constructorBasics
           );
           const constructorFrontPocket = await ConstructorFrontPocket.findById(
-            item.constructorFrontPocket._id
+            item.constructorFrontPocket
           );
           const constructorBottom = await ConstructorBottom.findById(
-            item.constructorBottom._id
+            item.constructorBottom
           );
-          item.constructorBasics.fixedPrice = constructorBasics.basePrice;
-          item.constructorFrontPocket.fixedPrice =
-            constructorFrontPocket.basePrice;
-          item.constructorBottom.fixedPrice = constructorBottom.basePrice;
-          item.actualPrice = [
+          item.fixedPrice = item.actualPrice = [
             {
               currency: 'UAH',
               value:
@@ -74,9 +70,8 @@ class OrdersService {
             },
           ];
         } else {
-          const { basePrice } = await Product.findById(item.product._id);
-          item.product.fixedPrice = basePrice;
-          item.actualPrice = [
+          const { basePrice } = await Product.findById(item.product);
+          item.fixedPrice = item.actualPrice = [
             {
               currency: 'UAH',
               value: (basePrice[0].value + additionalPrice[0].value) * quantity,
@@ -129,14 +124,7 @@ class OrdersService {
 
     const filters = orderStatus ? { status: { $in: orderStatus } } : {};
 
-    const items = await Order.find(filters)
-      .populate({
-        path: 'items',
-        populate: {
-          path: 'productId',
-          model: 'Product',
-        },
-      })
+    const items = await populateOrder(Order.find(filters))
       .sort({ dateOfCreation: -1 })
       .skip(skip)
       .limit(limit);
@@ -152,12 +140,8 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await Order.findById(id).populate({
-      path: 'constructorPattern',
-      model: 'Pattern',
-    });
+    const foundOrder = await populateOrder(Order.findById(id));
     if (foundOrder) {
-      console.log(foundOrder);
       return foundOrder;
     }
     throw new Error(ORDER_NOT_FOUND);
@@ -223,7 +207,7 @@ class OrdersService {
         };
       }
 
-      const totalPriceToPay = this.calculateTotalPriceToPay(
+      const totalPriceToPay = await this.calculateTotalPriceToPay(
         order,
         totalItemsPrice
       );
@@ -292,7 +276,7 @@ class OrdersService {
       };
     }
 
-    const totalPriceToPay = this.calculateTotalPriceToPay(
+    const totalPriceToPay = await this.calculateTotalPriceToPay(
       data,
       totalItemsPrice
     );
@@ -320,7 +304,7 @@ class OrdersService {
   async getUserOrders(user) {
     const { orders } = user;
 
-    return await Order.find({ _id: orders });
+    return await populateOrder(Order.find({ _id: orders }));
   }
 
   filterOrders({ days, isPaid }) {
