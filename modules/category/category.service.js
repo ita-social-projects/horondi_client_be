@@ -33,7 +33,7 @@ class CategoryService extends DuplicationService {
       throw new Error(CATEGORY_NOT_FOUND);
     }
 
-    if (await this.checkItemExist(category, 'LanguageSet', 'name', id)) {
+    if (await this.countDuplicationLanguageSet(category, 'name', id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
@@ -98,7 +98,7 @@ class CategoryService extends DuplicationService {
       throw new Error(IMAGES_NOT_PROVIDED);
     }
 
-    if (await this.checkItemExist(data, 'LanguageSet', 'name')) {
+    if (await this.countDuplicationLanguageSet(data, 'name')) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 

@@ -3,15 +3,6 @@ class DuplicationService {
     this.model = itemModel;
   }
 
-  async checkItemExist(data, type, field, id) {
-    if (data[field]) {
-      if (type === 'LanguageSet') {
-        return await this.countDuplicationLanguageSet(data, field, id);
-      }
-    }
-    throw new Error('Please provide data with field');
-  }
-
   async countDuplicationLanguageSet(data, field, id) {
     const conditionObj = {};
 
