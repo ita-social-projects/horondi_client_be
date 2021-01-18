@@ -13,21 +13,20 @@ class DuplicationService {
   }
 
   async countDuplicationLanguageSet(data, field, id) {
+    const conditionObj = {};
+
+    conditionObj[field] = {
+      $elemMatch: {
+        $or: data[field].map(({ value }) => ({ value })),
+      },
+    };
     return id
       ? await this.model.countDocuments({
           _id: { $ne: id },
-          name: {
-            $elemMatch: {
-              $or: data[field].map(({ value }) => ({ value })),
-            },
-          },
+          ...conditionObj,
         })
       : await this.model.countDocuments({
-          name: {
-            $elemMatch: {
-              $or: data[field].map(({ value }) => ({ value })),
-            },
-          },
+          ...conditionObj,
         });
   }
 }
