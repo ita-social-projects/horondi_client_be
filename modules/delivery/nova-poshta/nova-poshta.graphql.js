@@ -1,4 +1,4 @@
-const deliveryType = ` 
+const novaPoshtaType = ` 
   type NovaPoshtaCity {
     description: String
     ref: String
@@ -39,20 +39,9 @@ const deliveryType = `
       costRedelivery: Int
       costPack: Int
   }
-
-  type UkrPoshtaRegion {
-     res: String
-  }
-
-  type NovaPoshtaOrder {
-    ref: String,
-    costOnSite: Float,
-    intDocNumber: String,
-    typeDocument: String
-  }
 `;
 
-const deliveryInput = ` 
+const novaPoshtaInput = ` 
   input NovaPoshtaOrderInput {
     citySender: String,
     weight: Float,
@@ -85,4 +74,4 @@ const deliveryInput = `
   }
 `;
 
-module.exports = { deliveryType, deliveryInput };
+module.exports = { novaPoshtaType, novaPoshtaInput };
