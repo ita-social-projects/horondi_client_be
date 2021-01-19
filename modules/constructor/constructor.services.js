@@ -16,14 +16,13 @@ class ConstructorService {
   }
 
   async getConstructorElementById(id, model, error) {
-    const foundElement = await model.findById(id).populate({
+    const foundElement = await model.findById(id).populate([{
       path: 'material',
-      model: 'Material',
-      populate: {
-        path: 'color',
-        model: 'Color',
-      },
-    });
+      model: 'Material'
+    }, {
+      path: 'color',
+      model: 'Color'
+    }]);
     if (foundElement) {
       return foundElement;
     }
@@ -36,14 +35,13 @@ class ConstructorService {
     }
     data.basePrice = await calculatePrice(data.basePrice);
     const basic = await new model(data).save()
-    return await  model.findById(basic._id).populate({
+    return await  model.findById(basic._id).populate([{
       path: 'material',
-      model: 'Material',
-      populate: {
-        path: 'color',
-        model: 'Color',
-      },
-    });
+      model: 'Material'
+    }, {
+      path: 'color',
+      model: 'Color'
+    }]);
   }
 
 
@@ -56,14 +54,13 @@ class ConstructorService {
     return await model.findByIdAndUpdate(
       id, constructorElement,
       { new: true},
-    ).populate({
+    ).populate([{
       path: 'material',
-      model: 'Material',
-      populate: {
-        path: 'color',
-        model: 'Color',
-      },
-    });
+      model: 'Material'
+    }, {
+      path: 'color',
+      model: 'Color'
+    }]);
   }
 
   async deleteConstructorElement(id, model, error) {
