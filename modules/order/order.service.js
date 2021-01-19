@@ -26,11 +26,9 @@ class OrdersService {
   async calculateOrderPrice(items) {
     return items.reduce(
       async (prev, item) => {
-        console.log(!item.fixedPrice?.length);
         const sum = await prev;
         const { quantity } = item;
         if (!item.fixedPrice?.length) {
-          console.log('in');
           const { additionalPrice } = await Size.findById(item.options.size);
           if (item.isFromConstructor) {
             const constructorBasics = await ConstructorBasic.findById(
