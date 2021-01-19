@@ -42,7 +42,6 @@ enum Status {
 type OrderItem {
   product: Product
   model: Model
-  actualPrice: [CurrencySet]
   quantity: Int
   isFromConstructor: Boolean
   options: ItemOptions
@@ -119,6 +118,7 @@ input OrderItemInput {
   quantity: Int!
   isFromConstructor: Boolean
   options: ItemOptionsInput
+  fixedPrice: [CurrencyInputSet]
 }
 input ItemOptionsInput{
   size: ID!

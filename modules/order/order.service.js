@@ -26,72 +26,66 @@ class OrdersService {
   async calculateOrderPrice(items) {
     return items.reduce(
       async (prev, item) => {
+        console.log(!item.fixedPrice?.length);
         const sum = await prev;
         const { quantity } = item;
-        const { additionalPrice } = await Size.findById(item.options.size);
-        if (item.isFromConstructor) {
-          const constructorBasics = await ConstructorBasic.findById(
-            item.constructorBasics
-          );
-          const constructorFrontPocket = await ConstructorFrontPocket.findById(
-            item.constructorFrontPocket
-          );
-          const constructorBottom = await ConstructorBottom.findById(
-            item.constructorBottom
-          );
-          item.fixedPrice = item.actualPrice = [
-            {
-              currency: 'UAH',
-              value:
-                (constructorBasics.basePrice[0].value +
-                  constructorFrontPocket.basePrice[0].value +
-                  constructorBottom.basePrice[0].value +
-                  additionalPrice[0].value) *
-                quantity,
-            },
-            {
-              currency: 'USD',
-              value:
-                (constructorBasics.basePrice[1].value +
-                  constructorFrontPocket.basePrice[1].value +
-                  constructorBottom.basePrice[1].value +
-                  additionalPrice[1].value) *
-                quantity,
-            },
-          ];
-          return [
-            {
-              currency: 'UAH',
-              value: item.actualPrice[0].value + sum[0].value,
-            },
-            {
-              currency: 'USD',
-              value: item.actualPrice[1].value + sum[1].value,
-            },
-          ];
-        } else {
-          const { basePrice } = await Product.findById(item.product);
-          item.fixedPrice = item.actualPrice = [
-            {
-              currency: 'UAH',
-              value: (basePrice[0].value + additionalPrice[0].value) * quantity,
-            },
-            {
-              currency: 'USD',
-              value: (basePrice[1].value + additionalPrice[1].value) * quantity,
-            },
-          ];
-          return [
-            {
-              currency: 'UAH',
-              value: item.actualPrice[0].value + sum[0].value,
-            },
-            {
-              currency: 'USD',
-              value: item.actualPrice[0].value + sum[1].value,
-            },
-          ];
+        if (!item.fixedPrice?.length) {
+          console.log('in');
+          const { additionalPrice } = await Size.findById(item.options.size);
+          if (item.isFromConstructor) {
+            const constructorBasics = await ConstructorBasic.findById(
+              item.constructorBasics
+            );
+            const constructorFrontPocket = await ConstructorFrontPocket.findById(
+              item.constructorFrontPocket
+            );
+            const constructorBottom = await ConstructorBottom.findById(
+              item.constructorBottom
+            );
+            item.fixedPrice = [
+              {
+                currency: 'UAH',
+                value:
+                  (constructorBasics.basePrice[0].value +
+                    constructorFrontPocket.basePrice[0].value +
+                    constructorBottom.basePrice[0].value +
+                    additionalPrice[0].value) *
+                  quantity,
+              },
+              {
+                currency: 'USD',
+                value:
+                  (constructorBasics.basePrice[1].value +
+                    constructorFrontPocket.basePrice[1].value +
+                    constructorBottom.basePrice[1].value +
+                    additionalPrice[1].value) *
+                  quantity,
+              },
+            ];
+          } else {
+            const { basePrice } = await Product.findById(item.product);
+            item.fixedPrice = [
+              {
+                currency: 'UAH',
+                value: basePrice[0].value + additionalPrice[0].value,
+              },
+              {
+                currency: 'USD',
+                value: basePrice[1].value + additionalPrice[1].value,
+              },
+            ];
+          }
         }
+        return [
+          {
+            currency: 'UAH',
+            value: item.fixedPrice[0].value * quantity + sum[0].value,
+          },
+          {
+            currency: 'USD',
+            value: item.fixedPrice[1].value * quantity + sum[1].value,
+          },
+        ];
       },
       [
         {

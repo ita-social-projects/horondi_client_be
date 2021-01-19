@@ -11,7 +11,6 @@ const orderItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Model',
   },
-  actualPrice: [CurrencySet],
   quantity: {
     type: Number,
     required: true,
