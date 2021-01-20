@@ -53,11 +53,16 @@ type OrderItem {
 }
 type Delivery {
   sentOn: String
-  sentBy: String
+  sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
   cost: [CurrencySet]
+}
+enum SendByEnum{
+  NOVAPOST
+  UKRPOST
+  SELFPICKUP
 }
 type OrderUser {
   firstName: String
@@ -100,7 +105,7 @@ input CurrencyInputSet {
 
 input DeliveryInput {
   sentOn: String
-  sentBy: String
+  sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean

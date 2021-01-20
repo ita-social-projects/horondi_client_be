@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 const CurrencySet = require('./CurrencySet').schema;
 
 const deliverySchema = new mongoose.Schema({
+  _id: false,
   sentOn: Date,
   sentBy: {
     type: String,
-    enum: ['NOVA-POST', 'UKR-POST', 'SELF-PICKUP'],
-    default: 'SELF-PICKUP',
+    enum: ['NOVAPOST', 'UKRPOST', 'SELFPICKUP'],
+    default: 'SELFPICKUP',
   },
   byCourier: Boolean,
   courierOffice: Number,
