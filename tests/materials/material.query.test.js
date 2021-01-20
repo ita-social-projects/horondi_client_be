@@ -12,48 +12,21 @@ const {
   wrongSkip,
   wrongLimit,
   limitZero,
+  createColor,
+  color,
+  getMaterial,
 } = require('./material.variables');
 
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/currency/currency.utils.js');
+jest.setTimeout(10000);
 
 let materialId = '';
 let operations;
-
-const material = {
-  name: [
-    { lang: 'uk', value: 'Тест' },
-    { lang: 'en', value: 'Test' },
-  ],
-  description: [
-    { lang: 'uk', value: 'Опис Тестового матеріальчика' },
-    { lang: 'en', value: 'Description for Test Materialyy' },
-  ],
-  purpose: 'test',
-  available: true,
-  additionalPrice: 58,
-  colors: [
-    {
-      code: 777,
-      name: [
-        { lang: 'uk', value: 'Тестовий колір' },
-        { lang: 'en', value: 'Test color' },
-      ],
-      images: {
-        large: 'large_test',
-        medium: 'medium_test',
-        small: 'small_test',
-        thumbnail: 'thumbnail_test',
-      },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'проста назва кольору' },
-        { lang: 'en', value: 'simple color name' },
-      ],
-    },
-  ],
-};
+let colorId;
+let material;
 
 describe('material querries test', () => {
   beforeAll(async () => {
@@ -61,10 +34,12 @@ describe('material querries test', () => {
   });
 
   beforeAll(async () => {
+    colorId = await createColor(color);
+    material = getMaterial(colorId);
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material, images: []) {
+          addMaterial(material: $material) {
             ... on Material {
               _id
             }
@@ -98,13 +73,31 @@ describe('material querries test', () => {
       `,
       variables: { id: materialId },
     });
+
+    await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteColor(id: $id) {
+            ... on Color {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: colorId },
+    });
+    return { deleteMaterial, deleteColor };
   });
 
   it('should receive all materials', async () => {
     const res = await operations.query({
       query: gql`
         query {
-          getAllMaterials {
+          getAllMaterials(filter: { colors: [] }) {
             items {
               name {
                 lang
@@ -116,7 +109,7 @@ describe('material querries test', () => {
               }
               purpose
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -125,13 +118,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                colorHex
               }
               available
             }
@@ -162,34 +149,12 @@ describe('material querries test', () => {
       available: material.available,
       colors: [
         {
-          code: material.colors[0].code,
-          name: [
-            {
-              lang: material.colors[0].name[0].lang,
-              value: material.colors[0].name[0].value,
-            },
-            {
-              lang: material.colors[0].name[1].lang,
-              value: material.colors[0].name[1].value,
-            },
-          ],
-          images: null,
-          available: true,
-          simpleName: [
-            {
-              lang: material.colors[0].simpleName[0].lang,
-              value: material.colors[0].simpleName[0].value,
-            },
-            {
-              lang: material.colors[0].simpleName[1].lang,
-              value: material.colors[0].simpleName[1].value,
-            },
-          ],
+          _id: colorId,
+          ...color,
         },
       ],
     });
   });
-
   it('should receive one material', async () => {
     const res = await operations.query({
       query: gql`
@@ -206,7 +171,7 @@ describe('material querries test', () => {
               }
               purpose
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -215,13 +180,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                colorHex
               }
               available
             }
@@ -237,7 +196,6 @@ describe('material querries test', () => {
 
     const receivedMaterial = res.data.getMaterialById;
     expect(receivedMaterial).toBeDefined();
-    expect(receivedMaterial).toMatchSnapshot();
 
     expect(receivedMaterial).toHaveProperty('name', material.name);
     expect(receivedMaterial.name).toBeInstanceOf(Array);
@@ -251,15 +209,7 @@ describe('material querries test', () => {
     expect(receivedMaterial).toHaveProperty('purpose', material.purpose);
     expect(receivedMaterial).toHaveProperty('available', material.available);
 
-    expect(receivedMaterial).toHaveProperty('colors', [
-      {
-        code: 777,
-        name: material.colors[0].name,
-        simpleName: material.colors[0].simpleName,
-        available: true,
-        images: null,
-      },
-    ]);
+    expect(receivedMaterial).toHaveProperty('colors');
     expect(receivedMaterial.colors).toBeInstanceOf(Array);
   });
 
@@ -279,7 +229,7 @@ describe('material querries test', () => {
               }
               purpose
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -288,13 +238,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                colorHex
               }
               available
             }
@@ -313,13 +257,12 @@ describe('material querries test', () => {
     expect(receivedMaterial).toHaveProperty('statusCode', 404);
     expect(receivedMaterial).toHaveProperty('message', MATERIAL_NOT_FOUND);
   });
-
   it('Should receive 1 material', async () => {
     const res = await operations.query({
       variables: { skip, limit },
       query: gql`
         query($skip: Int, $limit: Int) {
-          getAllMaterials(skip: $skip, limit: $limit) {
+          getAllMaterials(skip: $skip, limit: $limit, filter: { colors: [] }) {
             items {
               name {
                 lang
@@ -331,7 +274,7 @@ describe('material querries test', () => {
               }
               purpose
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -340,13 +283,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                colorHex
               }
               available
             }
@@ -367,7 +304,7 @@ describe('material querries test', () => {
       variables: { skip: wrongSkip, limit },
       query: gql`
         query($skip: Int, $limit: Int) {
-          getAllMaterials(skip: $skip, limit: $limit) {
+          getAllMaterials(skip: $skip, limit: $limit, filter: { colors: [] }) {
             items {
               name {
                 lang
@@ -379,7 +316,7 @@ describe('material querries test', () => {
               }
               purpose
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -388,13 +325,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                colorHex
               }
               additionalPrice {
                 currency
@@ -410,12 +341,11 @@ describe('material querries test', () => {
 
     expect(res.errors[0].message).toEqual(graphqlErrorMessage);
   });
-
   it('should receive 3 materials if limit is -3', async () => {
     const res = await operations.query({
       query: gql`
         query($skip: Int, $limit: Int) {
-          getAllMaterials(skip: $skip, limit: $limit) {
+          getAllMaterials(skip: $skip, limit: $limit, filter: { colors: [] }) {
             items {
               name {
                 lang
@@ -426,8 +356,12 @@ describe('material querries test', () => {
                 value
               }
               purpose
+              additionalPrice {
+                currency
+                value
+              }
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -436,17 +370,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
-              }
-              additionalPrice {
-                currency
-                value
+                colorHex
               }
               available
             }
@@ -468,7 +392,7 @@ describe('material querries test', () => {
       variables: { skip, limit: limitZero },
       query: gql`
         query($skip: Int, $limit: Int) {
-          getAllMaterials(skip: $skip, limit: $limit) {
+          getAllMaterials(skip: $skip, limit: $limit, filter: { colors: [] }) {
             items {
               name {
                 lang
@@ -480,7 +404,7 @@ describe('material querries test', () => {
               }
               purpose
               colors {
-                code
+                _id
                 name {
                   lang
                   value
@@ -489,13 +413,7 @@ describe('material querries test', () => {
                   lang
                   value
                 }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                colorHex
               }
               additionalPrice {
                 currency
