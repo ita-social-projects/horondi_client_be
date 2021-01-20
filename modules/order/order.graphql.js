@@ -84,8 +84,6 @@ input OrderInput {
   items: [OrderItemInput],
   paymentMethod: PaymentEnum
   userComment: String
-  totalItemsPrice: [CurrencyInputSet]
-  totalPriceToPay: [CurrencyInputSet]
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
 }
