@@ -10,7 +10,6 @@ const dotenvVariables = [
   'REFRESH_TOKEN_EXPIRES_IN',
   'BASE_URI',
   'TEST_BASE_URI',
-  'KEY_VAULTS_URI',
   'IMAGE_LINK',
   'STORAGE_ACCOUNT',
   'ACCESS_KEY',
@@ -34,6 +33,7 @@ const dotenvVariables = [
   'SUPER_ADMIN_PASSWORD',
   'SENDGRID_API_KEY',
   'REACT_APP_GOOGLE_CLIENT_ID',
+  'CONTRIBUTING',
 ];
 
 function dotenvValidator(processEnv) {
@@ -49,19 +49,12 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
-    KEY_VAULTS_URI: joi
-      .string()
-      .uri()
-      .required(),
     IMAGE_LINK: joi
       .string()
       .uri()
       .required(),
-    STORAGE_ACCOUNT: joi.string().required(),
-    AZURE_HOST: joi
-      .string()
-      .uri()
-      .required(),
+    STORAGE_ACCOUNT: joi.string(),
+    AZURE_HOST: joi.string().uri(),
     PAYMENT_SECRET: joi.string().required(),
     PAYMENT_MERCHANT_ID: joi.number().required(),
     NOVA_POSHTA_API_LINK: joi
@@ -98,6 +91,7 @@ function dotenvValidator(processEnv) {
     CONFIRMATION_SECRET: joi.string().required(),
     SENDGRID_API_KEY: joi.string().required(),
     REACT_APP_GOOGLE_CLIENT_ID: joi.string().required(),
+    CONTRIBUTING: joi.boolean(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });

@@ -1,9 +1,7 @@
 const Currency = require('./currency.model');
 
 const calculatePrice = async price => {
-  console.log(price);
   const { convertOptions } = await Currency.findOne();
-
   return [
     {
       value: Math.round(price * convertOptions[0].exchangeRate * 100),
@@ -16,6 +14,4 @@ const calculatePrice = async price => {
   ];
 };
 
-module.exports = {
-  calculatePrice,
-};
+module.exports = { calculatePrice };

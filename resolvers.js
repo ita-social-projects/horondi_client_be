@@ -77,6 +77,16 @@ const {
 } = require('./modules/closures/closures.resolver');
 
 const {
+  constructorBasicQuery,
+  constructorBasicMutation,
+} = require('./modules/constructor/constructor-basic/constructor-basic.resolves');
+
+const {
+  constructorFrontPocketQuery,
+  constructorFrontPocketMutation,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves');
+
+const {
   constructorBottomMutation,
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
@@ -115,6 +125,8 @@ const SCHEMA_NAMES = {
   closure: 'Closure',
   color: 'Color',
   constructorBottom: 'ConstructorBottom',
+  constructorBasic: 'ConstructorBasic',
+  constructorFrontPocket: 'ConstructorFrontPocket',
 };
 
 const resolvers = {
@@ -163,6 +175,10 @@ const resolvers = {
 
     ...constructorBottomQuery,
 
+    ...constructorBasicQuery,
+
+    ...constructorFrontPocketQuery,
+
     ...colorQuery,
   },
 
@@ -191,7 +207,6 @@ const resolvers = {
 
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
-    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
     sizes: parent =>
       parent.sizes.map((size, index) =>
         sizeService.getSizeById(parent.sizes[index])
@@ -264,6 +279,10 @@ const resolvers = {
     ...closureMutation,
 
     ...colorMutation,
+
+    ...constructorBasicMutation,
+
+    ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
   },
@@ -458,6 +477,24 @@ const resolvers = {
         return SCHEMA_NAMES.color;
       } else if (obj.items) {
         return SCHEMA_NAMES.materials;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorBasicResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorBasic;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorFrontPocketResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorFrontPocket;
       }
       return 'Error';
     },

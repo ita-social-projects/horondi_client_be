@@ -8,10 +8,6 @@ const modelSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
-  subcategory: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-  },
   name: [Language],
   description: [Language],
   images: ImageSet,
@@ -22,6 +18,19 @@ const modelSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Size',
     },
+  ],
+  availableForConstructor: Boolean,
+  constructorBasic: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorBasic' },
+  ],
+  constructorPattern: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Pattern' },
+  ],
+  constructorFrontPocket: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorFrontPocket' },
+  ],
+  constructorBottom: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorBottom' },
   ],
 });
 

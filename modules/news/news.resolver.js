@@ -14,6 +14,7 @@ const newsQuery = {
     }
   },
 };
+
 const newsMutation = {
   addNews: async (parent, args) => {
     try {

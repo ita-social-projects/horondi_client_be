@@ -1,12 +1,17 @@
-const constructorBottomService = require('./constructor-bottom.service');
+const constructorService = require('../constructor.services');
 const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
+  CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
 } = require('../../../error-messages/constructor-bottom.messages');
+const ConstructorBottom = require('./constructor-bottom.model');
 
 const constructorBottomQuery = {
   getConstructorBottomById: async (parent, args) => {
     try {
-      return await constructorBottomService.getConstructorBottomById(args.id);
+      return await constructorService.getConstructorElementById(
+        args.id,
+        ConstructorBottom
+      );
     } catch (e) {
       return {
         statusCode: 404,
@@ -15,16 +20,17 @@ const constructorBottomQuery = {
     }
   },
 
-  getAllConstructorBottom: async () =>
-    await constructorBottomService.getAllConstructorBottom(),
+  getAllConstructorBottom: async (parent, args) =>
+    await constructorService.getAllConstructorElements(args, ConstructorBottom),
 };
 
 const constructorBottomMutation = {
   addConstructorBottom: async (parent, args) => {
     try {
-      return await constructorBottomService.addConstructorBottom(
-        args.constructorBottom,
-        args.upload
+      return await constructorService.addConstructorElement(
+        args.constructorElement,
+        ConstructorBottom,
+        CONSTRUCTOR_BOTTOM_ALREADY_EXIST
       );
     } catch (e) {
       return {
@@ -36,10 +42,10 @@ const constructorBottomMutation = {
 
   updateConstructorBottom: async (parent, args) => {
     try {
-      return await constructorBottomService.updateConstructorBottom(
-        args.id,
-        args.constructorBottom,
-        args.upload
+      return await constructorService.updateConstructorElement(
+        args,
+        ConstructorBottom,
+        CONSTRUCTOR_BOTTOM_NOT_FOUND
       );
     } catch (e) {
       return {
@@ -50,8 +56,10 @@ const constructorBottomMutation = {
   },
 
   deleteConstructorBottom: async (parent, args) => {
-    const deletedModel = await constructorBottomService.deleteConstructorBottom(
-      args.id
+    const deletedModel = await constructorService.deleteConstructorElement(
+      args.id,
+      ConstructorBottom,
+      CONSTRUCTOR_BOTTOM_NOT_FOUND
     );
     if (deletedModel) {
       return deletedModel;

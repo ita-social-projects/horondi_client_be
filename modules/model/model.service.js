@@ -1,5 +1,8 @@
 const { ObjectId } = require('mongoose').Types;
 const Model = require('./model.model');
+const ConstructorBasic = require('../constructor/constructor-basic/constructor-basic.model');
+const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
+const ConstructorFrontPocket = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
 const {
   CATEGORY_NOT_VALID,
   MODEL_ALREADY_EXIST,
@@ -26,7 +29,56 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new Error(MODEL_NOT_VALID);
     }
-    const foundModel = await Model.findById(id);
+
+    const foundModel = await Model.findById(id).populate([
+      {
+        path: 'constructorBasic',
+        model: 'ConstructorBasic',
+        populate: [
+          {
+            path: 'material',
+            model: 'Material',
+          },
+          {
+            path: 'color',
+            model: 'Color',
+          },
+        ],
+      },
+      {
+        path: 'constructorFrontPocket',
+        model: 'ConstructorFrontPocket',
+        populate: [
+          {
+            path: 'material',
+            model: 'Material',
+          },
+          {
+            path: 'color',
+            model: 'Color',
+          },
+        ],
+      },
+      {
+        path: 'constructorBottom',
+        model: 'ConstructorBottom',
+        populate: [
+          {
+            path: 'material',
+            model: 'Material',
+          },
+          {
+            path: 'color',
+            model: 'Color',
+          },
+        ],
+      },
+      {
+        path: 'constructorPattern',
+        model: 'Pattern',
+      },
+    ]);
+
     if (foundModel) {
       return foundModel;
     }
@@ -76,7 +128,15 @@ class ModelsService {
 
   async deleteModel(id) {
     const model = await Model.findByIdAndDelete(id);
-
+    model.constructorBasic.forEach(async basic => {
+      await ConstructorBasic.findByIdAndDelete(basic);
+    });
+    model.constructorBottom.forEach(async bottom => {
+      await ConstructorBottom.findByIdAndDelete(bottom);
+    });
+    await model.constructorFrontPocket.forEach(async pocket => {
+      await ConstructorFrontPocket.findByIdAndDelete(pocket);
+    });
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
     }
@@ -87,8 +147,67 @@ class ModelsService {
     if (images.length) {
       uploadService.deleteFiles(images);
     }
-
     return model;
+  }
+
+  async addModelConstructorBasic(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorBasic: [constructorElementID] } }
+    );
+  }
+
+  async deleteModelConstructorBasic(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorBasic: constructorElementID } },
+      { safe: true, upsert: true }
+    );
+  }
+
+  async addModelConstructorPattern(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorPattern: [constructorElementID] } }
+    );
+  }
+
+  async deleteModelConstructorPattern(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorPattern: constructorElementID } },
+      { safe: true, upsert: true }
+    );
+  }
+
+  async addModelConstructorFrontPocket(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorFrontPocket: [constructorElementID] } }
+    );
+  }
+
+  async deleteModelConstructorFrontPocket(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorFrontPocket: constructorElementID } },
+      { safe: true, upsert: true }
+    );
+  }
+
+  async addModelConstructorBottom(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $addToSet: { constructorBottom: [constructorElementID] } }
+    );
+  }
+
+  async deleteModelConstructorBottom(id, constructorElementID) {
+    return Model.findByIdAndUpdate(
+      { _id: id },
+      { $pull: { constructorBottom: constructorElementID } },
+      { safe: true, upsert: true }
+    );
   }
 
   async checkModelExist(data) {
@@ -102,4 +221,5 @@ class ModelsService {
     return modelCount > 0;
   }
 }
+
 module.exports = new ModelsService();

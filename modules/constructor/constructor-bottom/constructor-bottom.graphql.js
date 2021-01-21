@@ -3,9 +3,11 @@ const constructorBottomType = `
     _id: ID!
     name: [Language]!
     material: Material
-    image: ImageSet!
+    color:Color
+    image: String
     basePrice: [CurrencySet]
     available: Boolean!
+    default:Boolean,
   }
 `;
 
@@ -13,8 +15,11 @@ const constructorBottomInput = `
   input ConstructorBottomInput {
     name: [LanguageInput]!
     material: ID!
+    color:ID!
+    image: String
     basePrice: Int!
     available: Boolean!
+    default:Boolean,
   }
 `;
 

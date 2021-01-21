@@ -4,7 +4,6 @@ const {
   COLOR_ALREADY_EXIST,
   COLOR_NOT_FOUND,
 } = require('../../error-messages/color.massage');
-const { findByIdAndDelete } = require('../material/material.model');
 
 class ColorService {
   async getAllColors() {
@@ -32,7 +31,11 @@ class ColorService {
     if (!color) {
       throw new Error(COLOR_NOT_FOUND);
     }
-    const materials = await Material.find({ color: id });
+    const materials = await Material.find({
+      colors: {
+        $in: id,
+      },
+    });
 
     if (materials.length) {
       return { items: materials };

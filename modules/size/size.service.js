@@ -23,9 +23,7 @@ class SizeService {
     if (size.length) {
       throw new Error(SIZE_ALREADY_EXIST);
     }
-    console.log(sizeData);
     sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
-    console.log(sizeData);
     return new Size(sizeData).save();
   }
 
