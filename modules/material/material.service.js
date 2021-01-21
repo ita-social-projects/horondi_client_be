@@ -60,18 +60,7 @@ class MaterialsService {
       id,
       {
         ...rest,
-        additionalPrice: [
-          {
-            currency: this.currencyTypes.UAH,
-            value:
-              additionalPrice *
-              Math.round(currency.convertOptions[0].exchangeRate * 100),
-          },
-          {
-            currency: this.currencyTypes.USD,
-            value: additionalPrice * 100,
-          },
-        ],
+        additionalPrice: [calculatePrice(additionalPrice)],
       },
       { new: true }
     );

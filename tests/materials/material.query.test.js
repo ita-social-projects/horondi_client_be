@@ -21,7 +21,7 @@ const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.setTimeout(10000);
+jest.setTimeout(30000);
 
 let materialId = '';
 let operations;
