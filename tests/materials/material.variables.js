@@ -58,24 +58,6 @@ const getMaterialForMutation = colorId => ({
   colors: [colorId],
 });
 
-/*{
-    name: [
-    { lang: 'uk', value: 'Матеріал test' },
-    { lang: 'en', value: 'Material test' },
-  ],
-    description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
-  ],
-  purpose: 'update',
-  available: true,
-  colors: ["6008a3040b3ee58c7586765b"]
-}
-
-    additionalPrice: [
-        { currency: 'UAN', value: 61.98 },
-        { currency: 'USD', value: 2.2 }
-    ],*/
 const getMaterialToUpdate = colorId => ({
   name: [
     { lang: 'uk', value: 'Матеріал update' },
