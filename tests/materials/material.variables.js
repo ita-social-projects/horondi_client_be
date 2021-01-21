@@ -70,15 +70,6 @@ const getMaterial = colorId => ({
   colors: [colorId],
 });
 
-const getMaterialForMutation = colorId => ({
-  name: [
-    { lang: 'uk', value: 'Матеріал test2' },
-    { lang: 'en', value: 'Material test2' },
-  ],
-  ...materialOptions,
-  colors: [colorId],
-});
-
 const getMaterialToUpdate = colorId => ({
   name: [
     { lang: 'uk', value: 'Матеріал update' },
@@ -121,7 +112,6 @@ module.exports = {
   createColor,
   color,
   getMaterial,
-  getMaterialForMutation,
   getMaterialToUpdate,
   deleteMaterial,
 };

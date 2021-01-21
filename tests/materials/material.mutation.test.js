@@ -7,7 +7,6 @@ const {
 const {
   materialDoesNotExistId,
   createColor,
-  getMaterialForMutation,
   getMaterial,
   color,
   getMaterialToUpdate,
