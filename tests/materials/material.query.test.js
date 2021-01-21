@@ -208,7 +208,12 @@ describe('material querries test', () => {
     expect(receivedMaterial).toHaveProperty('purpose', material.purpose);
     expect(receivedMaterial).toHaveProperty('available', material.available);
 
-    expect(receivedMaterial).toHaveProperty('colors');
+    expect(receivedMaterial).toHaveProperty('colors', [
+      {
+        _id: colorId,
+        ...color,
+      },
+    ]);
     expect(receivedMaterial.colors).toBeInstanceOf(Array);
   });
 

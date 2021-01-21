@@ -40,6 +40,27 @@ const createColor = async color => {
   return createdColor.data.addColor._id;
 };
 
+const deleteMaterial = async materialId => {
+  const operations = await setupApp();
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteMaterial(id: $id) {
+          ... on Material {
+            _id
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { id: materialId },
+  });
+
+  return res;
+};
 const getMaterial = colorId => ({
   name: [
     { lang: 'uk', value: 'Матеріал test' },
@@ -51,8 +72,8 @@ const getMaterial = colorId => ({
 
 const getMaterialForMutation = colorId => ({
   name: [
-    { lang: 'uk', value: 'Матеріал test' },
-    { lang: 'en', value: 'Material test' },
+    { lang: 'uk', value: 'Матеріал test2' },
+    { lang: 'en', value: 'Material test2' },
   ],
   ...materialOptions,
   colors: [colorId],
@@ -102,4 +123,5 @@ module.exports = {
   getMaterial,
   getMaterialForMutation,
   getMaterialToUpdate,
+  deleteMaterial,
 };

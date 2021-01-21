@@ -8,14 +8,17 @@ const {
   materialDoesNotExistId,
   createColor,
   getMaterialForMutation,
+  getMaterial,
   color,
   getMaterialToUpdate,
+  deleteMaterial,
 } = require('./material.variables');
 
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.setTimeout(30000);
 
 let operations;
 let materialId = '';
@@ -27,7 +30,7 @@ describe('material mutations tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
     colorId = await createColor(color);
-    material = getMaterialForMutation(colorId);
+    material = getMaterial(colorId);
     materialToUpdate = getMaterialToUpdate(colorId);
   });
   afterAll(async () => {
@@ -204,7 +207,7 @@ describe('material mutations tests', () => {
     expect(updatedMaterial.colors).toBeInstanceOf(Array);
   });
 
-  it('should return error when update not existing material should return error', async () => {
+  it('should return error when update not existing material', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $material: MaterialInput!) {
@@ -246,11 +249,43 @@ describe('material mutations tests', () => {
     expect(updatedMaterial).toHaveProperty('message', MATERIAL_NOT_FOUND);
   });
 
-  it('should delete material', async () => {
-    const res = await operations.mutate({
+  it('should return error when update material with already existing name will ', async () => {
+    const firstRes = await operations.mutate({
       mutation: gql`
-        mutation($id: ID!) {
-          deleteMaterial(id: $id) {
+        mutation($material: MaterialInput!) {
+          addMaterial(material: $material) {
+            ... on Material {
+              _id
+              name {
+                lang
+                value
+              }
+              description {
+                lang
+                value
+              }
+              purpose
+              colors {
+                _id
+              }
+              available
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+      variables: { material },
+    });
+
+    const testMaterial = firstRes.data.addMaterial;
+    const testMaterialId = firstRes.data.addMaterial._id;
+    const secondRes = await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!, $material: MaterialInput!) {
+          updateMaterial(id: $id, material: $material) {
             ... on Material {
               _id
             }
@@ -261,8 +296,19 @@ describe('material mutations tests', () => {
           }
         }
       `,
-      variables: { id: materialId },
+      variables: { id: testMaterialId, material: materialToUpdate },
     });
+    expect(secondRes.data.updateMaterial).toHaveProperty('statusCode', 400);
+    expect(secondRes.data.updateMaterial).toHaveProperty(
+      'message',
+      MATERIAL_ALREADY_EXIST
+    );
+
+    await deleteMaterial(testMaterialId);
+  });
+
+  it('should delete material', async () => {
+    const res = await deleteMaterial(materialId);
 
     expect(res.data.deleteMaterial).toHaveProperty('_id', materialId);
   });
