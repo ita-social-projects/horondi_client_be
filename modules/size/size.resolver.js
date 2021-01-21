@@ -16,9 +16,9 @@ const sizeQuery = {
 };
 
 const sizeMutation = {
-  addSize: async (parent_, { data }) => {
+  addSize: async (parent_, { size }) => {
     try {
-      return await sizeService.addSize(data);
+      return await sizeService.addSize(size);
     } catch (e) {
       return {
         statusCode: 404,

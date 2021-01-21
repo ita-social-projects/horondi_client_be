@@ -692,7 +692,7 @@ const typeDefs = gql`
     updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
     deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
-    addSize(data: SizeInput!): SizeResult!
+    addSize(size: SizeInput!): SizeResult!
     deleteSize(id: ID!): SizeResult!
     updateSize(id: ID!, size: SizeInput!): SizeResult!
     "Color Mutation"
