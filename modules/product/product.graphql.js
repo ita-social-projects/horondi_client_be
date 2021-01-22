@@ -13,12 +13,11 @@ category: Category!
 model: Model!
 name: [Language]!
 description: [Language]!
-mainMaterial: [Material]!
-innerMaterial: [Material]!
+mainMaterial: ProductMaterialType!
+innerMaterial: ProductMaterialType!
 strapLengthInCm: Int!
 images: ProductImages
 closure: Closure
-colors: [Color]!
 pattern: Pattern
 basePrice: [CurrencySet]!
 options: [ProductOptions]!
@@ -31,7 +30,10 @@ rateCount: Int
 userRates: [UserRate]
 comments: PaginatedComments!
 }
-`;
+type ProductMaterialType{
+  material: Material
+  color: Color
+}`;
 
 const productInput = `
 input ProductInput {
@@ -39,18 +41,21 @@ category: ID!
 model: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
-mainMaterial: [ID]!
-innerMaterial: [ID]!
+mainMaterial: ProductMaterialsInput!
+innerMaterial: ProductMaterialsInput!
 strapLengthInCm: Int!
-colors: [ID]! 
-pattern: ID
-closure: ID
+pattern: ID!
+closure: ID!
 images: [Upload]
 availableCount: Int
 basePrice: Int!
 available: Boolean
 isHotItem: Boolean
 options:[ProductOptionsInput]
+}
+input ProductMaterialsInput{
+  material: ID
+  color: ID
 }`;
 
 const cartProductType = `

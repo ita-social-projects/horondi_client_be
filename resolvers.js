@@ -84,7 +84,7 @@ const {
 const {
   constructorFrontPocketQuery,
   constructorFrontPocketMutation,
-} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves')
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves');
 
 const {
   constructorBottomMutation,
@@ -99,6 +99,11 @@ const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
+const modelService = require('./modules/model/model.service');
+const materialService = require('./modules/material/material.service');
+const colorService = require('./modules/color/color.service');
+const patternService = require('./modules/pattern/pattern.service');
+const closuresService = require('./modules/closures/closures.service');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -203,20 +208,30 @@ const resolvers = {
     category: parent => categoryService.getCategoryById(parent.category),
     comments: parent =>
       commentsService.getAllCommentsByProduct({ productId: parent._id }),
+    model: parent => modelService.getModelById(parent.model),
+    mainMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.mainMaterial.material),
+      color: () => colorService.getColorById(parent.mainMaterial.color),
+    }),
+    innerMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.mainMaterial.material),
+      color: () => colorService.getColorById(parent.mainMaterial.color),
+    }),
+    pattern: parent => patternService.getPatternById(parent.pattern),
+    closure: parent => closuresService.getClosureById(parent.closure),
   },
 
   Model: {
-    category: parent => categoryService.getCategoryById(parent.category)
+    category: parent => categoryService.getCategoryById(parent.category),
   },
 
   ProductOptions: {
     size: parent => sizeService.getSizeById(parent.size),
-    bottomMaterial: parent => {
-      if (parent.bottomMaterial) {
-        return materialsService.getMaterialById(parent.bottomMaterial);
-      }
-      return null;
-    },
+    bottomMaterial: parent =>
+      materialsService.getMaterialById(parent.bottomMaterial),
+    bottomColor: parent => colorService.getColorById(parent.bottomColor),
   },
 
   UserRate: {
