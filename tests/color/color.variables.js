@@ -16,6 +16,10 @@ const color2 = {
 };
 
 const error_not_found = { message: 'COLOR_NOT_FOUND', statusCode: 404 };
+const error_already_exists = {
+  message: 'COLOR_ALREADY_EXIST',
+  statusCode: 400,
+};
 
 const createdColor = async color => {
   operations = await setupApp();
@@ -45,5 +49,6 @@ module.exports = {
   color,
   color2,
   error_not_found,
+  error_already_exists,
   createdColor,
 };

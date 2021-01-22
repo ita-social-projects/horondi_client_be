@@ -1,6 +1,11 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
-const { wrongID, color2 } = require('./color.variables');
+const {
+  wrongID,
+  color2,
+  error_not_found,
+  error_already_exists,
+} = require('./color.variables');
 
 let operations;
 let colorId;
@@ -59,10 +64,7 @@ describe('Color mutations', () => {
         data: color2,
       },
     });
-    expect(addCol.data.addColor).toEqual({
-      message: 'COLOR_ALREADY_EXIST',
-      statusCode: 400,
-    });
+    expect(addCol.data.addColor).toEqual(error_already_exists);
   });
 
   test('Should delete color by ID', async () => {
@@ -111,9 +113,6 @@ describe('Color mutations', () => {
         id: wrongID,
       },
     });
-    expect(deleteCol.data.deleteColor).toEqual({
-      message: 'COLOR_NOT_FOUND',
-      statusCode: 404,
-    });
+    expect(deleteCol.data.deleteColor).toEqual(error_not_found);
   });
 });
