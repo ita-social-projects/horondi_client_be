@@ -195,7 +195,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: ID
+    bottomColor: Color
     availableCount: Int
     additions: [ProductAdditions]
   }
