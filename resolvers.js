@@ -105,6 +105,8 @@ const constructorBasicModel = require('./modules/constructor/constructor-basic/c
 const constructorFrontPocketModel = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const materialService = require('./modules/material/material.service');
 const closuresService = require('./modules/closures/closures.service');
+const patternService = require('./modules/pattern/pattern.service');
+const modelService = require('./modules/model/model.service');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -246,9 +248,9 @@ const resolvers = {
               item.constructorPattern
             ),
             model: modelService.getModelById(item.model),
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-            },
+            options: () => ({
+              size: () => sizeService.getSizeById(item.options.size),
+            }),
           };
         } else {
           return {
@@ -268,7 +270,10 @@ const resolvers = {
   },
 
   ProductOptions: {
-    size: parent => sizeService.getSizeById(parent.size),
+    size: parent => {
+      console.log(parent);
+      return sizeService.getSizeById(parent.size);
+    },
     bottomMaterial: parent =>
       materialsService.getMaterialById(parent.bottomMaterial),
     bottomColor: parent => colorService.getColorById(parent.bottomColor),
