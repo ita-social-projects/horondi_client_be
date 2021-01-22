@@ -45,7 +45,7 @@ type OrderItem {
   quantity: Int
   isFromConstructor: Boolean
   options: ItemOptions
-  constructorBasic: ConstructorBasic
+  constructorBasics: ConstructorBasic
   constructorPattern: Pattern
   constructorFrontPocket: ConstructorFrontPocket
   constructorBottom: ConstructorBottom

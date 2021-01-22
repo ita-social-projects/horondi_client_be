@@ -84,7 +84,7 @@ const {
 const {
   constructorFrontPocketQuery,
   constructorFrontPocketMutation,
-} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves')
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves');
 
 const {
   constructorBottomMutation,
@@ -99,6 +99,14 @@ const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
+const constructorServices = require('./modules/constructor/constructor.services');
+const constructorBottomModel = require('./modules/constructor/constructor-bottom/constructor-bottom.model');
+const constructorBasicModel = require('./modules/constructor/constructor-basic/constructor-basic.model');
+const constructorFrontPocketModel = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
+const patternService = require('./modules/pattern/pattern.service');
+const modelService = require('./modules/model/model.service');
+const colorService = require('./modules/color/color.service');
+const closuresService = require('./modules/closures/closures.service');
 
 const SCHEMA_NAMES = {
   category: 'Category',
@@ -203,10 +211,61 @@ const resolvers = {
     category: parent => categoryService.getCategoryById(parent.category),
     comments: parent =>
       commentsService.getAllCommentsByProduct({ productId: parent._id }),
+    colors: parent =>
+      parent.colors.map(color => colorService.getColorById(color)),
+    model: parent => modelService.getModelById(parent.model),
+    closure: parent =>
+      parent.closure.map(item => closuresService.getClosureById(item._id)),
+    pattern: parent => patternService.getPatternById(parent.pattern._id),
+    options: {
+      bottomMaterial: parent => {
+        console.log(parent);
+        return materialService.getMaterialById(parent.options.bottomMaterial);
+      },
+    },
+  },
+
+  Order: {
+    items: parent => {
+      return parent.items.map(item => {
+        if (item.isFromConstructor) {
+          return {
+            ...item,
+            constructorBottom: constructorServices.getConstructorElementById(
+              item.constructorBottom,
+              constructorBottomModel
+            ),
+            constructorBasics: constructorServices.getConstructorElementById(
+              item.constructorBasics,
+              constructorBasicModel
+            ),
+            constructorFrontPocket: constructorServices.getConstructorElementById(
+              item.constructorFrontPocket,
+              constructorFrontPocketModel
+            ),
+            constructorPattern: patternService.getPatternById(
+              item.constructorPattern
+            ),
+            model: modelService.getModelById(item.model),
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+            },
+          };
+        } else {
+          return {
+            fixedPrice: item.fixedPrice,
+            isFromConstructor: item.isFromConstructor,
+            quantity: item.quantity,
+            options: item.options,
+            product: productsService.getProductById(item.product),
+          };
+        }
+      });
+    },
   },
 
   Model: {
-    category: parent => categoryService.getCategoryById(parent.category)
+    category: parent => categoryService.getCategoryById(parent.category),
   },
 
   ProductOptions: {
@@ -218,6 +277,7 @@ const resolvers = {
       return null;
     },
   },
+  ConstructorBottom: {},
 
   UserRate: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),

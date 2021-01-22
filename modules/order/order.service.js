@@ -132,7 +132,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await populateOrder(Order.findById(id));
+    const foundOrder = await Order.findById(id);
     if (foundOrder) {
       return foundOrder;
     }
