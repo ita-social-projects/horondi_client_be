@@ -214,7 +214,7 @@ const typeDefs = gql`
       weightInKg: Float
   }
   type AllProductOptions {
-    size: [Size]
+    sizes: [Size]
     bottomMaterials: [Material]
   }
   type UserForComment {
