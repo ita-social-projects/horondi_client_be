@@ -8,6 +8,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/horondi_client_be?style=flat-square)](https://github.com/ita-social-projects/Horondi_client_be/pulls)
 [![GitHub stars](https://img.shields.io/github/stars/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/stargazers)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects-horondi-client-be&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects-horondi-client-be)
+[![Build Status](https://dev.azure.com/ProjectApproach/HorondiProject/_apis/build/status/ita-social-projects.horondi_client_be?branchName=development&jobName=BuildandDeploy)](https://dev.azure.com/ProjectApproach/HorondiProject/_build/latest?definitionId=25&branchName=development)
 [![GitHub license](https://img.shields.io/github/license/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/blob/master/LICENSE)
 
 ---
@@ -38,7 +39,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 
 ### Required to install
 
-- NodeJS (14.4.0)
+- NodeJS (14.15.4)
 
 ### Clone
 
@@ -247,6 +248,8 @@ if issue is in work it should be placed in proper column on dashboard according 
 
 [![@SofiaDemyanovska](https://avatars1.githubusercontent.com/u/48492789?s=200&u=cb0520a8498667594ded0db8e29cdd3ec5529578&v=4)](https://github.com/SofiaDemyanovska)
 [![@ikoblyk](https://avatars3.githubusercontent.com/u/45568834?s=200&u=5d8790e8e58a7966e2d6d6bc6a4f0d15c8cb2e9c&v=4)](https://github.com/IKoblyk)
+[![@vitaliy-pavlyshyn](https://avatars0.githubusercontent.com/u/24523962?s=200&u=db2f3b6459c080079c5c5e4b52da61cd18b4e223&v=4)](https://github.com/vitaliy-pavlyshyn)
+
 
 ---
 
