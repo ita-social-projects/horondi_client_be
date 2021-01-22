@@ -1,14 +1,22 @@
+const productImagesType = `
+  type ProductImages { 
+    primary: ImageSet
+    additional: [ImageSet]
+  }
+`;
+
 const productType = `
+${productImagesType}
 type Product {
 _id: ID!
 category: Category!
 model: Model!
 name: [Language]!
 description: [Language]!
-mainMaterial: [ID]!
-innerMaterial: [ID]!
+mainMaterial: [Material]!
+innerMaterial: [Material]!
 strapLengthInCm: Int!
-images: [ImageSet]
+images: ProductImages
 closure: Closure
 colors: [Color]!
 pattern: Pattern
