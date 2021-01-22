@@ -30,43 +30,48 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
-    const foundModel = await Model.findById(id).populate({
-      path: 'constructorBasic',
-      model: 'ConstructorBasic',
-      populate: {
-        path: 'material',
-        model: 'Material',
-        populate: {
-          path: 'color',
-          model: 'Color',
+    const foundModel = await Model.findById(id)
+      .populate([
+        {
+          path: 'constructorBasic',
+          model: 'ConstructorBasic',
+          populate: [{
+            path: 'material',
+            model: 'Material',
+          },
+            {
+              path: 'color',
+              model: 'Color',
+            }],
         },
-      },
-    }).populate({
-      path: 'constructorPattern',
-      model: 'Pattern',
-    }).populate({
-      path: 'constructorFrontPocket',
-      model: 'ConstructorFrontPocket',
-      populate: {
-        path: 'material',
-        model: 'Material',
-        populate: {
-          path: 'color',
-          model: 'Color',
+        {
+          path: 'constructorFrontPocket',
+          model: 'ConstructorFrontPocket',
+          populate: [{
+            path: 'material',
+            model: 'Material',
+          },
+            {
+              path: 'color',
+              model: 'Color',
+            }],
+        }, {
+          path: 'constructorBottom',
+          model: 'ConstructorBottom',
+          populate: [{
+            path: 'material',
+            model: 'Material',
+          },
+            {
+              path: 'color',
+              model: 'Color',
+            }],
         },
-      },
-    }).populate({
-      path: 'constructorBottom',
-      model: 'ConstructorBottom',
-      populate: {
-        path: 'material',
-        model: 'Material',
-        populate: {
-          path: 'color',
-          model: 'Color',
+        {
+          path: 'constructorPattern',
+          model: 'Pattern',
         },
-      },
-    });
+      ]);
 
     if (foundModel) {
       return foundModel;
@@ -117,14 +122,14 @@ class ModelsService {
 
   async deleteModel(id) {
     const model = await Model.findByIdAndDelete(id);
-    model.constructorBasic.forEach(async basic=> {
-      await ConstructorBasic.findByIdAndDelete(basic)
+    model.constructorBasic.forEach(async basic => {
+      await ConstructorBasic.findByIdAndDelete(basic);
     });
-     model.constructorBottom.forEach(async bottom=>{
-       await ConstructorBottom.findByIdAndDelete(bottom)
+    model.constructorBottom.forEach(async bottom => {
+      await ConstructorBottom.findByIdAndDelete(bottom);
     });
-    await model.constructorFrontPocket.forEach(async pocket=>{
-      await ConstructorFrontPocket.findByIdAndDelete(pocket)
+    await model.constructorFrontPocket.forEach(async pocket => {
+      await ConstructorFrontPocket.findByIdAndDelete(pocket);
     });
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
@@ -136,7 +141,6 @@ class ModelsService {
     if (images.length) {
       uploadService.deleteFiles(images);
     }
-
     return model;
   }
 

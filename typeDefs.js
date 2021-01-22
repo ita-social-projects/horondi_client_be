@@ -195,7 +195,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: ID
+    bottomColor: Color
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -688,7 +688,7 @@ const typeDefs = gql`
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
-    updateOrder(order: OrderInput!): OrderResult
+    updateOrder(order: OrderInput!, id: ID!): OrderResult
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
