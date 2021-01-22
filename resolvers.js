@@ -103,9 +103,7 @@ const constructorServices = require('./modules/constructor/constructor.services'
 const constructorBottomModel = require('./modules/constructor/constructor-bottom/constructor-bottom.model');
 const constructorBasicModel = require('./modules/constructor/constructor-basic/constructor-basic.model');
 const constructorFrontPocketModel = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
-const patternService = require('./modules/pattern/pattern.service');
-const modelService = require('./modules/model/model.service');
-const colorService = require('./modules/color/color.service');
+const materialService = require('./modules/material/material.service');
 const closuresService = require('./modules/closures/closures.service');
 
 const SCHEMA_NAMES = {
@@ -211,18 +209,19 @@ const resolvers = {
     category: parent => categoryService.getCategoryById(parent.category),
     comments: parent =>
       commentsService.getAllCommentsByProduct({ productId: parent._id }),
-    colors: parent =>
-      parent.colors.map(color => colorService.getColorById(color)),
     model: parent => modelService.getModelById(parent.model),
-    closure: parent =>
-      parent.closure.map(item => closuresService.getClosureById(item._id)),
-    pattern: parent => patternService.getPatternById(parent.pattern._id),
-    options: {
-      bottomMaterial: parent => {
-        console.log(parent);
-        return materialService.getMaterialById(parent.options.bottomMaterial);
-      },
-    },
+    mainMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.mainMaterial.material),
+      color: () => colorService.getColorById(parent.mainMaterial.color),
+    }),
+    innerMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.mainMaterial.material),
+      color: () => colorService.getColorById(parent.mainMaterial.color),
+    }),
+    pattern: parent => patternService.getPatternById(parent.pattern),
+    closure: parent => closuresService.getClosureById(parent.closure),
   },
 
   Order: {
@@ -270,12 +269,9 @@ const resolvers = {
 
   ProductOptions: {
     size: parent => sizeService.getSizeById(parent.size),
-    bottomMaterial: parent => {
-      if (parent.bottomMaterial) {
-        return materialsService.getMaterialById(parent.bottomMaterial);
-      }
-      return null;
-    },
+    bottomMaterial: parent =>
+      materialsService.getMaterialById(parent.bottomMaterial),
+    bottomColor: parent => colorService.getColorById(parent.bottomColor),
   },
   ConstructorBottom: {},
 

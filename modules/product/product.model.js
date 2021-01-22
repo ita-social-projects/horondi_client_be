@@ -14,39 +14,41 @@ const productSchema = new mongoose.Schema({
   },
   name: [Language],
   description: [Language],
-  mainMaterial: [
-    {
+  mainMaterial: {
+    material: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Material',
     },
-  ],
-  innerMaterial: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Material',
-    },
-  ],
-  strapLengthInCm: Number,
-  images: PrimaryImage,
-  colors: [
-    {
+    color: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Color',
     },
-  ],
+  },
+  innerMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Color',
+    },
+  },
+
+  strapLengthInCm: Number,
+  images: PrimaryImage,
   pattern: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Pattern',
   },
-  closure: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Closure',
-    },
-  ],
+  closure: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Closure',
+  },
   basePrice: [CurrencySet],
   options: [
     {
+      _id: false,
       size: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Size',

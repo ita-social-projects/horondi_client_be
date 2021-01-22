@@ -12,16 +12,16 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { Error } = require('mongoose');
-const { uploadProductImages, populateProduct } = require('./product.utils');
+const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    return await populateProduct(Product.findById(id));
+    return await Product.findById(id);
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id }).populate('category');
+    const product = await Product.find({ category: id });
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -30,7 +30,7 @@ class ProductsService {
 
   async getProductOptions() {
     const sizes = await sizesService.getAllSizes();
-    const bottomMaterials = await Material.find().populate('color');
+    const bottomMaterials = await Material.find();
     return { sizes, bottomMaterials };
   }
 
@@ -106,7 +106,7 @@ class ProductsService {
         },
       ];
     }
-    const items = await populateProduct(Product.find(filters))
+    const items = await Product.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
@@ -246,12 +246,12 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId);
-    return await populateProduct(Product.find({ _id: { $in: wishlist } }));
+    return await Product.find({ _id: { $in: wishlist } });
   }
 
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId);
-    return await populateProduct(Product.find({ _id: { $in: cart } }));
+    return await Product.find({ _id: { $in: cart } });
   }
 }
 
