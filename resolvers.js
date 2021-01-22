@@ -248,9 +248,13 @@ const resolvers = {
               item.constructorPattern
             ),
             model: modelService.getModelById(item.model),
-            options: () => ({
-              size: () => sizeService.getSizeById(item.options.size),
-            }),
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+              sidePocket: item.options.sidePocket,
+            },
+            isFromConstructor: item.isFromConstructor,
+            quantity: item.quantity,
+            fixedPrice: item.fixedPrice,
           };
         } else {
           return {
@@ -270,10 +274,7 @@ const resolvers = {
   },
 
   ProductOptions: {
-    size: parent => {
-      console.log(parent);
-      return sizeService.getSizeById(parent.size);
-    },
+    size: parent => sizeService.getSizeById(parent.size),
     bottomMaterial: parent =>
       materialsService.getMaterialById(parent.bottomMaterial),
     bottomColor: parent => colorService.getColorById(parent.bottomColor),
