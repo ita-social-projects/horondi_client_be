@@ -271,10 +271,7 @@ const resolvers = {
 
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
-    sizes: parent =>
-      parent.sizes.map((size, index) =>
-        sizeService.getSizeById(parent.sizes[index])
-      ),
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
 
   ProductOptions: {
