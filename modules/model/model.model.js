@@ -20,7 +20,7 @@ const modelSchema = new mongoose.Schema({
     },
   ],
   availableForConstructor: Boolean,
-  constructorBasic: [
+  constructorBasics: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorBasic' },
   ],
   constructorPattern: [

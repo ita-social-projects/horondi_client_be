@@ -195,7 +195,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: ID
+    bottomColor: Color
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -214,7 +214,7 @@ const typeDefs = gql`
       weightInKg: Float
   }
   type AllProductOptions {
-    size: [Size]
+    sizes: [Size]
     bottomMaterials: [Material]
   }
   type UserForComment {

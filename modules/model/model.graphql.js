@@ -11,6 +11,7 @@ type Model {
     constructorPattern:[Pattern],
     constructorFrontPocket:[ConstructorFrontPocket],
     constructorBottom:[ConstructorBottom]
+    sizes: [Size]
   }
 `;
 const modelInput = `
