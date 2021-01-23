@@ -5,6 +5,7 @@ const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
 const Currency = require('../currency/currency.model');
+const { calculatePrice } = require('../currency/currency.utils');
 
 class MaterialsService {
   constructor() {
@@ -60,18 +61,7 @@ class MaterialsService {
       id,
       {
         ...rest,
-        additionalPrice: [
-          {
-            currency: this.currencyTypes.UAH,
-            value:
-              additionalPrice *
-              Math.round(currency.convertOptions[0].exchangeRate * 100),
-          },
-          {
-            currency: this.currencyTypes.USD,
-            value: additionalPrice * 100,
-          },
-        ],
+        additionalPrice: [calculatePrice(additionalPrice)],
       },
       { new: true }
     );
@@ -82,9 +72,7 @@ class MaterialsService {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
     material.additionalPrice = calculatePrice(material.additionalPrice);
-    return new Material({
-      material,
-    }).save();
+    return new Material(material).save();
   }
 
   async deleteMaterial(id) {
