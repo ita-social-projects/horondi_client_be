@@ -13,7 +13,7 @@ describe('Colors queries', () => {
   });
 
   test('Should recive all colors', async () => {
-    const getAll = await operations.query({
+    const result = await operations.query({
       query: gql`
         query {
           getAllColors {
@@ -32,14 +32,14 @@ describe('Colors queries', () => {
       `,
     });
 
-    expect(getAll.data.getAllColors).toContainEqual({
+    expect(result.data.getAllColors).toContainEqual({
       _id: colorId,
       ...COLOR,
     });
   });
 
   test('Should get color by it ID', async () => {
-    const getById = await operations.query({
+    const result = await operations.query({
       query: gql`
         query($id: ID!) {
           getColorById(id: $id) {
@@ -62,14 +62,14 @@ describe('Colors queries', () => {
         id: colorId,
       },
     });
-    expect(getById.data.getColorById).toEqual({
+    expect(result.data.getColorById).toEqual({
       _id: colorId,
       ...COLOR,
     });
   });
 
   test('Should recive error message COLOR_NOT_FOUND while getting by wrong ID', async () => {
-    const getByIdErrorMessage = await operations.query({
+    const result = await operations.query({
       query: gql`
         query($id: ID!) {
           getColorById(id: $id) {
@@ -84,7 +84,7 @@ describe('Colors queries', () => {
         id: WRONG_ID,
       },
     });
-    expect(getByIdErrorMessage.data.getColorById).toEqual(ERROR_NOT_FOUND);
+    expect(result.data.getColorById).toEqual(ERROR_NOT_FOUND);
   });
 
   afterAll(async () => {

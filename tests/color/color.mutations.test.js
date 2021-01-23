@@ -16,7 +16,7 @@ describe('Color mutations', () => {
   });
 
   test('Should add color', async () => {
-    const addCol = await operations.mutate({
+    const result = await operations.mutate({
       mutation: gql`
         mutation($data: ColorInput!) {
           addColor(data: $data) {
@@ -40,16 +40,16 @@ describe('Color mutations', () => {
       },
     });
 
-    colorId = addCol.data.addColor._id;
+    colorId = result.data.addColor._id;
 
-    expect(addCol.data.addColor).toEqual({
+    expect(result.data.addColor).toEqual({
       _id: colorId,
       ...COLOR_2,
     });
   });
 
   test('Should recive error message COLOR_ALREADY_EXIST when color already in the db while creating', async () => {
-    const addCol = await operations.mutate({
+    const result = await operations.mutate({
       mutation: gql`
         mutation($data: ColorInput!) {
           addColor(data: $data) {
@@ -64,11 +64,11 @@ describe('Color mutations', () => {
         data: COLOR_2,
       },
     });
-    expect(addCol.data.addColor).toEqual(ERROR_ALREDY_EXISTS);
+    expect(result.data.addColor).toEqual(ERROR_ALREDY_EXISTS);
   });
 
   test('Should delete color by ID', async () => {
-    const deleteCol = await operations.mutate({
+    const result = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteColor(id: $id) {
@@ -91,14 +91,14 @@ describe('Color mutations', () => {
         id: colorId,
       },
     });
-    expect(deleteCol.data.deleteColor).toEqual({
+    expect(result.data.deleteColor).toEqual({
       _id: colorId,
       ...COLOR_2,
     });
   });
 
   test('Should recieve error message COLOR_NOT_FOUND on deleting color with wrong ID', async () => {
-    const deleteCol = await operations.mutate({
+    const result = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
           deleteColor(id: $id) {
@@ -113,6 +113,6 @@ describe('Color mutations', () => {
         id: WRONG_ID,
       },
     });
-    expect(deleteCol.data.deleteColor).toEqual(ERROR_NOT_FOUND);
+    expect(result.data.deleteColor).toEqual(ERROR_NOT_FOUND);
   });
 });
