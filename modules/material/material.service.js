@@ -1,4 +1,5 @@
 const Material = require('./material.model');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
@@ -77,27 +78,12 @@ class MaterialsService {
   }
 
   async addMaterial({ material }) {
-    const { additionalPrice, ...rest } = material;
-
-    if (await this.checkMaterialExistOrDuplicated(rest, null)) {
+    if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    const currency = await Currency.findOne();
-
+    material.additionalPrice = calculatePrice(material.additionalPrice);
     return new Material({
-      ...rest,
-      additionalPrice: [
-        {
-          currency: this.currencyTypes.UAH,
-          value:
-            additionalPrice *
-            Math.round(currency.convertOptions[0].exchangeRate * 100),
-        },
-        {
-          currency: this.currencyTypes.USD,
-          value: additionalPrice * 100,
-        },
-      ],
+      material,
     }).save();
   }
 
