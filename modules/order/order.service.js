@@ -28,7 +28,7 @@ class OrdersService {
       async (prev, item) => {
         const sum = await prev;
         const { quantity } = item;
-        if (!item.fixedPrice?.length) {
+        if (!item.fixedPrice.length) {
           const { additionalPrice } = await Size.findById(item.options.size);
           if (item.isFromConstructor) {
             const constructorBasics = await ConstructorBasic.findById(
