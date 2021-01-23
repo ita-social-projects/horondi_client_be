@@ -16,7 +16,7 @@ const sizeQuery = {
 };
 
 const sizeMutation = {
-  addSize: async (parent_, { size }) => {
+  addSize: async (parent, { size }) => {
     try {
       return await sizeService.addSize(size);
     } catch (e) {
