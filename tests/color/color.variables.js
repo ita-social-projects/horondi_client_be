@@ -1,27 +1,27 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 
-const wrongID = '600987de4cf8d95fa80ddf9b';
+const WRONG_ID = '600987de4cf8d95fa80ddf9b';
 
-const color = {
+const COLOR = {
   name: [{ value: '222ddd', lang: 'UA' }],
   colorHex: '#3r56tg',
   simpleName: [{ value: '222ddd', lang: 'UA' }],
 };
 
-const color2 = {
+const COLOR_2 = {
   name: [{ value: '000fff', lang: 'UA' }],
   colorHex: '#13a3b7',
   simpleName: [{ value: '000fff', lang: 'UA' }],
 };
 
-const error_not_found = { message: 'COLOR_NOT_FOUND', statusCode: 404 };
-const error_already_exists = {
+const ERROR_NOT_FOUND = { message: 'COLOR_NOT_FOUND', statusCode: 404 };
+const ERROR_ALREDY_EXISTS = {
   message: 'COLOR_ALREADY_EXIST',
   statusCode: 400,
 };
 
-const createdColor = async color => {
+const createColor = async color => {
   operations = await setupApp();
   const createdColor = await operations.mutate({
     mutation: gql`
@@ -45,10 +45,10 @@ const createdColor = async color => {
 };
 
 module.exports = {
-  wrongID,
-  color,
-  color2,
-  error_not_found,
-  error_already_exists,
-  createdColor,
+  WRONG_ID,
+  COLOR,
+  COLOR_2,
+  ERROR_NOT_FOUND,
+  ERROR_ALREDY_EXISTS,
+  createColor,
 };

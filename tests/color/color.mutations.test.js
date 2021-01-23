@@ -1,10 +1,10 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 const {
-  wrongID,
-  color2,
-  error_not_found,
-  error_already_exists,
+  WRONG_ID,
+  COLOR_2,
+  ERROR_NOT_FOUND,
+  ERROR_ALREDY_EXISTS,
 } = require('./color.variables');
 
 let operations;
@@ -36,15 +36,15 @@ describe('Color mutations', () => {
         }
       `,
       variables: {
-        data: color2,
+        data: COLOR_2,
       },
     });
 
     colorId = addCol.data.addColor._id;
-    console.log(addCol.data.addColor);
+
     expect(addCol.data.addColor).toEqual({
       _id: colorId,
-      ...color2,
+      ...COLOR_2,
     });
   });
 
@@ -61,10 +61,10 @@ describe('Color mutations', () => {
         }
       `,
       variables: {
-        data: color2,
+        data: COLOR_2,
       },
     });
-    expect(addCol.data.addColor).toEqual(error_already_exists);
+    expect(addCol.data.addColor).toEqual(ERROR_ALREDY_EXISTS);
   });
 
   test('Should delete color by ID', async () => {
@@ -93,7 +93,7 @@ describe('Color mutations', () => {
     });
     expect(deleteCol.data.deleteColor).toEqual({
       _id: colorId,
-      ...color2,
+      ...COLOR_2,
     });
   });
 
@@ -110,9 +110,9 @@ describe('Color mutations', () => {
         }
       `,
       variables: {
-        id: wrongID,
+        id: WRONG_ID,
       },
     });
-    expect(deleteCol.data.deleteColor).toEqual(error_not_found);
+    expect(deleteCol.data.deleteColor).toEqual(ERROR_NOT_FOUND);
   });
 });

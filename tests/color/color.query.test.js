@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
-const { createdColor } = require('./color.variables');
-const { wrongID, color, error_not_found } = require('./color.variables');
+const { createColor } = require('./color.variables');
+const { WRONG_ID, COLOR, ERROR_NOT_FOUND } = require('./color.variables');
 const { setupApp } = require('../helper-functions');
 
 let operations;
@@ -9,7 +9,7 @@ let colorId;
 describe('Colors queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    colorId = await createdColor(color);
+    colorId = await createColor(COLOR);
   });
 
   test('Should recive all colors', async () => {
@@ -34,7 +34,7 @@ describe('Colors queries', () => {
 
     expect(getAll.data.getAllColors).toContainEqual({
       _id: colorId,
-      ...color,
+      ...COLOR,
     });
   });
 
@@ -64,7 +64,7 @@ describe('Colors queries', () => {
     });
     expect(getById.data.getColorById).toEqual({
       _id: colorId,
-      ...color,
+      ...COLOR,
     });
   });
 
@@ -81,10 +81,10 @@ describe('Colors queries', () => {
         }
       `,
       variables: {
-        id: wrongID,
+        id: WRONG_ID,
       },
     });
-    expect(getByIdErrorMessage.data.getColorById).toEqual(error_not_found);
+    expect(getByIdErrorMessage.data.getColorById).toEqual(ERROR_NOT_FOUND);
   });
 
   afterAll(async () => {
