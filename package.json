@@ -29,7 +29,6 @@
   },
   "author": "",
   "license": "ISC",
-  
   "dependencies": {
     "@apollo/client": "^3.2.1",
     "@azure/identity": "^1.0.3",
