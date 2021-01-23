@@ -26,7 +26,6 @@ const ordersMutation = {
     try {
       return await ordersService.addOrder(args.order);
     } catch (e) {
-      console.log(e);
       return {
         statusCode: 400,
         message: e.message,

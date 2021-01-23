@@ -279,7 +279,6 @@ const resolvers = {
       materialsService.getMaterialById(parent.bottomMaterial),
     bottomColor: parent => colorService.getColorById(parent.bottomColor),
   },
-  ConstructorBottom: {},
 
   UserRate: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
