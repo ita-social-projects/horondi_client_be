@@ -6,6 +6,7 @@ const { ADMIN, SUPERADMIN } = roles;
 const modelPermissionsQuery = {
   getAllCategories: allow,
   getModelsByCategory: allow,
+  getModelsForConstructor: allow,
 };
 
 const modelPermissionsMutations = {

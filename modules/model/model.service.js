@@ -30,6 +30,7 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
+
     const foundModel = await Model.findById(id)
       .populate({
         path: 'constructorBasic',
@@ -76,6 +77,10 @@ class ModelsService {
       return foundModel;
     }
     throw new Error(MODEL_NOT_FOUND);
+  }
+
+  async getModelsForConstructor() {
+    return Model.find({ availableForConstructor: true });
   }
 
   async getModelsByCategory(id) {
