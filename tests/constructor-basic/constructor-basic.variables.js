@@ -121,15 +121,6 @@ const createColorMy = async newColor => {
         addColor(data: $data) {
           ... on Color {
             _id
-            name {
-              lang
-              value
-            }
-            colorHex
-            simpleName {
-              lang
-              value
-            }
           }
         }
       }
@@ -147,13 +138,6 @@ const createMaterial = async newMaterial => {
         addMaterial(material: $material) {
           ... on Material {
             _id
-            name {
-              lang
-              value
-            }
-            colors {
-              _id
-            }
           }
           ... on Error {
             statusCode

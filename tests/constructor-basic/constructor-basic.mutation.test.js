@@ -1,12 +1,15 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
+const {
+  BASIC_ALREADY_EXIST,
+  BASIC_NOT_FOUND,
+} = require('../../error-messages/constructor-basic-messages');
 
 const {
   newColor,
   badConstructorBasicID,
   newMaterial,
   createMaterial,
-  createColorMy,
   deleteAll,
   newConstructorBasic,
   getConstructorData,
@@ -15,6 +18,7 @@ const {
   getConstructorDataForUpt,
   getConstructorDataForUptCompare,
 } = require('./constructor-basic.variables');
+const { createColor } = require('../materials/material.variables');
 
 let operations;
 let colorIdMy;
@@ -30,7 +34,7 @@ jest.mock('../../modules/currency/currency.utils.js');
 describe('constructor mutations', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    colorIdMy = await createColorMy(newColor);
+    colorIdMy = await createColor(newColor);
     materialInput = newMaterial(colorIdMy);
     materialID = await createMaterial(materialInput);
     constructorInput = newConstructorBasic(materialID, colorIdMy);
@@ -205,7 +209,7 @@ describe('constructor mutations', () => {
 
     const error = createConstructor.data.addConstructorBasic.message;
     expect(error).toBeDefined();
-    expect(error).toEqual('BASIC_ALREADY_EXIST');
+    expect(error).toEqual(BASIC_ALREADY_EXIST);
     done();
   });
 
@@ -233,7 +237,7 @@ describe('constructor mutations', () => {
       },
     });
     const result = updateConstructor.data.updateConstructorBasic.message;
-    expect(result).toBe('BASIC_NOT_FOUND');
+    expect(result).toBe(BASIC_NOT_FOUND);
     done();
   });
   test('#5 deleteConstructorBasic should return error BASIC_NOT_FOUND', async done => {
@@ -254,7 +258,7 @@ describe('constructor mutations', () => {
       variables: { id: badConstructorBasicID },
     });
     const result = deletedConstructor.data.deleteConstructorBasic.message;
-    expect(result).toBe('BASIC_NOT_FOUND');
+    expect(result).toBe(BASIC_NOT_FOUND);
     done();
   });
   test('#6 Should delete constructor basic and return id', async done => {

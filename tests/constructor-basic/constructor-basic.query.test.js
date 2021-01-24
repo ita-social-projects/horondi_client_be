@@ -1,6 +1,5 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
-
 const {
   newColor,
   badConstructorBasicID,
@@ -12,6 +11,9 @@ const {
   getConstructorData,
   createConstructorBasic,
 } = require('./constructor-basic.variables');
+const {
+  BASIC_NOT_FOUND,
+} = require('../../error-messages/constructor-basic-messages');
 
 let operations;
 let colorId;
@@ -146,9 +148,9 @@ describe('constructor mutations', () => {
       variables: { id: badConstructorBasicID },
     });
 
-    const receivedError =
-      constructorBasicsById.data.getConstructorBasicById.statusCode;
-    expect(receivedError).toBe(404);
+    const receivedError = constructorBasicsById.data.getConstructorBasicById;
+    expect(receivedError.statusCode).toBe(404);
+    expect(receivedError.message).toBe(BASIC_NOT_FOUND);
     done();
   });
   afterAll(async done => {
