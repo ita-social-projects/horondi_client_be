@@ -61,6 +61,27 @@ const createCategory = async (category, operations) => {
 
   return createdCategory.data.addCategory._id;
 };
+const createClosure = async (closure, operations) => {
+  const createdClosure = await operations.mutate({
+    mutation: gql`
+      mutation($closure: ClosureInput!) {
+        addClosure(closure: $closure) {
+          ... on Closure {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      closure,
+    },
+  });
+
+  return createdClosure.data.addClosure._id;
+};
 const createModel = async (model, operations) => {
   const createdModel = await operations.mutate({
     mutation: gql`
@@ -86,8 +107,8 @@ const createModel = async (model, operations) => {
 const createProduct = async (product, operations) => {
   const createdProduct = await operations.mutate({
     mutation: gql`
-      mutation($product: ProductInput!, $upload: Upload!) {
-        addProduct(product: $product, upload: $upload) {
+      mutation($product: ProductInput!) {
+        addProduct(product: $product, upload: []) {
           ... on Product {
             _id
           }
@@ -99,7 +120,6 @@ const createProduct = async (product, operations) => {
     `,
     variables: {
       product,
-      upload: ['__tests__/model/img.png'],
     },
   });
 
@@ -133,6 +153,65 @@ const createOrder = async (order, operations) => {
         addOrder(order: $order) {
           ... on Order {
             _id
+            totalItemsPrice {
+              currency
+              value
+            }
+            totalPriceToPay {
+              currency
+            }
+            status
+            paymentStatus
+            user {
+              firstName
+              lastName
+              patronymicName
+              email
+              phoneNumber
+            }
+
+            userComment
+            delivery {
+              sentBy
+              invoiceNumber
+              courierOffice
+              byCourier
+              cost {
+                currency
+                value
+              }
+            }
+            items {
+              product {
+                _id
+                category {
+                  _id
+                  name {
+                    lang
+                    value
+                  }
+                }
+                model {
+                  category {
+                    name {
+                      lang
+                      value
+                    }
+                    available
+                  }
+                  description {
+                    lang
+                    value
+                  }
+                }
+              }
+
+              quantity
+              fixedPrice {
+                currency
+                value
+              }
+            }
           }
           ... on Error {
             message
@@ -145,7 +224,7 @@ const createOrder = async (order, operations) => {
     },
   });
 
-  return createdOrder.data.addOrder._id;
+  return createdOrder.data.addOrder;
 };
 const createConstructorBasic = async (constructorElement, operations) => {
   const createdConstructorBasic = await operations.mutate({
@@ -168,12 +247,12 @@ const createConstructorBasic = async (constructorElement, operations) => {
 
   return createdConstructorBasic.data.addConstructorBasic._id;
 };
-const createConstructorBottom = async (constructorElement, operations) => {
-  const createdConstructorBottom = await operations.mutate({
+const createPattern = async (pattern, operations) => {
+  const createdPattern = await operations.mutate({
     mutation: gql`
-      mutation($constructorElement: ConstructorBottomInput!) {
-        addConstructorBottom(constructorElement: $constructorElement) {
-          ... on ConstructorBottom {
+      mutation($pattern: PatternInput!) {
+        addPattern(pattern: $pattern, image: []) {
+          ... on Pattern {
             _id
           }
           ... on Error {
@@ -183,11 +262,11 @@ const createConstructorBottom = async (constructorElement, operations) => {
       }
     `,
     variables: {
-      constructorElement,
+      pattern,
     },
   });
 
-  return createdConstructorBottom.data.addConstructorBottom._id;
+  return createdPattern.data.addPattern._id;
 };
 
 const deleteOrder = async (id, operations) => {
@@ -270,7 +349,7 @@ const deleteCategory = async (id, switchId, operations) => {
   await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $switchId: ID!) {
-        deleteCategory(id: $id, switchId: $switchId) {
+        deleteCategory(deleteId: $id, switchId: $id) {
           ... on Category {
             _id
           }
@@ -324,6 +403,63 @@ const deleteColor = async (id, operations) => {
     },
   });
 };
+const deleteConstructorBasic = async (id, operations) => {
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteConstructorBasic(id: $id) {
+          ... on ConstructorBasic {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+};
+const deletePattern = async (id, operations) => {
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deletePattern(id: $id) {
+          ... on Pattern {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+};
+const deleteClosure = async (id, operations) => {
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteClosure(id: $id) {
+          ... on Closure {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+};
 
 const getAllOrders = async operations => {
   const res = await operations.query({
@@ -337,19 +473,27 @@ const getAllOrders = async operations => {
               lastName
               patronymicName
               email
+              phoneNumber
             }
             userComment
             items {
-              product {
-                _id
-              }
               model {
                 _id
+                category {
+                  name {
+                    value
+                    lang
+                  }
+                }
               }
               quantity
               options {
                 size {
-                  _id
+                  name
+                  heightInCm
+                  widthInCm
+                  depthInCm
+                  weightInKg
                 }
               }
               fixedPrice {
@@ -376,6 +520,68 @@ const getAllOrders = async operations => {
   });
   return res.data.getAllOrders.items;
 };
+const getOrderById = async (id, operations) => {
+  return await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getOrderById(id: $id) {
+          ... on Order {
+            status
+            paymentStatus
+            userComment
+            delivery {
+              sentBy
+              invoiceNumber
+              courierOffice
+              byCourier
+              cost {
+                currency
+                value
+              }
+            }
+            items {
+              product {
+                _id
+                category {
+                  _id
+                  name {
+                    lang
+                    value
+                  }
+                }
+                model {
+                  category {
+                    name {
+                      lang
+                      value
+                    }
+                    available
+                  }
+                  description {
+                    lang
+                    value
+                  }
+                }
+              }
+
+              quantity
+              fixedPrice {
+                currency
+                value
+              }
+            }
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+};
 
 module.exports = {
   createColor,
@@ -393,4 +599,11 @@ module.exports = {
   deleteMaterial,
   deleteColor,
   getAllOrders,
+  createConstructorBasic,
+  createPattern,
+  createClosure,
+  deleteClosure,
+  deleteConstructorBasic,
+  deletePattern,
+  getOrderById,
 };

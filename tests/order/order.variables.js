@@ -1,4 +1,5 @@
-const newOrderInputData = (productId, modelId, sizeId) => ({
+const wrongId = '5fb412d8663cf10bec9faa1a';
+const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   status: 'CREATED',
   user: {
     firstName: 'Arsen',
@@ -12,6 +13,7 @@ const newOrderInputData = (productId, modelId, sizeId) => ({
     byCourier: true,
     courierOffice: 10,
     invoiceNumber: '6280260',
+    sentBy: 'SELFPICKUP',
     cost: [
       {
         currency: 'UAH',
@@ -28,6 +30,8 @@ const newOrderInputData = (productId, modelId, sizeId) => ({
       product: productId,
       model: modelId,
       quantity: 2,
+      isFromConstructor: false,
+      constructorBasics: constructorId,
       options: {
         size: sizeId,
       },
@@ -42,6 +46,26 @@ const newOrderInputData = (productId, modelId, sizeId) => ({
         },
       ],
     },
+    // {
+    //   product: productId,
+    //   model: modelId,
+    //   quantity: 2,
+    //   isFromConstructor: true,
+    //   constructorBasics: constructorId,
+    //   options: {
+    //     size: sizeId,
+    //   },
+    //   fixedPrice: [
+    //     {
+    //       currency: 'UAH',
+    //       value: 7000,
+    //     },
+    //     {
+    //       currency: 'USD',
+    //       value: 240,
+    //     },
+    //   ],
+    // },
   ],
   paymentStatus: 'CREATED',
 });
@@ -69,7 +93,10 @@ const newProductInputData = (
   modelId,
   mainMaterialId,
   innerMaterialId,
-  colorId
+  colorId,
+  patternId,
+  closureId,
+  sizeId
 ) => ({
   category: categoryId,
   model: modelId,
@@ -81,13 +108,68 @@ const newProductInputData = (
     { lang: 'uk', value: 'Опис тест' },
     { lang: 'en', value: 'Description test' },
   ],
-  mainMaterial: mainMaterialId,
-  innerMaterial: innerMaterialId,
+  mainMaterial: {
+    material: mainMaterialId,
+    color: colorId,
+  },
+  innerMaterial: {
+    material: innerMaterialId,
+    color: colorId,
+  },
   strapLengthInCm: 50,
-  colors: [colorId],
+  pattern: patternId,
+  closure: closureId,
   basePrice: 200,
+  options: [
+    {
+      size: sizeId,
+      bottomMaterial: mainMaterialId,
+      description: [
+        { lang: 'ua', value: 'Тканина Кордура' },
+        { lang: 'en', value: 'Cordura fabric' },
+      ],
+      bottomColor: colorId,
+      availableCount: 777,
+      additions: [
+        {
+          available: true,
+          name: [
+            { lang: 'uk', value: 'Кишеня' },
+            { lang: 'en', value: 'Pocket' },
+          ],
+          description: [
+            { lang: 'uk', value: 'Бокова кишенька за бажанням' },
+            { lang: 'en', value: 'Side pocket by request' },
+          ],
+          additionalPrice: [
+            { currency: 'UAH', value: 145000 },
+            { currency: 'USD', value: 5229 },
+          ],
+        },
+      ],
+    },
+  ],
 });
-const newModelInputData = categoryId => ({
+const newClosure = materialId => ({
+  name: [
+    { lang: 'uk', value: ' тест' },
+    { lang: 'en', value: ' test' },
+  ],
+  material: materialId,
+  available: true,
+});
+const newPattern = {
+  name: [
+    { lang: 'uk', value: 'Паттерн тест' },
+    { lang: 'en', value: 'Pattern test' },
+  ],
+  description: [
+    { lang: 'uk', value: 'Опис тест' },
+    { lang: 'en', value: 'Description test' },
+  ],
+  material: ' material',
+};
+const newModelInputData = (categoryId, constructorId) => ({
   category: categoryId,
   name: [
     {
@@ -110,6 +192,7 @@ const newModelInputData = categoryId => ({
     },
   ],
   priority: 1,
+  constructorBasic: [constructorId],
 });
 const newCategoryInputData = {
   code: 'Code for test',
@@ -124,7 +207,7 @@ const newCategoryInputData = {
     thumbnail: 'thumbnail_10b1e9gkhm7xa9m_backpacks.jpg',
   },
   available: true,
-}; //+++
+};
 const newMaterialInputData = colorId => ({
   name: [
     { lang: 'uk', value: 'Матеріал тест' },
@@ -149,8 +232,6 @@ const newColorInputData = {
     { lang: 'en', value: 'Simple color name test' },
   ],
 }; //+++
-const switchId = 'ddc81f5dbac48c38d0403dd3';
-
 const newConstructorBasic = (materialId, colorId) => ({
   name: [
     { lang: 'uk', value: 'Тестовий конструктор базовий' },
@@ -161,26 +242,7 @@ const newConstructorBasic = (materialId, colorId) => ({
   basePrice: 200,
   available: true,
 });
-const newConstructorBottom = (materialId, colorId) => ({
-  name: [
-    { lang: 'uk', value: 'Тестовий конструктор низ' },
-    { lang: 'en', value: 'Test constructor bottom' },
-  ],
-  material: materialId,
-  color: colorId,
-  basePrice: 300,
-  available: true,
-});
-const newConstructorFontPocket = (materialId, colorId) => ({
-  name: [
-    { lang: 'uk', value: 'Тестовий конструктор базовий' },
-    { lang: 'en', value: 'Test constructor basic test' },
-  ],
-  material: materialId,
-  color: colorId,
-  basePrice: 200,
-  available: true,
-});
+
 // const newOrderMutationData = {
 //   ...newOrderInputData,
 //   status: 'SENT',
@@ -209,5 +271,8 @@ module.exports = {
   newModelInputData,
   newMaterialInputData,
   newColorInputData,
-  switchId,
+  newConstructorBasic,
+  newPattern,
+  newClosure,
+  wrongId,
 };
