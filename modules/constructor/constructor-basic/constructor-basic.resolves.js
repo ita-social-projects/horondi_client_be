@@ -12,7 +12,8 @@ const constructorBasicQuery = {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
-        ConstructorBasic
+        ConstructorBasic,
+        BASIC_NOT_FOUND
       );
     } catch (e) {
       return {
