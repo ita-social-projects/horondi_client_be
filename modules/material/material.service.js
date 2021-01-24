@@ -5,7 +5,6 @@ const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
 const Currency = require('../currency/currency.model');
-const { calculatePrice } = require('../currency/currency.utils');
 
 class MaterialsService {
   constructor() {

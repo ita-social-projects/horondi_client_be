@@ -1,4 +1,4 @@
-const { gql, disableExperimentalFragmentVariables } = require('@apollo/client');
+const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 
 const {
@@ -6,36 +6,40 @@ const {
   badConstructorBasicID,
   newMaterial,
   createMaterial,
-  createColor,
+  createColorMy,
   deleteAll,
   newConstructorBasic,
   getConstructorData,
   createConstructorBasic,
+  getConstructorDataBeforeUpt,
+  getConstructorDataForUpt,
+  getConstructorDataForUptCompare,
 } = require('./constructor-basic.variables');
 
 let operations;
-let colorId;
+let colorIdMy;
 let materialInput;
 let materialID;
 let constructorInput;
 let constructorBasicID;
 let currentConstructorBasic = {};
+let construrtorIDafter;
+let constructorUpdateInput;
 jest.mock('../../modules/currency/currency.utils.js');
 
 describe('constructor mutations', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    colorId = await createColor(newColor);
-    materialInput = newMaterial(colorId);
+    colorIdMy = await createColorMy(newColor);
+    materialInput = newMaterial(colorIdMy);
     materialID = await createMaterial(materialInput);
-    constructorInput = newConstructorBasic(materialID);
-    //ConstructorBasic =  await createConstructorBasic(constructorInput);
+    constructorInput = newConstructorBasic(materialID, colorIdMy);
 
+    constructorUpdateInput = getConstructorDataForUpt(constructorInput);
     currentConstructorBasic = getConstructorData(constructorInput);
     done();
   });
-  test('add Constructor Basic', async done => {
-    const constructorInput = newConstructorBasic(materialID);
+  test('#1 Should add Constructor Basic', async done => {
     const createConstructor = await operations.mutate({
       mutation: gql`
         mutation($constructorElement: ConstructorBasicInput!) {
@@ -49,7 +53,12 @@ describe('constructor mutations', () => {
               material {
                 _id
               }
+              color {
+                _id
+              }
+              image
               available
+              default
             }
             ... on Error {
               statusCode
@@ -62,15 +71,11 @@ describe('constructor mutations', () => {
     });
 
     constructorBasicID = createConstructor.data.addConstructorBasic._id;
-    const createdConstructorBasic = createConstructor.data.addConstructorBasic;
-    const a = currentConstructorBasic;
-    expect(createdConstructorBasic).toBeDefined();
+    expect(createConstructor.data.addConstructorBasic).toBeDefined();
     expect(createConstructor.data.addConstructorBasic).toEqual({
       ...currentConstructorBasic,
       _id: constructorBasicID,
     });
-    done();
-    console.log(createConstructor.data.addConstructorBasic);
     const getConstructorBasic = await operations.query({
       query: gql`
         query($id: ID!) {
@@ -107,8 +112,64 @@ describe('constructor mutations', () => {
       ...currentConstructorBasic,
       _id: constructorBasicID,
     });
+    done();
   });
-  test('#2 ConstructorBasic should return Error ConstructorBasic already exist', async done => {
+
+  test('#2 Should update existing constructorBasic ', async done => {
+    const beforeUpdateInput = getConstructorDataBeforeUpt(constructorInput);
+
+    const constructorIdUpt = await createConstructorBasic(beforeUpdateInput);
+
+    const updateConstructor = await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!, $constructorElement: ConstructorBasicInput!) {
+          updateConstructorBasic(
+            id: $id
+            constructorElement: $constructorElement
+          ) {
+            ... on ConstructorBasic {
+              _id
+              name {
+                lang
+                value
+              }
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+              image
+              available
+              default
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        constructorElement: constructorUpdateInput,
+        id: constructorIdUpt._id,
+      },
+    });
+    const constructorAfterUpdate =
+      updateConstructor.data.updateConstructorBasic;
+    construrtorIDafter = constructorAfterUpdate._id;
+    const constructorData = getConstructorDataForUptCompare(
+      constructorAfterUpdate
+    );
+    expect(constructorAfterUpdate).toBeDefined();
+    expect(constructorData).toEqual({
+      ...constructorUpdateInput,
+      _id: constructorAfterUpdate._id,
+    });
+    done();
+  });
+
+  test('#3 ConstructorBasic should return Error ConstructorBasic already exist', async done => {
     const createConstructorF = await operations.mutate({
       mutation: gql`
         mutation($constructorElement: ConstructorBasicInput!) {
@@ -125,7 +186,6 @@ describe('constructor mutations', () => {
       `,
       variables: { constructorElement: constructorInput },
     });
-    console.log(createConstructorF);
     const createConstructor = await operations.mutate({
       mutation: gql`
         mutation($constructorElement: ConstructorBasicInput!) {
@@ -148,7 +208,8 @@ describe('constructor mutations', () => {
     expect(error).toEqual('BASIC_ALREADY_EXIST');
     done();
   });
-  test('#4 UpdateProduct should return BASIC_NOT_FOUND', async done => {
+
+  test('#4 UpdateConstructorBasic should return BASIC_NOT_FOUND', async done => {
     const updateConstructor = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $constructorElement: ConstructorBasicInput!) {
@@ -215,7 +276,12 @@ describe('constructor mutations', () => {
   });
 
   afterAll(async done => {
-    await deleteAll(colorId, materialID, constructorBasicID);
+    await deleteAll(
+      colorIdMy,
+      materialID,
+      constructorBasicID,
+      construrtorIDafter
+    );
     done();
   });
 });
