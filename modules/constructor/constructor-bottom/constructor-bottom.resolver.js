@@ -1,14 +1,17 @@
 const constructorService = require('../constructor.services');
 const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
-  CONSTRUCTOR_BOTTOM_ALREADY_EXIST
+  CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
 } = require('../../../error-messages/constructor-bottom.messages');
 const ConstructorBottom = require('./constructor-bottom.model');
 
 const constructorBottomQuery = {
   getConstructorBottomById: async (parent, args) => {
     try {
-      return await constructorService.getConstructorElementById(args.id, ConstructorBottom);
+      return await constructorService.getConstructorElementById(
+        args.id,
+        ConstructorBottom
+      );
     } catch (e) {
       return {
         statusCode: 404,
@@ -18,7 +21,7 @@ const constructorBottomQuery = {
   },
 
   getAllConstructorBottom: async (parent, args) =>
-    await constructorService.getAllConstructorElements(args, ConstructorBottom)
+    await constructorService.getAllConstructorElements(args, ConstructorBottom),
 };
 
 const constructorBottomMutation = {

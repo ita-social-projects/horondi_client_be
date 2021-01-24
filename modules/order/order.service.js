@@ -11,7 +11,6 @@ const ConstructorBasic = require('../constructor/constructor-basic/constructor-b
 const ConstructorFrontPocket = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../size/size.model');
-const { populateOrder } = require('./order.utils');
 
 const {
   removeDaysFromData,
@@ -29,8 +28,8 @@ class OrdersService {
         const sum = await prev;
         const { quantity } = item;
         if (!item.fixedPrice?.length) {
-          const { additionalPrice } = await Size.findById(item.options.size);
           if (item.isFromConstructor) {
+            const { additionalPrice } = await Size.findById(item.options.size);
             const constructorBasics = await ConstructorBasic.findById(
               item.constructorBasics
             );
@@ -65,11 +64,11 @@ class OrdersService {
             item.fixedPrice = [
               {
                 currency: 'UAH',
-                value: basePrice[0].value + additionalPrice[0].value,
+                value: basePrice[0].value,
               },
               {
                 currency: 'USD',
-                value: basePrice[1].value + additionalPrice[1].value,
+                value: basePrice[1].value,
               },
             ];
           }
@@ -116,7 +115,7 @@ class OrdersService {
 
     const filters = orderStatus ? { status: { $in: orderStatus } } : {};
 
-    const items = await populateOrder(Order.find(filters))
+    const items = await Order.find(filters)
       .sort({ dateOfCreation: -1 })
       .skip(skip)
       .limit(limit);
@@ -132,7 +131,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await populateOrder(Order.findById(id));
+    const foundOrder = await Order.findById(id);
     if (foundOrder) {
       return foundOrder;
     }
@@ -293,7 +292,7 @@ class OrdersService {
   async getUserOrders(user) {
     const { orders } = user;
 
-    return await populateOrder(Order.find({ _id: orders }));
+    return await Order.find({ _id: orders });
   }
 
   filterOrders({ days, isPaid }) {

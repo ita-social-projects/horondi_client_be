@@ -14,4 +14,7 @@ const constructorBasicPermissionsMutations = {
   deleteConstructorBasic: hasRoles([ADMIN, SUPERADMIN]),
 };
 
-module.exports = { constructorBasicPermissionsQuery, constructorBasicPermissionsMutations };
+module.exports = {
+  constructorBasicPermissionsQuery,
+  constructorBasicPermissionsMutations,
+};
