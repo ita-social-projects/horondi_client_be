@@ -113,23 +113,7 @@ const getConstructorDataForUptCompare = construrtorBasic => ({
   image: construrtorBasic.image,
   name: construrtorBasic.name,
 });
-const createColorMy = async newColor => {
-  operations = await setupApp();
-  const addColor = await operations.mutate({
-    mutation: gql`
-      mutation($data: ColorInput!) {
-        addColor(data: $data) {
-          ... on Color {
-            _id
-          }
-        }
-      }
-    `,
-    variables: { data: newColor },
-  });
-  const colorID = addColor.data.addColor._id;
-  return colorID;
-};
+
 const createMaterial = async newMaterial => {
   operations = await setupApp();
   const addMaterial = await operations.mutate({
@@ -271,7 +255,6 @@ module.exports = {
   badConstructorBasicID,
   newMaterial,
   createMaterial,
-  createColorMy,
   newConstructorBasic,
   deleteAll,
   getConstructorData,
