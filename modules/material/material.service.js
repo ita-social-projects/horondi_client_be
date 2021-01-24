@@ -1,5 +1,4 @@
 const Material = require('./material.model');
-const { calculatePrice } = require('../currency/currency.utils');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,

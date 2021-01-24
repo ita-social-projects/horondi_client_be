@@ -90,9 +90,9 @@ class CategoryService {
 
     const savedCategory = await new Category(data).save();
 
-    // const uploadResult = await uploadService.uploadFile(upload);
+    const uploadResult = await uploadService.uploadFile(upload);
 
-    // savedCategory.images = uploadResult.fileNames;
+    savedCategory.images = uploadResult.fileNames;
 
     return await savedCategory.save();
   }

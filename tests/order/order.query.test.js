@@ -15,29 +15,29 @@ const {
 } = require('./order.variables');
 
 const {
-  createColor,
-  createMaterial,
-  createCategory,
-  createModel,
-  createProduct,
-  createSize,
   createOrder,
-  deleteColor,
-  deleteMaterial,
-  deleteCategory,
-  deleteModel,
-  deleteProduct,
-  deleteSize,
   deleteOrder,
   getAllOrders,
-  createClosure,
-  createPattern,
-  createConstructorBasic,
-  deletePattern,
-  deleteConstructorBasic,
-  deleteClosure,
   getOrderById,
 } = require('./order.helpers');
+const {
+  deleteConstructorBasic,
+  createConstructorBasic,
+} = require('../constructor-basic/constructor-basic.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { createClosure, deleteClosure } = require('../closure/closure.helper');
+const { createModel, deleteModel } = require('../model/model.helper');
+const { createProduct, deleteProduct } = require('../product/product.helper');
+const { createSize, deleteSize } = require('../size/size.helper');
+const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
