@@ -30,53 +30,57 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
+
     const foundModel = await Model.findById(id)
-      .populate([
-        {
-          path: 'constructorBasic',
-          model: 'ConstructorBasic',
-          populate: [{
-            path: 'material',
-            model: 'Material',
+      .populate({
+        path: 'constructorBasic',
+        model: 'ConstructorBasic',
+        populate: {
+          path: 'material',
+          model: 'Material',
+          populate: {
+            path: 'color',
+            model: 'Color',
           },
-            {
-              path: 'color',
-              model: 'Color',
-            }],
         },
-        {
-          path: 'constructorFrontPocket',
-          model: 'ConstructorFrontPocket',
-          populate: [{
-            path: 'material',
-            model: 'Material',
+      })
+      .populate({
+        path: 'constructorPattern',
+        model: 'Pattern',
+      })
+      .populate({
+        path: 'constructorFrontPocket',
+        model: 'ConstructorFrontPocket',
+        populate: {
+          path: 'material',
+          model: 'Material',
+          populate: {
+            path: 'color',
+            model: 'Color',
           },
-            {
-              path: 'color',
-              model: 'Color',
-            }],
-        }, {
-          path: 'constructorBottom',
-          model: 'ConstructorBottom',
-          populate: [{
-            path: 'material',
-            model: 'Material',
+        },
+      })
+      .populate({
+        path: 'constructorBottom',
+        model: 'ConstructorBottom',
+        populate: {
+          path: 'material',
+          model: 'Material',
+          populate: {
+            path: 'color',
+            model: 'Color',
           },
-            {
-              path: 'color',
-              model: 'Color',
-            }],
         },
-        {
-          path: 'constructorPattern',
-          model: 'Pattern',
-        },
-      ]);
+      });
 
     if (foundModel) {
       return foundModel;
     }
     throw new Error(MODEL_NOT_FOUND);
+  }
+
+  async getModelsForConstructor() {
+    return Model.find({ availableForConstructor: true });
   }
 
   async getModelsByCategory(id) {
@@ -109,7 +113,7 @@ class ModelsService {
     if (upload) {
       if (model.images) {
         const images = Object.values(model.images).filter(
-          item => typeof item === 'string' && item,
+          item => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }
@@ -136,18 +140,19 @@ class ModelsService {
     }
 
     const images = Object.values(model.images).filter(
-      item => typeof item === 'string' && item,
+      item => typeof item === 'string' && item
     );
     if (images.length) {
       uploadService.deleteFiles(images);
     }
+
     return model;
   }
 
   async addModelConstructorBasic(id, constructorElementID) {
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorBasic: [constructorElementID] } },
+      { $addToSet: { constructorBasic: [constructorElementID] } }
     );
   }
 
@@ -155,14 +160,14 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBasic: constructorElementID } },
-      { safe: true, upsert: true },
+      { safe: true, upsert: true }
     );
   }
 
   async addModelConstructorPattern(id, constructorElementID) {
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorPattern: [constructorElementID] } },
+      { $addToSet: { constructorPattern: [constructorElementID] } }
     );
   }
 
@@ -170,14 +175,14 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorPattern: constructorElementID } },
-      { safe: true, upsert: true },
+      { safe: true, upsert: true }
     );
   }
 
   async addModelConstructorFrontPocket(id, constructorElementID) {
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorFrontPocket: [constructorElementID] } },
+      { $addToSet: { constructorFrontPocket: [constructorElementID] } }
     );
   }
 
@@ -185,14 +190,14 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorFrontPocket: constructorElementID } },
-      { safe: true, upsert: true },
+      { safe: true, upsert: true }
     );
   }
 
   async addModelConstructorBottom(id, constructorElementID) {
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorBottom: [constructorElementID] } },
+      { $addToSet: { constructorBottom: [constructorElementID] } }
     );
   }
 
@@ -200,7 +205,7 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBottom: constructorElementID } },
-      { safe: true, upsert: true },
+      { safe: true, upsert: true }
     );
   }
 

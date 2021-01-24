@@ -7,4 +7,3 @@ module.exports = {
   BASIC_ALREADY_EXIST,
   IMAGE_NOT_PROVIDED,
 };
-

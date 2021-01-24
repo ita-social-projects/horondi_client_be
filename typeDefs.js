@@ -195,7 +195,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: ID
+    bottomColor: Color
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -214,7 +214,7 @@ const typeDefs = gql`
       weightInKg: Float
   }
   type AllProductOptions {
-    size: [Size]
+    sizes: [Size]
     bottomMaterials: [Material]
   }
   type UserForComment {
@@ -399,6 +399,7 @@ const typeDefs = gql`
     getBusinessTextByCode(code: String!): BusinessTextResult
     getAllModels(limit: Int, skip: Int): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
+    getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
@@ -721,7 +722,7 @@ const typeDefs = gql`
     updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
     deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
-    addSize(data: SizeInput!): SizeResult!
+    addSize(size: SizeInput!): SizeResult!
     deleteSize(id: ID!): SizeResult!
     updateSize(id: ID!, size: SizeInput!): SizeResult!
     "Color Mutation"
