@@ -18,6 +18,17 @@ const modelsQuery = {
       };
     }
   },
+
+  getModelsForConstructor: async (parent, args) => {
+    try {
+      return await modelService.getModelsForConstructor();
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const modelsMutation = {
