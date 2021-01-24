@@ -101,7 +101,6 @@ const createModel = async (model, operations) => {
       upload: ['__tests__/model/img.png'],
     },
   });
-
   return createdModel.data.addModel._id;
 };
 const createProduct = async (product, operations) => {
@@ -129,7 +128,7 @@ const createSize = async (size, operations) => {
   const createdSize = await operations.mutate({
     mutation: gql`
       mutation($size: SizeInput!) {
-        addSize(data: $size) {
+        addSize(size: $size) {
           ... on Size {
             _id
           }
@@ -270,7 +269,7 @@ const createPattern = async (pattern, operations) => {
 };
 
 const deleteOrder = async (id, operations) => {
-  await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteOrder(id: $id) {
@@ -345,10 +344,10 @@ const deleteModel = async (id, operations) => {
     },
   });
 };
-const deleteCategory = async (id, switchId, operations) => {
+const deleteCategory = async (id, operations) => {
   await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $switchId: ID!) {
+      mutation($id: ID!) {
         deleteCategory(deleteId: $id, switchId: $id) {
           ... on Category {
             _id
@@ -361,7 +360,6 @@ const deleteCategory = async (id, switchId, operations) => {
     `,
     variables: {
       id,
-      switchId,
     },
   });
 };
@@ -582,6 +580,84 @@ const getOrderById = async (id, operations) => {
     },
   });
 };
+const updateOrderById = async (order, id, operations) => {
+  const updatedData = await operations.mutate({
+    mutation: gql`
+      mutation($order: OrderInput!, $id: ID!) {
+        updateOrder(order: $order, id: $id) {
+          ... on Order {
+            _id
+            totalItemsPrice {
+              currency
+              value
+            }
+            totalPriceToPay {
+              currency
+            }
+            status
+            paymentStatus
+            user {
+              firstName
+              lastName
+              patronymicName
+              email
+              phoneNumber
+            }
+
+            userComment
+            delivery {
+              sentBy
+              invoiceNumber
+              courierOffice
+              byCourier
+              cost {
+                currency
+                value
+              }
+            }
+            items {
+              product {
+                _id
+                category {
+                  _id
+                  name {
+                    lang
+                    value
+                  }
+                }
+                model {
+                  category {
+                    name {
+                      lang
+                      value
+                    }
+                    available
+                  }
+                  description {
+                    lang
+                    value
+                  }
+                }
+              }
+
+              quantity
+              fixedPrice {
+                currency
+                value
+              }
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { order, id },
+  });
+  return updatedData.data.updateOrder;
+};
 
 module.exports = {
   createColor,
@@ -606,4 +682,5 @@ module.exports = {
   deleteConstructorBasic,
   deletePattern,
   getOrderById,
+  updateOrderById,
 };

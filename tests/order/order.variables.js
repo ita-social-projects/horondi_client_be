@@ -46,26 +46,6 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
         },
       ],
     },
-    // {
-    //   product: productId,
-    //   model: modelId,
-    //   quantity: 2,
-    //   isFromConstructor: true,
-    //   constructorBasics: constructorId,
-    //   options: {
-    //     size: sizeId,
-    //   },
-    //   fixedPrice: [
-    //     {
-    //       currency: 'UAH',
-    //       value: 7000,
-    //     },
-    //     {
-    //       currency: 'USD',
-    //       value: 240,
-    //     },
-    //   ],
-    // },
   ],
   paymentStatus: 'CREATED',
 });
@@ -77,16 +57,7 @@ const newSizeInputData = {
   volumeInLiters: 15,
   weightInKg: 3.4,
   available: true,
-  additionalPrice: [
-    {
-      currency: 'UAH',
-      value: 270,
-    },
-    {
-      currency: 'USD',
-      value: 10,
-    },
-  ],
+  additionalPrice: 230,
 };
 const newProductInputData = (
   categoryId,
@@ -220,7 +191,7 @@ const newMaterialInputData = colorId => ({
   ],
   available: true,
   additionalPrice: 100,
-}); //+++
+});
 const newColorInputData = {
   name: [
     { lang: 'uk', value: 'Тестовий колір test' },
@@ -231,7 +202,7 @@ const newColorInputData = {
     { lang: 'uk', value: 'Проста назва кольору test' },
     { lang: 'en', value: 'Simple color name test' },
   ],
-}; //+++
+};
 const newConstructorBasic = (materialId, colorId) => ({
   name: [
     { lang: 'uk', value: 'Тестовий конструктор базовий' },
@@ -242,26 +213,56 @@ const newConstructorBasic = (materialId, colorId) => ({
   basePrice: 200,
   available: true,
 });
-
-// const newOrderMutationData = {
-//   ...newOrderInputData,
-//   status: 'SENT',
-// };
-
-// const updatedData = {
-//   user: {
-//     firstName: 'Updated',
-//     lastName: 'Updated',
-//     patronymicName: 'Updated',
-//     email: 'test.updated@gmail.com',
-//     phoneNumber: '380953544271',
-//   },
-// };
-//
-// const newOrderUpdated = {
-//   ...newOrderMutation,
-//   ...updatedData,
-// };
+const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
+  status: 'SENT',
+  user: {
+    firstName: 'Updated',
+    lastName: 'Updated',
+    patronymicName: 'Updated',
+    email: 'test.updated@gmail.com',
+    phoneNumber: '380953544271',
+  },
+  userComment: 'Updated',
+  delivery: {
+    byCourier: true,
+    courierOffice: 10,
+    invoiceNumber: '6280260',
+    sentBy: 'SELFPICKUP',
+    cost: [
+      {
+        currency: 'UAH',
+        value: 7000,
+      },
+      {
+        currency: 'USD',
+        value: 240,
+      },
+    ],
+  },
+  items: [
+    {
+      product: productId,
+      model: modelId,
+      quantity: 2,
+      isFromConstructor: false,
+      constructorBasics: constructorId,
+      options: {
+        size: sizeId,
+      },
+      fixedPrice: [
+        {
+          currency: 'UAH',
+          value: 7000,
+        },
+        {
+          currency: 'USD',
+          value: 240,
+        },
+      ],
+    },
+  ],
+  paymentStatus: 'APPROVED',
+});
 
 module.exports = {
   newOrderInputData,
@@ -275,4 +276,5 @@ module.exports = {
   newPattern,
   newClosure,
   wrongId,
+  newOrderUpdated,
 };

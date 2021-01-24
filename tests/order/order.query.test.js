@@ -78,7 +78,6 @@ describe('Order queries', () => {
       newModelInputData(categoryId, constructorBasicId),
       operations
     );
-
     productId = await createProduct(
       newProductInputData(
         categoryId,
@@ -115,7 +114,7 @@ describe('Order queries', () => {
   test('should receive order by id', async () => {
     const {
       data: { getOrderById: order },
-    } = await getOrderById(orderId, operations);
+    } = await getOrderById(orderId._id, operations);
 
     expect(order).toBeDefined();
     expect(order).toBeTruthy();
@@ -134,12 +133,11 @@ describe('Order queries', () => {
     await deleteProduct(productId, operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
-    await deleteCategory(categoryId, categoryId, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
     await deleteSize(sizeId, operations);
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
-    await deleteCategory(categoryId, categoryId, operations);
+    await deleteCategory(categoryId, operations);
   });
 });
