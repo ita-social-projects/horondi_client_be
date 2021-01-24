@@ -8,13 +8,12 @@ type Model {
     priority: Int,
     show: Boolean,
     availableForConstructor: Boolean,
-    constructorBasic:[ConstructorBasic],
     constructorPattern:[Pattern],
     constructorFrontPocket:[ConstructorFrontPocket],
     constructorBottom:[ConstructorBottom]
+    sizes: [Size]
   }
 `;
-
 const modelInput = `
 input ModelInput {
     category: ID!,
@@ -23,6 +22,7 @@ input ModelInput {
     images: ImageSetInput,
     priority: Int,
     show: Boolean,
+    sizes: [SizeInput]
     availableForConstructor: Boolean,
     constructorBasic:[ID],
     constructorPattern:[ID],

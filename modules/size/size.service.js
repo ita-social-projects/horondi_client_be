@@ -1,4 +1,5 @@
 const Size = require('./size.model');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
   SIZES_NOT_FOUND,
   SIZE_ALREADY_EXIST,
@@ -22,6 +23,7 @@ class SizeService {
     if (size.length) {
       throw new Error(SIZE_ALREADY_EXIST);
     }
+    sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
     return new Size(sizeData).save();
   }
 
