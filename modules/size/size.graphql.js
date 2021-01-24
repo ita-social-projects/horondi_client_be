@@ -21,7 +21,7 @@ const sizeInput = `
     volumeInLiters: Int!
     weightInKg: Float!
     available: Boolean!
-    additionalPrice: [CurrencySetInput]!
+    additionalPrice: Int!
   }
 `;
 
