@@ -8,6 +8,7 @@ type Model {
     priority: Int,
     show: Boolean,
     availableForConstructor: Boolean,
+    constructorBasic:[ConstructorBasic]
     constructorPattern:[Pattern],
     constructorFrontPocket:[ConstructorFrontPocket],
     constructorBottom:[ConstructorBottom]
