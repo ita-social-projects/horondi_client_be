@@ -171,7 +171,12 @@ const createConstructorBasic = async constructorInput => {
   return constructorBasic.data.addConstructorBasic;
 };
 
-const deleteAll = async (colorID, materialID, constructorBasicId) => {
+const deleteAll = async (
+  colorID,
+  materialID,
+  constructorBasicId,
+  construrtorIDafter
+) => {
   const operations = await setupApp();
 
   const deleteConstructorBasic = await operations.mutate({
@@ -190,6 +195,23 @@ const deleteAll = async (colorID, materialID, constructorBasicId) => {
     `,
     variables: { id: constructorBasicId },
   });
+  const deleteConstructorUpdated = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteConstructorBasic(id: $id) {
+          ... on ConstructorBasic {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: construrtorIDafter },
+  });
+
   const deleteMaterial = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
