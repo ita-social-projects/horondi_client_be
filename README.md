@@ -7,11 +7,13 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 [![GitHub issues](https://img.shields.io/github/issues/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/horondi_client_be?style=flat-square)](https://github.com/ita-social-projects/Horondi_client_be/pulls)
 [![GitHub stars](https://img.shields.io/github/stars/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/stargazers)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=horondi_horondi_client_be&metric=alert_status)](https://sonarcloud.io/dashboard?id=horondi_horondi_client_be)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects-horondi-client-be&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects-horondi-client-be)
+[![Build Status](https://dev.azure.com/ProjectApproach/HorondiProject/_apis/build/status/ita-social-projects.horondi_client_be?branchName=development&jobName=BuildandDeploy)](https://dev.azure.com/ProjectApproach/HorondiProject/_build/latest?definitionId=25&branchName=development)
 [![GitHub license](https://img.shields.io/github/license/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/blob/master/LICENSE)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects-horondi-client-be&metric=coverage)](https://sonarcloud.io/dashboard?id=ita-social-projects-horondi-client-be)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/horondi/horondi_client_be)
 [![Build Status](https://dev.azure.com/ProjectApproach/HorondiProject/_apis/build/status/Backend%20CI%20production?branchName=master)](https://dev.azure.com/ProjectApproach/HorondiProject/_build/latest?definitionId=10&branchName=master)
+
 ---
 
 - [Installation](#installation)
@@ -41,7 +43,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 
 ### Required to install
 
-- NodeJS (14.4.0)
+- NodeJS (14.15.4)
 
 ### Clone
 
@@ -58,11 +60,10 @@ $ npm install
 ### How to run local
 
 1. Open terminal.
-2. Run `npm run start` to start application.<sup>[*](#footnote)</sup>
+2. Run `npm run start` to start application.<sup>[\*](#footnote)</sup>
 3. Open http://localhost:5000/graphql to view it in the browser.
 
-###### <a name="footnote">*</a> - to run the project you need an `.env` file in root folder
-
+###### <a name="footnote">\*</a> - to run the project you need an `.env` file in root folder
 
 ### How to run Docker
 

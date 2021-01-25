@@ -32,7 +32,16 @@ const WEEK = 7;
 const THREE_DAYS = 3;
 const TWO_WEEKS = 14;
 
+const getUkrPoshtaRegionsUrl = 'get_regions_by_region_ua';
+const getUkrPoshtaDistrictsByRegionIdUrl = `get_districts_by_region_id_and_district_ua?region_id=`;
+const getUkrPoshtaCitiesByDistrictIdUrl = `get_city_by_region_id_and_district_id_and_city_ua?district_id=`;
+const getUkrPoshtaPostofficesCityIdUrl = `get_postoffices_by_postcode_cityid_cityvpzid?city_id=`;
+
 module.exports = {
+  getUkrPoshtaRegionsUrl,
+  getUkrPoshtaDistrictsByRegionIdUrl,
+  getUkrPoshtaCitiesByDistrictIdUrl,
+  getUkrPoshtaPostofficesCityIdUrl,
   roles,
   availableForRegistrationRoles,
   horondiAddress,
