@@ -1,11 +1,11 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
+const { createColor } = require('../materials/material.variables');
 const {
   newColor,
   badConstructorBasicID,
   newMaterial,
   createMaterial,
-  createColorMy,
   deleteAll,
   newConstructorBasic,
   getConstructorData,
@@ -27,7 +27,7 @@ jest.mock('../../modules/currency/currency.utils.js');
 describe('constructor mutations', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    colorId = await createColorMy(newColor);
+    colorId = await createColor(newColor);
     materialInput = newMaterial(colorId);
     materialID = await createMaterial(materialInput);
     constructorInput = newConstructorBasic(materialID, colorId);
