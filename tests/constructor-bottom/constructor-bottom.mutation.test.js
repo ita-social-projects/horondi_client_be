@@ -164,7 +164,7 @@ describe('Constructor mutations', () => {
     const result = updateConstructor.data.updateConstructorBottom.message;
     expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
-  test('should return Error (not found) when try to delete wrong constructor bottom', async () => {
+  test('should return Error (not found) when try to delete wrong constructor-bottom', async () => {
     const deletedConstructor = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -183,5 +183,21 @@ describe('Constructor mutations', () => {
     });
     const result = deletedConstructor.data.deleteConstructorBottom.message;
     expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
+  });
+  test('should delete constructor-bottom and return id', async () => {
+    const deletedConstructor = await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteConstructorBottom(id: $id) {
+            ... on ConstructorBottom {
+              _id
+            }
+          }
+        }
+      `,
+      variables: { id: constructorId },
+    });
+    const result = deletedConstructor.data.deleteConstructorBottom._id;
+    expect(result).toBe(constructorId);
   });
 });
