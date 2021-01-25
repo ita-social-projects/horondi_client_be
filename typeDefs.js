@@ -53,9 +53,9 @@ const {
   contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
-  deliveryType,
-  deliveryInput,
-} = require('./modules/delivery/delivery.graphql');
+  novaPoshtaType,
+  novaPoshtaInput,
+} = require('./modules/delivery/nova-poshta/nova-poshta.graphql');
 const {
   emailQuestionType,
   emailQuestionInput,
@@ -84,7 +84,6 @@ const {
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
-//const { sizeType } = require('./modules/size/size.graphql');
 const {
   constructorBasicType,
   constructorBasicInput,
@@ -93,6 +92,10 @@ const {
   constructorFrontPocketType,
   constructorFrontPocketInput,
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
+const {
+  ukrPoshtaEnum,
+  ukrPostaType,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -111,7 +114,8 @@ const typeDefs = gql`
   ${contactType}
   ${orderTypes}
   ${emailQuestionType}
-  ${deliveryType}
+  ${novaPoshtaType}
+  ${ukrPostaType}
   ${paymentType}
   ${paymentStatus}
   ${homePageImagesType}
@@ -134,6 +138,7 @@ const typeDefs = gql`
     admin
     user
   }
+  ${ukrPoshtaEnum}
   type Language {
     lang: String!
     value: String
@@ -331,7 +336,6 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
-  union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
   union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
@@ -407,8 +411,10 @@ const typeDefs = gql`
     getNovaPoshtaStreets(cityRef: String, street: String): [NovaPoshtaStreet]
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
-    createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
-    getUkrPoshtaRegion(region: String): UkrPoshtaRegion
+    getUkrPoshtaRegions: [UkrPoshtaRegion]
+    getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
+    getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
+    getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
@@ -493,7 +499,7 @@ const typeDefs = gql`
   ${orderInputs}
   ${emailQuestionInput}
   ${UserForStatisticsInput}
-  ${deliveryInput}
+  ${novaPoshtaInput}
   ${paymentInput}
   ${headerInput}
   ${sizeInput}

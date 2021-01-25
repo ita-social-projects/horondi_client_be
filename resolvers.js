@@ -42,8 +42,7 @@ const {
 } = require('./modules/category/category.resolver');
 const {
   novaPoshtaQuery,
-  ukrPoshtaQuery,
-} = require('./modules/delivery/delivery.resolver');
+} = require('./modules/delivery/nova-poshta/nova-poshta.resolver');
 const { paymentQuery } = require('./modules/payment/payment.resolver');
 const {
   businessTextQuery,
@@ -108,6 +107,9 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 
+const {
+  ukrPoshtaQuery,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -124,7 +126,6 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
-  novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
@@ -469,14 +470,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
-      }
-      return 'Error';
-    },
-  },
-  NovaPoshtaOrderResult: {
-    __resolveType: obj => {
-      if (obj.intDocNumber) {
-        return SCHEMA_NAMES.novaPoshtaOrder;
       }
       return 'Error';
     },
