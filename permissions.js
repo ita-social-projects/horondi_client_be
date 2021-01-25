@@ -69,7 +69,6 @@ const {
   constructorFrontPocketPermissionsMutations,
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.permission');
 
-
 const {
   сonstructorBottomPermissionsQuery,
   сonstructorBottomPermissionsMutations,

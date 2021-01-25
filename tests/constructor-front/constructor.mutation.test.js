@@ -1,76 +1,44 @@
 const { gql } = require('@apollo/client');
+const { setupApp } = require('../helper-functions');
 const {
   FRONT_POCKET_NOT_FOUND,
 } = require('../../error-messages/constructor-front-pocket-messages');
-const addConstructorData = require('./constructor.variables');
-const { setupApp } = require('../helper-functions');
-const { it } = require('date-fns/locale');
-jest.mock('../../modules/upload/upload.service');
+const {
+  badConstructorFrontID,
+  newColor,
+  newMaterial,
+  getConstructorData,
+  createMaterial,
+  createConstructorFrontPocket,
+} = require('./constructor.variables');
+
+const { createColor } = require('../materials/material.variables');
 
 let operations;
-let constructorId = '';
+let colorIdMy;
+let materialInput;
+let materialID;
+let constructorInput;
+let constructorFrontID;
+let currentConstructorFront = {};
+let construrtorIDafter;
+let constructorUpdateInput;
+jest.mock('../../modules/currency/currency.utils.js');
 
-describe('Front pocket mutation test:', () => {
+describe('constructor mutations', () => {
   beforeAll(async done => {
     operations = await setupApp();
+    colorIdMy = await createColor(newColor);
+    materialInput = newMaterial(colorIdMy);
+    materialID = await createMaterial(materialInput);
+    constructorInput = newConstructorFront(materialID, colorIdMy);
+
+    constructorUpdateInput = getConstructorDataForUpt(constructorInput);
+    currentConstructorFront = getConstructorData(constructorInput);
     done();
   });
-
-  beforeAll(async done => {
-    operations = await setupApp();
-    const itemsId = await createModel(newMaterial, newCategory, newModel);
-    categoryId = itemsId.categoryId;
-    modelId = itemsId.modelId;
-    materialId = itemsId.materialId;
-
-    product = getNewProduct(categoryId, modelId, materialId);
-    const createProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!) {
-          addProduct(upload: [], product: $product) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product,
-      },
-    });
-    productId = createProduct.data.addProduct._id;
-    const res = await operations
-      .query({
-        variables: { id: productId },
-        query: gql`
-          query($id: ID!) {
-            getProductById(id: $id) {
-              ... on Product {
-                rate
-                userRates {
-                  rate
-                }
-                rateCount
-              }
-              ... on Error {
-                message
-              }
-            }
-          }
-        `,
-      })
-      .catch(e => e);
-    const receivedProduct = res.data.getProductById;
-    productRate = receivedProduct.rate;
-    productRateCount = receivedProduct.rateCount;
-    productUserRates = receivedProduct.userRates;
-    done();
-  });
-  it('should connect to database', async done => {
-    const res = await operations.mutate({
+  test('#1 Should add Constructor Front Pocket', async done => {
+    const createConstructor = await operations.mutate({
       mutation: gql`
         mutation($constructorElement: ConstructorFrontPocketInput!) {
           addConstructorFrontPocket(constructorElement: $constructorElement) {
@@ -102,66 +70,49 @@ describe('Front pocket mutation test:', () => {
           }
         }
       `,
-      variables: { addConstructorData },
+      variables: { constructorElement: constructorInput },
     });
 
-    constructorName = res.data.addConstructorFrontPocket.name;
+    constructorFrontID = createConstructor.data.addConstructorFrontPocket._id;
+    expect(createConstructor.data.addConstructorFrontPocket).toBeDefined();
+    expect(createConstructor.data.addConstructorFrontPocket).toEqual({
+      ...addConstructorFrontPocket,
+      _id: addConstructorFrontPocket,
+    });
+    const getConstructorFrontPocket = await operations.query({
+      query: gql`
+        query($id: ID!) {
+          getConstructorFrontPocketById(id: $id) {
+            ... on ConstructorFrontPocket {
+              name {
+                lang
+                value
+              }
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+              }
+              color {
+                colorHex
+              }
+              available
+            }
+          }
+        }
+      `,
+      variables: { id: constructorFrontID },
+    });
 
-    expect(constructorName).toBeDefined();
-    // expect(addConstructorFrontPocket).toHaveProperty(
-    //     'basePrice',
-    //     {value: addConstructorData.basePrice[0]},
-    //     {value: addConstructorData.basePrice[1]}
-    // );
-    // expect(addConstructorFrontPocket.basePrice).toBeInstanceOf(Array);
-    // expect(addConstructorFrontPocket).toHaveProperty(
-    //     'name',
-    //     {value: addConstructorData.name[0]},
-    //     {value: addConstructorData.name[1]}
-    // );
-    // expect(addConstructorFrontPocket.name).toBeInstanceOf(Array);
-    // expect(addConstructorFrontPocket).toHaveProperty(
-    //     'material',
-    //     {name: addConstructorData.material.name}
-    // );
-    // expect(addConstructorFrontPocket.material).toBeInstanceOf(Object);
+    const receivedConstructorFront =
+      getConstructorFrontPocket.data.getConstructorFrontById;
+    expect(receivedConstructorFront).toBeDefined();
+    expect(createConstructor.data.addConstructorFrontPocket).toEqual({
+      ...currentConstructorFront,
+      _id: constructorFrontID,
+    });
+    done();
   });
 });
-
-// const createColorData = await options.mutate({
-//     mutation:gql`
-//     mutation($data: ColorInput!) {
-//        addColor(data: $data) {
-//          ... on Color {
-//            name [ {
-//              lang
-//              value
-//            } ]
-//            colorHex
-//            simpleName [{
-//              lang
-//              value
-//            }]
-//          }
-//        }
-//      }
-//     `,
-//     variables: { data }
-//  });
-
-//  const createMaterialData = await options.mutate({
-//     mutation:gql`
-//     mutation($material: MaterialInput!) {
-//        addMaterial(material: $material) {
-//          ... on Material {
-//            name[ {
-//              lang
-//              value
-//            }]
-//            colors
-//          }
-//        }
-//      }
-//     `,
-//     variables: { data }
-//  });

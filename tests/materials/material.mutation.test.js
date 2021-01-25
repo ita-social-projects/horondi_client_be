@@ -6,27 +6,57 @@ const {
 } = require('../../error-messages/material.messages');
 const {
   materialDoesNotExistId,
-  material,
-  materialToUpdate,
+  createColor,
+  getMaterial,
+  color,
+  getMaterialToUpdate,
+  deleteMaterial,
 } = require('./material.variables');
 
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/currency/currency.utils.js');
+jest.setTimeout(30000);
 
 let operations;
 let materialId = '';
+let colorId;
+let material;
+let materialToUpdate;
 
 describe('material mutations tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    colorId = await createColor(color);
+    material = getMaterial(colorId);
+    materialToUpdate = getMaterialToUpdate(colorId);
+  });
+  afterAll(async () => {
+    await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteColor(id: $id) {
+            ... on Color {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: colorId },
+    });
+    return { deleteColor };
   });
 
   it('should add material to database', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material, images: []) {
+          addMaterial(material: $material) {
             ... on Material {
               _id
               name {
@@ -38,24 +68,8 @@ describe('material mutations tests', () => {
                 value
               }
               purpose
-
               colors {
-                code
-                name {
-                  lang
-                  value
-                }
-                simpleName {
-                  lang
-                  value
-                }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                _id
               }
               available
             }
@@ -84,11 +98,7 @@ describe('material mutations tests', () => {
 
     expect(addedMaterial).toHaveProperty('colors', [
       {
-        code: 777,
-        name: material.colors[0].name,
-        simpleName: material.colors[0].simpleName,
-        available: true,
-        images: null,
+        _id: colorId,
       },
     ]);
     expect(addedMaterial.colors).toBeInstanceOf(Array);
@@ -98,7 +108,7 @@ describe('material mutations tests', () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($material: MaterialInput!) {
-          addMaterial(material: $material, images: []) {
+          addMaterial(material: $material) {
             ... on Material {
               name {
                 lang
@@ -109,24 +119,8 @@ describe('material mutations tests', () => {
                 value
               }
               purpose
-
               colors {
-                code
-                name {
-                  lang
-                  value
-                }
-                simpleName {
-                  lang
-                  value
-                }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                _id
               }
               additionalPrice {
                 currency
@@ -166,22 +160,7 @@ describe('material mutations tests', () => {
               purpose
 
               colors {
-                code
-                name {
-                  lang
-                  value
-                }
-                simpleName {
-                  lang
-                  value
-                }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                _id
               }
               additionalPrice {
                 currency
@@ -221,22 +200,13 @@ describe('material mutations tests', () => {
 
     expect(updatedMaterial).toHaveProperty('colors', [
       {
-        code: 777,
-        name: materialToUpdate.colors[0].name,
-        simpleName: materialToUpdate.colors[0].simpleName,
-        available: true,
-        images: {
-          large: 'large_test update',
-          medium: 'medium_test update',
-          small: 'small_test update',
-          thumbnail: 'thumbnail_test update',
-        },
+        _id: colorId,
       },
     ]);
     expect(updatedMaterial.colors).toBeInstanceOf(Array);
   });
 
-  it('should return error when update not existing material should return error', async () => {
+  it('should return error when update not existing material', async () => {
     const res = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $material: MaterialInput!) {
@@ -253,22 +223,7 @@ describe('material mutations tests', () => {
               purpose
 
               colors {
-                code
-                name {
-                  lang
-                  value
-                }
-                simpleName {
-                  lang
-                  value
-                }
-                available
-                images {
-                  large
-                  medium
-                  small
-                  thumbnail
-                }
+                _id
               }
               additionalPrice {
                 currency
@@ -294,7 +249,39 @@ describe('material mutations tests', () => {
   });
 
   it('should return error when update material with already existing name will ', async () => {
-    const res = await operations.mutate({
+    const firstRes = await operations.mutate({
+      mutation: gql`
+        mutation($material: MaterialInput!) {
+          addMaterial(material: $material) {
+            ... on Material {
+              _id
+              name {
+                lang
+                value
+              }
+              description {
+                lang
+                value
+              }
+              purpose
+              colors {
+                _id
+              }
+              available
+            }
+            ... on Error {
+              message
+              statusCode
+            }
+          }
+        }
+      `,
+      variables: { material },
+    });
+
+    const testMaterial = firstRes.data.addMaterial;
+    const testMaterialId = firstRes.data.addMaterial._id;
+    const secondRes = await operations.mutate({
       mutation: gql`
         mutation($id: ID!, $material: MaterialInput!) {
           updateMaterial(id: $id, material: $material) {
@@ -308,33 +295,19 @@ describe('material mutations tests', () => {
           }
         }
       `,
-      variables: { id: materialId, material: materialToUpdate },
+      variables: { id: testMaterialId, material: materialToUpdate },
     });
-
-    expect(res.data.updateMaterial).toHaveProperty('statusCode', 400);
-    expect(res.data.updateMaterial).toHaveProperty(
+    expect(secondRes.data.updateMaterial).toHaveProperty('statusCode', 400);
+    expect(secondRes.data.updateMaterial).toHaveProperty(
       'message',
       MATERIAL_ALREADY_EXIST
     );
+
+    await deleteMaterial(testMaterialId);
   });
 
   it('should delete material', async () => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteMaterial(id: $id) {
-            ... on Material {
-              _id
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { id: materialId },
-    });
+    const res = await deleteMaterial(materialId);
 
     expect(res.data.deleteMaterial).toHaveProperty('_id', materialId);
   });

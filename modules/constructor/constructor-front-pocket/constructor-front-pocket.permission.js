@@ -14,4 +14,7 @@ const constructorFrontPocketPermissionsMutations = {
   deleteConstructorFrontPocket: hasRoles([ADMIN, SUPERADMIN]),
 };
 
-module.exports = { constructorFrontPocketPermissionsQuery, constructorFrontPocketPermissionsMutations };
+module.exports = {
+  constructorFrontPocketPermissionsQuery,
+  constructorFrontPocketPermissionsMutations,
+};

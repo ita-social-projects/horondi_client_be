@@ -1,6 +1,6 @@
 const Currency = require('./currency.model');
 
-const calculatePrice = async (price) => {
+const calculatePrice = async price => {
   const { convertOptions } = await Currency.findOne();
   return [
     {
@@ -12,6 +12,6 @@ const calculatePrice = async (price) => {
       currency: 'USD',
     },
   ];
-}
+};
 
-module.exports = {calculatePrice};
+module.exports = { calculatePrice };
