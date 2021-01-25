@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
-const Size = require('../size/size.model').schema;
 
 const modelSchema = new mongoose.Schema({
   category: {
@@ -20,7 +19,7 @@ const modelSchema = new mongoose.Schema({
     },
   ],
   availableForConstructor: Boolean,
-  constructorBasics: [
+  constructorBasic: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorBasic' },
   ],
   constructorPattern: [
