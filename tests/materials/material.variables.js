@@ -19,48 +19,6 @@ const user = {
   password: SUPER_ADMIN_PASSWORD,
 };
 
-const createColor = async color => {
-  const operations = await setupApp();
-  const createdColor = await operations.mutate({
-    mutation: gql`
-      mutation($color: ColorInput!) {
-        addColor(data: $color) {
-          ... on Color {
-            _id
-          }
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: { color },
-  });
-  return createdColor.data.addColor._id;
-};
-
-const deleteMaterial = async materialId => {
-  const operations = await setupApp();
-  const res = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteMaterial(id: $id) {
-          ... on Material {
-            _id
-          }
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: { id: materialId },
-  });
-
-  return res;
-};
 const getMaterial = colorId => ({
   name: [
     { lang: 'uk', value: 'Матеріал test' },
@@ -109,9 +67,7 @@ module.exports = {
   limit,
   limitZero,
   user,
-  createColor,
   color,
   getMaterial,
   getMaterialToUpdate,
-  deleteMaterial,
 };
