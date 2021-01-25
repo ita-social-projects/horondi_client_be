@@ -2,6 +2,7 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 
 const {
+  wrongID,
   color,
   newMaterial,
   createMaterial,
@@ -30,12 +31,12 @@ describe('Constructor query', () => {
   afterAll(async () => {
     await deleteAll(colorId, materialId, newConstructorForQuery);
   });
-  test('should return all constructor-bottom', async () => {
-    const allConstructorBottom = await operations.query({
+  test('should return constructor-bottom by Id', async () => {
+    const constructorBottomById = await operations.query({
       query: gql`
-        query($limit: Int, $skip: Int) {
-          getAllConstructorBottoms(limit: $limit, skip: $skip) {
-            items {
+        query($id: ID!) {
+          getConstructorBottomById(id: $id) {
+            ... on ConstructorBottom {
               _id
               name {
                 lang
@@ -43,27 +44,58 @@ describe('Constructor query', () => {
               }
               material {
                 _id
-                name {
-                  lang
-                  value
-                }
-                purpose
-                available
-              }
-              color {
-                _id
-                colorHex
               }
               image
+              color {
+                _id
+              }
+              available
+              default
+            }
+            ... on Error {
+              statusCode
+              message
             }
           }
         }
       `,
+      variables: { id: newConstructorForQuery },
     });
 
-    const allProducts =
-      allConstructorBottom.data.getAllConstructorBottoms.items;
-    expect(allProducts).toBeDefined();
-    expect(allProducts.length).toBeGreaterThan(0);
+    const receivedById = constructorBottomById.data.getConstructorBottomById;
+    expect(receivedById).toBeDefined();
+  });
+  test('should return error when try to get constructor-bottom by wrong ID', async () => {
+    const constructorBottomById = await operations.query({
+      query: gql`
+        query($id: ID!) {
+          getConstructorBottomById(id: $id) {
+            ... on ConstructorBottom {
+              _id
+              name {
+                lang
+                value
+              }
+              material {
+                _id
+              }
+              image
+              color {
+                _id
+              }
+              available
+              default
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: wrongID },
+    });
+    const receivedError = constructorBottomById.data.getConstructorBottomById;
+    expect(receivedError.statusCode).toBe(404);
   });
 });
