@@ -42,8 +42,7 @@ const {
 } = require('./modules/category/category.resolver');
 const {
   novaPoshtaQuery,
-  ukrPoshtaQuery,
-} = require('./modules/delivery/delivery.resolver');
+} = require('./modules/delivery/nova-poshta/nova-poshta.resolver');
 const { paymentQuery } = require('./modules/payment/payment.resolver');
 const {
   businessTextQuery,
@@ -99,12 +98,18 @@ const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
-const modelService = require('./modules/model/model.service');
+const constructorServices = require('./modules/constructor/constructor.services');
+const constructorBottomModel = require('./modules/constructor/constructor-bottom/constructor-bottom.model');
+const constructorBasicModel = require('./modules/constructor/constructor-basic/constructor-basic.model');
+const constructorFrontPocketModel = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const materialService = require('./modules/material/material.service');
-const colorService = require('./modules/color/color.service');
-const patternService = require('./modules/pattern/pattern.service');
 const closuresService = require('./modules/closures/closures.service');
+const patternService = require('./modules/pattern/pattern.service');
+const modelService = require('./modules/model/model.service');
 
+const {
+  ukrPoshtaQuery,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -121,7 +126,6 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
-  novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
@@ -223,8 +227,52 @@ const resolvers = {
     closure: parent => closuresService.getClosureById(parent.closure),
   },
 
+  Order: {
+    items: parent => {
+      return parent.items.map(item => {
+        if (item.isFromConstructor) {
+          return {
+            ...item,
+            constructorBottom: constructorServices.getConstructorElementById(
+              item.constructorBottom,
+              constructorBottomModel
+            ),
+            constructorBasics: constructorServices.getConstructorElementById(
+              item.constructorBasics,
+              constructorBasicModel
+            ),
+            constructorFrontPocket: constructorServices.getConstructorElementById(
+              item.constructorFrontPocket,
+              constructorFrontPocketModel
+            ),
+            constructorPattern: patternService.getPatternById(
+              item.constructorPattern
+            ),
+            model: modelService.getModelById(item.model),
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+              sidePocket: item.options.sidePocket,
+            },
+            isFromConstructor: item.isFromConstructor,
+            quantity: item.quantity,
+            fixedPrice: item.fixedPrice,
+          };
+        } else {
+          return {
+            fixedPrice: item.fixedPrice,
+            isFromConstructor: item.isFromConstructor,
+            quantity: item.quantity,
+            options: item.options,
+            product: productsService.getProductById(item.product),
+          };
+        }
+      });
+    },
+  },
+
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
 
   ProductOptions: {
@@ -422,14 +470,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
-      }
-      return 'Error';
-    },
-  },
-  NovaPoshtaOrderResult: {
-    __resolveType: obj => {
-      if (obj.intDocNumber) {
-        return SCHEMA_NAMES.novaPoshtaOrder;
       }
       return 'Error';
     },

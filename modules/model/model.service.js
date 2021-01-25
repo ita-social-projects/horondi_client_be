@@ -85,6 +85,10 @@ class ModelsService {
     throw new Error(MODEL_NOT_FOUND);
   }
 
+  async getModelsForConstructor() {
+    return Model.find({ availableForConstructor: true });
+  }
+
   async getModelsByCategory(id) {
     if (!ObjectId.isValid(id)) {
       throw new Error(CATEGORY_NOT_VALID);
@@ -147,6 +151,7 @@ class ModelsService {
     if (images.length) {
       uploadService.deleteFiles(images);
     }
+
     return model;
   }
 
