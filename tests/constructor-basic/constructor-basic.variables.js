@@ -2,7 +2,7 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 let operations;
 
-const wrongID = '6009dcd5f9855555907ebf5e';
+const badConstructorBasicID = '6009dcd5f9855555907ebf5e';
 const newColor = {
   name: [
     { lang: 'ua', value: 'Світsadas' },
@@ -230,7 +230,7 @@ const deleteAll = async (colorID, materialID, constructorBasicId) => {
 
 module.exports = {
   newColor,
-  wrongID,
+  badConstructorBasicID,
   newMaterial,
   createMaterial,
   newConstructorBasic,
