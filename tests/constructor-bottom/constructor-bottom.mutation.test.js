@@ -15,6 +15,7 @@ const {
   getConstructorData,
   deleteAll,
   getConstructorDataForUpt,
+  wrongID,
 } = require('./constructor-bottom.variables');
 
 let operations;
@@ -116,7 +117,7 @@ describe('Constructor mutations', () => {
     expect(updatedResult.image).not.toEqual(result.image);
     expect(updatedResult.name).not.toEqual(result.name);
   });
-  test('should return Error constructor-basic already exist', async () => {
+  test('should return Error (already exist) when creating same constructor-bottom again', async () => {
     const createConstructorAgain = await operations.mutate({
       mutation: gql`
         mutation($constructorElement: ConstructorBottomInput!) {
@@ -136,5 +137,51 @@ describe('Constructor mutations', () => {
     const error = createConstructorAgain.data.addConstructorBottom.message;
     expect(error).toBeDefined();
     expect(error).toEqual(CONSTRUCTOR_BOTTOM_ALREADY_EXIST);
+  });
+  test('should return Error (not found) when updating not existing constructor-bottom', async () => {
+    const updateConstructor = await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!, $constructorElement: ConstructorBottomInput!) {
+          updateConstructorBottom(
+            id: $id
+            constructorElement: $constructorElement
+          ) {
+            ... on ConstructorBottom {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: {
+        id: wrongID,
+        constructorElement: addConstructor,
+      },
+    });
+    const result = updateConstructor.data.updateConstructorBottom.message;
+    expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
+  });
+  test('should return Error (not found) deleteConstructorBasic should return error BASIC_NOT_FOUND', async () => {
+    const deletedConstructor = await operations.mutate({
+      mutation: gql`
+        mutation($id: ID!) {
+          deleteConstructorBottom(id: $id) {
+            ... on ConstructorBottom {
+              _id
+            }
+            ... on Error {
+              statusCode
+              message
+            }
+          }
+        }
+      `,
+      variables: { id: wrongID },
+    });
+    const result = deletedConstructor.data.deleteConstructorBottom.message;
+    expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
 });

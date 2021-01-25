@@ -126,6 +126,6 @@
         "allowTemplateLiterals": true
       }
     ],
-    "no-confusing-arrow": 0,
+    "no-confusing-arrow": 0
   }
 }

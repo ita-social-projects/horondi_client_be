@@ -2,7 +2,7 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 let operations;
 
-const badConstructorBasicID = '6009dcd5f9855555907ebf5e';
+const wrongID = '6009dcd5f9855555907ebf5e';
 const newColor = {
   name: [
     { lang: 'ua', value: 'Світsadas' },
@@ -171,12 +171,7 @@ const createConstructorBasic = async constructorInput => {
   return constructorBasic.data.addConstructorBasic;
 };
 
-const deleteAll = async (
-  colorID,
-  materialID,
-  constructorBasicId,
-  construrtorIDafter
-) => {
+const deleteAll = async (colorID, materialID, constructorBasicId) => {
   const operations = await setupApp();
 
   const deleteConstructorBasic = await operations.mutate({
@@ -195,23 +190,6 @@ const deleteAll = async (
     `,
     variables: { id: constructorBasicId },
   });
-  const deleteConstructorUpdated = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteConstructorBasic(id: $id) {
-          ... on ConstructorBasic {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { id: construrtorIDafter },
-  });
-
   const deleteMaterial = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
@@ -252,7 +230,7 @@ const deleteAll = async (
 
 module.exports = {
   newColor,
-  badConstructorBasicID,
+  wrongID,
   newMaterial,
   createMaterial,
   newConstructorBasic,
