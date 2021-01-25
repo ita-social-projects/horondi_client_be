@@ -164,7 +164,7 @@ describe('Constructor mutations', () => {
     const result = updateConstructor.data.updateConstructorBottom.message;
     expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
-  test('should return Error (not found) deleteConstructorBasic should return error BASIC_NOT_FOUND', async () => {
+  test('should return Error (not found) when try to delete wrong constructor bottom', async () => {
     const deletedConstructor = await operations.mutate({
       mutation: gql`
         mutation($id: ID!) {
@@ -181,7 +181,7 @@ describe('Constructor mutations', () => {
       `,
       variables: { id: wrongID },
     });
-    const result = deletedConstructor.data.deleteConstructorBottom.message;
+    const result = deletedConstructor.data.deleteConstructorBottom.statusCode;
     expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
 });
