@@ -1,10 +1,10 @@
 const Material = require('./material.model');
-const { calculatePrice } = require('../currency/currency.utils');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
 const Currency = require('../currency/currency.model');
+const { calculatePrice } = require('../currency/currency.utils');
 
 class MaterialsService {
   constructor() {
