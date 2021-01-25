@@ -58,7 +58,7 @@ const constructorBottomMutation = {
   deleteConstructorBottom: async (parent, args) => {
     try {
       return await constructorService.deleteConstructorElement(
-        args,
+        args.id,
         ConstructorBottom,
         CONSTRUCTOR_BOTTOM_NOT_FOUND
       );

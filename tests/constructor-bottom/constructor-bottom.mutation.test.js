@@ -181,7 +181,7 @@ describe('Constructor mutations', () => {
       `,
       variables: { id: wrongID },
     });
-    const result = deletedConstructor.data.deleteConstructorBottom.statusCode;
+    const result = deletedConstructor.data.deleteConstructorBottom.message;
     expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
 });
