@@ -71,23 +71,7 @@ const getConstructorData = construrtorBasic => ({
   available: construrtorBasic.available,
   default: construrtorBasic.default,
 });
-const getConstructorDataBeforeUpt = construrtorBasic => ({
-  name: [
-    {
-      lang: construrtorBasic.name[0].lang,
-      value: 'Назва до оновлення',
-    },
-    {
-      lang: construrtorBasic.name[1].lang,
-      value: 'Before update name',
-    },
-  ],
-  material: construrtorBasic.material,
-  color: construrtorBasic.color,
-  image: construrtorBasic.image,
-  available: false,
-  default: false,
-});
+
 const getConstructorDataForUpt = construrtorBasic => ({
   name: [
     {
@@ -104,15 +88,6 @@ const getConstructorDataForUpt = construrtorBasic => ({
   image: '/new img',
   available: true,
   default: false,
-});
-const getConstructorDataForUptCompare = construrtorBasic => ({
-  _id: construrtorBasic._id,
-  available: construrtorBasic.available,
-  color: construrtorBasic.color._id,
-  default: construrtorBasic.default,
-  material: construrtorBasic.material._id,
-  image: construrtorBasic.image,
-  name: construrtorBasic.name,
 });
 
 const deleteAll = async (
@@ -135,8 +110,6 @@ module.exports = {
   newConstructorBasic,
   deleteAll,
   getConstructorData,
-  getConstructorDataBeforeUpt,
   newConstructorBasicUpdateInp,
   getConstructorDataForUpt,
-  getConstructorDataForUptCompare,
 };

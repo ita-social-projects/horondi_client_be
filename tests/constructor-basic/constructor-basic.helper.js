@@ -72,6 +72,47 @@ const createConstructorBasicWithData = async (constructorInput, operations) => {
   });
   return constructorBasic.data.addConstructorBasic;
 };
+
+const updateConstructorBasic = async (
+  constructorInput,
+  constructorId,
+  operations
+) => {
+  const constructorBasic = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElement: ConstructorBasicInput!) {
+        updateConstructorBasic(
+          id: $id
+          constructorElement: $constructorElement
+        ) {
+          ... on ConstructorBasic {
+            _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+            }
+            color {
+              _id
+            }
+            image
+            available
+            default
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { constructorElement: constructorInput, id: constructorId },
+  });
+  return constructorBasic.data.updateConstructorBasic;
+};
+
 const getAllConstructorBasics = async operations => {
   const res = await operations.query({
     query: gql`
@@ -145,4 +186,5 @@ module.exports = {
   createConstructorBasicWithData,
   getAllConstructorBasics,
   getConstructorBasicById,
+  updateConstructorBasic,
 };
