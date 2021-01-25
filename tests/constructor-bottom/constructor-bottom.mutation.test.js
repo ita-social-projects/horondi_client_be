@@ -2,7 +2,6 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
-  IMAGE_NOT_FOUND,
   CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
 } = require('../../error-messages/constructor-bottom.messages');
 

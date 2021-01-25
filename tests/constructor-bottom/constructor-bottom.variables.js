@@ -185,6 +185,35 @@ const getConstructorDataForUpt = (materialId, colorId) => ({
   default: true,
 });
 
+const createConstructorBottomQuery = async addConstructor => {
+  const operations = await setupApp();
+  const createConstructorBottom = await operations.mutate({
+    mutation: gql`
+      mutation($constructorElement: ConstructorBottomInput!) {
+        addConstructorBottom(constructorElement: $constructorElement) {
+          ... on ConstructorBottom {
+            _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+            }
+            image
+            color {
+              _id
+            }
+            available
+            default
+          }
+        }
+      }
+    `,
+    variables: { constructorElement: addConstructor },
+  });
+  return createConstructorBottom.data.addConstructorBottom._id;
+};
 module.exports = {
   color,
   wrongID,
@@ -195,4 +224,5 @@ module.exports = {
   getConstructorData,
   deleteAll,
   getConstructorDataForUpt,
+  createConstructorBottomQuery,
 };
