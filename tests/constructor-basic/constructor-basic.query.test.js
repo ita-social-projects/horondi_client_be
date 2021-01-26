@@ -1,15 +1,19 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
-const { createColor } = require('../materials/material.variables');
+const { createColor } = require('../color/color.helper');
+const { testCreateMaterial } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
+const {
+  createConstructorBasicWithData,
+  getAllConstructorBasics,
+  getConstructorBasicById,
+} = require('./constructor-basic.helper');
 const {
   newColor,
   badConstructorBasicID,
-  newMaterial,
-  createMaterial,
   deleteAll,
   newConstructorBasic,
   getConstructorData,
-  createConstructorBasic,
 } = require('./constructor-basic.variables');
 const {
   BASIC_NOT_FOUND,
@@ -18,6 +22,7 @@ const {
 let operations;
 let colorId;
 let materialInput;
+let receivedMaterial;
 let materialID;
 let constructorInput;
 let constructorBasic;
@@ -27,12 +32,16 @@ jest.mock('../../modules/currency/currency.utils.js');
 describe('constructor mutations', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    colorId = await createColor(newColor);
-    materialInput = newMaterial(colorId);
-    materialID = await createMaterial(materialInput);
+    colorId = await createColor(newColor, operations);
+    materialInput = getMaterial(colorId);
+    receivedMaterial = await testCreateMaterial(materialInput, operations);
+    materialID = receivedMaterial._id;
     constructorInput = newConstructorBasic(materialID, colorId);
 
-    constructorBasic = await createConstructorBasic(constructorInput);
+    constructorBasic = await createConstructorBasicWithData(
+      constructorInput,
+      operations
+    );
     constructorBasicId = constructorBasic._id;
 
     currentConstructorBasic = getConstructorData(constructorInput);
@@ -40,73 +49,18 @@ describe('constructor mutations', () => {
   });
 
   test('#1 Should return all ConstructorBasics', async done => {
-    const allConstructorBasics = await operations.query({
-      query: gql`
-        query($limit: Int, $skip: Int) {
-          getAllConstructorBasics(limit: $limit, skip: $skip) {
-            items {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-                name {
-                  lang
-                  value
-                }
-                purpose
-                available
-              }
-              color {
-                _id
-                colorHex
-              }
-              image
-            }
-          }
-        }
-      `,
-    });
-
-    const allProducts = allConstructorBasics.data.getAllConstructorBasics.items;
-    expect(allProducts).toBeDefined();
-    expect(allProducts.length).toBeGreaterThan(0);
+    const allConstructorBasics = await getAllConstructorBasics(operations);
+    const receivedAllConstructorBasics = allConstructorBasics;
+    expect(receivedAllConstructorBasics.items).toBeDefined();
+    expect(receivedAllConstructorBasics.items.length).toBeGreaterThan(0);
     done();
   });
 
   test('#2 Should return  ConstructorBasics by Id', async done => {
-    const constructorBasicsById = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getConstructorBasicById(id: $id) {
-            ... on ConstructorBasic {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-              }
-              image
-              color {
-                _id
-              }
-              available
-              default
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: constructorBasicId },
-    });
-
+    const constructorBasicsById = await getConstructorBasicById(
+      constructorBasicId,
+      operations
+    );
     const receivedById = constructorBasicsById.data.getConstructorBasicById;
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({
@@ -118,36 +72,10 @@ describe('constructor mutations', () => {
   });
 
   test('#3 Should return  Error', async done => {
-    const constructorBasicsById = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getConstructorBasicById(id: $id) {
-            ... on ConstructorBasic {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-              }
-              image
-              color {
-                _id
-              }
-              available
-              default
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: badConstructorBasicID },
-    });
-
+    const constructorBasicsById = await getConstructorBasicById(
+      badConstructorBasicID,
+      operations
+    );
     const receivedError = constructorBasicsById.data.getConstructorBasicById;
     expect(receivedError.statusCode).toBe(404);
     expect(receivedError.message).toBe(BASIC_NOT_FOUND);
