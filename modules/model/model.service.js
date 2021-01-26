@@ -132,6 +132,9 @@ class ModelsService {
 
   async deleteModel(id) {
     const model = await Model.findByIdAndDelete(id);
+    if (!model) {
+      throw new Error(MODEL_NOT_FOUND);
+    }
     model.constructorBasic.forEach(async basic => {
       await ConstructorBasic.findByIdAndDelete(basic);
     });
@@ -141,9 +144,6 @@ class ModelsService {
     await model.constructorFrontPocket.forEach(async pocket => {
       await ConstructorFrontPocket.findByIdAndDelete(pocket);
     });
-    if (!model) {
-      throw new Error(MODEL_NOT_FOUND);
-    }
 
     const images = Object.values(model.images).filter(
       item => typeof item === 'string' && item
