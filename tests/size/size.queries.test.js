@@ -32,8 +32,7 @@ describe('Sizes queries', () => {
     });
   });
 
-  // afterAll(async () => {
-  //   await deleteSize(sizeId1, operations);
-  //   await deleteSize(sizeId2, operations);
-  // });
+  afterAll(async () => {
+    await deleteSize(sizeId, operations);
+  });
 });
