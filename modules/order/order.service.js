@@ -27,9 +27,10 @@ class OrdersService {
       async (prev, item) => {
         const sum = await prev;
         const { quantity } = item;
+        const { additionalPrice } = await Size.findById(item.options.size);
+
         if (!item.fixedPrice?.length) {
           if (item.isFromConstructor) {
-            const { additionalPrice } = await Size.findById(item.options.size);
             const constructorBasics = await ConstructorBasic.findById(
               item.constructorBasics
             );
@@ -43,20 +44,18 @@ class OrdersService {
               {
                 currency: 'UAH',
                 value:
-                  (constructorBasics.basePrice[0].value +
-                    constructorFrontPocket.basePrice[0].value +
-                    constructorBottom.basePrice[0].value +
-                    additionalPrice[0].value) *
-                  quantity,
+                  constructorBasics.basePrice[0].value +
+                  constructorFrontPocket.basePrice[0].value +
+                  constructorBottom.basePrice[0].value +
+                  additionalPrice[0].value,
               },
               {
                 currency: 'USD',
                 value:
-                  (constructorBasics.basePrice[1].value +
-                    constructorFrontPocket.basePrice[1].value +
-                    constructorBottom.basePrice[1].value +
-                    additionalPrice[1].value) *
-                  quantity,
+                  constructorBasics.basePrice[1].value +
+                  constructorFrontPocket.basePrice[1].value +
+                  constructorBottom.basePrice[1].value +
+                  additionalPrice[1].value,
               },
             ];
           } else {
@@ -64,11 +63,11 @@ class OrdersService {
             item.fixedPrice = [
               {
                 currency: 'UAH',
-                value: basePrice[0].value,
+                value: basePrice[0].value + additionalPrice[0].value,
               },
               {
                 currency: 'USD',
-                value: basePrice[1].value,
+                value: basePrice[1].value + additionalPrice[1].value,
               },
             ];
           }
