@@ -134,8 +134,21 @@ const getMaterialById = async (id, operations) => {
 const testCreateMaterial = async (material, operations) => {
   const testCreatedMaterial = await operations.mutate({
     mutation: gql`
-      mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
+      mutation(
+        $colors: [ID!]
+        $available: Boolean
+        $description: [LanguageInput]
+        $name: [LanguageInput]
+      ) {
+        addMaterial(
+          material: {
+            purpose: INNER
+            colors: $colors
+            available: $available
+            description: $description
+            name: $name
+          }
+        ) {
           ... on Material {
             _id
             name {
@@ -163,7 +176,7 @@ const testCreateMaterial = async (material, operations) => {
         }
       }
     `,
-    variables: { material },
+    variables: { ...material },
   });
 
   return testCreatedMaterial.data.addMaterial;
@@ -172,8 +185,23 @@ const testCreateMaterial = async (material, operations) => {
 const updateMaterial = async (id, material, operations) => {
   const updatedMaterial = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $material: MaterialInput!) {
-        updateMaterial(id: $id, material: $material) {
+      mutation(
+        $id: ID!
+        $colors: [ID!]
+        $available: Boolean
+        $description: [LanguageInput]
+        $name: [LanguageInput]
+      ) {
+        updateMaterial(
+          id: $id
+          material: {
+            purpose: INNER
+            colors: $colors
+            available: $available
+            description: $description
+            name: $name
+          }
+        ) {
           ... on Material {
             name {
               lang
@@ -202,7 +230,7 @@ const updateMaterial = async (id, material, operations) => {
     `,
     variables: {
       id,
-      material,
+      ...material,
     },
   });
 
