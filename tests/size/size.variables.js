@@ -47,13 +47,13 @@ const SIZES_TO_TEST = {
     weightInKg: 0.6,
     available: true,
     additionalPrice: [
-      { currency: 'UAH', value: 140753 },
-      { currency: 'USD', value: 5000 },
+      { currency: 'UAH', value: 112603 },
+      { currency: 'USD', value: 4000 },
     ],
   },
 };
 
-const WRONG_ID = '600eb8c642952b055c148e34';
+const WRONG_ID = '600f20d51754387390b17fdA';
 
 const ERROR_ALREDY_EXISTS = {
   message: 'SIZE_ALREADY_EXIST',
