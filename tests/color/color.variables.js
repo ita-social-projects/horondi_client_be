@@ -16,7 +16,6 @@ const ERROR_ALREDY_EXISTS = {
 module.exports = {
   WRONG_ID,
   COLOR,
-  COLOR_2,
   ERROR_NOT_FOUND,
   ERROR_ALREDY_EXISTS,
 };
