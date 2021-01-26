@@ -135,7 +135,7 @@ const deleteConstructorBottom = async (constructorId, operations) => {
   });
   return deletedConstructor.data.deleteConstructorBottom._id;
 };
-const getConstructorBottom = async (newConstructorForQuery, operations) => {
+const getConstructorBottom = async (id, operations) => {
   const constructorBottomById = await operations.query({
     query: gql`
       query($id: ID!) {
@@ -163,39 +163,7 @@ const getConstructorBottom = async (newConstructorForQuery, operations) => {
         }
       }
     `,
-    variables: { id: newConstructorForQuery },
-  });
-  return constructorBottomById.data.getConstructorBottomById;
-};
-const constructorBottomByIdEr = async (wrongID, operations) => {
-  const constructorBottomById = await operations.query({
-    query: gql`
-      query($id: ID!) {
-        getConstructorBottomById(id: $id) {
-          ... on ConstructorBottom {
-            _id
-            name {
-              lang
-              value
-            }
-            material {
-              _id
-            }
-            image
-            color {
-              _id
-            }
-            available
-            default
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { id: wrongID },
+    variables: { id: id },
   });
   return constructorBottomById.data.getConstructorBottomById;
 };
@@ -268,7 +236,6 @@ module.exports = {
   updateConstructorB,
   deleteConstructorBottom,
   getConstructorBottom,
-  constructorBottomByIdEr,
   getAllConstructorBottom,
   createConstructorBottomQuery,
 };

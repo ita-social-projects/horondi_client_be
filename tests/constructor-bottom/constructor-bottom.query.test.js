@@ -13,7 +13,6 @@ const {
 const {
   getAllConstructorBottom,
   getConstructorBottom,
-  constructorBottomByIdEr,
 } = require('./constructor-bottom.helper');
 
 let operations;
@@ -48,7 +47,7 @@ describe('Constructor query', () => {
     expect(constructorBottomById).toBeDefined();
   });
   test('should return error when try to get constructor-bottom by wrong ID', async () => {
-    const constructorBottomById = await constructorBottomByIdEr(
+    const constructorBottomById = await getConstructorBottom(
       WRONG_ID,
       operations
     );
