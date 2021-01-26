@@ -221,13 +221,13 @@ const resolvers = {
     }),
     innerMaterial: parent => ({
       material: () =>
-        materialService.getMaterialById(parent.mainMaterial.material),
-      color: () => colorService.getColorById(parent.mainMaterial.color),
+        materialService.getMaterialById(parent.innerMaterial.material),
+      color: () => colorService.getColorById(parent.innerMaterial.color),
     }),
     bottomMaterial: parent => ({
       material: () =>
-        materialService.getMaterialById(parent.mainMaterial.material),
-      color: () => colorService.getColorById(parent.mainMaterial.color),
+        materialService.getMaterialById(parent.bottomMaterial.material),
+      color: () => colorService.getColorById(parent.bottomMaterial.color),
     }),
     pattern: parent => patternService.getPatternById(parent.pattern),
     closure: parent => closuresService.getClosureById(parent.closure),
