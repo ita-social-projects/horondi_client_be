@@ -34,7 +34,16 @@ const productSchema = new mongoose.Schema({
       ref: 'Color',
     },
   },
-
+  bottomMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Color',
+    },
+  },
   strapLengthInCm: Number,
   images: PrimaryImage,
   pattern: {
@@ -46,30 +55,10 @@ const productSchema = new mongoose.Schema({
     ref: 'Closure',
   },
   basePrice: [CurrencySet],
-  options: [
+  sizes: [
     {
-      _id: false,
-      size: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Size',
-      },
-      bottomMaterial: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Material',
-      },
-      bottomColor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Color',
-      },
-      additions: [
-        {
-          name: [Language],
-          description: [Language],
-          available: Boolean,
-          additionalPrice: [CurrencySet],
-        },
-      ],
-      availableCount: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Size',
     },
   ],
   available: Boolean,

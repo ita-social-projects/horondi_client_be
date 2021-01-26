@@ -53,29 +53,13 @@ class ProductsService {
       filter.category = { $in: category };
     }
     if (models && models.length) {
-      filter.model = {
-        $elemMatch: {
-          value: { $in: models },
-        },
-      };
+      filter.model = { $in: model };
     }
     if (colors && colors.length) {
-      filter.colors = {
-        $elemMatch: {
-          simpleName: {
-            $elemMatch: {
-              value: { $in: colors },
-            },
-          },
-        },
-      };
+      filter.colors = { $in: colors };
     }
     if (pattern && pattern.length) {
-      filter.pattern = {
-        $elemMatch: {
-          value: { $in: pattern },
-        },
-      };
+      filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
       const currencySign = currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
