@@ -33,6 +33,8 @@ let currentConstructorBottom;
 let newDataConstructorBottom;
 let result;
 
+jest.mock('../../modules/currency/currency.utils.js');
+
 describe('Constructor mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
