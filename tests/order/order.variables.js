@@ -91,35 +91,8 @@ const newProductInputData = (
   pattern: patternId,
   closure: closureId,
   basePrice: 200,
-  options: [
-    {
-      size: sizeId,
-      bottomMaterial: mainMaterialId,
-      description: [
-        { lang: 'ua', value: 'Тканина Кордура' },
-        { lang: 'en', value: 'Cordura fabric' },
-      ],
-      bottomColor: colorId,
-      availableCount: 777,
-      additions: [
-        {
-          available: true,
-          name: [
-            { lang: 'uk', value: 'Кишеня' },
-            { lang: 'en', value: 'Pocket' },
-          ],
-          description: [
-            { lang: 'uk', value: 'Бокова кишенька за бажанням' },
-            { lang: 'en', value: 'Side pocket by request' },
-          ],
-          additionalPrice: [
-            { currency: 'UAH', value: 145000 },
-            { currency: 'USD', value: 5229 },
-          ],
-        },
-      ],
-    },
-  ],
+  sizes: [sizeId],
+  availableCount: 20,
 });
 const newClosure = materialId => ({
   name: [
@@ -213,6 +186,7 @@ const newConstructorBasic = (materialId, colorId) => ({
   basePrice: 200,
   available: true,
 });
+
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   status: 'SENT',
   user: {

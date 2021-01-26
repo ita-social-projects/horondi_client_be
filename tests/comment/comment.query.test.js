@@ -9,17 +9,30 @@ const {
   validEmail,
   invalidEmail,
   productWrongId,
+  newCategory,
+  newConstructorBasic,
+  newModel,
+  newClosure,
+  newPattern,
+  newProduct,
+  color,
 } = require('./comment.variables');
 
-const {
-  createModel,
-  newCategory,
-  newModel,
-  newMaterial,
-  getNewProduct,
-  deleteAll,
-} = require('../product/product.variables');
+const { getNewProduct, deleteAll } = require('../product/product.variables');
 
+const {
+  deleteConstructorBasic,
+  createConstructorBasic,
+} = require('../constructor-basic/constructor-basic.helper');
+
+const { createModel } = require('../model/model.helper');
+const { createCategory } = require('../category/category.helper');
+const { testCreateMaterial } = require('../materials/material.helper');
+const { createProduct } = require('../product/product.helper');
+const { getMaterial } = require('../materials/material.variables');
+const { createColor } = require('../color/color.helper');
+const { createClosure, deleteClosure } = require('../closure/closure.helper');
+const newsModel = require('../../modules/news/news.model');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/product/product.utils.js');
@@ -31,36 +44,48 @@ let materialId;
 let product;
 let productId;
 let categoryId;
+let newMaterial;
+let closureId;
+let patternId;
+let constructorBasicId;
+let colorId;
 
 describe('Comment queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    const itemsId = await createModel(newMaterial, newCategory, newModel);
-    modelId = itemsId.modelId;
-    materialId = itemsId.materialId;
-    categoryId = itemsId.categoryId;
+    colorId = createColor(color, operations);
+    newMaterial = await getMaterial(colorId);
+    const materialdata = await testCreateMaterial(newMaterial, operations);
+    materialId = materialdata._id;
+    constructorBasicId = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId),
+      operations
+    );
+    patternId = await createPattern(newPattern, operations);
+    closureId = await createClosure(newClosure(materialId), operations);
+    //const itemsId = await createModel(newMaterial, newCategory, newModel);
+    categoryId = await createCategory(newCategory, operations);
+    //modelId = await createModel(newModel,operations);
+    modelId = await createModel(
+      newModel(categoryId, constructorBasicId),
+      operations
+    );
 
-    product = getNewProduct(categoryId, modelId, materialId);
+    //product = getNewProduct(categoryId, modelId, materialId);
+    //productId = await createProduct(product,operations);
 
-    const createProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!) {
-          addProduct(upload: [], product: $product) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product,
-      },
-    });
-
-    productId = createProduct.data.addProduct._id;
+    productId = await createProduct(
+      newProduct(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId
+      ),
+      operations
+    );
 
     const res = await operations
       .mutate({
