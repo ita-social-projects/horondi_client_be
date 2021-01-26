@@ -10,9 +10,6 @@ const {
   limit,
   wrongLimit,
   wrongSkip,
-  user,
-  languageTypeName,
-  imageTypeName,
   queryPatternToAdd,
   testImages,
 } = require('./pattern.variables');
@@ -80,21 +77,8 @@ describe('Pattern queries', () => {
         })
         .catch(e => e);
 
-      expect(res.data.getAllPatterns).toMatchSnapshot();
-      expect(res.data.getAllPatterns).toBeDefined();
-      expect(res.data.getAllPatterns.items).toContainEqual({
-        name: queryPatternToAdd.name.map(item => ({
-          ...languageTypeName,
-          ...item,
-        })),
-        description: queryPatternToAdd.description.map(item => ({
-          ...languageTypeName,
-          ...item,
-        })),
-        images: { ...imageTypeName },
-        material: queryPatternToAdd.material,
-        handmade: false,
-        available: true,
+      expect(res.data.getAllPatterns).toEqual({
+        items: [queryPatternToAdd],
       });
     });
     test('Should receive one pattern', async () => {
@@ -129,40 +113,7 @@ describe('Pattern queries', () => {
         })
         .catch(e => e);
 
-      expect(res.data.getPatternById).toMatchSnapshot();
-      expect(res.data.getPatternById).toBeDefined();
-      expect(res.data.getPatternById).toHaveProperty('images', testImages);
-      expect(res.data.getPatternById).toHaveProperty(
-        'name',
-        queryPatternToAdd.name.map(item => ({
-          ...languageTypeName,
-          ...item,
-        }))
-      );
-      expect(res.data.getPatternById).toHaveProperty('images', {
-        ...imageTypeName,
-        ...queryPatternToAdd.images,
-      });
-      expect(res.data.getPatternById).toHaveProperty(
-        'description',
-        ...queryPatternToAdd.description.map(item => ({
-          ...languageTypeName,
-          ...item,
-        }))
-      );
-      expect(res.data.getPatternById.description).toBeInstanceOf(Array);
-      expect(res.data.getPatternById).toHaveProperty(
-        'material',
-        queryPatternToAdd.material
-      );
-      expect(res.data.getPatternById).toHaveProperty(
-        'handmade',
-        queryPatternToAdd.handmade
-      );
-      expect(res.data.getPatternById).toHaveProperty(
-        'available',
-        queryPatternToAdd.available
-      );
+      expect(res.data.getPatternById).toEqual(queryPatternToAdd);
     });
     test('request not existing pattern should throw error', async () => {
       const res = await operations
@@ -241,7 +192,6 @@ describe('Pattern queries', () => {
         })
         .catch(e => e);
 
-      expect(res.data.getAllPatterns).toMatchSnapshot();
       expect(res.data.getAllPatterns.items).toHaveLength(1);
       expect(res.data.getAllPatterns.count).toEqual(1);
     });
