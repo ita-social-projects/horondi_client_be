@@ -30,48 +30,54 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
-
-    const foundModel = await Model.findById(id)
-      .populate({
+    const foundModel = await Model.findById(id).populate([
+      {
         path: 'constructorBasic',
         model: 'ConstructorBasic',
-        populate: {
-          path: 'material',
-          model: 'Material',
-          populate: {
+        populate: [
+          {
+            path: 'material',
+            model: 'Material',
+          },
+          {
             path: 'color',
             model: 'Color',
           },
-        },
-      })
-      .populate({
-        path: 'constructorPattern',
-        model: 'Pattern',
-      })
-      .populate({
+        ],
+      },
+      {
         path: 'constructorFrontPocket',
         model: 'ConstructorFrontPocket',
-        populate: {
-          path: 'material',
-          model: 'Material',
-          populate: {
+        populate: [
+          {
+            path: 'material',
+            model: 'Material',
+          },
+          {
             path: 'color',
             model: 'Color',
           },
-        },
-      })
-      .populate({
+        ],
+      },
+      {
         path: 'constructorBottom',
         model: 'ConstructorBottom',
-        populate: {
-          path: 'material',
-          model: 'Material',
-          populate: {
+        populate: [
+          {
+            path: 'material',
+            model: 'Material',
+          },
+          {
             path: 'color',
             model: 'Color',
           },
-        },
-      });
+        ],
+      },
+      {
+        path: 'constructorPattern',
+        model: 'Pattern',
+      },
+    ]);
 
     if (foundModel) {
       return foundModel;
