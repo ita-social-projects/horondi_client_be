@@ -1,14 +1,13 @@
 const { createMaterial } = require('../materials/material.helper');
 const { createColor } = require('../color/color.helper');
 const { setupApp } = require('../helper-functions');
+const { createConstructorBottomQuery } = require('./constructor-bottom.helper');
+const { getMaterial } = require('../materials/material.variables');
+const { COLOR, WRONG_ID } = require('../color/color.variables');
 
 const {
-  color,
-  newMaterial,
   newConstructorBottom,
   deleteAll,
-  wrongID,
-  createConstructorBottomQuery,
 } = require('./constructor-bottom.variables');
 
 const {
@@ -27,8 +26,8 @@ let newConstructorForQuery;
 describe('Constructor query', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    colorId = await createColor(color, operations);
-    materialInput = newMaterial(colorId);
+    colorId = await createColor(COLOR, operations);
+    materialInput = getMaterial(colorId);
     materialId = await createMaterial(materialInput, operations);
     addConstructor = newConstructorBottom(colorId, materialId);
     newConstructorForQuery = await createConstructorBottomQuery(addConstructor);
@@ -50,7 +49,7 @@ describe('Constructor query', () => {
   });
   test('should return error when try to get constructor-bottom by wrong ID', async () => {
     const constructorBottomById = await constructorBottomByIdEr(
-      wrongID,
+      WRONG_ID,
       operations
     );
     expect(constructorBottomById.statusCode).toBe(404);

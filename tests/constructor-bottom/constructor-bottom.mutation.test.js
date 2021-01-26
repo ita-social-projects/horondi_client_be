@@ -1,6 +1,8 @@
 const { gql } = require('@apollo/client');
 const { createMaterial } = require('../materials/material.helper');
 const { createColor } = require('../color/color.helper');
+const { getMaterial } = require('../materials/material.variables');
+const { COLOR, WRONG_ID } = require('../color/color.variables');
 const { setupApp } = require('../helper-functions');
 const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
@@ -16,13 +18,10 @@ const {
 } = require('./constructor-bottom.helper');
 
 const {
-  color,
-  newMaterial,
   newConstructorBottom,
   getConstructorData,
   deleteAll,
   getConstructorDataForUpt,
-  wrongID,
 } = require('./constructor-bottom.variables');
 
 let operations;
@@ -38,8 +37,8 @@ let result;
 describe('Constructor mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    colorId = await createColor(color, operations);
-    materialInput = newMaterial(colorId);
+    colorId = await createColor(COLOR, operations);
+    materialInput = getMaterial(colorId);
     materialId = await createMaterial(materialInput, operations);
     addConstructor = newConstructorBottom(colorId, materialId);
     currentConstructorBottom = getConstructorData(addConstructor);
@@ -81,7 +80,7 @@ describe('Constructor mutations', () => {
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async () => {
     const updateConstructor = await updateConstructorBottomEr(
-      wrongID,
+      WRONG_ID,
       operations,
       addConstructor
     );
@@ -89,7 +88,7 @@ describe('Constructor mutations', () => {
   });
   test('should return Error (not found) when try to delete wrong constructor-bottom', async () => {
     const deletedConstructor = await updateConstructorB(
-      wrongID,
+      WRONG_ID,
       operations,
       addConstructor
     );

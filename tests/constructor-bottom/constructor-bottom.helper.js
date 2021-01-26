@@ -1,4 +1,5 @@
 const { gql } = require('@apollo/client');
+const { setupApp } = require('../helper-functions');
 
 const createConstructorBottom = async (addConstructor, operations) => {
   const constructorBottom = await operations.mutate({
@@ -260,6 +261,36 @@ const updateConstructorBottomEr = async (
   });
   return updateConstructor.data.updateConstructorBottom.message;
 };
+
+const createConstructorBottomQuery = async addConstructor => {
+  const operations = await setupApp();
+  const createConstructorBottom = await operations.mutate({
+    mutation: gql`
+      mutation($constructorElement: ConstructorBottomInput!) {
+        addConstructorBottom(constructorElement: $constructorElement) {
+          ... on ConstructorBottom {
+            _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+            }
+            image
+            color {
+              _id
+            }
+            available
+            default
+          }
+        }
+      }
+    `,
+    variables: { constructorElement: addConstructor },
+  });
+  return createConstructorBottom.data.addConstructorBottom._id;
+};
 module.exports = {
   updateConstructorBottom,
   createConstructorBottom,
@@ -270,4 +301,5 @@ module.exports = {
   constructorBottomByIdEr,
   getAllConstructorBottom,
   updateConstructorBottomEr,
+  createConstructorBottomQuery,
 };
