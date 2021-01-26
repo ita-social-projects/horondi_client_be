@@ -1,7 +1,7 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 
-const { createMaterial } = require('../materials/material.helper');
+const { testCreateMaterial } = require('../materials/material.helper');
 const { createColor } = require('../color/color.helper');
 const {
   createConstructorBasicWithData,
@@ -13,11 +13,10 @@ const {
   BASIC_ALREADY_EXIST,
   BASIC_NOT_FOUND,
 } = require('../../error-messages/constructor-basic-messages');
-
+const { getMaterial } = require('../materials/material.variables');
 const {
   newColor,
   badConstructorBasicID,
-  newMaterial,
   deleteAll,
   newConstructorBasic,
   getConstructorData,
@@ -27,6 +26,7 @@ const {
 let operations;
 let colorId;
 let materialInput;
+let receivedMaterial;
 let materialID;
 let constructorInput;
 let constructorBasicID;
@@ -40,8 +40,9 @@ describe('constructor mutations', () => {
   beforeAll(async done => {
     operations = await setupApp();
     colorId = await createColor(newColor, operations);
-    materialInput = newMaterial(colorId);
-    materialID = await createMaterial(materialInput, operations);
+    materialInput = getMaterial(colorId);
+    receivedMaterial = await testCreateMaterial(materialInput, operations);
+    materialID = receivedMaterial._id;
     constructorInput = newConstructorBasic(materialID, colorId);
 
     constructorUpdateInput = getConstructorDataForUpt(constructorInput);
