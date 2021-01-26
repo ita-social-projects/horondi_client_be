@@ -42,7 +42,7 @@ const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
-c;
+jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 
 let colorId;
