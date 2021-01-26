@@ -2,7 +2,7 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 const {
   WRONG_ID,
-  COLOR_2,
+  COLOR,
   ERROR_NOT_FOUND,
   ERROR_ALREDY_EXISTS,
 } = require('./color.variables');
@@ -22,16 +22,16 @@ describe('Color mutations', () => {
   });
 
   test('Should add color', async () => {
-    const result = await addColor(COLOR_2, operations);
+    const result = await addColor(COLOR, operations);
     colorId = result._id;
     expect(result).toEqual({
       _id: colorId,
-      ...COLOR_2,
+      ...COLOR,
     });
   });
 
   test('Should recive error message COLOR_ALREADY_EXIST when color already in the db while creating', async () => {
-    const result = await errorAdd(COLOR_2, operations);
+    const result = await errorAdd(COLOR, operations);
     expect(result).toEqual(ERROR_ALREDY_EXISTS);
   });
 
@@ -39,7 +39,7 @@ describe('Color mutations', () => {
     const result = await deleteColorMutation(colorId, operations);
     expect(result).toEqual({
       _id: colorId,
-      ...COLOR_2,
+      ...COLOR,
     });
   });
 

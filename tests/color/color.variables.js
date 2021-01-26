@@ -6,12 +6,6 @@ const COLOR = {
   simpleName: [{ value: '222ddd', lang: 'UA' }],
 };
 
-const COLOR_2 = {
-  name: [{ value: '000fff', lang: 'UA' }],
-  colorHex: '#13a3b7',
-  simpleName: [{ value: '000fff', lang: 'UA' }],
-};
-
 const ERROR_NOT_FOUND = { message: 'COLOR_NOT_FOUND', statusCode: 404 };
 
 const ERROR_ALREDY_EXISTS = {
