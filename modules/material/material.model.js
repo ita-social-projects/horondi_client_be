@@ -6,7 +6,9 @@ const materialSchema = new mongoose.Schema({
   name: [Language],
   description: [Language],
   purpose: {
+    type: String,
     enum: ['MAIN', 'INNER', 'BOTTOM'],
+    required: true,
   },
   colors: [
     {
