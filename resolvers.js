@@ -106,6 +106,7 @@ const materialService = require('./modules/material/material.service');
 const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
+const colorService = require('./modules/color/color.service');
 
 const {
   ukrPoshtaQuery,
@@ -223,8 +224,14 @@ const resolvers = {
         materialService.getMaterialById(parent.mainMaterial.material),
       color: () => colorService.getColorById(parent.mainMaterial.color),
     }),
+    bottomMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.mainMaterial.material),
+      color: () => colorService.getColorById(parent.mainMaterial.color),
+    }),
     pattern: parent => patternService.getPatternById(parent.pattern),
     closure: parent => closuresService.getClosureById(parent.closure),
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
 
   Order: {
@@ -273,13 +280,6 @@ const resolvers = {
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
-  },
-
-  ProductOptions: {
-    size: parent => sizeService.getSizeById(parent.size),
-    bottomMaterial: parent =>
-      materialsService.getMaterialById(parent.bottomMaterial),
-    bottomColor: parent => colorService.getColorById(parent.bottomColor),
   },
 
   UserRate: {

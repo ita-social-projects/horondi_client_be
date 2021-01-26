@@ -1,12 +1,4 @@
-const productImagesType = `
-  type ProductImages { 
-    primary: ImageSet
-    additional: [ImageSet]
-  }
-`;
-
 const productType = `
-${productImagesType}
 type Product {
 _id: ID!
 category: Category!
@@ -15,12 +7,13 @@ name: [Language]!
 description: [Language]!
 mainMaterial: ProductMaterialType!
 innerMaterial: ProductMaterialType!
+bottomMaterial: ProductMaterialType
 strapLengthInCm: Int!
 images: ProductImages
 closure: Closure
 pattern: Pattern
 basePrice: [CurrencySet]!
-options: [ProductOptions]!
+sizes: [Size]!
 available: Boolean!
 isHotItem: Boolean
 purchasedCount: Int
@@ -33,6 +26,10 @@ comments: PaginatedComments!
 type ProductMaterialType{
   material: Material
   color: Color
+}
+type ProductImages { 
+  primary: ImageSet
+  additional: [ImageSet]
 }`;
 
 const productInput = `
@@ -43,15 +40,16 @@ name: [LanguageInput]!
 description: [LanguageInput]!
 mainMaterial: ProductMaterialsInput!
 innerMaterial: ProductMaterialsInput!
+bottomMaterial: ProductMaterialsInput
 strapLengthInCm: Int!
 pattern: ID!
 closure: ID!
+sizes:[ID]!
 images: [Upload]
 availableCount: Int
 basePrice: Int!
 available: Boolean
 isHotItem: Boolean
-options:[ProductOptionsInput]
 }
 input ProductMaterialsInput{
   material: ID
