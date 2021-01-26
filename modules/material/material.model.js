@@ -5,7 +5,9 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const materialSchema = new mongoose.Schema({
   name: [Language],
   description: [Language],
-  purpose: String,
+  purpose: {
+    enum: ['MAIN', 'INNER', 'BOTTOM'],
+  },
   colors: [
     {
       type: mongoose.Schema.Types.ObjectId,
