@@ -239,7 +239,6 @@ const resolvers = {
       return parent.items.map(item => {
         if (item.isFromConstructor) {
           return {
-            ...item,
             constructorBottom: constructorServices.getConstructorElementById(
               item.constructorBottom,
               constructorBottomModel
@@ -269,7 +268,10 @@ const resolvers = {
             fixedPrice: item.fixedPrice,
             isFromConstructor: item.isFromConstructor,
             quantity: item.quantity,
-            options: item.options,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+              sidePocket: item.options.sidePocket,
+            },
             product: productsService.getProductById(item.product),
           };
         }
