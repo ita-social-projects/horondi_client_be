@@ -4,6 +4,13 @@ const {
   CONSTRUCTOR_BOTTOM_NOT_FOUND,
   CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
 } = require('../../error-messages/constructor-bottom.messages');
+const {
+  createConstructorBottom,
+  updateConstructorBottom,
+  createConstructorBottomAgain,
+  updateConstructorB,
+  deleteConstructorBottom,
+} = require('./constructor-bottom.helper');
 
 const {
   color,
@@ -41,34 +48,12 @@ describe('Constructor mutations', () => {
     await deleteAll(colorId, materialId, constructorId);
   });
   test('should create constructor-bottom', async () => {
-    // create constructor bottom 1) check if is define
-    const createConstructorBottom = await operations.mutate({
-      mutation: gql`
-        mutation($constructorElement: ConstructorBottomInput!) {
-          addConstructorBottom(constructorElement: $constructorElement) {
-            ... on ConstructorBottom {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-              }
-              image
-              color {
-                _id
-              }
-              available
-              default
-            }
-          }
-        }
-      `,
-      variables: { constructorElement: addConstructor },
-    });
-    constructorId = createConstructorBottom.data.addConstructorBottom._id;
-    result = createConstructorBottom.data.addConstructorBottom;
+    const createConstructorB = await createConstructorBottom(
+      addConstructor,
+      operations
+    );
+    constructorId = createConstructorB._id;
+    result = createConstructorB;
     expect(result).toBeDefined();
     expect(result).toEqual({
       ...currentConstructorBottom,
@@ -76,66 +61,22 @@ describe('Constructor mutations', () => {
     });
   });
   test('should update existing constructor-bottom', async () => {
-    const updateConstructor = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!, $constructorElement: ConstructorBottomInput!) {
-          updateConstructorBottom(
-            id: $id
-            constructorElement: $constructorElement
-          ) {
-            ... on ConstructorBottom {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-              }
-              color {
-                _id
-              }
-              image
-              available
-              default
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        constructorElement: newDataConstructorBottom,
-        id: constructorId,
-      },
-    });
-    const updatedResult = updateConstructor.data.updateConstructorBottom;
-    expect(updatedResult).toBeDefined();
-    expect(updatedResult.image).not.toEqual(result.image);
-    expect(updatedResult.name).not.toEqual(result.name);
+    await updateConstructorBottom(
+      constructorId,
+      operations,
+      newDataConstructorBottom
+    );
+    expect(updateConstructorBottom).toBeDefined();
+    expect(updateConstructorBottom.image).not.toEqual(result.image);
+    expect(updateConstructorBottom.name).not.toEqual(result.name);
   });
   test('should return Error (already exist) when creating same constructor-bottom again', async () => {
-    const createConstructorAgain = await operations.mutate({
-      mutation: gql`
-        mutation($constructorElement: ConstructorBottomInput!) {
-          addConstructorBottom(constructorElement: $constructorElement) {
-            ... on ConstructorBottom {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { constructorElement: newDataConstructorBottom },
-    });
-    const error = createConstructorAgain.data.addConstructorBottom.message;
-    expect(error).toBeDefined();
-    expect(error).toEqual(CONSTRUCTOR_BOTTOM_ALREADY_EXIST);
+    const createConstructorAgain = await createConstructorBottomAgain(
+      newDataConstructorBottom,
+      operations
+    );
+    expect(createConstructorAgain).toBeDefined();
+    expect(createConstructorAgain).toEqual(CONSTRUCTOR_BOTTOM_ALREADY_EXIST);
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async () => {
     const updateConstructor = await operations.mutate({
@@ -164,39 +105,18 @@ describe('Constructor mutations', () => {
     expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
   test('should return Error (not found) when try to delete wrong constructor-bottom', async () => {
-    const deletedConstructor = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteConstructorBottom(id: $id) {
-            ... on ConstructorBottom {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: wrongID },
-    });
-    const result = deletedConstructor.data.deleteConstructorBottom.message;
-    expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
+    const deletedConstructor = await updateConstructorB(
+      wrongID,
+      operations,
+      addConstructor
+    );
+    expect(deletedConstructor).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
   test('should delete constructor-bottom and return id', async () => {
-    const deletedConstructor = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteConstructorBottom(id: $id) {
-            ... on ConstructorBottom {
-              _id
-            }
-          }
-        }
-      `,
-      variables: { id: constructorId },
-    });
-    const result = deletedConstructor.data.deleteConstructorBottom._id;
-    expect(result).toBe(constructorId);
+    const deletedConstructor = await deleteConstructorBottom(
+      constructorId,
+      operations
+    );
+    expect(deletedConstructor).toBe(constructorId);
   });
 });
