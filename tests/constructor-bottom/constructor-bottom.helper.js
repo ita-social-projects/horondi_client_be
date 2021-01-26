@@ -230,6 +230,36 @@ const getAllConstructorBottom = async operations => {
   });
   return allConstructorBottom.data.getAllConstructorBottom.items;
 };
+
+const updateConstructorBottomEr = async (
+  wrongID,
+  operations,
+  addConstructor
+) => {
+  const updateConstructor = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElement: ConstructorBottomInput!) {
+        updateConstructorBottom(
+          id: $id
+          constructorElement: $constructorElement
+        ) {
+          ... on ConstructorBottom {
+            _id
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id: wrongID,
+      constructorElement: addConstructor,
+    },
+  });
+  return updateConstructor.data.updateConstructorBottom.message;
+};
 module.exports = {
   updateConstructorBottom,
   createConstructorBottom,
@@ -239,4 +269,5 @@ module.exports = {
   getConstructorBottom,
   constructorBottomByIdEr,
   getAllConstructorBottom,
+  updateConstructorBottomEr,
 };

@@ -30,59 +30,6 @@ const newMaterial = colorID => ({
   available: true,
 });
 
-const createColor = async newColor => {
-  operations = await setupApp();
-  const addColor = await operations.mutate({
-    mutation: gql`
-      mutation($data: ColorInput!) {
-        addColor(data: $data) {
-          ... on Color {
-            _id
-            name {
-              lang
-              value
-            }
-            colorHex
-            simpleName {
-              lang
-              value
-            }
-          }
-        }
-      }
-    `,
-    variables: { data: newColor },
-  });
-  return addColor.data.addColor._id;
-};
-const createMaterial = async newMaterial => {
-  operations = await setupApp();
-  const addMaterial = await operations.mutate({
-    mutation: gql`
-      mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
-          ... on Material {
-            _id
-            name {
-              lang
-              value
-            }
-            colors {
-              _id
-            }
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { material: newMaterial },
-  });
-  return addMaterial.data.addMaterial._id;
-};
-
 const newConstructorBottom = (colorId, materialId) => ({
   name: [
     { lang: 'ua', value: 'Деяке імя' },
@@ -217,8 +164,6 @@ module.exports = {
   color,
   wrongID,
   newMaterial,
-  createMaterial,
-  createColor,
   newConstructorBottom,
   getConstructorData,
   deleteAll,

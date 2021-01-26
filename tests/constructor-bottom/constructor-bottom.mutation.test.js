@@ -12,6 +12,7 @@ const {
   createConstructorBottomAgain,
   updateConstructorB,
   deleteConstructorBottom,
+  updateConstructorBottomEr,
 } = require('./constructor-bottom.helper');
 
 const {
@@ -79,30 +80,12 @@ describe('Constructor mutations', () => {
     expect(createConstructorAgain).toEqual(CONSTRUCTOR_BOTTOM_ALREADY_EXIST);
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async () => {
-    const updateConstructor = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!, $constructorElement: ConstructorBottomInput!) {
-          updateConstructorBottom(
-            id: $id
-            constructorElement: $constructorElement
-          ) {
-            ... on ConstructorBottom {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        id: wrongID,
-        constructorElement: addConstructor,
-      },
-    });
-    const result = updateConstructor.data.updateConstructorBottom.message;
-    expect(result).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
+    const updateConstructor = await updateConstructorBottomEr(
+      wrongID,
+      operations,
+      addConstructor
+    );
+    expect(updateConstructor).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
   });
   test('should return Error (not found) when try to delete wrong constructor-bottom', async () => {
     const deletedConstructor = await updateConstructorB(
