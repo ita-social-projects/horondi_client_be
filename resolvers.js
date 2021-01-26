@@ -106,6 +106,7 @@ const materialService = require('./modules/material/material.service');
 const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
+const colorService = require('./modules/color/color.service');
 
 const {
   ukrPoshtaQuery,
@@ -220,11 +221,17 @@ const resolvers = {
     }),
     innerMaterial: parent => ({
       material: () =>
-        materialService.getMaterialById(parent.mainMaterial.material),
-      color: () => colorService.getColorById(parent.mainMaterial.color),
+        materialService.getMaterialById(parent.innerMaterial.material),
+      color: () => colorService.getColorById(parent.innerMaterial.color),
+    }),
+    bottomMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.bottomMaterial.material),
+      color: () => colorService.getColorById(parent.bottomMaterial.color),
     }),
     pattern: parent => patternService.getPatternById(parent.pattern),
     closure: parent => closuresService.getClosureById(parent.closure),
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
 
   Order: {
@@ -232,7 +239,6 @@ const resolvers = {
       return parent.items.map(item => {
         if (item.isFromConstructor) {
           return {
-            ...item,
             constructorBottom: constructorServices.getConstructorElementById(
               item.constructorBottom,
               constructorBottomModel
@@ -262,7 +268,10 @@ const resolvers = {
             fixedPrice: item.fixedPrice,
             isFromConstructor: item.isFromConstructor,
             quantity: item.quantity,
-            options: item.options,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+              sidePocket: item.options.sidePocket,
+            },
             product: productsService.getProductById(item.product),
           };
         }
@@ -273,13 +282,6 @@ const resolvers = {
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
-  },
-
-  ProductOptions: {
-    size: parent => sizeService.getSizeById(parent.size),
-    bottomMaterial: parent =>
-      materialsService.getMaterialById(parent.bottomMaterial),
-    bottomColor: parent => colorService.getColorById(parent.bottomColor),
   },
 
   UserRate: {
