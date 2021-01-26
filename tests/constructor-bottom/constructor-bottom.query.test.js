@@ -1,5 +1,9 @@
-const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
+const {
+  getConstructorBottom,
+  constructorBottomByIdEr,
+  getAllConstructorBottom,
+} = require('./constructor-bottom.helper');
 
 const {
   wrongID,
@@ -31,71 +35,23 @@ describe('Constructor query', () => {
   afterAll(async () => {
     await deleteAll(colorId, materialId, newConstructorForQuery);
   });
+  test('#1 Should return all ConstructorBasics', async () => {
+    const allConstructorBottom = await getAllConstructorBottom(operations);
+    expect(allConstructorBottom).toBeDefined();
+    expect(allConstructorBottom.length).toBeGreaterThan(0);
+  });
   test('should return constructor-bottom by Id', async () => {
-    const constructorBottomById = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getConstructorBottomById(id: $id) {
-            ... on ConstructorBottom {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-              }
-              image
-              color {
-                _id
-              }
-              available
-              default
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: newConstructorForQuery },
-    });
-
-    const receivedById = constructorBottomById.data.getConstructorBottomById;
-    expect(receivedById).toBeDefined();
+    const constructorBottomById = await getConstructorBottom(
+      newConstructorForQuery,
+      operations
+    );
+    expect(constructorBottomById).toBeDefined();
   });
   test('should return error when try to get constructor-bottom by wrong ID', async () => {
-    const constructorBottomById = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getConstructorBottomById(id: $id) {
-            ... on ConstructorBottom {
-              _id
-              name {
-                lang
-                value
-              }
-              material {
-                _id
-              }
-              image
-              color {
-                _id
-              }
-              available
-              default
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: wrongID },
-    });
-    const receivedError = constructorBottomById.data.getConstructorBottomById;
-    expect(receivedError.statusCode).toBe(404);
+    const constructorBottomById = await constructorBottomByIdEr(
+      wrongID,
+      operations
+    );
+    expect(constructorBottomById.statusCode).toBe(404);
   });
 });

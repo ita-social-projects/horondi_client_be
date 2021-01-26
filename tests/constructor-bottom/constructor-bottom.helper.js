@@ -1,5 +1,4 @@
 const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
 
 const createConstructorBottom = async (addConstructor, operations) => {
   const constructorBottom = await operations.mutate({
@@ -135,10 +134,109 @@ const deleteConstructorBottom = async (constructorId, operations) => {
   });
   return deletedConstructor.data.deleteConstructorBottom._id;
 };
+const getConstructorBottom = async (newConstructorForQuery, operations) => {
+  const constructorBottomById = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getConstructorBottomById(id: $id) {
+          ... on ConstructorBottom {
+            _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+            }
+            image
+            color {
+              _id
+            }
+            available
+            default
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: newConstructorForQuery },
+  });
+  return constructorBottomById.data.getConstructorBottomById;
+};
+const constructorBottomByIdEr = async (wrongID, operations) => {
+  const constructorBottomById = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getConstructorBottomById(id: $id) {
+          ... on ConstructorBottom {
+            _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+            }
+            image
+            color {
+              _id
+            }
+            available
+            default
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id: wrongID },
+  });
+  return constructorBottomById.data.getConstructorBottomById;
+};
+const getAllConstructorBottom = async operations => {
+  const allConstructorBottom = await operations.query({
+    query: gql`
+      query($limit: Int, $skip: Int) {
+        getAllConstructorBottom(limit: $limit, skip: $skip) {
+          items {
+            _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+              name {
+                lang
+                value
+              }
+              purpose
+              available
+            }
+            color {
+              _id
+              colorHex
+            }
+            image
+          }
+        }
+      }
+    `,
+  });
+  return allConstructorBottom.data.getAllConstructorBottom.items;
+};
 module.exports = {
   updateConstructorBottom,
   createConstructorBottom,
   createConstructorBottomAgain,
   updateConstructorB,
   deleteConstructorBottom,
+  getConstructorBottom,
+  constructorBottomByIdEr,
+  getAllConstructorBottom,
 };
