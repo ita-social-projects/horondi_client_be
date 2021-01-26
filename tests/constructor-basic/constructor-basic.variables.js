@@ -48,6 +48,7 @@ const newMaterial = colorID => ({
     { lang: 'ua', value: 'описання' },
     { lang: 'en', value: 'some description' },
   ],
+  colors: colorID,
 });
 
 const getConstructorData = construrtorBasic => ({
