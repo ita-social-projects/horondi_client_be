@@ -3,7 +3,6 @@ const { setupApp } = require('../helper-functions');
 const { deleteMaterial } = require('../materials/material.helper');
 const { deleteColor } = require('../color/color.helper');
 const { deleteConstructorBasic } = require('./constructor-basic.helper');
-let operations;
 
 const badConstructorBasicID = '6009dcd5f9855555907ebf5e';
 const newColor = {
@@ -27,31 +26,6 @@ const newConstructorBasic = (materialID, colorID) => ({
   image: '/imageURL',
   available: true,
   default: false,
-});
-const newConstructorBasicUpdateInp = (materialID, colorID) => ({
-  name: [
-    { lang: 'ua', value: 'варіант 5' },
-    { lang: 'en', value: 'variant 5' },
-  ],
-  material: materialID,
-  color: colorID,
-  image: '/imageURLkk',
-  available: true,
-  default: false,
-});
-const newMaterial = colorID => ({
-  name: [
-    { lang: 'ua', value: 'тканина кордура' },
-    { lang: 'en', value: 'Cordura fabric' },
-  ],
-  description: [
-    { lang: 'ua', value: 'описання' },
-    { lang: 'en', value: 'some description' },
-  ],
-  purpose: 'some purpose',
-  colors: colorID,
-  available: true,
-  additionalPrice: 0,
 });
 
 const getConstructorData = construrtorBasic => ({
@@ -106,10 +80,8 @@ const deleteAll = async (
 module.exports = {
   newColor,
   badConstructorBasicID,
-  newMaterial,
   newConstructorBasic,
   deleteAll,
   getConstructorData,
-  newConstructorBasicUpdateInp,
   getConstructorDataForUpt,
 };
