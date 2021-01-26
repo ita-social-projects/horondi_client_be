@@ -55,14 +55,14 @@ const modelsMutation = {
   },
 
   deleteModel: async (parent, args) => {
-    const deletedModel = await modelsService.deleteModel(args.id);
-    if (deletedModel) {
-      return deletedModel;
+    try {
+      return await modelsService.deleteModel(args.id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: MODEL_NOT_FOUND,
-    };
   },
 
   addModelConstructorBasic: async (parent, args) => {
