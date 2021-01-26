@@ -1,5 +1,8 @@
 const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
+const { deleteMaterial } = require('../materials/material.helper');
+const { deleteColor } = require('../color/color.helper');
+const { deleteConstructorBasic } = require('./constructor-basic.helper');
 let operations;
 
 const badConstructorBasicID = '6009dcd5f9855555907ebf5e';
@@ -22,7 +25,6 @@ const newConstructorBasic = (materialID, colorID) => ({
   material: materialID,
   color: colorID,
   image: '/imageURL',
-  basePrice: 0,
   available: true,
   default: false,
 });
@@ -34,7 +36,6 @@ const newConstructorBasicUpdateInp = (materialID, colorID) => ({
   material: materialID,
   color: colorID,
   image: '/imageURLkk',
-  basePrice: 0,
   available: true,
   default: false,
 });
@@ -70,23 +71,7 @@ const getConstructorData = construrtorBasic => ({
   available: construrtorBasic.available,
   default: construrtorBasic.default,
 });
-const getConstructorDataBeforeUpt = construrtorBasic => ({
-  name: [
-    {
-      lang: construrtorBasic.name[0].lang,
-      value: 'Назва до оновлення',
-    },
-    {
-      lang: construrtorBasic.name[1].lang,
-      value: 'Before update name',
-    },
-  ],
-  material: construrtorBasic.material,
-  color: construrtorBasic.color,
-  image: construrtorBasic.image,
-  available: false,
-  default: false,
-});
+
 const getConstructorDataForUpt = construrtorBasic => ({
   name: [
     {
@@ -104,72 +89,6 @@ const getConstructorDataForUpt = construrtorBasic => ({
   available: true,
   default: false,
 });
-const getConstructorDataForUptCompare = construrtorBasic => ({
-  _id: construrtorBasic._id,
-  available: construrtorBasic.available,
-  color: construrtorBasic.color._id,
-  default: construrtorBasic.default,
-  material: construrtorBasic.material._id,
-  image: construrtorBasic.image,
-  name: construrtorBasic.name,
-});
-
-const createMaterial = async newMaterial => {
-  operations = await setupApp();
-  const addMaterial = await operations.mutate({
-    mutation: gql`
-      mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
-          ... on Material {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { material: newMaterial },
-  });
-  return addMaterial.data.addMaterial._id;
-};
-const createConstructorBasic = async constructorInput => {
-  operations = await setupApp();
-  const constructorBasic = await operations.mutate({
-    mutation: gql`
-      mutation($constructorElement: ConstructorBasicInput!) {
-        addConstructorBasic(constructorElement: $constructorElement) {
-          ... on ConstructorBasic {
-            _id
-            name {
-              lang
-              value
-            }
-            material {
-              _id
-            }
-            color {
-              _id
-            }
-            image
-            basePrice {
-              value
-            }
-            available
-            default
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { constructorElement: constructorInput },
-  });
-  return constructorBasic.data.addConstructorBasic;
-};
 
 const deleteAll = async (
   colorID,
@@ -178,89 +97,19 @@ const deleteAll = async (
   construrtorIDafter
 ) => {
   const operations = await setupApp();
-
-  const deleteConstructorBasic = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteConstructorBasic(id: $id) {
-          ... on ConstructorBasic {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { id: constructorBasicId },
-  });
-  const deleteConstructorUpdated = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteConstructorBasic(id: $id) {
-          ... on ConstructorBasic {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { id: construrtorIDafter },
-  });
-
-  const deleteMaterial = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteMaterial(id: $id) {
-          ... on Material {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { id: materialID },
-  });
-
-  const deleteColor = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteColor(id: $id) {
-          __typename
-          ... on Color {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { id: colorID },
-  });
-
-  return { deleteColor, deleteMaterial, deleteConstructorBasic };
+  await deleteConstructorBasic(constructorBasicId, operations);
+  await deleteConstructorBasic(construrtorIDafter, operations);
+  await deleteMaterial(materialID, operations);
+  await deleteColor(colorID, operations);
 };
 
 module.exports = {
   newColor,
   badConstructorBasicID,
   newMaterial,
-  createMaterial,
   newConstructorBasic,
   deleteAll,
   getConstructorData,
-  createConstructorBasic,
-  getConstructorDataBeforeUpt,
   newConstructorBasicUpdateInp,
   getConstructorDataForUpt,
-  getConstructorDataForUptCompare,
 };
