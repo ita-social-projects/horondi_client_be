@@ -31,8 +31,11 @@ const SIZES_TO_TEST = {
     weightInKg: 0.8,
     available: true,
     additionalPrice: [
-      { currency: 'UAH', value: 140753 },
-      { currency: 'USD', value: 5000 },
+      {
+        currency: 'UAH',
+        value: 0,
+      },
+      null,
     ],
   },
   size2: {
@@ -44,8 +47,11 @@ const SIZES_TO_TEST = {
     weightInKg: 0.6,
     available: true,
     additionalPrice: [
-      { currency: 'UAH', value: 112603 },
-      { currency: 'USD', value: 4000 },
+      {
+        currency: 'UAH',
+        value: 0,
+      },
+      null,
     ],
   },
 };
