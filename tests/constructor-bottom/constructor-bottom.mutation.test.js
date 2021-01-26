@@ -14,7 +14,6 @@ const {
   createConstructorBottomAgain,
   updateConstructorB,
   deleteConstructorBottom,
-  updateConstructorBottomEr,
 } = require('./constructor-bottom.helper');
 
 const {
@@ -79,7 +78,7 @@ describe('Constructor mutations', () => {
     expect(createConstructorAgain).toEqual(CONSTRUCTOR_BOTTOM_ALREADY_EXIST);
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async () => {
-    const updateConstructor = await updateConstructorBottomEr(
+    const updateConstructor = await updateConstructorB(
       WRONG_ID,
       operations,
       addConstructor
