@@ -1,20 +1,21 @@
+const { createMaterial } = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
 const { setupApp } = require('../helper-functions');
-const {
-  getConstructorBottom,
-  constructorBottomByIdEr,
-  getAllConstructorBottom,
-} = require('./constructor-bottom.helper');
 
 const {
-  wrongID,
   color,
   newMaterial,
-  createMaterial,
-  createColor,
   newConstructorBottom,
   deleteAll,
+  wrongID,
   createConstructorBottomQuery,
 } = require('./constructor-bottom.variables');
+
+const {
+  getAllConstructorBottom,
+  getConstructorBottom,
+  constructorBottomByIdEr,
+} = require('./constructor-bottom.helper');
 
 let operations;
 let colorId;
@@ -26,16 +27,16 @@ let newConstructorForQuery;
 describe('Constructor query', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    colorId = await createColor(color);
+    colorId = await createColor(color, operations);
     materialInput = newMaterial(colorId);
-    materialId = await createMaterial(materialInput);
+    materialId = await createMaterial(materialInput, operations);
     addConstructor = newConstructorBottom(colorId, materialId);
     newConstructorForQuery = await createConstructorBottomQuery(addConstructor);
   });
   afterAll(async () => {
     await deleteAll(colorId, materialId, newConstructorForQuery);
   });
-  test('#1 Should return all ConstructorBasics', async () => {
+  test('should return all ConstructorBasics', async () => {
     const allConstructorBottom = await getAllConstructorBottom(operations);
     expect(allConstructorBottom).toBeDefined();
     expect(allConstructorBottom.length).toBeGreaterThan(0);

@@ -25,10 +25,9 @@ const newMaterial = colorID => ({
     { lang: 'ua', value: 'описання' },
     { lang: 'en', value: 'some description' },
   ],
-  purpose: 'some purpose',
+  purpose: 'INNER',
   colors: colorID,
   available: true,
-  additionalPrice: 0,
 });
 
 const createColor = async newColor => {
