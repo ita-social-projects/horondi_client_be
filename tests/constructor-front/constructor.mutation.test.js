@@ -69,11 +69,16 @@ describe('constructor mutations', () => {
   });
 
   test('#2 Should update existing Constructor Front Pocket ', async done => {
+    const createConstructor = await createConstructorFrontPocketWithData(
+      constructorInput,
+      operations
+    );
     const updateConstructor = await updateConstructorFrontPocket(
       constructorUpdateInput,
       createConstructor._id,
       operations
     );
+    constructorFrontID = updateConstructor._id;
 
     expect(updateConstructor).toBeDefined();
     expect(updateConstructor).toEqual({

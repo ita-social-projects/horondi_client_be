@@ -19,7 +19,7 @@ const {
   deleteAll,
 } = require('./constructor.variables');
 
-const { createColor } = require('../materials/material.variables');
+const { createColor } = require('../color/color.helper');
 const { createMaterial } = require('../materials/material.helper');
 
 let operations;

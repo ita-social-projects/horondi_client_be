@@ -54,7 +54,7 @@ const newMaterial = colorID => ({
     { lang: 'ua', value: 'описання' },
     { lang: 'en', value: 'Corduras fabric' },
   ],
-  purpose: 'some purpose',
+  purpose: 'INNER',
   colors: colorID,
   available: true,
   additionalPrice: 0,
