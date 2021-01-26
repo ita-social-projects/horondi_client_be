@@ -1,9 +1,10 @@
 const { gql } = require('@apollo/client');
-const { options } = require('@hapi/joi');
-const { id } = require('date-fns/locale');
 const { setupApp } = require('../helper-functions');
-
+const { deleteMaterial } = require('../materials/material.helper');
+const { deleteColor } = require('../color/color.helper');
+const { deleteConstructorFrontPocket } = require('./constructor.front.helper');
 let operations;
+
 const badConstructorFrontID = '6009dcd5f9855555907ebf5e';
 
 const newColor = {
@@ -17,6 +18,32 @@ const newColor = {
     { lang: 'en', value: 'White' },
   ],
 };
+
+const newConstructorFront = (materialID, colorID) => ({
+  name: [
+    { lang: 'ua', value: 'Щось' },
+    { lang: 'en', value: 'Something' },
+  ],
+  material: materialID,
+  color: colorID,
+  image: '/imageURL',
+  basePrice: 0,
+  available: true,
+  default: false,
+});
+
+const newConstructorFrontUpdateInp = (materialID, colorID) => ({
+  name: [
+    { lang: 'ua', value: 'Щось 2' },
+    { lang: 'en', value: 'Something 2' },
+  ],
+  material: materialID,
+  color: colorID,
+  image: '/imageURL2',
+  basePrice: 0,
+  available: true,
+  default: false,
+});
 
 const newMaterial = colorID => ({
   name: [
@@ -51,64 +78,35 @@ const getConstructorData = construrtorFront => ({
   default: construrtorFront.default,
 });
 
-const createMaterial = async newMaterial => {
-  operations = await setupApp();
-  const addMaterial = await operations.mutate({
-    mutation: gql`
-      mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
-          ... on Material {
-            _id
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { material: newMaterial },
-  });
-  return addMaterial.data.addMaterial._id;
-};
+const getConstructorDataForUpt = ConstructorFrontPocket => ({
+  name: [
+    {
+      lang: 'ua',
+      value: 'ПІСЛЯ',
+    },
+    {
+      lang: 'en',
+      value: 'After',
+    },
+  ],
+  material: ConstructorFrontPocket.material,
+  color: ConstructorFrontPocket.color,
+  image: '/new img',
+  available: true,
+  default: false,
+});
 
-const createConstructorFrontPocket = async constructorInput => {
-  operations = await setupApp();
-  const ConstructorFrontPocket = await operations.mutate({
-    mutation: gql`
-      mutation($constructorElement: ConstructorFrontPocketInput!) {
-        addConstructorFrontPocket(constructorElement: $constructorElement) {
-          ... on ConstructorFrontPocket {
-            _id
-            available
-            default
-            basePrice {
-              value
-            }
-            name {
-              value
-            }
-            image
-            material {
-              name {
-                value
-              }
-            }
-            color {
-              colorHex
-              _id
-            }
-          }
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: { constructorElement: constructorInput },
-  });
-  return ConstructorFrontPocket.data.addConstructorFrontPocket;
+const deleteAll = async (
+  colorID,
+  materialID,
+  constructorFrontId,
+  construrtorIDafter
+) => {
+  const operations = await setupApp();
+  await deleteConstructorFrontPocket(constructorFrontId, operations);
+  await deleteConstructorFrontPocket(construrtorIDafter, operations);
+  await deleteMaterial(materialID, operations);
+  await deleteColor(colorID, operations);
 };
 
 module.exports = {
@@ -116,6 +114,8 @@ module.exports = {
   newColor,
   newMaterial,
   getConstructorData,
-  createMaterial,
-  createConstructorFrontPocket,
+  newConstructorFront,
+  newConstructorFrontUpdateInp,
+  getConstructorDataForUpt,
+  deleteAll,
 };
