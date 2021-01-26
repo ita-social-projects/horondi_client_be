@@ -163,6 +163,7 @@ const newMaterialInputData = colorId => ({
     { lang: 'en', value: 'Description update' },
   ],
   available: true,
+  purpose: 'INNER',
   additionalPrice: 100,
 });
 const newColorInputData = {
