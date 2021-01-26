@@ -39,10 +39,10 @@ const getMaterialToUpdate = colorId => ({
 
 const materialOptions = {
   description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
+    { lang: 'uk', value: 'Опис test' },
+    { lang: 'en', value: 'Description test' },
   ],
-  purpose: 'update',
+  purpose: 'INNER',
   available: true,
 };
 
