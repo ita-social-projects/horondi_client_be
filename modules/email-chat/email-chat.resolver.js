@@ -9,7 +9,7 @@ const emailChatQuestionQuery = {
   getPendingEmailQuestionsCount: (parent, args) =>
     emailChatService.getPendingEmailQuestionsCount(),
   getEmailQuestionById: async (parent, args) => {
-    const question = await emailChatService.getEmailQuestionById(args.id);
+    const question = emailChatService.getEmailQuestionById(args.id);
     if (question) {
       return question;
     }

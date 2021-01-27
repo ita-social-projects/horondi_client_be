@@ -15,12 +15,12 @@ class EmailChatService {
       ? { status: { $in: emailQuestionStatus } }
       : {};
 
-    const questions = await EmailChat.find(filters)
+    const questions = EmailChat.find(filters)
       .skip(skip || 0)
       .limit(10)
       .sort('-date');
 
-    const count = await EmailChat.find(filters).countDocuments();
+    const count = EmailChat.find(filters).countDocuments();
 
     return {
       questions,
@@ -37,7 +37,7 @@ class EmailChatService {
   }
 
   async getPendingEmailQuestionsCount() {
-    return await EmailChat.find({ status: 'PENDING' }).countDocuments();
+    return EmailChat.find({ status: 'PENDING' }).countDocuments();
   }
 
   addEmailQuestion(data) {
@@ -49,14 +49,14 @@ class EmailChatService {
     const admin = await userService.getUserByFieldOrThrow('_id', adminId);
 
     const result = questionsToSpam.map(async id => {
-      const question = await EmailChat.findById(id);
+      const question = EmailChat.findById(id);
 
       question.status = 'SPAM';
       question.answer.admin = admin;
       question.answer.text = '';
       question.answer.date = Date.now();
 
-      return await EmailChat.findByIdAndUpdate(id, question, { new: true });
+      return EmailChat.findByIdAndUpdate(id, question, { new: true });
     });
 
     const updatedQuestions = await Promise.allSettled(result);
@@ -66,7 +66,7 @@ class EmailChatService {
   }
 
   async answerEmailQuestion({ questionId, adminId, text }) {
-    const question = await this.getEmailQuestionById(questionId);
+    const question = this.getEmailQuestionById(questionId);
     const admin = await userService.getUserByFieldOrThrow('_id', adminId);
 
     if (!question) {
@@ -77,13 +77,9 @@ class EmailChatService {
     question.answer.admin = admin;
     question.answer.text = text;
     question.answer.date = Date.now();
-    const updatedQuestion = await EmailChat.findByIdAndUpdate(
-      questionId,
-      question,
-      {
-        new: true,
-      }
-    );
+    const updatedQuestion = EmailChat.findByIdAndUpdate(questionId, question, {
+      new: true,
+    });
 
     const language = question.language;
     const subject = `[HORONDI] ${
@@ -102,8 +98,8 @@ class EmailChatService {
 
   async deleteEmailQuestions(questionsToDelete) {
     try {
-      const result = questionsToDelete.map(
-        async id => await EmailChat.findByIdAndDelete(id)
+      const result = questionsToDelete.map(async id =>
+        EmailChat.findByIdAndDelete(id)
       );
 
       const deletedQuestions = await Promise.allSettled(result);
