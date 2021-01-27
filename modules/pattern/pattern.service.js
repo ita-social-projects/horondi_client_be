@@ -8,10 +8,10 @@ const uploadService = require('../upload/upload.service');
 
 class PatternsService {
   async getAllPatterns({ skip, limit }) {
-    const items = await Pattern.find()
+    const items = Pattern.find()
       .skip(skip)
       .limit(limit);
-    const count = await Pattern.find().countDocuments();
+    const count = Pattern.find().countDocuments();
 
     return {
       items,
@@ -20,7 +20,7 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    const foundPattern = await Pattern.findById(id);
+    const foundPattern = Pattern.findById(id);
     if (foundPattern) {
       return foundPattern;
     }
@@ -28,7 +28,7 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }) {
-    const patternToUpdate = await Pattern.findById(id);
+    const patternToUpdate = Pattern.findById(id);
     if (!patternToUpdate) {
       throw new Error(PATTERN_NOT_FOUND);
     }
@@ -37,7 +37,7 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
     if (!image) {
-      return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
+      return Pattern.findByIdAndUpdate(id, pattern, { new: true });
     }
     const uploadResult = await uploadService.uploadFiles([image]);
 
@@ -46,12 +46,12 @@ class PatternsService {
     const images = imageResults.fileNames;
 
     if (!images) {
-      return await Pattern.findByIdAndUpdate(id, pattern);
+      return Pattern.findByIdAndUpdate(id, pattern);
     }
-    const foundPattern = await Pattern.findById(id).lean();
+    const foundPattern = Pattern.findById(id).lean();
     uploadService.deleteFiles(Object.values(foundPattern.images));
 
-    return await Pattern.findByIdAndUpdate(
+    return Pattern.findByIdAndUpdate(
       id,
       {
         ...pattern,
@@ -80,7 +80,7 @@ class PatternsService {
   }
 
   async deletePattern(id) {
-    const foundPattern = await Pattern.findByIdAndDelete(id).lean();
+    const foundPattern = Pattern.findByIdAndDelete(id).lean();
     if (!foundPattern) {
       throw new Error(PATTERN_NOT_FOUND);
     }
@@ -94,7 +94,7 @@ class PatternsService {
   }
 
   async checkPatternExist(data, id) {
-    const patternsCount = await Pattern.countDocuments({
+    const patternsCount = Pattern.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
