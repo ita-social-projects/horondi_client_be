@@ -99,7 +99,6 @@ describe('queries', () => {
               source
               tokenPass
             }
-            purchasedProducts
           }
         }
       `,

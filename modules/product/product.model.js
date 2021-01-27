@@ -2,47 +2,63 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
-const ImageSet = require('../common/ImageSet').schema;
-const Color = require('../../models/Color').schema;
 
 const productSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
   },
-  model: [Language],
+  model: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Model',
+  },
   name: [Language],
   description: [Language],
-  mainMaterial: [Language],
-  innerMaterial: [Language],
+  mainMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Color',
+    },
+  },
+  innerMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Color',
+    },
+  },
+  bottomMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Material',
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Color',
+    },
+  },
   strapLengthInCm: Number,
   images: PrimaryImage,
-  colors: [Color],
-  pattern: [Language],
-  patternImages: ImageSet,
-  closure: [Language],
-  closureColor: String,
+  pattern: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pattern',
+  },
+  closure: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Closure',
+  },
   basePrice: [CurrencySet],
-  options: [
+  sizes: [
     {
-      size: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Size',
-      },
-      bottomMaterial: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Material',
-      },
-      bottomColor: [Language],
-      additions: [
-        {
-          name: [Language],
-          description: [Language],
-          available: Boolean,
-          additionalPrice: [CurrencySet],
-        },
-      ],
-      availableCount: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Size',
     },
   ],
   available: Boolean,

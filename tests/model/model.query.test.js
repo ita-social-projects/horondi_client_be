@@ -8,7 +8,7 @@ let modelId;
 let categoryId;
 let operations;
 
-describe('Product queries', () => {
+describe('Model queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
     const createCategory = await operations.mutate({
@@ -93,10 +93,10 @@ describe('Product queries', () => {
       { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('images', {
-      large: 'large_0_test-file',
-      medium: 'medium_0_test-file',
-      small: 'small_0_test-file',
-      thumbnail: 'thumbnail_0_test-file',
+      large: 'large_test-file',
+      medium: 'medium_test-file',
+      small: 'small_test-file',
+      thumbnail: 'thumbnail_test-file',
     });
     expect(models[0]).toHaveProperty('category', {
       name: [

@@ -14,10 +14,11 @@ const newsQuery = {
     }
   },
 };
+
 const newsMutation = {
   addNews: async (parent, args) => {
     try {
-      return await newsService.addNews(args.news);
+      return await newsService.addNews(args.news, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
@@ -37,7 +38,7 @@ const newsMutation = {
   },
   updateNews: async (parent, args) => {
     try {
-      return await newsService.updateNews(args.id, args.news);
+      return await newsService.updateNews(args.id, args.news, args.upload);
     } catch (e) {
       return {
         statusCode: e.message === NEWS_NOT_FOUND ? 404 : 400,

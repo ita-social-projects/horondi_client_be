@@ -1,4 +1,5 @@
 const Currency = require('./currency.model');
+
 const {
   CURRENCY_ALREADY_EXIST,
   CURRENCY_NOT_FOUND,

@@ -9,6 +9,7 @@ const azureStorage = require('azure-storage');
 const getStream = require('into-stream');
 const Jimp = require('jimp');
 const uniqid = require('uniqid');
+const { imageQualities } = require('../../consts');
 
 let blobService;
 let containerName;
@@ -52,79 +53,76 @@ class UploadService {
     });
   }
 
-  uploadFiles = async files =>
-    files.map(async file => {
-      if (CONTRIBUTING) {
-        return {
-          prefixUrl: 'some prefix',
-          fileNames: {
-            large: 'large_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
-            medium: 'medium_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
-            small: 'small_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
-            thumbnail: 'thumbnail_xf6v7x8kjsxtltn_wishlist-light-theme-img.png',
-          },
-        };
-      }
-      const { createReadStream, filename } = await file.promise;
-      const inputStream = createReadStream();
-      let fileBuffer;
-      const id = uniqid();
+  async uploadFiles(files) {
+    return files.map(async file => this.uploadFile(file));
+  }
 
-      const inputBuffer = await new Promise((resolve, reject) => {
-        const chunks = [];
-        inputStream.once('error', err => reject(err));
+  async uploadFile(file, sizes) {
+    const { createReadStream, filename } = await file.promise;
+    const inputStream = createReadStream();
+    let fileBuffer;
+    const id = uniqid();
+    const inputBuffer = await new Promise((resolve, reject) => {
+      const chunks = [];
+      inputStream.once('error', err => reject(err));
 
-        inputStream.once('end', () => {
-          fileBuffer = Buffer.concat(chunks);
-          return resolve(fileBuffer);
-        });
-
-        inputStream.on('data', chunk => {
-          chunks.push(chunk);
-        });
+      inputStream.once('end', () => {
+        fileBuffer = Buffer.concat(chunks);
+        return resolve(fileBuffer);
       });
 
-      const image = await Jimp.read(inputBuffer);
-
-      const createName = sizeName => `${sizeName}_${id}_${filename}`;
-
-      this.uploadResizedImage(1920, createName('large'), image);
-
-      this.uploadResizedImage(1080, createName('medium'), image);
-
-      this.uploadResizedImage(768, createName('small'), image);
-
-      this.uploadResizedImage(128, createName('thumbnail'), image);
-
-      return {
-        prefixUrl: IMAGE_LINK,
-        fileNames: {
-          large: createName('large'),
-          medium: createName('medium'),
-          small: createName('small'),
-          thumbnail: createName('thumbnail'),
-        },
-      };
+      inputStream.on('data', chunk => {
+        chunks.push(chunk);
+      });
     });
 
-  async deleteFiles(files) {
-    if (CONTRIBUTING) {
-      return true;
+    const image = await Jimp.read(inputBuffer);
+
+    const createName = sizeName => `${sizeName}_${id}_${filename}`;
+    if (Array.isArray(sizes)) {
+      sizes.forEach(size => {
+        this.uploadResizedImage(imageQualities[size], createName(size), image);
+      });
+      const fileNames = sizes.reduce((acc, size) => {
+        acc[size] = createName(size);
+        return acc;
+      }, {});
+      return {
+        prefixUrl: IMAGE_LINK,
+        fileNames,
+      };
     }
-    return files.map(
-      async fileName =>
-        await new Promise((resolve, reject) =>
-          blobService.deleteBlobIfExists(
-            containerName,
-            fileName,
-            (err, res) => {
-              if (err) {
-                reject(err);
-              }
-              resolve(res);
-            }
-          )
-        )
+    this.uploadResizedImage(1920, createName('large'), image);
+
+    this.uploadResizedImage(1080, createName('medium'), image);
+
+    this.uploadResizedImage(768, createName('small'), image);
+
+    this.uploadResizedImage(128, createName('thumbnail'), image);
+
+    return {
+      prefixUrl: IMAGE_LINK,
+      fileNames: {
+        large: createName('large'),
+        medium: createName('medium'),
+        small: createName('small'),
+        thumbnail: createName('thumbnail'),
+      },
+    };
+  }
+
+  async deleteFiles(files) {
+    return files.map(async fileName => this.deleteFile(fileName));
+  }
+
+  async deleteFile(fileName) {
+    return await new Promise((resolve, reject) =>
+      blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(res);
+      })
     );
   }
 }

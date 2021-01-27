@@ -13,11 +13,12 @@ const {
   UserForStatisticsInput,
   paginatedUsersType,
   tokenType,
+  purchasedProductsType,
+  cartProductType,
 } = require('./modules/user/user.graphql');
 const {
   productType,
   productInput,
-  cartProductType,
   cartProductInput,
 } = require('./modules/product/product.graphql');
 const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
@@ -29,6 +30,7 @@ const {
 const {
   materialType,
   materialInput,
+  materialFilterInput,
 } = require('./modules/material/material.graphql');
 const {
   patternType,
@@ -70,9 +72,26 @@ const {
   homePageSlideType,
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
+const {
+  constructorBottomInput,
+  constructorBottomType,
+} = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
+const {
+  closureType,
+  closureInput,
+} = require('./modules/closures/closures.graphql');
 const { defaultPaginationParams } = require('./consts');
-const { sizeType } = require('./modules/size/size.graphql');
+const { sizeType, sizeInput } = require('./modules/size/size.graphql');
+const { colorType, colorInput } = require('./modules/color/color.graphql');
+const {
+  constructorBasicType,
+  constructorBasicInput,
+} = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
+const {
+  constructorFrontPocketType,
+  constructorFrontPocketInput,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 const {
   ukrPoshtaEnum,
   ukrPostaType,
@@ -89,7 +108,6 @@ const typeDefs = gql`
   ${userType}
   ${paginatedUsersType}
   ${productType}
-  ${cartProductType}
   ${commentType}
   ${businessTextType}
   ${modelType}
@@ -105,6 +123,13 @@ const typeDefs = gql`
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
+  ${closureType}
+  ${purchasedProductsType}
+  ${cartProductType}
+  ${colorType}
+  ${constructorBasicType}
+  ${constructorFrontPocketType}
+  ${constructorBottomType}
 
   scalar Upload
   scalar Date
@@ -169,20 +194,13 @@ const typeDefs = gql`
   }
   type Author {
     name: [Language]
-    image: ImageSet
-  }
-  type Color {
-    code: Int
-    name: [Language]
-    images: ImageSet
-    available: Boolean
-    simpleName: [Language]
+    image: String
   }
   type ProductOptions {
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: [Language]
+    bottomColor: Color
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -199,10 +217,6 @@ const typeDefs = gql`
   type CartProductDimensions {
       volumeInLiters: Int
       weightInKg: Float
-  }
-  type AllProductOptions {
-    sizes: [Size]
-    bottomMaterials: [Material]
   }
   type UserForComment {
     email: String!
@@ -286,10 +300,31 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
+
+  type PaginatedClosure {
+      items: [Closure]
+      count: Int
+  }
+
+  type Materials {
+    items: [Material]
+  }
+
+  type PaginatedConstructorBasics {
+      items: [ConstructorBasic]
+      count: Int
+  }
+  type PaginatedConstructorBottom {
+      items: [ConstructorBottom]
+      count: Int
+  }
+  type PaginatedConstructorFrontPocket {
+      items: [ConstructorFrontPocket]
+      count: Int
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
-  union MaterialColorResult = Color | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
   union ProductResult = Product | Error
@@ -305,7 +340,14 @@ const typeDefs = gql`
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
+  union ClosureResult = Closure | Error
+  union SizeResult = Size | Error
+  union ColorResult = Color | Error
+  union ColorDeletingResult = Color | Materials | Error
+  union ConstructorBasicResult = ConstructorBasic | Error
+  union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   
+  union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
@@ -313,9 +355,12 @@ const typeDefs = gql`
     getPopularCategories: StatisticDoughnut!
     getCategoryById(id: ID): CategoryResult
     getCategoriesForBurgerMenu: [BurgerMenu]
-    getAllMaterials(limit: Int, skip: Int): PaginatedMaterials!
+    getAllMaterials(
+      filter: MaterialFilterInput,
+      limit: Int, 
+      skip: Int
+    ): PaginatedMaterials!
     getMaterialById(id: ID): MaterialResult
-    getMaterialColorByCode(code: Int): Color
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
@@ -330,6 +375,7 @@ const typeDefs = gql`
       pagination: Pagination
       sort: UserSortInput
     ): PaginatedUsersType!
+    getPurchasedProducts(id: ID!): [PurchasedProduct]
     getUsersForStatistic(filter: UserForStatisticsInput): StatisticBar!
     getUserByToken: UserResult
     getUserById(id: ID!): User
@@ -342,7 +388,6 @@ const typeDefs = gql`
       search: String
       sort: SortInput
     ): PaginatedProducts!
-    getProductOptions: AllProductOptions
     getPopularProducts: StatisticBar!
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
@@ -357,6 +402,7 @@ const typeDefs = gql`
     getBusinessTextByCode(code: String!): BusinessTextResult
     getAllModels(limit: Int, skip: Int): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
+    getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
@@ -384,6 +430,17 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes: [Size]  
     getSizeById(id: ID!): Size
+    getAllClosure(limit: Int, skip: Int): PaginatedClosure!
+    getClosureById(id: ID!): ClosureResult!
+    getAllColors: [Color]
+    getColorById(id: ID!): ColorResult!
+    getAllConstructorBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
+    getConstructorBasicById(id: ID!): ConstructorBasicResult
+    getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
+    getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
+    getConstructorBottomById(id: ID!): ConstructorBottomResult  
+    getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
+
   }
   input Pagination {
       skip: Int = ${skip}
@@ -417,7 +474,7 @@ const typeDefs = gql`
   }
   input AuthorInput {
     name: [LanguageInput]
-    image: ImageSetInput
+    image: Upload
   }
   ${categoryInput}
   ${currencyInput}
@@ -444,7 +501,15 @@ const typeDefs = gql`
   ${novaPoshtaInput}
   ${paymentInput}
   ${headerInput}
+  ${sizeInput}
   ${homePageSlideInput}
+  ${closureInput}
+  ${colorInput}
+  ${materialFilterInput}
+  ${constructorBasicInput}
+  ${constructorFrontPocketInput}
+  
+  ${constructorBottomInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -474,19 +539,6 @@ const typeDefs = gql`
     small: String
     thumbnail: String
   }
-  input ColorInput {
-    code: Int!
-    name: [LanguageInput!]
-    images: ImageSetInput
-    available: Boolean!
-    simpleName: [LanguageInput!]
-  }
-  input MaterialColorInput {
-    code: Int!
-    name: [LanguageInput!]
-    available: Boolean!
-    simpleName: [LanguageInput!]
-  }
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
@@ -504,30 +556,6 @@ const typeDefs = gql`
   type File {
     fileNames: ImageSet!
     prefixUrl: String!
-  }
-  input ProductOptionsInput {
-    size: ID
-    bottomMaterial: ID
-    description: [LanguageInput!]
-    bottomColor: [LanguageInput!]
-    availableCount: Int
-    additions: [ProductOptionsAdditonalsInput]
-  }
-  input SizeInput {
-    name: String
-    heightInCm: Int
-    widthInCm: Int
-    depthInCm: Int
-    volumeInLiters: Int
-    weightInKg: Float
-    available: Boolean
-    additionalPrice: Int
-  }
-  input ProductOptionsAdditonalsInput {
-    name: [LanguageInput!]
-    description: [LanguageInput!]
-    available: Boolean
-    additionalPrice: [CurrencySetInput]
   }
   input CartProductDimensionsInput {
       volumeInLiters: Int
@@ -560,19 +588,12 @@ const typeDefs = gql`
       image: Upload
     ): PatternResult
     "Material Mutation"
-    addMaterial(material: MaterialInput!, images: Upload!): MaterialResult
+    addMaterial(material: MaterialInput!): MaterialResult
     deleteMaterial(id: ID!): MaterialResult
     updateMaterial(
       id: ID!
       material: MaterialInput!
-      images: Upload
     ): MaterialResult
-    addMaterialColor(
-      id: ID!
-      color: MaterialColorInput
-      image: Upload
-    ): MaterialColorResult
-    deleteMaterialColor(id: ID!, code: Int): MaterialResult
     "Category Mutation"
     addCategory(
       category: CategoryInput!
@@ -592,9 +613,9 @@ const typeDefs = gql`
     deleteCurrency(id: ID!): CurrencyResult
     updateCurrency(id: ID!, currency: CurrencyInput!): CurrencyResult
     "News Mutation"
-    addNews(news: NewsInput!): NewsResult
+    addNews(news: NewsInput!, upload: Upload): NewsResult
     deleteNews(id: ID!): NewsResult
-    updateNews(id: ID!, news: NewsInput!): NewsResult
+    updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
     registerAdmin(user: AdminRegisterInput!): UserResult
@@ -616,9 +637,6 @@ const typeDefs = gql`
     ): LogicalResult!
       addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
       removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
-      addProductToCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
-      removeProductFromCart(id: ID!, key: String!, product: CartProductInput!): CartProduct!
-      changeCartProductQuantity(id: ID!, key: String!, product: CartProductInput!): CartProduct!
        googleUser(idToken: String!, staySignedIn: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
@@ -662,7 +680,7 @@ const typeDefs = gql`
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
-    updateOrder(order: OrderInput!): OrderResult
+    updateOrder(order: OrderInput!, id: ID!): OrderResult
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
@@ -690,6 +708,38 @@ const typeDefs = gql`
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
+    "Closure Mutation"
+    addClosure(closure: ClosureInput!, upload: Upload): ClosureResult
+    updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
+    deleteClosure(id: ID!): ClosureResult  
+    "Sizes Mutation"
+    addSize(size: SizeInput!): SizeResult!
+    deleteSize(id: ID!): SizeResult!
+    updateSize(id: ID!, size: SizeInput!): SizeResult!
+    "Color Mutation"
+    addColor(data: ColorInput!): ColorResult!
+    deleteColor(id: ID!): ColorDeletingResult!
+    "ConstructorBasic Mutation"  
+    addConstructorBasic(constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    deleteConstructorBasic(id: ID!): ConstructorBasicResult
+    "ConstructorFrontPocket Mutation"  
+    addConstructorFrontPocket(constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
+    "ConstructorBottom Mutation"
+    addConstructorBottom(constructorElement: ConstructorBottomInput!): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorElement: ConstructorBottomInput!): ConstructorBottomResult
+    deleteConstructorBottom(id: ID!): ConstructorBottomResult
+    "Change model constructor details"  
+    addModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
   }
 `;
 

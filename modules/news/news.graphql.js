@@ -3,7 +3,7 @@ type News {
 _id: ID!
 title: [Language]
 text: [Language]
-images: PrimaryImage
+image: String
 author: Author
 date: String
 show: Boolean
@@ -14,7 +14,7 @@ const newsInput = `
 input NewsInput {
 title: [LanguageInput]
 text: [LanguageInput]
-images: PrimaryImageInput
+image: Upload
 author: AuthorInput
 date: String
 show: Boolean

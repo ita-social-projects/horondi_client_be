@@ -7,15 +7,34 @@ const {
   commentWrongId,
   rate,
   updatedRate,
-} = require('./comment.variables');
-const {
-  createModel,
   newCategory,
+  newConstructorBasic,
   newModel,
-  newMaterial,
-  getNewProduct,
-  deleteAll,
-} = require('../product/product.variables');
+  newClosure,
+  newPattern,
+  newProduct,
+  color,
+  getMaterial,
+} = require('./comment.variables');
+
+const {
+  deleteConstructorBasic,
+  createConstructorBasic,
+} = require('../constructor-basic/constructor-basic.helper');
+
+const { createPattern, deletePattern } = require('../pattern/pattern.helper');
+const { createModel, deleteModel } = require('../model/model.helper');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { createProduct, deleteProduct } = require('../product/product.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
+const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -28,10 +47,6 @@ jest.mock('../../modules/product/product.utils.js');
 
 let commentId = '';
 let operations;
-let productRate;
-let productRateCount;
-let productUserRates;
-let product;
 let productId;
 let categoryId;
 let modelId;
@@ -40,30 +55,33 @@ let materialId;
 describe('Comment queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    const itemsId = await createModel(newMaterial, newCategory, newModel);
-    categoryId = itemsId.categoryId;
-    modelId = itemsId.modelId;
-    materialId = itemsId.materialId;
+    colorId = await createColor(color, operations);
+    categoryId = await createCategory(newCategory, operations);
+    newMaterial = getMaterial(colorId);
+    materialId = await createMaterial(newMaterial, operations);
+    patternId = await createPattern(newPattern, operations);
+    closureId = await createClosure(newClosure(materialId), operations);
+    constructorBasicId = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId),
+      operations
+    );
+    modelId = await createModel(
+      newModel(categoryId, constructorBasicId),
+      operations
+    );
+    productId = await createProduct(
+      newProduct(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId
+      ),
+      operations
+    );
 
-    product = getNewProduct(categoryId, modelId, materialId);
-    const createProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!) {
-          addProduct(upload: [], product: $product) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product,
-      },
-    });
-    productId = createProduct.data.addProduct._id;
     const res = await operations
       .query({
         variables: { id: productId },
@@ -358,7 +376,32 @@ describe('Comment queries', () => {
     done();
   });
   afterAll(async done => {
-    await deleteAll(materialId, productId, categoryId, modelId);
+    await deleteProduct(productId, operations);
+    await deleteModel(modelId, operations);
+    await deleteConstructorBasic(constructorBasicId, operations);
+    await deleteMaterial(materialId, operations);
+    await deleteColor(colorId, operations);
+    await deleteClosure(closureId, operations);
+    await deletePattern(patternId, operations);
+    await deleteCategory(categoryId, operations);
+    await operations
+      .mutate({
+        mutation: gql`
+          mutation($id: ID!) {
+            deleteComment(id: $id) {
+              ... on Comment {
+                _id
+              }
+              ... on Error {
+                statusCode
+                message
+              }
+            }
+          }
+        `,
+        variables: { id: commentId },
+      })
+      .catch(e => e);
     done();
   });
 });
