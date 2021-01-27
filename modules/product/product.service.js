@@ -17,11 +17,11 @@ const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id);
+    return Product.findById(id);
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id });
+    const product = Product.find({ category: id });
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -84,12 +84,12 @@ class ProductsService {
         },
       ];
     }
-    const items = await Product.find(filters)
+    const items = Product.find(filters)
       .skip(skip)
       .limit(limit)
       .sort(sort);
 
-    const count = await Product.find(filters).countDocuments();
+    const count = Product.find(filters).countDocuments();
     return {
       items,
       count,
@@ -97,7 +97,7 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
-    const product = await Product.findById(id).lean();
+    const product = Product.findById(id).lean();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -125,7 +125,7 @@ class ProductsService {
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
-    return await Product.findByIdAndUpdate(id, productData, { new: true });
+    return Product.findByIdAndUpdate(id, productData, { new: true });
   }
 
   async addProduct(productData, filesToUpload) {
@@ -151,7 +151,7 @@ class ProductsService {
   }
 
   async deleteProduct(id) {
-    const product = await Product.findById(id).lean();
+    const product = Product.findById(id).lean();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -169,7 +169,7 @@ class ProductsService {
   }
 
   async checkProductExist(data) {
-    let productCount = await Product.countDocuments({
+    let productCount = Product.countDocuments({
       name: {
         $elemMatch: {
           $or: data.name.map(({ value }) => ({ value })),
@@ -180,7 +180,7 @@ class ProductsService {
   }
 
   async deleteImages(id, imagesToDelete) {
-    const product = await Product.findById(id).lean();
+    const product = Product.findById(id).lean();
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
@@ -188,7 +188,7 @@ class ProductsService {
           !Object.values(item).filter(image => imagesToDelete.includes(image))
             .length
       );
-      const updatedProduct = await Product.findByIdAndUpdate(
+      const updatedProduct = Product.findByIdAndUpdate(
         id,
         {
           images: {
@@ -203,7 +203,7 @@ class ProductsService {
   }
 
   async getPopularProducts() {
-    const products = await Product.find()
+    const products = Product.find()
       .sort({ purchasedCount: -1 })
       .limit(10)
       .lean();
@@ -219,13 +219,13 @@ class ProductsService {
   }
 
   async getProductsForWishlist(userId) {
-    const { wishlist } = await User.findById(userId);
-    return await Product.find({ _id: { $in: wishlist } });
+    const { wishlist } = User.findById(userId);
+    return Product.find({ _id: { $in: wishlist } });
   }
 
   async getProductsForCart(userId) {
-    const { cart } = await User.findById(userId);
-    return await Product.find({ _id: { $in: cart } });
+    const { cart } = User.findById(userId);
+    return Product.find({ _id: { $in: cart } });
   }
 }
 
