@@ -42,10 +42,6 @@ jest.mock('../../modules/product/product.utils.js');
 
 let commentId = '';
 let operations;
-//let productRate;
-//let productRateCount;
-//let productUserRates;
-//let product;
 let productId;
 let categoryId;
 let modelId;
