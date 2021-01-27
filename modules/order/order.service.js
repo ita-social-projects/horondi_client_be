@@ -27,17 +27,17 @@ class OrdersService {
       async (prev, item) => {
         const sum = await prev;
         const { quantity } = item;
-        const { additionalPrice } = await Size.findById(item.options.size);
+        const { additionalPrice } = Size.findById(item.options.size);
 
         if (!item.fixedPrice?.length) {
           if (item.isFromConstructor) {
-            const constructorBasics = await ConstructorBasic.findById(
+            const constructorBasics = ConstructorBasic.findById(
               item.constructorBasics
             );
-            const constructorFrontPocket = await ConstructorFrontPocket.findById(
+            const constructorFrontPocket = ConstructorFrontPocket.findById(
               item.constructorFrontPocket
             );
-            const constructorBottom = await ConstructorBottom.findById(
+            const constructorBottom = ConstructorBottom.findById(
               item.constructorBottom
             );
             item.fixedPrice = [
@@ -59,7 +59,7 @@ class OrdersService {
               },
             ];
           } else {
-            const { basePrice } = await Product.findById(item.product);
+            const { basePrice } = Product.findById(item.product);
             item.fixedPrice = [
               {
                 currency: 'UAH',
@@ -114,12 +114,12 @@ class OrdersService {
 
     const filters = orderStatus ? { status: { $in: orderStatus } } : {};
 
-    const items = await Order.find(filters)
+    const items = Order.find(filters)
       .sort({ dateOfCreation: -1 })
       .skip(skip)
       .limit(limit);
 
-    const count = await Order.find(filters).countDocuments();
+    const count = Order.find(filters).countDocuments();
     return {
       items,
       count,
@@ -130,7 +130,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await Order.findById(id);
+    const foundOrder = Order.findById(id);
     if (foundOrder) {
       return foundOrder;
     }
@@ -141,7 +141,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const orderToUpdate = await Order.findById(id);
+    const orderToUpdate = Order.findById(id);
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
     }
@@ -170,7 +170,7 @@ class OrdersService {
         cost: totalItemsPrice[0].value / 100,
       });
 
-      const currency = await Currency.findOne();
+      const currency = Currency.findOne();
 
       const cost = [
         {
@@ -206,7 +206,7 @@ class OrdersService {
       totalPriceToPay,
     };
 
-    return await Order.findByIdAndUpdate(
+    return Order.findByIdAndUpdate(
       id,
       { ...order, lastUpdatedDate: Date.now() },
       {
@@ -238,7 +238,7 @@ class OrdersService {
         cost: totalItemsPrice[0].value / 100,
       });
 
-      const currency = await Currency.findOne();
+      const currency = Currency.findOne();
 
       const cost = [
         {
@@ -281,7 +281,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await Order.findByIdAndDelete(id);
+    const foundOrder = Order.findByIdAndDelete(id);
     if (foundOrder) {
       return foundOrder;
     }
@@ -291,7 +291,7 @@ class OrdersService {
   async getUserOrders(user) {
     const { orders } = user;
 
-    return await Order.find({ _id: orders });
+    return Order.find({ _id: orders });
   }
 
   filterOrders({ days, isPaid }) {
@@ -322,7 +322,7 @@ class OrdersService {
 
   async getPaidOrdersStatistic(days) {
     const filter = this.filterOrders({ days, isPaid: true });
-    const orders = await Order.find(filter)
+    const orders = Order.find(filter)
       .sort({ dateOfCreation: 1 })
       .lean();
     const formattedDate = orders.map(({ dateOfCreation }) =>
@@ -340,7 +340,7 @@ class OrdersService {
 
   async getOrdersStatistic(days) {
     const filter = this.filterOrders({ days });
-    const orders = await Order.find(filter).lean();
+    const orders = Order.find(filter).lean();
     const statuses = orders.map(({ status }) => status);
     const { names, counts } = this.getOrdersStats(statuses);
     const relations = counts.map(count =>
