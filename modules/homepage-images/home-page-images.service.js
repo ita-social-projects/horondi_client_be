@@ -9,7 +9,7 @@ const {
 
 class HomePageImagesService {
   async getHomePageLooksImages() {
-    const looksImages = await LooksImages.find();
+    const looksImages = LooksImages.find();
 
     if (!looksImages) throw new Error(IMAGE_NOT_FOUND);
 
@@ -25,7 +25,7 @@ class HomePageImagesService {
   }
 
   async deleteHomePageLooksImage(data) {
-    const looksImage = await LooksImages.findById(data.id).lean();
+    const looksImage = LooksImages.findById(data.id).lean();
 
     if (!looksImage) throw new Error(IMAGE_NOT_FOUND);
 
@@ -33,11 +33,11 @@ class HomePageImagesService {
       this.deleteImages(looksImage.images);
     }
 
-    return await LooksImages.findByIdAndDelete(id);
+    return LooksImages.findByIdAndDelete(id);
   }
 
   async updateHomePageLooksImage(data) {
-    const imagesToUpdate = await LooksImages.findById(data.id).lean();
+    const imagesToUpdate = LooksImages.findById(data.id).lean();
     if (!imagesToUpdate) throw new Error(IMAGE_NOT_FOUND);
 
     return (
@@ -60,7 +60,7 @@ class HomePageImagesService {
   async saveUpdatedLooksImages(id, imageToUpload) {
     const images = await this.uploadImages([imageToUpload]);
 
-    return await LooksImages.findByIdAndUpdate(
+    return LooksImages.findByIdAndUpdate(
       id,
       { images: images[0] },
       {
