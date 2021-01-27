@@ -4,10 +4,10 @@ const { uploadContactImages } = require('./contact.utils');
 
 class ContactService {
   async getContacts({ skip, limit }) {
-    const items = await Contact.find()
+    const items = Contact.find()
       .skip(skip)
       .limit(limit);
-    const count = await Contact.find().countDocuments();
+    const count = Contact.find().countDocuments();
 
     return {
       items,
@@ -16,7 +16,7 @@ class ContactService {
   }
 
   async getContactById(id) {
-    const contact = await Contact.findById(id);
+    const contact = Contact.findById(id);
 
     return contact || null;
   }
@@ -31,7 +31,7 @@ class ContactService {
   }
 
   async updateContact(data) {
-    const contact = await Contact.findById(data.id).lean();
+    const contact = Contact.findById(data.id).lean();
 
     if (!contact) return null;
 
@@ -39,13 +39,13 @@ class ContactService {
       data.mapImages.length === 2 &&
       this.deleteMapImages(contact)
       ? await this.saveUpdatedContact(data)
-      : await Contact.findByIdAndUpdate(data.id, data.contact, {
+      : Contact.findByIdAndUpdate(data.id, data.contact, {
           new: true,
         });
   }
 
   async deleteContact(id) {
-    const contact = await Contact.findById(id).lean();
+    const contact = Contact.findById(id).lean();
 
     if (!contact) return null;
 
@@ -53,7 +53,7 @@ class ContactService {
       this.deleteMapImages(contact);
     }
 
-    return await Contact.findByIdAndDelete(id);
+    return Contact.findByIdAndDelete(id);
   }
 
   async uploadMapImages(data) {
@@ -68,7 +68,7 @@ class ContactService {
   async saveUpdatedContact(data) {
     const images = await this.uploadMapImages(data);
 
-    return await Contact.findByIdAndUpdate(
+    return Contact.findByIdAndUpdate(
       data.id,
       {
         ...data.contact,
