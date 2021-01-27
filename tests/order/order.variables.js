@@ -47,6 +47,52 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
       ],
     },
   ],
+  paymentStatus: 'CREATED',
+});
+const newSizeInputData = {
+  name: 'XL',
+  heightInCm: 40,
+  widthInCm: 50,
+  depthInCm: 30,
+  volumeInLiters: 15,
+  weightInKg: 3.4,
+  available: true,
+  additionalPrice: 230,
+};
+const newProductInputData = (
+  categoryId,
+  modelId,
+  mainMaterialId,
+  innerMaterialId,
+  colorId,
+  patternId,
+  closureId,
+  sizeId
+) => ({
+  category: categoryId,
+  model: modelId,
+  name: [
+    { lang: 'uk', value: 'Продукт тест' },
+    { lang: 'en', value: 'Product test' },
+  ],
+  description: [
+    { lang: 'uk', value: 'Опис тест' },
+    { lang: 'en', value: 'Description test' },
+  ],
+  mainMaterial: {
+    material: mainMaterialId,
+    color: colorId,
+  },
+  innerMaterial: {
+    material: innerMaterialId,
+    color: colorId,
+  },
+  strapLengthInCm: 50,
+  pattern: patternId,
+  closure: closureId,
+  basePrice: 200,
+  sizes: [sizeId],
+  availableCount: 20,
 });
 const newClosure = materialId => ({
   name: [
@@ -141,6 +187,7 @@ const newConstructorBasic = (materialId, colorId) => ({
   basePrice: 200,
   available: true,
 });
+
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   status: 'SENT',
   user: {
