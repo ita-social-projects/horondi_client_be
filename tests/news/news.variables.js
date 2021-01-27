@@ -9,7 +9,7 @@ const user = {
 };
 
 const wrongId = '5fa8f2ad0785350940d8953e';
-const upload = ['__tests__/model/img.png', '__tests__/model/img2.png'];
+const upload = [];
 
 const news = {
   title: [
@@ -25,9 +25,7 @@ const news = {
       { lang: 'ua', value: 'a sd' },
       { lang: 'en', value: 'a sd' },
     ],
-    image: 'large_test-file',
   },
-  image: 'large_test-file',
   date: '1111118820047',
   show: true,
 };

@@ -16,6 +16,7 @@ let operations;
 let skip = 0;
 let limit = 0;
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/upload/upload.utils');
 
 describe('News queries tests', () => {
   beforeAll(async () => {

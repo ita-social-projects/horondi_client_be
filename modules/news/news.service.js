@@ -35,13 +35,15 @@ class NewsService {
       throw new Error(NEWS_NOT_FOUND);
     }
 
-    if (upload[0]) {
-      await uploadService.deleteFile(news.author.image);
-      news.author.image = await uploadLargeImage(upload[0]);
-    }
-    if (upload[1]) {
-      await uploadService.deleteFile(news.image);
-      news.image = await uploadLargeImage(upload[1]);
+    if (upload.length) {
+      if (upload[0]) {
+        await uploadService.deleteFile(news.author.image);
+        news.author.image = await uploadLargeImage(upload[0]);
+      }
+      if (upload[1]) {
+        await uploadService.deleteFile(news.image);
+        news.image = await uploadLargeImage(upload[1]);
+      }
     }
 
     if (await this.checkNewsExist(news, id)) {
@@ -55,8 +57,10 @@ class NewsService {
       throw new Error(NEWS_ALREADY_EXIST);
     }
 
-    if (!upload[0] && !upload[1]) {
-      throw new Error(PHOTO_NOT_FOUND);
+    if (upload.length) {
+      if (!upload[0] && !upload[1]) {
+        throw new Error(PHOTO_NOT_FOUND);
+      }
     }
 
     data.author.image = await uploadLargeImage(upload[0]);

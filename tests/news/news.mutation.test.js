@@ -16,6 +16,7 @@ let newsId = '';
 const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
 let operations;
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/upload/upload.utils');
 
 describe('News mutations tests', () => {
   beforeAll(async () => {

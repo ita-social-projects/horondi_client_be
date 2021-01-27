@@ -20,9 +20,7 @@ const createNews = async (news, upload, operations) => {
                 name {
                   value
                 }
-                image
               }
-              image
             }
             ... on Error {
               message
