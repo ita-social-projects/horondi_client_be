@@ -28,12 +28,12 @@ class MaterialsService {
   async getAllMaterials({ filter, skip, limit }) {
     const filters = this.filterItems(filter);
 
-    const items = await Material.find(filters)
+    const items = Material.find(filters)
       .populate('colors')
       .skip(skip)
       .limit(limit);
 
-    const count = await Material.find().countDocuments();
+    const count = Material.find().countDocuments();
     return {
       items,
       count,
@@ -47,7 +47,7 @@ class MaterialsService {
   async updateMaterial(id, material) {
     const { additionalPrice, ...rest } = material;
 
-    const materialToUpdate = await Material.findById(id);
+    const materialToUpdate = Material.findById(id);
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
@@ -55,8 +55,7 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    const currency = await Currency.findOne();
-    return await Material.findByIdAndUpdate(
+    return Material.findByIdAndUpdate(
       id,
       {
         ...rest,
@@ -75,7 +74,7 @@ class MaterialsService {
   }
 
   async deleteMaterial(id) {
-    const foundMaterial = await Material.findByIdAndDelete(id);
+    const foundMaterial = Material.findByIdAndDelete(id);
     if (foundMaterial) {
       return foundMaterial;
     }
@@ -85,7 +84,7 @@ class MaterialsService {
   async checkMaterialExistOrDuplicated(data, id) {
     let materialsCount;
     if (!id) {
-      materialsCount = await Material.countDocuments({
+      materialsCount = Material.countDocuments({
         _id: { $ne: id },
         name: {
           $elemMatch: {
@@ -95,7 +94,7 @@ class MaterialsService {
       });
       return materialsCount > 0;
     }
-    materialsCount = await Material.countDocuments({
+    materialsCount = Material.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
