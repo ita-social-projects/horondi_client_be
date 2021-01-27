@@ -48,7 +48,6 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
-  ID_NOT_PROVIDED,
   SESSION_TIMEOUT,
   INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
@@ -135,7 +134,7 @@ class UserService {
   }
 
   async getUserByFieldOrThrow(key, param) {
-    const checkedUser = await User.findOne({
+    const checkedUser = User.findOne({
       [key]: param,
     });
 
@@ -147,7 +146,7 @@ class UserService {
   }
 
   async getPurchasedProducts(id) {
-    const user = await User.findOne({
+    const user = User.findOne({
       _id: id,
     }).populate('orders');
     const paidOrders = user.orders.filter(order => order.isPaid);
@@ -162,7 +161,7 @@ class UserService {
     let filteredItems = this.filterItems(filter);
     let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
 
-    const [users] = await User.aggregate([
+    const [users] = User.aggregate([
       {
         $addFields: {
           name: { $concat: ['$firstName', ' ', '$lastName'] },
@@ -193,7 +192,7 @@ class UserService {
 
   async getUsersForStatistic({ filter }) {
     const filters = this.filterItems(filter);
-    const users = await User.find(filters)
+    const users = User.find(filters)
       .sort({ registrationDate: 1 })
       .lean();
     const formatedData = users.map(el =>
@@ -230,7 +229,7 @@ class UserService {
     }
 
     if (user.email !== updatedUser.email) {
-      const existingUser = await User.findOne({ email: updatedUser.email });
+      const existingUser = User.findOne({ email: updatedUser.email });
       if (existingUser) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
@@ -318,7 +317,7 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await User.findOne({ email });
+    const user = User.findOne({ email });
 
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
@@ -377,7 +376,7 @@ class UserService {
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
-    if (!(await User.findOne({ email: dataUser.email }))) {
+    if (!User.findOne({ email: dataUser.email })) {
       await this.registerGoogleUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
@@ -399,7 +398,7 @@ class UserService {
   async loginGoogleUser({ email, staySignedIn }) {
     let refreshToken;
 
-    const user = await User.findOne({ email });
+    const user = User.findOne({ email });
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
@@ -418,7 +417,7 @@ class UserService {
   }
 
   async registerGoogleUser({ firstName, lastName, email, credentials }) {
-    if (await User.findOne({ email })) {
+    if (User.findOne({ email })) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
 
@@ -440,7 +439,7 @@ class UserService {
       email,
       password,
     });
-    if (await User.findOne({ email })) {
+    if (User.findOne({ email })) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
 
@@ -506,7 +505,7 @@ class UserService {
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id);
+    const res = User.findByIdAndDelete(id);
     return res || new Error(USER_NOT_FOUND);
   }
 
@@ -520,12 +519,12 @@ class UserService {
         confirmationToken: '',
       },
     };
-    await User.findByIdAndUpdate(decoded.userId, updates);
+    User.findByIdAndUpdate(decoded.userId, updates);
     return true;
   }
 
   async recoverUser(email, language) {
-    const user = await User.findOne({ email });
+    const user = User.findOne({ email });
     if (!user) {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
@@ -570,7 +569,7 @@ class UserService {
     const dayHasPassed =
       Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
     if (dayHasPassed) {
-      await User.findByIdAndUpdate(user._id, {
+      User.findByIdAndUpdate(user._id, {
         recoveryAttempts: 0,
         lastRecoveryDate: Date.now(),
       });
@@ -589,7 +588,7 @@ class UserService {
         recoveryToken: '',
       },
     };
-    await User.findByIdAndUpdate(user._id, updates);
+    User.findByIdAndUpdate(user._id, updates);
     return true;
   }
 
@@ -602,7 +601,7 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    if (await User.findOne({ email })) {
+    if (User.findOne({ email })) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
 
@@ -652,7 +651,7 @@ class UserService {
       });
     }
 
-    const user = await User.findOne({ email: decoded.email });
+    const user = User.findOne({ email: decoded.email });
 
     if (!user) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
@@ -689,7 +688,7 @@ class UserService {
   }
 
   async updateCartOrWishlist(userId, key, list, productId) {
-    await User.findByIdAndUpdate(userId, { [key]: list });
+    User.findByIdAndUpdate(userId, { [key]: list });
     return productService.getProductById(productId);
   }
 
