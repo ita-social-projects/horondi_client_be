@@ -9,12 +9,12 @@ const {
 
 class HomePageSliderService {
   async getAllSlides({ skip, limit }) {
-    const items = await HomePageSlider.find()
+    const items = HomePageSlider.find()
       .sort({ show: -1, order: 1 })
       .skip(skip)
       .limit(limit);
 
-    const count = await HomePageSlider.find().countDocuments();
+    const count = HomePageSlider.find().countDocuments();
     return {
       items,
       count,
@@ -25,7 +25,7 @@ class HomePageSliderService {
     if (!ObjectId.isValid(id)) {
       throw new Error(SLIDE_NOT_VALID);
     }
-    const foundSlide = await HomePageSlider.findById(id);
+    const foundSlide = HomePageSlider.findById(id);
     if (foundSlide) {
       return foundSlide;
     }
@@ -45,13 +45,13 @@ class HomePageSliderService {
   }
 
   async updateSlide({ id, slide, upload }) {
-    const slideToUpdate = await HomePageSlider.findById(id);
+    const slideToUpdate = HomePageSlider.findById(id);
     if (!slideToUpdate) {
       throw new Error(SLIDE_NOT_FOUND);
     }
 
     if (!upload) {
-      return await HomePageSlider.findByIdAndUpdate(id, slide, { new: true });
+      return HomePageSlider.findByIdAndUpdate(id, slide, { new: true });
     }
     const uploadResult = await uploadService.uploadFiles([upload]);
 
@@ -60,12 +60,12 @@ class HomePageSliderService {
     const images = imageResults.fileNames;
 
     if (!images) {
-      return await HomePageSlider.findByIdAndUpdate(id, slide);
+      return HomePageSlider.findByIdAndUpdate(id, slide);
     }
-    const foundSlide = await HomePageSlider.findById(id).lean();
+    const foundSlide = HomePageSlider.findById(id).lean();
     uploadService.deleteFiles(Object.values(foundSlide.images));
 
-    return await HomePageSlider.findByIdAndUpdate(
+    return HomePageSlider.findByIdAndUpdate(
       id,
       {
         ...slide,
@@ -78,7 +78,7 @@ class HomePageSliderService {
   }
 
   async deleteSlide(id) {
-    const foundSlide = await HomePageSlider.findByIdAndDelete(id).lean();
+    const foundSlide = HomePageSlider.findByIdAndDelete(id).lean();
     if (!foundSlide) {
       throw new Error(SLIDE_NOT_FOUND);
     }
