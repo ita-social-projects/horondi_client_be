@@ -10,7 +10,7 @@ const { monthInMilliseconds } = require('../../consts');
 
 class CommentsService {
   async getCommentById(id) {
-    const comment = await Comment.findById(id);
+    const comment = Comment.findById(id);
     if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -18,20 +18,20 @@ class CommentsService {
   }
 
   async getAllCommentsByProduct({ productId, skip, limit }) {
-    const product = await Product.findById(productId);
+    const product = Product.findById(productId);
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId })
+    const comments = Comment.find({ product: productId })
       .skip(skip)
       .limit(limit)
       .sort('-date');
-    const count = await Comment.find({ product: productId }).countDocuments();
+    const count = Comment.find({ product: productId }).countDocuments();
     return { items: comments, count };
   }
 
   async getAllCommentsByUser(userEmail) {
-    const comments = await Comment.find({ 'user.email': userEmail });
+    const comments = Comment.find({ 'user.email': userEmail });
     return comments;
   }
 
@@ -39,12 +39,12 @@ class CommentsService {
     const dateFrom = new Date().getTime();
     const dateTo = dateFrom - monthInMilliseconds;
 
-    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
+    const items = Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
       .sort({ date: -1 })
       .skip(skip)
       .limit(limit);
 
-    const count = await Comment.find({
+    const count = Comment.find({
       date: { $gt: dateTo, $lt: dateFrom },
     }).countDocuments();
 
@@ -55,7 +55,7 @@ class CommentsService {
   }
 
   async updateComment(id, comment) {
-    const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
+    const updatedComment = Comment.findByIdAndUpdate(id, comment, {
       new: true,
     });
     if (!updatedComment) {
@@ -65,7 +65,7 @@ class CommentsService {
   }
 
   async addComment(id, data) {
-    const product = await Product.findById(id);
+    const product = Product.findById(id);
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
@@ -73,7 +73,7 @@ class CommentsService {
   }
 
   async deleteComment(id) {
-    const deletedComment = await Comment.findByIdAndDelete(id);
+    const deletedComment = Comment.findByIdAndDelete(id);
     if (!deletedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -81,7 +81,7 @@ class CommentsService {
   }
 
   async addRate(id, data, user) {
-    const product = await Product.findById(id);
+    const product = Product.findById(id);
 
     if (!product) {
       throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
@@ -106,7 +106,7 @@ class CommentsService {
         )
       : [...userRates, { ...data, user: user._id }];
 
-    const rateToAdd = await Product.findByIdAndUpdate(
+    const rateToAdd = Product.findByIdAndUpdate(
       id,
       {
         rateCount,
