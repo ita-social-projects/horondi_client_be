@@ -11,11 +11,11 @@ const { OTHERS } = require('../../consts');
 
 class CategoryService {
   async getAllCategories() {
-    return await Category.find();
+    return Category.find();
   }
 
   async getCategoryById(id) {
-    const category = await Category.findById(id);
+    const category = Category.findById(id);
     if (category) {
       return category;
     }
@@ -23,7 +23,7 @@ class CategoryService {
   }
 
   async updateCategory({ id, category, upload }) {
-    const categoryToUpdate = await Category.findById(id);
+    const categoryToUpdate = Category.findById(id);
     if (!categoryToUpdate) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -33,18 +33,18 @@ class CategoryService {
     }
 
     if (!upload || !Object.keys(upload).length) {
-      return await Category.findByIdAndUpdate(id, category, { new: true });
+      return Category.findByIdAndUpdate(id, category, { new: true });
     }
     const uploadResult = await uploadService.uploadFile(upload);
 
     const images = uploadResult.fileNames;
     if (!images) {
-      return await Category.findByIdAndUpdate(id, category);
+      return Category.findByIdAndUpdate(id, category);
     }
-    const foundCategory = await Category.findById(id).lean();
+    const foundCategory = Category.findById(id).lean();
     uploadService.deleteFiles(Object.values(foundCategory.images));
 
-    return await Category.findByIdAndUpdate(
+    return Category.findByIdAndUpdate(
       id,
       {
         ...category,
@@ -60,7 +60,7 @@ class CategoryService {
     const categories = await this.getAllCategories();
 
     const data = categories.map(async category => {
-      const models = await Model.find({ category: category._id });
+      const models = Model.find({ category: category._id });
       const modelsFields = models.map(async model => {
         return {
           name: model.name,
@@ -98,12 +98,12 @@ class CategoryService {
   }
 
   async cascadeUpdateRelatives(filter, updateData) {
-    await Product.updateMany(filter, updateData);
-    await Model.updateMany(filter, updateData);
+    Product.updateMany(filter, updateData);
+    Model.updateMany(filter, updateData);
   }
   async deleteCategory({ deleteId, switchId }) {
-    const category = await Category.findByIdAndDelete(deleteId).lean();
-    const switchCategory = await Category.findById(switchId);
+    const category = Category.findByIdAndDelete(deleteId).lean();
+    const switchCategory = Category.findById(switchId);
 
     const filter = {
       category: deleteId,
@@ -134,7 +134,7 @@ class CategoryService {
     if (!data.name.length) {
       return false;
     }
-    const categoriesCount = await Category.countDocuments({
+    const categoriesCount = Category.countDocuments({
       _id: { $ne: id },
       name: {
         $elemMatch: {
@@ -172,7 +172,7 @@ class CategoryService {
 
   async getPopularCategories() {
     let total = 0;
-    const categories = await Category.find()
+    const categories = Category.find()
       .sort({ purchasedCount: -1 })
       .lean();
 

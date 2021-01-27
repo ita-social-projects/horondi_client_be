@@ -10,11 +10,11 @@ const { IMAGE_LINK } = require('../../dotenvValidator');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
-    return await BusinessText.find();
+    return BusinessText.find();
   }
 
   async getBusinessTextById(id) {
-    const businessText = await BusinessText.findById(id);
+    const businessText = BusinessText.findById(id);
     if (businessText) {
       return businessText;
     }
@@ -22,7 +22,7 @@ class BusinessTextService {
   }
 
   async getBusinessTextByCode(code) {
-    const businessText = await BusinessText.findOne({ code });
+    const businessText = BusinessText.findOne({ code });
     if (businessText) {
       return businessText;
     }
@@ -60,7 +60,7 @@ class BusinessTextService {
       await this.deleteNoNeededImages(imagesToDelete);
     }
 
-    const page = await BusinessText.findByIdAndUpdate(id, newPage, {
+    const page = BusinessText.findByIdAndUpdate(id, newPage, {
       new: true,
     });
 
@@ -95,14 +95,14 @@ class BusinessTextService {
       await this.deleteNoNeededImages(imagesToDelete);
     }
 
-    const businessText = await BusinessText.findByIdAndDelete(id);
+    const businessText = BusinessText.findByIdAndDelete(id);
     if (businessText) {
       return businessText;
     }
   }
 
   async checkBusinessTextExistByCode(data) {
-    return await BusinessText.find({ code: data.code });
+    return BusinessText.find({ code: data.code });
   }
 
   async replaceImageSourceToLink(page, files) {
