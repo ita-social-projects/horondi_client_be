@@ -486,7 +486,7 @@ const resolvers = {
   },
   HomepageImagesResult: {
     __resolveType: obj => {
-      if (obj.title) {
+      if (obj.images) {
         return SCHEMA_NAMES.homePageImages;
       }
       return 'Error';
