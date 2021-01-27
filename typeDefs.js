@@ -218,10 +218,6 @@ const typeDefs = gql`
       volumeInLiters: Int
       weightInKg: Float
   }
-  type AllProductOptions {
-    sizes: [Size]
-    bottomMaterials: [Material]
-  }
   type UserForComment {
     email: String!
     name: String
@@ -388,7 +384,6 @@ const typeDefs = gql`
       search: String
       sort: SortInput
     ): PaginatedProducts!
-    getProductOptions: AllProductOptions
     getPopularProducts: StatisticBar!
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
@@ -557,20 +552,6 @@ const typeDefs = gql`
   type File {
     fileNames: ImageSet!
     prefixUrl: String!
-  }
-  input ProductOptionsInput {
-    size: ID
-    bottomMaterial: ID
-    description: [LanguageInput!]
-    bottomColor: ID!
-    availableCount: Int
-    additions: [ProductOptionsAdditonalsInput]
-  }
-  input ProductOptionsAdditonalsInput {
-    name: [LanguageInput!]
-    description: [LanguageInput!]
-    available: Boolean
-    additionalPrice: [CurrencySetInput]
   }
   input CartProductDimensionsInput {
       volumeInLiters: Int

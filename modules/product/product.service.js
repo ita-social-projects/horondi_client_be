@@ -28,12 +28,6 @@ class ProductsService {
     return product;
   }
 
-  async getProductOptions() {
-    const sizes = await sizesService.getAllSizes();
-    const bottomMaterials = await Material.find();
-    return { sizes, bottomMaterials };
-  }
-
   filterItems(args = {}) {
     const filter = {};
     const {
