@@ -12,6 +12,7 @@ const modelsQuery = {
     try {
       return await modelService.getModelById(args.id);
     } catch (e) {
+      console.log(e);
       return {
         statusCode: 404,
         message: e.message,

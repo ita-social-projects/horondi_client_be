@@ -10,15 +10,16 @@ const {
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
 const uploadService = require('../upload/upload.service');
+const { populateModels } = require('./model.utils');
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
-    const items = await Model.find()
+    const items = Model.find()
       .populate('categories')
       .skip(skip)
       .limit(limit);
 
-    const count = await Model.find().countDocuments();
+    const count = Model.find().countDocuments();
     return {
       items,
       count,
@@ -30,54 +31,7 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
-    const foundModel = await Model.findById(id).populate([
-      {
-        path: 'constructorBasic',
-        model: 'ConstructorBasic',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorFrontPocket',
-        model: 'ConstructorFrontPocket',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorBottom',
-        model: 'ConstructorBottom',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorPattern',
-        model: 'Pattern',
-      },
-    ]);
+    const foundModel = populateModels(Model.findById(id));
 
     if (foundModel) {
       return foundModel;
@@ -111,7 +65,7 @@ class ModelsService {
   }
 
   async updateModel(id, newModel, upload) {
-    const model = await Model.findById(id);
+    const model = Model.findById(id);
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
     }
@@ -131,18 +85,18 @@ class ModelsService {
   }
 
   async deleteModel(id) {
-    const model = await Model.findByIdAndDelete(id);
+    const model = Model.findByIdAndDelete(id);
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
     }
     model.constructorBasic.forEach(async basic => {
-      await ConstructorBasic.findByIdAndDelete(basic);
+      ConstructorBasic.findByIdAndDelete(basic);
     });
     model.constructorBottom.forEach(async bottom => {
-      await ConstructorBottom.findByIdAndDelete(bottom);
+      ConstructorBottom.findByIdAndDelete(bottom);
     });
     await model.constructorFrontPocket.forEach(async pocket => {
-      await ConstructorFrontPocket.findByIdAndDelete(pocket);
+      ConstructorFrontPocket.findByIdAndDelete(pocket);
     });
 
     const images = Object.values(model.images).filter(
@@ -216,7 +170,7 @@ class ModelsService {
   }
 
   async checkModelExist(data) {
-    const modelCount = await Model.countDocuments({
+    const modelCount = Model.countDocuments({
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
