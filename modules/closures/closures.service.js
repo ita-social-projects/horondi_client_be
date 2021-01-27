@@ -7,12 +7,12 @@ const uploadService = require('../upload/upload.service');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {
-    const items = await Closure.find()
+    const items = Closure.find()
       .populate('material')
       .skip(skip)
       .limit(limit);
 
-    const count = await Closure.find().countDocuments();
+    const count = Closure.find().countDocuments();
     return {
       items,
       count,
@@ -20,7 +20,7 @@ class ClosureService {
   }
 
   async getClosureById(id) {
-    const foundClosure = await Closure.findById(id).populate('material');
+    const foundClosure = Closure.findById(id).populate('material');
     if (foundClosure) {
       return foundClosure;
     }
@@ -48,15 +48,15 @@ class ClosureService {
       data.image = uploadImage.fileNames.large;
     }
 
-    const closureMaterial = await Closure.findById(id).populate('material');
+    const closureMaterial = Closure.findById(id).populate('material');
     if (!closureMaterial) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
-    return await Closure.findByIdAndUpdate(id, closure, { new: true });
+    return Closure.findByIdAndUpdate(id, closure, { new: true });
   }
 
   async deleteClosure(id) {
-    const closure = await Closure.findByIdAndDelete(id);
+    const closure = Closure.findByIdAndDelete(id);
     if (!closure) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
@@ -64,7 +64,7 @@ class ClosureService {
   }
 
   async checkClosureExist(data) {
-    let closureCount = await Closure.countDocuments({
+    let closureCount = Closure.countDocuments({
       name: {
         $elemMatch: {
           $or: data.name.map(({ value }) => ({ value })),
