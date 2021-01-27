@@ -26,6 +26,20 @@ const color = {
     { lang: 'en', value: 'Simple color name test' },
   ],
 };
+const getMaterial = colorId => ({
+  name: [
+    { lang: 'uk', value: 'Матеріал тест' },
+    { lang: 'en', value: 'Material test' },
+  ],
+  description: [
+    { lang: 'uk', value: 'Опис update' },
+    { lang: 'en', value: 'Description update' },
+  ],
+  colors: [colorId],
+  purpose: 'INNER',
+  available: true,
+  additionalPrice: 100,
+});
 const newCategory = {
   code: 'Code for test',
   name: [
@@ -126,35 +140,8 @@ const newProduct = (
   pattern: patternId,
   closure: closureId,
   basePrice: 200,
-  options: [
-    {
-      size: sizeId,
-      bottomMaterial: mainMaterialId,
-      description: [
-        { lang: 'ua', value: 'Тканина Кордура' },
-        { lang: 'en', value: 'Cordura fabric' },
-      ],
-      bottomColor: colorId,
-      availableCount: 777,
-      additions: [
-        {
-          available: true,
-          name: [
-            { lang: 'uk', value: 'Кишеня' },
-            { lang: 'en', value: 'Pocket' },
-          ],
-          description: [
-            { lang: 'uk', value: 'Бокова кишенька за бажанням' },
-            { lang: 'en', value: 'Side pocket by request' },
-          ],
-          additionalPrice: [
-            { currency: 'UAH', value: 145000 },
-            { currency: 'USD', value: 5229 },
-          ],
-        },
-      ],
-    },
-  ],
+  sizes: [sizeId],
+  availableCount: 20,
 });
 module.exports = {
   validEmail,
@@ -169,9 +156,9 @@ module.exports = {
   newModel,
   newCategory,
   newConstructorBasic,
-  newModel,
   newClosure,
   newPattern,
   newProduct,
   color,
+  getMaterial,
 };

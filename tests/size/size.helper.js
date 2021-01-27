@@ -22,7 +22,7 @@ const createSize = async (size, operations) => {
   return createdSize.data.addSize._id;
 };
 
-const createSizeMutation = async (size, operations) => {
+const addSize = async (size, operations) => {
   const createdSize = await operations.mutate({
     mutation: gql`
       mutation($size: SizeInput!) {
@@ -244,7 +244,7 @@ module.exports = {
   createSize,
   getAllSizes,
   getSizeById,
-  createSizeMutation,
+  addSize,
   errorAdd,
   updateSize,
   errorUpdate,

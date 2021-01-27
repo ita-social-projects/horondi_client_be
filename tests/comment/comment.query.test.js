@@ -16,6 +16,7 @@ const {
   newPattern,
   newProduct,
   color,
+  getMaterial,
 } = require('./comment.variables');
 
 const { getNewProduct, deleteAll } = require('../product/product.variables');
@@ -25,14 +26,13 @@ const {
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
 
+const { createPattern } = require('../pattern/pattern.helper');
 const { createModel } = require('../model/model.helper');
 const { createCategory } = require('../category/category.helper');
-const { testCreateMaterial } = require('../materials/material.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { createProduct } = require('../product/product.helper');
-const { getMaterial } = require('../materials/material.variables');
 const { createColor } = require('../color/color.helper');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
-const newsModel = require('../../modules/news/news.model');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/product/product.utils.js');
@@ -44,36 +44,29 @@ let materialId;
 let product;
 let productId;
 let categoryId;
-let newMaterial;
 let closureId;
 let patternId;
 let constructorBasicId;
 let colorId;
+let newMaterial;
 
 describe('Comment queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    colorId = createColor(color, operations);
-    newMaterial = await getMaterial(colorId);
-    const materialdata = await testCreateMaterial(newMaterial, operations);
-    materialId = materialdata._id;
+    colorId = await createColor(color, operations);
+    categoryId = await createCategory(newCategory, operations);
+    newMaterial = getMaterial(colorId);
+    materialId = await createMaterial(newMaterial, operations);
+    patternId = await createPattern(newPattern, operations);
+    closureId = await createClosure(newClosure(materialId), operations);
     constructorBasicId = await createConstructorBasic(
       newConstructorBasic(materialId, colorId),
       operations
     );
-    patternId = await createPattern(newPattern, operations);
-    closureId = await createClosure(newClosure(materialId), operations);
-    //const itemsId = await createModel(newMaterial, newCategory, newModel);
-    categoryId = await createCategory(newCategory, operations);
-    //modelId = await createModel(newModel,operations);
     modelId = await createModel(
       newModel(categoryId, constructorBasicId),
       operations
     );
-
-    //product = getNewProduct(categoryId, modelId, materialId);
-    //productId = await createProduct(product,operations);
-
     productId = await createProduct(
       newProduct(
         categoryId,
@@ -86,6 +79,9 @@ describe('Comment queries', () => {
       ),
       operations
     );
+
+    //product = getNewProduct(categoryId, modelId, materialId);
+    //productId = await createProduct(product,operations);
 
     const res = await operations
       .mutate({

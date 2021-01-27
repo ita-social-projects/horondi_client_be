@@ -8,33 +8,31 @@ const {
   deleteSize,
 } = require('./size.helper');
 
+jest.mock('../../modules/currency/currency.utils.js');
+
 let operations;
-let sizeId1;
-let sizeId2;
+let sizeId;
 
 describe('Sizes queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    sizeId1 = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId2 = await createSize(SIZES_TO_CREATE.size2, operations);
+    sizeId = await createSize(SIZES_TO_CREATE.size1, operations);
   });
 
   test('should recieve all sizes', async () => {
     const result = await getAllSizes(operations);
-    expect(result).toContainEqual(SIZES_TO_TEST.size1);
-    expect(result).toContainEqual(SIZES_TO_TEST.size2);
+    expect(result[0]).toEqual(SIZES_TO_TEST.size1);
   });
 
   test('should recieve sizes by ID', async () => {
-    const result = await getSizeById(sizeId1, operations);
+    const result = await getSizeById(sizeId, operations);
     expect(result).toEqual({
-      _id: sizeId1,
+      _id: sizeId,
       ...SIZES_TO_TEST.size1,
     });
   });
 
   afterAll(async () => {
-    await deleteSize(sizeId1, operations);
-    await deleteSize(sizeId2, operations);
+    await deleteSize(sizeId, operations);
   });
 });

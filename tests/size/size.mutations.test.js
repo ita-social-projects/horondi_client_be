@@ -8,7 +8,7 @@ const {
   ERROR_NOT_FOUND,
 } = require('./size.variables');
 const {
-  createSizeMutation,
+  addSize,
   getSizeById,
   errorAdd,
   updateSize,
@@ -16,6 +16,8 @@ const {
   deleteSizeMutation,
   erorrDelete,
 } = require('./size.helper');
+
+jest.mock('../../modules/currency/currency.utils.js');
 
 let operations;
 let sizeId;
@@ -27,7 +29,7 @@ describe('Sizes mutations', () => {
   });
 
   test('should add size', async () => {
-    const result = await createSizeMutation(SIZES_TO_CREATE.size1, operations);
+    const result = await addSize(SIZES_TO_CREATE.size1, operations);
     sizeId = result._id;
     expect(result).toEqual({
       _id: sizeId,
