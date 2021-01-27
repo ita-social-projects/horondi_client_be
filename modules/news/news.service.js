@@ -9,11 +9,11 @@ const uploadService = require('../upload/upload.service');
 
 class NewsService {
   async getAllNews({ skip, limit }) {
-    const items = await News.find()
+    const items = News.find()
       .skip(skip)
       .limit(limit);
 
-    const count = await News.find().countDocuments();
+    const count = News.find().countDocuments();
 
     return {
       items,
@@ -22,7 +22,7 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    const foundNews = await News.findById(id);
+    const foundNews = News.findById(id);
     if (foundNews) {
       return foundNews;
     }
@@ -30,7 +30,7 @@ class NewsService {
   }
 
   async updateNews(id, news, upload) {
-    const foundNews = await News.findById(id);
+    const foundNews = News.findById(id);
     if (!foundNews) {
       throw new Error(NEWS_NOT_FOUND);
     }
@@ -49,7 +49,7 @@ class NewsService {
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    return await News.findByIdAndUpdate(id, news, { new: true });
+    return News.findByIdAndUpdate(id, news, { new: true });
   }
 
   async addNews(data, upload) {
@@ -70,7 +70,7 @@ class NewsService {
   }
 
   async deleteNews(id) {
-    const foundNews = await News.findByIdAndDelete(id);
+    const foundNews = News.findByIdAndDelete(id);
     uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
     if (foundNews) {
       return foundNews;
@@ -79,7 +79,7 @@ class NewsService {
   }
 
   async checkNewsExist(data, id) {
-    const newsCount = await News.countDocuments({
+    const newsCount = News.countDocuments({
       _id: { $ne: id },
       title: {
         $elemMatch: {
