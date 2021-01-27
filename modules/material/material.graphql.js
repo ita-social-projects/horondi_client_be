@@ -19,7 +19,7 @@ const materialInput = `
     input MaterialInput {
       name: [LanguageInput]
       description: [LanguageInput]
-      purpose: PurposeEnum
+      purpose: PurposeEnum!
       colors: [ID!]
       available: Boolean
       additionalPrice: Int

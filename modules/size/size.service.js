@@ -40,6 +40,7 @@ class SizeService {
     if (!sizeToUpdate) {
       throw new Error(SIZE_NOT_FOUND);
     }
+    input.additionalPrice = await calculatePrice(input.additionalPrice);
     return await Size.findByIdAndUpdate(id, input);
   }
 }

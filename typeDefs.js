@@ -314,6 +314,10 @@ const typeDefs = gql`
       items: [ConstructorBasic]
       count: Int
   }
+  type PaginatedConstructorBottom {
+      items: [ConstructorBottom]
+      count: Int
+  }
   type PaginatedConstructorFrontPocket {
       items: [ConstructorFrontPocket]
       count: Int
@@ -435,7 +439,7 @@ const typeDefs = gql`
     getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
-    getAllConstructorBottom: [ConstructorBottomResult]
+    getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
 
   }
   input Pagination {

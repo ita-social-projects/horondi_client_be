@@ -56,18 +56,18 @@ const constructorBottomMutation = {
   },
 
   deleteConstructorBottom: async (parent, args) => {
-    const deletedModel = await constructorService.deleteConstructorElement(
-      args.id,
-      ConstructorBottom,
-      CONSTRUCTOR_BOTTOM_NOT_FOUND
-    );
-    if (deletedModel) {
-      return deletedModel;
+    try {
+      return await constructorService.deleteConstructorElement(
+        args.id,
+        ConstructorBottom,
+        CONSTRUCTOR_BOTTOM_NOT_FOUND
+      );
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
     }
-    return {
-      statusCode: 404,
-      message: e.message,
-    };
   },
 };
 

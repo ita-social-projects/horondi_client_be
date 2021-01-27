@@ -9,17 +9,34 @@ const {
   validEmail,
   invalidEmail,
   productWrongId,
+  newCategory,
+  newConstructorBasic,
+  newModel,
+  newClosure,
+  newPattern,
+  newProduct,
+  color,
+  getMaterial,
 } = require('./comment.variables');
 
 const {
-  createModel,
-  newCategory,
-  newModel,
-  newMaterial,
-  getNewProduct,
-  deleteAll,
-} = require('../product/product.variables');
+  deleteConstructorBasic,
+  createConstructorBasic,
+} = require('../constructor-basic/constructor-basic.helper');
 
+const { createPattern, deletePattern } = require('../pattern/pattern.helper');
+const { createModel, deleteModel } = require('../model/model.helper');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { createProduct, deleteProduct } = require('../product/product.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
+const { createClosure, deleteClosure } = require('../closure/closure.helper');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/product/product.utils.js');
@@ -28,39 +45,43 @@ let commentId = '';
 let operations;
 let modelId;
 let materialId;
-let product;
 let productId;
 let categoryId;
+let closureId;
+let patternId;
+let constructorBasicId;
+let colorId;
+let newMaterial;
 
 describe('Comment queries', () => {
   beforeAll(async done => {
     operations = await setupApp();
-    const itemsId = await createModel(newMaterial, newCategory, newModel);
-    modelId = itemsId.modelId;
-    materialId = itemsId.materialId;
-    categoryId = itemsId.categoryId;
-
-    product = getNewProduct(categoryId, modelId, materialId);
-
-    const createProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!) {
-          addProduct(upload: [], product: $product) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product,
-      },
-    });
-
-    productId = createProduct.data.addProduct._id;
+    colorId = await createColor(color, operations);
+    categoryId = await createCategory(newCategory, operations);
+    newMaterial = getMaterial(colorId);
+    materialId = await createMaterial(newMaterial, operations);
+    patternId = await createPattern(newPattern, operations);
+    closureId = await createClosure(newClosure(materialId), operations);
+    constructorBasicId = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId),
+      operations
+    );
+    modelId = await createModel(
+      newModel(categoryId, constructorBasicId),
+      operations
+    );
+    productId = await createProduct(
+      newProduct(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId
+      ),
+      operations
+    );
 
     const res = await operations
       .mutate({
@@ -88,7 +109,14 @@ describe('Comment queries', () => {
   });
 
   afterAll(async done => {
-    await deleteAll(materialId, productId, categoryId, modelId);
+    await deleteProduct(productId, operations);
+    await deleteModel(modelId, operations);
+    await deleteConstructorBasic(constructorBasicId, operations);
+    await deleteMaterial(materialId, operations);
+    await deleteColor(colorId, operations);
+    await deleteClosure(closureId, operations);
+    await deletePattern(patternId, operations);
+    await deleteCategory(categoryId, operations);
     await operations
       .mutate({
         mutation: gql`
