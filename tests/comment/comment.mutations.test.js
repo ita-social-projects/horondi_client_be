@@ -16,7 +16,6 @@ const {
   color,
   getMaterial,
 } = require('./comment.variables');
-const { deleteAll } = require('../product/product.variables');
 
 const {
   deleteConstructorBasic,
@@ -24,10 +23,16 @@ const {
 } = require('../constructor-basic/constructor-basic.helper');
 
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
-const { createModel } = require('../model/model.helper');
-const { createCategory } = require('../category/category.helper');
-const { createMaterial } = require('../materials/material.helper');
-const { createProduct } = require('../product/product.helper');
+const { createModel, deleteModel } = require('../model/model.helper');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { createProduct, deleteProduct } = require('../product/product.helper');
 const { createColor, deleteColor } = require('../color/color.helper');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const {
@@ -371,11 +376,14 @@ describe('Comment queries', () => {
     done();
   });
   afterAll(async done => {
-    await deleteAll(materialId, productId, categoryId, modelId);
+    await deleteProduct(productId, operations);
+    await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
+    await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
+    await deleteCategory(categoryId, operations);
     done();
   });
 });
