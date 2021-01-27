@@ -2,11 +2,8 @@ const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 
-const { invalidId, updatedLooksImage } = require('./homepage-images.variables');
-const {
-  IMAGES_WERE_NOT_CONVERTED,
-  IMAGE_NOT_FOUND,
-} = require('../../error-messages/home-page-messages');
+const { invalidId } = require('./homepage-images.variables');
+const { IMAGE_NOT_FOUND } = require('../../error-messages/home-page-messages');
 
 let looksImageId;
 let operations;
