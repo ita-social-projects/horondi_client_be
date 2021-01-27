@@ -9,27 +9,27 @@ const user = {
 };
 
 const wrongId = '5fa8f2ad0785350940d8953e';
+const upload = ['__tests__/model/img.png', '__tests__/model/img2.png'];
 
 const news = {
   title: [
-    { lang: 'uk', value: 'bbb' },
-    { lang: 'eng', value: 'bbb' },
+    { lang: 'ua', value: 'bbb' },
+    { lang: 'en', value: 'bbb' },
   ],
   text: [
-    { lang: 'uk', value: ' d a s d' },
-    { lang: 'eng', value: ' a s d' },
+    { lang: 'ua', value: 'd a s d' },
+    { lang: 'en', value: 'a s d' },
   ],
   author: {
     name: [
-      { lang: 'uk', value: 'a sd' },
-      { lang: 'eng', value: 'a sd' },
+      { lang: 'ua', value: 'a sd' },
+      { lang: 'en', value: 'a sd' },
     ],
+    image: 'large_test-file',
   },
-  images: {
-    primary: { medium: 'ada s.jpg' },
-    additional: [],
-  },
+  image: 'large_test-file',
   date: '1111118820047',
+  show: true,
 };
 
 const newsUpdateData = {
@@ -64,6 +64,7 @@ const existingNews = {
 };
 
 module.exports = {
+  upload,
   user,
   news,
   newsUpdateData,

@@ -36,11 +36,11 @@ class NewsService {
     }
 
     if (upload[0]) {
-      uploadService.deleteFile(news.author.image);
+      await uploadService.deleteFile(news.author.image);
       news.author.image = await uploadLargeImage(upload[0]);
     }
     if (upload[1]) {
-      uploadService.deleteFile(news.image);
+      await uploadService.deleteFile(news.image);
       news.image = await uploadLargeImage(upload[1]);
     }
 
