@@ -22,6 +22,8 @@ let materialId;
 let addConstructor;
 let newConstructorForQuery;
 
+jest.mock('../../modules/currency/currency.utils.js');
+
 describe('Constructor query', () => {
   beforeAll(async () => {
     operations = await setupApp();
