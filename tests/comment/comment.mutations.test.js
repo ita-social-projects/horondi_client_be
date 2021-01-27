@@ -7,8 +7,6 @@ const {
   commentWrongId,
   rate,
   updatedRate,
-  validEmail,
-  invalidEmail,
   newCategory,
   newConstructorBasic,
   newModel,
@@ -18,19 +16,19 @@ const {
   color,
   getMaterial,
 } = require('./comment.variables');
-const { getNewProduct, deleteAll } = require('../product/product.variables');
+const { deleteAll } = require('../product/product.variables');
 
 const {
   deleteConstructorBasic,
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
 
-const { createPattern } = require('../pattern/pattern.helper');
+const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { createModel } = require('../model/model.helper');
 const { createCategory } = require('../category/category.helper');
 const { createMaterial } = require('../materials/material.helper');
 const { createProduct } = require('../product/product.helper');
-const { createColor } = require('../color/color.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const {
   COMMENT_NOT_FOUND,
@@ -44,10 +42,10 @@ jest.mock('../../modules/product/product.utils.js');
 
 let commentId = '';
 let operations;
-let productRate;
-let productRateCount;
-let productUserRates;
-let product;
+//let productRate;
+//let productRateCount;
+//let productUserRates;
+//let product;
 let productId;
 let categoryId;
 let modelId;
@@ -378,6 +376,10 @@ describe('Comment queries', () => {
   });
   afterAll(async done => {
     await deleteAll(materialId, productId, categoryId, modelId);
+    await deleteConstructorBasic(constructorBasicId, operations);
+    await deleteColor(colorId, operations);
+    await deleteClosure(closureId, operations);
+    await deletePattern(patternId, operations);
     done();
   });
 });

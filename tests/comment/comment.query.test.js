@@ -19,19 +19,19 @@ const {
   getMaterial,
 } = require('./comment.variables');
 
-const { getNewProduct, deleteAll } = require('../product/product.variables');
+const { deleteAll } = require('../product/product.variables');
 
 const {
   deleteConstructorBasic,
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
 
-const { createPattern } = require('../pattern/pattern.helper');
+const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { createModel } = require('../model/model.helper');
 const { createCategory } = require('../category/category.helper');
 const { createMaterial } = require('../materials/material.helper');
 const { createProduct } = require('../product/product.helper');
-const { createColor } = require('../color/color.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -41,7 +41,6 @@ let commentId = '';
 let operations;
 let modelId;
 let materialId;
-let product;
 let productId;
 let categoryId;
 let closureId;
@@ -80,9 +79,6 @@ describe('Comment queries', () => {
       operations
     );
 
-    //product = getNewProduct(categoryId, modelId, materialId);
-    //productId = await createProduct(product,operations);
-
     const res = await operations
       .mutate({
         mutation: gql`
@@ -110,6 +106,10 @@ describe('Comment queries', () => {
 
   afterAll(async done => {
     await deleteAll(materialId, productId, categoryId, modelId);
+    await deleteConstructorBasic(constructorBasicId, operations);
+    await deleteColor(colorId, operations);
+    await deleteClosure(closureId, operations);
+    await deletePattern(patternId, operations);
     await operations
       .mutate({
         mutation: gql`
