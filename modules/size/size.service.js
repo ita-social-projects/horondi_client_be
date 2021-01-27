@@ -8,10 +8,10 @@ const {
 
 class SizeService {
   async getAllSizes() {
-    return await Size.find();
+    return Size.find();
   }
   async getSizeById(id) {
-    const size = await Size.findById(id);
+    const size = Size.findById(id);
     if (size) {
       return size;
     }
@@ -19,7 +19,7 @@ class SizeService {
   }
 
   async addSize(sizeData) {
-    const size = await Size.find({ name: sizeData.name });
+    const size = Size.find({ name: sizeData.name });
     if (size.length) {
       throw new Error(SIZE_ALREADY_EXIST);
     }
@@ -28,7 +28,7 @@ class SizeService {
   }
 
   async deleteSize(id) {
-    const foundSize = await Size.findByIdAndDelete(id).lean();
+    const foundSize = Size.findByIdAndDelete(id).lean();
     if (!foundSize) {
       throw new Error(SIZE_NOT_FOUND);
     }
@@ -36,12 +36,12 @@ class SizeService {
   }
 
   async updateSize(id, input) {
-    const sizeToUpdate = await Size.findById(id).lean();
+    const sizeToUpdate = Size.findById(id).lean();
     if (!sizeToUpdate) {
       throw new Error(SIZE_NOT_FOUND);
     }
     input.additionalPrice = await calculatePrice(input.additionalPrice);
-    return await Size.findByIdAndUpdate(id, input);
+    return Size.findByIdAndUpdate(id, input);
   }
 }
 
