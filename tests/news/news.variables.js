@@ -12,24 +12,21 @@ const wrongId = '5fa8f2ad0785350940d8953e';
 
 const news = {
   title: [
-    { lang: 'uk', value: 'bbb' },
-    { lang: 'eng', value: 'bbb' },
+    { lang: 'ua', value: 'bbb' },
+    { lang: 'en', value: 'bbb' },
   ],
   text: [
-    { lang: 'uk', value: ' d a s d' },
-    { lang: 'eng', value: ' a s d' },
+    { lang: 'ua', value: 'd a s d' },
+    { lang: 'en', value: 'a s d' },
   ],
   author: {
     name: [
-      { lang: 'uk', value: 'a sd' },
-      { lang: 'eng', value: 'a sd' },
+      { lang: 'ua', value: 'a sd' },
+      { lang: 'en', value: 'a sd' },
     ],
   },
-  images: {
-    primary: { medium: 'ada s.jpg' },
-    additional: [],
-  },
   date: '1111118820047',
+  show: true,
 };
 
 const newsUpdateData = {
