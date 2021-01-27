@@ -10,8 +10,6 @@ const {
 } = require('../../error-messages/constructor-bottom.messages');
 const {
   createConstructorBottom,
-  updateConstructorBottom,
-  createConstructorBottomAgain,
   updateConstructorB,
   deleteConstructorBottom,
 } = require('./constructor-bottom.helper');
@@ -62,22 +60,24 @@ describe('Constructor mutations', () => {
     });
   });
   test('should update existing constructor-bottom', async () => {
-    await updateConstructorBottom(
+    await updateConstructorB(
       constructorId,
       operations,
       newDataConstructorBottom
     );
-    expect(updateConstructorBottom).toBeDefined();
-    expect(updateConstructorBottom.image).not.toEqual(result.image);
-    expect(updateConstructorBottom.name).not.toEqual(result.name);
+    expect(updateConstructorB).toBeDefined();
+    expect(updateConstructorB.image).not.toEqual(result.image);
+    expect(updateConstructorB.name).not.toEqual(result.name);
   });
   test('should return Error (already exist) when creating same constructor-bottom again', async () => {
-    const createConstructorAgain = await createConstructorBottomAgain(
+    const createConstructorAgain = await createConstructorBottom(
       newDataConstructorBottom,
       operations
     );
-    expect(createConstructorAgain).toBeDefined();
-    expect(createConstructorAgain).toEqual(CONSTRUCTOR_BOTTOM_ALREADY_EXIST);
+    expect(createConstructorAgain.message).toBeDefined();
+    expect(createConstructorAgain.message).toEqual(
+      CONSTRUCTOR_BOTTOM_ALREADY_EXIST
+    );
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async () => {
     const updateConstructor = await updateConstructorB(
