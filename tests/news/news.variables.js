@@ -9,7 +9,6 @@ const user = {
 };
 
 const wrongId = '5fa8f2ad0785350940d8953e';
-const upload = [];
 
 const news = {
   title: [
@@ -62,7 +61,6 @@ const existingNews = {
 };
 
 module.exports = {
-  upload,
   user,
   news,
   newsUpdateData,

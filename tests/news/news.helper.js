@@ -1,11 +1,11 @@
 const { gql } = require('@apollo/client');
 
-const createNews = async (news, upload, operations) => {
+const createNews = async (news, operations) => {
   const res = await operations
     .mutate({
       mutation: gql`
-        mutation($news: NewsInput!, $upload: Upload) {
-          addNews(news: $news, upload: $upload) {
+        mutation($news: NewsInput!) {
+          addNews(news: $news, upload: []) {
             ... on News {
               _id
               title {
@@ -31,19 +31,18 @@ const createNews = async (news, upload, operations) => {
       `,
       variables: {
         news,
-        upload,
       },
     })
     .catch(e => e);
   return res.data.addNews;
 };
 
-const updateNews = async (id, news, upload, operations) => {
+const updateNews = async (id, news, operations) => {
   const res = await operations
     .mutate({
       mutation: gql`
-        mutation($id: ID!, $news: NewsInput!, $upload: Upload) {
-          updateNews(id: $id, news: $news, upload: $upload) {
+        mutation($id: ID!, $news: NewsInput!) {
+          updateNews(id: $id, news: $news, upload: []) {
             ... on News {
               _id
               title {
@@ -73,7 +72,6 @@ const updateNews = async (id, news, upload, operations) => {
       variables: {
         id,
         news,
-        upload,
       },
     })
     .catch(e => e);

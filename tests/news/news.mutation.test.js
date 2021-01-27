@@ -1,6 +1,5 @@
 const { setupApp } = require('../helper-functions');
 const {
-  upload,
   news,
   newsUpdateData,
   existingNews,
@@ -24,7 +23,7 @@ describe('News mutations tests', () => {
   });
 
   test('#1 Should Add News To Database', async () => {
-    const addResponse = await createNews(news, upload, operations);
+    const addResponse = await createNews(news, operations);
 
     newsId = addResponse._id;
     expect(addResponse.title).toBeInstanceOf(Array);
@@ -45,19 +44,14 @@ describe('News mutations tests', () => {
   });
 
   test('#2 Creating News With Same Title Should Throw Error', async () => {
-    const addResponse = await createNews(news, upload, operations);
+    const addResponse = await createNews(news, operations);
 
     expect(addResponse).toHaveProperty('message', NEWS_ALREADY_EXIST);
     expect(addResponse).toHaveProperty('statusCode', 400);
   });
 
   test('#3 Should Update News', async () => {
-    const updateResponse = await updateNews(
-      newsId,
-      newsUpdateData,
-      upload,
-      operations
-    );
+    const updateResponse = await updateNews(newsId, newsUpdateData, operations);
 
     expect(updateResponse.author.name).toBeInstanceOf(Array);
     expect(updateResponse.text).toBeInstanceOf(Array);
@@ -73,7 +67,6 @@ describe('News mutations tests', () => {
     const updateResponse = await updateNews(
       newsDoesNotExistId,
       newsUpdateData,
-      upload,
       operations
     );
 
@@ -82,12 +75,7 @@ describe('News mutations tests', () => {
   });
 
   test('#5 Update Not Existing News Should Return Error', async () => {
-    const updateResponse = await updateNews(
-      wrongId,
-      existingNews,
-      upload,
-      operations
-    );
+    const updateResponse = await updateNews(wrongId, existingNews, operations);
 
     expect(updateResponse).toHaveProperty('message', NEWS_NOT_FOUND);
     expect(updateResponse).toHaveProperty('statusCode', 404);

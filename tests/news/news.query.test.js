@@ -8,7 +8,7 @@ const {
   getById,
   deleteNews,
 } = require('./news.helper');
-const { news, upload } = require('./news.variables');
+const { news } = require('./news.variables');
 
 let newsId = '';
 const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
@@ -21,7 +21,7 @@ jest.mock('../../modules/upload/upload.utils');
 describe('News queries tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const addResponse = await createNews(news, upload, operations);
+    const addResponse = await createNews(news, operations);
     newsId = addResponse._id;
   });
 
