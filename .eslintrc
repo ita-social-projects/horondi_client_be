@@ -3,10 +3,11 @@
   "parser": "babel-eslint",
   "env": {
     "commonjs": true,
+    "jest/globals": true,
     "es6": true,
     "node": true
   },
-  "extends": ["airbnb-base"],
+  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -125,6 +126,6 @@
         "allowTemplateLiterals": true
       }
     ],
-    "no-confusing-arrow": 0,
+    "no-confusing-arrow": 0
   }
 }

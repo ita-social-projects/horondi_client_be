@@ -120,7 +120,7 @@ class ProductsService {
       const imagesResults = await uploadResult[0];
       productData.images.primary = imagesResults.fileNames;
     }
-    if (filesToUpload) {
+    if (filesToUpload.length) {
       const uploadResult = await uploadService.uploadFiles(filesToUpload);
       const imagesResults = await Promise.allSettled(uploadResult);
       const additional = imagesResults.map(res => res.value.fileNames);
@@ -131,10 +131,6 @@ class ProductsService {
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
-    if (!Array.isArray(productData.model)) {
-      const model = await modelService.getModelById(productData.model);
-      productData.model = model.name;
-    }
     return await Product.findByIdAndUpdate(id, productData, { new: true });
   }
 

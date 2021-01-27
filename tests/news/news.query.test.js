@@ -2,235 +2,89 @@
 const { gql } = require('@apollo/client');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const { setupApp } = require('../helper-functions');
-
+const {
+  createNews,
+  getAllNews,
+  getById,
+  deleteNews,
+} = require('./news.helper');
 const { news } = require('./news.variables');
 
 let newsId = '';
 const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
 let operations;
+let skip = 0;
+let limit = 0;
+jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/upload/upload.utils');
 
 describe('News queries tests', () => {
-  describe('Get all news', () => {
-    beforeAll(async () => {
-      operations = await setupApp();
-      const res = await operations
-        .mutate({
-          mutation: gql`
-            mutation($news: NewsInput!) {
-              addNews(news: $news) {
-                ... on News {
-                  _id
-                  title {
-                    lang
-                    value
-                  }
-                  text {
-                    lang
-                    value
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                  images {
-                    primary {
-                      medium
-                    }
-                    additional {
-                      medium
-                    }
-                  }
-                }
-                ... on Error {
-                  message
-                  statusCode
-                }
-              }
-            }
-          `,
-          variables: { news },
-        })
-        .catch(e => e);
-      newsId = res.data.addNews._id;
-    });
-
-    test('Should receive all news', async () => {
-      const res = await operations
-        .query({
-          query: gql`
-            query {
-              getAllNews {
-                items {
-                  title {
-                    lang
-                    value
-                  }
-                  text {
-                    lang
-                    value
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                  images {
-                    primary {
-                      medium
-                    }
-                    additional {
-                      medium
-                    }
-                  }
-                  date
-                }
-              }
-            }
-          `,
-        })
-        .catch(e => e);
-
-      expect(res.data.getAllNews).toBeDefined();
-      expect(res.data.getAllNews.items).toContainEqual({ ...news });
-    });
+  beforeAll(async () => {
+    operations = await setupApp();
+    const addResponse = await createNews(news, operations);
+    newsId = addResponse._id;
   });
 
-  describe('Get news by ID', () => {
-    test('Should receive one news', async () => {
-      const res = await operations
-        .query({
-          query: gql`
-            query($id: ID!) {
-              getNewsById(id: $id) {
-                ... on News {
-                  title {
-                    lang
-                    value
-                  }
-                  text {
-                    lang
-                    value
-                  }
-                  images {
-                    primary {
-                      medium
-                    }
-                    additional {
-                      medium
-                    }
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                  date
-                }
-                ... on Error {
-                  statusCode
-                  message
-                }
-              }
-            }
-          `,
-          variables: { id: newsId },
-        })
-        .catch(e => e);
-      const receivedNews = res.data.getNewsById;
-      expect(receivedNews).toBeDefined();
-      expect(receivedNews).toHaveProperty(
-        'title',
-        news.title.map(item => ({
-          ...item,
-        }))
-      );
+  test('#1 Should Receive All News', async () => {
+    const allNews = await getAllNews(skip, limit, operations);
 
-      expect(receivedNews.title).toBeInstanceOf(Array);
-      expect(receivedNews).toHaveProperty(
-        'text',
-        news.text.map(item => ({
-          ...item,
-        }))
-      );
-      expect(receivedNews.author).toBeDefined();
-      expect(receivedNews.author).toHaveProperty(
-        'name',
-        news.author.name.map(item => ({
-          ...item,
-        }))
-      );
-      expect(receivedNews.text).toBeInstanceOf(Array);
-      expect(receivedNews).toHaveProperty('images');
-      expect(receivedNews.images).toHaveProperty('primary');
-      expect(receivedNews).toHaveProperty('date', '1111118820047');
-    });
+    expect(allNews).toBeDefined();
+    expect(allNews.items[0].title).toBeInstanceOf(Array);
+    expect(allNews.items[0]).toHaveProperty(
+      'text',
+      news.text.map(item => ({
+        ...item,
+      }))
+    );
+    expect(allNews.items[0].author).toBeDefined();
+    expect(allNews.items[0].author).toHaveProperty(
+      'name',
+      news.author.name.map(item => ({
+        ...item,
+      }))
+    );
+    expect(allNews.items[0].text).toBeInstanceOf(Array);
+    expect(allNews.items[0]).toHaveProperty('date', '1111118820047');
+  });
 
-    test('Returning not existing news should return error message', async () => {
-      const res = await operations
-        .query({
-          query: gql`
-            query($id: ID!) {
-              getNewsById(id: $id) {
-                ... on News {
-                  title {
-                    value
-                  }
-                  text {
-                    value
-                  }
-                  date
-                  images {
-                    primary {
-                      medium
-                    }
-                    additional {
-                      medium
-                    }
-                  }
-                  author {
-                    name {
-                      value
-                    }
-                  }
-                }
-                ... on Error {
-                  statusCode
-                  message
-                }
-              }
-            }
-          `,
-          variables: { id: newsDoesNotExistId },
-        })
-        .catch(e => e);
-      expect(res.data.getNewsById).toBeDefined();
-      expect(res.data.getNewsById).toHaveProperty('statusCode', 404);
-      expect(res.data.getNewsById).toHaveProperty('message', NEWS_NOT_FOUND);
-    });
+  test('#2 Should Receive One News', async () => {
+    const newsById = await getById(newsId, operations);
 
-    afterAll(async () => {
-      await operations
-        .mutate({
-          mutation: gql`
-            mutation($id: ID!) {
-              deleteNews(id: $id) {
-                ... on News {
-                  _id
-                }
-                ... on Error {
-                  statusCode
-                  message
-                }
-              }
-            }
-          `,
-          variables: { id: newsId },
-        })
-        .catch(e => e);
-    });
+    expect(newsById).toBeDefined();
+    expect(newsById).toHaveProperty(
+      'title',
+      news.title.map(item => ({
+        ...item,
+      }))
+    );
+
+    expect(newsById.title).toBeInstanceOf(Array);
+    expect(newsById).toHaveProperty(
+      'text',
+      news.text.map(item => ({
+        ...item,
+      }))
+    );
+    expect(newsById.author).toBeDefined();
+    expect(newsById.author).toHaveProperty(
+      'name',
+      news.author.name.map(item => ({
+        ...item,
+      }))
+    );
+    expect(newsById.text).toBeInstanceOf(Array);
+    expect(newsById).toHaveProperty('date', '1111118820047');
+  });
+
+  test('#3 Returning Not Existing News Should Return Error Message', async () => {
+    const newsById = await getById(newsDoesNotExistId, operations);
+
+    expect(newsById).toBeDefined();
+    expect(newsById).toHaveProperty('statusCode', 404);
+    expect(newsById).toHaveProperty('message', NEWS_NOT_FOUND);
+  });
+
+  afterAll(async () => {
+    await deleteNews(newsId, operations);
   });
 });
