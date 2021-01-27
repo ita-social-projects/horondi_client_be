@@ -1,9 +1,9 @@
 const looksImage = {
   images: {
-    large: 'large_0_test-file',
-    medium: 'medium_0_test-file',
-    small: 'small_0_test-file',
-    thumbnail: 'thumbnail_0_test-file',
+    large: 'large_test-file',
+    medium: 'medium_test-file',
+    small: 'small_test-file',
+    thumbnail: 'thumbnail_test-file',
   },
 };
 

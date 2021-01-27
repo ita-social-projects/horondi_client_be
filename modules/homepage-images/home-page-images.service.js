@@ -1,6 +1,6 @@
 const LooksImages = require('./home-page-images.model');
 
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 
 const {
   IMAGES_WERE_NOT_CONVERTED,
@@ -48,7 +48,7 @@ class HomePageImagesService {
   }
 
   async uploadImages(data) {
-    const uploadResult = await uploadFiles(data);
+    const uploadResult = await uploadService.uploadFiles(data);
     const imagesResult = await Promise.allSettled(uploadResult);
     const resizedImages = imagesResult.map(item => item.value.fileNames);
 
@@ -70,7 +70,7 @@ class HomePageImagesService {
   }
 
   async deleteImages(imagesToDelete) {
-    const deletedImages = await deleteFiles([imagesToDelete]);
+    const deletedImages = await uploadService.deleteFiles([imagesToDelete]);
 
     if (!deletedImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
 

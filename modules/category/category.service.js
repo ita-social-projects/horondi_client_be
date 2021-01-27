@@ -1,16 +1,12 @@
-const mongoose = require('mongoose');
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
-  CATEGORY_IS_NOT_MAIN,
-  WRONG_CATEGORY_DATA,
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
-const { validateCategoryInput } = require('../../utils/validate-category');
-const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
@@ -39,16 +35,14 @@ class CategoryService {
     if (!upload || !Object.keys(upload).length) {
       return await Category.findByIdAndUpdate(id, category, { new: true });
     }
-    const uploadResult = await uploadFiles([upload]);
+    const uploadResult = await uploadService.uploadFile(upload);
 
-    const uploadResults = await uploadResult[0];
-
-    const images = uploadResults.fileNames;
+    const images = uploadResult.fileNames;
     if (!images) {
       return await Category.findByIdAndUpdate(id, category);
     }
     const foundCategory = await Category.findById(id).lean();
-    deleteFiles(Object.values(foundCategory.images));
+    uploadService.deleteFiles(Object.values(foundCategory.images));
 
     return await Category.findByIdAndUpdate(
       id,
@@ -66,26 +60,19 @@ class CategoryService {
     const categories = await this.getAllCategories();
 
     const data = categories.map(async category => {
-      const products = await Product.find({ category: category._id });
-      const uniqueModels = [];
-      const models = products
-        .map(product => ({
-          name: [...product.model],
-          _id: product._id,
-        }))
-        .filter(({ name }) => {
-          if (!uniqueModels.includes(name[0].value)) {
-            uniqueModels.push(name[0].value);
-            return true;
-          }
-          return false;
-        });
+      const models = await Model.find({ category: category._id });
+      const modelsFields = models.map(async model => {
+        return {
+          name: model.name,
+          _id: model._id,
+        };
+      });
       return {
         category: {
           name: [...category.name],
           _id: category._id,
         },
-        models,
+        models: modelsFields,
       };
     });
 
@@ -103,9 +90,9 @@ class CategoryService {
 
     const savedCategory = await new Category(data).save();
 
-    const uploadResult = await uploadFiles([upload]);
-    const imageResults = await uploadResult[0];
-    savedCategory.images = imageResults.fileNames;
+    const uploadResult = await uploadService.uploadFile(upload);
+
+    savedCategory.images = uploadResult.fileNames;
 
     return await savedCategory.save();
   }
@@ -133,7 +120,7 @@ class CategoryService {
     );
 
     if (images.length) {
-      await deleteFiles(images);
+      await uploadService.deleteFiles(images);
     }
 
     if (category) {

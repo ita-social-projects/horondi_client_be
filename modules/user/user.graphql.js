@@ -17,7 +17,6 @@ type User{
     wishlist: [Product]
     cart: [CartProduct]
     orders:[ID]
-    purchasedProducts: [ID]
     comments: [ID]
     banned: Boolean
     confirmed: Boolean
@@ -41,13 +40,24 @@ input UserInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
-    cart: [CartProductInput]
     orders:[ID]
-    purchasedProducts: [ID]
     comments: [ID]
     banned: Boolean
     confirmed: Boolean
 }`;
+const cartProductType = `
+type CartProduct {
+_id: ID!
+name: [Language]
+bagBottom: CartProductBagBottom
+dimensions: CartProductDimensions
+image: String
+totalPrice: [CurrencySet]
+quantity: Int
+selectedSize: String
+sidePocket: Boolean
+}
+`;
 const userUpdateInput = `
 input UserUpdateInput {
     _id: ID
@@ -59,9 +69,7 @@ input UserUpdateInput {
     address: AddressInput
     images: ImageSetInput
     wishlist: [ID]
-    cart: [CartProductInput]
     orders:[ID]
-    purchasedProducts: [ID]
     comments: [ID]
     confirmed: Boolean
 }`;
@@ -122,6 +130,11 @@ type Token {
   accessToken: String
 }
 `;
+const purchasedProductsType = `
+    type PurchasedProduct {
+        _id: ID!
+    }
+`;
 
 module.exports = {
   userType,
@@ -136,4 +149,6 @@ module.exports = {
   paginatedUsersType,
   userSortInput,
   tokenType,
+  purchasedProductsType,
+  cartProductType,
 };

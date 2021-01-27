@@ -73,7 +73,12 @@ const app = express();
 app.disable('x-powered-by');
 currencyWorker();
 
-server.applyMiddleware({ app });
+server.applyMiddleware({
+  app,
+  bodyParserConfig: {
+    limit: '15mb',
+  },
+});
 
 app.listen(PORT, () => {
   console.log(

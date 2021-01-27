@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
-const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
-const Address = require('../common/Address').schema;
+const Delivery = require('../../models/Delivery').schema;
+const OrderItem = require('../../models/OrderItem').schema;
 
 const orderSchema = new mongoose.Schema({
+  orderNumber: String,
   status: {
     type: String,
     required: true,
@@ -29,12 +30,11 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  lastUpdatedDate: Date,
-  userComment: {
-    type: String,
-    default: '',
+  lastUpdatedDate: {
+    type: Date,
+    default: Date.now,
   },
-  adminComment: {
+  userComment: {
     type: String,
     default: '',
   },
@@ -42,49 +42,29 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-  delivery: {
-    sentOn: Date,
-    sentBy: String,
-    byCourier: Boolean,
-    courierOffice: Number,
-    invoiceNumber: String,
-    cost: [CurrencySet],
-  },
-  address: Address,
-  items: [
-    {
-      category: [Language],
-      subcategory: [Language],
-      model: [Language],
-      name: [Language],
-      colors: [[Language]],
-      pattern: [Language],
-      closure: [Language],
-      closureColor: String,
-      size: {
-        heightInCm: Number,
-        widthInCm: Number,
-        depthInCm: Number,
-        volumeInLiters: Number,
-        weightInKg: Number,
-      },
-      bottomMaterial: [Language],
-      bottomColor: [Language],
-      additions: [[Language]],
-      actualPrice: [CurrencySet],
-      quantity: Number,
-    },
-  ],
+  delivery: Delivery,
+  items: [OrderItem],
   totalItemsPrice: [CurrencySet],
   totalPriceToPay: [CurrencySet],
   paymentMethod: {
     type: String,
-    required: true,
     enum: ['CARD', 'CASH'],
+    default: 'CASH',
   },
   isPaid: {
     type: Boolean,
     default: false,
+  },
+  paymentStatus: {
+    type: String,
+    enum: [
+      'CREATED',
+      'EXPIRED',
+      'APPROVED',
+      'DECLINED',
+      'REVERSED',
+      'PROCESSING',
+    ],
   },
 });
 

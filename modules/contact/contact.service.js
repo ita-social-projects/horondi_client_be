@@ -1,5 +1,5 @@
 const Contact = require('./contact.model');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const { uploadContactImages } = require('./contact.utils');
 
 class ContactService {
@@ -57,7 +57,7 @@ class ContactService {
   }
 
   async uploadMapImages(data) {
-    const uploadResult = await uploadFiles([
+    const uploadResult = await uploadService.uploadFiles([
       data.mapImages[0].image,
       data.mapImages[1].image,
     ]);
@@ -84,7 +84,7 @@ class ContactService {
   }
 
   async deleteMapImages(contact) {
-    const deletedImages = await deleteFiles([
+    const deletedImages = await uploadService.deleteFiles([
       ...Object.values(contact.images[0].value),
       ...Object.values(contact.images[1].value),
     ]);

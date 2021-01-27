@@ -24,7 +24,6 @@ const productsQuery = {
   },
   getModelsByCategory: (parent, args) =>
     productsService.getModelsByCategory(args.id),
-  getProductOptions: () => productsService.getProductOptions(),
   getPopularProducts: () => productsService.getPopularProducts(),
 };
 
