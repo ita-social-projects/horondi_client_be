@@ -6,11 +6,11 @@ const {
 
 class HeadersService {
   async getAllHeaders() {
-    return await Header.find();
+    return Header.find();
   }
 
   async getHeaderById(id) {
-    const foundHeader = await Header.findById(id);
+    const foundHeader = Header.findById(id);
     if (foundHeader) {
       return foundHeader;
     }
@@ -18,7 +18,7 @@ class HeadersService {
   }
 
   async updateHeader({ id, header }) {
-    const headerToUpdate = await Header.findById(id).lean();
+    const headerToUpdate = Header.findById(id).lean();
     if (!headerToUpdate) {
       throw new Error(HEADER_NOT_FOUND);
     }
@@ -27,7 +27,7 @@ class HeadersService {
       throw new Error(HEADER_ALREADY_EXIST);
     }
 
-    return await Header.findByIdAndUpdate(id, header, {
+    return Header.findByIdAndUpdate(id, header, {
       new: true,
     });
   }
@@ -40,7 +40,7 @@ class HeadersService {
   }
 
   async deleteHeader(id) {
-    const foundHeader = await Header.findByIdAndDelete(id).lean();
+    const foundHeader = Header.findByIdAndDelete(id).lean();
 
     if (!foundHeader) {
       throw new Error(HEADER_NOT_FOUND);
@@ -50,7 +50,7 @@ class HeadersService {
   }
 
   async checkHeaderExist(data, id) {
-    const headersCount = await Header.countDocuments({
+    const headersCount = Header.countDocuments({
       _id: { $ne: id },
       title: {
         $elemMatch: {
