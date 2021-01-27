@@ -384,6 +384,24 @@ describe('Comment queries', () => {
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+    await operations
+      .mutate({
+        mutation: gql`
+          mutation($id: ID!) {
+            deleteComment(id: $id) {
+              ... on Comment {
+                _id
+              }
+              ... on Error {
+                statusCode
+                message
+              }
+            }
+          }
+        `,
+        variables: { id: commentId },
+      })
+      .catch(e => e);
     done();
   });
 });
