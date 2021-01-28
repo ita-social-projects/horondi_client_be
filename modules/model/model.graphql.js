@@ -23,10 +23,11 @@ input ModelInput {
     images: ImageSetInput,
     priority: Int,
     show: Boolean,
-    sizes: [SizeInput]
+    sizes: [ID]
     availableForConstructor: Boolean,
     constructorBasic:[ID],
     constructorPattern:[ID],
+    constructorFrontPocket:[ID],
     constructorBottom:[ID]
   }`;
 
