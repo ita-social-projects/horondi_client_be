@@ -389,6 +389,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getPopularProducts: StatisticBar!
+    getProductDetailsCombinations: ProductDetailsCombinations
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
       productId: ID!

@@ -1,8 +1,10 @@
 const Product = require('./product.model');
-const sizesService = require('../size/size.service');
-const Material = require('../material/material.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
+const categoryService = require('../category/category.service');
+const materialService = require('../material/material.service');
+const patternService = require('../pattern/pattern.service');
+const closuresService = require('../closures/closures.service');
 const uploadService = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
@@ -200,6 +202,19 @@ class ProductsService {
       );
       return updatedProduct.images;
     }
+  }
+
+  async getProductDetailsCombinations() {
+    const categories = await categoryService.getCategoriesWithModels();
+    const materials = await materialService.getMaterialsByPurpose();
+    const patterns = await patternService.getAllPatterns({});
+    const closures = await closuresService.getAllClosure({});
+    return {
+      categories,
+      materials,
+      patterns,
+      closures: closures.items,
+    };
   }
 
   async getPopularProducts() {

@@ -23,6 +23,12 @@ rateCount: Int
 userRates: [UserRate]
 comments: PaginatedComments!
 }
+type ProductDetailsCombinations {
+  categories: [CategoryWithModels]
+  materials: MaterialByPurpose
+  patterns: [Pattern]
+  closures: [Closure]
+}
 type ProductMaterialType{
   material: Material
   color: Color

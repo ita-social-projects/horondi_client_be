@@ -31,7 +31,8 @@ class MaterialsService {
     const items = await Material.find(filters)
       .populate('colors')
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     const count = await Material.find().countDocuments();
     return {
@@ -39,7 +40,14 @@ class MaterialsService {
       count,
     };
   }
-
+  async getMaterialsByPurpose() {
+    const materials = await this.getAllMaterials({ filter: {} });
+    return materials.items.reduce((acc, material) => {
+      acc[material.purpose] = acc[material.purpose] || [];
+      acc[material.purpose].push(material);
+      return acc;
+    }, {});
+  }
   async getMaterialById(id) {
     return Material.findById(id).populate('colors');
   }

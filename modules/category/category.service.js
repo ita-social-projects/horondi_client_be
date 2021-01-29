@@ -7,6 +7,7 @@ const {
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
 const uploadService = require('../upload/upload.service');
+const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
@@ -129,7 +130,13 @@ class CategoryService {
 
     throw new Error(CATEGORY_NOT_FOUND);
   }
-
+  async getCategoriesWithModels() {
+    const categories = await this.getAllCategories();
+    return categories.map(category => {
+      category.models = modelService.getModelsByCategory(category._id);
+      return category;
+    });
+  }
   async checkCategoryExist(data, id) {
     if (!data.name.length) {
       return false;
