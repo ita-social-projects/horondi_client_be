@@ -353,6 +353,7 @@ const typeDefs = gql`
     getCurrencyById(id: ID): CurrencyResult
     getAllCategories: [Category]
     getPopularCategories: StatisticDoughnut!
+    getCategoriesWithModels: [CategoryWithModels]
     getCategoryById(id: ID): CategoryResult
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(
@@ -360,6 +361,7 @@ const typeDefs = gql`
       limit: Int, 
       skip: Int
     ): PaginatedMaterials!
+    getMaterialsByPurpose: [MaterialByPurpose]
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
@@ -389,7 +391,6 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getPopularProducts: StatisticBar!
-    getProductDetailsCombinations: ProductDetailsCombinations
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
       productId: ID!

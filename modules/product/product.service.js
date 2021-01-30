@@ -204,19 +204,6 @@ class ProductsService {
     }
   }
 
-  async getProductDetailsCombinations() {
-    const categories = await categoryService.getCategoriesWithModels();
-    const materials = await materialService.getMaterialsByPurpose();
-    const patterns = (await patternService.getAllPatterns({})).items;
-    const closures = (await closuresService.getAllClosure({})).items;
-    return {
-      categories,
-      materials,
-      patterns,
-      closures,
-    };
-  }
-
   async getPopularProducts() {
     const products = await Product.find()
       .sort({ purchasedCount: -1 })
