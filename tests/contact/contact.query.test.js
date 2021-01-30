@@ -1,8 +1,9 @@
-/* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const { newContact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
+const { addContact, deleteContact, getContacts } = require('./contact.helper');
+
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/contact/contact.utils.js');
 
@@ -10,77 +11,13 @@ let contactsId = '';
 let operations;
 
 describe('Contacts queries', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($contact: contactInput!) {
-          addContact(contact: $contact, mapImages: []) {
-            ... on Contact {
-              _id
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { contact: newContact },
-    });
-    contactsId = res.data.addContact._id;
-    done();
+    contactsId = await addContact(newContact, operations);
   });
 
-  afterAll(async done => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteContact(id: $id) {
-            ... on Contact {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: contactsId },
-    });
-    done();
-  });
-
-  it('should receive all contacts', async done => {
-    const res = await operations.query({
-      query: gql`
-        query($skip: Int, $limit: Int) {
-          getContacts(skip: $skip, limit: $limit) {
-            items {
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              link
-            }
-            count
-          }
-        }
-      `,
-      variables: {
-        skip: 0,
-        limit: 1,
-      },
-    });
-
-    const receivedContacts = res.data.getContacts;
+  it('should receive all contacts', async () => {
+    const receivedContacts = await getContacts(operations);
 
     expect(receivedContacts).toBeDefined();
     expect(receivedContacts.items).toContainEqual({
@@ -108,7 +45,6 @@ describe('Contacts queries', () => {
       email: 'test@test.com',
       link: newContact.link,
     });
-    done();
   });
 
   test('should receive selected contact', async done => {
@@ -208,5 +144,8 @@ describe('Contacts queries', () => {
       CONTACT_NOT_FOUND
     );
     done();
+  });
+  afterAll(async () => {
+    await deleteContact(contactsId, operations);
   });
 });

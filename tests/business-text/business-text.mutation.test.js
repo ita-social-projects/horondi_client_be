@@ -1,9 +1,6 @@
-const { gql } = require('@apollo/client');
-
 const {
   BUSINESS_TEXT_NOT_FOUND,
   BUSINESS_TEXT_ALREADY_EXIST,
-  BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
 } = require('../../error-messages/business-text.messages');
 const {
   newBusinessText,
@@ -11,9 +8,14 @@ const {
   notExistBusinessTextId,
 } = require('./business-text.variables');
 const { setupApp } = require('../helper-functions');
+const {
+  addBusinessText,
+  updateBusinessText,
+  deleteBusinessText,
+} = require('./bussiness-text.helper');
 
-let businessText = null;
-let businessTextId = '';
+let businessText;
+let businessTextId;
 let operations;
 
 describe('Business page queries', () => {
@@ -21,37 +23,7 @@ describe('Business page queries', () => {
     operations = await setupApp();
   });
   test(' should add business text to database', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($businessText: BusinessTextInput!) {
-            addBusinessText(businessText: $businessText, files: []) {
-              ... on BusinessText {
-                _id
-                code
-                title {
-                  value
-                  lang
-                }
-                text {
-                  value
-                  lang
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          businessText: newBusinessText,
-        },
-      })
-      .catch(e => e);
-
-    businessText = res.data.addBusinessText;
+    businessText = await addBusinessText(newBusinessText, operations);
     businessTextId = businessText._id;
 
     expect(businessText).toHaveProperty('code', newBusinessText.code);
@@ -61,82 +33,24 @@ describe('Business page queries', () => {
     expect(businessText.text).toBeInstanceOf(Array);
     expect(businessText.code).isPrototypeOf(String);
   });
-
   test(' adding a new page with existing code should return error', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($businessText: BusinessTextInput!) {
-            addBusinessText(businessText: $businessText, files: []) {
-              ... on BusinessText {
-                _id
-                code
-                title {
-                  value
-                  lang
-                }
-                text {
-                  value
-                  lang
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          businessText: newBusinessText,
-        },
-      })
-      .catch(e => e);
+    const alreadyExistsException = await addBusinessText(
+      newBusinessText,
+      operations
+    );
 
-    expect(res.data.addBusinessText).toHaveProperty(
+    expect(alreadyExistsException).toHaveProperty(
       'message',
       BUSINESS_TEXT_ALREADY_EXIST
     );
-    expect(res.data.addBusinessText).toHaveProperty('statusCode', 400);
+    expect(alreadyExistsException).toHaveProperty('statusCode', 400);
   });
-
   test(' update business text', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $businessText: BusinessTextInput!) {
-            updateBusinessText(
-              id: $id
-              businessText: $businessText
-              files: []
-            ) {
-              ... on BusinessText {
-                _id
-                code
-                title {
-                  value
-                  lang
-                }
-                text {
-                  value
-                  lang
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          id: businessTextId,
-          businessText: updatedBusinessText,
-        },
-      })
-      .catch(e => e);
-
-    const receivedBusinessText = res.data.updateBusinessText;
+    const receivedBusinessText = await updateBusinessText(
+      businessTextId,
+      updatedBusinessText,
+      operations
+    );
 
     expect(receivedBusinessText).toHaveProperty(
       'code',
@@ -152,110 +66,21 @@ describe('Business page queries', () => {
       updatedBusinessText.text
     );
   });
-
   test(' update not existing businessText should return error', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($id: ID!, $businessText: BusinessTextInput!) {
-            updateBusinessText(
-              id: $id
-              businessText: $businessText
-              files: []
-            ) {
-              ... on BusinessText {
-                _id
-                code
-                title {
-                  value
-                  lang
-                }
-                text {
-                  value
-                  lang
-                }
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          id: notExistBusinessTextId,
-          businessText: updatedBusinessText,
-        },
-      })
-      .catch(e => e);
+    const notExistBusinessText = await updateBusinessText(
+      notExistBusinessTextId,
+      updatedBusinessText,
+      operations
+    );
 
-    expect(res.data.updateBusinessText).toHaveProperty(
+    expect(notExistBusinessText).toHaveProperty(
       'message',
       BUSINESS_TEXT_NOT_FOUND
     );
-    expect(res.data.updateBusinessText).toHaveProperty('statusCode', 404);
+    expect(notExistBusinessText).toHaveProperty('statusCode', 404);
   });
-
-  test(' delete businessText', async () => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteBusinessText(id: $id) {
-            ... on BusinessText {
-              _id
-              code
-              title {
-                value
-                lang
-              }
-              text {
-                value
-                lang
-              }
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { id: businessTextId },
-    });
-
-    businessText = res.data.deleteBusinessText;
-    expect(businessText).toHaveProperty('code', updatedBusinessText.code);
-    expect(businessText.title).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('title', updatedBusinessText.title);
-    expect(businessText).toHaveProperty('text', updatedBusinessText.text);
-  });
-
   test(' delete not existing business text should return error', async () => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteBusinessText(id: $id) {
-            ... on BusinessText {
-              _id
-              code
-              title {
-                value
-                lang
-              }
-              text {
-                value
-                lang
-              }
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { id: notExistBusinessTextId },
-    });
+    const res = await deleteBusinessText(notExistBusinessTextId, operations);
 
     expect(res.data.deleteBusinessText).toBeDefined();
     expect(res.data.deleteBusinessText).not.toBeNull();
@@ -264,5 +89,15 @@ describe('Business page queries', () => {
       'message',
       BUSINESS_TEXT_NOT_FOUND
     );
+  });
+
+  test(' delete businessText', async () => {
+    const res = await deleteBusinessText(businessTextId, operations);
+
+    businessText = res.data.deleteBusinessText;
+    expect(businessText).toHaveProperty('code', updatedBusinessText.code);
+    expect(businessText.title).toBeInstanceOf(Array);
+    expect(businessText).toHaveProperty('title', updatedBusinessText.title);
+    expect(businessText).toHaveProperty('text', updatedBusinessText.text);
   });
 });
