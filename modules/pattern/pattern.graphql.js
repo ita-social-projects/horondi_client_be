@@ -5,7 +5,7 @@ const patternType = `
       description: [Language]
       images: ImageSet
       constructorImg: String,
-      material: String
+      material: Material
       handmade: Boolean
       available: Boolean
     }
@@ -17,7 +17,7 @@ const patternInput = `
       description: [LanguageInput]
       images:ImageSetInput
       constructorImg: String,
-      material: String
+      material: ID
       handmade: Boolean
       available: Boolean
     }
