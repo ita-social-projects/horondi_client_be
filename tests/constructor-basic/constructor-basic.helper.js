@@ -1,46 +1,6 @@
 const { gql } = require('@apollo/client');
 
 const createConstructorBasic = async (constructorElement, operations) => {
-  const createdConstructorBasic = await operations.mutate({
-    mutation: gql`
-      mutation($constructorElement: ConstructorBasicInput!) {
-        addConstructorBasic(constructorElement: $constructorElement) {
-          ... on ConstructorBasic {
-            _id
-          }
-          ... on Error {
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      constructorElement,
-    },
-  });
-
-  return createdConstructorBasic.data.addConstructorBasic._id;
-};
-const deleteConstructorBasic = async (id, operations) => {
-  return await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteConstructorBasic(id: $id) {
-          ... on ConstructorBasic {
-            _id
-          }
-          ... on Error {
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      id,
-    },
-  });
-};
-const createConstructorBasicWithData = async (constructorInput, operations) => {
   const constructorBasic = await operations.mutate({
     mutation: gql`
       mutation($constructorElement: ConstructorBasicInput!) {
@@ -68,11 +28,29 @@ const createConstructorBasicWithData = async (constructorInput, operations) => {
         }
       }
     `,
-    variables: { constructorElement: constructorInput },
+    variables: { constructorElement },
   });
   return constructorBasic.data.addConstructorBasic;
 };
-
+const deleteConstructorBasic = async (id, operations) => {
+  return await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteConstructorBasic(id: $id) {
+          ... on ConstructorBasic {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+};
 const updateConstructorBasic = async (
   constructorInput,
   constructorId,
@@ -112,7 +90,6 @@ const updateConstructorBasic = async (
   });
   return constructorBasic.data.updateConstructorBasic;
 };
-
 const getAllConstructorBasics = async operations => {
   const res = await operations.query({
     query: gql`
@@ -146,7 +123,7 @@ const getAllConstructorBasics = async operations => {
   return res.data.getAllConstructorBasics;
 };
 const getConstructorBasicById = async (id, operations) => {
-  const ConstructorBasicById = await operations.query({
+  const constructorBasicById = await operations.query({
     query: gql`
       query($id: ID!) {
         getConstructorBasicById(id: $id) {
@@ -177,13 +154,12 @@ const getConstructorBasicById = async (id, operations) => {
       id,
     },
   });
-  return ConstructorBasicById;
+  return constructorBasicById.data.getConstructorBasicById;
 };
 
 module.exports = {
   createConstructorBasic,
   deleteConstructorBasic,
-  createConstructorBasicWithData,
   getAllConstructorBasics,
   getConstructorBasicById,
   updateConstructorBasic,

@@ -28,7 +28,7 @@ const addContact = async (contact, operations) => {
     `,
     variables: { contact },
   });
-  return res.data.addContact._id;
+  return res.data.addContact;
 };
 const deleteContact = async (id, operations) => {
   const res = await operations.mutate({
@@ -79,9 +79,72 @@ const getContacts = async operations => {
 
   return res.data.getContacts;
 };
+const getContactById = async (id, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getContactById(id: $id) {
+          ... on Contact {
+            phoneNumber
+            openHours {
+              lang
+              value
+            }
+            address {
+              lang
+              value
+            }
+            email
+            link
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id },
+  });
+
+  return res.data.getContactById;
+};
+const updateContact = async (id, contact, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $contact: contactInput!) {
+        updateContact(id: $id, contact: $contact) {
+          ... on Contact {
+            _id
+            phoneNumber
+            openHours {
+              lang
+              value
+            }
+            address {
+              lang
+              value
+            }
+            email
+            link
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { id, contact },
+  });
+
+  return res.data.updateContact;
+};
 
 module.exports = {
   addContact,
   deleteContact,
   getContacts,
+  getContactById,
+  updateContact,
 };

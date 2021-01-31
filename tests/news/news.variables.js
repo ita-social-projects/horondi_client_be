@@ -1,15 +1,6 @@
-const {
-  SUPER_ADMIN_EMAIL,
-  SUPER_ADMIN_PASSWORD,
-} = require('../../dotenvValidator');
-
-const user = {
-  email: SUPER_ADMIN_EMAIL,
-  password: SUPER_ADMIN_PASSWORD,
-};
-
+let skip = 0;
+let limit = 0;
 const wrongId = '5fa8f2ad0785350940d8953e';
-
 const news = {
   title: [
     { lang: 'ua', value: 'bbb' },
@@ -28,7 +19,6 @@ const news = {
   date: '1111118820047',
   show: true,
 };
-
 const newsUpdateData = {
   title: [
     { lang: 'uk', value: 'bbb' },
@@ -45,7 +35,6 @@ const newsUpdateData = {
     ],
   },
 };
-
 const existingNews = {
   title: [
     {
@@ -61,9 +50,10 @@ const existingNews = {
 };
 
 module.exports = {
-  user,
   news,
   newsUpdateData,
   existingNews,
   wrongId,
+  skip,
+  limit,
 };

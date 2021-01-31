@@ -1,21 +1,4 @@
-const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
-const { deleteMaterial } = require('../materials/material.helper');
-const { deleteColor } = require('../color/color.helper');
-const { deleteConstructorBasic } = require('./constructor-basic.helper');
-
-const badConstructorBasicID = '6009dcd5f9855555907ebf5e';
-const newColor = {
-  name: [
-    { lang: 'ua', value: 'Світsadas' },
-    { lang: 'en', value: 'blackdasdas' },
-  ],
-  colorHex: '#f47ac6',
-  simpleName: [
-    { lang: 'ua', value: 'Чорний' },
-    { lang: 'en', value: 'black' },
-  ],
-};
+const wrongId = '6009dcd5f9855555907ebf5e';
 const newConstructorBasic = (materialID, colorID) => ({
   name: [
     { lang: 'ua', value: 'варіант 1' },
@@ -27,7 +10,6 @@ const newConstructorBasic = (materialID, colorID) => ({
   available: true,
   default: false,
 });
-
 const getConstructorData = construrtorBasic => ({
   name: [
     {
@@ -45,7 +27,6 @@ const getConstructorData = construrtorBasic => ({
   available: construrtorBasic.available,
   default: construrtorBasic.default,
 });
-
 const getConstructorDataForUpt = construrtorBasic => ({
   name: [
     {
@@ -64,24 +45,9 @@ const getConstructorDataForUpt = construrtorBasic => ({
   default: false,
 });
 
-const deleteAll = async (
-  colorID,
-  materialID,
-  constructorBasicId,
-  construrtorIDafter
-) => {
-  const operations = await setupApp();
-  await deleteConstructorBasic(constructorBasicId, operations);
-  await deleteConstructorBasic(construrtorIDafter, operations);
-  await deleteMaterial(materialID, operations);
-  await deleteColor(colorID, operations);
-};
-
 module.exports = {
-  newColor,
-  badConstructorBasicID,
+  wrongId,
   newConstructorBasic,
-  deleteAll,
   getConstructorData,
   getConstructorDataForUpt,
 };
