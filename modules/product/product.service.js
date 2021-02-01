@@ -20,6 +20,27 @@ class ProductsService {
     return await Product.findById(id);
   }
 
+  async getProductsFilters() {
+    const categories = await Product.distinct('category').lean();
+    // 102 11 const models = await Product.distinct('model’).lean();
+    // 103 /1 const patterns = await Product.distinct(’pattern’).lean();
+    // 100 /1 const closures = await Product.distinct(’closure’).lean();
+    console.log({
+      categories,
+      // models,
+      // patterns,
+      // closures,
+    });
+
+    console.log(categories.length);
+    return {
+      categories,
+      // models,
+      // patterns,
+      // closures,
+    };
+  }
+
   async getModelsByCategory(id) {
     const product = await Product.find({ category: id });
     if (product.length === 0) {

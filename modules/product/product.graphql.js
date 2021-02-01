@@ -23,6 +23,9 @@ rateCount: Int
 userRates: [UserRate]
 comments: PaginatedComments!
 }
+type ProductsFilter {
+categories: [Category]
+}
 type ProductMaterialType{
   material: Material
   color: Color
