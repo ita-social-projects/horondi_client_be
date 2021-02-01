@@ -23,13 +23,13 @@ class CommentsService {
       throw new Error(COMMENT_NOT_FOUND);
     }
     const comments = Comment.find({ product: productId })
-      .exec()
       .skip(skip)
       .limit(limit)
-      .sort('-date');
+      .sort('-date')
+      .exec();
     const count = Comment.find({ product: productId })
-      .exec()
-      .countDocuments();
+      .countDocuments()
+      .exec();
     return { items: comments, count };
   }
 
@@ -43,17 +43,16 @@ class CommentsService {
     const dateTo = dateFrom - monthInMilliseconds;
 
     const items = Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
-      .exec()
       .sort({ date: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
     const count = Comment.find({
       date: { $gt: dateTo, $lt: dateFrom },
     })
-      .exec()
-      .countDocuments();
-
+      .countDocuments()
+      .exec();
     return {
       items,
       count,
