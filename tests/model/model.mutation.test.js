@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
 jest.mock('../../modules/upload/upload.service');
 const { adminLogin, setupApp } = require('../helper-functions');
@@ -17,7 +16,7 @@ let uploadFile = null;
 let operations;
 jest.mock('../../modules/upload/__mocks__/upload.service.js');
 
-describe('Product queries', () => {
+describe('Model mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const createCategory = await operations.mutate({
@@ -160,28 +159,6 @@ describe('Product queries', () => {
       mutation: gql`
         mutation($id: ID!) {
           deleteModel(id: $id) {
-            ... on Model {
-              name {
-                value
-                lang
-              }
-              description {
-                value
-                lang
-              }
-              images {
-                large
-                medium
-                small
-                thumbnail
-              }
-              category {
-                name {
-                  value
-                  lang
-                }
-              }
-            }
             ... on Error {
               statusCode
               message
@@ -192,7 +169,7 @@ describe('Product queries', () => {
       variables: { id: wrongId },
     });
 
-    const error = res.errors[0];
+    const error = res.data.deleteModel;
     expect(error).toBeDefined();
     expect(error).toHaveProperty('message', 'MODEL_NOT_FOUND');
   });

@@ -53,9 +53,9 @@ const {
   contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
-  deliveryType,
-  deliveryInput,
-} = require('./modules/delivery/delivery.graphql');
+  novaPoshtaType,
+  novaPoshtaInput,
+} = require('./modules/delivery/nova-poshta/nova-poshta.graphql');
 const {
   emailQuestionType,
   emailQuestionInput,
@@ -84,6 +84,18 @@ const {
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
+const {
+  constructorBasicType,
+  constructorBasicInput,
+} = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
+const {
+  constructorFrontPocketType,
+  constructorFrontPocketInput,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
+const {
+  ukrPoshtaEnum,
+  ukrPostaType,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -102,7 +114,8 @@ const typeDefs = gql`
   ${contactType}
   ${orderTypes}
   ${emailQuestionType}
-  ${deliveryType}
+  ${novaPoshtaType}
+  ${ukrPostaType}
   ${paymentType}
   ${paymentStatus}
   ${homePageImagesType}
@@ -114,6 +127,8 @@ const typeDefs = gql`
   ${purchasedProductsType}
   ${cartProductType}
   ${colorType}
+  ${constructorBasicType}
+  ${constructorFrontPocketType}
   ${constructorBottomType}
 
   scalar Upload
@@ -123,6 +138,7 @@ const typeDefs = gql`
     admin
     user
   }
+  ${ukrPoshtaEnum}
   type Language {
     lang: String!
     value: String
@@ -184,7 +200,7 @@ const typeDefs = gql`
     size: Size
     bottomMaterial: Material
     description: [Language]
-    bottomColor: [Language]
+    bottomColor: Color
     availableCount: Int
     additions: [ProductAdditions]
   }
@@ -201,10 +217,6 @@ const typeDefs = gql`
   type CartProductDimensions {
       volumeInLiters: Int
       weightInKg: Float
-  }
-  type AllProductOptions {
-    size: [Size]
-    bottomMaterials: [Material]
   }
   type UserForComment {
     email: String!
@@ -298,6 +310,18 @@ const typeDefs = gql`
     items: [Material]
   }
 
+  type PaginatedConstructorBasics {
+      items: [ConstructorBasic]
+      count: Int
+  }
+  type PaginatedConstructorBottom {
+      items: [ConstructorBottom]
+      count: Int
+  }
+  type PaginatedConstructorFrontPocket {
+      items: [ConstructorFrontPocket]
+      count: Int
+  }
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -312,7 +336,6 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
-  union NovaPoshtaOrderResult = NovaPoshtaOrder | Error
   union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
@@ -321,6 +344,9 @@ const typeDefs = gql`
   union SizeResult = Size | Error
   union ColorResult = Color | Error
   union ColorDeletingResult = Color | Materials | Error
+  union ConstructorBasicResult = ConstructorBasic | Error
+  union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
+  
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllCurrencies: [Currency!]!
@@ -362,7 +388,6 @@ const typeDefs = gql`
       search: String
       sort: SortInput
     ): PaginatedProducts!
-    getProductOptions: AllProductOptions
     getPopularProducts: StatisticBar!
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
@@ -377,6 +402,7 @@ const typeDefs = gql`
     getBusinessTextByCode(code: String!): BusinessTextResult
     getAllModels(limit: Int, skip: Int): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
+    getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
     getContacts(limit: Int, skip: Int): PaginatedContacts!
     getContactById(id: ID!): ContactResult
@@ -384,8 +410,10 @@ const typeDefs = gql`
     getNovaPoshtaStreets(cityRef: String, street: String): [NovaPoshtaStreet]
     getNovaPoshtaWarehouses(city: String): [NovaPoshtaWarehouse]
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
-    createNovaPoshtaOrder(data: NovaPoshtaOrderInput): NovaPoshtaOrderResult
-    getUkrPoshtaRegion(region: String): UkrPoshtaRegion
+    getUkrPoshtaRegions: [UkrPoshtaRegion]
+    getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
+    getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
+    getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput): Payment
     getPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
@@ -406,8 +434,12 @@ const typeDefs = gql`
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
+    getAllConstructorBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
+    getConstructorBasicById(id: ID!): ConstructorBasicResult
+    getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
+    getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
-    getAllConstructorBottom: [ConstructorBottomResult]
+    getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
 
   }
   input Pagination {
@@ -466,7 +498,7 @@ const typeDefs = gql`
   ${orderInputs}
   ${emailQuestionInput}
   ${UserForStatisticsInput}
-  ${deliveryInput}
+  ${novaPoshtaInput}
   ${paymentInput}
   ${headerInput}
   ${sizeInput}
@@ -474,6 +506,9 @@ const typeDefs = gql`
   ${closureInput}
   ${colorInput}
   ${materialFilterInput}
+  ${constructorBasicInput}
+  ${constructorFrontPocketInput}
+  
   ${constructorBottomInput}
   input LanguageInput {
     lang: String!
@@ -521,20 +556,6 @@ const typeDefs = gql`
   type File {
     fileNames: ImageSet!
     prefixUrl: String!
-  }
-  input ProductOptionsInput {
-    size: ID
-    bottomMaterial: ID
-    description: [LanguageInput!]
-    bottomColor: [LanguageInput!]
-    availableCount: Int
-    additions: [ProductOptionsAdditonalsInput]
-  }
-  input ProductOptionsAdditonalsInput {
-    name: [LanguageInput!]
-    description: [LanguageInput!]
-    available: Boolean
-    additionalPrice: [CurrencySetInput]
   }
   input CartProductDimensionsInput {
       volumeInLiters: Int
@@ -659,7 +680,7 @@ const typeDefs = gql`
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
-    updateOrder(order: OrderInput!): OrderResult
+    updateOrder(order: OrderInput!, id: ID!): OrderResult
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"
     addEmailQuestion(question: EmailQuestionInput!): EmailQuestion
@@ -692,16 +713,33 @@ const typeDefs = gql`
     updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
     deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
-    addSize(data: SizeInput!): SizeResult!
+    addSize(size: SizeInput!): SizeResult!
     deleteSize(id: ID!): SizeResult!
     updateSize(id: ID!, size: SizeInput!): SizeResult!
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
+    "ConstructorBasic Mutation"  
+    addConstructorBasic(constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    deleteConstructorBasic(id: ID!): ConstructorBasicResult
+    "ConstructorFrontPocket Mutation"  
+    addConstructorFrontPocket(constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
     "ConstructorBottom Mutation"
-    addConstructorBottom(constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
-    updateConstructorBottom(id: ID!, constructorBottom: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    addConstructorBottom(constructorElement: ConstructorBottomInput!): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorElement: ConstructorBottomInput!): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
+    "Change model constructor details"  
+    addModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorPattern(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
+    addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
+    deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
   }
 `;
 

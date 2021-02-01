@@ -3,10 +3,15 @@ const materialType = `
       _id: ID!
       name: [Language]
       description: [Language]
-      purpose: String
-      color: Color
+      purpose: PurposeEnum
+      colors: [Color]
       available: Boolean
       additionalPrice: [CurrencySet]
+    }
+    enum PurposeEnum{
+      MAIN
+      INNER
+      BOTTOM
     }
 `;
 
@@ -14,8 +19,8 @@ const materialInput = `
     input MaterialInput {
       name: [LanguageInput]
       description: [LanguageInput]
-      purpose: String
-      color: ID!
+      purpose: PurposeEnum!
+      colors: [ID!]
       available: Boolean
       additionalPrice: Int
     }

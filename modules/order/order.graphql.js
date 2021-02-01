@@ -1,23 +1,22 @@
 const orderTypes = `
 type Order {
   _id: ID!
-  status: Status!
   orderNumber: String
-  user: OrderUser!
-  dateOfCreation: String!
+  status: Status,
+  user: OrderUser
+  dateOfCreation: String
   lastUpdatedDate: String
-  adminComment: String
   userComment: String
   cancellationReason:  String
   delivery: Delivery
-  address: Address
-  items: [OrderItems]!
-  totalItemsPrice: [CurrencySet]!
-  totalPriceToPay: [CurrencySet]!
-  isPaid: Boolean!
-  paymentMethod: PaymentTypesEnum!
+  items: [OrderItem]
+  totalItemsPrice: [CurrencySet]
+  totalPriceToPay: [CurrencySet]
+  isPaid: Boolean
+  paymentMethod: PaymentEnum
   paymentStatus: PaymentStatusEnum
 }
+
 enum PaymentStatusEnum {
   CREATED
   EXPIRED
@@ -26,7 +25,8 @@ enum PaymentStatusEnum {
   REVERSED
   PROCESSING
 }
-enum PaymentTypesEnum {
+
+enum PaymentEnum {
   CARD
   CASH
 }
@@ -39,25 +39,30 @@ enum Status {
   SENT
   DELIVERED
 }
-enum DeliveryOptions {
-  NOVAPOST
-  UKRPOST
-  SELFPICKUP
-}
-type OrderItems {
-  productId: String!
-  sizeId: String
-  additions: [[Language]]
-  actualPrice: [CurrencySet]
-  quantity: Int!
+type OrderItem {
+  product: Product
+  model: Model
+  quantity: Int
+  isFromConstructor: Boolean
+  options: ItemOptions
+  constructorBasics: ConstructorBasic
+  constructorPattern: Pattern
+  constructorFrontPocket: ConstructorFrontPocket
+  constructorBottom: ConstructorBottom
+  fixedPrice: [CurrencySet]
 }
 type Delivery {
   sentOn: String
-  sentBy: DeliveryOptions!
+  sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
   cost: [CurrencySet]
+}
+enum SendByEnum{
+  NOVAPOST
+  UKRPOST
+  SELFPICKUP
 }
 type OrderUser {
   userId: String
@@ -66,18 +71,21 @@ type OrderUser {
   email: String
   phoneNumber: String
 }
+type ItemOptions{
+  size: Size
+  sidePocket: Boolean
+}
 `;
 const orderInputs = ` 
 input OrderInput {
-  user: OrderUserInput!,
+  status: Status
+  user: OrderUserInput,
+  delivery: DeliveryInput,
+  items: [OrderItemInput],
+  paymentMethod: PaymentEnum
   userComment: String
-  adminComment: String
-  cancellationReason: String
-  delivery: DeliveryInput!,
-  address: AddressInput
-  items: [OrderItemsInput]!,
-  paymentMethod: PaymentTypesEnum!
-  totalItemsPrice: [CurrencyInputSet]!
+  isPaid: Boolean
+  paymentStatus: PaymentStatusEnum
 }
 
 input OrderUserInput {
@@ -89,25 +97,35 @@ input OrderUserInput {
 }
 
 input CurrencyInputSet {
-  currency: String!
-  value: Float!
+  currency: String
+  value: Float
 }
 
 input DeliveryInput {
   sentOn: String
-  sentBy: DeliveryOptions!
+  sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: Int
   byCourier: Boolean
   cost: [CurrencyInputSet]
 }
 
-input OrderItemsInput {
-  productId: String!
-  sizeId: String!,
-  additions: [[LanguageInput]]
-  actualPrice: [CurrencySetInput]!
+input OrderItemInput {
+  product: ID
+  model: ID
+  constructorBasics: ID
+  constructorBottom: ID
+  constructorFrontPocket: ID
+  constructorPattern: ID
+  actualPrice: [CurrencyInputSet]
   quantity: Int!
+  isFromConstructor: Boolean
+  options: ItemOptionsInput
+  fixedPrice: [CurrencyInputSet]
+}
+input ItemOptionsInput{
+  size: ID!
+  sidePocket: Boolean
 }
 `;
 

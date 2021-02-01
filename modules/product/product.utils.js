@@ -11,6 +11,4 @@ const uploadProductImages = async filesToUpload => {
   };
 };
 
-module.exports = {
-  uploadProductImages,
-};
+module.exports = { uploadProductImages };

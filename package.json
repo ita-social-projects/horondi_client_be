@@ -24,7 +24,8 @@
     "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "test-docker": "npm run docker-db-stop && npm run docker-db-start && npm run test tests/order/order.mutation.test.js"
+    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\"",
+    "test-docker": "npm run docker-db-stop && npm run docker-db-start && npm run test"
   },
   "author": "",
   "license": "ISC",
@@ -42,7 +43,7 @@
     "apollo-link-http": "^1.5.17",
     "apollo-server": "^2.14.5",
     "apollo-server-express": "^2.17.0",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "azure": "^2.3.1-preview",
     "azure-storage": "^2.10.3",
     "bcryptjs": "^2.4.3",
@@ -62,6 +63,7 @@
     "into-stream": "^5.1.1",
     "jimp": "^0.16.1",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
     "mongoose": "^5.9.18",
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
@@ -98,7 +100,7 @@
     "prettier": "^1.19.1"
   },
   "engines": {
-    "node": ">=8.10.0"
+    "node": "=14.15.4"
   },
   "husky": {
     "hooks": {

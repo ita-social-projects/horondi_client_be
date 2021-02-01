@@ -17,10 +17,9 @@ const {
 
 const {
   calculateTotalPriceToPay,
+  calculateTotalItemsPrice,
   generateOrderId,
 } = require('../../utils/order.utils');
-
-const { calculateTotalItemsPrice } = require('../currency/currency.utils');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {} }) {
@@ -49,29 +48,30 @@ class OrdersService {
     return foundOrder;
   }
 
-  async updateOrder(order) {
-    if (!ObjectId.isValid(order._id)) throw new Error(ORDER_NOT_VALID);
+  async updateOrder(order, id) {
+    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
 
-    const orderToUpdate = await Order.findById(order._id);
+    const orderToUpdate = await Order.findById(id);
 
     if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
 
     const { items } = order;
 
-    const lastUpdatedDate = Date.now();
-    const totalItemsPrice = calculateTotalItemsPrice(items);
-    const totalPriceToPay = calculateTotalPriceToPay(order);
+    const totalItemsPrice = await calculateTotalItemsPrice(items);
+    const totalPriceToPay = await calculateTotalPriceToPay(
+      order,
+      totalItemsPrice
+    );
 
-    const updatedOrder = {
+    order = {
       ...order,
-      lastUpdatedDate,
       totalItemsPrice,
       totalPriceToPay,
     };
 
     return await Order.findByIdAndUpdate(
-      order._id,
-      { updatedOrder },
+      id,
+      { ...order, lastUpdatedDate: Date.now() },
       { new: true }
     );
   }
@@ -79,30 +79,18 @@ class OrdersService {
   async addOrder(data) {
     const { items } = data;
     const totalItemsPrice = calculateTotalItemsPrice(items);
-    const status = 'CREATED';
-    const dateOfCreation = Date.now();
-    const lastUpdatedDate = Date.now();
-    const isPaid = false;
-    const orderId = generateOrderId();
+    const orderNumber = generateOrderId();
+
+    const totalPriceToPay = calculateTotalPriceToPay(data, totalItemsPrice);
 
     const order = {
       ...data,
-      status,
-      orderId,
       totalItemsPrice,
-      dateOfCreation,
-      isPaid,
-      lastUpdatedDate,
-    };
-
-    const totalPriceToPay = calculateTotalPriceToPay(order);
-
-    const _order = {
-      ...order,
       totalPriceToPay,
+      orderNumber,
     };
 
-    return new Order(_order).save();
+    return new Order(order).save();
   }
 
   async deleteOrder(id) {

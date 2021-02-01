@@ -39,8 +39,16 @@ const imageQualities = {
   thumbnail: 128,
 };
 
+const getUkrPoshtaRegionsUrl = 'get_regions_by_region_ua';
+const getUkrPoshtaDistrictsByRegionIdUrl = `get_districts_by_region_id_and_district_ua?region_id=`;
+const getUkrPoshtaCitiesByDistrictIdUrl = `get_city_by_region_id_and_district_id_and_city_ua?district_id=`;
+const getUkrPoshtaPostofficesCityIdUrl = `get_postoffices_by_postcode_cityid_cityvpzid?city_id=`;
+
 module.exports = {
-  imageQualities,
+  getUkrPoshtaRegionsUrl,
+  getUkrPoshtaDistrictsByRegionIdUrl,
+  getUkrPoshtaCitiesByDistrictIdUrl,
+  getUkrPoshtaPostofficesCityIdUrl,
   roles,
   availableForRegistrationRoles,
   horondiAddress,
@@ -56,4 +64,5 @@ module.exports = {
   WEEK,
   THREE_DAYS,
   TWO_WEEKS,
+  imageQualities,
 };

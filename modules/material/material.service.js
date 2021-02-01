@@ -4,6 +4,7 @@ const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
 const Currency = require('../currency/currency.model');
+const { calculatePrice } = require('../currency/currency.utils');
 
 class MaterialsService {
   constructor() {
@@ -18,7 +19,7 @@ class MaterialsService {
     const { colors } = filterInput;
 
     if (colors && colors.length) {
-      filter.color = { $in: colors };
+      filter.colors = { $in: colors };
     }
 
     return filter;
@@ -28,7 +29,7 @@ class MaterialsService {
     const filters = this.filterItems(filter);
 
     const items = await Material.find(filters)
-      .populate('color')
+      .populate('colors')
       .skip(skip)
       .limit(limit);
 
@@ -40,7 +41,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id).populate('color');
+    return Material.findById(id).populate('colors');
   }
 
   async updateMaterial(id, material) {
@@ -59,46 +60,18 @@ class MaterialsService {
       id,
       {
         ...rest,
-        additionalPrice: [
-          {
-            currency: this.currencyTypes.UAH,
-            value:
-              additionalPrice *
-              Math.round(currency.convertOptions[0].exchangeRate * 100),
-          },
-          {
-            currency: this.currencyTypes.USD,
-            value: additionalPrice * 100,
-          },
-        ],
+        additionalPrice: [calculatePrice(additionalPrice)],
       },
       { new: true }
     );
   }
 
   async addMaterial({ material }) {
-    const { additionalPrice, ...rest } = material;
-
-    if (await this.checkMaterialExistOrDuplicated(rest, null)) {
+    if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    const currency = await Currency.findOne();
-
-    return new Material({
-      ...rest,
-      additionalPrice: [
-        {
-          currency: this.currencyTypes.UAH,
-          value:
-            additionalPrice *
-            Math.round(currency.convertOptions[0].exchangeRate * 100),
-        },
-        {
-          currency: this.currencyTypes.USD,
-          value: additionalPrice * 100,
-        },
-      ],
-    }).save();
+    material.additionalPrice = calculatePrice(material.additionalPrice);
+    return new Material(material).save();
   }
 
   async deleteMaterial(id) {
@@ -114,7 +87,6 @@ class MaterialsService {
     if (!id) {
       materialsCount = await Material.countDocuments({
         _id: { $ne: id },
-        color: { $eq: data.color },
         name: {
           $elemMatch: {
             $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
@@ -125,7 +97,6 @@ class MaterialsService {
     }
     materialsCount = await Material.countDocuments({
       _id: { $ne: id },
-      color: { $eq: data.color },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],

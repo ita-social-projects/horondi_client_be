@@ -42,8 +42,7 @@ const {
 } = require('./modules/category/category.resolver');
 const {
   novaPoshtaQuery,
-  ukrPoshtaQuery,
-} = require('./modules/delivery/delivery.resolver');
+} = require('./modules/delivery/nova-poshta/nova-poshta.resolver');
 const { paymentQuery } = require('./modules/payment/payment.resolver');
 const {
   businessTextQuery,
@@ -77,6 +76,16 @@ const {
 } = require('./modules/closures/closures.resolver');
 
 const {
+  constructorBasicQuery,
+  constructorBasicMutation,
+} = require('./modules/constructor/constructor-basic/constructor-basic.resolves');
+
+const {
+  constructorFrontPocketQuery,
+  constructorFrontPocketMutation,
+} = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.resolves');
+
+const {
   constructorBottomMutation,
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
@@ -89,7 +98,19 @@ const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
+const constructorServices = require('./modules/constructor/constructor.services');
+const constructorBottomModel = require('./modules/constructor/constructor-bottom/constructor-bottom.model');
+const constructorBasicModel = require('./modules/constructor/constructor-basic/constructor-basic.model');
+const constructorFrontPocketModel = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
+const materialService = require('./modules/material/material.service');
+const closuresService = require('./modules/closures/closures.service');
+const patternService = require('./modules/pattern/pattern.service');
+const modelService = require('./modules/model/model.service');
+const colorService = require('./modules/color/color.service');
 
+const {
+  ukrPoshtaQuery,
+} = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -106,7 +127,6 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
-  novaPoshtaOrder: 'NovaPoshtaOrder',
   header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
@@ -115,6 +135,8 @@ const SCHEMA_NAMES = {
   closure: 'Closure',
   color: 'Color',
   constructorBottom: 'ConstructorBottom',
+  constructorBasic: 'ConstructorBasic',
+  constructorFrontPocket: 'ConstructorFrontPocket',
 };
 
 const resolvers = {
@@ -163,6 +185,10 @@ const resolvers = {
 
     ...constructorBottomQuery,
 
+    ...constructorBasicQuery,
+
+    ...constructorFrontPocketQuery,
+
     ...colorQuery,
   },
 
@@ -187,21 +213,75 @@ const resolvers = {
     category: parent => categoryService.getCategoryById(parent.category),
     comments: parent =>
       commentsService.getAllCommentsByProduct({ productId: parent._id }),
+    model: parent => modelService.getModelById(parent.model),
+    mainMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.mainMaterial.material),
+      color: () => colorService.getColorById(parent.mainMaterial.color),
+    }),
+    innerMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.innerMaterial.material),
+      color: () => colorService.getColorById(parent.innerMaterial.color),
+    }),
+    bottomMaterial: parent => ({
+      material: () =>
+        materialService.getMaterialById(parent.bottomMaterial.material),
+      color: () => colorService.getColorById(parent.bottomMaterial.color),
+    }),
+    pattern: parent => patternService.getPatternById(parent.pattern),
+    closure: parent => closuresService.getClosureById(parent.closure),
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+  },
+
+  Order: {
+    items: parent => {
+      return parent.items.map(item => {
+        if (item.isFromConstructor) {
+          return {
+            constructorBottom: constructorServices.getConstructorElementById(
+              item.constructorBottom,
+              constructorBottomModel
+            ),
+            constructorBasics: constructorServices.getConstructorElementById(
+              item.constructorBasics,
+              constructorBasicModel
+            ),
+            constructorFrontPocket: constructorServices.getConstructorElementById(
+              item.constructorFrontPocket,
+              constructorFrontPocketModel
+            ),
+            constructorPattern: patternService.getPatternById(
+              item.constructorPattern
+            ),
+            model: modelService.getModelById(item.model),
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+              sidePocket: item.options.sidePocket,
+            },
+            isFromConstructor: item.isFromConstructor,
+            quantity: item.quantity,
+            fixedPrice: item.fixedPrice,
+          };
+        } else {
+          return {
+            fixedPrice: item.fixedPrice,
+            isFromConstructor: item.isFromConstructor,
+            quantity: item.quantity,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+              sidePocket: item.options.sidePocket,
+            },
+            product: productsService.getProductById(item.product),
+          };
+        }
+      });
+    },
   },
 
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
-    subcategory: parent => categoryService.getCategoryById(parent.subcategory),
-  },
-
-  ProductOptions: {
-    size: parent => sizeService.getSizeById(parent.size),
-    bottomMaterial: parent => {
-      if (parent.bottomMaterial) {
-        return materialsService.getMaterialById(parent.bottomMaterial);
-      }
-      return null;
-    },
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
 
   UserRate: {
@@ -260,6 +340,10 @@ const resolvers = {
     ...closureMutation,
 
     ...colorMutation,
+
+    ...constructorBasicMutation,
+
+    ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
   },
@@ -392,14 +476,6 @@ const resolvers = {
       return 'Error';
     },
   },
-  NovaPoshtaOrderResult: {
-    __resolveType: obj => {
-      if (obj.intDocNumber) {
-        return SCHEMA_NAMES.novaPoshtaOrder;
-      }
-      return 'Error';
-    },
-  },
   HeaderResult: {
     __resolveType: obj => {
       if (obj.title) {
@@ -410,7 +486,7 @@ const resolvers = {
   },
   HomepageImagesResult: {
     __resolveType: obj => {
-      if (obj.title) {
+      if (obj.images) {
         return SCHEMA_NAMES.homePageImages;
       }
       return 'Error';
@@ -454,6 +530,24 @@ const resolvers = {
         return SCHEMA_NAMES.color;
       } else if (obj.items) {
         return SCHEMA_NAMES.materials;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorBasicResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorBasic;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorFrontPocketResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructorFrontPocket;
       }
       return 'Error';
     },

@@ -2,20 +2,18 @@ const productType = `
 type Product {
 _id: ID!
 category: Category!
-model: [Language]!
+model: Model!
 name: [Language]!
 description: [Language]!
-mainMaterial: [Language]!
-innerMaterial: [Language]!
+mainMaterial: ProductMaterialType!
+innerMaterial: ProductMaterialType!
+bottomMaterial: ProductMaterialType
 strapLengthInCm: Int!
-images: PrimaryImage
-colors: [ID]!
-pattern: [Language]
-patternImages: ImageSet
-closure: [Language]!
-closureColor: String
+images: ProductImages
+closure: Closure
+pattern: Pattern
 basePrice: [CurrencySet]!
-options: [ProductOptions]!
+sizes: [Size]!
 available: Boolean!
 isHotItem: Boolean
 purchasedCount: Int
@@ -25,7 +23,14 @@ rateCount: Int
 userRates: [UserRate]
 comments: PaginatedComments!
 }
-`;
+type ProductMaterialType{
+  material: Material
+  color: Color
+}
+type ProductImages { 
+  primary: ImageSet
+  additional: [ImageSet]
+}`;
 
 const productInput = `
 input ProductInput {
@@ -33,22 +38,36 @@ category: ID!
 model: ID!
 name: [LanguageInput]!
 description: [LanguageInput]!
-mainMaterial: [LanguageInput]!
-innerMaterial: [LanguageInput]!
+mainMaterial: ProductMaterialsInput!
+innerMaterial: ProductMaterialsInput!
+bottomMaterial: ProductMaterialsInput
 strapLengthInCm: Int!
-colors: [ID]! 
-pattern: [LanguageInput]
-patternImages: ImageSetInput
-images: PrimaryImageInput
-closure: [LanguageInput]!
-closureColor: String
+pattern: ID!
+closure: ID!
+sizes:[ID]!
+images: [Upload]
 availableCount: Int
 basePrice: Int!
 available: Boolean
 isHotItem: Boolean
-options:[ProductOptionsInput]
+}
+input ProductMaterialsInput{
+  material: ID
+  color: ID
 }`;
 
+const cartProductType = `
+type CartProduct{
+  _id: ID!
+  name: [Language]
+  bagBottom: CartProductBagBottom
+  dimension: CartProductDimensions
+  image: String
+  totalPrice: [CurrencySet]
+  quantity: Int
+  selectedSize: String
+  sidePocket: Boolean
+}`;
 const cartProductInput = `
 input CartProductInput {
 _id: ID!
@@ -66,4 +85,5 @@ module.exports = {
   productType,
   productInput,
   cartProductInput,
+  cartProductType,
 };
