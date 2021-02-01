@@ -39,6 +39,7 @@ const { createColor, deleteColor } = require('../color/color.helper');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 
 let commentId = '';
