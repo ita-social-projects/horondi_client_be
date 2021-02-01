@@ -3,6 +3,7 @@ const Product = require('../product/product.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
+  COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
@@ -30,8 +31,11 @@ class CommentsService {
     return { items: comments, count };
   }
 
-  async getAllCommentsByUser(userEmail) {
-    const comments = await Comment.find({ 'user.email': userEmail });
+  async getAllCommentsByUser(userId) {
+    const comments = await Comment.find({ user: userId });
+    if (!comments.length) {
+      throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
+    }
     return comments;
   }
 
@@ -59,7 +63,7 @@ class CommentsService {
       new: true,
     });
     if (!updatedComment) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new Error(COMMENT_FOR__NOT_EXISTING_USER);
     }
     return updatedComment;
   }

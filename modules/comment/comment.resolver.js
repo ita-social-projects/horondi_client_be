@@ -17,7 +17,7 @@ const commentsQuery = {
 
   getAllCommentsByUser: async (parent, args) => {
     try {
-      return await commentsService.getAllCommentsByUser(args.userEmail);
+      return await commentsService.getAllCommentsByUser(args.userId);
     } catch (error) {
       return [
         {
