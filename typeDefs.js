@@ -361,7 +361,7 @@ const typeDefs = gql`
       limit: Int, 
       skip: Int
     ): PaginatedMaterials!
-    getMaterialsByPurpose: MaterialByPurpose
+    getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult

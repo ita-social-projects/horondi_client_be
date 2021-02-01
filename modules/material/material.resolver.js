@@ -16,7 +16,8 @@ const materialQuery = {
       message: MATERIAL_NOT_FOUND,
     };
   },
-  getMaterialsByPurpose: () => materialService.getMaterialsByPurpose(),
+  getMaterialsByPurpose: (parent, args) =>
+    materialService.getMaterialsByPurposes(args.purposes),
 };
 
 const materialMutation = {
