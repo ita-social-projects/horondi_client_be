@@ -78,10 +78,13 @@ class OrdersService {
 
   async addOrder(data) {
     const { items } = data;
-    const totalItemsPrice = calculateTotalItemsPrice(items);
+    const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderId();
 
-    const totalPriceToPay = calculateTotalPriceToPay(data, totalItemsPrice);
+    const totalPriceToPay = await calculateTotalPriceToPay(
+      data,
+      totalItemsPrice
+    );
 
     const order = {
       ...data,
