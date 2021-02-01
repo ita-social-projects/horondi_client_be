@@ -42,6 +42,11 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
         ) {
           ... on ConstructorBottom {
             _id
+            name {
+              lang
+              value
+            }
+            image
           }
           ... on Error {
             statusCode
@@ -55,7 +60,7 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
       constructorElement,
     },
   });
-  return updateConstructor.data.updateConstructorBottom.message;
+  return updateConstructor.data.updateConstructorBottom;
 };
 const deleteConstructorBottom = async (constructorId, operations) => {
   const deletedConstructor = await operations.mutate({
@@ -70,7 +75,7 @@ const deleteConstructorBottom = async (constructorId, operations) => {
     `,
     variables: { id: constructorId },
   });
-  return deletedConstructor.data.deleteConstructorBottom._id;
+  return deletedConstructor.data.deleteConstructorBottom;
 };
 const getConstructorBottomById = async (id, operations) => {
   const constructorBottomById = await operations.query({

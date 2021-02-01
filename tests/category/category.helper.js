@@ -7,6 +7,10 @@ const createCategory = async (category, operations) => {
         addCategory(category: $category, upload: $upload) {
           ... on Category {
             _id
+            name {
+              lang
+              value
+            }
           }
           ... on Error {
             message
@@ -20,7 +24,7 @@ const createCategory = async (category, operations) => {
     },
   });
 
-  return createdCategory.data.addCategory._id;
+  return createdCategory.data.addCategory;
 };
 const deleteCategory = async (id, operations) => {
   await operations.mutate({

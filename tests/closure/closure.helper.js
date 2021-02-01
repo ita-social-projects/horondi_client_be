@@ -7,9 +7,19 @@ const createClosure = async (closure, operations) => {
         addClosure(closure: $closure) {
           ... on Closure {
             _id
+            name {
+              lang
+              value
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -19,10 +29,10 @@ const createClosure = async (closure, operations) => {
     },
   });
 
-  return createdClosure.data.addClosure._id;
+  return createdClosure.data.addClosure;
 };
 const deleteClosure = async (id, operations) => {
-  await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteClosure(id: $id) {
@@ -39,6 +49,37 @@ const deleteClosure = async (id, operations) => {
       id,
     },
   });
+};
+const getClosureById = async (id, operations) => {
+  const result = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getClosureById(id: $id) {
+          ... on Closure {
+            _id
+            name {
+              lang
+              value
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+
+  return result.data.getSizeById;
 };
 
 module.exports = {

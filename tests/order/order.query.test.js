@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
 const {
   newCategoryInputData,

@@ -30,7 +30,6 @@ let addConstructor;
 let constructorId;
 let currentConstructorBottom;
 let newDataConstructorBottom;
-let result;
 
 jest.mock('../../modules/currency/currency.utils.js');
 
@@ -48,55 +47,49 @@ describe('Constructor mutations', () => {
   });
 
   test('should create constructor-bottom', async () => {
-    const createConstructorBottom = await createConstructorBottom(
+    const createConstructorBottomData = await createConstructorBottom(
       addConstructor,
       operations
     );
-    constructorId = createConstructorBottom._id;
+    constructorId = createConstructorBottomData._id;
 
-    expect(createConstructorBottom).toBeDefined();
-    expect(createConstructorBottom).toEqual({
+    expect(createConstructorBottomData).toBeDefined();
+    expect(createConstructorBottomData).toEqual({
       ...currentConstructorBottom,
       _id: constructorId,
     });
   });
-  //
-  // test('should update existing constructor-bottom', async () => {
-  //   await updateConstructorB(
-  //     constructorId,
-  //     operations,
-  //     newDataConstructorBottom,
-  //   );
-  //   expect(updateConstructorB).toBeDefined();
-  //   expect(updateConstructorB.image).not.toEqual(result.image);
-  //   expect(updateConstructorB.name).not.toEqual(result.name);
-  // });
-  // test('should return Error (already exist) when creating same constructor-bottom again', async () => {
-  //   const createConstructorAgain = await createConstructorBottom(
-  //     newDataConstructorBottom,
-  //     operations,
-  //   );
-  //   expect(createConstructorAgain.message).toBeDefined();
-  //   expect(createConstructorAgain.message).toEqual(
-  //     CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
-  //   );
-  // });
-  // test('should return Error (not found) when updating not existing constructor-bottom', async () => {
-  //   const updateConstructor = await updateConstructorB(
-  //     WRONG_ID,
-  //     operations,
-  //     addConstructor,
-  //   );
-  //   expect(updateConstructor).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
-  // });
-  // test('should return Error (not found) when try to delete wrong constructor-bottom', async () => {
-  //   const deletedConstructor = await updateConstructorB(
-  //     WRONG_ID,
-  //     operations,
-  //     addConstructor,
-  //   );
-  //   expect(deletedConstructor).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
-  // });
+
+  test('should update existing constructor-bottom', async () => {
+    const updatedData = await updateConstructorBottom(
+      constructorId,
+      newDataConstructorBottom,
+      operations
+    );
+
+    expect(updatedData).toBeDefined();
+    expect(updatedData.image).not.toEqual(currentConstructorBottom.image);
+  });
+  test('should return Error (already exist) when creating same constructor-bottom again', async () => {
+    const createConstructorAgain = await createConstructorBottom(
+      newDataConstructorBottom,
+      operations
+    );
+
+    expect(createConstructorAgain.message).toBeDefined();
+    expect(createConstructorAgain.message).toEqual(
+      CONSTRUCTOR_BOTTOM_ALREADY_EXIST
+    );
+  });
+  test('should return Error (not found) when updating not existing constructor-bottom', async () => {
+    const updateConstructor = await updateConstructorBottom(
+      wrongId,
+      addConstructor,
+      operations
+    );
+
+    expect(updateConstructor.message).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
+  });
 
   test('should delete constructor-bottom and return id', async () => {
     const deletedConstructor = await deleteConstructorBottom(
@@ -104,11 +97,11 @@ describe('Constructor mutations', () => {
       operations
     );
 
-    expect(deletedConstructor).toBe(constructorId);
+    expect(deletedConstructor._id).toBe(constructorId);
   });
 
   afterAll(async () => {
-    await deleteColor(colorId);
-    await deleteMaterial(materialId);
+    await deleteMaterial(materialId, operations);
+    await deleteColor(colorId, operations);
   });
 });

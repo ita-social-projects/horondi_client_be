@@ -1,49 +1,6 @@
 const { gql } = require('@apollo/client');
 
 const createConstructorFrontPocket = async (constructorElement, operations) => {
-  const createdConstructorFrontPocket = await operations.mutate({
-    mutation: gql`
-      mutation($constructorElement: ConstructorFrontPocketInput!) {
-        addConstructorFrontPocket(constructorElement: $constructorElement) {
-          ... on ConstructorFrontPocket {
-            _id
-          }
-          ... on Error {
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      constructorElement,
-    },
-  });
-
-  return createdConstructorFrontPocket.data.addConstructorFrontPocket._id;
-};
-const deleteConstructorFrontPocket = async (id, operations) => {
-  return await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteConstructorFrontPocket(id: $id) {
-          ... on ConstructorFrontPocket {
-            _id
-          }
-          ... on Error {
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      id,
-    },
-  });
-};
-const createConstructorFrontPocketWithData = async (
-  constructorInput,
-  operations
-) => {
   const constructorFrontPocket = await operations.mutate({
     mutation: gql`
       mutation($constructorElement: ConstructorFrontPocketInput!) {
@@ -71,11 +28,29 @@ const createConstructorFrontPocketWithData = async (
         }
       }
     `,
-    variables: { constructorElement: constructorInput },
+    variables: { constructorElement },
   });
   return constructorFrontPocket.data.addConstructorFrontPocket;
 };
-
+const deleteConstructorFrontPocket = async (id, operations) => {
+  return await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        deleteConstructorFrontPocket(id: $id) {
+          ... on ConstructorFrontPocket {
+            _id
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+};
 const updateConstructorFrontPocket = async (
   constructorInput,
   constructorId,
@@ -149,7 +124,7 @@ const getAllConstructorFrontPocket = async operations => {
   return res.data.getAllConstructorFrontPocket;
 };
 const getConstructorFrontPocketById = async (id, operations) => {
-  const ConstructorFrontPocketById = await operations.query({
+  const res = await operations.query({
     query: gql`
       query($id: ID!) {
         getConstructorFrontPocketById(id: $id) {
@@ -180,13 +155,12 @@ const getConstructorFrontPocketById = async (id, operations) => {
       id,
     },
   });
-  return ConstructorFrontPocketById;
+  return res.data.getConstructorFrontPocketById;
 };
 
 module.exports = {
   createConstructorFrontPocket,
   deleteConstructorFrontPocket,
-  createConstructorFrontPocketWithData,
   getAllConstructorFrontPocket,
   getConstructorFrontPocketById,
   updateConstructorFrontPocket,
