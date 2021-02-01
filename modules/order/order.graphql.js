@@ -65,9 +65,9 @@ enum SendByEnum{
   SELFPICKUP
 }
 type OrderUser {
-  userId: String
   firstName: String
   lastName: String
+  patronymicName: String
   email: String
   phoneNumber: String
 }
@@ -89,11 +89,11 @@ input OrderInput {
 }
 
 input OrderUserInput {
-  userId: String
-  firstName: String!
-  lastName: String!
-  email: String!
-  phoneNumber: String!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  patronymicName: String
 }
 
 input CurrencyInputSet {

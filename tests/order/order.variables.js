@@ -46,15 +46,6 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
         },
       ],
     },
-    {
-      productId: '00c4889ff34ec751301a6683',
-      size: '4cfa353a881b9fc17b3dce4f',
-      actualPrice: [
-        { value: 120, currency: 'USD' },
-        { value: 1400, currency: 'UAN' },
-      ],
-      quantity: 2,
-    },
   ],
   paymentStatus: 'CREATED',
 });
