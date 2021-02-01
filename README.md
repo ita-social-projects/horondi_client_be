@@ -263,10 +263,6 @@ if issue is in work it should be placed in proper column on dashboard according 
 ### ISTQB team
 
 [![@olya011](https://avatars3.githubusercontent.com/u/49495443?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/olya011)
-[![@GalyaGirnyak](https://avatars.githubusercontent.com/u/75363667?s=200&u=5602aefda507989d28b8bfba247dd05a8a81431b&v=4)](https://github.com/GalyaGirnyak)
-[![@kirkchernyshkov](https://avatars.githubusercontent.com/u/75264827?s=200&u=ba90664860143e53146be7f6956483d9b883618f&v=4)](https://github.com/kirkchernyshkov)
-[![@runner-on-waves](https://avatars.githubusercontent.com/u/75261055?s=200&u=d2b87ed36b47dcc16b934cf0ad2aab1327155fb8&v=4)](https://github.com/runner-on-waves)
-[Serhii Datsiuk](https://github.com/SerhiiDatsiuk)
 
 ### Database team
 
