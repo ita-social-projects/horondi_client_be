@@ -10,7 +10,7 @@ const { monthInMilliseconds } = require('../../consts');
 
 class CommentsService {
   async getCommentById(id) {
-    const comment = Comment.findById(id);
+    const comment = Comment.findById(id).exec();
     if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -18,20 +18,23 @@ class CommentsService {
   }
 
   async getAllCommentsByProduct({ productId, skip, limit }) {
-    const product = Product.findById(productId);
+    const product = Product.findById(productId).exec();
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
     const comments = Comment.find({ product: productId })
+      .exec()
       .skip(skip)
       .limit(limit)
       .sort('-date');
-    const count = Comment.find({ product: productId }).countDocuments();
+    const count = Comment.find({ product: productId })
+      .exec()
+      .countDocuments();
     return { items: comments, count };
   }
 
   async getAllCommentsByUser(userEmail) {
-    const comments = Comment.find({ 'user.email': userEmail });
+    const comments = Comment.find({ 'user.email': userEmail }).exec();
     return comments;
   }
 
@@ -40,13 +43,16 @@ class CommentsService {
     const dateTo = dateFrom - monthInMilliseconds;
 
     const items = Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
+      .exec()
       .sort({ date: -1 })
       .skip(skip)
       .limit(limit);
 
     const count = Comment.find({
       date: { $gt: dateTo, $lt: dateFrom },
-    }).countDocuments();
+    })
+      .exec()
+      .countDocuments();
 
     return {
       items,
@@ -57,7 +63,7 @@ class CommentsService {
   async updateComment(id, comment) {
     const updatedComment = Comment.findByIdAndUpdate(id, comment, {
       new: true,
-    });
+    }).exec();
     if (!updatedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -65,7 +71,7 @@ class CommentsService {
   }
 
   async addComment(id, data) {
-    const product = Product.findById(id);
+    const product = Product.findById(id).exec();
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
@@ -73,7 +79,7 @@ class CommentsService {
   }
 
   async deleteComment(id) {
-    const deletedComment = Comment.findByIdAndDelete(id);
+    const deletedComment = Comment.findByIdAndDelete(id).exec();
     if (!deletedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -81,7 +87,7 @@ class CommentsService {
   }
 
   async addRate(id, data, user) {
-    const product = Product.findById(id);
+    const product = Product.findById(id).exec();
 
     if (!product) {
       throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
@@ -114,7 +120,7 @@ class CommentsService {
         userRates: newUserRates,
       },
       { new: true }
-    );
+    ).exec();
     return rateToAdd;
   }
 }
