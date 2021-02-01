@@ -263,6 +263,13 @@ if issue is in work it should be placed in proper column on dashboard according 
 ### ISTQB team
 
 [![@olya011](https://avatars3.githubusercontent.com/u/49495443?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/olya011)
+[![@Vika-Bodnar](https://avatars2.githubusercontent.com/u/71330682?s=200&u=6c3b98868d6197bd41e3182c24c477343d355e04&v=4)](https://github.com/Vika-Bodnar)
+[![@chelochev](https://avatars0.githubusercontent.com/u/66883720?s=200&u=7eec35db41587211874a2bfe962cbb6ca4e8e99a&v=4)](https://github.com/chelochev)
+[![@Mary-Red](https://avatars0.githubusercontent.com/u/55394709?s=200&u=bcb5ad20d943f981a5a0d8ed09fb33bb9e878fc3&v=4)](https://github.com/Mary-Red)
+[![@GalyaGirnyak](https://avatars.githubusercontent.com/u/75363667?s=200&u=5602aefda507989d28b8bfba247dd05a8a81431b&v=4)](https://github.com/GalyaGirnyak)
+[![@kirkchernyshkov](https://avatars.githubusercontent.com/u/75264827?s=200&u=ba90664860143e53146be7f6956483d9b883618f&v=4)](https://github.com/kirkchernyshkov)
+[![@runner-on-waves](https://avatars.githubusercontent.com/u/75261055?s=200&u=d2b87ed36b47dcc16b934cf0ad2aab1327155fb8&v=4)](https://github.com/runner-on-waves)
+[Serhii Datsiuk](https://github.com/SerhiiDatsiuk)
 
 ### Database team
 
