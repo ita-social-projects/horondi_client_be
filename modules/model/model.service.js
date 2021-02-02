@@ -16,9 +16,12 @@ class ModelsService {
     const items = await Model.find()
       .populate('categories')
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
-    const count = await Model.find().countDocuments();
+    const count = await Model.find()
+      .countDocuments()
+      .exec();
     return {
       items,
       count,
@@ -30,54 +33,56 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
-    const foundModel = await Model.findById(id).populate([
-      {
-        path: 'constructorBasic',
-        model: 'ConstructorBasic',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorFrontPocket',
-        model: 'ConstructorFrontPocket',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorBottom',
-        model: 'ConstructorBottom',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorPattern',
-        model: 'Pattern',
-      },
-    ]);
+    const foundModel = await Model.findById(id)
+      .populate([
+        {
+          path: 'constructorBasic',
+          model: 'ConstructorBasic',
+          populate: [
+            {
+              path: 'material',
+              model: 'Material',
+            },
+            {
+              path: 'color',
+              model: 'Color',
+            },
+          ],
+        },
+        {
+          path: 'constructorFrontPocket',
+          model: 'ConstructorFrontPocket',
+          populate: [
+            {
+              path: 'material',
+              model: 'Material',
+            },
+            {
+              path: 'color',
+              model: 'Color',
+            },
+          ],
+        },
+        {
+          path: 'constructorBottom',
+          model: 'ConstructorBottom',
+          populate: [
+            {
+              path: 'material',
+              model: 'Material',
+            },
+            {
+              path: 'color',
+              model: 'Color',
+            },
+          ],
+        },
+        {
+          path: 'constructorPattern',
+          model: 'Pattern',
+        },
+      ])
+      .exec();
 
     if (foundModel) {
       return foundModel;
@@ -111,7 +116,7 @@ class ModelsService {
   }
 
   async updateModel(id, newModel, upload) {
-    const model = await Model.findById(id);
+    const model = await Model.findById(id).exec();
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
     }
@@ -131,18 +136,18 @@ class ModelsService {
   }
 
   async deleteModel(id) {
-    const model = await Model.findByIdAndDelete(id);
+    const model = await Model.findByIdAndDelete(id).exec();
     if (!model) {
       throw new Error(MODEL_NOT_FOUND);
     }
     model.constructorBasic.forEach(async basic => {
-      await ConstructorBasic.findByIdAndDelete(basic);
+      await ConstructorBasic.findByIdAndDelete(basic).exec();
     });
     model.constructorBottom.forEach(async bottom => {
-      await ConstructorBottom.findByIdAndDelete(bottom);
+      await ConstructorBottom.findByIdAndDelete(bottom).exec();
     });
     await model.constructorFrontPocket.forEach(async pocket => {
-      await ConstructorFrontPocket.findByIdAndDelete(pocket);
+      await ConstructorFrontPocket.findByIdAndDelete(pocket).exec();
     });
 
     const images = Object.values(model.images).filter(
@@ -222,7 +227,7 @@ class ModelsService {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
-    });
+    }).exec();
     return modelCount > 0;
   }
 }

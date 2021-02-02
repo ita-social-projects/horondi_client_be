@@ -10,8 +10,11 @@ class PatternsService {
   async getAllPatterns({ skip, limit }) {
     const items = await Pattern.find()
       .skip(skip)
-      .limit(limit);
-    const count = await Pattern.find().countDocuments();
+      .limit(limit)
+      .exec();
+    const count = await Pattern.find()
+      .countDocuments()
+      .exec();
 
     return {
       items,
@@ -20,7 +23,7 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    const foundPattern = await Pattern.findById(id);
+    const foundPattern = await Pattern.findById(id).exec();
     if (foundPattern) {
       return foundPattern;
     }
@@ -28,7 +31,7 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }) {
-    const patternToUpdate = await Pattern.findById(id);
+    const patternToUpdate = await Pattern.findById(id).exec();
     if (!patternToUpdate) {
       throw new Error(PATTERN_NOT_FOUND);
     }
@@ -37,7 +40,7 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
     if (!image) {
-      return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
+      return await Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
     }
     const uploadResult = await uploadService.uploadFiles([image]);
 
@@ -46,9 +49,11 @@ class PatternsService {
     const images = imageResults.fileNames;
 
     if (!images) {
-      return await Pattern.findByIdAndUpdate(id, pattern);
+      return await Pattern.findByIdAndUpdate(id, pattern).exec();
     }
-    const foundPattern = await Pattern.findById(id).lean();
+    const foundPattern = await Pattern.findById(id)
+      .lean()
+      .exec();
     uploadService.deleteFiles(Object.values(foundPattern.images));
 
     return await Pattern.findByIdAndUpdate(
@@ -60,7 +65,7 @@ class PatternsService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async addPattern({ pattern, image }) {
@@ -80,7 +85,9 @@ class PatternsService {
   }
 
   async deletePattern(id) {
-    const foundPattern = await Pattern.findByIdAndDelete(id).lean();
+    const foundPattern = await Pattern.findByIdAndDelete(id)
+      .lean()
+      .exec();
     if (!foundPattern) {
       throw new Error(PATTERN_NOT_FOUND);
     }
@@ -101,7 +108,7 @@ class PatternsService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return patternsCount > 0;
   }
 }

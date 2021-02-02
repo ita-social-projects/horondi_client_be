@@ -17,11 +17,11 @@ const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id);
+    return await Product.findById(id).exec();
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id });
+    const product = await Product.find({ category: id }).exec();
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -87,7 +87,8 @@ class ProductsService {
     const items = await Product.find(filters)
       .skip(skip)
       .limit(limit)
-      .sort(sort);
+      .sort(sort)
+      .exec();
 
     const count = await Product.find(filters).countDocuments();
     return {
@@ -97,7 +98,9 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -125,7 +128,9 @@ class ProductsService {
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
-    return await Product.findByIdAndUpdate(id, productData, { new: true });
+    return await Product.findByIdAndUpdate(id, productData, {
+      new: true,
+    }).exec();
   }
 
   async addProduct(productData, filesToUpload) {
@@ -151,7 +156,9 @@ class ProductsService {
   }
 
   async deleteProduct(id) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -175,12 +182,14 @@ class ProductsService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return productCount > 0;
   }
 
   async deleteImages(id, imagesToDelete) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
@@ -197,7 +206,7 @@ class ProductsService {
           },
         },
         { new: true }
-      );
+      ).exec();
       return updatedProduct.images;
     }
   }
@@ -206,7 +215,8 @@ class ProductsService {
     const products = await Product.find()
       .sort({ purchasedCount: -1 })
       .limit(10)
-      .lean();
+      .lean()
+      .exec();
 
     return products.reduce(
       (prev, curr) => ({
@@ -219,13 +229,13 @@ class ProductsService {
   }
 
   async getProductsForWishlist(userId) {
-    const { wishlist } = await User.findById(userId);
-    return await Product.find({ _id: { $in: wishlist } });
+    const { wishlist } = await User.findById(userId).exec();
+    return await Product.find({ _id: { $in: wishlist } }).exec();
   }
 
   async getProductsForCart(userId) {
-    const { cart } = await User.findById(userId);
-    return await Product.find({ _id: { $in: cart } });
+    const { cart } = await User.findById(userId).exec();
+    return await Product.find({ _id: { $in: cart } }).exec();
   }
 }
 
