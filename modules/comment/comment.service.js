@@ -10,6 +10,16 @@ const {
 const { monthInMilliseconds } = require('../../consts');
 
 class CommentsService {
+  async getAllComments({ skip, limit }) {
+    const comments = await Comment.find()
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    const count = await Comment.find()
+      .countDocuments()
+      .exec();
+    return { items: comments, count };
+  }
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {
@@ -40,28 +50,6 @@ class CommentsService {
       throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
     }
     return comments;
-  }
-
-  async getAllRecentComments({ skip, limit }) {
-    const dateFrom = new Date().getTime();
-    const dateTo = dateFrom - monthInMilliseconds;
-
-    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(limit)
-      .exec();
-
-    const count = await Comment.find({
-      date: { $gt: dateTo, $lt: dateFrom },
-    })
-      .countDocuments()
-      .exec();
-
-    return {
-      items,
-      count,
-    };
   }
 
   async updateComment(id, comment) {

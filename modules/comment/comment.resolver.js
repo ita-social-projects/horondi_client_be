@@ -1,6 +1,7 @@
 const commentsService = require('./comment.service');
 
 const commentsQuery = {
+  getAllComments: (parent, args) => commentsService.getAllComments(args),
   getCommentById: async (parent, args) => {
     try {
       return await commentsService.getCommentById(args.id);
