@@ -27,19 +27,21 @@ class OrdersService {
       async (prev, item) => {
         const sum = await prev;
         const { quantity } = item;
-        const { additionalPrice } = await Size.findById(item.options.size);
+        const { additionalPrice } = await Size.findById(
+          item.options.size
+        ).exec();
 
         if (!item.fixedPrice?.length) {
           if (item.isFromConstructor) {
             const constructorBasics = await ConstructorBasic.findById(
               item.constructorBasics
-            );
+            ).exec();
             const constructorFrontPocket = await ConstructorFrontPocket.findById(
               item.constructorFrontPocket
-            );
+            ).exec();
             const constructorBottom = await ConstructorBottom.findById(
               item.constructorBottom
-            );
+            ).exec();
             item.fixedPrice = [
               {
                 currency: 'UAH',
@@ -59,7 +61,7 @@ class OrdersService {
               },
             ];
           } else {
-            const { basePrice } = await Product.findById(item.product);
+            const { basePrice } = await Product.findById(item.product).exec();
             item.fixedPrice = [
               {
                 currency: 'UAH',
@@ -117,7 +119,8 @@ class OrdersService {
     const items = await Order.find(filters)
       .sort({ dateOfCreation: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
     const count = await Order.find(filters).countDocuments();
     return {
@@ -130,7 +133,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await Order.findById(id);
+    const foundOrder = await Order.findById(id).exec();
     if (foundOrder) {
       return foundOrder;
     }
@@ -141,7 +144,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const orderToUpdate = await Order.findById(id);
+    const orderToUpdate = await Order.findById(id).exec();
     if (!orderToUpdate) {
       throw new Error(ORDER_NOT_FOUND);
     }
@@ -170,7 +173,7 @@ class OrdersService {
         cost: totalItemsPrice[0].value / 100,
       });
 
-      const currency = await Currency.findOne();
+      const currency = await Currency.findOne().exec();
 
       const cost = [
         {
@@ -212,7 +215,7 @@ class OrdersService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async addOrder(data) {
@@ -238,7 +241,7 @@ class OrdersService {
         cost: totalItemsPrice[0].value / 100,
       });
 
-      const currency = await Currency.findOne();
+      const currency = await Currency.findOne().exec();
 
       const cost = [
         {
@@ -281,7 +284,7 @@ class OrdersService {
     if (!ObjectId.isValid(id)) {
       throw new Error(ORDER_NOT_VALID);
     }
-    const foundOrder = await Order.findByIdAndDelete(id);
+    const foundOrder = await Order.findByIdAndDelete(id).exec();
     if (foundOrder) {
       return foundOrder;
     }
@@ -291,7 +294,7 @@ class OrdersService {
   async getUserOrders(user) {
     const { orders } = user;
 
-    return await Order.find({ _id: orders });
+    return await Order.find({ _id: orders }).exec();
   }
 
   filterOrders({ days, isPaid }) {
@@ -324,7 +327,8 @@ class OrdersService {
     const filter = this.filterOrders({ days, isPaid: true });
     const orders = await Order.find(filter)
       .sort({ dateOfCreation: 1 })
-      .lean();
+      .lean()
+      .exec();
     const formattedDate = orders.map(({ dateOfCreation }) =>
       changeDataFormat(dateOfCreation, userDateFormat)
     );
@@ -340,7 +344,9 @@ class OrdersService {
 
   async getOrdersStatistic(days) {
     const filter = this.filterOrders({ days });
-    const orders = await Order.find(filter).lean();
+    const orders = await Order.find(filter)
+      .lean()
+      .exec();
     const statuses = orders.map(({ status }) => status);
     const { names, counts } = this.getOrdersStats(statuses);
     const relations = counts.map(count =>

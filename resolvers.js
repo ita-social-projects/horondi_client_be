@@ -93,7 +93,6 @@ const {
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
@@ -192,15 +191,6 @@ const resolvers = {
     ...colorQuery,
   },
 
-  ConstructorBottom: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.constructorBottom;
-      }
-      return 'Error';
-    },
-  },
-
   User: {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
@@ -282,12 +272,50 @@ const resolvers = {
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+    constructorBottom: parent =>
+      parent.constructorBottom.map(el =>
+        constructorServices.getConstructorElementById(
+          el,
+          constructorBottomModel
+        )
+      ),
+    constructorBasic: parent =>
+      parent.constructorBasic.map(el =>
+        constructorServices.getConstructorElementById(el, constructorBasicModel)
+      ),
+    constructorFrontPocket: parent =>
+      parent.constructorFrontPocket.map(el =>
+        constructorServices.getConstructorElementById(
+          el,
+          constructorFrontPocketModel
+        )
+      ),
+    constructorPattern: parent =>
+      parent.constructorPattern.map(el => patternService.getPatternById(el)),
+  },
+  Closure: {
+    material: parent => materialService.getMaterialById(parent.material),
+  },
+  ConstructorBottom: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
+  ConstructorBasic: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
+  ConstructorFrontPocket: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
   },
 
   UserRate: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
   },
-
+  Material: {
+    colors: parent =>
+      parent.colors.map(color => colorService.getColorById(color)),
+  },
   EmailQuestion: {
     answer: parent => {
       if (parent.answer.date) {
