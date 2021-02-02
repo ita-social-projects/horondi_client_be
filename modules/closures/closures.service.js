@@ -9,9 +9,12 @@ class ClosureService {
   async getAllClosure({ skip, limit }) {
     const items = await Closure.find()
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
-    const count = await Closure.find().countDocuments();
+    const count = await Closure.find()
+      .countDocuments()
+      .exec();
     return {
       items,
       count,
@@ -19,7 +22,7 @@ class ClosureService {
   }
 
   async getClosureById(id) {
-    const foundClosure = await Closure.findById(id);
+    const foundClosure = await Closure.findById(id).exec();
     if (foundClosure) {
       return foundClosure;
     }
@@ -47,15 +50,15 @@ class ClosureService {
       data.image = uploadImage.fileNames.large;
     }
 
-    const closureMaterial = await Closure.findById(id);
+    const closureMaterial = await Closure.findById(id).exec();
     if (!closureMaterial) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
-    return await Closure.findByIdAndUpdate(id, closure, { new: true });
+    return await Closure.findByIdAndUpdate(id, closure, { new: true }).exec();
   }
 
   async deleteClosure(id) {
-    const closure = await Closure.findByIdAndDelete(id);
+    const closure = await Closure.findByIdAndDelete(id).exec();
     if (!closure) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
@@ -69,7 +72,7 @@ class ClosureService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return closureCount > 0;
   }
 }

@@ -30,9 +30,12 @@ class MaterialsService {
 
     const items = await Material.find(filters)
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
-    const count = await Material.find().countDocuments();
+    const count = await Material.find()
+      .countDocuments()
+      .exec();
     return {
       items,
       count,
@@ -46,7 +49,7 @@ class MaterialsService {
   async updateMaterial(id, material) {
     const { additionalPrice, ...rest } = material;
 
-    const materialToUpdate = await Material.findById(id);
+    const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
@@ -54,7 +57,6 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    const currency = await Currency.findOne();
     return await Material.findByIdAndUpdate(
       id,
       {
@@ -62,7 +64,7 @@ class MaterialsService {
         additionalPrice: [calculatePrice(additionalPrice)],
       },
       { new: true }
-    );
+    ).exec();
   }
 
   async addMaterial({ material }) {
@@ -74,7 +76,7 @@ class MaterialsService {
   }
 
   async deleteMaterial(id) {
-    const foundMaterial = await Material.findByIdAndDelete(id);
+    const foundMaterial = await Material.findByIdAndDelete(id).exec();
     if (foundMaterial) {
       return foundMaterial;
     }
@@ -91,7 +93,7 @@ class MaterialsService {
             $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
           },
         },
-      });
+      }).exec();
       return materialsCount > 0;
     }
     materialsCount = await Material.countDocuments({
@@ -101,7 +103,7 @@ class MaterialsService {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
-    });
+    }).exec();
     return materialsCount > 0;
   }
 }
