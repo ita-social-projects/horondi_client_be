@@ -10,6 +10,7 @@ const createProduct = async (product, operations) => {
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -19,11 +20,10 @@ const createProduct = async (product, operations) => {
     },
   });
 
-  return createdProduct.data.addProduct._id;
+  return createdProduct.data.addProduct;
 };
-
 const updateProduct = async (id, product, operations) => {
-  const updatedProduct = await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $product: ProductInput!) {
         updateProduct(id: $id, product: $product, upload: []) {
@@ -91,34 +91,9 @@ const updateProduct = async (id, product, operations) => {
       product,
     },
   });
-
-  return updatedProduct;
-};
-
-const createProductSecond = async (product, operations) => {
-  const createdProduct = await operations.mutate({
-    mutation: gql`
-      mutation($product: ProductInput!) {
-        addProduct(product: $product, upload: []) {
-          ... on Product {
-            _id
-          }
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: {
-      product,
-    },
-  });
-
-  return createdProduct;
 };
 const getProductById = async (id, operations) => {
-  const ConstructorBasicById = await operations.query({
+  return await operations.query({
     query: gql`
       query($id: ID!) {
         getProductById(id: $id) {
@@ -193,7 +168,6 @@ const getProductById = async (id, operations) => {
       id,
     },
   });
-  return ConstructorBasicById;
 };
 const deleteProduct = async (id, operations) => {
   return await operations.mutate({
@@ -236,7 +210,6 @@ module.exports = {
   deleteProduct,
   createProduct,
   getProductById,
-  createProductSecond,
   getAllProductsWithSkipAndLimit,
   updateProduct,
 };

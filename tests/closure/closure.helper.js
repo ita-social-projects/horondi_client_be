@@ -31,8 +31,40 @@ const createClosure = async (closure, operations) => {
 
   return createdClosure.data.addClosure;
 };
+const updateClosure = async (id, closure, operations) => {
+  const updatedClosure = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $closure: ClosureInput!) {
+        updateClosure(id: $id, closure: $closure) {
+          ... on Closure {
+            _id
+            name {
+              lang
+              value
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      closure,
+      id,
+    },
+  });
+
+  return updatedClosure.data.updateClosure;
+};
 const deleteClosure = async (id, operations) => {
-  return await operations.mutate({
+  const res = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteClosure(id: $id) {
@@ -41,6 +73,7 @@ const deleteClosure = async (id, operations) => {
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -49,6 +82,7 @@ const deleteClosure = async (id, operations) => {
       id,
     },
   });
+  return res.data.deleteClosure;
 };
 const getClosureById = async (id, operations) => {
   const result = await operations.query({
@@ -79,10 +113,12 @@ const getClosureById = async (id, operations) => {
     },
   });
 
-  return result.data.getSizeById;
+  return result.data.getClosureById;
 };
 
 module.exports = {
   deleteClosure,
   createClosure,
+  getClosureById,
+  updateClosure,
 };

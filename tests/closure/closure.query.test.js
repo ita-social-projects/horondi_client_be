@@ -1,5 +1,10 @@
 const { setupApp } = require('../helper-functions');
-const { deleteClosure, createClosure } = require('./closure.helper');
+const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
+const {
+  deleteClosure,
+  createClosure,
+  getClosureById,
+} = require('./closure.helper');
 const { wrongId, newClosure } = require('./closure.variables');
 const { getMaterial } = require('../materials/material.variables');
 const {
@@ -27,19 +32,27 @@ describe('Closure queries', () => {
     closureId = closureData._id;
   });
 
-  // test('should recieve all sizes', async () => {
-  //   const result = await getAllSizes(operations);
-  //
-  //   expect(result[0]).toEqual(SIZES_TO_TEST.size1);
-  // });
-  // test('should recieve sizes by ID', async () => {
-  //   const result = await getSizeById(sizeId, operations);
-  //
-  //   expect(result).toEqual({
-  //     _id: sizeId,
-  //     ...SIZES_TO_TEST.size1,
-  //   });
-  // });
+  test('should receive closure by ID', async () => {
+    const result = await getClosureById(closureId, operations);
+
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('name', newClosure(materialId).name);
+    expect(result).toHaveProperty(
+      'additionalPrice',
+      newClosure(materialId).additionalPrice
+    );
+    expect(result).toHaveProperty(
+      'available',
+      newClosure(materialId).available
+    );
+  });
+  test('should throw error CLOSURE_NOT_FOUND', async () => {
+    const result = await getClosureById(wrongId, operations);
+
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('message', CLOSURE_NOT_FOUND);
+    expect(result).toHaveProperty('statusCode', 404);
+  });
 
   afterAll(async () => {
     await deleteClosure(closureId, operations);
