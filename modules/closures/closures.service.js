@@ -8,7 +8,6 @@ const uploadService = require('../upload/upload.service');
 class ClosureService {
   async getAllClosure({ skip, limit }) {
     const items = await Closure.find()
-      .populate('material')
       .skip(skip)
       .limit(limit)
       .exec();
@@ -23,9 +22,7 @@ class ClosureService {
   }
 
   async getClosureById(id) {
-    const foundClosure = await Closure.findById(id)
-      .populate('material')
-      .exec();
+    const foundClosure = await Closure.findById(id).exec();
     if (foundClosure) {
       return foundClosure;
     }
@@ -53,9 +50,7 @@ class ClosureService {
       data.image = uploadImage.fileNames.large;
     }
 
-    const closureMaterial = await Closure.findById(id)
-      .populate('material')
-      .exec();
+    const closureMaterial = await Closure.findById(id).exec();
     if (!closureMaterial) {
       throw new Error(CLOSURE_NOT_FOUND);
     }

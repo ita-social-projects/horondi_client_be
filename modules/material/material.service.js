@@ -29,7 +29,6 @@ class MaterialsService {
     const filters = this.filterItems(filter);
 
     const items = await Material.find(filters)
-      .populate('colors')
       .skip(skip)
       .limit(limit)
       .exec();
@@ -44,7 +43,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id).populate('colors');
+    return Material.findById(id);
   }
 
   async updateMaterial(id, material) {
