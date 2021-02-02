@@ -8,7 +8,7 @@ const registerUser = async (
   language,
   operations
 ) => {
-  const register = await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation(
         $firstName: String!
@@ -46,10 +46,92 @@ const registerUser = async (
       language,
     },
   });
-  return register;
+};
+const updateUserById = async (
+  userId,
+  email,
+  role,
+  phoneNumber,
+  country,
+  city,
+  street,
+  buildingNumber,
+  wishlist,
+  orders,
+  comments,
+  token,
+  operations
+) => {
+  return await operations.mutate({
+    mutation: gql`
+      mutation(
+        $userId: ID!
+        $email: String!
+        $phoneNumber: String!
+        $country: String!
+        $city: String!
+        $street: String!
+        $buildingNumber: String!
+        $wishlist: [ID!]!
+        $orders: [ID!]!
+        $comments: [ID!]!
+      ) {
+        updateUserById(
+          user: {
+            firstName: "Updated"
+            lastName: "Updated"
+            email: $email
+            phoneNumber: $phoneNumber
+            address: {
+              country: $country
+              city: $city
+              street: $street
+              buildingNumber: $buildingNumber
+            }
+            wishlist: $wishlist
+            orders: $orders
+            comments: $comments
+          }
+          id: $userId
+        ) {
+          firstName
+          lastName
+          email
+          phoneNumber
+          role
+          address {
+            country
+            city
+            street
+            buildingNumber
+          }
+          orders
+          comments
+        }
+      }
+    `,
+    context: {
+      headers: {
+        token,
+      },
+    },
+    variables: {
+      userId,
+      email,
+      role,
+      phoneNumber,
+      country,
+      city,
+      street,
+      buildingNumber,
+      wishlist,
+      orders,
+      comments,
+    },
+  });
 };
 const loginUser = async (email, pass, operations) => {
-  const authRes = await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($email: String!, $password: String!) {
         loginUser(loginInput: { email: $email, password: $password }) {
@@ -94,10 +176,9 @@ const loginUser = async (email, pass, operations) => {
       password: pass,
     },
   });
-  return authRes;
 };
 const getAllUsers = async operations => {
-  const res = await operations.query({
+  return await operations.query({
     query: gql`
       query {
         getAllUsers {
@@ -121,10 +202,9 @@ const getAllUsers = async operations => {
       }
     `,
   });
-  return res;
 };
 const getUserByToken = async operations => {
-  const res = await operations.query({
+  return await operations.query({
     query: gql`
       query {
         getUserByToken {
@@ -150,10 +230,9 @@ const getUserByToken = async operations => {
       }
     `,
   });
-  return res;
 };
 const getUserById = async (userId, operations) => {
-  const res = await operations.query({
+  return await operations.query({
     query: gql`
       query($userId: ID!) {
         getUserById(id: $userId) {
@@ -178,10 +257,9 @@ const getUserById = async (userId, operations) => {
       userId,
     },
   });
-  return res;
 };
 const deleteUser = async (userId, operations) => {
-  await operations.mutate({
+  const res = await operations.mutate({
     mutation: gql`
       mutation($userId: ID!) {
         deleteUser(id: $userId) {
@@ -195,9 +273,63 @@ const deleteUser = async (userId, operations) => {
       userId,
     },
   });
+  return res;
+};
+const completeAdminRegister = async (
+  token,
+  firstName,
+  lastName,
+  password,
+  operations
+) => {
+  const result = await operations.mutate({
+    mutation: gql`
+      mutation($user: AdminConfirmInput!, $token: String!) {
+        completeAdminRegister(user: $user, token: $token) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      token,
+      user: {
+        firstName,
+        lastName,
+        password,
+      },
+    },
+  });
+  return result;
+};
+const switchUserStatus = async (userId, operations) => {
+  const result = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        switchUserStatus(id: $id) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      id: userId,
+    },
+  });
+  return result;
 };
 const loginAdmin = async (email, password, operations) => {
-  const result = await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
@@ -213,10 +345,9 @@ const loginAdmin = async (email, password, operations) => {
       },
     },
   });
-  return result;
 };
 const getAllUsersWithToken = async (token, operations) => {
-  const result = await operations.query({
+  return await operations.query({
     query: gql`
       {
         getAllUsers {
@@ -235,7 +366,25 @@ const getAllUsersWithToken = async (token, operations) => {
       },
     },
   });
-  return result;
+};
+const validateConfirmationToken = async (token, operations) => {
+  return await operations.query({
+    query: gql`
+      query($token: String!) {
+        validateConfirmationToken(token: $token) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      token,
+    },
+  });
 };
 
 module.exports = {
@@ -247,4 +396,8 @@ module.exports = {
   deleteUser,
   loginAdmin,
   getAllUsersWithToken,
+  validateConfirmationToken,
+  updateUserById,
+  switchUserStatus,
+  completeAdminRegister,
 };

@@ -3,13 +3,13 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   INVALID_PERMISSIONS,
 } = require('../../error-messages/user.messages');
-let {
+const {
   superAdminUser,
   testUser,
   testUsersSet,
   wrongId,
 } = require('./user.variables');
-let {
+const {
   registerUser,
   loginUser,
   getAllUsers,
@@ -18,6 +18,7 @@ let {
   deleteUser,
   loginAdmin,
   getAllUsersWithToken,
+  validateConfirmationToken,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -247,7 +248,7 @@ describe('Testing obtaining information restrictions', () => {
     expect(data.length).toBeGreaterThanOrEqual(2);
   });
   test('User can obtain the information about himself', async () => {
-    const userLoginInfo = await loginUser(userLogin, userLogin, operations);
+    const userLoginInfo = await loginUser(userLogin, userPassword, operations);
     const result = await getUserById(
       userLoginInfo.data.loginUser._id,
       operations
@@ -257,212 +258,160 @@ describe('Testing obtaining information restrictions', () => {
     expect(userInfo.firstName).toEqual(firstName);
     expect(userInfo.lastName).toEqual(lastName);
   });
-  //
-  // test('Should throw an error when validate invalid token', async () => {
-  //   const invalidAdminToken = 'y' + adminToken.slice(1);
-  //
-  //   const result = await operations
-  //     .query({
-  //       query: gql`
-  //         query($token: String!) {
-  //           validateConfirmationToken(token: $token) {
-  //             ... on SuccessfulResponse {
-  //               isSuccess
-  //             }
-  //             ... on Error {
-  //               message
-  //             }
-  //           }
-  //         }
-  //       `,
-  //       variables: {
-  //         token: invalidAdminToken,
-  //       },
-  //     })
-  //     .catch(err => err);
-  //
-  //   const data = result.data.validateConfirmationToken;
-  //
-  //   expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
-  // });
-  //
-  // test('Should return successful response when token is valid', async () => {
-  //   const result = await operations
-  //     .query({
-  //       query: gql`
-  //         query($token: String!) {
-  //           validateConfirmationToken(token: $token) {
-  //             ... on SuccessfulResponse {
-  //               isSuccess
-  //             }
-  //             ... on Error {
-  //               message
-  //             }
-  //           }
-  //         }
-  //       `,
-  //       variables: {
-  //         token: adminToken,
-  //       },
-  //     })
-  //     .catch(err => err);
-  //
-  //   const data = result.data.validateConfirmationToken;
-  //
-  //   expect(data.isSuccess).toEqual(true);
-  // });
+  test('Should throw an error when validate invalid token', async () => {
+    const invalidAdminToken = 'y' + adminToken.slice(1);
+    const result = await validateConfirmationToken(
+      invalidAdminToken,
+      operations
+    );
+    const data = result.data.validateConfirmationToken;
+
+    expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
+  });
+  test('Should return successful response when token is valid', async () => {
+    const result = await validateConfirmationToken(adminToken, operations);
+    const data = result.data.validateConfirmationToken;
+
+    expect(data.isSuccess).toEqual(true);
+  });
+
   afterAll(async () => {
     await deleteUser(userId, operations);
   });
 });
 
-// describe('Filter users', () => {
-//   const ACTIVE = { banned: false };
-//   const BANNED = { banned: true };
-//   const SORT = {
-//     byName: { asc: { name: 1 }, desc: { name: -1 } },
-//     byEmail: { asc: { email: 1 }, desc: { email: -1 } },
-//   };
-//   let usersId = [];
-//
-//   beforeAll(async () => {
-//     operations = await setupApp();
-//
-//     for (let i = 0; i < testUsersSet.length; i++) {
-//       usersId.push(await createUser(operations, testUsersSet[i]));
-//     }
-//
-//     let users = await getAllUsersQuery(operations);
-//
-//     for (let i = 0; i < users.length; i++) {
-//       if (
-//         testUsersSet.some(
-//           el => el.firstName === users[i].firstName && el.banned,
-//         )
-//       ) {
-//         await operations.mutate({
-//           mutation: gql`
-//             mutation($id: ID!) {
-//               switchUserStatus(id: $id) {
-//                 ... on SuccessfulResponse {
-//                   isSuccess
-//                 }
-//                 ... on Error {
-//                   statusCode
-//                 }
-//               }
-//             }
-//           `,
-//           variables: {
-//             id: users[i]._id,
-//           },
-//         });
-//       }
-//     }
-//   });
-//
-//   test('should sort by name from a to z', async () => {
-//     const compareResult = testUsersSet.map(user => user.firstName).sort();
-//
-//     let users = await getAllUsersQuery(operations, SORT.byName.asc);
-//
-//     users = chooseOnlyUsers(users);
-//     expect(users).toBeDefined();
-//     expect(users.map(user => user.firstName)).toEqual(compareResult);
-//   });
-//
-//   test('should sort by name from z to a', async () => {
-//     const compareResult = testUsersSet
-//       .map(user => user.firstName)
-//       .sort()
-//       .reverse();
-//
-//     let users = await getAllUsersQuery(operations, SORT.byName.desc);
-//
-//     users = chooseOnlyUsers(users);
-//     expect(users).toBeDefined();
-//     expect(users.map(user => user.firstName)).toEqual(compareResult);
-//   });
-//
-//   test('should sort by email from a to z', async () => {
-//     const compareResult = testUsersSet.map(user => user.email).sort();
-//
-//     let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
-//
-//     users = chooseOnlyUsers(users);
-//     expect(users).toBeDefined();
-//     expect(users.map(user => user.email)).toEqual(compareResult);
-//   });
-//
-//   test('should sort by emaill from z to a', async () => {
-//     const compareResult = testUsersSet
-//       .map(user => user.email)
-//       .sort()
-//       .reverse();
-//
-//     let users = await getAllUsersQuery(operations, SORT.byEmail.desc);
-//
-//     users = chooseOnlyUsers(users);
-//     expect(users).toBeDefined();
-//     expect(users.map(user => user.email)).toEqual(compareResult);
-//   });
-//
-//   test('should show only banned users', async () => {
-//     const compareResult = testUsersSet
-//       .filter(user => user.banned)
-//       .map(user => ({ firstName: user.firstName, banned: user.banned }));
-//
-//     let users = await getAllUsersQuery(operations, {}, BANNED);
-//     users = chooseOnlyUsers(users).map(user => ({
-//       firstName: user.firstName,
-//       banned: user.banned,
-//     }));
-//     expect(users).toBeDefined();
-//     users.forEach(user => {
-//       expect(user).toEqual(
-//         compareResult.find(el => el.firstName === user.firstName),
-//       );
-//     });
-//   });
-//
-//   test('should show only not banned users', async () => {
-//     const compareResult = testUsersSet
-//       .filter(user => !user.banned)
-//       .map(user => ({ firstName: user.firstName, banned: user.banned }));
-//
-//     let users = await getAllUsersQuery(operations, {}, ACTIVE);
-//
-//     users = chooseOnlyUsers(users).map(user => ({
-//       firstName: user.firstName,
-//       banned: user.banned,
-//     }));
-//     expect(users).toBeDefined();
-//     users.forEach(user => {
-//       expect(user).toEqual(
-//         compareResult.find(el => el.firstName === user.firstName),
-//       );
-//     });
-//   });
-//
-//   afterAll(() => {
-//     usersId.forEach(async id => {
-//       await operations.mutate({
-//         mutation: gql`
-//           mutation($id: ID!) {
-//             deleteUser(id: $id) {
-//               ... on User {
-//                 _id
-//               }
-//               ... on Error {
-//                 message
-//               }
-//             }
-//           }
-//         `,
-//         variables: {
-//           id,
-//         },
-//       });
-//     });
-//   });
-// });
+describe('Filter users', () => {
+  const ACTIVE = { banned: false };
+  const BANNED = { banned: true };
+  const SORT = {
+    byName: { asc: { name: 1 }, desc: { name: -1 } },
+    byEmail: { asc: { email: 1 }, desc: { email: -1 } },
+  };
+  let usersId = [];
+
+  beforeAll(async () => {
+    operations = await setupApp();
+
+    for (let i = 0; i < testUsersSet.length; i++) {
+      usersId.push(await createUser(operations, testUsersSet[i]));
+    }
+
+    let users = await getAllUsersQuery(operations);
+
+    for (let i = 0; i < users.length; i++) {
+      if (
+        testUsersSet.some(
+          el => el.firstName === users[i].firstName && el.banned
+        )
+      ) {
+        await operations.mutate({
+          mutation: gql`
+            mutation($id: ID!) {
+              switchUserStatus(id: $id) {
+                ... on SuccessfulResponse {
+                  isSuccess
+                }
+                ... on Error {
+                  statusCode
+                }
+              }
+            }
+          `,
+          variables: {
+            id: users[i]._id,
+          },
+        });
+      }
+    }
+  });
+
+  test('should sort by name from a to z', async () => {
+    const compareResult = testUsersSet.map(user => user.firstName).sort();
+
+    let users = await getAllUsersQuery(operations, SORT.byName.asc);
+
+    users = chooseOnlyUsers(users);
+    expect(users).toBeDefined();
+    expect(users.map(user => user.firstName)).toEqual(compareResult);
+  });
+
+  test('should sort by name from z to a', async () => {
+    const compareResult = testUsersSet
+      .map(user => user.firstName)
+      .sort()
+      .reverse();
+
+    let users = await getAllUsersQuery(operations, SORT.byName.desc);
+
+    users = chooseOnlyUsers(users);
+    expect(users).toBeDefined();
+    expect(users.map(user => user.firstName)).toEqual(compareResult);
+  });
+
+  test('should sort by email from a to z', async () => {
+    const compareResult = testUsersSet.map(user => user.email).sort();
+    let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
+    users = chooseOnlyUsers(users);
+
+    expect(users).toBeDefined();
+    expect(users.map(user => user.email)).toEqual(compareResult);
+  });
+
+  test('should sort by emaill from z to a', async () => {
+    const compareResult = testUsersSet
+      .map(user => user.email)
+      .sort()
+      .reverse();
+    let users = await getAllUsersQuery(operations, SORT.byEmail.desc);
+    users = chooseOnlyUsers(users);
+
+    expect(users).toBeDefined();
+    expect(users.map(user => user.email)).toEqual(compareResult);
+  });
+
+  test('should show only banned users', async () => {
+    const compareResult = testUsersSet
+      .filter(user => user.banned)
+      .map(user => ({ firstName: user.firstName, banned: user.banned }));
+
+    let users = await getAllUsersQuery(operations, {}, BANNED);
+    users = chooseOnlyUsers(users).map(user => ({
+      firstName: user.firstName,
+      banned: user.banned,
+    }));
+
+    expect(users).toBeDefined();
+    users.forEach(user => {
+      expect(user).toEqual(
+        compareResult.find(el => el.firstName === user.firstName)
+      );
+    });
+  });
+
+  test('should show only not banned users', async () => {
+    const compareResult = testUsersSet
+      .filter(user => !user.banned)
+      .map(user => ({ firstName: user.firstName, banned: user.banned }));
+
+    let users = await getAllUsersQuery(operations, {}, ACTIVE);
+
+    users = chooseOnlyUsers(users).map(user => ({
+      firstName: user.firstName,
+      banned: user.banned,
+    }));
+    expect(users).toBeDefined();
+    users.forEach(user => {
+      expect(user).toEqual(
+        compareResult.find(el => el.firstName === user.firstName)
+      );
+    });
+  });
+
+  afterAll(async () => {
+    await Promise.all(
+      usersId.map(async id => {
+        await deleteUser(id, operations);
+      })
+    );
+  });
+});
