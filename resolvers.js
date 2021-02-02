@@ -302,11 +302,29 @@ const resolvers = {
     constructorPattern: parent =>
       parent.constructorPattern.map(el => patternService.getPatternById(el)),
   },
+  Closure: {
+    material: parent => materialService.getMaterialById(parent.material),
+  },
+  ConstructorBottom: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
+  ConstructorBasic: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
+  ConstructorFrontPocket: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
 
   UserRate: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
   },
-
+  Material: {
+    colors: parent =>
+      parent.colors.map(color => colorService.getColorById(color)),
+  },
   EmailQuestion: {
     answer: parent => {
       if (parent.answer.date) {
