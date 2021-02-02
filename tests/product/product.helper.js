@@ -156,6 +156,10 @@ const getProductById = async (id, operations) => {
               _id
             }
             availableCount
+            userRates {
+              rate
+            }
+            rateCount
           }
           ... on Error {
             message

@@ -1,42 +1,40 @@
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
 const {
-  newCategoryInputData,
-  newOrderInputData,
-  newColorInputData,
-  newMaterialInputData,
-  newModelInputData,
-  newProductInputData,
-  newSizeInputData,
-  newClosure,
-  newPattern,
-  newConstructorBasic,
-  wrongId,
-} = require('./order.variables');
-
-const {
-  createOrder,
   deleteOrder,
-  getAllOrders,
+  createOrder,
   getOrderById,
+  getAllOrders,
 } = require('./order.helpers');
+const { wrongId, newOrderInputData } = require('./order.variables');
+const { newProductInputData } = require('../product/product.variables');
+const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
+const {
+  newConstructorBasic,
+} = require('../constructor-basic/constructor-basic.variables');
 const { createColor, deleteColor } = require('../color/color.helper');
+const { color } = require('../color/color.variables');
 const {
   createMaterial,
   deleteMaterial,
 } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
 const {
   createCategory,
   deleteCategory,
 } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
+const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
-const { createProduct, deleteProduct } = require('../product/product.helper');
+const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
+const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
+const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
@@ -59,24 +57,29 @@ let closureId;
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    sizeId = await createSize(newSizeInputData, operations);
-    colorId = await createColor(newColorInputData, operations);
-    categoryId = await createCategory(newCategoryInputData, operations);
-    materialId = await createMaterial(
-      newMaterialInputData(colorId),
-      operations
-    );
-    patternId = await createPattern(newPattern, operations);
-    closureId = await createClosure(newClosure(materialId), operations);
-    constructorBasicId = await createConstructorBasic(
+    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
+    sizeId = sizeData._id;
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const materialData = await createMaterial(getMaterial(colorId), operations);
+    materialId = materialData._id;
+    const patternData = await createPattern(queryPatternToAdd, operations);
+    patternId = patternData._id;
+    const closureData = await createClosure(newClosure(materialId), operations);
+    closureId = closureData._id;
+    const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId),
       operations
     );
-    modelId = await createModel(
-      newModelInputData(categoryId, constructorBasicId),
+    constructorBasicId = constructorBasicData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
       operations
     );
-    productId = await createProduct(
+    modelId = modelData._id;
+    const productData = await createProduct(
       newProductInputData(
         categoryId,
         modelId,
@@ -84,14 +87,17 @@ describe('Order queries', () => {
         materialId,
         colorId,
         patternId,
-        closureId
+        closureId,
+        sizeId
       ),
       operations
     );
-    orderId = await createOrder(
+    productId = productData._id;
+    const orderData = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId),
       operations
     );
+    orderId = orderData._id;
   });
 
   const {
@@ -104,6 +110,7 @@ describe('Order queries', () => {
 
   test('Should receive all orders', async () => {
     const orders = await getAllOrders(operations);
+
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
@@ -112,7 +119,7 @@ describe('Order queries', () => {
   test('should receive order by id', async () => {
     const {
       data: { getOrderById: order },
-    } = await getOrderById(orderId._id, operations);
+    } = await getOrderById(orderId, operations);
 
     expect(order).toBeDefined();
     expect(order).toBeTruthy();
@@ -124,10 +131,11 @@ describe('Order queries', () => {
   });
   test('Should throw error ORDER_NOT_FOUND', async () => {
     const { errors } = await getOrderById(wrongId, operations);
+
     expect(errors[0].message).toEqual(ORDER_NOT_FOUND);
   });
   afterAll(async () => {
-    await deleteOrder(orderId._id, operations);
+    await deleteOrder(orderId, operations);
     await deleteProduct(productId, operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);

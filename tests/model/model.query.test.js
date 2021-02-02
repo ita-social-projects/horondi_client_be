@@ -100,8 +100,8 @@ describe('Model queries', () => {
   });
 
   afterAll(async () => {
-    await deleteSize(sizeId, operations);
     await deleteModel(modelId, operations);
     await deleteCategory(categoryId, operations);
+    await deleteSize(sizeId, operations);
   });
 });

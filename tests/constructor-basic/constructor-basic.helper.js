@@ -17,7 +17,7 @@ const createConstructorBasic = async (constructorElement, operations) => {
             color {
               _id
             }
-            image
+
             available
             default
           }
@@ -75,7 +75,7 @@ const updateConstructorBasic = async (
             color {
               _id
             }
-            image
+
             available
             default
           }
@@ -114,7 +114,6 @@ const getAllConstructorBasics = async operations => {
               _id
               colorHex
             }
-            image
           }
         }
       }
@@ -136,7 +135,7 @@ const getConstructorBasicById = async (id, operations) => {
             material {
               _id
             }
-            image
+
             color {
               _id
             }

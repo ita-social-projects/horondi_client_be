@@ -32,6 +32,7 @@ let constructorBasicId;
 let currentConstructorBasic;
 
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/upload/upload.service');
 
 describe('constructor mutations', () => {
   beforeAll(async () => {

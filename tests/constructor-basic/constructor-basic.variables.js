@@ -6,7 +6,6 @@ const newConstructorBasic = (materialID, colorID) => ({
   ],
   material: materialID,
   color: colorID,
-  image: '/imageURL',
   available: true,
   default: false,
 });
@@ -23,7 +22,6 @@ const getConstructorData = construrtorBasic => ({
   ],
   material: { _id: construrtorBasic.material },
   color: { _id: construrtorBasic.color },
-  image: construrtorBasic.image,
   available: construrtorBasic.available,
   default: construrtorBasic.default,
 });
@@ -40,7 +38,6 @@ const getConstructorDataForUpt = construrtorBasic => ({
   ],
   material: construrtorBasic.material,
   color: construrtorBasic.color,
-  image: '/new img',
   available: true,
   default: false,
 });

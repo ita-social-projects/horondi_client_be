@@ -105,10 +105,8 @@ describe('Order mutations', () => {
     let res = products.data.getProductById;
 
     expect(products).toBeDefined();
-    expect(res).toEqual({
-      ...currentProduct,
-      _id: productId,
-    });
+    expect(res).toHaveProperty('name', currentProduct.name);
+    expect(res).toHaveProperty('description', currentProduct.description);
   });
   test('#2 Should Products by filter', async () => {
     const products = await getAllProductsWithSkipAndLimit(0, 0, operations);
