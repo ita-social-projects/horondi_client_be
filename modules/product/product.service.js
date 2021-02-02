@@ -22,22 +22,25 @@ class ProductsService {
 
   async getProductsFilters() {
     const categories = await Product.distinct('category').lean();
-    // 102 11 const models = await Product.distinct('model’).lean();
-    // 103 /1 const patterns = await Product.distinct(’pattern’).lean();
-    // 100 /1 const closures = await Product.distinct(’closure’).lean();
+    const models = await Product.distinct('model').lean();
+    const patterns = await Product.distinct('pattern').lean();
+    const closures = await Product.distinct('closure').lean();
     console.log({
       categories,
-      // models,
-      // patterns,
-      // closures,
+      models,
+      patterns,
+      closures,
     });
 
     console.log(categories.length);
+    console.log(models.length);
+    console.log(patterns.length);
+    console.log(closures.length);
     return {
       categories,
-      // models,
-      // patterns,
-      // closures,
+      models,
+      patterns,
+      closures,
     };
   }
 

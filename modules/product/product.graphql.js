@@ -25,6 +25,9 @@ comments: PaginatedComments!
 }
 type ProductsFilter {
 categories: [Category]
+models: [Model]
+patterns: [Pattern]
+closures: [Closure]
 }
 type ProductMaterialType{
   material: Material
