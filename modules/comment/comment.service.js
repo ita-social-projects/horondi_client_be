@@ -11,7 +11,7 @@ const { monthInMilliseconds } = require('../../consts');
 
 class CommentsService {
   async getCommentById(id) {
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(id).exec();
     if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -19,15 +19,18 @@ class CommentsService {
   }
 
   async getAllCommentsByProduct({ productId, skip, limit }) {
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).exec();
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
     const comments = await Comment.find({ product: productId })
       .skip(skip)
       .limit(limit)
-      .sort('-date');
-    const count = await Comment.find({ product: productId }).countDocuments();
+      .sort('-date')
+      .exec();
+    const count = await Comment.find({ product: productId })
+      .countDocuments()
+      .exec();
     return { items: comments, count };
   }
 
@@ -46,11 +49,14 @@ class CommentsService {
     const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
       .sort({ date: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
     const count = await Comment.find({
       date: { $gt: dateTo, $lt: dateFrom },
-    }).countDocuments();
+    })
+      .countDocuments()
+      .exec();
 
     return {
       items,
@@ -61,7 +67,7 @@ class CommentsService {
   async updateComment(id, comment) {
     const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
       new: true,
-    });
+    }).exec();
     if (!updatedComment) {
       throw new Error(COMMENT_FOR__NOT_EXISTING_USER);
     }
@@ -69,7 +75,7 @@ class CommentsService {
   }
 
   async addComment(id, data) {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).exec();
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
@@ -77,7 +83,7 @@ class CommentsService {
   }
 
   async deleteComment(id) {
-    const deletedComment = await Comment.findByIdAndDelete(id);
+    const deletedComment = await Comment.findByIdAndDelete(id).exec();
     if (!deletedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -85,7 +91,7 @@ class CommentsService {
   }
 
   async addRate(id, data, user) {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).exec();
 
     if (!product) {
       throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
@@ -118,7 +124,7 @@ class CommentsService {
         userRates: newUserRates,
       },
       { new: true }
-    );
+    ).exec();
     return rateToAdd;
   }
 }

@@ -7,11 +7,11 @@ const {
 
 class ColorService {
   async getAllColors() {
-    return await Color.find();
+    return await Color.find().exec();
   }
 
   async getColorById(id) {
-    const color = await Color.findById(id);
+    const color = await Color.findById(id).exec();
     if (color) {
       return color;
     }
@@ -19,7 +19,7 @@ class ColorService {
   }
 
   async addColor(colorData) {
-    const hex = await Color.find({ colorHex: colorData.colorHex });
+    const hex = await Color.find({ colorHex: colorData.colorHex }).exec();
     if (hex.length) {
       throw new Error(COLOR_ALREADY_EXIST);
     }
@@ -27,7 +27,7 @@ class ColorService {
   }
 
   async deleteColor(id) {
-    const color = await Color.findById(id);
+    const color = await Color.findById(id).exec();
     if (!color) {
       throw new Error(COLOR_NOT_FOUND);
     }
@@ -35,13 +35,13 @@ class ColorService {
       colors: {
         $in: id,
       },
-    });
+    }).exec();
 
     if (materials.length) {
       return { items: materials };
     }
 
-    return await Color.findByIdAndDelete(id);
+    return await Color.findByIdAndDelete(id).exec();
   }
 }
 

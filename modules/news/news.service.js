@@ -11,9 +11,12 @@ class NewsService {
   async getAllNews({ skip, limit }) {
     const items = await News.find()
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
-    const count = await News.find().countDocuments();
+    const count = await News.find()
+      .countDocuments()
+      .exec();
 
     return {
       items,
@@ -22,7 +25,7 @@ class NewsService {
   }
 
   async getNewsById(id) {
-    const foundNews = await News.findById(id);
+    const foundNews = await News.findById(id).exec();
     if (foundNews) {
       return foundNews;
     }
@@ -30,7 +33,7 @@ class NewsService {
   }
 
   async updateNews(id, news, upload) {
-    const foundNews = await News.findById(id);
+    const foundNews = await News.findById(id).exec();
     if (!foundNews) {
       throw new Error(NEWS_NOT_FOUND);
     }
@@ -49,7 +52,7 @@ class NewsService {
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    return await News.findByIdAndUpdate(id, news, { new: true });
+    return await News.findByIdAndUpdate(id, news, { new: true }).exec();
   }
 
   async addNews(data, upload) {
@@ -70,7 +73,7 @@ class NewsService {
   }
 
   async deleteNews(id) {
-    const foundNews = await News.findByIdAndDelete(id);
+    const foundNews = await News.findByIdAndDelete(id).exec();
     uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
     if (foundNews) {
       return foundNews;
@@ -87,7 +90,7 @@ class NewsService {
           $or: [{ value: data.title[0].value }, { value: data.title[1].value }],
         },
       },
-    });
+    }).exec();
     return newsCount > 0;
   }
 }
