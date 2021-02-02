@@ -93,7 +93,6 @@ const {
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
@@ -282,6 +281,26 @@ const resolvers = {
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+    constructorBottom: parent =>
+      parent.constructorBottom.map(el =>
+        constructorServices.getConstructorElementById(
+          el,
+          constructorBottomModel
+        )
+      ),
+    constructorBasic: parent =>
+      parent.constructorBasic.map(el =>
+        constructorServices.getConstructorElementById(el, constructorBasicModel)
+      ),
+    constructorFrontPocket: parent =>
+      parent.constructorFrontPocket.map(el =>
+        constructorServices.getConstructorElementById(
+          el,
+          constructorFrontPocketModel
+        )
+      ),
+    constructorPattern: parent =>
+      parent.constructorPattern.map(el => patternService.getPatternById(el)),
   },
 
   UserRate: {

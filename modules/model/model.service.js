@@ -14,7 +14,6 @@ const uploadService = require('../upload/upload.service');
 class ModelsService {
   async getAllModels({ skip, limit }) {
     const items = await Model.find()
-      .populate('categories')
       .skip(skip)
       .limit(limit);
 
@@ -30,54 +29,7 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
-    const foundModel = await Model.findById(id).populate([
-      {
-        path: 'constructorBasic',
-        model: 'ConstructorBasic',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorFrontPocket',
-        model: 'ConstructorFrontPocket',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorBottom',
-        model: 'ConstructorBottom',
-        populate: [
-          {
-            path: 'material',
-            model: 'Material',
-          },
-          {
-            path: 'color',
-            model: 'Color',
-          },
-        ],
-      },
-      {
-        path: 'constructorPattern',
-        model: 'Pattern',
-      },
-    ]);
+    const foundModel = await Model.findById(id);
 
     if (foundModel) {
       return foundModel;
