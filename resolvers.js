@@ -191,15 +191,6 @@ const resolvers = {
     ...colorQuery,
   },
 
-  ConstructorBottom: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.constructorBottom;
-      }
-      return 'Error';
-    },
-  },
-
   User: {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },

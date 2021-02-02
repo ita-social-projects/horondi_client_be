@@ -32,7 +32,7 @@ class ModelsService {
       throw new Error(MODEL_NOT_VALID);
     }
 
-    const foundModel = await Model.findById(id).exex();
+    const foundModel = await Model.findById(id).exec();
 
     if (foundModel) {
       return foundModel;
