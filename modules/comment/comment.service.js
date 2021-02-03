@@ -45,7 +45,7 @@ class CommentsService {
   }
 
   async getAllCommentsByUser(userId) {
-    const comments = await Comment.find({ user: userId });
+    const comments = await Comment.find({ user: userId }).exec();
     if (!comments.length) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
     }
