@@ -18,9 +18,12 @@ class EmailChatService {
     const questions = await EmailChat.find(filters)
       .skip(skip || 0)
       .limit(10)
-      .sort('-date');
+      .sort('-date')
+      .exec();
 
-    const count = await EmailChat.find(filters).countDocuments();
+    const count = await EmailChat.find(filters)
+      .countDocuments()
+      .exec();
 
     return {
       questions,
@@ -37,7 +40,9 @@ class EmailChatService {
   }
 
   async getPendingEmailQuestionsCount() {
-    return await EmailChat.find({ status: 'PENDING' }).countDocuments();
+    return await EmailChat.find({ status: 'PENDING' })
+      .countDocuments()
+      .exec();
   }
 
   addEmailQuestion(data) {
@@ -49,14 +54,16 @@ class EmailChatService {
     const admin = await userService.getUserByFieldOrThrow('_id', adminId);
 
     const result = questionsToSpam.map(async id => {
-      const question = await EmailChat.findById(id);
+      const question = await EmailChat.findById(id).exec();
 
       question.status = 'SPAM';
       question.answer.admin = admin;
       question.answer.text = '';
       question.answer.date = Date.now();
 
-      return await EmailChat.findByIdAndUpdate(id, question, { new: true });
+      return await EmailChat.findByIdAndUpdate(id, question, {
+        new: true,
+      }).exec();
     });
 
     const updatedQuestions = await Promise.allSettled(result);
@@ -66,7 +73,7 @@ class EmailChatService {
   }
 
   async answerEmailQuestion({ questionId, adminId, text }) {
-    const question = await this.getEmailQuestionById(questionId);
+    const question = await this.getEmailQuestionById(questionId).exec();
     const admin = await userService.getUserByFieldOrThrow('_id', adminId);
 
     if (!question) {
@@ -83,7 +90,7 @@ class EmailChatService {
       {
         new: true,
       }
-    );
+    ).exec();
 
     const language = question.language;
     const subject = `[HORONDI] ${
@@ -103,7 +110,7 @@ class EmailChatService {
   async deleteEmailQuestions(questionsToDelete) {
     try {
       const result = questionsToDelete.map(
-        async id => await EmailChat.findByIdAndDelete(id)
+        async id => await EmailChat.findByIdAndDelete(id).exec()
       );
 
       const deletedQuestions = await Promise.allSettled(result);
