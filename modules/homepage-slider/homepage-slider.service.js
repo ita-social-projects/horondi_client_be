@@ -12,9 +12,12 @@ class HomePageSliderService {
     const items = await HomePageSlider.find()
       .sort({ show: -1, order: 1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
-    const count = await HomePageSlider.find().countDocuments();
+    const count = await HomePageSlider.find()
+      .countDocuments()
+      .exec();
     return {
       items,
       count,
@@ -25,7 +28,7 @@ class HomePageSliderService {
     if (!ObjectId.isValid(id)) {
       throw new Error(SLIDE_NOT_VALID);
     }
-    const foundSlide = await HomePageSlider.findById(id);
+    const foundSlide = await HomePageSlider.findById(id).exec();
     if (foundSlide) {
       return foundSlide;
     }
@@ -45,13 +48,15 @@ class HomePageSliderService {
   }
 
   async updateSlide({ id, slide, upload }) {
-    const slideToUpdate = await HomePageSlider.findById(id);
+    const slideToUpdate = await HomePageSlider.findById(id).exec();
     if (!slideToUpdate) {
       throw new Error(SLIDE_NOT_FOUND);
     }
 
     if (!upload) {
-      return await HomePageSlider.findByIdAndUpdate(id, slide, { new: true });
+      return await HomePageSlider.findByIdAndUpdate(id, slide, {
+        new: true,
+      }).exec();
     }
     const uploadResult = await uploadService.uploadFiles([upload]);
 
@@ -60,9 +65,11 @@ class HomePageSliderService {
     const images = imageResults.fileNames;
 
     if (!images) {
-      return await HomePageSlider.findByIdAndUpdate(id, slide);
+      return await HomePageSlider.findByIdAndUpdate(id, slide).exec();
     }
-    const foundSlide = await HomePageSlider.findById(id).lean();
+    const foundSlide = await HomePageSlider.findById(id)
+      .lean()
+      .exec();
     uploadService.deleteFiles(Object.values(foundSlide.images));
 
     return await HomePageSlider.findByIdAndUpdate(
@@ -74,11 +81,13 @@ class HomePageSliderService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async deleteSlide(id) {
-    const foundSlide = await HomePageSlider.findByIdAndDelete(id).lean();
+    const foundSlide = await HomePageSlider.findByIdAndDelete(id)
+      .lean()
+      .exec();
     if (!foundSlide) {
       throw new Error(SLIDE_NOT_FOUND);
     }

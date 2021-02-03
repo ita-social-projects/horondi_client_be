@@ -21,7 +21,6 @@ const newBusinessText = {
     },
   ],
 };
-
 const updatedBusinessText = {
   title: [
     {
@@ -45,11 +44,14 @@ const updatedBusinessText = {
     },
   ],
 };
-
 const notExistBusinessTextId = '5f311ec5f2983e390432a8c3';
+const code = 'new-code';
+const wrongCode = 'not-existing-code';
 
 module.exports = {
   newBusinessText,
   updatedBusinessText,
   notExistBusinessTextId,
+  code,
+  wrongCode,
 };

@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const { setupApp } = require('../helper-functions');
 const {
@@ -8,13 +6,11 @@ const {
   getById,
   deleteNews,
 } = require('./news.helper');
-const { news } = require('./news.variables');
+const { news, limit, skip, wrongId } = require('./news.variables');
 
-let newsId = '';
-const newsDoesNotExistId = '5f311ec5f2983e390432a8c3';
+let newsId;
 let operations;
-let skip = 0;
-let limit = 0;
+
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/upload/upload.utils');
 
@@ -57,7 +53,6 @@ describe('News queries tests', () => {
         ...item,
       }))
     );
-
     expect(newsById.title).toBeInstanceOf(Array);
     expect(newsById).toHaveProperty(
       'text',
@@ -77,7 +72,7 @@ describe('News queries tests', () => {
   });
 
   test('#3 Returning Not Existing News Should Return Error Message', async () => {
-    const newsById = await getById(newsDoesNotExistId, operations);
+    const newsById = await getById(wrongId, operations);
 
     expect(newsById).toBeDefined();
     expect(newsById).toHaveProperty('statusCode', 404);

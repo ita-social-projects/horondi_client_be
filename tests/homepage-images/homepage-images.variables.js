@@ -6,7 +6,6 @@ const looksImage = {
     thumbnail: 'thumbnail_test-file',
   },
 };
-
 const updatedLooksImage = {
   images: {
     large: 'large_0_test-file',
@@ -15,11 +14,10 @@ const updatedLooksImage = {
     thumbnail: 'thumbnail_0_test-file',
   },
 };
-
-const invalidId = '5f9ab9acc1446000240e9f6a';
+const wrongId = '5f9ab9acc1446000240e9f6a';
 
 module.exports = {
   looksImage,
   updatedLooksImage,
-  invalidId,
+  wrongId,
 };

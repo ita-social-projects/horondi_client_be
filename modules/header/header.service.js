@@ -6,11 +6,11 @@ const {
 
 class HeadersService {
   async getAllHeaders() {
-    return await Header.find();
+    return await Header.find().exec();
   }
 
   async getHeaderById(id) {
-    const foundHeader = await Header.findById(id);
+    const foundHeader = await Header.findById(id).exec();
     if (foundHeader) {
       return foundHeader;
     }
@@ -18,7 +18,9 @@ class HeadersService {
   }
 
   async updateHeader({ id, header }) {
-    const headerToUpdate = await Header.findById(id).lean();
+    const headerToUpdate = await Header.findById(id)
+      .lean()
+      .exec();
     if (!headerToUpdate) {
       throw new Error(HEADER_NOT_FOUND);
     }
@@ -29,7 +31,7 @@ class HeadersService {
 
     return await Header.findByIdAndUpdate(id, header, {
       new: true,
-    });
+    }).exec();
   }
 
   async addHeader({ header }) {
@@ -40,7 +42,9 @@ class HeadersService {
   }
 
   async deleteHeader(id) {
-    const foundHeader = await Header.findByIdAndDelete(id).lean();
+    const foundHeader = await Header.findByIdAndDelete(id)
+      .lean()
+      .exec();
 
     if (!foundHeader) {
       throw new Error(HEADER_NOT_FOUND);
@@ -57,7 +61,7 @@ class HeadersService {
           $or: data.title.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return headersCount > 0;
   }
 }

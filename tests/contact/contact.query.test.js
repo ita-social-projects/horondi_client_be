@@ -1,8 +1,13 @@
-/* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const { newContact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
+const {
+  addContact,
+  deleteContact,
+  getContacts,
+  getContactById,
+} = require('./contact.helper');
+
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/contact/contact.utils.js');
 
@@ -10,77 +15,14 @@ let contactsId = '';
 let operations;
 
 describe('Contacts queries', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($contact: contactInput!) {
-          addContact(contact: $contact, mapImages: []) {
-            ... on Contact {
-              _id
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { contact: newContact },
-    });
-    contactsId = res.data.addContact._id;
-    done();
+    const contactData = await addContact(newContact, operations);
+    contactsId = contactData._id;
   });
 
-  afterAll(async done => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteContact(id: $id) {
-            ... on Contact {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: contactsId },
-    });
-    done();
-  });
-
-  it('should receive all contacts', async done => {
-    const res = await operations.query({
-      query: gql`
-        query($skip: Int, $limit: Int) {
-          getContacts(skip: $skip, limit: $limit) {
-            items {
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              link
-            }
-            count
-          }
-        }
-      `,
-      variables: {
-        skip: 0,
-        limit: 1,
-      },
-    });
-
-    const receivedContacts = res.data.getContacts;
+  test('should receive all contacts', async () => {
+    const receivedContacts = await getContacts(operations);
 
     expect(receivedContacts).toBeDefined();
     expect(receivedContacts.items).toContainEqual({
@@ -108,38 +50,9 @@ describe('Contacts queries', () => {
       email: 'test@test.com',
       link: newContact.link,
     });
-    done();
   });
-
-  test('should receive selected contact', async done => {
-    const res = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getContactById(id: $id) {
-            ... on Contact {
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              link
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: contactsId },
-    });
-
-    const receivedContact = res.data.getContactById;
+  test('should receive selected contact', async () => {
+    const receivedContact = await getContactById(contactsId, operations);
 
     expect(receivedContact).toMatchSnapshot();
     expect(receivedContact).toBeDefined();
@@ -165,48 +78,16 @@ describe('Contacts queries', () => {
     expect(receivedContact.address).toBeInstanceOf(Object);
     expect(receivedContact).toHaveProperty('email', newContact.email);
     expect(receivedContact).toHaveProperty('link', newContact.link);
-    done();
+  });
+  test('should return error message when returning not existing contact', async () => {
+    const res = await getContactById(notExistContactId, operations);
+
+    expect(res).toBeDefined();
+    expect(res).toHaveProperty('statusCode', 404);
+    expect(res).toHaveProperty('message', CONTACT_NOT_FOUND);
   });
 
-  test('should return error message when returning not existing contact', async done => {
-    const res = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getContactById(id: $id) {
-            ... on Contact {
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              images {
-                value {
-                  medium
-                }
-              }
-              link
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: notExistContactId },
-    });
-
-    expect(res.data.getContactById).toBeDefined();
-    expect(res.data.getContactById).toHaveProperty('statusCode', 404);
-    expect(res.data.getContactById).toHaveProperty(
-      'message',
-      CONTACT_NOT_FOUND
-    );
-    done();
+  afterAll(async () => {
+    await deleteContact(contactsId, operations);
   });
 });

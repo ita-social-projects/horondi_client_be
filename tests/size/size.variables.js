@@ -20,7 +20,6 @@ const SIZES_TO_CREATE = {
     additionalPrice: 40,
   },
 };
-
 const SIZES_TO_TEST = {
   size1: {
     name: 'S',
@@ -55,14 +54,11 @@ const SIZES_TO_TEST = {
     ],
   },
 };
-
 const WRONG_ID = '600f20d51754387390b17fdA';
-
 const ERROR_ALREDY_EXISTS = {
   message: 'SIZE_ALREADY_EXIST',
   statusCode: 404,
 };
-
 const ERROR_NOT_FOUND = {
   message: 'SIZE_NOT_FOUND',
   statusCode: 404,
