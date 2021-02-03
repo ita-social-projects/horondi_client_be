@@ -308,7 +308,7 @@ const completeAdminRegister = async (
   return result;
 };
 const switchUserStatus = async (userId, operations) => {
-  const result = await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         switchUserStatus(id: $id) {
@@ -326,7 +326,6 @@ const switchUserStatus = async (userId, operations) => {
       id: userId,
     },
   });
-  return result;
 };
 const loginAdmin = async (email, password, operations) => {
   return await operations.mutate({
