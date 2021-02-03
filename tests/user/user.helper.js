@@ -8,7 +8,7 @@ const registerUser = async (
   language,
   operations
 ) => {
-  return await operations.mutate({
+  const registeredUser = await operations.mutate({
     mutation: gql`
       mutation(
         $firstName: String!
@@ -46,6 +46,7 @@ const registerUser = async (
       language,
     },
   });
+  return registeredUser;
 };
 const updateUserById = async (
   userId,

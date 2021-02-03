@@ -57,7 +57,7 @@ class CommentsService {
       new: true,
     }).exec();
     if (!updatedComment) {
-      throw new Error(COMMENT_FOR__NOT_EXISTING_USER);
+      throw new Error(COMMENT_NOT_FOUND);
     }
     return updatedComment;
   }
