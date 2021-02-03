@@ -1,94 +1,85 @@
-const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 const {
   FRONT_POCKET_NOT_FOUND,
 } = require('../../error-messages/constructor-front-pocket-messages');
-
 const {
-  createConstructorFrontPocketWithData,
+  createConstructorFrontPocket,
   getAllConstructorFrontPocket,
   getConstructorFrontPocketById,
+  deleteConstructorFrontPocket,
 } = require('./constructor.front.helper');
-
 const {
-  badConstructorFrontID,
-  newColor,
-  newMaterial,
   getConstructorData,
   newConstructorFront,
-  deleteAll,
+  wrongId,
 } = require('./constructor.variables');
-
-const { createColor } = require('../color/color.helper');
-const { createMaterial } = require('../materials/material.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { color } = require('../color/color.variables');
+const { getMaterial } = require('../materials/material.variables');
 
 let operations;
 let colorId;
-let materialInput;
 let materialID;
 let constructorInput;
 let constructorFrontID;
 let constructorFrontPocket;
+let currentConstructorFrontPocket;
 
 jest.mock('../../modules/currency/currency.utils.js');
 
 describe('constructor mutations', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
-    colorId = await createColor(newColor, operations);
-    materialInput = newMaterial(colorId);
-    materialID = await createMaterial(materialInput, operations);
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+    const materialData = await createMaterial(getMaterial(colorId), operations);
+    materialID = materialData._id;
     constructorInput = newConstructorFront(materialID, colorId);
-
-    constructorFrontPocket = await createConstructorFrontPocketWithData(
+    constructorFrontPocket = await createConstructorFrontPocket(
       constructorInput,
       operations
     );
     constructorFrontID = constructorFrontPocket._id;
 
     currentConstructorFrontPocket = getConstructorData(constructorInput);
-    done();
   });
 
-  test('#1 Should return all Constructor Front Pocket', async done => {
-    const allConstructorFrontPocket = await getAllConstructorFrontPocket(
+  test('#1 Should return all Constructor Front Pocket', async () => {
+    const receivedAllConstructorFrontPocket = await getAllConstructorFrontPocket(
       operations
     );
-    const receivedAllConstructorFrontPocket = allConstructorFrontPocket;
     expect(receivedAllConstructorFrontPocket.items).toBeDefined();
     expect(receivedAllConstructorFrontPocket.items.length).toBeGreaterThan(0);
-    done();
   });
-
-  test('#2 Should return  Constructor Front Pocket by Id', async done => {
-    const constructorFrontPocketById = await getConstructorFrontPocketById(
+  test('#2 Should return  Constructor Front Pocket by Id', async () => {
+    const receivedById = await getConstructorFrontPocketById(
       constructorFrontID,
       operations
     );
-    const receivedById =
-      constructorFrontPocketById.data.getConstructorFrontPocketById;
+
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({
       ...currentConstructorFrontPocket,
       _id: constructorFrontID,
     });
-
-    done();
   });
 
-  test('#3 Should return  Error', async done => {
-    const constructorFrontPocketById = await getConstructorFrontPocketById(
-      badConstructorFrontID,
+  test('#3 Should return  Error', async () => {
+    const receivedError = await getConstructorFrontPocketById(
+      wrongId,
       operations
     );
-    const receivedError =
-      constructorFrontPocketById.data.getConstructorFrontPocketById;
+
     expect(receivedError.statusCode).toBe(404);
     expect(receivedError.message).toBe(FRONT_POCKET_NOT_FOUND);
-    done();
   });
-  afterAll(async done => {
-    await deleteAll(colorId, materialID, constructorFrontID);
-    done();
+  afterAll(async () => {
+    await deleteConstructorFrontPocket(constructorFrontID, operations);
+    await deleteMaterial(materialID, operations);
+    await deleteColor(colorId, operations);
   });
 });

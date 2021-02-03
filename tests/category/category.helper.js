@@ -7,9 +7,16 @@ const createCategory = async (category, operations) => {
         addCategory(category: $category, upload: $upload) {
           ... on Category {
             _id
+            name {
+              lang
+              value
+            }
+            available
+            code
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -20,10 +27,85 @@ const createCategory = async (category, operations) => {
     },
   });
 
-  return createdCategory.data.addCategory._id;
+  return createdCategory.data.addCategory;
+};
+const updateCategory = async (id, category, operations) => {
+  const updatedCategory = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $category: CategoryInput!, $upload: Upload) {
+        updateCategory(id: $id, category: $category, upload: $upload) {
+          ... on Category {
+            _id
+            name {
+              lang
+              value
+            }
+            available
+            code
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+      category,
+      upload: '../___test__/model/dog.img',
+    },
+  });
+
+  return updatedCategory.data.updateCategory;
+};
+const getAllCategories = async operations => {
+  const allCategories = await operations.query({
+    query: gql`
+      query {
+        getAllCategories {
+          _id
+          name {
+            lang
+            value
+          }
+          code
+          available
+        }
+      }
+    `,
+  });
+
+  return allCategories.data.getAllCategories;
+};
+const getCategoryById = async (id, operations) => {
+  const categoryById = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getCategoryById(id: $id) {
+          ... on Category {
+            _id
+            name {
+              lang
+              value
+            }
+            code
+            available
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { id },
+  });
+
+  return categoryById.data.getCategoryById;
 };
 const deleteCategory = async (id, operations) => {
-  await operations.mutate({
+  const res = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteCategory(deleteId: $id, switchId: $id) {
@@ -32,6 +114,7 @@ const deleteCategory = async (id, operations) => {
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -40,9 +123,13 @@ const deleteCategory = async (id, operations) => {
       id,
     },
   });
+  return res.data.deleteCategory;
 };
 
 module.exports = {
   deleteCategory,
   createCategory,
+  getAllCategories,
+  getCategoryById,
+  updateCategory,
 };

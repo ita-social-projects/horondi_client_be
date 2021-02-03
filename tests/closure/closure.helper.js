@@ -7,9 +7,19 @@ const createClosure = async (closure, operations) => {
         addClosure(closure: $closure) {
           ... on Closure {
             _id
+            name {
+              lang
+              value
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -19,10 +29,42 @@ const createClosure = async (closure, operations) => {
     },
   });
 
-  return createdClosure.data.addClosure._id;
+  return createdClosure.data.addClosure;
+};
+const updateClosure = async (id, closure, operations) => {
+  const updatedClosure = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $closure: ClosureInput!) {
+        updateClosure(id: $id, closure: $closure) {
+          ... on Closure {
+            _id
+            name {
+              lang
+              value
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      closure,
+      id,
+    },
+  });
+
+  return updatedClosure.data.updateClosure;
 };
 const deleteClosure = async (id, operations) => {
-  await operations.mutate({
+  const res = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteClosure(id: $id) {
@@ -30,6 +72,37 @@ const deleteClosure = async (id, operations) => {
             _id
           }
           ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+  return res.data.deleteClosure;
+};
+const getClosureById = async (id, operations) => {
+  const result = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getClosureById(id: $id) {
+          ... on Closure {
+            _id
+            name {
+              lang
+              value
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
+          }
+          ... on Error {
+            statusCode
             message
           }
         }
@@ -39,9 +112,13 @@ const deleteClosure = async (id, operations) => {
       id,
     },
   });
+
+  return result.data.getClosureById;
 };
 
 module.exports = {
   deleteClosure,
   createClosure,
+  getClosureById,
+  updateClosure,
 };

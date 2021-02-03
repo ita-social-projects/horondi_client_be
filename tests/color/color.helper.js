@@ -7,6 +7,15 @@ const createColor = async (color, operations) => {
         addColor(data: $color) {
           ... on Color {
             _id
+            name {
+              lang
+              value
+            }
+            colorHex
+            simpleName {
+              lang
+              value
+            }
           }
           ... on Error {
             message
@@ -18,18 +27,28 @@ const createColor = async (color, operations) => {
     variables: { color },
   });
 
-  return createdColor.data.addColor._id;
+  return createdColor.data.addColor;
 };
 const deleteColor = async (id, operations) => {
-  await operations.mutate({
+  return await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteColor(id: $id) {
           ... on Color {
             _id
+            name {
+              value
+              lang
+            }
+            colorHex
+            simpleName {
+              value
+              lang
+            }
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
@@ -39,7 +58,6 @@ const deleteColor = async (id, operations) => {
     },
   });
 };
-
 const getAllColors = async operations => {
   const result = await operations.query({
     query: gql`
@@ -61,7 +79,6 @@ const getAllColors = async operations => {
   });
   return result.data.getAllColors;
 };
-
 const getColorById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
@@ -79,21 +96,6 @@ const getColorById = async (id, operations) => {
               value
             }
           }
-        }
-      }
-    `,
-    variables: {
-      id,
-    },
-  });
-  return result.data.getColorById;
-};
-
-const errorColor = async (id, operations) => {
-  const result = await operations.query({
-    query: gql`
-      query($id: ID!) {
-        getColorById(id: $id) {
           ... on Error {
             statusCode
             message
@@ -106,98 +108,6 @@ const errorColor = async (id, operations) => {
     },
   });
   return result.data.getColorById;
-};
-
-const addColor = async (data, operations) => {
-  const result = await operations.mutate({
-    mutation: gql`
-      mutation($data: ColorInput!) {
-        addColor(data: $data) {
-          ... on Color {
-            _id
-            name {
-              lang
-              value
-            }
-            colorHex
-            simpleName {
-              lang
-              value
-            }
-          }
-        }
-      }
-    `,
-    variables: {
-      data,
-    },
-  });
-  return result.data.addColor;
-};
-
-const errorAdd = async (data, operations) => {
-  const result = await operations.mutate({
-    mutation: gql`
-      mutation($data: ColorInput!) {
-        addColor(data: $data) {
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: {
-      data,
-    },
-  });
-  return result.data.addColor;
-};
-
-const deleteColorMutation = async (id, operations) => {
-  const result = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteColor(id: $id) {
-          ... on Color {
-            _id
-            name {
-              value
-              lang
-            }
-            colorHex
-            simpleName {
-              value
-              lang
-            }
-          }
-        }
-      }
-    `,
-    variables: {
-      id,
-    },
-  });
-  return result.data.deleteColor;
-};
-
-const errorDelete = async (id, operations) => {
-  const result = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!) {
-        deleteColor(id: $id) {
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: {
-      id,
-    },
-  });
-  return result.data.deleteColor;
 };
 
 module.exports = {
@@ -205,9 +115,4 @@ module.exports = {
   createColor,
   getAllColors,
   getColorById,
-  errorColor,
-  addColor,
-  errorAdd,
-  deleteColorMutation,
-  errorDelete,
 };

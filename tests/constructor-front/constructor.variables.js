@@ -1,24 +1,4 @@
-const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
-const { deleteMaterial } = require('../materials/material.helper');
-const { deleteColor } = require('../color/color.helper');
-const { deleteConstructorFrontPocket } = require('./constructor.front.helper');
-let operations;
-
-const badConstructorFrontID = '6009dcd5f9855555907ebf5e';
-
-const newColor = {
-  name: [
-    { lang: 'ua', value: 'Білий' },
-    { lang: 'en', value: 'White' },
-  ],
-  colorHex: '#81434d',
-  simpleName: [
-    { lang: 'ua', value: 'Білий' },
-    { lang: 'en', value: 'White' },
-  ],
-};
-
+const wrongId = '6009dcd5f9855555907ebf5e';
 const newConstructorFront = (materialID, colorID) => ({
   name: [
     { lang: 'ua', value: 'Щось' },
@@ -31,7 +11,6 @@ const newConstructorFront = (materialID, colorID) => ({
   available: true,
   default: false,
 });
-
 const newConstructorFrontUpdateInp = (materialID, colorID) => ({
   name: [
     { lang: 'ua', value: 'Щось 2' },
@@ -44,22 +23,6 @@ const newConstructorFrontUpdateInp = (materialID, colorID) => ({
   available: true,
   default: false,
 });
-
-const newMaterial = colorID => ({
-  name: [
-    { lang: 'ua', value: 'Тканина кордура' },
-    { lang: 'en', value: 'Cordura fabric' },
-  ],
-  description: [
-    { lang: 'ua', value: 'описання' },
-    { lang: 'en', value: 'Corduras fabric' },
-  ],
-  purpose: 'INNER',
-  colors: colorID,
-  available: true,
-  additionalPrice: 0,
-});
-
 const getConstructorData = construrtorFront => ({
   name: [
     {
@@ -77,7 +40,6 @@ const getConstructorData = construrtorFront => ({
   available: construrtorFront.available,
   default: construrtorFront.default,
 });
-
 const getConstructorDataForUpt = ConstructorFrontPocket => ({
   name: [
     {
@@ -96,26 +58,10 @@ const getConstructorDataForUpt = ConstructorFrontPocket => ({
   default: false,
 });
 
-const deleteAll = async (
-  colorID,
-  materialID,
-  constructorFrontId,
-  construrtorIDafter
-) => {
-  const operations = await setupApp();
-  await deleteConstructorFrontPocket(constructorFrontId, operations);
-  await deleteConstructorFrontPocket(construrtorIDafter, operations);
-  await deleteMaterial(materialID, operations);
-  await deleteColor(colorID, operations);
-};
-
 module.exports = {
-  badConstructorFrontID,
-  newColor,
-  newMaterial,
   getConstructorData,
   newConstructorFront,
   newConstructorFrontUpdateInp,
   getConstructorDataForUpt,
-  deleteAll,
+  wrongId,
 };

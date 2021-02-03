@@ -1,34 +1,4 @@
-const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
-
 const badProductId = '6009dcd5f9855555907ebf5e';
-
-const newCategory = {
-  available: true,
-  name: [
-    {
-      value: 'Тестовенька категорія',
-      lang: 'uk',
-    },
-    {
-      value: 'Testy Category',
-      lang: 'en',
-    },
-  ],
-  code: 'new catyyy',
-};
-
-const newColor = {
-  name: [
-    { lang: 'ua', value: 'Світsadas' },
-    { lang: 'en', value: 'blackdasdas' },
-  ],
-  colorHex: '#f47ac6',
-  simpleName: [
-    { lang: 'ua', value: 'Чорний' },
-    { lang: 'en', value: 'black' },
-  ],
-};
 const newProductInputData = (
   categoryId,
   modelId,
@@ -134,7 +104,6 @@ const newProductInputDataForCompare = product => ({
   ],
   availableCount: product.availableCount,
   pattern: { _id: product.pattern },
-
   strapLengthInCm: product.strapLengthInCm,
   sizes: [{ _id: product.sizes[0] }],
   innerMaterial: {
@@ -165,8 +134,6 @@ const newProductInputDataForCompare = product => ({
 
 module.exports = {
   badProductId,
-  newCategory,
-  newColor,
   newProductInputData,
   newProductInputDataForCompare,
   newProductInputDataForUpdate,

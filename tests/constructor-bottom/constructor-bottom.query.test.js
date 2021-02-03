@@ -1,18 +1,17 @@
-const { createMaterial } = require('../materials/material.helper');
-const { createColor } = require('../color/color.helper');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
 const { setupApp } = require('../helper-functions');
 const { createConstructorBottom } = require('./constructor-bottom.helper');
 const { getMaterial } = require('../materials/material.variables');
-const { COLOR, WRONG_ID } = require('../color/color.variables');
-
-const {
-  newConstructorBottom,
-  deleteAll,
-} = require('./constructor-bottom.variables');
-
+const { color, wrongId } = require('../color/color.variables');
+const { newConstructorBottom } = require('./constructor-bottom.variables');
 const {
   getAllConstructorBottom,
-  getConstructorBottom,
+  getConstructorBottomById,
+  deleteConstructorBottom,
 } = require('./constructor-bottom.helper');
 
 let operations;
@@ -27,35 +26,43 @@ jest.mock('../../modules/currency/currency.utils.js');
 describe('Constructor query', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    colorId = await createColor(COLOR, operations);
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
     materialInput = getMaterial(colorId);
-    materialId = await createMaterial(materialInput, operations);
+    const materialData = await createMaterial(materialInput, operations);
+    materialId = materialData._id;
     addConstructor = newConstructorBottom(colorId, materialId);
     newConstructorForQuery = await createConstructorBottom(
       addConstructor,
       operations
     );
   });
-  afterAll(async () => {
-    await deleteAll(colorId, materialId, newConstructorForQuery._id);
-  });
   test('should return all ConstructorBasics', async () => {
     const allConstructorBottom = await getAllConstructorBottom(operations);
+
     expect(allConstructorBottom).toBeDefined();
     expect(allConstructorBottom.length).toBeGreaterThan(0);
   });
   test('should return constructor-bottom by Id', async () => {
-    const constructorBottomById = await getConstructorBottom(
+    const constructorBottomById = await getConstructorBottomById(
       newConstructorForQuery._id,
       operations
     );
+
     expect(constructorBottomById).toBeDefined();
   });
   test('should return error when try to get constructor-bottom by wrong ID', async () => {
-    const constructorBottomById = await getConstructorBottom(
-      WRONG_ID,
+    const constructorBottomById = await getConstructorBottomById(
+      wrongId,
       operations
     );
+
     expect(constructorBottomById.statusCode).toBe(404);
+  });
+
+  afterAll(async () => {
+    await deleteConstructorBottom(newConstructorForQuery._id, operations);
+    await deleteMaterial(materialId, operations);
+    await deleteColor(colorId, operations);
   });
 });

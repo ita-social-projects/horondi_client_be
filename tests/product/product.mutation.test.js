@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -6,47 +5,40 @@ const {
 const {
   badProductId,
   newProductInputData,
-  newProductInputDataForCompare,
   newProductInputDataForUpdate,
 } = require('./product.variables');
 const {
-  newConstructorBasic,
-  newPattern,
-  newClosure,
-  newSizeInputData,
-  newModelInputData,
-  newCategoryInputData,
-  newMaterialInputData,
-  newColorInputData,
-} = require('../order/order.variables');
-
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} = require('../product/product.helper');
 const {
   deleteConstructorBasic,
-  createConstructorBasicWithData,
+  createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
-const { createColor, deleteColor } = require('../color/color.helper');
 const {
-  testCreateMaterial,
+  newConstructorBasic,
+} = require('../constructor-basic/constructor-basic.variables');
+const { createColor, deleteColor } = require('../color/color.helper');
+const { color } = require('../color/color.variables');
+const {
+  createMaterial,
   deleteMaterial,
 } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
 const {
   createCategory,
   deleteCategory,
 } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
+const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
-const {
-  createProduct,
-  deleteProduct,
-  getProductById,
-  createProductWithData,
-  createProductSecond,
-  getAllProductsWithSkipAndLimit,
-  updateProduct,
-} = require('../product/product.helper');
+const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
+const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
-
+const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
@@ -65,33 +57,37 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let productInput;
-let currentProduct;
-let productUpdateInput;
-let currentProductUpdated;
 
 describe('Order mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    sizeId = await createSize(newSizeInputData, operations);
-    colorId = await createColor(newColorInputData, operations);
-    categoryId = await createCategory(newCategoryInputData, operations);
-    const receivedMaterial = await testCreateMaterial(
-      newMaterialInputData(colorId),
+    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
+    sizeId = sizeData._id;
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const receivedMaterial = await createMaterial(
+      getMaterial(colorId),
       operations
     );
     materialId = receivedMaterial._id;
-    patternId = await createPattern(newPattern, operations);
-    closureId = await createClosure(newClosure(materialId), operations);
-    const receivedConstructorBasic = await createConstructorBasicWithData(
+    const patternData = await createPattern(queryPatternToAdd, operations);
+    patternId = patternData._id;
+    const closureData = await createClosure(newClosure(materialId), operations);
+    closureId = closureData._id;
+    const receivedConstructorBasic = await createConstructorBasic(
       newConstructorBasic(materialId, colorId),
       operations
     );
     constructorBasicId = receivedConstructorBasic._id;
-
-    modelId = await createModel(
-      newModelInputData(categoryId, constructorBasicId, sizeId),
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
       operations
     );
+    modelId = modelData._id;
+  });
+  test('#1 Should create product', async () => {
     productInput = newProductInputData(
       categoryId,
       modelId,
@@ -102,81 +98,86 @@ describe('Order mutations', () => {
       closureId,
       sizeId
     );
-    productUpdateInput = newProductInputDataForUpdate(
-      categoryId,
-      modelId,
-      materialId,
-      materialId,
-      colorId,
-      patternId,
-      closureId,
-      sizeId
-    );
-    currentProductUpdated = newProductInputDataForCompare(productUpdateInput);
-    currentProduct = newProductInputDataForCompare(productInput);
+    const productData = await createProduct(productInput, operations);
+    productId = productData._id;
+
+    expect(productData).toBeDefined();
+    expect(productData).toHaveProperty('_id', productId);
   });
-  afterEach(async () => {
-    await deleteProduct(productId, operations);
-  });
-  test('#1 Should receive all products', async done => {
-    productId = await createProduct(productInput, operations);
-    const products = await getProductById(productId, operations);
-    let res = products.data.getProductById;
-    expect(products).toBeDefined();
-    expect(res).toEqual({
-      ...currentProduct,
-      _id: productId,
-    });
-    done();
-  });
-  test('#2 Should Update Product', async done => {
-    productId = await createProduct(productInput, operations);
+  test('#2 Should Update Product', async () => {
     const receivedUpdatedProduct = await updateProduct(
       productId,
-      productUpdateInput,
+      newProductInputDataForUpdate(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId,
+        sizeId
+      ),
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
+
     expect(res).toBeDefined();
-    expect(res).toEqual({
-      ...currentProductUpdated,
-      _id: productId,
-    });
-    done();
+    expect(res).toHaveProperty('name');
+    expect(res).toHaveProperty('description');
+    expect(res).toHaveProperty('model');
+    expect(res).toHaveProperty('category');
   });
-  test('#3 Should return Error PRODUCT_NOT_FOUND on updateProduct', async done => {
+  test('#3 Should return Error PRODUCT_NOT_FOUND on updateProduct', async () => {
     const receivedUpdatedProduct = await updateProduct(
       badProductId,
-      productUpdateInput,
+      newProductInputDataForUpdate(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId,
+        sizeId
+      ),
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
+
     expect(res).toBeDefined();
     expect(res.message).toBe(PRODUCT_NOT_FOUND);
     expect(res.statusCode).toBe(404);
-    done();
   });
-  test('#4 Should return Error PRODUCT_ALREADY_EXIST', async done => {
-    productId = await createProduct(productInput, operations);
-    const products = await createProductSecond(productInput, operations);
-    const res = products.data.addProduct;
-    expect(res).toBeDefined();
-    expect(res.message).toBe(PRODUCT_ALREADY_EXIST);
-    expect(res.statusCode).toBe(400);
-    done();
+  test('#4 Should return Error PRODUCT_ALREADY_EXIST', async () => {
+    const products = await createProduct(
+      newProductInputDataForUpdate(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId,
+        sizeId
+      ),
+      operations
+    );
+
+    expect(products).toBeDefined();
+    expect(products.message).toBe(PRODUCT_ALREADY_EXIST);
+    expect(products.statusCode).toBe(400);
   });
-  test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async done => {
-    const ReceivedData = await deleteProduct(badProductId, operations);
-    const res = ReceivedData.errors[0].message;
+  test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
+    const receivedData = await deleteProduct(badProductId, operations);
+    const res = receivedData.errors[0].message;
+
     expect(res).toBe(PRODUCT_NOT_FOUND);
-    done();
   });
-  test('#6 Should delete Product and return it`s id', async done => {
-    productId = await createProduct(productInput, operations);
-    const ReceivedData = await deleteProduct(productId, operations);
-    const res = ReceivedData.data.deleteProduct._id;
+  test('#6 Should delete Product and return it`s id', async () => {
+    const receivedData = await deleteProduct(productId, operations);
+    const res = receivedData.data.deleteProduct._id;
+
     expect(res).toBe(productId);
-    done();
   });
 
   afterAll(async () => {
