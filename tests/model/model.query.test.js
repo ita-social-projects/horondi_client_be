@@ -1,84 +1,48 @@
-/* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
-jest.mock('../../modules/upload/upload.service');
-const { newCategory, newModel } = require('./model.variables');
+const { wrongId, notValidId, newModel } = require('./model.variables');
+const {
+  createModel,
+  deleteModel,
+  getModelsByCategory,
+  getModelById,
+} = require('./model.helper');
+const { createSize, deleteSize } = require('../size/size.helper');
+const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { setupApp } = require('../helper-functions');
+const {
+  deleteCategory,
+  createCategory,
+} = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+
+jest.mock('../../modules/upload/upload.service');
 
 let modelId;
 let categoryId;
 let operations;
+let sizeId;
+const CATEGORY_NOT_VALID = 'CATEGORY_NOT_VALID';
+const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
+const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 
 describe('Model queries', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
-    const createCategory = await operations.mutate({
-      mutation: gql`
-        mutation($category: CategoryInput!, $upload: Upload) {
-          addCategory(category: $category, upload: $upload) {
-            ... on Category {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { category: newCategory, upload: '__tests__/model/img.png' },
-    });
-    categoryId = createCategory.data.addCategory._id;
-
-    const createModel = await operations.mutate({
-      mutation: gql`
-        mutation($model: ModelInput!) {
-          addModel(model: $model, upload: []) {
-            ... on Model {
-              _id
-              name {
-                value
-              }
-            }
-          }
-        }
-      `,
-      variables: { model: { ...newModel, category: categoryId } },
-    });
-    modelId = createModel.data.addModel._id;
-    done();
+    const createdSize = await createSize(SIZES_TO_CREATE.size1, operations);
+    sizeId = createdSize._id;
+    const createdCategory = await createCategory(
+      newCategoryInputData,
+      operations
+    );
+    categoryId = createdCategory._id;
+    const createdModel = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = createdModel._id;
   });
-  test('Should receive all models by category id', async done => {
-    const res = await operations.query({
-      query: gql`
-        query($category: ID!) {
-          getModelsByCategory(id: $category) {
-            category {
-              name {
-                value
-              }
-            }
-            name {
-              value
-              lang
-            }
-            description {
-              value
-              lang
-            }
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
-          }
-        }
-      `,
-      variables: {
-        category: categoryId,
-      },
-    });
 
+  test('Should receive all models by category id', async () => {
+    const res = await getModelsByCategory(categoryId, operations);
     const models = res.data.getModelsByCategory;
 
     expect(models).toBeDefined();
@@ -92,121 +56,52 @@ describe('Model queries', () => {
       { value: 'Тест', lang: 'uk' },
       { value: 'Test', lang: 'en' },
     ]);
-    expect(models[0]).toHaveProperty('images', {
-      large: 'large_test-file',
-      medium: 'medium_test-file',
-      small: 'small_test-file',
-      thumbnail: 'thumbnail_test-file',
-    });
-    expect(models[0]).toHaveProperty('category', {
-      name: [
-        {
-          value: 'Нова',
-        },
-        {
-          value: 'New',
-        },
-      ],
-    });
-    done();
+    expect(models[0]).toHaveProperty('category');
   });
-  test('Should throw error CATEGORY_NOT_VALID', async done => {
-    const res = await operations
-      .query({
-        query: gql`
-          query {
-            getModelsByCategory(id: "$category") {
-              category {
-                name {
-                  value
-                }
-              }
-              name {
-                value
-                lang
-              }
-              description {
-                value
-                lang
-              }
-              images {
-                large
-              }
-            }
-          }
-        `,
-      })
-      .catch(err => err);
-    const error = res;
-    expect(error.errors[0].message).toBe('CATEGORY_NOT_VALID');
-    done();
-  });
-  test('Should return empty array when category isnt exist', async done => {
-    const res = await operations
-      .query({
-        query: gql`
-          query {
-            getModelsByCategory(id: "56ade69dd46eafc5968e5390") {
-              category {
-                name {
-                  value
-                }
-              }
-              name {
-                value
-                lang
-              }
-              description {
-                value
-                lang
-              }
-              images {
-                large
-              }
-            }
-          }
-        `,
-      })
-      .catch(err => err);
-    const getModelsByCategory = res.data.getModelsByCategory;
-    expect(getModelsByCategory.length).toBe(0);
-    expect(getModelsByCategory).toBeInstanceOf(Array);
-    done();
-  });
-  afterAll(async done => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteCategory(deleteId: $id, switchId: $id) {
-            ... on Category {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: categoryId },
-    });
+  test('Should throw error CATEGORY_NOT_VALID', async () => {
+    const error = await getModelsByCategory(notValidId, operations);
 
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteModel(id: $id) {
-            ... on Model {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: modelId },
-    });
-    done();
+    expect(error.errors[0].message).toBe(CATEGORY_NOT_VALID);
+  });
+  test('Should return empty array when category isnt exist', async () => {
+    const res = await getModelsByCategory(wrongId, operations);
+
+    const modelsByCategory = res.data.getModelsByCategory;
+    expect(modelsByCategory.length).toBe(0);
+    expect(modelsByCategory).toBeInstanceOf(Array);
+  });
+  test('Should return model by id', async () => {
+    const res = await getModelById(modelId, operations);
+
+    const modelsById = res.data.getModelById;
+
+    expect(modelsById).toBeDefined();
+    expect(modelsById).toHaveProperty('name', [
+      { value: 'Тест', lang: 'uk' },
+      { value: 'Test', lang: 'en' },
+    ]);
+    expect(modelsById).toHaveProperty('description', [
+      { value: 'Тест', lang: 'uk' },
+      { value: 'Test', lang: 'en' },
+    ]);
+    expect(modelsById).toHaveProperty('category');
+  });
+  test('Should throw error MODEL_NOT_VALID', async () => {
+    const error = await getModelById(notValidId, operations);
+
+    expect(error.data.getModelById.message).toBe(MODEL_NOT_VALID);
+    expect(error.data.getModelById.statusCode).toBe(404);
+  });
+  test('Should throw error MODEL_NOT_FOUND', async () => {
+    const error = await getModelById(wrongId, operations);
+
+    expect(error.data.getModelById.message).toBe(MODEL_NOT_FOUND);
+    expect(error.data.getModelById.statusCode).toBe(404);
+  });
+
+  afterAll(async () => {
+    await deleteModel(modelId, operations);
+    await deleteCategory(categoryId, operations);
+    await deleteSize(sizeId, operations);
   });
 });

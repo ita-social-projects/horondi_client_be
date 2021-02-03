@@ -1,86 +1,63 @@
-/* eslint-disable no-undef */
 const { gql } = require('@apollo/client');
-
-let { newAdmin, testUser, user } = require('./user.variables');
-
+const { newAdmin, testUser, user } = require('./user.variables');
+const {
+  registerUser,
+  loginUser,
+  getAllUsers,
+  getUserByToken,
+  getUserById,
+  deleteUser,
+  loginAdmin,
+  getAllUsersWithToken,
+  validateConfirmationToken,
+  switchUserStatus,
+  updateUserById,
+  completeAdminRegister,
+} = require('./user.helper');
 const { setupApp } = require('../helper-functions');
+const {
+  createUser,
+  getAllUsersQuery,
+  chooseOnlyUsers,
+} = require('../helpers/users');
 const {
   INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   USER_ALREADY_EXIST,
+  WRONG_CREDENTIALS,
+  INVALID_PERMISSIONS,
+  USER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
 
 let userId;
 let token;
-let badId;
+let badId = '9c031d62a3c4909b216e1d87';
 let invitationalToken;
 let operations;
 let loginedUser;
+let wrongEmail = 'udernotfound@gmail.com';
+let wrongPassword = '12345678pT';
 
 describe('mutations', () => {
   beforeAll(async () => {
-    badId = '9c031d62a3c4909b216e1d87';
     operations = await setupApp();
-  });
-  afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            ... on User {
-              _id
-            }
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
   });
 
   test('should register user', async () => {
     const { firstName, lastName, email, pass, language } = testUser;
 
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation(
-          $firstName: String!
-          $lastName: String!
-          $email: String!
-          $password: String!
-          $language: Int!
-        ) {
-          registerUser(
-            user: {
-              firstName: $firstName
-              lastName: $lastName
-              email: $email
-              password: $password
-            }
-            language: $language
-          ) {
-            _id
-            firstName
-            lastName
-            email
-            role
-            registrationDate
-          }
-        }
-      `,
-      variables: {
-        firstName,
-        lastName,
-        email,
-        password: pass,
-        language,
-      },
-    });
-
+    const res = await registerUser(
+      firstName,
+      lastName,
+      email,
+      pass,
+      language,
+      operations
+    );
     userId = res.data.registerUser._id;
+
     expect(typeof res.data.registerUser._id).toBe('string');
     expect(res.data.registerUser).toHaveProperty(
       'firstName',
@@ -90,165 +67,48 @@ describe('mutations', () => {
     expect(res.data.registerUser).toHaveProperty('email', testUser.email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
-    const date = new Date(
-      +res.data.registerUser.registrationDate
-    ).toDateString();
-    const dateNow = new Date(Date.now()).toDateString();
-    expect(dateNow).toBe(date);
   });
-
   test('should throw error User with provided email already exist', async () => {
     const { firstName, lastName, email, pass, language } = testUser;
 
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation(
-            $firstName: String!
-            $lastName: String!
-            $email: String!
-            $password: String!
-            $language: Int!
-          ) {
-            registerUser(
-              user: {
-                firstName: $firstName
-                lastName: $lastName
-                email: $email
-                password: $password
-              }
-              language: $language
-            ) {
-              _id
-              firstName
-              lastName
-              email
-              role
-              registrationDate
-            }
-          }
-        `,
-        variables: {
-          firstName,
-          lastName,
-          email,
-          password: pass,
-          language,
-        },
-      })
-      .catch(err => err);
+    const res = await registerUser(
+      firstName,
+      lastName,
+      email,
+      pass,
+      language,
+      operations
+    );
 
     expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('USER_ALREADY_EXIST');
+    expect(res.errors[0].message).toBe(USER_ALREADY_EXIST);
   });
-
   test('should authorize and recive user token', async () => {
     const { email, pass } = testUser;
 
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($email: String!, $password: String!) {
-          loginUser(loginInput: { email: $email, password: $password }) {
-            token
-            firstName
-            lastName
-            comments
-            _id
-            email
-            password
-            phoneNumber
-            address {
-              zipcode
-              buildingNumber
-              region
-              street
-              city
-              appartment
-              country
-            }
-            registrationDate
-            cart {
-              dimensions {
-                volumeInLiters
-              }
-              _id
-              sidePocket
-              selectedSize
-            }
-            wishlist {
-              _id
-            }
-            role
-            credentials {
-              source
-              tokenPass
-            }
-          }
-        }
-      `,
-      variables: {
-        email,
-        password: pass,
-      },
-    });
+    const res = await loginUser(email, pass, operations);
     loginedUser = res.data.loginUser;
+    token = res.data.loginUser.token;
+
     expect(res.data.loginUser).toHaveProperty('token');
     expect(typeof res.data.loginUser.token).toBe('string');
     expect(res.data.loginUser).toHaveProperty('firstName', testUser.firstName);
     expect(res.data.loginUser).toHaveProperty('lastName', testUser.lastName);
     expect(res.data.loginUser).toHaveProperty('email', testUser.email);
-    expect(res.data.loginUser).toHaveProperty('role', 'user');
     expect(res.data.loginUser).toHaveProperty('registrationDate');
-
-    token = res.data.loginUser.token;
   });
-
   test('should throw error User with provided email not found', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation {
-            loginUser(
-              loginInput: {
-                email: "udernotfound@gmail.com"
-                password: "12345678Pt"
-              }
-            ) {
-              _id
-              firstName
-              token
-            }
-          }
-        `,
-      })
-      .catch(err => err);
+    const res = await loginUser(wrongEmail, testUser.pass, operations);
 
     expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
+    expect(res.errors[0].message).toBe(WRONG_CREDENTIALS);
   });
-
   test('should throw error Wrong password', async () => {
-    const res = await operations
-      .mutate({
-        mutation: gql`
-          mutation($email: String!) {
-            loginUser(loginInput: { email: $email, password: "12345678pT" }) {
-              _id
-              firstName
-              token
-            }
-          }
-        `,
-        variables: {
-          email: testUser.email,
-        },
-      })
-      .catch(err => err);
+    const res = await loginUser(testUser.email, wrongPassword, operations);
 
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
   });
-
   test('should update user by id', async () => {
     const {
       email,
@@ -262,73 +122,22 @@ describe('mutations', () => {
     operations = await setupApp(loginedUser);
     const { country, city, street, buildingNumber } = address;
 
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation(
-          $userId: ID!
-          $email: String!
-          $phoneNumber: String!
-          $country: String!
-          $city: String!
-          $street: String!
-          $buildingNumber: String!
-          $wishlist: [ID!]!
-          $orders: [ID!]!
-          $comments: [ID!]!
-        ) {
-          updateUserById(
-            user: {
-              firstName: "Updated"
-              lastName: "Updated"
-              email: $email
-              phoneNumber: $phoneNumber
-              address: {
-                country: $country
-                city: $city
-                street: $street
-                buildingNumber: $buildingNumber
-              }
-              wishlist: $wishlist
-              orders: $orders
-              comments: $comments
-            }
-            id: $userId
-          ) {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
-            }
-            orders
-            comments
-          }
-        }
-      `,
-      context: {
-        headers: {
-          token,
-        },
-      },
-      variables: {
-        userId,
-        email,
-        role,
-        phoneNumber,
-        country,
-        city,
-        street,
-        buildingNumber,
-        wishlist,
-        orders,
-        comments,
-      },
-    });
+    const res = await updateUserById(
+      userId,
+      email,
+      role,
+      phoneNumber,
+      country,
+      city,
+      street,
+      buildingNumber,
+      wishlist,
+      orders,
+      comments,
+      token,
+      operations
+    );
+
     expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('lastName', 'Updated');
     expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
@@ -349,80 +158,32 @@ describe('mutations', () => {
       testUser.comments
     );
   });
-
   test('Should change user status', async () => {
     operations = await setupApp();
-    const result = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          switchUserStatus(id: $id) {
-            ... on SuccessfulResponse {
-              isSuccess
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: {
-        id: userId,
-      },
-    });
-
+    const result = await switchUserStatus(userId, operations);
     const { switchUserStatus: response } = result.data;
 
     expect(response.isSuccess).toEqual(true);
   });
-
   test('should not delete user without super-admin role', async () => {
     operations = await setupApp({ token: 'jgjcdvjkbvdnfjlvdvlf' });
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            ... on User {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
-    expect(res.data.deleteUser.message).toEqual('INVALID_PERMISSIONS');
+    const res = await deleteUser(userId, operations);
+
+    expect(res.data.deleteUser.message).toEqual(INVALID_PERMISSIONS);
   });
 
   test('Should return error when switch status of non-existent user', async () => {
     operations = await setupApp();
-    const result = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          switchUserStatus(id: $id) {
-            ... on SuccessfulResponse {
-              isSuccess
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: {
-        id: badId,
-      },
-    });
-
+    const result = await switchUserStatus(badId, operations);
     const { switchUserStatus: response } = result.data;
 
-    expect(response.message).toEqual('USER_NOT_FOUND');
+    expect(response.message).toEqual(USER_NOT_FOUND);
     expect(response.statusCode).toEqual(400);
+  });
+
+  afterAll(async () => {
+    operations = await setupApp();
+    await deleteUser(userId, operations);
   });
 });
 
@@ -435,30 +196,57 @@ describe('User`s mutation restictions tests', () => {
   let language = user.language;
 
   beforeAll(async () => {
-    const res = await operations.mutate({
+    const res = await registerUser(
+      firstName,
+      lastName,
+      email,
+      password,
+      language,
+      operations
+    );
+    userId = res.data.registerUser._id;
+  });
+
+  test('User must login', async () => {
+    const result = await loginUser(email, password, operations);
+    const loginedUser = result.data.loginUser;
+    userToken = loginedUser.token;
+
+    expect(loginedUser).not.toEqual(null);
+  });
+
+  test('User doesn`t allowed to change another user`s data', async () => {
+    const user = {
+      firstName: 'One',
+      lastName: 'User',
+      email: 'secretEmail@sec.com',
+      password: 'qwerty12345',
+    };
+    const res = await registerUser(
+      user.firstName,
+      user.lastName,
+      user.email,
+      user.password,
+      (language = 1),
+      operations
+    );
+
+    operations = await setupApp({ ...res.data.registerUser });
+
+    const result = await operations.mutate({
       mutation: gql`
         mutation(
           $firstName: String!
           $lastName: String!
           $email: String!
-          $password: String!
-          $language: Int!
+          $userId: ID!
         ) {
-          registerUser(
-            user: {
-              firstName: $firstName
-              lastName: $lastName
-              email: $email
-              password: $password
-            }
-            language: $language
+          updateUserById(
+            user: { firstName: $firstName, lastName: $lastName, email: $email }
+            id: $userId
           ) {
-            _id
             firstName
             lastName
-            email
-            role
-            registrationDate
           }
         }
       `,
@@ -466,192 +254,21 @@ describe('User`s mutation restictions tests', () => {
         firstName,
         lastName,
         email,
-        password,
-        language,
+        userId,
       },
     });
-    userId = res.data.registerUser._id;
-  });
 
-  test('User must login', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: LoginInput!) {
-            loginUser(loginInput: $user) {
-              token
-              firstName
-              lastName
-              comments
-              _id
-              email
-              password
-              phoneNumber
-              address {
-                zipcode
-                buildingNumber
-                region
-                street
-                city
-                appartment
-                country
-              }
-              registrationDate
-              cart {
-                dimensions {
-                  volumeInLiters
-                }
-                _id
-                sidePocket
-                selectedSize
-              }
-              wishlist {
-                _id
-              }
-              credentials {
-                source
-                tokenPass
-              }
-            }
-          }
-        `,
-        variables: {
-          user: {
-            email,
-            password,
-          },
-        },
-      })
-      .catch(err => err);
-    const userInfo = result.data;
-    loginedUser = userInfo.loginUser;
-    expect(userInfo.loginUser).not.toEqual(null);
-
-    userToken = loginedUser.token;
-  });
-
-  test('User doesn`t allowed to change another user`s data', async () => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation {
-          registerUser(
-            user: {
-              firstName: "One"
-              lastName: "User"
-              email: "secretEmail@sec.com"
-              password: "qwerty12345"
-            }
-            language: 1
-          ) {
-            _id
-            firstName
-            lastName
-            email
-            role
-            registrationDate
-            token
-          }
-        }
-      `,
-    });
-
-    operations = await setupApp({ ...res.data.registerUser });
-
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation(
-            $firstName: String!
-            $lastName: String!
-            $email: String!
-            $userId: ID!
-          ) {
-            updateUserById(
-              user: {
-                firstName: $firstName
-                lastName: $lastName
-                email: $email
-              }
-              id: $userId
-            ) {
-              firstName
-              lastName
-            }
-          }
-        `,
-        variables: {
-          firstName,
-          lastName,
-          email,
-          userId,
-        },
-      })
-      .catch(err => err);
     expect(result.data.updateUserById.message).toBeDefined();
-    expect(result.data.updateUserById.message).toEqual('WRONG_CREDENTIALS');
+    expect(result.data.updateUserById.message).toEqual(WRONG_CREDENTIALS);
 
     operations = await setupApp();
-
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            ... on User {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        userId: res.data.registerUser._id,
-      },
-    });
-  });
-
-  test('User can change his own data', async () => {
-    operations = await setupApp({ ...loginedUser, token: userToken });
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($user: UserUpdateInput!, $id: ID!) {
-          updateUserById(user: $user, id: $id) {
-            firstName
-            lastName
-          }
-        }
-      `,
-      variables: {
-        user: { firstName, lastName, email },
-        id: userId,
-      },
-    });
-    const userInfo = res.data.updateUserById;
-
-    expect(userInfo.firstName).toBe(firstName);
-    expect(userInfo.lastName).toBe(lastName);
+    await deleteUser(res.data.registerUser._id, operations);
   });
 
   test('Admin can delete user', async () => {
     operations = await setupApp();
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            ... on User {
-              _id
-            }
-            ... on Error {
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
+    const res = await deleteUser(userId, operations);
+
     expect(res.data.deleteUser._id).toBeDefined();
   });
 });
@@ -789,19 +406,9 @@ describe('Register admin', () => {
 
     invitationalToken = data.invitationalToken;
   });
+
   afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            _id
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
+    await deleteUser(userId, operations);
   });
 });
 
@@ -820,64 +427,27 @@ describe('Admin confirmation', () => {
   } = newAdmin;
 
   test('Should throw an error when use invalid lastname', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: AdminConfirmInput!, $token: String!) {
-            completeAdminRegister(user: $user, token: $token) {
-              ... on SuccessfulResponse {
-                isSuccess
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          token: invitationalToken,
-          user: {
-            firstName: newAdminFirstName,
-            lastName: invalidLastName,
-            password: newAdminPassword,
-          },
-        },
-      })
-      .catch(err => err);
-
+    const result = await completeAdminRegister(
+      invitationalToken,
+      newAdminFirstName,
+      invalidLastName,
+      newAdminPassword,
+      operations
+    );
     const data = result.data.completeAdminRegister;
+
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
   });
 
   test('Should throw an error when use invalid firstname', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: AdminConfirmInput!, $token: String!) {
-            completeAdminRegister(user: $user, token: $token) {
-              ... on SuccessfulResponse {
-                isSuccess
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          token: invitationalToken,
-          user: {
-            firstName: invalidFirstName,
-            lastName: newAdminLastName,
-            password: newAdminPassword,
-          },
-        },
-      })
-      .catch(err => err);
-
+    const result = await completeAdminRegister(
+      invitationalToken,
+      invalidFirstName,
+      newAdminLastName,
+      newAdminPassword,
+      operations
+    );
     const data = result.data.completeAdminRegister;
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
@@ -885,32 +455,13 @@ describe('Admin confirmation', () => {
   });
 
   test('Should throw an error when use invalid password', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: AdminConfirmInput!, $token: String!) {
-            completeAdminRegister(user: $user, token: $token) {
-              ... on SuccessfulResponse {
-                isSuccess
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          token: invitationalToken,
-          user: {
-            firstName: newAdminFirstName,
-            lastName: newAdminLastName,
-            password: invalidPassword,
-          },
-        },
-      })
-      .catch(err => err);
-
+    const result = await completeAdminRegister(
+      invitationalToken,
+      invalidFirstName,
+      newAdminLastName,
+      invalidPassword,
+      operations
+    );
     const data = result.data.completeAdminRegister;
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
@@ -918,122 +469,28 @@ describe('Admin confirmation', () => {
   });
 
   test('Should throw an error when use invalid token', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: AdminConfirmInput!, $token: String!) {
-            completeAdminRegister(user: $user, token: $token) {
-              ... on SuccessfulResponse {
-                isSuccess
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          token: invalidToken,
-          user: {
-            firstName: newAdminFirstName,
-            lastName: newAdminLastName,
-            password: newAdminPassword,
-          },
-        },
-      })
-      .catch(err => err);
-
+    const result = await completeAdminRegister(
+      invalidToken,
+      newAdminFirstName,
+      newAdminLastName,
+      newAdminPassword,
+      operations
+    );
     const data = result.data.completeAdminRegister;
 
     expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
   });
 
   test('Should confirm user with a custom role', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: AdminConfirmInput!, $token: String!) {
-            completeAdminRegister(user: $user, token: $token) {
-              ... on SuccessfulResponse {
-                isSuccess
-              }
-              ... on Error {
-                message
-                statusCode
-              }
-            }
-          }
-        `,
-        variables: {
-          token: invitationalToken,
-          user: {
-            firstName: newAdminFirstName,
-            lastName: newAdminLastName,
-            password: newAdminPassword,
-          },
-        },
-      })
-      .catch(err => err);
+    const result = await completeAdminRegister(
+      invitationalToken,
+      newAdminFirstName,
+      newAdminLastName,
+      newAdminPassword,
+      operations
+    );
 
-    const { isSuccess } = result.data.completeAdminRegister;
-
-    expect(isSuccess).toEqual(true);
-  });
-});
-
-describe('New admin login', () => {
-  let id;
-  let {
-    firstName: newAdminFirstName,
-    lastName: newAdminLastName,
-    email: newAdminEmail,
-    pass: newAdminPassword,
-  } = newAdmin;
-
-  afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteUser(id: $id) {
-            firstName
-          }
-        }
-      `,
-      variables: {
-        id,
-      },
-    });
-  });
-
-  test('Should successfully login as an admin', async () => {
-    const result = await operations
-      .mutate({
-        mutation: gql`
-          mutation($user: LoginInput!) {
-            loginAdmin(loginInput: $user) {
-              firstName
-              lastName
-              _id
-              token
-            }
-          }
-        `,
-        variables: {
-          user: {
-            email: newAdminEmail,
-            password: newAdminPassword,
-          },
-        },
-      })
-      .catch(err => err);
-
-    const data = result.data.loginAdmin;
-
-    expect(data.firstName).toEqual(newAdminFirstName);
-    expect(data.lastName).toEqual(newAdminLastName);
-
-    id = data._id;
+    expect(result).toBeTruthy();
   });
 });
 
@@ -1085,26 +542,12 @@ describe('User filtering', () => {
         },
       })
       .catch(err => err);
-
     const data = result.data.getAllUsers.items;
 
     expect(data.every(item => roles.includes(item.role))).toEqual(true);
   });
 
   afterAll(async () => {
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!) {
-          deleteUser(id: $userId) {
-            ... on User {
-              _id
-            }
-          }
-        }
-      `,
-      variables: {
-        userId,
-      },
-    });
+    await deleteUser(userId, operations);
   });
 });

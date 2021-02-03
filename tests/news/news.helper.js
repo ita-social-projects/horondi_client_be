@@ -36,7 +36,6 @@ const createNews = async (news, operations) => {
     .catch(e => e);
   return res.data.addNews;
 };
-
 const updateNews = async (id, news, operations) => {
   const res = await operations
     .mutate({
@@ -77,7 +76,6 @@ const updateNews = async (id, news, operations) => {
     .catch(e => e);
   return res.data.updateNews;
 };
-
 const deleteNews = async (id, operations) => {
   const res = await operations
     .mutate({
@@ -108,7 +106,6 @@ const deleteNews = async (id, operations) => {
     .catch(e => e);
   return res.data.deleteNews;
 };
-
 const getAllNews = async (skip, limit, operations) => {
   const res = await operations
     .query({
@@ -142,7 +139,6 @@ const getAllNews = async (skip, limit, operations) => {
     .catch(e => e);
   return res.data.getAllNews;
 };
-
 const getById = async (id, operations) => {
   const res = await operations
     .query({

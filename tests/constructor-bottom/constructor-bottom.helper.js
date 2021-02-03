@@ -1,7 +1,6 @@
 const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
 
-const createConstructorBottom = async (addConstructor, operations) => {
+const createConstructorBottom = async (constructorElement, operations) => {
   const constructorBottom = await operations.mutate({
     mutation: gql`
       mutation($constructorElement: ConstructorBottomInput!) {
@@ -29,12 +28,11 @@ const createConstructorBottom = async (addConstructor, operations) => {
         }
       }
     `,
-    variables: { constructorElement: addConstructor },
+    variables: { constructorElement },
   });
   return constructorBottom.data.addConstructorBottom;
 };
-
-const updateConstructorB = async (ID, operations, addConstructor) => {
+const updateConstructorBottom = async (id, constructorElement, operations) => {
   const updateConstructor = await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $constructorElement: ConstructorBottomInput!) {
@@ -44,6 +42,11 @@ const updateConstructorB = async (ID, operations, addConstructor) => {
         ) {
           ... on ConstructorBottom {
             _id
+            name {
+              lang
+              value
+            }
+            image
           }
           ... on Error {
             statusCode
@@ -53,11 +56,11 @@ const updateConstructorB = async (ID, operations, addConstructor) => {
       }
     `,
     variables: {
-      id: ID,
-      constructorElement: addConstructor,
+      id,
+      constructorElement,
     },
   });
-  return updateConstructor.data.updateConstructorBottom.message;
+  return updateConstructor.data.updateConstructorBottom;
 };
 const deleteConstructorBottom = async (constructorId, operations) => {
   const deletedConstructor = await operations.mutate({
@@ -72,9 +75,9 @@ const deleteConstructorBottom = async (constructorId, operations) => {
     `,
     variables: { id: constructorId },
   });
-  return deletedConstructor.data.deleteConstructorBottom._id;
+  return deletedConstructor.data.deleteConstructorBottom;
 };
-const getConstructorBottom = async (id, operations) => {
+const getConstructorBottomById = async (id, operations) => {
   const constructorBottomById = await operations.query({
     query: gql`
       query($id: ID!) {
@@ -141,8 +144,8 @@ const getAllConstructorBottom = async operations => {
 
 module.exports = {
   createConstructorBottom,
-  updateConstructorB,
+  updateConstructorBottom,
   deleteConstructorBottom,
-  getConstructorBottom,
+  getConstructorBottomById,
   getAllConstructorBottom,
 };
