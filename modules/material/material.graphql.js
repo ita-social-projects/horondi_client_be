@@ -12,6 +12,8 @@ const materialType = `
       MAIN
       INNER
       BOTTOM
+      PATTERN
+      CLOSURE
     }
 `;
 

@@ -7,7 +7,7 @@ const materialSchema = new mongoose.Schema({
   description: [Language],
   purpose: {
     type: String,
-    enum: ['MAIN', 'INNER', 'BOTTOM'],
+    enum: ['MAIN', 'INNER', 'BOTTOM', 'PATTERN', 'CLOSURE'],
     required: true,
   },
   colors: [
