@@ -381,6 +381,7 @@ const typeDefs = gql`
     getUserById(id: ID!): User
     validateConfirmationToken(token: String!): LogicalResult!
     getProductById(id: ID!): ProductResult
+    getProductsFilters: ProductsFilter
     getProducts(
       filter: FilterInput
       limit: Int

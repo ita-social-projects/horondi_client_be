@@ -14,10 +14,24 @@ const {
 const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const categoryService = require('../category/category.service');
 
 class ProductsService {
   async getProductById(id) {
     return await Product.findById(id).exec();
+  }
+
+  async getProductsFilters() {
+    const categories = await Product.distinct('category').lean();
+    const models = await Product.distinct('model').lean();
+    const patterns = await Product.distinct('pattern').lean();
+    const closures = await Product.distinct('closure').lean();
+    return {
+      categories,
+      models,
+      patterns,
+      closures,
+    };
   }
 
   async getModelsByCategory(id) {

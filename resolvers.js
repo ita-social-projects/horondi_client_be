@@ -195,6 +195,14 @@ const resolvers = {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
 
+  ProductsFilter: {
+    categories: parent =>
+      parent.categories.map(category => {
+        console.log('123');
+        return categoryService.getCategoryById(category);
+      }),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
   },
