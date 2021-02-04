@@ -28,6 +28,7 @@ categories: [Category]
 models: [Model]
 patterns: [Pattern]
 closures: [Closure]
+mainMaterial: [Material]
 }
 type ProductMaterialType{
   material: Material

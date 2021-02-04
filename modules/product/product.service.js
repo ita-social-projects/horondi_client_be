@@ -26,11 +26,17 @@ class ProductsService {
     const models = await Product.distinct('model').lean();
     const patterns = await Product.distinct('pattern').lean();
     const closures = await Product.distinct('closure').lean();
+    const material = await Product.distinct('mainMaterial.color').lean();
+    const mainMaterial = material.map(material => material.material);
+    console.log(material);
+    console.log(mainMaterial);
+
     return {
       categories,
       models,
       patterns,
       closures,
+      mainMaterial,
     };
   }
 

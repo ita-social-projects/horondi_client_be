@@ -31,7 +31,7 @@ class OrdersService {
           item.options.size
         ).exec();
 
-        if (!item.fixedPrice?.length) {
+        if (!item.fixedPrice.length) {
           if (item.isFromConstructor) {
             const constructorBasics = await ConstructorBasic.findById(
               item.constructorBasics

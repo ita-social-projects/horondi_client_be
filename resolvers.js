@@ -201,6 +201,22 @@ const resolvers = {
         console.log('123');
         return categoryService.getCategoryById(category);
       }),
+    models: parent =>
+      parent.models.map(model => {
+        return modelService.getModelById(model);
+      }),
+    patterns: parent =>
+      parent.patterns.map(pattern => {
+        return patternService.getPatternById(pattern);
+      }),
+    closures: parent =>
+      parent.closures.map(closure => {
+        return closuresService.getClosureById(closure);
+      }),
+    mainMaterial: parent =>
+      parent.mainMaterial.map(material => {
+        return materialService.getMaterialById(material);
+      }),
   },
 
   Comment: {
