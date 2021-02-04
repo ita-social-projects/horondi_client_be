@@ -29,7 +29,6 @@ class ProductsService {
     const material = await Product.distinct('mainMaterial.color').lean();
     const mainMaterial = material.map(material => material.material);
     console.log(material);
-    console.log(mainMaterial);
 
     return {
       categories,
