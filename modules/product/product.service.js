@@ -14,6 +14,7 @@ const {
 const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const categoryService = require('../category/category.service');
 
 class ProductsService {
   async getProductById(id) {
@@ -25,17 +26,6 @@ class ProductsService {
     const models = await Product.distinct('model').lean();
     const patterns = await Product.distinct('pattern').lean();
     const closures = await Product.distinct('closure').lean();
-    console.log({
-      categories,
-      models,
-      patterns,
-      closures,
-    });
-
-    console.log(categories.length);
-    console.log(models.length);
-    console.log(patterns.length);
-    console.log(closures.length);
     return {
       categories,
       models,
