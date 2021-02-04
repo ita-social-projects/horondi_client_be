@@ -41,7 +41,17 @@ class MaterialsService {
       count,
     };
   }
-
+  async getMaterialsByPurposes(purposes) {
+    const materials = await this.getAllMaterials({ filter: {} });
+    return materials.items.reduce((acc, material) => {
+      if (purposes.includes(material.purpose)) {
+        const purpose = material.purpose.toLowerCase();
+        acc[purpose] = acc[purpose] || [];
+        acc[purpose].push(material);
+      }
+      return acc;
+    }, {});
+  }
   async getMaterialById(id) {
     return Material.findById(id);
   }
