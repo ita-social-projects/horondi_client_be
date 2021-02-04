@@ -74,6 +74,11 @@ const {
   сonstructorBottomPermissionsMutations,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
 
+const {
+  commentPermissionsMutations,
+  commentPermissionsQuery,
+} = require('./modules/comment/comment.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -92,6 +97,7 @@ const permissions = shield(
       ...сonstructorBottomPermissionsQuery,
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
+      ...commentPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -109,6 +115,7 @@ const permissions = shield(
       ...сonstructorBottomPermissionsMutations,
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
+      ...commentPermissionsMutations,
     },
   },
   {

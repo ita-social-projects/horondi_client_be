@@ -389,6 +389,10 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProducts!
     getPopularProducts: StatisticBar!
+    getAllComments(
+      skip: Int
+      limit: Int
+    ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
       productId: ID!
@@ -396,7 +400,7 @@ const typeDefs = gql`
       limit: Int
     ): PaginatedComments!
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
-    getAllCommentsByUser(userEmail: String!): [Comment]
+    getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
