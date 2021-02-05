@@ -10,7 +10,7 @@ const addComment = async (productId, comment, operations) => {
             text
             show
             user {
-              email
+              _id
             }
             product {
               _id
@@ -64,7 +64,7 @@ const updateComment = async (id, productId, updatedComment, operations) => {
             text
             show
             user {
-              email
+              _id
             }
             product {
               _id
@@ -102,11 +102,11 @@ const deleteComment = async (id, operations) => {
     variables: { id },
   });
 };
-const getAllCommentsByUser = async (userEmail, operations) => {
+const getAllCommentsByUser = async (userId, operations) => {
   const res = await operations.query({
     query: gql`
-      query($userEmail: String!) {
-        getAllCommentsByUser(userEmail: $userEmail) {
+      query($userId: ID!) {
+        getAllCommentsByUser(userId: $userId) {
           ... on Comment {
             text
 
@@ -115,14 +115,14 @@ const getAllCommentsByUser = async (userEmail, operations) => {
             }
             show
             user {
-              email
+              _id
             }
           }
         }
       }
     `,
     variables: {
-      userEmail,
+      userId,
     },
   });
   return res.data.getAllCommentsByUser;
@@ -139,7 +139,7 @@ const getAllCommentsByProduct = async (productId, operations) => {
             }
             show
             user {
-              email
+              _id
             }
           }
         }
@@ -162,7 +162,7 @@ const getCommentById = async (id, operations) => {
             }
             show
             user {
-              email
+              _id
             }
           }
           ... on Error {

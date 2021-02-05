@@ -3,12 +3,23 @@ const Product = require('../product/product.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
+  COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
 const { monthInMilliseconds } = require('../../consts');
 
 class CommentsService {
+  async getAllComments({ skip, limit }) {
+    const comments = await Comment.find()
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    const count = await Comment.find()
+      .countDocuments()
+      .exec();
+    return { items: comments, count };
+  }
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {
@@ -33,31 +44,12 @@ class CommentsService {
     return { items: comments, count };
   }
 
-  async getAllCommentsByUser(userEmail) {
-    const comments = await Comment.find({ 'user.email': userEmail }).exec();
+  async getAllCommentsByUser(userId) {
+    const comments = await Comment.find({ user: userId }).exec();
+    if (!comments.length) {
+      throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
+    }
     return comments;
-  }
-
-  async getAllRecentComments({ skip, limit }) {
-    const dateFrom = new Date().getTime();
-    const dateTo = dateFrom - monthInMilliseconds;
-
-    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(limit)
-      .exec();
-
-    const count = await Comment.find({
-      date: { $gt: dateTo, $lt: dateFrom },
-    })
-      .countDocuments()
-      .exec();
-
-    return {
-      items,
-      count,
-    };
   }
 
   async updateComment(id, comment) {

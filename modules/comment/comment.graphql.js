@@ -3,7 +3,7 @@ type Comment {
 _id: ID!
 text: String!
 date: String!
-user: UserForComment!
+user: User
 product: Product
 show: Boolean
 }
@@ -12,7 +12,7 @@ show: Boolean
 const commentInput = `
 input commentInput {
   text: String
-  user: UserForCommentInput!
+  user: ID!
   product: ID!
   show: Boolean!
 }`;

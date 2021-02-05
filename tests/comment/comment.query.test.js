@@ -3,8 +3,7 @@ const { setupApp } = require('../helper-functions');
 const {
   newComment,
   commentWrongId,
-  validEmail,
-  invalidEmail,
+  userWrongId,
   productWrongId,
 } = require('./comment.variables');
 const {
@@ -42,6 +41,8 @@ const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
 const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
+const { registerUser, deleteUser } = require('../user/user.helper');
+const { testUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -61,10 +62,12 @@ let patternId;
 let constructorBasicId;
 let colorId;
 let sizeId;
+let userId;
 
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    const { firstName, lastName, email, pass, language } = testUser;
     const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
     sizeId = sizeData._id;
     const colorData = await createColor(color, operations);
@@ -101,26 +104,37 @@ describe('Comment queries', () => {
       operations
     );
     productId = productData._id;
-    const commentData = await addComment(productId, newComment, operations);
+    const userData = await registerUser(
+      firstName,
+      lastName,
+      email,
+      pass,
+      language,
+      operations
+    );
+    userId = userData.data.registerUser._id;
+    const commentData = await addComment(
+      productId,
+      newComment(userId),
+      operations
+    );
     commentId = commentData._id;
   });
 
   it(' Should receive all comments written by selected user', async () => {
-    const res = await getAllCommentsByUser(validEmail, operations);
+    const res = await getAllCommentsByUser(userId, operations);
 
     expect(res).toBeDefined();
-    expect(res).toContainEqual({
-      product: { _id: productId },
-      text: newComment.text,
-      user: newComment.user,
-      show: newComment.show,
-    });
+    expect(res[0]).toHaveProperty('product', { _id: productId });
+    expect(res[0]).toHaveProperty('text', newComment(userId).text);
+    expect(res[0]).toHaveProperty('user', { _id: userId });
+    expect(res[0]).toHaveProperty('show', newComment(userId).show);
   });
-  it(' should return empty array of comments for unexciting email ', async () => {
-    const res = await getAllCommentsByUser(invalidEmail, operations);
+  it(' should return empty array of comments for unexciting id ', async () => {
+    const res = await getAllCommentsByUser(userWrongId, operations);
 
     expect(res).toBeDefined();
-    expect(res.length).toBe(0);
+    expect(res[0]).toEqual({});
     expect(res).toBeInstanceOf(Array);
   });
   it(' Should receive all comments for one product', async () => {
@@ -128,12 +142,10 @@ describe('Comment queries', () => {
     const receivedComments = res.data.getAllCommentsByProduct.items;
 
     expect(receivedComments).toBeDefined();
-    expect(receivedComments).toContainEqual({
-      product: { _id: productId },
-      text: newComment.text,
-      user: newComment.user,
-      show: newComment.show,
-    });
+    expect(receivedComments[0]).toHaveProperty('product', { _id: productId });
+    expect(receivedComments[0]).toHaveProperty('text', newComment(userId).text);
+    expect(receivedComments[0]).toHaveProperty('user', { _id: userId });
+    expect(receivedComments[0]).toHaveProperty('show', newComment(userId).show);
   });
   it(' Should receive COMMENT_NOT_FOUND for get all comments for one product', async () => {
     const res = await getAllCommentsByProduct(productWrongId, operations);
@@ -147,26 +159,23 @@ describe('Comment queries', () => {
     const receivedComment = await getCommentById(commentId, operations);
 
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toBeDefined();
     expect(receivedComment).toEqual({
       product: { _id: productId },
-      text: newComment.text,
-      user: newComment.user,
-      show: newComment.show,
+      text: newComment(userId).text,
+      user: { _id: userId },
+      show: newComment(userId).show,
     });
   });
   it(' should return error when find comment by wrong id', async () => {
     const receivedComment = await getCommentById(commentWrongId, operations);
 
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toMatchSnapshot();
-    expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('statusCode', 404);
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
   });
-
   afterAll(async () => {
     await deleteComment(commentId, operations);
+    await deleteUser(userId, operations);
     await deleteProduct(productId, operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);

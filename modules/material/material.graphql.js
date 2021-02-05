@@ -8,10 +8,18 @@ const materialType = `
       available: Boolean
       additionalPrice: [CurrencySet]
     }
+    type MaterialByPurpose {
+      main: [Material]
+      inner: [Material]
+      bottom: [Material]
+    }
+
     enum PurposeEnum{
       MAIN
       INNER
       BOTTOM
+      PATTERN
+      CLOSURE
     }
 `;
 

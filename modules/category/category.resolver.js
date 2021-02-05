@@ -18,6 +18,7 @@ const categoryQuery = {
       };
     }
   },
+  getCategoriesWithModels: () => categoryService.getCategoriesWithModels(),
 };
 
 const categoryMutation = {

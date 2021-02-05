@@ -241,6 +241,7 @@ const resolvers = {
 
   Comment: {
     product: parent => productsService.getProductById(parent.product),
+    user: parent => userService.getUser(parent.user),
   },
 
   Product: {
