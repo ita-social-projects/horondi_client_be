@@ -16,7 +16,6 @@ const {
 const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
-const categoryService = require('../category/category.service');
 
 class ProductsService {
   async getProductById(id) {

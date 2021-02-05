@@ -43,38 +43,6 @@ type ProductImages {
   primary: ImageSet
   additional: [ImageSet]
 }
-  type Product {
-    _id: ID!
-    category: Category!
-    model: Model!
-    name: [Language]!
-    description: [Language]!
-    mainMaterial: ProductMaterialType!
-    innerMaterial: ProductMaterialType!
-    bottomMaterial: ProductMaterialType
-    strapLengthInCm: Int!
-    images: ProductImages
-    closure: Closure
-    pattern: Pattern
-    basePrice: [CurrencySet]!
-    sizes: [Size]!
-    available: Boolean!
-    isHotItem: Boolean
-    purchasedCount: Int
-    availableCount: Int
-    rate: Float
-    rateCount: Int
-    userRates: [UserRate]
-    comments: PaginatedComments!
-  }
-  type ProductMaterialType{
-    material: Material
-    color: Color
-  }
-  type ProductImages { 
-    primary: ImageSet
-    additional: [ImageSet]
-  }
 `;
 
 const productInput = `
