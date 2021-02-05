@@ -1,3 +1,4 @@
+const { Error } = require('mongoose');
 const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
@@ -13,13 +14,49 @@ const {
 const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
-const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
     return await Product.findById(id).exec();
+  }
+
+  async getProductsFilters() {
+    const categories = await Product.distinct('category').lean();
+    const models = await Product.distinct('model').lean();
+    const patterns = await Product.distinct('pattern').lean();
+    const closures = await Product.distinct('closure').lean();
+    const mainMaterial = await Product.distinct('mainMaterial.material').lean();
+    const mainMaterialColor = await Product.distinct(
+      'mainMaterial.color'
+    ).lean();
+    const innerMaterial = await Product.distinct(
+      'innerMaterial.material'
+    ).lean();
+    const innerMaterialColor = await Product.distinct(
+      'innerMaterial.color'
+    ).lean();
+    const bottomMaterial = await Product.distinct(
+      'bottomMaterial.material'
+    ).lean();
+    const bottomMaterialColor = await Product.distinct(
+      'bottomMaterial.color'
+    ).lean();
+    console.log(mainMaterialColor);
+
+    return {
+      categories,
+      models,
+      patterns,
+      closures,
+      mainMaterial,
+      mainMaterialColor,
+      innerMaterial,
+      innerMaterialColor,
+      bottomMaterial,
+      bottomMaterialColor,
+    };
   }
 
   async getModelsByCategory(id) {
@@ -178,7 +215,7 @@ class ProductsService {
   }
 
   async checkProductExist(data) {
-    let productCount = await Product.countDocuments({
+    const productCount = await Product.countDocuments({
       name: {
         $elemMatch: {
           $or: data.name.map(({ value }) => ({ value })),
