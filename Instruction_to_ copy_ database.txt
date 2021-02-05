@@ -2,8 +2,8 @@
 2. Search and select System (Control Panel).
 3. Click on the Advanced system settings link and then click Environment Variables. Under the section System Variables, select the Path environment variable, and click Edit.
 4. Input path to bin folder of MongoDatabase tools. 
-5. Execute "mongodump --uri="mongodb+srv://user-read-write1:<password>@horondi-yl27g.mongodb.net/<dbname>?retryWrites=true&w=majority" "
+5. Execute "npm run dump-db" "
  and set valid credentials
 6. Copy of database will be created at dump folder
 7. Then, if you want to restore database locally:
-8. Execute "mongorestore dump/<dump_name> --db="<name_restored_db>" "
+8. Execute "npm run restore-db"
