@@ -29,6 +29,11 @@ models: [Model]
 patterns: [Pattern]
 closures: [Closure]
 mainMaterial: [Material]
+mainMaterialColor: [Color]
+innerMaterial: [Material]
+innerMaterialColor: [Color]
+bottomMaterial: [Material]
+bottomMaterialColor: [Color]
 }
 type ProductMaterialType{
   material: Material

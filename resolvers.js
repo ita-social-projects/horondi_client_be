@@ -217,6 +217,26 @@ const resolvers = {
       parent.mainMaterial.map(material => {
         return materialService.getMaterialById(material);
       }),
+    mainMaterialColor: parent =>
+      parent.mainMaterialColor.map(color => {
+        return colorService.getColorById(color);
+      }),
+    innerMaterial: parent =>
+      parent.innerMaterial.map(material => {
+        return materialService.getMaterialById(material);
+      }),
+    innerMaterialColor: parent =>
+      parent.innerMaterialColor.map(color => {
+        return colorService.getColorById(color);
+      }),
+    bottomMaterial: parent =>
+      parent.bottomMaterial.map(material => {
+        return materialService.getMaterialById(material);
+      }),
+    bottomMaterialColor: parent =>
+      parent.bottomMaterialColor.map(color => {
+        return colorService.getColorById(color);
+      }),
   },
 
   Comment: {

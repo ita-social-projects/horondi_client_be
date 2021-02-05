@@ -26,9 +26,23 @@ class ProductsService {
     const models = await Product.distinct('model').lean();
     const patterns = await Product.distinct('pattern').lean();
     const closures = await Product.distinct('closure').lean();
-    const material = await Product.distinct('mainMaterial.color').lean();
-    const mainMaterial = material.map(material => material.material);
-    console.log(material);
+    const mainMaterial = await Product.distinct('mainMaterial.material').lean();
+    const mainMaterialColor = await Product.distinct(
+      'mainMaterial.color'
+    ).lean();
+    const innerMaterial = await Product.distinct(
+      'innerMaterial.material'
+    ).lean();
+    const innerMaterialColor = await Product.distinct(
+      'innerMaterial.color'
+    ).lean();
+    const bottomMaterial = await Product.distinct(
+      'bottomMaterial.material'
+    ).lean();
+    const bottomMaterialColor = await Product.distinct(
+      'bottomMaterial.color'
+    ).lean();
+    console.log(mainMaterialColor);
 
     return {
       categories,
@@ -36,6 +50,11 @@ class ProductsService {
       patterns,
       closures,
       mainMaterial,
+      mainMaterialColor,
+      innerMaterial,
+      innerMaterialColor,
+      bottomMaterial,
+      bottomMaterialColor,
     };
   }
 
