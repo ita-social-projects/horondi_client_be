@@ -269,7 +269,9 @@ const resolvers = {
       });
     },
   },
-
+  Pattern: {
+    material: parent => materialService.getMaterialById(parent.material),
+  },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
