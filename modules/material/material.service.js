@@ -2,11 +2,9 @@ const Material = require('./material.model');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
-  IMAGE_NOT_PROVIDED,
-  IMAGES_WERE_NOT_CONVERTED,
 } = require('../../error-messages/material.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const Currency = require('../currency/currency.model');
+const { calculatePrice } = require('../currency/currency.utils');
 
 class MaterialsService {
   constructor() {
@@ -16,31 +14,52 @@ class MaterialsService {
     };
   }
 
-  async getAllMaterials({ skip, limit }) {
-    const items = await Material.find()
-      .skip(skip)
-      .limit(limit);
+  filterItems(filterInput) {
+    const filter = {};
+    const { colors } = filterInput;
 
-    const count = await Material.find().countDocuments();
+    if (colors && colors.length) {
+      filter.colors = { $in: colors };
+    }
+
+    return filter;
+  }
+
+  async getAllMaterials({ filter, skip, limit }) {
+    const filters = this.filterItems(filter);
+
+    const items = await Material.find(filters)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = await Material.find()
+      .countDocuments()
+      .exec();
     return {
       items,
       count,
     };
   }
-
+  async getMaterialsByPurposes(purposes) {
+    const materials = await this.getAllMaterials({ filter: {} });
+    return materials.items.reduce((acc, material) => {
+      if (purposes.includes(material.purpose)) {
+        const purpose = material.purpose.toLowerCase();
+        acc[purpose] = acc[purpose] || [];
+        acc[purpose].push(material);
+      }
+      return acc;
+    }, {});
+  }
   async getMaterialById(id) {
     return Material.findById(id);
   }
 
-  async getMaterialColorByCode(code) {
-    const material = await Material.find({ colors: { $elemMatch: { code } } });
-    return material[0].colors[0];
-  }
-
-  async updateMaterial(id, material, images) {
+  async updateMaterial(id, material) {
     const { additionalPrice, ...rest } = material;
 
-    const materialToUpdate = await Material.findById(id);
+    const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
@@ -48,91 +67,26 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    const currency = await Currency.findOne();
-    if (!images) {
-      return await Material.findByIdAndUpdate(
-        id,
-        {
-          ...rest,
-          additionalPrice: [
-            {
-              currency: this.currencyTypes.UAH,
-              value:
-                additionalPrice *
-                Math.round(currency.convertOptions[0].exchangeRate * 100),
-            },
-            {
-              currency: this.currencyTypes.USD,
-              value: additionalPrice * 100,
-            },
-          ],
-        },
-        { new: true }
-      );
-    }
-    return await Material.findByIdAndUpdate(id, material, { new: true });
+    return await Material.findByIdAndUpdate(
+      id,
+      {
+        ...rest,
+        additionalPrice: [calculatePrice(additionalPrice)],
+      },
+      { new: true }
+    ).exec();
   }
 
-  async addMaterial({ material, images }) {
-    const { additionalPrice, ...rest } = material;
-
-    if (await this.checkMaterialExistOrDuplicated(rest, null)) {
+  async addMaterial({ material }) {
+    if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    if (!images) {
-      throw new Error(IMAGE_NOT_PROVIDED);
-    }
-    const currency = await Currency.findOne();
-
-    const uploadResult = await uploadFiles(images);
-
-    const imageResults = await Promise.allSettled(uploadResult);
-
-    const resizedImages = imageResults.map(item => item.value.fileNames);
-
-    if (!resizedImages) {
-      throw new Error(IMAGES_WERE_NOT_CONVERTED);
-    }
-
-    const mappedColors = material.colors.map((item, index) => ({
-      ...item,
-      images: resizedImages[index],
-    }));
-
-    return new Material({
-      ...rest,
-      additionalPrice: [
-        {
-          currency: this.currencyTypes.UAH,
-          value:
-            additionalPrice *
-            Math.round(currency.convertOptions[0].exchangeRate * 100),
-        },
-        {
-          currency: this.currencyTypes.USD,
-          value: additionalPrice * 100,
-        },
-      ],
-      colors: mappedColors,
-    }).save();
-  }
-
-  async addMaterialColor(id, color, image) {
-    const uploadResult = await uploadFiles(image);
-    const imageResults = await Promise.allSettled(uploadResult);
-    const resizedImages = imageResults.map(item => item.value.fileNames);
-    if (!resizedImages) {
-      throw new Error(IMAGES_WERE_NOT_CONVERTED);
-    }
-    const mappedColors = Object.assign(color, { images: resizedImages[0] });
-    return Material.update(
-      { _id: id },
-      { $addToSet: { colors: [mappedColors] } }
-    );
+    material.additionalPrice = calculatePrice(material.additionalPrice);
+    return new Material(material).save();
   }
 
   async deleteMaterial(id) {
-    const foundMaterial = await Material.findByIdAndDelete(id);
+    const foundMaterial = await Material.findByIdAndDelete(id).exec();
     if (foundMaterial) {
       return foundMaterial;
     }
@@ -149,35 +103,18 @@ class MaterialsService {
             $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
           },
         },
-      });
+      }).exec();
       return materialsCount > 0;
     }
     materialsCount = await Material.countDocuments({
-      _id: { $eq: id },
+      _id: { $ne: id },
       name: {
         $elemMatch: {
           $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
         },
       },
-    });
+    }).exec();
     return materialsCount > 0;
-  }
-
-  async deleteMaterialColor(id, code) {
-    const material = await Material.find({ colors: { $elemMatch: { code } } });
-    const images = material[0].colors[0].images;
-    const deletedImages = await deleteFiles([
-      images.large,
-      images.medium,
-      images.small,
-      images.thumbnail,
-    ]);
-    if (await Promise.allSettled(deletedImages)) {
-      return Material.update(
-        { _id: id },
-        { $pull: { colors: { code: code } } }
-      );
-    }
   }
 }
 

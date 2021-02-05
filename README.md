@@ -7,11 +7,13 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 [![GitHub issues](https://img.shields.io/github/issues/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/issues)
 [![Pending Pull-Requests](https://img.shields.io/github/issues-pr/ita-social-projects/horondi_client_be?style=flat-square)](https://github.com/ita-social-projects/Horondi_client_be/pulls)
 [![GitHub stars](https://img.shields.io/github/stars/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/stargazers)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=horondi_horondi_client_be&metric=alert_status)](https://sonarcloud.io/dashboard?id=horondi_horondi_client_be)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects-horondi-client-be&metric=alert_status)](https://sonarcloud.io/dashboard?id=ita-social-projects-horondi-client-be)
+[![Build Status](https://dev.azure.com/ProjectApproach/HorondiProject/_apis/build/status/ita-social-projects.horondi_client_be?branchName=development&jobName=BuildandDeploy)](https://dev.azure.com/ProjectApproach/HorondiProject/_build/latest?definitionId=25&branchName=development)
 [![GitHub license](https://img.shields.io/github/license/ita-social-projects/horondi_client_be)](https://github.com/ita-social-projects/horondi_client_be/blob/master/LICENSE)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ita-social-projects-horondi-client-be&metric=coverage)](https://sonarcloud.io/dashboard?id=ita-social-projects-horondi-client-be)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/horondi/horondi_client_be)
 [![Build Status](https://dev.azure.com/ProjectApproach/HorondiProject/_apis/build/status/Backend%20CI%20production?branchName=master)](https://dev.azure.com/ProjectApproach/HorondiProject/_build/latest?definitionId=10&branchName=master)
+
 ---
 
 - [Installation](#installation)
@@ -23,7 +25,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
   - [How to run Docker](#How-to-run-Docker)
 - [Usage](#Usage)
   - [How to run tests](#How-to-run-tests)
-- [Documentation](#Documentation))
+- [Documentation](#Documentation)
   - [Rules and guidelines](#Rules-and-guidelines)
   - [Testing](#Testing)
   - [Generator](#Generator)
@@ -41,7 +43,7 @@ HORONDI project is an e-commerce online shop that provides hand-made backpacks, 
 
 ### Required to install
 
-- NodeJS (14.4.0)
+- NodeJS (14.15.4)
 
 ### Clone
 
@@ -58,8 +60,10 @@ $ npm install
 ### How to run local
 
 1. Open terminal.
-2. Run `npm run start` to start application.
-3. Open http://localhost:3000 to view it in the browser.
+2. Run `npm run start` to start application.<sup>[\*](#footnote)</sup>
+3. Open http://localhost:5000/graphql to view it in the browser.
+
+###### <a name="footnote">\*</a> - to run the project you need an `.env` file in root folder
 
 ### How to run Docker
 
@@ -221,7 +225,7 @@ if issue is in work it should be placed in proper column on dashboard according 
 ### Development team
 
 [![@VolodymyrTrach](https://avatars2.githubusercontent.com/u/50409925?s=200&u=cc5eae94f38151d613308da12c0d8f1f84fb1777&v=4)](https://github.com/VolodymyrTrach)
-[![@bandvov](https://avatars2.githubusercontent.com/u/48312647?s=200&u=e63ba5607d222194799c4d04a59a2b2b21131aef&v=4)](https://github.com/bandvov)
+[![@bandvov](https://avatars0.githubusercontent.com/u/48312647?s=200&u=0a8915fc55a44ac1e3ad34968dbe53291d1e4b24&v=4)](https://github.com/bandvov)
 [![@YarkoSumyk](https://avatars3.githubusercontent.com/u/40059484?s=200&u=c1252af7060ce2e61f1836d8a7904d098c9519d3&v=4)](https://github.com/YarkoSumyk)
 [![@INR4GE](https://avatars3.githubusercontent.com/u/29551153?s=200&u=64b5922801512d6a92a6005239996bc6a6f49400&v=4)](https://github.com/INR4GE)
 [![@Crash1212](https://avatars0.githubusercontent.com/u/39312657?s=200&u=6f9768ca1cf96e2f1452913b769820120991ce02&v=4)](https://github.com/Crash1212)
@@ -258,6 +262,7 @@ if issue is in work it should be placed in proper column on dashboard according 
 
 [![@SofiaDemyanovska](https://avatars1.githubusercontent.com/u/48492789?s=200&u=cb0520a8498667594ded0db8e29cdd3ec5529578&v=4)](https://github.com/SofiaDemyanovska)
 [![@ikoblyk](https://avatars3.githubusercontent.com/u/45568834?s=200&u=5d8790e8e58a7966e2d6d6bc6a4f0d15c8cb2e9c&v=4)](https://github.com/IKoblyk)
+[![@vitaliy-pavlyshyn](https://avatars0.githubusercontent.com/u/24523962?s=200&u=db2f3b6459c080079c5c5e4b52da61cd18b4e223&v=4)](https://github.com/vitaliy-pavlyshyn)
 
 ---
 

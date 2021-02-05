@@ -1,86 +1,90 @@
-const mongoose = require('mongoose');
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
-  CATEGORY_IS_NOT_MAIN,
-  WRONG_CATEGORY_DATA,
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
-const { validateCategoryInput } = require('../../utils/validate-category');
-const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
+const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
   async getAllCategories() {
-    return await Category.find();
+    return await Category.find().exec();
   }
 
   async getCategoryById(id) {
-    const category = await Category.findById(id);
+    const category = await Category.findById(id).exec();
     if (category) {
       return category;
     }
     throw new Error(CATEGORY_NOT_FOUND);
   }
 
-  async updateCategory(id, category, upload) {
-    await this.getCategoryById(id);
+  async updateCategory({ id, category, upload }) {
+    const categoryToUpdate = await Category.findById(id).exec();
+    if (!categoryToUpdate) {
+      throw new Error(CATEGORY_NOT_FOUND);
+    }
+
     if (await this.checkCategoryExist(category, id)) {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
-    if (upload) {
-      await deleteFiles(
-        Object.values(category.images).filter(
-          item => typeof item === 'string' && item
-        )
-      );
-      const uploadResult = await uploadFiles([upload]);
-      const imageResults = await uploadResult[0];
-      category.images = imageResults.fileNames;
+
+    if (!upload || !Object.keys(upload).length) {
+      return await Category.findByIdAndUpdate(id, category, {
+        new: true,
+      }).exec();
     }
-    return await Category.findByIdAndUpdate(id, category, {
-      new: true,
-    });
+    const uploadResult = await uploadService.uploadFile(upload);
+
+    const images = uploadResult.fileNames;
+    if (!images) {
+      return await Category.findByIdAndUpdate(id, category).exec();
+    }
+    const foundCategory = await Category.findById(id)
+      .lean()
+      .exec();
+    uploadService.deleteFiles(Object.values(foundCategory.images));
+
+    return await Category.findByIdAndUpdate(
+      id,
+      {
+        ...category,
+        images,
+      },
+      {
+        new: true,
+      }
+    ).exec();
   }
 
   async getCategoriesForBurgerMenu() {
     const categories = await this.getAllCategories();
 
-    const data = categories
-      .filter(category => category.isMain)
-      .map(async category => {
-        const products = await Product.find({ category: category._id });
-        const uniqueModels = [];
-        const models = products
-          .map(product => ({
-            name: [...product.model],
-            _id: product._id,
-          }))
-          .filter(({ name }) => {
-            if (!uniqueModels.includes(name[0].value)) {
-              uniqueModels.push(name[0].value);
-              return true;
-            }
-            return false;
-          });
+    const data = categories.map(async category => {
+      const models = await Model.find({ category: category._id }).exec();
+      const modelsFields = models.map(async model => {
         return {
-          category: {
-            name: [...category.name],
-            _id: category._id,
-          },
-          models,
+          name: model.name,
+          _id: model._id,
         };
       });
+      return {
+        category: {
+          name: [...category.name],
+          _id: category._id,
+        },
+        models: modelsFields,
+      };
+    });
 
     return data;
   }
 
-  async addCategory(data, parentId, upload) {
-    await validateCategoryInput.validateAsync({ ...data, parentId });
-
+  async addCategory(data, upload) {
     if (!upload) {
       throw new Error(IMAGES_NOT_PROVIDED);
     }
@@ -89,47 +93,24 @@ class CategoryService {
       throw new Error(CATEGORY_ALREADY_EXIST);
     }
 
-    const parentCategory = await Category.findById(parentId);
     const savedCategory = await new Category(data).save();
 
-    if (parentCategory) {
-      if (!parentCategory.isMain) {
-        throw new Error(CATEGORY_IS_NOT_MAIN);
-      }
-      if (data.isMain) {
-        throw new Error(WRONG_CATEGORY_DATA);
-      }
-      if (!parentCategory.available) {
-        savedCategory.available = false;
-      }
-      parentCategory.subcategories.push(savedCategory._id);
-      await parentCategory.save();
-    }
+    const uploadResult = await uploadService.uploadFile(upload);
 
-    const uploadResult = await uploadFiles([upload]);
-    const imageResults = await uploadResult[0];
-    savedCategory.images = imageResults.fileNames;
+    savedCategory.images = uploadResult.fileNames;
 
     return await savedCategory.save();
   }
 
   async cascadeUpdateRelatives(filter, updateData) {
-    await Product.updateMany(filter, updateData);
-    await Model.updateMany(filter, updateData);
+    await Product.updateMany(filter, updateData).exec();
+    await Model.updateMany(filter, updateData).exec();
   }
-
-  async clearSubcategoryField(id) {
-    const parentCategory = await Category.findOne({
-      subcategories: { $in: [id] },
-    });
-    await this.updateCategory(parentCategory._id, {
-      $pull: { subcategories: { $in: [id] } },
-    });
-  }
-
   async deleteCategory({ deleteId, switchId }) {
-    const category = await Category.findByIdAndDelete(deleteId).lean();
-    const switchCategory = await Category.findById(switchId);
+    const category = await Category.findByIdAndDelete(deleteId)
+      .lean()
+      .exec();
+    const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
       category: deleteId,
@@ -141,16 +122,12 @@ class CategoryService {
 
     await this.cascadeUpdateRelatives(filter, updateSettings);
 
-    if (!category.isMain) {
-      await this.clearSubcategoryField(deleteId);
-    }
-
     const images = Object.values(category.images).filter(
       item => typeof item === 'string' && item
     );
 
     if (images.length) {
-      await deleteFiles(images);
+      await uploadService.deleteFiles(images);
     }
 
     if (category) {
@@ -159,7 +136,13 @@ class CategoryService {
 
     throw new Error(CATEGORY_NOT_FOUND);
   }
-
+  async getCategoriesWithModels() {
+    const categories = await this.getAllCategories();
+    return categories.map(category => {
+      category.models = modelService.getModelsByCategory(category._id);
+      return category;
+    });
+  }
   async checkCategoryExist(data, id) {
     if (!data.name.length) {
       return false;
@@ -171,21 +154,8 @@ class CategoryService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return categoriesCount > 0;
-  }
-
-  async getSubcategories(id) {
-    const category = await this.getCategoryById(id);
-    if (!category.isMain) {
-      return [];
-    }
-    if (!category.subcategories.length) {
-      return [];
-    }
-    return await Category.find({
-      _id: { $in: category.subcategories },
-    });
   }
 
   getCategoriesStats(categories, total) {
@@ -193,7 +163,7 @@ class CategoryService {
     let res = { names: [], counts: [], relations: [] };
 
     categories
-      .filter(({ isMain }, idx) => isMain && idx < 3)
+      .filter((_, idx) => idx < 3)
       .forEach(({ name, purchasedCount }) => {
         const relation = Math.round((purchasedCount * 100) / total);
         popularSum += relation;
@@ -217,7 +187,8 @@ class CategoryService {
     let total = 0;
     const categories = await Category.find()
       .sort({ purchasedCount: -1 })
-      .lean();
+      .lean()
+      .exec();
 
     categories.forEach(({ purchasedCount }) => (total += purchasedCount));
 

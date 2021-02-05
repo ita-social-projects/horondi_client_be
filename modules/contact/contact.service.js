@@ -1,13 +1,16 @@
 const Contact = require('./contact.model');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const { uploadContactImages } = require('./contact.utils');
 
 class ContactService {
   async getContacts({ skip, limit }) {
     const items = await Contact.find()
       .skip(skip)
-      .limit(limit);
-    const count = await Contact.find().countDocuments();
+      .limit(limit)
+      .exec();
+    const count = await Contact.find()
+      .countDocuments()
+      .exec();
 
     return {
       items,
@@ -16,7 +19,7 @@ class ContactService {
   }
 
   async getContactById(id) {
-    const contact = await Contact.findById(id);
+    const contact = await Contact.findById(id).exec();
 
     return contact || null;
   }
@@ -31,7 +34,9 @@ class ContactService {
   }
 
   async updateContact(data) {
-    const contact = await Contact.findById(data.id).lean();
+    const contact = await Contact.findById(data.id)
+      .lean()
+      .exec();
 
     if (!contact) return null;
 
@@ -41,11 +46,13 @@ class ContactService {
       ? await this.saveUpdatedContact(data)
       : await Contact.findByIdAndUpdate(data.id, data.contact, {
           new: true,
-        });
+        }).exec();
   }
 
   async deleteContact(id) {
-    const contact = await Contact.findById(id).lean();
+    const contact = await Contact.findById(id)
+      .lean()
+      .exec();
 
     if (!contact) return null;
 
@@ -53,11 +60,11 @@ class ContactService {
       this.deleteMapImages(contact);
     }
 
-    return await Contact.findByIdAndDelete(id);
+    return await Contact.findByIdAndDelete(id).exec();
   }
 
   async uploadMapImages(data) {
-    const uploadResult = await uploadFiles([
+    const uploadResult = await uploadService.uploadFiles([
       data.mapImages[0].image,
       data.mapImages[1].image,
     ]);
@@ -80,11 +87,11 @@ class ContactService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async deleteMapImages(contact) {
-    const deletedImages = await deleteFiles([
+    const deletedImages = await uploadService.deleteFiles([
       ...Object.values(contact.images[0].value),
       ...Object.values(contact.images[1].value),
     ]);

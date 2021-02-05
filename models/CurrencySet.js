@@ -6,6 +6,8 @@ const currencySetSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  _id: false,
+  id: false,
 });
 
 module.exports = mongoose.model('CurrencySet', currencySetSchema);

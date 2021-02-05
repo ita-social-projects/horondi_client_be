@@ -10,7 +10,6 @@ const dotenvVariables = [
   'REFRESH_TOKEN_EXPIRES_IN',
   'BASE_URI',
   'TEST_BASE_URI',
-  'KEY_VAULTS_URI',
   'IMAGE_LINK',
   'STORAGE_ACCOUNT',
   'ACCESS_KEY',
@@ -34,6 +33,13 @@ const dotenvVariables = [
   'SUPER_ADMIN_PASSWORD',
   'SENDGRID_API_KEY',
   'REACT_APP_GOOGLE_CLIENT_ID',
+  'UKR_POSHTA_API_LINK',
+  'UKR_POSHTA_API_KEY',
+  'UKR_POSHTA_STATUS_KEY',
+  'UKR_POSHTA_COUNTERPARTY_TOKEN',
+  'UKR_POSHTA_COUNTERPARTY_UUID',
+  'UKR_POSHTA_ADDRESS_API_LINK',
+  'CONTRIBUTING',
 ];
 
 function dotenvValidator(processEnv) {
@@ -49,19 +55,12 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
-    KEY_VAULTS_URI: joi
-      .string()
-      .uri()
-      .required(),
     IMAGE_LINK: joi
       .string()
       .uri()
       .required(),
-    STORAGE_ACCOUNT: joi.string().required(),
-    AZURE_HOST: joi
-      .string()
-      .uri()
-      .required(),
+    STORAGE_ACCOUNT: joi.string(),
+    AZURE_HOST: joi.string().uri(),
     PAYMENT_SECRET: joi.string().required(),
     PAYMENT_MERCHANT_ID: joi.number().required(),
     NOVA_POSHTA_API_LINK: joi
@@ -98,6 +97,13 @@ function dotenvValidator(processEnv) {
     CONFIRMATION_SECRET: joi.string().required(),
     SENDGRID_API_KEY: joi.string().required(),
     REACT_APP_GOOGLE_CLIENT_ID: joi.string().required(),
+    UKR_POSHTA_API_LINK: joi.string().uri(),
+    UKR_POSHTA_ADDRESS_API_LINK: joi.string().uri(),
+    UKR_POSHTA_API_KEY: joi.string(),
+    UKR_POSHTA_STATUS_KEY: joi.string(),
+    UKR_POSHTA_COUNTERPARTY_TOKEN: joi.string(),
+    UKR_POSHTA_COUNTERPARTY_UUID: joi.string(),
+    CONTRIBUTING: joi.boolean(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });

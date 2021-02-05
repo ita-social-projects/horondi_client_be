@@ -18,26 +18,13 @@ const categoryQuery = {
       };
     }
   },
-  getSubcategories: async (parent, args) => {
-    try {
-      return await categoryService.getSubcategories(args.parentCategoryId);
-    } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
-    }
-  },
+  getCategoriesWithModels: () => categoryService.getCategoriesWithModels(),
 };
 
 const categoryMutation = {
   addCategory: async (parent, args) => {
     try {
-      return await categoryService.addCategory(
-        args.category,
-        args.parentId,
-        args.upload
-      );
+      return await categoryService.addCategory(args.category, args.upload);
     } catch (e) {
       return {
         statusCode: 400,
@@ -57,11 +44,7 @@ const categoryMutation = {
   },
   updateCategory: async (parent, args) => {
     try {
-      return await categoryService.updateCategory(
-        args.id,
-        args.category,
-        args.upload
-      );
+      return await categoryService.updateCategory(args);
     } catch (e) {
       return {
         statusCode: e.message === CATEGORY_NOT_FOUND ? 404 : 400,

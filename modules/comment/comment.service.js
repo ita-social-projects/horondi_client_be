@@ -1,19 +1,27 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
-const User = require('../user/user.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
+  COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
 const { monthInMilliseconds } = require('../../consts');
-const { UserRate } = require('../../resolvers');
-const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 
 class CommentsService {
+  async getAllComments({ skip, limit }) {
+    const comments = await Comment.find()
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    const count = await Comment.find()
+      .countDocuments()
+      .exec();
+    return { items: comments, count };
+  }
   async getCommentById(id) {
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(id).exec();
     if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -21,45 +29,33 @@ class CommentsService {
   }
 
   async getAllCommentsByProduct({ productId, skip, limit }) {
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).exec();
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
     const comments = await Comment.find({ product: productId })
       .skip(skip)
       .limit(limit)
-      .sort('-date');
-    const count = await Comment.find({ product: productId }).countDocuments();
+      .sort('-date')
+      .exec();
+    const count = await Comment.find({ product: productId })
+      .countDocuments()
+      .exec();
     return { items: comments, count };
   }
 
-  async getAllCommentsByUser(userEmail) {
-    return await Comment.find({ 'user.email': userEmail });
-  }
-
-  async getAllRecentComments({ skip, limit }) {
-    const dateFrom = new Date().getTime();
-    const dateTo = dateFrom - monthInMilliseconds;
-
-    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const count = await Comment.find({
-      date: { $gt: dateTo, $lt: dateFrom },
-    }).countDocuments();
-
-    return {
-      items,
-      count,
-    };
+  async getAllCommentsByUser(userId) {
+    const comments = await Comment.find({ user: userId }).exec();
+    if (!comments.length) {
+      throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
+    }
+    return comments;
   }
 
   async updateComment(id, comment) {
     const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
       new: true,
-    });
+    }).exec();
     if (!updatedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -67,7 +63,7 @@ class CommentsService {
   }
 
   async addComment(id, data) {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).exec();
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
@@ -75,7 +71,7 @@ class CommentsService {
   }
 
   async deleteComment(id) {
-    const deletedComment = await Comment.findByIdAndDelete(id);
+    const deletedComment = await Comment.findByIdAndDelete(id).exec();
     if (!deletedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -83,7 +79,7 @@ class CommentsService {
   }
 
   async addRate(id, data, user) {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).exec();
 
     if (!product) {
       throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
@@ -92,10 +88,12 @@ class CommentsService {
     let { rateCount } = product;
 
     const { rate } =
-      userRates.find(rate => String(rate.user) === String(user._id)) || {};
+      userRates.find(rating => String(rating.user) === String(user._id)) || {};
 
     const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
-    rateCount = rate ? rateCount : ++rateCount;
+    if (!rate) {
+      rateCount++;
+    }
     const newRate = rateSum / rateCount;
 
     const newUserRates = rate
@@ -114,7 +112,7 @@ class CommentsService {
         userRates: newUserRates,
       },
       { new: true }
-    );
+    ).exec();
     return rateToAdd;
   }
 }

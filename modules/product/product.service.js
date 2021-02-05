@@ -1,10 +1,11 @@
 const Product = require('./product.model');
-const Size = require('../../models/Size');
-const Material = require('../material/material.model');
-const Currency = require('../currency/currency.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const categoryService = require('../category/category.service');
+const materialService = require('../material/material.service');
+const patternService = require('../pattern/pattern.service');
+const closuresService = require('../closures/closures.service');
+const uploadService = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -14,31 +15,19 @@ const {
 } = require('../../error-messages/category.messages');
 const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
+const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
-  getProductById(id) {
-    return Product.findById(id);
-  }
-
-  getSizeById(id) {
-    return Size.findById(id);
+  async getProductById(id) {
+    return await Product.findById(id).exec();
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id });
-
+    const product = await Product.find({ category: id }).exec();
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
-
     return product;
-  }
-
-  async getProductOptions() {
-    const sizes = await Size.find();
-    const bottomMaterials = await Material.find();
-
-    return { sizes, bottomMaterials };
   }
 
   filterItems(args = {}) {
@@ -60,29 +49,13 @@ class ProductsService {
       filter.category = { $in: category };
     }
     if (models && models.length) {
-      filter.model = {
-        $elemMatch: {
-          value: { $in: models },
-        },
-      };
+      filter.model = { $in: model };
     }
     if (colors && colors.length) {
-      filter.colors = {
-        $elemMatch: {
-          simpleName: {
-            $elemMatch: {
-              value: { $in: colors },
-            },
-          },
-        },
-      };
+      filter.colors = { $in: colors };
     }
     if (pattern && pattern.length) {
-      filter.pattern = {
-        $elemMatch: {
-          value: { $in: pattern },
-        },
-      };
+      filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
       const currencySign = currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
@@ -116,7 +89,8 @@ class ProductsService {
     const items = await Product.find(filters)
       .skip(skip)
       .limit(limit)
-      .sort(sort);
+      .sort(sort)
+      .exec();
 
     const count = await Product.find(filters).countDocuments();
     return {
@@ -125,38 +99,28 @@ class ProductsService {
     };
   }
 
-  async calculatePrice(price) {
-    const { convertOptions } = await Currency.findOne();
-
-    return [
-      {
-        value: Math.round(price * convertOptions[0].exchangeRate * 100),
-        currency: 'UAH',
-      },
-      {
-        value: Math.round(price * 100),
-        currency: 'USD',
-      },
-    ];
-  }
-
   async updateProduct(id, productData, filesToUpload, primary) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
+    if (await this.checkProductExist(productData)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
     if (primary) {
-      await deleteFiles(
+      await uploadService.deleteFiles(
         Object.values(product.images.primary).filter(
           item => typeof item === 'string'
         )
       );
-      const uploadResult = await uploadFiles(primary);
+      const uploadResult = await uploadService.uploadFiles(primary);
       const imagesResults = await uploadResult[0];
       productData.images.primary = imagesResults.fileNames;
     }
-    if (filesToUpload) {
-      const uploadResult = await uploadFiles(filesToUpload);
+    if (filesToUpload.length) {
+      const uploadResult = await uploadService.uploadFiles(filesToUpload);
       const imagesResults = await Promise.allSettled(uploadResult);
       const additional = imagesResults.map(res => res.value.fileNames);
       productData.images.additional = [
@@ -165,40 +129,45 @@ class ProductsService {
       ];
     }
     const { basePrice } = productData;
-    productData.basePrice = await this.calculatePrice(basePrice);
-    if (!Array.isArray(productData.model)) {
-      const model = await modelService.getModelById(productData.model);
-      productData.model = model.name;
-    }
-    return await Product.findByIdAndUpdate(id, productData, { new: true });
+    productData.basePrice = await calculatePrice(basePrice);
+    return await Product.findByIdAndUpdate(id, productData, {
+      new: true,
+    }).exec();
   }
 
   async addProduct(productData, filesToUpload) {
+    if (await this.checkProductExist(productData)) {
+      throw new Error(PRODUCT_ALREADY_EXIST);
+    }
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
-    productData.basePrice = await this.calculatePrice(basePrice);
+    productData.basePrice = await calculatePrice(basePrice);
 
     const model = await modelService.getModelById(productData.model);
-    productData.model = model.name;
+    productData.model = model;
+
     productData.images = {
       primary,
       additional,
     };
 
     const newProduct = await new Product(productData).save();
+
     if (newProduct) return newProduct;
   }
 
   async deleteProduct(id) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
     const { images } = product;
     const { primary, additional } = images;
     const additionalImagesToDelete = Object.assign(...additional);
-    const deletedImages = await deleteFiles([
+    const deletedImages = await uploadService.deleteFiles([
       ...Object.values(primary),
       ...Object.values(additionalImagesToDelete),
     ]);
@@ -208,21 +177,22 @@ class ProductsService {
     }
   }
 
-  async checkProductExist(data, id) {
-    const modelCount = await Product.countDocuments({
-      _id: { $ne: id },
+  async checkProductExist(data) {
+    let productCount = await Product.countDocuments({
       name: {
         $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
+          $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
-    return modelCount > 0;
+    }).exec();
+    return productCount > 0;
   }
 
   async deleteImages(id, imagesToDelete) {
-    const product = await Product.findById(id).lean();
-    const deleteResults = await deleteFiles(imagesToDelete);
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
+    const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
         item =>
@@ -238,7 +208,7 @@ class ProductsService {
           },
         },
         { new: true }
-      );
+      ).exec();
       return updatedProduct.images;
     }
   }
@@ -247,7 +217,8 @@ class ProductsService {
     const products = await Product.find()
       .sort({ purchasedCount: -1 })
       .limit(10)
-      .lean();
+      .lean()
+      .exec();
 
     return products.reduce(
       (prev, curr) => ({
@@ -260,13 +231,13 @@ class ProductsService {
   }
 
   async getProductsForWishlist(userId) {
-    const { wishlist } = await User.findById(userId);
-    return await Product.find({ _id: { $in: wishlist } });
+    const { wishlist } = await User.findById(userId).exec();
+    return await Product.find({ _id: { $in: wishlist } }).exec();
   }
 
   async getProductsForCart(userId) {
-    const { cart } = await User.findById(userId);
-    return await Product.find({ _id: { $in: cart } });
+    const { cart } = await User.findById(userId).exec();
+    return await Product.find({ _id: { $in: cart } }).exec();
   }
 }
 

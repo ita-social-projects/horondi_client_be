@@ -137,13 +137,27 @@ class UserService {
   async getUserByFieldOrThrow(key, param) {
     const checkedUser = await User.findOne({
       [key]: param,
-    });
+    }).exec();
 
     if (!checkedUser) {
       throw new UserInputError(USER_NOT_FOUND, { key, statusCode: 400 });
     }
 
     return checkedUser;
+  }
+
+  async getPurchasedProducts(id) {
+    const user = await User.findOne({
+      _id: id,
+    })
+      .populate('orders')
+      .exec();
+    const paidOrders = user.orders.filter(order => order.isPaid);
+    const purchasedProducts = paidOrders.reduce((acc, order) => {
+      acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
+      return acc;
+    }, []);
+    return purchasedProducts;
   }
 
   async getAllUsers({ filter, pagination, sort }) {
@@ -161,7 +175,8 @@ class UserService {
       .facet({
         items: aggregatedItems,
         calculations: [{ $match: filteredItems }, { $count: 'count' }],
-      });
+      })
+      .exec();
     let userCount;
 
     const {
@@ -183,7 +198,8 @@ class UserService {
     const filters = this.filterItems(filter);
     const users = await User.find(filters)
       .sort({ registrationDate: 1 })
-      .lean();
+      .lean()
+      .exec();
     const formatedData = users.map(el =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
@@ -218,7 +234,9 @@ class UserService {
     }
 
     if (user.email !== updatedUser.email) {
-      const existingUser = await User.findOne({ email: updatedUser.email });
+      const existingUser = await User.findOne({
+        email: updatedUser.email,
+      }).exec();
       if (existingUser) {
         throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
       }
@@ -306,7 +324,7 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).exec();
 
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
@@ -365,7 +383,7 @@ class UserService {
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
-    if (!(await User.findOne({ email: dataUser.email }))) {
+    if (!(await User.findOne({ email: dataUser.email }).exec())) {
       await this.registerGoogleUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
@@ -387,7 +405,7 @@ class UserService {
   async loginGoogleUser({ email, staySignedIn }) {
     let refreshToken;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
@@ -406,7 +424,7 @@ class UserService {
   }
 
   async registerGoogleUser({ firstName, lastName, email, credentials }) {
-    if (await User.findOne({ email })) {
+    if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
 
@@ -428,7 +446,7 @@ class UserService {
       email,
       password,
     });
-    if (await User.findOne({ email })) {
+    if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
 
@@ -494,7 +512,7 @@ class UserService {
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id);
+    const res = await User.findByIdAndDelete(id).exec();
     return res || new Error(USER_NOT_FOUND);
   }
 
@@ -508,12 +526,12 @@ class UserService {
         confirmationToken: '',
       },
     };
-    await User.findByIdAndUpdate(decoded.userId, updates);
+    await User.findByIdAndUpdate(decoded.userId, updates).exec();
     return true;
   }
 
   async recoverUser(email, language) {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
@@ -561,7 +579,7 @@ class UserService {
       await User.findByIdAndUpdate(user._id, {
         recoveryAttempts: 0,
         lastRecoveryDate: Date.now(),
-      });
+      }).exec();
     }
     if (user.recoveryAttempts >= 3) {
       throw new UserInputError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
@@ -577,7 +595,7 @@ class UserService {
         recoveryToken: '',
       },
     };
-    await User.findByIdAndUpdate(user._id, updates);
+    await User.findByIdAndUpdate(user._id, updates).exec();
     return true;
   }
 
@@ -590,7 +608,7 @@ class UserService {
       throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
     }
 
-    if (await User.findOne({ email })) {
+    if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }
 
@@ -640,7 +658,7 @@ class UserService {
       });
     }
 
-    const user = await User.findOne({ email: decoded.email });
+    const user = await User.findOne({ email: decoded.email }).exec();
 
     if (!user) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
@@ -677,7 +695,7 @@ class UserService {
   }
 
   async updateCartOrWishlist(userId, key, list, productId) {
-    await User.findByIdAndUpdate(userId, { [key]: list });
+    await User.findByIdAndUpdate(userId, { [key]: list }).exec();
     return productService.getProductById(productId);
   }
 
@@ -689,32 +707,6 @@ class UserService {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
-  }
-
-  addProductToCart(product, key, user) {
-    const newList = [...user.cart, product];
-    return this.updateCartOrWishlist(user._id, key, newList, product._id);
-  }
-
-  removeProductFromCart(product, key, user) {
-    const newList = user.cart.filter(
-      ({ _id, selectedSize }) =>
-        String(_id) !== product._id ||
-        (String(_id) === product._id && selectedSize !== product.selectedSize)
-    );
-
-    return this.updateCartOrWishlist(user._id, key, newList, product._id);
-  }
-
-  changeCartProductQuantity(product, key, user) {
-    const newList = user.cart.map(item =>
-      String(item._id) === product._id &&
-      item.selectedSize === product.selectedSize
-        ? product
-        : item
-    );
-
-    return this.updateCartOrWishlist(user._id, key, newList, product._id);
   }
 }
 

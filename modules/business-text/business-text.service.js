@@ -5,16 +5,16 @@ const {
   BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
   IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
-    return await BusinessText.find();
+    return await BusinessText.find().exec();
   }
 
   async getBusinessTextById(id) {
-    const businessText = await BusinessText.findById(id);
+    const businessText = await BusinessText.findById(id).exec();
     if (businessText) {
       return businessText;
     }
@@ -22,7 +22,7 @@ class BusinessTextService {
   }
 
   async getBusinessTextByCode(code) {
-    const businessText = await BusinessText.findOne({ code });
+    const businessText = await BusinessText.findOne({ code }).exec();
     if (businessText) {
       return businessText;
     }
@@ -62,7 +62,7 @@ class BusinessTextService {
 
     const page = await BusinessText.findByIdAndUpdate(id, newPage, {
       new: true,
-    });
+    }).exec();
 
     return page || null;
   }
@@ -95,20 +95,20 @@ class BusinessTextService {
       await this.deleteNoNeededImages(imagesToDelete);
     }
 
-    const businessText = await BusinessText.findByIdAndDelete(id);
+    const businessText = await BusinessText.findByIdAndDelete(id).exec();
     if (businessText) {
       return businessText;
     }
   }
 
   async checkBusinessTextExistByCode(data) {
-    return await BusinessText.find({ code: data.code });
+    return await BusinessText.find({ code: data.code }).exec();
   }
 
   async replaceImageSourceToLink(page, files) {
     const fileNames = files.map(({ file }) => file.filename);
 
-    const uploadResult = await uploadFiles(files);
+    const uploadResult = await uploadService.uploadFiles(files);
     const imagesResults = await Promise.allSettled(uploadResult);
 
     const updatedPage = { ...page };
@@ -148,7 +148,7 @@ class BusinessTextService {
       .flat();
 
     const deleteResult = await Promise.allSettled(
-      await deleteFiles(valuesToDelete)
+      await uploadService.deleteFiles(valuesToDelete)
     );
     const isAllImagesDeleted = deleteResult.every(
       res => res.status === 'fulfilled'

@@ -1,6 +1,6 @@
 const LooksImages = require('./home-page-images.model');
 
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 
 const {
   IMAGES_WERE_NOT_CONVERTED,
@@ -9,7 +9,7 @@ const {
 
 class HomePageImagesService {
   async getHomePageLooksImages() {
-    const looksImages = await LooksImages.find();
+    const looksImages = await LooksImages.find().exec();
 
     if (!looksImages) throw new Error(IMAGE_NOT_FOUND);
 
@@ -25,7 +25,9 @@ class HomePageImagesService {
   }
 
   async deleteHomePageLooksImage(data) {
-    const looksImage = await LooksImages.findById(data.id).lean();
+    const looksImage = await LooksImages.findById(data.id)
+      .lean()
+      .exec();
 
     if (!looksImage) throw new Error(IMAGE_NOT_FOUND);
 
@@ -33,11 +35,13 @@ class HomePageImagesService {
       this.deleteImages(looksImage.images);
     }
 
-    return await LooksImages.findByIdAndDelete(id);
+    return await LooksImages.findByIdAndDelete(id).exec();
   }
 
   async updateHomePageLooksImage(data) {
-    const imagesToUpdate = await LooksImages.findById(data.id).lean();
+    const imagesToUpdate = await LooksImages.findById(data.id)
+      .lean()
+      .exec();
     if (!imagesToUpdate) throw new Error(IMAGE_NOT_FOUND);
 
     return (
@@ -48,7 +52,7 @@ class HomePageImagesService {
   }
 
   async uploadImages(data) {
-    const uploadResult = await uploadFiles(data);
+    const uploadResult = await uploadService.uploadFiles(data);
     const imagesResult = await Promise.allSettled(uploadResult);
     const resizedImages = imagesResult.map(item => item.value.fileNames);
 
@@ -66,11 +70,11 @@ class HomePageImagesService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async deleteImages(imagesToDelete) {
-    const deletedImages = await deleteFiles([imagesToDelete]);
+    const deletedImages = await uploadService.deleteFiles([imagesToDelete]);
 
     if (!deletedImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
 

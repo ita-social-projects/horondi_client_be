@@ -1,95 +1,33 @@
-const {
-  SUPER_ADMIN_EMAIL,
-  SUPER_ADMIN_PASSWORD,
-} = require('../../dotenvValidator');
-
 const materialDoesNotExistId = '1f2ad410eb01783384e6111b';
 const graphqlErrorMessage = 'Skip value must be non-negative, but received: -5';
-
 const skip = 0;
 const wrongSkip = -5;
 const wrongLimit = -3;
 const limit = 2;
 const limitZero = 0;
-
-const user = {
-  email: SUPER_ADMIN_EMAIL,
-  password: SUPER_ADMIN_PASSWORD,
-};
-
-const languageTypeName = { __typename: 'Language' };
-const currencyTypeName = { __typename: 'CurrencySet' };
-const imageTypeName = { __typename: 'ImageSet' };
-
-const materialData = {
-  description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
-  ],
-  purpose: 'test update',
-  available: true,
-  additionalPrice: 2,
-  colors: [
-    {
-      code: 777,
-      name: [
-        { lang: 'uk', value: 'Тестовий колір update' },
-        { lang: 'en', value: 'Test color update' },
-      ],
-      images: {
-        large: 'large_test update',
-        medium: 'medium_test update',
-        small: 'small_test update',
-        thumbnail: 'thumbnail_test update',
-      },
-      available: true,
-      simpleName: [
-        { lang: 'uk', value: 'проста назва кольору update' },
-        { lang: 'en', value: 'simple color name update' },
-      ],
-    },
-  ],
-};
-
-const material = {
+const getMaterial = colorId => ({
   name: [
-    { lang: 'uk', value: 'Тест mutation' },
-    { lang: 'en', value: 'Test mutation' },
+    { lang: 'uk', value: 'Матеріал test' },
+    { lang: 'en', value: 'Material test' },
   ],
+  ...materialOptions,
+  colors: [colorId],
+});
+const getMaterialToUpdate = colorId => ({
+  name: [
+    { lang: 'uk', value: 'Матеріал update' },
+    { lang: 'en', value: 'Material update' },
+  ],
+  ...materialOptions,
+  colors: [colorId],
+});
+const materialOptions = {
   description: [
     { lang: 'uk', value: 'Опис test' },
     { lang: 'en', value: 'Description test' },
   ],
-  purpose: 'test',
+  purpose: 'INNER',
   available: true,
-  additionalPrice: 2,
-  colors: [
-    {
-      code: 777,
-      name: [
-        { lang: 'uk', value: 'Тестовий колір' },
-        { lang: 'en', value: 'Test color' },
-      ],
-      simpleName: [
-        { lang: 'uk', value: 'проста назва кольору' },
-        { lang: 'en', value: 'simple color name' },
-      ],
-      available: true,
-      images: {
-        large: 'large_test',
-        medium: 'medium_test',
-        small: 'small_test',
-        thumbnail: 'thumbnail_test',
-      },
-    },
-  ],
-};
-const materialToUpdate = {
-  name: [
-    { lang: 'uk', value: 'Тест updated' },
-    { lang: 'en', value: 'Test updated' },
-  ],
-  ...materialData,
 };
 
 module.exports = {
@@ -100,10 +38,6 @@ module.exports = {
   wrongLimit,
   limit,
   limitZero,
-  user,
-  languageTypeName,
-  currencyTypeName,
-  imageTypeName,
-  material,
-  materialToUpdate,
+  getMaterial,
+  getMaterialToUpdate,
 };

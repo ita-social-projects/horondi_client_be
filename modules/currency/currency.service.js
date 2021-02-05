@@ -1,4 +1,5 @@
 const Currency = require('./currency.model');
+
 const {
   CURRENCY_ALREADY_EXIST,
   CURRENCY_NOT_FOUND,
@@ -13,11 +14,11 @@ class CurrencyService {
   }
 
   async getAllCurrencies() {
-    return await Currency.find();
+    return await Currency.find().exec();
   }
 
   async getCurrencyById(id) {
-    const foundCurrency = await Currency.findById(id);
+    const foundCurrency = await Currency.findById(id).exec();
     if (foundCurrency) {
       return foundCurrency;
     }
@@ -25,7 +26,7 @@ class CurrencyService {
   }
 
   async updateCurrency(id, currency) {
-    const currencyToUpdate = await Currency.findById(id);
+    const currencyToUpdate = await Currency.findById(id).exec();
     if (!currencyToUpdate) {
       throw new Error(CURRENCY_NOT_FOUND);
     }
@@ -34,7 +35,7 @@ class CurrencyService {
     }
     return await Currency.findByIdAndUpdate(id, currency, {
       new: true,
-    });
+    }).exec();
   }
 
   async addCurrency(data) {
@@ -45,7 +46,7 @@ class CurrencyService {
   }
 
   async deleteCurrency(id) {
-    const foundCurrency = await Currency.findByIdAndDelete(id);
+    const foundCurrency = await Currency.findByIdAndDelete(id).exec();
     if (foundCurrency) {
       return foundCurrency;
     }
@@ -53,7 +54,7 @@ class CurrencyService {
   }
 
   async deleteAllCurrencies() {
-    await Currency.deleteMany({});
+    await Currency.deleteMany({}).exec();
   }
 
   async checkCurrencyExist(data, id) {
@@ -67,7 +68,7 @@ class CurrencyService {
           ],
         },
       },
-    });
+    }).exec();
     return currenciesCount > 0;
   }
 }

@@ -1,300 +1,193 @@
-/* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
-const { setupApp } = require('../helper-functions');
 const {
-  newModel,
-  newCategory,
-  newMaterial,
+  PRODUCT_ALREADY_EXIST,
+  PRODUCT_NOT_FOUND,
+} = require('../../error-messages/products.messages');
+const {
   badProductId,
-  getNewProduct,
-  getProductForUpdate,
-  createModel,
-  getProductData,
-  deleteAll,
+  newProductInputData,
+  newProductInputDataForUpdate,
 } = require('./product.variables');
+const {
+  createProduct,
+  deleteProduct,
+  updateProduct,
+} = require('../product/product.helper');
+const {
+  deleteConstructorBasic,
+  createConstructorBasic,
+} = require('../constructor-basic/constructor-basic.helper');
+const {
+  newConstructorBasic,
+} = require('../constructor-basic/constructor-basic.variables');
+const { createColor, deleteColor } = require('../color/color.helper');
+const { color } = require('../color/color.variables');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createClosure, deleteClosure } = require('../closure/closure.helper');
+const { newClosure } = require('../closure/closure.variables');
+const { createModel, deleteModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const { createSize, deleteSize } = require('../size/size.helper');
+const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { createPattern, deletePattern } = require('../pattern/pattern.helper');
+const { queryPatternToAdd } = require('../pattern/pattern.variables');
+const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 
-let product;
-let updatedProduct;
+let colorId;
+let sizeId;
 let productId;
-let operations;
-let categoryId;
 let modelId;
+let operations;
 let materialId;
-let currentProduct = {};
-let updatedProductData = {};
+let categoryId;
+let patternId;
+let constructorBasicId;
+let closureId;
+let productInput;
 
-describe('Product mutations', () => {
-  beforeAll(async done => {
+describe('Order mutations', () => {
+  beforeAll(async () => {
     operations = await setupApp();
-    const itemsId = await createModel(newMaterial, newCategory, newModel);
-    categoryId = itemsId.categoryId;
-    modelId = itemsId.modelId;
-    materialId = itemsId.materialId;
+    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
+    sizeId = sizeData._id;
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const receivedMaterial = await createMaterial(
+      getMaterial(colorId),
+      operations
+    );
+    materialId = receivedMaterial._id;
+    const patternData = await createPattern(queryPatternToAdd, operations);
+    patternId = patternData._id;
+    const closureData = await createClosure(newClosure(materialId), operations);
+    closureId = closureData._id;
+    const receivedConstructorBasic = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId),
+      operations
+    );
+    constructorBasicId = receivedConstructorBasic._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+  });
+  test('#1 Should create product', async () => {
+    productInput = newProductInputData(
+      categoryId,
+      modelId,
+      materialId,
+      materialId,
+      colorId,
+      patternId,
+      closureId,
+      sizeId
+    );
+    const productData = await createProduct(productInput, operations);
+    productId = productData._id;
 
-    product = getNewProduct(categoryId, modelId, materialId);
-    updatedProduct = getProductForUpdate(categoryId, modelId, materialId);
-    updatedProductData = getProductData(updatedProduct);
+    expect(productData).toBeDefined();
+    expect(productData).toHaveProperty('_id', productId);
+  });
+  test('#2 Should Update Product', async () => {
+    const receivedUpdatedProduct = await updateProduct(
+      productId,
+      newProductInputDataForUpdate(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId,
+        sizeId
+      ),
+      operations
+    );
+    const res = receivedUpdatedProduct.data.updateProduct;
 
-    currentProduct = getProductData(product);
-    done();
+    expect(res).toBeDefined();
+    expect(res).toHaveProperty('name');
+    expect(res).toHaveProperty('description');
+    expect(res).toHaveProperty('model');
+    expect(res).toHaveProperty('category');
+  });
+  test('#3 Should return Error PRODUCT_NOT_FOUND on updateProduct', async () => {
+    const receivedUpdatedProduct = await updateProduct(
+      badProductId,
+      newProductInputDataForUpdate(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId,
+        sizeId
+      ),
+      operations
+    );
+    const res = receivedUpdatedProduct.data.updateProduct;
+
+    expect(res).toBeDefined();
+    expect(res.message).toBe(PRODUCT_NOT_FOUND);
+    expect(res.statusCode).toBe(404);
+  });
+  test('#4 Should return Error PRODUCT_ALREADY_EXIST', async () => {
+    const products = await createProduct(
+      newProductInputDataForUpdate(
+        categoryId,
+        modelId,
+        materialId,
+        materialId,
+        colorId,
+        patternId,
+        closureId,
+        sizeId
+      ),
+      operations
+    );
+
+    expect(products).toBeDefined();
+    expect(products.message).toBe(PRODUCT_ALREADY_EXIST);
+    expect(products.statusCode).toBe(400);
+  });
+  test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
+    const receivedData = await deleteProduct(badProductId, operations);
+    const res = receivedData.errors[0].message;
+
+    expect(res).toBe(PRODUCT_NOT_FOUND);
+  });
+  test('#6 Should delete Product and return it`s id', async () => {
+    const receivedData = await deleteProduct(productId, operations);
+    const res = receivedData.data.deleteProduct._id;
+
+    expect(res).toBe(productId);
   });
 
-  test('#1 Should add new product', async done => {
-    const createProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!) {
-          addProduct(upload: [], product: $product) {
-            ... on Product {
-              _id
-              category {
-                _id
-              }
-              name {
-                value
-              }
-              description {
-                value
-              }
-              mainMaterial {
-                value
-              }
-              innerMaterial {
-                value
-              }
-              strapLengthInCm
-              pattern {
-                value
-              }
-              closureColor
-              available
-              isHotItem
-              purchasedCount
-              rate
-              rateCount
-            }
-          }
-        }
-      `,
-      variables: {
-        product,
-      },
-    });
-
-    productId = createProduct.data.addProduct._id;
-    const createdProduct = createProduct.data.addProduct;
-    expect(createdProduct).toBeDefined();
-    expect(createProduct.data.addProduct).toEqual({
-      ...currentProduct,
-      _id: productId,
-    });
-    const getProduct = await operations.query({
-      query: gql`
-        query($id: ID!) {
-          getProductById(id: $id) {
-            ... on Product {
-              _id
-              category {
-                _id
-              }
-              name {
-                value
-              }
-              description {
-                value
-              }
-              mainMaterial {
-                value
-              }
-              innerMaterial {
-                value
-              }
-              strapLengthInCm
-              pattern {
-                value
-              }
-              closureColor
-              available
-              isHotItem
-              purchasedCount
-              rate
-              rateCount
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: productId },
-    });
-    const receivedProduct = getProduct.data.getProductById;
-    expect(receivedProduct).toBeDefined();
-    expect(createProduct.data.addProduct).toEqual({
-      ...currentProduct,
-      _id: productId,
-    });
-    done();
-  });
-
-  test.skip('#2 AddProduct should return Error product already exist', async done => {
-    const createProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!) {
-          addProduct(upload: [], product: $product) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product: getNewProduct(categoryId, modelId, materialId),
-      },
-    });
-    const error = createProduct.errors[0].message;
-    expect(error).toBeDefined();
-    expect(error).toEqual('PRODUCT_ALREADY_EXIST');
-    done();
-  });
-
-  test('#3 Should update new product', async done => {
-    const updateProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!, $id: ID!) {
-          updateProduct(id: $id, product: $product) {
-            ... on Product {
-              _id
-              category {
-                _id
-              }
-              name {
-                value
-              }
-              description {
-                value
-              }
-              mainMaterial {
-                value
-              }
-              innerMaterial {
-                value
-              }
-              strapLengthInCm
-              pattern {
-                value
-              }
-              closureColor
-              available
-              isHotItem
-              purchasedCount
-              rate
-              rateCount
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product: updatedProduct,
-        id: productId,
-      },
-    });
-    const productAfterUpdate = updateProduct.data.updateProduct;
-    expect(productAfterUpdate).toBeDefined();
-    expect(productAfterUpdate).toEqual({
-      ...updatedProductData,
-      _id: productId,
-    });
-    done();
-  });
-
-  test('#4 UpdateProduct should return Error product not found', async done => {
-    const updateProduct = await operations.mutate({
-      mutation: gql`
-        mutation($product: ProductInput!, $id: ID!) {
-          updateProduct(id: $id, product: $product) {
-            ... on Product {
-              _id
-              name {
-                lang
-                value
-              }
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: {
-        product: getProductForUpdate(categoryId, modelId, materialId),
-        id: badProductId,
-      },
-    });
-    const productAfterUpdate = updateProduct.data.updateProduct;
-    expect(productAfterUpdate).toBeDefined();
-    expect(productAfterUpdate).toHaveProperty('statusCode', 404);
-    expect(productAfterUpdate).toHaveProperty('message', 'PRODUCT_NOT_FOUND');
-    done();
-  });
-
-  test('#5 deleteProduct should return add fields and delete product', async done => {
-    const deletedProduct = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteProduct(id: $id) {
-            ... on Product {
-              _id
-            }
-          }
-        }
-      `,
-      variables: { id: productId },
-    });
-
-    const result = deletedProduct.data.deleteProduct;
-    expect(result).toBeDefined();
-    expect(result._id).toBe(productId);
-    done();
-  });
-
-  test('#6 deleteProduct should return error product not found', async done => {
-    const deletedProduct = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteProduct(id: $id) {
-            ... on Product {
-              _id
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: badProductId },
-    });
-    const result = deletedProduct.errors[0].message;
-    expect(result).toBe('PRODUCT_NOT_FOUND');
-    done();
-  });
-
-  afterAll(async done => {
-    await deleteAll(materialId, productId, categoryId, modelId);
-    done();
+  afterAll(async () => {
+    await deleteModel(modelId, operations);
+    await deleteConstructorBasic(constructorBasicId, operations);
+    await deleteMaterial(materialId, operations);
+    await deleteColor(colorId, operations);
+    await deleteSize(sizeId, operations);
+    await deleteClosure(closureId, operations);
+    await deletePattern(patternId, operations);
+    await deleteCategory(categoryId, operations);
   });
 });
