@@ -23,27 +23,36 @@ class ProductsService {
   }
 
   async getProductsFilters() {
-    const categories = await Product.distinct('category').lean();
-    const models = await Product.distinct('model').lean();
-    const patterns = await Product.distinct('pattern').lean();
-    const closures = await Product.distinct('closure').lean();
-    const mainMaterial = await Product.distinct('mainMaterial.material').lean();
-    const mainMaterialColor = await Product.distinct(
-      'mainMaterial.color'
-    ).lean();
-    const innerMaterial = await Product.distinct(
-      'innerMaterial.material'
-    ).lean();
-    const innerMaterialColor = await Product.distinct(
-      'innerMaterial.color'
-    ).lean();
-    const bottomMaterial = await Product.distinct(
-      'bottomMaterial.material'
-    ).lean();
-    const bottomMaterialColor = await Product.distinct(
-      'bottomMaterial.color'
-    ).lean();
-    console.log(mainMaterialColor);
+    const categories = await Product.distinct('category')
+      .lean()
+      .exec();
+    const models = await Product.distinct('model')
+      .lean()
+      .exec();
+    const patterns = await Product.distinct('pattern')
+      .lean()
+      .exec();
+    const closures = await Product.distinct('closure')
+      .lean()
+      .exec();
+    const mainMaterial = await Product.distinct('mainMaterial.material')
+      .lean()
+      .exec();
+    const mainMaterialColor = await Product.distinct('mainMaterial.color')
+      .lean()
+      .exec();
+    const innerMaterial = await Product.distinct('innerMaterial.material')
+      .lean()
+      .exec();
+    const innerMaterialColor = await Product.distinct('innerMaterial.color')
+      .lean()
+      .exec();
+    const bottomMaterial = await Product.distinct('bottomMaterial.material')
+      .lean()
+      .exec();
+    const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
+      .lean()
+      .exec();
 
     return {
       categories,
