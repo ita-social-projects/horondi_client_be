@@ -193,10 +193,9 @@ const resolvers = {
   },
   ProductsFilter: {
     categories: parent =>
-      parent.categories.map(category => {
-        console.log('123');
-        return categoryService.getCategoryById(category);
-      }),
+      parent.categories.map(category =>
+        categoryService.getCategoryById(category)
+      ),
     models: parent =>
       parent.models.map(model => modelService.getModelById(model)),
     patterns: parent =>
