@@ -12,6 +12,8 @@ const materialType = `
       main: [Material]
       inner: [Material]
       bottom: [Material]
+      pattern: [Material]
+      closure: [Material]
     }
 
     enum PurposeEnum{
