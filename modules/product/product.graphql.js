@@ -27,6 +27,18 @@ const productType = `
     material: Material
     color: Color
   }
+  type ProductsFilter {
+    categories: [Category]
+    models: [Model]
+    patterns: [Pattern]
+    closures: [Closure]
+    mainMaterial: [Material]
+    mainMaterialColor: [Color]
+    innerMaterial: [Material]
+    innerMaterialColor: [Color]
+    bottomMaterial: [Material]
+    bottomMaterialColor: [Color]
+   }
   type ProductImages { 
     primary: ImageSet
     additional: [ImageSet]

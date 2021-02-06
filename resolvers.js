@@ -110,6 +110,7 @@ const colorService = require('./modules/color/color.service');
 const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
+
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -190,7 +191,36 @@ const resolvers = {
 
     ...colorQuery,
   },
-
+  ProductsFilter: {
+    categories: parent =>
+      parent.categories.map(category =>
+        categoryService.getCategoryById(category)
+      ),
+    models: parent =>
+      parent.models.map(model => modelService.getModelById(model)),
+    patterns: parent =>
+      parent.patterns.map(pattern => patternService.getPatternById(pattern)),
+    closures: parent =>
+      parent.closures.map(closure => closuresService.getClosureById(closure)),
+    mainMaterial: parent =>
+      parent.mainMaterial.map(material =>
+        materialService.getMaterialById(material)
+      ),
+    mainMaterialColor: parent =>
+      parent.mainMaterialColor.map(color => colorService.getColorById(color)),
+    innerMaterial: parent =>
+      parent.innerMaterial.map(material =>
+        materialService.getMaterialById(material)
+      ),
+    innerMaterialColor: parent =>
+      parent.innerMaterialColor.map(color => colorService.getColorById(color)),
+    bottomMaterial: parent =>
+      parent.bottomMaterial.map(material =>
+        materialService.getMaterialById(material)
+      ),
+    bottomMaterialColor: parent =>
+      parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
+  },
   User: {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
@@ -226,8 +256,8 @@ const resolvers = {
   },
 
   Order: {
-    items: parent => {
-      return parent.items.map(item => {
+    items: parent =>
+      parent.items.map(item => {
         if (item.isFromConstructor) {
           return {
             constructorBottom: constructorServices.getConstructorElementById(
@@ -254,20 +284,18 @@ const resolvers = {
             quantity: item.quantity,
             fixedPrice: item.fixedPrice,
           };
-        } else {
-          return {
-            fixedPrice: item.fixedPrice,
-            isFromConstructor: item.isFromConstructor,
-            quantity: item.quantity,
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-              sidePocket: item.options.sidePocket,
-            },
-            product: productsService.getProductById(item.product),
-          };
         }
-      });
-    },
+        return {
+          fixedPrice: item.fixedPrice,
+          isFromConstructor: item.isFromConstructor,
+          quantity: item.quantity,
+          options: {
+            size: sizeService.getSizeById(item.options.size),
+            sidePocket: item.options.sidePocket,
+          },
+          product: productsService.getProductById(item.product),
+        };
+      }),
   },
   Pattern: {
     material: parent => materialService.getMaterialById(parent.material),
@@ -559,7 +587,8 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.colorHex) {
         return SCHEMA_NAMES.color;
-      } else if (obj.items) {
+      }
+      if (obj.items) {
         return SCHEMA_NAMES.materials;
       }
       return 'Error';
