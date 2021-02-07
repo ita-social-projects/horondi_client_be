@@ -11,8 +11,89 @@ const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
-  async getAllCategories() {
-    return await Category.find().exec();
+  filterItems(args = {}) {
+    const filter = {};
+    const { roles, days, banned, search } = args;
+
+    if (roles && roles.length) {
+      filter.role = { $in: roles };
+    }
+
+    if (banned && banned.length) {
+      filter.banned = { $in: banned };
+    }
+
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search.trim());
+    }
+
+    if (days) {
+      filter.registrationDate = {
+        $gte: removeDaysFromData(days, Date.now()),
+        $lte: removeDaysFromData(0, Date.now()),
+      };
+    }
+
+    return filter;
+  }
+
+  searchItems(searchString) {
+    return [
+      {
+        name: {
+          $elemMatch: { value: { $regex: new RegExp(searchString, 'i') } },
+        },
+      },
+    ];
+  }
+
+  aggregateItems(filters = {}, pagination = {}, sort = {}) {
+    let aggregationItems = [];
+
+    if (Object.keys(sort).length) {
+      aggregationItems.push({
+        $sort: sort,
+      });
+    }
+
+    aggregationItems.push({ $match: filters });
+
+    if (pagination.skip !== undefined && pagination.limit) {
+      aggregationItems.push({
+        $skip: pagination.skip,
+      });
+      aggregationItems.push({
+        $limit: pagination.limit,
+      });
+    }
+
+    return aggregationItems;
+  }
+
+  async getAllCategories({ filter, pagination, sort }) {
+    let filters = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+    const [categories] = await Category.aggregate()
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filters }, { $count: 'count' }],
+      })
+      .exec();
+    let categoryCount;
+
+    const {
+      items,
+      calculations: [calculations],
+    } = categories;
+
+    if (calculations) {
+      categoryCount = calculations.count;
+    }
+    return {
+      items,
+      count: categoryCount || 0,
+    };
   }
 
   async getCategoryById(id) {

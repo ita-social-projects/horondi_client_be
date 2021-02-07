@@ -1,4 +1,5 @@
 const sharedFields = `
+
   _id: ID!
   code: String!
   name: [Language]
@@ -14,6 +15,12 @@ const categoryType = `
     models: [Model]
   }
 `;
+const paginatedCategory = `
+	type PaginatedCategory {
+		items: [Category]
+		count: Int
+	}
+`;
 
 const categoryInput = `
   input CategoryInput {
@@ -21,6 +28,27 @@ const categoryInput = `
     name: [LanguageInput]
     images: ImageSetInput
     available: Boolean
-  }`;
+	}`;
 
-module.exports = { categoryType, categoryInput };
+const FilterInputComponent = `
+  input FilterInputComponent {
+    roles: [String!]
+    banned: [Boolean!]
+    search: String
+}
+`;
+
+const SortInputComponent = `
+	input SortInputComponent {
+		name: Int
+		email: Int
+	}
+`;
+
+module.exports = {
+  categoryType,
+  categoryInput,
+  FilterInputComponent,
+  SortInputComponent,
+  paginatedCategory,
+};
