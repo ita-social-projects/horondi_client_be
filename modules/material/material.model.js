@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
+const FIELD_ERROR_MESSAGE = require('../../error-messages/common.messages');
 
 const materialSchema = new mongoose.Schema({
   name: [Language],
@@ -8,7 +9,7 @@ const materialSchema = new mongoose.Schema({
   purpose: {
     type: String,
     enum: ['MAIN', 'INNER', 'BOTTOM', 'PATTERN', 'CLOSURE'],
-    required: true,
+    required: [true, FIELD_ERROR_MESSAGE],
   },
   colors: [
     {

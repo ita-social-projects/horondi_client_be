@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
+const IMAGE_NOT_PROVIDED = require('../../error-messages/constructor-basic-messages.js');
 
 const NewsSchema = new mongoose.Schema({
   title: [Language],
   text: [Language],
-  image: String,
+  image: {
+    type: String,
+    required: [true, IMAGE_NOT_PROVIDED],
+  },
   author: {
     name: {
       type: Array,
@@ -19,7 +23,10 @@ const NewsSchema = new mongoose.Schema({
         },
       ],
     },
-    image: String,
+    image: {
+      type: String,
+      required: [true, IMAGE_NOT_PROVIDED],
+    },
   },
   date: {
     type: Date,

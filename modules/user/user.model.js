@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
+const {
+  WRONG_CREDENTIALS,
+  INPUT_NOT_VALID,
+  EMAIL_ERROR,
+} = require('../../error-messages/user.messages');
+const PHONE_NUMBER_NOT_VALID = require('../../error-messages/common.messages');
 
 const { UserInputError } = require('apollo-server');
 
@@ -9,15 +15,33 @@ const {
 } = require('../../error-messages/user.messages');
 
 const userSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
+  firstName: {
+    type: String,
+    min: [2, WRONG_CREDENTIALS],
+    max: [20, WRONG_CREDENTIALS],
+    required: [true, INPUT_NOT_VALID],
+  },
+  lastName: {
+    type: String,
+    min: [2, WRONG_CREDENTIALS],
+    max: [20, WRONG_CREDENTIALS],
+    required: [true, INPUT_NOT_VALID],
+  },
   role: {
     type: String,
     enum: ['user', 'admin', 'superadmin'],
     default: 'user',
   },
-  email: String,
-  phoneNumber: String,
+  email: {
+    type: String,
+    required: [true, EMAIL_ERROR],
+  },
+  phoneNumber: {
+    type: String,
+    min: [12, WRONG_CREDENTIALS],
+    max: [12, WRONG_CREDENTIALS],
+    required: [true, PHONE_NUMBER_NOT_VALID],
+  },
   address: Address,
   images: ImageSet,
   credentials: [
