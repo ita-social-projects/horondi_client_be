@@ -56,7 +56,7 @@ class PatternsService {
       .lean()
       .exec();
     await uploadService.deleteFiles(Object.values(foundPattern.images));
-    await uploadService.deleteFile(foundPattern.constructorImg);
+    await uploadService.deleteFiles([foundPattern.constructorImg]);
 
     return await Pattern.findByIdAndUpdate(
       id,
@@ -99,7 +99,7 @@ class PatternsService {
     const deletedImages = await uploadService.deleteFiles(
       Object.values(foundPattern.images)
     );
-    await uploadService.deleteFile(foundPattern.constructorImg);
+    await uploadService.deleteFiles([foundPattern.constructorImg]);
     if (await Promise.allSettled(deletedImages)) {
       return foundPattern;
     }
