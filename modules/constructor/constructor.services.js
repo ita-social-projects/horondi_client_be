@@ -60,7 +60,11 @@ class ConstructorService {
 
   async deleteConstructorElement(id, model, error) {
     const constructorElement = await model.findByIdAndDelete(id);
-    await uploadService.deleteFile(constructorElement.image);
+    if (constructorElement) {
+      if (constructorElement.image) {
+        await uploadService.deleteFile(constructorElement.image);
+      }
+    }
     if (!constructorElement) {
       throw new Error(error);
     }
