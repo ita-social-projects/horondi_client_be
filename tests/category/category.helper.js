@@ -64,19 +64,25 @@ const getAllCategories = async operations => {
     query: gql`
       query {
         getAllCategories {
-          _id
-          name {
-            lang
-            value
+          items {
+            _id
+            code
+            name {
+              lang
+              value
+            }
+            images {
+              large
+            }
+            available
           }
-          code
-          available
+          count
         }
       }
     `,
   });
 
-  return allCategories.data.getAllCategories;
+  return allCategories.data.getAllCategories.items;
 };
 const getCategoryById = async (id, operations) => {
   const categoryById = await operations.query({

@@ -143,9 +143,13 @@ class CategoryService {
   }
 
   async getCategoriesForBurgerMenu() {
-    const categories = await this.getAllCategories();
+    const categories = await this.getAllCategories({
+      filter: {},
+      pagination: {},
+      sort: {},
+    });
 
-    const data = categories.map(async category => {
+    const data = categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => {
         return {
