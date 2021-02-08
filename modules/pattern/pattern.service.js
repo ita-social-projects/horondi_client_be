@@ -1,3 +1,4 @@
+const { uploadLargeImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const {
   PATTERN_ALREADY_EXIST,
@@ -42,19 +43,20 @@ class PatternsService {
     if (!image) {
       return await Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
     }
-    const uploadResult = await uploadService.uploadFiles([image]);
 
-    const imageResults = await uploadResult[0];
+    const uploadResult = await uploadService.uploadFile(image[0]);
+    const images = uploadResult.fileNames;
+    const constructorImg = await uploadLargeImage(image[1]);
+    pattern.constructorImg = constructorImg;
 
-    const images = imageResults.fileNames;
-
-    if (!images) {
+    if (!images && constructorImg) {
       return await Pattern.findByIdAndUpdate(id, pattern).exec();
     }
     const foundPattern = await Pattern.findById(id)
       .lean()
       .exec();
-    uploadService.deleteFiles(Object.values(foundPattern.images));
+    await uploadService.deleteFiles(Object.values(foundPattern.images));
+    await uploadService.deleteFile(foundPattern.constructorImg);
 
     return await Pattern.findByIdAndUpdate(
       id,
@@ -73,14 +75,16 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
 
-    const uploadResult = await uploadService.uploadFiles([image]);
-
-    const imageResults = await uploadResult[0];
-
-    const images = imageResults.fileNames;
-    if (!images) {
-      throw new Error(IMAGE_NOT_PROVIDED);
+    if (image.length) {
+      if (!image[0] && !image[1]) {
+        throw new Error(IMAGE_NOT_PROVIDED);
+      }
     }
+
+    const uploadResult = await uploadService.uploadFile(image[0]);
+    const images = uploadResult.fileNames;
+    pattern.constructorImg = await uploadLargeImage(image[1]);
+
     return new Pattern({ ...pattern, images }).save();
   }
 
@@ -95,6 +99,7 @@ class PatternsService {
     const deletedImages = await uploadService.deleteFiles(
       Object.values(foundPattern.images)
     );
+    await uploadService.deleteFile(foundPattern.constructorImg);
     if (await Promise.allSettled(deletedImages)) {
       return foundPattern;
     }
@@ -112,4 +117,5 @@ class PatternsService {
     return patternsCount > 0;
   }
 }
+
 module.exports = new PatternsService();
