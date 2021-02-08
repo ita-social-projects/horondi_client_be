@@ -10,8 +10,8 @@ const CategorySchema = new mongoose.Schema({
   code: {
     type: String,
     required: [true, CATEGORY_ERROR_MESSAGE],
-    min: [2, CATEGORY_VALIDATION_ERROR],
-    max: [30, CATEGORY_VALIDATION_ERROR],
+    minlength: [2, CATEGORY_VALIDATION_ERROR],
+    maxlength: [30, CATEGORY_VALIDATION_ERROR],
   },
   name: [Language],
   images: ImageSet,

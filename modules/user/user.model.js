@@ -5,6 +5,7 @@ const {
   WRONG_CREDENTIALS,
   INPUT_NOT_VALID,
   EMAIL_ERROR,
+  EMAIL_VALIDATION_ERROR,
 } = require('../../error-messages/user.messages');
 const PHONE_NUMBER_NOT_VALID = require('../../error-messages/common.messages');
 
@@ -17,14 +18,14 @@ const {
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    min: [2, WRONG_CREDENTIALS],
-    max: [20, WRONG_CREDENTIALS],
+    minlength: [2, WRONG_CREDENTIALS],
+    maxlength: [20, WRONG_CREDENTIALS],
     required: [true, INPUT_NOT_VALID],
   },
   lastName: {
     type: String,
-    min: [2, WRONG_CREDENTIALS],
-    max: [20, WRONG_CREDENTIALS],
+    minlength: [2, WRONG_CREDENTIALS],
+    maxlength: [20, WRONG_CREDENTIALS],
     required: [true, INPUT_NOT_VALID],
   },
   role: {
@@ -34,12 +35,21 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    trim: true,
+    lowercase: true,
+    unique: true,
+    validate: {
+      validator: function(v) {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+      },
+      message: EMAIL_VALIDATION_ERROR,
+    },
     required: [true, EMAIL_ERROR],
   },
   phoneNumber: {
     type: String,
-    min: [12, WRONG_CREDENTIALS],
-    max: [12, WRONG_CREDENTIALS],
+    minlength: [12, WRONG_CREDENTIALS],
+    maxlength: [12, WRONG_CREDENTIALS],
     required: [true, PHONE_NUMBER_NOT_VALID],
   },
   address: Address,

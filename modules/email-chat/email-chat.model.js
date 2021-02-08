@@ -3,6 +3,7 @@ const {
   EMAIL_ERROR,
   USER_NOT_FOUND,
   WRONG_CREDENTIALS,
+  EMAIL_VALIDATION_ERROR,
 } = require('../../error-messages/user.messages');
 const {
   FIELD_ERROR_MESSAGE,
@@ -12,8 +13,8 @@ const {
 const EmailChatSchema = new mongoose.Schema({
   text: {
     type: String,
-    min: [2, INPUT_VALIDATION_ERROR],
-    max: [700, INPUT_VALIDATION_ERROR],
+    minlength: [2, INPUT_VALIDATION_ERROR],
+    maxlength: [700, INPUT_VALIDATION_ERROR],
     required: [true, FIELD_ERROR_MESSAGE],
   },
   senderName: {
@@ -32,6 +33,15 @@ const EmailChatSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    trim: true,
+    lowercase: true,
+    unique: true,
+    validate: {
+      validator: function(v) {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+      },
+      message: EMAIL_VALIDATION_ERROR,
+    },
     required: [true, EMAIL_ERROR],
   },
   status: {
