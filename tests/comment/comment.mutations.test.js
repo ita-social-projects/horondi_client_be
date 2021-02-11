@@ -52,7 +52,7 @@ const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
 const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
-const { registerUser, deleteUser } = require('../user/user.helper');
+const { registerUser, deleteUser, loginUser } = require('../user/user.helper');
 const { testUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 
@@ -130,7 +130,8 @@ describe('Comment queries', () => {
       language,
       operations
     );
-    userId = userData.data.registerUser._id;
+    const authRes = await loginUser(email, pass, operations);
+    userId = authRes.data.loginUser._id;
   });
 
   it(' should add a new comment', async () => {
