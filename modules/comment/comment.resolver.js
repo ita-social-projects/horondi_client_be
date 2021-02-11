@@ -17,7 +17,6 @@ const commentsQuery = {
     try {
       return await commentsService.getAllCommentsByProduct(args);
     } catch (error) {
-      console.log(error);
       return [
         {
           statusCode: 404,
