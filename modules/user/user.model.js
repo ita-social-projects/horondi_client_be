@@ -9,7 +9,9 @@ const {
 } = require('../../error-messages/user.messages');
 
 const userSchema = new mongoose.Schema({
-  firstName: String,
+  firstName: {
+    type: String,
+  },
   lastName: String,
   role: {
     type: String,
