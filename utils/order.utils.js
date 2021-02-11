@@ -79,16 +79,6 @@ async function calculateTotalItemsPrice(items) {
   );
 }
 
-// this method should return totalItemsPrice + nova poshta delivery price
-function novaPoshtaDeliveryPrice(data) {
-  // need backend for sizes
-}
-
-// this method should return totalItemsPrice + ukr poshta delivery price
-function ukrPoshtaDeliveryPrice(data) {
-  // need backend for sizes
-}
-
 function calculateTotalPriceToPay(data, totalItemsPrice) {
   switch (data.delivery.sentBy) {
     case 'NOVAPOST':
