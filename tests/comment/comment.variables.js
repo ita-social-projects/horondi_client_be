@@ -9,11 +9,10 @@ const newComment = userId => ({
   user: userId,
   show: false,
 });
-const updatedComment = userId => ({
+const updatedComment = {
   text: 'updated text',
-  user: userId,
   show: true,
-});
+};
 
 module.exports = {
   userWrongId,
