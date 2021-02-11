@@ -10,19 +10,19 @@ async function calculateTotalItemsPrice(items) {
     async (prev, item) => {
       const sum = await prev;
       const { quantity } = item;
-      const { additionalPrice } = await Size.findById(item.options.size);
+      const { additionalPrice } = await Size.findById(item.options.size).exec();
 
       if (!item.fixedPrice?.length) {
         if (item.isFromConstructor) {
           const constructorBasics = await ConstructorBasic.findById(
             item.constructorBasics
-          );
+          ).exec();
           const constructorFrontPocket = await ConstructorFrontPocket.findById(
             item.constructorFrontPocket
-          );
+          ).exec();
           const constructorBottom = await ConstructorBottom.findById(
             item.constructorBottom
-          );
+          ).exec();
           item.fixedPrice = [
             {
               currency: 'UAH',
@@ -42,7 +42,7 @@ async function calculateTotalItemsPrice(items) {
             },
           ];
         } else {
-          const { basePrice } = await Product.findById(item.product);
+          const { basePrice } = await Product.findById(item.product).exec();
           item.fixedPrice = [
             {
               currency: 'UAH',
