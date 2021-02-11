@@ -166,23 +166,21 @@ describe('Comment queries', () => {
   it('should update comment', async () => {
     const receivedComment = await updateComment(
       commentId,
-      productId,
-      updatedComment(userId),
+      updatedComment,
       operations
     );
 
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('text', updatedComment(userId).text);
-    expect(receivedComment).toHaveProperty('show', updatedComment(userId).show);
+    expect(receivedComment).toHaveProperty('text', updatedComment.text);
+    expect(receivedComment).toHaveProperty('show', updatedComment.show);
     expect(receivedComment).toHaveProperty('user', { _id: userId });
     expect(receivedComment).toHaveProperty('product', { _id: productId });
   });
   it(' should return error if id of comment to update is not correct', async () => {
     const receivedComment = await updateComment(
       commentWrongId,
-      productId,
-      updatedComment(userId),
+      updatedComment,
       operations
     );
 
