@@ -1,11 +1,11 @@
 const sharedFields = `
-
   _id: ID!
   code: String!
   name: [Language]
   images: ImageSet
   available: Boolean
 `;
+
 const categoryType = `
   type Category {
     ${sharedFields}
@@ -15,6 +15,7 @@ const categoryType = `
     models: [Model]
   }
 `;
+
 const paginatedCategory = `
 	type PaginatedCategory {
 		items: [Category]
@@ -34,7 +35,7 @@ const FilterInputComponent = `
   input FilterInputComponent {
     roles: [String!]
 		banned: [Boolean]
-		category: [ID]
+		_id: [ID]
     search: String
 }
 `;

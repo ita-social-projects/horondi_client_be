@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 class FilterHelper {
   filterItems(args = {}) {
     const filter = {};
-    const { roles, days, banned, category, search } = args;
+    const { roles, days, banned, _id, search } = args;
 
     if (roles && roles.length) {
       filter.role = { $in: roles };
     }
 
-    if (category && category.length) {
-      filter._id = { $in: category.map(id => mongoose.Types.ObjectId(id)) };
+    if (_id && _id.length) {
+      filter._id = { $in: _id.map(id => mongoose.Types.ObjectId(id)) };
     }
 
     if (banned && banned.length) {
