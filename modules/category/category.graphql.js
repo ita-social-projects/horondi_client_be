@@ -33,7 +33,8 @@ const categoryInput = `
 const FilterInputComponent = `
   input FilterInputComponent {
     roles: [String!]
-    banned: [Boolean!]
+		banned: [Boolean]
+		category: [ID]
     search: String
 }
 `;

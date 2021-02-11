@@ -12,29 +12,33 @@ const { OTHERS } = require('../../consts');
 const FilterHelper = require('../../helpers/helper');
 class CategoryService extends FilterHelper {
   async getAllCategories({ filter, pagination, sort }) {
-    let filters = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filters, pagination, sort);
-    const [categories] = await Category.aggregate()
-      .collation({ locale: 'uk' })
-      .facet({
-        items: aggregatedItems,
-        calculations: [{ $match: filters }, { $count: 'count' }],
-      })
-      .exec();
-    let categoryCount;
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+      const [categories] = await Category.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+      let categoryCount;
 
-    const {
-      items,
-      calculations: [calculations],
-    } = categories;
+      const {
+        items,
+        calculations: [calculations],
+      } = categories;
 
-    if (calculations) {
-      categoryCount = calculations.count;
+      if (calculations) {
+        categoryCount = calculations.count;
+      }
+      return {
+        items,
+        count: categoryCount || 0,
+      };
+    } catch (e) {
+      console.log(e.message);
     }
-    return {
-      items,
-      count: categoryCount || 0,
-    };
   }
 
   async getCategoryById(id) {

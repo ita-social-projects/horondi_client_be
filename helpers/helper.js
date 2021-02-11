@@ -1,10 +1,15 @@
+const mongoose = require('mongoose');
 class FilterHelper {
   filterItems(args = {}) {
     const filter = {};
-    const { roles, days, banned, search } = args;
+    const { roles, days, banned, category, search } = args;
 
     if (roles && roles.length) {
       filter.role = { $in: roles };
+    }
+
+    if (category && category.length) {
+      filter._id = { $in: category.map(id => mongoose.Types.ObjectId(id)) };
     }
 
     if (banned && banned.length) {
@@ -26,11 +31,7 @@ class FilterHelper {
   }
 
   searchItems(searchString) {
-    return [
-      { name: { $regex: new RegExp(searchString, 'i') } },
-      { phoneNumber: { $regex: new RegExp(searchString) } },
-      { email: { $regex: new RegExp(searchString, 'i') } },
-    ];
+    return [{ 'name.value': { $regex: new RegExp(searchString, 'i') } }];
   }
 
   aggregateItems(filters = {}, pagination = {}, sort = {}) {
