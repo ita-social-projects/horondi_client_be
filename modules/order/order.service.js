@@ -43,7 +43,7 @@ class OrdersService {
   async getOrderById(id) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
 
-    const foundOrder = await Order.findById(id);
+    const foundOrder = await Order.findById(id).exec();
     if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
 
     return foundOrder;
@@ -52,10 +52,9 @@ class OrdersService {
   async updateOrder(order, id) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
 
-    const orderToUpdate = await Order.findById(id);
+    const orderToUpdate = await Order.findById(id).exec();
 
     if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
-
 
     const { items } = order;
 
@@ -102,7 +101,7 @@ class OrdersService {
   async deleteOrder(id) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
 
-    const foundOrder = await Order.findByIdAndDelete(id);
+    const foundOrder = await Order.findByIdAndDelete(id).exec();
 
     if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
     return foundOrder;
