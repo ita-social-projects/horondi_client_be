@@ -63,6 +63,8 @@ enum SendByEnum{
   NOVAPOST
   UKRPOST
   SELFPICKUP
+  NOVAPOSTCOURIER
+  UKRPOSTCOURIER
 }
 type OrderUser {
   firstName: String
