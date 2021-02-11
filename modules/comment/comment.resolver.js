@@ -13,8 +13,19 @@ const commentsQuery = {
     }
   },
 
-  getAllCommentsByProduct: async (parent, args) =>
-    commentsService.getAllCommentsByProduct(args),
+  getAllCommentsByProduct: async (parent, args) => {
+    try {
+      return await commentsService.getAllCommentsByProduct(args);
+    } catch (error) {
+      console.log(error);
+      return [
+        {
+          statusCode: 404,
+          message: error.message,
+        },
+      ];
+    }
+  },
 
   getAllCommentsByUser: async (parent, args) => {
     try {
