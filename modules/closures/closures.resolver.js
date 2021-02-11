@@ -2,7 +2,7 @@ const ClosureService = require('./closures.service');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 
 const closureQuery = {
-  getAllClosure: (parent, args) => ClosureService.getAllClosures(args),
+  getAllClosure: (parent, args) => ClosureService.getAllClosure(args),
   getClosureById: async (parent, args) => {
     try {
       return await ClosureService.getClosureById(args.id);

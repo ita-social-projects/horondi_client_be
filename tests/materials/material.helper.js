@@ -1,25 +1,54 @@
 const { gql } = require('@apollo/client');
 
 const createMaterial = async (material, operations) => {
-  const createdMaterial = await operations.mutate({
+  const testCreatedMaterial = await operations.mutate({
     mutation: gql`
-      mutation($material: MaterialInput!) {
-        addMaterial(material: $material) {
+      mutation(
+        $colors: [ID!]
+        $available: Boolean
+        $description: [LanguageInput]
+        $name: [LanguageInput]
+      ) {
+        addMaterial(
+          material: {
+            purpose: INNER
+            colors: $colors
+            available: $available
+            description: $description
+            name: $name
+          }
+        ) {
           ... on Material {
             _id
+            name {
+              lang
+              value
+            }
+            description {
+              lang
+              value
+            }
+            purpose
+            colors {
+              _id
+            }
+            additionalPrice {
+              currency
+              value
+            }
+            available
           }
           ... on Error {
             message
+            statusCode
           }
         }
       }
     `,
-    variables: { material },
+    variables: { ...material },
   });
-
-  return createdMaterial.data.addMaterial._id;
+  return testCreatedMaterial.data.addMaterial;
 };
-
 const getAllMaterials = async operations => {
   const allMaterials = await operations.query({
     query: gql`
@@ -131,57 +160,6 @@ const getMaterialById = async (id, operations) => {
     variables: { id },
   });
 };
-const testCreateMaterial = async (material, operations) => {
-  const testCreatedMaterial = await operations.mutate({
-    mutation: gql`
-      mutation(
-        $colors: [ID!]
-        $available: Boolean
-        $description: [LanguageInput]
-        $name: [LanguageInput]
-      ) {
-        addMaterial(
-          material: {
-            purpose: INNER
-            colors: $colors
-            available: $available
-            description: $description
-            name: $name
-          }
-        ) {
-          ... on Material {
-            _id
-            name {
-              lang
-              value
-            }
-            description {
-              lang
-              value
-            }
-            purpose
-            colors {
-              _id
-            }
-            additionalPrice {
-              currency
-              value
-            }
-            available
-          }
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: { ...material },
-  });
-
-  return testCreatedMaterial.data.addMaterial;
-};
-
 const updateMaterial = async (id, material, operations) => {
   const updatedMaterial = await operations.mutate({
     mutation: gql`
@@ -236,7 +214,6 @@ const updateMaterial = async (id, material, operations) => {
 
   return updatedMaterial.data.updateMaterial;
 };
-
 const deleteMaterial = async (id, operations) => {
   return await operations.mutate({
     mutation: gql`
@@ -264,6 +241,5 @@ module.exports = {
   getAllMaterials,
   getMaterialById,
   getAllMaterialsWithSkipAndLimit,
-  testCreateMaterial,
   updateMaterial,
 };

@@ -1,26 +1,14 @@
-const {
-  SUPER_ADMIN_EMAIL,
-  SUPER_ADMIN_PASSWORD,
-} = require('../../dotenvValidator');
-
-const patternDoesNotExistId = '5f311ec5f2983e390432a8c3';
+const wrongId = '5f311ec5f2983e390432a8c3';
 const skip = 0;
 const wrongSkip = -1;
 const wrongLimit = -5;
 const limit = 5;
-
-const user = {
-  email: SUPER_ADMIN_EMAIL,
-  password: SUPER_ADMIN_PASSWORD,
-};
-
 const testImages = {
   large: 'large_test-file',
   medium: 'medium_test-file',
   small: 'small_test-file',
   thumbnail: 'thumbnail_test-file',
 };
-
 const testValue = 'test value';
 const updateValue = 'update value';
 const mutationPatternToAdd = {
@@ -44,11 +32,9 @@ const mutationPatternToAdd = {
       value: testValue,
     },
   ],
-  material: 'test',
   handmade: false,
   available: true,
 };
-
 const queryPatternToAdd = {
   name: [
     {
@@ -71,11 +57,9 @@ const queryPatternToAdd = {
     },
   ],
   images: testImages,
-  material: 'test',
   handmade: false,
   available: true,
 };
-
 const patternToUpdate = {
   name: [
     {
@@ -103,15 +87,13 @@ const patternToUpdate = {
     small: 'update',
     thumbnail: 'update',
   },
-  material: 'update',
   available: true,
   handmade: false,
 };
 
 module.exports = {
   patternToUpdate,
-  patternDoesNotExistId,
-  user,
+  wrongId,
   skip,
   limit,
   wrongSkip,

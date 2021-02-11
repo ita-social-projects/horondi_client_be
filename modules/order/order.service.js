@@ -30,7 +30,8 @@ class OrdersService {
     const items = await Order.find(filters)
       .sort({ dateOfCreation: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .exec();
 
     const count = await Order.find(filters).countDocuments();
     return {
@@ -55,6 +56,7 @@ class OrdersService {
 
     if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
 
+
     const { items } = order;
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
@@ -73,11 +75,12 @@ class OrdersService {
       id,
       { ...order, lastUpdatedDate: Date.now() },
       { new: true }
-    );
+    ).exec();
   }
 
   async addOrder(data) {
     const { items } = data;
+
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderId();
 
@@ -108,7 +111,7 @@ class OrdersService {
   async getUserOrders(user) {
     const { orders } = user;
 
-    return await Order.find({ _id: orders });
+    return await Order.find({ _id: orders }).exec();
   }
 
   filterOrders({ days, isPaid }) {
@@ -141,7 +144,8 @@ class OrdersService {
     const filter = this.filterOrders({ days, isPaid: true });
     const orders = await Order.find(filter)
       .sort({ dateOfCreation: 1 })
-      .lean();
+      .lean()
+      .exec();
     const formattedDate = orders.map(({ dateOfCreation }) =>
       changeDataFormat(dateOfCreation, userDateFormat)
     );
@@ -157,7 +161,9 @@ class OrdersService {
 
   async getOrdersStatistic(days) {
     const filter = this.filterOrders({ days });
-    const orders = await Order.find(filter).lean();
+    const orders = await Order.find(filter)
+      .lean()
+      .exec();
     const statuses = orders.map(({ status }) => status);
     const { names, counts } = this.getOrdersStats(statuses);
     const relations = counts.map(count =>

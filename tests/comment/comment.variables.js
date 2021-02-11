@@ -1,151 +1,22 @@
-const validEmail = 'superadmin@gmail.com';
-const invalidEmail = 'resttestqwerty123@gmail.com';
+const userWrongId = '5faced40a3e018192ca5cd8z';
 const productWrongId = '5faa3d306071ad276cc3d63f';
 const commentWrongId = '5faa3d306071ad276cc3d63c';
 const wrongData = '123siSTm#';
 const rate = 4;
 const updatedRate = 1;
-const newComment = {
+const newComment = userId => ({
   text: 'Test text',
-  user: { email: 'superadmin@gmail.com' },
+  user: userId,
   show: false,
-};
-const updatedComment = {
+});
+const updatedComment = userId => ({
   text: 'updated text',
-  user: { email: 'ermn7dyptp@yahoo.com' },
+  user: userId,
   show: true,
-};
-const color = {
-  name: [
-    { lang: 'uk', value: 'Тестовий колір test' },
-    { lang: 'en', value: 'Test color test' },
-  ],
-  colorHex: 'colorHex test',
-  simpleName: [
-    { lang: 'uk', value: 'Проста назва кольору test' },
-    { lang: 'en', value: 'Simple color name test' },
-  ],
-};
-const getMaterial = colorId => ({
-  name: [
-    { lang: 'uk', value: 'Матеріал тест' },
-    { lang: 'en', value: 'Material test' },
-  ],
-  description: [
-    { lang: 'uk', value: 'Опис update' },
-    { lang: 'en', value: 'Description update' },
-  ],
-  colors: [colorId],
-  purpose: 'INNER',
-  available: true,
-  additionalPrice: 100,
 });
-const newCategory = {
-  code: 'Code for test',
-  name: [
-    { lang: 'uk', value: 'Категорія тест' },
-    { lang: 'en', value: 'Category test' },
-  ],
-  images: {
-    large: 'large_10b1e9gkhm7xa9m_backpacks.jpg',
-    medium: 'medium_10b1e9gkhm7xa9m_backpacks.jpg',
-    small: 'small_10b1e9gkhm7xa9m_backpacks.jpg',
-    thumbnail: 'thumbnail_10b1e9gkhm7xa9m_backpacks.jpg',
-  },
-  available: true,
-};
-const newConstructorBasic = (materialId, colorId) => ({
-  name: [
-    { lang: 'uk', value: 'Тестовий конструктор базовий' },
-    { lang: 'en', value: 'Test constructor basic test' },
-  ],
-  material: materialId,
-  color: colorId,
-  basePrice: 200,
-  available: true,
-});
-const newModel = (categoryId, constructorId) => ({
-  category: categoryId,
-  name: [
-    {
-      lang: 'ua',
-      value: 'Тестова модель',
-    },
-    {
-      lang: 'en',
-      value: 'Тестова модель',
-    },
-  ],
-  description: [
-    {
-      lang: 'ua',
-      value: 'Тестовий опис моделі',
-    },
-    {
-      lang: 'en',
-      value: 'Test description',
-    },
-  ],
-  priority: 1,
-  constructorBasic: [constructorId],
-});
-const newClosure = materialId => ({
-  name: [
-    { lang: 'uk', value: ' тест' },
-    { lang: 'en', value: ' test' },
-  ],
-  material: materialId,
-  available: true,
-});
-const newPattern = {
-  name: [
-    { lang: 'uk', value: 'Паттерн тест' },
-    { lang: 'en', value: 'Pattern test' },
-  ],
-  description: [
-    { lang: 'uk', value: 'Опис тест' },
-    { lang: 'en', value: 'Description test' },
-  ],
-  material: ' material',
-};
-const newProduct = (
-  categoryId,
-  modelId,
-  mainMaterialId,
-  innerMaterialId,
-  colorId,
-  patternId,
-  closureId,
-  sizeId
-) => ({
-  category: categoryId,
-  model: modelId,
-  name: [
-    { lang: 'uk', value: 'Продукт тест' },
-    { lang: 'en', value: 'Product test' },
-  ],
-  description: [
-    { lang: 'uk', value: 'Опис тест' },
-    { lang: 'en', value: 'Description test' },
-  ],
-  mainMaterial: {
-    material: mainMaterialId,
-    color: colorId,
-  },
-  innerMaterial: {
-    material: innerMaterialId,
-    color: colorId,
-  },
-  strapLengthInCm: 50,
-  pattern: patternId,
-  closure: closureId,
-  basePrice: 200,
-  sizes: [sizeId],
-  availableCount: 20,
-});
+
 module.exports = {
-  validEmail,
-  invalidEmail,
+  userWrongId,
   newComment,
   wrongData,
   updatedComment,
@@ -153,12 +24,4 @@ module.exports = {
   productWrongId,
   rate,
   updatedRate,
-  newModel,
-  newCategory,
-  newConstructorBasic,
-  newClosure,
-  newPattern,
-  newProduct,
-  color,
-  getMaterial,
 };

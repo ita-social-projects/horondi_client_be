@@ -1,8 +1,11 @@
+const { Error } = require('mongoose');
 const Product = require('./product.model');
-const sizesService = require('../size/size.service');
-const Material = require('../material/material.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
+const categoryService = require('../category/category.service');
+const materialService = require('../material/material.service');
+const patternService = require('../pattern/pattern.service');
+const closuresService = require('../closures/closures.service');
 const uploadService = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
@@ -11,17 +14,62 @@ const {
 const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
-const { Error } = require('mongoose');
 const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id);
+    return await Product.findById(id).exec();
+  }
+
+  async getProductsFilters() {
+    const categories = await Product.distinct('category')
+      .lean()
+      .exec();
+    const models = await Product.distinct('model')
+      .lean()
+      .exec();
+    const patterns = await Product.distinct('pattern')
+      .lean()
+      .exec();
+    const closures = await Product.distinct('closure')
+      .lean()
+      .exec();
+    const mainMaterial = await Product.distinct('mainMaterial.material')
+      .lean()
+      .exec();
+    const mainMaterialColor = await Product.distinct('mainMaterial.color')
+      .lean()
+      .exec();
+    const innerMaterial = await Product.distinct('innerMaterial.material')
+      .lean()
+      .exec();
+    const innerMaterialColor = await Product.distinct('innerMaterial.color')
+      .lean()
+      .exec();
+    const bottomMaterial = await Product.distinct('bottomMaterial.material')
+      .lean()
+      .exec();
+    const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
+      .lean()
+      .exec();
+
+    return {
+      categories,
+      models,
+      patterns,
+      closures,
+      mainMaterial,
+      mainMaterialColor,
+      innerMaterial,
+      innerMaterialColor,
+      bottomMaterial,
+      bottomMaterialColor,
+    };
   }
 
   async getModelsByCategory(id) {
-    const product = await Product.find({ category: id });
+    const product = await Product.find({ category: id }).exec();
     if (product.length === 0) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -87,7 +135,8 @@ class ProductsService {
     const items = await Product.find(filters)
       .skip(skip)
       .limit(limit)
-      .sort(sort);
+      .sort(sort)
+      .exec();
 
     const count = await Product.find(filters).countDocuments();
     return {
@@ -97,7 +146,9 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -125,7 +176,9 @@ class ProductsService {
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
-    return await Product.findByIdAndUpdate(id, productData, { new: true });
+    return await Product.findByIdAndUpdate(id, productData, {
+      new: true,
+    }).exec();
   }
 
   async addProduct(productData, filesToUpload) {
@@ -151,7 +204,9 @@ class ProductsService {
   }
 
   async deleteProduct(id) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
@@ -169,18 +224,20 @@ class ProductsService {
   }
 
   async checkProductExist(data) {
-    let productCount = await Product.countDocuments({
+    const productCount = await Product.countDocuments({
       name: {
         $elemMatch: {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return productCount > 0;
   }
 
   async deleteImages(id, imagesToDelete) {
-    const product = await Product.findById(id).lean();
+    const product = await Product.findById(id)
+      .lean()
+      .exec();
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
@@ -197,7 +254,7 @@ class ProductsService {
           },
         },
         { new: true }
-      );
+      ).exec();
       return updatedProduct.images;
     }
   }
@@ -206,7 +263,8 @@ class ProductsService {
     const products = await Product.find()
       .sort({ purchasedCount: -1 })
       .limit(10)
-      .lean();
+      .lean()
+      .exec();
 
     return products.reduce(
       (prev, curr) => ({
@@ -219,13 +277,13 @@ class ProductsService {
   }
 
   async getProductsForWishlist(userId) {
-    const { wishlist } = await User.findById(userId);
-    return await Product.find({ _id: { $in: wishlist } });
+    const { wishlist } = await User.findById(userId).exec();
+    return await Product.find({ _id: { $in: wishlist } }).exec();
   }
 
   async getProductsForCart(userId) {
-    const { cart } = await User.findById(userId);
-    return await Product.find({ _id: { $in: cart } });
+    const { cart } = await User.findById(userId).exec();
+    return await Product.find({ _id: { $in: cart } }).exec();
   }
 }
 

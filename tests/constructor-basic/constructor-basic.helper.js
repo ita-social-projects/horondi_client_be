@@ -1,25 +1,36 @@
 const { gql } = require('@apollo/client');
 
 const createConstructorBasic = async (constructorElement, operations) => {
-  const createdConstructorBasic = await operations.mutate({
+  const constructorBasic = await operations.mutate({
     mutation: gql`
       mutation($constructorElement: ConstructorBasicInput!) {
         addConstructorBasic(constructorElement: $constructorElement) {
           ... on ConstructorBasic {
             _id
+            name {
+              lang
+              value
+            }
+            material {
+              _id
+            }
+            color {
+              _id
+            }
+
+            available
+            default
           }
           ... on Error {
+            statusCode
             message
           }
         }
       }
     `,
-    variables: {
-      constructorElement,
-    },
+    variables: { constructorElement },
   });
-
-  return createdConstructorBasic.data.addConstructorBasic._id;
+  return constructorBasic.data.addConstructorBasic;
 };
 const deleteConstructorBasic = async (id, operations) => {
   return await operations.mutate({
@@ -40,39 +51,6 @@ const deleteConstructorBasic = async (id, operations) => {
     },
   });
 };
-const createConstructorBasicWithData = async (constructorInput, operations) => {
-  const constructorBasic = await operations.mutate({
-    mutation: gql`
-      mutation($constructorElement: ConstructorBasicInput!) {
-        addConstructorBasic(constructorElement: $constructorElement) {
-          ... on ConstructorBasic {
-            _id
-            name {
-              lang
-              value
-            }
-            material {
-              _id
-            }
-            color {
-              _id
-            }
-            image
-            available
-            default
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: { constructorElement: constructorInput },
-  });
-  return constructorBasic.data.addConstructorBasic;
-};
-
 const updateConstructorBasic = async (
   constructorInput,
   constructorId,
@@ -97,7 +75,7 @@ const updateConstructorBasic = async (
             color {
               _id
             }
-            image
+
             available
             default
           }
@@ -112,7 +90,6 @@ const updateConstructorBasic = async (
   });
   return constructorBasic.data.updateConstructorBasic;
 };
-
 const getAllConstructorBasics = async operations => {
   const res = await operations.query({
     query: gql`
@@ -137,7 +114,6 @@ const getAllConstructorBasics = async operations => {
               _id
               colorHex
             }
-            image
           }
         }
       }
@@ -146,7 +122,7 @@ const getAllConstructorBasics = async operations => {
   return res.data.getAllConstructorBasics;
 };
 const getConstructorBasicById = async (id, operations) => {
-  const ConstructorBasicById = await operations.query({
+  const constructorBasicById = await operations.query({
     query: gql`
       query($id: ID!) {
         getConstructorBasicById(id: $id) {
@@ -159,7 +135,7 @@ const getConstructorBasicById = async (id, operations) => {
             material {
               _id
             }
-            image
+
             color {
               _id
             }
@@ -177,13 +153,12 @@ const getConstructorBasicById = async (id, operations) => {
       id,
     },
   });
-  return ConstructorBasicById;
+  return constructorBasicById.data.getConstructorBasicById;
 };
 
 module.exports = {
   createConstructorBasic,
   deleteConstructorBasic,
-  createConstructorBasicWithData,
   getAllConstructorBasics,
   getConstructorBasicById,
   updateConstructorBasic,

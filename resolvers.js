@@ -93,7 +93,6 @@ const {
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const materialsService = require('./modules/material/material.service');
 const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
@@ -111,6 +110,7 @@ const colorService = require('./modules/color/color.service');
 const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
+
 const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
@@ -191,22 +191,43 @@ const resolvers = {
 
     ...colorQuery,
   },
-
-  ConstructorBottom: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.constructorBottom;
-      }
-      return 'Error';
-    },
+  ProductsFilter: {
+    categories: parent =>
+      parent.categories.map(category =>
+        categoryService.getCategoryById(category)
+      ),
+    models: parent =>
+      parent.models.map(model => modelService.getModelById(model)),
+    patterns: parent =>
+      parent.patterns.map(pattern => patternService.getPatternById(pattern)),
+    closures: parent =>
+      parent.closures.map(closure => closuresService.getClosureById(closure)),
+    mainMaterial: parent =>
+      parent.mainMaterial.map(material =>
+        materialService.getMaterialById(material)
+      ),
+    mainMaterialColor: parent =>
+      parent.mainMaterialColor.map(color => colorService.getColorById(color)),
+    innerMaterial: parent =>
+      parent.innerMaterial.map(material =>
+        materialService.getMaterialById(material)
+      ),
+    innerMaterialColor: parent =>
+      parent.innerMaterialColor.map(color => colorService.getColorById(color)),
+    bottomMaterial: parent =>
+      parent.bottomMaterial.map(material =>
+        materialService.getMaterialById(material)
+      ),
+    bottomMaterialColor: parent =>
+      parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
   },
-
   User: {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
 
   Comment: {
     product: parent => productsService.getProductById(parent.product),
+    user: parent => userService.getUser(parent.user),
   },
 
   Product: {
@@ -235,8 +256,8 @@ const resolvers = {
   },
 
   Order: {
-    items: parent => {
-      return parent.items.map(item => {
+    items: parent =>
+      parent.items.map(item => {
         if (item.isFromConstructor) {
           return {
             constructorBottom: constructorServices.getConstructorElementById(
@@ -263,31 +284,69 @@ const resolvers = {
             quantity: item.quantity,
             fixedPrice: item.fixedPrice,
           };
-        } else {
-          return {
-            fixedPrice: item.fixedPrice,
-            isFromConstructor: item.isFromConstructor,
-            quantity: item.quantity,
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-              sidePocket: item.options.sidePocket,
-            },
-            product: productsService.getProductById(item.product),
-          };
         }
-      });
-    },
+        return {
+          fixedPrice: item.fixedPrice,
+          isFromConstructor: item.isFromConstructor,
+          quantity: item.quantity,
+          options: {
+            size: sizeService.getSizeById(item.options.size),
+            sidePocket: item.options.sidePocket,
+          },
+          product: productsService.getProductById(item.product),
+        };
+      }),
   },
-
+  Pattern: {
+    material: parent => materialService.getMaterialById(parent.material),
+  },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+    constructorBottom: parent =>
+      parent.constructorBottom.map(el =>
+        constructorServices.getConstructorElementById(
+          el,
+          constructorBottomModel
+        )
+      ),
+    constructorBasic: parent =>
+      parent.constructorBasic.map(el =>
+        constructorServices.getConstructorElementById(el, constructorBasicModel)
+      ),
+    constructorFrontPocket: parent =>
+      parent.constructorFrontPocket.map(el =>
+        constructorServices.getConstructorElementById(
+          el,
+          constructorFrontPocketModel
+        )
+      ),
+    constructorPattern: parent =>
+      parent.constructorPattern.map(el => patternService.getPatternById(el)),
+  },
+  Closure: {
+    material: parent => materialService.getMaterialById(parent.material),
+  },
+  ConstructorBottom: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
+  ConstructorBasic: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
+  ConstructorFrontPocket: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
   },
 
   UserRate: {
     user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
   },
-
+  Material: {
+    colors: parent =>
+      parent.colors.map(color => colorService.getColorById(color)),
+  },
   EmailQuestion: {
     answer: parent => {
       if (parent.answer.date) {
@@ -528,7 +587,8 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.colorHex) {
         return SCHEMA_NAMES.color;
-      } else if (obj.items) {
+      }
+      if (obj.items) {
         return SCHEMA_NAMES.materials;
       }
       return 'Error';

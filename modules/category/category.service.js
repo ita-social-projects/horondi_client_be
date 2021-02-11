@@ -7,15 +7,16 @@ const {
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
 const uploadService = require('../upload/upload.service');
+const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
 
 class CategoryService {
   async getAllCategories() {
-    return await Category.find();
+    return await Category.find().exec();
   }
 
   async getCategoryById(id) {
-    const category = await Category.findById(id);
+    const category = await Category.findById(id).exec();
     if (category) {
       return category;
     }
@@ -23,7 +24,7 @@ class CategoryService {
   }
 
   async updateCategory({ id, category, upload }) {
-    const categoryToUpdate = await Category.findById(id);
+    const categoryToUpdate = await Category.findById(id).exec();
     if (!categoryToUpdate) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -33,15 +34,19 @@ class CategoryService {
     }
 
     if (!upload || !Object.keys(upload).length) {
-      return await Category.findByIdAndUpdate(id, category, { new: true });
+      return await Category.findByIdAndUpdate(id, category, {
+        new: true,
+      }).exec();
     }
     const uploadResult = await uploadService.uploadFile(upload);
 
     const images = uploadResult.fileNames;
     if (!images) {
-      return await Category.findByIdAndUpdate(id, category);
+      return await Category.findByIdAndUpdate(id, category).exec();
     }
-    const foundCategory = await Category.findById(id).lean();
+    const foundCategory = await Category.findById(id)
+      .lean()
+      .exec();
     uploadService.deleteFiles(Object.values(foundCategory.images));
 
     return await Category.findByIdAndUpdate(
@@ -53,14 +58,14 @@ class CategoryService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async getCategoriesForBurgerMenu() {
     const categories = await this.getAllCategories();
 
     const data = categories.map(async category => {
-      const models = await Model.find({ category: category._id });
+      const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => {
         return {
           name: model.name,
@@ -98,12 +103,14 @@ class CategoryService {
   }
 
   async cascadeUpdateRelatives(filter, updateData) {
-    await Product.updateMany(filter, updateData);
-    await Model.updateMany(filter, updateData);
+    await Product.updateMany(filter, updateData).exec();
+    await Model.updateMany(filter, updateData).exec();
   }
   async deleteCategory({ deleteId, switchId }) {
-    const category = await Category.findByIdAndDelete(deleteId).lean();
-    const switchCategory = await Category.findById(switchId);
+    const category = await Category.findByIdAndDelete(deleteId)
+      .lean()
+      .exec();
+    const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
       category: deleteId,
@@ -129,7 +136,13 @@ class CategoryService {
 
     throw new Error(CATEGORY_NOT_FOUND);
   }
-
+  async getCategoriesWithModels() {
+    const categories = await this.getAllCategories();
+    return categories.map(category => {
+      category.models = modelService.getModelsByCategory(category._id);
+      return category;
+    });
+  }
   async checkCategoryExist(data, id) {
     if (!data.name.length) {
       return false;
@@ -141,7 +154,7 @@ class CategoryService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return categoriesCount > 0;
   }
 
@@ -174,7 +187,8 @@ class CategoryService {
     let total = 0;
     const categories = await Category.find()
       .sort({ purchasedCount: -1 })
-      .lean();
+      .lean()
+      .exec();
 
     categories.forEach(({ purchasedCount }) => (total += purchasedCount));
 

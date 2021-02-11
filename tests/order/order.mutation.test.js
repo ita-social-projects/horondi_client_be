@@ -1,43 +1,43 @@
-/* eslint-disable no-undef */
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
 const {
-  newConstructorBasic,
-  newPattern,
-  newClosure,
-  newOrderInputData,
-  newSizeInputData,
-  newProductInputData,
-  newModelInputData,
-  newCategoryInputData,
-  newMaterialInputData,
-  newColorInputData,
-  newOrderUpdated,
-  wrongId,
-} = require('./order.variables');
-const {
-  createOrder,
   deleteOrder,
+  createOrder,
   updateOrderById,
 } = require('./order.helpers');
+const {
+  wrongId,
+  newOrderInputData,
+  newOrderUpdated,
+} = require('./order.variables');
+const { newProductInputData } = require('../product/product.variables');
+const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
+const {
+  newConstructorBasic,
+} = require('../constructor-basic/constructor-basic.variables');
 const { createColor, deleteColor } = require('../color/color.helper');
+const { color } = require('../color/color.variables');
 const {
   createMaterial,
   deleteMaterial,
 } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
 const {
   createCategory,
   deleteCategory,
 } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
 const { createClosure, deleteClosure } = require('../closure/closure.helper');
+const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
-const { createProduct, deleteProduct } = require('../product/product.helper');
+const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
+const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
-
+const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
@@ -57,28 +57,32 @@ let patternId;
 let constructorBasicId;
 let closureId;
 
-describe('Order mutations', () => {
+describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    sizeId = await createSize(newSizeInputData, operations);
-    colorId = await createColor(newColorInputData, operations);
-    categoryId = await createCategory(newCategoryInputData, operations);
-    materialId = await createMaterial(
-      newMaterialInputData(colorId),
-      operations
-    );
-    patternId = await createPattern(newPattern, operations);
-    closureId = await createClosure(newClosure(materialId), operations);
-    constructorBasicId = await createConstructorBasic(
+    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
+    sizeId = sizeData._id;
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const materialData = await createMaterial(getMaterial(colorId), operations);
+    materialId = materialData._id;
+    const patternData = await createPattern(queryPatternToAdd, operations);
+    patternId = patternData._id;
+    const closureData = await createClosure(newClosure(materialId), operations);
+    closureId = closureData._id;
+    const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId),
       operations
     );
-    modelId = await createModel(
-      newModelInputData(categoryId, constructorBasicId, sizeId),
+    constructorBasicId = constructorBasicData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
       operations
     );
-
-    productId = await createProduct(
+    modelId = modelData._id;
+    const productData = await createProduct(
       newProductInputData(
         categoryId,
         modelId,
@@ -86,10 +90,12 @@ describe('Order mutations', () => {
         materialId,
         colorId,
         patternId,
-        closureId
+        closureId,
+        sizeId
       ),
       operations
     );
+    productId = productData._id;
   });
   const {
     status,
@@ -106,6 +112,7 @@ describe('Order mutations', () => {
       operations
     );
     orderId = order._id;
+
     expect(order).toBeDefined();
     expect(items).toBeInstanceOf(Array);
     expect(order).toHaveProperty('status', status);
@@ -123,6 +130,7 @@ describe('Order mutations', () => {
     user: updatedUser,
     status: updatedStatus,
   } = newOrderUpdated(productId, modelId, sizeId, constructorBasicId);
+
   test('Should update order', async () => {
     const updatedOrder = await updateOrderById(
       newOrderUpdated(productId, modelId, sizeId),
@@ -146,10 +154,12 @@ describe('Order mutations', () => {
       wrongId,
       operations
     );
+
     expect(message).toBe(ORDER_NOT_FOUND);
   });
   test('Should throw error ORDER_NOT_FOUND after try to delete', async () => {
     const { errors } = await deleteOrder(wrongId, operations);
+
     expect(errors[0].message).toEqual(ORDER_NOT_FOUND);
   });
   test('Should delete order', async () => {
@@ -157,6 +167,7 @@ describe('Order mutations', () => {
 
     expect(deletedOrder.data.deleteOrder).toHaveProperty('_id', orderId);
   });
+
   afterAll(async () => {
     await deleteProduct(productId, operations);
     await deleteModel(modelId, operations);

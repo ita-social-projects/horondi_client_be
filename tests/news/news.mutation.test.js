@@ -11,11 +11,11 @@ const {
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
 
-let newsId = '';
-const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
-let operations;
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/upload/upload.utils');
+
+let newsId;
+let operations;
 
 describe('News mutations tests', () => {
   beforeAll(async () => {
@@ -65,7 +65,7 @@ describe('News mutations tests', () => {
 
   test('#4 Update Not Existing News Should Return Error', async () => {
     const updateResponse = await updateNews(
-      newsDoesNotExistId,
+      wrongId,
       newsUpdateData,
       operations
     );
@@ -83,6 +83,7 @@ describe('News mutations tests', () => {
 
   test('#6 Delete News', async () => {
     const deleteResponse = await deleteNews(newsId, operations);
+
     expect(deleteResponse).toBeDefined();
     expect(deleteResponse).not.toBeNull();
     expect(deleteResponse.text).toBeInstanceOf(Array);
@@ -101,7 +102,7 @@ describe('News mutations tests', () => {
   });
 
   test('#7 Delete Not Existing News Should Return Error', async () => {
-    const deleteResponse = await deleteNews(newsDoesNotExistId, operations);
+    const deleteResponse = await deleteNews(wrongId, operations);
 
     expect(deleteResponse).toBeDefined();
     expect(deleteResponse).not.toBeNull();
