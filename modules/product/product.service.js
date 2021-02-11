@@ -7,6 +7,7 @@ const materialService = require('../material/material.service');
 const patternService = require('../pattern/pattern.service');
 const closuresService = require('../closures/closures.service');
 const uploadService = require('../upload/upload.service');
+const mongoose = require('mongoose');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -95,7 +96,7 @@ class ProductsService {
       filter.category = { $in: category };
     }
     if (models && models.length) {
-      filter.model = { $in: model };
+      filter.models = { $in: models.map(id => mongoose.Types.ObjectId(id)) };
     }
     if (colors && colors.length) {
       filter.colors = { $in: colors };

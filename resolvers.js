@@ -112,6 +112,7 @@ const {
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 
 const SCHEMA_NAMES = {
+  paginatedProducts: 'PaginatedProducts',
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
@@ -418,6 +419,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.category;
+      }
+      return 'Error';
+    },
+  },
+  PaginatedProductsResult: {
+    __resolveType: obj => {
+      console.log(obj);
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedProducts;
       }
       return 'Error';
     },
