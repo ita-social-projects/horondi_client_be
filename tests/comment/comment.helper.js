@@ -118,6 +118,10 @@ const getAllCommentsByUser = async (userId, operations) => {
               _id
             }
           }
+          ... on Error {
+            message
+            statusCode
+          }
         }
       }
     `,
@@ -132,7 +136,7 @@ const getAllCommentsByProduct = async (productId, operations) => {
     query: gql`
       query($productId: ID!) {
         getAllCommentsByProduct(productId: $productId) {
-          items {
+          ... on Comment {
             text
             product {
               _id
@@ -141,6 +145,10 @@ const getAllCommentsByProduct = async (productId, operations) => {
             user {
               _id
             }
+          }
+          ... on Error {
+            message
+            statusCode
           }
         }
       }
