@@ -28,7 +28,7 @@ const constructorBasicMutation = {
   addConstructorBasic: async (parent, args) => {
     try {
       return await constructorService.addConstructorElement(
-        args.constructorElement,
+        args,
         ConstructorBasic,
         BASIC_ALREADY_EXIST
       );

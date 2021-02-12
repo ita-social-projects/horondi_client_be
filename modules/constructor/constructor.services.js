@@ -1,4 +1,6 @@
+const { uploadSmallImage } = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const uploadService = require('../upload/upload.service');
 
 class ConstructorService {
   async getAllConstructorElements({ skip, limit }, model) {
@@ -22,19 +24,33 @@ class ConstructorService {
     throw new Error(error);
   }
 
-  async addConstructorElement(data, model, error) {
-    if (await this.checkConstructorElementExist(data, model)) {
+  async addConstructorElement({ constructorElement, upload }, model, error) {
+    if (upload) {
+      constructorElement.image = await uploadSmallImage(upload);
+    }
+    if (await this.checkConstructorElementExist(constructorElement, model)) {
       throw new Error(error);
     }
-    data.basePrice = await calculatePrice(data.basePrice);
-    const basic = await new model(data).save();
+    constructorElement.basePrice = await calculatePrice(
+      constructorElement.basePrice
+    );
+    const basic = await new model(constructorElement).save();
     return await model.findById(basic._id);
   }
 
-  async updateConstructorElement({ id, constructorElement }, model, error) {
+  async updateConstructorElement(
+    { id, constructorElement, upload },
+    model,
+    error
+  ) {
     const constructorFountElement = await model.findById(id);
     if (!constructorFountElement) {
       throw new Error(error);
+    }
+
+    if (upload) {
+      await uploadService.deleteFile(constructorFountElement.image);
+      constructorElement.image = await uploadSmallImage(upload);
     }
     constructorElement.basePrice = await calculatePrice(
       constructorElement.basePrice
@@ -44,6 +60,11 @@ class ConstructorService {
 
   async deleteConstructorElement(id, model, error) {
     const constructorElement = await model.findByIdAndDelete(id);
+    if (constructorElement) {
+      if (constructorElement.image) {
+        await uploadService.deleteFile(constructorElement.image);
+      }
+    }
     if (!constructorElement) {
       throw new Error(error);
     }

@@ -19,15 +19,15 @@ jest.mock('../../modules/upload/upload.service');
 let patternId;
 let operations;
 
-describe('pattern mutation tests', () => {
+describe('Pattern Mutation Tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
 
-  it('should add pattern to database', async () => {
+  test('#1 Should Add Pattern To Database', async () => {
     const addedPattern = await createPattern(mutationPatternToAdd, operations);
-    patternId = addedPattern._id;
 
+    patternId = addedPattern._id;
     expect(addedPattern).toHaveProperty(
       'name',
       mutationPatternToAdd.name.map(item => ({
@@ -40,7 +40,6 @@ describe('pattern mutation tests', () => {
         ...item,
       }))
     );
-    expect(addedPattern).toHaveProperty('images');
     expect(addedPattern).toHaveProperty(
       'handmade',
       mutationPatternToAdd.handmade
@@ -54,13 +53,15 @@ describe('pattern mutation tests', () => {
       mutationPatternToAdd.material
     );
   });
-  it('should return error if we try to create pattern with name that already exists', async () => {
+
+  test('#2 Should Return Error If We Try To Create Pattern With Name That Already Exists', async () => {
     const res = await createPattern(mutationPatternToAdd, operations);
 
     expect(res).toHaveProperty('message', PATTERN_ALREADY_EXIST);
     expect(res).toHaveProperty('statusCode', 400);
   });
-  it('should update pattern', async () => {
+
+  test('#3 Should Update Pattern', async () => {
     const updatedPattern = await updatePattern(
       patternId,
       patternToUpdate,
@@ -74,26 +75,27 @@ describe('pattern mutation tests', () => {
       patternToUpdate.description
     );
     expect(updatedPattern.description).toBeInstanceOf(Array);
-    expect(updatedPattern).toHaveProperty('images');
-
     expect(updatedPattern).toHaveProperty('handmade', patternToUpdate.handmade);
     expect(updatedPattern).toHaveProperty(
       'available',
       patternToUpdate.available
     );
   });
-  it('should return error if we try to update pattern with wrong id', async () => {
+
+  test('#4 Should Return Error If We Try To Update Pattern With Wrong Id', async () => {
     const res = await updatePattern(wrongId, patternToUpdate, operations);
 
     expect(res).toHaveProperty('statusCode', 404);
     expect(res).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
-  it('should delete pattern from database', async () => {
+
+  test('#5 Should Delete Pattern From Database', async () => {
     const deletedData = await deletePattern(patternId, operations);
 
     expect(deletedData.data.deletePattern._id).toEqual(patternId);
   });
-  it('should return error if we try to delete not existing pattern', async () => {
+
+  test('#6 Should Return Error If We Try To Delete Not Existing Pattern', async () => {
     const res = await deletePattern(wrongId, operations);
 
     expect(res.data.deletePattern).toHaveProperty('statusCode', 404);

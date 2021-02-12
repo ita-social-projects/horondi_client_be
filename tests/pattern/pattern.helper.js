@@ -17,12 +17,6 @@ const createPattern = async (pattern, operations) => {
             }
             handmade
             available
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
           }
           ... on Error {
             message
@@ -73,12 +67,6 @@ const getAllPatterns = async operations => {
               lang
               value
             }
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
             handmade
             available
           }
@@ -102,13 +90,6 @@ const getPatternById = async (id, operations) => {
               lang
               value
             }
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
-
             handmade
             available
           }
@@ -137,13 +118,6 @@ const getAllPatternsPaginated = async (skip, limit, operations) => {
               lang
               value
             }
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
-
             handmade
             available
           }
@@ -169,13 +143,6 @@ const updatePattern = async (id, pattern, operations) => {
               lang
               value
             }
-            images {
-              large
-              medium
-              small
-              thumbnail
-            }
-
             handmade
             available
           }
