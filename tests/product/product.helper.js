@@ -198,10 +198,12 @@ const getAllProductsWithSkipAndLimit = async (skip, limit, operations) => {
     query: gql`
       query($skip: Int, $limit: Int) {
         getProducts(skip: $skip, limit: $limit, filter: { colors: [] }) {
-          items {
-            name {
-              lang
-              value
+          ... on PaginatedProducts {
+            items {
+              name {
+                lang
+                value
+              }
             }
           }
         }

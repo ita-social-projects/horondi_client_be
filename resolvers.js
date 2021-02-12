@@ -425,7 +425,6 @@ const resolvers = {
   },
   PaginatedProductsResult: {
     __resolveType: obj => {
-      console.log(obj);
       if (obj.items) {
         return SCHEMA_NAMES.paginatedProducts;
       }

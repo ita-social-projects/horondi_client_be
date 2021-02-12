@@ -97,7 +97,7 @@ class ProductsService {
       filter.category = { $in: category };
     }
     if (models && models.length) {
-      filter.models = { $in: models.map(id => mongoose.Types.ObjectId(id)) };
+      filter.model = { $in: models };
     }
     if (colors && colors.length) {
       filter.colors = { $in: colors };
