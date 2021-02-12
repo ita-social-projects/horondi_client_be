@@ -8,16 +8,8 @@ class FilterHelper {
       filter.role = { $in: roles };
     }
 
-    if (_id && _id.length) {
-      filter._id = { $in: _id.map(id => mongoose.Types.ObjectId(id)) };
-    }
-
     if (banned && banned.length) {
       filter.banned = { $in: banned };
-    }
-
-    if (search && search.trim()) {
-      filter.$or = this.searchItems(search.trim());
     }
 
     if (days) {
@@ -25,6 +17,14 @@ class FilterHelper {
         $gte: removeDaysFromData(days, Date.now()),
         $lte: removeDaysFromData(0, Date.now()),
       };
+    }
+
+    if (_id && _id.length) {
+      filter._id = { $in: _id.map(id => mongoose.Types.ObjectId(id)) };
+    }
+
+    if (search && search.trim()) {
+      filter.$or = this.searchItems(search.trim());
     }
 
     return filter;
