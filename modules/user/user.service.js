@@ -52,9 +52,8 @@ const {
   SESSION_TIMEOUT,
   INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
-
 const { userDateFormat } = require('../../consts');
-const FilterHelper = require('../../helpers/helper');
+const FilterHelper = require('../../helpers/filter-helper');
 
 const ROLES = {
   admin: 'admin',

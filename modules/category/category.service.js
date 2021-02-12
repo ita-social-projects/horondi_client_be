@@ -9,7 +9,8 @@ const {
 const uploadService = require('../upload/upload.service');
 const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
-const FilterHelper = require('../../helpers/helper');
+const FilterHelper = require('../../helpers/filter-helper');
+
 class CategoryService extends FilterHelper {
   async getAllCategories({ filter, pagination, sort }) {
     try {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 class FilterHelper {
   filterItems(args = {}) {
     const filter = {};
