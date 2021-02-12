@@ -1,4 +1,4 @@
-const { uploadLargeImage } = require('../upload/upload.utils');
+const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const {
   PATTERN_ALREADY_EXIST,
