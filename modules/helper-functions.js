@@ -136,6 +136,6 @@ const reduceByDaysCount = (names, counts, days) => {
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
-  countItemsOccurency,
   changeDataFormat,
+  countItemsOccurency,
 };

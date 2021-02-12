@@ -6,7 +6,13 @@ const deliverySchema = new mongoose.Schema({
   sentOn: Date,
   sentBy: {
     type: String,
-    enum: ['NOVAPOST', 'UKRPOST', 'SELFPICKUP'],
+    enum: [
+      'NOVAPOST',
+      'UKRPOST',
+      'SELFPICKUP',
+      'NOVAPOSTCOURIER',
+      'UKRPOSTCOURIER',
+    ],
     default: 'SELFPICKUP',
   },
   byCourier: Boolean,

@@ -400,9 +400,7 @@ const typeDefs = gql`
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
       productId: ID!
-      skip: Int
-      limit: Int
-    ): PaginatedComments!
+    ): [CommentResult]
     getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
@@ -658,9 +656,9 @@ const typeDefs = gql`
     ): ProductResult
     deleteImages(id: ID!, images: [String!]!): PrimaryImage
     "Comment Mutation"
-    addComment(productId: ID!, comment: commentInput!): CommentResult
+    addComment(productId: ID!, comment: CommentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
-    updateComment(id: ID!, comment: commentInput!): CommentResult
+    updateComment(id: ID!, comment: CommentUpdateInput!): CommentResult
     "BusinessText Mutation"
     addBusinessText(
       businessText: BusinessTextInput!
