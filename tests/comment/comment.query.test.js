@@ -1,4 +1,7 @@
-const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
+const {
+  COMMENT_NOT_FOUND,
+  COMMENT_FOR_NOT_EXISTING_USER,
+} = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
   newComment,
@@ -41,7 +44,7 @@ const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
 const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
-const { registerUser, deleteUser } = require('../user/user.helper');
+const { registerUser, deleteUser, loginUser } = require('../user/user.helper');
 const { testUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 
@@ -112,7 +115,8 @@ describe('Comment queries', () => {
       language,
       operations
     );
-    userId = userData.data.registerUser._id;
+    const authRes = await loginUser(email, pass, operations);
+    userId = authRes.data.loginUser._id;
     const commentData = await addComment(
       productId,
       newComment(userId),
@@ -133,13 +137,13 @@ describe('Comment queries', () => {
   it(' should return empty array of comments for unexciting id ', async () => {
     const res = await getAllCommentsByUser(userWrongId, operations);
 
-    expect(res).toBeDefined();
-    expect(res[0]).toEqual({});
-    expect(res).toBeInstanceOf(Array);
+    expect(res[0]).toBeDefined();
+    expect(res[0].statusCode).toBe(404);
+    expect(res[0].message).toBe(COMMENT_FOR_NOT_EXISTING_USER);
   });
   it(' Should receive all comments for one product', async () => {
     const res = await getAllCommentsByProduct(productId, operations);
-    const receivedComments = res.data.getAllCommentsByProduct.items;
+    const receivedComments = res.data.getAllCommentsByProduct;
 
     expect(receivedComments).toBeDefined();
     expect(receivedComments[0]).toHaveProperty('product', { _id: productId });
@@ -149,10 +153,11 @@ describe('Comment queries', () => {
   });
   it(' Should receive COMMENT_NOT_FOUND for get all comments for one product', async () => {
     const res = await getAllCommentsByProduct(productWrongId, operations);
-    const error = res.errors[0].message;
+    const receivedComments = res.data.getAllCommentsByProduct;
 
-    expect(error).toBeDefined();
-    expect(error).toBe(COMMENT_NOT_FOUND);
+    expect(receivedComments[0]).toBeDefined();
+    expect(receivedComments[0].statusCode).toBe(404);
+    expect(receivedComments[0].message).toBe(COMMENT_NOT_FOUND);
   });
 
   it(' should return one comment', async () => {

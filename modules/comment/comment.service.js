@@ -28,20 +28,13 @@ class CommentsService {
     return comment;
   }
 
-  async getAllCommentsByProduct({ productId, skip, limit }) {
+  async getAllCommentsByProduct({ productId }) {
     const product = await Product.findById(productId).exec();
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId })
-      .skip(skip)
-      .limit(limit)
-      .sort('-date')
-      .exec();
-    const count = await Comment.find({ product: productId })
-      .countDocuments()
-      .exec();
-    return { items: comments, count };
+    const comments = await Comment.find({ product: productId }).exec();
+    return comments;
   }
 
   async getAllCommentsByUser(userId) {
