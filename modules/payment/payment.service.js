@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const {
   PAYMENT_MERCHANT_ID,
   PAYMENT_SECRET,
+  CRYPTO,
 } = require('../../dotenvValidator');
 
 class PaymentService {
@@ -24,7 +25,7 @@ class PaymentService {
     const signString = secret + '|' + Object.values(ordered).join('|');
 
     return crypto
-      .createHash('sha1')
+      .createHash(CRYPTO)
       .update(signString)
       .digest('hex');
   }

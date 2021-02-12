@@ -9,12 +9,18 @@ show: Boolean
 }
 `;
 
-const commentInput = `
-input commentInput {
+const sharedInputFields = `
   text: String
+  show: Boolean
+`;
+const commentInput = `
+input CommentInput {
+  ${sharedInputFields}
   user: ID!
   product: ID!
-  show: Boolean!
+}
+input CommentUpdateInput {
+  ${sharedInputFields}
 }`;
 
 module.exports = {

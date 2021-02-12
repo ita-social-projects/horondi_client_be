@@ -1,4 +1,4 @@
-const userWrongId = '5faced40a3e018192ca5cd8z';
+const userWrongId = '5fae5ab81069f737a6d4c00d';
 const productWrongId = '5faa3d306071ad276cc3d63f';
 const commentWrongId = '5faa3d306071ad276cc3d63c';
 const wrongData = '123siSTm#';
@@ -9,11 +9,10 @@ const newComment = userId => ({
   user: userId,
   show: false,
 });
-const updatedComment = userId => ({
+const updatedComment = {
   text: 'updated text',
-  user: userId,
   show: true,
-});
+};
 
 module.exports = {
   userWrongId,
