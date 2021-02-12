@@ -46,7 +46,7 @@ class PatternsService {
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
-    const constructorImg = await uploadLargeImage(image[1]);
+    const constructorImg = await uploadSmallImage(image[1]);
     pattern.constructorImg = constructorImg;
 
     if (!images && constructorImg) {
@@ -83,7 +83,7 @@ class PatternsService {
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
-    pattern.constructorImg = await uploadLargeImage(image[1]);
+    pattern.constructorImg = await uploadSmallImage(image[1]);
 
     return new Pattern({ ...pattern, images }).save();
   }

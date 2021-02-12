@@ -5,6 +5,12 @@ const uploadLargeImage = async file => {
   return result.fileNames.large;
 };
 
+const uploadSmallImage = async file => {
+  let result = await uploadService.uploadFile(file, ['small']);
+  return result.fileNames.small;
+};
+
 module.exports = {
   uploadLargeImage,
+  uploadSmallImage,
 };

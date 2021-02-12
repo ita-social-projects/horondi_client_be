@@ -1,4 +1,4 @@
-const { uploadLargeImage } = require('../upload/upload.utils');
+const { uploadSmallImage } = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 const uploadService = require('../upload/upload.service');
 
@@ -26,7 +26,7 @@ class ConstructorService {
 
   async addConstructorElement({ constructorElement, upload }, model, error) {
     if (upload) {
-      constructorElement.image = await uploadLargeImage(upload);
+      constructorElement.image = await uploadSmallImage(upload);
     }
     if (await this.checkConstructorElementExist(constructorElement, model)) {
       throw new Error(error);
@@ -50,7 +50,7 @@ class ConstructorService {
 
     if (upload) {
       await uploadService.deleteFile(constructorFountElement.image);
-      constructorElement.image = await uploadLargeImage(upload);
+      constructorElement.image = await uploadSmallImage(upload);
     }
     constructorElement.basePrice = await calculatePrice(
       constructorElement.basePrice
