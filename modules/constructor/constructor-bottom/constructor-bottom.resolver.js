@@ -28,7 +28,7 @@ const constructorBottomMutation = {
   addConstructorBottom: async (parent, args) => {
     try {
       return await constructorService.addConstructorElement(
-        args.constructorElement,
+        args,
         ConstructorBottom,
         CONSTRUCTOR_BOTTOM_ALREADY_EXIST
       );

@@ -726,16 +726,16 @@ const typeDefs = gql`
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
     "ConstructorBasic Mutation"  
-    addConstructorBasic(constructorElement: ConstructorBasicInput!): ConstructorBasicResult
-    updateConstructorBasic(id: ID!, constructorElement: ConstructorBasicInput!): ConstructorBasicResult
+    addConstructorBasic(constructorElement: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
+    updateConstructorBasic(id: ID!, constructorElement: ConstructorBasicInput!, upload: Upload): ConstructorBasicResult
     deleteConstructorBasic(id: ID!): ConstructorBasicResult
     "ConstructorFrontPocket Mutation"  
-    addConstructorFrontPocket(constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
-    updateConstructorFrontPocket(id: ID!, constructorElement: ConstructorFrontPocketInput!): ConstructorFrontPocketResult
+    addConstructorFrontPocket(constructorElement: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
+    updateConstructorFrontPocket(id: ID!, constructorElement: ConstructorFrontPocketInput!, upload: Upload): ConstructorFrontPocketResult
     deleteConstructorFrontPocket(id: ID!): ConstructorFrontPocketResult
     "ConstructorBottom Mutation"
-    addConstructorBottom(constructorElement: ConstructorBottomInput!): ConstructorBottomResult
-    updateConstructorBottom(id: ID!, constructorElement: ConstructorBottomInput!): ConstructorBottomResult
+    addConstructorBottom(constructorElement: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
+    updateConstructorBottom(id: ID!, constructorElement: ConstructorBottomInput!, upload: Upload): ConstructorBottomResult
     deleteConstructorBottom(id: ID!): ConstructorBottomResult
     "Change model constructor details"  
     addModelConstructorBasic(id:ID!, constructorElementID:ID!):ModelResult
