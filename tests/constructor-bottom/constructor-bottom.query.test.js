@@ -24,7 +24,7 @@ let newConstructorForQuery;
 jest.mock('../../modules/currency/currency.utils.js');
 
 describe('Constructor query', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -36,33 +36,38 @@ describe('Constructor query', () => {
       addConstructor,
       operations
     );
+    done();
   });
-  test('should return all ConstructorBasics', async () => {
+  test('should return all ConstructorBasics', async done => {
     const allConstructorBottom = await getAllConstructorBottom(operations);
 
     expect(allConstructorBottom).toBeDefined();
     expect(allConstructorBottom.length).toBeGreaterThan(0);
+    done();
   });
-  test('should return constructor-bottom by Id', async () => {
+  test('should return constructor-bottom by Id', async done => {
     const constructorBottomById = await getConstructorBottomById(
       newConstructorForQuery._id,
       operations
     );
 
     expect(constructorBottomById).toBeDefined();
+    done();
   });
-  test('should return error when try to get constructor-bottom by wrong ID', async () => {
+  test('should return error when try to get constructor-bottom by wrong ID', async done => {
     const constructorBottomById = await getConstructorBottomById(
       wrongId,
       operations
     );
 
     expect(constructorBottomById.statusCode).toBe(404);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteConstructorBottom(newConstructorForQuery._id, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
+    done();
   });
 });

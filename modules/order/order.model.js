@@ -2,6 +2,13 @@ const mongoose = require('mongoose');
 const CurrencySet = require('../../models/CurrencySet').schema;
 const Delivery = require('../../models/Delivery').schema;
 const OrderItem = require('../../models/OrderItem').schema;
+const {
+  INPUT_NOT_VALID,
+  PHONE_NUMBER_NOT_VALID,
+  PHONE_NUMBER_IS_REQUIRED,
+  EMAIL_NOT_VALID,
+  EMAIL_IS_REQUIRED,
+} = require('../../error-messages/common.messages');
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
@@ -20,11 +27,43 @@ const orderSchema = new mongoose.Schema({
     default: 'CREATED',
   },
   user: {
-    firstName: String,
-    lastName: String,
-    patronymicName: String,
-    email: String,
-    phoneNumber: Number,
+    firstName: {
+      type: String,
+      minlength: [2, 'INPUT_NOT_VALID'],
+      maxlength: [20, 'INPUT_NOT_VALID'],
+      required: [true, 'INPUT_NOT_VALID'],
+    },
+    lastName: {
+      type: String,
+      minlength: [2, 'INPUT_NOT_VALID'],
+      maxlength: [20, 'INPUT_NOT_VALID'],
+      required: [true, 'INPUT_NOT_VALID'],
+    },
+    patronymicName: {
+      type: String,
+      minlength: [2, 'INPUT_NOT_VALID'],
+      maxlength: [20, 'INPUT_NOT_VALID'],
+    },
+    email: {
+      type: String,
+      validate: {
+        validator: function(v) {
+          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+        },
+        message: 'EMAIL_NOT_VALID',
+      },
+      required: [true, 'EMAIL_IS_REQUIRED'],
+    },
+    phoneNumber: {
+      type: String,
+      validate: {
+        validator: function(v) {
+          return /^\+?3?8?(0\d{9})$/.test(v);
+        },
+        message: 'PHONE_NUMBER_NOT_VALID',
+      },
+      required: [true, 'PHONE_NUMBER_IS_REQUIRED'],
+    },
   },
   dateOfCreation: {
     type: Date,

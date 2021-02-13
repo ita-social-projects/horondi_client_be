@@ -20,11 +20,12 @@ let operations;
 let categoryId;
 
 describe('Closure queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
+    done();
   });
 
-  test('should create category', async () => {
+  test('should create category', async done => {
     const result = await createCategory(newCategoryInputData, operations);
     categoryId = result._id;
 
@@ -32,15 +33,17 @@ describe('Closure queries', () => {
     expect(result).toHaveProperty('code', newCategoryInputData.code);
     expect(result).toHaveProperty('available', newCategoryInputData.available);
     expect(result).toHaveProperty('name', newCategoryInputData.name);
+    done();
   });
-  test('should get CATEGORY_ALREADY_EXIST err msg for create', async () => {
+  test('should get CATEGORY_ALREADY_EXIST err msg for create', async done => {
     const result = await createCategory(newCategoryInputData, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', CATEGORY_ALREADY_EXIST);
     expect(result).toHaveProperty('statusCode', 400);
+    done();
   });
-  test('should update category', async () => {
+  test('should update category', async done => {
     const result = await updateCategory(
       categoryId,
       newCategoryInputDataUpdate,
@@ -54,8 +57,9 @@ describe('Closure queries', () => {
       newCategoryInputDataUpdate.available
     );
     expect(result).toHaveProperty('name', newCategoryInputDataUpdate.name);
+    done();
   });
-  test('should get CATEGORY_NOT_FOUND err msg for create', async () => {
+  test('should get CATEGORY_NOT_FOUND err msg for create', async done => {
     const result = await updateCategory(
       wrongId,
       newCategoryInputDataUpdate,
@@ -65,16 +69,19 @@ describe('Closure queries', () => {
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', CATEGORY_NOT_FOUND);
     expect(result).toHaveProperty('statusCode', 404);
+    done();
   });
-  test('should get CATEGORY_NOT_FOUND err msg for delete', async () => {
+  test('should get CATEGORY_NOT_FOUND err msg for delete', async done => {
     const result = await deleteCategory(wrongId, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('statusCode', 404);
+    done();
   });
-  test('should delete category', async () => {
+  test('should delete category', async done => {
     const result = await deleteCategory(categoryId, operations);
 
     expect(result).toBeDefined();
+    done();
   });
 });

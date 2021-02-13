@@ -1,4 +1,7 @@
-const { COMMENT_NOT_FOUND } = require('../../error-messages/comment.messages');
+const {
+  COMMENT_NOT_FOUND,
+  COMMENT_FOR_NOT_EXISTING_USER,
+} = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
   newComment,
@@ -41,7 +44,7 @@ const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
 const { SIZES_TO_CREATE } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
-const { registerUser, deleteUser } = require('../user/user.helper');
+const { registerUser, deleteUser, loginUser } = require('../user/user.helper');
 const { testUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 
@@ -50,6 +53,7 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
+//jest.setTimeout(30000)
 
 let commentId;
 let operations;
@@ -65,7 +69,7 @@ let sizeId;
 let userId;
 
 describe('Comment queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const { firstName, lastName, email, pass, language } = testUser;
     const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
@@ -112,16 +116,18 @@ describe('Comment queries', () => {
       language,
       operations
     );
-    userId = userData.data.registerUser._id;
+    const authRes = await loginUser(email, pass, operations);
+    userId = authRes.data.loginUser._id;
     const commentData = await addComment(
       productId,
       newComment(userId),
       operations
     );
     commentId = commentData._id;
+    done();
   });
 
-  it(' Should receive all comments written by selected user', async () => {
+  it(' Should receive all comments written by selected user', async done => {
     const res = await getAllCommentsByUser(userId, operations);
 
     expect(res).toBeDefined();
@@ -129,33 +135,38 @@ describe('Comment queries', () => {
     expect(res[0]).toHaveProperty('text', newComment(userId).text);
     expect(res[0]).toHaveProperty('user', { _id: userId });
     expect(res[0]).toHaveProperty('show', newComment(userId).show);
+    done();
   });
-  it(' should return empty array of comments for unexciting id ', async () => {
+  it(' should return empty array of comments for unexciting id ', async done => {
     const res = await getAllCommentsByUser(userWrongId, operations);
 
-    expect(res).toBeDefined();
-    expect(res[0]).toEqual({});
-    expect(res).toBeInstanceOf(Array);
+    expect(res[0]).toBeDefined();
+    expect(res[0].statusCode).toBe(404);
+    expect(res[0].message).toBe(COMMENT_FOR_NOT_EXISTING_USER);
+    done();
   });
-  it(' Should receive all comments for one product', async () => {
+  it(' Should receive all comments for one product', async done => {
     const res = await getAllCommentsByProduct(productId, operations);
-    const receivedComments = res.data.getAllCommentsByProduct.items;
+    const receivedComments = res.data.getAllCommentsByProduct;
 
     expect(receivedComments).toBeDefined();
     expect(receivedComments[0]).toHaveProperty('product', { _id: productId });
     expect(receivedComments[0]).toHaveProperty('text', newComment(userId).text);
     expect(receivedComments[0]).toHaveProperty('user', { _id: userId });
     expect(receivedComments[0]).toHaveProperty('show', newComment(userId).show);
+    done();
   });
-  it(' Should receive COMMENT_NOT_FOUND for get all comments for one product', async () => {
+  it(' Should receive COMMENT_NOT_FOUND for get all comments for one product', async done => {
     const res = await getAllCommentsByProduct(productWrongId, operations);
-    const error = res.errors[0].message;
+    const receivedComments = res.data.getAllCommentsByProduct;
 
-    expect(error).toBeDefined();
-    expect(error).toBe(COMMENT_NOT_FOUND);
+    expect(receivedComments[0]).toBeDefined();
+    expect(receivedComments[0].statusCode).toBe(404);
+    expect(receivedComments[0].message).toBe(COMMENT_NOT_FOUND);
+    done();
   });
 
-  it(' should return one comment', async () => {
+  it(' should return one comment', async done => {
     const receivedComment = await getCommentById(commentId, operations);
 
     expect(receivedComment).toBeDefined();
@@ -165,15 +176,17 @@ describe('Comment queries', () => {
       user: { _id: userId },
       show: newComment(userId).show,
     });
+    done();
   });
-  it(' should return error when find comment by wrong id', async () => {
+  it(' should return error when find comment by wrong id', async done => {
     const receivedComment = await getCommentById(commentWrongId, operations);
 
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('statusCode', 404);
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
+    done();
   });
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteComment(commentId, operations);
     await deleteUser(userId, operations);
     await deleteProduct(productId, operations);
@@ -185,5 +198,6 @@ describe('Comment queries', () => {
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
     await deleteSize(sizeId, operations);
+    done();
   });
 });

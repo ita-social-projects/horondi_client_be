@@ -35,7 +35,7 @@ jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/upload/upload.service');
 
 describe('constructor mutations', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -51,17 +51,19 @@ describe('constructor mutations', () => {
     constructorBasicId = constructorBasic._id;
 
     currentConstructorBasic = getConstructorData(constructorInput);
+    done();
   });
 
-  test('#1 Should return all ConstructorBasics', async () => {
+  test('#1 Should return all ConstructorBasics', async done => {
     const receivedAllConstructorBasics = await getAllConstructorBasics(
       operations
     );
 
     expect(receivedAllConstructorBasics.items).toBeDefined();
     expect(receivedAllConstructorBasics.items.length).toBeGreaterThan(0);
+    done();
   });
-  test('#2 Should return  ConstructorBasics by Id', async () => {
+  test('#2 Should return  ConstructorBasics by Id', async done => {
     const receivedById = await getConstructorBasicById(
       constructorBasicId,
       operations
@@ -72,17 +74,20 @@ describe('constructor mutations', () => {
       ...currentConstructorBasic,
       _id: constructorBasicId,
     });
+    done();
   });
-  test('#3 Should return  Error', async () => {
+  test('#3 Should return  Error', async done => {
     const receivedError = await getConstructorBasicById(wrongId, operations);
 
     expect(receivedError.statusCode).toBe(404);
     expect(receivedError.message).toBe(BASIC_NOT_FOUND);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
+    done();
   });
 });
