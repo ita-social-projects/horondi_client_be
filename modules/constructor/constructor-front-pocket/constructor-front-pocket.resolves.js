@@ -28,7 +28,7 @@ const constructorFrontPocketMutation = {
   addConstructorFrontPocket: async (parent, args) => {
     try {
       return await constructorService.addConstructorElement(
-        args.constructorElement,
+        args,
         ConstructorFrontPocket,
         FRONT_POCKET_ALREADY_EXIST
       );
