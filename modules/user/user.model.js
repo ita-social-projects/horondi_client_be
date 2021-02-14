@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
 const {
-  INPUT_NOT_VALID,
+  FIRST_NAME_TO_SHORT,
+  FIRST_NAME_TO_LONG,
+  LAST_NAME_TO_SHORT,
+  LAST_NAME_TO_LONG,
   PHONE_NUMBER_NOT_VALID,
   EMAIL_NOT_VALID,
   EMAIL_IS_REQUIRED,
@@ -17,13 +20,13 @@ const {
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    minlength: [2, INPUT_NOT_VALID],
-    maxlength: [20, INPUT_NOT_VALID],
+    minlength: [2, FIRST_NAME_TO_SHORT],
+    maxlength: [20, FIRST_NAME_TO_LONG],
   },
   lastName: {
     type: String,
-    minlength: [2, INPUT_NOT_VALID],
-    maxlength: [20, INPUT_NOT_VALID],
+    minlength: [2, LAST_NAME_TO_SHORT],
+    maxlength: [20, LAST_NAME_TO_LONG],
   },
   role: {
     type: String,
