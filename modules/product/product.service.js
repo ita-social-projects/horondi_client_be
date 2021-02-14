@@ -73,7 +73,6 @@ class ProductsService {
   }
 
   filterItems(args = {}) {
-    // fix
     const filter = {};
     const {
       pattern,
