@@ -6,8 +6,8 @@ const { INPUT_NOT_VALID } = require('../../error-messages/common.messages');
 const CategorySchema = new mongoose.Schema({
   code: {
     type: String,
-    minlength: [2, 'INPUT_NOT_VALID'],
-    maxlength: [30, 'INPUT_NOT_VALID'],
+    minlength: [2, INPUT_NOT_VALID],
+    maxlength: [30, INPUT_NOT_VALID],
   },
   name: [Language],
   images: ImageSet,

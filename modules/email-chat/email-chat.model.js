@@ -20,7 +20,7 @@ const EmailChatSchema = new mongoose.Schema({
       validator: function(v) {
         return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
       },
-      message: 'EMAIL_NOT_VALID',
+      message: EMAIL_NOT_VALID,
     },
   },
   status: {

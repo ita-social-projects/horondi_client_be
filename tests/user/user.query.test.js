@@ -28,7 +28,6 @@ const {
 } = require('../helpers/users');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
-//jest.setTimeout(30000)
 
 let token;
 let userId;

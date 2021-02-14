@@ -9,9 +9,9 @@ const ColorSchema = new mongoose.Schema({
   name: [Language],
   colorHex: {
     type: String,
-    minlength: [2, 'COLOR_HEX_NOT_VALID'],
-    maxlength: [10, 'COLOR_HEX_NOT_VALID'],
-    required: [true, 'COLOR_HEX_NOT_FOUND'],
+    minlength: [2, COLOR_HEX_NOT_VALID],
+    maxlength: [10, COLOR_HEX_NOT_VALID],
+    required: [true, COLOR_HEX_NOT_FOUND],
   },
   simpleName: [Language],
 });

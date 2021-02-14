@@ -17,8 +17,8 @@ const constructorFrontPocketSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    minlength: [2, 'IMAGE_NOT_PROVIDED'],
-    maxlength: [20, 'IMAGE_NOT_PROVIDED'],
+    minlength: [2, IMAGE_NOT_PROVIDED],
+    maxlength: [20, IMAGE_NOT_PROVIDED],
   },
   basePrice: [CurrencySet],
   available: Boolean,

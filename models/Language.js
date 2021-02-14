@@ -8,7 +8,7 @@ const languageSchema = new mongoose.Schema({
       validator: function(v) {
         return /^[а-яїієґ0-9\s]+$/i.test(v) || /^[a-z0-9\s]+$/i.test(v);
       },
-      message: 'INPUT_NOT_VALID',
+      message: INPUT_NOT_VALID,
     },
   },
   value: String,

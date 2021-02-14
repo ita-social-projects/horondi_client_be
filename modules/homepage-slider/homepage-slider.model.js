@@ -8,8 +8,8 @@ const HomePageSlideSchema = new mongoose.Schema({
   description: [Language],
   link: {
     type: String,
-    minlength: [1, 'INPUT_NOT_VALID'],
-    maxlength: [30, 'INPUT_NOT_VALID'],
+    minlength: [1, INPUT_NOT_VALID],
+    maxlength: [30, INPUT_NOT_VALID],
   },
   images: ImageSet,
   order: Number,
