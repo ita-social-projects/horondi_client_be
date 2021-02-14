@@ -2,12 +2,7 @@ const { Error } = require('mongoose');
 const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
-const categoryService = require('../category/category.service');
-const materialService = require('../material/material.service');
-const patternService = require('../pattern/pattern.service');
-const closuresService = require('../closures/closures.service');
 const uploadService = require('../upload/upload.service');
-const mongoose = require('mongoose');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -192,8 +187,7 @@ class ProductsService {
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
 
-    const model = await modelService.getModelById(productData.model);
-    productData.model = model;
+    productData.model = await modelService.getModelById(productData.model);
 
     productData.images = {
       primary,
