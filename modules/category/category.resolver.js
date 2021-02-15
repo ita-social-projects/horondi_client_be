@@ -4,7 +4,7 @@ const {
 } = require('../../error-messages/category.messages');
 
 const categoryQuery = {
-  getAllCategories: (parent, args) => categoryService.getAllCategories(),
+  getAllCategories: (parent, args) => categoryService.getAllCategories(args),
   getCategoriesForBurgerMenu: (parent, args) =>
     categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),

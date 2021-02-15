@@ -26,6 +26,9 @@ const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
+  FilterInputComponent,
+  SortInputComponent,
+  paginatedCategory,
 } = require('./modules/category/category.graphql');
 const {
   materialType,
@@ -100,7 +103,8 @@ const {
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
-  ${categoryType}
+	${categoryType}
+	${paginatedCategory}
   ${currencyType}
   ${materialType}
   ${newsType}
@@ -351,7 +355,11 @@ const typeDefs = gql`
   type Query {
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
-    getAllCategories: [Category]
+    getAllCategories(
+			filter: FilterInputComponent
+      pagination: Pagination
+			sort: SortInputComponent
+			): PaginatedCategory
     getPopularCategories: StatisticDoughnut!
     getCategoriesWithModels: [CategoryWithModels]
     getCategoryById(id: ID): CategoryResult
@@ -494,8 +502,10 @@ const typeDefs = gql`
   ${LoginInput}
   ${userRegisterInput}
   ${businessTextInput}
-  ${userFilterInput}
-  ${userSortInput}
+	${userFilterInput}
+	${userSortInput}
+	${FilterInputComponent}
+	${SortInputComponent}
   ${adminConfirmInput}
   ${adminRegisterInput}
   ${modelInput}
