@@ -2,7 +2,7 @@ const { sizeName } = require('../consts/migrations');
 
 module.exports = {
   async up(db, client) {
-    await db.collection('sizes').update(
+    await db.collection('sizes').updateMany(
       {},
       {
         $set: sizeName,
@@ -13,6 +13,6 @@ module.exports = {
   async down(db, client) {
     await db
       .collection('sizes')
-      .update({}, { $unset: { name: 1 } }, false, true);
+      .updateMany({}, { $unset: { name: 1 } }, false, true);
   },
 };
