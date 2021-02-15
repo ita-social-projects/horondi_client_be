@@ -168,8 +168,9 @@ class CategoryService extends FilterHelper {
     throw new Error(CATEGORY_NOT_FOUND);
   }
   async getCategoriesWithModels() {
-    const categories = await this.getAllCategories();
-    return categories.map(category => {
+    const { items } = await this.getAllCategories({});
+    console.log(items);
+    return items.map(category => {
       category.models = modelService.getModelsByCategory(category._id);
       return category;
     });
