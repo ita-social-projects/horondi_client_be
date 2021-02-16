@@ -401,8 +401,10 @@ const typeDefs = gql`
     ): PaginatedProducts!
     getPopularProducts: StatisticBar!
     getAllComments(
+      filter: FilterInputComponent
       skip: Int
       limit: Int
+      sort: SortInputComponent
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
     getAllCommentsByProduct(
