@@ -53,6 +53,7 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.setTimeout(10000);
 
 let commentId;
 let operations;
@@ -68,7 +69,7 @@ let sizeId;
 let userId;
 
 describe('Comment queries', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
     const { firstName, lastName, email, pass, language } = testUser;
     const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
@@ -123,7 +124,6 @@ describe('Comment queries', () => {
       operations
     );
     commentId = commentData._id;
-    done();
   });
 
   it(' Should receive all comments written by selected user', async done => {
@@ -185,7 +185,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
     done();
   });
-  afterAll(async done => {
+  afterAll(async () => {
     await deleteComment(commentId, operations);
     await deleteUser(userId, operations);
     await deleteProduct(productId, operations);
@@ -197,6 +197,5 @@ describe('Comment queries', () => {
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
     await deleteSize(sizeId, operations);
-    done();
   });
 });

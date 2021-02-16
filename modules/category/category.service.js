@@ -9,10 +9,37 @@ const {
 const uploadService = require('../upload/upload.service');
 const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
+const FilterHelper = require('../../helpers/filter-helper');
 
-class CategoryService {
-  async getAllCategories() {
-    return await Category.find().exec();
+class CategoryService extends FilterHelper {
+  async getAllCategories({ filter, pagination, sort }) {
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+      const [categories] = await Category.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+      let categoryCount;
+
+      const {
+        items,
+        calculations: [calculations],
+      } = categories;
+
+      if (calculations) {
+        categoryCount = calculations.count;
+      }
+      return {
+        items,
+        count: categoryCount || 0,
+      };
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   async getCategoryById(id) {
@@ -62,9 +89,13 @@ class CategoryService {
   }
 
   async getCategoriesForBurgerMenu() {
-    const categories = await this.getAllCategories();
+    const categories = await this.getAllCategories({
+      filter: {},
+      pagination: {},
+      sort: {},
+    });
 
-    const data = categories.map(async category => {
+    const data = categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => {
         return {
@@ -137,8 +168,8 @@ class CategoryService {
     throw new Error(CATEGORY_NOT_FOUND);
   }
   async getCategoriesWithModels() {
-    const categories = await this.getAllCategories();
-    return categories.map(category => {
+    const { items } = await this.getAllCategories({});
+    return items.map(category => {
       category.models = modelService.getModelsByCategory(category._id);
       return category;
     });

@@ -5,6 +5,7 @@ const sharedFields = `
   images: ImageSet
   available: Boolean
 `;
+
 const categoryType = `
   type Category {
     ${sharedFields}
@@ -15,12 +16,41 @@ const categoryType = `
   }
 `;
 
+const paginatedCategory = `
+	type PaginatedCategory {
+		items: [Category]
+		count: Int
+	}
+`;
+
 const categoryInput = `
   input CategoryInput {
     code: String
     name: [LanguageInput]
     images: ImageSetInput
     available: Boolean
-  }`;
+	}`;
 
-module.exports = { categoryType, categoryInput };
+const FilterInputComponent = `
+  input FilterInputComponent {
+    roles: [String!]
+		banned: [Boolean]
+		_id: [ID]
+    search: String
+}
+`;
+
+const SortInputComponent = `
+	input SortInputComponent {
+		name: Int
+		email: Int
+	}
+`;
+
+module.exports = {
+  categoryType,
+  categoryInput,
+  FilterInputComponent,
+  SortInputComponent,
+  paginatedCategory,
+};

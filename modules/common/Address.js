@@ -10,8 +10,8 @@ const {
   ZIPCODE_LENGTH_TO_LONG,
   STREET_LENGTH_TO_SHORT,
   STREET_LENGTH_TO_LONG,
-  BUILDINGNUMBER_LENGTH_TO_SHORT,
-  BUILDINGNUMBER_LENGTH_TO_LONG,
+  BUILDING_NUMBER_LENGTH_TO_SHORT,
+  BUILDING_NUMBER_LENGTH_TO_LONG,
   APPARTMENT_LENGTH_TO_SHORT,
   APPARTMENT_LENGTH_TO_LONG,
 } = require('../../error-messages/address.messages');
@@ -44,8 +44,8 @@ const addressSchema = new mongoose.Schema({
   },
   buildingNumber: {
     type: String,
-    minlength: [2, BUILDINGNUMBER_LENGTH_TO_SHORT],
-    maxlength: [20, BUILDINGNUMBER_LENGTH_TO_LONG],
+    minlength: [2, BUILDING_NUMBER_LENGTH_TO_SHORT],
+    maxlength: [20, BUILDING_NUMBER_LENGTH_TO_LONG],
   },
   appartment: {
     type: String,

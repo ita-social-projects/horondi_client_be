@@ -61,6 +61,7 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.setTimeout(10000);
 
 let commentId;
 let operations;
@@ -78,7 +79,7 @@ let productRateCount;
 let productUserRates;
 
 describe('Comment queries', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
     const { firstName, lastName, email, pass, language } = testUser;
     const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
@@ -132,10 +133,9 @@ describe('Comment queries', () => {
     );
     const authRes = await loginUser(email, pass, operations);
     userId = authRes.data.loginUser._id;
-    done();
   });
 
-  it(' should add a new comment', async done => {
+  it(' should add a new comment', async () => {
     const receivedComment = await addComment(
       productId,
       newComment(userId),
@@ -149,9 +149,8 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('text', newComment(userId).text);
     expect(receivedComment).toHaveProperty('user', { _id: userId });
     expect(receivedComment).toHaveProperty('show', newComment(userId).show);
-    done();
   });
-  it(' should return error if to add comment to not existing product', async done => {
+  it(' should return error if to add comment to not existing product', async () => {
     const receivedComment = await addComment(
       productWrongId,
       newComment(userId),
@@ -165,9 +164,8 @@ describe('Comment queries', () => {
       COMMENT_FOR_NOT_EXISTING_PRODUCT
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
-    done();
   });
-  it('should update comment', async done => {
+  it('should update comment', async () => {
     const receivedComment = await updateComment(
       commentId,
       updatedComment,
@@ -180,9 +178,8 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('show', updatedComment.show);
     expect(receivedComment).toHaveProperty('user', { _id: userId });
     expect(receivedComment).toHaveProperty('product', { _id: productId });
-    done();
   });
-  it(' should return error if id of comment to update is not correct', async done => {
+  it(' should return error if id of comment to update is not correct', async () => {
     const receivedComment = await updateComment(
       commentWrongId,
       updatedComment,
@@ -193,9 +190,8 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
     expect(receivedComment).toHaveProperty('statusCode', 404);
-    done();
   });
-  it('should add rate to the product', async done => {
+  it('should add rate to the product', async () => {
     const receivedComment = await addRate(productId, rate, operations);
 
     expect(receivedComment).toMatchSnapshot();
@@ -204,9 +200,8 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('rate', rate);
     expect(receivedComment).toHaveProperty('rateCount', 1);
     expect(receivedComment.userRates.length).toEqual(1);
-    done();
   });
-  it('should update rate of the product', async done => {
+  it('should update rate of the product', async () => {
     const receivedComment = await addRate(productId, updatedRate, operations);
 
     expect(receivedComment).toMatchSnapshot();
@@ -215,9 +210,8 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('rate', updatedRate);
     expect(receivedComment).toHaveProperty('rateCount', 1);
     expect(receivedComment.userRates.length).toEqual(1);
-    done();
   });
-  it('should return error if to add rate to not existing product', async done => {
+  it('should return error if to add rate to not existing product', async () => {
     const receivedComment = await addRate(productWrongId, rate, operations);
 
     expect(receivedComment).toMatchSnapshot();
@@ -228,10 +222,9 @@ describe('Comment queries', () => {
       RATE_FOR_NOT_EXISTING_PRODUCT
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
-    done();
   });
 
-  afterAll(async done => {
+  afterAll(async () => {
     await deleteComment(commentId, operations);
     await deleteUser(userId, operations);
     await deleteProduct(productId, operations);
@@ -243,6 +236,5 @@ describe('Comment queries', () => {
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
     await deleteSize(sizeId, operations);
-    done();
   });
 });

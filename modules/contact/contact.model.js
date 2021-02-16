@@ -5,6 +5,7 @@ const {
   PHONE_NUMBER_IS_TO_SHORT,
   PHONE_NUMBER_IS_TO_LONG,
   PHONE_NUMBER_IS_REQUIRED,
+  PHONE_NUMBER_NOT_VALID,
   EMAIL_IS_REQUIRED,
   EMAIL_NOT_VALID,
   LINK_TO_SHORT,
@@ -17,6 +18,12 @@ const ContactSchema = new mongoose.Schema({
     type: String,
     minlength: [10, PHONE_NUMBER_IS_TO_SHORT],
     maxlength: [13, PHONE_NUMBER_IS_TO_LONG],
+    validate: {
+      validator: function(v) {
+        return /^\+?3?8?(0\d{9})$/.test(v);
+      },
+      message: PHONE_NUMBER_NOT_VALID,
+    },
     required: [true, PHONE_NUMBER_IS_REQUIRED],
   },
   openHours: [Language],
