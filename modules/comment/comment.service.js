@@ -9,16 +9,34 @@ const {
 
 const { monthInMilliseconds } = require('../../consts');
 
-class CommentsService {
-  async getAllComments({ skip, limit }) {
-    const comments = await Comment.find()
-      .skip(skip)
-      .limit(limit)
+const FilterHelper = require('../../helpers/filter-helper');
+
+class CommentsService extends FilterHelper {
+  async getAllComments({ filter, skip, limit, sort }) {
+    let filters = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filters, skip, limit, sort);
+    const [comments] = await Comment.aggregate()
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filters }, { $count: 'count' }],
+      })
       .exec();
-    const count = await Comment.find()
-      .countDocuments()
-      .exec();
-    return { items: comments, count };
+
+    let commentsCount;
+
+    const {
+      items,
+      calculations: [calculations],
+    } = comments;
+
+    if (calculations) {
+      commentsCount = calculations.count;
+    }
+    return {
+      items,
+      count: commentsCount || 0,
+    };
   }
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
