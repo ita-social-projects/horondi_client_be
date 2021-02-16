@@ -326,6 +326,7 @@ const typeDefs = gql`
       items: [ConstructorFrontPocket]
       count: Int
   }
+  union PaginatedProductsResult = PaginatedProducts | Error
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -398,7 +399,7 @@ const typeDefs = gql`
       skip: Int
       search: String
       sort: SortInput
-    ): PaginatedProducts!
+    ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
     getAllComments(
       filter: FilterInputComponent
