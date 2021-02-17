@@ -12,9 +12,9 @@ const { monthInMilliseconds } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
 
 class CommentsService extends FilterHelper {
-  async getAllComments({ filter, skip, limit, sort }) {
+  async getAllComments({ filter, pagination }) {
     let filters = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filters, skip, limit, sort);
+    let aggregatedItems = this.aggregateItems(filters, pagination);
     const [comments] = await Comment.aggregate()
       .collation({ locale: 'uk' })
       .facet({
@@ -29,7 +29,6 @@ class CommentsService extends FilterHelper {
       items,
       calculations: [calculations],
     } = comments;
-
     if (calculations) {
       commentsCount = calculations.count;
     }
