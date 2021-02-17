@@ -1,8 +1,6 @@
-const { MONGO_URL } = require('../dotenvValidator');
-
 const config = {
   mongodb: {
-    url: MONGO_URL,
+    url: '//your db uri',
     databaseName: 'horondi',
 
     options: {
