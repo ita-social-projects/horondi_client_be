@@ -1,5 +1,5 @@
 const sizeName = {
-  name: [
+  simpleName: [
     {
       lang: 'ua',
       value: 'Назва розміру',

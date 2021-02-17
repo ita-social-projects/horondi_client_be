@@ -13,6 +13,6 @@ module.exports = {
   async down(db, client) {
     await db
       .collection('sizes')
-      .updateMany({}, { $unset: { name: 1 } }, false, true);
+      .updateMany({}, { $unset: { simpleName: 1 } }, false, true);
   },
 };
