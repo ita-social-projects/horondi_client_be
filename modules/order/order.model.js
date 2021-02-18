@@ -3,14 +3,14 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const Delivery = require('../../models/Delivery').schema;
 const OrderItem = require('../../models/OrderItem').schema;
 const {
-  FIRST_NAME_TO_SHORT,
-  FIRST_NAME_TO_LONG,
+  FIRST_NAME_TOO_SHORT,
+  FIRST_NAME_TOO_LONG,
   FIRST_NAME_IS_REQUIRED,
-  LAST_NAME_TO_SHORT,
-  LAST_NAME_TO_LONG,
+  LAST_NAME_TOO_SHORT,
+  LAST_NAME_TOO_LONG,
   LAST_NAME_IS_REQUIRED,
-  PATRONYMIC_NAME_TO_SHORT,
-  PATRONYMIC_NAME_TO_LONG,
+  PATRONYMIC_NAME_TOO_SHORT,
+  PATRONYMIC_NAME_TOO_LONG,
   PHONE_NUMBER_NOT_VALID,
   PHONE_NUMBER_IS_REQUIRED,
   EMAIL_NOT_VALID,
@@ -36,20 +36,20 @@ const orderSchema = new mongoose.Schema({
   user: {
     firstName: {
       type: String,
-      minlength: [2, FIRST_NAME_TO_SHORT],
-      maxlength: [20, FIRST_NAME_TO_LONG],
+      minlength: [2, FIRST_NAME_TOO_SHORT],
+      maxlength: [20, FIRST_NAME_TOO_LONG],
       required: [true, FIRST_NAME_IS_REQUIRED],
     },
     lastName: {
       type: String,
-      minlength: [2, LAST_NAME_TO_SHORT],
-      maxlength: [20, LAST_NAME_TO_LONG],
+      minlength: [2, LAST_NAME_TOO_SHORT],
+      maxlength: [20, LAST_NAME_TOO_LONG],
       required: [true, LAST_NAME_IS_REQUIRED],
     },
     patronymicName: {
       type: String,
-      minlength: [2, PATRONYMIC_NAME_TO_SHORT],
-      maxlength: [20, PATRONYMIC_NAME_TO_LONG],
+      minlength: [2, PATRONYMIC_NAME_TOO_SHORT],
+      maxlength: [20, PATRONYMIC_NAME_TOO_LONG],
     },
     email: {
       type: String,

@@ -3,23 +3,12 @@ const { newAdmin, testUser, user } = require('./user.variables');
 const {
   registerUser,
   loginUser,
-  getAllUsers,
-  getUserByToken,
-  getUserById,
   deleteUser,
-  loginAdmin,
-  getAllUsersWithToken,
-  validateConfirmationToken,
   switchUserStatus,
   updateUserById,
   completeAdminRegister,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
-const {
-  createUser,
-  getAllUsersQuery,
-  chooseOnlyUsers,
-} = require('../helpers/users');
 const {
   INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,

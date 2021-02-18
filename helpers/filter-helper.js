@@ -32,7 +32,10 @@ class FilterHelper {
   }
 
   searchItems(searchString) {
-    return [{ 'name.value': { $regex: new RegExp(searchString, 'i') } }];
+    return [
+      { 'name.value': { $regex: new RegExp(searchString, 'i') } },
+      { text: { $regex: new RegExp(searchString, 'i') } },
+    ];
   }
 
   aggregateItems(filters = {}, pagination = {}, sort = {}) {

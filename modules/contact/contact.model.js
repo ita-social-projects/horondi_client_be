@@ -2,22 +2,22 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
 const {
-  PHONE_NUMBER_IS_TO_SHORT,
-  PHONE_NUMBER_IS_TO_LONG,
+  PHONE_NUMBER_IS_TOO_SHORT,
+  PHONE_NUMBER_IS_TOO_LONG,
   PHONE_NUMBER_IS_REQUIRED,
   PHONE_NUMBER_NOT_VALID,
   EMAIL_IS_REQUIRED,
   EMAIL_NOT_VALID,
-  LINK_TO_SHORT,
-  LINK_TO_LONG,
+  LINK_TOO_SHORT,
+  LINK_TOO_LONG,
   LINK_IS_REQUIRED,
 } = require('../../error-messages/common.messages');
 
 const ContactSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
-    minlength: [10, PHONE_NUMBER_IS_TO_SHORT],
-    maxlength: [13, PHONE_NUMBER_IS_TO_LONG],
+    minlength: [10, PHONE_NUMBER_IS_TOO_SHORT],
+    maxlength: [13, PHONE_NUMBER_IS_TOO_LONG],
     validate: {
       validator: function(v) {
         return /^\+?3?8?(0\d{9})$/.test(v);
@@ -46,8 +46,8 @@ const ContactSchema = new mongoose.Schema({
   ],
   link: {
     type: String,
-    minlength: [2, LINK_TO_SHORT],
-    maxlength: [30, LINK_TO_LONG],
+    minlength: [2, LINK_TOO_SHORT],
+    maxlength: [30, LINK_TOO_LONG],
     required: [true, LINK_IS_REQUIRED],
   },
 });
