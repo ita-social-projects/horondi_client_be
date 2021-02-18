@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const CurrencySet = require('../../models/CurrencySet').schema;
+const Language = require('../../models/Language').schema;
 const {
   SIZE_NAME_TOO_SHORT,
   SIZE_NAME_TOO_LONG,
@@ -28,6 +29,7 @@ const sizeSchema = new mongoose.Schema({
     maxlength: [2, SIZE_NAME_TOO_LONG],
     required: [true, SIZE_NAME_IS_REQUIRED],
   },
+  simpleName: [Language],
   heightInCm: {
     type: Number,
     min: [1, HEIGHT_IN_CM_TOO_SHORT],
