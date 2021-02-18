@@ -2,6 +2,7 @@ const sizeType = `
   type Size {
     _id: ID!
     name: String!
+    simpleName:[Language]!
     heightInCm: Int!
     widthInCm: Int!
     depthInCm: Int!
@@ -15,6 +16,7 @@ const sizeType = `
 const sizeInput = `
   input SizeInput {
     name: String!
+    simpleName: [LanguageInput]!
     heightInCm: Int!
     widthInCm: Int!
     depthInCm: Int!
