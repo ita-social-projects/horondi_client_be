@@ -1,6 +1,10 @@
 const SIZES_TO_CREATE = {
   size1: {
     name: 'S',
+    simpleName: [
+      { lang: 'ua', value: 'розмір' },
+      { lang: 'en', value: 'size' },
+    ],
     heightInCm: 35,
     widthInCm: 26,
     depthInCm: 14,
@@ -11,6 +15,10 @@ const SIZES_TO_CREATE = {
   },
   size2: {
     name: 'M',
+    simpleName: [
+      { lang: 'ua', value: 'розмір2' },
+      { lang: 'en', value: 'size2' },
+    ],
     heightInCm: 25,
     widthInCm: 36,
     depthInCm: 12,
@@ -23,6 +31,10 @@ const SIZES_TO_CREATE = {
 const SIZES_TO_TEST = {
   size1: {
     name: 'S',
+    simpleName: [
+      { lang: 'ua', value: 'розмір' },
+      { lang: 'en', value: 'size' },
+    ],
     heightInCm: 35,
     widthInCm: 26,
     depthInCm: 14,
@@ -39,6 +51,10 @@ const SIZES_TO_TEST = {
   },
   size2: {
     name: 'M',
+    simpleName: [
+      { lang: 'ua', value: 'розмір2' },
+      { lang: 'en', value: 'size2' },
+    ],
     heightInCm: 25,
     widthInCm: 36,
     depthInCm: 12,
@@ -55,10 +71,6 @@ const SIZES_TO_TEST = {
   },
 };
 const WRONG_ID = '600f20d51754387390b17fdA';
-const ERROR_ALREDY_EXISTS = {
-  message: 'SIZE_ALREADY_EXIST',
-  statusCode: 404,
-};
 const ERROR_NOT_FOUND = {
   message: 'SIZE_NOT_FOUND',
   statusCode: 404,
@@ -68,6 +80,5 @@ module.exports = {
   SIZES_TO_CREATE,
   SIZES_TO_TEST,
   WRONG_ID,
-  ERROR_ALREDY_EXISTS,
   ERROR_NOT_FOUND,
 };

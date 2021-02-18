@@ -3,7 +3,6 @@ const {
   SIZES_TO_CREATE,
   SIZES_TO_TEST,
   WRONG_ID,
-  ERROR_ALREDY_EXISTS,
   ERROR_NOT_FOUND,
 } = require('./size.variables');
 const {
@@ -31,14 +30,6 @@ describe('Sizes mutations', () => {
     expect(result).toEqual({
       _id: sizeId,
       ...SIZES_TO_TEST.size1,
-    });
-  });
-
-  test('should receive error SIZE_ALREADY_EXIST while adding size', async () => {
-    const result = await createSize(SIZES_TO_CREATE.size1, operations);
-
-    expect(result).toEqual({
-      ...ERROR_ALREDY_EXISTS,
     });
   });
 
