@@ -3,23 +3,12 @@ const { newAdmin, testUser, user } = require('./user.variables');
 const {
   registerUser,
   loginUser,
-  getAllUsers,
-  getUserByToken,
-  getUserById,
   deleteUser,
-  loginAdmin,
-  getAllUsersWithToken,
-  validateConfirmationToken,
   switchUserStatus,
   updateUserById,
   completeAdminRegister,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
-const {
-  createUser,
-  getAllUsersQuery,
-  chooseOnlyUsers,
-} = require('../helpers/users');
 const {
   INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
@@ -30,6 +19,7 @@ const {
 } = require('../../error-messages/user.messages');
 
 jest.mock('../../modules/confirm-email/confirmation-email.service');
+jest.setTimeout(10000);
 
 let userId;
 let token;
@@ -41,11 +31,12 @@ let wrongEmail = 'udernotfound@gmail.com';
 let wrongPassword = '12345678pT';
 
 describe('mutations', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
+    done();
   });
 
-  test('should register user', async () => {
+  test('should register user', async done => {
     const { firstName, lastName, email, pass, language } = testUser;
 
     const res = await registerUser(
@@ -67,8 +58,9 @@ describe('mutations', () => {
     expect(res.data.registerUser).toHaveProperty('email', testUser.email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
+    done();
   });
-  test('should throw error User with provided email already exist', async () => {
+  test('should throw error User with provided email already exist', async done => {
     const { firstName, lastName, email, pass, language } = testUser;
 
     const res = await registerUser(
@@ -82,8 +74,9 @@ describe('mutations', () => {
 
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe(USER_ALREADY_EXIST);
+    done();
   });
-  test('should authorize and recive user token', async () => {
+  test('should authorize and recive user token', async done => {
     const { email, pass } = testUser;
 
     const res = await loginUser(email, pass, operations);
@@ -96,20 +89,23 @@ describe('mutations', () => {
     expect(res.data.loginUser).toHaveProperty('lastName', testUser.lastName);
     expect(res.data.loginUser).toHaveProperty('email', testUser.email);
     expect(res.data.loginUser).toHaveProperty('registrationDate');
+    done();
   });
-  test('should throw error User with provided email not found', async () => {
+  test('should throw error User with provided email not found', async done => {
     const res = await loginUser(wrongEmail, testUser.pass, operations);
 
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe(WRONG_CREDENTIALS);
+    done();
   });
-  test('should throw error Wrong password', async () => {
+  test('should throw error Wrong password', async done => {
     const res = await loginUser(testUser.email, wrongPassword, operations);
 
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
+    done();
   });
-  test('should update user by id', async () => {
+  test('should update user by id', async done => {
     const {
       email,
       role,
@@ -157,33 +153,38 @@ describe('mutations', () => {
       'comments',
       testUser.comments
     );
+    done();
   });
-  test('Should change user status', async () => {
+  test('Should change user status', async done => {
     operations = await setupApp();
     const result = await switchUserStatus(userId, operations);
     const { switchUserStatus: response } = result.data;
 
     expect(response.isSuccess).toEqual(true);
+    done();
   });
-  test('should not delete user without super-admin role', async () => {
+  test('should not delete user without super-admin role', async done => {
     operations = await setupApp({ token: 'jgjcdvjkbvdnfjlvdvlf' });
     const res = await deleteUser(userId, operations);
 
     expect(res.data.deleteUser.message).toEqual(INVALID_PERMISSIONS);
+    done();
   });
 
-  test('Should return error when switch status of non-existent user', async () => {
+  test('Should return error when switch status of non-existent user', async done => {
     operations = await setupApp();
     const result = await switchUserStatus(badId, operations);
     const { switchUserStatus: response } = result.data;
 
     expect(response.message).toEqual(USER_NOT_FOUND);
     expect(response.statusCode).toEqual(400);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     operations = await setupApp();
     await deleteUser(userId, operations);
+    done();
   });
 });
 
@@ -195,7 +196,7 @@ describe('User`s mutation restictions tests', () => {
   let password = user.pass;
   let language = user.language;
 
-  beforeAll(async () => {
+  beforeAll(async done => {
     const res = await registerUser(
       firstName,
       lastName,
@@ -205,17 +206,19 @@ describe('User`s mutation restictions tests', () => {
       operations
     );
     userId = res.data.registerUser._id;
+    done();
   });
 
-  test('User must login', async () => {
+  test('User must login', async done => {
     const result = await loginUser(email, password, operations);
     const loginedUser = result.data.loginUser;
     userToken = loginedUser.token;
 
     expect(loginedUser).not.toEqual(null);
+    done();
   });
 
-  test('User doesn`t allowed to change another user`s data', async () => {
+  test('User doesn`t allowed to change another user`s data', async done => {
     const user = {
       firstName: 'One',
       lastName: 'User',
@@ -263,13 +266,15 @@ describe('User`s mutation restictions tests', () => {
 
     operations = await setupApp();
     await deleteUser(res.data.registerUser._id, operations);
+    done();
   });
 
-  test('Admin can delete user', async () => {
+  test('Admin can delete user', async done => {
     operations = await setupApp();
     const res = await deleteUser(userId, operations);
 
     expect(res.data.deleteUser._id).toBeDefined();
+    done();
   });
 });
 
@@ -280,7 +285,7 @@ describe('Register admin', () => {
 
   let { email: newAdminEmail } = newAdmin;
 
-  test('Should throw an error when use already in-usage email while admin registration', async () => {
+  test('Should throw an error when use already in-usage email while admin registration', async done => {
     const result = await operations
       .mutate({
         mutation: gql`
@@ -309,9 +314,10 @@ describe('Register admin', () => {
     const data = result.data.registerAdmin;
     expect(data.message).toEqual(USER_ALREADY_EXIST);
     expect(data.statusCode).toEqual(400);
+    done();
   });
 
-  test('Should throw an error when use invalid email while admin registration', async () => {
+  test('Should throw an error when use invalid email while admin registration', async done => {
     const result = await operations
       .mutate({
         mutation: gql`
@@ -340,9 +346,10 @@ describe('Register admin', () => {
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
+    done();
   });
 
-  test('Should throw an error when use invalid role', async () => {
+  test('Should throw an error when use invalid role', async done => {
     const result = await operations
       .mutate({
         mutation: gql`
@@ -372,9 +379,10 @@ describe('Register admin', () => {
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
+    done();
   });
 
-  test('Should create an user with custom role and generate a confirmation token', async () => {
+  test('Should create an user with custom role and generate a confirmation token', async done => {
     const result = await operations
       .mutate({
         mutation: gql`
@@ -405,10 +413,12 @@ describe('Register admin', () => {
     expect(data.email).toEqual(newAdminEmail);
 
     invitationalToken = data.invitationalToken;
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteUser(userId, operations);
+    done();
   });
 });
 
@@ -426,7 +436,7 @@ describe('Admin confirmation', () => {
     lastName: newAdminLastName,
   } = newAdmin;
 
-  test('Should throw an error when use invalid lastname', async () => {
+  test('Should throw an error when use invalid lastname', async done => {
     const result = await completeAdminRegister(
       invitationalToken,
       newAdminFirstName,
@@ -438,9 +448,10 @@ describe('Admin confirmation', () => {
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
+    done();
   });
 
-  test('Should throw an error when use invalid firstname', async () => {
+  test('Should throw an error when use invalid firstname', async done => {
     const result = await completeAdminRegister(
       invitationalToken,
       invalidFirstName,
@@ -452,9 +463,10 @@ describe('Admin confirmation', () => {
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
+    done();
   });
 
-  test('Should throw an error when use invalid password', async () => {
+  test('Should throw an error when use invalid password', async done => {
     const result = await completeAdminRegister(
       invitationalToken,
       invalidFirstName,
@@ -466,9 +478,10 @@ describe('Admin confirmation', () => {
 
     expect(data.message).toEqual(INPUT_NOT_VALID);
     expect(data.statusCode).toEqual(400);
+    done();
   });
 
-  test('Should throw an error when use invalid token', async () => {
+  test('Should throw an error when use invalid token', async done => {
     const result = await completeAdminRegister(
       invalidToken,
       newAdminFirstName,
@@ -479,9 +492,10 @@ describe('Admin confirmation', () => {
     const data = result.data.completeAdminRegister;
 
     expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
+    done();
   });
 
-  test('Should confirm user with a custom role', async () => {
+  test('Should confirm user with a custom role', async done => {
     const result = await completeAdminRegister(
       invitationalToken,
       newAdminFirstName,
@@ -491,11 +505,12 @@ describe('Admin confirmation', () => {
     );
 
     expect(result).toBeTruthy();
+    done();
   });
 });
 
 describe('User filtering', () => {
-  test('Should receive users via using filters for roles', async () => {
+  test('Should receive users via using filters for roles', async done => {
     const role = 'user';
 
     const result = await operations
@@ -519,9 +534,10 @@ describe('User filtering', () => {
     const data = result.data.getAllUsers.items;
 
     expect(data.every(item => item.role === role)).toEqual(true);
+    done();
   });
 
-  test('Should receive admins and superadmins via using filters for roles', async () => {
+  test('Should receive admins and superadmins via using filters for roles', async done => {
     const roles = ['admin', 'superadmin'];
 
     const result = await operations
@@ -545,9 +561,11 @@ describe('User filtering', () => {
     const data = result.data.getAllUsers.items;
 
     expect(data.every(item => roles.includes(item.role))).toEqual(true);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteUser(userId, operations);
+    done();
   });
 });

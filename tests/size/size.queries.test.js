@@ -13,28 +13,32 @@ let operations;
 let sizeId;
 
 describe('Sizes queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const size = await createSize(SIZES_TO_CREATE.size1, operations);
 
     sizeId = size._id;
+    done();
   });
 
-  test('should recieve all sizes', async () => {
+  test('should recieve all sizes', async done => {
     const result = await getAllSizes(operations);
 
     expect(result[0]).toEqual(SIZES_TO_TEST.size1);
+    done();
   });
-  test('should recieve sizes by ID', async () => {
+  test('should recieve sizes by ID', async done => {
     const result = await getSizeById(sizeId, operations);
 
     expect(result).toEqual({
       _id: sizeId,
       ...SIZES_TO_TEST.size1,
     });
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteSize(sizeId, operations);
+    done();
   });
 });

@@ -51,7 +51,7 @@ describe('constructor mutations', () => {
     currentConstructorBasic = getConstructorData(constructorInput);
   });
 
-  test('#1 Should add Constructor Basic', async () => {
+  test('#1 Should add Constructor Basic', async done => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
       operations
@@ -63,8 +63,9 @@ describe('constructor mutations', () => {
       ...currentConstructorBasic,
       _id: constructorBasicID,
     });
+    done();
   });
-  test('#3 ConstructorBasic should return Error ConstructorBasic already exist', async () => {
+  test('#3 ConstructorBasic should return Error ConstructorBasic already exist', async done => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
       operations
@@ -73,8 +74,9 @@ describe('constructor mutations', () => {
     expect(createConstructor).toBeDefined();
     expect(createConstructor.message).toEqual(BASIC_ALREADY_EXIST);
     expect(createConstructor.statusCode).toEqual(400);
+    done();
   });
-  test('#2 Should update existing constructorBasic ', async () => {
+  test('#2 Should update existing constructorBasic ', async done => {
     const updateConstructor = await updateConstructorBasic(
       constructorUpdateInput,
       constructorBasicID,
@@ -86,8 +88,9 @@ describe('constructor mutations', () => {
       ...currentconstructorUpdate,
       _id: constructorBasicID,
     });
+    done();
   });
-  test('#4 UpdateConstructorBasic should return BASIC_NOT_FOUND', async () => {
+  test('#4 UpdateConstructorBasic should return BASIC_NOT_FOUND', async done => {
     const updateConstructor = await updateConstructorBasic(
       constructorInput,
       wrongId,
@@ -96,8 +99,9 @@ describe('constructor mutations', () => {
     const result = updateConstructor.message;
 
     expect(result).toBe(BASIC_NOT_FOUND);
+    done();
   });
-  test('#5 deleteConstructorBasic should return error BASIC_NOT_FOUND', async () => {
+  test('#5 deleteConstructorBasic should return error BASIC_NOT_FOUND', async done => {
     const deletedConstructor = await deleteConstructorBasic(
       wrongId,
       operations
@@ -105,8 +109,9 @@ describe('constructor mutations', () => {
     const result = deletedConstructor.data.deleteConstructorBasic.message;
 
     expect(result).toBe(BASIC_NOT_FOUND);
+    done();
   });
-  test('#6 Should delete constructor basic and return id', async () => {
+  test('#6 Should delete constructor basic and return id', async done => {
     const deletedConstructor = await deleteConstructorBasic(
       constructorBasicID,
       operations
@@ -114,10 +119,12 @@ describe('constructor mutations', () => {
     const result = deletedConstructor.data.deleteConstructorBasic._id;
 
     expect(result).toBe(constructorBasicID);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteMaterial(materialID, operations);
     await deleteColor(colorId, operations);
+    done();
   });
 });

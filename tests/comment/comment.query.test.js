@@ -53,6 +53,7 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.setTimeout(10000);
 
 let commentId;
 let operations;
@@ -125,7 +126,7 @@ describe('Comment queries', () => {
     commentId = commentData._id;
   });
 
-  it(' Should receive all comments written by selected user', async () => {
+  it(' Should receive all comments written by selected user', async done => {
     const res = await getAllCommentsByUser(userId, operations);
 
     expect(res).toBeDefined();
@@ -133,15 +134,17 @@ describe('Comment queries', () => {
     expect(res[0]).toHaveProperty('text', newComment(userId).text);
     expect(res[0]).toHaveProperty('user', { _id: userId });
     expect(res[0]).toHaveProperty('show', newComment(userId).show);
+    done();
   });
-  it(' should return empty array of comments for unexciting id ', async () => {
+  it(' should return empty array of comments for unexciting id ', async done => {
     const res = await getAllCommentsByUser(userWrongId, operations);
 
     expect(res[0]).toBeDefined();
     expect(res[0].statusCode).toBe(404);
     expect(res[0].message).toBe(COMMENT_FOR_NOT_EXISTING_USER);
+    done();
   });
-  it(' Should receive all comments for one product', async () => {
+  it(' Should receive all comments for one product', async done => {
     const res = await getAllCommentsByProduct(productId, operations);
     const receivedComments = res.data.getAllCommentsByProduct;
 
@@ -150,17 +153,19 @@ describe('Comment queries', () => {
     expect(receivedComments[0]).toHaveProperty('text', newComment(userId).text);
     expect(receivedComments[0]).toHaveProperty('user', { _id: userId });
     expect(receivedComments[0]).toHaveProperty('show', newComment(userId).show);
+    done();
   });
-  it(' Should receive COMMENT_NOT_FOUND for get all comments for one product', async () => {
+  it(' Should receive COMMENT_NOT_FOUND for get all comments for one product', async done => {
     const res = await getAllCommentsByProduct(productWrongId, operations);
     const receivedComments = res.data.getAllCommentsByProduct;
 
     expect(receivedComments[0]).toBeDefined();
     expect(receivedComments[0].statusCode).toBe(404);
     expect(receivedComments[0].message).toBe(COMMENT_NOT_FOUND);
+    done();
   });
 
-  it(' should return one comment', async () => {
+  it(' should return one comment', async done => {
     const receivedComment = await getCommentById(commentId, operations);
 
     expect(receivedComment).toBeDefined();
@@ -170,13 +175,15 @@ describe('Comment queries', () => {
       user: { _id: userId },
       show: newComment(userId).show,
     });
+    done();
   });
-  it(' should return error when find comment by wrong id', async () => {
+  it(' should return error when find comment by wrong id', async done => {
     const receivedComment = await getCommentById(commentWrongId, operations);
 
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('statusCode', 404);
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
+    done();
   });
   afterAll(async () => {
     await deleteComment(commentId, operations);
