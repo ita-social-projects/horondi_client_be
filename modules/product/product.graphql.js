@@ -38,6 +38,7 @@ const productType = `
     innerMaterialColor: [Color]
     bottomMaterial: [Material]
     bottomMaterialColor: [Color]
+    productPrice: [Product]
    }
   type ProductImages { 
     primary: ImageSet

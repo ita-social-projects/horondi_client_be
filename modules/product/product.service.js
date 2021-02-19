@@ -49,8 +49,12 @@ class ProductsService {
     const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
       .lean()
       .exec();
+    const productPrice = await Product.distinct('_id')
+      .lean()
+      .exec();
 
     return {
+      productPrice,
       categories,
       models,
       patterns,
