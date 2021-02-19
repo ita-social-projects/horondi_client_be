@@ -55,7 +55,12 @@ type Delivery {
   sentOn: String
   sentBy: SendByEnum
   invoiceNumber: String
-  courierOffice: Int
+  courierOffice: String,
+  courierOfficeName: String,
+  city: String,
+  street: String,
+  house: Int,
+  flat: Int,
   byCourier: Boolean
   cost: [CurrencySet]
 }
@@ -69,7 +74,6 @@ enum SendByEnum{
 type OrderUser {
   firstName: String
   lastName: String
-  patronymicName: String
   email: String
   phoneNumber: String
 }
@@ -95,7 +99,6 @@ input OrderUserInput {
   lastName: String
   email: String
   phoneNumber: String
-  patronymicName: String
 }
 
 input CurrencyInputSet {
@@ -107,7 +110,12 @@ input DeliveryInput {
   sentOn: String
   sentBy: SendByEnum
   invoiceNumber: String
-  courierOffice: Int
+  courierOffice: String,
+  courierOfficeName: String,
+  city: String,
+  street: String,
+  house: Int,
+  flat: Int,
   byCourier: Boolean
   cost: [CurrencyInputSet]
 }
