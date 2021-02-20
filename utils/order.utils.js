@@ -80,10 +80,7 @@ async function calculateTotalItemsPrice(items) {
 }
 
 function calculateTotalPriceToPay(data, totalItemsPrice) {
-  switch (data.delivery.sentBy) {
-    default:
-      return totalItemsPrice;
-  }
+  return totalItemsPrice;
 }
 
 function generateOrderId() {
