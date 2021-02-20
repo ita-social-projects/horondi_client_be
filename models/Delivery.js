@@ -28,8 +28,8 @@ const deliverySchema = new mongoose.Schema({
   invoiceNumber: String,
   city: String,
   street: String,
-  house: Number,
-  flat: Number,
+  house: String,
+  flat: String,
   cost: {
     type: [CurrencySet],
     required: true,

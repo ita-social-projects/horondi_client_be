@@ -59,8 +59,8 @@ type Delivery {
   courierOfficeName: String,
   city: String,
   street: String,
-  house: Int,
-  flat: Int,
+  house: String,
+  flat: String,
   byCourier: Boolean
   cost: [CurrencySet]
 }
@@ -114,8 +114,8 @@ input DeliveryInput {
   courierOfficeName: String,
   city: String,
   street: String,
-  house: Int,
-  flat: Int,
+  house: String,
+  flat: String,
   byCourier: Boolean
   cost: [CurrencyInputSet]
 }
