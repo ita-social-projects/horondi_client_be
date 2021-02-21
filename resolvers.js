@@ -221,10 +221,6 @@ const resolvers = {
       ),
     bottomMaterialColor: parent =>
       parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
-    productPrice: parent =>
-      parent.productPrice.map(product =>
-        productsService.getProductById(product)
-      ),
   },
   User: {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
