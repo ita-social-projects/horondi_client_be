@@ -3,9 +3,11 @@ const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
+const _ = require('lodash');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
+  PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
 const {
   CATEGORY_NOT_FOUND,
@@ -148,8 +150,8 @@ class ProductsService {
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
-    if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+    if (await _.isEqual(productData, filesToUpload)) {
+      throw new Error(PRODUCT_HAS_NOT_CHANGED);
     }
     if (primary) {
       await uploadService.deleteFiles(
