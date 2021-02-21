@@ -4,14 +4,12 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   user: {
     firstName: 'Arsen',
     lastName: 'Wenger',
-    patronymicName: 'Test',
     email: 'test@gmail.com',
     phoneNumber: '380950000000',
   },
   userComment: 'The bag is pretty good',
   delivery: {
-    byCourier: true,
-    courierOffice: 10,
+    courierOffice: '10',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
     cost: [
@@ -54,14 +52,12 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   user: {
     firstName: 'Updated',
     lastName: 'Updated',
-    patronymicName: 'Updated',
     email: 'test.updated@gmail.com',
     phoneNumber: '380953544271',
   },
   userComment: 'Updated',
   delivery: {
-    byCourier: true,
-    courierOffice: 10,
+    courierOffice: '12',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
     cost: [

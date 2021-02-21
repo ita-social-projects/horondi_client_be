@@ -19,7 +19,6 @@ const createOrder = async (order, operations) => {
             user {
               firstName
               lastName
-              patronymicName
               email
               phoneNumber
             }
@@ -29,7 +28,7 @@ const createOrder = async (order, operations) => {
               sentBy
               invoiceNumber
               courierOffice
-              byCourier
+
               cost {
                 currency
                 value
@@ -109,7 +108,6 @@ const getAllOrders = async operations => {
             user {
               firstName
               lastName
-              patronymicName
               email
               phoneNumber
             }
@@ -141,7 +139,6 @@ const getAllOrders = async operations => {
             }
             delivery {
               invoiceNumber
-              byCourier
               courierOffice
               cost {
                 currency
@@ -171,7 +168,6 @@ const getOrderById = async (id, operations) => {
               sentBy
               invoiceNumber
               courierOffice
-              byCourier
               cost {
                 currency
                 value
@@ -239,17 +235,14 @@ const updateOrderById = async (order, id, operations) => {
             user {
               firstName
               lastName
-              patronymicName
               email
               phoneNumber
             }
-
             userComment
             delivery {
               sentBy
               invoiceNumber
               courierOffice
-              byCourier
               cost {
                 currency
                 value

@@ -80,16 +80,7 @@ async function calculateTotalItemsPrice(items) {
 }
 
 function calculateTotalPriceToPay(data, totalItemsPrice) {
-  switch (data.delivery.sentBy) {
-    case 'NOVAPOST':
-      return novaPoshtaDeliveryPrice();
-
-    case 'UKRPOST':
-      return ukrPoshtaDeliveryPrice();
-
-    default:
-      return totalItemsPrice;
-  }
+  return totalItemsPrice;
 }
 
 function generateOrderId() {
