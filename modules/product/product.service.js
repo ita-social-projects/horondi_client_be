@@ -50,12 +50,11 @@ class ProductsService {
       .lean()
       .exec();
     const productPrice = await this.getProducts({});
-    const minPrice = productPrice.items.sort((a, b) => {
+    const sortedPrices = productPrice.items.sort((a, b) => {
       return a.basePrice[1].value - b.basePrice[1].value;
-    })[0].basePrice;
-    const maxPrice = productPrice.items.sort((a, b) => {
-      return a.basePrice[1].value - b.basePrice[1].value;
-    })[minPrice.length - 1].basePrice;
+    });
+    const minPrice = sortedPrices[0].basePrice;
+    const maxPrice = sortedPrices[sortedPrices.length - 1].basePrice;
 
     return {
       minPrice,
