@@ -49,12 +49,12 @@ class ProductsService {
     const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
       .lean()
       .exec();
-    const productPrice = await this.getProducts({});
-    const sortedPrices = productPrice.items.sort((a, b) => {
+    const products = await this.getProducts({});
+    const sortedByPrices = [...products.items].sort((a, b) => {
       return a.basePrice[1].value - b.basePrice[1].value;
     });
-    const minPrice = sortedPrices[0].basePrice;
-    const maxPrice = sortedPrices[sortedPrices.length - 1].basePrice;
+    const minPrice = sortedByPrices[0].basePrice;
+    const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
 
     return {
       minPrice,
