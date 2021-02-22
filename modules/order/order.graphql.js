@@ -56,7 +56,6 @@ type Delivery {
   sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: String,
-  courierOfficeName: String,
   city: String,
   street: String,
   house: String,
@@ -111,7 +110,6 @@ input DeliveryInput {
   sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: String,
-  courierOfficeName: String,
   city: String,
   street: String,
   house: String,

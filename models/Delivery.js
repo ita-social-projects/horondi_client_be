@@ -24,7 +24,6 @@ const deliverySchema = new mongoose.Schema({
   },
   byCourier: Boolean,
   courierOffice: String,
-  courierOfficeName: String,
   invoiceNumber: String,
   city: String,
   street: String,

@@ -144,9 +144,14 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
+    console.log(id);
+    console.log(productData);
+    console.log(filesToUpload);
+    console.log(primary);
     const product = await Product.findById(id)
       .lean()
       .exec();
+    console.log(product);
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
