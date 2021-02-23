@@ -38,6 +38,8 @@ const productType = `
     innerMaterialColor: [Color]
     bottomMaterial: [Material]
     bottomMaterialColor: [Color]
+    maxPrice: [CurrencySet]
+    minPrice: [CurrencySet]
    }
   type ProductImages { 
     primary: ImageSet
