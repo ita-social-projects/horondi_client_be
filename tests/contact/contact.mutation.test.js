@@ -1,6 +1,3 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const {
   contact,
@@ -8,48 +5,26 @@ const {
   notExistContactId,
 } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
+const {
+  addContact,
+  updateContact,
+  deleteContact,
+} = require('./contact.helper');
+
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/contact/contact.utils.js');
 
 let operations;
-let contactsId = '';
+let contactsId;
 
 describe('Contacts mutations test', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
-    done();
   });
 
-  it('should add contact to database', async done => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($contact: contactInput!) {
-          addContact(contact: $contact, mapImages: []) {
-            ... on Contact {
-              _id
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              link
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { contact },
-    });
-    contactsId = res.data.addContact._id;
-    const addedContact = res.data.addContact;
+  test('should add contact to database', async () => {
+    const addedContact = await addContact(contact, operations);
+    contactsId = addedContact._id;
 
     expect(addedContact).toHaveProperty('phoneNumber', contact.phoneNumber);
     expect(addedContact).toHaveProperty(
@@ -65,113 +40,28 @@ describe('Contacts mutations test', () => {
     );
     expect(addedContact.address).toBeInstanceOf(Array);
     expect(addedContact).toHaveProperty('email', contact.email);
-    expect(res.data.addContact).toHaveProperty('link', contact.link);
-    done();
+    expect(addedContact).toHaveProperty('link', contact.link);
+  });
+  test('should return error when update not existing contact', async () => {
+    const res = await updateContact(
+      notExistContactId,
+      updatedContact,
+      operations
+    );
+
+    expect(res).toHaveProperty('message', CONTACT_NOT_FOUND);
+    expect(res).toHaveProperty('statusCode', 404);
+  });
+  test('should delete contact', async () => {
+    await deleteContact(contactsId, operations);
   });
 
-  it('should return error when update not existing contact', async done => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!, $contact: contactInput!) {
-          updateContact(id: $id, contact: $contact) {
-            ... on Contact {
-              _id
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              link
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-      variables: { id: notExistContactId, contact: updatedContact },
-    });
+  it('should return error when delete not existing contact ', async () => {
+    const res = await deleteContact(notExistContactId, operations);
 
-    expect(res.data.updateContact).toHaveProperty('message', CONTACT_NOT_FOUND);
-    expect(res.data.updateContact).toHaveProperty('statusCode', 404);
-    done();
-  });
-
-  it('should delete contact', async done => {
-    await operations.mutate({
-      variables: { id: contactsId },
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteContact(id: $id) {
-            ... on Contact {
-              _id
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              link
-            }
-            ... on Error {
-              message
-              statusCode
-            }
-          }
-        }
-      `,
-    });
-    done();
-  });
-
-  it('should return error when delete not existing contact ', async done => {
-    const res = await operations.mutate({
-      mutation: gql`
-        mutation($id: ID!) {
-          deleteContact(id: $id) {
-            ... on Contact {
-              _id
-              phoneNumber
-              openHours {
-                lang
-                value
-              }
-              address {
-                lang
-                value
-              }
-              email
-              images {
-                value {
-                  medium
-                }
-              }
-              link
-            }
-            ... on Error {
-              statusCode
-              message
-            }
-          }
-        }
-      `,
-      variables: { id: notExistContactId },
-    });
-
-    expect(res.data.deleteContact).toBeDefined();
-    expect(res.data.deleteContact).not.toBeNull();
-    expect(res.data.deleteContact).toHaveProperty('statusCode', 404);
-    expect(res.data.deleteContact).toHaveProperty('message', CONTACT_NOT_FOUND);
-    done();
+    expect(res).toBeDefined();
+    expect(res).not.toBeNull();
+    expect(res).toHaveProperty('statusCode', 404);
+    expect(res).toHaveProperty('message', CONTACT_NOT_FOUND);
   });
 });

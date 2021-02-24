@@ -1,17 +1,21 @@
+const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
 
 class PatternsService {
   async getAllPatterns({ skip, limit }) {
     const items = await Pattern.find()
       .skip(skip)
-      .limit(limit);
-    const count = await Pattern.find().countDocuments();
+      .limit(limit)
+      .exec();
+    const count = await Pattern.find()
+      .countDocuments()
+      .exec();
 
     return {
       items,
@@ -20,7 +24,7 @@ class PatternsService {
   }
 
   async getPatternById(id) {
-    const foundPattern = await Pattern.findById(id);
+    const foundPattern = await Pattern.findById(id).exec();
     if (foundPattern) {
       return foundPattern;
     }
@@ -28,7 +32,7 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }) {
-    const patternToUpdate = await Pattern.findById(id);
+    const patternToUpdate = await Pattern.findById(id).exec();
     if (!patternToUpdate) {
       throw new Error(PATTERN_NOT_FOUND);
     }
@@ -37,19 +41,22 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
     if (!image) {
-      return await Pattern.findByIdAndUpdate(id, pattern, { new: true });
+      return await Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
     }
-    const uploadResult = await uploadFiles([image]);
 
-    const imageResults = await uploadResult[0];
+    const uploadResult = await uploadService.uploadFile(image[0]);
+    const images = uploadResult.fileNames;
+    const constructorImg = await uploadSmallImage(image[1]);
+    pattern.constructorImg = constructorImg;
 
-    const images = imageResults.fileNames;
-
-    if (!images) {
-      return await Pattern.findByIdAndUpdate(id, pattern);
+    if (!images && constructorImg) {
+      return await Pattern.findByIdAndUpdate(id, pattern).exec();
     }
-    const foundPattern = await Pattern.findById(id).lean();
-    deleteFiles(Object.values(foundPattern.images));
+    const foundPattern = await Pattern.findById(id)
+      .lean()
+      .exec();
+    await uploadService.deleteFiles(Object.values(foundPattern.images));
+    await uploadService.deleteFiles([foundPattern.constructorImg]);
 
     return await Pattern.findByIdAndUpdate(
       id,
@@ -60,7 +67,7 @@ class PatternsService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async addPattern({ pattern, image }) {
@@ -68,24 +75,31 @@ class PatternsService {
       throw new Error(PATTERN_ALREADY_EXIST);
     }
 
-    const uploadResult = await uploadFiles([image]);
-
-    const imageResults = await uploadResult[0];
-
-    const images = imageResults.fileNames;
-    if (!images) {
-      throw new Error(IMAGE_NOT_PROVIDED);
+    if (image.length) {
+      if (!image[0] && !image[1]) {
+        throw new Error(IMAGE_NOT_PROVIDED);
+      }
     }
+
+    const uploadResult = await uploadService.uploadFile(image[0]);
+    const images = uploadResult.fileNames;
+    pattern.constructorImg = await uploadSmallImage(image[1]);
+
     return new Pattern({ ...pattern, images }).save();
   }
 
   async deletePattern(id) {
-    const foundPattern = await Pattern.findByIdAndDelete(id).lean();
+    const foundPattern = await Pattern.findByIdAndDelete(id)
+      .lean()
+      .exec();
     if (!foundPattern) {
       throw new Error(PATTERN_NOT_FOUND);
     }
 
-    const deletedImages = await deleteFiles(Object.values(foundPattern.images));
+    const deletedImages = await uploadService.deleteFiles(
+      Object.values(foundPattern.images)
+    );
+    await uploadService.deleteFiles([foundPattern.constructorImg]);
     if (await Promise.allSettled(deletedImages)) {
       return foundPattern;
     }
@@ -99,8 +113,9 @@ class PatternsService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return patternsCount > 0;
   }
 }
+
 module.exports = new PatternsService();

@@ -1,26 +1,17 @@
-const newOrder = {
-  status: 'DELIVERED',
+const wrongId = '5fb412d8663cf10bec9faa1a';
+const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
+  status: 'CREATED',
   user: {
-    firstName: 'Test',
-    lastName: 'Test',
-    patronymicName: 'Test',
+    firstName: 'Arsen',
+    lastName: 'Wenger',
     email: 'test@gmail.com',
-    phoneNumber: '380953544271',
+    phoneNumber: '380950000000',
   },
-  address: {
-    country: 'Україна',
-    region: 'Кіровоградська область',
-    city: 'Новомиргород',
-    zipcode: '98908',
-    street: 'Бульвар Марії Приймаченко',
-    buildingNumber: '25',
-    appartment: '97',
-  },
+  userComment: 'The bag is pretty good',
   delivery: {
-    sentBy: 'Nova Poshta',
-    byCourier: true,
-    courierOffice: 10,
+    courierOffice: '10',
     invoiceNumber: '6280260',
+    sentBy: 'SELFPICKUP',
     cost: [
       {
         currency: 'UAH',
@@ -34,144 +25,79 @@ const newOrder = {
   },
   items: [
     {
-      category: [
-        {
-          lang: 'uk',
-          value: 'Сумки',
-        },
-        {
-          lang: 'en',
-          value: 'Bags',
-        },
-      ],
-      subcategory: [
-        {
-          lang: 'uk',
-          value: 'Сумки',
-        },
-        {
-          lang: 'en',
-          value: 'Bags',
-        },
-      ],
-      model: [
-        {
-          lang: 'uk',
-          value: 'Сумка з гобеленом',
-        },
-        {
-          lang: 'en',
-          value: 'Bag with a Pattern',
-        },
-      ],
-      name: [
-        {
-          lang: 'uk',
-          value: 'Сумка з гобеленом синя',
-        },
-        {
-          lang: 'en',
-          value: 'Bag with a Pattern Blue',
-        },
-      ],
-      colors: [
-        [
-          {
-            lang: 'uk',
-            value: 'Сталево-блакитний',
-          },
-          {
-            lang: 'en',
-            value: 'Steel-blue',
-          },
-        ],
-      ],
-      pattern: [
-        {
-          lang: 'uk',
-          value: 'Олені',
-        },
-        {
-          lang: 'en',
-          value: 'Deers',
-        },
-      ],
-      closure: [],
-      closureColor: '',
-      size: {
-        heightInCm: 38,
-        widthInCm: 36,
-        depthInCm: 10,
-        volumeInLiters: 0,
-        weightInKg: 0,
+      product: productId,
+      model: modelId,
+      quantity: 2,
+      isFromConstructor: false,
+      constructorBasics: constructorId,
+      options: {
+        size: sizeId,
       },
-      bottomMaterial: [
-        {
-          lang: 'uk',
-          value: 'Тканина Кордура',
-        },
-        {
-          lang: 'en',
-          value: 'Cordura fabric',
-        },
-      ],
-      bottomColor: [
-        {
-          lang: 'uk',
-          value: 'чорний',
-        },
-        {
-          lang: 'en',
-          value: 'black',
-        },
-      ],
-      additions: [],
-      actualPrice: [
+      fixedPrice: [
         {
           currency: 'UAH',
-          value: 90000,
+          value: 7000,
         },
         {
           currency: 'USD',
-          value: 3246,
+          value: 240,
         },
       ],
-      quantity: 1,
     },
   ],
-  paymentMethod: 'CARD',
-};
-
-const newOrderMutation = {
-  ...newOrder,
+  paymentStatus: 'CREATED',
+});
+const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   status: 'SENT',
-};
-
-const updatedData = {
   user: {
     firstName: 'Updated',
     lastName: 'Updated',
-    patronymicName: 'Updated',
     email: 'test.updated@gmail.com',
     phoneNumber: '380953544271',
   },
-};
-
-const deliveryOrder = {
-  sentBy: 'Nova Poshta',
-  byCourier: true,
-  courierOffice: 10,
-  invoiceNumber: '6280260',
-  sentOn: null,
-};
-const newOrderUpdated = {
-  ...newOrderMutation,
-  ...updatedData,
-};
+  userComment: 'Updated',
+  delivery: {
+    courierOffice: '12',
+    invoiceNumber: '6280260',
+    sentBy: 'SELFPICKUP',
+    cost: [
+      {
+        currency: 'UAH',
+        value: 7000,
+      },
+      {
+        currency: 'USD',
+        value: 240,
+      },
+    ],
+  },
+  items: [
+    {
+      product: productId,
+      model: modelId,
+      quantity: 2,
+      isFromConstructor: false,
+      constructorBasics: constructorId,
+      options: {
+        size: sizeId,
+      },
+      fixedPrice: [
+        {
+          currency: 'UAH',
+          value: 7000,
+        },
+        {
+          currency: 'USD',
+          value: 240,
+        },
+      ],
+    },
+  ],
+  paymentStatus: 'APPROVED',
+});
 
 module.exports = {
-  newOrder,
+  newOrderInputData,
+  wrongId,
   newOrderUpdated,
-  newOrderMutation,
-  deliveryOrder,
 };

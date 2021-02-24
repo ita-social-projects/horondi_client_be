@@ -16,6 +16,8 @@ const userQuery = {
       };
     }
   },
+  getPurchasedProducts: (parent, args) =>
+    userService.getPurchasedProducts(args.id),
 };
 const userMutation = {
   registerUser: (parent, args) =>
@@ -104,13 +106,6 @@ const userMutation = {
       args.key,
       context.user
     ),
-
-  addProductToCart: (parent, args, context) =>
-    userService.addProductToCart(args.product, args.key, context.user),
-  removeProductFromCart: (parent, args, context) =>
-    userService.removeProductFromCart(args.product, args.key, context.user),
-  changeCartProductQuantity: (parent, args, context) =>
-    userService.changeCartProductQuantity(args.product, args.key, context.user),
 };
 
 module.exports = {

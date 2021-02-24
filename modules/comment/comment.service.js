@@ -1,65 +1,71 @@
 const Comment = require('./comment.model');
 const Product = require('../product/product.model');
-const User = require('../user/user.model');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
+  COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
 const { monthInMilliseconds } = require('../../consts');
-const { UserRate } = require('../../resolvers');
-const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 
-class CommentsService {
+const FilterHelper = require('../../helpers/filter-helper');
+
+class CommentsService extends FilterHelper {
+  async getAllComments({ filter, pagination }) {
+    let filters = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filters, pagination);
+    const [comments] = await Comment.aggregate()
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filters }, { $count: 'count' }],
+      })
+      .exec();
+
+    let commentsCount;
+
+    const {
+      items,
+      calculations: [calculations],
+    } = comments;
+    if (calculations) {
+      commentsCount = calculations.count;
+    }
+    return {
+      items,
+      count: commentsCount || 0,
+    };
+  }
   async getCommentById(id) {
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(id).exec();
     if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
     return comment;
   }
 
-  async getAllCommentsByProduct({ productId, skip, limit }) {
-    const product = await Product.findById(productId);
+  async getAllCommentsByProduct({ productId }) {
+    const product = await Product.findById(productId).exec();
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId })
-      .skip(skip)
-      .limit(limit)
-      .sort('-date');
-    const count = await Comment.find({ product: productId }).countDocuments();
-    return { items: comments, count };
+    const comments = await Comment.find({ product: productId }).exec();
+    return comments;
   }
 
-  async getAllCommentsByUser(userEmail) {
-    return await Comment.find({ 'user.email': userEmail });
-  }
-
-  async getAllRecentComments({ skip, limit }) {
-    const dateFrom = new Date().getTime();
-    const dateTo = dateFrom - monthInMilliseconds;
-
-    const items = await Comment.find({ date: { $lt: dateFrom, $gt: dateTo } })
-      .sort({ date: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const count = await Comment.find({
-      date: { $gt: dateTo, $lt: dateFrom },
-    }).countDocuments();
-
-    return {
-      items,
-      count,
-    };
+  async getAllCommentsByUser(userId) {
+    const comments = await Comment.find({ user: userId }).exec();
+    if (!comments.length) {
+      throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
+    }
+    return comments;
   }
 
   async updateComment(id, comment) {
     const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
       new: true,
-    });
+    }).exec();
     if (!updatedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -67,7 +73,7 @@ class CommentsService {
   }
 
   async addComment(id, data) {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).exec();
     if (!product) {
       throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
     }
@@ -75,7 +81,7 @@ class CommentsService {
   }
 
   async deleteComment(id) {
-    const deletedComment = await Comment.findByIdAndDelete(id);
+    const deletedComment = await Comment.findByIdAndDelete(id).exec();
     if (!deletedComment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
@@ -83,7 +89,7 @@ class CommentsService {
   }
 
   async addRate(id, data, user) {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).exec();
 
     if (!product) {
       throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
@@ -116,7 +122,7 @@ class CommentsService {
         userRates: newUserRates,
       },
       { new: true }
-    );
+    ).exec();
     return rateToAdd;
   }
 }

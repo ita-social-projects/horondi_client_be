@@ -1,25 +1,49 @@
-const mongoose = require('mongoose');
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
-  CATEGORY_IS_NOT_MAIN,
-  WRONG_CATEGORY_DATA,
   IMAGES_NOT_PROVIDED,
 } = require('../../error-messages/category.messages');
-const { validateCategoryInput } = require('../../utils/validate-category');
-const { deleteFiles, uploadFiles } = require('../upload/upload.service');
+const uploadService = require('../upload/upload.service');
+const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
+const FilterHelper = require('../../helpers/filter-helper');
 
-class CategoryService {
-  async getAllCategories() {
-    return await Category.find();
+class CategoryService extends FilterHelper {
+  async getAllCategories({ filter, pagination, sort }) {
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+      const [categories] = await Category.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+      let categoryCount;
+
+      const {
+        items,
+        calculations: [calculations],
+      } = categories;
+
+      if (calculations) {
+        categoryCount = calculations.count;
+      }
+      return {
+        items,
+        count: categoryCount || 0,
+      };
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   async getCategoryById(id) {
-    const category = await Category.findById(id);
+    const category = await Category.findById(id).exec();
     if (category) {
       return category;
     }
@@ -27,7 +51,7 @@ class CategoryService {
   }
 
   async updateCategory({ id, category, upload }) {
-    const categoryToUpdate = await Category.findById(id);
+    const categoryToUpdate = await Category.findById(id).exec();
     if (!categoryToUpdate) {
       throw new Error(CATEGORY_NOT_FOUND);
     }
@@ -37,18 +61,20 @@ class CategoryService {
     }
 
     if (!upload || !Object.keys(upload).length) {
-      return await Category.findByIdAndUpdate(id, category, { new: true });
+      return await Category.findByIdAndUpdate(id, category, {
+        new: true,
+      }).exec();
     }
-    const uploadResult = await uploadFiles([upload]);
+    const uploadResult = await uploadService.uploadFile(upload);
 
-    const uploadResults = await uploadResult[0];
-
-    const images = uploadResults.fileNames;
+    const images = uploadResult.fileNames;
     if (!images) {
-      return await Category.findByIdAndUpdate(id, category);
+      return await Category.findByIdAndUpdate(id, category).exec();
     }
-    const foundCategory = await Category.findById(id).lean();
-    deleteFiles(Object.values(foundCategory.images));
+    const foundCategory = await Category.findById(id)
+      .lean()
+      .exec();
+    uploadService.deleteFiles(Object.values(foundCategory.images));
 
     return await Category.findByIdAndUpdate(
       id,
@@ -59,33 +85,30 @@ class CategoryService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async getCategoriesForBurgerMenu() {
-    const categories = await this.getAllCategories();
+    const categories = await this.getAllCategories({
+      filter: {},
+      pagination: {},
+      sort: {},
+    });
 
-    const data = categories.map(async category => {
-      const products = await Product.find({ category: category._id });
-      const uniqueModels = [];
-      const models = products
-        .map(product => ({
-          name: [...product.model],
-          _id: product._id,
-        }))
-        .filter(({ name }) => {
-          if (!uniqueModels.includes(name[0].value)) {
-            uniqueModels.push(name[0].value);
-            return true;
-          }
-          return false;
-        });
+    const data = categories.items.map(async category => {
+      const models = await Model.find({ category: category._id }).exec();
+      const modelsFields = models.map(async model => {
+        return {
+          name: model.name,
+          _id: model._id,
+        };
+      });
       return {
         category: {
           name: [...category.name],
           _id: category._id,
         },
-        models,
+        models: modelsFields,
       };
     });
 
@@ -103,20 +126,22 @@ class CategoryService {
 
     const savedCategory = await new Category(data).save();
 
-    const uploadResult = await uploadFiles([upload]);
-    const imageResults = await uploadResult[0];
-    savedCategory.images = imageResults.fileNames;
+    const uploadResult = await uploadService.uploadFile(upload);
+
+    savedCategory.images = uploadResult.fileNames;
 
     return await savedCategory.save();
   }
 
   async cascadeUpdateRelatives(filter, updateData) {
-    await Product.updateMany(filter, updateData);
-    await Model.updateMany(filter, updateData);
+    await Product.updateMany(filter, updateData).exec();
+    await Model.updateMany(filter, updateData).exec();
   }
   async deleteCategory({ deleteId, switchId }) {
-    const category = await Category.findByIdAndDelete(deleteId).lean();
-    const switchCategory = await Category.findById(switchId);
+    const category = await Category.findByIdAndDelete(deleteId)
+      .lean()
+      .exec();
+    const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
       category: deleteId,
@@ -133,7 +158,7 @@ class CategoryService {
     );
 
     if (images.length) {
-      await deleteFiles(images);
+      await uploadService.deleteFiles(images);
     }
 
     if (category) {
@@ -142,7 +167,13 @@ class CategoryService {
 
     throw new Error(CATEGORY_NOT_FOUND);
   }
-
+  async getCategoriesWithModels() {
+    const { items } = await this.getAllCategories({});
+    return items.map(category => {
+      category.models = modelService.getModelsByCategory(category._id);
+      return category;
+    });
+  }
   async checkCategoryExist(data, id) {
     if (!data.name.length) {
       return false;
@@ -154,7 +185,7 @@ class CategoryService {
           $or: data.name.map(({ value }) => ({ value })),
         },
       },
-    });
+    }).exec();
     return categoriesCount > 0;
   }
 
@@ -187,7 +218,8 @@ class CategoryService {
     let total = 0;
     const categories = await Category.find()
       .sort({ purchasedCount: -1 })
-      .lean();
+      .lean()
+      .exec();
 
     categories.forEach(({ purchasedCount }) => (total += purchasedCount));
 

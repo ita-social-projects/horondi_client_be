@@ -1,6 +1,3 @@
-/* eslint-disable object-curly-newline */
-/* eslint-disable no-undef */
-const { gql } = require('@apollo/client');
 const { setupApp } = require('../helper-functions');
 const {
   news,
@@ -8,323 +5,107 @@ const {
   existingNews,
   wrongId,
 } = require('./news.variables');
+const { createNews, updateNews, deleteNews } = require('./news.helper');
 const {
   NEWS_ALREADY_EXIST,
   NEWS_NOT_FOUND,
 } = require('../../error-messages/news.messages');
 
-let newsId = '';
-const newsDoesNotExistId = '1f2ad410eb01783384e6111b';
+jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/upload/upload.utils');
+
+let newsId;
 let operations;
 
 describe('News mutations tests', () => {
-  describe('Create news test', () => {
-    beforeAll(async () => {
-      operations = await setupApp();
-    });
-    test('should add news to database', async () => {
-      const res = await operations
-        .mutate({
-          mutation: gql`
-            mutation($news: NewsInput!) {
-              addNews(news: $news) {
-                ... on News {
-                  _id
-                  title {
-                    lang
-                    value
-                  }
-                  text {
-                    lang
-                    value
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                  images {
-                    primary {
-                      medium
-                    }
-                    additional {
-                      medium
-                    }
-                  }
-                }
-                ... on Error {
-                  message
-                  statusCode
-                }
-              }
-            }
-          `,
-          variables: { news },
-        })
-        .catch(e => e);
+  beforeAll(async () => {
+    operations = await setupApp();
+  });
 
-      newsId = res.data.addNews._id;
-      expect(res.data.addNews.title).toBeInstanceOf(Array);
-      expect(res.data.addNews).toHaveProperty(
-        'title',
-        news.title.map(item => ({
-          ...item,
-        }))
-      );
-      expect(res.data.addNews.text).toBeInstanceOf(Array);
-      expect(res.data.addNews).toHaveProperty(
-        'text',
-        news.text.map(item => ({
-          ...item,
-        }))
-      );
-      expect(res.data.addNews.author).toHaveProperty(
-        'name',
-        news.author.name.map(item => ({
-          ...item,
-        }))
-      );
-      expect(res.data.addNews).toHaveProperty('images');
-      expect(res.data.addNews.images).toHaveProperty('primary');
-    });
+  test('#1 Should Add News To Database', async () => {
+    const addResponse = await createNews(news, operations);
 
-    test('creating news with same title should throw error', async () => {
-      const res = await operations
-        .mutate({
-          mutation: gql`
-            mutation($news: NewsInput!) {
-              addNews(news: $news) {
-                ... on News {
-                  _id
-                  title {
-                    lang
-                    value
-                  }
-                  text {
-                    lang
-                    value
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                }
-                ... on Error {
-                  message
-                  statusCode
-                }
-              }
-            }
-          `,
+    newsId = addResponse._id;
+    expect(addResponse.title).toBeInstanceOf(Array);
+    expect(addResponse.text).toBeInstanceOf(Array);
+    expect(addResponse.author.name).toBeInstanceOf(Array);
+    expect(addResponse).toHaveProperty(
+      'title',
+      news.title.map(item => ({
+        ...item,
+      }))
+    );
+    expect(addResponse).toHaveProperty(
+      'text',
+      news.text.map(item => ({
+        ...item,
+      }))
+    );
+  });
 
-          variables: { news },
-        })
-        .catch(e => e);
-      expect(res.data.addNews).toHaveProperty('message', NEWS_ALREADY_EXIST);
-      expect(res.data.addNews).toHaveProperty('statusCode', 400);
-    });
+  test('#2 Creating News With Same Title Should Throw Error', async () => {
+    const addResponse = await createNews(news, operations);
 
-    describe('Update news test', () => {
-      test('update news', async () => {
-        const res = await operations.mutate({
-          mutation: gql`
-            mutation($id: ID!, $news: NewsInput!) {
-              updateNews(id: $id, news: $news) {
-                ... on News {
-                  _id
-                  title {
-                    lang
-                    value
-                  }
-                  text {
-                    lang
-                    value
-                  }
-                  author {
-                    name {
-                      lang
-                      value
-                    }
-                  }
-                }
-                ... on Error {
-                  message
-                }
-              }
-            }
-          `,
-          variables: { id: newsId, news: newsUpdateData },
-        });
+    expect(addResponse).toHaveProperty('message', NEWS_ALREADY_EXIST);
+    expect(addResponse).toHaveProperty('statusCode', 400);
+  });
 
-        expect(res.data.updateNews.text).toBeInstanceOf(Array);
-        expect(res.data.updateNews).toHaveProperty(
-          'text',
-          newsUpdateData.text.map(item => ({
-            ...item,
-          }))
-        );
+  test('#3 Should Update News', async () => {
+    const updateResponse = await updateNews(newsId, newsUpdateData, operations);
 
-        expect(res.data.updateNews.author).toHaveProperty(
-          'name',
-          newsUpdateData.author.name.map(item => ({
-            ...item,
-          }))
-        );
-      });
+    expect(updateResponse.author.name).toBeInstanceOf(Array);
+    expect(updateResponse.text).toBeInstanceOf(Array);
+    expect(updateResponse).toHaveProperty(
+      'text',
+      newsUpdateData.text.map(item => ({
+        ...item,
+      }))
+    );
+  });
 
-      test('update not existing news should return error', async () => {
-        const res = await operations
-          .mutate({
-            mutation: gql`
-              mutation($id: ID!, $news: NewsInput!) {
-                updateNews(id: $id, news: $news) {
-                  ... on News {
-                    _id
-                    text {
-                      lang
-                      value
-                    }
-                    title {
-                      lang
-                      value
-                    }
-                    author {
-                      name {
-                        lang
-                        value
-                      }
-                    }
-                  }
-                  ... on Error {
-                    message
-                    statusCode
-                  }
-                }
-              }
-            `,
-            variables: { id: newsDoesNotExistId, news: newsUpdateData },
-          })
-          .catch(e => e);
-        expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
-        expect(res.data.updateNews).toHaveProperty('statusCode', 404);
-      });
+  test('#4 Update Not Existing News Should Return Error', async () => {
+    const updateResponse = await updateNews(
+      wrongId,
+      newsUpdateData,
+      operations
+    );
 
-      test('update not existing news should return error', async () => {
-        const res = await operations
-          .mutate({
-            mutation: gql`
-              mutation($id: ID!, $news: NewsInput!) {
-                updateNews(id: $id, news: $news) {
-                  ... on News {
-                    _id
-                    text {
-                      lang
-                      value
-                    }
-                    title {
-                      lang
-                      value
-                    }
-                    author {
-                      name {
-                        lang
-                        value
-                      }
-                    }
-                  }
-                  ... on Error {
-                    message
-                    statusCode
-                  }
-                }
-              }
-            `,
-            variables: { id: wrongId, news: existingNews },
-          })
-          .catch(e => e);
-        expect(res.data.updateNews).toHaveProperty('message', NEWS_NOT_FOUND);
-        expect(res.data.updateNews).toHaveProperty('statusCode', 404);
-      });
+    expect(updateResponse).toHaveProperty('message', NEWS_NOT_FOUND);
+    expect(updateResponse).toHaveProperty('statusCode', 404);
+  });
 
-      describe('Delete news test', () => {
-        test('delete news', async () => {
-          const res = await operations.mutate({
-            mutation: gql`
-              mutation($id: ID!) {
-                deleteNews(id: $id) {
-                  ... on News {
-                    text {
-                      lang
-                      value
-                    }
-                    author {
-                      name {
-                        lang
-                        value
-                      }
-                    }
-                  }
-                  ... on Error {
-                    statusCode
-                    message
-                  }
-                }
-              }
-            `,
-            variables: { id: newsId },
-          });
-          expect(res.data.deleteNews).toBeDefined();
-          expect(res.data.deleteNews).not.toBeNull();
-          expect(res.data.deleteNews.text).toBeInstanceOf(Array);
-          expect(res.data.deleteNews).toHaveProperty(
-            'text',
-            newsUpdateData.text.map(item => ({
-              ...item,
-            }))
-          );
-          expect(res.data.deleteNews.author).toHaveProperty(
-            'name',
-            newsUpdateData.author.name.map(item => ({
-              ...item,
-            }))
-          );
-        });
+  test('#5 Update Not Existing News Should Return Error', async () => {
+    const updateResponse = await updateNews(wrongId, existingNews, operations);
 
-        test('delete not existing news should return error', async () => {
-          const res = await operations.mutate({
-            mutation: gql`
-              mutation($id: ID!) {
-                deleteNews(id: $id) {
-                  ... on News {
-                    text {
-                      lang
-                      value
-                    }
-                    author {
-                      name {
-                        lang
-                        value
-                      }
-                    }
-                  }
-                  ... on Error {
-                    statusCode
-                    message
-                  }
-                }
-              }
-            `,
-            variables: { id: newsDoesNotExistId },
-          });
-          expect(res.data.deleteNews).toBeDefined();
-          expect(res.data.deleteNews).not.toBeNull();
-          expect(res.data.deleteNews).toHaveProperty('statusCode', 404);
-          expect(res.data.deleteNews).toHaveProperty('message', NEWS_NOT_FOUND);
-        });
-      });
-    });
+    expect(updateResponse).toHaveProperty('message', NEWS_NOT_FOUND);
+    expect(updateResponse).toHaveProperty('statusCode', 404);
+  });
+
+  test('#6 Delete News', async () => {
+    const deleteResponse = await deleteNews(newsId, operations);
+
+    expect(deleteResponse).toBeDefined();
+    expect(deleteResponse).not.toBeNull();
+    expect(deleteResponse.text).toBeInstanceOf(Array);
+    expect(deleteResponse).toHaveProperty(
+      'text',
+      newsUpdateData.text.map(item => ({
+        ...item,
+      }))
+    );
+    expect(deleteResponse.author).toHaveProperty(
+      'name',
+      newsUpdateData.author.name.map(item => ({
+        ...item,
+      }))
+    );
+  });
+
+  test('#7 Delete Not Existing News Should Return Error', async () => {
+    const deleteResponse = await deleteNews(wrongId, operations);
+
+    expect(deleteResponse).toBeDefined();
+    expect(deleteResponse).not.toBeNull();
+    expect(deleteResponse).toHaveProperty('statusCode', 404);
   });
 });

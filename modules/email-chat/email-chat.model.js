@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { EMAIL_NOT_VALID } = require('../../error-messages/common.messages');
 
 const EmailChatSchema = new mongoose.Schema({
   text: String,
@@ -13,7 +14,15 @@ const EmailChatSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  email: String,
+  email: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+      },
+      message: EMAIL_NOT_VALID,
+    },
+  },
   status: {
     type: String,
     required: true,

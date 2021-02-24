@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
+const {
+  FIRST_NAME_TOO_SHORT,
+  FIRST_NAME_TOO_LONG,
+  LAST_NAME_TOO_SHORT,
+  LAST_NAME_TOO_LONG,
+  PHONE_NUMBER_NOT_VALID,
+  EMAIL_NOT_VALID,
+  EMAIL_IS_REQUIRED,
+} = require('../../error-messages/common.messages');
 
 const { UserInputError } = require('apollo-server');
 
@@ -9,15 +18,40 @@ const {
 } = require('../../error-messages/user.messages');
 
 const userSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
+  firstName: {
+    type: String,
+    minlength: [2, FIRST_NAME_TOO_SHORT],
+    maxlength: [20, FIRST_NAME_TOO_LONG],
+  },
+  lastName: {
+    type: String,
+    minlength: [2, LAST_NAME_TOO_SHORT],
+    maxlength: [20, LAST_NAME_TOO_LONG],
+  },
   role: {
     type: String,
     enum: ['user', 'admin', 'superadmin'],
     default: 'user',
   },
-  email: String,
-  phoneNumber: String,
+  email: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
+      },
+      message: EMAIL_NOT_VALID,
+    },
+    required: [true, EMAIL_IS_REQUIRED],
+  },
+  phoneNumber: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        return /^\+?3?8?(0\d{9})$/.test(v);
+      },
+      message: PHONE_NUMBER_NOT_VALID,
+    },
+  },
   address: Address,
   images: ImageSet,
   credentials: [
@@ -36,21 +70,10 @@ const userSchema = new mongoose.Schema({
       ref: 'Product',
     },
   ],
-  cart: [
-    {
-      type: Object,
-    },
-  ],
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Order',
-    },
-  ],
-  purchasedProducts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
     },
   ],
   comments: [

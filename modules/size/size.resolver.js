@@ -1,11 +1,11 @@
-const sizesService = require('./size.service');
+const sizeService = require('./size.service');
 
 const sizeQuery = {
-  getAllSizes: () => sizesService.getAllSizes(),
+  getAllSizes: () => sizeService.getAllSizes(),
 
-  getSizeById: async (_, { id }) => {
+  getSizeById: async (parent, { id }) => {
     try {
-      return await sizesService.getSizeById(id);
+      return await sizeService.getSizeById(id);
     } catch (e) {
       return {
         statusCode: 404,
@@ -15,4 +15,39 @@ const sizeQuery = {
   },
 };
 
-module.exports = { sizeQuery };
+const sizeMutation = {
+  addSize: async (parent, { size }) => {
+    try {
+      return await sizeService.addSize(size);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
+
+  deleteSize: async (parent, { id }) => {
+    try {
+      return await sizeService.deleteSize(id);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
+
+  updateSize: async (parent, { id, size }) => {
+    try {
+      return await sizeService.updateSize(id, size);
+    } catch (e) {
+      return {
+        statusCode: 404,
+        message: e.message,
+      };
+    }
+  },
+};
+
+module.exports = { sizeQuery, sizeMutation };

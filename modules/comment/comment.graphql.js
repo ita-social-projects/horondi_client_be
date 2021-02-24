@@ -3,18 +3,24 @@ type Comment {
 _id: ID!
 text: String!
 date: String!
-user: UserForComment!
+user: User
 product: Product
 show: Boolean
 }
 `;
 
-const commentInput = `
-input commentInput {
+const sharedInputFields = `
   text: String
-  user: UserForCommentInput!
+  show: Boolean
+`;
+const commentInput = `
+input CommentInput {
+  ${sharedInputFields}
+  user: ID!
   product: ID!
-  show: Boolean!
+}
+input CommentUpdateInput {
+  ${sharedInputFields}
 }`;
 
 module.exports = {
