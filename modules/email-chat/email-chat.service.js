@@ -47,7 +47,7 @@ class EmailChatService {
   }
 
   async getPendingEmailQuestionsCount() {
-    return await EmailChat.find({ status: PENDING })
+    return await EmailChat.find({ status: 'PENDING' })
       .countDocuments()
       .exec();
   }
