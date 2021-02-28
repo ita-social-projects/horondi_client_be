@@ -4,11 +4,10 @@ const SERVICES = {
   INITIAL_TEXT: '',
   INITIAL_VALUE: '',
   INITIAL_PAGES: 1,
-  EMAIL_CHAT_SUBJECT: `[HORONDI] ${
-    !language ? 'відповідь на запитання' : 'question answer'
-  }`,
   ADDRESS: 'Address',
   ADDRESS_GENERAL: 'AddressGeneral',
+  UKR: 'відповідь на запитання',
+  EN: 'question answer',
 };
 
 const DELIVERY_SERVICES_METHODS = {

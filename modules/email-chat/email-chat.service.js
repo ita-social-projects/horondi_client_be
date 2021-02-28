@@ -11,7 +11,7 @@ const {
   STATUSES: { PENDING, SPAM, ANSWERED },
 } = require('../../consts/statuses');
 const {
-  SERVICES: { ID, DATE, INITIAL_TEXT, EMAIL_CHAT_SUBJECT },
+  SERVICES: { ID, DATE, INITIAL_TEXT, UKR, EN },
 } = require('../../consts/delivery-services');
 
 class EmailChatService {
@@ -100,7 +100,7 @@ class EmailChatService {
     ).exec();
 
     const language = question.language;
-    const subject = EMAIL_CHAT_SUBJECT;
+    const subject = `[HORONDI] ${!language ? UKR : EN}`;
     const message = {
       from: MAIL_USER,
       to: question.email,
