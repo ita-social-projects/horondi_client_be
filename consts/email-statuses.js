@@ -1,9 +1,9 @@
-const STATUSES = {
+const EMAIL_MESSAGES_STATUSES = {
   PENDING: 'PENDING',
   ANSWERED: 'ANSWERED',
   SPAM: 'SPAM',
 };
 
 module.exports = {
-  STATUSES,
+  EMAIL_MESSAGES_STATUSES,
 };

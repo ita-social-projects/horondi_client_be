@@ -2,14 +2,13 @@ const mongoose = require('mongoose');
 
 const { EMAIL_NOT_VALID } = require('../../error-messages/common.messages');
 const {
-  DB_TABLES_NAMES: { EMAIL_CHAT },
-} = require('../../consts/db-tables-names');
-const {
+  DB_COLLECTIONS_NAMES: { EMAIL_CHAT },
   DB_REFS: { USER },
-} = require('../../consts/db-refs');
+} = require('../../consts/db-collections-names');
+
 const {
-  STATUSES: { PENDING, ANSWERED, SPAM },
-} = require('../../consts/statuses');
+  EMAIL_MESSAGES_STATUSES: { PENDING, ANSWERED, SPAM },
+} = require('../../consts/email-statuses');
 
 const EmailChatSchema = new mongoose.Schema({
   text: String,

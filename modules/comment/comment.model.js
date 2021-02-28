@@ -5,11 +5,9 @@ const {
   TEXT_TOO_LONG,
 } = require('../../error-messages/common.messages');
 const {
-  DB_TABLES_NAMES: { COMMENT },
-} = require('../../consts/db-tables-names');
-const {
+  DB_COLLECTIONS_NAMES: { COMMENT },
   DB_REFS: { PRODUCT, USER },
-} = require('../../consts/db-refs');
+} = require('../../consts/db-collections-names');
 
 const commentSchema = new mongoose.Schema({
   text: {

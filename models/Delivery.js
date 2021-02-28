@@ -15,8 +15,8 @@ const {
 } = require('../consts/currency');
 
 const {
-  DB_TABLES_NAMES: { DELIVERY },
-} = require('../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { DELIVERY },
+} = require('../consts/db-collections-names');
 
 const deliverySchema = new mongoose.Schema({
   _id: false,

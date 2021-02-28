@@ -9,11 +9,9 @@ const {
   RANGES: { MIN, MAX },
 } = require('../../../consts/ranges');
 const {
-  DB_TABLES_NAMES: { CONSTRUCTOR_FRONT_POCKET },
-} = require('../../../consts/db-tables-names');
-const {
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_FRONT_POCKET },
   DB_REFS: { MATERIAL, COLOR },
-} = require('../../../consts/db-refs');
+} = require('../../../consts/db-collections-names');
 
 const constructorFrontPocketSchema = new mongoose.Schema({
   name: [Language],

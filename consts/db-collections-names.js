@@ -1,4 +1,4 @@
-const DB_TABLES_NAMES = {
+const DB_COLLECTIONS_NAMES = {
   BACKGROUND: 'Background',
   BUSINESS_TEXT: 'BusinessText',
   CLOSURE: 'Closure',
@@ -20,6 +20,20 @@ const DB_TABLES_NAMES = {
   CURRENCY: 'Currency',
 };
 
+const DB_REFS = {
+  PRODUCT: 'Product',
+  MODEL: 'Model',
+  SIZE: 'Size',
+  CONSTRUCTOR_BASICS: 'constructorBasics',
+  CONSTRUCTOR_BOTTOM: 'constructorBottom',
+  CONSTRUCTOR_FRONT_POCKET: 'constructorFrontPocket',
+  PATTERN: 'Pattern',
+  USER: 'User',
+  COLOR: 'Color',
+  MATERIAL: 'Material',
+};
+
 module.exports = {
-  DB_TABLES_NAMES,
+  DB_COLLECTIONS_NAMES,
+  DB_REFS,
 };

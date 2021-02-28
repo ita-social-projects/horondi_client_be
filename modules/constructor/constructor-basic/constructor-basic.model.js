@@ -5,11 +5,10 @@ const {
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-basic-messages');
 const {
-  DB_TABLES_NAMES: { CONSTRUCTOR_BASICS },
-} = require('../../../consts/db-tables-names');
-const {
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BASICS },
   DB_REFS: { MATERIAL, COLOR },
-} = require('../../../consts/db-refs');
+} = require('../../../consts/db-collections-names');
+
 const {
   RANGES: { MIN, MAX },
 } = require('../../../consts/ranges');

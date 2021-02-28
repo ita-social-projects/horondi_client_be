@@ -18,13 +18,15 @@ const {
   ORDER_CREATION_FAILED,
 } = require('../../../error-messages/delivery.message');
 const {
-  DELIVERY_SERVICES_METHODS: { GET, POST },
   URL_PARAMS: {
     CREATE_UKR_POSHTA_ORDER_PARAMS,
     CREATE_UKR_POSHTA_USER_PARAMS,
     ADDRESSES,
   },
 } = require('../../../consts/delivery-services');
+const {
+  REQUEST_METHODS: { GET, POST },
+} = require('../../../consts/request-methods');
 
 class UkrPoshtaService {
   async getUkrPoshtaRequest(urlParams, method, data) {

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const {
-  DB_TABLES_NAMES: { IMAGE_SET },
-} = require('../../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { IMAGE_SET },
+} = require('../../consts/db-collections-names');
 
 const imageSetSchema = new mongoose.Schema({
   large: String,

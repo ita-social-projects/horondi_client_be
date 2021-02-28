@@ -5,8 +5,8 @@ const {
 } = require('../../error-messages/closures.messages');
 const uploadService = require('../upload/upload.service');
 const {
-  SIZES: { LARGE },
-} = require('../../consts/sizes');
+  FILE_SIZES: { LARGE },
+} = require('../../consts/file-sizes');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {

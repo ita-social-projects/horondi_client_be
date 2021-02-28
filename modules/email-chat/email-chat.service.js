@@ -8,10 +8,10 @@ const { sendEmail } = require('../../utils/sendGrid-email');
 const { emailQuestionAnswerMessage } = require('../../utils/localization');
 const { MAIL_USER } = require('../../dotenvValidator');
 const {
-  STATUSES: { PENDING, SPAM, ANSWERED },
-} = require('../../consts/statuses');
+  STATUSES: { SPAM, ANSWERED },
+} = require('../../consts/email-statuses');
 const {
-  SERVICES: { ID, DATE, INITIAL_TEXT, UKR, EN },
+  DELIVERY_SERVICES_INITIAL_VALUES: { ID, DATE, INITIAL_TEXT, UKR, EN },
 } = require('../../consts/delivery-services');
 
 class EmailChatService {

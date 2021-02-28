@@ -2,9 +2,7 @@ const mongoose = require('mongoose');
 
 const CurrencySet = require('./CurrencySet').schema;
 const {
-  DB_TABLES_NAMES: { ORDER_ITEM },
-} = require('../consts/db-tables-names');
-const {
+  DB_COLLECTIONS_NAMES: { ORDER_ITEM },
   DB_REFS: {
     PRODUCT,
     MODEL,
@@ -14,7 +12,7 @@ const {
     CONSTRUCTOR_FRONT_POCKET,
     PATTERN,
   },
-} = require('../consts/db-refs');
+} = require('../consts/db-collections-names');
 
 const orderItemSchema = new mongoose.Schema({
   _id: false,

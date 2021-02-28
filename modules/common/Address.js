@@ -20,8 +20,8 @@ const {
   RANGES: { MIN, MAX },
 } = require('../../consts/ranges');
 const {
-  DB_TABLES_NAMES: { ADDRESS },
-} = require('../../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { ADDRESS },
+} = require('../../consts/db-collections-names');
 
 const addressSchema = new mongoose.Schema({
   country: {

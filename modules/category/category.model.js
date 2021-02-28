@@ -7,8 +7,8 @@ const {
   CODE_IS_TOO_LONG,
 } = require('../../error-messages/category.messages');
 const {
-  DB_TABLES_NAMES: { CATEGORY },
-} = require('../../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { CATEGORY },
+} = require('../../consts/db-collections-names');
 
 const CategorySchema = new mongoose.Schema({
   code: {

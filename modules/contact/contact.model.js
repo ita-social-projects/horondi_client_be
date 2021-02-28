@@ -18,8 +18,8 @@ const {
   LINK_RANGES: { MIN_LINK, MAX_LINK },
 } = require('../../consts/ranges');
 const {
-  DB_TABLES_NAMES: { CONTACT },
-} = require('../../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { CONTACT },
+} = require('../../consts/db-collections-names');
 
 const ContactSchema = new mongoose.Schema({
   phoneNumber: {

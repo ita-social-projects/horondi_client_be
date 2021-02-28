@@ -1,5 +1,5 @@
 const PAYMENT_METHOD = {
-  CASH: 'Cash',
+  CASH: 'CASH',
 };
 
 module.exports = {

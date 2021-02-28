@@ -13,7 +13,7 @@ const {
 } = require('../../consts/currency');
 const {
   COUNTS: { COUNT },
-} = require('../../consts/currency');
+} = require('../../consts/comments-operations');
 
 class CommentsService extends FilterHelper {
   async getAllComments({ filter, pagination }) {

@@ -1,7 +1,7 @@
-const SIZES = {
+const FILE_SIZES = {
   LARGE: 'large',
 };
 
 module.exports = {
-  SIZES,
+  FILE_SIZES,
 };

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const { INPUT_NOT_VALID } = require('../error-messages/common.messages');
 const {
-  DB_TABLES_NAMES: { LANGUAGE },
-} = require('../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { LANGUAGE },
+} = require('../consts/db-collections-names');
 
 const languageSchema = new mongoose.Schema({
   lang: {

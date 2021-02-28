@@ -6,8 +6,8 @@ const {
   CODE_IS_TOO_LONG,
 } = require('../../error-messages/business-text.messages');
 const {
-  DB_TABLES_NAMES: { BUSINESS_TEXT },
-} = require('../../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { BUSINESS_TEXT },
+} = require('../../consts/db-collections-names');
 
 const businessTextSchema = new mongoose.Schema({
   code: {

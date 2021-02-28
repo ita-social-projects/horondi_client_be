@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const {
-  DB_TABLES_NAMES: { CURRENCY_SET },
-} = require('../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { CURRENCY_SET },
+} = require('../consts/db-collections-names');
 
 const currencySetSchema = new mongoose.Schema({
   currency: String,

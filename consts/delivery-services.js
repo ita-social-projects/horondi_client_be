@@ -1,4 +1,4 @@
-const SERVICES = {
+const DELIVERY_SERVICES_INITIAL_VALUES = {
   ID: '_id',
   DATE: '-date',
   INITIAL_TEXT: '',
@@ -18,8 +18,6 @@ const DELIVERY_SERVICES_METHODS = {
   GET_COUNTER_PARTIES: 'getCounterparties',
   GET_DOCUMENT_PRICE: 'getDocumentPrice',
   SAVE: 'save',
-  POST: 'POST',
-  GET: 'GET',
 };
 
 const DELIVERY_SERVICE_MODELS = {
@@ -48,7 +46,7 @@ const URL_PARAMS = {
 };
 
 module.exports = {
-  SERVICES,
+  DELIVERY_SERVICES_INITIAL_VALUES,
   DELIVERY_SERVICES_METHODS,
   DELIVERY_SERVICE_TYPES,
   CARGO_TYPES,

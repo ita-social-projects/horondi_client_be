@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const ImageSet = require('../modules/common/ImageSet').schema;
 const {
-  DB_TABLES_NAMES: { BACKGROUND },
-} = require('../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { BACKGROUND },
+} = require('../consts/db-collections-names');
 
 const BackgroundSchema = new mongoose.Schema({
   usedIn: String,

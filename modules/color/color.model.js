@@ -7,8 +7,8 @@ const {
   COLOR_HEX_NOT_FOUND,
 } = require('../../error-messages/color.massage');
 const {
-  DB_TABLES_NAMES: { COLOR },
-} = require('../../consts/db-tables-names');
+  DB_COLLECTIONS_NAMES: { COLOR },
+} = require('../../consts/db-collections-names');
 
 const ColorSchema = new mongoose.Schema({
   name: [Language],
