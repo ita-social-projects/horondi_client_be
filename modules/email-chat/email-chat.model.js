@@ -8,7 +8,7 @@ const {
   DB_REFS: { USER },
 } = require('../../consts/db-refs');
 const {
-  ENUMS: { PENDING, ANSWERED, SPAM },
+  STATUSES: { PENDING, ANSWERED, SPAM },
 } = require('../../consts/statuses');
 
 const EmailChatSchema = new mongoose.Schema({
