@@ -4,6 +4,9 @@ const {
   CLOSURE_ALREADY_EXIST,
 } = require('../../error-messages/closures.messages');
 const uploadService = require('../upload/upload.service');
+const {
+  SIZES: { LARGE },
+} = require('../../consts/sizes');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {
@@ -31,7 +34,7 @@ class ClosureService {
 
   async addClosure(data, upload) {
     if (upload) {
-      const uploadImage = await uploadService.uploadFile(upload, ['large']);
+      const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
       data.image = uploadImage.fileNames.large;
     }
 
@@ -46,7 +49,7 @@ class ClosureService {
       throw new Error(CLOSURE_ALREADY_EXIST);
     }
     if (upload) {
-      const uploadImage = await uploadService.uploadFile(upload, ['large']);
+      const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
       data.image = uploadImage.fileNames.large;
     }
 

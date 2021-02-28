@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+const {
+  DB_TABLES_NAMES: { IMAGE_SET },
+} = require('../../consts/db-tables-names');
+
 const imageSetSchema = new mongoose.Schema({
   large: String,
   medium: String,
@@ -9,4 +13,4 @@ const imageSetSchema = new mongoose.Schema({
   id: false,
 });
 
-module.exports = mongoose.model('ImageSet', imageSetSchema);
+module.exports = mongoose.model(IMAGE_SET, imageSetSchema);

@@ -1,5 +1,15 @@
 const mongoose = require('mongoose');
+
 const { EMAIL_NOT_VALID } = require('../../error-messages/common.messages');
+const {
+  DB_TABLES_NAMES: { EMAIL_CHAT },
+} = require('../../consts/db-tables-names');
+const {
+  DB_REFS: { USER },
+} = require('../../consts/db-refs');
+const {
+  ENUMS: { PENDING, ANSWERED, SPAM },
+} = require('../../consts/statuses');
 
 const EmailChatSchema = new mongoose.Schema({
   text: String,
@@ -26,17 +36,17 @@ const EmailChatSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    default: 'PENDING',
-    enum: ['PENDING', 'ANSWERED', 'SPAM'],
+    default: PENDING,
+    enum: [PENDING, ANSWERED, SPAM],
   },
   answer: {
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: USER,
     },
     date: Date,
     text: String,
   },
 });
 
-module.exports = mongoose.model('EmailChat', EmailChatSchema);
+module.exports = mongoose.model(EMAIL_CHAT, EmailChatSchema);

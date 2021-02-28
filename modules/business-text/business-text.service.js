@@ -7,6 +7,9 @@ const {
 } = require('../../error-messages/business-text.messages');
 const uploadService = require('../upload/upload.service');
 const { IMAGE_LINK } = require('../../dotenvValidator');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
@@ -41,7 +44,7 @@ class BusinessTextService {
     if (existingPage) {
       return {
         message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       };
     }
 

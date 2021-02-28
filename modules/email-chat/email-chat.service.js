@@ -7,6 +7,13 @@ const {
 const { sendEmail } = require('../../utils/sendGrid-email');
 const { emailQuestionAnswerMessage } = require('../../utils/localization');
 const { MAIL_USER } = require('../../dotenvValidator');
+const {
+  STATUSES: { PENDING, SPAM, ANSWERED },
+} = require('../../consts/statuses');
+const {
+  SERVICES: { ID, DATE, INITIAL_TEXT, EMAIL_CHAT_SUBJECT },
+} = require('../../consts/delivery-services');
+
 class EmailChatService {
   async getAllEmailQuestions({ filter = {}, skip }) {
     const { emailQuestionStatus } = filter;
@@ -18,7 +25,7 @@ class EmailChatService {
     const questions = await EmailChat.find(filters)
       .skip(skip || 0)
       .limit(10)
-      .sort('-date')
+      .sort(DATE)
       .exec();
 
     const count = await EmailChat.find(filters)
@@ -40,7 +47,7 @@ class EmailChatService {
   }
 
   async getPendingEmailQuestionsCount() {
-    return await EmailChat.find({ status: 'PENDING' })
+    return await EmailChat.find({ status: PENDING })
       .countDocuments()
       .exec();
   }
@@ -51,14 +58,14 @@ class EmailChatService {
   }
 
   async makeEmailQuestionsSpam({ questionsToSpam, adminId }) {
-    const admin = await userService.getUserByFieldOrThrow('_id', adminId);
+    const admin = await userService.getUserByFieldOrThrow(ID, adminId);
 
     const result = questionsToSpam.map(async id => {
       const question = await EmailChat.findById(id).exec();
 
-      question.status = 'SPAM';
+      question.status = SPAM;
       question.answer.admin = admin;
-      question.answer.text = '';
+      question.answer.text = INITIAL_TEXT;
       question.answer.date = Date.now();
 
       return await EmailChat.findByIdAndUpdate(id, question, {
@@ -74,13 +81,13 @@ class EmailChatService {
 
   async answerEmailQuestion({ questionId, adminId, text }) {
     const question = await this.getEmailQuestionById(questionId).exec();
-    const admin = await userService.getUserByFieldOrThrow('_id', adminId);
+    const admin = await userService.getUserByFieldOrThrow(ID, adminId);
 
     if (!question) {
       throw new Error(QUESTION_NOT_FOUND);
     }
 
-    question.status = 'ANSWERED';
+    question.status = ANSWERED;
     question.answer.admin = admin;
     question.answer.text = text;
     question.answer.date = Date.now();
@@ -93,9 +100,7 @@ class EmailChatService {
     ).exec();
 
     const language = question.language;
-    const subject = `[HORONDI] ${
-      !language ? 'відповідь на запитання' : 'question answer'
-    }`;
+    const subject = EMAIL_CHAT_SUBJECT;
     const message = {
       from: MAIL_USER,
       to: question.email,

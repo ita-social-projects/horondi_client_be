@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+const {
+  DB_TABLES_NAMES: { CURRENCY_SET },
+} = require('../consts/db-tables-names');
+
 const currencySetSchema = new mongoose.Schema({
   currency: String,
   value: {
@@ -10,4 +14,4 @@ const currencySetSchema = new mongoose.Schema({
   id: false,
 });
 
-module.exports = mongoose.model('CurrencySet', currencySetSchema);
+module.exports = mongoose.model(CURRENCY_SET, currencySetSchema);

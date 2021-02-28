@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
 const {
@@ -12,12 +13,19 @@ const {
   LINK_TOO_LONG,
   LINK_IS_REQUIRED,
 } = require('../../error-messages/common.messages');
+const {
+  PHONE_RANGES: { MIN_PHONE, MAX_PHONE },
+  LINK_RANGES: { MIN_LINK, MAX_LINK },
+} = require('../../consts/ranges');
+const {
+  DB_TABLES_NAMES: { CONTACT },
+} = require('../../consts/db-tables-names');
 
 const ContactSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
-    minlength: [10, PHONE_NUMBER_IS_TOO_SHORT],
-    maxlength: [13, PHONE_NUMBER_IS_TOO_LONG],
+    minlength: [MIN_PHONE, PHONE_NUMBER_IS_TOO_SHORT],
+    maxlength: [MAX_PHONE, PHONE_NUMBER_IS_TOO_LONG],
     validate: {
       validator: function(v) {
         return /^\+?3?8?(0\d{9})$/.test(v);
@@ -46,10 +54,10 @@ const ContactSchema = new mongoose.Schema({
   ],
   link: {
     type: String,
-    minlength: [2, LINK_TOO_SHORT],
-    maxlength: [30, LINK_TOO_LONG],
+    minlength: [MIN_LINK, LINK_TOO_SHORT],
+    maxlength: [MAX_LINK, LINK_TOO_LONG],
     required: [true, LINK_IS_REQUIRED],
   },
 });
 
-module.exports = mongoose.model('Contact', ContactSchema);
+module.exports = mongoose.model(CONTACT, ContactSchema);

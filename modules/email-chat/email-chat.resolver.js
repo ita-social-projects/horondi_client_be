@@ -2,6 +2,9 @@ const emailChatService = require('./email-chat.service');
 const {
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 
 const emailChatQuestionQuery = {
   getAllEmailQuestions: (parent, args) =>
@@ -16,7 +19,7 @@ const emailChatQuestionQuery = {
       return question;
     }
     return {
-      statusCode: 404,
+      statusCode: NOT_FOUND,
       message: QUESTION_NOT_FOUND,
     };
   },
@@ -31,7 +34,7 @@ const emailChatQuestionMutation = {
       return await emailChatService.makeEmailQuestionsSpam(args);
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }
@@ -42,7 +45,7 @@ const emailChatQuestionMutation = {
       return await emailChatService.answerEmailQuestion(args);
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }
@@ -54,7 +57,7 @@ const emailChatQuestionMutation = {
       );
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }

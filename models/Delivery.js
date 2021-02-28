@@ -14,6 +14,10 @@ const {
   CURRENCY: { UAH, USD },
 } = require('../consts/currency');
 
+const {
+  DB_TABLES_NAMES: { DELIVERY },
+} = require('../consts/db-tables-names');
+
 const deliverySchema = new mongoose.Schema({
   _id: false,
   sentOn: Date,
@@ -39,4 +43,4 @@ const deliverySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Delivery', deliverySchema);
+module.exports = mongoose.model(DELIVERY, deliverySchema);

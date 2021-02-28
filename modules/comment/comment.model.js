@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
+
 const {
   TEXT_TOO_SHORT,
   TEXT_TOO_LONG,
 } = require('../../error-messages/common.messages');
+const {
+  DB_TABLES_NAMES: { COMMENT },
+} = require('../../consts/db-tables-names');
+const {
+  DB_REFS: { PRODUCT, USER },
+} = require('../../consts/db-refs');
 
 const commentSchema = new mongoose.Schema({
   text: {
@@ -16,13 +23,13 @@ const commentSchema = new mongoose.Schema({
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: USER,
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
+    ref: PRODUCT,
   },
   show: Boolean,
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+module.exports = mongoose.model(COMMENT, commentSchema);

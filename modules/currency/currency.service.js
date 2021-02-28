@@ -4,12 +4,15 @@ const {
   CURRENCY_ALREADY_EXIST,
   CURRENCY_NOT_FOUND,
 } = require('../../error-messages/currency.messages');
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../consts/currency');
 
 class CurrencyService {
   constructor() {
     this.currencyTypes = {
-      UAH: 'UAH',
-      USD: 'USD',
+      UAH: UAH,
+      USD: USD,
     };
   }
 

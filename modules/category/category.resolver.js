@@ -2,6 +2,9 @@ const categoryService = require('./category.service');
 const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const categoryQuery = {
   getAllCategories: (parent, args) => categoryService.getAllCategories(args),
@@ -13,7 +16,7 @@ const categoryQuery = {
       return await categoryService.getCategoryById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -27,7 +30,7 @@ const categoryMutation = {
       return await categoryService.addCategory(args.category, args.upload);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -37,7 +40,7 @@ const categoryMutation = {
       return await categoryService.deleteCategory(args);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -47,7 +50,7 @@ const categoryMutation = {
       return await categoryService.updateCategory(args);
     } catch (e) {
       return {
-        statusCode: e.message === CATEGORY_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === CATEGORY_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }

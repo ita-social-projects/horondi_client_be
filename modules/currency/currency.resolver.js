@@ -2,6 +2,9 @@ const currencyService = require('./currency.service');
 const {
   CURRENCY_NOT_FOUND,
 } = require('../../error-messages/currency.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const currencyQuery = {
   getAllCurrencies: () => currencyService.getAllCurrencies(),
@@ -10,7 +13,7 @@ const currencyQuery = {
       return await currencyService.getCurrencyById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -23,7 +26,7 @@ const currencyMutation = {
       return await currencyService.addCurrency(args.currency);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -34,7 +37,7 @@ const currencyMutation = {
       return await currencyService.deleteCurrency(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -45,7 +48,7 @@ const currencyMutation = {
       return await currencyService.updateCurrency(args.id, args.currency);
     } catch (e) {
       return {
-        statusCode: e.message === CURRENCY_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === CURRENCY_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }

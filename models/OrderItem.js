@@ -1,15 +1,30 @@
 const mongoose = require('mongoose');
+
 const CurrencySet = require('./CurrencySet').schema;
+const {
+  DB_TABLES_NAMES: { ORDER_ITEM },
+} = require('../consts/db-tables-names');
+const {
+  DB_REFS: {
+    PRODUCT,
+    MODEL,
+    SIZE,
+    CONSTRUCTOR_BASICS,
+    CONSTRUCTOR_BOTTOM,
+    CONSTRUCTOR_FRONT_POCKET,
+    PATTERN,
+  },
+} = require('../consts/db-refs');
 
 const orderItemSchema = new mongoose.Schema({
   _id: false,
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
+    ref: PRODUCT,
   },
   model: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Model',
+    ref: MODEL,
   },
   quantity: {
     type: Number,
@@ -22,7 +37,7 @@ const orderItemSchema = new mongoose.Schema({
   options: {
     size: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Size',
+      ref: SIZE,
     },
     sidePocket: {
       type: Boolean,
@@ -31,21 +46,21 @@ const orderItemSchema = new mongoose.Schema({
   },
   constructorBasics: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorBasics',
+    ref: CONSTRUCTOR_BASICS,
   },
   constructorBottom: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorBottom',
+    ref: CONSTRUCTOR_BOTTOM,
   },
   constructorFrontPocket: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'constructorFrontPocket',
+    ref: CONSTRUCTOR_FRONT_POCKET,
   },
   constructorPattern: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Pattern',
+    ref: PATTERN,
   },
   fixedPrice: [CurrencySet],
 });
 
-module.exports = mongoose.model('OrderItem', orderItemSchema);
+module.exports = mongoose.model(ORDER_ITEM, orderItemSchema);

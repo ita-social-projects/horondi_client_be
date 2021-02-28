@@ -7,19 +7,23 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 
-const { monthInMilliseconds } = require('../../consts');
-
 const FilterHelper = require('../../helpers/filter-helper');
+const {
+  LOCALES: { UK },
+} = require('../../consts/currency');
+const {
+  COUNTS: { COUNT },
+} = require('../../consts/currency');
 
 class CommentsService extends FilterHelper {
   async getAllComments({ filter, pagination }) {
     let filters = this.filterItems(filter);
     let aggregatedItems = this.aggregateItems(filters, pagination);
     const [comments] = await Comment.aggregate()
-      .collation({ locale: 'uk' })
+      .collation({ locale: UK })
       .facet({
         items: aggregatedItems,
-        calculations: [{ $match: filters }, { $count: 'count' }],
+        calculations: [{ $match: filters }, { $count: COUNT }],
       })
       .exec();
 
