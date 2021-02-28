@@ -3,7 +3,6 @@ const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
-const _ = require('lodash');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -51,8 +50,16 @@ class ProductsService {
     const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
       .lean()
       .exec();
+    const products = await this.getProducts({});
+    const sortedByPrices = [...products.items].sort((a, b) => {
+      return a.basePrice[1].value - b.basePrice[1].value;
+    });
+    const minPrice = sortedByPrices[0].basePrice;
+    const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
 
     return {
+      minPrice,
+      maxPrice,
       categories,
       models,
       patterns,
@@ -143,6 +150,16 @@ class ProductsService {
     };
   }
 
+  async checkProductEqual(currentProd, updateProd) {
+    if (currentProd.name !== updateProd.name) {
+      return false;
+    }
+    if (currentProd.description !== updateProd.description) {
+      return false;
+    }
+    return true;
+  }
+
   async updateProduct(id, productData, filesToUpload, primary) {
     console.log(id);
     console.log(productData);
@@ -155,7 +172,7 @@ class ProductsService {
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
-    if (await _.isEqual(productData, filesToUpload)) {
+    if (await checkProductEqual(productData, product)) {
       throw new Error(PRODUCT_HAS_NOT_CHANGED);
     }
     if (primary) {
