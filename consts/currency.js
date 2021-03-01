@@ -3,11 +3,6 @@ const CURRENCY = {
   USD: 'USD',
 };
 
-const LOCALES = {
-  UK: 'uk',
-};
-
 module.exports = {
   CURRENCY,
-  LOCALES,
 };

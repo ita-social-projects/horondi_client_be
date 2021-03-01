@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const CurrencySet = require('./CurrencySet').schema;
 const {
-  DB_COLLECTIONS_NAMES: { ORDER_ITEM },
-  DB_REFS: {
+  DB_COLLECTIONS_NAMES: {
+    ORDER_ITEM,
     PRODUCT,
     MODEL,
     SIZE,

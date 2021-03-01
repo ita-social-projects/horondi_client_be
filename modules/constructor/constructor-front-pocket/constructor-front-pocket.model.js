@@ -9,8 +9,7 @@ const {
   RANGES: { MIN, MAX },
 } = require('../../../consts/ranges');
 const {
-  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_FRONT_POCKET },
-  DB_REFS: { MATERIAL, COLOR },
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_FRONT_POCKET, MATERIAL, COLOR },
 } = require('../../../consts/db-collections-names');
 
 const constructorFrontPocketSchema = new mongoose.Schema({

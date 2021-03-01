@@ -5,8 +5,7 @@ const {
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-basic-messages');
 const {
-  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BASICS },
-  DB_REFS: { MATERIAL, COLOR },
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BASICS, MATERIAL, COLOR },
 } = require('../../../consts/db-collections-names');
 
 const {

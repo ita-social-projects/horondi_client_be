@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const { EMAIL_NOT_VALID } = require('../../error-messages/common.messages');
 const {
-  DB_COLLECTIONS_NAMES: { EMAIL_CHAT },
-  DB_REFS: { USER },
+  DB_COLLECTIONS_NAMES: { EMAIL_CHAT, USER },
 } = require('../../consts/db-collections-names');
 
 const {

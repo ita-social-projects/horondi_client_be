@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const Language = require('../../../models/Language').schema;
 const CurrencySet = require('../../../models/CurrencySet').schema;
 const {
-  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BOTTOM },
-  DB_REFS: { MATERIAL, COLOR },
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BOTTOM, MATERIAL, COLOR },
 } = require('../../../consts/db-collections-names');
 
 const constructorBottomSchema = new mongoose.Schema({

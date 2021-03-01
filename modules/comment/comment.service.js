@@ -10,7 +10,7 @@ const {
 const FilterHelper = require('../../helpers/filter-helper');
 const {
   LOCALES: { UK },
-} = require('../../consts/currency');
+} = require('../../consts/locations');
 const {
   COUNTS: { COUNT },
 } = require('../../consts/comments-operations');
