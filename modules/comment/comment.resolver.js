@@ -1,4 +1,7 @@
 const commentsService = require('./comment.service');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 
 const commentsQuery = {
   getAllComments: (parent, args) => commentsService.getAllComments(args),
@@ -7,7 +10,7 @@ const commentsQuery = {
       return await commentsService.getCommentById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -19,7 +22,7 @@ const commentsQuery = {
     } catch (error) {
       return [
         {
-          statusCode: 404,
+          statusCode: NOT_FOUND,
           message: error.message,
         },
       ];
@@ -32,7 +35,7 @@ const commentsQuery = {
     } catch (error) {
       return [
         {
-          statusCode: 404,
+          statusCode: NOT_FOUND,
           message: error.message,
         },
       ];
@@ -49,7 +52,7 @@ const commentsMutation = {
       return await commentsService.addComment(args.productId, args.comment);
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }
@@ -60,7 +63,7 @@ const commentsMutation = {
       return await commentsService.deleteComment(args.id);
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }
@@ -71,7 +74,7 @@ const commentsMutation = {
       return await commentsService.updateComment(args.id, args.comment);
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }
@@ -86,7 +89,7 @@ const commentsMutation = {
       );
     } catch (error) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: error.message,
       };
     }

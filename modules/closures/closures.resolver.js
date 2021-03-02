@@ -1,5 +1,8 @@
 const ClosureService = require('./closures.service');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const closureQuery = {
   getAllClosure: (parent, args) => ClosureService.getAllClosure(args),
@@ -8,7 +11,7 @@ const closureQuery = {
       return await ClosureService.getClosureById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -21,7 +24,7 @@ const closureMutation = {
       return await ClosureService.addClosure(args.closure, args.upload);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -35,7 +38,7 @@ const closureMutation = {
       );
     } catch (e) {
       return {
-        statusCode: e.message === CLOSURE_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === CLOSURE_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
@@ -45,7 +48,7 @@ const closureMutation = {
       return await ClosureService.deleteClosure(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
