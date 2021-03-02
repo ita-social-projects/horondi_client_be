@@ -1,0 +1,9 @@
+const EMAIL_MESSAGES_STATUSES = {
+  PENDING: 'PENDING',
+  ANSWERED: 'ANSWERED',
+  SPAM: 'SPAM',
+};
+
+module.exports = {
+  EMAIL_MESSAGES_STATUSES,
+};

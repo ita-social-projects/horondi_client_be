@@ -1,4 +1,5 @@
 const { or, allow } = require('graphql-shield');
+
 const { isTheSameUser, hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
 

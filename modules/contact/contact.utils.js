@@ -1,15 +1,18 @@
 const uploadService = require('../upload/upload.service');
+const {
+  MAP_IMAGES_INDECIES: { ZERO_INDEX, FIRST_INDEX },
+} = require('../../consts/map-images-indecies');
 
 const uploadContactImages = async data => {
   const uploadResult = await uploadService.uploadFiles([
-    data.mapImages[0].image,
-    data.mapImages[1].image,
+    data.mapImages[ZERO_INDEX].image,
+    data.mapImages[FIRST_INDEX].image,
   ]);
   const imagesResult = await Promise.allSettled(uploadResult);
   const images = imagesResult.map(item => item.value.fileNames);
   return [
-    { lang: data.mapImages[0].lang, value: images[0] },
-    { lang: data.mapImages[1].lang, value: images[1] },
+    { lang: data.mapImages[ZERO_INDEX].lang, value: images[ZERO_INDEX] },
+    { lang: data.mapImages[FIRST_INDEX].lang, value: images[FIRST_INDEX] },
   ];
 };
 

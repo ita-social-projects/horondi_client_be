@@ -2,6 +2,9 @@ const businessTextService = require('./business-text.service');
 const {
   BUSINESS_TEXT_NOT_FOUND,
 } = require('../../error-messages/business-text.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const businessTextQuery = {
   getAllBusinessTexts: () => businessTextService.getAllBusinessTexts(),
@@ -11,7 +14,7 @@ const businessTextQuery = {
       return await businessTextService.getBusinessTextById(id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -21,7 +24,7 @@ const businessTextQuery = {
       return await businessTextService.getBusinessTextByCode(code);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -34,7 +37,7 @@ const businessTextMutation = {
       return await businessTextService.addBusinessText(businessText, files);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -45,7 +48,7 @@ const businessTextMutation = {
       return await businessTextService.deleteBusinessText(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -59,7 +62,8 @@ const businessTextMutation = {
       );
     } catch (e) {
       return {
-        statusCode: e.message === BUSINESS_TEXT_NOT_FOUND ? 404 : 400,
+        statusCode:
+          e.message === BUSINESS_TEXT_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
