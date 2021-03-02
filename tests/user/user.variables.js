@@ -12,7 +12,7 @@ const newAdmin = {
   email: 'admintest4@gmail.com',
   firstName: 'Hook',
   lastName: 'Age',
-  pass: 'dffdsfsdsdfA11@',
+  pass: 'dffdsfsdsdf',
 };
 
 const testUsersSet = [
@@ -20,7 +20,7 @@ const testUsersSet = [
     firstName: 'Albina',
     lastName: 'Todoriyk',
     email: 'albinaT@gmail.com',
-    pass: 'dffdsfsdsdfA11@s',
+    pass: 'qwertY123',
     language: 1,
     banned: true,
   },
@@ -28,7 +28,7 @@ const testUsersSet = [
     firstName: 'Denis',
     lastName: 'Babarin',
     email: 'denisBB@gmail.com',
-    pass: 'dffdsfsdsdfA11',
+    pass: 'qwertY124',
     language: 1,
     banned: false,
   },
@@ -36,7 +36,7 @@ const testUsersSet = [
     firstName: 'Zelda',
     lastName: 'Evense',
     email: 'zeldaB@gmail.com',
-    pass: 'dffdsfsdsdfA11d',
+    pass: 'qwertY125',
     language: 1,
     banned: false,
   },
@@ -44,7 +44,7 @@ const testUsersSet = [
     firstName: 'Pepo',
     lastName: 'Markelo',
     email: 'example@gmail.com',
-    pass: 'vdffdsfsdsdfA11',
+    pass: 'qwertY123',
     language: 1,
     banned: true,
   },
@@ -52,7 +52,7 @@ const testUsersSet = [
     firstName: 'Petro',
     lastName: 'Tatsenyak',
     email: 'f5dbbdnvf1@gmail.com',
-    pass: 'dffdsfsdsdfA11we',
+    pass: '12345678Pt',
     language: 1,
     banned: true,
   },
@@ -81,7 +81,7 @@ const user = {
   firstName: 'Pepo',
   lastName: 'Markelo',
   email: '1xamp31d2v1@gmail.com',
-  pass: 'dffdsfsdsdfA11dsds',
+  pass: 'qwertY123',
   language: 1,
 };
 
