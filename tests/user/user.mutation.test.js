@@ -18,7 +18,7 @@ const {
   USER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
 
-jest.mock('../../modules/confirm-email/confirmation-email.service');
+jest.mock('../../modules/email/email.service');
 jest.setTimeout(10000);
 
 let userId;

@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;900&display=swap');
+body {
+    width: 818px;
+}
+
+header {
+    background-color: brown;
+    background-image: url('../../public/email/headerBackground.jpg');
+    height: 290px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header h1 {
+    color: white;
+    margin: 0;
+    font-family: Montserrat;
+    font-size: 96px;
+}
+
+header .subheader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+    height: 118px;
+    width: 602px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+footer p{
+    width: 282px;
+    height: 22px;
+    margin-left: 62px;
+    margin-bottom: 0;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+}
+
+footer h2{
+    width: 189px;
+    height: 44px;
+    margin-top: 0;
+    margin-left: 61px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 36px;
+    line-height: 44px;
+    color: #000000;
+}

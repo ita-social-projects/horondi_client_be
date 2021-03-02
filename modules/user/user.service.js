@@ -18,7 +18,7 @@ const {
   recoveryMessage,
   adminConfirmationMessage,
 } = require('../../utils/localization');
-const emailService = require('../confirm-email/confirmation-email.service');
+const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
