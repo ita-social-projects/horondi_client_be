@@ -24,6 +24,7 @@ enum PaymentStatusEnum {
   DECLINED
   REVERSED
   PROCESSING
+  PAID
 }
 
 enum PaymentEnum {
