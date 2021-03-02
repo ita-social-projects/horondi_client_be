@@ -1,12 +1,12 @@
 const Joi = require('joi');
 
 const createUserValidator = Joi.object({
-  name: Joi.string()
+  firstName: Joi.string()
     .trim()
     .min(2)
     .max(20)
     .required(),
-  surname: Joi.string()
+  lastName: Joi.string()
     .trim()
     .min(2)
     .max(20)

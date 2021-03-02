@@ -1,8 +1,10 @@
 const { or, allow } = require('graphql-shield');
-const { isAuthorized, isTheSameUser, hasRoles } = require('../../utils/rules');
-const { roles } = require('../../consts');
 
-const { ADMIN, SUPERADMIN } = roles;
+const { isAuthorized, isTheSameUser, hasRoles } = require('../../utils/rules');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
+const { registerUserValidation } = require('../../rules/user');
 
 const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
@@ -12,7 +14,7 @@ const userPermissionsQuery = {
   validateConfirmationToken: allow,
 };
 const userPermissionsMutation = {
-  registerUser: allow,
+  registerUser: registerUserValidation,
   loginUser: allow,
   loginAdmin: allow,
   deleteUser: hasRoles([SUPERADMIN]),
