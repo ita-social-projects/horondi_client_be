@@ -1,15 +1,15 @@
 const Joi = require('joi');
 
+const { userNameRegExp, passwordRegExp } = require('../consts/regexp');
+
 const createUserValidator = Joi.object({
   firstName: Joi.string()
     .trim()
-    .min(2)
-    .max(20)
+    .regex(userNameRegExp)
     .required(),
   lastName: Joi.string()
     .trim()
-    .min(2)
-    .max(20)
+    .regex(userNameRegExp)
     .required(),
   email: Joi.string()
     .trim()
@@ -17,8 +17,7 @@ const createUserValidator = Joi.object({
     .required(),
   password: Joi.string()
     .trim()
-    .min(8)
-    .max(50)
+    .regex(passwordRegExp)
     .required(),
 });
 
