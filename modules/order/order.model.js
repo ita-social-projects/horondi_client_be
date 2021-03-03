@@ -103,7 +103,9 @@ const orderSchema = new mongoose.Schema({
       'DECLINED',
       'REVERSED',
       'PROCESSING',
+      'PAID',
     ],
+    default: 'CREATED',
   },
 });
 
