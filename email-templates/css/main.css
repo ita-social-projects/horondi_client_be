@@ -5,8 +5,8 @@ body {
 
 header {
     background-color: brown;
-    background-image: url('../../public/email/headerBackground.jpg');
-    height: 290px;
+    background-image: url('../img/headerBackground.png');
+    height: 286px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -54,5 +54,127 @@ footer h2{
     font-weight: 900;
     font-size: 36px;
     line-height: 44px;
+    color: #000000;
+}
+
+p.registrationText {
+    height: 44px;
+    width: 553px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 44px;
+    color: #FFFFFF;
+}
+
+div.contentRegistrationText {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+p.congrats {
+    margin-left: 62px;
+    align-self: flex-start;
+    width: 718px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+}
+
+.confirm {
+    width: 315px;
+    height: 76px;
+    background: #000000;
+    align-items: center;
+}
+
+.confirm a {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 29px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+p.link {
+    width: 357px;
+    height: 22px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+}
+
+a.alink {
+    margin-left: 62px;
+    align-self: flex-start;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    text-decoration-line: underline;
+    color: #000000;
+}
+
+p.successfulRegistrationText {
+    width: 552px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 44px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.blockUserText{
+    width: 552px;
+    height: 44px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 44px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.blockUserContent{
+    width: 718px;
+    height: 154px;
+    margin-left: 62px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+}
+
+.unlockUserContent {
+    width: 718px;
+    height: 130px;
+    margin-left: 62px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+}
+
+.termslink {
     color: #000000;
 }
