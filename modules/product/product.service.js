@@ -151,8 +151,21 @@ class ProductsService {
   }
 
   async checkProductEqual(productData, product) {
-    for (const prop in productData) {
-      if (productData[prop] !== product[prop]) {
+    let obj1Keys = Object.keys(productData);
+    let obj2Keys = Object.keys(product);
+    for (let i = 0; i < obj1Keys.length; i++) {
+      if (obj2Keys.includes(obj1Keys[i]) === false) {
+        return false;
+      }
+    }
+    for (let i = 0; i < obj1Keys.length; i++) {
+      if (typeof productData[obj1Keys[i]] === 'object') {
+        return checkProductEqual(
+          productData[obj1Keys[i]],
+          product[obj1Keys[i]]
+        );
+      }
+      if (productData[obj1Keys[i]] !== product[obj2Keys[i]]) {
         return false;
       }
     }
