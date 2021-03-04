@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
+
 const Language = require('../../models/Language').schema;
 const {
   CODE_IS_TOO_SHORT,
   CODE_IS_TOO_LONG,
 } = require('../../error-messages/business-text.messages');
+const {
+  DB_COLLECTIONS_NAMES: { BUSINESS_TEXT },
+} = require('../../consts/db-collections-names');
 
 const businessTextSchema = new mongoose.Schema({
   code: {
@@ -20,4 +24,4 @@ const businessTextSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('BusinessText', businessTextSchema);
+module.exports = mongoose.model(BUSINESS_TEXT, businessTextSchema);

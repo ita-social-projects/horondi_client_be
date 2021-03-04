@@ -1,4 +1,7 @@
 const colorService = require('./color.service');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const colorQuery = {
   getAllColors: async () => colorService.getAllColors(),
@@ -8,7 +11,7 @@ const colorQuery = {
       return await colorService.getColorById(id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -21,7 +24,7 @@ const colorMutation = {
       return await colorService.addColor(data);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -32,7 +35,7 @@ const colorMutation = {
       return await colorService.deleteColor(id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }

@@ -383,12 +383,6 @@ class UserService extends FilterHelper {
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
-    await validateRegisterInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
     }

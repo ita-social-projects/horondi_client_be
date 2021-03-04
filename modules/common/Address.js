@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const {
   COUNTRY_LENGTH_TOO_SHORT,
   COUNTRY_LENGTH_TOO_LONG,
@@ -15,43 +16,49 @@ const {
   APPARTMENT_LENGTH_TOO_SHORT,
   APPARTMENT_LENGTH_TOO_LONG,
 } = require('../../error-messages/address.messages');
+const {
+  RANGES: { MIN, MAX },
+} = require('../../consts/ranges');
+const {
+  DB_COLLECTIONS_NAMES: { ADDRESS },
+} = require('../../consts/db-collections-names');
 
 const addressSchema = new mongoose.Schema({
   country: {
     type: String,
-    minlength: [2, COUNTRY_LENGTH_TOO_SHORT],
-    maxlength: [20, COUNTRY_LENGTH_TOO_LONG],
+    minlength: [MIN, COUNTRY_LENGTH_TOO_SHORT],
+    maxlength: [MAX, COUNTRY_LENGTH_TOO_LONG],
   },
   region: {
     type: String,
-    minlength: [2, REGION_LENGTH_TOO_SHORT],
-    maxlength: [20, REGION_LENGTH_TOO_LONG],
+    minlength: [MIN, REGION_LENGTH_TOO_SHORT],
+    maxlength: [MAX, REGION_LENGTH_TOO_LONG],
   },
   city: {
     type: String,
-    minlength: [2, CITY_LENGTH_TOO_SHORT],
-    maxlength: [20, CITY_LENGTH_TOO_LONG],
+    minlength: [MIN, CITY_LENGTH_TOO_SHORT],
+    maxlength: [MAX, CITY_LENGTH_TOO_LONG],
   },
   zipcode: {
     type: String,
-    minlength: [2, ZIPCODE_LENGTH_TOO_SHORT],
-    maxlength: [20, ZIPCODE_LENGTH_TOO_LONG],
+    minlength: [MIN, ZIPCODE_LENGTH_TOO_SHORT],
+    maxlength: [MAX, ZIPCODE_LENGTH_TOO_LONG],
   },
   street: {
     type: String,
-    minlength: [2, STREET_LENGTH_TOO_SHORT],
-    maxlength: [20, STREET_LENGTH_TOO_LONG],
+    minlength: [MIN, STREET_LENGTH_TOO_SHORT],
+    maxlength: [MAX, STREET_LENGTH_TOO_LONG],
   },
   buildingNumber: {
     type: String,
-    minlength: [2, BUILDING_NUMBER_LENGTH_TOO_SHORT],
-    maxlength: [20, BUILDING_NUMBER_LENGTH_TOO_LONG],
+    minlength: [MIN, BUILDING_NUMBER_LENGTH_TOO_SHORT],
+    maxlength: [MAX, BUILDING_NUMBER_LENGTH_TOO_LONG],
   },
   appartment: {
     type: String,
-    minlength: [2, APPARTMENT_LENGTH_TOO_SHORT],
-    maxlength: [20, APPARTMENT_LENGTH_TOO_LONG],
+    minlength: [MIN, APPARTMENT_LENGTH_TOO_SHORT],
+    maxlength: [MAX, APPARTMENT_LENGTH_TOO_LONG],
   },
 });
 
-module.exports = mongoose.model('Address', addressSchema);
+module.exports = mongoose.model(ADDRESS, addressSchema);

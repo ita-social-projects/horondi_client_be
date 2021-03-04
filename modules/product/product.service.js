@@ -150,25 +150,19 @@ class ProductsService {
     };
   }
 
-  async checkProductEqual(currentProd, updateProd) {
-    if (currentProd.name !== updateProd.name) {
-      return false;
-    }
-    if (currentProd.description !== updateProd.description) {
-      return false;
+  async checkProductEqual(productData, product) {
+    for (const prop in productData) {
+      if (productData[prop] !== product[prop]) {
+        return false;
+      }
     }
     return true;
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
-    console.log(id);
-    console.log(productData);
-    console.log(filesToUpload);
-    console.log(primary);
     const product = await Product.findById(id)
       .lean()
       .exec();
-    console.log(product);
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }

@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
+
 const ImageSet = require('../modules/common/ImageSet').schema;
+const {
+  DB_COLLECTIONS_NAMES: { BACKGROUND },
+} = require('../consts/db-collections-names');
 
 const BackgroundSchema = new mongoose.Schema({
   usedIn: String,
@@ -7,4 +11,4 @@ const BackgroundSchema = new mongoose.Schema({
   active: Boolean,
 });
 
-module.exports = mongoose.model('Background', BackgroundSchema);
+module.exports = mongoose.model(BACKGROUND, BackgroundSchema);

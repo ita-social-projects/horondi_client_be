@@ -1,11 +1,15 @@
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../../consts/currency');
+
 const calculatePrice = async price => {
   return [
     {
-      currency: 'UAH',
+      currency: UAH,
       exchangeRate: 24,
     },
     {
-      name: 'USD',
+      name: USD,
       exchangeRate: 1,
     },
   ];
