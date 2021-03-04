@@ -1,11 +1,14 @@
-const Order = require('./order.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 
+const RuleError = require('../../errors/rule.error');
+const Order = require('./order.model');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
-
 const { userDateFormat } = require('../../consts');
 
 const {
@@ -18,7 +21,7 @@ const {
 const {
   calculateTotalPriceToPay,
   calculateTotalItemsPrice,
-  generateOrderId,
+  generateOrderNumber,
 } = require('../../utils/order.utils');
 
 class OrdersService {
@@ -81,7 +84,7 @@ class OrdersService {
     const { items } = data;
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
-    const orderNumber = generateOrderId();
+    const orderNumber = generateOrderNumber();
 
     const totalPriceToPay = await calculateTotalPriceToPay(
       data,
@@ -96,6 +99,22 @@ class OrdersService {
     };
 
     return new Order(order).save();
+  }
+
+  async regenerateOrderNumber(id) {
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+
+    const isOrderPresent = await Order.findById(id);
+
+    if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    const orderNumber = generateOrderNumber();
+
+    return Order.findByIdAndUpdate(
+      id,
+      { $set: { orderNumber } },
+      { new: true }
+    );
   }
 
   async deleteOrder(id) {

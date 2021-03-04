@@ -429,7 +429,7 @@ const typeDefs = gql`
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput): Payment
-    getPaymentStatus(orderId: String!): PaymentStatus
+    checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: FilterInput
@@ -696,6 +696,7 @@ const typeDefs = gql`
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
+    regenerateOrderNumber(id:ID!):OrderResult
     updateOrder(order: OrderInput!, id: ID!): OrderResult
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"

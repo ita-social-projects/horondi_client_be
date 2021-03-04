@@ -5,7 +5,6 @@ const paymentType = `
     checkoutUrl: String
   }
 `;
-
 const paymentStatus = `
   type PaymentStatus {
     orderId: String!
@@ -15,7 +14,6 @@ const paymentStatus = `
     currency: String
   }
 `;
-
 const paymentInput = `
   input PaymentInput {
       orderId: String!

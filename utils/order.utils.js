@@ -83,12 +83,12 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
   return totalItemsPrice;
 }
 
-function generateOrderId() {
-  return crypto.randomInt(100000000);
+function generateOrderNumber() {
+  return crypto.randomInt(1000000000);
 }
 
 module.exports = {
   calculateTotalPriceToPay,
-  generateOrderId,
+  generateOrderNumber,
   calculateTotalItemsPrice,
 };

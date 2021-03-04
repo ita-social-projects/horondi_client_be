@@ -1,5 +1,6 @@
 const ordersService = require('./order.service');
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
+const RuleError = require('../../errors/rule.error');
 
 const ordersQuery = {
   getOrderById: async (parent, args) => {
@@ -50,6 +51,13 @@ const ordersMutation = {
         statusCode: e.message === ORDER_NOT_FOUND ? 404 : 400,
         message: e.message,
       };
+    }
+  },
+  regenerateOrderNumber: async (_, { id }) => {
+    try {
+      return await ordersService.regenerateOrderNumber(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

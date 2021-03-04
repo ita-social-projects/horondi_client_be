@@ -2,41 +2,35 @@ const CloudIpsp = require('cloudipsp-node-js-sdk');
 const crypto = require('crypto');
 
 const {
-  PAYMENT_MERCHANT_ID,
-  PAYMENT_SECRET,
-  CRYPTO,
-} = require('../../dotenvValidator');
+  PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
+} = require('../../consts/payment-actions');
+const { paymentWorker } = require('../../helpers/payment-worker');
 
 class PaymentService {
-  genSignature(data, secret) {
-    const ordered = {};
-
-    Object.keys(data)
-      .sort()
-      .forEach(function(key) {
-        if (
-          data[key] !== '' &&
-          key !== 'signature' &&
-          key !== 'response_signature_string'
-        ) {
-          ordered[key] = data[key];
-        }
-      });
-    const signString = secret + '|' + Object.values(ordered).join('|');
-
-    return crypto
-      .createHash(CRYPTO)
-      .update(signString)
-      .digest('hex');
-  }
+  // genSignature(data, secret) {
+  //   const ordered = {};
+  //
+  //   Object.keys(data)
+  //     .sort()
+  //     .forEach(function(key) {
+  //       if (
+  //         data[key] !== '' &&
+  //         key !== 'signature' &&
+  //         key !== 'response_signature_string'
+  //       ) {
+  //         ordered[key] = data[key];
+  //       }
+  //     });
+  //   const signString = secret + '|' + Object.values(ordered).join('|');
+  //
+  //   return crypto
+  //     .createHash(CRYPTO)
+  //     .update(signString)
+  //     .digest('hex');
+  // }
 
   async getPaymentCheckout(data) {
     const { orderId, orderDesc, currency, amount } = data;
-
-    const fondy = new CloudIpsp({
-      merchantId: PAYMENT_MERCHANT_ID,
-      secretKey: PAYMENT_SECRET,
-    });
 
     const requestData = {
       order_id: orderId,
@@ -45,10 +39,7 @@ class PaymentService {
       amount,
     };
 
-    const result = await fondy
-      .Checkout(requestData)
-      .then(res => res)
-      .catch(error => error);
+    const result = await paymentWorker(GO_TO_CHECKOUT, requestData);
 
     return {
       paymentId: result.payment_id,
@@ -57,20 +48,12 @@ class PaymentService {
     };
   }
 
-  async getPaymentStatus(orderId) {
-    const fondy = new CloudIpsp({
-      merchantId: PAYMENT_MERCHANT_ID,
-      secretKey: PAYMENT_SECRET,
-    });
-
+  async checkPaymentStatus(orderId) {
     const req = {
       order_id: orderId,
     };
 
-    const result = await fondy
-      .Status(req)
-      .then(res => res)
-      .catch(error => error);
+    const result = await paymentWorker(CHECK_PAYMENT_STATUS, orderId);
 
     return {
       orderId: result.order_id,
