@@ -3,6 +3,7 @@ const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
+const _ = require('lodash');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -150,28 +151,6 @@ class ProductsService {
     };
   }
 
-  async checkProductEqual(productData, product) {
-    let obj1Keys = Object.keys(productData);
-    let obj2Keys = Object.keys(product);
-    for (let i = 0; i < obj1Keys.length; i++) {
-      if (obj2Keys.includes(obj1Keys[i]) === false) {
-        return false;
-      }
-    }
-    for (let i = 0; i < obj1Keys.length; i++) {
-      if (typeof productData[obj1Keys[i]] === 'object') {
-        return checkProductEqual(
-          productData[obj1Keys[i]],
-          product[obj1Keys[i]]
-        );
-      }
-      if (productData[obj1Keys[i]] !== product[obj2Keys[i]]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   async updateProduct(id, productData, filesToUpload, primary) {
     const product = await Product.findById(id)
       .lean()
@@ -179,7 +158,7 @@ class ProductsService {
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
-    if (await checkProductEqual(productData, product)) {
+    if (await _.isMatch(productData, product)) {
       throw new Error(PRODUCT_HAS_NOT_CHANGED);
     }
     if (primary) {
