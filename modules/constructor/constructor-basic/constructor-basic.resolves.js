@@ -4,6 +4,9 @@ const {
   BASIC_ALREADY_EXIST,
 } = require('../../../error-messages/constructor-basic-messages');
 const ConstructorBasic = require('./constructor-basic.model');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../../consts/status-codes');
 
 const constructorBasicQuery = {
   getAllConstructorBasics: (parent, args) =>
@@ -17,7 +20,7 @@ const constructorBasicQuery = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -34,7 +37,7 @@ const constructorBasicMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -49,7 +52,7 @@ const constructorBasicMutation = {
       );
     } catch (e) {
       return {
-        statusCode: e.message === BASIC_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === BASIC_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
@@ -63,7 +66,7 @@ const constructorBasicMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }

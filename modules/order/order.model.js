@@ -9,8 +9,6 @@ const {
   LAST_NAME_TOO_SHORT,
   LAST_NAME_TOO_LONG,
   LAST_NAME_IS_REQUIRED,
-  PATRONYMIC_NAME_TOO_SHORT,
-  PATRONYMIC_NAME_TOO_LONG,
   PHONE_NUMBER_NOT_VALID,
   PHONE_NUMBER_IS_REQUIRED,
   EMAIL_NOT_VALID,
@@ -45,11 +43,6 @@ const orderSchema = new mongoose.Schema({
       minlength: [2, LAST_NAME_TOO_SHORT],
       maxlength: [20, LAST_NAME_TOO_LONG],
       required: [true, LAST_NAME_IS_REQUIRED],
-    },
-    patronymicName: {
-      type: String,
-      minlength: [2, PATRONYMIC_NAME_TOO_SHORT],
-      maxlength: [20, PATRONYMIC_NAME_TOO_LONG],
     },
     email: {
       type: String,
@@ -110,7 +103,9 @@ const orderSchema = new mongoose.Schema({
       'DECLINED',
       'REVERSED',
       'PROCESSING',
+      'PAID',
     ],
+    default: 'CREATED',
   },
 });
 

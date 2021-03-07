@@ -1,14 +1,9 @@
 const mongoose = require('mongoose');
+
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
 const {
-  FIRST_NAME_TOO_SHORT,
-  FIRST_NAME_TOO_LONG,
-  LAST_NAME_TOO_SHORT,
-  LAST_NAME_TOO_LONG,
   PHONE_NUMBER_NOT_VALID,
-  EMAIL_NOT_VALID,
-  EMAIL_IS_REQUIRED,
 } = require('../../error-messages/common.messages');
 
 const { UserInputError } = require('apollo-server');
@@ -20,13 +15,9 @@ const {
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    minlength: [2, FIRST_NAME_TOO_SHORT],
-    maxlength: [20, FIRST_NAME_TOO_LONG],
   },
   lastName: {
     type: String,
-    minlength: [2, LAST_NAME_TOO_SHORT],
-    maxlength: [20, LAST_NAME_TOO_LONG],
   },
   role: {
     type: String,
@@ -35,13 +26,6 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    validate: {
-      validator: function(v) {
-        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
-      },
-      message: EMAIL_NOT_VALID,
-    },
-    required: [true, EMAIL_IS_REQUIRED],
   },
   phoneNumber: {
     type: String,

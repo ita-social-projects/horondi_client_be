@@ -1,4 +1,5 @@
 const axios = require('axios');
+
 const {
   getUkrPoshtaRegionsUrl,
   getUkrPoshtaDistrictsByRegionIdUrl,
@@ -16,6 +17,16 @@ const {
 const {
   ORDER_CREATION_FAILED,
 } = require('../../../error-messages/delivery.message');
+const {
+  URL_PARAMS: {
+    CREATE_UKR_POSHTA_ORDER_PARAMS,
+    CREATE_UKR_POSHTA_USER_PARAMS,
+    ADDRESSES,
+  },
+} = require('../../../consts/delivery-services');
+const {
+  REQUEST_METHODS: { GET, POST },
+} = require('../../../consts/request-methods');
 
 class UkrPoshtaService {
   async getUkrPoshtaRequest(urlParams, method, data) {
@@ -31,7 +42,7 @@ class UkrPoshtaService {
   }
   async getUkrPoshtaAddressRequest(urlParams) {
     return await axios({
-      method: 'GET',
+      method: GET,
       url: encodeURI(UKR_POSHTA_ADDRESS_API_LINK + urlParams),
       headers: {
         Authorization: `Bearer ${UKR_POSHTA_API_KEY}`,
@@ -40,7 +51,7 @@ class UkrPoshtaService {
   }
   async createUkrPoshtaAddress(address) {
     const createdAddress = await this.getUkrPoshtaRequest(
-      'addresses',
+      ADDRESSES,
       'post',
       address
     );
@@ -48,7 +59,7 @@ class UkrPoshtaService {
   }
 
   async getUkrPoshtaAddressById(id) {
-    const address = await this.getUkrPoshtaRequest(`addresses/${id}`);
+    const address = await this.getUkrPoshtaRequest(`${ADDRESSES}/${id}`);
     return address.data;
   }
 
@@ -56,8 +67,8 @@ class UkrPoshtaService {
     const { address, firstName, lastName, phoneNumber, type } = client;
     const createdAddress = await this.createUkrPoshtaAddress(address);
     const createdClient = await this.getUkrPoshtaRequest(
-      `clients?token=${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
-      'POST',
+      `${CREATE_UKR_POSHTA_USER_PARAMS}${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
+      POST,
       {
         firstName,
         lastName,
@@ -72,8 +83,8 @@ class UkrPoshtaService {
   async createUkrPoshtaOrder(client, order) {
     const createdClient = await this.createUkrPoshtaClient(client);
     const createdOrder = await this.getUkrPoshtaRequest(
-      `shipments?token=${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
-      'POST',
+      `${CREATE_UKR_POSHTA_ORDER_PARAMS}${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
+      POST,
       {
         ...order,
         sender: {

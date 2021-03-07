@@ -5,16 +5,23 @@ const CurrencySet = require('../../../models/CurrencySet').schema;
 const {
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-basic-messages');
+const {
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BASICS, MATERIAL, COLOR },
+} = require('../../../consts/db-collections-names');
+
+const {
+  RANGES: { MIN, MAX },
+} = require('../../../consts/ranges');
 
 const constructorBasicSchema = new mongoose.Schema({
   name: [Language],
   material: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Material',
+    ref: MATERIAL,
   },
   color: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Color',
+    ref: COLOR,
   },
   image: Yup.string().required(IMAGE_NOT_PROVIDED),
   basePrice: [CurrencySet],
@@ -22,4 +29,4 @@ const constructorBasicSchema = new mongoose.Schema({
   default: Boolean,
 });
 
-module.exports = mongoose.model('ConstructorBasic', constructorBasicSchema);
+module.exports = mongoose.model(CONSTRUCTOR_BASICS, constructorBasicSchema);
