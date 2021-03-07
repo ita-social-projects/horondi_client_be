@@ -1,51 +1,44 @@
-const CloudIpsp = require('cloudipsp-node-js-sdk');
-const crypto = require('crypto');
+const ObjectId = require('mongoose').Types.ObjectId;
 
+const RuleError = require('../../errors/rule.error');
 const {
+  PAYMENT_DESCRIPTION,
   PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
-} = require('../../consts/payment-actions');
+} = require('../../consts/payments');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
+const {
+  ORDER_NOT_FOUND,
+  ORDER_NOT_VALID,
+} = require('../../error-messages/orders.messages');
+const OrderModel = require('../order/order.model');
 const { paymentWorker } = require('../../helpers/payment-worker');
+const { generateOrderNumber } = require('../../utils/order.utils');
 
 class PaymentService {
-  // genSignature(data, secret) {
-  //   const ordered = {};
-  //
-  //   Object.keys(data)
-  //     .sort()
-  //     .forEach(function(key) {
-  //       if (
-  //         data[key] !== '' &&
-  //         key !== 'signature' &&
-  //         key !== 'response_signature_string'
-  //       ) {
-  //         ordered[key] = data[key];
-  //       }
-  //     });
-  //   const signString = secret + '|' + Object.values(ordered).join('|');
-  //
-  //   return crypto
-  //     .createHash(CRYPTO)
-  //     .update(signString)
-  //     .digest('hex');
-  // }
+  async getPaymentCheckout({ orderId, orderNumber, currency, amount }) {
+    if (!ObjectId.isValid(orderId))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
-  async getPaymentCheckout(data) {
-    const { orderId, orderDesc, currency, amount } = data;
+    const isOrderPresent = await OrderModel.findById(id);
 
-    const requestData = {
-      order_id: orderId,
-      order_desc: orderDesc,
+    if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    await paymentWorker(GO_TO_CHECKOUT, {
+      order_id: orderNumber,
+      order_desc: PAYMENT_DESCRIPTION,
       currency,
       amount,
-    };
+    });
 
-    const result = await paymentWorker(GO_TO_CHECKOUT, requestData);
+    const newOrderNumber = generateOrderNumber();
 
-    return {
-      paymentId: result.payment_id,
-      responseStatus: result.response_status,
-      checkoutUrl: result.checkout_url,
-    };
+    return OrderModel.findByIdAndUpdate(
+      orderId,
+      { $set: { orderNumber: newOrderNumber } },
+      { new: true }
+    );
   }
 
   async checkPaymentStatus(orderId) {
