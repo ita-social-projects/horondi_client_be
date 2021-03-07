@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Yup = require('yup');
 const Language = require('../../../models/Language').schema;
 const CurrencySet = require('../../../models/CurrencySet').schema;
 const {
@@ -15,11 +16,7 @@ const constructorBasicSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Color',
   },
-  image: {
-    type: String,
-    minlength: [2, IMAGE_NOT_PROVIDED],
-    maxlength: [20, IMAGE_NOT_PROVIDED],
-  },
+  image: Yup.string().required(IMAGE_NOT_PROVIDED),
   basePrice: [CurrencySet],
   available: Boolean,
   default: Boolean,
