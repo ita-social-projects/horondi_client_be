@@ -158,7 +158,7 @@ class ProductsService {
     if (!product) {
       throw new Error(PRODUCT_NOT_FOUND);
     }
-    if (await _.isMatch(productData, product)) {
+    if (_.isMatch(productData, product)) {
       throw new Error(PRODUCT_HAS_NOT_CHANGED);
     }
     if (primary) {
