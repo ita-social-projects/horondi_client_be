@@ -26,24 +26,12 @@ describe('Header mutations tests', () => {
     expect(result).toEqual(ERROR_ALREADY_EXISTS);
   });
 
-  test('Should delete header', async () => {
-    const result = await deleteHeader(headerId, operations);
-    expect(result).toEqual({ _id: headerId, ...firstHeader });
-  });
-
-  test('Should get HEADER_NOT_FOUND error when trying to delete non-existent header', async () => {
-    const result = await deleteHeader(wrongId, operations);
-    expect(result).toEqual(ERROR_NOT_FOUND);
-  });
-
   test('Should get HEADER_NOT_FOUND error when trying to update non-existent header', async () => {
     const result = await updateHeader(wrongId, firstHeader, operations);
     expect(result).toEqual(ERROR_NOT_FOUND);
   });
 
   test('Should update header', async () => {
-    const header = await addHeader(firstHeader, operations);
-    headerId = header._id;
     const updatedHeader = await updateHeader(
       headerId,
       secondHeader,
@@ -53,10 +41,23 @@ describe('Header mutations tests', () => {
   });
 
   test('Should get HEADER_ALREADY_EXISTS if updated header already exists', async () => {
-    const header = await addHeader(firstHeader, operations);
-    const result = await updateHeader(header._id, secondHeader, operations);
+    const headerToUpdate = await addHeader(firstHeader, operations);
+    const result = await updateHeader(
+      headerToUpdate._id,
+      secondHeader,
+      operations
+    );
     expect(result).toEqual(ERROR_ALREADY_EXISTS);
-    await deleteHeader(headerId, operations);
-    await deleteHeader(header._id, operations);
+    await deleteHeader(headerToUpdate._id, operations);
+  });
+
+  test('Should delete header', async () => {
+    const result = await deleteHeader(headerId, operations);
+    expect(result).toEqual({ _id: headerId, ...secondHeader });
+  });
+
+  test('Should get HEADER_NOT_FOUND error when trying to delete non-existent header', async () => {
+    const result = await deleteHeader(wrongId, operations);
+    expect(result).toEqual(ERROR_NOT_FOUND);
   });
 });
