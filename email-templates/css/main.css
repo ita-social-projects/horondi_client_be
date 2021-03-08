@@ -1,30 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;900&display=swap');
+
+/* @font-face {
+    font-family: "Montserrat";
+    src: url("../../assets/fonts/Montserrat/Montserrat-Light.ttf") format("ttf")
+} */
+
 body {
     width: 818px;
+    font-family: Montserrat;
 }
 
 header {
-    background-color: brown;
-    background-image: url('../img/headerBackground.png');
-    height: 286px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    background-image: url('https://horondi.blob.core.windows.net/horondi/images/background-email-image.png');
+    background-size: cover;
+    height: 290px;
+    text-align: center;
+    color: #FFFFFF;
 }
 
-header h1 {
-    color: white;
+header h1{
     margin: 0;
-    font-family: Montserrat;
+    padding-top: 25px;
     font-size: 96px;
+    line-height: 117px;
 }
 
 header .subheader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     margin: 0 auto;
     height: 118px;
     width: 602px;
@@ -32,146 +33,113 @@ header .subheader {
 }
 
 footer p{
-    width: 282px;
     height: 22px;
-    margin-left: 62px;
-    margin-bottom: 0;
-    font-family: Montserrat;
-    font-style: normal;
-    font-weight: normal;
+    margin: 0;
+    padding-left: 62px;
+    padding-top: 25px;
     font-size: 18px;
-    line-height: 22px;
     color: #000000;
 }
 
 footer h2{
-    width: 189px;
-    height: 44px;
-    margin-top: 0;
-    margin-left: 61px;
-    font-family: Montserrat;
-    font-style: normal;
+    margin: 0;
+    padding-left: 61px;
     font-weight: 900;
     font-size: 36px;
-    line-height: 44px;
     color: #000000;
 }
 
 p.registrationText {
-    height: 44px;
-    width: 553px;
-    font-family: Montserrat;
-    font-style: normal;
-    font-weight: 500;
+    margin: 0;
+    padding-top: 35px;
     font-size: 36px;
     line-height: 44px;
-    color: #FFFFFF;
 }
 
 div.contentRegistrationText {
     height: 320px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    padding-left: 62px;
+    font-family: Montserrat;
 }
 
 p.congrats {
-    margin-left: 62px;
-    align-self: flex-start;
-    width: 718px;
-    font-family: Montserrat;
+    padding-top: 30px;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
-    line-height: 22px;
     color: #000000;
 }
 
 .confirm {
     width: 315px;
     height: 76px;
+    margin-left: 213px;
     background: #000000;
-    align-items: center;
+    text-align: center;
 }
 
 .confirm a {
-    font-family: Montserrat;
     font-style: normal;
     font-weight: bold;
     font-size: 24px;
-    line-height: 29px;
     color: #FFFFFF;
     text-decoration: none;
 }
 
 p.link {
     width: 357px;
-    height: 22px;
-    font-family: Montserrat;
+    padding-left: 230px;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
-    line-height: 22px;
-    color: #000000;
 }
 
 a.alink {
-    margin-left: 62px;
-    align-self: flex-start;
-    font-family: Montserrat;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
-    line-height: 22px;
     text-decoration-line: underline;
     color: #000000;
 }
 
 p.successfulRegistrationText {
+    margin: 0;
     width: 552px;
-    font-family: Montserrat;
+    padding-top: 15px;
     font-style: normal;
     font-weight: 500;
     font-size: 36px;
-    line-height: 44px;
     text-align: center;
-    color: #FFFFFF;
 }
 
 .blockUserText{
-    width: 552px;
-    height: 44px;
+    margin: 0;
+    padding-top: 37px;
     font-family: Montserrat;
     font-style: normal;
     font-weight: 500;
     font-size: 36px;
-    line-height: 44px;
     text-align: center;
-    color: #FFFFFF;
 }
 
 .blockUserContent{
     width: 718px;
     height: 154px;
-    margin-left: 62px;
+    padding-left: 62px;
     font-family: Montserrat;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
-    line-height: 22px;
-    color: #000000;
 }
 
 .unlockUserContent {
     width: 718px;
     height: 130px;
-    margin-left: 62px;
+    padding-left: 62px;
     font-family: Montserrat;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
-    line-height: 22px;
     color: #000000;
 }
 

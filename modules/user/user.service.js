@@ -12,12 +12,11 @@ const {
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendGrid-email');
 const {
-  confirmationMessage,
-  recoveryMessage,
-  adminConfirmationMessage,
-} = require('../../utils/localization');
+  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD },
+} = require('../../consts/email-actions');
+const { sendEmail } = require('../../utils/sendGrid-email');
+const { adminConfirmationMessage } = require('../../utils/localization');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
@@ -411,15 +410,7 @@ class UserService extends FilterHelper {
 
     await savedUser.save();
 
-    const subject = '[HORONDI] Email confirmation';
-    const html = confirmationMessage(firstName, token, language);
-
-    await emailService.sendEmail({
-      user,
-      sendEmail,
-      subject,
-      html,
-    });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
 
     await savedUser.save();
 
@@ -438,13 +429,7 @@ class UserService extends FilterHelper {
     });
     user.confirmationToken = token;
     await user.save();
-    const message = {
-      from: MAIL_USER,
-      to: user.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
     return true;
   }
 
@@ -478,13 +463,7 @@ class UserService extends FilterHelper {
       secret: SECRET,
     });
     user.recoveryToken = token;
-    const message = {
-      from: MAIL_USER,
-      to: email,
-      subject: '[HORONDI] Instructions for password recovery',
-      html: recoveryMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { token });
     await user.save();
     return true;
   }
