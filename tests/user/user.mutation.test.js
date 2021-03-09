@@ -72,8 +72,7 @@ describe('mutations', () => {
       operations
     );
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe(USER_ALREADY_EXIST);
+    expect(res.data.registerUser.message).toBe(USER_ALREADY_EXIST);
     done();
   });
   test('should authorize and recive user token', async done => {
