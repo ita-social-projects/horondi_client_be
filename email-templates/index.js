@@ -29,6 +29,10 @@ const htmlTemplates = {
     subject: '[HORONDI] Successful made order',
     templateFileName: 'successful-order',
   },
+  [EmailActions.CONFIRM_ADMIN_EMAIL]: {
+    subject: '[HORONDI] Invitation to become an admin',
+    templateFileName: 'confirm-admin-email',
+  },
 };
 
 module.exports = { htmlTemplates };

@@ -13,17 +13,19 @@ const {
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const {
-  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD },
+  EmailActions: {
+    CONFIRM_EMAIL,
+    RECOVER_PASSWORD,
+    CONFIRM_ADMIN_EMAIL,
+    SUCCESSFUL_CONFIRM,
+  },
 } = require('../../consts/email-actions');
-const { sendEmail } = require('../../utils/sendGrid-email');
-const { adminConfirmationMessage } = require('../../utils/localization');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  MAIL_USER,
   NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
@@ -448,6 +450,7 @@ class UserService extends FilterHelper {
         confirmationToken: '',
       },
     };
+    await emailService.sendEmail(user.email, SUCCESSFUL_CONFIRM, { token });
     await User.findByIdAndUpdate(decoded.userId, updates).exec();
     return true;
   }
@@ -540,14 +543,7 @@ class UserService extends FilterHelper {
       return { ...savedUser._doc, invitationalToken };
     }
 
-    const message = {
-      from: MAIL_USER,
-      to: savedUser.email,
-      subject: '[Horondi] Invitation to become an admin',
-      html: adminConfirmationMessage(invitationalToken),
-    };
-
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, CONFIRM_ADMIN_EMAIL, { token });
 
     return savedUser;
   }

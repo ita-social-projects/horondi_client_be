@@ -1,13 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;900&display=swap');
-
-/* @font-face {
-    font-family: "Montserrat";
-    src: url("../../assets/fonts/Montserrat/Montserrat-Light.ttf") format("ttf")
-} */
-
 body {
     width: 818px;
-    font-family: Montserrat;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight: 300;
 }
 
 header {
@@ -36,7 +30,7 @@ footer p{
     height: 22px;
     margin: 0;
     padding-left: 62px;
-    padding-top: 25px;
+    padding-top: 75px;
     font-size: 18px;
     color: #000000;
 }
@@ -125,6 +119,7 @@ p.successfulRegistrationText {
 .blockUserContent{
     width: 718px;
     height: 154px;
+    padding-top: 50px;
     padding-left: 62px;
     font-family: Montserrat;
     font-style: normal;
@@ -135,6 +130,7 @@ p.successfulRegistrationText {
 .unlockUserContent {
     width: 718px;
     height: 130px;
+    padding-top: 50px;
     padding-left: 62px;
     font-family: Montserrat;
     font-style: normal;
