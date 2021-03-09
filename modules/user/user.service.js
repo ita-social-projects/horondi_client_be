@@ -13,12 +13,7 @@ const {
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const {
-  EmailActions: {
-    CONFIRM_EMAIL,
-    RECOVER_PASSWORD,
-    CONFIRM_ADMIN_EMAIL,
-    SUCCESSFUL_CONFIRM,
-  },
+  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
@@ -542,8 +537,6 @@ class UserService extends FilterHelper {
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
-
-    await emailService.sendEmail(user.email, CONFIRM_ADMIN_EMAIL, { token });
 
     return savedUser;
   }
