@@ -405,8 +405,6 @@ class UserService extends FilterHelper {
 
     savedUser.confirmationToken = token;
 
-    await savedUser.save();
-
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
 
     await savedUser.save();
