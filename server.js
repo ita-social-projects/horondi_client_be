@@ -41,15 +41,16 @@ const server = new ApolloServer({
   schema,
   context: async ({ req }) => {
     const { token } = req.headers || '';
+    console.log(token);
 
     loggerHttp.log({
       level: 'info',
       message: `method: ${req.method}/baseUrl: ${req.baseUrl}/date:${req.fresh}/`,
     });
     if (token) {
-      const user = verifyUser(token);
+      const { userId } = verifyUser(token);
 
-      if (!user) {
+      if (!userId) {
         logger.error({
           level: 'error',
           message: formatErrorForLogger(INVALID_PERMISSIONS),
@@ -57,7 +58,7 @@ const server = new ApolloServer({
         return null;
       }
       return {
-        user: await userService.getUserByFieldOrThrow('email', user.email),
+        user: await userService.getUserByFieldOrThrow('_id', userId),
       };
     }
   },

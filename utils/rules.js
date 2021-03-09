@@ -11,9 +11,13 @@ const {
   STATUS_CODES: { FORBIDDEN, UNAUTHORIZED },
 } = require('../consts/status-codes');
 
-const isAuthorized = rule()((parent, args, context, info) =>
-  context.user ? true : new RuleError(USER_NOT_AUTHORIZED, UNAUTHORIZED)
-);
+const isAuthorized = rule()((parent, args, context, info) => {
+  if (context.user) {
+    return true;
+  } else {
+    return new RuleError(USER_NOT_AUTHORIZED, UNAUTHORIZED);
+  }
+});
 
 const hasRoles = roles =>
   and(

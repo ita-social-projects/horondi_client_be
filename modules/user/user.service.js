@@ -12,6 +12,7 @@ const {
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
+const generateTokens = require('../../utils/create-tokens');
 const { sendEmail } = require('../../utils/sendGrid-email');
 const {
   confirmationMessage,
@@ -256,8 +257,6 @@ class UserService extends FilterHelper {
   }
 
   async loginUser({ email, password, staySignedIn }) {
-    let refreshToken;
-
     const { errors } = await validateLoginInput.validateAsync({
       email,
       password,
@@ -281,40 +280,31 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-
-    const token = generateToken(user._id, user.email);
-
-    if (staySignedIn) {
-      refreshToken = generateRefreshToken(user);
-    }
+    const { accesToken, refreshToken } = generateTokens(user._id, staySignedIn);
 
     return {
       ...user._doc,
       _id: user._id,
+      token: accesToken,
       refreshToken,
-      token,
     };
   }
 
-  async regenerateAccessToken(refreshToken) {
+  async regenerateAccessToken(refreshTokenForVerify) {
     let decoded;
-
     try {
-      decoded = jwt.verify(refreshToken, SECRET);
+      decoded = jwt.verify(refreshTokenForVerify, SECRET);
     } catch (err) {
       throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
     }
 
-    if (!decoded.isRefreshToken) {
-      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: 400 });
-    }
+    await this.getUserByFieldOrThrow('_id', decoded.userId);
 
-    await this.getUserByFieldOrThrow('email', decoded.email);
-
-    const token = generateToken(decoded.userId, decoded.email);
+    const { accesToken, refreshToken } = generateTokens(decoded.userId, true);
 
     return {
-      token,
+      refreshToken,
+      token: accesToken,
     };
   }
 
