@@ -72,23 +72,6 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.disable('x-powered-by');
 currencyWorker();
-app.set('view engine', 'pug');
-app.use(express.static(__dirname + '/email-templates/'));
-app.get('/pug', (req, res) => {
-  res.render(__dirname + '/email-templates/confirm-email.pug');
-});
-app.get('/pug1', (req, res) => {
-  res.render(__dirname + '/email-templates/successful-confirm.pug');
-});
-app.get('/pug2', (req, res) => {
-  res.render(__dirname + '/email-templates/block-user.pug');
-});
-app.get('/pug3', (req, res) => {
-  res.render(__dirname + '/email-templates/unlock-user.pug');
-});
-app.get('/pug4', (req, res) => {
-  res.render(__dirname + '/email-templates/recover-password.pug');
-});
 
 server.applyMiddleware({
   app,

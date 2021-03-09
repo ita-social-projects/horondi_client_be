@@ -53,7 +53,6 @@ p.registrationText {
 div.contentRegistrationText {
     height: 320px;
     padding-left: 62px;
-    font-family: Montserrat;
 }
 
 p.congrats {
@@ -109,7 +108,6 @@ p.successfulRegistrationText {
 .blockUserText{
     margin: 0;
     padding-top: 37px;
-    font-family: Montserrat;
     font-style: normal;
     font-weight: 500;
     font-size: 36px;
@@ -121,7 +119,6 @@ p.successfulRegistrationText {
     height: 154px;
     padding-top: 50px;
     padding-left: 62px;
-    font-family: Montserrat;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
@@ -132,7 +129,6 @@ p.successfulRegistrationText {
     height: 130px;
     padding-top: 50px;
     padding-left: 62px;
-    font-family: Montserrat;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;

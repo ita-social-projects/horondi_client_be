@@ -21,9 +21,9 @@ const userQuery = {
     userService.getPurchasedProducts(args.id),
 };
 const userMutation = {
-  registerUser: (parent, args) => {
+  registerUser: async (parent, args) => {
     try {
-      return userService.registerUser(args.user, args.language);
+      return await userService.registerUser(args.user, args.language);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

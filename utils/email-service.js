@@ -14,6 +14,7 @@ const contextExtension = {
 
 const transporter = nodemailer.createTransport({
   service: GMAIL_EMAIL_SERVICE,
+  secure: true,
   auth: {
     user: MAIL_USER,
     pass: MAIL_PASS,
