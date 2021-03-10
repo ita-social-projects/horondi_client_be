@@ -251,7 +251,7 @@ class UserService extends FilterHelper {
     return {
       ...user._doc,
       _id: user._id,
-      token:accesToken,
+      token: accesToken,
     };
   }
 
@@ -299,7 +299,10 @@ class UserService extends FilterHelper {
 
     await this.getUserByFieldOrThrow('_id', decoded.userId);
 
-    const { accesToken, refreshToken } = generateTokens(decoded.userId, withRefresh);
+    const { accesToken, refreshToken } = generateTokens(
+      decoded.userId,
+      withRefresh
+    );
 
     return {
       refreshToken,
@@ -335,7 +338,6 @@ class UserService extends FilterHelper {
   }
 
   async loginGoogleUser({ email, staySignedIn }) {
-    
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
@@ -346,7 +348,7 @@ class UserService extends FilterHelper {
     return {
       ...user._doc,
       _id: user._id,
-      token:accesToken,
+      token: accesToken,
       refreshToken,
     };
   }
@@ -387,7 +389,7 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const token = generateToken(savedUser._id, savedUser.email, {
+    const token = generateTokens(savedUser._id, false, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
@@ -417,7 +419,7 @@ class UserService extends FilterHelper {
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const token = generateToken(user._id, user.email, {
+    const token = generateTokens(user._id, false, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
@@ -458,7 +460,7 @@ class UserService extends FilterHelper {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
 
-    const token = generateToken(user._id, user.email, {
+    const token = generateTokens(user._id, false, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
@@ -540,7 +542,7 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = generateToken(savedUser._id, savedUser.email);
+    const invitationalToken = generateTokens(savedUser._id);
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
