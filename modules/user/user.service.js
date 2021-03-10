@@ -12,19 +12,15 @@ const {
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendGrid-email');
 const {
-  confirmationMessage,
-  recoveryMessage,
-  adminConfirmationMessage,
-} = require('../../utils/localization');
-const emailService = require('../confirm-email/confirmation-email.service');
+  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
+} = require('../../consts/email-actions');
+const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  MAIL_USER,
   NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
@@ -409,17 +405,7 @@ class UserService extends FilterHelper {
 
     savedUser.confirmationToken = token;
 
-    await savedUser.save();
-
-    const subject = '[HORONDI] Email confirmation';
-    const html = confirmationMessage(firstName, token, language);
-
-    await emailService.sendEmail({
-      user,
-      sendEmail,
-      subject,
-      html,
-    });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
 
     await savedUser.save();
 
@@ -438,13 +424,7 @@ class UserService extends FilterHelper {
     });
     user.confirmationToken = token;
     await user.save();
-    const message = {
-      from: MAIL_USER,
-      to: user.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
     return true;
   }
 
@@ -463,6 +443,7 @@ class UserService extends FilterHelper {
         confirmationToken: '',
       },
     };
+    await emailService.sendEmail(user.email, SUCCESSFUL_CONFIRM, { token });
     await User.findByIdAndUpdate(decoded.userId, updates).exec();
     return true;
   }
@@ -478,13 +459,7 @@ class UserService extends FilterHelper {
       secret: SECRET,
     });
     user.recoveryToken = token;
-    const message = {
-      from: MAIL_USER,
-      to: email,
-      subject: '[HORONDI] Instructions for password recovery',
-      html: recoveryMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { token });
     await user.save();
     return true;
   }
@@ -560,15 +535,6 @@ class UserService extends FilterHelper {
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
-
-    const message = {
-      from: MAIL_USER,
-      to: savedUser.email,
-      subject: '[Horondi] Invitation to become an admin',
-      html: adminConfirmationMessage(invitationalToken),
-    };
-
-    await sendEmail(message);
 
     return savedUser;
   }
