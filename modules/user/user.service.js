@@ -246,13 +246,12 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-
-    const token = generateToken(user._id, user.email);
+    const { accesToken } = generateTokens(user._id);
 
     return {
       ...user._doc,
       _id: user._id,
-      token,
+      token:accesToken,
     };
   }
 
@@ -300,7 +299,7 @@ class UserService extends FilterHelper {
 
     await this.getUserByFieldOrThrow('_id', decoded.userId);
 
-    const { accesToken, refreshToken } = generateTokens(decoded.userId, true);
+    const { accesToken, refreshToken } = generateTokens(decoded.userId, withRefresh);
 
     return {
       refreshToken,
@@ -336,22 +335,18 @@ class UserService extends FilterHelper {
   }
 
   async loginGoogleUser({ email, staySignedIn }) {
-    let refreshToken;
-
+    
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const token = generateToken(user._id, user.email);
+    const { accesToken, refreshToken } = generateTokens(user._id, staySignedIn);
 
-    if (staySignedIn) {
-      refreshToken = generateRefreshToken(user);
-    }
     return {
       ...user._doc,
       _id: user._id,
-      token,
+      token:accesToken,
       refreshToken,
     };
   }

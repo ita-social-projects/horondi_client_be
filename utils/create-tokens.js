@@ -5,7 +5,7 @@ const {
   SECRET,
 } = require('../dotenvValidator');
 
-const generateTokens = (userId, withRefresh) => {
+const generateTokens = (userId, withRefresh=false) => {
   if (withRefresh) {
     const accesToken = jwt.sign({ userId }, SECRET, {
       expiresIn: TOKEN_EXPIRES_IN,

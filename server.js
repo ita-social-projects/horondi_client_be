@@ -41,7 +41,6 @@ const server = new ApolloServer({
   schema,
   context: async ({ req }) => {
     const { token } = req.headers || '';
-    console.log(token);
 
     loggerHttp.log({
       level: 'info',
