@@ -125,10 +125,15 @@ class ProductsService {
       filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
-      const currencySign = currency === 0 ? UAH : currency === 1 ? USD : '';
+      const getCurrencySign = () => {
+        if (currency === 0) {
+          return UAH;
+        }
+        return currency === 1 ? USD : '';
+      };
       filter.basePrice = {
         $elemMatch: {
-          currency: currencySign,
+          currency: getCurrencySign(),
           value: {
             $gte: price[0],
             $lte: price[1],
