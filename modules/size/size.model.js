@@ -21,6 +21,9 @@ const {
   WEIGHT_IN_KG_TOO_LONG,
   WEIGHT_IN_KG_IS_REQUIRED,
 } = require('../../error-messages/size.messages');
+const {
+  DB_COLLECTIONS_NAMES: { SIZE },
+} = require('../../consts/db-collections-names');
 
 const sizeSchema = new mongoose.Schema({
   name: {
@@ -64,4 +67,4 @@ const sizeSchema = new mongoose.Schema({
   additionalPrice: [CurrencySet],
 });
 
-module.exports = mongoose.model('Size', sizeSchema);
+module.exports = mongoose.model(SIZE, sizeSchema);
