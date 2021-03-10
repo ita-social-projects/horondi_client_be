@@ -18,7 +18,7 @@ const {
   USER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
 
-jest.mock('../../modules/confirm-email/confirmation-email.service');
+jest.mock('../../modules/email/email.service');
 jest.setTimeout(10000);
 
 let userId;
@@ -72,8 +72,7 @@ describe('mutations', () => {
       operations
     );
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe(USER_ALREADY_EXIST);
+    expect(res.data.registerUser.message).toBe(USER_ALREADY_EXIST);
     done();
   });
   test('should authorize and recive user token', async done => {

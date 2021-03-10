@@ -2,6 +2,7 @@ const userService = require('./user.service');
 const {
   STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(args),
@@ -23,8 +24,13 @@ const userQuery = {
     userService.getPurchasedProducts(args.id),
 };
 const userMutation = {
-  registerUser: (parent, args) =>
-    userService.registerUser(args.user, args.language),
+  registerUser: async (parent, args) => {
+    try {
+      return await userService.registerUser(args.user, args.language);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   googleUser: (parent, args) =>
     userService.googleUser(args.idToken, args.staySignedIn),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
