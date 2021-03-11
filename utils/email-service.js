@@ -4,6 +4,8 @@ const EmailTemplates = require('email-templates');
 const {
   MAIL_USER,
   MAIL_PASS,
+  MAIL_HOST,
+  MAIL_PORT,
   FRONT_BASE_URI,
   GMAIL_EMAIL_SERVICE,
 } = require('../dotenvValidator');
@@ -14,6 +16,8 @@ const contextExtension = {
 
 const transporter = nodemailer.createTransport({
   service: GMAIL_EMAIL_SERVICE,
+  host: MAIL_HOST,
+  port: MAIL_PORT,
   secure: true,
   auth: {
     user: MAIL_USER,
