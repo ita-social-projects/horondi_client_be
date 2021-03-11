@@ -24,10 +24,8 @@
     "preinstall": "npm i npm-force-resolutions & npx npm-force-resolutions",
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
-    "mongodump": "mongodump --db=horondi --uri=mongodb+srv://user-read-write1:sfd$42A3a@horondi-yl27g.mongodb.net/horondi?retryWrites=true&w=majority",
     "test-docker": "npm run docker-db-stop && npm run docker-db-start && npm run test",
-    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\"",
-    "restore": "mongorestore dump/horondi --db=horondi --uri=\"mongodb+srv://root:root@cluster0.9xwme.mongodb.net/myFirstDatabase?retryWrites=true&w=majority\" "
+    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\""
   },
   "author": "",
   "license": "ISC",
