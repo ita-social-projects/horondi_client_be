@@ -17,9 +17,8 @@ const paymentStatus = `
 const paymentInput = `
   input PaymentInput {
       orderId: String!
-      orderDesc: String
-      currency: String
-      amount: Int!
+      currency: String!
+      amount: String!
   }
 `;
 

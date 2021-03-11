@@ -13,6 +13,7 @@ const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
+const { checkPaymentStatus } = require('./modules/payment/payment.service');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { dotenvVariables } = require('./dotenvValidator');
 const {
@@ -72,6 +73,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.disable('x-powered-by');
 currencyWorker();
+app.post('/fondy/callback', checkPaymentStatus);
 
 server.applyMiddleware({
   app,

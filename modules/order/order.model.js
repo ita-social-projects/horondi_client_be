@@ -17,6 +17,7 @@ const {
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
+  paidOrderNumber: String,
   status: {
     type: String,
     required: true,

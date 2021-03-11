@@ -74,6 +74,7 @@
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.10",
     "npm-force-resolutions": "0.0.3",
+    "open": "^8.0.2",
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
@@ -87,6 +88,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",
     "@graphql-codegen/fragment-matcher": "^1.17.7",
+    "@types/joi": "^14.3.4",
     "apollo-server-testing": "^2.18.1",
     "babel-eslint": "^10.1.0",
     "chance": "^1.1.5",
@@ -102,7 +104,7 @@
     "lint-staged": "^10.2.9",
     "nodemon": "^2.0.4",
     "prettier": "^1.19.1",
-    "@types/joi": "^14.3.4"
+    "react-dev-utils": "^11.0.4"
   },
   "engines": {
     "node": "=14.15.4"

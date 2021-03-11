@@ -53,13 +53,6 @@ const ordersMutation = {
       };
     }
   },
-  regenerateOrderNumber: async (_, { id }) => {
-    try {
-      return await ordersService.regenerateOrderNumber(id);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
 };
 
 module.exports = { ordersQuery, ordersMutation };

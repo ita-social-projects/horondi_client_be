@@ -428,7 +428,7 @@ const typeDefs = gql`
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
-    getPaymentCheckout(data: PaymentInput): Payment
+    getPaymentCheckout(data: PaymentInput!): OrderResult
     checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(

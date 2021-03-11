@@ -101,22 +101,6 @@ class OrdersService {
     return new Order(order).save();
   }
 
-  async regenerateOrderNumber(id) {
-    if (!ObjectId.isValid(id))
-      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
-
-    const isOrderPresent = await Order.findById(id);
-
-    if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-    const orderNumber = generateOrderNumber();
-
-    return Order.findByIdAndUpdate(
-      id,
-      { $set: { orderNumber } },
-      { new: true }
-    );
-  }
-
   async deleteOrder(id) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
 
