@@ -3,11 +3,15 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
 const {
+  ORDER_PAYMENT_STATUS: { PAID },
+} = require('../../consts/order-payment-status');
+const {
   STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
+  ORDER_IS_NOT_PAID,
 } = require('../../error-messages/orders.messages');
 const { userDateFormat } = require('../../consts');
 
@@ -50,6 +54,16 @@ class OrdersService {
     if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
 
     return foundOrder;
+  }
+
+  async getOrderByPaidOrderNumber(paidOrderNumber) {
+    const order = await Order.findOne({ paidOrderNumber }).exec();
+
+    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (order.paymentStatus !== PAID)
+      throw new RuleError(ORDER_IS_NOT_PAID, BAD_REQUEST);
+
+    return order;
   }
 
   async updateOrder(order, id) {

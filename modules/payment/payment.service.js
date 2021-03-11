@@ -38,7 +38,6 @@ class PaymentService {
 
     const newOrderNumber = generateOrderNumber();
     console.log(isOrderPresent.orderNumber);
-    console.log(newOrderNumber);
 
     return OrderModel.findByIdAndUpdate(
       orderId,
@@ -54,16 +53,19 @@ class PaymentService {
 
   async checkPaymentStatus(req, res) {
     try {
-      const { order_id, order_status } = await paymentWorker(
+      const { order_id } = req.body;
+
+      const { order_id: paidOrderNumber, order_status } = await paymentWorker(
         CHECK_PAYMENT_STATUS,
         {
-          order_id: '611122214',
+          order_id,
         }
       );
 
-      const order = await OrderModel.findOne({ paidOrderNumber: order_id });
+      const order = await OrderModel.findOne({ paidOrderNumber });
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
       if (order_status !== APPROVED.toLowerCase())
         throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
 
