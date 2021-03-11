@@ -74,6 +74,7 @@
     "morgan": "^1.9.1",
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.10",
+    "nodemailer-smtp-transport": "^2.7.4",
     "npm-force-resolutions": "0.0.3",
     "open": "^8.0.2",
     "passport": "^0.4.1",
