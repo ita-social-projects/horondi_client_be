@@ -290,19 +290,15 @@ class UserService extends FilterHelper {
   }
 
   async regenerateAccessToken(refreshTokenForVerify) {
-    let decoded;
-    try {
-      decoded = jwt.verify(refreshTokenForVerify, SECRET);
-    } catch (err) {
+    const decoded = jwt.verify(refreshTokenForVerify, SECRET);
+    console.log(decoded);
+
+    if (!decoded) {
       throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
     }
-
     await this.getUserByFieldOrThrow('_id', decoded.userId);
 
-    const { accesToken, refreshToken } = generateTokens(
-      decoded.userId,
-      withRefresh
-    );
+    const { accesToken, refreshToken } = generateTokens(decoded.userId, true);
 
     return {
       refreshToken,
