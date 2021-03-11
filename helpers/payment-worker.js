@@ -16,7 +16,7 @@ const fondy = new CloudIpsp({
 
 const paymentWorker = async (action, data) => {
   if (action === GO_TO_CHECKOUT) {
-    return await fondy
+    return fondy
       .Checkout(data)
       .then(({ response_status, checkout_url }) => {
         return response_status === SUCCESS && open(checkout_url);
@@ -24,7 +24,7 @@ const paymentWorker = async (action, data) => {
       .catch(error => error);
   }
   if (action === CHECK_PAYMENT_STATUS) {
-    return await fondy
+    return fondy
       .Status(data)
       .then(res => {
         return res;

@@ -25,7 +25,7 @@ class PaymentService {
     if (!ObjectId.isValid(orderId))
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
-    const isOrderPresent = await OrderModel.findById(orderId);
+    const isOrderPresent = await OrderModel.findById(orderId).exec();
 
     if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
@@ -37,7 +37,6 @@ class PaymentService {
     });
 
     const newOrderNumber = generateOrderNumber();
-    console.log(isOrderPresent.orderNumber);
 
     return OrderModel.findByIdAndUpdate(
       orderId,
@@ -48,7 +47,7 @@ class PaymentService {
         },
       },
       { new: true }
-    );
+    ).exec();
   }
 
   async checkPaymentStatus(req, res) {
@@ -62,7 +61,7 @@ class PaymentService {
         }
       );
 
-      const order = await OrderModel.findOne({ paidOrderNumber });
+      const order = await OrderModel.findOne({ paidOrderNumber }).exec();
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
@@ -71,7 +70,7 @@ class PaymentService {
 
       await OrderModel.findByIdAndUpdate(order._id, {
         $set: { paymentStatus: PAID },
-      });
+      }).exec();
 
       res.end();
     } catch (e) {
