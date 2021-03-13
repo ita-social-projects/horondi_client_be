@@ -11,7 +11,6 @@ const {
   validateSendConfirmation,
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
-const generateToken = require('../../utils/create-token');
 const generateTokens = require('../../utils/create-tokens');
 const { sendEmail } = require('../../utils/sendGrid-email');
 const {
@@ -28,6 +27,7 @@ const {
   MAIL_USER,
   NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
+  TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
   removeDaysFromData,
@@ -36,7 +36,6 @@ const {
   reduceByDaysCount,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
-const { generateRefreshToken } = require('../../utils/token');
 
 const {
   USER_ALREADY_EXIST,
@@ -51,7 +50,6 @@ const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   ID_NOT_PROVIDED,
   SESSION_TIMEOUT,
-  INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
 const { userDateFormat } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
@@ -246,7 +244,10 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-    const { accesToken } = generateTokens(user._id);
+    const { accesToken } = generateTokens(user._id, {
+      expiresIn: TOKEN_EXPIRES_IN,
+      secret: SECRET,
+    });
 
     return {
       ...user._doc,
@@ -279,7 +280,14 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
-    const { accesToken, refreshToken } = generateTokens(user._id, staySignedIn);
+    const { accesToken, refreshToken } = generateTokens(
+      user._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      staySignedIn
+    );
 
     return {
       ...user._doc,
@@ -291,14 +299,20 @@ class UserService extends FilterHelper {
 
   async regenerateAccessToken(refreshTokenForVerify) {
     const decoded = jwt.verify(refreshTokenForVerify, SECRET);
-    console.log(decoded);
 
     if (!decoded) {
-      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+      return new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
     }
     await this.getUserByFieldOrThrow('_id', decoded.userId);
 
-    const { accesToken, refreshToken } = generateTokens(decoded.userId, true);
+    const { accesToken, refreshToken } = generateTokens(
+      decoded.userId,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      true
+    );
 
     return {
       refreshToken,
@@ -339,7 +353,14 @@ class UserService extends FilterHelper {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
     }
 
-    const { accesToken, refreshToken } = generateTokens(user._id, staySignedIn);
+    const { accesToken, refreshToken } = generateTokens(
+      user._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      staySignedIn
+    );
 
     return {
       ...user._doc,
@@ -385,7 +406,7 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const token = generateTokens(savedUser._id, false, {
+    const token = generateTokens(savedUser._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
@@ -415,7 +436,7 @@ class UserService extends FilterHelper {
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const token = generateTokens(user._id, false, {
+    const token = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
@@ -456,7 +477,7 @@ class UserService extends FilterHelper {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
     }
 
-    const token = generateTokens(user._id, false, {
+    const token = generateTokens(user._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
@@ -538,7 +559,10 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = generateTokens(savedUser._id);
+    const invitationalToken = generateTokens(savedUser._id, {
+      expiresIn: TOKEN_EXPIRES_IN,
+      secret: SECRET,
+    });
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
