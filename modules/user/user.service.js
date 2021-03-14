@@ -5,9 +5,7 @@ const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
 const {
   validateRegisterInput,
-  validateLoginInput,
   validateUpdateInput,
-  validateNewPassword,
   validateSendConfirmation,
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
@@ -44,7 +42,6 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
-  ID_NOT_PROVIDED,
   SESSION_TIMEOUT,
   INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
@@ -219,15 +216,6 @@ class UserService extends FilterHelper {
   }
 
   async loginAdmin({ email, password }) {
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
-
     const user = await this.getUserByFieldOrThrow('email', email);
     const match = await bcrypt.compare(
       password,
@@ -253,15 +241,6 @@ class UserService extends FilterHelper {
 
   async loginUser({ email, password, staySignedIn }) {
     let refreshToken;
-
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
 
     const user = await User.findOne({ email }).exec();
 
@@ -475,7 +454,6 @@ class UserService extends FilterHelper {
   }
 
   async resetPassword(password, token) {
-    await validateNewPassword.validateAsync({ password });
     const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow('email', decoded.email);
 
@@ -542,16 +520,6 @@ class UserService extends FilterHelper {
   async completeAdminRegister(updatedUser, token) {
     const { firstName, lastName, password } = updatedUser;
     let decoded;
-
-    try {
-      await validateRegisterInput.validateAsync({
-        firstName,
-        lastName,
-        password,
-      });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
 
     try {
       decoded = jwt.verify(token, SECRET);

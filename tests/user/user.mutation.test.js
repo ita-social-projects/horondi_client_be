@@ -1,5 +1,13 @@
 const { gql } = require('@apollo/client');
-const { newAdmin, testUser, user } = require('./user.variables');
+
+const {
+  newAdmin,
+  testUser,
+  user,
+  INVALID_FIRST_NAME,
+  INVALID_LAST_NAME,
+  INVALID_PASSWORD,
+} = require('./user.variables');
 const {
   registerUser,
   loginUser,
@@ -17,6 +25,9 @@ const {
   INVALID_PERMISSIONS,
   USER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
+const {
+  STATUS_CODES: { FORBIDDEN },
+} = require('../../consts/status-codes');
 
 jest.mock('../../modules/email/email.service');
 jest.setTimeout(10000);
@@ -445,8 +456,8 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
+    expect(data.message).toEqual(INVALID_LAST_NAME);
+    expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
 
@@ -460,23 +471,23 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
+    expect(data.message).toEqual(INVALID_FIRST_NAME);
+    expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
 
   test('Should throw an error when use invalid password', async done => {
     const result = await completeAdminRegister(
       invitationalToken,
-      invalidFirstName,
+      newAdminFirstName,
       newAdminLastName,
       invalidPassword,
       operations
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
+    expect(data.message).toEqual(INVALID_PASSWORD);
+    expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
 

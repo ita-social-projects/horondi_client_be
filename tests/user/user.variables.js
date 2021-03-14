@@ -12,7 +12,7 @@ const newAdmin = {
   email: 'admintest4@gmail.com',
   firstName: 'Hook',
   lastName: 'Age',
-  pass: 'dffdsfsdsdf',
+  pass: 'dffds45TYfsdsdf',
 };
 
 const testUsersSet = [
@@ -85,6 +85,12 @@ const user = {
   language: 1,
 };
 
+const INVALID_FIRST_NAME =
+  '"firstName" with value "H" fails to match the required pattern: /^(?=.{2,30}$)[a-zA-Zа-яА-Яіїє]+(([\',. -][a-zA-Zа-яА-Яіїє])?[a-zA-Zа-яА-Яіїє]*)*$/u';
+const INVALID_LAST_NAME =
+  '"lastName" with value "O" fails to match the required pattern: /^(?=.{2,30}$)[a-zA-Zа-яА-Яіїє]+(([\',. -][a-zA-Zа-яА-Яіїє])?[a-zA-Zа-яА-Яіїє]*)*$/u';
+const INVALID_PASSWORD =
+  '"password" with value "You" fails to match the required pattern: /^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,30}$/';
 module.exports = {
   newAdmin,
   superAdminUser,
@@ -92,4 +98,7 @@ module.exports = {
   testUsersSet,
   user,
   wrongId,
+  INVALID_FIRST_NAME,
+  INVALID_LAST_NAME,
+  INVALID_PASSWORD,
 };
