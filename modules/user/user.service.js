@@ -411,7 +411,7 @@ class UserService extends FilterHelper {
       secret: CONFIRMATION_SECRET,
     });
 
-    savedUser.confirmationToken = token;
+    savedUser.confirmationToken = token.accesToken;
 
     await savedUser.save();
 
@@ -440,7 +440,7 @@ class UserService extends FilterHelper {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
-    user.confirmationToken = token;
+    user.confirmationToken = token.accesToken;
     await user.save();
     const message = {
       from: MAIL_USER,
@@ -481,7 +481,7 @@ class UserService extends FilterHelper {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
-    user.recoveryToken = token;
+    user.recoveryToken = token.accesToken;
     const message = {
       from: MAIL_USER,
       to: email,
@@ -559,10 +559,11 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = generateTokens(savedUser._id, {
+    const { accesToken } = generateTokens(savedUser._id, {
       expiresIn: TOKEN_EXPIRES_IN,
       secret: SECRET,
     });
+    const invitationalToken = accesToken;
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
