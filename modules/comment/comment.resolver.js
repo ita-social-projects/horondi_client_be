@@ -16,8 +16,18 @@ const commentsQuery = {
     }
   },
 
-  getRecentComments: async (parent, args) =>
-    commentsService.getRecentComments(args.comentDate),
+  getRecentComments: async (parent, args) => {
+    try {
+      return commentsService.getRecentComments(args.comentDate);
+    } catch (error) {
+      return [
+        {
+          statusCode: NOT_FOUND,
+          message: error.message,
+        },
+      ];
+    }
+  },
 
   getAllCommentsByProduct: async (parent, args) => {
     try {
