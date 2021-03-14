@@ -41,6 +41,15 @@ class CommentsService extends FilterHelper {
       count: commentsCount || 0,
     };
   }
+
+  async getRecentComments({ comentDate }) {
+    const comment = await Comment.find(comentDate).exec();
+    if (!comment) {
+      throw new Error(COMMENT_NOT_FOUND);
+    }
+    return comment;
+  }
+
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {

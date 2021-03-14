@@ -16,6 +16,9 @@ const commentsQuery = {
     }
   },
 
+  getRecentComments: async (parent, args) =>
+    commentsService.getRecentComments(args.comentDate),
+
   getAllCommentsByProduct: async (parent, args) => {
     try {
       return await commentsService.getAllCommentsByProduct(args);
@@ -41,9 +44,6 @@ const commentsQuery = {
       ];
     }
   },
-
-  getAllRecentComments: async (parent, args) =>
-    commentsService.getAllRecentComments(args),
 };
 
 const commentsMutation = {

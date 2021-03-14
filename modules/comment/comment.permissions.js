@@ -7,6 +7,7 @@ const commentPermissionsQuery = {
   getCommentById: allow,
   getAllCommentsByProduct: allow,
   getAllCommentsByUser: allow,
+  getRecentComments: allow,
 };
 const commentPermissionsMutations = {
   updateComment: hasRoles([ADMIN, SUPERADMIN]),
