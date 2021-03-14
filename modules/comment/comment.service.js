@@ -50,13 +50,11 @@ class CommentsService extends FilterHelper {
     return comment;
   }
 
-  async getRecentComments({ id, commentDate }) {
-    const comments = await Comment.findById(id).exec();
+  async getRecentComments({ limit, skip }) {
+    const comments = await Comment.find()
+      .sort({ date: -1 })
+      .exec();
     if (!comments) {
-      throw new Error(COMMENT_NOT_FOUND);
-    }
-    const comment = await Comment.find({ comments: commentDate }).exec();
-    if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
     return comment;
