@@ -18,7 +18,7 @@ const commentsQuery = {
 
   getRecentComments: async (parent, args) => {
     try {
-      return commentsService.getRecentComments(args.comentDate);
+      return commentsService.getRecentComments(args.commentDate);
     } catch (error) {
       return [
         {
