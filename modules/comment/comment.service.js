@@ -2,6 +2,7 @@ const Comment = require('./comment.model');
 const Product = require('../product/product.model');
 const {
   COMMENT_NOT_FOUND,
+  COMMENTS_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
@@ -50,14 +51,16 @@ class CommentsService extends FilterHelper {
     return comment;
   }
 
-  async getRecentComments({ limit, skip }) {
+  async getRecentComments(limit) {
     const comments = await Comment.find()
       .sort({ date: -1 })
+      .limit(limit)
       .exec();
-    if (!comments) {
-      throw new Error(COMMENT_NOT_FOUND);
+
+    if (!comments.length) {
+      throw new Error(COMMENTS_NOT_FOUND);
     }
-    return comment;
+    return comments;
   }
 
   async getAllCommentsByProduct({ productId }) {
