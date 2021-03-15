@@ -7,6 +7,7 @@ const {
   INVALID_FIRST_NAME,
   INVALID_LAST_NAME,
   INVALID_PASSWORD,
+  INVALID_ROLE,
 } = require('./user.variables');
 const {
   registerUser,
@@ -353,9 +354,8 @@ describe('Register admin', () => {
       })
       .catch(err => err);
     const data = result.data.registerAdmin;
-
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
+    expect(data.message).toEqual(INVALID_ROLE);
+    expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
 
@@ -379,7 +379,7 @@ describe('Register admin', () => {
         variables: {
           user: {
             email: invalidEmail,
-            role,
+            role: invalidRole,
           },
         },
       })
@@ -387,8 +387,8 @@ describe('Register admin', () => {
 
     const data = result.data.registerAdmin;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
+    expect(data.message).toEqual(INVALID_ROLE);
+    expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
 

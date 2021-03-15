@@ -3,12 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
-const {
-  validateRegisterInput,
-  validateUpdateInput,
-  validateSendConfirmation,
-  validateAdminRegisterInput,
-} = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const {
   EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
@@ -23,7 +17,6 @@ const {
   REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
 const {
-  removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
   reduceByDaysCount,
@@ -159,16 +152,6 @@ class UserService extends FilterHelper {
   async updateUserById(updatedUser, user, upload) {
     const { firstName, lastName, email } = updatedUser;
 
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
-
     if (user.email !== updatedUser.email) {
       const existingUser = await User.findOne({
         email: updatedUser.email,
@@ -195,15 +178,6 @@ class UserService extends FilterHelper {
 
   async updateUserByToken(updatedUser, user) {
     const { firstName, lastName, email } = updatedUser;
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
 
     return User.findByIdAndUpdate(
       user._id,
@@ -392,7 +366,6 @@ class UserService extends FilterHelper {
   }
 
   async sendConfirmationLetter(email, language) {
-    await validateSendConfirmation.validateAsync({ email, language });
     const user = await this.getUserByFieldOrThrow('email', email);
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
@@ -491,12 +464,6 @@ class UserService extends FilterHelper {
 
   async registerAdmin(userInput) {
     const { email, role } = userInput;
-
-    try {
-      await validateAdminRegisterInput.validateAsync({ email, role });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
 
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });

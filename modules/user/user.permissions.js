@@ -1,4 +1,4 @@
-const { or, allow } = require('graphql-shield');
+const { or, allow, and } = require('graphql-shield');
 
 const {
   isAuthorized,
@@ -12,9 +12,11 @@ const {
 const {
   createUserValidator,
   loginUserValidator,
-  recoverUserValidator,
+  emailUserValidator,
   resetPasswordValidator,
   completeAdminRegisterValidator,
+  registerAdminValidator,
+  updateUserValidator,
 } = require('../../validators/user.validator');
 const {
   INPUT_FIELDS: { USER, LOGIN_INPUT, EMAIL, PASSWORD },
@@ -32,17 +34,29 @@ const userPermissionsMutation = {
   loginUser: inputDataValidation(LOGIN_INPUT, loginUserValidator),
   loginAdmin: inputDataValidation(LOGIN_INPUT, loginUserValidator),
   deleteUser: hasRoles([SUPERADMIN]),
-  updateUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
-  updateUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
+  updateUserById: and(
+    inputDataValidation(USER, updateUserValidator),
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+  ),
+  updateUserByToken: and(
+    inputDataValidation(USER, updateUserValidator),
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+  ),
   regenerateAccessToken: allow,
   confirmUser: allow,
   confirmUserEmail: allow,
-  recoverUser: inputDataValidation(EMAIL, recoverUserValidator),
+  recoverUser: inputDataValidation(EMAIL, emailUserValidator),
   switchUserStatus: hasRoles([ADMIN, SUPERADMIN]),
   resetPassword: inputDataValidation(PASSWORD, resetPasswordValidator),
   checkIfTokenIsValid: allow,
-  sendEmailConfirmation: isAuthorized,
-  registerAdmin: hasRoles([SUPERADMIN]),
+  sendEmailConfirmation: and(
+    inputDataValidation(EMAIL, emailUserValidator),
+    isAuthorized
+  ),
+  registerAdmin: and(
+    inputDataValidation(USER, registerAdminValidator),
+    hasRoles([SUPERADMIN])
+  ),
   completeAdminRegister: inputDataValidation(
     USER,
     completeAdminRegisterValidator
