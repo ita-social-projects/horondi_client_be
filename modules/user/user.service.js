@@ -150,8 +150,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserById(updatedUser, user, upload) {
-    const { firstName, lastName, email } = updatedUser;
-
     if (user.email !== updatedUser.email) {
       const existingUser = await User.findOne({
         email: updatedUser.email,
@@ -177,8 +175,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserByToken(updatedUser, user) {
-    const { firstName, lastName, email } = updatedUser;
-
     return User.findByIdAndUpdate(
       user._id,
       {
