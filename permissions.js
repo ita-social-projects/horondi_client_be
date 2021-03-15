@@ -27,6 +27,7 @@ const {
 const {
   categoryPermissionsMutations,
   categoryPermissionsQuery,
+  categoryValidationMutations,
 } = require('./modules/category/category.permission');
 
 const {
@@ -79,6 +80,8 @@ const {
   commentPermissionsQuery,
 } = require('./modules/comment/comment.permissions');
 
+console.log(categoryValidationMutations);
+
 const permissions = shield(
   {
     Query: {
@@ -106,6 +109,7 @@ const permissions = shield(
       ...contactPermissionsMutations,
       ...newsPermissionsMutations,
       ...categoryPermissionsMutations,
+      ...categoryValidationMutations,
       ...modelPermissionsMutations,
       ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
