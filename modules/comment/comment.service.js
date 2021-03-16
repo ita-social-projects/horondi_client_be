@@ -53,15 +53,14 @@ class CommentsService extends FilterHelper {
   }
 
   async getRecentComments(limit) {
-    try {
-      const comments = await Comment.find()
-        .sort({ date: -1 })
-        .limit(limit)
-        .exec();
-      return comments;
-    } catch (error) {
-      throw new RuleError(error.message, error.statusCode);
+    const comments = await Comment.find()
+      .sort({ date: -1 })
+      .limit(limit)
+      .exec();
+    if (!comments) {
+      throw new RuleError(COMMENTS_NOT_FOUND);
     }
+    return comments;
   }
 
   async getAllCommentsByProduct({ productId }) {
