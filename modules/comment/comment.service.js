@@ -60,7 +60,7 @@ class CommentsService extends FilterHelper {
       .sort({ date: -1 })
       .limit(limit)
       .exec();
-    if (!comments) {
+    if (!comments.length) {
       throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     return comments;
