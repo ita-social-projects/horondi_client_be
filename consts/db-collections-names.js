@@ -24,6 +24,7 @@ const DB_COLLECTIONS_NAMES = {
   PATTERN: 'Pattern',
   USER: 'User',
   MATERIAL: 'Material',
+  CART: 'Cart',
 };
 
 module.exports = {

@@ -90,6 +90,8 @@ const {
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
 
+const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -106,7 +108,6 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
-
 const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
@@ -142,6 +143,8 @@ const SCHEMA_NAMES = {
 
 const resolvers = {
   Query: {
+    ...cartQuery,
+
     ...currencyQuery,
 
     ...materialQuery,
@@ -361,6 +364,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...cartMutation,
+
     ...uploadMutation,
 
     ...patternMutation,

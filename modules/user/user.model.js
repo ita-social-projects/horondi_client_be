@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
+const Cart = require('../cart/cart.model').schema;
 const {
   PHONE_NUMBER_NOT_VALID,
 } = require('../../error-messages/common.messages');
@@ -54,6 +55,7 @@ const userSchema = new mongoose.Schema({
       ref: 'Product',
     },
   ],
+  cart: Cart,
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
