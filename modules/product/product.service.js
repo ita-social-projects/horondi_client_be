@@ -29,6 +29,7 @@ const {
     PRODUCT_BOTTOM_COLOR,
   },
 } = require('../../consts/product-features');
+const { getCurrencySign } = require('../../utils/product-service');
 
 class ProductsService {
   async getProductById(id) {
@@ -125,15 +126,9 @@ class ProductsService {
       filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
-      const getCurrencySign = () => {
-        if (currency === 0) {
-          return UAH;
-        }
-        return currency === 1 ? USD : '';
-      };
       filter.basePrice = {
         $elemMatch: {
-          currency: getCurrencySign(),
+          currency: getCurrencySign(currency, UAH, USD),
           value: {
             $gte: price[0],
             $lte: price[1],
