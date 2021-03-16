@@ -12,11 +12,11 @@ const {
   SUPER_ADMIN_IS_IMMUTABLE,
 } = require('../../error-messages/user.messages');
 const {
-  DB_COLLECTIONS_NAMES: { USER, PRODUCT, COMMENT, ORDER },
+  DB_COLLECTIONS_NAMES: { USER: USER_DB, PRODUCT, COMMENT, ORDER },
 } = require('../../consts/db-collections-names');
 const {
-  USER_ROLES: { ROLE_USER, ROLE_ADMIN, ROLE_SUPERADMIN },
-} = require('../../consts/user-roles');
+  roles: { USER, ADMIN, SUPERADMIN },
+} = require('../../consts/index');
 const {
   STATUS_CODES: { FORBIDDEN },
 } = require('../../consts/status-codes');
@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: [ROLE_USER, ROLE_ADMIN, ROLE_SUPERADMIN],
-    default: ROLE_USER,
+    enum: [USER, ADMIN, SUPERADMIN],
+    default: USER,
   },
   email: {
     type: String,
@@ -96,7 +96,7 @@ userSchema.pre('findOneAndDelete', async function(next) {
   const query = this.getQuery();
   const user = await this.model.findOne(query);
 
-  if (user.role === ROLE_SUPERADMIN) {
+  if (user.role === SUPERADMIN) {
     throw new UserInputError(SUPER_ADMIN_IS_IMMUTABLE, {
       statusCode: FORBIDDEN,
     });
@@ -105,4 +105,4 @@ userSchema.pre('findOneAndDelete', async function(next) {
   next();
 });
 
-module.exports = mongoose.model(USER, userSchema);
+module.exports = mongoose.model(USER_DB, userSchema);

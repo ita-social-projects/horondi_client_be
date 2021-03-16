@@ -48,33 +48,19 @@ const {
   SESSION_TIMEOUT,
   INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
-const { userDateFormat } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
 } = require('../../consts/status-codes');
-const {
-  USER_ROLES: { ROLE_USER, ROLE_ADMIN },
-} = require('../../consts/user-roles');
 const {
   LOCALES: { UK },
 } = require('../../consts/locations');
 const {
   SOURCES: { HORONDI, GOOGLE },
   USER_FIELDS: { USER_EMAIL, USER_ID },
+  userDateFormat,
+  roles: { USER },
 } = require('../../consts');
-const {
-  EMAIL_SUBJECTS: { EMAIL_CONFIRMATION, PASS_RECOVERY, BECOME_ADMIN },
-} = require('../../consts/email-subjects');
-
-const ROLES = {
-  admin: ROLE_ADMIN,
-  user: ROLE_USER,
-};
-
-const SOURCES = {
-  horondi: HORONDI,
-};
 
 class UserService extends FilterHelper {
   async checkIfTokenIsValid(token) {
@@ -252,10 +238,10 @@ class UserService extends FilterHelper {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
-    if (user.role === ROLES.user) {
+    if (user.role === USER) {
       throw new UserInputError(INVALID_PERMISSIONS, {
         statusCode: BAD_REQUEST,
       });
