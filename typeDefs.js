@@ -99,6 +99,11 @@ const {
   ukrPoshtaEnum,
   ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
+const {
+  sidePocketType,
+  sideOptions,
+  sidePocketInput,
+} = require('./modules/side-pockets/side-pockets.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -134,6 +139,7 @@ const typeDefs = gql`
   ${constructorBasicType}
   ${constructorFrontPocketType}
   ${constructorBottomType}
+  ${sidePocketType}
 
   scalar Upload
   scalar Date
@@ -143,6 +149,7 @@ const typeDefs = gql`
     user
   }
   ${ukrPoshtaEnum}
+  ${sideOptions}
   type Language {
     lang: String!
     value: String
@@ -524,8 +531,8 @@ const typeDefs = gql`
   ${materialFilterInput}
   ${constructorBasicInput}
   ${constructorFrontPocketInput}
-  
   ${constructorBottomInput}
+  ${sidePocketInput}
   input LanguageInput {
     lang: String!
     value: String
