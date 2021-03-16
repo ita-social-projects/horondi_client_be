@@ -1,6 +1,8 @@
-const _ = require('lodash');
-
 const UserModel = require('../user/user.model');
+const ConstructorBasicModel = require('../constructor/constructor-basic/constructor-basic.model');
+const ConstructorBottomModel = require('../constructor/constructor-bottom/constructor-bottom.model');
+const ConstructorFrontPocketModel = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
+const PatternModel = require('../../modules/pattern/pattern.model');
 const RuleError = require('../../errors/rule.error');
 const {
   CART_MESSAGES: {
@@ -11,6 +13,16 @@ const {
   },
 } = require('../../error-messages/cart.messages');
 const { SIZE_NOT_FOUND } = require('../../error-messages/size.messages');
+const {
+  BASIC_NOT_FOUND,
+} = require('../../error-messages/constructor-basic-messages');
+const {
+  CONSTRUCTOR_BOTTOM_NOT_FOUND,
+} = require('../../error-messages/constructor-bottom.messages');
+const {
+  FRONT_POCKET_NOT_FOUND,
+} = require('../../error-messages/constructor-front-pocket-messages');
+const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -35,19 +47,18 @@ class CartService {
   }
 
   async addProductToCart(sizeId, id, { _id }) {
-    const { additionalPrice } = await getSizeById(sizeId);
-
-    if (!additionalPrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
-
     const isProductAlreadyExistsInCart = await UserModel.findOne({
       _id: id,
       'cart.items.product': _id,
+      'cart.items.options.size': sizeId,
     }).exec();
 
     if (isProductAlreadyExistsInCart) {
       throw new RuleError(PRODUCT_ALREADY_EXIST_IN_CART, FORBIDDEN);
     }
+    const { additionalPrice } = await getSizeById(sizeId);
 
+    if (!additionalPrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
     const productPriceWithSize = calculateCartItemPriceWithSize(
       additionalPrice
     );
@@ -131,13 +142,13 @@ class CartService {
         { _id: id },
         { 'cart.totalPrice': cartSum },
         { new: true }
-      );
+      ).exec();
     } else {
       return UserModel.updateOne(
         { _id: id },
         { $unset: { cart: 1 } },
         { new: true }
-      );
+      ).exec();
     }
   }
 
@@ -201,6 +212,56 @@ class CartService {
         { new: true }
       );
     }
+  }
+
+  async addConstructorProductItem(
+    {
+      constructorBasics,
+      constructorBottom,
+      constructorPattern,
+      constructorFrontPocket,
+    },
+    sizeId,
+    id,
+    { _id }
+  ) {
+    const isItemAlreadyExists = UserModel.findOne({
+      _id: id,
+      'cart.items.product': _id,
+      'cart.items.fromConstructor.constructorBasics': constructorBasics,
+      'cart.items.fromConstructor.constructorBottom': constructorBottom,
+      'cart.items.fromConstructor.constructorPattern': constructorPattern,
+      'cart.items.fromConstructor.constructorFrontPocket': constructorFrontPocket,
+    });
+
+    if (isItemAlreadyExists) {
+      throw new RuleError(PRODUCT_ALREADY_EXIST_IN_CART, BAD_REQUEST);
+    }
+    const { additionalPrice } = await getSizeById(sizeId);
+
+    if (!additionalPrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    const {
+      basePrice: constructorBasicsPrice,
+    } = ConstructorBasicModel.findById(constructorBasics).exec();
+
+    if (!constructorBasicsPrice) {
+      throw new RuleError(BASIC_NOT_FOUND, NOT_FOUND);
+    }
+    const {
+      basePrice: constructorBottomPrice,
+    } = ConstructorBottomModel.findById(constructorBottom).exec();
+
+    if (!constructorBottomPrice) {
+      throw new RuleError(CONSTRUCTOR_BOTTOM_NOT_FOUND, NOT_FOUND);
+    }
+    const {
+      basePrice: constructorFrontPocketPrice,
+    } = ConstructorFrontPocketModel.findById(constructorFrontPocket).exec();
+
+    if (!constructorFrontPocketPrice) {
+      throw new RuleError(FRONT_POCKET_NOT_FOUND, NOT_FOUND);
+    }
+    const {} = await UserModel.return;
   }
 }
 

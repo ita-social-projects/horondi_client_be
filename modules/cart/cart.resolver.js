@@ -4,6 +4,7 @@ const {
   cleanCart,
   getCartByUserId,
   updateCartItemQuantity,
+  addConstructorProductItem,
 } = require('./cart.service');
 
 const RuleError = require('../../errors/rule.error');
@@ -43,6 +44,13 @@ const cartMutation = {
   updateCartItemQuantity: (_, { quantity, id, product }) => {
     try {
       return updateCartItemQuantity(quantity, id, product);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  addConstructorProductItem(_, { constructorData, id, product }) {
+    try {
+      return addConstructorProductItem(constructorData, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

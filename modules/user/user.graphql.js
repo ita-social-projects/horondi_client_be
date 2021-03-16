@@ -71,31 +71,15 @@ const cartType = `
     constructorBottom: ConstructorBottom    
     constructorFrontPocket: ConstructorFrontPocket    
     constructorPattern: Pattern
-    constructorImage: String
   }
 `;
 const cartInput = ` 
-  input CartInput {
-    items: [CartItemInput]
-  }
 
-  input CartItemInput {
-    product: ID
-    productFromConstructor: ProductFromConstructorInput
-    quantity: Int!
-    options: OptionsInput
-  }
-    input ProductFromConstructorInput {
-    model: ID
-    constructorBasics: ID
-    constructorBottom: ID
-    constructorFrontPocket: ID
-    constructorPattern: ID
-    constructorImage: String
-  }
-  
-  input OptionsInput {
-   size: ID!
+  input CartInput {
+    constructorBasics: ID!
+    constructorBottom: ID!
+    constructorFrontPocket: ID!
+    constructorPattern: ID!
   }
 `;
 

@@ -23,11 +23,7 @@ const CartSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: PRODUCT,
       },
-      productFromConstructor: {
-        model: {
-          type: Schema.Types.ObjectId,
-          ref: MODEL,
-        },
+      fromConstructor: {
         constructorBasics: {
           type: Schema.Types.ObjectId,
           ref: CONSTRUCTOR_BASICS,
@@ -44,7 +40,6 @@ const CartSchema = new Schema({
           type: Schema.Types.ObjectId,
           ref: PATTERN,
         },
-        constructorImage: String,
       },
       quantity: {
         type: Number,

@@ -25,5 +25,6 @@ const cartPermissionsMutations = {
     isProductToCartCorrect
   ),
   cleanCart: isTheSameUser,
+  addConstructorProductItem: and(isTheSameUser, isProductToCartCorrect),
 };
 module.exports = { cartPermissionsQuery, cartPermissionsMutations };
