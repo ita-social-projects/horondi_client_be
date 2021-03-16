@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const {
-  DB_COLLECTIONS_NAMES: { MATERIAL, COLOR, SIDE_POCKET },
+  DB_COLLECTIONS_NAMES: { MATERIAL, COLOR, POCKET },
 } = require('../../consts/db-collections-names');
 
 const sidePocketSchema = new mongoose.Schema({
@@ -17,8 +17,8 @@ const sidePocketSchema = new mongoose.Schema({
   },
   side: {
     type: String,
-    enum: ['left', 'right', 'hidden'],
-    default: 'left',
+    enum: ['left', 'right', 'front', 'back'],
+    default: 'front',
   },
   image: String,
   basePrice: [CurrencySet],
@@ -26,4 +26,4 @@ const sidePocketSchema = new mongoose.Schema({
   default: Boolean,
 });
 
-module.exports = mongoose.model(SIDE_POCKET, sidePocketSchema);
+module.exports = mongoose.model(POCKET, sidePocketSchema);

@@ -100,10 +100,10 @@ const {
   ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 const {
-  sidePocketType,
+  pocketType,
   sideOptions,
-  sidePocketInput,
-} = require('./modules/side-pockets/side-pockets.graphql');
+  pocketInput,
+} = require('./modules/pockets/pockets.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -139,7 +139,7 @@ const typeDefs = gql`
   ${constructorBasicType}
   ${constructorFrontPocketType}
   ${constructorBottomType}
-  ${sidePocketType}
+  ${pocketType}
 
   scalar Upload
   scalar Date
@@ -358,6 +358,7 @@ const typeDefs = gql`
   union ColorDeletingResult = Color | Materials | Error
   union ConstructorBasicResult = ConstructorBasic | Error
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
+  union PocketResult = Pocket | Error
   
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
@@ -532,7 +533,7 @@ const typeDefs = gql`
   ${constructorBasicInput}
   ${constructorFrontPocketInput}
   ${constructorBottomInput}
-  ${sidePocketInput}
+  ${pocketInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -763,6 +764,7 @@ const typeDefs = gql`
     deleteModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
     addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
     deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
+    addPocket(pocket: PocketInput!, upload: Upload):PocketResult
   }
 `;
 

@@ -1,5 +1,5 @@
-const sidePocketType = `
-  type SidePocket {
+const pocketType = `
+  type Pocket {
     _id: ID!
     name: [Language]
     material: Material
@@ -16,26 +16,26 @@ const sideOptions = `
   enum SideOptions {
     LEFT
     RIGHT
-    HIDDEN
+    FRONT
+    BACK
   }
 `;
 
-const sidePocketInput = `
-  input SidePocketInput {
-    _id: ID!
-    name: [LanguageInput]!
-    material: ID!
-    color: ID!
+const pocketInput = `
+  input PocketInput {
+    name: [LanguageInput]
+    material: ID
+    color: ID
     side: SideOptions
-    image: String
-    basePrice: Int!
+    image: Upload
+    basePrice: Int
     available: Boolean
     default: Boolean
   }
 `;
 
 module.exports = {
-  sidePocketType,
+  pocketType,
   sideOptions,
-  sidePocketInput,
+  pocketInput,
 };

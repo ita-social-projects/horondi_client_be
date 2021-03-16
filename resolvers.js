@@ -90,6 +90,8 @@ const {
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
 
+const { pocketMutation } = require('./modules/pockets/pockets.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -106,6 +108,7 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
+const pocketService = require('./modules/pockets/pockets.service');
 
 const {
   ukrPoshtaQuery,
@@ -138,6 +141,7 @@ const SCHEMA_NAMES = {
   constructorBottom: 'ConstructorBottom',
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
+  pocket: 'Pocket',
 };
 
 const resolvers = {
@@ -359,6 +363,10 @@ const resolvers = {
   EmailAnswer: {
     admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
+  Pocket: {
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
 
   Mutation: {
     ...uploadMutation,
@@ -406,6 +414,8 @@ const resolvers = {
     ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
+
+    ...pocketMutation,
   },
   TokenResult: {
     __resolveType: obj => {
@@ -617,6 +627,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructorFrontPocket;
+      }
+      return 'Error';
+    },
+  },
+
+  PocketResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.pocket;
       }
       return 'Error';
     },
