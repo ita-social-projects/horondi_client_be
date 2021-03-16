@@ -2,6 +2,9 @@ const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
 const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const {
   COMMENT_NOT_FOUND,
   COMMENTS_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -58,7 +61,7 @@ class CommentsService extends FilterHelper {
       .limit(limit)
       .exec();
     if (!comments) {
-      throw new RuleError(COMMENTS_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     return comments;
   }
