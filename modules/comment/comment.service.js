@@ -1,4 +1,5 @@
 const Comment = require('./comment.model');
+const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
 const {
   COMMENT_NOT_FOUND,
@@ -52,15 +53,15 @@ class CommentsService extends FilterHelper {
   }
 
   async getRecentComments(limit) {
-    const comments = await Comment.find()
-      .sort({ date: -1 })
-      .limit(limit)
-      .exec();
-
-    if (!comments.length) {
-      throw new Error(COMMENTS_NOT_FOUND);
+    try {
+      const comments = await Comment.find()
+        .sort({ date: -1 })
+        .limit(limit)
+        .exec();
+      return comments;
+    } catch (error) {
+      throw new RuleError(error.message, error.statusCode);
     }
-    return comments;
   }
 
   async getAllCommentsByProduct({ productId }) {

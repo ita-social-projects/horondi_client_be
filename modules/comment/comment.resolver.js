@@ -17,9 +17,9 @@ const commentsQuery = {
     }
   },
 
-  getRecentComments: (_, { limit }) => {
+  getRecentComments: async (_, { limit }) => {
     try {
-      return commentsService.getRecentComments(limit);
+      return await commentsService.getRecentComments(limit);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
