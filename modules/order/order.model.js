@@ -3,66 +3,32 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const Delivery = require('../../models/Delivery').schema;
 const OrderItem = require('../../models/OrderItem').schema;
 const {
-  FIRST_NAME_TOO_SHORT,
-  FIRST_NAME_TOO_LONG,
-  FIRST_NAME_IS_REQUIRED,
-  LAST_NAME_TOO_SHORT,
-  LAST_NAME_TOO_LONG,
-  LAST_NAME_IS_REQUIRED,
-  PHONE_NUMBER_NOT_VALID,
-  PHONE_NUMBER_IS_REQUIRED,
-  EMAIL_NOT_VALID,
-  EMAIL_IS_REQUIRED,
-} = require('../../error-messages/common.messages');
+  PAYMENT_METHODS,
+  ORDER_STATUSES,
+  EMPTY_STRING,
+} = require('../../consts/order-details');
+
+const { CREATED } = ORDER_STATUSES;
+const { CASH } = PAYMENT_METHODS;
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
   status: {
     type: String,
-    required: true,
-    enum: [
-      'CREATED',
-      'CONFIRMED',
-      'PRODUCED',
-      'CANCELLED',
-      'REFUNDED',
-      'SENT',
-      'DELIVERED',
-    ],
-    default: 'CREATED',
+    default: CREATED,
   },
   user: {
     firstName: {
       type: String,
-      minlength: [2, FIRST_NAME_TOO_SHORT],
-      maxlength: [20, FIRST_NAME_TOO_LONG],
-      required: [true, FIRST_NAME_IS_REQUIRED],
     },
     lastName: {
       type: String,
-      minlength: [2, LAST_NAME_TOO_SHORT],
-      maxlength: [20, LAST_NAME_TOO_LONG],
-      required: [true, LAST_NAME_IS_REQUIRED],
     },
     email: {
       type: String,
-      validate: {
-        validator: function(v) {
-          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
-        },
-        message: EMAIL_NOT_VALID,
-      },
-      required: [true, EMAIL_IS_REQUIRED],
     },
     phoneNumber: {
       type: String,
-      validate: {
-        validator: function(v) {
-          return /^\+?3?8?(0\d{9})$/.test(v);
-        },
-        message: PHONE_NUMBER_NOT_VALID,
-      },
-      required: [true, PHONE_NUMBER_IS_REQUIRED],
     },
   },
   dateOfCreation: {
@@ -75,11 +41,11 @@ const orderSchema = new mongoose.Schema({
   },
   userComment: {
     type: String,
-    default: '',
+    default: EMPTY_STRING,
   },
   cancellationReason: {
     type: String,
-    default: '',
+    default: EMPTY_STRING,
   },
   delivery: Delivery,
   items: [OrderItem],
@@ -87,8 +53,7 @@ const orderSchema = new mongoose.Schema({
   totalPriceToPay: [CurrencySet],
   paymentMethod: {
     type: String,
-    enum: ['CARD', 'CASH'],
-    default: 'CASH',
+    default: CASH,
   },
   isPaid: {
     type: Boolean,
@@ -96,16 +61,7 @@ const orderSchema = new mongoose.Schema({
   },
   paymentStatus: {
     type: String,
-    enum: [
-      'CREATED',
-      'EXPIRED',
-      'APPROVED',
-      'DECLINED',
-      'REVERSED',
-      'PROCESSING',
-      'PAID',
-    ],
-    default: 'CREATED',
+    default: CREATED,
   },
 });
 

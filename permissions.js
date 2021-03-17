@@ -79,6 +79,10 @@ const {
   commentPermissionsQuery,
 } = require('./modules/comment/comment.permissions');
 
+const {
+  orderPermissionsMutation,
+} = require('./modules/order/order.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -116,6 +120,7 @@ const permissions = shield(
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
+      ...orderPermissionsMutation,
     },
   },
   {
