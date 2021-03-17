@@ -40,6 +40,7 @@ const dotenvVariables = [
   'UKR_POSHTA_COUNTERPARTY_UUID',
   'UKR_POSHTA_ADDRESS_API_LINK',
   'CONTRIBUTING',
+  'GMAIL_EMAIL_SERVICE',
 ];
 
 function dotenvValidator(processEnv) {
@@ -104,6 +105,7 @@ function dotenvValidator(processEnv) {
     UKR_POSHTA_COUNTERPARTY_TOKEN: joi.string(),
     UKR_POSHTA_COUNTERPARTY_UUID: joi.string(),
     CONTRIBUTING: joi.boolean(),
+    GMAIL_EMAIL_SERVICE: joi.string(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });

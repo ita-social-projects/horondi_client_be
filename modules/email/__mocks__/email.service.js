@@ -1,5 +1,7 @@
 class EmailService {
-  async sendEmail() {}
+  async sendEmail() {
+    return;
+  }
 }
 
 module.exports = new EmailService();

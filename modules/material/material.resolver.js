@@ -2,6 +2,9 @@ const materialService = require('./material.service');
 const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const materialQuery = {
   getAllMaterials: async (parent, args) =>
@@ -12,7 +15,7 @@ const materialQuery = {
       return material;
     }
     return {
-      statusCode: 404,
+      statusCode: NOT_FOUND,
       message: MATERIAL_NOT_FOUND,
     };
   },
@@ -26,7 +29,7 @@ const materialMutation = {
       return await materialService.addMaterial(args);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -37,7 +40,7 @@ const materialMutation = {
       return await materialService.deleteMaterial(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -48,7 +51,7 @@ const materialMutation = {
       return await materialService.updateMaterial(args.id, args.material);
     } catch (e) {
       return {
-        statusCode: e.message === MATERIAL_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === MATERIAL_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }

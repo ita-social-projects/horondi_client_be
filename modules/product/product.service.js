@@ -12,6 +12,24 @@ const {
 } = require('../../error-messages/category.messages');
 const { uploadProductImages } = require('./product.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../consts/currency');
+const {
+  PRODUCT_FEATURES: {
+    PRODUCT_CATEGORY,
+    PRODUCT_MODEL,
+    PRODUCT_PATTERN,
+    PRODUCT_CLOSURE,
+    PRODUCT_MAIN_MATERIAL,
+    PRODUCT_MAIN_COLOR,
+    PRODUCT_INNER_MATERIAL,
+    PRODUCT_INNER_COLOR,
+    PRODUCT_BOTTOM_MATERIAL,
+    PRODUCT_BOTTOM_COLOR,
+  },
+} = require('../../consts/product-features');
+const { getCurrencySign } = require('../../utils/product-service');
 
 class ProductsService {
   async getProductById(id) {
@@ -19,34 +37,34 @@ class ProductsService {
   }
 
   async getProductsFilters() {
-    const categories = await Product.distinct('category')
+    const categories = await Product.distinct(PRODUCT_CATEGORY)
       .lean()
       .exec();
-    const models = await Product.distinct('model')
+    const models = await Product.distinct(PRODUCT_MODEL)
       .lean()
       .exec();
-    const patterns = await Product.distinct('pattern')
+    const patterns = await Product.distinct(PRODUCT_PATTERN)
       .lean()
       .exec();
-    const closures = await Product.distinct('closure')
+    const closures = await Product.distinct(PRODUCT_CLOSURE)
       .lean()
       .exec();
-    const mainMaterial = await Product.distinct('mainMaterial.material')
+    const mainMaterial = await Product.distinct(PRODUCT_MAIN_MATERIAL)
       .lean()
       .exec();
-    const mainMaterialColor = await Product.distinct('mainMaterial.color')
+    const mainMaterialColor = await Product.distinct(PRODUCT_MAIN_COLOR)
       .lean()
       .exec();
-    const innerMaterial = await Product.distinct('innerMaterial.material')
+    const innerMaterial = await Product.distinct(PRODUCT_INNER_MATERIAL)
       .lean()
       .exec();
-    const innerMaterialColor = await Product.distinct('innerMaterial.color')
+    const innerMaterialColor = await Product.distinct(PRODUCT_INNER_COLOR)
       .lean()
       .exec();
-    const bottomMaterial = await Product.distinct('bottomMaterial.material')
+    const bottomMaterial = await Product.distinct(PRODUCT_BOTTOM_MATERIAL)
       .lean()
       .exec();
-    const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
+    const bottomMaterialColor = await Product.distinct(PRODUCT_BOTTOM_COLOR)
       .lean()
       .exec();
     const products = await this.getProducts({});
@@ -108,10 +126,9 @@ class ProductsService {
       filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
-      const currencySign = currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
       filter.basePrice = {
         $elemMatch: {
-          currency: currencySign,
+          currency: getCurrencySign(currency, UAH, USD),
           value: {
             $gte: price[0],
             $lte: price[1],
