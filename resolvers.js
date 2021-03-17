@@ -363,10 +363,6 @@ const resolvers = {
   EmailAnswer: {
     admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
-  Pocket: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
-  },
 
   Mutation: {
     ...uploadMutation,

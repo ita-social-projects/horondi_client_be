@@ -2,8 +2,6 @@ const pocketType = `
   type Pocket {
     _id: ID!
     name: [Language]
-    material: Material
-    color: Color
     side: SideOptions
     image: String
     basePrice: [CurrencySet]
@@ -24,8 +22,6 @@ const sideOptions = `
 const pocketInput = `
   input PocketInput {
     name: [LanguageInput]
-    material: ID
-    color: ID
     side: SideOptions
     image: Upload
     basePrice: Int

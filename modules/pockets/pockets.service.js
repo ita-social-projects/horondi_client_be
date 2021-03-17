@@ -7,17 +7,19 @@ const {
 } = require('../../error-messages/pocket.messages');
 
 class PocketService {
-  async addPocket(pocketData, imageFile) {
-    if (await this.checkIfPocketExist(pocketData)) {
-      throw new Error(POCKET_ALREADY_EXIST);
-    }
+  async addPocket({ pocket }, upload) {
+    console.log(pocket);
+    console.log(upload);
+    // if (await this.checkIfPocketExist(pocketData)) {
+    //   throw new Error(POCKET_ALREADY_EXIST);
+    // }
 
-    if (imageFile) {
-      const uploadImage = await uploadService.uploadLargeImage(imageFile);
-      pocketData.image = uploadImage.fileNames.large;
-    }
+    // if (imageFile) {
+    //   const uploadImage = await uploadService.uploadLargeImage(imageFile);
+    //   pocketData.image = uploadImage.fileNames.large;
+    // }
 
-    return new Pocket(pocketData).save();
+    return new Pocket(pocket).save();
   }
 
   async checkIfPocketExist(data) {
