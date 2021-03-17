@@ -33,6 +33,7 @@ const {
   reduceByDaysCount,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
+const verifyUser = require('../../utils/verify-user');
 
 const {
   USER_ALREADY_EXIST,
@@ -250,15 +251,20 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
-    const { accesToken } = generateTokens(user._id, {
-      expiresIn: TOKEN_EXPIRES_IN,
-      secret: SECRET,
-    });
+    const { accesToken, refreshToken } = generateTokens(
+      user._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      true
+    );
 
     return {
       ...user._doc,
       _id: user._id,
       token: accesToken,
+      refreshToken,
     };
   }
 
@@ -304,26 +310,18 @@ class UserService extends FilterHelper {
   }
 
   async regenerateAccessToken(refreshTokenForVerify) {
-    const decoded = jwt.verify(refreshTokenForVerify, SECRET);
+    const { userId } = verifyUser(refreshTokenForVerify);
 
-    if (!decoded) {
-      return new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+    if (!userId) {
+      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
     }
-    await this.getUserByFieldOrThrow('_id', decoded.userId);
-
+    await this.getUserByFieldOrThrow('_id', userId);
     const { accesToken, refreshToken } = generateTokens(
-      decoded.userId,
-      {
-        expiresIn: TOKEN_EXPIRES_IN,
-        secret: SECRET,
-      },
+      userId,
+      { expiresIn: TOKEN_EXPIRES_IN, secret: SECRET },
       true
     );
-
-    return {
-      refreshToken,
-      token: accesToken,
-    };
+    return { refreshToken, token: accesToken };
   }
 
   async googleUser(idToken, staySignedIn) {
@@ -412,15 +410,14 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const token = generateTokens(savedUser._id, {
+    const { accesToken } = generateTokens(savedUser._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
 
-    savedUser.confirmationToken = token.accesToken;
+    savedUser.confirmationToken = accesToken;
 
-    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
-
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { accesToken });
     await savedUser.save();
 
     return savedUser;
@@ -432,13 +429,13 @@ class UserService extends FilterHelper {
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const token = generateTokens(user._id, {
+    const { accesToken } = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
-    user.confirmationToken = token.accesToken;
+    user.confirmationToken = accesToken;
     await user.save();
-    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { accesToken });
     return true;
   }
 
@@ -467,18 +464,12 @@ class UserService extends FilterHelper {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
     }
 
-    const token = generateTokens(user._id, {
+    const { accesToken } = generateTokens(user._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
-    user.recoveryToken = token.accesToken;
-    const message = {
-      from: MAIL_USER,
-      to: email,
-      subject: '[HORONDI] Instructions for password recovery',
-      html: recoveryMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    user.recoveryToken = accesToken;
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { accesToken });
     await user.save();
     return true;
   }
