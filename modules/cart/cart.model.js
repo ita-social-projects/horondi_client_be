@@ -24,6 +24,10 @@ const CartSchema = new Schema({
         ref: PRODUCT,
       },
       fromConstructor: {
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: PRODUCT,
+        },
         constructorBasics: {
           type: Schema.Types.ObjectId,
           ref: CONSTRUCTOR_BASICS,

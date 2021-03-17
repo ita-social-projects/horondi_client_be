@@ -3,6 +3,7 @@ const { rule, and } = require('graphql-shield');
 
 const RuleError = require('../errors/rule.error');
 const ProductModel = require('../modules/product/product.model');
+const UserModel = require('../modules/user/user.model');
 const {
   INVALID_PERMISSIONS,
   USER_NOT_AUTHORIZED,
@@ -58,10 +59,31 @@ const isProductToCartCorrect = rule()(async (_, args) => {
   }
 });
 
+const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
+  args.constructorData = await UserModel.findOne(
+    {
+      _id: args.id,
+      'cart.items.fromConstructor.product': args.productId,
+      'cart.items.fromConstructor.constructorBasics':
+        args.constructorData.constructorBasics,
+      'cart.items.fromConstructor.constructorBottom':
+        args.constructorData.constructorBottom,
+      'cart.items.fromConstructor.constructorPattern':
+        args.constructorData.constructorPattern,
+      'cart.items.fromConstructor.constructorFrontPocket':
+        args.constructorData.constructorFrontPocket,
+    },
+    'cart.items.$ -_id'
+  ).exec();
+
+  return true;
+});
+
 module.exports = {
   hasRoles,
   isAuthorized,
   isTheSameUser,
   inputDataValidation,
   isProductToCartCorrect,
+  getConstructorProductItemPresentInCart,
 };

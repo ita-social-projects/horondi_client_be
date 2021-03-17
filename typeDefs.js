@@ -639,7 +639,27 @@ const typeDefs = gql`
     removeCartProductItem(productId: ID!, id: ID!): UserResult
     cleanCart(id: ID!): UserResult
     updateCartItemQuantity(productId:ID!, quantity:Int!, id: ID!): UserResult
-    addConstructorProductItem(productId: ID!,sizeId:ID!, constructorData: CartInput!, id: ID!): UserResult
+    addConstructorProductItem(
+    productId: ID!,
+    sizeId:ID!,
+     constructorData: CartInput!, 
+     id: ID!
+     ): UserResult
+    removeConstructorProductItemFromCart(
+      productId: ID!,
+      constructorData: CartInput!,
+      id: ID!
+      ): UserResult 
+    updateConstructorProductItemQuantity(
+      quantity: ID!,
+      productId: ID!,
+      constructorData: CartInput!,
+      id: ID!
+      ): UserResult 
+    mergeCartFromLS(
+      cartFromLS: [CartFromLSInput!],
+      id: ID!
+      ): UserResult
     registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User

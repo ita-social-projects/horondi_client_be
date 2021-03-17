@@ -7,6 +7,7 @@ const {
   isProductToCartCorrect,
   isTheSameUser,
   inputDataValidation,
+  getConstructorProductItemPresentInCart,
 } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { QUANTITY },
@@ -26,5 +27,14 @@ const cartPermissionsMutations = {
   ),
   cleanCart: isTheSameUser,
   addConstructorProductItem: and(isTheSameUser, isProductToCartCorrect),
+  removeConstructorProductItemFromCart: and(
+    isTheSameUser,
+    getConstructorProductItemPresentInCart
+  ),
+  updateConstructorProductItemQuantity: and(
+    inputDataValidation(QUANTITY, updateCartQuantityValidator),
+    isTheSameUser,
+    getConstructorProductItemPresentInCart
+  ),
 };
 module.exports = { cartPermissionsQuery, cartPermissionsMutations };

@@ -5,6 +5,9 @@ const {
   getCartByUserId,
   updateCartItemQuantity,
   addConstructorProductItem,
+  removeConstructorProductItemFromCart,
+  updateConstructorProductItemQuantity,
+  mergeCartFromLS,
 } = require('./cart.service');
 
 const RuleError = require('../../errors/rule.error');
@@ -48,9 +51,42 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  addConstructorProductItem(_, { constructorData, id, product }) {
+  addConstructorProductItem(_, { constructorData, sizeId, id, product }) {
     try {
-      return addConstructorProductItem(constructorData, id, product);
+      return addConstructorProductItem(constructorData, sizeId, id, product);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  removeConstructorProductItemFromCart(_, { productId, constructorData, id }) {
+    try {
+      return removeConstructorProductItemFromCart(
+        productId,
+        constructorData,
+        id
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  updateConstructorProductItemQuantity(
+    _,
+    { quantity, productId, constructorData, id }
+  ) {
+    try {
+      return updateConstructorProductItemQuantity(
+        quantity,
+        productId,
+        constructorData,
+        id
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  mergeCartFromLS(_, { cartFromLS, id }) {
+    try {
+      return mergeCartFromLS(cartFromLS, id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

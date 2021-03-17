@@ -74,12 +74,32 @@ const cartType = `
   }
 `;
 const cartInput = ` 
-
   input CartInput {
     constructorBasics: ID!
     constructorBottom: ID!
     constructorFrontPocket: ID!
     constructorPattern: ID!
+  }
+  input CartFromLSInput {
+    items: [CartItemInput]
+  }
+  input CartItemInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    quantity: Int!
+    options: OptionsInput
+  }
+  
+   input OptionsInput {
+    size: ID!
+  } 
+  
+    input ProductFromConstructorInput {
+      product: ID
+      constructorBasics: ID
+      constructorBottom: ID    
+      constructorFrontPocket: ID    
+      constructorPattern: ID
   }
 `;
 
