@@ -443,7 +443,6 @@ class UserService extends FilterHelper {
         confirmationToken: '',
       },
     };
-    await emailService.sendEmail(user.email, SUCCESSFUL_CONFIRM, { token });
     await User.findByIdAndUpdate(decoded.userId, updates).exec();
     return true;
   }
