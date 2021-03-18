@@ -1,12 +1,10 @@
 const { schedule } = require('node-cron');
 
-const {
-  CRON_PERIOD_FOR_SEND_MSG_ABOUT_UNFINISHED_CART,
-} = require('../../dotenvValidator');
 const UserModel = require('../../modules/user/user.model');
+const { getDaysInMilliseconds } = require('../../utils/getDaysInMilliseconds');
 
 const rememberAboutUnfinishedCartOperations = () =>
-  schedule('*/5 * * * * *', async () => {
+  schedule('0 0 */12 * * *', async () => {
     const currentDate = new Date().getTime();
 
     const usersInfo = await UserModel.find(
@@ -28,12 +26,18 @@ const rememberAboutUnfinishedCartOperations = () =>
       .exec();
 
     if (usersInfo.length) {
-      usersInfo.forEach(cartItemData => {
+      for (const cartItemData of usersInfo) {
         const orderDate = new Date(cartItemData.cart.updatedAt).getTime();
         const dateDifference = currentDate - orderDate;
+        const oneDay = getDaysInMilliseconds();
 
-        console.log(diff);
-      });
+        if (dateDifference > oneDay && !cartItemData.cart.rememberMailCount) {
+          await UserModel.findOneAndUpdate(
+            { _id: cartItemData._id },
+            { $set: { 'cart.rememberMailCount': 1 } }
+          );
+        }
+      }
     }
   });
 

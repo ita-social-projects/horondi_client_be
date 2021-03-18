@@ -41,7 +41,6 @@ const dotenvVariables = [
   'UKR_POSHTA_ADDRESS_API_LINK',
   'CONTRIBUTING',
   'GMAIL_EMAIL_SERVICE',
-  'CRON_PERIOD_FOR_SEND_MSG_ABOUT_UNFINISHED_CART',
 ];
 
 function dotenvValidator(processEnv) {
@@ -107,7 +106,6 @@ function dotenvValidator(processEnv) {
     UKR_POSHTA_COUNTERPARTY_UUID: joi.string(),
     CONTRIBUTING: joi.boolean(),
     GMAIL_EMAIL_SERVICE: joi.string(),
-    CRON_PERIOD_FOR_SEND_MSG_ABOUT_UNFINISHED_CART: joi.string(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });
