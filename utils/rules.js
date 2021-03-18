@@ -63,6 +63,7 @@ const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
   args.constructorData = await UserModel.findOne(
     {
       _id: args.id,
+      'cart.items.options.size': args.sizeId,
       'cart.items.fromConstructor.product': args.productId,
       'cart.items.fromConstructor.constructorBasics':
         args.constructorData.constructorBasics,

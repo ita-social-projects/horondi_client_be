@@ -80,10 +80,8 @@ const cartInput = `
     constructorFrontPocket: ID!
     constructorPattern: ID!
   }
+
   input CartFromLSInput {
-    items: [CartItemInput]
-  }
-  input CartItemInput {
     product: ID
     productFromConstructor: ProductFromConstructorInput
     quantity: Int!

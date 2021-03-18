@@ -36,5 +36,6 @@ const cartPermissionsMutations = {
     isTheSameUser,
     getConstructorProductItemPresentInCart
   ),
+  mergeCartFromLS: isTheSameUser,
 };
 module.exports = { cartPermissionsQuery, cartPermissionsMutations };

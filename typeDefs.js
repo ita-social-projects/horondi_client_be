@@ -636,9 +636,9 @@ const typeDefs = gql`
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
     addProductToCart(productId: ID!, sizeId: ID!, id: ID!): UserResult
-    removeCartProductItem(productId: ID!, id: ID!): UserResult
+    removeCartProductItem(productId: ID!, sizeId:ID!, id: ID!): UserResult
     cleanCart(id: ID!): UserResult
-    updateCartItemQuantity(productId:ID!, quantity:Int!, id: ID!): UserResult
+    updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
     addConstructorProductItem(
     productId: ID!,
     sizeId:ID!,
@@ -647,17 +647,19 @@ const typeDefs = gql`
      ): UserResult
     removeConstructorProductItemFromCart(
       productId: ID!,
+      sizeId: ID!,
       constructorData: CartInput!,
       id: ID!
       ): UserResult 
     updateConstructorProductItemQuantity(
       quantity: ID!,
       productId: ID!,
+      sizeId: ID!,
       constructorData: CartInput!,
       id: ID!
       ): UserResult 
     mergeCartFromLS(
-      cartFromLS: [CartFromLSInput!],
+      items:[ CartFromLSInput!],
       id: ID!
       ): UserResult
     registerAdmin(user: AdminRegisterInput!): UserResult

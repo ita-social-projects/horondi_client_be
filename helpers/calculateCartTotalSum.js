@@ -49,20 +49,21 @@ const getTotalCartSum = (items, userId) =>
           },
           {
             currency: USD,
-            value: sizePrice[USD_VALUE].value + item.quantity,
+            value: sizePrice[USD_VALUE].value * item.quantity,
           },
         ];
         await UserModel.findOneAndUpdate(
           {
             _id: userId,
             'cart.items.product': item.product,
+            'cart.items.options.size': item.options.size,
           },
           {
             $set: {
               'cart.items.$.price': item.price,
             },
           }
-        );
+        ).exec();
       }
       if (item.fromConstructor.product) {
         const {
@@ -107,13 +108,14 @@ const getTotalCartSum = (items, userId) =>
           {
             _id: userId,
             'cart.items.fromConstructor.product': item.fromConstructor.product,
+            'cart.items.options.size': item.options.size,
           },
           {
             $set: {
               'cart.items.$.price': item.price,
             },
           }
-        );
+        ).exec();
       }
 
       return [
@@ -139,7 +141,26 @@ const getTotalCartSum = (items, userId) =>
     ]
   );
 
+const setTotalCartSum = items =>
+  items.reduce(
+    (acc, item) => [
+      {
+        currency: UAH,
+        value: item.price[UAH_VALUE].value + acc[UAH_VALUE].value,
+      },
+      {
+        currency: USD,
+        value: item.price[USD_VALUE].value + acc[USD_VALUE].value,
+      },
+    ],
+    [
+      { currency: UAH, value: 0 },
+      { currency: USD, value: 0 },
+    ]
+  );
+
 module.exports = {
   totalCartSum,
   getTotalCartSum,
+  setTotalCartSum,
 };

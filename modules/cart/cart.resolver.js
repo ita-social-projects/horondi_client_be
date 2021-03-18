@@ -30,9 +30,9 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  removeCartProductItem: (_, { id, product }) => {
+  removeCartProductItem: (_, { sizeId, id, product }) => {
     try {
-      return removeCartProductItem(id, product);
+      return removeCartProductItem(sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -44,9 +44,9 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateCartItemQuantity: (_, { quantity, id, product }) => {
+  updateCartItemQuantity: (_, { quantity, sizeId, id, product }) => {
     try {
-      return updateCartItemQuantity(quantity, id, product);
+      return updateCartItemQuantity(quantity, sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -58,10 +58,14 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  removeConstructorProductItemFromCart(_, { productId, constructorData, id }) {
+  removeConstructorProductItemFromCart(
+    _,
+    { productId, sizeId, constructorData, id }
+  ) {
     try {
       return removeConstructorProductItemFromCart(
         productId,
+        sizeId,
         constructorData,
         id
       );
@@ -71,12 +75,13 @@ const cartMutation = {
   },
   updateConstructorProductItemQuantity(
     _,
-    { quantity, productId, constructorData, id }
+    { quantity, productId, sizeId, constructorData, id }
   ) {
     try {
       return updateConstructorProductItemQuantity(
         quantity,
         productId,
+        sizeId,
         constructorData,
         id
       );
@@ -84,9 +89,9 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  mergeCartFromLS(_, { cartFromLS, id }) {
+  mergeCartFromLS(_, { items, id }) {
     try {
-      return mergeCartFromLS(cartFromLS, id);
+      return mergeCartFromLS(items, id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
