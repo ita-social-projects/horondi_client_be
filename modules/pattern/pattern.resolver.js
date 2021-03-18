@@ -1,6 +1,9 @@
 const patternService = require('./pattern.service');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const patternQuery = {
   getAllPatterns: (parent, args) => patternService.getAllPatterns(args),
@@ -9,7 +12,7 @@ const patternQuery = {
       return await patternService.getPatternById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -22,7 +25,7 @@ const patternMutation = {
       return await patternService.addPattern(args);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -33,7 +36,7 @@ const patternMutation = {
       return await patternService.deletePattern(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -44,7 +47,7 @@ const patternMutation = {
       return await patternService.updatePattern(args);
     } catch (e) {
       return {
-        statusCode: e.message === PATTERN_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === PATTERN_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }

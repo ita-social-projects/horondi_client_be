@@ -5,6 +5,9 @@ const {
   LINK_TOO_SHORT,
   LINK_TOO_LONG,
 } = require('../../error-messages/common.messages');
+const {
+  DB_COLLECTIONS_NAMES: { HOME_PAGE_SLIDE },
+} = require('../../consts/db-collections-names');
 
 const HomePageSlideSchema = new mongoose.Schema({
   title: [Language],
@@ -19,4 +22,4 @@ const HomePageSlideSchema = new mongoose.Schema({
   show: Boolean,
 });
 
-module.exports = mongoose.model('HomePageSlide', HomePageSlideSchema);
+module.exports = mongoose.model(HOME_PAGE_SLIDE, HomePageSlideSchema);

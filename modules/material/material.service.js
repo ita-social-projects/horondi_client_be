@@ -5,12 +5,15 @@ const {
 } = require('../../error-messages/material.messages');
 const Currency = require('../currency/currency.model');
 const { calculatePrice } = require('../currency/currency.utils');
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../consts/currency');
 
 class MaterialsService {
   constructor() {
     this.currencyTypes = {
-      UAH: 'UAH',
-      USD: 'USD',
+      UAH: UAH,
+      USD: USD,
     };
   }
 

@@ -25,6 +25,11 @@ const DB_COLLECTIONS_NAMES = {
   USER: 'User',
   MATERIAL: 'Material',
   POCKET: 'Pocket',
+  HEADER: 'Header',
+  HOME_PAGE_IMAGES: 'LooksImages',
+  HOME_PAGE_SLIDE: 'HomePageSlide',
+  NEWS: 'News',
+  ORDER: 'Order',
 };
 
 module.exports = {
