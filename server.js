@@ -15,6 +15,7 @@ const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { dotenvVariables } = require('./dotenvValidator');
+const { cronJob } = require('./helpers/cron-job');
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
@@ -81,6 +82,7 @@ server.applyMiddleware({
 });
 
 app.listen(PORT, () => {
+  cronJob();
   console.log(
     'apollo server started, port',
     PORT,
