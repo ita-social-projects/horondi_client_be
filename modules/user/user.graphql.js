@@ -48,7 +48,7 @@ input UserInput {
 }`;
 const cartType = `
   type Cart {
-    items: CartItem
+    items: [CartItem]
     totalPrice: [CurrencySet]
     rememberMailCount: Int
   }
@@ -66,7 +66,6 @@ const cartType = `
   } 
   
     type ProductFromConstructor {
-    model: Model
     constructorBasics: ConstructorBasic
     constructorBottom: ConstructorBottom    
     constructorFrontPocket: ConstructorFrontPocket    

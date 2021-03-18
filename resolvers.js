@@ -258,7 +258,49 @@ const resolvers = {
     closure: parent => closuresService.getClosureById(parent.closure),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
+  Cart: {
+    items: parent =>
+      parent.items.map(item => {
+        console.log(item);
 
+        if (item.product) {
+          return {
+            product: productsService.getProductById(item.product),
+            price: item.price,
+            quantity: item.quantity,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+            },
+          };
+        }
+        if (item.fromConstructor) {
+          return {
+            productFromConstructor: {
+              constructorBasics: constructorServices.getConstructorElementById(
+                item.fromConstructor.constructorBasics,
+                constructorBasicModel
+              ),
+              constructorBottom: constructorServices.getConstructorElementById(
+                item.fromConstructor.constructorBottom,
+                constructorBottomModel
+              ),
+              constructorFrontPocket: constructorServices.getConstructorElementById(
+                item.fromConstructor.constructorFrontPocket,
+                constructorFrontPocketModel
+              ),
+              constructorPattern: patternService.getPatternById(
+                item.fromConstructor.constructorPattern
+              ),
+            },
+            price: item.price,
+            quantity: item.quantity,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+            },
+          };
+        }
+      }),
+  },
   Order: {
     items: parent =>
       parent.items.map(item => {
