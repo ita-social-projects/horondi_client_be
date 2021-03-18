@@ -10,7 +10,6 @@ const {
     CONSTRUCTOR_FRONT_POCKET,
     PATTERN,
     SIZE,
-    MODEL,
   },
 } = require('../../consts/db-collections-names');
 

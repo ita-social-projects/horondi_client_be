@@ -12,6 +12,15 @@ const { UserInputError } = require('apollo-server');
 const {
   SUPER_ADMIN_IS_IMMUTABLE,
 } = require('../../error-messages/user.messages');
+const {
+  DB_COLLECTIONS_NAMES: { USER: USER_DB, PRODUCT, COMMENT, ORDER },
+} = require('../../consts/db-collections-names');
+const {
+  roles: { USER, ADMIN, SUPERADMIN },
+} = require('../../consts/index');
+const {
+  STATUS_CODES: { FORBIDDEN },
+} = require('../../consts/status-codes');
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -22,8 +31,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'superadmin'],
-    default: 'user',
+    enum: [USER, ADMIN, SUPERADMIN],
+    default: USER,
   },
   email: {
     type: String,
@@ -52,20 +61,20 @@ const userSchema = new mongoose.Schema({
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
+      ref: PRODUCT,
     },
   ],
   cart: Cart,
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Order',
+      ref: ORDER,
     },
   ],
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
+      ref: COMMENT,
     },
   ],
   banned: {
@@ -89,11 +98,13 @@ userSchema.pre('findOneAndDelete', async function(next) {
   const query = this.getQuery();
   const user = await this.model.findOne(query);
 
-  if (user.role === 'superadmin') {
-    throw new UserInputError(SUPER_ADMIN_IS_IMMUTABLE, { statusCode: 403 });
+  if (user.role === SUPERADMIN) {
+    throw new UserInputError(SUPER_ADMIN_IS_IMMUTABLE, {
+      statusCode: FORBIDDEN,
+    });
   }
 
   next();
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model(USER_DB, userSchema);

@@ -24,6 +24,11 @@ const DB_COLLECTIONS_NAMES = {
   PATTERN: 'Pattern',
   USER: 'User',
   MATERIAL: 'Material',
+  HEADER: 'Header',
+  HOME_PAGE_IMAGES: 'LooksImages',
+  HOME_PAGE_SLIDE: 'HomePageSlide',
+  NEWS: 'News',
+  ORDER: 'Order',
   CART: 'Cart',
 };
 

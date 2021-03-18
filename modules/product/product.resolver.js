@@ -1,5 +1,8 @@
 const productsService = require('./product.service');
 const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
@@ -8,7 +11,7 @@ const productsQuery = {
       return product;
     }
     return {
-      statusCode: 404,
+      statusCode: NOT_FOUND,
       message: PRODUCT_NOT_FOUND,
     };
   },
@@ -17,7 +20,7 @@ const productsQuery = {
       return await productsService.getProducts(args);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -34,7 +37,7 @@ const productsMutation = {
       return await productsService.addProduct(args.product, args.upload);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -45,7 +48,7 @@ const productsMutation = {
       return deletedProduct;
     }
     return {
-      statusCode: 404,
+      statusCode: NOT_FOUND,
       message: PRODUCT_NOT_FOUND,
     };
   },
@@ -59,7 +62,7 @@ const productsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === PRODUCT_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
@@ -69,7 +72,7 @@ const productsMutation = {
       return await productsService.deleteImages(args.id, args.images);
     } catch (e) {
       return {
-        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === PRODUCT_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
