@@ -90,6 +90,7 @@ class CartService {
     );
 
     const { cart } = await UserModel.findById(id, 'cart -_id').exec();
+
     if (cart?.items?.length) {
       const totalPrice = totalCartSum(
         ADD_ITEM,
@@ -97,7 +98,7 @@ class CartService {
         cart.totalPrice
       );
 
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': totalPrice,
@@ -114,7 +115,7 @@ class CartService {
         }
       ).exec();
     } else {
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': productPriceWithSize,
@@ -210,7 +211,7 @@ class CartService {
         cart.totalPrice
       );
 
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': totalPrice,
@@ -231,7 +232,7 @@ class CartService {
         }
       ).exec();
     } else {
-      return UserModel.updateOne(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': productPriceWithSize,
@@ -285,13 +286,13 @@ class CartService {
         updatedCart.totalPrice
       );
 
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         { 'cart.totalPrice': cartSum },
         { new: true }
       ).exec();
     } else {
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         { $unset: { cart: 1 } },
         { new: true }
@@ -333,13 +334,13 @@ class CartService {
         updatedCart.totalPrice
       );
 
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         { 'cart.totalPrice': cartSum },
         { new: true }
       ).exec();
     } else {
-      return UserModel.updateOne(
+      return await UserModel.findOneAndUpdate(
         { _id: id },
         { $unset: { cart: 1 } },
         { new: true }

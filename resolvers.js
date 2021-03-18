@@ -261,8 +261,6 @@ const resolvers = {
   Cart: {
     items: parent =>
       parent.items.map(item => {
-        console.log(item);
-
         if (item.product) {
           return {
             product: productsService.getProductById(item.product),
@@ -276,6 +274,9 @@ const resolvers = {
         if (item.fromConstructor) {
           return {
             productFromConstructor: {
+              product: productsService.getProductById(
+                item.fromConstructor.product
+              ),
               constructorBasics: constructorServices.getConstructorElementById(
                 item.fromConstructor.constructorBasics,
                 constructorBasicModel

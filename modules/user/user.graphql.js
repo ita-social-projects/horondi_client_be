@@ -66,6 +66,7 @@ const cartType = `
   } 
   
     type ProductFromConstructor {
+    product: Product
     constructorBasics: ConstructorBasic
     constructorBottom: ConstructorBottom    
     constructorFrontPocket: ConstructorFrontPocket    
