@@ -12,19 +12,15 @@ const {
   validateAdminRegisterInput,
 } = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendGrid-email');
 const {
-  confirmationMessage,
-  recoveryMessage,
-  adminConfirmationMessage,
-} = require('../../utils/localization');
-const emailService = require('../confirm-email/confirmation-email.service');
+  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
+} = require('../../consts/email-actions');
+const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  MAIL_USER,
   NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
@@ -52,26 +48,28 @@ const {
   SESSION_TIMEOUT,
   INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
-const { userDateFormat } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
-
-const ROLES = {
-  admin: 'admin',
-  user: 'user',
-};
-
-const SOURCES = {
-  horondi: 'horondi',
-};
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
+} = require('../../consts/status-codes');
+const {
+  LOCALES: { UK },
+} = require('../../consts/locations');
+const {
+  SOURCES: { HORONDI, GOOGLE },
+  USER_FIELDS: { USER_EMAIL, USER_ID },
+  userDateFormat,
+  roles: { USER },
+} = require('../../consts');
 
 class UserService extends FilterHelper {
   async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow('email', decoded.email);
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
     return true;
@@ -83,7 +81,10 @@ class UserService extends FilterHelper {
     }).exec();
 
     if (!checkedUser) {
-      throw new UserInputError(USER_NOT_FOUND, { key, statusCode: 400 });
+      throw new UserInputError(USER_NOT_FOUND, {
+        key,
+        statusCode: BAD_REQUEST,
+      });
     }
 
     return checkedUser;
@@ -114,7 +115,7 @@ class UserService extends FilterHelper {
         },
       },
     ])
-      .collation({ locale: 'uk' })
+      .collation({ locale: UK })
       .facet({
         items: aggregatedItems,
         calculations: [{ $match: filteredItems }, { $count: 'count' }],
@@ -160,7 +161,7 @@ class UserService extends FilterHelper {
   }
 
   async getUser(id) {
-    return this.getUserByFieldOrThrow('_id', id);
+    return this.getUserByFieldOrThrow(USER_ID, id);
   }
 
   async updateUserById(updatedUser, user, upload) {
@@ -173,7 +174,7 @@ class UserService extends FilterHelper {
     });
 
     if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
     }
 
     if (user.email !== updatedUser.email) {
@@ -181,7 +182,9 @@ class UserService extends FilterHelper {
         email: updatedUser.email,
       }).exec();
       if (existingUser) {
-        throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+        throw new UserInputError(USER_ALREADY_EXIST, {
+          statusCode: BAD_REQUEST,
+        });
       }
     }
     if (!user.images) user.images = [];
@@ -209,7 +212,7 @@ class UserService extends FilterHelper {
     });
 
     if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
     }
 
     return User.findByIdAndUpdate(
@@ -229,21 +232,23 @@ class UserService extends FilterHelper {
     });
 
     if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
     }
 
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
-    if (user.role === ROLES.user) {
-      throw new UserInputError(INVALID_PERMISSIONS, { statusCode: 400 });
+    if (user.role === USER) {
+      throw new UserInputError(INVALID_PERMISSIONS, {
+        statusCode: BAD_REQUEST,
+      });
     }
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
     const token = generateToken(user._id, user.email);
@@ -264,22 +269,22 @@ class UserService extends FilterHelper {
     });
 
     if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
     }
 
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
     const token = generateToken(user._id, user.email);
@@ -302,14 +307,14 @@ class UserService extends FilterHelper {
     try {
       decoded = jwt.verify(refreshToken, SECRET);
     } catch (err) {
-      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+      throw new UserInputError(SESSION_TIMEOUT, { statusCode: BAD_REQUEST });
     }
 
     if (!decoded.isRefreshToken) {
-      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: 400 });
+      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: BAD_REQUEST });
     }
 
-    await this.getUserByFieldOrThrow('email', decoded.email);
+    await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     const token = generateToken(decoded.userId, decoded.email);
 
@@ -333,7 +338,7 @@ class UserService extends FilterHelper {
         email: dataUser.email,
         credentials: [
           {
-            source: 'google',
+            source: GOOGLE,
             tokenPass: userid,
           },
         ],
@@ -350,7 +355,7 @@ class UserService extends FilterHelper {
 
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
     const token = generateToken(user._id, user.email);
@@ -368,7 +373,7 @@ class UserService extends FilterHelper {
 
   async registerGoogleUser({ firstName, lastName, email, credentials }) {
     if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
 
     const user = new User({
@@ -384,7 +389,7 @@ class UserService extends FilterHelper {
 
   async registerUser({ firstName, lastName, email, password }, language) {
     if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -395,7 +400,7 @@ class UserService extends FilterHelper {
       email,
       credentials: [
         {
-          source: 'horondi',
+          source: HORONDI,
           tokenPass: encryptedPassword,
         },
       ],
@@ -409,17 +414,7 @@ class UserService extends FilterHelper {
 
     savedUser.confirmationToken = token;
 
-    await savedUser.save();
-
-    const subject = '[HORONDI] Email confirmation';
-    const html = confirmationMessage(firstName, token, language);
-
-    await emailService.sendEmail({
-      user,
-      sendEmail,
-      subject,
-      html,
-    });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
 
     await savedUser.save();
 
@@ -428,7 +423,7 @@ class UserService extends FilterHelper {
 
   async sendConfirmationLetter(email, language) {
     await validateSendConfirmation.validateAsync({ email, language });
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
@@ -438,13 +433,7 @@ class UserService extends FilterHelper {
     });
     user.confirmationToken = token;
     await user.save();
-    const message = {
-      from: MAIL_USER,
-      to: user.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
     return true;
   }
 
@@ -470,7 +459,7 @@ class UserService extends FilterHelper {
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
+      throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
     }
 
     const token = generateToken(user._id, user.email, {
@@ -478,19 +467,13 @@ class UserService extends FilterHelper {
       secret: SECRET,
     });
     user.recoveryToken = token;
-    const message = {
-      from: MAIL_USER,
-      to: email,
-      subject: '[HORONDI] Instructions for password recovery',
-      html: recoveryMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { token });
     await user.save();
     return true;
   }
 
   async switchUserStatus(id) {
-    const user = await this.getUserByFieldOrThrow('_id', id);
+    const user = await this.getUserByFieldOrThrow(USER_ID, id);
 
     user.banned = !user.banned;
 
@@ -502,11 +485,11 @@ class UserService extends FilterHelper {
   async resetPassword(password, token) {
     await validateNewPassword.validateAsync({ password });
     const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow('email', decoded.email);
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
 
@@ -520,7 +503,7 @@ class UserService extends FilterHelper {
     }
     if (user.recoveryAttempts >= 3) {
       throw new UserInputError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
-        statusCode: 403,
+        statusCode: FORBIDDEN,
       });
     }
     const updates = {
@@ -542,11 +525,11 @@ class UserService extends FilterHelper {
     try {
       await validateAdminRegisterInput.validateAsync({ email, role });
     } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
     }
 
     if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
 
     const user = new User({
@@ -560,15 +543,6 @@ class UserService extends FilterHelper {
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
-
-    const message = {
-      from: MAIL_USER,
-      to: savedUser.email,
-      subject: '[Horondi] Invitation to become an admin',
-      html: adminConfirmationMessage(invitationalToken),
-    };
-
-    await sendEmail(message);
 
     return savedUser;
   }
@@ -584,14 +558,14 @@ class UserService extends FilterHelper {
         password,
       });
     } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
     }
 
     try {
       decoded = jwt.verify(token, SECRET);
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
 
@@ -599,7 +573,7 @@ class UserService extends FilterHelper {
 
     if (!user) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
 
@@ -609,7 +583,7 @@ class UserService extends FilterHelper {
     user.lastName = lastName;
     user.credentials = [
       {
-        source: 'horondi',
+        source: HORONDI,
         tokenPass: encryptedPassword,
       },
     ];
@@ -626,7 +600,7 @@ class UserService extends FilterHelper {
       return { isSuccess: true };
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
   }

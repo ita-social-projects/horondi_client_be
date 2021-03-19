@@ -1,11 +1,22 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
+const {
+  DB_COLLECTIONS_NAMES: {
+    CATEGORY,
+    SIZE,
+    CONSTRUCTOR_BASICS,
+    PATTERN,
+    CONSTRUCTOR_FRONT_POCKET,
+    CONSTRUCTOR_BOTTOM,
+    MODEL,
+  },
+} = require('../../consts/db-collections-names');
 
 const modelSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+    ref: CATEGORY,
   },
   name: [Language],
   description: [Language],
@@ -15,22 +26,20 @@ const modelSchema = new mongoose.Schema({
   sizes: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Size',
+      ref: SIZE,
     },
   ],
   availableForConstructor: Boolean,
   constructorBasic: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorBasic' },
+    { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_BASICS },
   ],
-  constructorPattern: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'Pattern' },
-  ],
+  constructorPattern: [{ type: mongoose.Schema.Types.ObjectId, ref: PATTERN }],
   constructorFrontPocket: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorFrontPocket' },
+    { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_FRONT_POCKET },
   ],
   constructorBottom: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'ConstructorBottom' },
+    { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_BOTTOM },
   ],
 });
 
-module.exports = mongoose.model('Model', modelSchema);
+module.exports = mongoose.model(MODEL, modelSchema);
