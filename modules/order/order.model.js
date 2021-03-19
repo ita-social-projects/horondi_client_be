@@ -3,13 +3,11 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const Delivery = require('../../models/Delivery').schema;
 const OrderItem = require('../../models/OrderItem').schema;
 const {
-  PAYMENT_METHODS,
-  ORDER_STATUSES,
-  EMPTY_STRING,
-} = require('../../consts/order-details');
-
-const { CREATED } = ORDER_STATUSES;
-const { CASH } = PAYMENT_METHODS;
+  PAYMENT_TYPES: { CASH },
+} = require('../../consts/payment-types');
+const {
+  ORDER_STATUSES: { CREATED },
+} = require('../../consts/order-statuses');
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
@@ -41,11 +39,11 @@ const orderSchema = new mongoose.Schema({
   },
   userComment: {
     type: String,
-    default: EMPTY_STRING,
+    default: '',
   },
   cancellationReason: {
     type: String,
-    default: EMPTY_STRING,
+    default: '',
   },
   delivery: Delivery,
   items: [OrderItem],

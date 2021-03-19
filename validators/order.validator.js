@@ -1,44 +1,41 @@
 const Joi = require('joi');
 
 const {
-  ORDER_STATUSES,
-  PAYMENT_METHODS,
-  PAYMENT_STATUSES,
-  SENT_BY,
-  EMPTY_STRING,
-} = require('../consts/order-details');
+  ORDER_STATUSES: {
+    CREATED,
+    CONFIRMED,
+    PRODUCED,
+    CANCELLED,
+    REFUNDED,
+    SENT,
+    DELIVERED,
+  },
+} = require('../consts/order-statuses');
+const { SENT_BY } = require('../consts/order-details');
+const {
+  PAYMENT_STATUSES: {
+    PAYMNET_CREATED,
+    PAYMENT_EXPIRED,
+    PAYMENT_APPROVED,
+    PAYMENT_DECLINED,
+    PAYMENT_REVERSED,
+    PAYMENT_PROCESSING,
+    PAYMENT_PAID,
+  },
+} = require('../consts/payment-statuses');
+const {
+  PAYMENT_TYPES: { CARD, CASH },
+} = require('../consts/payment-types');
 const { userNameRegExp, numberRegExp } = require('../consts/regexp');
-const { DELIVERY_TYPE } = require('../consts/delivery-type');
-
 const {
-  ORDER_CREATED,
-  CONFIRMED,
-  PRODUCED,
-  CANCELLED,
-  REFUNDED,
-  SENT,
-  DELIVERED,
-} = ORDER_STATUSES;
-
-const { CARD, CASH } = PAYMENT_METHODS;
-
-const {
-  CREATED,
-  EXPIRED,
-  APPROVED,
-  DECLINED,
-  REVERSED,
-  PROCESSING,
-  PAID,
-} = PAYMENT_STATUSES;
-
-const {
-  NOVAPOST,
-  UKRPOST,
-  SELFPICKUP,
-  NOVAPOSTCOURIER,
-  UKRPOSTCOURIER,
-} = DELIVERY_TYPE;
+  DELIVERY_TYPE: {
+    NOVAPOST,
+    UKRPOST,
+    SELFPICKUP,
+    NOVAPOSTCOURIER,
+    UKRPOSTCOURIER,
+  },
+} = require('../consts/delivery-type');
 
 const deliveryCheckerValidator = Joi.string()
   .when(SENT_BY, {
@@ -48,7 +45,7 @@ const deliveryCheckerValidator = Joi.string()
   .when(SENT_BY, {
     is: UKRPOSTCOURIER,
     then: Joi.string().required(),
-    otherwise: Joi.string().only(EMPTY_STRING),
+    otherwise: Joi.string().only(''),
   });
 
 const nestedUserValidator = Joi.object({
@@ -71,12 +68,12 @@ const nestedUserValidator = Joi.object({
 });
 
 const nestedDeliveryValidator = Joi.object({
-  sentOn: Joi.string().allow(EMPTY_STRING),
+  sentOn: Joi.string().allow(''),
   sentBy: Joi.string()
     .trim()
     .valid(NOVAPOST, UKRPOST, SELFPICKUP, NOVAPOSTCOURIER, UKRPOSTCOURIER)
     .required(),
-  invoiceNumber: Joi.string().allow(EMPTY_STRING),
+  invoiceNumber: Joi.string().allow(''),
   courierOffice: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOST,
@@ -85,7 +82,7 @@ const nestedDeliveryValidator = Joi.object({
     .when(SENT_BY, {
       is: UKRPOST,
       then: Joi.string().required(),
-      otherwise: Joi.string().only(EMPTY_STRING),
+      otherwise: Joi.string().only(''),
     }),
   city: Joi.string()
     .when(SENT_BY, {
@@ -103,7 +100,7 @@ const nestedDeliveryValidator = Joi.object({
     .when(SENT_BY, {
       is: NOVAPOST,
       then: Joi.string().required(),
-      otherwise: Joi.string().only(EMPTY_STRING),
+      otherwise: Joi.string().only(''),
     }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
@@ -138,7 +135,6 @@ const nestedItemValidator = Joi.object({
   isFromConstructor: Joi.boolean().required(),
   options: Joi.object({
     size: Joi.string().required(),
-    sidePocket: Joi.boolean().required(),
   }),
   fixedPrice: Joi.array().has(nestedCostValidator),
 });
@@ -146,15 +142,7 @@ const nestedItemValidator = Joi.object({
 const orderValidator = Joi.object({
   status: Joi.string()
     .trim()
-    .valid(
-      ORDER_CREATED,
-      CONFIRMED,
-      PRODUCED,
-      CANCELLED,
-      REFUNDED,
-      SENT,
-      DELIVERED
-    )
+    .valid(CREATED, CONFIRMED, PRODUCED, CANCELLED, REFUNDED, SENT, DELIVERED)
     .required(),
   user: nestedUserValidator,
   delivery: nestedDeliveryValidator,
@@ -166,17 +154,41 @@ const orderValidator = Joi.object({
   userComment: Joi.string()
     .min(2)
     .max(500)
-    .allow(EMPTY_STRING),
+    .allow(''),
   isPaid: Joi.boolean().required(),
   paymentStatus: Joi.string().valid(
-    CREATED,
-    EXPIRED,
-    APPROVED,
-    DECLINED,
-    REVERSED,
-    PROCESSING,
-    PAID
+    PAYMNET_CREATED,
+    PAYMENT_EXPIRED,
+    PAYMENT_APPROVED,
+    PAYMENT_DECLINED,
+    PAYMENT_REVERSED,
+    PAYMENT_PROCESSING,
+    PAYMENT_PAID
   ),
 });
 
-module.exports = { orderValidator };
+const getAllOrdersValidator = {
+  limitValidator: Joi.number(),
+  skipValidator: Joi.number(),
+  filterValidator: Joi.object({
+    pattern: Joi.array().has(Joi.string()),
+    materials: Joi.array().has(Joi.string()),
+    colors: Joi.array().has(Joi.string()),
+    price: Joi.array().has(Joi.number()),
+    category: Joi.array().has(Joi.string()),
+    search: Joi.string(),
+    isHotItem: Joi.boolean(),
+    models: Joi.array().has(Joi.string()),
+    currency: Joi.number(),
+    emailQuestionStatus: Joi.array().has(Joi.string()),
+    orderStatus: Joi.array().has(Joi.string()),
+  }),
+};
+
+const getOrdersStatisticValidator = Joi.number().required();
+
+module.exports = {
+  orderValidator,
+  getAllOrdersValidator,
+  getOrdersStatisticValidator,
+};

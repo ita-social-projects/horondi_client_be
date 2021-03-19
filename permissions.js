@@ -81,6 +81,7 @@ const {
 
 const {
   orderPermissionsMutation,
+  orderPermissionsQuery,
 } = require('./modules/order/order.permissions');
 
 const permissions = shield(
@@ -102,6 +103,7 @@ const permissions = shield(
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
+      ...orderPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
