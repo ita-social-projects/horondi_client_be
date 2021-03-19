@@ -48,8 +48,8 @@ const inputDataValidation = (data, validationSchema) =>
     }
   });
 
-const isProductToCartCorrect = rule()((_, args) => {
-  const isProductExists = ProductModel.findById(args.productId);
+const isProductToCartCorrect = rule()(async (_, args) => {
+  const isProductExists = await ProductModel.findById(args.productId).exec();
 
   if (isProductExists && isProductExists.available) {
     args.product = isProductExists;

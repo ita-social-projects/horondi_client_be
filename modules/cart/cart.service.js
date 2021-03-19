@@ -98,7 +98,7 @@ class CartService {
         cart.totalPrice
       );
 
-      await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': totalPrice,
@@ -115,7 +115,7 @@ class CartService {
         }
       ).exec();
     } else {
-      await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': productPriceWithSize,
