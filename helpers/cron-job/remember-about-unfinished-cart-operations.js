@@ -32,7 +32,7 @@ const rememberAboutUnfinishedCartOperations = () =>
         const oneDay = getDaysInMilliseconds();
 
         if (dateDifference > oneDay && !cartItemData.cart.rememberMailCount) {
-          await UserModel.findOneAndUpdate(
+          UserModel.findOneAndUpdate(
             { _id: cartItemData._id },
             { $set: { 'cart.rememberMailCount': 1 } }
           );

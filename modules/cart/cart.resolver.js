@@ -13,9 +13,9 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const cartQuery = {
-  getCartByUserId: (_, { id }) => {
+  getCartByUserId: async (_, { id }) => {
     try {
-      return getCartByUserId(id);
+      return await getCartByUserId(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -23,47 +23,55 @@ const cartQuery = {
 };
 
 const cartMutation = {
-  addProductToCart: (_, { sizeId, id, product }) => {
+  addProductToCart: async (_, { sizeId, id, product }) => {
     try {
-      return addProductToCart(sizeId, id, product);
+      return await addProductToCart(sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  removeCartProductItem: (_, { sizeId, id, product }) => {
+  removeCartProductItem: async (_, { sizeId, id, product }) => {
     try {
-      return removeCartProductItem(sizeId, id, product);
+      return await removeCartProductItem(sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  cleanCart: (_, { id }) => {
+  cleanCart: async (_, { id }) => {
     try {
-      return cleanCart(id);
+      return await cleanCart(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateCartItemQuantity: (_, { quantity, sizeId, id, product }) => {
+  updateCartItemQuantity: async (_, { quantity, sizeId, id, product }) => {
     try {
-      return updateCartItemQuantity(quantity, sizeId, id, product);
+      return await updateCartItemQuantity(quantity, sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  addConstructorProductItem(_, { constructorData, sizeId, id, product }) {
+  addConstructorProductItem: async (
+    _,
+    { constructorData, sizeId, id, product }
+  ) => {
     try {
-      return addConstructorProductItem(constructorData, sizeId, id, product);
+      return await addConstructorProductItem(
+        constructorData,
+        sizeId,
+        id,
+        product
+      );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  removeConstructorProductItemFromCart(
+  removeConstructorProductItemFromCart: async (
     _,
     { productId, sizeId, constructorData, id }
-  ) {
+  ) => {
     try {
-      return removeConstructorProductItemFromCart(
+      return await removeConstructorProductItemFromCart(
         productId,
         sizeId,
         constructorData,
@@ -73,12 +81,12 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateConstructorProductItemQuantity(
+  updateConstructorProductItemQuantity: async (
     _,
     { quantity, productId, sizeId, constructorData, id }
-  ) {
+  ) => {
     try {
-      return updateConstructorProductItemQuantity(
+      return await updateConstructorProductItemQuantity(
         quantity,
         productId,
         sizeId,
@@ -89,9 +97,9 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  mergeCartFromLS(_, { items, id }) {
+  mergeCartFromLS: async (_, { items, id }) => {
     try {
-      return mergeCartFromLS(items, id);
+      return await mergeCartFromLS(items, id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

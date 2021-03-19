@@ -62,11 +62,11 @@ class CartService {
       throw new RuleError(CART_IS_NOT_FOUND, NOT_FOUND);
     }
 
-    const totalCartSum = await getTotalCartSum(cartByUserId.cart.items, id);
+    const cartSum = await getTotalCartSum(cartByUserId.cart.items, id);
 
     return UserModel.findByIdAndUpdate(
       id,
-      { $set: { 'cart.totalPrice': totalCartSum } },
+      { $set: { 'cart.totalPrice': cartSum } },
       { new: true }
     ).exec();
   }
@@ -98,7 +98,7 @@ class CartService {
         cart.totalPrice
       );
 
-      return await UserModel.findOneAndUpdate(
+      await UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': totalPrice,
@@ -115,7 +115,7 @@ class CartService {
         }
       ).exec();
     } else {
-      return await UserModel.findOneAndUpdate(
+      await UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': productPriceWithSize,
@@ -211,7 +211,7 @@ class CartService {
         cart.totalPrice
       );
 
-      return await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         {
           'cart.totalPrice': totalPrice,
@@ -286,13 +286,13 @@ class CartService {
         updatedCart.totalPrice
       );
 
-      return await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         { 'cart.totalPrice': cartSum },
         { new: true }
       ).exec();
     } else {
-      return await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         { $unset: { cart: 1 } },
         { new: true }
@@ -334,13 +334,13 @@ class CartService {
         updatedCart.totalPrice
       );
 
-      return await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         { 'cart.totalPrice': cartSum },
         { new: true }
       ).exec();
     } else {
-      return await UserModel.findOneAndUpdate(
+      return UserModel.findOneAndUpdate(
         { _id: id },
         { $unset: { cart: 1 } },
         { new: true }
