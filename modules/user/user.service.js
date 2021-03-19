@@ -371,7 +371,7 @@ class UserService extends FilterHelper {
   }
 
   async sendConfirmationLetter(email, language) {
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
