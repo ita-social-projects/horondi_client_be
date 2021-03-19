@@ -611,17 +611,16 @@ class CartService {
           }
         })
       );
-
-      const { cart } = await UserModel.findById(id, 'cart ').exec();
-
-      const totalPrice = await setTotalCartSum(cart?.items);
-
-      return UserModel.findByIdAndUpdate(
-        id,
-        { $set: { 'cart.totalPrice': totalPrice } },
-        { new: true }
-      ).exec();
     }
+    const { cart } = await UserModel.findById(id, 'cart ').exec();
+
+    const totalPrice = await setTotalCartSum(cart?.items);
+
+    return UserModel.findByIdAndUpdate(
+      id,
+      { $set: { 'cart.totalPrice': totalPrice } },
+      { new: true }
+    ).exec();
   }
 }
 
