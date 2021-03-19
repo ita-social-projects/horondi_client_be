@@ -12,7 +12,6 @@ const {
     PRODUCT_IS_NOT_EXIST_IN_CART,
     CART_IS_ALREADY_CLEANED,
     CART_IS_NOT_FOUND,
-    CART_FOR_MERGING_IS_EMPTY,
   },
 } = require('../../error-messages/cart.messages');
 const { SIZE_NOT_FOUND } = require('../../error-messages/size.messages');
