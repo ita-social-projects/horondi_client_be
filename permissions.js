@@ -79,6 +79,11 @@ const {
   commentPermissionsQuery,
 } = require('./modules/comment/comment.permissions');
 
+const {
+  pocketPermissionsMutations,
+  pocketPermissionsQuery,
+} = require('./modules/pocket/pocket.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -98,6 +103,7 @@ const permissions = shield(
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
+      ...pocketPermissionsQuery,
     },
     Mutation: {
       ...userPermissionsMutation,
@@ -116,6 +122,7 @@ const permissions = shield(
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
+      ...pocketPermissionsMutations,
     },
   },
   {

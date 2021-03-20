@@ -1,29 +1,22 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
+const Blocker = require('../blocker/blocker.model').schema;
 const {
-  DB_COLLECTIONS_NAMES: { MATERIAL, COLOR, POCKET },
+  DB_COLLECTIONS_NAMES: { PRODUCT, POCKET },
 } = require('../../consts/db-collections-names');
 
-const sidePocketSchema = new mongoose.Schema({
+const pocketSchema = new mongoose.Schema({
   name: [Language],
-  material: {
+  product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: MATERIAL,
+    ref: PRODUCT,
   },
-  color: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: COLOR,
-  },
-  side: {
-    type: String,
-    enum: ['left', 'right', 'front', 'back'],
-    default: 'front',
-  },
+  blockers: [Blocker],
   image: String,
   basePrice: [CurrencySet],
   available: Boolean,
   default: Boolean,
 });
 
-module.exports = mongoose.model(POCKET, sidePocketSchema);
+module.exports = mongoose.model(POCKET, pocketSchema);

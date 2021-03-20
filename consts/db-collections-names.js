@@ -25,6 +25,7 @@ const DB_COLLECTIONS_NAMES = {
   USER: 'User',
   MATERIAL: 'Material',
   POCKET: 'Pocket',
+  BLOCKER: 'Blocker',
   HEADER: 'Header',
   HOME_PAGE_IMAGES: 'LooksImages',
   HOME_PAGE_SLIDE: 'HomePageSlide',

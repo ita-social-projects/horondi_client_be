@@ -90,7 +90,10 @@ const {
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
 
-const { pocketMutation } = require('./modules/pockets/pockets.resolver');
+const {
+  pocketMutation,
+  pocketQuery,
+} = require('./modules/pocket/pocket.resolver');
 
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
@@ -108,7 +111,7 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
-const pocketService = require('./modules/pockets/pockets.service');
+const pocketService = require('./modules/pocket/pocket.service');
 
 const {
   ukrPoshtaQuery,
@@ -142,6 +145,7 @@ const SCHEMA_NAMES = {
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
   pocket: 'Pocket',
+  blocker: 'Blocker',
 };
 
 const resolvers = {
@@ -195,6 +199,8 @@ const resolvers = {
     ...constructorFrontPocketQuery,
 
     ...colorQuery,
+
+    ...pocketQuery,
   },
   ProductsFilter: {
     categories: parent =>

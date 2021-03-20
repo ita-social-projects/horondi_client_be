@@ -99,11 +99,11 @@ const {
   ukrPoshtaEnum,
   ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
+const { pocketType, pocketInput } = require('./modules/pocket/pocket.graphql');
 const {
-  pocketType,
-  sideOptions,
-  pocketInput,
-} = require('./modules/pockets/pockets.graphql');
+  blockerType,
+  blockerInput,
+} = require('./modules/blocker/blocker.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -140,6 +140,7 @@ const typeDefs = gql`
   ${constructorFrontPocketType}
   ${constructorBottomType}
   ${pocketType}
+  ${blockerType}
 
   scalar Upload
   scalar Date
@@ -149,7 +150,6 @@ const typeDefs = gql`
     user
   }
   ${ukrPoshtaEnum}
-  ${sideOptions}
   type Language {
     lang: String!
     value: String
@@ -317,6 +317,11 @@ const typeDefs = gql`
       count: Int
   }
 
+  type PaginatedPockets {
+    items: [Pocket]
+    count: Int
+  }
+
   type Materials {
     items: [Material]
   }
@@ -462,6 +467,8 @@ const typeDefs = gql`
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
     getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
+    getAllPockets(limit: Int, skip: Int): PaginatedPockets!
+    getPocketById(id: ID): PocketResult
 
   }
   input Pagination {
@@ -534,6 +541,7 @@ const typeDefs = gql`
   ${constructorFrontPocketInput}
   ${constructorBottomInput}
   ${pocketInput}
+  ${blockerInput}
   input LanguageInput {
     lang: String!
     value: String
@@ -764,7 +772,9 @@ const typeDefs = gql`
     deleteModelConstructorFrontPocket(id:ID!, constructorElementID:ID!):ModelResult
     addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
     deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
-    addPocket(pocket: PocketInput!, upload: Upload):PocketResult
+    "Pocket Mutation"
+    addPocket(pocket: PocketInput!, image: Upload):PocketResult
+    updatePocket(id: ID, pocket: PocketInput!, image: Upload):PocketResult
   }
 `;
 

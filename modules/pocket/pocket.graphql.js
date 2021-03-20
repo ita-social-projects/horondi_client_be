@@ -2,7 +2,8 @@ const pocketType = `
   type Pocket {
     _id: ID!
     name: [Language]
-    side: SideOptions
+    product: Product
+    blocker: [Blocker]
     image: String
     basePrice: [CurrencySet]
     available: Boolean
@@ -10,19 +11,11 @@ const pocketType = `
   }
 `;
 
-const sideOptions = `
-  enum SideOptions {
-    LEFT
-    RIGHT
-    FRONT
-    BACK
-  }
-`;
-
 const pocketInput = `
   input PocketInput {
     name: [LanguageInput]
-    side: SideOptions
+    product: ID
+    blocker: [BlockerInput]
     image: Upload
     basePrice: Int
     available: Boolean
@@ -32,6 +25,5 @@ const pocketInput = `
 
 module.exports = {
   pocketType,
-  sideOptions,
   pocketInput,
 };
