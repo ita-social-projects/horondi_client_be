@@ -254,98 +254,98 @@ class CartService {
     }
   }
 
-  async removeCartProductItem(sizeId, id, { _id }) {
-    const isProductPresentInCart = await UserModel.findOne({
-      _id: id,
-      'cart.items.product': _id,
-      'cart.items.options.size': sizeId,
-    }).exec();
-
-    if (!isProductPresentInCart) {
-      throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
-    }
-
-    const {
-      cart: { items: deleteItem },
-    } = await UserModel.findOneAndUpdate(
-      { _id: id, 'cart.items.product': _id, 'cart.items.options.size': sizeId },
-      { $pull: { 'cart.items': { product: _id } } },
-      { projection: 'cart.items.$' }
-    ).exec();
-
-    const { cart: updatedCart } = await UserModel.findOne(
-      { _id: id },
-      'cart -_id'
-    ).exec();
-
-    if (updatedCart.items.length) {
-      const cartSum = totalCartSum(
-        REMOVE_ITEM,
-        deleteItem[0].price,
-        updatedCart.totalPrice
-      );
-
-      return UserModel.findOneAndUpdate(
-        { _id: id },
-        { 'cart.totalPrice': cartSum },
-        { new: true }
-      ).exec();
-    } else {
-      return UserModel.findOneAndUpdate(
-        { _id: id },
-        { $unset: { cart: 1 } },
-        { new: true }
-      ).exec();
-    }
-  }
-
-  async removeConstructorProductItemFromCart(
-    productId,
-    sizeId,
-    constructorData,
-    id
-  ) {
-    if (!constructorData) {
-      throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
-    }
-
-    const {
-      cart: { items: deleteItem },
-    } = await UserModel.findOneAndUpdate(
-      {
-        _id: id,
-        'cart.items.fromConstructor.product': productId,
-        'cart.items.options.size': sizeId,
-      },
-      { $pull: { 'cart.items': { 'fromConstructor.product': productId } } },
-      { projection: 'cart.items.$' }
-    ).exec();
-
-    const { cart: updatedCart } = await UserModel.findOne(
-      { _id: id },
-      'cart -_id'
-    ).exec();
-
-    if (updatedCart?.items?.length) {
-      const cartSum = totalCartSum(
-        REMOVE_ITEM,
-        deleteItem[0].price,
-        updatedCart.totalPrice
-      );
-
-      return UserModel.findOneAndUpdate(
-        { _id: id },
-        { 'cart.totalPrice': cartSum },
-        { new: true }
-      ).exec();
-    } else {
-      return UserModel.findOneAndUpdate(
-        { _id: id },
-        { $unset: { cart: 1 } },
-        { new: true }
-      ).exec();
-    }
-  }
+  // async removeCartProductItem(sizeId, id, { _id }) {
+  //   const isProductPresentInCart = await UserModel.findOne({
+  //     _id: id,
+  //     'cart.items.product': _id,
+  //     'cart.items.options.size': sizeId,
+  //   }).exec();
+  //
+  //   if (!isProductPresentInCart) {
+  //     throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
+  //   }
+  //
+  //   const {
+  //     cart: { items: deleteItem },
+  //   } = await UserModel.findOneAndUpdate(
+  //     { _id: id, 'cart.items.product': _id, 'cart.items.options.size': sizeId },
+  //     { $pull: { 'cart.items': { product: _id } } },
+  //     { projection: 'cart.items.$' }
+  //   ).exec();
+  //
+  //   const { cart: updatedCart } = await UserModel.findOne(
+  //     { _id: id },
+  //     'cart -_id'
+  //   ).exec();
+  //
+  //   if (updatedCart.items.length) {
+  //     const cartSum = totalCartSum(
+  //       REMOVE_ITEM,
+  //       deleteItem[0].price,
+  //       updatedCart.totalPrice
+  //     );
+  //
+  //     return UserModel.findOneAndUpdate(
+  //       { _id: id },
+  //       { 'cart.totalPrice': cartSum },
+  //       { new: true }
+  //     ).exec();
+  //   } else {
+  //     return UserModel.findOneAndUpdate(
+  //       { _id: id },
+  //       { $unset: { cart: 1 } },
+  //       { new: true }
+  //     ).exec();
+  //   }
+  // }
+  //
+  // async removeConstructorProductItemFromCart(
+  //   productId,
+  //   sizeId,
+  //   constructorData,
+  //   id
+  // ) {
+  //   if (!constructorData) {
+  //     throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
+  //   }
+  //
+  //   const {
+  //     cart: { items: deleteItem },
+  //   } = await UserModel.findOneAndUpdate(
+  //     {
+  //       _id: id,
+  //       'cart.items.fromConstructor.product': productId,
+  //       'cart.items.options.size': sizeId,
+  //     },
+  //     { $pull: { 'cart.items': { 'fromConstructor.product': productId } } },
+  //     { projection: 'cart.items.$' }
+  //   ).exec();
+  //
+  //   const { cart: updatedCart } = await UserModel.findOne(
+  //     { _id: id },
+  //     'cart -_id'
+  //   ).exec();
+  //
+  //   if (updatedCart?.items?.length) {
+  //     const cartSum = totalCartSum(
+  //       REMOVE_ITEM,
+  //       deleteItem[0].price,
+  //       updatedCart.totalPrice
+  //     );
+  //
+  //     return UserModel.findOneAndUpdate(
+  //       { _id: id },
+  //       { 'cart.totalPrice': cartSum },
+  //       { new: true }
+  //     ).exec();
+  //   } else {
+  //     return UserModel.findOneAndUpdate(
+  //       { _id: id },
+  //       { $unset: { cart: 1 } },
+  //       { new: true }
+  //     ).exec();
+  //   }
+  // }
 
   async updateCartItemQuantity(quantity, sizeId, id, { _id }) {
     const { cart } = await UserModel.findById(id, 'cart -_id').exec();
@@ -367,7 +367,10 @@ class CartService {
 
     const newPriceForProduct = itemFromCart.cart.items[0].price.map(
       ({ value, currency }) => {
-        return { value: value * quantity, currency };
+        return {
+          value: (value / itemFromCart.cart.items[0].quantity) * quantity,
+          currency,
+        };
       }
     );
 
@@ -386,8 +389,7 @@ class CartService {
       return UserModel.findOneAndUpdate(
         {
           _id: id,
-          'cart.items.product': _id,
-          'cart.items.options.size': sizeId,
+          'cart.items._id': itemFromCart.cart.items[0]._id,
         },
         {
           $set: {
@@ -402,8 +404,7 @@ class CartService {
       return UserModel.findOneAndUpdate(
         {
           _id: id,
-          'cart.items.product': _id,
-          'cart.items.options.size': sizeId,
+          'cart.items._id': itemFromCart.cart.items[0]._id,
         },
         {
           $set: {
@@ -432,7 +433,10 @@ class CartService {
 
     const newPriceForConstructorProduct = constructorData.cart.items[0].price.map(
       ({ value, currency }) => {
-        return { value: value * quantity, currency };
+        return {
+          value: (value / constructorData.cart.items[0].quantity) * quantity,
+          currency,
+        };
       }
     );
 
@@ -451,8 +455,7 @@ class CartService {
       return UserModel.findOneAndUpdate(
         {
           _id: id,
-          'cart.items.fromConstructor.product': productId,
-          'cart.items.options.size': sizeId,
+          'cart.items._id': constructorData.cart.items[0]._id,
         },
         {
           $set: {
@@ -467,8 +470,7 @@ class CartService {
       return UserModel.findOneAndUpdate(
         {
           _id: id,
-          'cart.items.fromConstructor.product': productId,
-          'cart.items.options.size': sizeId,
+          'cart.items._id': constructorData.cart.items[0]._id,
         },
         {
           $set: {
@@ -603,6 +605,85 @@ class CartService {
                       quantity: item.quantity,
                       'options.size': item.options.size,
                       price: itemPrice,
+                    },
+                  },
+                }
+              ).exec();
+            }
+          }
+        })
+      );
+    }
+    const { cart } = await UserModel.findById(id, 'cart ').exec();
+
+    const totalPrice = await setTotalCartSum(cart?.items);
+
+    return UserModel.findByIdAndUpdate(
+      id,
+      { $set: { 'cart.totalPrice': totalPrice } },
+      { new: true }
+    ).exec();
+  }
+
+  async removeProductItemsFromCart(items, id) {
+    if (items.length) {
+      await Promise.all(
+        items.map(async item => {
+          if (item.product) {
+            const isProductExistsInCart = await UserModel.findOne(
+              {
+                _id: id,
+                'cart.items.product': item.product,
+                'cart.items.options.size': item.options.size,
+              },
+              'cart.items.$ -_id'
+            ).exec();
+
+            if (isProductExistsInCart) {
+              await UserModel.findOneAndUpdate(
+                {
+                  _id: id,
+                  'cart.items._id': isProductExistsInCart.cart.items[0]._id,
+                },
+                {
+                  $pull: {
+                    'cart.items': {
+                      _id: isProductExistsInCart.cart.items[0]._id,
+                    },
+                  },
+                }
+              ).exec();
+            }
+          }
+          if (item.productFromConstructor) {
+            const isConstructorExistsInCart = await UserModel.findOne(
+              {
+                _id: id,
+                'cart.items.options.size': item.options.size,
+                'cart.items.fromConstructor.product':
+                  item.productFromConstructor.product,
+                'cart.items.fromConstructor.constructorBasics':
+                  item.productFromConstructor.constructorBasics,
+                'cart.items.fromConstructor.constructorBottom':
+                  item.productFromConstructor.constructorBottom,
+                'cart.items.fromConstructor.constructorPattern':
+                  item.productFromConstructor.constructorPattern,
+                'cart.items.fromConstructor.constructorFrontPocket':
+                  item.productFromConstructor.constructorFrontPocket,
+              },
+              'cart.items.$ -_id'
+            ).exec();
+
+            if (isConstructorExistsInCart) {
+              await UserModel.findOneAndUpdate(
+                {
+                  _id: id,
+                  'cart.items._id': isConstructorExistsInCart.cart.items[0]._id,
+                },
+                {
+                  $pull: {
+                    'cart.items': {
+                      _id: isConstructorExistsInCart.cart.items[0]._id,
                     },
                   },
                 }

@@ -19,7 +19,6 @@ const cartPermissionsQuery = {
 
 const cartPermissionsMutations = {
   addProductToCart: and(isTheSameUser, isProductToCartCorrect),
-  removeCartProductItem: and(isTheSameUser, isProductToCartCorrect),
   updateCartItemQuantity: and(
     inputDataValidation(QUANTITY, updateCartQuantityValidator),
     isTheSameUser,
@@ -27,15 +26,12 @@ const cartPermissionsMutations = {
   ),
   cleanCart: isTheSameUser,
   addConstructorProductItem: and(isTheSameUser, isProductToCartCorrect),
-  removeConstructorProductItemFromCart: and(
-    isTheSameUser,
-    getConstructorProductItemPresentInCart
-  ),
   updateConstructorProductItemQuantity: and(
     inputDataValidation(QUANTITY, updateCartQuantityValidator),
     isTheSameUser,
     getConstructorProductItemPresentInCart
   ),
   mergeCartFromLS: isTheSameUser,
+  removeProductItemsFromCart: isTheSameUser,
 };
 module.exports = { cartPermissionsQuery, cartPermissionsMutations };

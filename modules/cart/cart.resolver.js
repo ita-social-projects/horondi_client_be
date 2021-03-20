@@ -1,13 +1,12 @@
 const {
   addProductToCart,
-  removeCartProductItem,
   cleanCart,
   getCartByUserId,
   updateCartItemQuantity,
   addConstructorProductItem,
-  removeConstructorProductItemFromCart,
   updateConstructorProductItemQuantity,
   mergeCartFromLS,
+  removeProductItemsFromCart,
 } = require('./cart.service');
 
 const RuleError = require('../../errors/rule.error');
@@ -26,13 +25,6 @@ const cartMutation = {
   addProductToCart: async (_, { sizeId, id, product }) => {
     try {
       return await addProductToCart(sizeId, id, product);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
-  removeCartProductItem: async (_, { sizeId, id, product }) => {
-    try {
-      return await removeCartProductItem(sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -66,21 +58,7 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  removeConstructorProductItemFromCart: async (
-    _,
-    { productId, sizeId, constructorData, id }
-  ) => {
-    try {
-      return await removeConstructorProductItemFromCart(
-        productId,
-        sizeId,
-        constructorData,
-        id
-      );
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
+
   updateConstructorProductItemQuantity: async (
     _,
     { quantity, productId, sizeId, constructorData, id }
@@ -100,6 +78,14 @@ const cartMutation = {
   mergeCartFromLS: async (_, { items, id }) => {
     try {
       return await mergeCartFromLS(items, id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
+  removeProductItemsFromCart: async (_, { items, id }) => {
+    try {
+      return await removeProductItemsFromCart(items, id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
