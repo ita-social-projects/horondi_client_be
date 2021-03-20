@@ -5,6 +5,7 @@ const INPUT_FIELDS = {
   PASSWORD: 'password',
   CATEGORY: 'category',
   QUANTITY: 'quantity',
+  MODEL: 'model',
 };
 
 module.exports = {
