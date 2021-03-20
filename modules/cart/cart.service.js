@@ -325,13 +325,7 @@ class CartService {
     }
   }
 
-  async updateConstructorProductItemQuantity(
-    quantity,
-    productId,
-    sizeId,
-    constructorData,
-    id
-  ) {
+  async updateConstructorProductItemQuantity(quantity, constructorData, id) {
     if (!constructorData) {
       throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
     }
