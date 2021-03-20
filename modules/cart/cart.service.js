@@ -533,8 +533,8 @@ class CartService {
             const isProductExistsInCart = await UserModel.findOne(
               {
                 _id: id,
-                'cart.items.product': item.product,
                 'cart.items.options.size': item.options.size,
+                'cart.items.product': item.product,
               },
               'cart.items.$ -_id'
             ).exec();
@@ -559,9 +559,9 @@ class CartService {
             const isConstructorExistsInCart = await UserModel.findOne(
               {
                 _id: id,
-                'cart.items.options.size': item.options.size,
                 'cart.items.fromConstructor.product':
                   item.productFromConstructor.product,
+                'cart.items.options.size': item.options.size,
                 'cart.items.fromConstructor.constructorBasics':
                   item.productFromConstructor.constructorBasics,
                 'cart.items.fromConstructor.constructorBottom':
