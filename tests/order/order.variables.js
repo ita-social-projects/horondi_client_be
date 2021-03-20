@@ -9,7 +9,8 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   },
   userComment: 'The bag is pretty good',
   delivery: {
-    courierOffice: '10',
+    byCourier: true,
+    courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
     cost: [
@@ -45,6 +46,7 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
       ],
     },
   ],
+  paymentMethod: 'CASH',
   paymentStatus: 'CREATED',
 });
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
@@ -57,7 +59,8 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   },
   userComment: 'Updated',
   delivery: {
-    courierOffice: '12',
+    byCourier: true,
+    courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
     cost: [
@@ -93,6 +96,7 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
       ],
     },
   ],
+  paymentMethod: 'CASH',
   paymentStatus: 'APPROVED',
 });
 

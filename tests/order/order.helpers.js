@@ -25,6 +25,7 @@ const createOrder = async (order, operations) => {
 
             userComment
             delivery {
+              byCourier
               sentBy
               invoiceNumber
               courierOffice
@@ -240,6 +241,7 @@ const updateOrderById = async (order, id, operations) => {
             }
             userComment
             delivery {
+              byCourier
               sentBy
               invoiceNumber
               courierOffice
