@@ -135,15 +135,26 @@ const nestedItemValidator = Joi.object({
   isFromConstructor: Joi.boolean().required(),
   options: Joi.object({
     size: Joi.string().required(),
+    sidePocket: Joi.boolean(),
   }),
-  fixedPrice: Joi.array().has(nestedCostValidator),
+  fixedPrice: Joi.array()
+    .has(nestedCostValidator)
+    .optional(),
 });
 
 const orderValidator = Joi.object({
   status: Joi.string()
     .trim()
-    .valid(CREATED, CONFIRMED, PRODUCED, CANCELLED, REFUNDED, SENT, DELIVERED)
-    .required(),
+    .valid(
+      CREATED,
+      CONFIRMED,
+      PRODUCED,
+      CANCELLED,
+      REFUNDED,
+      SENT,
+      DELIVERED,
+      null
+    ),
   user: nestedUserValidator,
   delivery: nestedDeliveryValidator,
   items: Joi.array().has(nestedItemValidator),
@@ -155,7 +166,7 @@ const orderValidator = Joi.object({
     .min(2)
     .max(500)
     .allow(''),
-  isPaid: Joi.boolean().required(),
+  isPaid: Joi.boolean(),
   paymentStatus: Joi.string().valid(
     PAYMNET_CREATED,
     PAYMENT_EXPIRED,
