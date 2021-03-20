@@ -254,99 +254,6 @@ class CartService {
     }
   }
 
-  // async removeCartProductItem(sizeId, id, { _id }) {
-  //   const isProductPresentInCart = await UserModel.findOne({
-  //     _id: id,
-  //     'cart.items.product': _id,
-  //     'cart.items.options.size': sizeId,
-  //   }).exec();
-  //
-  //   if (!isProductPresentInCart) {
-  //     throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
-  //   }
-  //
-  //   const {
-  //     cart: { items: deleteItem },
-  //   } = await UserModel.findOneAndUpdate(
-  //     { _id: id, 'cart.items.product': _id, 'cart.items.options.size': sizeId },
-  //     { $pull: { 'cart.items': { product: _id } } },
-  //     { projection: 'cart.items.$' }
-  //   ).exec();
-  //
-  //   const { cart: updatedCart } = await UserModel.findOne(
-  //     { _id: id },
-  //     'cart -_id'
-  //   ).exec();
-  //
-  //   if (updatedCart.items.length) {
-  //     const cartSum = totalCartSum(
-  //       REMOVE_ITEM,
-  //       deleteItem[0].price,
-  //       updatedCart.totalPrice
-  //     );
-  //
-  //     return UserModel.findOneAndUpdate(
-  //       { _id: id },
-  //       { 'cart.totalPrice': cartSum },
-  //       { new: true }
-  //     ).exec();
-  //   } else {
-  //     return UserModel.findOneAndUpdate(
-  //       { _id: id },
-  //       { $unset: { cart: 1 } },
-  //       { new: true }
-  //     ).exec();
-  //   }
-  // }
-  //
-  // async removeConstructorProductItemFromCart(
-  //   productId,
-  //   sizeId,
-  //   constructorData,
-  //   id
-  // ) {
-  //   if (!constructorData) {
-  //     throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
-  //   }
-  //
-  //   const {
-  //     cart: { items: deleteItem },
-  //   } = await UserModel.findOneAndUpdate(
-  //     {
-  //       _id: id,
-  //       'cart.items.fromConstructor.product': productId,
-  //       'cart.items.options.size': sizeId,
-  //     },
-  //     { $pull: { 'cart.items': { 'fromConstructor.product': productId } } },
-  //     { projection: 'cart.items.$' }
-  //   ).exec();
-  //
-  //   const { cart: updatedCart } = await UserModel.findOne(
-  //     { _id: id },
-  //     'cart -_id'
-  //   ).exec();
-  //
-  //   if (updatedCart?.items?.length) {
-  //     const cartSum = totalCartSum(
-  //       REMOVE_ITEM,
-  //       deleteItem[0].price,
-  //       updatedCart.totalPrice
-  //     );
-  //
-  //     return UserModel.findOneAndUpdate(
-  //       { _id: id },
-  //       { 'cart.totalPrice': cartSum },
-  //       { new: true }
-  //     ).exec();
-  //   } else {
-  //     return UserModel.findOneAndUpdate(
-  //       { _id: id },
-  //       { $unset: { cart: 1 } },
-  //       { new: true }
-  //     ).exec();
-  //   }
-  // }
-
   async updateCartItemQuantity(quantity, sizeId, id, { _id }) {
     const { cart } = await UserModel.findById(id, 'cart -_id').exec();
 
@@ -485,138 +392,137 @@ class CartService {
   }
 
   async mergeCartFromLS(cartFromLS, id) {
-    if (cartFromLS.length) {
-      await Promise.all(
-        cartFromLS.map(async item => {
-          const { additionalPrice: sizePrice } = await SizeModel.findById(
-            item.options.size
+    await Promise.all(
+      cartFromLS.map(async item => {
+        const { additionalPrice: sizePrice } = await SizeModel.findById(
+          item.options.size
+        ).exec();
+
+        if (item.product) {
+          const isProductPresent = await ProductModel.findById(
+            item.product
+          ).exec();
+          const isProductAlreadyInCart = await UserModel.findOne(
+            {
+              _id: id,
+              'cart.items.product': item.product,
+              'cart.items.options.size': item.options.size,
+            },
+            'cart.items.$ -_id'
           ).exec();
 
-          if (item.product) {
-            const isProductPresent = await ProductModel.findById(
-              item.product
-            ).exec();
-            const isProductAlreadyInCart = await UserModel.findOne(
+          if (sizePrice && !isProductAlreadyInCart && isProductPresent) {
+            const itemPrice = calculateCartItemPriceWithSize(
+              sizePrice,
+              item.quantity
+            );
+
+            await UserModel.findOneAndUpdate(
+              { _id: id },
               {
-                _id: id,
-                'cart.items.product': item.product,
-                'cart.items.options.size': item.options.size,
-              },
-              'cart.items.$ -_id'
-            ).exec();
-
-            if (sizePrice && !isProductAlreadyInCart && isProductPresent) {
-              const itemPrice = calculateCartItemPriceWithSize(
-                sizePrice,
-                item.quantity
-              );
-
-              await UserModel.findOneAndUpdate(
-                { _id: id },
-                {
-                  $push: {
-                    'cart.items': {
-                      product: item.product,
-                      quantity: item.quantity,
-                      'options.size': item.options.size,
-                      price: itemPrice,
-                    },
+                $push: {
+                  'cart.items': {
+                    product: item.product,
+                    quantity: item.quantity,
+                    'options.size': item.options.size,
+                    price: itemPrice,
                   },
-                }
-              ).exec();
-            }
-          }
-          if (item.productFromConstructor) {
-            const isProductPresent = await ProductModel.findById(
-              item.productFromConstructor.product
+                },
+              }
             ).exec();
+          }
+        }
+        if (item.productFromConstructor) {
+          const isProductPresent = await ProductModel.findById(
+            item.productFromConstructor.product
+          ).exec();
 
-            const isConstructorAlreadyInCart = await UserModel.findOne(
+          const isConstructorAlreadyInCart = await UserModel.findOne(
+            {
+              _id: id,
+              'cart.items.fromConstructor.product':
+                item.productFromConstructor.product,
+              'cart.items.fromConstructor.constructorBasics':
+                item.productFromConstructor.constructorBasics,
+              'cart.items.fromConstructor.constructorBottom':
+                item.productFromConstructor.constructorBottom,
+              'cart.items.fromConstructor.constructorPattern':
+                item.productFromConstructor.constructorPattern,
+              'cart.items.fromConstructor.constructorFrontPocket':
+                item.productFromConstructor.constructorFrontPocket,
+              'cart.items.options.size': item.options.size,
+            },
+            'cart.items.$ -_id'
+          ).exec();
+
+          const {
+            basePrice: constructorBasicsPrice,
+          } = await ConstructorBasicModel.findById(
+            item.productFromConstructor.constructorBasics
+          ).exec();
+
+          const {
+            basePrice: constructorBottomPrice,
+          } = await ConstructorBottomModel.findById(
+            item.productFromConstructor.constructorBottom
+          ).exec();
+
+          const {
+            basePrice: constructorFrontPocketPrice,
+          } = await ConstructorFrontPocketModel.findById(
+            item.productFromConstructor.constructorFrontPocket
+          ).exec();
+
+          const isPatternPresent = await PatternModel.findById(
+            item.productFromConstructor.constructorPattern
+          ).exec();
+
+          if (
+            isProductPresent &&
+            !isConstructorAlreadyInCart &&
+            constructorBasicsPrice &&
+            constructorBottomPrice &&
+            constructorFrontPocketPrice &&
+            isPatternPresent
+          ) {
+            const itemPrice = calculateConstructorCartItemPriceWithSize(
+              sizePrice,
+              constructorBasicsPrice,
+              constructorBottomPrice,
+              constructorFrontPocketPrice,
+              item.quantity
+            );
+
+            await UserModel.findOneAndUpdate(
+              { _id: id },
               {
-                _id: id,
-                'cart.items.fromConstructor.product':
-                  item.productFromConstructor.product,
-                'cart.items.fromConstructor.constructorBasics':
-                  item.productFromConstructor.constructorBasics,
-                'cart.items.fromConstructor.constructorBottom':
-                  item.productFromConstructor.constructorBottom,
-                'cart.items.fromConstructor.constructorPattern':
-                  item.productFromConstructor.constructorPattern,
-                'cart.items.fromConstructor.constructorFrontPocket':
-                  item.productFromConstructor.constructorFrontPocket,
-                'cart.items.options.size': item.options.size,
-              },
-              'cart.items.$ -_id'
-            ).exec();
-
-            const {
-              basePrice: constructorBasicsPrice,
-            } = await ConstructorBasicModel.findById(
-              item.productFromConstructor.constructorBasics
-            ).exec();
-
-            const {
-              basePrice: constructorBottomPrice,
-            } = await ConstructorBottomModel.findById(
-              item.productFromConstructor.constructorBottom
-            ).exec();
-
-            const {
-              basePrice: constructorFrontPocketPrice,
-            } = await ConstructorFrontPocketModel.findById(
-              item.productFromConstructor.constructorFrontPocket
-            ).exec();
-
-            const isPatternPresent = await PatternModel.findById(
-              item.productFromConstructor.constructorPattern
-            ).exec();
-
-            if (
-              isProductPresent &&
-              !isConstructorAlreadyInCart &&
-              constructorBasicsPrice &&
-              constructorBottomPrice &&
-              constructorFrontPocketPrice &&
-              isPatternPresent
-            ) {
-              const itemPrice = calculateConstructorCartItemPriceWithSize(
-                sizePrice,
-                constructorBasicsPrice,
-                constructorBottomPrice,
-                constructorFrontPocketPrice,
-                item.quantity
-              );
-
-              await UserModel.findOneAndUpdate(
-                { _id: id },
-                {
-                  $push: {
-                    'cart.items': {
-                      'fromConstructor.product':
-                        item.productFromConstructor.product,
-                      'fromConstructor.constructorBasics':
-                        item.productFromConstructor.constructorBasics,
-                      'fromConstructor.constructorBottom':
-                        item.productFromConstructor.constructorBottom,
-                      'fromConstructor.constructorFrontPocket':
-                        item.productFromConstructor.constructorFrontPocket,
-                      'fromConstructor.constructorPattern':
-                        item.productFromConstructor.constructorPattern,
-                      quantity: item.quantity,
-                      'options.size': item.options.size,
-                      price: itemPrice,
-                    },
+                $push: {
+                  'cart.items': {
+                    'fromConstructor.product':
+                      item.productFromConstructor.product,
+                    'fromConstructor.constructorBasics':
+                      item.productFromConstructor.constructorBasics,
+                    'fromConstructor.constructorBottom':
+                      item.productFromConstructor.constructorBottom,
+                    'fromConstructor.constructorFrontPocket':
+                      item.productFromConstructor.constructorFrontPocket,
+                    'fromConstructor.constructorPattern':
+                      item.productFromConstructor.constructorPattern,
+                    quantity: item.quantity,
+                    'options.size': item.options.size,
+                    price: itemPrice,
                   },
-                }
-              ).exec();
-            }
+                },
+              }
+            ).exec();
           }
-        })
-      );
-    }
+        }
+      })
+    );
+
     const { cart } = await UserModel.findById(id, 'cart ').exec();
 
-    const totalPrice = await setTotalCartSum(cart?.items);
+    const totalPrice = await setTotalCartSum(cart.items);
 
     return UserModel.findByIdAndUpdate(
       id,
