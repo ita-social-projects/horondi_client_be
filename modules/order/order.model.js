@@ -8,6 +8,9 @@ const {
 const {
   ORDER_STATUSES: { CREATED },
 } = require('../../consts/order-statuses');
+const {
+  DB_COLLECTIONS_NAMES: { ORDER },
+} = require('../../consts/db-collections-names');
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
@@ -63,4 +66,4 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = mongoose.model(ORDER, orderSchema);
