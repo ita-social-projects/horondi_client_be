@@ -75,6 +75,11 @@ const {
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
 
 const {
+  cartPermissionsMutations,
+  cartPermissionsQuery,
+} = require('./modules/cart/cart.permissions');
+
+const {
   commentPermissionsMutations,
   commentPermissionsQuery,
 } = require('./modules/comment/comment.permissions');
@@ -87,6 +92,7 @@ const {
 const permissions = shield(
   {
     Query: {
+      ...cartPermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
@@ -106,6 +112,7 @@ const permissions = shield(
       ...pocketPermissionsQuery,
     },
     Mutation: {
+      ...cartPermissionsMutations,
       ...userPermissionsMutation,
       ...patternPermissionsMutations,
       ...materialPermissionsMutations,

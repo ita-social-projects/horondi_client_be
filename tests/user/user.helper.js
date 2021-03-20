@@ -154,14 +154,6 @@ const loginUser = async (email, pass, operations) => {
             country
           }
           registrationDate
-          cart {
-            dimensions {
-              volumeInLiters
-            }
-            _id
-            sidePocket
-            selectedSize
-          }
           wishlist {
             _id
           }

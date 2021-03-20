@@ -15,7 +15,7 @@ type User{
     credentials: [Credential]
     registrationDate: String
     wishlist: [Product]
-    cart: [CartProduct]
+    cart: Cart
     orders:[ID]
     comments: [ID]
     banned: Boolean
@@ -42,22 +42,70 @@ input UserInput {
     wishlist: [ID]
     orders:[ID]
     comments: [ID]
+    cart: CartInput
     banned: Boolean
     confirmed: Boolean
 }`;
-const cartProductType = `
-type CartProduct {
-_id: ID!
-name: [Language]
-bagBottom: CartProductBagBottom
-dimensions: CartProductDimensions
-image: String
-totalPrice: [CurrencySet]
-quantity: Int
-selectedSize: String
-sidePocket: Boolean
-}
+const cartType = `
+  type Cart {
+    items: [CartItem]
+    totalPrice: [CurrencySet]
+    rememberMailCount: Int
+  }
+
+  type CartItem {
+    product: Product
+    productFromConstructor: ProductFromConstructor
+    quantity: Int
+    price: [CurrencySet]
+    options: Options
+  }
+  
+   type Options {
+    size: Size
+  } 
+  
+    type ProductFromConstructor {
+    product: Product
+    constructorBasics: ConstructorBasic
+    constructorBottom: ConstructorBottom    
+    constructorFrontPocket: ConstructorFrontPocket    
+    constructorPattern: Pattern
+  }
 `;
+const cartInput = ` 
+  input CartInput {
+    constructorBasics: ID!
+    constructorBottom: ID!
+    constructorFrontPocket: ID!
+    constructorPattern: ID!
+  }
+
+  input CartFromLSInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    quantity: Int!
+    options: OptionsInput
+  }
+  input RemoveItemsFromCartInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    options: OptionsInput
+  }
+  
+   input OptionsInput {
+    size: ID!
+  } 
+  
+    input ProductFromConstructorInput {
+      product: ID
+      constructorBasics: ID
+      constructorBottom: ID    
+      constructorFrontPocket: ID    
+      constructorPattern: ID
+  }
+`;
+
 const userUpdateInput = `
 input UserUpdateInput {
     _id: ID
@@ -150,5 +198,6 @@ module.exports = {
   userSortInput,
   tokenType,
   purchasedProductsType,
-  cartProductType,
+  cartType,
+  cartInput,
 };
