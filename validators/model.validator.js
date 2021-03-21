@@ -2,18 +2,22 @@ const Joi = require('joi');
 
 const modelValidator = Joi.object({
   category: Joi.string(),
-  name: Joi.object({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string().trim(),
-  }),
-  description: Joi.object({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string().trim(),
-  }),
+  name: Joi.array().items(
+    Joi.object({
+      lang: Joi.string()
+        .trim()
+        .required(),
+      value: Joi.string().trim(),
+    })
+  ),
+  description: Joi.array().items(
+    Joi.object({
+      lang: Joi.string()
+        .trim()
+        .required(),
+      value: Joi.string().trim(),
+    })
+  ),
   images: Joi.object({
     large: Joi.string().trim(),
     medium: Joi.string().trim(),
@@ -22,12 +26,12 @@ const modelValidator = Joi.object({
   }),
   priority: Joi.number().integer(),
   show: Joi.boolean(),
-  sizes: Joi.array().items(Joi.string()),
+  sizes: Joi.array().items(Joi.object()),
   availableForConstructor: Joi.boolean(),
-  constructorBasic: Joi.array().items(Joi.string()),
-  constructorPattern: Joi.array().items(Joi.string()),
-  constructorFrontPocket: Joi.array().items(Joi.string()),
-  constructorBottom: Joi.array().items(Joi.string()),
+  constructorBasic: Joi.array().items(Joi.object()),
+  constructorPattern: Joi.array().items(Joi.object()),
+  constructorFrontPocket: Joi.array().items(Joi.object()),
+  constructorBottom: Joi.array().items(Joi.object()),
 });
 
 module.exports = {
