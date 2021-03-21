@@ -166,6 +166,7 @@ const getOrderById = async (id, operations) => {
             paymentStatus
             userComment
             delivery {
+              byCourier
               sentBy
               invoiceNumber
               courierOffice
