@@ -26,12 +26,12 @@ const modelValidator = Joi.object({
   }),
   priority: Joi.number().integer(),
   show: Joi.boolean(),
-  sizes: Joi.array().items(Joi.object()),
+  sizes: Joi.array().items(Joi.string()),
   availableForConstructor: Joi.boolean(),
-  constructorBasic: Joi.array().items(Joi.object()),
-  constructorPattern: Joi.array().items(Joi.object()),
-  constructorFrontPocket: Joi.array().items(Joi.object()),
-  constructorBottom: Joi.array().items(Joi.object()),
+  constructorBasic: Joi.array().items(Joi.string()),
+  constructorPattern: Joi.array().items(Joi.string()),
+  constructorFrontPocket: Joi.array().items(Joi.string()),
+  constructorBottom: Joi.array().items(Joi.string()),
 });
 
 module.exports = {
