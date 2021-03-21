@@ -90,6 +90,8 @@ const {
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
 
+const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -106,7 +108,6 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
-
 const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
@@ -142,6 +143,8 @@ const SCHEMA_NAMES = {
 
 const resolvers = {
   Query: {
+    ...cartQuery,
+
     ...currencyQuery,
 
     ...materialQuery,
@@ -255,7 +258,50 @@ const resolvers = {
     closure: parent => closuresService.getClosureById(parent.closure),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
   },
-
+  Cart: {
+    items: parent =>
+      parent.items.map(item => {
+        if (item.product) {
+          return {
+            product: productsService.getProductById(item.product),
+            price: item.price,
+            quantity: item.quantity,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+            },
+          };
+        }
+        if (item.fromConstructor) {
+          return {
+            productFromConstructor: {
+              product: productsService.getProductById(
+                item.fromConstructor.product
+              ),
+              constructorBasics: constructorServices.getConstructorElementById(
+                item.fromConstructor.constructorBasics,
+                constructorBasicModel
+              ),
+              constructorBottom: constructorServices.getConstructorElementById(
+                item.fromConstructor.constructorBottom,
+                constructorBottomModel
+              ),
+              constructorFrontPocket: constructorServices.getConstructorElementById(
+                item.fromConstructor.constructorFrontPocket,
+                constructorFrontPocketModel
+              ),
+              constructorPattern: patternService.getPatternById(
+                item.fromConstructor.constructorPattern
+              ),
+            },
+            price: item.price,
+            quantity: item.quantity,
+            options: {
+              size: sizeService.getSizeById(item.options.size),
+            },
+          };
+        }
+      }),
+  },
   Order: {
     items: parent =>
       parent.items.map(item => {
@@ -361,6 +407,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...cartMutation,
+
     ...uploadMutation,
 
     ...patternMutation,
