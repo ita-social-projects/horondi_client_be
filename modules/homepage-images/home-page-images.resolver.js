@@ -1,4 +1,7 @@
 const homePageService = require('./home-page-images.service');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const homePageImagesQuery = {
   getHomePageLooksImages: async () => {
@@ -11,7 +14,7 @@ const homePageImagesMutation = {
     try {
       return await homePageService.updateHomePageLooksImage(args);
     } catch (e) {
-      return { statusCode: 400, message: e.message };
+      return { statusCode: BAD_REQUEST, message: e.message };
     }
   },
 
@@ -19,7 +22,7 @@ const homePageImagesMutation = {
     try {
       return await homePageService.addHomePageLooksImage(args);
     } catch (e) {
-      return { statusCode: 400, message: e.message };
+      return { statusCode: BAD_REQUEST, message: e.message };
     }
   },
 
@@ -27,7 +30,7 @@ const homePageImagesMutation = {
     try {
       return await homePageService.deleteHomePageLooksImage(args);
     } catch (e) {
-      return { statusCode: 404, message: e.message };
+      return { statusCode: NOT_FOUND, message: e.message };
     }
   },
 };

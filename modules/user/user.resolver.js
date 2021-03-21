@@ -1,4 +1,7 @@
 const userService = require('./user.service');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
@@ -12,7 +15,7 @@ const userQuery = {
       return userService.validateConfirmationToken(args.token);
     } catch (err) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: err.message,
       };
     }
@@ -62,7 +65,7 @@ const userMutation = {
       return await userService.switchUserStatus(args.id);
     } catch (err) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: err.message,
       };
     }
@@ -79,7 +82,7 @@ const userMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -89,7 +92,7 @@ const userMutation = {
       return await userService.registerAdmin(args.user);
     } catch (err) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: err.message,
       };
     }
@@ -99,7 +102,7 @@ const userMutation = {
       return await userService.completeAdminRegister(args.user, args.token);
     } catch (err) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: err.message,
       };
     }

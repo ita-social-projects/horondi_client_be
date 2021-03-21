@@ -1,7 +1,7 @@
 const INPUT_FIELDS = {
   USER: 'user',
   CATEGORY: 'category',
-  QUANTITY: 'quantity'
+  QUANTITY: 'quantity',
 };
 
 module.exports = {
