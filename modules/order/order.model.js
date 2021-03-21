@@ -14,6 +14,34 @@ const {
   EMAIL_NOT_VALID,
   EMAIL_IS_REQUIRED,
 } = require('../../error-messages/common.messages');
+const {
+  ORDER_STATUSES: {
+    DELIVERED,
+    SENT,
+    PRODUCED,
+    CANCELLED,
+    REFUNDED,
+    CONFIRMED,
+    CREATED,
+  },
+} = require('../../consts/order-statuses');
+const {
+  PAYMENT_TYPES: { CARD, CASH },
+} = require('../../consts/payment-types');
+const {
+  PAYMENT_STATUSES: {
+    PAYMNET_CREATED,
+    PAYMENT_EXPIRED,
+    PAYMENT_APPROVED,
+    PAYMENT_DECLINED,
+    PAYMENT_REVERSED,
+    PAYMENT_PROCESSING,
+    PAYMENT_PAID,
+  },
+} = require('../../consts/payment-statuses');
+const {
+  DB_COLLECTIONS_NAMES: { ORDER },
+} = require('../../consts/db-collections-names');
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
@@ -21,16 +49,8 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: [
-      'CREATED',
-      'CONFIRMED',
-      'PRODUCED',
-      'CANCELLED',
-      'REFUNDED',
-      'SENT',
-      'DELIVERED',
-    ],
-    default: 'CREATED',
+    enum: [CREATED, CONFIRMED, PRODUCED, CANCELLED, REFUNDED, SENT, DELIVERED],
+    default: CREATED,
   },
   user: {
     firstName: {
@@ -88,8 +108,8 @@ const orderSchema = new mongoose.Schema({
   totalPriceToPay: [CurrencySet],
   paymentMethod: {
     type: String,
-    enum: ['CARD', 'CASH'],
-    default: 'CASH',
+    enum: [CARD, CASH],
+    default: CASH,
   },
   isPaid: {
     type: Boolean,
@@ -98,16 +118,16 @@ const orderSchema = new mongoose.Schema({
   paymentStatus: {
     type: String,
     enum: [
-      'CREATED',
-      'EXPIRED',
-      'APPROVED',
-      'DECLINED',
-      'REVERSED',
-      'PROCESSING',
-      'PAID',
+      PAYMNET_CREATED,
+      PAYMENT_EXPIRED,
+      PAYMENT_APPROVED,
+      PAYMENT_DECLINED,
+      PAYMENT_REVERSED,
+      PAYMENT_PROCESSING,
+      PAYMENT_PAID,
     ],
-    default: 'CREATED',
+    default: PAYMNET_CREATED,
   },
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = mongoose.model(ORDER, orderSchema);

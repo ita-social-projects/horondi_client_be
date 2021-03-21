@@ -10,6 +10,7 @@ const { htmlTemplates } = require('../../email-templates');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
+
 class EmailService {
   async sendEmail(email, action, context = {}) {
     const templateInfo = htmlTemplates[action];

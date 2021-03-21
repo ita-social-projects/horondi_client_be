@@ -1,6 +1,9 @@
 const modelsService = require('./model.service');
 const { MODEL_NOT_FOUND } = require('../../error-messages/model.messages');
 const modelService = require('./model.service');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const modelsQuery = {
   getAllModels: async (parent, args) => await modelsService.getAllModels(args),
@@ -13,7 +16,7 @@ const modelsQuery = {
       return await modelService.getModelById(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -24,7 +27,7 @@ const modelsQuery = {
       return await modelService.getModelsForConstructor();
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -37,7 +40,7 @@ const modelsMutation = {
       return await modelsService.addModel(args.model, args.upload);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -48,7 +51,7 @@ const modelsMutation = {
       return await modelService.updateModel(args.id, args.model, args.upload);
     } catch (e) {
       return {
-        statusCode: e.message === MODEL_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === MODEL_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
@@ -59,7 +62,7 @@ const modelsMutation = {
       return await modelsService.deleteModel(args.id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -73,7 +76,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -86,7 +89,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -99,7 +102,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -112,7 +115,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -125,7 +128,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -138,7 +141,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -151,7 +154,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }
@@ -164,7 +167,7 @@ const modelsMutation = {
       );
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: MODEL_NOT_FOUND,
       };
     }

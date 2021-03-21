@@ -74,7 +74,6 @@
     "nodemailer": "^6.4.10",
     "nodemailer-smtp-transport": "^2.7.4",
     "npm-force-resolutions": "0.0.3",
-    "open": "^8.0.2",
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
@@ -104,9 +103,10 @@
     "jest": "^26.3.0",
     "jest-sonar-reporter": "^2.0.0",
     "lint-staged": "^10.2.9",
+    "node-cron": "^3.0.0",
+    "@types/node-cron": "^2.0.3",
     "nodemon": "^2.0.4",
-    "prettier": "^1.19.1",
-    "react-dev-utils": "^11.0.4"
+    "prettier": "^1.19.1"
   },
   "engines": {
     "node": "=14.15.4"

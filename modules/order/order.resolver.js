@@ -9,7 +9,7 @@ const ordersQuery = {
       return order;
     }
     return {
-      statusCode: 404,
+      statusCode: NOT_FOUND,
       message: ORDER_NOT_FOUND,
     };
   },
@@ -35,7 +35,7 @@ const ordersMutation = {
       return await ordersService.addOrder(args.order);
     } catch (e) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: e.message,
       };
     }
@@ -46,7 +46,7 @@ const ordersMutation = {
       return deletedOrder;
     }
     return {
-      statusCode: 404,
+      statusCode: NOT_FOUND,
       message: ORDER_NOT_FOUND,
     };
   },
@@ -55,7 +55,7 @@ const ordersMutation = {
       return await ordersService.updateOrder(args.order, args.id);
     } catch (e) {
       return {
-        statusCode: e.message === ORDER_NOT_FOUND ? 404 : 400,
+        statusCode: e.message === ORDER_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
         message: e.message,
       };
     }
