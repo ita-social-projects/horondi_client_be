@@ -29,6 +29,7 @@ const DB_COLLECTIONS_NAMES = {
   HOME_PAGE_SLIDE: 'HomePageSlide',
   NEWS: 'News',
   ORDER: 'Order',
+  CART: 'Cart',
 };
 
 module.exports = {
