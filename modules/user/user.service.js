@@ -3,15 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
-const {
-  validateRegisterInput,
-  validateLoginInput,
-  validateUpdateInput,
-  validateNewPassword,
-  validateSendConfirmation,
-  validateAdminRegisterInput,
-} = require('../../utils/validate-user');
-const generateToken = require('../../utils/create-token');
+const generateTokens = require('../../utils/create-tokens');
 const {
   EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
 } = require('../../consts/email-actions');
@@ -23,15 +15,15 @@ const {
   CONFIRMATION_SECRET,
   NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
+  TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
-  removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
-const { generateRefreshToken } = require('../../utils/token');
+const verifyUser = require('../../utils/verify-user');
 
 const {
   USER_ALREADY_EXIST,
@@ -44,9 +36,7 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
-  ID_NOT_PROVIDED,
   SESSION_TIMEOUT,
-  INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -165,18 +155,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserById(updatedUser, user, upload) {
-    const { firstName, lastName, email } = updatedUser;
-
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     if (user.email !== updatedUser.email) {
       const existingUser = await User.findOne({
         email: updatedUser.email,
@@ -204,17 +182,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserByToken(updatedUser, user) {
-    const { firstName, lastName, email } = updatedUser;
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     return User.findByIdAndUpdate(
       user._id,
       {
@@ -226,15 +193,6 @@ class UserService extends FilterHelper {
   }
 
   async loginAdmin({ email, password }) {
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     const match = await bcrypt.compare(
       password,
@@ -250,28 +208,24 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
-
-    const token = generateToken(user._id, user.email);
+    const { accesToken, refreshToken } = generateTokens(
+      user._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      true
+    );
 
     return {
       ...user._doc,
       _id: user._id,
-      token,
+      token: accesToken,
+      refreshToken,
     };
   }
 
   async loginUser({ email, password, staySignedIn }) {
-    let refreshToken;
-
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
@@ -286,41 +240,36 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
-
-    const token = generateToken(user._id, user.email);
-
-    if (staySignedIn) {
-      refreshToken = generateRefreshToken(user);
-    }
+    const { accesToken, refreshToken } = generateTokens(
+      user._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      staySignedIn
+    );
 
     return {
       ...user._doc,
       _id: user._id,
+      token: accesToken,
       refreshToken,
-      token,
     };
   }
 
-  async regenerateAccessToken(refreshToken) {
-    let decoded;
+  async regenerateAccessToken(refreshTokenForVerify) {
+    const { userId } = verifyUser(refreshTokenForVerify);
 
-    try {
-      decoded = jwt.verify(refreshToken, SECRET);
-    } catch (err) {
-      throw new UserInputError(SESSION_TIMEOUT, { statusCode: BAD_REQUEST });
+    if (!userId) {
+      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
     }
-
-    if (!decoded.isRefreshToken) {
-      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: BAD_REQUEST });
-    }
-
-    await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
-
-    const token = generateToken(decoded.userId, decoded.email);
-
-    return {
-      token,
-    };
+    await this.getUserByFieldOrThrow('_id', userId);
+    const { accesToken, refreshToken } = generateTokens(
+      userId,
+      { expiresIn: TOKEN_EXPIRES_IN, secret: SECRET },
+      true
+    );
+    return { refreshToken, token: accesToken };
   }
 
   async googleUser(idToken, staySignedIn) {
@@ -351,22 +300,24 @@ class UserService extends FilterHelper {
   }
 
   async loginGoogleUser({ email, staySignedIn }) {
-    let refreshToken;
-
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
-    const token = generateToken(user._id, user.email);
+    const { accesToken, refreshToken } = generateTokens(
+      user._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      staySignedIn
+    );
 
-    if (staySignedIn) {
-      refreshToken = generateRefreshToken(user);
-    }
     return {
       ...user._doc,
       _id: user._id,
-      token,
+      token: accesToken,
       refreshToken,
     };
   }
@@ -407,33 +358,31 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const token = generateToken(savedUser._id, savedUser.email, {
+    const { accesToken } = generateTokens(savedUser._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
 
-    savedUser.confirmationToken = token;
+    savedUser.confirmationToken = accesToken;
 
-    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
-
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { accesToken });
     await savedUser.save();
 
     return savedUser;
   }
 
   async sendConfirmationLetter(email, language) {
-    await validateSendConfirmation.validateAsync({ email, language });
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const token = generateToken(user._id, user.email, {
+    const { accesToken } = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
-    user.confirmationToken = token;
+    user.confirmationToken = accesToken;
     await user.save();
-    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { token });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { accesToken });
     return true;
   }
 
@@ -462,12 +411,12 @@ class UserService extends FilterHelper {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
     }
 
-    const token = generateToken(user._id, user.email, {
+    const { accesToken } = generateTokens(user._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
-    user.recoveryToken = token;
-    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { token });
+    user.recoveryToken = accesToken;
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { accesToken });
     await user.save();
     return true;
   }
@@ -483,7 +432,6 @@ class UserService extends FilterHelper {
   }
 
   async resetPassword(password, token) {
-    await validateNewPassword.validateAsync({ password });
     const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
@@ -522,12 +470,6 @@ class UserService extends FilterHelper {
   async registerAdmin(userInput) {
     const { email, role } = userInput;
 
-    try {
-      await validateAdminRegisterInput.validateAsync({ email, role });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
@@ -538,7 +480,11 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = generateToken(savedUser._id, savedUser.email);
+    const { accesToken } = generateTokens(savedUser._id, {
+      expiresIn: TOKEN_EXPIRES_IN,
+      secret: SECRET,
+    });
+    const invitationalToken = accesToken;
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
@@ -550,16 +496,6 @@ class UserService extends FilterHelper {
   async completeAdminRegister(updatedUser, token) {
     const { firstName, lastName, password } = updatedUser;
     let decoded;
-
-    try {
-      await validateRegisterInput.validateAsync({
-        firstName,
-        lastName,
-        password,
-      });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
 
     try {
       decoded = jwt.verify(token, SECRET);

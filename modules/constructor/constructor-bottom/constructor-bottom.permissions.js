@@ -3,9 +3,8 @@ const { hasRoles } = require('../../../utils/rules');
 const { roles } = require('../../../consts');
 const { ADMIN, SUPERADMIN } = roles;
 const {
-  addConstructorBottomValidator,
-  updateConstructorBottomValidator,
-} = require('../../../validators/constructor-basic.validator');
+  constructorValidator,
+} = require('../../../validators/constructor.validator');
 const {
   INPUT_FIELDS: { CONSTRUCTOR_ELEMENT },
 } = require('../../../consts/input-fields');
@@ -18,10 +17,10 @@ const сonstructorBottomPermissionsQuery = {
 
 const сonstructorBottomPermissionsMutations = {
   addConstructorBottom:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, addConstructorBottomValidator),
+    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
     hasRoles([ADMIN, SUPERADMIN])),
   updateConstructorBottom:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, updateConstructorBottomValidator),
+    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
     hasRoles([ADMIN, SUPERADMIN])),
   deleteConstructorBottom: hasRoles([ADMIN, SUPERADMIN]),
 };
