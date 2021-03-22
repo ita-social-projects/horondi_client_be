@@ -3,14 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
-const {
-  validateRegisterInput,
-  validateLoginInput,
-  validateUpdateInput,
-  validateNewPassword,
-  validateSendConfirmation,
-  validateAdminRegisterInput,
-} = require('../../utils/validate-user');
 const generateToken = require('../../utils/create-token');
 const {
   EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
@@ -25,7 +17,6 @@ const {
   REACT_APP_GOOGLE_CLIENT_ID,
 } = require('../../dotenvValidator');
 const {
-  removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
   reduceByDaysCount,
@@ -44,7 +35,6 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
-  ID_NOT_PROVIDED,
   SESSION_TIMEOUT,
   INVALID_TOKEN_TYPE,
 } = require('../../error-messages/user.messages');
@@ -165,18 +155,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserById(updatedUser, user, upload) {
-    const { firstName, lastName, email } = updatedUser;
-
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     if (user.email !== updatedUser.email) {
       const existingUser = await User.findOne({
         email: updatedUser.email,
@@ -204,17 +182,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserByToken(updatedUser, user) {
-    const { firstName, lastName, email } = updatedUser;
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     return User.findByIdAndUpdate(
       user._id,
       {
@@ -226,15 +193,6 @@ class UserService extends FilterHelper {
   }
 
   async loginAdmin({ email, password }) {
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     const match = await bcrypt.compare(
       password,
@@ -262,15 +220,6 @@ class UserService extends FilterHelper {
 
   async loginUser({ email, password, staySignedIn }) {
     let refreshToken;
-
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
 
     const user = await User.findOne({ email }).exec();
 
@@ -422,7 +371,6 @@ class UserService extends FilterHelper {
   }
 
   async sendConfirmationLetter(email, language) {
-    await validateSendConfirmation.validateAsync({ email, language });
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
@@ -483,7 +431,6 @@ class UserService extends FilterHelper {
   }
 
   async resetPassword(password, token) {
-    await validateNewPassword.validateAsync({ password });
     const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
@@ -522,12 +469,6 @@ class UserService extends FilterHelper {
   async registerAdmin(userInput) {
     const { email, role } = userInput;
 
-    try {
-      await validateAdminRegisterInput.validateAsync({ email, role });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
-
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
@@ -550,16 +491,6 @@ class UserService extends FilterHelper {
   async completeAdminRegister(updatedUser, token) {
     const { firstName, lastName, password } = updatedUser;
     let decoded;
-
-    try {
-      await validateRegisterInput.validateAsync({
-        firstName,
-        lastName,
-        password,
-      });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: BAD_REQUEST });
-    }
 
     try {
       decoded = jwt.verify(token, SECRET);
