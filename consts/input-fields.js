@@ -1,5 +1,6 @@
 const INPUT_FIELDS = {
   USER: 'user',
+  CATEGORY: 'category',
   QUANTITY: 'quantity',
 };
 
