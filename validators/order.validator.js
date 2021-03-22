@@ -181,19 +181,6 @@ const orderValidator = Joi.object({
 const getAllOrdersValidator = {
   limitValidator: Joi.number(),
   skipValidator: Joi.number(),
-  filterValidator: Joi.object({
-    pattern: Joi.array().has(Joi.string()),
-    materials: Joi.array().has(Joi.string()),
-    colors: Joi.array().has(Joi.string()),
-    price: Joi.array().has(Joi.number()),
-    category: Joi.array().has(Joi.string()),
-    search: Joi.string(),
-    isHotItem: Joi.boolean(),
-    models: Joi.array().has(Joi.string()),
-    currency: Joi.number(),
-    emailQuestionStatus: Joi.array().has(Joi.string()),
-    orderStatus: Joi.array().has(Joi.string()),
-  }),
 };
 
 const getOrdersStatisticValidator = Joi.number().required();

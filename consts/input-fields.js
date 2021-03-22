@@ -8,7 +8,6 @@ const INPUT_FIELDS = {
   ORDER: 'order',
   LIMIT: 'limit',
   SKIP: 'skip',
-  FILTER: 'filter',
   DATE: 'date',
 };
 

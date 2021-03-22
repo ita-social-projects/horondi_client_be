@@ -18,8 +18,7 @@ const orderPermissionsMutation = {
 const orderPermissionsQuery = {
   getAllOrders: and(
     inputDataValidation(LIMIT, getAllOrdersValidator.limitValidator),
-    inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
-    inputDataValidation(FILTER, getAllOrdersValidator.filterValidator)
+    inputDataValidation(SKIP, getAllOrdersValidator.skipValidator)
   ),
   getPaidOrdersStatistic: inputDataValidation(
     DATE,
