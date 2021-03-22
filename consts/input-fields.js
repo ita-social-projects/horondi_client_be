@@ -3,6 +3,7 @@ const INPUT_FIELDS = {
   LOGIN_INPUT: 'loginInput',
   EMAIL: 'email',
   PASSWORD: 'password',
+  CATEGORY: 'category',
   QUANTITY: 'quantity',
 };
 
