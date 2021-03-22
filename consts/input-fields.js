@@ -5,6 +5,10 @@ const INPUT_FIELDS = {
   PASSWORD: 'password',
   CATEGORY: 'category',
   QUANTITY: 'quantity',
+  ORDER: 'order',
+  LIMIT: 'limit',
+  SKIP: 'skip',
+  DATE: 'date',
 };
 
 module.exports = {
