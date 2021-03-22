@@ -33,7 +33,6 @@ class OrdersService {
       .limit(limit)
       .exec();
 
-    console.log(items);
     const count = await Order.find(filters).countDocuments();
     return {
       items,
