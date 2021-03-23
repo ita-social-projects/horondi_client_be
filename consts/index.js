@@ -39,6 +39,16 @@ const imageQualities = {
   thumbnail: 128,
 };
 
+const IMAGES_CONTAINER = 'images';
+const SOURCES = {
+  HORONDI: 'horondi',
+  GOOGLE: 'google',
+};
+const USER_FIELDS = {
+  USER_EMAIL: 'email',
+  USER_ID: '_id',
+};
+
 const getUkrPoshtaRegionsUrl = 'get_regions_by_region_ua';
 const getUkrPoshtaDistrictsByRegionIdUrl = `get_districts_by_region_id_and_district_ua?region_id=`;
 const getUkrPoshtaCitiesByDistrictIdUrl = `get_city_by_region_id_and_district_id_and_city_ua?district_id=`;
@@ -65,4 +75,7 @@ module.exports = {
   THREE_DAYS,
   TWO_WEEKS,
   imageQualities,
+  IMAGES_CONTAINER,
+  SOURCES,
+  USER_FIELDS,
 };

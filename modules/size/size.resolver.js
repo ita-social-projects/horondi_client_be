@@ -1,4 +1,7 @@
 const sizeService = require('./size.service');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 
 const sizeQuery = {
   getAllSizes: () => sizeService.getAllSizes(),
@@ -8,7 +11,7 @@ const sizeQuery = {
       return await sizeService.getSizeById(id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -21,7 +24,7 @@ const sizeMutation = {
       return await sizeService.addSize(size);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -32,7 +35,7 @@ const sizeMutation = {
       return await sizeService.deleteSize(id);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
@@ -43,7 +46,7 @@ const sizeMutation = {
       return await sizeService.updateSize(id, size);
     } catch (e) {
       return {
-        statusCode: 404,
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }
