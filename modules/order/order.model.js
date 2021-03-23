@@ -45,7 +45,14 @@ const {
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
-  paidOrderNumber: String,
+  signature: {
+    type: String,
+    default: '',
+  },
+  paymentUrl: {
+    type: String,
+    default: '',
+  },
   status: {
     type: String,
     required: true,

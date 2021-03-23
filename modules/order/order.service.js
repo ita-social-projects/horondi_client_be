@@ -29,6 +29,14 @@ const {
 } = require('../../utils/order.utils');
 
 class OrdersService {
+  async getOrderByPaidOrderNumber(orderNumber) {
+    const order = await Order.findOne({ orderNumber }).exec();
+
+    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    return order;
+  }
+
   async getAllOrders({ skip, limit, filter = {} }) {
     const { orderStatus } = filter;
 
@@ -54,16 +62,6 @@ class OrdersService {
     if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
 
     return foundOrder;
-  }
-
-  async getOrderByPaidOrderNumber(paidOrderNumber) {
-    const order = await Order.findOne({ paidOrderNumber }).exec();
-
-    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-    if (order.paymentStatus !== PAID)
-      throw new RuleError(ORDER_IS_NOT_PAID, BAD_REQUEST);
-
-    return order;
   }
 
   async updateOrder(order, id) {

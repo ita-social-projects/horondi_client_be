@@ -1,9 +1,10 @@
 const orderTypes = `
 type Order {
   _id: ID!
-  orderNumber: String
-  paidOrderNumber: String
-  status: Status,
+  orderNumber: String,
+  signature: String
+  paymentUrl: String
+  status: Status
   user: OrderUser
   dateOfCreation: String
   lastUpdatedDate: String

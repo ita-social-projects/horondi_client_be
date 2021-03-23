@@ -3,7 +3,7 @@ const ConstructorBasic = require('../modules/constructor/constructor-basic/const
 const ConstructorFrontPocket = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../modules/size/size.model');
-const crypto = require('crypto');
+const { default: ShortUniqueId } = require('short-unique-id');
 
 async function calculateTotalItemsPrice(items) {
   return items.reduce(
@@ -84,7 +84,9 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
 }
 
 function generateOrderNumber() {
-  return crypto.randomInt(1000000000);
+  const uid = new ShortUniqueId();
+
+  return uid();
 }
 
 module.exports = {

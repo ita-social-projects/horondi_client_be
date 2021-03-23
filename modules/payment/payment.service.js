@@ -1,10 +1,17 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-
+const {
+  PAYMENT_MERCHANT_ID,
+  PAYMENT_SECRET,
+} = require('../../dotenvValidator');
+const { generatePaymentSignature } = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
 const {
   PAYMENT_DESCRIPTION,
   PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
 } = require('../../consts/payments');
+const {
+  PAYMENT_STATUSES: { PAYMENT_PROCESSING },
+} = require('../../consts/payment-statuses');
 const {
   STATUS_CODES: { BAD_REQUEST, FORBIDDEN },
 } = require('../../consts/status-codes');
@@ -14,8 +21,7 @@ const {
   ORDER_IS_NOT_PAID,
 } = require('../../error-messages/orders.messages');
 const OrderModel = require('../order/order.model');
-const { paymentWorker } = require('../../helpers/payment-worker');
-const { generateOrderNumber } = require('../../utils/order.utils');
+const { paymentController } = require('../../helpers/payment-controller');
 const {
   ORDER_PAYMENT_STATUS: { APPROVED, PAID },
 } = require('../../consts/order-payment-status');
@@ -28,40 +34,47 @@ class PaymentService {
     const isOrderPresent = await OrderModel.findById(orderId).exec();
 
     if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-
-    await paymentWorker(GO_TO_CHECKOUT, {
+    const b = `${PAYMENT_SECRET}|${amount}|${currency}|${PAYMENT_MERCHANT_ID}|${PAYMENT_DESCRIPTION}|${isOrderPresent.orderNumber}`;
+    const signature = generatePaymentSignature(b);
+    console.log(b);
+    console.log(signature);
+    const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       order_id: isOrderPresent.orderNumber,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
       amount,
+      signature,
     });
 
-    const newOrderNumber = generateOrderNumber();
-
-    return OrderModel.findByIdAndUpdate(
-      orderId,
-      {
-        $set: {
-          paidOrderNumber: isOrderPresent.orderNumber,
-          orderNumber: newOrderNumber,
+    if (paymentUrl) {
+      return OrderModel.findByIdAndUpdate(
+        orderId,
+        {
+          $set: {
+            signature,
+            paymentUrl,
+            paymentStatus: PAYMENT_PROCESSING,
+          },
         },
-      },
-      { new: true }
-    ).exec();
+        { new: true }
+      ).exec();
+    }
   }
 
   async checkPaymentStatus(req, res) {
     try {
-      const { order_id } = req.body;
+      // const { order_id } = req.body;
 
-      const { order_id: paidOrderNumber, order_status } = await paymentWorker(
-        CHECK_PAYMENT_STATUS,
-        {
-          order_id,
-        }
-      );
-
-      const order = await OrderModel.findOne({ paidOrderNumber }).exec();
+      const {
+        order_id: orderNumber,
+        order_status,
+        signature,
+      } = await paymentController(CHECK_PAYMENT_STATUS, {
+        order_id: '4hp0K5',
+      });
+      console.log('************');
+      console.log(signature);
+      const order = await OrderModel.findOne({ orderNumber }).exec();
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
@@ -69,7 +82,9 @@ class PaymentService {
         throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
 
       await OrderModel.findByIdAndUpdate(order._id, {
-        $set: { paymentStatus: PAID },
+        $set: {
+          paymentStatus: PAID,
+        },
       }).exec();
 
       res.end();

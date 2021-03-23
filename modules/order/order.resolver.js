@@ -1,6 +1,9 @@
 const ordersService = require('./order.service');
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
 const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+} = require('../../consts/status-codes');
 
 const ordersQuery = {
   getOrderById: async (parent, args) => {
