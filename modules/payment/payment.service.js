@@ -65,7 +65,6 @@ class PaymentService {
   async checkPaymentStatus(req, res) {
     try {
       // const { order_id } = req.body;
-
       const { order_id, order_status } = await paymentController(
         CHECK_PAYMENT_STATUS,
         {
