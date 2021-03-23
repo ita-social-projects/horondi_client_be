@@ -58,7 +58,7 @@ let constructorBasicId;
 let closureId;
 let productInput;
 
-describe('Order mutations', () => {
+describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
