@@ -34,10 +34,11 @@ class PaymentService {
     const isOrderPresent = await OrderModel.findById(orderId).exec();
 
     if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-    const b = `${PAYMENT_SECRET}|${amount}|${currency}|${PAYMENT_MERCHANT_ID}|${PAYMENT_DESCRIPTION}|${isOrderPresent.orderNumber}`;
-    const signature = generatePaymentSignature(b);
-    console.log(b);
-    console.log(signature);
+
+    const signature = generatePaymentSignature(
+      `${PAYMENT_SECRET}|${amount}|${currency}|${PAYMENT_MERCHANT_ID}|${PAYMENT_DESCRIPTION}|${isOrderPresent.orderNumber}`
+    );
+
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       order_id: isOrderPresent.orderNumber,
       order_desc: PAYMENT_DESCRIPTION,
@@ -65,16 +66,14 @@ class PaymentService {
     try {
       // const { order_id } = req.body;
 
-      const {
-        order_id: orderNumber,
-        order_status,
-        signature,
-      } = await paymentController(CHECK_PAYMENT_STATUS, {
-        order_id: '4hp0K5',
-      });
-      console.log('************');
-      console.log(signature);
-      const order = await OrderModel.findOne({ orderNumber }).exec();
+      const { order_id, order_status } = await paymentController(
+        CHECK_PAYMENT_STATUS,
+        {
+          order_id: 'kRPR6M',
+        }
+      );
+
+      const order = await OrderModel.findOne({ orderNumber: order_id }).exec();
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
