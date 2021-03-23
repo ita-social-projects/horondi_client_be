@@ -1,9 +1,9 @@
-const { Error } = require('mongoose');
+const _ = require('lodash');
+
 const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
-const _ = require('lodash');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -32,6 +32,10 @@ const {
   },
 } = require('../../consts/product-features');
 const { getCurrencySign } = require('../../utils/product-service');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { FORBIDDEN },
+} = require('../../consts/status-codes');
 
 class ProductsService {
   async getProductById(id) {
@@ -169,14 +173,16 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
+    productData.images = { primary: {}, additional: [] };
+
     const product = await Product.findById(id)
       .lean()
       .exec();
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new RuleError(PRODUCT_NOT_FOUND, FORBIDDEN);
     }
     if (_.isMatch(productData, product)) {
-      throw new Error(PRODUCT_HAS_NOT_CHANGED);
+      throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
     if (primary) {
       await uploadService.deleteFiles(
