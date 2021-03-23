@@ -1,4 +1,4 @@
-const { or, allow } = require('graphql-shield');
+const { or, allow, and } = require('graphql-shield');
 
 const {
   isAuthorized,
@@ -9,9 +9,17 @@ const {
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
-const { createUserValidator } = require('../../validators/user.validator');
 const {
-  INPUT_FIELDS: { USER },
+  createUserValidator,
+  loginUserValidator,
+  emailUserValidator,
+  resetPasswordValidator,
+  completeAdminRegisterValidator,
+  registerAdminValidator,
+  updateUserValidator,
+} = require('../../validators/user.validator');
+const {
+  INPUT_FIELDS: { USER, LOGIN_INPUT, EMAIL, PASSWORD },
 } = require('../../consts/input-fields');
 
 const userPermissionsQuery = {
@@ -23,21 +31,36 @@ const userPermissionsQuery = {
 };
 const userPermissionsMutation = {
   registerUser: inputDataValidation(USER, createUserValidator),
-  loginUser: allow,
-  loginAdmin: allow,
+  loginUser: inputDataValidation(LOGIN_INPUT, loginUserValidator),
+  loginAdmin: inputDataValidation(LOGIN_INPUT, loginUserValidator),
   deleteUser: hasRoles([SUPERADMIN]),
-  updateUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
-  updateUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
+  updateUserById: and(
+    inputDataValidation(USER, updateUserValidator),
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+  ),
+  updateUserByToken: and(
+    inputDataValidation(USER, updateUserValidator),
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+  ),
   regenerateAccessToken: allow,
   confirmUser: allow,
   confirmUserEmail: allow,
-  recoverUser: allow,
+  recoverUser: inputDataValidation(EMAIL, emailUserValidator),
   switchUserStatus: hasRoles([ADMIN, SUPERADMIN]),
-  resetPassword: allow,
+  resetPassword: inputDataValidation(PASSWORD, resetPasswordValidator),
   checkIfTokenIsValid: allow,
-  sendEmailConfirmation: isAuthorized,
-  registerAdmin: hasRoles([SUPERADMIN]),
-  completeAdminRegister: allow,
+  sendEmailConfirmation: and(
+    inputDataValidation(EMAIL, emailUserValidator),
+    isAuthorized
+  ),
+  registerAdmin: and(
+    inputDataValidation(USER, registerAdminValidator),
+    hasRoles([SUPERADMIN])
+  ),
+  completeAdminRegister: inputDataValidation(
+    USER,
+    completeAdminRegisterValidator
+  ),
   addProductToWishlist: isTheSameUser,
   removeProductFromWishlist: isTheSameUser,
 };
