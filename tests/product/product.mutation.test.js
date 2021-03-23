@@ -146,7 +146,7 @@ describe('Order mutations', () => {
 
     expect(res).toBeDefined();
     expect(res.message).toBe(PRODUCT_NOT_FOUND);
-    expect(res.statusCode).toBe(404);
+    expect(res.statusCode).toBe(403);
   });
   test('#4 Should return Error PRODUCT_ALREADY_EXIST', async () => {
     const products = await createProduct(
