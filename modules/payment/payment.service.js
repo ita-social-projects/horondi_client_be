@@ -54,12 +54,9 @@ class PaymentService {
   }
 
   async checkPaymentStatus(req, res) {
-    console.log('first');
-    console.log(req);
-    console.log(res);
     try {
       const { order_id } = req.body;
-      console.log(order_id);
+
       const {
         order_status,
         response_signature_string,
@@ -67,21 +64,21 @@ class PaymentService {
       } = await paymentController(CHECK_PAYMENT_STATUS, {
         order_id,
       });
-      console.log(order_status, response_signature_string, signature);
+
       const signatureWithoutFirstParam = response_signature_string
         .split('|')
         .slice(1);
-      console.log(signatureWithoutFirstParam);
+
       const signatureToCheck = PAYMENT_SECRET.split(' ')
         .concat(signatureWithoutFirstParam)
         .join('|');
-      console.log(signatureToCheck);
+
       const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
-      console.log(signSignatureToCheck);
+
       const order = await OrderModel.findOne({ orderNumber: order_id }).exec();
-      console.log(order);
+
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-      console.log(signature !== signSignatureToCheck);
+
       if (
         order_status !== APPROVED.toLowerCase() ||
         signature !== signSignatureToCheck
