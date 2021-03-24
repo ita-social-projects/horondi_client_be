@@ -65,7 +65,7 @@ class PaymentService {
       } = await paymentController(CHECK_PAYMENT_STATUS, {
         order_id,
       });
-
+      console.log(order_status, response_signature_string, signature);
       const signatureWithoutFirstParam = response_signature_string
         .split('|')
         .slice(1);
