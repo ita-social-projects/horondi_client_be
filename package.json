@@ -6,7 +6,7 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ita-social-projects/horondi_client_be"
+    "url": "git+https://github.com/ita-social-projects/horondi_client_be.git"
   },
   "private": "true",
   "resolutions": {
@@ -125,5 +125,12 @@
   },
   "jest": {
     "collectCoverage": true
+  },
+  "bugs": {
+    "url": "https://github.com/ita-social-projects/horondi_client_be/issues"
+  },
+  "homepage": "https://github.com/ita-social-projects/horondi_client_be#readme",
+  "directories": {
+    "test": "tests"
   }
 }

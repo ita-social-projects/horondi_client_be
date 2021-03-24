@@ -58,7 +58,7 @@ let constructorBasicId;
 let closureId;
 let productInput;
 
-describe('Order mutations', () => {
+describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
@@ -146,7 +146,7 @@ describe('Order mutations', () => {
 
     expect(res).toBeDefined();
     expect(res.message).toBe(PRODUCT_NOT_FOUND);
-    expect(res.statusCode).toBe(404);
+    expect(res.statusCode).toBe(403);
   });
   test('#4 Should return Error PRODUCT_ALREADY_EXIST', async () => {
     const products = await createProduct(
@@ -172,6 +172,7 @@ describe('Order mutations', () => {
     const res = receivedData.errors[0].message;
 
     expect(res).toBe(PRODUCT_NOT_FOUND);
+    console.log(productId);
   });
   test('#6 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProduct(productId, operations);
