@@ -188,15 +188,17 @@ class ProductsService {
         small: SMALL_SAD_BACKPACK,
         thumbnail: THUMBNAIL_SAD_BACKPACK,
       },
-      additional: [
-        {
-          large: LARGE_SAD_BACKPACK,
-          medium: MEDIUM_SAD_BACKPACK,
-          small: SMALL_SAD_BACKPACK,
-          thumbnail: THUMBNAIL_SAD_BACKPACK,
-        },
-      ],
     };
+    filesToUpload.length
+      ? (productData.images.additional = [])
+      : (productData.images.additional = [
+          {
+            large: LARGE_SAD_BACKPACK,
+            medium: MEDIUM_SAD_BACKPACK,
+            small: SMALL_SAD_BACKPACK,
+            thumbnail: THUMBNAIL_SAD_BACKPACK,
+          },
+        ]);
 
     const product = await Product.findById(id)
       .lean()
@@ -215,16 +217,15 @@ class ProductsService {
       );
       const uploadResult = await uploadService.uploadFiles(primary);
       const imagesResults = await uploadResult[0];
-      productData.images.primary = imagesResults.fileNames;
+      imagesResults?.fileNames
+        ? (productData.images.primary = imagesResults?.fileNames)
+        : productData.images.primary;
     }
     if (filesToUpload.length) {
       const uploadResult = await uploadService.uploadFiles(filesToUpload);
       const imagesResults = await Promise.allSettled(uploadResult);
       const additional = imagesResults.map(res => res.value.fileNames);
-      productData.images.additional = [
-        ...product.images.additional,
-        ...additional,
-      ];
+      productData.images.additional = [...additional];
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
