@@ -1,8 +1,5 @@
 const ObjectId = require('mongoose').Types.ObjectId;
-const {
-  PAYMENT_MERCHANT_ID,
-  PAYMENT_SECRET,
-} = require('../../dotenvValidator');
+const { PAYMENT_SECRET } = require('../../dotenvValidator');
 const { generatePaymentSignature } = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
 const {
@@ -35,16 +32,11 @@ class PaymentService {
 
     if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
-    const signature = generatePaymentSignature(
-      `${PAYMENT_SECRET}|${amount}|${currency}|${PAYMENT_MERCHANT_ID}|${PAYMENT_DESCRIPTION}|${isOrderPresent.orderNumber}`
-    );
-
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       order_id: isOrderPresent.orderNumber,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
       amount,
-      signature,
     });
 
     if (paymentUrl) {
@@ -52,7 +44,6 @@ class PaymentService {
         orderId,
         {
           $set: {
-            signature,
             paymentUrl,
             paymentStatus: PAYMENT_PROCESSING,
           },
@@ -64,20 +55,35 @@ class PaymentService {
 
   async checkPaymentStatus(req, res) {
     try {
-      // const { order_id } = req.body;
-      const { order_id, order_status } = await paymentController(
-        CHECK_PAYMENT_STATUS,
-        {
-          order_id: 'kRPR6M',
-        }
-      );
+      const { order_id } = req.body;
+
+      const {
+        order_status,
+        response_signature_string,
+        signature,
+      } = await paymentController(CHECK_PAYMENT_STATUS, {
+        order_id,
+      });
+
+      const signatureWithoutFirstParam = response_signature_string
+        .split('|')
+        .slice(1);
+      const signatureToCheck = PAYMENT_SECRET.split(' ')
+        .concat(signatureWithoutFirstParam)
+        .join('|');
+
+      const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
 
       const order = await OrderModel.findOne({ orderNumber: order_id }).exec();
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
-      if (order_status !== APPROVED.toLowerCase())
+      if (
+        order_status !== APPROVED.toLowerCase() ||
+        signature !== signSignatureToCheck
+      ) {
         throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
+      }
 
       await OrderModel.findByIdAndUpdate(order._id, {
         $set: {
