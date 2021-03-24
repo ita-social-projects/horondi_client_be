@@ -55,6 +55,8 @@ class PaymentService {
 
   async checkPaymentStatus(req, res) {
     console.log('first');
+    console.log(req);
+    console.log(res);
     try {
       const { order_id } = req.body;
       console.log(order_id);
