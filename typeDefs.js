@@ -410,7 +410,7 @@ const typeDefs = gql`
     getAllCommentsByProduct(
       productId: ID!
     ): [CommentResult]
-    getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
+    getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
