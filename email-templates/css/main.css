@@ -156,7 +156,7 @@ p.successfulRegistrationText {
     text-align: center;
     vertical-align: middle;
     border-bottom: 1.5px solid #e0e0e0c4;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 .tableHead th {
