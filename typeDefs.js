@@ -410,7 +410,7 @@ const typeDefs = gql`
     getAllCommentsByProduct(
       productId: ID!
     ): [CommentResult]
-    getAllRecentComments(limit: Int, skip: Int): PaginatedComments!
+    getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
@@ -429,8 +429,9 @@ const typeDefs = gql`
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
-    getPaymentCheckout(data: PaymentInput): Payment
-    getPaymentStatus(orderId: String!): PaymentStatus
+    getPaymentCheckout(data: PaymentInput!): OrderResult
+    getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
+    checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: FilterInput
@@ -721,6 +722,7 @@ const typeDefs = gql`
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
+    regenerateOrderNumber(id:ID!):OrderResult
     updateOrder(order: OrderInput!, id: ID!): OrderResult
     deleteOrder(id: ID!): OrderResult
     "EmailChat Mutation"

@@ -1,84 +1,101 @@
-const CloudIpsp = require('cloudipsp-node-js-sdk');
-const crypto = require('crypto');
-
+const ObjectId = require('mongoose').Types.ObjectId;
+const { PAYMENT_SECRET } = require('../../dotenvValidator');
+const { generatePaymentSignature } = require('../../utils/payment.utils');
+const RuleError = require('../../errors/rule.error');
 const {
-  PAYMENT_MERCHANT_ID,
-  PAYMENT_SECRET,
-  CRYPTO,
-} = require('../../dotenvValidator');
+  PAYMENT_DESCRIPTION,
+  PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
+} = require('../../consts/payments');
+const {
+  PAYMENT_STATUSES: { PAYMENT_PROCESSING },
+} = require('../../consts/payment-statuses');
+const {
+  STATUS_CODES: { BAD_REQUEST, FORBIDDEN },
+} = require('../../consts/status-codes');
+const {
+  ORDER_NOT_FOUND,
+  ORDER_NOT_VALID,
+  ORDER_IS_NOT_PAID,
+} = require('../../error-messages/orders.messages');
+const OrderModel = require('../order/order.model');
+const { paymentController } = require('../../helpers/payment-controller');
+const {
+  ORDER_PAYMENT_STATUS: { APPROVED, PAID },
+} = require('../../consts/order-payment-status');
 
 class PaymentService {
-  genSignature(data, secret) {
-    const ordered = {};
+  async getPaymentCheckout({ orderId, currency, amount }) {
+    if (!ObjectId.isValid(orderId))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
-    Object.keys(data)
-      .sort()
-      .forEach(function(key) {
-        if (
-          data[key] !== '' &&
-          key !== 'signature' &&
-          key !== 'response_signature_string'
-        ) {
-          ordered[key] = data[key];
-        }
-      });
-    const signString = secret + '|' + Object.values(ordered).join('|');
+    const isOrderPresent = await OrderModel.findById(orderId).exec();
 
-    return crypto
-      .createHash(CRYPTO)
-      .update(signString)
-      .digest('hex');
-  }
+    if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
-  async getPaymentCheckout(data) {
-    const { orderId, orderDesc, currency, amount } = data;
-
-    const fondy = new CloudIpsp({
-      merchantId: PAYMENT_MERCHANT_ID,
-      secretKey: PAYMENT_SECRET,
-    });
-
-    const requestData = {
-      order_id: orderId,
-      order_desc: orderDesc,
+    const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
+      order_id: isOrderPresent.orderNumber,
+      order_desc: PAYMENT_DESCRIPTION,
       currency,
       amount,
-    };
-
-    const result = await fondy
-      .Checkout(requestData)
-      .then(res => res)
-      .catch(error => error);
-
-    return {
-      paymentId: result.payment_id,
-      responseStatus: result.response_status,
-      checkoutUrl: result.checkout_url,
-    };
-  }
-
-  async getPaymentStatus(orderId) {
-    const fondy = new CloudIpsp({
-      merchantId: PAYMENT_MERCHANT_ID,
-      secretKey: PAYMENT_SECRET,
     });
 
-    const req = {
-      order_id: orderId,
-    };
+    if (paymentUrl) {
+      return OrderModel.findByIdAndUpdate(
+        orderId,
+        {
+          $set: {
+            paymentUrl,
+            paymentStatus: PAYMENT_PROCESSING,
+          },
+        },
+        { new: true }
+      ).exec();
+    }
+  }
 
-    const result = await fondy
-      .Status(req)
-      .then(res => res)
-      .catch(error => error);
+  async checkPaymentStatus(req, res) {
+    try {
+      const { order_id } = req.body;
 
-    return {
-      orderId: result.order_id,
-      orderStatus: result.order_status,
-      orderTime: result.order_time,
-      amount: result.amount,
-      currency: result.currency,
-    };
+      const {
+        order_status,
+        response_signature_string,
+        signature,
+      } = await paymentController(CHECK_PAYMENT_STATUS, {
+        order_id,
+      });
+
+      const signatureWithoutFirstParam = response_signature_string
+        .split('|')
+        .slice(1);
+
+      const signatureToCheck = PAYMENT_SECRET.split(' ')
+        .concat(signatureWithoutFirstParam)
+        .join('|');
+
+      const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
+
+      const order = await OrderModel.findOne({ orderNumber: order_id }).exec();
+
+      if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+      if (
+        order_status !== APPROVED.toLowerCase() ||
+        signature !== signSignatureToCheck
+      ) {
+        throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
+      }
+
+      await OrderModel.findByIdAndUpdate(order._id, {
+        $set: {
+          paymentStatus: PAID,
+        },
+      }).exec();
+
+      res.end();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
   }
 }
 

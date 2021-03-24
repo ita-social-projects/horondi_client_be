@@ -1,4 +1,5 @@
-const { Error } = require('mongoose');
+const _ = require('lodash');
+
 const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
@@ -6,6 +7,7 @@ const uploadService = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
+  PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
 const {
   CATEGORY_NOT_FOUND,
@@ -29,7 +31,19 @@ const {
     PRODUCT_BOTTOM_COLOR,
   },
 } = require('../../consts/product-features');
+const {
+  DEFAULT_IMAGES: {
+    LARGE_SAD_BACKPACK,
+    MEDIUM_SAD_BACKPACK,
+    SMALL_SAD_BACKPACK,
+    THUMBNAIL_SAD_BACKPACK,
+  },
+} = require('../../consts/default-images');
 const { getCurrencySign } = require('../../utils/product-service');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { FORBIDDEN },
+} = require('../../consts/status-codes');
 
 class ProductsService {
   async getProductById(id) {
@@ -167,14 +181,33 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
+    productData.images = {
+      primary: {
+        large: LARGE_SAD_BACKPACK,
+        medium: MEDIUM_SAD_BACKPACK,
+        small: SMALL_SAD_BACKPACK,
+        thumbnail: THUMBNAIL_SAD_BACKPACK,
+      },
+    };
+    filesToUpload.length
+      ? (productData.images.additional = [])
+      : (productData.images.additional = [
+          {
+            large: LARGE_SAD_BACKPACK,
+            medium: MEDIUM_SAD_BACKPACK,
+            small: SMALL_SAD_BACKPACK,
+            thumbnail: THUMBNAIL_SAD_BACKPACK,
+          },
+        ]);
+
     const product = await Product.findById(id)
       .lean()
       .exec();
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new RuleError(PRODUCT_NOT_FOUND, FORBIDDEN);
     }
-    if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+    if (_.isMatch(productData, product)) {
+      throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
     if (primary) {
       await uploadService.deleteFiles(
@@ -184,16 +217,15 @@ class ProductsService {
       );
       const uploadResult = await uploadService.uploadFiles(primary);
       const imagesResults = await uploadResult[0];
-      productData.images.primary = imagesResults.fileNames;
+      if (imagesResults?.fileNames) {
+        productData.images.primary = imagesResults?.fileNames;
+      }
     }
     if (filesToUpload.length) {
       const uploadResult = await uploadService.uploadFiles(filesToUpload);
       const imagesResults = await Promise.allSettled(uploadResult);
       const additional = imagesResults.map(res => res.value.fileNames);
-      productData.images.additional = [
-        ...product.images.additional,
-        ...additional,
-      ];
+      productData.images.additional = [...additional];
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);

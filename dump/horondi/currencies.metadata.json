@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"horondi.currencies"}],"uuid":"70c0f8a03672457389d0469b29ea906d","collectionName":"currencies"}

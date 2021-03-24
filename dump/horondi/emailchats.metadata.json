@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"horondi.emailchats"}],"uuid":"c77b573f3594483cbfc3697bfff1067e","collectionName":"emailchats"}
