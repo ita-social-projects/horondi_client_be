@@ -6,7 +6,7 @@ const newModel = (categoryId, sizeId) => ({
   show: true,
   sizes: [sizeId],
   name: [
-    { value: 'Тестт', lang: 'uk' },
+    { value: 'Тест', lang: 'uk' },
     { value: 'Test', lang: 'en' },
   ],
   description: [
