@@ -31,6 +31,14 @@ const {
     PRODUCT_BOTTOM_COLOR,
   },
 } = require('../../consts/product-features');
+const {
+  DEFAULT_IMAGES: {
+    LARGE_SAD_BACKPACK,
+    MEDIUM_SAD_BACKPACK,
+    SMALL_SAD_BACKPACK,
+    THUMBNAIL_SAD_BACKPACK,
+  },
+} = require('../../consts/default-images');
 const { getCurrencySign } = require('../../utils/product-service');
 const RuleError = require('../../errors/rule.error');
 const {
@@ -173,7 +181,22 @@ class ProductsService {
   }
 
   async updateProduct(id, productData, filesToUpload, primary) {
-    productData.images = { primary: {}, additional: [] };
+    productData.images = {
+      primary: {
+        large: LARGE_SAD_BACKPACK,
+        medium: MEDIUM_SAD_BACKPACK,
+        small: SMALL_SAD_BACKPACK,
+        thumbnail: THUMBNAIL_SAD_BACKPACK,
+      },
+      additional: [
+        {
+          large: LARGE_SAD_BACKPACK,
+          medium: MEDIUM_SAD_BACKPACK,
+          small: SMALL_SAD_BACKPACK,
+          thumbnail: THUMBNAIL_SAD_BACKPACK,
+        },
+      ],
+    };
 
     const product = await Product.findById(id)
       .lean()

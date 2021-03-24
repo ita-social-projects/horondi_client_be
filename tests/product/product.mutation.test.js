@@ -172,6 +172,7 @@ describe('Product mutations', () => {
     const res = receivedData.errors[0].message;
 
     expect(res).toBe(PRODUCT_NOT_FOUND);
+    console.log(productId);
   });
   test('#6 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProduct(productId, operations);
