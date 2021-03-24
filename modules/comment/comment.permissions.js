@@ -5,6 +5,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 
+const { ADMIN, SUPERADMIN, USER } = roles;
 const commentPermissionsQuery = {
   getCommentById: allow,
   getAllCommentsByProduct: allow,
@@ -12,8 +13,8 @@ const commentPermissionsQuery = {
   getRecentComments: hasRoles([ADMIN, SUPERADMIN]),
 };
 const commentPermissionsMutations = {
-  updateComment: hasRoles([ADMIN, SUPERADMIN]),
-  addComment: hasRoles([ADMIN, SUPERADMIN]),
+  updateComment: hasRoles([ADMIN, SUPERADMIN, USER]),
+  addComment: hasRoles([ADMIN, SUPERADMIN, USER]),
   deleteComment: hasRoles([ADMIN, SUPERADMIN]),
   addRate: hasRoles([ADMIN, SUPERADMIN]),
 };

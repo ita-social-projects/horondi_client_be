@@ -11,6 +11,7 @@ class SizeService {
   }
   async getSizeById(id) {
     const size = await Size.findById(id).exec();
+
     if (size) {
       return size;
     }

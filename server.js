@@ -15,12 +15,14 @@ const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { dotenvVariables } = require('./dotenvValidator');
+const { cronJob } = require('./helpers/cron-job');
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
   NODE_ENV,
 } = require('./dotenvValidator');
 const { registerAdmin } = require('./tests/helper-functions');
+const RuleError = require('./errors/rule.error');
 
 connectDB();
 
@@ -47,20 +49,25 @@ const server = new ApolloServer({
       message: `method: ${req.method}/baseUrl: ${req.baseUrl}/date:${req.fresh}/`,
     });
     if (token) {
-      const user = verifyUser(token);
+      try {
+        const { userId } = verifyUser(token);
 
-      if (!user) {
-        logger.error({
-          level: 'error',
-          message: formatErrorForLogger(INVALID_PERMISSIONS),
-        });
-        return null;
+        if (!userId) {
+          logger.error({
+            level: 'error',
+            message: formatErrorForLogger(INVALID_PERMISSIONS),
+          });
+          return null;
+        }
+        return {
+          user: await userService.getUserByFieldOrThrow('_id', userId),
+        };
+      } catch (e) {
+        return new RuleError(e.message, e.statusCode);
       }
-      return {
-        user: await userService.getUserByFieldOrThrow('email', user.email),
-      };
     }
   },
+
   plugins: [errorOutputPlugin],
   formatError,
   introspection: true,
@@ -81,6 +88,7 @@ server.applyMiddleware({
 });
 
 app.listen(PORT, () => {
+  cronJob();
   console.log(
     'apollo server started, port',
     PORT,

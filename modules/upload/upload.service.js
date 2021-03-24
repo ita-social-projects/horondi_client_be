@@ -9,7 +9,10 @@ const azureStorage = require('azure-storage');
 const getStream = require('into-stream');
 const Jimp = require('jimp');
 const uniqid = require('uniqid');
-const { imageQualities } = require('../../consts');
+const { imageQualities, IMAGES_CONTAINER } = require('../../consts');
+const {
+  IMAGE_SIZES: { IMAGE_LARGE, IMAGE_MEDIUM, IMAGE_SMALL, IMAGE_THUMBNAIL },
+} = require('../../consts/image-sizes');
 
 let blobService;
 let containerName;
@@ -19,7 +22,7 @@ if (!CONTRIBUTING) {
     ACCESS_KEY,
     AZURE_HOST
   );
-  containerName = 'images';
+  containerName = IMAGES_CONTAINER;
 }
 class UploadService {
   async uploadResizedImage(size, imageName, image) {
@@ -92,21 +95,21 @@ class UploadService {
         fileNames,
       };
     }
-    this.uploadResizedImage(1920, createName('large'), image);
+    this.uploadResizedImage(1920, createName(IMAGE_LARGE), image);
 
-    this.uploadResizedImage(1080, createName('medium'), image);
+    this.uploadResizedImage(1080, createName(IMAGE_MEDIUM), image);
 
-    this.uploadResizedImage(768, createName('small'), image);
+    this.uploadResizedImage(768, createName(IMAGE_SMALL), image);
 
-    this.uploadResizedImage(128, createName('thumbnail'), image);
+    this.uploadResizedImage(128, createName(IMAGE_THUMBNAIL), image);
 
     return {
       prefixUrl: IMAGE_LINK,
       fileNames: {
-        large: createName('large'),
-        medium: createName('medium'),
-        small: createName('small'),
-        thumbnail: createName('thumbnail'),
+        large: createName(IMAGE_LARGE),
+        medium: createName(IMAGE_MEDIUM),
+        small: createName(IMAGE_SMALL),
+        thumbnail: createName(IMAGE_THUMBNAIL),
       },
     };
   }

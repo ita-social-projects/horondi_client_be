@@ -14,12 +14,12 @@ const {
   paginatedUsersType,
   tokenType,
   purchasedProductsType,
-  cartProductType,
+  cartType,
+  cartInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
   productInput,
-  cartProductInput,
 } = require('./modules/product/product.graphql');
 const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
 const { modelType, modelInput } = require('./modules/model/model.graphql');
@@ -129,7 +129,7 @@ const typeDefs = gql`
   ${sizeType}
   ${closureType}
   ${purchasedProductsType}
-  ${cartProductType}
+  ${cartType}
   ${colorType}
   ${constructorBasicType}
   ${constructorFrontPocketType}
@@ -377,6 +377,7 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
+    getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
     getAllNews(limit: Int, skip: Int): PaginatedNews!
@@ -498,7 +499,7 @@ const typeDefs = gql`
   ${userInput}
   ${userUpdateInput}
   ${productInput}
-  ${cartProductInput}
+  ${cartInput}
   ${commentInput}
   ${LoginInput}
   ${userRegisterInput}
@@ -634,6 +635,30 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
+    addProductToCart(productId: ID!, sizeId: ID!, id: ID!): UserResult
+    cleanCart(id: ID!): UserResult
+    updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
+    addConstructorProductItem(
+    productId: ID!,
+    sizeId:ID!,
+     constructorData: CartInput!, 
+     id: ID!
+     ): UserResult
+    updateConstructorProductItemQuantity(
+      quantity: ID!,
+      productId: ID!,
+      sizeId: ID!,
+      constructorData: CartInput!,
+      id: ID!
+      ): UserResult 
+    removeProductItemsFromCart(
+      items:[ RemoveItemsFromCartInput!],
+      id: ID!
+      ): UserResult
+    mergeCartFromLS(
+      items:[ CartFromLSInput!],
+      id: ID!
+      ): UserResult
     registerAdmin(user: AdminRegisterInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
