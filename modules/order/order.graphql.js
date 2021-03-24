@@ -1,8 +1,7 @@
 const orderTypes = `
 type Order {
   _id: ID!
-  orderNumber: String,
-  signature: String
+  orderNumber: String
   paymentUrl: String
   status: Status
   user: OrderUser
