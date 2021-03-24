@@ -217,9 +217,11 @@ class ProductsService {
       );
       const uploadResult = await uploadService.uploadFiles(primary);
       const imagesResults = await uploadResult[0];
-      imagesResults.fileNames
-        ? (productData.images.primary = imagesResults?.fileNames)
-        : productData.images.primary;
+      if (imagesResults?.fileNames) {
+        productData.images.primary = imagesResults?.fileNames;
+      } else {
+        productData.images.primary;
+      }
     }
     if (filesToUpload.length) {
       const uploadResult = await uploadService.uploadFiles(filesToUpload);
