@@ -2,10 +2,9 @@ const { allow } = require('graphql-shield');
 
 const { hasRoles } = require('../../utils/rules');
 const {
-  roles: { ADMIN, SUPERADMIN },
+  roles: { ADMIN, SUPERADMIN, USER },
 } = require('../../consts');
 
-const { ADMIN, SUPERADMIN, USER } = roles;
 const commentPermissionsQuery = {
   getCommentById: allow,
   getAllCommentsByProduct: allow,
