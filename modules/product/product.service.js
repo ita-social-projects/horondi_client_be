@@ -219,8 +219,6 @@ class ProductsService {
       const imagesResults = await uploadResult[0];
       if (imagesResults?.fileNames) {
         productData.images.primary = imagesResults?.fileNames;
-      } else {
-        productData.images.primary;
       }
     }
     if (filesToUpload.length) {
