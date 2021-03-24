@@ -21,7 +21,7 @@ jest.mock('../../modules/upload/__mocks__/upload.service.js');
 jest.mock('../../modules/upload/upload.service');
 
 describe('Model mutations', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const createdSize = await createSize(SIZES_TO_CREATE.size1, operations);
     sizeId = createdSize._id;
@@ -31,9 +31,10 @@ describe('Model mutations', () => {
     );
     categoryId = createdCategory._id;
     categoryName = createdCategory.name;
+    done();
   });
 
-  test('Should create model', async () => {
+  test('Should create model', async done => {
     const model = await createModel(newModel(categoryId, sizeId), operations);
     modelId = model._id;
 
@@ -50,21 +51,24 @@ describe('Model mutations', () => {
         ...item,
       }))
     );
+    done();
   });
-  test('Should throw error MODEL_ALREADY_EXIST', async () => {
+  test('Should throw error MODEL_ALREADY_EXIST', async done => {
     const error = await createModel(newModel(categoryId, sizeId), operations);
 
     expect(error).toBeDefined();
     expect(error).toHaveProperty('statusCode', 400);
     expect(error).toHaveProperty('message', MODEL_ALREADY_EXIST);
+    done();
   });
-  test('Should throw error MODEL_NOT_FOUND', async () => {
+  test('Should throw error MODEL_NOT_FOUND', async done => {
     const error = await deleteModel(wrongId, operations);
 
     expect(error).toBeDefined();
     expect(error).toHaveProperty('message', MODEL_NOT_FOUND);
+    done();
   });
-  test('Should update model', async () => {
+  test('Should update model', async done => {
     const modelUpdate = await updateModel(
       modelId,
       newModelUpdated(categoryId, sizeId),
@@ -84,16 +88,19 @@ describe('Model mutations', () => {
         ...item,
       }))
     );
+    done();
   });
-  test('Should delete model', async () => {
+  test('Should delete model', async done => {
     const modelDelete = await deleteModel(modelId, operations);
 
     expect(modelDelete).toBeDefined();
     expect(modelDelete._id).toEqual(modelId);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteCategory(categoryId, operations);
     await deleteSize(sizeId, operations);
+    done();
   });
 });

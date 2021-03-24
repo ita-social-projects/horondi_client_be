@@ -25,7 +25,7 @@ const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 
 describe('Model queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
     const createdSize = await createSize(SIZES_TO_CREATE.size1, operations);
     sizeId = createdSize._id;
@@ -39,9 +39,10 @@ describe('Model queries', () => {
       operations
     );
     modelId = createdModel._id;
+    done();
   });
 
-  test('Should receive all models by category id', async () => {
+  test('Should receive all models by category id', async done => {
     const res = await getModelsByCategory(categoryId, operations);
     const models = res.data.getModelsByCategory;
 
@@ -57,20 +58,23 @@ describe('Model queries', () => {
       { value: 'Test', lang: 'en' },
     ]);
     expect(models[0]).toHaveProperty('category');
+    done();
   });
-  test('Should throw error CATEGORY_NOT_VALID', async () => {
+  test('Should throw error CATEGORY_NOT_VALID', async done => {
     const error = await getModelsByCategory(notValidId, operations);
 
     expect(error.errors[0].message).toBe(CATEGORY_NOT_VALID);
+    done();
   });
-  test('Should return empty array when category isnt exist', async () => {
+  test('Should return empty array when category isnt exist', async done => {
     const res = await getModelsByCategory(wrongId, operations);
 
     const modelsByCategory = res.data.getModelsByCategory;
     expect(modelsByCategory.length).toBe(0);
     expect(modelsByCategory).toBeInstanceOf(Array);
+    done();
   });
-  test('Should return model by id', async () => {
+  test('Should return model by id', async done => {
     const res = await getModelById(modelId, operations);
 
     const modelsById = res.data.getModelById;
@@ -85,23 +89,27 @@ describe('Model queries', () => {
       { value: 'Test', lang: 'en' },
     ]);
     expect(modelsById).toHaveProperty('category');
+    done();
   });
-  test('Should throw error MODEL_NOT_VALID', async () => {
+  test('Should throw error MODEL_NOT_VALID', async done => {
     const error = await getModelById(notValidId, operations);
 
     expect(error.data.getModelById.message).toBe(MODEL_NOT_VALID);
     expect(error.data.getModelById.statusCode).toBe(404);
+    done();
   });
-  test('Should throw error MODEL_NOT_FOUND', async () => {
+  test('Should throw error MODEL_NOT_FOUND', async done => {
     const error = await getModelById(wrongId, operations);
 
     expect(error.data.getModelById.message).toBe(MODEL_NOT_FOUND);
     expect(error.data.getModelById.statusCode).toBe(404);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async done => {
     await deleteModel(modelId, operations);
     await deleteCategory(categoryId, operations);
     await deleteSize(sizeId, operations);
+    done();
   });
 });
