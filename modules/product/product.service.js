@@ -217,7 +217,7 @@ class ProductsService {
       );
       const uploadResult = await uploadService.uploadFiles(primary);
       const imagesResults = await uploadResult[0];
-      imagesResults?.fileNames
+      imagesResults.fileNames
         ? (productData.images.primary = imagesResults?.fileNames)
         : productData.images.primary;
     }
