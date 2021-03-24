@@ -11,13 +11,10 @@ const constructorValidator = Joi.object({
       .trim()
       .regex(userNameRegExp),
   }),
-  material: Joi.object().required(),
-  color: Joi.object().required(),
-  image: Joi.string().required(),
-  basePrice: Joi.array().items(
-    { currency: Joi.string() },
-    { value: Joi.string() }
-  ),
+  material: Joi.string().required(),
+  color: Joi.string().required(),
+  image: Joi.string(),
+  basePrice: Joi.number(),
 });
 
 module.exports = {

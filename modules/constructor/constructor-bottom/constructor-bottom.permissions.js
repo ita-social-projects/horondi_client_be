@@ -16,12 +16,14 @@ const сonstructorBottomPermissionsQuery = {
 };
 
 const сonstructorBottomPermissionsMutations = {
-  addConstructorBottom:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])),
-  updateConstructorBottom:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])),
+  addConstructorBottom: and(
+    inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  updateConstructorBottom: and(
+    inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   deleteConstructorBottom: hasRoles([ADMIN, SUPERADMIN]),
 };
 

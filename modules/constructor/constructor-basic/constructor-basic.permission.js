@@ -16,12 +16,14 @@ const constructorBasicPermissionsQuery = {
 };
 
 const constructorBasicPermissionsMutations = {
-  addConstructorBasic:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])),
-  updateConstructorBasic:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])),
+  addConstructorBasic: and(
+    inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  updateConstructorBasic: and(
+    inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   deleteConstructorBasic: hasRoles([ADMIN, SUPERADMIN]),
 };
 

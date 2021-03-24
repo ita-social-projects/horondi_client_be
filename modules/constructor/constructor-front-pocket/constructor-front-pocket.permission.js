@@ -16,12 +16,14 @@ const constructorFrontPocketPermissionsQuery = {
 };
 
 const constructorFrontPocketPermissionsMutations = {
-  addConstructorFrontPocket:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])),
-  updateConstructorFrontPocket:
-    (inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])),
+  addConstructorFrontPocket: and(
+    inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  updateConstructorFrontPocket: and(
+    inputDataValidation(CONSTRUCTOR_ELEMENT, constructorValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   deleteConstructorFrontPocket: hasRoles([ADMIN, SUPERADMIN]),
 };
 
