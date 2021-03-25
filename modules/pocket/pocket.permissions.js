@@ -7,11 +7,13 @@ const { ADMIN, SUPERADMIN } = roles;
 const pocketPermissionsQuery = {
   getAllPockets: allow,
   getPocketById: allow,
+  getPocketsByModel: allow,
 };
 
 const pocketPermissionsMutations = {
   addPocket: hasRoles([ADMIN, SUPERADMIN]),
   updatePocket: hasRoles([ADMIN, SUPERADMIN]),
+  deletePocket: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = {

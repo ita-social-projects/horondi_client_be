@@ -100,6 +100,7 @@ const {
   ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 const { pocketType, pocketInput } = require('./modules/pocket/pocket.graphql');
+const { backType, backInput } = require('./modules/back/back.graphql');
 const {
   blockerType,
   blockerInput,
@@ -140,6 +141,7 @@ const typeDefs = gql`
   ${constructorFrontPocketType}
   ${constructorBottomType}
   ${pocketType}
+  ${backType}
   ${blockerType}
 
   scalar Upload
@@ -322,6 +324,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedBacks {
+    items: [Back]
+    count: Int
+  }
+
   type Materials {
     items: [Material]
   }
@@ -364,6 +371,7 @@ const typeDefs = gql`
   union ConstructorBasicResult = ConstructorBasic | Error
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   union PocketResult = Pocket | Error
+  union BackResult = Back | Error
   
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
@@ -470,6 +478,10 @@ const typeDefs = gql`
     getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
     getAllPockets(limit: Int, skip: Int): PaginatedPockets!
     getPocketById(id: ID): PocketResult
+    getPocketsByModel(id: ID): [Pocket]
+    getAllBacks(limit: Int, skip: Int): PaginatedBacks!
+    getBackById(id: ID): BackResult
+    getBacksByModel(id: ID): [Back]
 
   }
   input Pagination {
@@ -542,6 +554,7 @@ const typeDefs = gql`
   ${constructorFrontPocketInput}
   ${constructorBottomInput}
   ${pocketInput}
+  ${backInput}
   ${blockerInput}
   input LanguageInput {
     lang: String!
@@ -800,6 +813,11 @@ const typeDefs = gql`
     "Pocket Mutation"
     addPocket(pocket: PocketInput!, image: Upload):PocketResult
     updatePocket(id: ID, pocket: PocketInput!, image: Upload):PocketResult
+    deletePocket(id: ID):PocketResult
+    "Back Mutation"
+    addBack(back: BackInput!, image: Upload):BackResult
+    updateBack(id: ID, back: BackInput!, image: Upload):BackResult
+    deleteBack(id: ID):BackResult
   }
 `;
 

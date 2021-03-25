@@ -1,4 +1,5 @@
 const Pocket = require('./pocket.model');
+const Model = require('../model/model.model');
 const uploadService = require('../upload/upload.utils');
 const {
   POCKET_ALREADY_EXIST,
@@ -28,6 +29,32 @@ class PocketService {
       return foundPocket;
     }
     throw new Error(POCKET_NOT_FOUND);
+  }
+
+  async getPocketsByModel(id) {
+    const pocket = Pocket.find({ model: id }).exec();
+    if (pocket.length === 0) {
+      throw new Error(POCKET_NOT_FOUND);
+    }
+    return pocket;
+  }
+
+  async deletePocket({ id }) {
+    const foundPocket = await Pocket.findByIdAndDelete(id)
+      .lean()
+      .exec();
+
+    if (!foundPocket) {
+      throw new Error(POCKET_NOT_FOUND);
+    }
+
+    const deletedImage = await uploadService.deleteFiles(
+      Object.values(foundPocket.image)
+    );
+
+    if (await Promise.allSettled(deletedImage)) {
+      return foundPocket;
+    }
   }
 
   async updatePocket({ id, pocket, image }) {

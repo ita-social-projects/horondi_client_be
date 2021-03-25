@@ -1,9 +1,9 @@
-const pocketType = `
-  type Pocket {
-    _id: ID!
+const backType = `
+  type Back {
     name: [Language]
     model: Model
-    blocker: [Blocker]
+    material: Material
+    color: Color
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
@@ -11,11 +11,12 @@ const pocketType = `
   }
 `;
 
-const pocketInput = `
-  input PocketInput {
+const backInput = `
+  input BackInput {
     name: [LanguageInput]
     model: ID
-    blocker: [BlockerInput]
+    material: ID
+    color: ID
     image: Upload
     additionalPrice: Int
     available: Boolean
@@ -24,6 +25,6 @@ const pocketInput = `
 `;
 
 module.exports = {
-  pocketType,
-  pocketInput,
+  backType,
+  backInput,
 };

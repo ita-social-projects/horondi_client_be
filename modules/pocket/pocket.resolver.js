@@ -16,6 +16,16 @@ const pocketQuery = {
       };
     }
   },
+  getPocketsByModel: async (parent, args) => {
+    try {
+      return await pocketService.getPocketsByModel(args.id);
+    } catch (e) {
+      return {
+        statusCode: NOT_FOUND,
+        message: e.message,
+      };
+    }
+  },
 };
 
 const pocketMutation = {
@@ -35,6 +45,16 @@ const pocketMutation = {
     } catch (e) {
       return {
         statusCode: e.message === POCKET_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
+        message: e.message,
+      };
+    }
+  },
+  deletePocket: async (parent, args) => {
+    try {
+      return await pocketService.deletePocket(args);
+    } catch (e) {
+      return {
+        statusCode: NOT_FOUND,
         message: e.message,
       };
     }

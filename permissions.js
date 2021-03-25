@@ -90,6 +90,11 @@ const {
 } = require('./modules/pocket/pocket.permissions');
 
 const {
+  backPermissionsMutations,
+  backPermissionsQuery,
+} = require('./modules/back/back.permissions');
+
+const {
   orderPermissionsMutation,
   orderPermissionsQuery,
 } = require('./modules/order/order.permissions');
@@ -115,6 +120,7 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
       ...pocketPermissionsQuery,
+      ...backPermissionsQuery,
       ...orderPermissionsQuery,
     },
     Mutation: {
@@ -136,6 +142,7 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
       ...pocketPermissionsMutations,
+      ...backPermissionsMutations,
       ...orderPermissionsMutation,
     },
   },

@@ -94,6 +94,9 @@ const {
   pocketMutation,
   pocketQuery,
 } = require('./modules/pocket/pocket.resolver');
+
+const { backQuery, backMutation } = require('./modules/back/back.resolver');
+
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 
 const categoryService = require('./modules/category/category.service');
@@ -146,6 +149,7 @@ const SCHEMA_NAMES = {
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
   pocket: 'Pocket',
+  back: 'Back',
   blocker: 'Blocker',
 };
 
@@ -204,6 +208,8 @@ const resolvers = {
     ...colorQuery,
 
     ...pocketQuery,
+
+    ...backQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -415,6 +421,14 @@ const resolvers = {
   EmailAnswer: {
     admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
+  Pocket: {
+    model: parent => modelService.getModelById(parent.model),
+  },
+  Back: {
+    model: parent => modelService.getModelById(parent.model),
+    material: parent => materialService.getMaterialById(parent.material),
+    color: parent => colorService.getColorById(parent.color),
+  },
 
   Mutation: {
     ...cartMutation,
@@ -466,6 +480,8 @@ const resolvers = {
     ...constructorBottomMutation,
 
     ...pocketMutation,
+
+    ...backMutation,
   },
   TokenResult: {
     __resolveType: obj => {
@@ -686,6 +702,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.pocket;
+      }
+      return 'Error';
+    },
+  },
+
+  BackResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.back;
       }
       return 'Error';
     },
