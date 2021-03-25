@@ -12,20 +12,12 @@ block content
                     th Кількість
                     th Ціна
                 each val in cart.items
-                if val.hasOwnProperty('fromConstructor')
-                    tr.tableBody
-                        td
-                            img.tableImg(src= `https://horondi.blob.core.windows.net/horondi/images/${val.product.images.primary.large}`)
-                        td= val.fromConstructor.product.name[1].value
-                        td= val.quantity 
-                        td= val.price[0].value + val.price[0].currency 
-                else 
-                    tr.tableBody
-                        td
-                            img.tableImg(src= `https://horondi.blob.core.windows.net/horondi/images/${val.product.images.primary.large}`)
-                        td= val.product.name[1].value
-                        td= val.quantity 
-                        td= val.price[0].value + val.price[0].currency 
+                tr.tableBody
+                    td
+                        img.tableImg(src= `https://horondi.blob.core.windows.net/horondi/images/${val.product.images.primary.large}`)
+                    td= val.product.name[1].value
+                    td= val.quantity 
+                    td= val.price[0].value + val.price[0].currency 
         button.confirm
             a(href=frontendUrl ) Оплатити замовлення
         p.link або перейдіть за посиланням нижче:

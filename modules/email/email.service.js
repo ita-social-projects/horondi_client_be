@@ -18,6 +18,7 @@ class EmailService {
       throw new RuleError(TEMPLATE_NOT_FOUND, NOT_FOUND);
     }
 
+    console.log(MAIL_USER);
     Object.assign(context, contextExtension);
     const html = await emailTemplates.render(
       templateInfo.templateFileName,
