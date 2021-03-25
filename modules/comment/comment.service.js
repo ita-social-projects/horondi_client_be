@@ -1,7 +1,12 @@
 const Comment = require('./comment.model');
+const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
 const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const {
   COMMENT_NOT_FOUND,
+  COMMENTS_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
@@ -41,12 +46,24 @@ class CommentsService extends FilterHelper {
       count: commentsCount || 0,
     };
   }
+
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {
       throw new Error(COMMENT_NOT_FOUND);
     }
     return comment;
+  }
+
+  async getRecentComments(limit) {
+    const comments = await Comment.find()
+      .sort({ date: -1 })
+      .limit(limit)
+      .exec();
+    if (!comments?.length) {
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+    }
+    return comments;
   }
 
   async getAllCommentsByProduct({ productId }) {

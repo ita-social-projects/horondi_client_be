@@ -1,7 +1,8 @@
 const ordersService = require('./order.service');
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
+const RuleError = require('../../errors/rule.error');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
 
 const ordersQuery = {
@@ -22,6 +23,13 @@ const ordersQuery = {
     ordersService.getOrdersStatistic(args.date),
   getPaidOrdersStatistic: (parent, args) =>
     ordersService.getPaidOrdersStatistic(args.date),
+  getOrderByPaidOrderNumber: async (_, { paidOrderNumber }) => {
+    try {
+      return await ordersService.getOrderByPaidOrderNumber(paidOrderNumber);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const ordersMutation = {

@@ -14,6 +14,10 @@ const {
 
 const orderSchema = new mongoose.Schema({
   orderNumber: String,
+  paymentUrl: {
+    type: String,
+    default: '',
+  },
   status: {
     type: String,
     default: CREATED,

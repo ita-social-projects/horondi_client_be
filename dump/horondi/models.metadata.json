@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"horondi.models"}],"uuid":"d8df363c783140c99e27d6f57c1f30d7","collectionName":"models"}

@@ -3,6 +3,7 @@ const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
@@ -61,10 +62,7 @@ const productsMutation = {
         args.primary
       );
     } catch (e) {
-      return {
-        statusCode: e.message === PRODUCT_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteImages: async (parent, args) => {
