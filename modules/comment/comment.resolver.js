@@ -1,4 +1,5 @@
 const commentsService = require('./comment.service');
+const RuleError = require('../../errors/rule.error');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -13,6 +14,14 @@ const commentsQuery = {
         statusCode: NOT_FOUND,
         message: e.message,
       };
+    }
+  },
+
+  getRecentComments: async (_, { limit }) => {
+    try {
+      return await commentsService.getRecentComments(limit);
+    } catch (error) {
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -41,9 +50,6 @@ const commentsQuery = {
       ];
     }
   },
-
-  getAllRecentComments: async (parent, args) =>
-    commentsService.getAllRecentComments(args),
 };
 
 const commentsMutation = {
