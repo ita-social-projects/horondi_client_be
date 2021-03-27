@@ -67,7 +67,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "migrate-mongo": "^8.1.4",
-    "mongoose": "^5.9.18",
+    "mongoose": "^5.11.15",
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
     "node-fetch": "^2.6.1",
