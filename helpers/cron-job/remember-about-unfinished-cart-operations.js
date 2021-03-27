@@ -27,15 +27,17 @@ const rememberAboutUnfinishedCartOperations = () =>
 
     if (usersInfo.length) {
       for (const cartItemData of usersInfo) {
-        const orderDate = new Date(cartItemData.cart.updatedAt).getTime();
-        const dateDifference = currentDate - orderDate;
-        const oneDay = getDaysInMilliseconds();
+        if (cartItemData.cart.items.length) {
+          const orderDate = new Date(cartItemData.cart.updatedAt).getTime();
+          const dateDifference = currentDate - orderDate;
+          const oneDay = getDaysInMilliseconds();
 
-        if (dateDifference > oneDay && !cartItemData.cart.rememberMailCount) {
-          UserModel.findOneAndUpdate(
-            { _id: cartItemData._id },
-            { $set: { 'cart.rememberMailCount': 1 } }
-          );
+          if (dateDifference > oneDay && !cartItemData.cart.rememberMailCount) {
+            UserModel.findOneAndUpdate(
+              { _id: cartItemData._id },
+              { $set: { 'cart.rememberMailCount': 1 } }
+            );
+          }
         }
       }
     }
