@@ -1,11 +1,18 @@
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
 const generateTokens = require('../../utils/create-tokens');
 const {
-  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, SUCCESSFUL_CONFIRM },
+  EmailActions: {
+    CONFIRM_EMAIL,
+    RECOVER_PASSWORD,
+    SUCCESSFUL_CONFIRM,
+    BLOCK_USER,
+    UNLOCK_USER,
+  },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
@@ -28,7 +35,6 @@ const verifyUser = require('../../utils/verify-user');
 const {
   USER_ALREADY_EXIST,
   USER_NOT_FOUND,
-  INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
   PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
@@ -37,11 +43,19 @@ const {
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   SESSION_TIMEOUT,
+  YOU_CANT_BLOCK_YOURSELF,
+  USER_IS_ALREADY_BLOCKED,
+  USER_IS_ALREADY_UNLOCKED,
+  YOU_CANT_UNLOCK_YOURSELF,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
 } = require('../../consts/status-codes');
+const {
+  USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
+  USER_BLOCK_COUNT: { NO_ONE_TIME, ONE_TIME, TWO_TIMES, THREE_TIMES },
+} = require('../../consts/user-block-period');
 const {
   LOCALES: { UK },
 } = require('../../consts/locations');
@@ -51,8 +65,141 @@ const {
   userDateFormat,
   roles: { USER },
 } = require('../../consts');
+const RuleError = require('../../errors/rule.error');
 
 class UserService extends FilterHelper {
+  async blockUser(userId, { _id: adminId }) {
+    const userToBlock = await User.findById(userId).exec();
+
+    if (!userToBlock) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (userToBlock._id.toString() === adminId.toString()) {
+      throw new RuleError(YOU_CANT_BLOCK_YOURSELF, FORBIDDEN);
+    }
+
+    if (userToBlock.banned.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_ALREADY_BLOCKED, FORBIDDEN);
+    }
+
+    switch (userToBlock.banned.blockCount) {
+      case NO_ONE_TIME: {
+        const blockedUser = await User.findByIdAndUpdate(
+          userToBlock._id,
+          {
+            $set: {
+              banned: {
+                blockPeriod: ONE_MONTH,
+                blockCount: ONE_TIME,
+              },
+            },
+          },
+          { new: true }
+        );
+
+        await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
+          period: blockedUser.banned.blockPeriod,
+        });
+
+        return blockedUser;
+      }
+
+      case ONE_TIME: {
+        const blockedUser = await User.findByIdAndUpdate(
+          userToBlock._id,
+          {
+            $set: {
+              banned: {
+                blockPeriod: TWO_MONTH,
+                blockCount: TWO_TIMES,
+              },
+            },
+          },
+          { new: true }
+        );
+
+        await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
+          period: blockedUser.banned.blockPeriod,
+        });
+
+        return blockedUser;
+      }
+      case TWO_TIMES: {
+        const blockedUser = await User.findByIdAndUpdate(
+          userToBlock._id,
+          {
+            $set: {
+              banned: {
+                blockPeriod: INFINITE,
+                blockCount: THREE_TIMES,
+              },
+            },
+          },
+          { new: true }
+        );
+
+        await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
+          period: blockedUser.banned.blockPeriod,
+        });
+
+        return blockedUser;
+      }
+    }
+  }
+
+  async unlockUser(userId, { _id: adminId }) {
+    const userToUnlock = await User.findById(userId).exec();
+
+    if (!userToUnlock) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (userToUnlock._id.toString() === adminId.toString()) {
+      throw new RuleError(YOU_CANT_UNLOCK_YOURSELF, FORBIDDEN);
+    }
+
+    if (userToUnlock.banned.blockPeriod === UNLOCKED) {
+      throw new RuleError(USER_IS_ALREADY_UNLOCKED, FORBIDDEN);
+    }
+
+    if (userToUnlock.banned.blockPeriod === INFINITE) {
+      const unlockedUser = await User.findByIdAndUpdate(
+        userToUnlock._id,
+        {
+          $set: {
+            banned: {
+              blockPeriod: UNLOCKED,
+              blockCount: TWO_TIMES,
+            },
+          },
+        },
+        { new: true }
+      );
+
+      await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
+
+      return unlockedUser;
+    } else {
+      const unlockedUser = await User.findByIdAndUpdate(
+        userToUnlock._id,
+        {
+          $set: {
+            banned: {
+              blockPeriod: UNLOCKED,
+              blockCount: userToUnlock.banned.blockCount,
+            },
+          },
+        },
+        { new: true }
+      );
+
+      await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
+
+      return unlockedUser;
+    }
+  }
+
   async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);

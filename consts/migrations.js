@@ -11,6 +11,14 @@ const sizeName = {
   ],
 };
 
+const banned = {
+  banned: {
+    blockPeriod: '0',
+    blockCount: 0,
+  },
+};
+
 module.exports = {
   sizeName,
+  banned,
 };

@@ -1,6 +1,7 @@
 const config = {
   mongodb: {
-    url: '//your db uri',
+    url:
+      'mongodb+srv://user-read-write1:sfd$42A3a@horondi-yl27g.mongodb.net/horondi?retryWrites=true&w=majority',
     databaseName: 'horondi',
 
     options: {
