@@ -512,7 +512,9 @@ class UserService extends FilterHelper {
 
     savedUser.confirmationToken = accesToken;
 
-    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { accesToken });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      token: accesToken,
+    });
     await savedUser.save();
 
     return savedUser;

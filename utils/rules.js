@@ -69,18 +69,22 @@ const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
   args.constructorData = await UserModel.findOne(
     {
       _id: args.id,
-      'cart.items.options.size': args.sizeId,
-      'cart.items.fromConstructor.product': args.productId,
-      'cart.items.fromConstructor.constructorBasics':
-        args.constructorData.constructorBasics,
-      'cart.items.fromConstructor.constructorBottom':
-        args.constructorData.constructorBottom,
-      'cart.items.fromConstructor.constructorPattern':
-        args.constructorData.constructorPattern,
-      'cart.items.fromConstructor.constructorFrontPocket':
-        args.constructorData.constructorFrontPocket,
+      'cart.items': {
+        $elemMatch: {
+          'fromConstructor.product': args.productId,
+          'fromConstructor.constructorBasics':
+            args.constructorData.constructorBasics,
+          'fromConstructor.constructorBottom':
+            args.constructorData.constructorBottom,
+          'fromConstructor.constructorPattern':
+            args.constructorData.constructorPattern,
+          'fromConstructor.constructorFrontPocket':
+            args.constructorData.constructorFrontPocket,
+          'options.size': args.sizeId,
+        },
+      },
     },
-    'cart.items.$ -_id'
+    'cart.items.$ '
   ).exec();
 
   return true;
