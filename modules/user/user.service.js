@@ -302,16 +302,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserById(updatedUser, user, upload) {
-    if (user.email !== updatedUser.email) {
-      const existingUser = await User.findOne({
-        email: updatedUser.email,
-      }).exec();
-      if (existingUser) {
-        throw new UserInputError(USER_ALREADY_EXIST, {
-          statusCode: BAD_REQUEST,
-        });
-      }
-    }
     if (!user.images) user.images = [];
     if (upload) {
       if (user.images.length) {

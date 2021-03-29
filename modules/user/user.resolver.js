@@ -24,16 +24,16 @@ const userQuery = {
     userService.getPurchasedProducts(args.id),
 };
 const userMutation = {
-  blockUser: async (_, { userId, authorizedUser }) => {
+  blockUser: async (_, { userId }, { user }) => {
     try {
-      return await userService.blockUser(userId, authorizedUser);
+      return await userService.blockUser(userId, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  unlockUser: async (_, { userId, authorizedUser }) => {
+  unlockUser: async (_, { userId }, { user }) => {
     try {
-      return await userService.unlockUser(userId, authorizedUser);
+      return await userService.unlockUser(userId, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

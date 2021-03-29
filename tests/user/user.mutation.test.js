@@ -126,7 +126,8 @@ describe('mutations', () => {
       orders,
       comments,
     } = testUser;
-    operations = await setupApp(loginedUser);
+    // operations = await setupApp(loginedUser);
+
     const { country, city, street, buildingNumber } = address;
 
     const res = await updateUserById(
@@ -152,7 +153,7 @@ describe('mutations', () => {
       'phoneNumber',
       testUser.phoneNumber
     );
-    expect(res.data.updateUserById).toHaveProperty('role', 'user');
+    expect(res.data.updateUserById).toHaveProperty('role', 'superadmin');
     expect(res.data.updateUserById).toHaveProperty('address', {
       country: testUser.address.country,
       city: testUser.address.city,
