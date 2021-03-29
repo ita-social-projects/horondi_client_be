@@ -7,7 +7,6 @@ const {
   EmailActions: { UNLOCK_USER },
 } = require('../../consts/email-actions');
 const {
-  USER_BLOCK_COUNT: {},
   USER_BLOCK_PERIOD: { UNLOCKED, INFINITE },
 } = require('../../consts/user-block-period');
 
