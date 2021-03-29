@@ -202,7 +202,7 @@ const getAllUsers = async operations => {
   return allUsers;
 };
 const getUserByToken = async operations => {
-  return await operations.query({
+  const user = await operations.query({
     query: gql`
       query {
         getUserByToken {
@@ -228,6 +228,8 @@ const getUserByToken = async operations => {
       }
     `,
   });
+
+  return user;
 };
 const getUserById = async (userId, operations) => {
   return await operations.query({
