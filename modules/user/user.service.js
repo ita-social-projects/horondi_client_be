@@ -100,7 +100,7 @@ class UserService extends FilterHelper {
             },
           },
           { new: true }
-        );
+        ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
           period: blockedUser.banned.blockPeriod,
@@ -121,7 +121,7 @@ class UserService extends FilterHelper {
             },
           },
           { new: true }
-        );
+        ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
           period: blockedUser.banned.blockPeriod,
@@ -141,7 +141,7 @@ class UserService extends FilterHelper {
             },
           },
           { new: true }
-        );
+        ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
           period: blockedUser.banned.blockPeriod,
@@ -186,7 +186,7 @@ class UserService extends FilterHelper {
           },
         },
         { new: true }
-      );
+      ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
 
@@ -203,7 +203,7 @@ class UserService extends FilterHelper {
           },
         },
         { new: true }
-      );
+      ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
 

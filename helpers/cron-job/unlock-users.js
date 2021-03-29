@@ -19,7 +19,7 @@ const unlockUsers = () =>
         { 'banned.blockPeriod': { $ne: UNLOCKED } },
         { 'banned.blockPeriod': { $ne: INFINITE } },
       ],
-    });
+    }).exec();
 
     if (blockedUsers.length) {
       for (const userData of blockedUsers) {
@@ -40,7 +40,7 @@ const unlockUsers = () =>
                 },
               },
             }
-          );
+          ).exec();
 
           return sendEmail(userData.email, UNLOCK_USER);
         }
