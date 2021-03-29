@@ -29,6 +29,8 @@ const deliverySchema = new mongoose.Schema({
   byCourier: Boolean,
   courierOffice: String,
   invoiceNumber: String,
+  region: String,
+  district: String,
   city: String,
   street: String,
   house: String,

@@ -84,6 +84,14 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
+  region: Joi.string().when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
+  district: Joi.string().when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   city: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
