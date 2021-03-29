@@ -59,8 +59,11 @@ type Delivery {
   invoiceNumber: String
   courierOffice: String,
   region: String,
+  regionId: String
   district: String,
+  districtId: String
   city: String,
+  cityId: String
   street: String,
   house: String,
   flat: String,
@@ -115,8 +118,11 @@ input DeliveryInput {
   invoiceNumber: String
   courierOffice: String,
   region: String,
+  regionId: String
   district: String,
+  districtId: String
   city: String,
+  cityId: String
   street: String,
   house: String,
   flat: String,
