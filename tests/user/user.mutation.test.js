@@ -456,7 +456,7 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INVALID_LAST_NAME);
+    expect(data.message).toContain(INVALID_LAST_NAME);
     expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
@@ -471,7 +471,7 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INVALID_FIRST_NAME);
+    expect(data.message).toContain(INVALID_FIRST_NAME);
     expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
