@@ -1,8 +1,6 @@
 const backService = require('./back.service');
-const {
-  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
-} = require('../../consts/status-codes');
-const { BACK_NOT_FOUND } = require('../../consts/back-messages');
+
+const RuleError = require('../../errors/rule.error');
 
 const backQuery = {
   getAllBacks: (parent, args) => backService.getAllBacks(args),
@@ -10,20 +8,14 @@ const backQuery = {
     try {
       return await backService.getBackById(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   getBacksByModel: async (parent, args) => {
     try {
       return await backService.getBacksByModel(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -33,30 +25,21 @@ const backMutation = {
     try {
       return await backService.addBack(args);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updateBack: async (parent, args) => {
     try {
       return await backService.updateBack(args);
     } catch (e) {
-      return {
-        statusCode: e.message === BACK_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteBack: async (parent, args) => {
     try {
       return await backService.deleteBack(args);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

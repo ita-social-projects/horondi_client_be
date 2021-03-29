@@ -1,8 +1,6 @@
 const pocketService = require('./pocket.service');
-const {
-  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
-} = require('../../consts/status-codes');
-const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
+
+const RuleError = require('../../errors/rule.error');
 
 const pocketQuery = {
   getAllPockets: (parent, args) => pocketService.getAllPockets(args),
@@ -10,20 +8,14 @@ const pocketQuery = {
     try {
       return await pocketService.getPocketById(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   getPocketsByModel: async (parent, args) => {
     try {
       return await pocketService.getPocketsByModel(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -33,30 +25,21 @@ const pocketMutation = {
     try {
       return await pocketService.addPocket(args);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updatePocket: async (parent, args) => {
     try {
       return await pocketService.updatePocket(args);
     } catch (e) {
-      return {
-        statusCode: e.message === POCKET_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deletePocket: async (parent, args) => {
     try {
       return await pocketService.deletePocket(args);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

@@ -39,13 +39,13 @@ class BackService {
     return back;
   }
 
-  async updatePBack({ id, back, image }) {
+  async updateBack({ id, back, image }) {
     const backToUpdate = await Back.findById(id).exec();
     if (!backToUpdate) {
       throw new Error(BACK_NOT_FOUND);
     }
 
-    if (await this.checkIfPocketExist(back, id)) {
+    if (await this.checkIfBackExist(back, id)) {
       throw new Error(BACK_ALREADY_EXIST);
     }
 
