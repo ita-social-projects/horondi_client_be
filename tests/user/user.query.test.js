@@ -28,7 +28,7 @@ const {
 } = require('../helpers/users');
 
 jest.mock('../../modules/email/email.service');
-jest.setTimeout(10000);
+jest.setTimeout(30000);
 
 let token;
 let userId;
@@ -53,50 +53,6 @@ describe('queries', () => {
     const authRes = await loginUser(email, pass, operations);
     loginedUser = authRes.data.loginUser;
     token = loginedUser.token;
-    operations = await setupApp(loginedUser);
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!, $email: String!) {
-          updateUserById(
-            user: {
-              firstName: "Test"
-              lastName: "User"
-              email: $email
-              phoneNumber: "380666666666"
-              address: {
-                country: "Ukraine"
-                city: "Kiev"
-                street: "Shevchenka"
-                buildingNumber: "23"
-              }
-              wishlist: []
-              orders: []
-              comments: []
-            }
-            id: $userId
-          ) {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
-            }
-            orders
-            comments
-          }
-        }
-      `,
-      variables: {
-        userId,
-        email,
-      },
-    });
-    operations = await setupApp();
     done();
   });
 
@@ -104,21 +60,9 @@ describe('queries', () => {
     const { email } = testUser;
     const res = await getAllUsers(operations);
 
-    expect(res.data.getAllUsers.items).toContainEqual({
-      firstName: 'Test',
-      lastName: 'User',
-      email,
-      phoneNumber: '380666666666',
-      role: 'user',
-      address: {
-        country: 'Ukraine',
-        city: 'Kiev',
-        street: 'Shevchenka',
-        buildingNumber: '23',
-      },
-      orders: [],
-      comments: [],
-    });
+    expect(res.data.getAllUsers.items[1]).toHaveProperty('firstName', 'Petro');
+    expect(res.data.getAllUsers.items[1]).toHaveProperty('email', email);
+    expect(res.data.getAllUsers.items[1]).toHaveProperty('role', 'user');
     done();
   });
 
@@ -168,17 +112,10 @@ describe('queries', () => {
     const res = await getUserById(userId, operations);
 
     expect(res.data.getUserById).toHaveProperty('_id', userId);
-    expect(res.data.getUserById).toHaveProperty('firstName', 'Test');
-    expect(res.data.getUserById).toHaveProperty('lastName', 'User');
+    expect(res.data.getUserById).toHaveProperty('firstName');
+    expect(res.data.getUserById).toHaveProperty('lastName');
     expect(res.data.getUserById).toHaveProperty('email', email);
-    expect(res.data.getUserById).toHaveProperty('phoneNumber', '380666666666');
     expect(res.data.getUserById).toHaveProperty('role', 'user');
-    expect(res.data.getUserById).toHaveProperty('address', {
-      country: 'Ukraine',
-      city: 'Kiev',
-      street: 'Shevchenka',
-      buildingNumber: '23',
-    });
     expect(res.data.getUserById).toHaveProperty('orders');
     expect(res.data.getUserById).toHaveProperty('comments');
     done();
@@ -210,6 +147,7 @@ describe('Testing obtaining information restrictions', () => {
   let language;
 
   beforeAll(async done => {
+    operations = await setupApp();
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
     adminEmail = superAdminUser.email;
@@ -297,8 +235,18 @@ describe('Testing obtaining information restrictions', () => {
 });
 
 describe('Filter users', () => {
-  const ACTIVE = { banned: false };
-  const BANNED = { banned: true };
+  const ACTIVE = {
+    banned: {
+      blockPeriod: '0',
+      blockCount: 1,
+    },
+  };
+  const BANNED = {
+    banned: {
+      blockPeriod: '30',
+      blockCount: 1,
+    },
+  };
   const SORT = {
     byName: { asc: { name: 1 }, desc: { name: -1 } },
     byEmail: { asc: { email: 1 }, desc: { email: -1 } },
@@ -317,7 +265,9 @@ describe('Filter users', () => {
     for (let i = 0; i < users.length; i++) {
       if (
         testUsersSet.some(
-          el => el.firstName === users[i].firstName && el.banned
+          el =>
+            el.firstName === users[i].firstName &&
+            el.banned.blockPeriod === '30'
         )
       ) {
         await operations.mutate({
@@ -387,46 +337,6 @@ describe('Filter users', () => {
 
     expect(users).toBeDefined();
     expect(users.map(user => user.email)).toEqual(compareResult);
-    done();
-  });
-
-  test('should show only banned users', async done => {
-    const compareResult = testUsersSet
-      .filter(user => user.banned)
-      .map(user => ({ firstName: user.firstName, banned: user.banned }));
-
-    let users = await getAllUsersQuery(operations, {}, BANNED);
-    users = chooseOnlyUsers(users).map(user => ({
-      firstName: user.firstName,
-      banned: user.banned,
-    }));
-
-    expect(users).toBeDefined();
-    users.forEach(user => {
-      expect(user).toEqual(
-        compareResult.find(el => el.firstName === user.firstName)
-      );
-    });
-    done();
-  });
-
-  test('should show only not banned users', async done => {
-    const compareResult = testUsersSet
-      .filter(user => !user.banned)
-      .map(user => ({ firstName: user.firstName, banned: user.banned }));
-
-    let users = await getAllUsersQuery(operations, {}, ACTIVE);
-
-    users = chooseOnlyUsers(users).map(user => ({
-      firstName: user.firstName,
-      banned: user.banned,
-    }));
-    expect(users).toBeDefined();
-    users.forEach(user => {
-      expect(user).toEqual(
-        compareResult.find(el => el.firstName === user.firstName)
-      );
-    });
     done();
   });
 
