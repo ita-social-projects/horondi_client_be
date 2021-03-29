@@ -6,13 +6,7 @@ const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
 const generateTokens = require('../../utils/create-tokens');
 const {
-  EmailActions: {
-    CONFIRM_EMAIL,
-    RECOVER_PASSWORD,
-    SUCCESSFUL_CONFIRM,
-    BLOCK_USER,
-    UNLOCK_USER,
-  },
+  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, BLOCK_USER, UNLOCK_USER },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
@@ -31,7 +25,6 @@ const {
 } = require('../helper-functions');
 const productService = require('../product/product.service');
 const verifyUser = require('../../utils/verify-user');
-
 const {
   USER_ALREADY_EXIST,
   USER_NOT_FOUND,
@@ -47,6 +40,8 @@ const {
   USER_IS_ALREADY_BLOCKED,
   USER_IS_ALREADY_UNLOCKED,
   YOU_CANT_UNLOCK_YOURSELF,
+  ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
+  ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -66,21 +61,30 @@ const {
   roles: { USER },
 } = require('../../consts');
 const RuleError = require('../../errors/rule.error');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts/');
 
 class UserService extends FilterHelper {
-  async blockUser(userId, { _id: adminId }) {
+  async blockUser(userId, { _id: adminId, role }) {
     const userToBlock = await User.findById(userId).exec();
 
     if (!userToBlock) {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+    if (userToBlock.banned.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_ALREADY_BLOCKED, FORBIDDEN);
     }
 
     if (userToBlock._id.toString() === adminId.toString()) {
       throw new RuleError(YOU_CANT_BLOCK_YOURSELF, FORBIDDEN);
     }
 
-    if (userToBlock.banned.blockPeriod !== UNLOCKED) {
-      throw new RuleError(USER_IS_ALREADY_BLOCKED, FORBIDDEN);
+    if (
+      (userToBlock.role === ADMIN || userToBlock.role === SUPERADMIN) &&
+      role !== SUPERADMIN
+    ) {
+      throw new RuleError(ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN, FORBIDDEN);
     }
 
     switch (userToBlock.banned.blockCount) {
@@ -148,19 +152,26 @@ class UserService extends FilterHelper {
     }
   }
 
-  async unlockUser(userId, { _id: adminId }) {
+  async unlockUser(userId, { _id: adminId, role }) {
     const userToUnlock = await User.findById(userId).exec();
 
     if (!userToUnlock) {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
+    if (userToUnlock.banned.blockPeriod === UNLOCKED) {
+      throw new RuleError(USER_IS_ALREADY_UNLOCKED, FORBIDDEN);
+    }
+
     if (userToUnlock._id.toString() === adminId.toString()) {
       throw new RuleError(YOU_CANT_UNLOCK_YOURSELF, FORBIDDEN);
     }
 
-    if (userToUnlock.banned.blockPeriod === UNLOCKED) {
-      throw new RuleError(USER_IS_ALREADY_UNLOCKED, FORBIDDEN);
+    if (
+      (userToUnlock.role === ADMIN || userToUnlock.role === SUPERADMIN) &&
+      role !== SUPERADMIN
+    ) {
+      throw new RuleError(ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN, FORBIDDEN);
     }
 
     if (userToUnlock.banned.blockPeriod === INFINITE) {
