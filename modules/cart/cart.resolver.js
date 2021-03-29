@@ -61,13 +61,11 @@ const cartMutation = {
 
   updateConstructorProductItemQuantity: async (
     _,
-    { quantity, productId, sizeId, constructorData, id }
+    { quantity, constructorData, id }
   ) => {
     try {
       return await updateConstructorProductItemQuantity(
         quantity,
-        productId,
-        sizeId,
         constructorData,
         id
       );

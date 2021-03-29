@@ -71,11 +71,13 @@ class CartService {
   }
 
   async addProductToCart(sizeId, id, { _id }) {
-    const isProductAlreadyExistsInCart = await UserModel.findOne({
-      _id: id,
-      'cart.items.product': _id,
-      'cart.items.options.size': sizeId,
-    }).exec();
+    const isProductAlreadyExistsInCart = await UserModel.findOne(
+      {
+        _id: id,
+        'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
+      },
+      'cart.items.$'
+    ).exec();
 
     if (isProductAlreadyExistsInCart) {
       throw new RuleError(PRODUCT_ALREADY_EXIST_IN_CART, FORBIDDEN);
@@ -111,6 +113,8 @@ class CartService {
         },
         {
           new: true,
+          safe: true,
+          upsert: true,
         }
       ).exec();
     } else {
@@ -128,6 +132,8 @@ class CartService {
         },
         {
           new: true,
+          safe: true,
+          upsert: true,
         }
       ).exec();
     }
@@ -144,15 +150,22 @@ class CartService {
     id,
     { _id }
   ) {
-    const isItemAlreadyExists = await UserModel.findOne({
-      _id: id,
-      'cart.items.options.size': sizeId,
-      'cart.items.fromConstructor.product': _id,
-      'cart.items.fromConstructor.constructorBasics': constructorBasics,
-      'cart.items.fromConstructor.constructorBottom': constructorBottom,
-      'cart.items.fromConstructor.constructorPattern': constructorPattern,
-      'cart.items.fromConstructor.constructorFrontPocket': constructorFrontPocket,
-    }).exec();
+    const isItemAlreadyExists = await UserModel.findOne(
+      {
+        _id: id,
+        'cart.items': {
+          $elemMatch: {
+            'fromConstructor.product': _id,
+            'fromConstructor.constructorBasics': constructorBasics,
+            'fromConstructor.constructorBottom': constructorBottom,
+            'fromConstructor.constructorPattern': constructorPattern,
+            'fromConstructor.constructorFrontPocket': constructorFrontPocket,
+            'options.size': sizeId,
+          },
+        },
+      },
+      'cart.items.$'
+    ).exec();
 
     if (isItemAlreadyExists) {
       throw new RuleError(PRODUCT_ALREADY_EXIST_IN_CART, BAD_REQUEST);
@@ -262,10 +275,9 @@ class CartService {
     const itemFromCart = await UserModel.findOne(
       {
         _id: id,
-        'cart.items.product': _id,
-        'cart.items.options.size': sizeId,
+        'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
       },
-      'cart.items.$ -_id'
+      'cart.items.$'
     ).exec();
 
     if (!itemFromCart) {
@@ -399,10 +411,14 @@ class CartService {
           const isProductAlreadyInCart = await UserModel.findOne(
             {
               _id: id,
-              'cart.items.product': item.product,
-              'cart.items.options.size': item.options.size,
+              'cart.items': {
+                $elemMatch: {
+                  product: item.product,
+                  'options.size': item.options.size,
+                },
+              },
             },
-            'cart.items.$ -_id'
+            'cart.items.$'
           ).exec();
 
           if (sizePrice && !isProductAlreadyInCart && isProductPresent) {
@@ -434,19 +450,23 @@ class CartService {
           const isConstructorAlreadyInCart = await UserModel.findOne(
             {
               _id: id,
-              'cart.items.fromConstructor.product':
-                item.productFromConstructor.product,
-              'cart.items.fromConstructor.constructorBasics':
-                item.productFromConstructor.constructorBasics,
-              'cart.items.fromConstructor.constructorBottom':
-                item.productFromConstructor.constructorBottom,
-              'cart.items.fromConstructor.constructorPattern':
-                item.productFromConstructor.constructorPattern,
-              'cart.items.fromConstructor.constructorFrontPocket':
-                item.productFromConstructor.constructorFrontPocket,
-              'cart.items.options.size': item.options.size,
+              'cart.items': {
+                $elemMatch: {
+                  'fromConstructor.product':
+                    item.productFromConstructor.product,
+                  'fromConstructor.constructorBasics':
+                    item.productFromConstructor.constructorBasics,
+                  'fromConstructor.constructorBottom':
+                    item.productFromConstructor.constructorBottom,
+                  'fromConstructor.constructorPattern':
+                    item.productFromConstructor.constructorPattern,
+                  'fromConstructor.constructorFrontPocket':
+                    item.productFromConstructor.constructorFrontPocket,
+                  'options.size': item.options.size,
+                },
+              },
             },
-            'cart.items.$ -_id'
+            'cart.items.$'
           ).exec();
 
           const {
@@ -533,10 +553,14 @@ class CartService {
             const isProductExistsInCart = await UserModel.findOne(
               {
                 _id: id,
-                'cart.items.options.size': item.options.size,
-                'cart.items.product': item.product,
+                'cart.items': {
+                  $elemMatch: {
+                    product: item.product,
+                    'options.size': item.options.size,
+                  },
+                },
               },
-              'cart.items.$ -_id'
+              'cart.items.$'
             ).exec();
 
             if (isProductExistsInCart) {
@@ -559,19 +583,23 @@ class CartService {
             const isConstructorExistsInCart = await UserModel.findOne(
               {
                 _id: id,
-                'cart.items.fromConstructor.product':
-                  item.productFromConstructor.product,
-                'cart.items.options.size': item.options.size,
-                'cart.items.fromConstructor.constructorBasics':
-                  item.productFromConstructor.constructorBasics,
-                'cart.items.fromConstructor.constructorBottom':
-                  item.productFromConstructor.constructorBottom,
-                'cart.items.fromConstructor.constructorPattern':
-                  item.productFromConstructor.constructorPattern,
-                'cart.items.fromConstructor.constructorFrontPocket':
-                  item.productFromConstructor.constructorFrontPocket,
+                'cart.items': {
+                  $elemMatch: {
+                    'fromConstructor.product':
+                      item.productFromConstructor.product,
+                    'fromConstructor.constructorBasics':
+                      item.productFromConstructor.constructorBasics,
+                    'fromConstructor.constructorBottom':
+                      item.productFromConstructor.constructorBottom,
+                    'fromConstructor.constructorPattern':
+                      item.productFromConstructor.constructorPattern,
+                    'fromConstructor.constructorFrontPocket':
+                      item.productFromConstructor.constructorFrontPocket,
+                    'options.size': item.options.size,
+                  },
+                },
               },
-              'cart.items.$ -_id'
+              'cart.items.$'
             ).exec();
 
             if (isConstructorExistsInCart) {

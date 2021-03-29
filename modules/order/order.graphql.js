@@ -2,7 +2,8 @@ const orderTypes = `
 type Order {
   _id: ID!
   orderNumber: String
-  status: Status,
+  paymentUrl: String
+  status: Status
   user: OrderUser
   dateOfCreation: String
   lastUpdatedDate: String
