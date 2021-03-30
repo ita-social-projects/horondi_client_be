@@ -19,7 +19,6 @@ const {
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
-  INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   USER_ALREADY_EXIST,
   WRONG_CREDENTIALS,
@@ -116,7 +115,7 @@ describe('mutations', () => {
     expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
     done();
   });
-  test('should update user by id', async done => {
+  test('should get invalid permissions when try to update user', async done => {
     const {
       email,
       role,
@@ -145,25 +144,11 @@ describe('mutations', () => {
       operations
     );
 
-    expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
-    expect(res.data.updateUserById).toHaveProperty('lastName', 'Updated');
-    expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
     expect(res.data.updateUserById).toHaveProperty(
-      'phoneNumber',
-      testUser.phoneNumber
+      'message',
+      INVALID_PERMISSIONS
     );
-    expect(res.data.updateUserById).toHaveProperty('role', 'user');
-    expect(res.data.updateUserById).toHaveProperty('address', {
-      country: testUser.address.country,
-      city: testUser.address.city,
-      street: testUser.address.street,
-      buildingNumber: testUser.address.buildingNumber,
-    });
-    expect(res.data.updateUserById).toHaveProperty('orders', testUser.orders);
-    expect(res.data.updateUserById).toHaveProperty(
-      'comments',
-      testUser.comments
-    );
+    expect(res.data.updateUserById).toHaveProperty('statusCode', 403);
     done();
   });
   test('Should change user status', async done => {
