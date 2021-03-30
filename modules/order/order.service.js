@@ -1,11 +1,18 @@
-const Order = require('./order.model');
 const ObjectId = require('mongoose').Types.ObjectId;
 
+const RuleError = require('../../errors/rule.error');
+const Order = require('./order.model');
+const {
+  ORDER_PAYMENT_STATUS: { PAID },
+} = require('../../consts/order-payment-status');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
+  ORDER_IS_NOT_PAID,
 } = require('../../error-messages/orders.messages');
-
 const { userDateFormat } = require('../../consts');
 
 const {
@@ -18,10 +25,18 @@ const {
 const {
   calculateTotalPriceToPay,
   calculateTotalItemsPrice,
-  generateOrderId,
+  generateOrderNumber,
 } = require('../../utils/order.utils');
 
 class OrdersService {
+  async getOrderByPaidOrderNumber(orderNumber) {
+    const order = await Order.findOne({ orderNumber }).exec();
+
+    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    return order;
+  }
+
   async getAllOrders({ skip, limit, filter = {} }) {
     const { orderStatus } = filter;
 
@@ -81,7 +96,7 @@ class OrdersService {
     const { items } = data;
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
-    const orderNumber = generateOrderId();
+    const orderNumber = generateOrderNumber();
 
     const totalPriceToPay = await calculateTotalPriceToPay(
       data,
