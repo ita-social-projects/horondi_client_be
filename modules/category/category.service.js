@@ -10,6 +10,13 @@ const uploadService = require('../upload/upload.service');
 const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
+const {
+  PRODUCTS,
+  _ID,
+  CATEGORY,
+  FROM_PRODUCTS,
+  PURCHASED_COUNT,
+} = require('../../consts/category-fields');
 
 class CategoryService extends FilterHelper {
   async getAllCategories({ filter, pagination, sort }) {
@@ -201,25 +208,38 @@ class CategoryService extends FilterHelper {
 
         res.names.push(name[0].value);
         res.counts.push(purchasedCount);
-        res.relations.push(relation);
+        res.relations.push(relation || 0);
       });
 
     const otherRelation = 100 - popularSum;
     const otherCount = Math.round((otherRelation * total) / 100);
-
     return {
       names: [...res.names, OTHERS],
-      counts: [...res.counts, otherCount],
-      relations: [...res.relations, otherRelation],
+      counts: [...res.counts, otherCount || 0],
+      relations: [...res.relations, otherRelation || 0],
     };
   }
 
   async getPopularCategories() {
     let total = 0;
-    const categories = await Category.find()
-      .sort({ purchasedCount: -1 })
-      .lean()
-      .exec();
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: PRODUCTS,
+          localField: _ID,
+          foreignField: CATEGORY,
+          as: FROM_PRODUCTS,
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          purchasedCount: {
+            $sum: PURCHASED_COUNT,
+          },
+        },
+      },
+    ]).exec();
 
     categories.forEach(({ purchasedCount }) => (total += purchasedCount));
 
