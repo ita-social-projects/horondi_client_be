@@ -239,7 +239,9 @@ class CategoryService extends FilterHelper {
           },
         },
       },
-    ]).exec();
+    ])
+      .sort({ purchasedCount: -1 })
+      .exec();
 
     categories.forEach(({ purchasedCount }) => (total += purchasedCount));
 
