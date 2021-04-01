@@ -96,6 +96,7 @@ class UserService extends FilterHelper {
               banned: {
                 blockPeriod: ONE_MONTH,
                 blockCount: ONE_TIME,
+                updatedAt: Date.now(),
               },
             },
           },
@@ -117,6 +118,7 @@ class UserService extends FilterHelper {
               banned: {
                 blockPeriod: TWO_MONTH,
                 blockCount: TWO_TIMES,
+                updatedAt: Date.now(),
               },
             },
           },
@@ -137,6 +139,7 @@ class UserService extends FilterHelper {
               banned: {
                 blockPeriod: INFINITE,
                 blockCount: THREE_TIMES,
+                updatedAt: Date.now(),
               },
             },
           },
@@ -182,6 +185,7 @@ class UserService extends FilterHelper {
             banned: {
               blockPeriod: UNLOCKED,
               blockCount: TWO_TIMES,
+              updatedAt: Date.now(),
             },
           },
         },
@@ -199,6 +203,7 @@ class UserService extends FilterHelper {
             banned: {
               blockPeriod: UNLOCKED,
               blockCount: userToUnlock.banned.blockCount,
+              updatedAt: Date.now(),
             },
           },
         },
