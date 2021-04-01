@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+const { removeDaysFromData } = require('./../modules/helper-functions');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, INFINITE, TWO_MONTH, ONE_MONTH },
 } = require('../consts/user-block-period');
