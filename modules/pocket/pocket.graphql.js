@@ -2,7 +2,9 @@ const pocketType = `
   type Pocket {
     _id: ID!
     name: [Language]
+    type: String
     model: Model
+    features: [PocketSide]
     blocker: [Blocker]
     image: String
     additionalPrice: [CurrencySet]
@@ -11,10 +13,33 @@ const pocketType = `
   }
 `;
 
+const pocketSide = `
+    type PocketSide {
+     side: SideEnum
+    }
+`;
+
+const pocketSideInput = `
+    input PocketSideInput {
+     side: String
+    }
+`;
+
+const sideEnum = `
+    enum SideEnum {
+      LEFT
+      RIGHT
+      FRONT
+      BACK
+    }
+`;
+
 const pocketInput = `
   input PocketInput {
     name: [LanguageInput]
+    type: String
     model: ID
+    features: [PocketSideInput]
     blocker: [BlockerInput]
     image: Upload
     additionalPrice: Int
@@ -26,4 +51,7 @@ const pocketInput = `
 module.exports = {
   pocketType,
   pocketInput,
+  pocketSide,
+  pocketSideInput,
+  sideEnum,
 };

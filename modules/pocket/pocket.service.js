@@ -88,6 +88,7 @@ class PocketService {
       const uploadImage = await uploadService.uploadSmallImage(image);
       image = uploadImage.fileNames.small;
     }
+    console.log(pocket);
     return new Pocket({ ...pocket, image }).save();
   }
 

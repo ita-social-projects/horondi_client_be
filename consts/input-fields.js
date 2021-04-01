@@ -9,6 +9,7 @@ const INPUT_FIELDS = {
   LIMIT: 'limit',
   SKIP: 'skip',
   DATE: 'date',
+  POCKET: 'pocket',
 };
 
 module.exports = {

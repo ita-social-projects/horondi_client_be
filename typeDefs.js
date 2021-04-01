@@ -99,7 +99,13 @@ const {
   ukrPoshtaEnum,
   ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
-const { pocketType, pocketInput } = require('./modules/pocket/pocket.graphql');
+const {
+  pocketType,
+  pocketInput,
+  sideEnum,
+  pocketSide,
+  pocketSideInput,
+} = require('./modules/pocket/pocket.graphql');
 const { backType, backInput } = require('./modules/back/back.graphql');
 const {
   blockerType,
@@ -141,6 +147,7 @@ const typeDefs = gql`
   ${constructorFrontPocketType}
   ${constructorBottomType}
   ${pocketType}
+  ${pocketSide}
   ${backType}
   ${blockerType}
 
@@ -151,6 +158,8 @@ const typeDefs = gql`
     admin
     user
   }
+
+  ${sideEnum}
   ${ukrPoshtaEnum}
   type Language {
     lang: String!
@@ -555,6 +564,7 @@ const typeDefs = gql`
   ${constructorFrontPocketInput}
   ${constructorBottomInput}
   ${pocketInput}
+  ${pocketSideInput}
   ${backInput}
   ${blockerInput}
   input LanguageInput {
