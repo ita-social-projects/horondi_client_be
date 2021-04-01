@@ -209,7 +209,6 @@ class ProductsService {
     if (_.isMatch(productData, product)) {
       throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
-    if (primary) {
       if (primary?.large) {
         productData.images.primary = primary;
       } else {
@@ -222,7 +221,6 @@ class ProductsService {
         const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
       }
-    }
     if (filesToUpload.length) {
       const previousImagesLinks = [];
       const newFiles = [];
