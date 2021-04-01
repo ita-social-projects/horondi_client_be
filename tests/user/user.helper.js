@@ -63,7 +63,7 @@ const updateUserById = async (
   token,
   operations
 ) => {
-  return await operations.mutate({
+  const updatedUser = await operations.mutate({
     mutation: gql`
       mutation(
         $userId: ID!
@@ -130,9 +130,11 @@ const updateUserById = async (
       comments,
     },
   });
+
+  return updatedUser;
 };
 const loginUser = async (email, pass, operations) => {
-  return await operations.mutate({
+  const loginedUser = await operations.mutate({
     mutation: gql`
       mutation($email: String!, $password: String!) {
         loginUser(loginInput: { email: $email, password: $password }) {
@@ -169,9 +171,10 @@ const loginUser = async (email, pass, operations) => {
       password: pass,
     },
   });
+  return loginedUser;
 };
 const getAllUsers = async operations => {
-  return await operations.query({
+  const allUsers = await operations.query({
     query: gql`
       query {
         getAllUsers {
@@ -195,9 +198,11 @@ const getAllUsers = async operations => {
       }
     `,
   });
+
+  return allUsers;
 };
 const getUserByToken = async operations => {
-  return await operations.query({
+  const user = await operations.query({
     query: gql`
       query {
         getUserByToken {
@@ -223,6 +228,8 @@ const getUserByToken = async operations => {
       }
     `,
   });
+
+  return user;
 };
 const getUserById = async (userId, operations) => {
   return await operations.query({

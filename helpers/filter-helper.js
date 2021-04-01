@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+const { removeDaysFromData } = require('./../modules/helper-functions');
 class FilterHelper {
   filterItems(args = {}) {
     const filter = {};

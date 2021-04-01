@@ -22,7 +22,10 @@ const testUsersSet = [
     email: 'albinaT@gmail.com',
     pass: 'qwertY123',
     language: 1,
-    banned: true,
+    banned: {
+      blockPeriod: '30',
+      blockCount: 1,
+    },
   },
   {
     firstName: 'Denis',
@@ -30,7 +33,10 @@ const testUsersSet = [
     email: 'denisBB@gmail.com',
     pass: 'qwertY124',
     language: 1,
-    banned: false,
+    banned: {
+      blockPeriod: '0',
+      blockCount: 1,
+    },
   },
   {
     firstName: 'Zelda',
@@ -38,7 +44,10 @@ const testUsersSet = [
     email: 'zeldaB@gmail.com',
     pass: 'qwertY125',
     language: 1,
-    banned: false,
+    banned: {
+      blockPeriod: '0',
+      blockCount: 1,
+    },
   },
   {
     firstName: 'Pepo',
@@ -46,7 +55,10 @@ const testUsersSet = [
     email: 'example@gmail.com',
     pass: 'qwertY123',
     language: 1,
-    banned: true,
+    banned: {
+      blockPeriod: '30',
+      blockCount: 1,
+    },
   },
   {
     firstName: 'Petro',
@@ -54,7 +66,10 @@ const testUsersSet = [
     email: 'f5dbbdnvf1@gmail.com',
     pass: '12345678Pt',
     language: 1,
-    banned: true,
+    banned: {
+      blockPeriod: '30',
+      blockCount: 1,
+    },
   },
 ];
 
@@ -86,9 +101,9 @@ const user = {
 };
 
 const INVALID_FIRST_NAME =
-  '"firstName" with value "H" fails to match the required pattern: /^(?=.{2,30}$)[a-zA-Zа-яА-ЯІЄіїє]+(([\',. -][a-zA-Zа-яА-ЯІЄіїє])?[a-zA-Zа-яА-ЯІЄіїє]*)*$/u';
+  '"firstName" with value "H" fails to match the required pattern: ';
 const INVALID_LAST_NAME =
-  '"lastName" with value "O" fails to match the required pattern: /^(?=.{2,30}$)[a-zA-Zа-яА-ЯІЄіїє]+(([\',. -][a-zA-Zа-яА-ЯІЄіїє])?[a-zA-Zа-яА-ЯІЄіїє]*)*$/u';
+  '"lastName" with value "O" fails to match the required pattern: ';
 const INVALID_PASSWORD =
   '"password" with value "You" fails to match the required pattern: /^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,30}$/';
 const INVALID_ROLE = '"role" must be one of [admin]';
