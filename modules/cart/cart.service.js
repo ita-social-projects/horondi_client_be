@@ -97,22 +97,22 @@ class CartService {
       );
 
       if (isProductAlreadyExistsInCart) {
-        const item = isProductAlreadyExistsInCart.cart.items[0];
         const incrementProductPrice = totalCartSum(
           ADD_ITEM,
           productPriceWithSize,
-          item.price
+          isProductAlreadyExistsInCart.cart.items[0].price
         );
         return UserModel.findOneAndUpdate(
           {
             _id: id,
-            'cart.items._id': item._id,
+            'cart.items._id': isProductAlreadyExistsInCart.cart.items[0]._id,
           },
           {
             $set: {
               'cart.totalPrice': totalPrice,
               'cart.items.$.price': incrementProductPrice,
-              'cart.items.$.quantity': item.quantity + 1,
+              'cart.items.$.quantity':
+                isProductAlreadyExistsInCart.cart.items[0].quantity + 1,
             },
           },
           {
@@ -243,28 +243,26 @@ class CartService {
         cart.totalPrice
       );
       if (isItemAlreadyExists) {
-        const item = isItemAlreadyExists.cart.items[0];
         const incrementProductPrice = totalCartSum(
           ADD_ITEM,
           productPriceWithSize,
-          item.price
+          isItemAlreadyExists.cart.items[0].price
         );
         return UserModel.findOneAndUpdate(
           {
             _id: id,
-            'cart.items._id': item._id,
+            'cart.items._id': isItemAlreadyExists.cart.items[0]._id,
           },
           {
             $set: {
               'cart.totalPrice': totalPrice,
               'cart.items.$.price': incrementProductPrice,
-              'cart.items.$.quantity': item.quantity + 1,
+              'cart.items.$.quantity':
+                isItemAlreadyExists.cart.items[0].quantity + 1,
             },
           },
           {
             new: true,
-            safe: true,
-            upsert: true,
           }
         ).exec();
       } else {

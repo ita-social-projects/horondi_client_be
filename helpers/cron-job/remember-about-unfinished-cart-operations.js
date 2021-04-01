@@ -26,23 +26,25 @@ const rememberAboutUnfinishedCartOperations = () =>
       .exec();
 
     if (usersInfo.length) {
-      for (const cartItemData of usersInfo) {
-        if (cartItemData.cart.items.length) {
-          const orderDate = new Date(cartItemData.cart.updatedAt).getTime();
-          const dateDifference = currentDate - orderDate;
-          const oneDay = getDaysInMilliseconds();
+      await Promise.all(
+        usersInfo.map(cartItemData => {
+          if (cartItemData.cart?.items?.length) {
+            const orderDate = new Date(cartItemData.cart.updatedAt).getTime();
+            const dateDifference = currentDate - orderDate;
+            const oneDay = getDaysInMilliseconds();
 
-          if (
-            dateDifference >= oneDay &&
-            !cartItemData.cart.rememberMailCount
-          ) {
-            await UserModel.findOneAndUpdate(
-              { _id: cartItemData._id },
-              { $set: { 'cart.rememberMailCount': 1 } }
-            );
+            if (
+              dateDifference >= oneDay &&
+              !cartItemData.cart.rememberMailCount
+            ) {
+              return UserModel.findOneAndUpdate(
+                { _id: cartItemData._id },
+                { $set: { 'cart.rememberMailCount': 1 } }
+              );
+            }
           }
-        }
-      }
+        })
+      );
     }
   });
 
