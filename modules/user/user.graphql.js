@@ -18,9 +18,16 @@ type User{
     cart: Cart
     orders:[ID]
     comments: [ID]
-    banned: Boolean
+    banned: UserBlockPeriod
     confirmed: Boolean
-}`;
+}
+
+type UserBlockPeriod {
+  blockPeriod: String
+  blockCount: Int
+  updatedAt: Date
+}
+`;
 
 const paginatedUsersType = `
 type PaginatedUsersType {

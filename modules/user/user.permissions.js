@@ -30,6 +30,8 @@ const userPermissionsQuery = {
   validateConfirmationToken: allow,
 };
 const userPermissionsMutation = {
+  blockUser: hasRoles([SUPERADMIN, ADMIN]),
+  unlockUser: hasRoles([SUPERADMIN, ADMIN]),
   registerUser: inputDataValidation(USER, createUserValidator),
   loginUser: inputDataValidation(LOGIN_INPUT, loginUserValidator),
   loginAdmin: inputDataValidation(LOGIN_INPUT, loginUserValidator),

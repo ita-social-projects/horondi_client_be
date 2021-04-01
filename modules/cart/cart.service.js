@@ -71,15 +71,14 @@ class CartService {
   }
 
   async addProductToCart(sizeId, id, { _id }) {
-    const isProductAlreadyExistsInCart = await UserModel.findOne({
-      _id: id,
-      'cart.items.product': _id,
-      'cart.items.options.size': sizeId,
-    }).exec();
+    const isProductAlreadyExistsInCart = await UserModel.findOne(
+      {
+        _id: id,
+        'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
+      },
+      'cart.items.$'
+    ).exec();
 
-    if (isProductAlreadyExistsInCart) {
-      throw new RuleError(PRODUCT_ALREADY_EXIST_IN_CART, FORBIDDEN);
-    }
     const { additionalPrice } = await getSizeById(sizeId);
 
     if (!additionalPrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
@@ -97,22 +96,51 @@ class CartService {
         cart.totalPrice
       );
 
-      return UserModel.findOneAndUpdate(
-        { _id: id },
-        {
-          'cart.totalPrice': totalPrice,
-          $push: {
-            'cart.items': {
-              product: _id,
-              'options.size': sizeId,
-              price: productPriceWithSize,
+      if (isProductAlreadyExistsInCart) {
+        const incrementProductPrice = totalCartSum(
+          ADD_ITEM,
+          productPriceWithSize,
+          isProductAlreadyExistsInCart.cart.items[0].price
+        );
+        return UserModel.findOneAndUpdate(
+          {
+            _id: id,
+            'cart.items._id': isProductAlreadyExistsInCart.cart.items[0]._id,
+          },
+          {
+            $set: {
+              'cart.totalPrice': totalPrice,
+              'cart.items.$.price': incrementProductPrice,
+              'cart.items.$.quantity':
+                isProductAlreadyExistsInCart.cart.items[0].quantity + 1,
             },
           },
-        },
-        {
-          new: true,
-        }
-      ).exec();
+          {
+            new: true,
+            safe: true,
+            upsert: true,
+          }
+        ).exec();
+      } else {
+        return UserModel.findOneAndUpdate(
+          { _id: id },
+          {
+            'cart.totalPrice': totalPrice,
+            $push: {
+              'cart.items': {
+                product: _id,
+                'options.size': sizeId,
+                price: productPriceWithSize,
+              },
+            },
+          },
+          {
+            new: true,
+            safe: true,
+            upsert: true,
+          }
+        ).exec();
+      }
     } else {
       return UserModel.findOneAndUpdate(
         { _id: id },
@@ -128,6 +156,8 @@ class CartService {
         },
         {
           new: true,
+          safe: true,
+          upsert: true,
         }
       ).exec();
     }
@@ -144,19 +174,22 @@ class CartService {
     id,
     { _id }
   ) {
-    const isItemAlreadyExists = await UserModel.findOne({
-      _id: id,
-      'cart.items.options.size': sizeId,
-      'cart.items.fromConstructor.product': _id,
-      'cart.items.fromConstructor.constructorBasics': constructorBasics,
-      'cart.items.fromConstructor.constructorBottom': constructorBottom,
-      'cart.items.fromConstructor.constructorPattern': constructorPattern,
-      'cart.items.fromConstructor.constructorFrontPocket': constructorFrontPocket,
-    }).exec();
-
-    if (isItemAlreadyExists) {
-      throw new RuleError(PRODUCT_ALREADY_EXIST_IN_CART, BAD_REQUEST);
-    }
+    const isItemAlreadyExists = await UserModel.findOne(
+      {
+        _id: id,
+        'cart.items': {
+          $elemMatch: {
+            'fromConstructor.product': _id,
+            'fromConstructor.constructorBasics': constructorBasics,
+            'fromConstructor.constructorBottom': constructorBottom,
+            'fromConstructor.constructorPattern': constructorPattern,
+            'fromConstructor.constructorFrontPocket': constructorFrontPocket,
+            'options.size': sizeId,
+          },
+        },
+      },
+      'cart.items.$'
+    ).exec();
 
     const { additionalPrice: sizePrice } = await getSizeById(sizeId);
 
@@ -209,27 +242,51 @@ class CartService {
         productPriceWithSize,
         cart.totalPrice
       );
-
-      return UserModel.findOneAndUpdate(
-        { _id: id },
-        {
-          'cart.totalPrice': totalPrice,
-          $push: {
-            'cart.items': {
-              'fromConstructor.product': _id,
-              'fromConstructor.constructorBasics': constructorBasics,
-              'fromConstructor.constructorBottom': constructorBottom,
-              'fromConstructor.constructorFrontPocket': constructorFrontPocket,
-              'fromConstructor.constructorPattern': constructorPattern,
-              'options.size': sizeId,
-              price: productPriceWithSize,
+      if (isItemAlreadyExists) {
+        const incrementProductPrice = totalCartSum(
+          ADD_ITEM,
+          productPriceWithSize,
+          isItemAlreadyExists.cart.items[0].price
+        );
+        return UserModel.findOneAndUpdate(
+          {
+            _id: id,
+            'cart.items._id': isItemAlreadyExists.cart.items[0]._id,
+          },
+          {
+            $set: {
+              'cart.totalPrice': totalPrice,
+              'cart.items.$.price': incrementProductPrice,
+              'cart.items.$.quantity':
+                isItemAlreadyExists.cart.items[0].quantity + 1,
             },
           },
-        },
-        {
-          new: true,
-        }
-      ).exec();
+          {
+            new: true,
+          }
+        ).exec();
+      } else {
+        return UserModel.findOneAndUpdate(
+          { _id: id },
+          {
+            'cart.totalPrice': totalPrice,
+            $push: {
+              'cart.items': {
+                'fromConstructor.product': _id,
+                'fromConstructor.constructorBasics': constructorBasics,
+                'fromConstructor.constructorBottom': constructorBottom,
+                'fromConstructor.constructorFrontPocket': constructorFrontPocket,
+                'fromConstructor.constructorPattern': constructorPattern,
+                'options.size': sizeId,
+                price: productPriceWithSize,
+              },
+            },
+          },
+          {
+            new: true,
+          }
+        ).exec();
+      }
     } else {
       return UserModel.findOneAndUpdate(
         { _id: id },
@@ -262,10 +319,9 @@ class CartService {
     const itemFromCart = await UserModel.findOne(
       {
         _id: id,
-        'cart.items.product': _id,
-        'cart.items.options.size': sizeId,
+        'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
       },
-      'cart.items.$ -_id'
+      'cart.items.$'
     ).exec();
 
     if (!itemFromCart) {
@@ -399,10 +455,14 @@ class CartService {
           const isProductAlreadyInCart = await UserModel.findOne(
             {
               _id: id,
-              'cart.items.product': item.product,
-              'cart.items.options.size': item.options.size,
+              'cart.items': {
+                $elemMatch: {
+                  product: item.product,
+                  'options.size': item.options.size,
+                },
+              },
             },
-            'cart.items.$ -_id'
+            'cart.items.$'
           ).exec();
 
           if (sizePrice && !isProductAlreadyInCart && isProductPresent) {
@@ -434,19 +494,23 @@ class CartService {
           const isConstructorAlreadyInCart = await UserModel.findOne(
             {
               _id: id,
-              'cart.items.fromConstructor.product':
-                item.productFromConstructor.product,
-              'cart.items.fromConstructor.constructorBasics':
-                item.productFromConstructor.constructorBasics,
-              'cart.items.fromConstructor.constructorBottom':
-                item.productFromConstructor.constructorBottom,
-              'cart.items.fromConstructor.constructorPattern':
-                item.productFromConstructor.constructorPattern,
-              'cart.items.fromConstructor.constructorFrontPocket':
-                item.productFromConstructor.constructorFrontPocket,
-              'cart.items.options.size': item.options.size,
+              'cart.items': {
+                $elemMatch: {
+                  'fromConstructor.product':
+                    item.productFromConstructor.product,
+                  'fromConstructor.constructorBasics':
+                    item.productFromConstructor.constructorBasics,
+                  'fromConstructor.constructorBottom':
+                    item.productFromConstructor.constructorBottom,
+                  'fromConstructor.constructorPattern':
+                    item.productFromConstructor.constructorPattern,
+                  'fromConstructor.constructorFrontPocket':
+                    item.productFromConstructor.constructorFrontPocket,
+                  'options.size': item.options.size,
+                },
+              },
             },
-            'cart.items.$ -_id'
+            'cart.items.$'
           ).exec();
 
           const {
@@ -525,74 +589,76 @@ class CartService {
     ).exec();
   }
 
-  async removeProductItemsFromCart(items, id) {
-    if (items.length) {
-      await Promise.all(
-        items.map(async item => {
-          if (item.product) {
-            const isProductExistsInCart = await UserModel.findOne(
-              {
-                _id: id,
-                'cart.items.options.size': item.options.size,
-                'cart.items.product': item.product,
-              },
-              'cart.items.$ -_id'
-            ).exec();
+  async removeProductItemsFromCart(item, id) {
+    if (item?.product) {
+      const isProductExistsInCart = await UserModel.findOne(
+        {
+          _id: id,
+          'cart.items': {
+            $elemMatch: {
+              product: item.product,
+              'options.size': item.options.size,
+            },
+          },
+        },
+        'cart.items.$'
+      ).exec();
 
-            if (isProductExistsInCart) {
-              await UserModel.findOneAndUpdate(
-                {
-                  _id: id,
-                  'cart.items._id': isProductExistsInCart.cart.items[0]._id,
-                },
-                {
-                  $pull: {
-                    'cart.items': {
-                      _id: isProductExistsInCart.cart.items[0]._id,
-                    },
-                  },
-                }
-              ).exec();
-            }
-          }
-          if (item.productFromConstructor) {
-            const isConstructorExistsInCart = await UserModel.findOne(
-              {
-                _id: id,
-                'cart.items.fromConstructor.product':
-                  item.productFromConstructor.product,
-                'cart.items.options.size': item.options.size,
-                'cart.items.fromConstructor.constructorBasics':
-                  item.productFromConstructor.constructorBasics,
-                'cart.items.fromConstructor.constructorBottom':
-                  item.productFromConstructor.constructorBottom,
-                'cart.items.fromConstructor.constructorPattern':
-                  item.productFromConstructor.constructorPattern,
-                'cart.items.fromConstructor.constructorFrontPocket':
-                  item.productFromConstructor.constructorFrontPocket,
+      if (isProductExistsInCart) {
+        await UserModel.findOneAndUpdate(
+          {
+            _id: id,
+            'cart.items._id': isProductExistsInCart.cart.items[0]._id,
+          },
+          {
+            $pull: {
+              'cart.items': {
+                _id: isProductExistsInCart.cart.items[0]._id,
               },
-              'cart.items.$ -_id'
-            ).exec();
-
-            if (isConstructorExistsInCart) {
-              await UserModel.findOneAndUpdate(
-                {
-                  _id: id,
-                  'cart.items._id': isConstructorExistsInCart.cart.items[0]._id,
-                },
-                {
-                  $pull: {
-                    'cart.items': {
-                      _id: isConstructorExistsInCart.cart.items[0]._id,
-                    },
-                  },
-                }
-              ).exec();
-            }
+            },
           }
-        })
-      );
+        ).exec();
+      }
     }
+    if (item?.productFromConstructor) {
+      const isConstructorExistsInCart = await UserModel.findOne(
+        {
+          _id: id,
+          'cart.items': {
+            $elemMatch: {
+              'fromConstructor.product': item.productFromConstructor.product,
+              'fromConstructor.constructorBasics':
+                item.productFromConstructor.constructorBasics,
+              'fromConstructor.constructorBottom':
+                item.productFromConstructor.constructorBottom,
+              'fromConstructor.constructorPattern':
+                item.productFromConstructor.constructorPattern,
+              'fromConstructor.constructorFrontPocket':
+                item.productFromConstructor.constructorFrontPocket,
+              'options.size': item.options.size,
+            },
+          },
+        },
+        'cart.items.$'
+      ).exec();
+
+      if (isConstructorExistsInCart) {
+        await UserModel.findOneAndUpdate(
+          {
+            _id: id,
+            'cart.items._id': isConstructorExistsInCart.cart.items[0]._id,
+          },
+          {
+            $pull: {
+              'cart.items': {
+                _id: isConstructorExistsInCart.cart.items[0]._id,
+              },
+            },
+          }
+        ).exec();
+      }
+    }
+
     const { cart } = await UserModel.findById(id, 'cart ').exec();
 
     const totalPrice = await setTotalCartSum(cart?.items);

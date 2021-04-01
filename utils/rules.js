@@ -5,9 +5,13 @@ const RuleError = require('../errors/rule.error');
 const ProductModel = require('../modules/product/product.model');
 const UserModel = require('../modules/user/user.model');
 const {
+  USER_BLOCK_PERIOD: { UNLOCKED },
+} = require('../consts/user-block-period');
+const {
   INVALID_PERMISSIONS,
   USER_NOT_AUTHORIZED,
   WRONG_CREDENTIALS,
+  USER_IS_BLOCKED,
 } = require('../error-messages/user.messages');
 const { PRODUCT_NOT_FOUND } = require('../error-messages/products.messages');
 const {
@@ -18,9 +22,16 @@ const isAuthorized = rule()((parent, args, context, info) =>
   context.user ? true : new RuleError(USER_NOT_AUTHORIZED, UNAUTHORIZED)
 );
 
+const isUnlocked = rule()((parent, args, { user }) =>
+  user.banned.blockPeriod === UNLOCKED
+    ? true
+    : new RuleError(USER_IS_BLOCKED, FORBIDDEN)
+);
+
 const hasRoles = roles =>
   and(
     isAuthorized,
+    isUnlocked,
     rule()((parent, args, context, info) =>
       roles.includes(context.user.role)
         ? true
@@ -30,6 +41,7 @@ const hasRoles = roles =>
 
 const isTheSameUser = and(
   isAuthorized,
+  isUnlocked,
   rule()((parent, args, context, info) =>
     `${context.user._id}` === args.id
       ? true
@@ -63,18 +75,22 @@ const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
   args.constructorData = await UserModel.findOne(
     {
       _id: args.id,
-      'cart.items.options.size': args.sizeId,
-      'cart.items.fromConstructor.product': args.productId,
-      'cart.items.fromConstructor.constructorBasics':
-        args.constructorData.constructorBasics,
-      'cart.items.fromConstructor.constructorBottom':
-        args.constructorData.constructorBottom,
-      'cart.items.fromConstructor.constructorPattern':
-        args.constructorData.constructorPattern,
-      'cart.items.fromConstructor.constructorFrontPocket':
-        args.constructorData.constructorFrontPocket,
+      'cart.items': {
+        $elemMatch: {
+          'fromConstructor.product': args.productId,
+          'fromConstructor.constructorBasics':
+            args.constructorData.constructorBasics,
+          'fromConstructor.constructorBottom':
+            args.constructorData.constructorBottom,
+          'fromConstructor.constructorPattern':
+            args.constructorData.constructorPattern,
+          'fromConstructor.constructorFrontPocket':
+            args.constructorData.constructorFrontPocket,
+          'options.size': args.sizeId,
+        },
+      },
     },
-    'cart.items.$ -_id'
+    'cart.items.$ '
   ).exec();
 
   return true;
