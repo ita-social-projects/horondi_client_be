@@ -149,6 +149,12 @@ input AdminRegisterInput {
     role: String!
 }
 `;
+
+const resendEmailToConfirmAdminInput = `
+input resendEmailToConfirmAdminInput {
+    email: String!
+}
+`;
 const adminConfirmInput = `
 input AdminConfirmInput {
     firstName: String!
@@ -199,6 +205,7 @@ module.exports = {
   userFilterInput,
   LoginInput,
   adminRegisterInput,
+  resendEmailToConfirmAdminInput,
   adminConfirmInput,
   UserForStatisticsInput,
   paginatedUsersType,

@@ -111,6 +111,16 @@ const userMutation = {
       };
     }
   },
+  resendEmailToConfirmAdmin: async (parent, args) => {
+    try {
+      return await userService.resendEmailToConfirmAdmin(args.user);
+    } catch (err) {
+      return {
+        statusCode: BAD_REQUEST,
+        message: err.message,
+      };
+    }
+  },
   completeAdminRegister: async (parent, args) => {
     try {
       return await userService.completeAdminRegister(args.user, args.token);

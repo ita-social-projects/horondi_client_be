@@ -6,7 +6,13 @@ const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
 const generateTokens = require('../../utils/create-tokens');
 const {
-  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, BLOCK_USER, UNLOCK_USER },
+  EmailActions: {
+    CONFIRM_EMAIL,
+    RECOVER_PASSWORD,
+    BLOCK_USER,
+    UNLOCK_USER,
+    CONFIRM_ADMIN_EMAIL,
+  },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
@@ -617,11 +623,11 @@ class UserService extends FilterHelper {
     return true;
   }
 
-  async registerAdmin(userInput) {
-    const { email, role } = userInput;
+  async registerAdmin({ email, role }) {
+    const isAdminExists = await User.findOne({ email }).exec();
 
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+    if (isAdminExists) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const user = new User({
@@ -639,43 +645,66 @@ class UserService extends FilterHelper {
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
+    await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
+      token: invitationalToken,
+    });
 
     return savedUser;
   }
 
-  async completeAdminRegister(updatedUser, token) {
-    const { firstName, lastName, password } = updatedUser;
-    let decoded;
+  async resendEmailToConfirmAdmin({ email }) {
+    const isAdminExists = await User.findOne({ email }).exec();
 
-    try {
-      decoded = jwt.verify(token, SECRET);
-    } catch (err) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: BAD_REQUEST,
-      });
+    if (!isAdminExists) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const user = await User.findOne({ email: decoded.email }).exec();
+    const { accesToken } = generateTokens(isAdminExists._id, {
+      expiresIn: TOKEN_EXPIRES_IN,
+      secret: SECRET,
+    });
+    const invitationalToken = accesToken;
+
+    await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
+      token: invitationalToken,
+    });
+
+    return { isSuccess: true };
+  }
+
+  async completeAdminRegister(updatedUser, token) {
+    const { password } = updatedUser;
+
+    const userDetails = verifyUser(token);
+
+    if (!userDetails) {
+      throw new RuleError(INVALID_ADMIN_INVITATIONAL_TOKEN, BAD_REQUEST);
+    }
+
+    const user = await User.findOne({ _id: userDetails.userId }).exec();
 
     if (!user) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.credentials = [
+    await User.findByIdAndUpdate(
+      userDetails.userId,
       {
-        source: HORONDI,
-        tokenPass: encryptedPassword,
+        $set: {
+          ...updatedUser,
+          credentials: [
+            {
+              source: HORONDI,
+              tokenPass: encryptedPassword,
+            },
+          ],
+          confirmed: true,
+        },
       },
-    ];
-    user.confirmed = true;
-
-    await user.save();
+      { new: true }
+    ).exec();
 
     return { isSuccess: true };
   }
