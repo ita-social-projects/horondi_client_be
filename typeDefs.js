@@ -653,7 +653,7 @@ const typeDefs = gql`
       id: ID!
       ): UserResult 
     removeProductItemsFromCart(
-      items:[ RemoveItemsFromCartInput!],
+      items: RemoveItemsFromCartInput!,
       id: ID!
       ): UserResult
     mergeCartFromLS(
