@@ -1,6 +1,7 @@
-const { allow } = require('graphql-shield');
+const { allow, and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
+const { checkImageType, checkImageSize } = require('../../utils/rules');
 
 const { ADMIN, SUPERADMIN } = roles;
 
@@ -8,7 +9,11 @@ const homePageImagesPermissionsQuery = {
   getHomePageLooksImages: allow,
 };
 const homePageImagesPermissionsMutations = {
-  updateHomePageLooksImage: allow,
+  updateHomePageLooksImage: and(
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkImageType,
+    checkImageSize
+  ),
 };
 
 module.exports = {
