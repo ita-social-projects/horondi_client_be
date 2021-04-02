@@ -96,6 +96,73 @@ const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
   return true;
 });
 
+const checkImageType = rule()((_, args) => {
+  return true;
+  const fileTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  let imagesArray = [];
+  if (args.image) {
+    imagesArray = args.image;
+  } else if (!args.upload.length) {
+    imagesArray.push(args.upload);
+  } else {
+    imagesArray = args.upload;
+  }
+  if (!imagesArray.length)
+    return new RuleError('INCORRECT_FILETYPE', BAD_REQUEST);
+  for (let i = 0; i < imagesArray.length; i++) {
+    let incorrectTypes = [];
+    for (let j = 0; j < fileTypes.length; j++) {
+      if (imagesArray[i].file.mimetype !== fileTypes[j]) {
+        incorrectTypes.push(fileTypes[j]);
+      }
+    }
+    if (incorrectTypes.length === 3) {
+      console.log('Incorrect type');
+      return new RuleError('INCORRECT_FILETYPE', BAD_REQUEST);
+    }
+  }
+  console.log('Good type');
+  return true;
+});
+
+const checkImageSize = rule()(async (_, args) => {
+  return true;
+  let result = '';
+  let imagesArray = [];
+  if (args.image) {
+    imagesArray = args.image;
+  } else if (!args.upload.length) {
+    imagesArray.push(args.upload);
+  } else {
+    imagesArray = args.upload;
+  }
+  if (!imagesArray.length)
+    return new RuleError('INCORRECT_FILESIZE', BAD_REQUEST);
+  let promise = new Promise((resolve, reject) => {
+    for (let i = 0; i < imagesArray.length; i++) {
+      result = '';
+      imagesArray[i].promise.then(file => {
+        let { createReadStream } = file;
+        const fileStream = createReadStream();
+        fileStream.on('data', chunk => {
+          result += chunk;
+        });
+        fileStream.on('end', () => {
+          if (result.length > 100000000) {
+            console.log('Big size');
+            reject(new RuleError('INCORRECT_FILESIZE', BAD_REQUEST));
+          } else {
+            console.log(result.length);
+            console.log('Good size');
+            resolve(true);
+          }
+        });
+      });
+    }
+  });
+  return await promise;
+});
+
 module.exports = {
   hasRoles,
   isAuthorized,
@@ -103,4 +170,6 @@ module.exports = {
   inputDataValidation,
   isProductToCartCorrect,
   getConstructorProductItemPresentInCart,
+  checkImageType,
+  checkImageSize,
 };

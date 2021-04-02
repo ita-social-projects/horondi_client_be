@@ -1,7 +1,8 @@
-const { allow } = require('graphql-shield');
+const { allow, and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
 const { ADMIN, SUPERADMIN } = roles;
+const { checkImageType, checkImageSize } = require('../../utils/rules');
 
 const modelPermissionsQuery = {
   getAllCategories: allow,
@@ -10,8 +11,12 @@ const modelPermissionsQuery = {
 };
 
 const modelPermissionsMutations = {
-  addModel: hasRoles([ADMIN, SUPERADMIN]),
-  updateModel: hasRoles([ADMIN, SUPERADMIN]),
+  addModel: and(hasRoles([ADMIN, SUPERADMIN]), checkImageType, checkImageSize),
+  updateModel: and(
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkImageType,
+    checkImageSize
+  ),
   deleteModel: hasRoles([ADMIN, SUPERADMIN]),
 };
 

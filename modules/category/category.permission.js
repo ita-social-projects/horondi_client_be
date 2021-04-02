@@ -5,6 +5,7 @@ const { roles } = require('../../consts');
 const { ADMIN, SUPERADMIN } = roles;
 const { categoryValidator } = require('../../validators/category.validator');
 const { inputDataValidation } = require('../../utils/rules');
+const { checkImageType, checkImageSize } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { CATEGORY },
 } = require('../../consts/input-fields');
@@ -17,11 +18,15 @@ const categoryPermissionsQuery = {
 const categoryPermissionsMutations = {
   addCategory: and(
     inputDataValidation(CATEGORY, categoryValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkImageType,
+    checkImageSize
   ),
   updateCategory: and(
     inputDataValidation(CATEGORY, categoryValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkImageType,
+    checkImageSize
   ),
   deleteCategory: hasRoles([ADMIN, SUPERADMIN]),
 };
