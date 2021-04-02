@@ -12,6 +12,8 @@ const {
   USER_NOT_AUTHORIZED,
   WRONG_CREDENTIALS,
   USER_IS_BLOCKED,
+  INCORRECT_MIMETYPE,
+  INCORRECT_FILESIZE,
 } = require('../error-messages/user.messages');
 const { PRODUCT_NOT_FOUND } = require('../error-messages/products.messages');
 const {
@@ -97,10 +99,11 @@ const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
 });
 
 const checkImageType = rule()((_, args) => {
-  return true;
   const fileTypes = ['image/jpeg', 'image/png', 'image/webp'];
   let imagesArray = [];
-  if (args.image) {
+  if (args.images) {
+    imagesArray = [args.images];
+  } else if (args.image) {
     imagesArray = args.image;
   } else if (!args.upload.length) {
     imagesArray.push(args.upload);
@@ -108,7 +111,7 @@ const checkImageType = rule()((_, args) => {
     imagesArray = args.upload;
   }
   if (!imagesArray.length)
-    return new RuleError('INCORRECT_FILETYPE', BAD_REQUEST);
+    return new RuleError(INCORRECT_MIMETYPE, BAD_REQUEST);
   for (let i = 0; i < imagesArray.length; i++) {
     let incorrectTypes = [];
     for (let j = 0; j < fileTypes.length; j++) {
@@ -117,19 +120,18 @@ const checkImageType = rule()((_, args) => {
       }
     }
     if (incorrectTypes.length === 3) {
-      console.log('Incorrect type');
-      return new RuleError('INCORRECT_FILETYPE', BAD_REQUEST);
+      return new RuleError(INCORRECT_MIMETYPE, BAD_REQUEST);
     }
   }
-  console.log('Good type');
   return true;
 });
 
 const checkImageSize = rule()(async (_, args) => {
-  return true;
   let result = '';
   let imagesArray = [];
-  if (args.image) {
+  if (args.images) {
+    imagesArray = [args.images];
+  } else if (args.image) {
     imagesArray = args.image;
   } else if (!args.upload.length) {
     imagesArray.push(args.upload);
@@ -137,7 +139,7 @@ const checkImageSize = rule()(async (_, args) => {
     imagesArray = args.upload;
   }
   if (!imagesArray.length)
-    return new RuleError('INCORRECT_FILESIZE', BAD_REQUEST);
+    return new RuleError(INCORRECT_FILESIZE, BAD_REQUEST);
   let promise = new Promise((resolve, reject) => {
     for (let i = 0; i < imagesArray.length; i++) {
       result = '';
@@ -148,19 +150,20 @@ const checkImageSize = rule()(async (_, args) => {
           result += chunk;
         });
         fileStream.on('end', () => {
-          if (result.length > 100000000) {
-            console.log('Big size');
-            reject(new RuleError('INCORRECT_FILESIZE', BAD_REQUEST));
+          if (result.length > 2000000) {
+            reject(false);
           } else {
-            console.log(result.length);
-            console.log('Good size');
             resolve(true);
           }
         });
       });
     }
   });
-  return await promise;
+  let state = await promise;
+  if (!state) {
+    return new RuleError(INCORRECT_FILESIZE, BAD_REQUEST);
+  }
+  return state;
 });
 
 module.exports = {
