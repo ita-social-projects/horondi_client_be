@@ -1,5 +1,4 @@
 const { allow, and } = require('graphql-shield');
-
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
 const { ADMIN, SUPERADMIN } = roles;

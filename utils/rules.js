@@ -138,8 +138,9 @@ const checkImageSize = rule()(async (_, args) => {
   } else {
     imagesArray = args.upload;
   }
-  if (!imagesArray.length)
+  if (!imagesArray.length) {
     return new RuleError(INCORRECT_FILESIZE, BAD_REQUEST);
+  }
   let promise = new Promise((resolve, reject) => {
     for (let i = 0; i < imagesArray.length; i++) {
       result = '';

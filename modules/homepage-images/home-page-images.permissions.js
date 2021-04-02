@@ -1,9 +1,9 @@
 const { allow, and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
-const { checkImageType, checkImageSize } = require('../../utils/rules');
 
 const { ADMIN, SUPERADMIN } = roles;
+const { checkImageType, checkImageSize } = require('../../utils/rules');
 
 const homePageImagesPermissionsQuery = {
   getHomePageLooksImages: allow,
