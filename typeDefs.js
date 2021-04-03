@@ -1,4 +1,6 @@
 const { gql } = require('apollo-server-express');
+
+const { historyType } = require('./modules/history/history.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -103,6 +105,7 @@ const {
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${historyType}
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
@@ -351,9 +354,10 @@ const typeDefs = gql`
   union ColorDeletingResult = Color | Materials | Error
   union ConstructorBasicResult = ConstructorBasic | Error
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
-  
+  union HistoryResult = History | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
+    getAllHistoryRecords(limit:Int!, skip:Int!):HistoryResult
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
     getAllCategories(

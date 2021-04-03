@@ -1,5 +1,6 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
+const { historyQuery } = require('./modules/history/history.resolvers');
 const {
   productsQuery,
   productsMutation,
@@ -113,6 +114,7 @@ const {
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 
 const SCHEMA_NAMES = {
+  history: 'History',
   paginatedProducts: 'PaginatedProducts',
   category: 'Category',
   news: 'News',
@@ -143,6 +145,8 @@ const SCHEMA_NAMES = {
 
 const resolvers = {
   Query: {
+    ...historyQuery,
+
     ...cartQuery,
 
     ...currencyQuery,
@@ -194,6 +198,23 @@ const resolvers = {
     ...constructorFrontPocketQuery,
 
     ...colorQuery,
+  },
+  History: {
+    items: parent =>
+      parent.items.map(item => {
+        return {
+          _id: item._id,
+          action: item.action,
+          subject: {
+            name: item.subject.name,
+            subjectId: item.subject.subjectId,
+          },
+          valueBeforeChange: item.valueBeforeChange,
+          valueAfterChange: item.valueAfterChange,
+          userId: userService.getUser(item.userId),
+          createdAt: item.createdAt,
+        };
+      }),
   },
   ProductsFilter: {
     categories: parent =>
@@ -454,6 +475,14 @@ const resolvers = {
     ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
+  },
+  HistoryResult: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.history;
+      }
+      return 'Error';
+    },
   },
   TokenResult: {
     __resolveType: obj => {

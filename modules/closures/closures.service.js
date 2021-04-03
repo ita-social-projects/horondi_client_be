@@ -7,6 +7,14 @@ const uploadService = require('../upload/upload.service');
 const {
   FILE_SIZES: { LARGE },
 } = require('../../consts/file-sizes');
+const {
+  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
+} = require('../../consts/history-actions');
+const { generateHistoryObject, getChanges } = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {
@@ -41,7 +49,13 @@ class ClosureService {
     if (await this.checkClosureExist(data)) {
       throw new Error(CLOSURE_ALREADY_EXIST);
     }
-    return await new Closure(data).save();
+    const newClosure = await new Closure(data).save();
+
+    const historyRecord = generateHistoryObject(ADD_CLOSURE);
+
+    await addHistoryRecord();
+
+    return newClosure;
   }
 
   async updateClosure(id, closure, upload) {
