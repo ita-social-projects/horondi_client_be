@@ -18,15 +18,17 @@ const nestedPriceValidator = Joi.object({
     .default(0),
 });
 
+const nestedNameValidator = Joi.object({
+  lang: Joi.string()
+    .trim()
+    .required(),
+  value: Joi.string()
+    .trim()
+    .required(),
+});
+
 const pocketValidator = Joi.object({
-  name: Joi.array().items({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string()
-      .trim()
-      .required(),
-  }),
+  name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
     .required()
@@ -39,19 +41,12 @@ const pocketValidator = Joi.object({
     .trim()
     .required(),
   additionalPrice: Joi.array().has(nestedPriceValidator),
-  available: Joi.boolean(),
+  available: Joi.boolean().required(),
   default: Joi.boolean().required(),
 });
 
 const backValidator = Joi.object({
-  name: Joi.array().items({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string()
-      .trim()
-      .required(),
-  }),
+  name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
     .required()
@@ -76,14 +71,7 @@ const backValidator = Joi.object({
 });
 
 const closureValidator = Joi.object({
-  name: Joi.array().items({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string()
-      .trim()
-      .required(),
-  }),
+  name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
     .required()
@@ -108,14 +96,7 @@ const closureValidator = Joi.object({
 });
 
 const strapValidator = Joi.object({
-  name: Joi.array().items({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string()
-      .trim()
-      .required(),
-  }),
+  name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
     .required()
@@ -136,135 +117,153 @@ const strapValidator = Joi.object({
   default: Joi.boolean().required(),
 });
 
+const patternValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    handmade: Joi.boolean().required(),
+  }),
+  description: Joi.array().has(nestedNameValidator),
+  images: Joi.object({
+    large: Joi.string()
+      .trim()
+      .required(),
+    medium: Joi.string()
+      .trim()
+      .required(),
+    small: Joi.string()
+      .trim()
+      .required(),
+    thumbnail: Joi.string()
+      .trim()
+      .required(),
+  }),
+  constructorImg: Joi.string()
+    .trim()
+    .required(),
+  additionalPrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean().required(),
+});
+
+const constructorBasicValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  basePrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean().required(),
+});
+
+const constructorBottomValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  basePrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean().required(),
+});
+
+const constructorFrontPocketValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+    pattern: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  basePrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean().required(),
+});
+
+const sizeValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  simpleName: Joi.array().has(nestedNameValidator),
+  model: Joi.string().required(),
+  heightInCm: Joi.number()
+    .integer()
+    .required(),
+  widthInCm: Joi.number()
+    .integer()
+    .required(),
+  depthInCm: Joi.number()
+    .integer()
+    .required(),
+  volumeInLiters: Joi.number()
+    .integer()
+    .required(),
+  weightInKg: Joi.number().required(),
+  additionalPrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+});
+
 module.exports = {
   pocketValidator,
   backValidator,
   closureValidator,
   strapValidator,
+  patternValidator,
+  constructorBasicValidator,
+  constructorBottomValidator,
+  constructorFrontPocketValidator,
+  sizeValidator,
 };
-// const appliedOption = {
-//   type: 'POCKET',
-//   features: [
-//     {
-//       type: 'SIDE',
-//       side: 'LEFT'
-//     },
-//     {
-//       type: 'SIDE',
-//       side: 'RIGHT'
-//     }
-//   ],
-//   isDefault: true,
-//   modelId: modelId
-// };
-
-// const pocketScheme = {
-//   type: 'POCKET',
-//   features: ['SIDE'],
-//   isDefault: '',
-//   modelId: ''
-// };
-
-// const bottomScheme = {
-//   type: 'BOTTOM',
-//   features: ['MATERIAL', 'COLOR'],
-//   isDefault: 'Boolean',
-//   modelId: ''
-// };
-
-// const jsonPocketScheme = {
-//   "title": "Pocket",
-//   "type": "object",
-//   "properties": {
-//     "type": {
-//       "type": "string"
-//     },
-//     "isDefault": {
-//       "type": "bool"
-//     },
-//     "modelId": {
-//       "type": "string"
-//     },
-//     "features": {
-//       "type": "array",
-//       "items": { "$ref": "#/$defs/feature" }
-//     }
-//   },
-//   "$defs": {
-//     "feature": {
-//       "type": "object",
-//       "required": ["side"],
-//       "properties": {
-//         "side": {
-//           "type": "string",
-//           "enum": ['LEFT', 'RIGHT', 'FRONT']
-//         }
-//       }
-//     }
-//   }
-// };
-
-// const closureScheme = {
-//   "title": "Pocket",
-//   "type": "object",
-//   "properties": {
-//     "type": {
-//       "type": "string"
-//     },
-//     "isDefault": {
-//       "type": "bool"
-//     },
-//     "modelId": {
-//       "type": "string"
-//     },
-//     "features": {
-//       "type": "array",
-//       "items": { "$ref": "#/$defs/feature" },
-//     }
-//   },
-//   "$defs": {
-//     "feature": {
-//       "type": "object",
-//       "required": ["material", "color"],
-//       "properties": {
-//         "material": {
-//           "type": "object",
-//         },
-//         "color": {
-//           "type": "object",
-//         }
-//       }
-//     }
-//   }
-// };
-
-// const smujka = {
-//   "title": "Pocket",
-//   "type": "object",
-//   "properties": {
-//     "type": {
-//       "type": "string"
-//     },
-//     "isDefault": {
-//       "type": "bool"
-//     },
-//     "modelId": {
-//       "type": "string"
-//     },
-//     "features": {
-//       "type": "array",
-//       "items": { "$ref": "#/$defs/feature" },
-//     }
-//   },
-//   "$defs": {
-//     "feature": {
-//       "type": "object",
-//       "required": ["color"],
-//       "properties": {
-//         "color": {
-//           "type": "object",
-//         }
-//       }
-//     }
-//   }
-// };

@@ -37,7 +37,8 @@ const {
 } = require('./modules/material/material.graphql');
 const {
   patternType,
-  patternInput,
+  patternInputs,
+  patternFeatureSet,
 } = require('./modules/pattern/pattern.graphql');
 const {
   currencyType,
@@ -76,8 +77,9 @@ const {
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const {
-  constructorBottomInput,
+  constructorBottomInputs,
   constructorBottomType,
+  constructorBottomFeatureSet,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const {
@@ -90,11 +92,13 @@ const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
 const {
   constructorBasicType,
-  constructorBasicInput,
+  constructorBasicInputs,
+  constructorBasicFeatureSet,
 } = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
 const {
   constructorFrontPocketType,
-  constructorFrontPocketInput,
+  constructorFrontPocketInputs,
+  constructorFrPocketFeatureSet,
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 const {
   ukrPoshtaEnum,
@@ -131,6 +135,7 @@ const typeDefs = gql`
   ${materialType}
   ${newsType}
   ${patternType}
+  ${patternFeatureSet}
   ${userType}
   ${paginatedUsersType}
   ${productType}
@@ -155,8 +160,11 @@ const typeDefs = gql`
   ${cartType}
   ${colorType}
   ${constructorBasicType}
+  ${constructorBasicFeatureSet}
   ${constructorFrontPocketType}
+  ${constructorFrPocketFeatureSet}
   ${constructorBottomType}
+  ${constructorBottomFeatureSet}
   ${pocketType}
   ${pocketSide}
   ${backType}
@@ -555,7 +563,7 @@ const typeDefs = gql`
   ${currencyInput}
   ${materialInput}
   ${newsInput}
-  ${patternInput}
+  ${patternInputs}
   ${userInput}
   ${userUpdateInput}
   ${productInput}
@@ -583,9 +591,9 @@ const typeDefs = gql`
   ${closureInputs}
   ${colorInput}
   ${materialFilterInput}
-  ${constructorBasicInput}
-  ${constructorFrontPocketInput}
-  ${constructorBottomInput}
+  ${constructorBasicInputs}
+  ${constructorFrontPocketInputs}
+  ${constructorBottomInputs}
   ${pocketInput}
   ${pocketSideInput}
   ${backInputs}

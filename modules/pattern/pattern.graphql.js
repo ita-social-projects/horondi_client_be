@@ -2,25 +2,47 @@ const patternType = `
     type Pattern {
       _id: ID!
       name: [Language]
+      optionType: String
+      model: ID
+      features: PatternFeatureSet
       description: [Language]
       images: ImageSet
-      constructorImg: String,
-      material: Material
-      handmade: Boolean
+      constructorImg: String
+      additionalPrice: [CurrencySet]
       available: Boolean
+      default: Boolean
     }
 `;
 
-const patternInput = `
+const patternFeatureSet = `
+    type PatternFeatureSet {
+      material: Material
+      handmade: Boolean
+    }
+`;
+
+const patternInputs = `
     input PatternInput {
       name: [LanguageInput]
       description: [LanguageInput]
+      optionType: String
+      model: ID
+      features: PatternFeatureSetInput
       images:ImageSetInput
-      constructorImg: String,
+      constructorImg: String
+      additionalPrice: [CurrencySetInput]
+      available: Boolean
+      default: Boolean
+    }
+
+    input PatternFeatureSetInput {
       material: ID
       handmade: Boolean
-      available: Boolean
     }
 `;
 
-module.exports = { patternType, patternInput };
+module.exports = {
+  patternType,
+  patternInputs,
+  patternFeatureSet,
+};

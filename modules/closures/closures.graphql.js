@@ -3,8 +3,8 @@ const closureType = `
     _id: ID
     name: [Language]
     optionType: String
-    model: ID
-    features: closureFeatureSet
+    model: Model
+    features: ClosureFeatureSet
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
@@ -13,7 +13,7 @@ const closureType = `
 `;
 
 const closureFeatureSet = `
-  type closureFeatureSet {
+  type ClosureFeatureSet {
     material: Material
     color: Color
   }

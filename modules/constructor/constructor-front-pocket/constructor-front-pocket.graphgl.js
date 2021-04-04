@@ -1,29 +1,46 @@
 const constructorFrontPocketType = `  
 type ConstructorFrontPocket {
     _id: ID!
-    name: [Language],
-    material:Material,
-    color:Color,
-    image:String,
+    name: [Language]
+    optionType: String
+    model: Model
+    features: ConstructorFrPocketFeatureSet
+    image:String
     basePrice: [CurrencySet]
-    available: Boolean,
-    default:Boolean,
+    available: Boolean
+    default:Boolean
   }
 `;
 
-const constructorFrontPocketInput = `  
-input ConstructorFrontPocketInput {
-    name: [LanguageInput],
-    material: ID,
-    color:ID,
-    image:String,
-    basePrice: Int
-    available: Boolean,
-    default:Boolean,
+const constructorFrPocketFeatureSet = `
+  type ConstructorFrPocketFeatureSet {
+    material:Material
+    color:Color
+    pattern: Pattern
   }
+`;
+
+const constructorFrontPocketInputs = `  
+input ConstructorFrontPocketInput {
+  name: [LanguageInput]
+  optionType: String
+  model: ID
+  features: ConstructorFrPocketFeatureInput
+  image: String
+  basePrice: [CurrencySetInput]
+  available: Boolean
+  default:Boolean
+}
+
+input ConstructorFrPocketFeatureInput {
+  material: ID
+  color: ID
+  pattern: ID
+}
 `;
 
 module.exports = {
   constructorFrontPocketType,
-  constructorFrontPocketInput,
+  constructorFrontPocketInputs,
+  constructorFrPocketFeatureSet,
 };

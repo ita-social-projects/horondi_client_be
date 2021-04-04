@@ -367,7 +367,10 @@ const resolvers = {
       }),
   },
   Pattern: {
-    material: parent => materialService.getMaterialById(parent.material),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+    }),
   },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
@@ -401,16 +404,26 @@ const resolvers = {
     }),
   },
   ConstructorBottom: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
   ConstructorBasic: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
   ConstructorFrontPocket: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+      pattern: () => patternService.getPatternById(parent.features.pattern),
+    }),
   },
 
   UserRate: {

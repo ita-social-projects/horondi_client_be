@@ -22,7 +22,7 @@ const {
   WEIGHT_IN_KG_IS_REQUIRED,
 } = require('../../error-messages/size.messages');
 const {
-  DB_COLLECTIONS_NAMES: { SIZE },
+  DB_COLLECTIONS_NAMES: { SIZE, MODEL },
 } = require('../../consts/db-collections-names');
 
 const sizeSchema = new mongoose.Schema({
@@ -33,6 +33,10 @@ const sizeSchema = new mongoose.Schema({
     required: [true, SIZE_NAME_IS_REQUIRED],
   },
   simpleName: [Language],
+  model: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: MODEL,
+  },
   heightInCm: {
     type: Number,
     min: [1, HEIGHT_IN_CM_TOO_SHORT],

@@ -1,29 +1,44 @@
 const constructorBasicType = `  
 type ConstructorBasic {
     _id: ID!
-    name: [Language],
-    material:Material,
-    color:Color,
-    image:String,
+    name: [Language]
+    optionType: String
+    model: Model
+    features: ConstructorBasicFeatureSet
+    image:String
     basePrice: [CurrencySet]
-    available: Boolean,
-    default:Boolean,
+    available: Boolean
+    default:Boolean
   }
 `;
 
-const constructorBasicInput = `  
-input ConstructorBasicInput {
-    name: [LanguageInput],
-    material: ID,
-    color:ID,
-    image:String,
-    basePrice: Int
-    available: Boolean,
-    default:Boolean,
+const constructorBasicFeatureSet = `
+  type ConstructorBasicFeatureSet {
+    material: Material
+    color: Color
   }
+`;
+
+const constructorBasicInputs = `  
+input ConstructorBasicInput {
+    name: [LanguageInput]
+    optionType: String
+    model: ID
+    features: ConstructorBasicFeatureInput
+    image: String
+    basePrice: [CurrencySetInput]
+    available: Boolean
+    default:Boolean
+  }
+
+input ConstructorBasicFeatureInput {
+  material: ID
+  color:ID
+}
 `;
 
 module.exports = {
   constructorBasicType,
-  constructorBasicInput,
+  constructorBasicInputs,
+  constructorBasicFeatureSet,
 };

@@ -5,7 +5,7 @@ const {
   IMAGE_NOT_PROVIDED,
 } = require('../../../error-messages/constructor-basic-messages');
 const {
-  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BASICS, MATERIAL, COLOR },
+  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_BASICS, MATERIAL, COLOR, MODEL },
 } = require('../../../consts/db-collections-names');
 
 const {
@@ -14,13 +14,20 @@ const {
 
 const constructorBasicSchema = new mongoose.Schema({
   name: [Language],
-  material: {
+  optionType: String,
+  model: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: MATERIAL,
+    ref: MODEL,
   },
-  color: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: COLOR,
+  features: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: MATERIAL,
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: COLOR,
+    },
   },
   image: {
     type: String,
