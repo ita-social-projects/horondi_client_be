@@ -1,10 +1,10 @@
 const pocketType = `
   type Pocket {
-    _id: ID!
+    _id: ID
     name: [Language]
-    type: String
+    optionType: String
     model: Model
-    features: [PocketSide]
+    features: PocketSide
     blocker: [Blocker]
     image: String
     additionalPrice: [CurrencySet]
@@ -37,12 +37,12 @@ const sideEnum = `
 const pocketInput = `
   input PocketInput {
     name: [LanguageInput]
-    type: String
+    optionType: String
     model: ID
-    features: [PocketSideInput]
+    features: PocketSideInput
     blocker: [BlockerInput]
     image: Upload
-    additionalPrice: Int
+    additionalPrice: [CurrencySetInput]
     available: Boolean
     default: Boolean
   }

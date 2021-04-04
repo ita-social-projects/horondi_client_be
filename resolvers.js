@@ -95,6 +95,8 @@ const {
   pocketQuery,
 } = require('./modules/pocket/pocket.resolver');
 
+const { strapMutation, strapQuery } = require('./modules/strap/strap.resolver');
+
 const { backQuery, backMutation } = require('./modules/back/back.resolver');
 
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
@@ -116,6 +118,7 @@ const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
 const pocketService = require('./modules/pocket/pocket.service');
+const strapService = require('./modules/strap/strap.service');
 
 const {
   ukrPoshtaQuery,
@@ -150,6 +153,7 @@ const SCHEMA_NAMES = {
   constructorFrontPocket: 'ConstructorFrontPocket',
   pocket: 'Pocket',
   back: 'Back',
+  strap: 'Strap',
   blocker: 'Blocker',
 };
 
@@ -210,6 +214,8 @@ const resolvers = {
     ...pocketQuery,
 
     ...backQuery,
+
+    ...strapQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -388,7 +394,11 @@ const resolvers = {
       parent.constructorPattern.map(el => patternService.getPatternById(el)),
   },
   Closure: {
-    material: parent => materialService.getMaterialById(parent.material),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
   ConstructorBottom: {
     material: parent => materialService.getMaterialById(parent.material),
@@ -426,8 +436,16 @@ const resolvers = {
   },
   Back: {
     model: parent => modelService.getModelById(parent.model),
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
+  },
+  Strap: {
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
 
   Mutation: {
@@ -482,6 +500,8 @@ const resolvers = {
     ...pocketMutation,
 
     ...backMutation,
+
+    ...strapMutation,
   },
   TokenResult: {
     __resolveType: obj => {
@@ -711,6 +731,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.back;
+      }
+      return 'Error';
+    },
+  },
+
+  StrapResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.strap;
       }
       return 'Error';
     },

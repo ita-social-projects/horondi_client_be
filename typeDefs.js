@@ -82,7 +82,8 @@ const {
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const {
   closureType,
-  closureInput,
+  closureInputs,
+  closureFeatureSet,
 } = require('./modules/closures/closures.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
@@ -106,11 +107,20 @@ const {
   pocketSide,
   pocketSideInput,
 } = require('./modules/pocket/pocket.graphql');
-const { backType, backInput } = require('./modules/back/back.graphql');
+const {
+  backType,
+  backInputs,
+  backFeatureSet,
+} = require('./modules/back/back.graphql');
 const {
   blockerType,
   blockerInput,
 } = require('./modules/blocker/blocker.graphql');
+const {
+  strapType,
+  strapFeatureType,
+  strapInputs,
+} = require('./modules/strap/strap.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -140,6 +150,7 @@ const typeDefs = gql`
   ${tokenType}
   ${sizeType}
   ${closureType}
+  ${closureFeatureSet}
   ${purchasedProductsType}
   ${cartType}
   ${colorType}
@@ -149,6 +160,9 @@ const typeDefs = gql`
   ${pocketType}
   ${pocketSide}
   ${backType}
+  ${backFeatureSet}
+  ${strapType}
+  ${strapFeatureType}
   ${blockerType}
 
   scalar Upload
@@ -338,6 +352,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedStraps {
+    items: [Strap]
+    count: Int
+  }
+
   type Materials {
     items: [Material]
   }
@@ -381,6 +400,7 @@ const typeDefs = gql`
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   union PocketResult = Pocket | Error
   union BackResult = Back | Error
+  union StrapResult = Strap | Error
   
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
@@ -492,6 +512,9 @@ const typeDefs = gql`
     getAllBacks(limit: Int, skip: Int): PaginatedBacks!
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [Back]
+    getAllStraps(limit: Int, skip: Int): PaginatedStraps!
+    getStrapById(id: ID): StrapResult
+    getStrapsByModel(id: ID): [Strap]
 
   }
   input Pagination {
@@ -557,7 +580,7 @@ const typeDefs = gql`
   ${headerInput}
   ${sizeInput}
   ${homePageSlideInput}
-  ${closureInput}
+  ${closureInputs}
   ${colorInput}
   ${materialFilterInput}
   ${constructorBasicInput}
@@ -565,7 +588,8 @@ const typeDefs = gql`
   ${constructorBottomInput}
   ${pocketInput}
   ${pocketSideInput}
-  ${backInput}
+  ${backInputs}
+  ${strapInputs}
   ${blockerInput}
   input LanguageInput {
     lang: String!
@@ -832,6 +856,11 @@ const typeDefs = gql`
     addBack(back: BackInput!, image: Upload):BackResult
     updateBack(id: ID, back: BackInput!, image: Upload):BackResult
     deleteBack(id: ID):BackResult
+    "Strap Mutation"
+    addStrap(strap: StrapInput!, image: Upload): StrapResult
+    updateStrap(id: ID, strap: StrapInput!, image: Upload):StrapResult
+    deleteStrap(id: ID):StrapResult
+
   }
 `;
 

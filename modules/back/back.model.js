@@ -8,17 +8,20 @@ const {
 
 const backSchema = new mongoose.Schema({
   name: [Language],
+  optionType: String,
   model: {
     type: mongoose.Schema.Types.ObjectId,
     ref: MODEL,
   },
-  material: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: MATERIAL,
-  },
-  color: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: COLOR,
+  features: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: MATERIAL,
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: COLOR,
+    },
   },
   image: String,
   additionalPrice: [CurrencySet],

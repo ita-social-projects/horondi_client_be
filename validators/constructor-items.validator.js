@@ -9,6 +9,15 @@ const nestedSideValidator = Joi.string()
   .valid(RIGHT, LEFT, FRONT, BACK)
   .required();
 
+const nestedPriceValidator = Joi.object({
+  currency: Joi.string()
+    .trim()
+    .required(),
+  value: Joi.number()
+    .optional()
+    .default(0),
+});
+
 const pocketValidator = Joi.object({
   name: Joi.array().items({
     lang: Joi.string()
@@ -18,32 +27,120 @@ const pocketValidator = Joi.object({
       .trim()
       .required(),
   }),
-  type: Joi.string()
+  optionType: Joi.string()
     .trim()
     .required()
     .uppercase(),
   model: Joi.string().required(),
-  features: Joi.array().items({
+  features: Joi.Object({
     side: nestedSideValidator,
   }),
   image: Joi.string()
     .trim()
-    .optional(),
-  additionalPrice: Joi.array().items({
-    currency: Joi.string()
+    .required(),
+  additionalPrice: Joi.array().has(nestedPriceValidator),
+  available: Joi.boolean(),
+  default: Joi.boolean().required(),
+});
+
+const backValidator = Joi.object({
+  name: Joi.array().items({
+    lang: Joi.string()
       .trim()
       .required(),
-    value: Joi.number()
-      .optional()
-      .default(0),
+    value: Joi.string()
+      .trim()
+      .required(),
   }),
-  available: Joi.boolean(),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  additionalPrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean().required(),
+});
+
+const closureValidator = Joi.object({
+  name: Joi.array().items({
+    lang: Joi.string()
+      .trim()
+      .required(),
+    value: Joi.string()
+      .trim()
+      .required(),
+  }),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  additionalPrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean().required(),
+});
+
+const strapValidator = Joi.object({
+  name: Joi.array().items({
+    lang: Joi.string()
+      .trim()
+      .required(),
+    value: Joi.string()
+      .trim()
+      .required(),
+  }),
+  optionType: Joi.string()
+    .trim()
+    .required()
+    .uppercase(),
+  model: Joi.string().required(),
+  features: Joi.object({
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  additionalPrice: Joi.array()
+    .has(nestedPriceValidator)
+    .optional(),
+  available: Joi.boolean().required(),
   default: Joi.boolean().required(),
 });
 
 module.exports = {
   pocketValidator,
-  nestedSideValidator,
+  backValidator,
+  closureValidator,
+  strapValidator,
 };
 // const appliedOption = {
 //   type: 'POCKET',

@@ -1,44 +1,43 @@
-const backType = `
-  type Back {
-    _id: ID!
+const strapType = `
+  type Strap {
+    _id: ID
     name: [Language]
     optionType: String
     model: Model
-    features: BackFeatureSet
+    features: StrapFeature
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
     default: Boolean
   }
+
 `;
 
-const backFeatureSet = `
-  type BackFeatureSet {
-    material: Material
+const strapFeatureType = `
+  type StrapFeature {
     color: Color
   }
 `;
 
-const backInputs = `
-  input BackInput {
+const strapInputs = `
+  input StrapInput {
     name: [LanguageInput]
     optionType: String
     model: ID
-    features: BackFeatureSetInput
+    features: StrapFeatureInput
     image: Upload
     additionalPrice: [CurrencySetInput]
     available: Boolean
     default: Boolean
   }
 
-  input BackFeatureSetInput {
-    material: ID
+  input StrapFeatureInput {
     color: ID
   }
 `;
 
 module.exports = {
-  backType,
-  backInputs,
-  backFeatureSet,
+  strapType,
+  strapFeatureType,
+  strapInputs,
 };

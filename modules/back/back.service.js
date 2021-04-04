@@ -88,6 +88,7 @@ class BackService {
       const uploadImage = await uploadService.uploadSmallImage(image);
       image = uploadImage.fileNames.small;
     }
+
     return new Back({ ...back, image }).save();
   }
 

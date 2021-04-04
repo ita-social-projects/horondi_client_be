@@ -95,6 +95,11 @@ const {
 } = require('./modules/back/back.permissions');
 
 const {
+  strapPermissionsQuery,
+  strapPermissionsMutations,
+} = require('./modules/strap/strap.permissions');
+
+const {
   orderPermissionsMutation,
   orderPermissionsQuery,
 } = require('./modules/order/order.permissions');
@@ -122,6 +127,7 @@ const permissions = shield(
       ...pocketPermissionsQuery,
       ...backPermissionsQuery,
       ...orderPermissionsQuery,
+      ...strapPermissionsQuery,
     },
     Mutation: {
       ...cartPermissionsMutations,
@@ -144,6 +150,7 @@ const permissions = shield(
       ...pocketPermissionsMutations,
       ...backPermissionsMutations,
       ...orderPermissionsMutation,
+      ...strapPermissionsMutations,
     },
   },
   {

@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const {
-  DB_COLLECTIONS_NAMES: { CLOSURE, MATERIAL, COLOR, MODEL },
+  DB_COLLECTIONS_NAMES: { MODEL, COLOR, STRAP },
 } = require('../../consts/db-collections-names');
 
-const closureSchema = new mongoose.Schema({
+const strapSchema = new mongoose.Schema({
   name: [Language],
   optionType: String,
   model: {
@@ -14,10 +14,6 @@ const closureSchema = new mongoose.Schema({
     ref: MODEL,
   },
   features: {
-    material: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: MATERIAL,
-    },
     color: {
       type: mongoose.Schema.Types.ObjectId,
       ref: COLOR,
@@ -29,4 +25,4 @@ const closureSchema = new mongoose.Schema({
   default: Boolean,
 });
 
-module.exports = mongoose.model(CLOSURE, closureSchema);
+module.exports = mongoose.model(STRAP, strapSchema);
