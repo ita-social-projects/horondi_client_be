@@ -23,6 +23,9 @@ const { paymentController } = require('../../helpers/payment-controller');
 const {
   ORDER_PAYMENT_STATUS: { APPROVED, PAID },
 } = require('../../consts/order-payment-status');
+const { IMAGE_LINK } = require('../../dotenvValidator');
+
+const paymentOrderPug = 'PAYMENT_ORDER';
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }) {
@@ -60,9 +63,11 @@ class PaymentService {
           select: 'name',
         })
         .exec();
-      await sendEmail(order.user.email, 'PAYMENT_ORDER', {
+      await sendEmail(order.user.email, paymentOrderPug, {
         items: order.items,
+        totalPrice: order.totalItemsPrice,
         paymentUrl: order.paymentUrl,
+        imagesUrl: IMAGE_LINK,
       });
       return order;
     }

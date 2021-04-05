@@ -6,6 +6,7 @@ block content
         div.productTableContent
             p.congrats Вітаємо! #[br] Залшився ще один крок для отримання Вашого замовлення: #[br]
             table.productTable 
+                caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
                 tr.tableHead
                     th Фото
                     th Назва
@@ -14,7 +15,7 @@ block content
                 each val in items
                     tr.tableBody
                         td
-                            img.tableImg(src= `https://horondi.blob.core.windows.net/horondi/images/${val.product.images.primary.large}`)
+                            img.tableImg(src= `${imagesUrl}${val.product.images.primary.large}`)
                         td 
                             p= val.product.name[0].value
                             p= `Розмір - ${val.options.size.name}`

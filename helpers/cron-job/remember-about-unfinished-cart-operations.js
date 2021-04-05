@@ -2,6 +2,10 @@ const { schedule } = require('node-cron');
 
 const UserModel = require('../../modules/user/user.model');
 const { getDaysInMilliseconds } = require('../../utils/getDaysInMilliseconds');
+const { sendEmail } = require('../../modules/email/email.service');
+const { IMAGE_LINK } = require('../../dotenvValidator');
+
+const incompleteOperationsPug = 'INCOMPLETE_OPERATIONS_CART';
 
 const rememberAboutUnfinishedCartOperations = () =>
   schedule('0 0 */12 * * *', async () => {
@@ -27,7 +31,7 @@ const rememberAboutUnfinishedCartOperations = () =>
 
     if (usersInfo.length) {
       await Promise.all(
-        usersInfo.map(cartItemData => {
+        usersInfo.map(async cartItemData => {
           if (cartItemData.cart?.items?.length) {
             const orderDate = new Date(cartItemData.cart.updatedAt).getTime();
             const dateDifference = currentDate - orderDate;
@@ -37,6 +41,11 @@ const rememberAboutUnfinishedCartOperations = () =>
               dateDifference >= oneDay &&
               !cartItemData.cart.rememberMailCount
             ) {
+              await sendEmail(cartItemData.email, incompleteOperationsPug, {
+                items: cartItemData.cart.items,
+                totalPrice: cartItemData.cart.totalPrice,
+                imagesUrl: IMAGE_LINK,
+              });
               return UserModel.findOneAndUpdate(
                 { _id: cartItemData._id },
                 { $set: { 'cart.rememberMailCount': 1 } }

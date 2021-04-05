@@ -172,8 +172,7 @@ p.successfulRegistrationText {
     display: block;
     width: 130px;
     overflow: hidden;
-    margin-left: .5rem;
-    margin-bottom: 0;
+    margin: 0 auto;
 }
 
 .tableBody td { 
