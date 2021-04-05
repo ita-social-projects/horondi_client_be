@@ -1,0 +1,26 @@
+extends template
+block subheaderText
+    p.paymentText Оплата замовлення
+block content
+    div.contentPaymentText
+        div.productTableContent
+            p.congrats Вітаємо! #[br] Залшився ще один крок для отримання Вашого замовлення: #[br]
+            table.productTable 
+                tr.tableHead
+                    th Фото
+                    th Назва
+                    th Кількість
+                    th Ціна
+                each val in items
+                    tr.tableBody
+                        td
+                            img.tableImg(src= `https://horondi.blob.core.windows.net/horondi/images/${val.product.images.primary.large}`)
+                        td 
+                            p= val.product.name[0].value
+                            p= `Розмір - ${val.options.size.name}`
+                        td= val.quantity
+                        td= val.fixedPrice[0].value + val.fixedPrice[0].currency
+        button.confirm
+            a(href=paymentUrl) Оплатити замовлення
+        p.operationsLink або перейдіть за посиланням нижче:
+        a.aoperationsLink(href=paymentUrl) #{paymentUrl}

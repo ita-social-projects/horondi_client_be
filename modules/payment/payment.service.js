@@ -2,6 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const { PAYMENT_SECRET } = require('../../dotenvValidator');
 const { generatePaymentSignature } = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
+const { sendEmail } = require('../email/email.service');
 const {
   PAYMENT_DESCRIPTION,
   PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
@@ -40,7 +41,7 @@ class PaymentService {
     });
 
     if (paymentUrl) {
-      return OrderModel.findByIdAndUpdate(
+      const order = await OrderModel.findByIdAndUpdate(
         orderId,
         {
           $set: {
@@ -49,7 +50,21 @@ class PaymentService {
           },
         },
         { new: true }
-      ).exec();
+      )
+        .populate({
+          path: 'items.product',
+          select: 'name images ',
+        })
+        .populate({
+          path: 'items.options.size ',
+          select: 'name',
+        })
+        .exec();
+      await sendEmail(order.user.email, 'PAYMENT_ORDER', {
+        items: order.items,
+        paymentUrl: order.paymentUrl,
+      });
+      return order;
     }
   }
 
