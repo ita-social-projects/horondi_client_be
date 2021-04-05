@@ -210,22 +210,33 @@ class ProductsService {
       throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
     if (primary) {
-      await uploadService.deleteFiles(
-        Object.values(product.images.primary).filter(
-          item => typeof item === 'string'
-        )
-      );
-      const uploadResult = await uploadService.uploadFiles(primary);
-      const imagesResults = await uploadResult[0];
-      if (imagesResults?.fileNames) {
+      if (primary?.large) {
+        productData.images.primary = primary;
+      } else {
+        await uploadService.deleteFiles(
+          Object.values(product.images.primary).filter(
+            item => typeof item === 'string'
+          )
+        );
+        const uploadResult = await uploadService.uploadFiles(primary);
+        const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
       }
     }
     if (filesToUpload.length) {
-      const uploadResult = await uploadService.uploadFiles(filesToUpload);
-      const imagesResults = await Promise.allSettled(uploadResult);
-      const additional = imagesResults.map(res => res.value.fileNames);
-      productData.images.additional = [...additional];
+      const previousImagesLinks = [];
+      const newFiles = [];
+      filesToUpload.map(e => {
+        if (e?.large) {
+          previousImagesLinks.push(e);
+        } else {
+          newFiles.push(e);
+        }
+      });
+      const newUploadResult = await uploadService.uploadFiles(newFiles);
+      const imagesResults = await Promise.allSettled(newUploadResult);
+      const additional = imagesResults.map(res => res?.value?.fileNames);
+      productData.images.additional = [...additional, ...previousImagesLinks];
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
