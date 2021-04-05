@@ -1,9 +1,10 @@
-const Product = require('../modules/product/product.model');
+const { default: ShortUniqueId } = require('short-unique-id');
+
 const ConstructorBasic = require('../modules/constructor/constructor-basic/constructor-basic.model');
 const ConstructorFrontPocket = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../modules/size/size.model');
-const { default: ShortUniqueId } = require('short-unique-id');
+const { CURRENCY, CURRENCY_VALUE } = require('./../consts/currency');
 
 async function calculateTotalItemsPrice(items) {
   return items.reduce(
@@ -25,54 +26,59 @@ async function calculateTotalItemsPrice(items) {
           ).exec();
           item.fixedPrice = [
             {
-              currency: 'UAH',
+              currency: CURRENCY.UAH,
               value:
-                constructorBasics.basePrice[0].value +
-                constructorFrontPocket.basePrice[0].value +
-                constructorBottom.basePrice[0].value +
-                additionalPrice[0].value,
+                constructorBasics.basePrice[CURRENCY_VALUE.UAH_VALUE].value +
+                constructorFrontPocket.basePrice[CURRENCY_VALUE.UAH_VALUE]
+                  .value +
+                constructorBottom.basePrice[CURRENCY_VALUE.UAH_VALUE].value +
+                additionalPrice[CURRENCY_VALUE.UAH_VALUE].value,
             },
             {
-              currency: 'USD',
+              currency: CURRENCY.USD,
               value:
-                constructorBasics.basePrice[1].value +
-                constructorFrontPocket.basePrice[1].value +
-                constructorBottom.basePrice[1].value +
-                additionalPrice[1].value,
+                constructorBasics.basePrice[CURRENCY_VALUE.USD_VALUE].value +
+                constructorFrontPocket.basePrice[CURRENCY_VALUE.USD_VALUE]
+                  .value +
+                constructorBottom.basePrice[CURRENCY_VALUE.USD_VALUE].value +
+                additionalPrice[CURRENCY_VALUE.USD_VALUE].value,
             },
           ];
         } else {
-          const { basePrice } = await Product.findById(item.product).exec();
           item.fixedPrice = [
             {
-              currency: 'UAH',
-              value: basePrice[0].value + additionalPrice[0].value,
+              currency: CURRENCY.UAH,
+              value: additionalPrice[CURRENCY_VALUE.UAH_VALUE].value,
             },
             {
-              currency: 'USD',
-              value: basePrice[1].value + additionalPrice[1].value,
+              currency: CURRENCY.USD,
+              value: additionalPrice[CURRENCY_VALUE.USD_VALUE].value,
             },
           ];
         }
       }
       return [
         {
-          currency: 'UAH',
-          value: item.fixedPrice[0].value * quantity + sum[0].value,
+          currency: CURRENCY.UAH,
+          value:
+            item.fixedPrice[CURRENCY_VALUE.UAH_VALUE].value * quantity +
+            sum[CURRENCY_VALUE.UAH_VALUE].value,
         },
         {
-          currency: 'USD',
-          value: item.fixedPrice[1].value * quantity + sum[1].value,
+          currency: CURRENCY.USD,
+          value:
+            item.fixedPrice[CURRENCY_VALUE.USD_VALUE].value * quantity +
+            sum[CURRENCY_VALUE.USD_VALUE].value,
         },
       ];
     },
     [
       {
-        currency: 'UAH',
+        currency: CURRENCY.UAH,
         value: 0,
       },
       {
-        currency: 'USD',
+        currency: CURRENCY.USD,
         value: 0,
       },
     ]
