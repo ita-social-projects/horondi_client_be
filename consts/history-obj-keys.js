@@ -39,6 +39,11 @@ const HISTORY_OBJ_KEYS = {
   CLOSURE: 'closure',
   IS_HOT_ITEM: 'isHotItem',
   SIZES: 'sizes',
+  ROLE: 'role',
+  BANNED: 'banned',
+  FIRST_NAME: 'firstName',
+  LAST_NAME: 'lastName',
+  EMAIL: 'email',
 };
 
 module.exports = {

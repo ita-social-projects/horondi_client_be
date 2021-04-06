@@ -10,21 +10,6 @@ const {
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
 const uploadService = require('../upload/upload.service');
-const {
-  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
-} = require('../../consts/history-actions');
-const {
-  generateHistoryObject,
-  getChanges,
-  generateHistoryChangesData,
-} = require('../../utils/hisrory');
-const { addHistoryRecord } = require('../history/history.service');
-const {
-  LANGUAGE_INDEX: { UA },
-} = require('../../consts/languages');
-const {
-  HISTORY_OBJ_KEYS: { NAME, MATERIAL, ADDITIONAL_PRICE, AVAILABLE },
-} = require('../../consts/history-obj-keys');
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -77,9 +62,7 @@ class ModelsService {
       data.images = imageResults.fileNames;
     }
 
-    const newModel = await new Model(data).save();
-
-    return newModel;
+    return await new Model(data).save();
   }
 
   async updateModel(id, newModel, upload) {

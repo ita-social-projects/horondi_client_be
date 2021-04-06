@@ -7,7 +7,7 @@ const generateHistoryObject = (
   subjectId,
   valueBeforeChange,
   valueAfterChange,
-  userId
+  userId = ''
 ) => ({
   action,
   subject: {

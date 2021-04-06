@@ -211,7 +211,13 @@ class ProductsService {
     };
   }
 
-  async updateProduct(id, productData, filesToUpload, primary) {
+  async updateProduct(
+    id,
+    productData,
+    filesToUpload,
+    primary,
+    { _id: adminId }
+  ) {
     productData.images = {
       primary: {
         large: LARGE_SAD_BACKPACK,
@@ -253,7 +259,7 @@ class ProductsService {
         const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
       }
-     }
+    }
     if (filesToUpload.length) {
       const previousImagesLinks = [];
       const newFiles = [];
@@ -271,6 +277,21 @@ class ProductsService {
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
+    if (productData) {
+      const { beforeChanges, afterChanges } = getChanges(product, productData);
+
+      const historyRecord = generateHistoryObject(
+        EDIT_PRODUCT,
+        product.model,
+        product.name[UA].value,
+        product._id,
+        beforeChanges,
+        afterChanges,
+        adminId
+      );
+      await addHistoryRecord(historyRecord);
+    }
+
     return await Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
@@ -344,7 +365,7 @@ class ProductsService {
 
     if (await Promise.allSettled(deletedImages)) {
       const historyRecord = generateHistoryObject(
-        ADD_PRODUCT,
+        DELETE_PRODUCT,
         product.model,
         product.name[UA].value,
         product._id,
