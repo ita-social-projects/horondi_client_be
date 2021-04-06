@@ -10,6 +10,21 @@ const {
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
 const uploadService = require('../upload/upload.service');
+const {
+  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { NAME, MATERIAL, ADDITIONAL_PRICE, AVAILABLE },
+} = require('../../consts/history-obj-keys');
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -51,7 +66,7 @@ class ModelsService {
     return Model.find({ category: id });
   }
 
-  async addModel(data, upload) {
+  async addModel(data, upload, { _id: adminId }) {
     if (await this.checkModelExist(data)) {
       throw new Error(MODEL_ALREADY_EXIST);
     }
@@ -62,7 +77,9 @@ class ModelsService {
       data.images = imageResults.fileNames;
     }
 
-    return await new Model(data).save();
+    const newModel = await new Model(data).save();
+
+    return newModel;
   }
 
   async updateModel(id, newModel, upload) {

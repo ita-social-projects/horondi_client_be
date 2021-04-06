@@ -20,11 +20,18 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_CATEGORY, DELETE_CATEGORY, EDIT_CATEGORY },
 } = require('../../consts/history-actions');
-const { generateHistoryObject, getChanges } = require('../../utils/hisrory');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { CODE, NAME },
+} = require('../../consts/history-obj-keys');
 
 class CategoryService extends FilterHelper {
   async getAllCategories({ filter, pagination, sort }) {
@@ -84,6 +91,7 @@ class CategoryService extends FilterHelper {
 
       const historyRecord = generateHistoryObject(
         EDIT_CATEGORY,
+        '',
         categoryToUpdate.name[UA].value,
         categoryToUpdate._id,
         beforeChanges,
@@ -167,10 +175,11 @@ class CategoryService extends FilterHelper {
 
     const historyRecord = generateHistoryObject(
       ADD_CATEGORY,
+      '',
       newCategory.name[UA].value,
       newCategory._id,
       [],
-      [newCategory.name[UA].value, newCategory.code],
+      generateHistoryChangesData(newCategory, [NAME, CODE]),
       adminId
     );
     await addHistoryRecord(historyRecord);
@@ -210,10 +219,11 @@ class CategoryService extends FilterHelper {
     if (category) {
       const historyRecord = generateHistoryObject(
         DELETE_CATEGORY,
+        '',
         category.name[UA].value,
         category._id,
+        generateHistoryChangesData(category, [NAME, CODE]),
         [],
-        [category.name[UA].value, category.code],
         adminId
       );
       await addHistoryRecord(historyRecord);

@@ -13,6 +13,7 @@ const historyType = `
         createdAt: Date
     }
     type HistorySubject {
+        model: String
         name: String,
         subjectId: ID
      }

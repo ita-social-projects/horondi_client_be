@@ -12,6 +12,10 @@ const historySchema = new mongoose.Schema({
     enum: Object.values(HISTORY_ACTIONS),
   },
   subject: {
+    model: {
+      type: String,
+      default: '',
+    },
     name: {
       type: String,
     },
@@ -19,8 +23,8 @@ const historySchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
     },
   },
-  valueBeforeChange: [String],
-  valueAfterChange: [String],
+  valueBeforeChange: [Object],
+  valueAfterChange: [Object],
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: USER,

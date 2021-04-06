@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 const generateHistoryObject = (
   action,
+  subjectModel = '',
   subjectName,
   subjectId,
   valueBeforeChange,
@@ -10,6 +11,7 @@ const generateHistoryObject = (
 ) => ({
   action,
   subject: {
+    model: subjectModel,
     name: subjectName,
     subjectId,
   },
@@ -18,14 +20,14 @@ const generateHistoryObject = (
   userId,
 });
 
-const getChanges = (objBefore, objAfter) => {
+const getChanges = (objBefore, objWithChanges) => {
   const beforeChanges = [];
   const afterChanges = [];
 
-  _.mergeWith(objBefore, objAfter, (oldValue, newValue) => {
+  _.mergeWith(objBefore, objWithChanges, (oldValue, newValue, key) => {
     if (!_.isEqual(oldValue, newValue) && Object(oldValue) !== oldValue) {
-      beforeChanges.push(oldValue);
-      afterChanges.push(newValue);
+      beforeChanges.push({ [key]: oldValue });
+      afterChanges.push({ [key]: newValue });
     }
   });
   return {
@@ -34,7 +36,18 @@ const getChanges = (objBefore, objAfter) => {
   };
 };
 
+const generateHistoryChangesData = (obj, keys = []) => {
+  const changes = [];
+
+  keys.forEach(key => {
+    changes.push({ [key]: obj[key] });
+  });
+
+  return changes;
+};
+
 module.exports = {
   generateHistoryObject,
   getChanges,
+  generateHistoryChangesData,
 };

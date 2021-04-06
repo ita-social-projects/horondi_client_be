@@ -206,6 +206,7 @@ const resolvers = {
           _id: item._id,
           action: item.action,
           subject: {
+            model: item.subject.model,
             name: item.subject.name,
             subjectId: item.subject.subjectId,
           },

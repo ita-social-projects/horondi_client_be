@@ -6,6 +6,21 @@ const {
 } = require('../../error-messages/news.messages');
 const { uploadLargeImage } = require('../upload/upload.utils');
 const uploadService = require('../upload/upload.service');
+const {
+  HISTORY_ACTIONS: { ADD_NEWS, EDIT_NEWS, DELETE_NEWS },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
+} = require('../../consts/history-obj-keys');
 
 class NewsService {
   async getAllNews({ skip, limit }) {
@@ -32,7 +47,7 @@ class NewsService {
     throw new Error(NEWS_NOT_FOUND);
   }
 
-  async updateNews(id, news, upload) {
+  async updateNews(id, news, upload, { _id: adminId }) {
     const foundNews = await News.findById(id).exec();
     if (!foundNews) {
       throw new Error(NEWS_NOT_FOUND);
@@ -52,10 +67,28 @@ class NewsService {
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    return await News.findByIdAndUpdate(id, news, { new: true }).exec();
+    const updatedNews = await News.findByIdAndUpdate(id, news, {
+      new: true,
+    }).exec();
+    if (news) {
+      const { beforeChanges, afterChanges } = getChanges(foundNews, news);
+
+      const historyRecord = generateHistoryObject(
+        EDIT_NEWS,
+        '',
+        foundNews.name[UA].value,
+        foundNews._id,
+        beforeChanges,
+        afterChanges,
+        adminId
+      );
+      await addHistoryRecord(historyRecord);
+    }
+
+    return updatedNews;
   }
 
-  async addNews(data, upload) {
+  async addNews(data, upload, { _id: adminId }) {
     if (await this.checkNewsExist(data)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
@@ -69,13 +102,40 @@ class NewsService {
     data.author.image = await uploadLargeImage(upload[0]);
     data.image = await uploadLargeImage(upload[1]);
 
-    return new News(data).save();
+    const newNews = await new News(data).save();
+
+    const historyRecord = generateHistoryObject(
+      ADD_NEWS,
+      '',
+      newNews.author.name[UA].value,
+      newNews._id,
+      [],
+      generateHistoryChangesData(newNews, [AUTHOR, LANGUAGES, TITLE, TEXT]),
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return newNews;
   }
 
-  async deleteNews(id) {
+  async deleteNews(id, { _id: adminId }) {
     const foundNews = await News.findByIdAndDelete(id).exec();
-    uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
+    await uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
+
     if (foundNews) {
+      const historyRecord = generateHistoryObject(
+        DELETE_NEWS,
+        '',
+        foundNews.author.name[UA].value,
+        foundNews._id,
+        generateHistoryChangesData(foundNews, [AUTHOR, LANGUAGES, TITLE, TEXT]),
+        [],
+        adminId
+      );
+
+      await addHistoryRecord(historyRecord);
+
       return foundNews;
     }
     throw new Error(NEWS_NOT_FOUND);
@@ -94,4 +154,5 @@ class NewsService {
     return newsCount > 0;
   }
 }
+
 module.exports = new NewsService();
