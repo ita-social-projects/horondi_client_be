@@ -87,18 +87,22 @@ const nestedDeliveryValidator = Joi.object({
   region: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
+    otherwise: Joi.string().only(''),
   }),
   regionId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
+    otherwise: Joi.string().only(''),
   }),
   district: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
+    otherwise: Joi.string().only(''),
   }),
   districtId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
+    otherwise: Joi.string().only(''),
   }),
   city: Joi.string()
     .when(SENT_BY, {
@@ -121,6 +125,7 @@ const nestedDeliveryValidator = Joi.object({
   cityId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
+    otherwise: Joi.string().only(''),
   }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
