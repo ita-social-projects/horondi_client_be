@@ -12,6 +12,7 @@ const {
     BLOCK_USER,
     UNLOCK_USER,
     CONFIRM_ADMIN_EMAIL,
+    CONFIRM_CREATION_SUPERADMIN_EMAIL,
   },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
@@ -48,6 +49,7 @@ const {
   YOU_CANT_UNLOCK_YOURSELF,
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
+  INVALID_CODE,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -70,6 +72,7 @@ const RuleError = require('../../errors/rule.error');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts/');
+const { generateOrderNumber } = require('../../utils/order.utils');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -628,7 +631,11 @@ class UserService extends FilterHelper {
     return true;
   }
 
-  async registerAdmin({ email, role }) {
+  async registerAdmin({ email, role, code }, admin) {
+    if (code && code !== admin.otp_code) {
+      throw new RuleError(INVALID_CODE, FORBIDDEN);
+    }
+
     const isAdminExists = await User.findOne({ email }).exec();
 
     if (isAdminExists) {
@@ -654,7 +661,45 @@ class UserService extends FilterHelper {
       token: invitationalToken,
     });
 
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          otp_code: null,
+        },
+      },
+      { new: true }
+    ).exec();
+
     return savedUser;
+  }
+
+  async confirmSuperadminCreation(_id) {
+    const user = await User.findOne({ _id }).exec();
+
+    if (!user) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    const otp_code = generateOrderNumber();
+
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          otp_code: otp_code,
+        },
+      },
+      { new: true }
+    ).exec();
+
+    await emailService.sendEmail(
+      user.email,
+      CONFIRM_CREATION_SUPERADMIN_EMAIL,
+      { otp_code }
+    );
+
+    return { isSuccess: true };
   }
 
   async resendEmailToConfirmAdmin({ email }) {

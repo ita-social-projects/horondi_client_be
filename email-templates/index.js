@@ -33,6 +33,10 @@ const htmlTemplates = {
     subject: '[HORONDI] Invitation to become an admin',
     templateFileName: 'confirm-admin-email',
   },
+  [EmailActions.CONFIRM_CREATION_SUPERADMIN_EMAIL]: {
+    subject: '[HORONDI] Confirmation creating superadmin',
+    templateFileName: 'confirm-creation-superadmin-email',
+  },
 };
 
 module.exports = { htmlTemplates };

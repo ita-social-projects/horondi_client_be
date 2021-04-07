@@ -101,9 +101,9 @@ const userMutation = {
       };
     }
   },
-  registerAdmin: async (parent, args) => {
+  registerAdmin: async (parent, args, context) => {
     try {
-      return await userService.registerAdmin(args.user);
+      return await userService.registerAdmin(args.user, context.user);
     } catch (err) {
       return {
         statusCode: BAD_REQUEST,
@@ -114,6 +114,16 @@ const userMutation = {
   resendEmailToConfirmAdmin: async (parent, args) => {
     try {
       return await userService.resendEmailToConfirmAdmin(args.user);
+    } catch (err) {
+      return {
+        statusCode: BAD_REQUEST,
+        message: err.message,
+      };
+    }
+  },
+  confirmSuperadminCreation: async (parent, args) => {
+    try {
+      return await userService.confirmSuperadminCreation(args.user);
     } catch (err) {
       return {
         statusCode: BAD_REQUEST,

@@ -147,6 +147,7 @@ const adminRegisterInput = `
 input AdminRegisterInput {
     email: String!
     role: String!
+    code: String
 }
 `;
 
@@ -155,6 +156,13 @@ input resendEmailToConfirmAdminInput {
     email: String!
 }
 `;
+
+const confirmSuperadminCreationInput = `
+input confirmSuperadminCreationInput {
+    _id: ID!
+}
+`;
+
 const adminConfirmInput = `
 input AdminConfirmInput {
     firstName: String!
@@ -206,6 +214,7 @@ module.exports = {
   LoginInput,
   adminRegisterInput,
   resendEmailToConfirmAdminInput,
+  confirmSuperadminCreationInput,
   adminConfirmInput,
   UserForStatisticsInput,
   paginatedUsersType,
