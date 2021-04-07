@@ -13,14 +13,24 @@ block content
                     th Кількість
                     th Ціна
                 each val in items
-                    tr.tableBody
-                        td
-                            img.tableImg(src= `${imagesUrl}${val.product.images.primary.large}`)
-                        td 
-                            p= val.product.name[0].value
-                            p= `Розмір - ${val.options.size.name}`
-                        td= val.quantity
-                        td= `${val.price[0].value} ${val.price[0].currency}`
+                    if val.product
+                        tr.tableBody
+                            td
+                                img.tableImg(src= `${imagesUrl}${val.product.images.primary.large}`)
+                            td 
+                                p= val.product.name[0].value
+                                p= `Розмір - ${val.options.size.name}`
+                            td= val.quantity
+                            td= `${val.price[0].value} ${val.price[0].currency}`
+                    else if val.fromConstructor
+                        tr.tableBody
+                            td
+                                img.tableImg(src= `${imagesUrl}large_21r21sdeokmxcw0i8_Rolltop_blue.png`)
+                            td 
+                                p= val.fromConstructor.product.name[0].value
+                                p= `Розмір - ${val.options.size.name}`
+                            td= val.quantity
+                            td= `${val.price[0].value} ${val.price[0].currency}`
             
             p.completeOperationsText Завершіть будь ласка свої покупки
             button.confirm
