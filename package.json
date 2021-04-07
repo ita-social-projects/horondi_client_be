@@ -25,8 +25,7 @@
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
     "test-docker": "npm run docker-db-stop && npm run docker-db-start && npm run test",
-    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\"",
-    "dump-db": "mongodump --db=horondi --uri=\"mongodb+srv://user-read-write1:sfd%2442A3a@horondi-yl27g.mongodb.net/horondi?retryWrites=true&w=majority\""
+    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\""
   },
   "author": "",
   "license": "ISC",
