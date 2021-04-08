@@ -60,10 +60,7 @@ describe('queries', () => {
     const { email } = testUser;
     const res = await getAllUsers(operations);
 
-    expect(res.data.getAllUsers.items[1]).toHaveProperty(
-      'firstName',
-      'Super аdmin'
-    );
+    expect(res.data.getAllUsers.items[1]).toHaveProperty('firstName', 'Petro');
     expect(res.data.getAllUsers.items[1]).toHaveProperty('email', email);
     expect(res.data.getAllUsers.items[1]).toHaveProperty('role', 'user');
     done();
