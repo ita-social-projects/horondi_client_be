@@ -199,24 +199,6 @@ const resolvers = {
 
     ...colorQuery,
   },
-  History: {
-    items: parent =>
-      parent.items.map(item => {
-        return {
-          _id: item._id,
-          action: item.action,
-          subject: {
-            model: item.subject.model,
-            name: item.subject.name,
-            subjectId: item.subject.subjectId,
-          },
-          valueBeforeChange: item.valueBeforeChange,
-          valueAfterChange: item.valueAfterChange,
-          userId: userService.getUser(item.userId),
-          createdAt: item.createdAt,
-        };
-      }),
-  },
   ProductsFilter: {
     categories: parent =>
       parent.categories.map(category =>

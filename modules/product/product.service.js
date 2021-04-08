@@ -298,6 +298,7 @@ class ProductsService {
   }
 
   async addProduct(productData, filesToUpload, { _id: adminId }) {
+    console.log('heelo');
     if (await this.checkProductExist(productData)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
@@ -314,8 +315,8 @@ class ProductsService {
     };
 
     const newProduct = await new Product(productData).save();
-
-    if (newProduct) {
+    console.log(newProduct);
+    if (productData) {
       const historyRecord = generateHistoryObject(
         ADD_PRODUCT,
         newProduct.model,

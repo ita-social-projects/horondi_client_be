@@ -7,8 +7,8 @@ const historyType = `
         _id: ID!
         action: String,
         subject: HistorySubject
-        valueBeforeChange: [String],
-        valueAfterChange: [String]
+        valueBeforeChange: [JSONObject],
+        valueAfterChange: [JSONObject]
         userId: User
         createdAt: Date
     }
@@ -18,4 +18,18 @@ const historyType = `
         subjectId: ID
      }
   `;
-module.exports = { historyType };
+const historyFilterInput = `
+  input HistoryFilterInput{
+    date:DateRangeInput
+    action:[String]
+    fullName:String
+    role:[String]
+  }
+  
+  input DateRangeInput{
+    dateFrom: Date
+    dateTo: Date
+  }
+`;
+
+module.exports = { historyType, historyFilterInput };

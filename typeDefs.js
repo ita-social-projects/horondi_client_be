@@ -1,6 +1,9 @@
 const { gql } = require('apollo-server-express');
 
-const { historyType } = require('./modules/history/history.graphql');
+const {
+  historyType,
+  historyFilterInput,
+} = require('./modules/history/history.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -137,8 +140,9 @@ const typeDefs = gql`
   ${constructorBasicType}
   ${constructorFrontPocketType}
   ${constructorBottomType}
-
+  ${historyFilterInput}
   scalar Upload
+  scalar JSONObject
   scalar Date
   enum RoleEnum {
     superadmin
@@ -357,7 +361,7 @@ const typeDefs = gql`
   union HistoryResult = History | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
-    getAllHistoryRecords(limit:Int!, skip:Int!):HistoryResult
+    getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
     getAllCategories(
