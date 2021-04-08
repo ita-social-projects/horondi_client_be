@@ -97,7 +97,6 @@ class OrdersService {
   async addOrder(data, user) {
     if (user) {
       await cleanCart(user._id);
-      console.log(user);
     }
     const { items } = data;
 
