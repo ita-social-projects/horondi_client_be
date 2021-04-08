@@ -59,7 +59,10 @@ const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
             firstName
             email
             role
-            banned
+            banned {
+              blockPeriod
+              blockCount
+            }
           }
         }
       }

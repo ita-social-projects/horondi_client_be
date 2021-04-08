@@ -21,6 +21,10 @@ const {
 const {
   STATUS_CODES: { FORBIDDEN },
 } = require('../../consts/status-codes');
+const {
+  USER_BLOCK_PERIOD: { UNLOCKED },
+  USER_BLOCK_COUNT: { NO_ONE_TIME },
+} = require('../../consts/user-block-period');
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -78,8 +82,18 @@ const userSchema = new mongoose.Schema({
     },
   ],
   banned: {
-    type: Boolean,
-    default: false,
+    blockPeriod: {
+      type: String,
+      default: UNLOCKED,
+    },
+    blockCount: {
+      type: Number,
+      default: NO_ONE_TIME,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   confirmed: {
     type: Boolean,
