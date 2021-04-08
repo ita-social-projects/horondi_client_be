@@ -298,7 +298,6 @@ class ProductsService {
   }
 
   async addProduct(productData, filesToUpload, { _id: adminId }) {
-    console.log('heelo');
     if (await this.checkProductExist(productData)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
