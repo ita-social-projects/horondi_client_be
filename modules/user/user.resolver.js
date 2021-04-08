@@ -101,44 +101,32 @@ const userMutation = {
       };
     }
   },
-  registerAdmin: async (parent, args, context) => {
+  registerAdmin: async (_, { user }, { user: admin }) => {
     try {
-      return await userService.registerAdmin(args.user, context.user);
+      return await userService.registerAdmin(user, admin);
     } catch (err) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
-  resendEmailToConfirmAdmin: async (parent, args) => {
+  resendEmailToConfirmAdmin: async (_, { user }) => {
     try {
-      return await userService.resendEmailToConfirmAdmin(args.user);
+      return await userService.resendEmailToConfirmAdmin(user);
     } catch (err) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
-  confirmSuperadminCreation: async (parent, args) => {
+  confirmSuperadminCreation: async (_, { user }) => {
     try {
-      return await userService.confirmSuperadminCreation(args.user);
+      return await userService.confirmSuperadminCreation(user);
     } catch (err) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
-  completeAdminRegister: async (parent, args) => {
+  completeAdminRegister: async (_, { user, token }) => {
     try {
-      return await userService.completeAdminRegister(args.user, args.token);
+      return await userService.completeAdminRegister(user, token);
     } catch (err) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
   addProductToWishlist: (parent, args, context) =>

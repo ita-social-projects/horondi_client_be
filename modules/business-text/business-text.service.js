@@ -34,7 +34,6 @@ class BusinessTextService {
 
   async updateBusinessText(id, businessText, files) {
     const pages = await this.checkBusinessTextExistByCode(businessText);
-    console.log('pages', pages);
     const oldPage = await this.getBusinessTextById(id);
     const existingPage = pages.find(el => el._id.toString() !== id);
 
@@ -106,7 +105,6 @@ class BusinessTextService {
   }
 
   async checkBusinessTextExistByCode(data) {
-    console.log(BusinessText.find({ code: data.code }).exec());
     return BusinessText.find({ code: data.code }).exec();
   }
 

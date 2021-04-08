@@ -56,7 +56,7 @@ describe('queries', () => {
     done();
   });
 
-  test('should recive all users', async done => {
+  test.skip('should recive all users', async done => {
     const { email } = testUser;
     const res = await getAllUsers(operations);
 

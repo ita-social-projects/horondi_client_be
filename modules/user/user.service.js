@@ -49,7 +49,7 @@ const {
   YOU_CANT_UNLOCK_YOURSELF,
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
-  INVALID_CODE,
+  INVALID_OTP_CODE,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -72,7 +72,9 @@ const RuleError = require('../../errors/rule.error');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts/');
-const { generateOrderNumber } = require('../../utils/order.utils');
+const {
+  generateOrderNumber: generateOtpCode,
+} = require('../../utils/order.utils');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -633,7 +635,7 @@ class UserService extends FilterHelper {
 
   async registerAdmin({ email, role, code }, admin) {
     if (code && code !== admin.otp_code) {
-      throw new RuleError(INVALID_CODE, FORBIDDEN);
+      throw new RuleError(INVALID_OTP_CODE, FORBIDDEN);
     }
 
     const isAdminExists = await User.findOne({ email }).exec();
@@ -648,11 +650,10 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const { accesToken } = generateTokens(savedUser._id, {
+    const { accesToken: invitationalToken } = generateTokens(savedUser._id, {
       expiresIn: TOKEN_EXPIRES_IN,
       secret: SECRET,
     });
-    const invitationalToken = accesToken;
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
@@ -681,7 +682,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const otp_code = generateOrderNumber();
+    const otp_code = generateOtpCode();
 
     await User.findByIdAndUpdate(
       user._id,
@@ -709,11 +710,13 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const { accesToken } = generateTokens(isAdminExists._id, {
-      expiresIn: TOKEN_EXPIRES_IN,
-      secret: SECRET,
-    });
-    const invitationalToken = accesToken;
+    const { accesToken: invitationalToken } = generateTokens(
+      isAdminExists._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      }
+    );
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
       token: invitationalToken,
@@ -722,9 +725,7 @@ class UserService extends FilterHelper {
     return { isSuccess: true };
   }
 
-  async completeAdminRegister(updatedUser, token) {
-    const { password } = updatedUser;
-
+  async completeAdminRegister({ password }, token) {
     const userDetails = verifyUser(token);
 
     if (!userDetails) {

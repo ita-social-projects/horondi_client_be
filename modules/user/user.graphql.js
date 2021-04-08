@@ -147,7 +147,7 @@ const adminRegisterInput = `
 input AdminRegisterInput {
     email: String!
     role: String!
-    code: String
+    otp_code: String
 }
 `;
 
