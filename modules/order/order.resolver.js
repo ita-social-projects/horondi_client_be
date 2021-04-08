@@ -33,9 +33,9 @@ const ordersQuery = {
 };
 
 const ordersMutation = {
-  addOrder: async (parent, args) => {
+  addOrder: async (parent, args, context) => {
     try {
-      return await ordersService.addOrder(args.order);
+      return await ordersService.addOrder(args.order, context.user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,

@@ -28,6 +28,8 @@ const {
   generateOrderNumber,
 } = require('../../utils/order.utils');
 
+const { cleanCart } = require('./../cart/cart.service');
+
 class OrdersService {
   async getOrderByPaidOrderNumber(orderNumber) {
     const order = await Order.findOne({ orderNumber }).exec();
@@ -92,7 +94,11 @@ class OrdersService {
     ).exec();
   }
 
-  async addOrder(data) {
+  async addOrder(data, user) {
+    if (user) {
+      await cleanCart(user._id);
+      console.log(user);
+    }
     const { items } = data;
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
