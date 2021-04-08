@@ -725,7 +725,8 @@ class UserService extends FilterHelper {
     return { isSuccess: true };
   }
 
-  async completeAdminRegister({ password }, token) {
+  async completeAdminRegister(updatedUser, token) {
+    const { password } = updatedUser;
     const userDetails = verifyUser(token);
 
     if (!userDetails) {
