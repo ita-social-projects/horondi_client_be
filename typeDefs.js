@@ -22,7 +22,11 @@ const {
   productInput,
 } = require('./modules/product/product.graphql');
 const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
-const { modelType, modelInput } = require('./modules/model/model.graphql');
+const {
+  modelType,
+  optionTypes,
+  modelInputs,
+} = require('./modules/model/model.graphql');
 const {
   categoryType,
   categoryInput,
@@ -142,6 +146,7 @@ const typeDefs = gql`
   ${commentType}
   ${businessTextType}
   ${modelType}
+  ${optionTypes}
   ${contactType}
   ${orderTypes}
   ${emailQuestionType}
@@ -578,7 +583,7 @@ const typeDefs = gql`
 	${SortInputComponent}
   ${adminConfirmInput}
   ${adminRegisterInput}
-  ${modelInput}
+  ${modelInputs}
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}

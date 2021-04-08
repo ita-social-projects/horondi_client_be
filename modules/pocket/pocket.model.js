@@ -16,11 +16,14 @@ const pocketSchema = new mongoose.Schema({
     ref: MODEL,
   },
   features: {
-    side: {
-      type: String,
-      enum: [RIGHT, LEFT, FRONT, BACK],
-      required: true,
-    },
+    side: [
+      {
+        type: String,
+        enum: [RIGHT, LEFT, FRONT, BACK],
+        required: true,
+      },
+    ],
+    state: String,
   },
   blockers: [Blocker],
   image: String,

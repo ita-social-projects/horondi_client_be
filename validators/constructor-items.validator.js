@@ -35,7 +35,7 @@ const pocketValidator = Joi.object({
     .uppercase(),
   model: Joi.string().required(),
   features: Joi.Object({
-    side: nestedSideValidator,
+    side: Joi.array().has(nestedSideValidator),
   }),
   image: Joi.string()
     .trim()

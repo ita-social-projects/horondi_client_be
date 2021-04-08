@@ -15,7 +15,7 @@ const pocketType = `
 
 const pocketSide = `
     type PocketSide {
-     side: SideEnum
+     side: [SideEnum]
     }
 `;
 
