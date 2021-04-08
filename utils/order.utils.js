@@ -5,6 +5,10 @@ const ConstructorFrontPocket = require('../modules/constructor/constructor-front
 const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../modules/size/size.model');
 const { CURRENCY, CURRENCY_VALUE } = require('./../consts/currency');
+const productModel = require('../modules/product/product.model');
+const {
+  ORDER_STATUSES: { CANCELLED, REFUNDED },
+} = require('../consts/order-statuses');
 
 async function calculateTotalItemsPrice(items) {
   return items.reduce(
@@ -95,8 +99,65 @@ function generateOrderNumber() {
   return uid();
 }
 
+async function addProductsToStatistic(items) {
+  const ids = items.map(item => item.product);
+  const products = await productModel.find({ _id: { $in: ids } });
+  products.forEach(async product => {
+    const { quantity } = items.find(item => {
+      return item.product === product._id.toString();
+    });
+    product.purchasedCount += quantity;
+    await product.save();
+  });
+}
+
+async function updateProductStatistic(orderToUpdate, newOrder) {
+  if (newOrder.status === CANCELLED || newOrder.status === REFUNDED) {
+    const ids = orderToUpdate.items.map(item => item.product);
+    const products = await productModel.find({ _id: { $in: ids } });
+    products.forEach(async product => {
+      const { quantity } = orderToUpdate.items.find(item => {
+        return item.product.toString() === product._id.toString();
+      });
+      product.purchasedCount -= quantity;
+      await product.save();
+    });
+  } else {
+    const arrOfDifferences = newOrder.items.map(item => {
+      const index = orderToUpdate.items.findIndex(
+        el => el.product.toString() === item.product.toString()
+      );
+      let quantity;
+      if (index !== -1) {
+        quantity = item.quantity - orderToUpdate.items[index].quantity;
+        orderToUpdate.items.splice(index, 1);
+      } else {
+        quantity = item.quantity;
+      }
+      return { _id: item.product, quantity };
+    });
+    arrOfDifferences.push(
+      ...orderToUpdate.items.map(item => ({
+        _id: item.product.toString(),
+        quantity: -item.quantity,
+      }))
+    );
+    const ids = arrOfDifferences.map(el => el._id);
+    const products = await productModel.find({ _id: { $in: ids } });
+    products.forEach(async product => {
+      const { quantity } = arrOfDifferences.find(item => {
+        return item._id === product._id.toString();
+      });
+      product.purchasedCount += quantity;
+      await product.save();
+    });
+  }
+}
+
 module.exports = {
   calculateTotalPriceToPay,
   generateOrderNumber,
   calculateTotalItemsPrice,
+  addProductsToStatistic,
+  updateProductStatistic,
 };
