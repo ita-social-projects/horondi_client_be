@@ -25,8 +25,8 @@ const cartPermissionsMutations = {
     isProductToCartCorrect
   ),
   cleanCart: isTheSameUser,
-  addConstructorProductItem: and(isTheSameUser, isProductToCartCorrect),
-  updateConstructorProductItemQuantity: and(
+  addConstructorProductItemToCart: and(isTheSameUser, isProductToCartCorrect),
+  updateCartConstructorProductItemQuantity: and(
     inputDataValidation(QUANTITY, updateCartQuantityValidator),
     isTheSameUser,
     getConstructorProductItemPresentInCart

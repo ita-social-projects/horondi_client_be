@@ -51,7 +51,7 @@ class ModelsService {
     return Model.find({ category: id });
   }
 
-  async addModel(data, upload, { _id: adminId }) {
+  async addModel(data, upload) {
     if (await this.checkModelExist(data)) {
       throw new Error(MODEL_ALREADY_EXIST);
     }

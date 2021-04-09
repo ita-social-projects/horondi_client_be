@@ -13,23 +13,37 @@ class HistoryService {
     if (filter.role?.length) {
       filterUserOptions.role = { $in: filter.role };
     }
+    if (filter.fullName) {
+      const [name, surname] = filter.fullName.split(' ');
 
-    const items = await HistoryModel.find(filterOptions)
+      filterUserOptions.$or = [
+        { firstName: { $regex: `${name || surname}`, $options: 'i' } },
+        { lastName: { $regex: `${name || surname}`, $options: 'i' } },
+      ];
+    }
+    if (filter.date) {
+      filterOptions.createdAt = {
+        $gte: new Date(filter.date.dateFrom).getTime(),
+        $lte: new Date(filter.date.dateTo).getTime(),
+      };
+    }
+
+    const historyRecords = await HistoryModel.find(filterOptions)
       .populate({
         path: 'userId',
         match: filterUserOptions,
       })
-      .limit(limit)
-      .skip(skip)
       .exec();
 
-    const count = await HistoryModel.find(filterOptions)
-      .populate({
-        path: 'userId',
-        match: filterUserOptions,
-      })
-      .countDocuments()
-      .exec();
+    const items = _.take(
+      _.drop(
+        _.filter(historyRecords, record => record.userId),
+        skip
+      ),
+      limit
+    );
+
+    const count = _.filter(historyRecords, record => record.userId).length;
 
     return {
       items,
