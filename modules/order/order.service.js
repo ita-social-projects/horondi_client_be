@@ -99,7 +99,7 @@ class OrdersService {
     ).exec();
   }
 
-  async addOrder(data, user) {
+  async addOrder(data) {
     const { items } = data;
 
     await addProductsToStatistic(items);
