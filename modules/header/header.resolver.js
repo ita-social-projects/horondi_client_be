@@ -32,7 +32,7 @@ const headerMutation = {
 
   deleteHeader: async (parent, args, { user }) => {
     try {
-      return await headerService.deleteHeader(args.id, { user });
+      return await headerService.deleteHeader(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
