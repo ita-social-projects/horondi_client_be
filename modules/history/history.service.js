@@ -21,7 +21,7 @@ class HistoryService {
         { lastName: { $regex: `${name || surname}`, $options: 'i' } },
       ];
     }
-    if (filter.date) {
+    if (filter.date.dateFrom && filter.date.dateTo) {
       filterOptions.createdAt = {
         $gte: new Date(filter.date.dateFrom).getTime(),
         $lte: new Date(filter.date.dateTo).getTime(),
