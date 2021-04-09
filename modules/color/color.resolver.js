@@ -19,9 +19,9 @@ const colorQuery = {
 };
 
 const colorMutation = {
-  addColor: async (parent, { data }) => {
+  addColor: async (parent, { data }, { user }) => {
     try {
-      return await colorService.addColor(data);
+      return await colorService.addColor(data, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -30,9 +30,9 @@ const colorMutation = {
     }
   },
 
-  deleteColor: async (parent, { id }) => {
+  deleteColor: async (parent, { id }, { user }) => {
     try {
-      return await colorService.deleteColor(id);
+      return await colorService.deleteColor(id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
