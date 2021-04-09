@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const HistoryModel = require('./history.model');
 
 class HistoryService {
@@ -12,18 +14,20 @@ class HistoryService {
       filterUserOptions.role = { $in: filter.role };
     }
 
-    let items = await HistoryModel.find()
-      .populate('userId', null, 'User', { role: 'user' })
-      .lean()
+    const items = await HistoryModel.find(filterOptions)
+      .populate({
+        path: 'userId',
+        match: filterUserOptions,
+      })
       .limit(limit)
       .skip(skip)
       .exec();
 
-    items = items.filter(value => value.userId);
-
-    console.log(items);
-
-    const count = await HistoryModel.find()
+    const count = await HistoryModel.find(filterOptions)
+      .populate({
+        path: 'userId',
+        match: filterUserOptions,
+      })
       .countDocuments()
       .exec();
 
