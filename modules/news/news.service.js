@@ -67,16 +67,13 @@ class NewsService {
     if (await this.checkNewsExist(news, id)) {
       throw new Error(NEWS_ALREADY_EXIST);
     }
-    const updatedNews = await News.findByIdAndUpdate(id, news, {
-      new: true,
-    }).exec();
     if (news) {
       const { beforeChanges, afterChanges } = getChanges(foundNews, news);
 
       const historyRecord = generateHistoryObject(
         EDIT_NEWS,
         '',
-        foundNews.name[UA].value,
+        foundNews.author.name[UA].value,
         foundNews._id,
         beforeChanges,
         afterChanges,
@@ -84,8 +81,9 @@ class NewsService {
       );
       await addHistoryRecord(historyRecord);
     }
-
-    return updatedNews;
+    return await News.findByIdAndUpdate(id, news, {
+      new: true,
+    }).exec();
   }
 
   async addNews(data, upload, { _id: adminId }) {
