@@ -33,8 +33,6 @@ const {
   updateProductStatistic,
 } = require('../../utils/order.utils');
 
-const { cleanCart } = require('./../cart/cart.service');
-
 class OrdersService {
   async getOrderByPaidOrderNumber(orderNumber) {
     const order = await Order.findOne({ orderNumber }).exec();
@@ -102,9 +100,6 @@ class OrdersService {
   }
 
   async addOrder(data, user) {
-    if (user && user.role === USER) {
-      await cleanCart(user._id);
-    }
     const { items } = data;
 
     await addProductsToStatistic(items);
