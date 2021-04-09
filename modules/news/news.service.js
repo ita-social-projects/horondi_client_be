@@ -81,7 +81,7 @@ class NewsService {
       );
       await addHistoryRecord(historyRecord);
     }
-    return await News.findByIdAndUpdate(id, news, {
+    return News.findByIdAndUpdate(id, news, {
       new: true,
     }).exec();
   }

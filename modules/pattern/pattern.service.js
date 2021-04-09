@@ -86,7 +86,7 @@ class PatternsService {
     await uploadService.deleteFiles(Object.values(foundPattern.images));
     await uploadService.deleteFiles([foundPattern.constructorImg]);
 
-    const updatedPattern = await Pattern.findByIdAndUpdate(
+    return await Pattern.findByIdAndUpdate(
       id,
       {
         ...pattern,
@@ -96,8 +96,6 @@ class PatternsService {
         new: true,
       }
     ).exec();
-
-    return updatedPattern;
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {

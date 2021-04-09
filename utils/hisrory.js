@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const generateHistoryObject = (
   action,
-  subjectModel = '',
+  subjectModel,
   subjectName,
   subjectId,
   valueBeforeChange,
