@@ -73,11 +73,32 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts/');
 const {
+  HISTORY_ACTIONS: {
+    BLOCK_USER: BLOCK_USER_ACTION,
+    UNLOCK_USER: UNLOCK_USER_ACTION,
+    REGISTER_ADMIN,
+  },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
+} = require('../../consts/history-obj-keys');
+const {
   generateOrderNumber: generateOtpCode,
 } = require('../../utils/order.utils');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
+    let blockedUser;
+
     const userToBlock = await User.findById(userId).exec();
 
     if (!userToBlock) {
@@ -100,7 +121,7 @@ class UserService extends FilterHelper {
 
     switch (userToBlock.banned.blockCount) {
       case NO_ONE_TIME: {
-        const blockedUser = await User.findByIdAndUpdate(
+        blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
             $set: {
@@ -118,11 +139,11 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
-        return blockedUser;
+        break;
       }
 
       case ONE_TIME: {
-        const blockedUser = await User.findByIdAndUpdate(
+        blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
             $set: {
@@ -140,10 +161,10 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
-        return blockedUser;
+        break;
       }
       case TWO_TIMES: {
-        const blockedUser = await User.findByIdAndUpdate(
+        blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
             $set: {
@@ -161,12 +182,32 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
-        return blockedUser;
+        break;
       }
     }
+
+    const { beforeChanges, afterChanges } = getChanges(
+      userToBlock,
+      blockedUser
+    );
+
+    const historyRecord = generateHistoryObject(
+      BLOCK_USER_ACTION,
+      '',
+      `${userToBlock.firstName} ${userToBlock.lastName}`,
+      userToBlock._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return blockedUser;
   }
 
   async unlockUser(userId, { _id: adminId, role }) {
+    let unlockedUser;
+
     const userToUnlock = await User.findById(userId).exec();
 
     if (!userToUnlock) {
@@ -189,7 +230,7 @@ class UserService extends FilterHelper {
     }
 
     if (userToUnlock.banned.blockPeriod === INFINITE) {
-      const unlockedUser = await User.findByIdAndUpdate(
+      unlockedUser = await User.findByIdAndUpdate(
         userToUnlock._id,
         {
           $set: {
@@ -204,10 +245,8 @@ class UserService extends FilterHelper {
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
-
-      return unlockedUser;
     } else {
-      const unlockedUser = await User.findByIdAndUpdate(
+      unlockedUser = await User.findByIdAndUpdate(
         userToUnlock._id,
         {
           $set: {
@@ -222,9 +261,24 @@ class UserService extends FilterHelper {
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
-
-      return unlockedUser;
     }
+    const { beforeChanges, afterChanges } = getChanges(
+      userToUnlock,
+      unlockedUser
+    );
+
+    const historyRecord = generateHistoryObject(
+      UNLOCK_USER_ACTION,
+      '',
+      `${userToUnlock.firstName} ${userToUnlock.lastName}`,
+      userToUnlock._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return unlockedUser;
   }
 
   async checkIfTokenIsValid(token) {
@@ -741,22 +795,38 @@ class UserService extends FilterHelper {
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
-    await User.findByIdAndUpdate(
-      userDetails.userId,
-      {
-        $set: {
-          ...updatedUser,
-          credentials: [
-            {
-              source: HORONDI,
-              tokenPass: encryptedPassword,
-            },
-          ],
-          confirmed: true,
-        },
+    await User.findByIdAndUpdate(userDetails.userId, {
+      $set: {
+        ...updatedUser,
+        credentials: [
+          {
+            source: HORONDI,
+            tokenPass: encryptedPassword,
+          },
+        ],
+        confirmed: true,
       },
-      { new: true }
-    ).exec();
+    });
+    user.confirmed = true;
+
+    await user.save();
+    const historyRecord = generateHistoryObject(
+      REGISTER_ADMIN,
+      '',
+      `${user.firstName} ${user.lastName}`,
+      user._id,
+      [],
+      generateHistoryChangesData(user, [
+        ROLE,
+        BANNED,
+        FIRST_NAME,
+        LAST_NAME,
+        EMAIL,
+      ]),
+      user._id
+    );
+
+    await addHistoryRecord(historyRecord);
 
     return { isSuccess: true };
   }

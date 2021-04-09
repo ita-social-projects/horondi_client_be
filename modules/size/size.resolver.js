@@ -19,9 +19,9 @@ const sizeQuery = {
 };
 
 const sizeMutation = {
-  addSize: async (parent, { size }) => {
+  addSize: async (parent, { size }, { user }) => {
     try {
-      return await sizeService.addSize(size);
+      return await sizeService.addSize(size, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -30,9 +30,9 @@ const sizeMutation = {
     }
   },
 
-  deleteSize: async (parent, { id }) => {
+  deleteSize: async (parent, { id }, { user }) => {
     try {
-      return await sizeService.deleteSize(id);
+      return await sizeService.deleteSize(id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -41,9 +41,9 @@ const sizeMutation = {
     }
   },
 
-  updateSize: async (parent, { id, size }) => {
+  updateSize: async (parent, { id, size }, { user }) => {
     try {
-      return await sizeService.updateSize(id, size);
+      return await sizeService.updateSize(id, size, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,

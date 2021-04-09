@@ -1,4 +1,8 @@
 const { shield } = require('graphql-shield');
+
+const {
+  historyPermissionsQuery,
+} = require('./modules/history/history.permissions');
 const {
   userPermissionsMutation,
   userPermissionsQuery,
@@ -89,9 +93,14 @@ const {
   orderPermissionsQuery,
 } = require('./modules/order/order.permissions');
 
+const {
+  productPermissionsMutation,
+} = require('./modules/product/product.permissions');
+
 const permissions = shield(
   {
     Query: {
+      ...historyPermissionsQuery,
       ...cartPermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
@@ -112,6 +121,7 @@ const permissions = shield(
       ...orderPermissionsQuery,
     },
     Mutation: {
+      ...productPermissionsMutation,
       ...cartPermissionsMutations,
       ...userPermissionsMutation,
       ...patternPermissionsMutations,

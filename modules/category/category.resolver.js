@@ -25,9 +25,13 @@ const categoryQuery = {
 };
 
 const categoryMutation = {
-  addCategory: async (parent, args) => {
+  addCategory: async (parent, args, { user }) => {
     try {
-      return await categoryService.addCategory(args.category, args.upload);
+      return await categoryService.addCategory(
+        args.category,
+        args.upload,
+        user
+      );
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -35,9 +39,9 @@ const categoryMutation = {
       };
     }
   },
-  deleteCategory: async (parent, args) => {
+  deleteCategory: async (parent, args, { user }) => {
     try {
-      return await categoryService.deleteCategory(args);
+      return await categoryService.deleteCategory(args, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -45,9 +49,9 @@ const categoryMutation = {
       };
     }
   },
-  updateCategory: async (parent, args) => {
+  updateCategory: async (parent, args, { user }) => {
     try {
-      return await categoryService.updateCategory(args);
+      return await categoryService.updateCategory(args, user);
     } catch (e) {
       return {
         statusCode: e.message === CATEGORY_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,

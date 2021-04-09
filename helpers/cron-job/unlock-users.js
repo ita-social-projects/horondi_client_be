@@ -3,12 +3,17 @@ const { schedule } = require('node-cron');
 const UserModel = require('../../modules/user/user.model');
 const { getDaysInMilliseconds } = require('../../utils/getDaysInMilliseconds');
 const { sendEmail } = require('../../modules/email/email.service');
+const { addHistoryRecord } = require('../../modules/history/history.service');
 const {
   EmailActions: { UNLOCK_USER },
 } = require('../../consts/email-actions');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, INFINITE },
 } = require('../../consts/user-block-period');
+const {
+  HISTORY_ACTIONS: { UNLOCK_USER: UNLOCK_ACTION },
+} = require('../../consts/history-actions');
+const { getChanges, generateHistoryObject } = require('../../utils/hisrory');
 
 const unlockUsers = () =>
   schedule('0 0 */12 * * *', async () => {
@@ -30,7 +35,7 @@ const unlockUsers = () =>
         );
 
         if (dateDifference >= blockPeriod) {
-          await UserModel.findOneAndUpdate(
+          const unlockedUser = await UserModel.findOneAndUpdate(
             { _id: userData._id },
             {
               $set: {
@@ -41,7 +46,19 @@ const unlockUsers = () =>
               },
             }
           ).exec();
-
+          const { beforeChanges, afterChanges } = getChanges(
+            userData,
+            unlockedUser
+          );
+          const historyRecord = generateHistoryObject(
+            UNLOCK_ACTION,
+            '',
+            `${userData.firstName} ${userData.lastName}`,
+            userData._id,
+            beforeChanges,
+            afterChanges
+          );
+          await addHistoryRecord(historyRecord);
           return sendEmail(userData.email, UNLOCK_USER);
         }
       }
