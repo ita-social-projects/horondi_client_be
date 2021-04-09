@@ -100,57 +100,40 @@ function generateOrderNumber() {
 }
 
 async function addProductsToStatistic(items) {
-  const ids = items.map(item => item.product);
-  const products = await productModel.find({ _id: { $in: ids } });
-  products.forEach(async product => {
-    const { quantity } = items.find(item => {
-      return item.product === product._id.toString();
-    });
-    product.purchasedCount += quantity;
+  items.forEach(async item => {
+    const product = await productModel.findById(item.product);
+    product.purchasedCount += item.quantity;
     await product.save();
   });
 }
 
 async function updateProductStatistic(orderToUpdate, newOrder) {
+  const oldItems = orderToUpdate.items.map(item => ({
+    product: item.product.toString(),
+    quantity: -item.quantity,
+  }));
+
   if (newOrder.status === CANCELLED || newOrder.status === REFUNDED) {
-    const ids = orderToUpdate.items.map(item => item.product);
-    const products = await productModel.find({ _id: { $in: ids } });
-    products.forEach(async product => {
-      const { quantity } = orderToUpdate.items.find(item => {
-        return item.product.toString() === product._id.toString();
-      });
-      product.purchasedCount -= quantity;
-      await product.save();
-    });
+    await addProductsToStatistic(oldItems);
   } else {
-    const arrOfDifferences = newOrder.items.map(item => {
-      const index = orderToUpdate.items.findIndex(
-        el => el.product.toString() === item.product.toString()
-      );
+    const newItems = newOrder.items.map(item => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+    const items = newItems.map(newItem => {
+      const index = oldItems.findIndex(el => el.product === newItem.product);
       let quantity;
       if (index !== -1) {
-        quantity = item.quantity - orderToUpdate.items[index].quantity;
-        orderToUpdate.items.splice(index, 1);
+        quantity = newItem.quantity + oldItems[index].quantity;
+        oldItems.splice(index, 1);
       } else {
-        quantity = item.quantity;
+        quantity = newItem.quantity;
       }
-      return { _id: item.product, quantity };
+      return { product: newItem.product, quantity };
     });
-    arrOfDifferences.push(
-      ...orderToUpdate.items.map(item => ({
-        _id: item.product.toString(),
-        quantity: -item.quantity,
-      }))
-    );
-    const ids = arrOfDifferences.map(el => el._id);
-    const products = await productModel.find({ _id: { $in: ids } });
-    products.forEach(async product => {
-      const { quantity } = arrOfDifferences.find(item => {
-        return item._id === product._id.toString();
-      });
-      product.purchasedCount += quantity;
-      await product.save();
-    });
+
+    items.push(...oldItems);
+    await addProductsToStatistic(items);
   }
 }
 
