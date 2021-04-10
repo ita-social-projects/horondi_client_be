@@ -806,7 +806,7 @@ class UserService extends FilterHelper {
         ],
         confirmed: true,
       },
-    });
+    }).exec();
 
     const historyRecord = generateHistoryObject(
       REGISTER_ADMIN,
