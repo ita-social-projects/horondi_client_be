@@ -101,9 +101,11 @@ function generateOrderNumber() {
 
 async function addProductsToStatistic(items) {
   items.forEach(async item => {
-    const product = await productModel.findById(item.product).exec();
-    product.purchasedCount += item.quantity;
-    await product.save();
+    if (item.quantity !== 0) {
+      const product = await productModel.findById(item.product).exec();
+      product.purchasedCount += item.quantity;
+      await product.save();
+    }
   });
 }
 
