@@ -3,8 +3,5 @@ block subheaderText
     p.registrationText Пароль для підтвердження
 block content
     div.contentRegistrationText
-        p.congrats Вітаємо! #[br] Щоб підтвердити створення адміністратора натисніть на кнопку нижче та введіть код #{otp_code}:
-        button.confirm
-            a(href=frontendUrl + `/users/`) Підтвердити код
-        p.link або перейдіть за посиланням нижче:
-        a.alink(href=frontendUrl + `/users/` ) #{frontendUrl + `/users/` }
+        p.congrats Вітаємо! #[br] Щоб підтвердити створення адміністратора натисніть на кнопку нижче та введіть код:
+        p.code #{otp_code}
