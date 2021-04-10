@@ -807,9 +807,7 @@ class UserService extends FilterHelper {
         confirmed: true,
       },
     });
-    user.confirmed = true;
 
-    await user.save();
     const historyRecord = generateHistoryObject(
       REGISTER_ADMIN,
       '',
