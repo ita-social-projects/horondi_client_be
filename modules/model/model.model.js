@@ -10,6 +10,10 @@ const {
     CONSTRUCTOR_FRONT_POCKET,
     CONSTRUCTOR_BOTTOM,
     MODEL,
+    POCKET,
+    BACK,
+    CLOSURE,
+    STRAP,
   },
 } = require('../../consts/db-collections-names');
 
@@ -30,16 +34,45 @@ const modelSchema = new mongoose.Schema({
     },
   ],
   availableForConstructor: Boolean,
-  constructorBasic: [
-    { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_BASICS },
-  ],
-  constructorPattern: [{ type: mongoose.Schema.Types.ObjectId, ref: PATTERN }],
-  constructorFrontPocket: [
-    { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_FRONT_POCKET },
-  ],
-  constructorBottom: [
-    { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_BOTTOM },
-  ],
+  eligibleOptions: {
+    constructorBasic: [
+      { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_BASICS },
+    ],
+    constructorPattern: [
+      { type: mongoose.Schema.Types.ObjectId, ref: PATTERN },
+    ],
+    constructorFrontPocket: [
+      { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_FRONT_POCKET },
+    ],
+    constructorBottom: [
+      { type: mongoose.Schema.Types.ObjectId, ref: CONSTRUCTOR_BOTTOM },
+    ],
+    constructorPocket: [{ type: mongoose.Schema.Types.ObjectId, ref: POCKET }],
+    constructorBack: [{ type: mongoose.Schema.Types.ObjectId, ref: BACK }],
+    constructorClosure: [
+      { type: mongoose.Schema.Types.ObjectId, ref: CLOSURE },
+    ],
+    constructorStrap: [{ type: mongoose.Schema.Types.ObjectId, ref: STRAP }],
+  },
+  appliedOptions: {
+    constructorBasic: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: CONSTRUCTOR_BASICS,
+    },
+    constructorPattern: { type: mongoose.Schema.Types.ObjectId, ref: PATTERN },
+    constructorFrontPocket: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: CONSTRUCTOR_FRONT_POCKET,
+    },
+    constructorBottom: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: CONSTRUCTOR_BOTTOM,
+    },
+    constructorPocket: [{ type: mongoose.Schema.Types.ObjectId, ref: POCKET }],
+    constructorBack: { type: mongoose.Schema.Types.ObjectId, ref: BACK },
+    constructorClosure: { type: mongoose.Schema.Types.ObjectId, ref: CLOSURE },
+    constructorStrap: { type: mongoose.Schema.Types.ObjectId, ref: STRAP },
+  },
 });
 
 module.exports = mongoose.model(MODEL, modelSchema);

@@ -124,6 +124,7 @@ const strapService = require('./modules/strap/strap.service');
 const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
+const backService = require('./modules/back/back.service');
 
 const SCHEMA_NAMES = {
   history: 'History',
@@ -379,26 +380,79 @@ const resolvers = {
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
-    constructorBottom: parent =>
-      parent.constructorBottom.map(el =>
-        constructorServices.getConstructorElementById(
-          el,
-          constructorBottomModel
-        )
+    eligibleOptions: parent => ({
+      constructorBottom: () =>
+        parent.eligibleOptions.constructorBottom.map(el =>
+          constructorServices.getConstructorElementById(
+            el,
+            constructorBottomModel
+          )
+        ),
+      constructorBasic: () =>
+        parent.eligibleOptions.constructorBasic.map(el =>
+          constructorServices.getConstructorElementById(
+            el,
+            constructorBasicModel
+          )
+        ),
+      constructorFrontPocket: () =>
+        parent.eligibleOptions.constructorFrontPocket.map(el =>
+          constructorServices.getConstructorElementById(
+            el,
+            constructorFrontPocketModel
+          )
+        ),
+      constructorPattern: () =>
+        parent.eligibleOptions.constructorPattern.map(el =>
+          patternService.getPatternById(el)
+        ),
+      constructorPocket: () =>
+        parent.eligibleOptions.constructorPocket.map(el =>
+          pocketService.getPocketById(el)
+        ),
+      constructorBack: () =>
+        parent.eligibleOptions.constructorBack.map(el =>
+          backService.getBackById(el)
+        ),
+      constructorClosure: () =>
+        parent.eligibleOptions.constructorClosure.map(el =>
+          closuresService.getClosureById(el)
+        ),
+      constructorStrap: () =>
+        parent.eligibleOptions.constructorStrap.map(el =>
+          strapService.getStrapById(el)
+        ),
+    }),
+    appliedOptions: parent => ({
+      constructorBottom: constructorServices.getConstructorElementById(
+        parent.appliedOptions.constructorBottom,
+        constructorBottomModel
       ),
-    constructorBasic: parent =>
-      parent.constructorBasic.map(el =>
-        constructorServices.getConstructorElementById(el, constructorBasicModel)
-      ),
-    constructorFrontPocket: parent =>
-      parent.constructorFrontPocket.map(el =>
+      constructorBasic: () =>
         constructorServices.getConstructorElementById(
-          el,
+          parent.appliedOptions.constructorBasic,
+          constructorBasicModel
+        ),
+      constructorFrontPocket: () =>
+        constructorServices.getConstructorElementById(
+          parent.appliedOptions.constructorFrontPocket,
           constructorFrontPocketModel
-        )
-      ),
-    constructorPattern: parent =>
-      parent.constructorPattern.map(el => patternService.getPatternById(el)),
+        ),
+      constructorPattern: () =>
+        patternService.getPatternById(parent.appliedOptions.constructorPattern),
+      constructorPocket: () =>
+        parent.eligibleOptions.constructorPocket.map(el =>
+          pocketService.getPocketById(el)
+        ),
+      constructorBack: () =>
+        backService.getBackById(parent.appliedOptions.constructorBack),
+      constructorClosure: () =>
+        closuresService.getClosureById(
+          parent.appliedOptions.constructorClosure
+        ),
+      constructorStrap: () =>
+        strapService.getStrapById(parent.appliedOptions.constructorStrap),
+    }),
   },
   Closure: {
     model: parent => modelService.getModelById(parent.model),

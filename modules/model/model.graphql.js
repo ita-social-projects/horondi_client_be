@@ -10,11 +10,11 @@ type Model {
     availableForConstructor: Boolean
     eligibleOptions: Option
     appliedOptions: AppliedOption
-    restrictions: Restriction
     sizes: [Size]
   }
 `;
 
+// restrictions: Restriction
 const optionTypes = `
   type Option {
     constructorBasic:[ConstructorBasic]
@@ -28,21 +28,15 @@ const optionTypes = `
   }
 
   type AppliedOption {
-    constructorBasic:[ConstructorBasic]
-    constructorPattern:[Pattern]
-    constructorFrontPocket:[ConstructorFrontPocket]
-    constructorBottom:[ConstructorBottom]
+    constructorBasic: ConstructorBasic
+    constructorPattern: Pattern
+    constructorFrontPocket: ConstructorFrontPocket
+    constructorBottom: ConstructorBottom
     constructorPocket: [Pocket]
-    constructorBack: [Back]
-    constructorClosure: [Closure]
-    constructorStrap: [Strap]
+    constructorBack: Back
+    constructorClosure: Closure
+    constructorStrap: Strap
   }
-`;
-
-const restrictionType = `
-    type Restriction {
-      
-    }
 `;
 
 const modelInputs = `

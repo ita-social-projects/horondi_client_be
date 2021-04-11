@@ -27,6 +27,7 @@ const DB_COLLECTIONS_NAMES = {
   POCKET: 'Pocket',
   BACK: 'Back',
   STRAP: 'Strap',
+  RESTRICTION: 'Restriction',
   BLOCKER: 'Blocker',
   HEADER: 'Header',
   HOME_PAGE_IMAGES: 'LooksImages',
