@@ -33,6 +33,11 @@ const {
   modelInputs,
 } = require('./modules/model/model.graphql');
 const {
+  restrictionTypes,
+  expressionEnum,
+  restrictionInputs,
+} = require('./modules/restriction/restriction.graphql');
+const {
   categoryType,
   categoryInput,
   FilterInputComponent,
@@ -126,10 +131,6 @@ const {
   backFeatureSet,
 } = require('./modules/back/back.graphql');
 const {
-  blockerType,
-  blockerInput,
-} = require('./modules/blocker/blocker.graphql');
-const {
   strapType,
   strapFeatureType,
   strapInputs,
@@ -152,6 +153,7 @@ const typeDefs = gql`
   ${commentType}
   ${businessTextType}
   ${modelType}
+  ${restrictionTypes}
   ${optionTypes}
   ${contactType}
   ${orderTypes}
@@ -182,7 +184,7 @@ const typeDefs = gql`
   ${backFeatureSet}
   ${strapType}
   ${strapFeatureType}
-  ${blockerType}
+ 
 
   ${historyFilterInput}
   scalar Upload
@@ -195,6 +197,7 @@ const typeDefs = gql`
   }
 
   ${sideEnum}
+  ${expressionEnum}
   ${ukrPoshtaEnum}
   type Language {
     lang: String!
@@ -594,6 +597,7 @@ const typeDefs = gql`
   ${adminConfirmInput}
   ${adminRegisterInput}
   ${modelInputs}
+  ${restrictionInputs}
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}
@@ -613,7 +617,7 @@ const typeDefs = gql`
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}
-  ${blockerInput}
+
   input LanguageInput {
     lang: String!
     value: String

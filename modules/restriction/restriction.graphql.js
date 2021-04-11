@@ -13,7 +13,7 @@ const restrictionTypes = `
 `;
 
 const expressionEnum = `
-  num ExpressionEnum {
+  enum ExpressionEnum {
     IS_EQUAL
     IS_NOT_EQUAL
   }
@@ -21,7 +21,19 @@ const expressionEnum = `
 
 const restrictionInputs = `
   input RestrictionInput {
-    
+    compareByExpression: String
+    options: [BlockedItemInput]
+  }
+
+  input BlockedItemInput {
+    option: ID
+    feature: ID
   }
 
 `;
+
+module.exports = {
+  restrictionTypes,
+  expressionEnum,
+  restrictionInputs,
+};

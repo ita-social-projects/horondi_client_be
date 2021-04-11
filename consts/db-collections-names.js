@@ -28,7 +28,6 @@ const DB_COLLECTIONS_NAMES = {
   BACK: 'Back',
   STRAP: 'Strap',
   RESTRICTION: 'Restriction',
-  BLOCKER: 'Blocker',
   HEADER: 'Header',
   HOME_PAGE_IMAGES: 'LooksImages',
   HOME_PAGE_SLIDE: 'HomePageSlide',

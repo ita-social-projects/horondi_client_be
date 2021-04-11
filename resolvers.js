@@ -157,7 +157,6 @@ const SCHEMA_NAMES = {
   pocket: 'Pocket',
   back: 'Back',
   strap: 'Strap',
-  blocker: 'Blocker',
 };
 
 const resolvers = {
