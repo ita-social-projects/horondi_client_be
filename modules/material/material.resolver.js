@@ -24,9 +24,9 @@ const materialQuery = {
 };
 
 const materialMutation = {
-  addMaterial: async (parent, args) => {
+  addMaterial: async (parent, args, { user }) => {
     try {
-      return await materialService.addMaterial(args);
+      return await materialService.addMaterial(args, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -35,9 +35,9 @@ const materialMutation = {
     }
   },
 
-  deleteMaterial: async (parent, args) => {
+  deleteMaterial: async (parent, args, { user }) => {
     try {
-      return await materialService.deleteMaterial(args.id);
+      return await materialService.deleteMaterial(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -46,9 +46,9 @@ const materialMutation = {
     }
   },
 
-  updateMaterial: async (parent, args) => {
+  updateMaterial: async (parent, args, { user }) => {
     try {
-      return await materialService.updateMaterial(args.id, args.material);
+      return await materialService.updateMaterial(args.id, args.material, user);
     } catch (e) {
       return {
         statusCode: e.message === MATERIAL_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,

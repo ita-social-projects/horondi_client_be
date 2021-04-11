@@ -33,9 +33,9 @@ const productsQuery = {
 };
 
 const productsMutation = {
-  addProduct: async (parent, args) => {
+  addProduct: async (parent, args, { user }) => {
     try {
-      return await productsService.addProduct(args.product, args.upload);
+      return await productsService.addProduct(args.product, args.upload, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -43,8 +43,8 @@ const productsMutation = {
       };
     }
   },
-  deleteProduct: async (parent, args) => {
-    const deletedProduct = await productsService.deleteProduct(args.id);
+  deleteProduct: async (parent, args, { user }) => {
+    const deletedProduct = await productsService.deleteProduct(args.id, user);
     if (deletedProduct) {
       return deletedProduct;
     }
@@ -53,13 +53,14 @@ const productsMutation = {
       message: PRODUCT_NOT_FOUND,
     };
   },
-  updateProduct: async (parent, args) => {
+  updateProduct: async (parent, args, { user }) => {
     try {
       return await productsService.updateProduct(
         args.id,
         args.product,
         args.upload,
-        args.primary
+        args.primary,
+        user
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
