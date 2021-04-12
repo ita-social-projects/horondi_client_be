@@ -1,7 +1,6 @@
-const { allow, and } = require('graphql-shield');
+const { allow } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
-const { checkImageType, checkImageSize } = require('../../utils/rules');
 
 const { ADMIN, SUPERADMIN } = roles;
 const patternPermissionsQuery = {
@@ -9,16 +8,8 @@ const patternPermissionsQuery = {
   getPatternById: allow,
 };
 const patternPermissionsMutations = {
-  addPattern: and(
-    hasRoles([ADMIN, SUPERADMIN]),
-    checkImageType,
-    checkImageSize
-  ),
-  updatePattern: and(
-    hasRoles([ADMIN, SUPERADMIN]),
-    checkImageType,
-    checkImageSize
-  ),
+  addPattern: hasRoles([ADMIN, SUPERADMIN]),
+  updatePattern: hasRoles([ADMIN, SUPERADMIN]),
   deletePattern: hasRoles([ADMIN, SUPERADMIN]),
 };
 

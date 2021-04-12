@@ -8,7 +8,6 @@ const { inputDataValidation } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { CATEGORY },
 } = require('../../consts/input-fields');
-const { checkImageType, checkImageSize } = require('../../utils/rules');
 
 const categoryPermissionsQuery = {
   getAllCategories: allow,
@@ -18,15 +17,11 @@ const categoryPermissionsQuery = {
 const categoryPermissionsMutations = {
   addCategory: and(
     inputDataValidation(CATEGORY, categoryValidator),
-    hasRoles([ADMIN, SUPERADMIN]),
-    checkImageType,
-    checkImageSize
+    hasRoles([ADMIN, SUPERADMIN])
   ),
   updateCategory: and(
     inputDataValidation(CATEGORY, categoryValidator),
-    hasRoles([ADMIN, SUPERADMIN]),
-    checkImageType,
-    checkImageSize
+    hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteCategory: hasRoles([ADMIN, SUPERADMIN]),
 };
