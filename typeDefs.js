@@ -15,6 +15,8 @@ const {
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
+  resendEmailToConfirmAdminInput,
+  confirmSuperadminCreationInput,
   UserForStatisticsInput,
   paginatedUsersType,
   tokenType,
@@ -519,6 +521,8 @@ const typeDefs = gql`
 	${SortInputComponent}
   ${adminConfirmInput}
   ${adminRegisterInput}
+  ${resendEmailToConfirmAdminInput}
+  ${confirmSuperadminCreationInput}
   ${modelInput}
   ${contactInput}
   ${orderInputs}
@@ -669,6 +673,8 @@ const typeDefs = gql`
       id: ID!
       ): UserResult
     registerAdmin(user: AdminRegisterInput!): UserResult
+    resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): UserResult
+    confirmSuperadminCreation(user: confirmSuperadminCreationInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult

@@ -99,6 +99,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  otp_code: String,
   recoveryAttempts: Number,
   lastRecoveryDate: {
     type: Date,
