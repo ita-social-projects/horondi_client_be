@@ -1,7 +1,11 @@
 const { allow } = require('graphql-shield');
-const { hasRoles } = require('../../../utils/rules');
-const { roles } = require('../../../consts');
-const { ADMIN, SUPERADMIN } = roles;
+const { inputDataValidation } = require('../../../utils/rules');
+const {
+  INPUT_FIELDS: { CONSTRUCTOR_BASIC },
+} = require('../../../consts/input-fields');
+const {
+  constructorBasicValidator,
+} = require('../../../validators/constructor-items.validator');
 
 const constructorBasicPermissionsQuery = {
   getAllConstructorBasics: allow,
@@ -9,9 +13,18 @@ const constructorBasicPermissionsQuery = {
 };
 
 const constructorBasicPermissionsMutations = {
-  addConstructorBasic: hasRoles([ADMIN, SUPERADMIN]),
-  updateConstructorBasic: hasRoles([ADMIN, SUPERADMIN]),
-  deleteConstructorBasic: hasRoles([ADMIN, SUPERADMIN]),
+  addConstructorBasic: inputDataValidation(
+    CONSTRUCTOR_BASIC,
+    constructorBasicValidator
+  ),
+  updateConstructorBasic: inputDataValidation(
+    CONSTRUCTOR_BASIC,
+    constructorBasicValidator
+  ),
+  deleteConstructorBasic: inputDataValidation(
+    CONSTRUCTOR_BASIC,
+    constructorBasicValidator
+  ),
 };
 
 module.exports = {

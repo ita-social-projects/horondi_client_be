@@ -1,8 +1,11 @@
 const { allow } = require('graphql-shield');
-const { hasRoles } = require('../../utils/rules');
-const { roles } = require('../../consts');
-
-const { ADMIN, SUPERADMIN } = roles;
+const { inputDataValidation } = require('../../utils/rules');
+const {
+  INPUT_FIELDS: { STRAP },
+} = require('../../consts/input-fields');
+const {
+  strapValidator,
+} = require('../../validators/constructor-items.validator');
 
 const strapPermissionsQuery = {
   getAllStraps: allow,
@@ -11,9 +14,9 @@ const strapPermissionsQuery = {
 };
 
 const strapPermissionsMutations = {
-  addStrap: hasRoles([ADMIN, SUPERADMIN]),
-  updateStrap: hasRoles([ADMIN, SUPERADMIN]),
-  deleteStrap: hasRoles([ADMIN, SUPERADMIN]),
+  addStrap: inputDataValidation(STRAP, strapValidator),
+  updateStrap: inputDataValidation(STRAP, strapValidator),
+  deleteStrap: inputDataValidation(STRAP, strapValidator),
 };
 
 module.exports = {

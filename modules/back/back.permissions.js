@@ -1,7 +1,11 @@
 const { allow } = require('graphql-shield');
-const { hasRoles } = require('../../utils/rules');
-const { roles } = require('../../consts');
-const { ADMIN, SUPERADMIN } = roles;
+const { inputDataValidation } = require('../../utils/rules');
+const {
+  INPUT_FIELDS: { BACK },
+} = require('../../consts/input-fields');
+const {
+  backValidator,
+} = require('../../validators/constructor-items.validator');
 
 const backPermissionsQuery = {
   getAllBacks: allow,
@@ -10,9 +14,9 @@ const backPermissionsQuery = {
 };
 
 const backPermissionsMutations = {
-  addBack: hasRoles([ADMIN, SUPERADMIN]),
-  updateBack: hasRoles([ADMIN, SUPERADMIN]),
-  deleteBack: hasRoles([ADMIN, SUPERADMIN]),
+  addBack: inputDataValidation(BACK, backValidator),
+  updateBack: inputDataValidation(BACK, backValidator),
+  deleteBack: inputDataValidation(BACK, backValidator),
 };
 
 module.exports = {

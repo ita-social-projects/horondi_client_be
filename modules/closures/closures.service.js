@@ -20,7 +20,17 @@ const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { NAME, MATERIAL, ADDITIONAL_PRICE, AVAILABLE },
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    MATERIAL,
+    ADDITIONAL_PRICE,
+    AVAILABLE,
+    DEFAULT,
+    FEATURES,
+    COLOR,
+    OPTION_TYPE,
+    MODEL,
+  },
 } = require('../../consts/history-obj-keys');
 
 class ClosureService {
@@ -60,16 +70,20 @@ class ClosureService {
 
     const historyRecord = generateHistoryObject(
       ADD_CLOSURE,
-      '',
+      newClosure.model,
       newClosure.name[UA].value,
       newClosure._id,
       [],
       generateHistoryChangesData(newClosure, [
         NAME,
-        MATERIAL,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
+      newClosure.optionType,
+      newClosure.features,
       adminId
     );
 

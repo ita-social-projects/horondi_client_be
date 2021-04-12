@@ -27,7 +27,7 @@ input ConstructorFrontPocketInput {
   model: ID
   features: ConstructorFrPocketFeatureInput
   image: String
-  basePrice: [CurrencySetInput]
+  basePrice: Int
   available: Boolean
   default:Boolean
 }

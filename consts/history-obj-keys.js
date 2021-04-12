@@ -44,6 +44,10 @@ const HISTORY_OBJ_KEYS = {
   FIRST_NAME: 'firstName',
   LAST_NAME: 'lastName',
   EMAIL: 'email',
+  OPTION_TYPE: 'optionType',
+  FEATURES: 'features',
+  COLOR: 'color',
+  DEFAULT: 'default',
 };
 
 module.exports = {

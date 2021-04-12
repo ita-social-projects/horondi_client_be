@@ -26,7 +26,7 @@ input ConstructorBasicInput {
     model: ID
     features: ConstructorBasicFeatureInput
     image: String
-    basePrice: [CurrencySetInput]
+    basePrice: Int
     available: Boolean
     default:Boolean
   }

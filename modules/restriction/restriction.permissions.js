@@ -1,13 +1,12 @@
-const { and } = require('graphql-shield');
+const { allow } = require('graphql-shield');
 
 const { inputDataValidation } = require('../../utils/rules');
 const {
-  INPUT_FIELDS: { LIMIT, SKIP, RESTRICTION },
+  INPUT_FIELDS: { RESTRICTION },
 } = require('../../consts/input-fields');
 const {
   restrictionValidator,
 } = require('../../validators/constructor-items.validator');
-const { getAllOrdersValidator } = require('../../validators/order.validator');
 
 const restrictionPermissionsMutations = {
   addRestriction: inputDataValidation(RESTRICTION, restrictionValidator),
@@ -16,10 +15,7 @@ const restrictionPermissionsMutations = {
 };
 
 const restrictionPermissionsQuery = {
-  getAllRestrictions: and(
-    inputDataValidation(LIMIT, getAllOrdersValidator.limitValidator),
-    inputDataValidation(SKIP, getAllOrdersValidator.skipValidator)
-  ),
+  getAllRestrictions: allow,
 };
 
 module.exports = {
