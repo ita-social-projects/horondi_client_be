@@ -1,4 +1,5 @@
 const { allow, and } = require('graphql-shield');
+
 const { hasRoles } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { MODEL },
@@ -16,12 +17,12 @@ const modelPermissionsQuery = {
 
 const modelPermissionsMutations = {
   addModel: and(
-    hasRoles([ADMIN, SUPERADMIN]),
-    inputDataValidation(MODEL, modelValidator)
+    inputDataValidation(MODEL, modelValidator),
+    hasRoles([ADMIN, SUPERADMIN])
   ),
   updateModel: and(
-    hasRoles([ADMIN, SUPERADMIN]),
-    inputDataValidation(MODEL, modelValidator)
+    inputDataValidation(MODEL, modelValidator),
+    hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteModel: hasRoles([ADMIN, SUPERADMIN]),
 };

@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const modelValidator = Joi.object({
-  category: Joi.string(),
+  category: Joi.string().required(),
   name: Joi.array().items(
     Joi.object({
       lang: Joi.string()
