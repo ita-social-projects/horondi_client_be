@@ -34,6 +34,10 @@ const {
   modelsMutation,
 } = require('./modules/model/model.resolver');
 const {
+  restrictionMutation,
+  restrictionQuery,
+} = require('./modules/restriction/restriction.resolver');
+const {
   patternQuery,
   patternMutation,
 } = require('./modules/pattern/pattern.resolver');
@@ -140,6 +144,7 @@ const SCHEMA_NAMES = {
   businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
+  restriction: 'Restriction',
   contact: 'Contact',
   order: 'Order',
   user: 'User',
@@ -184,6 +189,8 @@ const resolvers = {
     ...businessTextQuery,
 
     ...modelsQuery,
+
+    ...restrictionQuery,
 
     ...contactQuery,
 
@@ -543,6 +550,8 @@ const resolvers = {
 
     ...modelsMutation,
 
+    ...restrictionMutation,
+
     ...contactMutation,
 
     ...ordersMutation,
@@ -682,6 +691,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.model;
+      }
+      return 'Error';
+    },
+  },
+  RestrictionResult: {
+    __resolveType: obj => {
+      if (obj.compareByExpression) {
+        return SCHEMA_NAMES.restriction;
       }
       return 'Error';
     },

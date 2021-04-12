@@ -16,7 +16,6 @@ const pocketSchema = new mongoose.Schema({
   },
   features: [
     {
-      _id: String,
       side: {
         type: String,
         enum: [RIGHT, LEFT, FRONT, BACK],

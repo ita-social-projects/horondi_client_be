@@ -14,14 +14,12 @@ const pocketType = `
 
 const pocketSide = `
     type PocketSide {
-     _id: ID
      side: SideEnum
     }
 `;
 
 const pocketSideInput = `
     input PocketSideInput {
-     _id: String
      side: String
     }
 `;

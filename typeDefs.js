@@ -381,6 +381,11 @@ const typeDefs = gql`
     count: Int
   }
 
+  type PaginatedRestrictions {
+    items: [Restriction]
+    count: Int
+  }
+
   type Materials {
     items: [Material]
   }
@@ -408,6 +413,7 @@ const typeDefs = gql`
   union BusinessTextResult = BusinessText | Error
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
+  union RestrictionResult = Restriction | Error
   union ContactResult = Contact | Error
   union OrderResult = Order | Error
   union UserResult = User | Error
@@ -541,6 +547,7 @@ const typeDefs = gql`
     getAllStraps(limit: Int, skip: Int): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [Strap]
+    getAllRestrictions(limit: Int, skip: Int): PaginatedRestrictions!
 
   }
   input Pagination {
@@ -887,6 +894,10 @@ const typeDefs = gql`
     addStrap(strap: StrapInput!, image: Upload): StrapResult
     updateStrap(id: ID, strap: StrapInput!, image: Upload):StrapResult
     deleteStrap(id: ID):StrapResult
+    "Restriction Mutation"
+    addRestriction(restriction: RestrictionInput!): RestrictionResult
+    updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
+    deleteRestriction(id: ID): RestrictionResult
 
   }
 `;

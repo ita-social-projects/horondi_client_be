@@ -7,7 +7,7 @@ const restrictionTypes = `
 
   type BlockedItem {
     option: ID
-    feature: ID
+    feature: String
   }
 
 `;
@@ -27,7 +27,7 @@ const restrictionInputs = `
 
   input BlockedItemInput {
     option: ID
-    feature: ID
+    feature: String
   }
 
 `;

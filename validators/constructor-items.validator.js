@@ -1,13 +1,17 @@
 const Joi = require('joi');
-
 const {
   SIDES: { LEFT, RIGHT, BACK, FRONT },
 } = require('../consts/side-names');
+const {
+  RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
+} = require('../consts/restriction-expression-names');
 
-const nestedSideValidator = Joi.string()
-  .trim()
-  .valid(RIGHT, LEFT, FRONT, BACK)
-  .required();
+const nestedSideValidator = Joi.object({
+  side: Joi.string()
+    .trim()
+    .valid(RIGHT, LEFT, FRONT, BACK)
+    .required(),
+});
 
 const nestedPriceValidator = Joi.object({
   currency: Joi.string()
@@ -34,9 +38,7 @@ const pocketValidator = Joi.object({
     .required()
     .uppercase(),
   model: Joi.string().required(),
-  features: Joi.Object({
-    side: Joi.array().has(nestedSideValidator),
-  }),
+  features: Joi.array().has(nestedSideValidator),
   image: Joi.string()
     .trim()
     .required(),
@@ -256,6 +258,23 @@ const sizeValidator = Joi.object({
   available: Joi.boolean().required(),
 });
 
+const restrictionValidator = Joi.object({
+  compareByExpression: Joi.string()
+    .trim()
+    .valid(IS_EQUAL, IS_NOT_EQUAL)
+    .required(),
+  options: Joi.array().items(
+    Joi.object({
+      option: Joi.string()
+        .trim()
+        .required(),
+      feature: Joi.string()
+        .trim()
+        .required(),
+    })
+  ),
+});
+
 module.exports = {
   pocketValidator,
   backValidator,
@@ -266,4 +285,5 @@ module.exports = {
   constructorBottomValidator,
   constructorFrontPocketValidator,
   sizeValidator,
+  restrictionValidator,
 };

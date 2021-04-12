@@ -15,8 +15,10 @@ const restrictionSchema = new mongoose.Schema({
   },
   options: [
     {
-      option: mongoose.Schema.Types.ObjectId,
-      feature: mongoose.Schema.Types.ObjectId,
+      option: {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+      feature: String,
     },
   ],
 });

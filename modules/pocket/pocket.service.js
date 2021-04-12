@@ -1,10 +1,8 @@
 const Pocket = require('./pocket.model');
-const Model = require('../model/model.model');
 const uploadService = require('../upload/upload.utils');
 const {
   POCKET_ALREADY_EXIST,
   POCKET_NOT_FOUND,
-  IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pocket.messages');
 
 class PocketService {
