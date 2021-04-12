@@ -1,5 +1,6 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
+const { historyQuery } = require('./modules/history/history.resolvers');
 const {
   productsQuery,
   productsMutation,
@@ -113,6 +114,7 @@ const {
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 
 const SCHEMA_NAMES = {
+  history: 'History',
   paginatedProducts: 'PaginatedProducts',
   category: 'Category',
   news: 'News',
@@ -143,6 +145,8 @@ const SCHEMA_NAMES = {
 
 const resolvers = {
   Query: {
+    ...historyQuery,
+
     ...cartQuery,
 
     ...currencyQuery,
@@ -454,6 +458,14 @@ const resolvers = {
     ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
+  },
+  HistoryResult: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.history;
+      }
+      return 'Error';
+    },
   },
   TokenResult: {
     __resolveType: obj => {

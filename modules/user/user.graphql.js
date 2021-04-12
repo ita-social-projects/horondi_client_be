@@ -147,8 +147,22 @@ const adminRegisterInput = `
 input AdminRegisterInput {
     email: String!
     role: String!
+    otp_code: String
 }
 `;
+
+const resendEmailToConfirmAdminInput = `
+input resendEmailToConfirmAdminInput {
+    email: String!
+}
+`;
+
+const confirmSuperadminCreationInput = `
+input confirmSuperadminCreationInput {
+    _id: ID!
+}
+`;
+
 const adminConfirmInput = `
 input AdminConfirmInput {
     firstName: String!
@@ -199,6 +213,8 @@ module.exports = {
   userFilterInput,
   LoginInput,
   adminRegisterInput,
+  resendEmailToConfirmAdminInput,
+  confirmSuperadminCreationInput,
   adminConfirmInput,
   UserForStatisticsInput,
   paginatedUsersType,

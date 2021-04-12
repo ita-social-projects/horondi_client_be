@@ -1,6 +1,6 @@
 body {
     width: 818px;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
 }
 
@@ -43,7 +43,9 @@ footer h2{
     color: #000000;
 }
 
-p.registrationText {
+p.registrationText,
+p.paymentText,
+p.unfinishedCartOperations {
     margin: 0;
     padding-top: 35px;
     font-size: 36px;
@@ -55,11 +57,22 @@ div.contentRegistrationText {
     padding-left: 62px;
 }
 
+div.contentPaymentText,
+div.contentUnfinishedCartOperations {
+    padding-left: 62px;
+}
+
 p.congrats {
     padding-top: 30px;
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
+    color: #000000;
+}
+
+p.code {
+    font-weight: 700;
+    font-size: 24px;
     color: #000000;
 }
 
@@ -138,3 +151,52 @@ p.successfulRegistrationText {
 .termslink {
     color: #000000;
 }
+
+.productTable {
+    min-width: 100%;
+    min-height: auto;
+    border-collapse: collapse;
+    margin: 2rem 0;
+}
+
+.tableHead th, 
+.tableBody td{
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1.5px solid #e0e0e0c4;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+.tableHead th {
+    border-top: 1.5px solid #e0e0e0c4;
+    font-size: 1.3rem;
+    font-weight: 100;
+    
+}
+
+.tableImg {
+    display: block;
+    width: 130px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.tableBody td { 
+    padding: 15px;
+    font-size: 1rem;
+    height: 140px;
+}
+
+caption{
+    caption-side: bottom;
+    text-align: right;
+    font-size: 17px;
+    margin: 23px;
+}
+
+.completeOperationsText,
+.operationsLink,
+.aoperationsLink{
+    font-size: 17px;
+}
+

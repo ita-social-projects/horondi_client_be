@@ -19,9 +19,9 @@ const headerQuery = {
 };
 
 const headerMutation = {
-  addHeader: async (parent, args) => {
+  addHeader: async (parent, args, { user }) => {
     try {
-      return await headerService.addHeader(args);
+      return await headerService.addHeader(args, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -30,9 +30,9 @@ const headerMutation = {
     }
   },
 
-  deleteHeader: async (parent, args) => {
+  deleteHeader: async (parent, args, { user }) => {
     try {
-      return await headerService.deleteHeader(args.id);
+      return await headerService.deleteHeader(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -41,9 +41,9 @@ const headerMutation = {
     }
   },
 
-  updateHeader: async (parent, args) => {
+  updateHeader: async (parent, args, { user }) => {
     try {
-      return await headerService.updateHeader(args);
+      return await headerService.updateHeader(args, user);
     } catch (e) {
       return {
         statusCode: e.message === HEADER_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
