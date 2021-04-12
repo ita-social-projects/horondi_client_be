@@ -1,0 +1,39 @@
+extends template
+block subheaderText
+    p.unfinishedCartOperations Незавершені покупки
+block content
+    div.contentUnfinishedCartOperations
+        div.productTableContent
+            p.congrats У Вас залишились товари в корзині: #[br]
+            table.productTable
+                caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
+                tr.tableHead
+                    th Фото
+                    th Назва
+                    th Кількість
+                    th Ціна
+                each val in items
+                    if val.product
+                        tr.tableBody
+                            td
+                                img.tableImg(src= `${imagesUrl}${val.product.images.primary.large}`)
+                            td 
+                                p= val.product.name[0].value
+                                p= `Розмір - ${val.options.size.name}`
+                            td= val.quantity
+                            td= `${val.price[0].value} ${val.price[0].currency}`
+                    else if val.fromConstructor
+                        tr.tableBody
+                            td
+                                img.tableImg(src= `${imagesUrl}large_21r21sdeokmxcw0i8_Rolltop_blue.png`)
+                            td 
+                                p= val.fromConstructor.product.name[0].value
+                                p= `Розмір - ${val.options.size.name}`
+                            td= val.quantity
+                            td= `${val.price[0].value} ${val.price[0].currency}`
+            
+            p.completeOperationsText Завершіть будь ласка свої покупки
+            button.confirm
+                a(href=`${frontendUrl}/cart`) Завершити покупки
+            p.operationsLink або перейдіть за посиланням нижче:
+            a.aoperationsLink(href= `${frontendUrl}/cart`) #{`${frontendUrl}/cart`}
