@@ -112,11 +112,11 @@ const checkImageType = rule()((_, args) => {
   }
   if (!imagesArray.length)
     return new RuleError(INCORRECT_MIMETYPE, BAD_REQUEST);
-  for (let i = 0; i < imagesArray.length; i++) {
+  for (const imageElement of imagesArray) {
     let incorrectTypes = [];
-    for (let j = 0; j < fileTypes.length; j++) {
-      if (imagesArray[i].file.mimetype !== fileTypes[j]) {
-        incorrectTypes.push(fileTypes[j]);
+    for (const mimeType of fileTypes) {
+      if (imageElement.file.mimetype !== mimeType) {
+        incorrectTypes.push(mimeType);
       }
     }
     if (incorrectTypes.length === 3) {
@@ -142,9 +142,9 @@ const checkImageSize = rule()(async (_, args) => {
     return new RuleError(INCORRECT_FILESIZE, BAD_REQUEST);
   }
   let promise = new Promise((resolve, reject) => {
-    for (let i = 0; i < imagesArray.length; i++) {
+    for (const imageElem of imagesArray) {
       result = '';
-      imagesArray[i].promise.then(file => {
+      imageElem.promise.then(file => {
         let { createReadStream } = file;
         const fileStream = createReadStream();
         fileStream.on('data', chunk => {
