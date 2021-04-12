@@ -277,7 +277,8 @@ describe('User`s mutation restictions tests', () => {
 describe('Register admin', () => {
   let role = 'admin';
   let invalidEmail = 'invalid@com';
-  let invalidRole = 'superadmin';
+  let invalidRole = 'user';
+  let superRole = 'superadmin';
 
   let { email: newAdminEmail } = newAdmin;
 
@@ -398,7 +399,7 @@ describe('Register admin', () => {
         variables: {
           user: {
             email: newAdminEmail,
-            role,
+            role: superRole,
           },
         },
       })

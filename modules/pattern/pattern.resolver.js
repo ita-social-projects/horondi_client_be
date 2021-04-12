@@ -20,9 +20,9 @@ const patternQuery = {
 };
 
 const patternMutation = {
-  addPattern: async (parent, args) => {
+  addPattern: async (parent, args, { user }) => {
     try {
-      return await patternService.addPattern(args);
+      return await patternService.addPattern(args, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -31,9 +31,9 @@ const patternMutation = {
     }
   },
 
-  deletePattern: async (parent, args) => {
+  deletePattern: async (parent, args, { user }) => {
     try {
-      return await patternService.deletePattern(args.id);
+      return await patternService.deletePattern(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -42,9 +42,9 @@ const patternMutation = {
     }
   },
 
-  updatePattern: async (parent, args) => {
+  updatePattern: async (parent, args, { user }) => {
     try {
-      return await patternService.updatePattern(args);
+      return await patternService.updatePattern(args, user);
     } catch (e) {
       return {
         statusCode: e.message === PATTERN_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,

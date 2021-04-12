@@ -71,6 +71,9 @@ const registerAdminValidator = Joi.object({
   role: Joi.string()
     .required()
     .valid(...availableForRegistrationRoles),
+  otp_code: Joi.string()
+    .trim()
+    .allow(''),
 });
 
 const updateUserValidator = Joi.object({

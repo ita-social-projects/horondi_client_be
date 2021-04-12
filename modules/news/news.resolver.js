@@ -19,9 +19,9 @@ const newsQuery = {
 };
 
 const newsMutation = {
-  addNews: async (parent, args) => {
+  addNews: async (parent, args, { user }) => {
     try {
-      return await newsService.addNews(args.news, args.upload);
+      return await newsService.addNews(args.news, args.upload, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -29,9 +29,9 @@ const newsMutation = {
       };
     }
   },
-  deleteNews: async (parent, args) => {
+  deleteNews: async (parent, args, { user }) => {
     try {
-      return await newsService.deleteNews(args.id);
+      return await newsService.deleteNews(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -39,9 +39,14 @@ const newsMutation = {
       };
     }
   },
-  updateNews: async (parent, args) => {
+  updateNews: async (parent, args, { user }) => {
     try {
-      return await newsService.updateNews(args.id, args.news, args.upload);
+      return await newsService.updateNews(
+        args.id,
+        args.news,
+        args.upload,
+        user
+      );
     } catch (e) {
       return {
         statusCode: e.message === NEWS_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,

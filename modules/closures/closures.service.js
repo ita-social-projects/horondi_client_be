@@ -7,6 +7,21 @@ const uploadService = require('../upload/upload.service');
 const {
   FILE_SIZES: { LARGE },
 } = require('../../consts/file-sizes');
+const {
+  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { NAME, MATERIAL, ADDITIONAL_PRICE, AVAILABLE },
+} = require('../../consts/history-obj-keys');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {
@@ -32,7 +47,7 @@ class ClosureService {
     throw new Error(CLOSURE_NOT_FOUND);
   }
 
-  async addClosure(data, upload) {
+  async addClosure(data, upload, { _id: adminId }) {
     if (upload) {
       const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
       data.image = uploadImage.fileNames.large;
@@ -41,10 +56,29 @@ class ClosureService {
     if (await this.checkClosureExist(data)) {
       throw new Error(CLOSURE_ALREADY_EXIST);
     }
-    return await new Closure(data).save();
+    const newClosure = await new Closure(data).save();
+
+    const historyRecord = generateHistoryObject(
+      ADD_CLOSURE,
+      '',
+      newClosure.name[UA].value,
+      newClosure._id,
+      [],
+      generateHistoryChangesData(newClosure, [
+        NAME,
+        MATERIAL,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return newClosure;
   }
 
-  async updateClosure(id, closure, upload) {
+  async updateClosure(id, closure, upload, { _id: adminId }) {
     if (await this.checkClosureExist(closure)) {
       throw new Error(CLOSURE_ALREADY_EXIST);
     }
@@ -54,17 +88,57 @@ class ClosureService {
     }
 
     const closureMaterial = await Closure.findById(id).exec();
+
     if (!closureMaterial) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
-    return await Closure.findByIdAndUpdate(id, closure, { new: true }).exec();
+
+    const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
+      new: true,
+    }).exec();
+
+    const { beforeChanges, afterChanges } = getChanges(
+      closureMaterial,
+      closure
+    );
+
+    const historyRecord = generateHistoryObject(
+      EDIT_CLOSURE,
+      '',
+      closureMaterial.name[UA].value,
+      closureMaterial._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return updatedClosure;
   }
 
-  async deleteClosure(id) {
+  async deleteClosure(id, { _id: adminId }) {
     const closure = await Closure.findByIdAndDelete(id).exec();
     if (!closure) {
       throw new Error(CLOSURE_NOT_FOUND);
     }
+    const historyRecord = generateHistoryObject(
+      DELETE_CLOSURE,
+      '',
+      closure.name[UA].value,
+      closure._id,
+      generateHistoryChangesData(closure, [
+        NAME,
+        MATERIAL,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      [],
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    await addHistoryRecord(historyRecord);
     return closure;
   }
 

@@ -19,9 +19,9 @@ const closureQuery = {
 };
 
 const closureMutation = {
-  addClosure: async (parent, args) => {
+  addClosure: async (parent, args, { user }) => {
     try {
-      return await ClosureService.addClosure(args.closure, args.upload);
+      return await ClosureService.addClosure(args.closure, args.upload, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -29,12 +29,13 @@ const closureMutation = {
       };
     }
   },
-  updateClosure: async (parent, args) => {
+  updateClosure: async (parent, args, { user }) => {
     try {
       return await ClosureService.updateClosure(
         args.id,
         args.closure,
-        args.upload
+        args.upload,
+        user
       );
     } catch (e) {
       return {
@@ -43,9 +44,9 @@ const closureMutation = {
       };
     }
   },
-  deleteClosure: async (parent, args) => {
+  deleteClosure: async (parent, args, { user }) => {
     try {
-      return await ClosureService.deleteClosure(args.id);
+      return await ClosureService.deleteClosure(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,

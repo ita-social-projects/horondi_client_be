@@ -1,6 +1,6 @@
 body {
     width: 818px;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
 }
 
@@ -67,6 +67,12 @@ p.congrats {
     font-style: normal;
     font-weight: normal;
     font-size: 18px;
+    color: #000000;
+}
+
+p.code {
+    font-weight: 700;
+    font-size: 24px;
     color: #000000;
 }
 
@@ -193,3 +199,4 @@ caption{
 .aoperationsLink{
     font-size: 17px;
 }
+
