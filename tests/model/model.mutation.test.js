@@ -19,6 +19,8 @@ let sizeId;
 
 jest.mock('../../modules/upload/__mocks__/upload.service.js');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/currency/currency.utils.js');
 
 describe('Model mutations', () => {
   beforeAll(async () => {
