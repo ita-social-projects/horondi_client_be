@@ -110,6 +110,12 @@ async function addProductsToStatistic(items) {
 }
 
 async function updateProductStatistic(orderToUpdate, newOrder) {
+  if (
+    (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
+    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+  ) {
+    return;
+  }
   const oldItems = orderToUpdate.items.map(item => ({
     product: item.product.toString(),
     quantity: -item.quantity,
@@ -117,6 +123,12 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
 
   if (newOrder.status === CANCELLED || newOrder.status === REFUNDED) {
     await addProductsToStatistic(oldItems);
+  } else if (
+    newOrder.status !== CANCELLED &&
+    newOrder.status !== REFUNDED &&
+    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+  ) {
+    await addProductsToStatistic(newOrder.items);
   } else {
     const newItems = newOrder.items.map(item => ({
       product: item.product,
