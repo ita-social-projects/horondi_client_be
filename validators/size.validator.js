@@ -3,7 +3,7 @@ const Joi = require('joi');
 const sizeInputValidator = Joi.object({
   name: Joi.string()
     .min(1)
-    .max(2)
+    .max(3)
     .required(),
   simpleName: Joi.array().items({
     lang: Joi.string()
