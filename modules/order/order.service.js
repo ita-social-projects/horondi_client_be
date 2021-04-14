@@ -13,7 +13,10 @@ const {
   ORDER_NOT_VALID,
   ORDER_IS_NOT_PAID,
 } = require('../../error-messages/orders.messages');
-const { userDateFormat } = require('../../consts');
+const {
+  userDateFormat,
+  roles: { USER },
+} = require('../../consts');
 
 const {
   removeDaysFromData,
@@ -26,6 +29,8 @@ const {
   calculateTotalPriceToPay,
   calculateTotalItemsPrice,
   generateOrderNumber,
+  addProductsToStatistic,
+  updateProductStatistic,
 } = require('../../utils/order.utils');
 
 class OrdersService {
@@ -73,6 +78,8 @@ class OrdersService {
 
     const { items } = order;
 
+    await updateProductStatistic(orderToUpdate, order);
+
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const totalPriceToPay = await calculateTotalPriceToPay(
       order,
@@ -94,6 +101,8 @@ class OrdersService {
 
   async addOrder(data) {
     const { items } = data;
+
+    await addProductsToStatistic(items);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderNumber();
