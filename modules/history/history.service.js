@@ -1,6 +1,13 @@
 const _ = require('lodash');
 
 const HistoryModel = require('./history.model');
+const RuleError = require('../../errors/rule.error');
+const {
+  HISTORY_RECORD_IS_NOT_PRESENT,
+} = require('../../error-messages/history');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 
 class HistoryService {
   async getAllHistoryRecords(limit, skip, filter) {
@@ -21,10 +28,14 @@ class HistoryService {
         { lastName: { $regex: `${name || surname}`, $options: 'i' } },
       ];
     }
-    if (filter.date.dateFrom && filter.date.dateTo) {
+    if (filter.date.dateFrom) {
       filterOptions.createdAt = {
-        $gte: new Date(filter.date.dateFrom).getTime(),
-        $lte: new Date(filter.date.dateTo).getTime(),
+        $gte: filter.date.dateFrom.toString(),
+      };
+    }
+    if (filter.date.dateTo) {
+      filterOptions.createdAt = {
+        $lte: filter.date.dateTo.toString(),
       };
     }
 
@@ -53,6 +64,20 @@ class HistoryService {
 
   async addHistoryRecord(record) {
     return new HistoryModel(record).save();
+  }
+
+  async getHistoryRecordById(id) {
+    const historyRecord = await HistoryModel.findById(id)
+      .populate({
+        path: 'userId',
+      })
+      .exec();
+
+    if (!historyRecord) {
+      throw new RuleError(HISTORY_RECORD_IS_NOT_PRESENT, NOT_FOUND);
+    }
+
+    return historyRecord;
   }
 }
 

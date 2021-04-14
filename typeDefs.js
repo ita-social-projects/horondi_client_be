@@ -361,9 +361,11 @@ const typeDefs = gql`
   union ConstructorBasicResult = ConstructorBasic | Error
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   union HistoryResult = History | Error
+  union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
+    getHistoryRecordById(id:ID!):HistoryRecordResult
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
     getAllCategories(

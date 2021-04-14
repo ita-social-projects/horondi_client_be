@@ -5,6 +5,7 @@ const {
 
 const historyPermissionsQuery = {
   getAllHistoryRecords: hasRoles([SUPERADMIN, ADMIN]),
+  getHistoryRecordById: hasRoles([SUPERADMIN, ADMIN]),
 };
 
 module.exports = { historyPermissionsQuery };
