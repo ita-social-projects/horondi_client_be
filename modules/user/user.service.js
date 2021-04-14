@@ -426,7 +426,7 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
-    const { accesToken, refreshToken } = generateTokens(
+    const { accessToken, refreshToken } = generateTokens(
       user._id,
       {
         expiresIn: TOKEN_EXPIRES_IN,
@@ -438,7 +438,7 @@ class UserService extends FilterHelper {
     return {
       ...user._doc,
       _id: user._id,
-      token: accesToken,
+      token: accessToken,
       refreshToken,
     };
   }
@@ -458,7 +458,7 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
-    const { accesToken, refreshToken } = generateTokens(
+    const { accessToken, refreshToken } = generateTokens(
       user._id,
       {
         expiresIn: TOKEN_EXPIRES_IN,
@@ -470,7 +470,7 @@ class UserService extends FilterHelper {
     return {
       ...user._doc,
       _id: user._id,
-      token: accesToken,
+      token: accessToken,
       refreshToken,
     };
   }
@@ -482,12 +482,12 @@ class UserService extends FilterHelper {
       throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
     }
     await this.getUserByFieldOrThrow('_id', userId);
-    const { accesToken, refreshToken } = generateTokens(
+    const { accessToken, refreshToken } = generateTokens(
       userId,
       { expiresIn: TOKEN_EXPIRES_IN, secret: SECRET },
       true
     );
-    return { refreshToken, token: accesToken };
+    return { refreshToken, token: accessToken };
   }
 
   async googleUser(idToken, staySignedIn) {
@@ -523,7 +523,7 @@ class UserService extends FilterHelper {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
-    const { accesToken, refreshToken } = generateTokens(
+    const { accessToken, refreshToken } = generateTokens(
       user._id,
       {
         expiresIn: TOKEN_EXPIRES_IN,
@@ -535,7 +535,7 @@ class UserService extends FilterHelper {
     return {
       ...user._doc,
       _id: user._id,
-      token: accesToken,
+      token: accessToken,
       refreshToken,
     };
   }
@@ -576,15 +576,15 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const { accesToken } = generateTokens(savedUser._id, {
+    const { accessToken } = generateTokens(savedUser._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: CONFIRMATION_SECRET,
     });
 
-    savedUser.confirmationToken = accesToken;
+    savedUser.confirmationToken = accessToken;
 
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
-      token: accesToken,
+      token: accessToken,
     });
     await savedUser.save();
 
@@ -596,13 +596,15 @@ class UserService extends FilterHelper {
     if (user.confirmed) {
       throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
     }
-    const { accesToken } = generateTokens(user._id, {
+    const { accessToken } = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
       expiresIn: RECOVERY_EXPIRE,
     });
-    user.confirmationToken = accesToken;
+    user.confirmationToken = accessToken;
     await user.save();
-    await emailService.sendEmail(user.email, CONFIRM_EMAIL, { accesToken });
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      token: accessToken,
+    });
     return true;
   }
 
@@ -631,12 +633,12 @@ class UserService extends FilterHelper {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
     }
 
-    const { accesToken } = generateTokens(user._id, {
+    const { accessToken } = generateTokens(user._id, {
       expiresIn: RECOVERY_EXPIRE,
       secret: SECRET,
     });
-    user.recoveryToken = accesToken;
-    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { accesToken });
+    user.recoveryToken = accessToken;
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { accessToken });
     await user.save();
     return true;
   }
@@ -704,7 +706,7 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const { accesToken: invitationalToken } = generateTokens(savedUser._id, {
+    const { accessToken: invitationalToken } = generateTokens(savedUser._id, {
       expiresIn: TOKEN_EXPIRES_IN,
       secret: SECRET,
     });
@@ -764,7 +766,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const { accesToken: invitationalToken } = generateTokens(
+    const { accessToken: invitationalToken } = generateTokens(
       isAdminExists._id,
       {
         expiresIn: TOKEN_EXPIRES_IN,
