@@ -19,6 +19,7 @@ const INPUT_FIELDS = {
   STRAP: 'strap',
   PATTERN: 'pattern',
   SIZE: 'size',
+  MODEL: 'model',
 };
 
 module.exports = {

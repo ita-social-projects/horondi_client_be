@@ -11,12 +11,15 @@ const {
   USER_BLOCK_PERIOD: { UNLOCKED, INFINITE },
 } = require('../../consts/user-block-period');
 const {
+  CRON_PERIOD: { EVERY_TWELVE_HOURS },
+} = require('../../consts/cron-period');
+const {
   HISTORY_ACTIONS: { UNLOCK_USER: UNLOCK_ACTION },
 } = require('../../consts/history-actions');
 const { getChanges, generateHistoryObject } = require('../../utils/hisrory');
 
 const unlockUsers = () =>
-  schedule('0 0 */12 * * *', async () => {
+  schedule(EVERY_TWELVE_HOURS, async () => {
     const currentDate = new Date().getTime();
 
     const blockedUsers = await UserModel.find({
