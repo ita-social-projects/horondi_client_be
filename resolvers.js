@@ -115,6 +115,7 @@ const {
 
 const SCHEMA_NAMES = {
   history: 'History',
+  historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
   category: 'Category',
   news: 'News',
@@ -463,6 +464,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.history;
+      }
+      return 'Error';
+    },
+  },
+  HistoryRecordResult: {
+    __resolveType: obj => {
+      if (obj.action) {
+        return SCHEMA_NAMES.historyRecord;
       }
       return 'Error';
     },
