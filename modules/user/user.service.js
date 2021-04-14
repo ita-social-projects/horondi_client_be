@@ -6,7 +6,14 @@ const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
 const generateTokens = require('../../utils/create-tokens');
 const {
-  EmailActions: { CONFIRM_EMAIL, RECOVER_PASSWORD, BLOCK_USER, UNLOCK_USER },
+  EmailActions: {
+    CONFIRM_EMAIL,
+    RECOVER_PASSWORD,
+    BLOCK_USER,
+    UNLOCK_USER,
+    CONFIRM_ADMIN_EMAIL,
+    CONFIRM_CREATION_SUPERADMIN_EMAIL,
+  },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
@@ -42,6 +49,7 @@ const {
   YOU_CANT_UNLOCK_YOURSELF,
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
+  INVALID_OTP_CODE,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -64,9 +72,33 @@ const RuleError = require('../../errors/rule.error');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts/');
+const {
+  HISTORY_ACTIONS: {
+    BLOCK_USER: BLOCK_USER_ACTION,
+    UNLOCK_USER: UNLOCK_USER_ACTION,
+    REGISTER_ADMIN,
+  },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
+} = require('../../consts/history-obj-keys');
+const {
+  generateOrderNumber: generateOtpCode,
+} = require('../../utils/order.utils');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
+    let blockedUser;
+
     const userToBlock = await User.findById(userId).exec();
 
     if (!userToBlock) {
@@ -89,13 +121,14 @@ class UserService extends FilterHelper {
 
     switch (userToBlock.banned.blockCount) {
       case NO_ONE_TIME: {
-        const blockedUser = await User.findByIdAndUpdate(
+        blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
             $set: {
               banned: {
                 blockPeriod: ONE_MONTH,
                 blockCount: ONE_TIME,
+                updatedAt: Date.now(),
               },
             },
           },
@@ -106,17 +139,18 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
-        return blockedUser;
+        break;
       }
 
       case ONE_TIME: {
-        const blockedUser = await User.findByIdAndUpdate(
+        blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
             $set: {
               banned: {
                 blockPeriod: TWO_MONTH,
                 blockCount: TWO_TIMES,
+                updatedAt: Date.now(),
               },
             },
           },
@@ -127,16 +161,17 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
-        return blockedUser;
+        break;
       }
       case TWO_TIMES: {
-        const blockedUser = await User.findByIdAndUpdate(
+        blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
             $set: {
               banned: {
                 blockPeriod: INFINITE,
                 blockCount: THREE_TIMES,
+                updatedAt: Date.now(),
               },
             },
           },
@@ -147,12 +182,32 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
-        return blockedUser;
+        break;
       }
     }
+
+    const { beforeChanges, afterChanges } = getChanges(
+      userToBlock,
+      blockedUser
+    );
+
+    const historyRecord = generateHistoryObject(
+      BLOCK_USER_ACTION,
+      '',
+      `${userToBlock.firstName} ${userToBlock.lastName}`,
+      userToBlock._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return blockedUser;
   }
 
   async unlockUser(userId, { _id: adminId, role }) {
+    let unlockedUser;
+
     const userToUnlock = await User.findById(userId).exec();
 
     if (!userToUnlock) {
@@ -175,13 +230,14 @@ class UserService extends FilterHelper {
     }
 
     if (userToUnlock.banned.blockPeriod === INFINITE) {
-      const unlockedUser = await User.findByIdAndUpdate(
+      unlockedUser = await User.findByIdAndUpdate(
         userToUnlock._id,
         {
           $set: {
             banned: {
               blockPeriod: UNLOCKED,
               blockCount: TWO_TIMES,
+              updatedAt: Date.now(),
             },
           },
         },
@@ -189,16 +245,15 @@ class UserService extends FilterHelper {
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
-
-      return unlockedUser;
     } else {
-      const unlockedUser = await User.findByIdAndUpdate(
+      unlockedUser = await User.findByIdAndUpdate(
         userToUnlock._id,
         {
           $set: {
             banned: {
               blockPeriod: UNLOCKED,
               blockCount: userToUnlock.banned.blockCount,
+              updatedAt: Date.now(),
             },
           },
         },
@@ -206,9 +261,24 @@ class UserService extends FilterHelper {
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
-
-      return unlockedUser;
     }
+    const { beforeChanges, afterChanges } = getChanges(
+      userToUnlock,
+      unlockedUser
+    );
+
+    const historyRecord = generateHistoryObject(
+      UNLOCK_USER_ACTION,
+      '',
+      `${userToUnlock.firstName} ${userToUnlock.lastName}`,
+      userToUnlock._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return unlockedUser;
   }
 
   async checkIfTokenIsValid(token) {
@@ -617,11 +687,15 @@ class UserService extends FilterHelper {
     return true;
   }
 
-  async registerAdmin(userInput) {
-    const { email, role } = userInput;
+  async registerAdmin({ email, role, code }, admin) {
+    if (code && code !== admin.otp_code) {
+      throw new RuleError(INVALID_OTP_CODE, FORBIDDEN);
+    }
 
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+    const isAdminExists = await User.findOne({ email }).exec();
+
+    if (isAdminExists) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const user = new User({
@@ -630,52 +704,127 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const { accesToken } = generateTokens(savedUser._id, {
+    const { accesToken: invitationalToken } = generateTokens(savedUser._id, {
       expiresIn: TOKEN_EXPIRES_IN,
       secret: SECRET,
     });
-    const invitationalToken = accesToken;
 
     if (NODE_ENV === 'test') {
       return { ...savedUser._doc, invitationalToken };
     }
+    await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
+      token: invitationalToken,
+    });
+
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          otp_code: null,
+        },
+      },
+      { new: true }
+    ).exec();
 
     return savedUser;
   }
 
-  async completeAdminRegister(updatedUser, token) {
-    const { firstName, lastName, password } = updatedUser;
-    let decoded;
-
-    try {
-      decoded = jwt.verify(token, SECRET);
-    } catch (err) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: BAD_REQUEST,
-      });
-    }
-
-    const user = await User.findOne({ email: decoded.email }).exec();
+  async confirmSuperadminCreation(_id) {
+    const user = await User.findOne({ _id }).exec();
 
     if (!user) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    const otp_code = generateOtpCode();
+
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          otp_code: otp_code,
+        },
+      },
+      { new: true }
+    ).exec();
+
+    await emailService.sendEmail(
+      user.email,
+      CONFIRM_CREATION_SUPERADMIN_EMAIL,
+      { otp_code }
+    );
+
+    return { isSuccess: true };
+  }
+
+  async resendEmailToConfirmAdmin({ email }) {
+    const isAdminExists = await User.findOne({ email }).exec();
+
+    if (!isAdminExists) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    const { accesToken: invitationalToken } = generateTokens(
+      isAdminExists._id,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      }
+    );
+
+    await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
+      token: invitationalToken,
+    });
+
+    return { isSuccess: true };
+  }
+
+  async completeAdminRegister(updatedUser, token) {
+    const { password } = updatedUser;
+    const userDetails = verifyUser(token);
+
+    if (!userDetails) {
+      throw new RuleError(INVALID_ADMIN_INVITATIONAL_TOKEN, BAD_REQUEST);
+    }
+
+    const user = await User.findOne({ _id: userDetails.userId }).exec();
+
+    if (!user) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
 
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.credentials = [
-      {
-        source: HORONDI,
-        tokenPass: encryptedPassword,
+    await User.findByIdAndUpdate(userDetails.userId, {
+      $set: {
+        ...updatedUser,
+        credentials: [
+          {
+            source: HORONDI,
+            tokenPass: encryptedPassword,
+          },
+        ],
+        confirmed: true,
       },
-    ];
-    user.confirmed = true;
+    }).exec();
 
-    await user.save();
+    const historyRecord = generateHistoryObject(
+      REGISTER_ADMIN,
+      '',
+      `${user.firstName} ${user.lastName}`,
+      user._id,
+      [],
+      generateHistoryChangesData(user, [
+        ROLE,
+        BANNED,
+        FIRST_NAME,
+        LAST_NAME,
+        EMAIL,
+      ]),
+      user._id
+    );
+
+    await addHistoryRecord(historyRecord);
 
     return { isSuccess: true };
   }

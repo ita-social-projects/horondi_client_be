@@ -44,6 +44,37 @@ const RuleError = require('../../errors/rule.error');
 const {
   STATUS_CODES: { FORBIDDEN },
 } = require('../../consts/status-codes');
+const {
+  HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: {
+    SIZES,
+    PURCHASED_COUNT,
+    AVAILABLE_COUNT,
+    CATEGORY,
+    MODEL,
+    NAME,
+    DESCRIPTION,
+    MAIN_MATERIAL,
+    INNER_MATERIAL,
+    BOTTOM_MATERIAL,
+    STRAP_LENGTH_IN_CM,
+    PATTERN,
+    CLOSURE,
+    AVAILABLE,
+    IS_HOT_ITEM,
+  },
+} = require('../../consts/history-obj-keys');
 
 class ProductsService {
   async getProductById(id) {
@@ -180,7 +211,13 @@ class ProductsService {
     };
   }
 
-  async updateProduct(id, productData, filesToUpload, primary) {
+  async updateProduct(
+    id,
+    productData,
+    filesToUpload,
+    primary,
+    { _id: adminId }
+  ) {
     productData.images = {
       primary: {
         large: LARGE_SAD_BACKPACK,
@@ -210,31 +247,57 @@ class ProductsService {
       throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
     if (primary) {
-      await uploadService.deleteFiles(
-        Object.values(product.images.primary).filter(
-          item => typeof item === 'string'
-        )
-      );
-      const uploadResult = await uploadService.uploadFiles(primary);
-      const imagesResults = await uploadResult[0];
-      if (imagesResults?.fileNames) {
+      if (primary?.large) {
+        productData.images.primary = primary;
+      } else {
+        await uploadService.deleteFiles(
+          Object.values(product.images.primary).filter(
+            item => typeof item === 'string'
+          )
+        );
+        const uploadResult = await uploadService.uploadFiles(primary);
+        const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
       }
     }
     if (filesToUpload.length) {
-      const uploadResult = await uploadService.uploadFiles(filesToUpload);
-      const imagesResults = await Promise.allSettled(uploadResult);
-      const additional = imagesResults.map(res => res.value.fileNames);
-      productData.images.additional = [...additional];
+      const previousImagesLinks = [];
+      const newFiles = [];
+      filesToUpload.map(e => {
+        if (e?.large) {
+          previousImagesLinks.push(e);
+        } else {
+          newFiles.push(e);
+        }
+      });
+      const newUploadResult = await uploadService.uploadFiles(newFiles);
+      const imagesResults = await Promise.allSettled(newUploadResult);
+      const additional = imagesResults.map(res => res?.value?.fileNames);
+      productData.images.additional = [...additional, ...previousImagesLinks];
     }
     const { basePrice } = productData;
     productData.basePrice = await calculatePrice(basePrice);
+    if (productData) {
+      const { beforeChanges, afterChanges } = getChanges(product, productData);
+
+      const historyRecord = generateHistoryObject(
+        EDIT_PRODUCT,
+        product.model,
+        product.name[UA].value,
+        product._id,
+        beforeChanges,
+        afterChanges,
+        adminId
+      );
+      await addHistoryRecord(historyRecord);
+    }
+
     return await Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
   }
 
-  async addProduct(productData, filesToUpload) {
+  async addProduct(productData, filesToUpload, { _id: adminId }) {
     if (await this.checkProductExist(productData)) {
       throw new Error(PRODUCT_ALREADY_EXIST);
     }
@@ -252,10 +315,40 @@ class ProductsService {
 
     const newProduct = await new Product(productData).save();
 
-    if (newProduct) return newProduct;
+    if (productData) {
+      const historyRecord = generateHistoryObject(
+        ADD_PRODUCT,
+        newProduct.model,
+        newProduct.name[UA].value,
+        newProduct._id,
+        [],
+        generateHistoryChangesData(newProduct, [
+          SIZES,
+          PURCHASED_COUNT,
+          AVAILABLE_COUNT,
+          CATEGORY,
+          MODEL,
+          NAME,
+          DESCRIPTION,
+          MAIN_MATERIAL,
+          INNER_MATERIAL,
+          BOTTOM_MATERIAL,
+          STRAP_LENGTH_IN_CM,
+          PATTERN,
+          CLOSURE,
+          AVAILABLE,
+          IS_HOT_ITEM,
+        ]),
+        adminId
+      );
+
+      await addHistoryRecord(historyRecord);
+
+      return newProduct;
+    }
   }
 
-  async deleteProduct(id) {
+  async deleteProduct(id, { _id: adminId }) {
     const product = await Product.findById(id)
       .lean()
       .exec();
@@ -271,6 +364,34 @@ class ProductsService {
     ]);
 
     if (await Promise.allSettled(deletedImages)) {
+      const historyRecord = generateHistoryObject(
+        DELETE_PRODUCT,
+        product.model,
+        product.name[UA].value,
+        product._id,
+        generateHistoryChangesData(product, [
+          SIZES,
+          PURCHASED_COUNT,
+          AVAILABLE_COUNT,
+          CATEGORY,
+          MODEL,
+          NAME,
+          DESCRIPTION,
+          MAIN_MATERIAL,
+          INNER_MATERIAL,
+          BOTTOM_MATERIAL,
+          STRAP_LENGTH_IN_CM,
+          PATTERN,
+          CLOSURE,
+          AVAILABLE,
+          IS_HOT_ITEM,
+        ]),
+        [],
+        adminId
+      );
+
+      await addHistoryRecord(historyRecord);
+
       return Product.findByIdAndDelete(id);
     }
   }

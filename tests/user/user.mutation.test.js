@@ -277,7 +277,8 @@ describe('User`s mutation restictions tests', () => {
 describe('Register admin', () => {
   let role = 'admin';
   let invalidEmail = 'invalid@com';
-  let invalidRole = 'superadmin';
+  let invalidRole = 'user';
+  let superRole = 'superadmin';
 
   let { email: newAdminEmail } = newAdmin;
 
@@ -398,7 +399,7 @@ describe('Register admin', () => {
         variables: {
           user: {
             email: newAdminEmail,
-            role,
+            role: superRole,
           },
         },
       })
@@ -441,7 +442,7 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INVALID_LAST_NAME);
+    expect(data.message).toContain(INVALID_LAST_NAME);
     expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });
@@ -456,7 +457,7 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INVALID_FIRST_NAME);
+    expect(data.message).toContain(INVALID_FIRST_NAME);
     expect(data.statusCode).toEqual(FORBIDDEN);
     done();
   });

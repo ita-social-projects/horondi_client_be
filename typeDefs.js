@@ -1,4 +1,9 @@
 const { gql } = require('apollo-server-express');
+
+const {
+  historyType,
+  historyFilterInput,
+} = require('./modules/history/history.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -10,6 +15,8 @@ const {
   LoginInput,
   adminConfirmInput,
   adminRegisterInput,
+  resendEmailToConfirmAdminInput,
+  confirmSuperadminCreationInput,
   UserForStatisticsInput,
   paginatedUsersType,
   tokenType,
@@ -103,6 +110,7 @@ const {
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${historyType}
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
@@ -134,8 +142,9 @@ const typeDefs = gql`
   ${constructorBasicType}
   ${constructorFrontPocketType}
   ${constructorBottomType}
-
+  ${historyFilterInput}
   scalar Upload
+  scalar JSONObject
   scalar Date
   enum RoleEnum {
     superadmin
@@ -351,9 +360,10 @@ const typeDefs = gql`
   union ColorDeletingResult = Color | Materials | Error
   union ConstructorBasicResult = ConstructorBasic | Error
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
-  
+  union HistoryResult = History | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   type Query {
+    getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getAllCurrencies: [Currency!]!
     getCurrencyById(id: ID): CurrencyResult
     getAllCategories(
@@ -511,6 +521,8 @@ const typeDefs = gql`
 	${SortInputComponent}
   ${adminConfirmInput}
   ${adminRegisterInput}
+  ${resendEmailToConfirmAdminInput}
+  ${confirmSuperadminCreationInput}
   ${modelInput}
   ${contactInput}
   ${orderInputs}
@@ -639,13 +651,13 @@ const typeDefs = gql`
     addProductToCart(productId: ID!, sizeId: ID!, id: ID!): UserResult
     cleanCart(id: ID!): UserResult
     updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
-    addConstructorProductItem(
+    addConstructorProductItemToCart(
     productId: ID!,
     sizeId:ID!,
      constructorData: CartInput!, 
      id: ID!
      ): UserResult
-    updateConstructorProductItemQuantity(
+    updateCartConstructorProductItemQuantity(
       quantity: ID!,
       productId: ID!,
       sizeId: ID!,
@@ -653,7 +665,7 @@ const typeDefs = gql`
       id: ID!
       ): UserResult 
     removeProductItemsFromCart(
-      items:[ RemoveItemsFromCartInput!],
+      items: RemoveItemsFromCartInput!,
       id: ID!
       ): UserResult
     mergeCartFromLS(
@@ -661,6 +673,8 @@ const typeDefs = gql`
       id: ID!
       ): UserResult
     registerAdmin(user: AdminRegisterInput!): UserResult
+    resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): UserResult
+    confirmSuperadminCreation(user: confirmSuperadminCreationInput!): UserResult
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult

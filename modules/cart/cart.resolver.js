@@ -3,8 +3,8 @@ const {
   cleanCart,
   getCartByUserId,
   updateCartItemQuantity,
-  addConstructorProductItem,
-  updateConstructorProductItemQuantity,
+  addConstructorProductItemToCart,
+  updateCartConstructorProductItemQuantity,
   mergeCartFromLS,
   removeProductItemsFromCart,
 } = require('./cart.service');
@@ -43,12 +43,12 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  addConstructorProductItem: async (
+  addConstructorProductItemToCart: async (
     _,
     { constructorData, sizeId, id, product }
   ) => {
     try {
-      return await addConstructorProductItem(
+      return await addConstructorProductItemToCart(
         constructorData,
         sizeId,
         id,
@@ -59,12 +59,12 @@ const cartMutation = {
     }
   },
 
-  updateConstructorProductItemQuantity: async (
+  updateCartConstructorProductItemQuantity: async (
     _,
     { quantity, constructorData, id }
   ) => {
     try {
-      return await updateConstructorProductItemQuantity(
+      return await updateCartConstructorProductItemQuantity(
         quantity,
         constructorData,
         id

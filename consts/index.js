@@ -4,7 +4,7 @@ const roles = {
   SUPERADMIN: 'superadmin',
 };
 
-const availableForRegistrationRoles = [roles.ADMIN];
+const availableForRegistrationRoles = [roles.ADMIN, roles.SUPERADMIN];
 
 const horondiAddress = {
   street: 'Литвиненка',

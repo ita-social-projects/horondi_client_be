@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const { removeDaysFromData } = require('./../modules/helper-functions');
+const {
+  USER_BLOCK_PERIOD: { UNLOCKED, INFINITE, TWO_MONTH, ONE_MONTH },
+} = require('../consts/user-block-period');
+
 class FilterHelper {
   filterItems(args = {}) {
     const filter = {};
@@ -10,7 +15,12 @@ class FilterHelper {
     }
 
     if (banned && banned.length) {
-      filter.banned = { $in: banned };
+      const [isBanned, all] = banned;
+      if (!all) {
+        filter['banned.blockPeriod'] = !isBanned
+          ? { $in: [UNLOCKED] }
+          : { $in: [INFINITE, TWO_MONTH, ONE_MONTH] };
+      }
     }
 
     if (days) {

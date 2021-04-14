@@ -15,6 +15,8 @@ const {
 const { newCategoryInputData } = require('../category/category.variables');
 
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.model.js');
+jest.mock('../../modules/currency/currency.utils.js');
 
 let modelId;
 let categoryId;

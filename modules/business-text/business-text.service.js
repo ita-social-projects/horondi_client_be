@@ -105,7 +105,7 @@ class BusinessTextService {
   }
 
   async checkBusinessTextExistByCode(data) {
-    return await BusinessText.find({ code: data.code }).exec();
+    return BusinessText.find({ code: data.code }).exec();
   }
 
   async replaceImageSourceToLink(page, files) {
