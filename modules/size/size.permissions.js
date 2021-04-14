@@ -1,8 +1,11 @@
 const { allow, and } = require('graphql-shield');
-const { inputDataValidation } = require('../../utils/rules');
+const { inputDataValidation, hasRoles } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { SIZE },
 } = require('../../consts/input-fields');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
 const {
   sizeValidator,
 } = require('../../validators/constructor-items.validator');
@@ -13,9 +16,18 @@ const sizePermissionsQuery = {
 };
 
 const sizePermissionsMutations = {
-  addSize: inputDataValidation(SIZE, sizeValidator),
-  deleteSize: inputDataValidation(SIZE, sizeValidator),
-  updateSize: inputDataValidation(SIZE, sizeValidator),
+  addSize: and(
+    inputDataValidation(SIZE, sizeValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  deleteSize: and(
+    inputDataValidation(SIZE, sizeValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  updateSize: and(
+    inputDataValidation(SIZE, sizeValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
 };
 
 module.exports = {

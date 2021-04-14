@@ -609,7 +609,6 @@ const typeDefs = gql`
   ${restrictionInputs}
   ${resendEmailToConfirmAdminInput}
   ${confirmSuperadminCreationInput}
-  ${modelInput}
   ${contactInput}
   ${orderInputs}
   ${emailQuestionInput}

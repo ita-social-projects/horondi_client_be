@@ -1,9 +1,12 @@
-const { allow } = require('graphql-shield');
+const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation } = require('../../utils/rules');
+const { inputDataValidation, hasRoles } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { PATTERN },
 } = require('../../consts/input-fields');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
 const {
   patternValidator,
 } = require('../../validators/constructor-items.validator');
@@ -14,9 +17,18 @@ const patternPermissionsQuery = {
 };
 
 const patternPermissionsMutations = {
-  addPattern: inputDataValidation(PATTERN, patternValidator),
-  updatePattern: inputDataValidation(PATTERN, patternValidator),
-  deletePattern: inputDataValidation(PATTERN, patternValidator),
+  addPattern: and(
+    inputDataValidation(PATTERN, patternValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  updatePattern: and(
+    inputDataValidation(PATTERN, patternValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  deletePattern: and(
+    inputDataValidation(PATTERN, patternValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
 };
 
 module.exports = { patternPermissionsMutations, patternPermissionsQuery };

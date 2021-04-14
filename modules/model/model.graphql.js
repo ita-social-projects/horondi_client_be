@@ -10,11 +10,11 @@ type Model {
     availableForConstructor: Boolean
     eligibleOptions: Option
     appliedOptions: AppliedOption
+    restrictions: Restriction
     sizes: [Size]
   }
 `;
 
-// restrictions: Restriction
 const optionTypes = `
   type Option {
     constructorBasic:[ConstructorBasic]
@@ -48,8 +48,9 @@ input ModelInput {
     priority: Int,
     show: Boolean,
     sizes: [ID]
-    availableForConstructor: Boolean,
+    availableForConstructor: Boolean
     eligibleOptions: OptionInput
+    restrictions: RestrictionInput
   }
   
 input OptionInput {
