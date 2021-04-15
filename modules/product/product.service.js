@@ -314,11 +314,10 @@ class ProductsService {
     };
 
     const newProduct = await new Product(productData).save();
-
     if (productData) {
       const historyRecord = generateHistoryObject(
         ADD_PRODUCT,
-        newProduct.model,
+        newProduct.model?._id,
         newProduct.name[UA].value,
         newProduct._id,
         [],
