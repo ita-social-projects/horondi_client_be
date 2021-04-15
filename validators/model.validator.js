@@ -38,10 +38,16 @@ const modelValidator = Joi.object({
     constructorClosure: Joi.array().items(Joi.string()),
     constructorStrap: Joi.array().items(Joi.string()),
   }),
-  constructorBasic: Joi.array().items(Joi.string()),
-  constructorPattern: Joi.array().items(Joi.string()),
-  constructorFrontPocket: Joi.array().items(Joi.string()),
-  constructorBottom: Joi.array().items(Joi.string()),
+  appliedOptions: Joi.object({
+    constructorBasic: Joi.string(),
+    constructorPattern: Joi.string(),
+    constructorFrontPocket: Joi.string(),
+    constructorBottom: Joi.string(),
+    constructorPocket: Joi.string(),
+    constructorBack: Joi.string(),
+    constructorClosure: Joi.string(),
+    constructorStrap: Joi.string(),
+  }),
 });
 
 module.exports = {

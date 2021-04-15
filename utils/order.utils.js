@@ -1,9 +1,14 @@
-const Product = require('../modules/product/product.model');
+const { default: ShortUniqueId } = require('short-unique-id');
+
 const ConstructorBasic = require('../modules/constructor/constructor-basic/constructor-basic.model');
 const ConstructorFrontPocket = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../modules/size/size.model');
-const { default: ShortUniqueId } = require('short-unique-id');
+const { CURRENCY, CURRENCY_VALUE } = require('./../consts/currency');
+const productModel = require('../modules/product/product.model');
+const {
+  ORDER_STATUSES: { CANCELLED, REFUNDED },
+} = require('../consts/order-statuses');
 
 async function calculateTotalItemsPrice(items) {
   return items.reduce(
@@ -25,54 +30,59 @@ async function calculateTotalItemsPrice(items) {
           ).exec();
           item.fixedPrice = [
             {
-              currency: 'UAH',
+              currency: CURRENCY.UAH,
               value:
-                constructorBasics.basePrice[0].value +
-                constructorFrontPocket.basePrice[0].value +
-                constructorBottom.basePrice[0].value +
-                additionalPrice[0].value,
+                constructorBasics.basePrice[CURRENCY_VALUE.UAH_VALUE].value +
+                constructorFrontPocket.basePrice[CURRENCY_VALUE.UAH_VALUE]
+                  .value +
+                constructorBottom.basePrice[CURRENCY_VALUE.UAH_VALUE].value +
+                additionalPrice[CURRENCY_VALUE.UAH_VALUE].value,
             },
             {
-              currency: 'USD',
+              currency: CURRENCY.USD,
               value:
-                constructorBasics.basePrice[1].value +
-                constructorFrontPocket.basePrice[1].value +
-                constructorBottom.basePrice[1].value +
-                additionalPrice[1].value,
+                constructorBasics.basePrice[CURRENCY_VALUE.USD_VALUE].value +
+                constructorFrontPocket.basePrice[CURRENCY_VALUE.USD_VALUE]
+                  .value +
+                constructorBottom.basePrice[CURRENCY_VALUE.USD_VALUE].value +
+                additionalPrice[CURRENCY_VALUE.USD_VALUE].value,
             },
           ];
         } else {
-          const { basePrice } = await Product.findById(item.product).exec();
           item.fixedPrice = [
             {
-              currency: 'UAH',
-              value: basePrice[0].value + additionalPrice[0].value,
+              currency: CURRENCY.UAH,
+              value: additionalPrice[CURRENCY_VALUE.UAH_VALUE].value,
             },
             {
-              currency: 'USD',
-              value: basePrice[1].value + additionalPrice[1].value,
+              currency: CURRENCY.USD,
+              value: additionalPrice[CURRENCY_VALUE.USD_VALUE].value,
             },
           ];
         }
       }
       return [
         {
-          currency: 'UAH',
-          value: item.fixedPrice[0].value * quantity + sum[0].value,
+          currency: CURRENCY.UAH,
+          value:
+            item.fixedPrice[CURRENCY_VALUE.UAH_VALUE].value * quantity +
+            sum[CURRENCY_VALUE.UAH_VALUE].value,
         },
         {
-          currency: 'USD',
-          value: item.fixedPrice[1].value * quantity + sum[1].value,
+          currency: CURRENCY.USD,
+          value:
+            item.fixedPrice[CURRENCY_VALUE.USD_VALUE].value * quantity +
+            sum[CURRENCY_VALUE.USD_VALUE].value,
         },
       ];
     },
     [
       {
-        currency: 'UAH',
+        currency: CURRENCY.UAH,
         value: 0,
       },
       {
-        currency: 'USD',
+        currency: CURRENCY.USD,
         value: 0,
       },
     ]
@@ -89,8 +99,62 @@ function generateOrderNumber() {
   return uid();
 }
 
+async function addProductsToStatistic(items) {
+  items.forEach(async item => {
+    if (item.quantity !== 0) {
+      const product = await productModel.findById(item.product).exec();
+      product.purchasedCount += item.quantity;
+      await product.save();
+    }
+  });
+}
+
+async function updateProductStatistic(orderToUpdate, newOrder) {
+  if (
+    (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
+    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+  ) {
+    return;
+  }
+  const oldItems = orderToUpdate.items.map(item => ({
+    product: item.product.toString(),
+    quantity: -item.quantity,
+  }));
+
+  if (newOrder.status === CANCELLED || newOrder.status === REFUNDED) {
+    await addProductsToStatistic(oldItems);
+  } else if (
+    newOrder.status !== CANCELLED &&
+    newOrder.status !== REFUNDED &&
+    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+  ) {
+    await addProductsToStatistic(newOrder.items);
+  } else {
+    const newItems = newOrder.items.map(item => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+    const items = newItems.map(newItem => {
+      const index = oldItems.findIndex(el => el.product === newItem.product);
+      let quantity;
+      if (index !== -1) {
+        quantity = newItem.quantity + oldItems[index].quantity;
+        oldItems.splice(index, 1);
+      } else {
+        quantity = newItem.quantity;
+      }
+      return { product: newItem.product, quantity };
+    });
+
+    items.push(...oldItems);
+    await addProductsToStatistic(items);
+  }
+}
+
 module.exports = {
   calculateTotalPriceToPay,
   generateOrderNumber,
   calculateTotalItemsPrice,
+  addProductsToStatistic,
+  updateProductStatistic,
 };

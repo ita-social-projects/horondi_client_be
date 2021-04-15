@@ -235,29 +235,6 @@ const constructorFrontPocketValidator = Joi.object({
   default: Joi.boolean().required(),
 });
 
-const sizeValidator = Joi.object({
-  name: Joi.array().has(nestedNameValidator),
-  simpleName: Joi.array().has(nestedNameValidator),
-  model: Joi.string().required(),
-  heightInCm: Joi.number()
-    .integer()
-    .required(),
-  widthInCm: Joi.number()
-    .integer()
-    .required(),
-  depthInCm: Joi.number()
-    .integer()
-    .required(),
-  volumeInLiters: Joi.number()
-    .integer()
-    .required(),
-  weightInKg: Joi.number().required(),
-  additionalPrice: Joi.array()
-    .has(nestedPriceValidator)
-    .optional(),
-  available: Joi.boolean().required(),
-});
-
 const restrictionValidator = Joi.object({
   compareByExpression: Joi.string()
     .trim()
@@ -284,6 +261,5 @@ module.exports = {
   constructorBasicValidator,
   constructorBottomValidator,
   constructorFrontPocketValidator,
-  sizeValidator,
   restrictionValidator,
 };

@@ -1,14 +1,13 @@
 const { allow, and } = require('graphql-shield');
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
+const { hasRoles } = require('../../utils/rules');
+const { roles } = require('../../consts');
+const { ADMIN, SUPERADMIN } = roles;
+const { sizeInputValidator } = require('../../validators/size.validator');
+const { inputDataValidation } = require('../../utils/rules');
+
 const {
-  INPUT_FIELDS: { SIZE },
-} = require('../../consts/input-fields');
-const {
-  roles: { ADMIN, SUPERADMIN },
-} = require('../../consts');
-const {
-  sizeValidator,
-} = require('../../validators/constructor-items.validator');
+  DB_COLLECTIONS_NAMES: { SIZE },
+} = require('../../consts/db-collections-names');
 
 const sizePermissionsQuery = {
   getAllSizes: allow,
@@ -17,15 +16,12 @@ const sizePermissionsQuery = {
 
 const sizePermissionsMutations = {
   addSize: and(
-    inputDataValidation(SIZE, sizeValidator),
+    inputDataValidation(SIZE, sizeInputValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteSize: and(
-    inputDataValidation(SIZE, sizeValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
+  deleteSize: hasRoles([ADMIN, SUPERADMIN]),
   updateSize: and(
-    inputDataValidation(SIZE, sizeValidator),
+    inputDataValidation(SIZE, sizeInputValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
 };
