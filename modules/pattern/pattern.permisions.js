@@ -25,10 +25,7 @@ const patternPermissionsMutations = {
     inputDataValidation(PATTERN, patternValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deletePattern: and(
-    inputDataValidation(PATTERN, patternValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
+  deletePattern: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = { patternPermissionsMutations, patternPermissionsQuery };

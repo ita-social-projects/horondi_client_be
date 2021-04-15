@@ -1,4 +1,5 @@
 const { allow, and } = require('graphql-shield');
+
 const { inputDataValidation, hasRoles } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { STRAP },
@@ -25,10 +26,7 @@ const strapPermissionsMutations = {
     inputDataValidation(STRAP, strapValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteStrap: and(
-    inputDataValidation(STRAP, strapValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
+  deleteStrap: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = {

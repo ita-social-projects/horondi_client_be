@@ -1,8 +1,12 @@
-const { allow } = require('graphql-shield');
-const { inputDataValidation } = require('../../utils/rules');
+const { allow, and } = require('graphql-shield');
+
+const { inputDataValidation, hasRoles } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { CLOSURE },
 } = require('../../consts/input-fields');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
 const {
   closureValidator,
 } = require('../../validators/constructor-items.validator');
@@ -13,9 +17,15 @@ const closurePermissionsQuery = {
 };
 
 const closurePermissionsMutations = {
-  addClosure: inputDataValidation(CLOSURE, closureValidator),
-  updateClosure: inputDataValidation(CLOSURE, closureValidator),
-  deleteClosure: inputDataValidation(CLOSURE, closureValidator),
+  addClosure: and(
+    inputDataValidation(CLOSURE, closureValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  updateClosure: and(
+    inputDataValidation(CLOSURE, closureValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  deleteClosure: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = { closurePermissionsQuery, closurePermissionsMutations };

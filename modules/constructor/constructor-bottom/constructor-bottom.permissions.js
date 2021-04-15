@@ -1,8 +1,12 @@
-const { allow } = require('graphql-shield');
-const { inputDataValidation } = require('../../../utils/rules');
+const { allow, and } = require('graphql-shield');
+
+const { inputDataValidation, hasRoles } = require('../../../utils/rules');
 const {
   INPUT_FIELDS: { CONSTRUCTOR_BOTTOM },
 } = require('../../../consts/input-fields');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../../consts');
 const {
   constructorBottomValidator,
 } = require('../../../validators/constructor-items.validator');
@@ -13,18 +17,15 @@ const сonstructorBottomPermissionsQuery = {
 };
 
 const сonstructorBottomPermissionsMutations = {
-  addConstructorBottom: inputDataValidation(
-    CONSTRUCTOR_BOTTOM,
-    constructorBottomValidator
+  addConstructorBottom: and(
+    inputDataValidation(CONSTRUCTOR_BOTTOM, constructorBottomValidator),
+    hasRoles([ADMIN, SUPERADMIN])
   ),
-  updateConstructorBottom: inputDataValidation(
-    CONSTRUCTOR_BOTTOM,
-    constructorBottomValidator
+  updateConstructorBottom: and(
+    inputDataValidation(CONSTRUCTOR_BOTTOM, constructorBottomValidator),
+    hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteConstructorBottom: inputDataValidation(
-    CONSTRUCTOR_BOTTOM,
-    constructorBottomValidator
-  ),
+  deleteConstructorBottom: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = {

@@ -1,4 +1,5 @@
 const { allow, and } = require('graphql-shield');
+
 const { inputDataValidation, hasRoles } = require('../../utils/rules');
 const {
   INPUT_FIELDS: { POCKET },
@@ -25,10 +26,7 @@ const pocketPermissionsMutations = {
     inputDataValidation(POCKET, pocketValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deletePocket: and(
-    inputDataValidation(POCKET, pocketValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
+  deletePocket: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = {

@@ -20,10 +20,7 @@ const restrictionPermissionsMutations = {
     inputDataValidation(RESTRICTION, restrictionValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteRestriction: and(
-    inputDataValidation(RESTRICTION, restrictionValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
+  deleteRestriction: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 const restrictionPermissionsQuery = {
