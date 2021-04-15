@@ -22,12 +22,9 @@ const {
 const {
   HISTORY_OBJ_KEYS: {
     NAME,
-    MATERIAL,
     ADDITIONAL_PRICE,
     AVAILABLE,
-    DEFAULT,
     FEATURES,
-    COLOR,
     OPTION_TYPE,
     MODEL,
   },
@@ -70,7 +67,7 @@ class ClosureService {
 
     const historyRecord = generateHistoryObject(
       ADD_CLOSURE,
-      newClosure.model,
+      newClosure.model?._id,
       newClosure.name[UA].value,
       newClosure._id,
       [],
@@ -82,8 +79,6 @@ class ClosureService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      newClosure.optionType,
-      newClosure.features,
       adminId
     );
 
@@ -118,7 +113,7 @@ class ClosureService {
 
     const historyRecord = generateHistoryObject(
       EDIT_CLOSURE,
-      '',
+      closureMaterial.model?._id,
       closureMaterial.name[UA].value,
       closureMaterial._id,
       beforeChanges,
@@ -137,12 +132,14 @@ class ClosureService {
     }
     const historyRecord = generateHistoryObject(
       DELETE_CLOSURE,
-      '',
+      closure.model?._id,
       closure.name[UA].value,
       closure._id,
       generateHistoryChangesData(closure, [
         NAME,
-        MATERIAL,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
@@ -152,7 +149,6 @@ class ClosureService {
 
     await addHistoryRecord(historyRecord);
 
-    await addHistoryRecord(historyRecord);
     return closure;
   }
 

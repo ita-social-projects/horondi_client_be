@@ -48,6 +48,12 @@ const HISTORY_OBJ_KEYS = {
   FEATURES: 'features',
   COLOR: 'color',
   DEFAULT: 'default',
+  BASE_PRICE: 'basePrice',
+  ELIGIBLE_OPTIONS: 'eligibleOptions',
+  APPLIED_OPTIONS: 'appliedOptions',
+  RESTRICTIONS: 'restrictions',
+  COMPARE_BY_EXPRESSION: 'compareByExpression',
+  OPTIONS: 'options',
 };
 
 module.exports = {

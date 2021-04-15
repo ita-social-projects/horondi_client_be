@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
+
 const Model = require('./model.model');
 const ConstructorBasic = require('../constructor/constructor-basic/constructor-basic.model');
 const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
@@ -10,6 +11,32 @@ const {
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
 const uploadService = require('../upload/upload.service');
+const {
+  HISTORY_ACTIONS: { ADD_MODEL, EDIT_MODEL, DELETE_MODEL },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    CATEGORY,
+    DESCRIPTION,
+    PRIORITY,
+    SIZES,
+    AVAILABLE_FOR_CONSTRUCTOR,
+    ELIGIBLE_OPTIONS,
+    APPLIED_OPTIONS,
+    RESTRICTIONS,
+    AVAILABLE,
+  },
+} = require('../../consts/history-obj-keys');
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -51,7 +78,7 @@ class ModelsService {
     return Model.find({ category: id });
   }
 
-  async addModel(data, upload) {
+  async addModel(data, upload, { _id: adminId }) {
     if (await this.checkModelExist(data)) {
       throw new Error(MODEL_ALREADY_EXIST);
     }
@@ -62,18 +89,43 @@ class ModelsService {
       data.images = imageResults.fileNames;
     }
 
-    return await new Model(data).save();
+    const newModel = await new Model(data).save();
+
+    const historyRecord = generateHistoryObject(
+      ADD_MODEL,
+      newModel.model?._id,
+      newModel.name[UA].value,
+      newModel._id,
+      [],
+      generateHistoryChangesData(newModel, [
+        NAME,
+        CATEGORY,
+        DESCRIPTION,
+        PRIORITY,
+        SIZES,
+        AVAILABLE_FOR_CONSTRUCTOR,
+        ELIGIBLE_OPTIONS,
+        APPLIED_OPTIONS,
+        RESTRICTIONS,
+        AVAILABLE,
+      ]),
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return newModel;
   }
 
-  async updateModel(id, newModel, upload) {
-    const model = await Model.findById(id).exec();
-    if (!model) {
+  async updateModel(id, newModel, upload, { _id: adminId }) {
+    const modelToUpdate = await Model.findById(id).exec();
+    if (!modelToUpdate) {
       throw new Error(MODEL_NOT_FOUND);
     }
 
     if (upload) {
-      if (model.images) {
-        const images = Object.values(model.images).filter(
+      if (modelToUpdate.images) {
+        const images = Object.values(modelToUpdate.images).filter(
           item => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
@@ -82,32 +134,69 @@ class ModelsService {
       const imageResults = await uploadResult[0];
       newModel.images = imageResults.fileNames;
     }
+
+    const { beforeChanges, afterChanges } = getChanges(modelToUpdate, newModel);
+
+    const historyRecord = generateHistoryObject(
+      EDIT_MODEL,
+      modelToUpdate.model?._id,
+      modelToUpdate.name[UA].value,
+      modelToUpdate._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
     return Model.findByIdAndUpdate(id, newModel, { new: true });
   }
 
-  async deleteModel(id) {
-    const model = await Model.findByIdAndDelete(id).exec();
-    if (!model) {
+  async deleteModel(id, { _id: adminId }) {
+    const modelToDelete = await Model.findByIdAndDelete(id).exec();
+    if (!modelToDelete) {
       throw new Error(MODEL_NOT_FOUND);
     }
-    model.constructorBasic.forEach(async basic => {
+    modelToDelete.constructorBasic.forEach(async basic => {
       await ConstructorBasic.findByIdAndDelete(basic).exec();
     });
-    model.constructorBottom.forEach(async bottom => {
+    modelToDelete.constructorBottom.forEach(async bottom => {
       await ConstructorBottom.findByIdAndDelete(bottom).exec();
     });
-    await model.constructorFrontPocket.forEach(async pocket => {
+    await modelToDelete.constructorFrontPocket.forEach(async pocket => {
       await ConstructorFrontPocket.findByIdAndDelete(pocket).exec();
     });
 
-    const images = Object.values(model.images).filter(
+    const images = Object.values(modelToDelete.images).filter(
       item => typeof item === 'string' && item
     );
     if (images.length) {
       uploadService.deleteFiles(images);
     }
 
-    return model;
+    const historyRecord = generateHistoryObject(
+      DELETE_MODEL,
+      modelToDelete.model?._id,
+      modelToDelete.name[UA].value,
+      modelToDelete._id,
+      generateHistoryChangesData(modelToDelete, [
+        NAME,
+        CATEGORY,
+        DESCRIPTION,
+        PRIORITY,
+        SIZES,
+        AVAILABLE_FOR_CONSTRUCTOR,
+        ELIGIBLE_OPTIONS,
+        APPLIED_OPTIONS,
+        RESTRICTIONS,
+        AVAILABLE,
+      ]),
+      [],
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return modelToDelete;
   }
 
   async addModelConstructorBasic(id, constructorElementID) {

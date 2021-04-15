@@ -2,8 +2,29 @@ const Strap = require('./strap.model');
 const {
   STRAP_NOT_FOUND,
   STRAP_ALREADY_EXIST,
-  COLOR_NOT_PROVIDED,
 } = require('../../error-messages/strap.messages');
+const {
+  HISTORY_ACTIONS: { ADD_STRAP, EDIT_STRAP, DELETE_STRAP },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/hisrory');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    ADDITIONAL_PRICE,
+    AVAILABLE,
+    FEATURES,
+    OPTION_TYPE,
+    MODEL,
+  },
+} = require('../../consts/history-obj-keys');
 
 class StrapService {
   async getAllStraps({ skip, limit }) {
@@ -37,7 +58,7 @@ class StrapService {
     return strap;
   }
 
-  async deleteStrap({ id }) {
+  async deleteStrap({ id }, { _id: adminId }) {
     const foundStrap = await Strap.findByIdAndDelete(id)
       .lean()
       .exec();
@@ -46,16 +67,31 @@ class StrapService {
       throw new Error(STRAP_NOT_FOUND);
     }
 
-    const deletedImage = await uploadService.deleteFiles(
-      Object.values(foundStrap.image)
+    await uploadService.deleteFiles(Object.values(foundStrap.image));
+
+    const historyRecord = generateHistoryObject(
+      DELETE_STRAP,
+      foundStrap.model,
+      foundStrap.name[UA].value,
+      foundStrap._id,
+      generateHistoryChangesData(foundStrap, [
+        NAME,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      [],
+      adminId
     );
 
-    if (await Promise.allSettled(deletedImage)) {
-      return foundStrap;
-    }
+    await addHistoryRecord(historyRecord);
+
+    return foundStrap;
   }
 
-  async updateStrap({ id, strap, image }) {
+  async updateStrap({ id, strap, image }, { _id: adminId }) {
     const strapToUpdate = await Strap.findById(id).exec();
     if (!strapToUpdate) {
       throw new Error(STRAP_NOT_FOUND);
@@ -74,10 +110,24 @@ class StrapService {
     const uploadImage = await uploadService.uploadSmallImage(image);
     image = uploadImage.fileNames.small;
 
+    const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
+
+    const historyRecord = generateHistoryObject(
+      EDIT_STRAP,
+      strapToUpdate.model?._id,
+      strapToUpdate.name[UA].value,
+      strapToUpdate._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
     return await Strap.findByIdAndUpdate(id, { ...strap, image }).exec();
   }
 
-  async addStrap({ strap, image }) {
+  async addStrap({ strap, image }, { _id: adminId }) {
     if (await this.checkIfStrapExist(strap)) {
       throw new Error(STRAP_ALREADY_EXIST);
     }
@@ -86,7 +136,28 @@ class StrapService {
       const uploadImage = await uploadService.uploadSmallImage(image);
       image = uploadImage.fileNames.small;
     }
-    return new Strap({ ...strap, image }).save();
+    const newStrap = await new Strap({ ...strap, image }).save();
+
+    const historyRecord = generateHistoryObject(
+      ADD_STRAP,
+      newStrap.model?._id,
+      newStrap.name[UA].value,
+      newStrap._id,
+      [],
+      generateHistoryChangesData(newStrap, [
+        NAME,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return newStrap;
   }
 
   async checkIfStrapExist(data, id) {

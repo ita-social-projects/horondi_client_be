@@ -7,8 +7,6 @@ const generateHistoryObject = (
   subjectId,
   valueBeforeChange,
   valueAfterChange,
-  subjectType,
-  subjectFeatures,
   userId = ''
 ) => ({
   action,
@@ -16,8 +14,6 @@ const generateHistoryObject = (
     model: subjectModel,
     name: subjectName,
     subjectId,
-    optionType: subjectType,
-    features: subjectFeatures,
   },
   valueBeforeChange,
   valueAfterChange,

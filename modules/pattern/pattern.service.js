@@ -19,7 +19,15 @@ const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { NAME, DESCRIPTION, MATERIAL, AVAILABLE, HANDMADE },
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    DESCRIPTION,
+    AVAILABLE,
+    FEATURES,
+    ADDITIONAL_PRICE,
+    MODEL,
+    OPTION_TYPE,
+  },
 } = require('../../consts/history-obj-keys');
 
 class PatternsService {
@@ -122,10 +130,12 @@ class PatternsService {
       [],
       generateHistoryChangesData(newPattern, [
         NAME,
-        MATERIAL,
-        AVAILABLE,
         DESCRIPTION,
-        HANDMADE,
+        MODEL,
+        OPTION_TYPE,
+        FEATURES,
+        ADDITIONAL_PRICE,
+        AVAILABLE,
       ]),
       adminId
     );
@@ -155,10 +165,12 @@ class PatternsService {
         foundPattern._id,
         generateHistoryChangesData(foundPattern, [
           NAME,
-          MATERIAL,
-          AVAILABLE,
           DESCRIPTION,
-          HANDMADE,
+          MODEL,
+          OPTION_TYPE,
+          FEATURES,
+          ADDITIONAL_PRICE,
+          AVAILABLE,
         ]),
         [],
         adminId
