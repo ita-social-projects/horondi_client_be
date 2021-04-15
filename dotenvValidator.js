@@ -41,6 +41,7 @@ const dotenvVariables = [
   'UKR_POSHTA_ADDRESS_API_LINK',
   'CONTRIBUTING',
   'GMAIL_EMAIL_SERVICE',
+  'ADMIN_BASE_URI',
 ];
 
 function dotenvValidator(processEnv) {
@@ -79,6 +80,10 @@ function dotenvValidator(processEnv) {
       .required(),
     RECOVERY_EXPIRE: joi.string().required(),
     FRONT_BASE_URI: joi
+      .string()
+      .uri()
+      .required(),
+    ADMIN_BASE_URI: joi
       .string()
       .uri()
       .required(),
