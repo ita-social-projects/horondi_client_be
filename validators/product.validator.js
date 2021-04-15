@@ -1,66 +1,53 @@
 const Joi = require('joi');
 
-const idLength = 24;
-
-const languageSchemaValidator = Joi.object().keys({
+const languageSchemaValidator = {
   lang: Joi.string()
     .max(2)
     .required(),
   value: Joi.string()
     .min(6)
+    .max(150)
     .required(),
-});
+};
 
 const constructorMaterialsValidator = Joi.object({
-  material: Joi.string().max(idLength),
-  color: Joi.string().max(idLength),
+  material: Joi.string().required(),
+  color: Joi.string().required(),
 });
 
 const productInputValidator = Joi.object({
-  category: Joi.string()
-    .max(idLength)
-    .required(), // ID!
-  model: Joi.string()
-    .max(idLength)
-    .required(), // ID!
+  category: Joi.string().required(),
+  model: Joi.string().required(),
   name: Joi.array()
     .items(languageSchemaValidator)
-    .required(), //  [LanguageInput]!
+    .required(),
   description: Joi.array()
     .items(languageSchemaValidator)
-    .required(), // [LanguageInput]!
-  mainMaterial: constructorMaterialsValidator, //  { material: ID, color: ID }
-  innerMaterial: constructorMaterialsValidator, //  { material: ID, color: ID }
-  bottomMaterial: constructorMaterialsValidator, //  { material: ID, color: ID }
+    .required(),
+  mainMaterial: constructorMaterialsValidator,
+  innerMaterial: constructorMaterialsValidator,
+  bottomMaterial: constructorMaterialsValidator,
   strapLengthInCm: Joi.number()
     .integer()
-    .required(), // Int!
-  pattern: Joi.string()
-    .max(idLength)
-    .required(), // ID!
-  closure: Joi.string()
-    .max(idLength)
-    .required(), // ID!
+    .min(0)
+    .required(),
+  pattern: Joi.string().required(),
+  closure: Joi.string().required(),
   sizes: Joi.array()
-    .items(
-      Joi.string()
-        .max(idLength)
-        .required()
-    )
-    .required(), // [ID]!
-  images: Joi.array(), // [Upload],
-  availableCount: Joi.number().integer(), // Int,
+    .items(Joi.string().required())
+    .required(),
+  images: Joi.array(),
+  availableCount: Joi.number().integer(),
   basePrice: Joi.number()
     .integer()
-    .required(), // Int!,
-  available: Joi.bool(), // Boolean,
-  isHotItem: Joi.bool(), // Boolean
+    .min(0)
+    .required(),
+  available: Joi.bool(),
+  isHotItem: Joi.bool(),
 });
 
 const deleteProductValidator = Joi.object({
-  id: Joi.string()
-    .max(idLength)
-    .required(),
+  id: Joi.string().required(),
 });
 
 module.exports = {
