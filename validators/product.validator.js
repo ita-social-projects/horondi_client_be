@@ -46,9 +46,7 @@ const productInputValidator = Joi.object({
   isHotItem: Joi.bool(),
 });
 
-const deleteProductValidator = Joi.object({
-  id: Joi.string().required(),
-});
+const deleteProductValidator = Joi.string().required();
 
 module.exports = {
   productInputValidator,

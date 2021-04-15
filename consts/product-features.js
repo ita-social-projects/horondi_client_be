@@ -1,4 +1,5 @@
 const PRODUCT_FEATURES = {
+  ID: 'id',
   PRODUCT: 'product',
   PRODUCT_CATEGORY: 'category',
   PRODUCT_MODEL: 'model',

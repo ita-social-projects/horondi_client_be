@@ -6,7 +6,7 @@ const { inputDataValidation } = require('../../utils/rules');
 const { and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const {
-  PRODUCT_FEATURES: { PRODUCT },
+  PRODUCT_FEATURES: { PRODUCT, ID },
 } = require('../../consts/product-features');
 const {
   roles: { ADMIN, SUPERADMIN },
@@ -22,7 +22,7 @@ const productPermissionsMutation = {
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteProduct: and(
-    inputDataValidation(PRODUCT, deleteProductValidator),
+    inputDataValidation(ID, deleteProductValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
 };
