@@ -21,23 +21,23 @@ const backQuery = {
 };
 
 const backMutation = {
-  addBack: async (parent, args) => {
+  addBack: async (parent, args, { user }) => {
     try {
-      return await backService.addBack(args);
+      return await backService.addBack(args.back, args.image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateBack: async (parent, args) => {
+  updateBack: async (parent, args, { user }) => {
     try {
-      return await backService.updateBack(args);
+      return await backService.updateBack(args.id, args.back, args.image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteBack: async (parent, args) => {
+  deleteBack: async (parent, args, { user }) => {
     try {
-      return await backService.deleteBack(args);
+      return await backService.deleteBack(args.id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

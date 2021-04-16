@@ -61,7 +61,7 @@ class BackService {
     return back;
   }
 
-  async updateBack({ id, back, image }, { _id: adminId }) {
+  async updateBack(id, back, image, { _id: adminId }) {
     const backToUpdate = await Back.findById(id).exec();
     if (!backToUpdate) {
       throw new Error(BACK_NOT_FOUND);
@@ -78,12 +78,9 @@ class BackService {
     await uploadService.deleteFiles(image);
 
     const uploadImage = await uploadService.uploadSmallImage(image);
-    image = uploadImage.fileNames.small;
+    back.image = uploadImage.fileNames.small;
 
-    const updatedBack = await Back.findByIdAndUpdate(id, {
-      ...back,
-      image,
-    }).exec();
+    const updatedBack = await Back.findByIdAndUpdate(id, back).exec();
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
 
@@ -102,7 +99,7 @@ class BackService {
     return updatedBack;
   }
 
-  async deleteBack({ id }, { _id: adminId }) {
+  async deleteBack(id, { _id: adminId }) {
     const foundBack = await Back.findById(id)
       .lean()
       .exec();
@@ -139,17 +136,17 @@ class BackService {
     }
   }
 
-  async addBack({ back, image }, { _id: adminId }) {
+  async addBack(back, image, { _id: adminId }) {
     if (await this.checkIfBackExist(back)) {
       throw new Error(BACK_ALREADY_EXIST);
     }
 
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
-      image = uploadImage.fileNames.small;
+      back.image = uploadImage.fileNames.small;
     }
 
-    const newBack = await new Back({ ...back, image }).save();
+    const newBack = await new Back(back).save();
 
     const historyRecord = generateHistoryObject(
       ADD_BACK,

@@ -1,6 +1,7 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 const uploadService = require('../upload/upload.service');
+const RuleError = require('../../errors/rule.error');
 const {
   HISTORY_ACTIONS: {
     ADD_CONSTRUCTOR_ELEMENT,
@@ -42,25 +43,24 @@ class ConstructorService {
     };
   }
 
-  async getConstructorElementById(id, model, error) {
+  async getConstructorElementById(id, model) {
     const foundElement = await model.findById(id);
     if (foundElement) {
       return foundElement;
     }
-    throw new Error(error);
+    return new RuleError(e.message, e.statusCode);
   }
 
   async addConstructorElement(
     { constructorElement, upload },
     model,
-    error,
     { _id: adminId }
   ) {
     if (upload) {
       constructorElement.image = await uploadSmallImage(upload);
     }
     if (await this.checkConstructorElementExist(constructorElement, model)) {
-      throw new Error(error);
+      return new RuleError(e.message, e.statusCode);
     }
     constructorElement.basePrice = await calculatePrice(
       constructorElement.basePrice
@@ -92,12 +92,11 @@ class ConstructorService {
   async updateConstructorElement(
     { id, constructorElement, upload },
     model,
-    error,
     { _id: adminId }
   ) {
     const constructorFountElement = await model.findById(id);
     if (!constructorFountElement) {
-      throw new Error(error);
+      return new RuleError(e.message, e.statusCode);
     }
 
     if (upload) {
@@ -132,7 +131,7 @@ class ConstructorService {
     return updatedBasic;
   }
 
-  async deleteConstructorElement(id, model, error, { _id: adminId }) {
+  async deleteConstructorElement(id, model, { _id: adminId }) {
     const constructorElement = await model.findByIdAndDelete(id);
     if (constructorElement) {
       if (constructorElement.image) {
@@ -140,7 +139,7 @@ class ConstructorService {
       }
     }
     if (!constructorElement) {
-      throw new Error(error);
+      return new RuleError(e.message, e.statusCode);
     }
 
     const historyRecord = generateHistoryObject(

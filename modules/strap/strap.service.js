@@ -58,7 +58,7 @@ class StrapService {
     return strap;
   }
 
-  async deleteStrap({ id }, { _id: adminId }) {
+  async deleteStrap(id, { _id: adminId }) {
     const foundStrap = await Strap.findByIdAndDelete(id)
       .lean()
       .exec();
@@ -91,7 +91,7 @@ class StrapService {
     return foundStrap;
   }
 
-  async updateStrap({ id, strap, image }, { _id: adminId }) {
+  async updateStrap(id, strap, image, { _id: adminId }) {
     const strapToUpdate = await Strap.findById(id).exec();
     if (!strapToUpdate) {
       throw new Error(STRAP_NOT_FOUND);
@@ -108,7 +108,7 @@ class StrapService {
     await uploadService.deleteFiles(image);
 
     const uploadImage = await uploadService.uploadSmallImage(image);
-    image = uploadImage.fileNames.small;
+    strap.image = uploadImage.fileNames.small;
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
 
@@ -124,19 +124,19 @@ class StrapService {
 
     await addHistoryRecord(historyRecord);
 
-    return await Strap.findByIdAndUpdate(id, { ...strap, image }).exec();
+    return await Strap.findByIdAndUpdate(id, strap).exec();
   }
 
-  async addStrap({ strap, image }, { _id: adminId }) {
+  async addStrap(strap, image, { _id: adminId }) {
     if (await this.checkIfStrapExist(strap)) {
       throw new Error(STRAP_ALREADY_EXIST);
     }
 
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
-      image = uploadImage.fileNames.small;
+      strap.image = uploadImage.fileNames.small;
     }
-    const newStrap = await new Strap({ ...strap, image }).save();
+    const newStrap = await new Strap(strap).save();
 
     const historyRecord = generateHistoryObject(
       ADD_STRAP,

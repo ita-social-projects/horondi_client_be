@@ -39,11 +39,7 @@ const constructorFrontPocketSchema = new mongoose.Schema({
       ref: PATTERN,
     },
   },
-  image: {
-    type: String,
-    minlength: [MIN, IMAGE_NOT_PROVIDED],
-    maxlength: [MAX, IMAGE_NOT_PROVIDED],
-  },
+  image: String,
   basePrice: [CurrencySet],
   available: Boolean,
   default: Boolean,

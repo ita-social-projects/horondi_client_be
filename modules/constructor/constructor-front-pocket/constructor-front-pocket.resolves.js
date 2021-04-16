@@ -1,12 +1,6 @@
 const constructorService = require('../constructor.services');
-const {
-  FRONT_POCKET_NOT_FOUND,
-  FRONT_POCKET_ALREADY_EXIST,
-} = require('../../../error-messages/constructor-front-pocket-messages');
+const RuleError = require('../../../errors/rule.error');
 const ConstructorFrontPocket = require('./constructor-front-pocket.model');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../../consts/status-codes');
 
 const constructorFrontPocketQuery = {
   getAllConstructorFrontPocket: (parent, args) =>
@@ -15,61 +9,47 @@ const constructorFrontPocketQuery = {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
-        ConstructorFrontPocket,
-        FRONT_POCKET_NOT_FOUND
+        ConstructorFrontPocket
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const constructorFrontPocketMutation = {
-  addConstructorFrontPocket: async (parent, args) => {
+  addConstructorFrontPocket: async (parent, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
         ConstructorFrontPocket,
-        FRONT_POCKET_ALREADY_EXIST
+        user
       );
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updateConstructorFrontPocket: async (parent, args) => {
+  updateConstructorFrontPocket: async (parent, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
         ConstructorFrontPocket,
-        FRONT_POCKET_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode:
-          e.message === FRONT_POCKET_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteConstructorFrontPocket: async (parent, args) => {
+  deleteConstructorFrontPocket: async (parent, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,
         ConstructorFrontPocket,
-        FRONT_POCKET_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

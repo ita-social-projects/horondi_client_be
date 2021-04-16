@@ -21,23 +21,28 @@ const strapQuery = {
 };
 
 const strapMutation = {
-  addStrap: async (parent, args) => {
+  addStrap: async (parent, args, { user }) => {
     try {
-      return await strapService.addStrap(args);
+      return await strapService.addStrap(args.strap, args.image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateStrap: async (parent, args) => {
+  updateStrap: async (parent, args, { user }) => {
     try {
-      return await strapService.updateStrap(args);
+      return await strapService.updateStrap(
+        args.id,
+        args.strap,
+        args.image,
+        user
+      );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteStrap: async (parent, args) => {
+  deleteStrap: async (parent, args, { user }) => {
     try {
-      return await strapService.deleteStrap(args);
+      return await strapService.deleteStrap(args.id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

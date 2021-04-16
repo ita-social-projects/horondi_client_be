@@ -2,23 +2,27 @@ const restrictionService = require('./restriction.service');
 const RuleError = require('../../errors/rule.error');
 
 const restrictionMutation = {
-  addRestriction: async (parent, args) => {
+  addRestriction: async (parent, args, { user }) => {
     try {
-      return await restrictionService.addRestriction(args);
+      return await restrictionService.addRestriction(args.restriction, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateRestriction: async (parent, args) => {
+  updateRestriction: async (parent, args, { user }) => {
     try {
-      return await restrictionService.updateRestriction(args);
+      return await restrictionService.updateRestriction(
+        args.id,
+        args.restriction,
+        user
+      );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteRestriction: async (parent, args) => {
+  deleteRestriction: async (parent, args, { user }) => {
     try {
-      return await restrictionService.deleteRestriction(args);
+      return await restrictionService.deleteRestriction(args.id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

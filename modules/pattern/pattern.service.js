@@ -68,7 +68,7 @@ class PatternsService {
     );
     const historyRecord = generateHistoryObject(
       EDIT_PATTERN,
-      patternToUpdate.material,
+      patternToUpdate.model?._id,
       patternToUpdate.name[UA].value,
       patternToUpdate._id,
       beforeChanges,
@@ -124,7 +124,7 @@ class PatternsService {
     const newPattern = await new Pattern({ ...pattern, images }).save();
     const historyRecord = generateHistoryObject(
       ADD_PATTERN,
-      newPattern.material,
+      newPattern.model?._id,
       newPattern.name[UA].value,
       newPattern._id,
       [],
@@ -160,7 +160,7 @@ class PatternsService {
     if (await Promise.allSettled(deletedImages)) {
       const historyRecord = generateHistoryObject(
         DELETE_PATTERN,
-        foundPattern.material,
+        foundPattern.model,
         foundPattern.name[UA].value,
         foundPattern._id,
         generateHistoryChangesData(foundPattern, [

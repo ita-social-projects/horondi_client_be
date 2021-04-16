@@ -43,8 +43,8 @@ class RestrictionService {
     throw new RuleError(NOT_FOUND, FORBIDDEN);
   }
 
-  async addRestriction({ restriction }, { _id: adminId }) {
-    const newRestriction = await new Restriction({ ...restriction }).save();
+  async addRestriction(restriction, { _id: adminId }) {
+    const newRestriction = await new Restriction(restriction).save();
 
     const historyRecord = generateHistoryObject(
       ADD_RESTRICTION,
@@ -64,7 +64,7 @@ class RestrictionService {
     return newRestriction;
   }
 
-  async updateRestriction({ id, restriction }, { _id: adminId }) {
+  async updateRestriction(id, restriction, { _id: adminId }) {
     const restrictionItem = await Restriction.findById(id)
       .lean()
       .exec();
@@ -90,16 +90,12 @@ class RestrictionService {
 
     await addHistoryRecord(historyRecord);
 
-    return await Restriction.findByIdAndUpdate(
-      id,
-      { ...restriction },
-      {
-        new: true,
-      }
-    ).exec();
+    return await Restriction.findByIdAndUpdate(id, restriction, {
+      new: true,
+    }).exec();
   }
 
-  async deleteRestriction({ id }, { _id: adminId }) {
+  async deleteRestriction(id, { _id: adminId }) {
     const foundRestriction = await Restriction.findByIdAndDelete(id)
       .lean()
       .exec();
