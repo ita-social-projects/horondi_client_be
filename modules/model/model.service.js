@@ -93,7 +93,7 @@ class ModelsService {
 
     const historyRecord = generateHistoryObject(
       ADD_MODEL,
-      newModel.model?._id,
+      '',
       newModel.name[UA].value,
       newModel._id,
       [],
@@ -156,15 +156,6 @@ class ModelsService {
     if (!modelToDelete) {
       throw new Error(MODEL_NOT_FOUND);
     }
-    modelToDelete.constructorBasic.forEach(async basic => {
-      await ConstructorBasic.findByIdAndDelete(basic).exec();
-    });
-    modelToDelete.constructorBottom.forEach(async bottom => {
-      await ConstructorBottom.findByIdAndDelete(bottom).exec();
-    });
-    await modelToDelete.constructorFrontPocket.forEach(async pocket => {
-      await ConstructorFrontPocket.findByIdAndDelete(pocket).exec();
-    });
 
     const images = Object.values(modelToDelete.images).filter(
       item => typeof item === 'string' && item

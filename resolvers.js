@@ -129,6 +129,7 @@ const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const backService = require('./modules/back/back.service');
+const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
   history: 'History',
@@ -460,6 +461,8 @@ const resolvers = {
       constructorStrap: () =>
         strapService.getStrapById(parent.appliedOptions.constructorStrap),
     }),
+    restrictions: parent =>
+      restrictionService.getRestrictionById(parent.restriction),
   },
   Closure: {
     model: parent => modelService.getModelById(parent.model),

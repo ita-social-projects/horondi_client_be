@@ -35,9 +35,9 @@ const modelsQuery = {
 };
 
 const modelsMutation = {
-  addModel: async (parent, args) => {
+  addModel: async (parent, args, { user }) => {
     try {
-      return await modelsService.addModel(args.model, args.upload);
+      return await modelsService.addModel(args.model, args.upload, user);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
@@ -46,9 +46,14 @@ const modelsMutation = {
     }
   },
 
-  updateModel: async (parent, args) => {
+  updateModel: async (parent, args, { user }) => {
     try {
-      return await modelService.updateModel(args.id, args.model, args.upload);
+      return await modelService.updateModel(
+        args.id,
+        args.model,
+        args.upload,
+        user
+      );
     } catch (e) {
       return {
         statusCode: e.message === MODEL_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
@@ -57,9 +62,9 @@ const modelsMutation = {
     }
   },
 
-  deleteModel: async (parent, args) => {
+  deleteModel: async (parent, args, { user }) => {
     try {
-      return await modelsService.deleteModel(args.id);
+      return await modelsService.deleteModel(args.id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,

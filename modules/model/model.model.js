@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
-const Restriction = require('../restriction/restriction.model').schema;
 const {
   DB_COLLECTIONS_NAMES: {
     CATEGORY,
@@ -15,6 +14,7 @@ const {
     BACK,
     CLOSURE,
     STRAP,
+    RESTRICTION,
   },
 } = require('../../consts/db-collections-names');
 
@@ -74,7 +74,7 @@ const modelSchema = new mongoose.Schema({
     constructorClosure: { type: mongoose.Schema.Types.ObjectId, ref: CLOSURE },
     constructorStrap: { type: mongoose.Schema.Types.ObjectId, ref: STRAP },
   },
-  restrictions: [Restriction],
+  restrictions: [{ type: mongoose.Schema.Types.ObjectId, ref: RESTRICTION }],
 });
 
 module.exports = mongoose.model(MODEL, modelSchema);

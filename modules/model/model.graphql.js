@@ -10,7 +10,7 @@ type Model {
     availableForConstructor: Boolean
     eligibleOptions: Option
     appliedOptions: AppliedOption
-    restrictions: Restriction
+    restrictions: [Restriction]
     sizes: [Size]
   }
 `;
@@ -41,21 +41,21 @@ const optionTypes = `
 
 const modelInputs = `
 input ModelInput {
-    category: ID!,
-    name: [LanguageInput],
-    description: [LanguageInput],
-    images: ImageSetInput,
-    priority: Int,
-    show: Boolean,
+    category: ID!
+    name: [LanguageInput]
+    description: [LanguageInput]
+    images: ImageSetInput
+    priority: Int
+    show: Boolean
     sizes: [ID]
     availableForConstructor: Boolean
     eligibleOptions: OptionInput
-    restrictions: RestrictionInput
+    restrictions: [ID]
   }
   
 input OptionInput {
-  constructorBasic:[ID],
-  constructorPattern:[ID],
+  constructorBasic:[ID]
+  constructorPattern:[ID]
   constructorFrontPocket:[ID]
   constructorBottom:[ID]
   constructorPocket: [ID]

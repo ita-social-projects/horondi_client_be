@@ -21,23 +21,28 @@ const pocketQuery = {
 };
 
 const pocketMutation = {
-  addPocket: async (parent, args) => {
+  addPocket: async (parent, args, { user }) => {
     try {
-      return await pocketService.addPocket(args);
+      return await pocketService.addPocket(args.pocket, args.upload, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updatePocket: async (parent, args) => {
+  updatePocket: async (parent, args, { user }) => {
     try {
-      return await pocketService.updatePocket(args);
+      return await pocketService.updatePocket(
+        args.id,
+        args.pocket,
+        args.image,
+        user
+      );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deletePocket: async (parent, args) => {
+  deletePocket: async (parent, args, { user }) => {
     try {
-      return await pocketService.deletePocket(args);
+      return await pocketService.deletePocket(args.id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

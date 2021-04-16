@@ -14,15 +14,15 @@ const pocketSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: MODEL,
   },
-  features: [
-    {
-      side: {
+  features: {
+    side: [
+      {
         type: String,
         enum: [RIGHT, LEFT, FRONT, BACK],
         required: true,
       },
-    },
-  ],
+    ],
+  },
   image: String,
   additionalPrice: [CurrencySet],
   available: Boolean,

@@ -35,6 +35,14 @@ class RestrictionService {
     };
   }
 
+  async getRestrictionById(id) {
+    const foundRestriction = await Restriction.findById(id).exec();
+    if (foundRestriction) {
+      return foundRestriction;
+    }
+    throw new RuleError(NOT_FOUND, FORBIDDEN);
+  }
+
   async addRestriction({ restriction }, { _id: adminId }) {
     const newRestriction = await new Restriction({ ...restriction }).save();
 

@@ -7,10 +7,12 @@ const {
 } = require('../consts/restriction-expression-names');
 
 const nestedSideValidator = Joi.object({
-  side: Joi.string()
-    .trim()
-    .valid(RIGHT, LEFT, FRONT, BACK)
-    .required(),
+  side: Joi.array().has(
+    Joi.string()
+      .trim()
+      .valid(RIGHT, LEFT, FRONT, BACK)
+      .required()
+  ),
 });
 
 const nestedPriceValidator = Joi.object({
@@ -38,7 +40,7 @@ const pocketValidator = Joi.object({
     .required()
     .uppercase(),
   model: Joi.string().required(),
-  features: Joi.array().has(nestedSideValidator),
+  features: nestedSideValidator,
   image: Joi.string()
     .trim()
     .required(),

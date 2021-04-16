@@ -59,7 +59,7 @@ class PocketService {
     return pocket;
   }
 
-  async deletePocket({ id }, { _id: adminId }) {
+  async deletePocket(id, { _id: adminId }) {
     const foundPocket = await Pocket.findByIdAndDelete(id)
       .lean()
       .exec();
@@ -67,8 +67,6 @@ class PocketService {
     if (!foundPocket) {
       throw new Error(POCKET_NOT_FOUND);
     }
-
-    await uploadService.deleteFiles(Object.values(foundPocket.image));
 
     const historyRecord = generateHistoryObject(
       DELETE_POCKET,
@@ -92,7 +90,7 @@ class PocketService {
     return foundPocket;
   }
 
-  async updatePocket({ id, pocket, image }, { _id: adminId }) {
+  async updatePocket(id, pocket, image, { _id: adminId }) {
     const pocketToUpdate = await Pocket.findById(id).exec();
     if (!pocketToUpdate) {
       throw new Error(POCKET_NOT_FOUND);
@@ -109,7 +107,7 @@ class PocketService {
     await uploadService.deleteFiles(image);
 
     const uploadImage = await uploadService.uploadSmallImage(image);
-    image = uploadImage.fileNames.small;
+    pocket.image = uploadImage.fileNames.small;
 
     const { beforeChanges, afterChanges } = getChanges(pocketToUpdate, pocket);
 
@@ -125,19 +123,22 @@ class PocketService {
 
     await addHistoryRecord(historyRecord);
 
-    return await Pocket.findByIdAndUpdate(id, { ...pocket, image }).exec();
+    return await Pocket.findByIdAndUpdate(id, pocket, {
+      new: true,
+    }).exec();
   }
 
-  async addPocket({ pocket, image }, { _id: adminId }) {
+  async addPocket(pocket, image, { _id: adminId }) {
     if (await this.checkIfPocketExist(pocket)) {
       throw new Error(POCKET_ALREADY_EXIST);
     }
 
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
-      image = uploadImage.fileNames.small;
+      pocket.image = uploadImage.fileNames.small;
     }
-    const newPocket = await new Pocket({ ...pocket, image }).save();
+
+    const newPocket = await new Pocket(pocket).save();
 
     const historyRecord = generateHistoryObject(
       ADD_POCKET,

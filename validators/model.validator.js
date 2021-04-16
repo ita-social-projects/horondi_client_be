@@ -48,6 +48,7 @@ const modelValidator = Joi.object({
     constructorClosure: Joi.string(),
     constructorStrap: Joi.string(),
   }),
+  restrictions: Joi.array().items(Joi.string()),
 });
 
 module.exports = {

@@ -14,13 +14,13 @@ const pocketType = `
 
 const pocketSide = `
     type PocketSide {
-     side: SideEnum
+     side: [SideEnum]
     }
 `;
 
 const pocketSideInput = `
     input PocketSideInput {
-     side: String
+     side: [String]
     }
 `;
 
@@ -38,7 +38,7 @@ const pocketInput = `
     name: [LanguageInput]
     optionType: String
     model: ID
-    features: [PocketSideInput]
+    features: PocketSideInput
     image: Upload
     additionalPrice: [CurrencySetInput]
     available: Boolean

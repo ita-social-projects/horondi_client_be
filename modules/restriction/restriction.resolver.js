@@ -28,6 +28,13 @@ const restrictionMutation = {
 const restrictionQuery = {
   getAllRestrictions: (parent, args) =>
     restrictionService.getAllRestrictions(args),
+  getRestrictionById: async (parent, args) => {
+    try {
+      return await restrictionService.getRestrictionById(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 module.exports = { restrictionMutation, restrictionQuery };
