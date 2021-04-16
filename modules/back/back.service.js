@@ -1,11 +1,14 @@
 const Back = require('./back.model');
 const Model = require('../model/model.model');
 const uploadService = require('../upload/upload.utils');
+const RuleError = require('../../errors/rule.error');
 const {
   BACK_NOT_FOUND,
   BACK_ALREADY_EXIST,
-  IMAGE_NOT_PROVIDED,
 } = require('../../consts/back-messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_BACK, EDIT_BACK, DELETE_BACK },
 } = require('../../consts/history-actions');
@@ -50,13 +53,13 @@ class BackService {
     if (foundBack) {
       return foundBack;
     }
-    throw new Error(BACK_NOT_FOUND);
+    throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
   }
 
   async getBacksByModel(id) {
     const back = Back.find({ model: id }).exec();
     if (back.length === 0) {
-      throw new Error(BACK_NOT_FOUND);
+      throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
     return back;
   }
@@ -64,11 +67,11 @@ class BackService {
   async updateBack(id, back, image, { _id: adminId }) {
     const backToUpdate = await Back.findById(id).exec();
     if (!backToUpdate) {
-      throw new Error(BACK_NOT_FOUND);
+      throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkIfBackExist(back, id)) {
-      throw new Error(BACK_ALREADY_EXIST);
+      throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (!image) {
@@ -105,7 +108,7 @@ class BackService {
       .exec();
 
     if (!foundBack) {
-      throw new Error(BACK_NOT_FOUND);
+      throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
     const deletedImage = await uploadService.deleteFiles(
@@ -138,7 +141,7 @@ class BackService {
 
   async addBack(back, image, { _id: adminId }) {
     if (await this.checkIfBackExist(back)) {
-      throw new Error(BACK_ALREADY_EXIST);
+      throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image) {

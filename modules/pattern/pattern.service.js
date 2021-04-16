@@ -1,10 +1,14 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
+const RuleError = require('../../errors/rule.error');
 const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
   HISTORY_ACTIONS: { ADD_PATTERN, DELETE_PATTERN, EDIT_PATTERN },
@@ -51,16 +55,16 @@ class PatternsService {
     if (foundPattern) {
       return foundPattern;
     }
-    throw new Error(PATTERN_NOT_FOUND);
+    throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
   }
 
   async updatePattern({ id, pattern, image }, { _id: adminId }) {
     const patternToUpdate = await Pattern.findById(id).exec();
     if (!patternToUpdate) {
-      throw new Error(PATTERN_NOT_FOUND);
+      throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
     if (await this.checkPatternExist(pattern, id)) {
-      throw new Error(PATTERN_ALREADY_EXIST);
+      throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
@@ -108,12 +112,12 @@ class PatternsService {
 
   async addPattern({ pattern, image }, { _id: adminId }) {
     if (await this.checkPatternExist(pattern)) {
-      throw new Error(PATTERN_ALREADY_EXIST);
+      throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image.length) {
       if (!image[0] && !image[1]) {
-        throw new Error(IMAGE_NOT_PROVIDED);
+        throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
       }
     }
 
@@ -150,7 +154,7 @@ class PatternsService {
       .lean()
       .exec();
     if (!foundPattern) {
-      throw new Error(PATTERN_NOT_FOUND);
+      throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
 
     const deletedImages = await uploadService.deleteFiles(

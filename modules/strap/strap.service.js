@@ -1,8 +1,12 @@
 const Strap = require('./strap.model');
+const RuleError = require('../../errors/rule.error');
 const {
   STRAP_NOT_FOUND,
   STRAP_ALREADY_EXIST,
 } = require('../../error-messages/strap.messages');
+const {
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+} = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_STRAP, EDIT_STRAP, DELETE_STRAP },
 } = require('../../consts/history-actions');
@@ -47,13 +51,13 @@ class StrapService {
     if (foundStrap) {
       return foundStrap;
     }
-    throw new Error(STRAP_NOT_FOUND);
+    throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
   }
 
   async getStrapsByModel(id) {
     const strap = Strap.find({ model: id }).exec();
     if (strap.length === 0) {
-      throw new Error(STRAP_NOT_FOUND);
+      throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
     return strap;
   }
@@ -64,7 +68,7 @@ class StrapService {
       .exec();
 
     if (!foundStrap) {
-      throw new Error(STRAP_NOT_FOUND);
+      throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
     await uploadService.deleteFiles(Object.values(foundStrap.image));
@@ -94,11 +98,11 @@ class StrapService {
   async updateStrap(id, strap, image, { _id: adminId }) {
     const strapToUpdate = await Strap.findById(id).exec();
     if (!strapToUpdate) {
-      throw new Error(STRAP_NOT_FOUND);
+      throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkIfStrapExist(strap, id)) {
-      throw new Error(STRAP_ALREADY_EXIST);
+      throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (!image) {
@@ -129,7 +133,7 @@ class StrapService {
 
   async addStrap(strap, image, { _id: adminId }) {
     if (await this.checkIfStrapExist(strap)) {
-      throw new Error(STRAP_ALREADY_EXIST);
+      throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image) {

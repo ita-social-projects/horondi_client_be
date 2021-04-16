@@ -3,6 +3,13 @@ const { calculatePrice } = require('../currency/currency.utils');
 const uploadService = require('../upload/upload.service');
 const RuleError = require('../../errors/rule.error');
 const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+  CONSTRUCTOR_ELEMENT_ALREADY_EXIST,
+} = require('../../error-messages/constructor-element-messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const {
   HISTORY_ACTIONS: {
     ADD_CONSTRUCTOR_ELEMENT,
     EDIT_CONSTRUCTOR_ELEMENT,
@@ -48,7 +55,7 @@ class ConstructorService {
     if (foundElement) {
       return foundElement;
     }
-    return new RuleError(e.message, e.statusCode);
+    return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
   }
 
   async addConstructorElement(
@@ -60,7 +67,7 @@ class ConstructorService {
       constructorElement.image = await uploadSmallImage(upload);
     }
     if (await this.checkConstructorElementExist(constructorElement, model)) {
-      return new RuleError(e.message, e.statusCode);
+      return new RuleError(CONSTRUCTOR_ELEMENT_ALREADY_EXIST, BAD_REQUEST);
     }
     constructorElement.basePrice = await calculatePrice(
       constructorElement.basePrice
@@ -96,7 +103,7 @@ class ConstructorService {
   ) {
     const constructorFountElement = await model.findById(id);
     if (!constructorFountElement) {
-      return new RuleError(e.message, e.statusCode);
+      return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
     }
 
     if (upload) {
@@ -139,7 +146,7 @@ class ConstructorService {
       }
     }
     if (!constructorElement) {
-      return new RuleError(e.message, e.statusCode);
+      return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
     }
 
     const historyRecord = generateHistoryObject(

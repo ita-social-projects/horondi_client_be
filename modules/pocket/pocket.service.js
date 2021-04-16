@@ -1,9 +1,13 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.utils');
+const RuleError = require('../../errors/rule.error');
 const {
   POCKET_ALREADY_EXIST,
   POCKET_NOT_FOUND,
 } = require('../../error-messages/pocket.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_POCKET, EDIT_POCKET, DELETE_POCKET },
 } = require('../../consts/history-actions');
@@ -48,13 +52,13 @@ class PocketService {
     if (foundPocket) {
       return foundPocket;
     }
-    throw new Error(POCKET_NOT_FOUND);
+    throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
   }
 
   async getPocketsByModel(id) {
     const pocket = Pocket.find({ model: id }).exec();
     if (pocket.length === 0) {
-      throw new Error(POCKET_NOT_FOUND);
+      throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
     return pocket;
   }
@@ -65,7 +69,7 @@ class PocketService {
       .exec();
 
     if (!foundPocket) {
-      throw new Error(POCKET_NOT_FOUND);
+      throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
     const historyRecord = generateHistoryObject(
@@ -93,11 +97,11 @@ class PocketService {
   async updatePocket(id, pocket, image, { _id: adminId }) {
     const pocketToUpdate = await Pocket.findById(id).exec();
     if (!pocketToUpdate) {
-      throw new Error(POCKET_NOT_FOUND);
+      throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkIfPocketExist(pocket, id)) {
-      throw new Error(POCKET_ALREADY_EXIST);
+      throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (!image) {
@@ -130,7 +134,7 @@ class PocketService {
 
   async addPocket(pocket, image, { _id: adminId }) {
     if (await this.checkIfPocketExist(pocket)) {
-      throw new Error(POCKET_ALREADY_EXIST);
+      throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image) {

@@ -1,10 +1,10 @@
 const Restriction = require('./restriction.model');
 const RuleError = require('../../errors/rule.error');
 const {
-  restrictionMessages: { NOT_FOUND },
+  restrictionMessages: { RESTRICTION_NOT_FOUND },
 } = require('../../consts/restriction.messages');
 const {
-  STATUS_CODES: { FORBIDDEN },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_RESTRICTION, EDIT_RESTRICTION, DELETE_RESTRICTION },
@@ -40,7 +40,7 @@ class RestrictionService {
     if (foundRestriction) {
       return foundRestriction;
     }
-    throw new RuleError(NOT_FOUND, FORBIDDEN);
+    throw new RuleError(RESTRICTION_NOT_FOUND, NOT_FOUND);
   }
 
   async addRestriction(restriction, { _id: adminId }) {
@@ -70,7 +70,7 @@ class RestrictionService {
       .exec();
 
     if (!restrictionItem) {
-      throw new RuleError(NOT_FOUND, FORBIDDEN);
+      throw new RuleError(RESTRICTION_NOT_FOUND, NOT_FOUND);
     }
 
     const { beforeChanges, afterChanges } = getChanges(
@@ -101,7 +101,7 @@ class RestrictionService {
       .exec();
 
     if (!foundRestriction) {
-      throw new RuleError(NOT_FOUND, FORBIDDEN);
+      throw new RuleError(RESTRICTION_NOT_FOUND, NOT_FOUND);
     }
 
     const historyRecord = generateHistoryObject(
