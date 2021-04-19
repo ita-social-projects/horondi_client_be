@@ -1,5 +1,19 @@
 const { shield } = require('graphql-shield');
 
+const { uploadMutation } = require('./modules/upload/upload.permission');
+
+const { paymentQuery } = require('./modules/payment/payment.permission');
+
+const {
+  homePageSlideMutation,
+} = require('./modules/homepage-slider/homepage-slider.permission');
+
+const { currencyMutation } = require('./modules/currency/currency.resolver');
+
+const {
+  emailChatQuestionMutation,
+} = require('./modules/currency/currency.permission');
+
 const {
   businessTextMutation,
 } = require('./modules/business-text/business-text.permissions');
@@ -123,6 +137,7 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
       ...orderPermissionsQuery,
+      ...paymentQuery,
     },
     Mutation: {
       ...productPermissionsMutation,
@@ -145,6 +160,10 @@ const permissions = shield(
       ...commentPermissionsMutations,
       ...orderPermissionsMutation,
       ...businessTextMutation,
+      ...emailChatQuestionMutation,
+      ...currencyMutation,
+      ...homePageSlideMutation,
+      ...uploadMutation,
     },
   },
   {
