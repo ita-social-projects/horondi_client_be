@@ -1,6 +1,10 @@
 const { shield } = require('graphql-shield');
 
 const {
+  businessTextMutation,
+} = require('./modules/business-text/business-text.permissions');
+
+const {
   historyPermissionsQuery,
 } = require('./modules/history/history.permissions');
 const {
@@ -140,6 +144,7 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
       ...orderPermissionsMutation,
+      ...businessTextMutation,
     },
   },
   {
