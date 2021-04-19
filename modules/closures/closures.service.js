@@ -4,6 +4,7 @@ const {
   CLOSURE_NOT_FOUND,
   CLOSURE_ALREADY_EXIST,
 } = require('../../error-messages/closures.messages');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -67,6 +68,7 @@ class ClosureService {
     if (await this.checkClosureExist(data)) {
       throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
     }
+    data.additionalPrice = await calculatePrice(data.additionalPrice);
     const newClosure = await new Closure(data).save();
 
     const historyRecord = generateHistoryObject(

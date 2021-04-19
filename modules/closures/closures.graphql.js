@@ -26,7 +26,7 @@ const closureInputs = `
     model: ID
     features: ClosureFeatureSetInput
     image: Upload
-    additionalPrice: [CurrencySetInput]
+    additionalPrice: Int
     available: Boolean
     default: Boolean
   }

@@ -16,9 +16,7 @@ const nestedSideValidator = Joi.object({
 });
 
 const nestedPriceValidator = Joi.object({
-  currency: Joi.string()
-    .trim()
-    .required(),
+  currency: Joi.string(),
   value: Joi.number()
     .optional()
     .default(0),
@@ -86,12 +84,32 @@ const closureValidator = Joi.object({
       .trim()
       .required(),
   }),
-  image: Joi.string()
-    .trim()
-    .required(),
+  image: Joi.string(),
   additionalPrice: Joi.array()
     .has(nestedPriceValidator)
     .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
+const addClosureValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
   available: Joi.boolean().required(),
   default: Joi.boolean(),
 });
@@ -250,6 +268,7 @@ module.exports = {
   pocketValidator,
   backValidator,
   closureValidator,
+  addClosureValidator,
   strapValidator,
   patternValidator,
   constructorBasicValidator,

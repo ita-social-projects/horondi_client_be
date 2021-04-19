@@ -1,27 +1,55 @@
-const newClosure = materialId => ({
+const newClosure = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'uk', value: ' тест' },
     { lang: 'en', value: ' test' },
   ],
-  material: materialId,
+  optionType: 'CLOSURE',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   available: true,
+  default: true,
+});
+
+const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
+  name: [
+    { lang: 'uk', value: ' тест' },
+    { lang: 'en', value: ' test' },
+  ],
+  optionType: 'CLOSURE',
+  model: {
+    _id: modelId,
+  },
+  features: {
+    material: {
+      _id: materialId,
+    },
+    color: {
+      _id: colorId,
+    },
+  },
+  available: true,
+  default: true,
   additionalPrice: [
     {
       currency: 'UAH',
-      value: 7000,
+      value: 0,
     },
-    {
-      currency: 'USD',
-      value: 240,
-    },
+    null,
   ],
 });
-const newClosureUpdated = materialId => ({
+
+const newClosureUpdated = (materialId, colorId) => ({
   name: [
     { lang: 'uk', value: ' змінено' },
     { lang: 'en', value: ' updated' },
   ],
-  material: materialId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   available: true,
   additionalPrice: [
     {
@@ -38,6 +66,7 @@ const wrongId = '5fb412d8663cf10bec9faa1a';
 
 module.exports = {
   newClosure,
+  closureWithConvertedPrice,
   newClosureUpdated,
   wrongId,
 };

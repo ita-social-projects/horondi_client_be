@@ -11,11 +11,24 @@ const createClosure = async (closure, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            available
+            default
             additionalPrice {
               currency
               value
             }
-            available
           }
           ... on Error {
             message
@@ -28,7 +41,7 @@ const createClosure = async (closure, operations) => {
       closure,
     },
   });
-
+  console.log(createdClosure.data);
   return createdClosure.data.addClosure;
 };
 const updateClosure = async (id, closure, operations) => {
@@ -42,11 +55,24 @@ const updateClosure = async (id, closure, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            available
+            default
             additionalPrice {
               currency
               value
             }
-            available
           }
           ... on Error {
             message
@@ -95,11 +121,24 @@ const getClosureById = async (id, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            available
+            default
             additionalPrice {
               currency
               value
             }
-            available
           }
           ... on Error {
             statusCode
