@@ -42,7 +42,6 @@ class ConstructorService {
       .find()
       .skip(skip)
       .limit(limit);
-
     const count = await model.find().countDocuments();
     return {
       items,

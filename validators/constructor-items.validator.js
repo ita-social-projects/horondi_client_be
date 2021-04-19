@@ -37,25 +37,23 @@ const pocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: nestedSideValidator,
   image: Joi.string()
     .trim()
     .required(),
   additionalPrice: Joi.array().has(nestedPriceValidator),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const backValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
       .trim()
@@ -71,16 +69,15 @@ const backValidator = Joi.object({
     .has(nestedPriceValidator)
     .optional(),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const closureValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
       .trim()
@@ -96,16 +93,15 @@ const closureValidator = Joi.object({
     .has(nestedPriceValidator)
     .optional(),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const strapValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     color: Joi.string()
       .trim()
@@ -118,16 +114,15 @@ const strapValidator = Joi.object({
     .has(nestedPriceValidator)
     .optional(),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const patternValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
       .trim()
@@ -155,17 +150,16 @@ const patternValidator = Joi.object({
   additionalPrice: Joi.array()
     .has(nestedPriceValidator)
     .optional(),
-  available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  available: Joi.boolean(),
+  default: Joi.boolean(),
 });
 
 const constructorBasicValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
       .trim()
@@ -181,16 +175,15 @@ const constructorBasicValidator = Joi.object({
     .has(nestedPriceValidator)
     .optional(),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const constructorBottomValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
       .trim()
@@ -206,16 +199,15 @@ const constructorBottomValidator = Joi.object({
     .has(nestedPriceValidator)
     .optional(),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const constructorFrontPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .required()
     .uppercase(),
-  model: Joi.string().required(),
+  model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
       .trim()
@@ -234,7 +226,7 @@ const constructorFrontPocketValidator = Joi.object({
     .has(nestedPriceValidator)
     .optional(),
   available: Joi.boolean().required(),
-  default: Joi.boolean().required(),
+  default: Joi.boolean(),
 });
 
 const restrictionValidator = Joi.object({
