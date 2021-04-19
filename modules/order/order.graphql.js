@@ -1,7 +1,7 @@
 const orderTypes = `
 type Order {
   _id: ID!
-  orderNumber: String
+  orderNumber: Int
   paymentUrl: String
   status: Status
   user: OrderUser
