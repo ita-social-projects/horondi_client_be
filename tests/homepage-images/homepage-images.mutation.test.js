@@ -5,7 +5,9 @@ const {
   deleteHomePageLooksImage,
   updateHomePageLooksImage,
 } = require('./homepage-images.helper');
-const { IMAGE_NOT_FOUND } = require('../../error-messages/home-page-messages');
+const {
+  INVALID_PERMISSIONS,
+} = require('../../error-messages/home-page-messages');
 
 jest.mock('../../modules/upload/upload.service');
 
@@ -24,8 +26,8 @@ describe('Homepage looks images mutations', () => {
   it('Passing invalid ID should return error', async () => {
     const updateResult = await updateHomePageLooksImage(wrongId, operations);
 
-    expect(updateResult).toHaveProperty('message', IMAGE_NOT_FOUND);
-    expect(updateResult).toHaveProperty('statusCode', 400);
+    expect(updateResult).toHaveProperty('message', INVALID_PERMISSIONS);
+    expect(updateResult).toHaveProperty('statusCode', 403);
   });
 
   afterAll(async () => {
