@@ -13,7 +13,7 @@ const {
 } = require('../../consts/db-collections-names');
 
 const orderSchema = new mongoose.Schema({
-  orderNumber: Number,
+  orderNumber: String,
   paymentUrl: {
     type: String,
     default: '',

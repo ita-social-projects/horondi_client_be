@@ -92,7 +92,8 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
 }
 
 function generateOrderNumber() {
-  return new Date().getTime();
+  const uid = new Date().getTime();
+  return uid.toString();
 }
 
 async function addProductsToStatistic(items) {
