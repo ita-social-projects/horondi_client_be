@@ -91,9 +91,7 @@ const {
 const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
-const {
-  generateOrderNumber: generateOtpCode,
-} = require('../../utils/order.utils');
+const { generateOtpCode } = require('../../utils/user');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
