@@ -1,4 +1,5 @@
-const { hasRoles, isAuthorized } = require('../../utils/rules');
+const { allow } = require('graphql-shield');
+const { hasRoles } = require('../../utils/rules');
 const {
   roles: { SUPERADMIN, ADMIN },
 } = require('../../consts');
@@ -10,7 +11,7 @@ const emailChatQuestionQuery = {
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: isAuthorized,
+  addEmailQuestion: allow,
   makeEmailQuestionsSpam: hasRoles([SUPERADMIN, ADMIN]),
   answerEmailQuestion: hasRoles([SUPERADMIN, ADMIN]),
   deleteEmailQuestions: hasRoles([SUPERADMIN, ADMIN]),
