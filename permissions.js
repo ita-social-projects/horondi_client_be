@@ -1,18 +1,20 @@
 const { shield } = require('graphql-shield');
 
-const { uploadMutation } = require('./modules/upload/upload.permission');
+const {
+  emailChatQuestionQuery,
+} = require('./modules/email-chat/email-chat.permission');
 
-const { paymentQuery } = require('./modules/payment/payment.permission');
+const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
   homePageSlideMutation,
 } = require('./modules/homepage-slider/homepage-slider.permission');
 
-const { currencyMutation } = require('./modules/currency/currency.resolver');
+const { currencyMutation } = require('./modules/currency/currency.permission');
 
 const {
   emailChatQuestionMutation,
-} = require('./modules/currency/currency.permission');
+} = require('./modules/email-chat/email-chat.permission');
 
 const {
   businessTextMutation,
@@ -137,7 +139,7 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
       ...orderPermissionsQuery,
-      ...paymentQuery,
+      ...emailChatQuestionQuery,
     },
     Mutation: {
       ...productPermissionsMutation,

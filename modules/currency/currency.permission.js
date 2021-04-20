@@ -3,10 +3,10 @@ const {
   roles: { SUPERADMIN, ADMIN },
 } = require('../../consts');
 
-const emailChatQuestionMutation = {
+const currencyMutation = {
   addCurrency: hasRoles([SUPERADMIN, ADMIN]),
   deleteCurrency: hasRoles([SUPERADMIN, ADMIN]),
   updateCurrency: hasRoles([SUPERADMIN, ADMIN]),
 };
 
-module.exports = { emailChatQuestionMutation };
+module.exports = { currencyMutation };
