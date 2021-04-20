@@ -1,6 +1,6 @@
-const { allow } = require('graphql-shield');
+const { allow, or } = require('graphql-shield');
 
-const { hasRoles } = require('../../utils/rules');
+const { hasRoles, isTheSameUser, isAuthorized } = require('../../utils/rules');
 const {
   roles: { ADMIN, SUPERADMIN, USER },
 } = require('../../consts');
@@ -11,11 +11,12 @@ const commentPermissionsQuery = {
   getAllCommentsByUser: allow,
   getRecentComments: hasRoles([ADMIN, SUPERADMIN]),
 };
+
 const commentPermissionsMutations = {
-  updateComment: hasRoles([ADMIN, SUPERADMIN, USER]),
-  addComment: hasRoles([ADMIN, SUPERADMIN, USER]),
-  deleteComment: hasRoles([ADMIN, SUPERADMIN]),
-  addRate: hasRoles([ADMIN, SUPERADMIN]),
+  updateComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
+  addComment: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
+  deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
+  addRate: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };
 
 module.exports = { commentPermissionsMutations, commentPermissionsQuery };
