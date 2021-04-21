@@ -130,6 +130,7 @@ const {
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const backService = require('./modules/back/back.service');
 const restrictionService = require('./modules/restriction/restriction.service');
+const { GraphQLBoolean } = require('graphql');
 
 const SCHEMA_NAMES = {
   history: 'History',
@@ -383,6 +384,7 @@ const resolvers = {
     model: parent => modelService.getModelById(parent.model),
     features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
+      handmade: parent.features.handmade,
     }),
   },
   Model: {

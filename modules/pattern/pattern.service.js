@@ -95,10 +95,11 @@ class PatternsService {
     const foundPattern = await Pattern.findById(id)
       .lean()
       .exec();
+
     await uploadService.deleteFiles(Object.values(foundPattern.images));
     await uploadService.deleteFiles([foundPattern.constructorImg]);
 
-    return await Pattern.findByIdAndUpdate(
+    const updatedPattern = await Pattern.findByIdAndUpdate(
       id,
       {
         ...pattern,
@@ -108,6 +109,8 @@ class PatternsService {
         new: true,
       }
     ).exec();
+
+    return updatedPattern;
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
@@ -117,36 +120,37 @@ class PatternsService {
 
     if (image.length) {
       if (!image[0] && !image[1]) {
-        throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
+        throw new Error(IMAGE_NOT_PROVIDED);
       }
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
-    pattern.constructorImg = await uploadSmallImage(image[1]);
+    const constructorImg = await uploadSmallImage(image[1]);
+    pattern.constructorImg = constructorImg;
 
-    const newPattern = await new Pattern({ ...pattern, images }).save();
-    const historyRecord = generateHistoryObject(
-      ADD_PATTERN,
-      newPattern.model?._id,
-      newPattern.name[UA].value,
-      newPattern._id,
-      [],
-      generateHistoryChangesData(newPattern, [
-        NAME,
-        DESCRIPTION,
-        MODEL,
-        OPTION_TYPE,
-        FEATURES,
-        ADDITIONAL_PRICE,
-        AVAILABLE,
-      ]),
-      adminId
-    );
+    return await new Pattern({ ...pattern, images }).save();
+    // const historyRecord = generateHistoryObject(
+    //   ADD_PATTERN,
+    //   newPattern.model?._id,
+    //   newPattern.name[UA].value,
+    //   newPattern._id,
+    //   [],
+    //   generateHistoryChangesData(newPattern, [
+    //     NAME,
+    //     DESCRIPTION,
+    //     MODEL,
+    //     OPTION_TYPE,
+    //     FEATURES,
+    //     ADDITIONAL_PRICE,
+    //     AVAILABLE,
+    //   ]),
+    //   adminId
+    // );
 
-    await addHistoryRecord(historyRecord);
-
-    return newPattern;
+    // await addHistoryRecord(historyRecord);
+    // console.log(newPattern);
+    // return newPattern;
   }
 
   async deletePattern(id, { _id: adminId }) {

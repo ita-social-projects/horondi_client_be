@@ -142,9 +142,7 @@ const patternValidator = Joi.object({
     .uppercase(),
   model: Joi.string(),
   features: Joi.object({
-    material: Joi.string()
-      .trim()
-      .required(),
+    material: Joi.string(),
     handmade: Joi.boolean().required(),
   }),
   description: Joi.array().has(nestedNameValidator),
