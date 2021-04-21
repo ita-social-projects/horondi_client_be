@@ -14,7 +14,7 @@ const {
 const { SENT_BY } = require('../consts/order-details');
 const {
   PAYMENT_STATUSES: {
-    PAYMNET_CREATED,
+    PAYMENT_CREATED,
     PAYMENT_EXPIRED,
     PAYMENT_APPROVED,
     PAYMENT_DECLINED,
@@ -193,7 +193,7 @@ const orderValidator = Joi.object({
     .allow(''),
   isPaid: Joi.boolean(),
   paymentStatus: Joi.string().valid(
-    PAYMNET_CREATED,
+    PAYMENT_CREATED,
     PAYMENT_EXPIRED,
     PAYMENT_APPROVED,
     PAYMENT_DECLINED,

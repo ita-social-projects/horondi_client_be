@@ -1,5 +1,3 @@
-const { default: ShortUniqueId } = require('short-unique-id');
-
 const ConstructorBasic = require('../modules/constructor/constructor-basic/constructor-basic.model');
 const ConstructorFrontPocket = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
@@ -94,9 +92,8 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
 }
 
 function generateOrderNumber() {
-  const uid = new ShortUniqueId();
-
-  return uid();
+  const uid = new Date().getTime();
+  return uid.toString();
 }
 
 async function addProductsToStatistic(items) {

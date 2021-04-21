@@ -1,6 +1,26 @@
 const { shield } = require('graphql-shield');
 
 const {
+  emailChatQuestionQuery,
+} = require('./modules/email-chat/email-chat.permission');
+
+const { uploadMutation } = require('./modules/upload/upload.permission');
+
+const {
+  homePageSlideMutation,
+} = require('./modules/homepage-slider/homepage-slider.permission');
+
+const { currencyMutation } = require('./modules/currency/currency.permission');
+
+const {
+  emailChatQuestionMutation,
+} = require('./modules/email-chat/email-chat.permission');
+
+const {
+  businessTextMutation,
+} = require('./modules/business-text/business-text.permissions');
+
+const {
   historyPermissionsQuery,
 } = require('./modules/history/history.permissions');
 const {
@@ -119,6 +139,7 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
       ...orderPermissionsQuery,
+      ...emailChatQuestionQuery,
     },
     Mutation: {
       ...productPermissionsMutation,
@@ -140,6 +161,11 @@ const permissions = shield(
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
       ...orderPermissionsMutation,
+      ...businessTextMutation,
+      ...emailChatQuestionMutation,
+      ...currencyMutation,
+      ...homePageSlideMutation,
+      ...uploadMutation,
     },
   },
   {
