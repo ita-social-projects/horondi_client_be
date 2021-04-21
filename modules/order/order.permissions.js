@@ -20,6 +20,7 @@ const orderPermissionsMutation = {
     inputDataValidation(ORDER, orderValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
+  deleteOrder: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 const orderPermissionsQuery = {
