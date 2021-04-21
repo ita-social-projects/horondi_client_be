@@ -118,11 +118,11 @@ class PatternsService {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    if (image.length) {
-      if (!image[0] && !image[1]) {
-        throw new Error(IMAGE_NOT_PROVIDED);
-      }
-    }
+    // if (await image.length) {
+    //   if (await !image[0] && !image[1]) {
+    //     throw new Error(IMAGE_NOT_PROVIDED);
+    //   }
+    // }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;

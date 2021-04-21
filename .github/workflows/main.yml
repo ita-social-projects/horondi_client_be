@@ -36,6 +36,7 @@ jobs:
           BASE_URI: ${{secrets.BASE_URI}}
           KEY_VAULTS_URI: ${{secrets.KEY_VAULTS_URI}}
           FRONT_BASE_URI: ${{secrets.FRONT_BASE_URI}}
+          ADMIN_BASE_URI: ${{secrets.ADMIN_BASE_URI}}
           TEST_BASE_URI: ${{secrets.TEST_BASE_URI}}
           IMAGE_LINK: ${{secrets.IMAGE_LINK}}
           STORAGE_ACCOUNT: ${{secrets.STORAGE_ACCOUNT}}

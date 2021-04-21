@@ -6,12 +6,14 @@ const {
   MAIL_PASS,
   MAIL_HOST,
   MAIL_PORT,
+  ADMIN_BASE_URI,
   FRONT_BASE_URI,
   GMAIL_EMAIL_SERVICE,
 } = require('../dotenvValidator');
 
 const contextExtension = {
   frontendUrl: FRONT_BASE_URI,
+  adminUrl: ADMIN_BASE_URI,
 };
 
 const transporter = nodemailer.createTransport({

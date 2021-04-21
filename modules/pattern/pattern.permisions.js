@@ -17,7 +17,10 @@ const patternPermissionsQuery = {
 };
 
 const patternPermissionsMutations = {
-  addPattern: hasRoles([ADMIN, SUPERADMIN]),
+  addPattern: and(
+    inputDataValidation(PATTERN, patternValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   updatePattern: and(
     inputDataValidation(PATTERN, patternValidator),
     hasRoles([ADMIN, SUPERADMIN])
