@@ -13,14 +13,9 @@ const {
 const {
   createMaterial,
   deleteMaterial,
-  getMaterialById,
 } = require('../materials/material.helper');
 const { getMaterialToUpdate } = require('../materials/material.variables');
-const {
-  createColor,
-  deleteColor,
-  getColorById,
-} = require('../color/color.helper');
+const { createColor, deleteColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
@@ -38,13 +33,7 @@ jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/currency/currency.model.js');
 
-let operations;
-let closureId;
-let materialId;
-let colorId;
-let modelId;
-let categoryId;
-let sizeId;
+let operations, closureId, materialId, colorId, modelId, categoryId, sizeId;
 
 describe('Closure queries', () => {
   beforeAll(async done => {

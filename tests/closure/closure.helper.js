@@ -41,7 +41,6 @@ const createClosure = async (closure, operations) => {
       closure,
     },
   });
-  console.log(createdClosure.data);
   return createdClosure.data.addClosure;
 };
 const updateClosure = async (id, closure, operations) => {
@@ -86,7 +85,7 @@ const updateClosure = async (id, closure, operations) => {
       id,
     },
   });
-
+  console.log('updatedClosure', updatedClosure.data);
   return updatedClosure.data.updateClosure;
 };
 const deleteClosure = async (id, operations) => {

@@ -18,7 +18,10 @@ const closurePermissionsQuery = {
 };
 
 const closurePermissionsMutations = {
-  addClosure: hasRoles([ADMIN, SUPERADMIN]),
+  addClosure: and(
+    inputDataValidation(CLOSURE, closureValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   updateClosure: and(
     inputDataValidation(CLOSURE, closureValidator),
     hasRoles([ADMIN, SUPERADMIN])

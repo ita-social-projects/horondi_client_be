@@ -41,16 +41,19 @@ const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
   ],
 });
 
-const newClosureUpdated = (materialId, colorId) => ({
+const newClosureUpdated = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'uk', value: ' змінено' },
     { lang: 'en', value: ' updated' },
   ],
+  optionType: 'CLOSURE',
+  model: modelId,
   features: {
     material: materialId,
     color: colorId,
   },
   available: true,
+  default: true,
   additionalPrice: [
     {
       currency: 'UAH',

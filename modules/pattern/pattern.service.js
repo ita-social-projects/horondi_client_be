@@ -118,39 +118,39 @@ class PatternsService {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    // if (await image.length) {
-    //   if (await !image[0] && !image[1]) {
-    //     throw new Error(IMAGE_NOT_PROVIDED);
-    //   }
-    // }
+    if (await image.length) {
+      if ((await !image[0]) && !image[1]) {
+        throw new Error(IMAGE_NOT_PROVIDED);
+      }
+    }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
     const constructorImg = await uploadSmallImage(image[1]);
     pattern.constructorImg = constructorImg;
 
-    return await new Pattern({ ...pattern, images }).save();
-    // const historyRecord = generateHistoryObject(
-    //   ADD_PATTERN,
-    //   newPattern.model?._id,
-    //   newPattern.name[UA].value,
-    //   newPattern._id,
-    //   [],
-    //   generateHistoryChangesData(newPattern, [
-    //     NAME,
-    //     DESCRIPTION,
-    //     MODEL,
-    //     OPTION_TYPE,
-    //     FEATURES,
-    //     ADDITIONAL_PRICE,
-    //     AVAILABLE,
-    //   ]),
-    //   adminId
-    // );
+    const newPattern = await new Pattern({ ...pattern, images }).save();
+    const historyRecord = generateHistoryObject(
+      ADD_PATTERN,
+      newPattern.model?._id,
+      newPattern.name[UA].value,
+      newPattern._id,
+      [],
+      generateHistoryChangesData(newPattern, [
+        NAME,
+        DESCRIPTION,
+        MODEL,
+        OPTION_TYPE,
+        FEATURES,
+        ADDITIONAL_PRICE,
+        AVAILABLE,
+      ]),
+      adminId
+    );
 
-    // await addHistoryRecord(historyRecord);
-    // console.log(newPattern);
-    // return newPattern;
+    await addHistoryRecord(historyRecord);
+
+    return newPattern;
   }
 
   async deletePattern(id, { _id: adminId }) {
