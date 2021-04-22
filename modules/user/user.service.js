@@ -43,6 +43,7 @@ const {
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   SESSION_TIMEOUT,
+  REFRESH_TOKEN_IS_NOT_VALID,
   YOU_CANT_BLOCK_YOURSELF,
   USER_IS_ALREADY_BLOCKED,
   USER_IS_ALREADY_UNLOCKED,
@@ -477,7 +478,7 @@ class UserService extends FilterHelper {
     const { userId } = verifyUser(refreshTokenForVerify);
 
     if (!userId) {
-      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+      throw new RuleError(REFRESH_TOKEN_IS_NOT_VALID, FORBIDDEN);
     }
     await this.getUserByFieldOrThrow('_id', userId);
     const { accessToken, refreshToken } = generateTokens(

@@ -65,10 +65,7 @@ const userMutation = {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
     } catch (err) {
-      return {
-        statusCode: err.statusCode,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
   confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
