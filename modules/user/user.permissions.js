@@ -25,7 +25,7 @@ const {
 const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
   getUsersForStatistic: hasRoles([ADMIN, SUPERADMIN]),
-  getUserByToken: isTheSameUser,
+  getUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   getUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   validateConfirmationToken: allow,
 };

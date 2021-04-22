@@ -69,7 +69,7 @@ describe('queries', () => {
     done();
   });
 
-  test('should receive error when try getUserByToken', async done => {
+  test('should receive user by token', async done => {
     const { email } = testUser;
     operations = await setupApp({
       firstName: 'Test',
@@ -89,11 +89,23 @@ describe('queries', () => {
       token,
     });
     const res = await getUserByToken(operations);
-    expect(res.data.getUserByToken).toHaveProperty('statusCode', 401);
+
+    expect(res.data.getUserByToken).toHaveProperty('firstName', 'Test');
+    expect(res.data.getUserByToken).toHaveProperty('lastName', 'User');
+    expect(res.data.getUserByToken).toHaveProperty('email', email);
     expect(res.data.getUserByToken).toHaveProperty(
-      'message',
-      'WRONG_CREDENTIALS'
+      'phoneNumber',
+      '380666666666'
     );
+    expect(res.data.getUserByToken).toHaveProperty('role', 'user');
+    expect(res.data.getUserByToken).toHaveProperty('address', {
+      country: 'Ukraine',
+      city: 'Kiev',
+      street: 'Shevchenka',
+      buildingNumber: '23',
+    });
+    expect(res.data.getUserByToken).toHaveProperty('orders', []);
+    expect(res.data.getUserByToken).toHaveProperty('comments', []);
     done();
   });
 
@@ -318,7 +330,7 @@ describe('Filter users', () => {
     done();
   });
 
-  test('should sort by emaill from z to a', async done => {
+  test('should sort by email from z to a', async done => {
     const compareResult = testUsersSet
       .map(user => user.email)
       .sort()
