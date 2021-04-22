@@ -7,16 +7,22 @@ const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
 } = require('../dotenvValidator');
+const {
+  SOURCES: { HORONDI },
+  roles: { SUPERADMIN },
+} = require('../consts');
+const { FIRST_NAME, LAST_NAME } = require('../consts/test-admin');
+
 const registerAdmin = async (email, password) => {
   await User.deleteOne({ email: email });
   const admin = new User();
-  admin.firstName = 'Super аdmin';
-  admin.lastName = 'Super admin full';
+  admin.firstName = FIRST_NAME;
+  admin.lastName = LAST_NAME;
   admin.email = email;
-  admin.role = 'superadmin';
+  admin.role = SUPERADMIN;
   admin.credentials = [
     {
-      source: 'horondi',
+      source: HORONDI,
       tokenPass: await bcrypt.hash(password, 12),
     },
   ];
