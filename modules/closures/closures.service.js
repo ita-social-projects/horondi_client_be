@@ -68,7 +68,11 @@ class ClosureService {
     if (await this.checkClosureExist(data)) {
       throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
     }
-    data.additionalPrice = await calculatePrice(data.additionalPrice);
+
+    if (data.additionalPrice) {
+      data.additionalPrice = await calculatePrice(data.additionalPrice);
+    }
+
     const newClosure = await new Closure(data).save();
 
     const historyRecord = generateHistoryObject(
@@ -106,6 +110,10 @@ class ClosureService {
 
     if (!closureMaterial) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (closure.additionalPrice) {
+      closure.additionalPrice = await calculatePrice(closure.additionalPrice);
     }
 
     const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {

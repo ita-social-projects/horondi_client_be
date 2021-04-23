@@ -9,7 +9,7 @@ const {
 } = require('../../consts');
 const {
   closureValidator,
-  addClosureValidator,
+  crudClosureValidator,
 } = require('../../validators/constructor-items.validator');
 
 const closurePermissionsQuery = {
@@ -19,11 +19,11 @@ const closurePermissionsQuery = {
 
 const closurePermissionsMutations = {
   addClosure: and(
-    inputDataValidation(CLOSURE, closureValidator),
+    inputDataValidation(CLOSURE, crudClosureValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   updateClosure: and(
-    inputDataValidation(CLOSURE, closureValidator),
+    inputDataValidation(CLOSURE, crudClosureValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteClosure: hasRoles([ADMIN, SUPERADMIN]),

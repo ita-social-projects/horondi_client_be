@@ -11,6 +11,7 @@ const newClosure = (materialId, colorId, modelId) => ({
   },
   available: true,
   default: true,
+  additionalPrice: 1,
 });
 
 const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
@@ -19,16 +20,10 @@ const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
     { lang: 'en', value: ' test' },
   ],
   optionType: 'CLOSURE',
-  model: {
-    _id: modelId,
-  },
+  model: { _id: modelId },
   features: {
-    material: {
-      _id: materialId,
-    },
-    color: {
-      _id: colorId,
-    },
+    material: { _id: materialId },
+    color: { _id: colorId },
   },
   available: true,
   default: true,
@@ -41,7 +36,7 @@ const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
   ],
 });
 
-const newClosureUpdated = (materialId, colorId, modelId) => ({
+const closureToUpdate = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'uk', value: ' змінено' },
     { lang: 'en', value: ' updated' },
@@ -54,15 +49,28 @@ const newClosureUpdated = (materialId, colorId, modelId) => ({
   },
   available: true,
   default: true,
+  additionalPrice: 40,
+});
+
+const newClosureUpdated = (materialId, colorId, modelId) => ({
+  name: [
+    { lang: 'uk', value: ' змінено' },
+    { lang: 'en', value: ' updated' },
+  ],
+  optionType: 'CLOSURE',
+  model: { _id: modelId },
+  features: {
+    material: { _id: materialId },
+    color: { _id: colorId },
+  },
+  available: true,
+  default: true,
   additionalPrice: [
     {
       currency: 'UAH',
-      value: 8000,
+      value: 0,
     },
-    {
-      currency: 'USD',
-      value: 400,
-    },
+    null,
   ],
 });
 const wrongId = '5fb412d8663cf10bec9faa1a';
@@ -71,5 +79,6 @@ module.exports = {
   newClosure,
   closureWithConvertedPrice,
   newClosureUpdated,
+  closureToUpdate,
   wrongId,
 };

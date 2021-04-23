@@ -85,9 +85,9 @@ const updateClosure = async (id, closure, operations) => {
       id,
     },
   });
-  console.log('updatedClosure', updatedClosure.data);
   return updatedClosure.data.updateClosure;
 };
+
 const deleteClosure = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`

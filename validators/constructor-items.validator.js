@@ -92,7 +92,7 @@ const closureValidator = Joi.object({
   default: Joi.boolean(),
 });
 
-const addClosureValidator = Joi.object({
+const crudClosureValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -266,7 +266,7 @@ module.exports = {
   pocketValidator,
   backValidator,
   closureValidator,
-  addClosureValidator,
+  crudClosureValidator,
   strapValidator,
   patternValidator,
   constructorBasicValidator,

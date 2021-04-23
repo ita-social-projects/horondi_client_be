@@ -7,13 +7,21 @@ const {
   deleteClosure,
   createClosure,
   updateClosure,
+  getClosureById,
 } = require('./closure.helper');
 const {
   wrongId,
   newClosure,
   closureWithConvertedPrice,
   newClosureUpdated,
+  closureToUpdate,
 } = require('./closure.variables');
+const Closure = require('../../modules/closures/closures.model').schema;
+const Color = require('../../modules/color/color.model').schema;
+const MaterialModel = require('../../modules/material/material.model').schema;
+const Category = require('../../modules/category/category.model').schema;
+const Size = require('../../modules/size/size.model').schema;
+const Model = require('../../modules/model/model.model').schema;
 const { getMaterial } = require('../materials/material.variables');
 const {
   createMaterial,
@@ -29,6 +37,7 @@ const { createSize, deleteSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
+const { Material, CategoryResult } = require('../../resolvers');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -64,8 +73,6 @@ describe('Closure mutations', () => {
       operations
     );
     closureId = closureData._id;
-    console.log(closureData);
-    console.log(closureId);
   });
 
   test('should create closure', async () => {
@@ -90,63 +97,68 @@ describe('Closure mutations', () => {
     expect(closureData).toHaveProperty('message', CLOSURE_ALREADY_EXIST);
     expect(closureData).toHaveProperty('statusCode', 400);
   });
-  // test('should receive error CLOSURE_NOT_FOUND when update', async () => {
-  //   const closureData = await updateClosure(
-  //     wrongId,
-  //     newClosureUpdated(materialId, colorId, modelId),
-  //     operations
-  //   );
-  //   console.log('wrong id update', closureData);
-  //   expect(closureData).toBeDefined();
-  //   expect(closureData).toHaveProperty('message', CLOSURE_NOT_FOUND);
-  //   expect(closureData).toHaveProperty('statusCode', 404);
-  // });
-  test('should update closure', async () => {
-    closureData = await createClosure(
-      newClosure(materialId, colorId, modelId),
-      operations
-    );
-    const newClosureId = closureData._id;
-
-    const updatedClosureData = await updateClosure(
-      closureId,
-      newClosureUpdated(materialId, colorId, modelId),
+  test('should receive error CLOSURE_NOT_FOUND when update', async () => {
+    closureData = await updateClosure(
+      wrongId,
+      closureToUpdate(materialId, colorId, modelId),
       operations
     );
 
-    expect(updatedClosureData).toBeDefined();
-    expect(updatedClosureData).toEqual({
-      _id: newClosureId,
-      ...updatedClosureData,
-    });
+    expect(closureData).toBeDefined();
+    expect(closureData).toHaveProperty('message', CLOSURE_NOT_FOUND);
+    expect(closureData).toHaveProperty('statusCode', 404);
   });
-  // test('should receive error CLOSURE_ALREADY_EXIST when update', async () => {
-  //   const closureData = await updateClosure(
-  //     closureId,
-  //     newClosureUpdated(materialId, colorId, modelId),
-  //     operations
-  //   );
+  test('should update closure', async done => {
+    const updatedClosure = await updateClosure(
+      closureId,
+      closureToUpdate(materialId, colorId, modelId),
+      operations
+    );
 
-  //   expect(closureData).toBeDefined();
-  //   expect(closureData).toHaveProperty('message', CLOSURE_ALREADY_EXIST);
-  //   expect(closureData).toHaveProperty('statusCode', 400);
-  // });
-  // test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
-  //   const closureData = await deleteClosure(wrongId, operations);
+    const finalClosure = newClosureUpdated(materialId, colorId, modelId);
 
-  //   expect(closureData).toBeDefined();
-  //   expect(closureData).toHaveProperty('message', CLOSURE_NOT_FOUND);
-  //   expect(closureData).toHaveProperty('statusCode', 404);
-  // });
-  // test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
-  //   const closureData = await deleteClosure(closureId, operations);
+    expect(updatedClosure).toBeDefined();
+    expect(updatedClosure).toEqual({
+      _id: closureId,
+      additionalPrice: finalClosure.additionalPrice,
+      ...finalClosure,
+    });
+    done();
+  });
+  test('should receive error CLOSURE_ALREADY_EXIST when update', async () => {
+    const closureDataToUpdate = await updateClosure(
+      closureId,
+      closureToUpdate(materialId, colorId, modelId),
+      operations
+    );
 
-  //   expect(closureData).toBeDefined();
-  //   expect(closureData).toHaveProperty('_id', closureId);
-  // });
+    expect(closureDataToUpdate).toBeDefined();
+    expect(closureDataToUpdate).toHaveProperty(
+      'message',
+      CLOSURE_ALREADY_EXIST
+    );
+    expect(closureDataToUpdate).toHaveProperty('statusCode', 400);
+  });
+  test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
+    closureData = await deleteClosure(wrongId, operations);
+
+    expect(closureData).toBeDefined();
+    expect(closureData).toHaveProperty('message', CLOSURE_NOT_FOUND);
+    expect(closureData).toHaveProperty('statusCode', 404);
+  });
+  test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
+    closureData = await deleteClosure(closureId, operations);
+
+    expect(closureData).toBeDefined();
+    expect(closureData).toHaveProperty('_id', closureId);
+  });
 
   afterAll(async () => {
-    await deleteMaterial(materialId, operations);
+    await deleteClosure(closureId, operations);
     await deleteColor(colorId, operations);
+    await deleteMaterial(materialId, operations);
+    await deleteCategory(categoryId, operations);
+    await deleteSize(sizeId, operations);
+    await deleteModel(modelId, operations);
   });
 });
