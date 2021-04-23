@@ -54,6 +54,7 @@ class ConstructorService {
     if (foundElement) {
       return foundElement;
     }
+
     return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
   }
 

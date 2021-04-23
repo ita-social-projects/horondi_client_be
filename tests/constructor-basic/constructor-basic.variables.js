@@ -1,15 +1,24 @@
 const wrongId = '6009dcd5f9855555907ebf5e';
-const newConstructorBasic = (materialID, colorID) => ({
+const newConstructorBasic = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'варіант 1' },
     { lang: 'en', value: 'variant 1' },
   ],
-  material: materialID,
-  color: colorID,
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   available: true,
-  default: false,
+  default: true,
+  basePrice: 1,
 });
-const getConstructorData = construrtorBasic => ({
+
+const getConstructorData = (
+  construrtorBasic,
+  { materialId, colorId, modelId }
+) => ({
   name: [
     {
       lang: construrtorBasic.name[0].lang,
@@ -20,11 +29,40 @@ const getConstructorData = construrtorBasic => ({
       value: construrtorBasic.name[1].value,
     },
   ],
-  material: { _id: construrtorBasic.material },
-  color: { _id: construrtorBasic.color },
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: { _id: modelId },
+  features: {
+    material: {
+      _id: materialId,
+      available: true,
+      name: [
+        {
+          lang: 'uk',
+          value: 'Матеріал test',
+        },
+        {
+          lang: 'en',
+          value: 'Material test',
+        },
+      ],
+      purpose: 'INNER',
+    },
+    color: {
+      _id: colorId,
+      colorHex: '#3r56tg',
+    },
+  },
   available: construrtorBasic.available,
   default: construrtorBasic.default,
+  basePrice: [
+    {
+      currency: 'UAH',
+      value: 0,
+    },
+    null,
+  ],
 });
+
 const getConstructorDataForUpt = construrtorBasic => ({
   name: [
     {

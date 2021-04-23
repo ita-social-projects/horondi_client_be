@@ -11,15 +11,31 @@ const createConstructorBasic = async (constructorElement, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
-
             available
             default
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -69,15 +85,31 @@ const updateConstructorBasic = async (
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
-
             available
             default
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -101,18 +133,30 @@ const getAllConstructorBasics = async operations => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
-              name {
-                lang
-                value
-              }
-              purpose
-              available
             }
-            color {
-              _id
-              colorHex
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
+            }
+            available
+            default
+            basePrice {
+              currency
+              value
             }
           }
         }
@@ -132,15 +176,31 @@ const getConstructorBasicById = async (id, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             available
             default
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode

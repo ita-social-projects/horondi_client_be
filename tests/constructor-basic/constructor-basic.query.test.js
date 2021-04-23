@@ -15,24 +15,45 @@ const {
   newConstructorBasic,
   getConstructorData,
 } = require('./constructor-basic.variables');
-const { color } = require('../color/color.variables');
-const { getMaterial } = require('../materials/material.variables');
 const {
-  BASIC_NOT_FOUND,
-} = require('../../error-messages/constructor-basic-messages');
+  getMaterial,
+  getMaterialToUpdate,
+} = require('../materials/material.variables');
+const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+} = require('../../error-messages/constructor-element-messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const { color } = require('../color/color.variables');
+const { createModel, deleteModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize, deleteSize } = require('../size/size.helper');
+const {
+  SIZES_TO_CREATE: { size1 },
+} = require('../size/size.variables');
 
-let operations;
-let colorId;
-let materialInput;
-let receivedMaterial;
-let materialId;
-let constructorInput;
-let constructorBasic;
-let constructorBasicId;
-let currentConstructorBasic;
-
-jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
+
+let operations,
+  materialId,
+  receivedMaterial,
+  materialInput,
+  constructorInput,
+  constructorBasic,
+  constructorBasicId,
+  currentConstructorBasic,
+  colorId,
+  modelId,
+  categoryId,
+  sizeId;
 
 describe('constructor mutations', () => {
   beforeAll(async done => {
@@ -42,7 +63,16 @@ describe('constructor mutations', () => {
     materialInput = getMaterial(colorId);
     receivedMaterial = await createMaterial(materialInput, operations);
     materialId = receivedMaterial._id;
-    constructorInput = newConstructorBasic(materialId, colorId);
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const sizeData = await createSize(size1, operations);
+    sizeId = sizeData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    constructorInput = newConstructorBasic(materialId, colorId, modelId);
 
     constructorBasic = await createConstructorBasic(
       constructorInput,
@@ -50,7 +80,12 @@ describe('constructor mutations', () => {
     );
     constructorBasicId = constructorBasic._id;
 
-    currentConstructorBasic = getConstructorData(constructorInput);
+    currentConstructorBasic = getConstructorData(constructorInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
+    console.log(currentConstructorBasic);
     done();
   });
 
@@ -58,7 +93,6 @@ describe('constructor mutations', () => {
     const receivedAllConstructorBasics = await getAllConstructorBasics(
       operations
     );
-
     expect(receivedAllConstructorBasics.items).toBeDefined();
     expect(receivedAllConstructorBasics.items.length).toBeGreaterThan(0);
     done();
@@ -68,7 +102,7 @@ describe('constructor mutations', () => {
       constructorBasicId,
       operations
     );
-
+    console.log(receivedById);
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({
       ...currentConstructorBasic,
@@ -79,15 +113,18 @@ describe('constructor mutations', () => {
   test('#3 Should return  Error', async done => {
     const receivedError = await getConstructorBasicById(wrongId, operations);
 
-    expect(receivedError.statusCode).toBe(404);
-    expect(receivedError.message).toBe(BASIC_NOT_FOUND);
+    expect(receivedError.statusCode).toBe(NOT_FOUND);
+    expect(receivedError.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
     done();
   });
 
   afterAll(async done => {
     await deleteConstructorBasic(constructorBasicId, operations);
-    await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
+    await deleteMaterial(materialId, operations);
+    await deleteCategory(categoryId, operations);
+    await deleteSize(sizeId, operations);
+    await deleteModel(modelId, operations);
     done();
   });
 });
