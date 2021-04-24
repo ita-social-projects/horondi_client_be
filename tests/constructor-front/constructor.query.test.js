@@ -1,8 +1,5 @@
 const { setupApp } = require('../helper-functions');
 const {
-  FRONT_POCKET_NOT_FOUND,
-} = require('../../error-messages/constructor-front-pocket-messages');
-const {
   createConstructorFrontPocket,
   getAllConstructorFrontPocket,
   getConstructorFrontPocketById,

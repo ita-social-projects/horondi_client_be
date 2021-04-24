@@ -170,6 +170,31 @@ const patternValidator = Joi.object({
   default: Joi.boolean(),
 });
 
+const crudPatternValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string(),
+    handmade: Joi.boolean().required(),
+  }),
+  description: Joi.array().has(nestedNameValidator),
+  images: Joi.object({
+    large: Joi.string(),
+    medium: Joi.string(),
+    small: Joi.string(),
+    thumbnail: Joi.string(),
+  }),
+  constructorImg: Joi.string(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean(),
+  default: Joi.boolean(),
+});
+
 const constructorBasicValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
@@ -269,6 +294,7 @@ module.exports = {
   crudClosureValidator,
   strapValidator,
   patternValidator,
+  crudPatternValidator,
   constructorBasicValidator,
   constructorBottomValidator,
   constructorFrontPocketValidator,

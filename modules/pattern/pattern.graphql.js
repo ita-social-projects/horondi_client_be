@@ -3,7 +3,7 @@ const patternType = `
       _id: ID!
       name: [Language]
       optionType: String
-      model: ID
+      model: Model
       features: PatternFeatureSet
       description: [Language]
       images: ImageSet
@@ -30,7 +30,7 @@ const patternInputs = `
       features: PatternFeatureSetInput
       images:ImageSetInput
       constructorImg: String
-      additionalPrice: [CurrencySetInput]
+      additionalPrice: Int
       available: Boolean
       default: Boolean
     }

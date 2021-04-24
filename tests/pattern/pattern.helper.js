@@ -15,8 +15,22 @@ const createPattern = async (pattern, operations) => {
               lang
               value
             }
-            handmade
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              handmade
+            }
+            additionalPrice {
+              currency
+              value
+            }
             available
+            default
           }
           ... on Error {
             message
@@ -27,7 +41,6 @@ const createPattern = async (pattern, operations) => {
     `,
     variables: { pattern },
   });
-
   return res.data.addPattern;
 };
 const deletePattern = async (id, operations) => {
@@ -59,6 +72,7 @@ const getAllPatterns = async operations => {
       query {
         getAllPatterns {
           items {
+            _id
             name {
               lang
               value
@@ -67,8 +81,22 @@ const getAllPatterns = async operations => {
               lang
               value
             }
-            handmade
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              handmade
+            }
+            additionalPrice {
+              currency
+              value
+            }
             available
+            default
           }
         }
       }
@@ -82,6 +110,7 @@ const getPatternById = async (id, operations) => {
       query($id: ID!) {
         getPatternById(id: $id) {
           ... on Pattern {
+            _id
             name {
               lang
               value
@@ -90,8 +119,22 @@ const getPatternById = async (id, operations) => {
               lang
               value
             }
-            handmade
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              handmade
+            }
+            additionalPrice {
+              currency
+              value
+            }
             available
+            default
           }
           ... on Error {
             message
@@ -118,8 +161,22 @@ const getAllPatternsPaginated = async (skip, limit, operations) => {
               lang
               value
             }
-            handmade
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              handmade
+            }
+            additionalPrice {
+              currency
+              value
+            }
             available
+            default
           }
           count
         }
@@ -143,8 +200,22 @@ const updatePattern = async (id, pattern, operations) => {
               lang
               value
             }
-            handmade
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              handmade
+            }
+            additionalPrice {
+              currency
+              value
+            }
             available
+            default
           }
           ... on Error {
             message

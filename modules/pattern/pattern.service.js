@@ -1,6 +1,7 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
@@ -66,6 +67,11 @@ class PatternsService {
     if (await this.checkPatternExist(pattern, id)) {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
+
+    if (pattern.additionalPrice) {
+      pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
+    }
+
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
       pattern
@@ -128,6 +134,10 @@ class PatternsService {
     const images = uploadResult.fileNames;
     const constructorImg = await uploadSmallImage(image[1]);
     pattern.constructorImg = constructorImg;
+
+    if (pattern.additionalPrice) {
+      pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
+    }
 
     const newPattern = await new Pattern({ ...pattern, images }).save();
     const historyRecord = generateHistoryObject(

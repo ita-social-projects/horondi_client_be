@@ -5,7 +5,15 @@ const wrongLimit = -5;
 const limit = 5;
 const testValue = 'test value';
 const updateValue = 'update value';
-const mutationPatternToAdd = {
+const finalPrice = [
+  {
+    currency: 'UAH',
+    value: 0,
+  },
+  null,
+];
+
+const mutationPatternToAdd = (materialId, modelId) => ({
   name: [
     {
       lang: 'uk',
@@ -26,10 +34,18 @@ const mutationPatternToAdd = {
       value: testValue,
     },
   ],
-  handmade: false,
+  optionType: 'PATTERN',
+  model: modelId,
+  features: {
+    material: materialId,
+    handmade: false,
+  },
+  additionalPrice: 1,
   available: true,
-};
-const queryPatternToAdd = {
+  default: true,
+});
+
+const queryPatternToAdd = (materialId, modelId) => ({
   name: [
     {
       lang: 'uk',
@@ -50,10 +66,50 @@ const queryPatternToAdd = {
       value: testValue,
     },
   ],
-  handmade: false,
+  optionType: 'PATTERN',
+  model: modelId,
+  features: {
+    material: materialId,
+    handmade: false,
+  },
+  additionalPrice: 1,
   available: true,
-};
-const patternToUpdate = {
+  default: false,
+});
+
+const createdPattern = (materialId, modelId) => ({
+  name: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: testValue,
+    },
+    {
+      lang: 'en',
+      value: testValue,
+    },
+  ],
+  optionType: 'PATTERN',
+  model: { _id: modelId },
+  features: {
+    material: { _id: materialId },
+    handmade: false,
+  },
+  additionalPrice: finalPrice,
+  available: true,
+  default: true,
+});
+
+const patternToUpdate = (materialId, modelId) => ({
   name: [
     {
       lang: 'uk',
@@ -74,9 +130,48 @@ const patternToUpdate = {
       value: updateValue,
     },
   ],
+  optionType: 'PATTERN',
+  model: modelId,
+  features: {
+    material: materialId,
+    handmade: false,
+  },
+  additionalPrice: 1,
   available: true,
-  handmade: false,
-};
+  default: false,
+});
+
+const patternAfterUpdate = (materialId, modelId) => ({
+  name: [
+    {
+      lang: 'uk',
+      value: updateValue,
+    },
+    {
+      lang: 'en',
+      value: updateValue,
+    },
+  ],
+  description: [
+    {
+      lang: 'uk',
+      value: updateValue,
+    },
+    {
+      lang: 'en',
+      value: updateValue,
+    },
+  ],
+  optionType: 'PATTERN',
+  model: { _id: modelId },
+  features: {
+    material: { _id: materialId },
+    handmade: false,
+  },
+  additionalPrice: finalPrice,
+  available: true,
+  default: false,
+});
 
 module.exports = {
   patternToUpdate,
@@ -85,6 +180,9 @@ module.exports = {
   limit,
   wrongSkip,
   wrongLimit,
+  finalPrice,
   queryPatternToAdd,
   mutationPatternToAdd,
+  createdPattern,
+  patternAfterUpdate,
 };
