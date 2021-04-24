@@ -85,7 +85,6 @@ describe('constructor mutations', () => {
       colorId,
       modelId,
     });
-    console.log(currentConstructorBasic);
     done();
   });
 

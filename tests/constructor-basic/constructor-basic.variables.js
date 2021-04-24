@@ -63,7 +63,7 @@ const getConstructorData = (
   ],
 });
 
-const getConstructorDataForUpt = construrtorBasic => ({
+const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   name: [
     {
       lang: 'ua',
@@ -74,10 +74,15 @@ const getConstructorDataForUpt = construrtorBasic => ({
       value: 'After',
     },
   ],
-  material: construrtorBasic.material,
-  color: construrtorBasic.color,
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   available: true,
   default: false,
+  basePrice: 1,
 });
 
 module.exports = {

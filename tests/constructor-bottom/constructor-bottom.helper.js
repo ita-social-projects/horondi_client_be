@@ -11,15 +11,32 @@ const createConstructorBottom = async (constructorElement, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
+            }
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
-            color {
-              _id
-            }
             available
             default
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -46,7 +63,32 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
+            }
             image
+            available
+            default
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -88,15 +130,32 @@ const getConstructorBottomById = async (id, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
+            }
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
-            color {
-              _id
-            }
             available
             default
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -120,25 +179,38 @@ const getAllConstructorBottom = async operations => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
-              name {
-                lang
-                value
-              }
-              purpose
-              available
             }
-            color {
-              _id
-              colorHex
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
+            available
+            default
+            basePrice {
+              currency
+              value
+            }
           }
         }
       }
     `,
   });
+  console.log(allConstructorBottom.data);
   return allConstructorBottom.data.getAllConstructorBottom.items;
 };
 

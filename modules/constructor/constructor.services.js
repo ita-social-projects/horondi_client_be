@@ -73,7 +73,6 @@ class ConstructorService {
       constructorElement.basePrice
     );
     const basic = await new model(constructorElement).save();
-
     const historyRecord = generateHistoryObject(
       ADD_CONSTRUCTOR_ELEMENT,
       basic.model,
@@ -139,12 +138,12 @@ class ConstructorService {
   }
 
   async deleteConstructorElement(id, model, { _id: adminId }) {
-    const constructorElement = await model.findByIdAndDelete(id);
-    if (constructorElement) {
-      if (constructorElement.image) {
-        await uploadService.deleteFile(constructorElement.image);
-      }
+    const constructorElement = await model.findById(id);
+
+    if (constructorElement.image) {
+      await uploadService.deleteFile(constructorElement.image);
     }
+
     if (!constructorElement) {
       return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
     }
@@ -167,8 +166,7 @@ class ConstructorService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    return constructorElement;
+    return await model.findByIdAndDelete(id);
   }
 
   async checkConstructorElementExist(data, model) {
