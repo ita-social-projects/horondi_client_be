@@ -140,12 +140,12 @@ class ConstructorService {
   async deleteConstructorElement(id, model, { _id: adminId }) {
     const constructorElement = await model.findById(id);
 
-    if (constructorElement.image) {
-      await uploadService.deleteFile(constructorElement.image);
-    }
-
     if (!constructorElement) {
       return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (constructorElement.image) {
+      await uploadService.deleteFile(constructorElement.image);
     }
 
     const historyRecord = generateHistoryObject(

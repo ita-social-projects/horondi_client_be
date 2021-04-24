@@ -20,16 +20,38 @@ const {
 } = require('../materials/material.helper');
 const { color } = require('../color/color.variables');
 const { getMaterial } = require('../materials/material.variables');
+const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+} = require('../../error-messages/constructor-element-messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const { createModel, deleteModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize, deleteSize } = require('../size/size.helper');
+const {
+  SIZES_TO_CREATE: { size1 },
+} = require('../size/size.variables');
 
-let operations;
-let colorId;
-let materialID;
-let constructorInput;
-let constructorFrontID;
-let constructorFrontPocket;
-let currentConstructorFrontPocket;
+let operations,
+  colorId,
+  materialId,
+  modelId,
+  sizeId,
+  categoryId,
+  constructorInput,
+  constructorFrontId,
+  constructorFrontPocket,
+  currentConstructorFrontPocket;
 
+jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
 
 describe('constructor mutations', () => {
   beforeAll(async () => {
@@ -37,15 +59,28 @@ describe('constructor mutations', () => {
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
-    materialID = materialData._id;
-    constructorInput = newConstructorFront(materialID, colorId);
+    materialId = materialData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const sizeData = await createSize(size1, operations);
+    sizeId = sizeData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    constructorInput = newConstructorFront(materialId, colorId, modelId);
     constructorFrontPocket = await createConstructorFrontPocket(
       constructorInput,
       operations
     );
-    constructorFrontID = constructorFrontPocket._id;
+    constructorFrontId = constructorFrontPocket._id;
 
-    currentConstructorFrontPocket = getConstructorData(constructorInput);
+    currentConstructorFrontPocket = getConstructorData(constructorInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
   });
 
   test('#1 Should return all Constructor Front Pocket', async () => {
@@ -57,29 +92,32 @@ describe('constructor mutations', () => {
   });
   test('#2 Should return  Constructor Front Pocket by Id', async () => {
     const receivedById = await getConstructorFrontPocketById(
-      constructorFrontID,
+      constructorFrontId,
       operations
     );
 
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({
       ...currentConstructorFrontPocket,
-      _id: constructorFrontID,
+      _id: constructorFrontId,
     });
   });
-
   test('#3 Should return  Error', async () => {
     const receivedError = await getConstructorFrontPocketById(
       wrongId,
       operations
     );
 
-    expect(receivedError.statusCode).toBe(404);
-    expect(receivedError.message).toBe(FRONT_POCKET_NOT_FOUND);
+    expect(receivedError.statusCode).toBe(NOT_FOUND);
+    expect(receivedError.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
+
   afterAll(async () => {
-    await deleteConstructorFrontPocket(constructorFrontID, operations);
-    await deleteMaterial(materialID, operations);
+    await deleteConstructorFrontPocket(constructorFrontId, operations);
+    await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
+    await deleteCategory(categoryId, operations);
+    await deleteSize(sizeId, operations);
+    await deleteModel(modelId, operations);
   });
 });
