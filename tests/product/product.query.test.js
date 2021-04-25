@@ -71,20 +71,26 @@ describe('Product mutations', () => {
       operations
     );
     materialId = receivedMaterial._id;
-    const patternData = await createPattern(queryPatternToAdd, operations);
-    patternId = patternData._id;
-    const closureData = await createClosure(newClosure(materialId), operations);
-    closureId = closureData._id;
-    const receivedConstructorBasic = await createConstructorBasic(
-      newConstructorBasic(materialId, colorId),
-      operations
-    );
-    constructorBasicId = receivedConstructorBasic._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
       operations
     );
     modelId = modelData._id;
+    const patternData = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
+    patternId = patternData._id;
+    const closureData = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
+    closureId = closureData._id;
+    const receivedConstructorBasic = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId, modelId),
+      operations
+    );
+    constructorBasicId = receivedConstructorBasic._id;
     productInput = newProductInputData(
       categoryId,
       modelId,
