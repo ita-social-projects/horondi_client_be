@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 const {
@@ -84,12 +85,7 @@ describe('Closure queries', () => {
     expect(result).toHaveProperty('statusCode', 404);
   });
 
-  afterAll(async () => {
-    await deleteClosure(closureId, operations);
-    await deleteColor(colorId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

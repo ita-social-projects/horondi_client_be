@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   FRONT_POCKET_NOT_FOUND,
@@ -156,11 +157,7 @@ describe('constructor mutations', () => {
     expect(result).toBe(constructorFrontId);
   });
 
-  afterAll(async () => {
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

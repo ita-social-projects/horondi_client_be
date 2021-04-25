@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   createMaterial,
   deleteMaterial,
@@ -107,12 +108,6 @@ describe('Constructor query', () => {
   });
 
   afterAll(async done => {
-    await deleteConstructorBottom(newConstructorForQuery._id, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
-    done();
+    mongoose.connection.db.dropDatabase(done);
   });
 });

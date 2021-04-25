@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   CLOSURE_NOT_FOUND,
@@ -16,12 +17,6 @@ const {
   newClosureUpdated,
   closureToUpdate,
 } = require('./closure.variables');
-const Closure = require('../../modules/closures/closures.model').schema;
-const Color = require('../../modules/color/color.model').schema;
-const MaterialModel = require('../../modules/material/material.model').schema;
-const Category = require('../../modules/category/category.model').schema;
-const Size = require('../../modules/size/size.model').schema;
-const Model = require('../../modules/model/model.model').schema;
 const { getMaterial } = require('../materials/material.variables');
 const {
   createMaterial,
@@ -37,7 +32,6 @@ const { createSize, deleteSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
-const { Material, CategoryResult } = require('../../resolvers');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -153,12 +147,7 @@ describe('Closure mutations', () => {
     expect(closureData).toHaveProperty('_id', closureId);
   });
 
-  afterAll(async () => {
-    await deleteClosure(closureId, operations);
-    await deleteColor(colorId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

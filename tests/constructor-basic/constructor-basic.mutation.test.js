@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   createMaterial,
@@ -170,12 +171,6 @@ describe('constructor mutations', () => {
   });
 
   afterAll(async done => {
-    await deleteConstructorBasic(constructorBasicId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
-    done();
+    mongoose.connection.db.dropDatabase(done);
   });
 });

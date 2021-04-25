@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   createConstructorFrontPocket,
@@ -109,12 +110,7 @@ describe('constructor mutations', () => {
     expect(receivedError.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
 
-  afterAll(async () => {
-    await deleteConstructorFrontPocket(constructorFrontId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

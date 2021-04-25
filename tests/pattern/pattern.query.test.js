@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const { setupApp } = require('../helper-functions');
 const {
@@ -120,12 +121,7 @@ describe('Pattern queries', () => {
     );
   });
 
-  afterAll(async () => {
-    await deletePattern(patternId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

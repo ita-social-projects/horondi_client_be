@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   patternToUpdate,
   wrongId,
@@ -134,12 +135,7 @@ describe('Pattern Mutation Tests', () => {
     expect(res.data.deletePattern).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
 
-  afterAll(async () => {
-    await deletePattern(patternId, operations);
-    await deleteColor(colorId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
-    await deleteModel(modelId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

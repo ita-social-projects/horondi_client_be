@@ -821,7 +821,7 @@ const typeDefs = gql`
     updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult
     deleteModel(id: ID!): ModelResult
     "Contacts Mutation"
-    addContact(contact: contactInput!, mapImagfes: [MapImage]!): ContactResult
+    addContact(contact: contactInput!, mapImages: [MapImage]!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(
       id: ID!
