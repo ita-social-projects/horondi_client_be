@@ -210,7 +210,6 @@ const getAllConstructorBottom = async operations => {
       }
     `,
   });
-  console.log(allConstructorBottom.data);
   return allConstructorBottom.data.getAllConstructorBottom.items;
 };
 

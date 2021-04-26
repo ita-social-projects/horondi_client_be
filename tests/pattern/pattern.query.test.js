@@ -77,7 +77,6 @@ describe('Pattern queries', () => {
 
   test('Should receive all patterns', async () => {
     const allPatterns = await getAllPatterns(operations);
-    console.log(allPatterns.items);
     expect(allPatterns.items).toEqual([
       {
         ...res,

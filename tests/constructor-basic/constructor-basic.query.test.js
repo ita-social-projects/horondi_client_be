@@ -102,7 +102,6 @@ describe('constructor mutations', () => {
       constructorBasicId,
       operations
     );
-    console.log(receivedById);
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({
       ...currentConstructorBasic,
