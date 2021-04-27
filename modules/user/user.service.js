@@ -710,9 +710,6 @@ class UserService extends FilterHelper {
       secret: SECRET,
     });
 
-    if (NODE_ENV === 'test') {
-      return { ...savedUser._doc, invitationalToken };
-    }
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
       token: invitationalToken,
     });
@@ -727,7 +724,7 @@ class UserService extends FilterHelper {
       { new: true }
     ).exec();
 
-    return savedUser;
+    return { isSuccess: true };
   }
 
   async confirmSuperadminCreation(_id) {
