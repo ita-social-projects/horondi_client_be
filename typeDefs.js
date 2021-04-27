@@ -674,9 +674,9 @@ const typeDefs = gql`
       items:[ CartFromLSInput!],
       id: ID!
       ): UserResult
-    registerAdmin(user: AdminRegisterInput!): UserResult
-    resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): UserResult
-    confirmSuperadminCreation(user: confirmSuperadminCreationInput!): UserResult
+    registerAdmin(user: AdminRegisterInput!): LogicalResult!
+    resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): LogicalResult!
+    confirmSuperadminCreation(user: confirmSuperadminCreationInput!): LogicalResult!
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult

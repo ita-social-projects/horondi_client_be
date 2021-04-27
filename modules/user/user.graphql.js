@@ -20,6 +20,7 @@ type User{
     comments: [ID]
     banned: UserBlockPeriod
     confirmed: Boolean
+    isSuccess: Boolean
 }
 
 type UserBlockPeriod {
