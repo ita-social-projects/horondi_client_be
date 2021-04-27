@@ -9,11 +9,8 @@ const commentsQuery = {
   getCommentById: async (parent, args) => {
     try {
       return await commentsService.getCommentById(args.id);
-    } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+    } catch (error) {
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -29,12 +26,7 @@ const commentsQuery = {
     try {
       return await commentsService.getAllCommentsByProduct(args);
     } catch (error) {
-      return [
-        {
-          statusCode: NOT_FOUND,
-          message: error.message,
-        },
-      ];
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -42,12 +34,7 @@ const commentsQuery = {
     try {
       return await commentsService.getAllCommentsByUser(args.userId);
     } catch (error) {
-      return [
-        {
-          statusCode: NOT_FOUND,
-          message: error.message,
-        },
-      ];
+      return new RuleError(error.message, error.statusCode);
     }
   },
 };
@@ -57,10 +44,7 @@ const commentsMutation = {
     try {
       return await commentsService.addComment(args.productId, args.comment);
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -68,10 +52,7 @@ const commentsMutation = {
     try {
       return await commentsService.deleteComment(args.id);
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -79,10 +60,7 @@ const commentsMutation = {
     try {
       return await commentsService.updateComment(args.id, args.comment);
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -94,10 +72,7 @@ const commentsMutation = {
         context.user
       );
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(error.message, error.statusCode);
     }
   },
 };

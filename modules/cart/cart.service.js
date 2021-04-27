@@ -7,6 +7,9 @@ const ConstructorFrontPocketModel = require('../constructor/constructor-front-po
 const PatternModel = require('../../modules/pattern/pattern.model');
 const RuleError = require('../../errors/rule.error');
 const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const {
   CART_MESSAGES: {
     PRODUCT_ALREADY_EXIST_IN_CART,
     PRODUCT_IS_NOT_EXIST_IN_CART,
@@ -25,9 +28,6 @@ const {
   FRONT_POCKET_NOT_FOUND,
 } = require('../../error-messages/constructor-front-pocket-messages');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
-const {
-  STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
-} = require('../../consts/status-codes');
 const { getSizeById } = require('../../modules/size/size.service');
 const {
   totalCartSum,

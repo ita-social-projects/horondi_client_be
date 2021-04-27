@@ -1,5 +1,9 @@
 const EmailChat = require('./email-chat.model');
 const userService = require('../user/user.service');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   CHAT_NOT_FOUND,
   QUESTION_NOT_FOUND,
@@ -41,7 +45,7 @@ class EmailChatService {
   getEmailQuestionById(id) {
     const question = EmailChat.findById(id);
     if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
+      throw new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
     }
     return question;
   }
@@ -84,7 +88,7 @@ class EmailChatService {
     const admin = await userService.getUserByFieldOrThrow(ID, adminId);
 
     if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
+      throw new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
     }
 
     question.status = ANSWERED;
@@ -123,7 +127,7 @@ class EmailChatService {
         ...item.value._doc,
       }));
     } catch (e) {
-      throw new Error(CHAT_NOT_FOUND);
+      throw new RuleError(CHAT_NOT_FOUND, NOT_FOUND);
     }
   }
 }

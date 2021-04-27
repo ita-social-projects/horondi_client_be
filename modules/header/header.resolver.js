@@ -1,4 +1,5 @@
 const headerService = require('./header.service');
+const RuleError = require('../../errors/rule.error');
 const { HEADER_NOT_FOUND } = require('../../error-messages/header.messages');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
@@ -10,10 +11,7 @@ const headerQuery = {
     try {
       return await headerService.getHeaderById(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -23,10 +21,7 @@ const headerMutation = {
     try {
       return await headerService.addHeader(args, user);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -34,10 +29,7 @@ const headerMutation = {
     try {
       return await headerService.deleteHeader(args.id, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -45,10 +37,7 @@ const headerMutation = {
     try {
       return await headerService.updateHeader(args, user);
     } catch (e) {
-      return {
-        statusCode: e.message === HEADER_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

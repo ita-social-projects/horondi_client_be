@@ -1,4 +1,8 @@
 const Material = require('./material.model');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
@@ -88,11 +92,11 @@ class MaterialsService {
 
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
-      throw new Error(MATERIAL_NOT_FOUND);
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
     const updatedMaterial = await Material.findByIdAndUpdate(
       id,
@@ -124,7 +128,7 @@ class MaterialsService {
 
   async addMaterial({ material }, { _id: adminId }) {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
     material.additionalPrice = calculatePrice(material.additionalPrice);
 
@@ -177,7 +181,7 @@ class MaterialsService {
 
       return foundMaterial;
     }
-    throw new Error(MATERIAL_NOT_FOUND);
+    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   }
 
   async checkMaterialExistOrDuplicated(data, id) {

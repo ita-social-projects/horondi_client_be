@@ -11,10 +11,7 @@ const ordersQuery = {
     if (order) {
       return order;
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: ORDER_NOT_FOUND,
-    };
+    return new RuleError(e.message, e.statusCode);
   },
   getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
   getUserOrders: async (parent, args, context) =>
@@ -37,10 +34,7 @@ const ordersMutation = {
     try {
       return await ordersService.addOrder(args.order);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteOrder: async (parent, args) => {
@@ -48,19 +42,13 @@ const ordersMutation = {
     if (deletedOrder) {
       return deletedOrder;
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: ORDER_NOT_FOUND,
-    };
+    return new RuleError(e.message, e.statusCode);
   },
   updateOrder: async (parent, args) => {
     try {
       return await ordersService.updateOrder(args.order, args.id);
     } catch (e) {
-      return {
-        statusCode: e.message === ORDER_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
