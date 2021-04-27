@@ -1,4 +1,5 @@
 const axios = require('axios');
+const RuleError = require('../../../errors/rule.error');
 
 const {
   getUkrPoshtaRegionsUrl,
@@ -27,6 +28,9 @@ const {
 const {
   REQUEST_METHODS: { GET, POST },
 } = require('../../../consts/request-methods');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../../consts/status-codes');
 
 class UkrPoshtaService {
   async getUkrPoshtaRequest(urlParams, method, data) {
@@ -96,7 +100,7 @@ class UkrPoshtaService {
       }
     );
     if (!createdOrder) {
-      throw Error(ORDER_CREATION_FAILED);
+      throw new RuleError(ORDER_CREATION_FAILED, BAD_REQUEST);
     }
     return createdOrder.data;
   }

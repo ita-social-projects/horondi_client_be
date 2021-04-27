@@ -1,4 +1,5 @@
 const emailChatService = require('./email-chat.service');
+const RuleError = require('../../errors/rule.error');
 const {
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
@@ -18,10 +19,7 @@ const emailChatQuestionQuery = {
     if (question) {
       return question;
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: QUESTION_NOT_FOUND,
-    };
+    return new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
   },
 };
 
@@ -33,10 +31,7 @@ const emailChatQuestionMutation = {
     try {
       return await emailChatService.makeEmailQuestionsSpam(args);
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -44,10 +39,7 @@ const emailChatQuestionMutation = {
     try {
       return await emailChatService.answerEmailQuestion(args);
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteEmailQuestions: async (parent, args) => {
@@ -56,10 +48,7 @@ const emailChatQuestionMutation = {
         args.questionsToDelete
       );
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

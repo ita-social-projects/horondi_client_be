@@ -1,4 +1,8 @@
 const Closure = require('./closures.model');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const {
   CLOSURE_NOT_FOUND,
   CLOSURE_ALREADY_EXIST,
@@ -44,7 +48,7 @@ class ClosureService {
     if (foundClosure) {
       return foundClosure;
     }
-    throw new Error(CLOSURE_NOT_FOUND);
+    throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
   }
 
   async addClosure(data, upload, { _id: adminId }) {
@@ -54,7 +58,7 @@ class ClosureService {
     }
 
     if (await this.checkClosureExist(data)) {
-      throw new Error(CLOSURE_ALREADY_EXIST);
+      throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
     }
     const newClosure = await new Closure(data).save();
 
@@ -80,7 +84,7 @@ class ClosureService {
 
   async updateClosure(id, closure, upload, { _id: adminId }) {
     if (await this.checkClosureExist(closure)) {
-      throw new Error(CLOSURE_ALREADY_EXIST);
+      throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
     }
     if (upload) {
       const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
@@ -90,7 +94,7 @@ class ClosureService {
     const closureMaterial = await Closure.findById(id).exec();
 
     if (!closureMaterial) {
-      throw new Error(CLOSURE_NOT_FOUND);
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
 
     const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
@@ -119,7 +123,7 @@ class ClosureService {
   async deleteClosure(id, { _id: adminId }) {
     const closure = await Closure.findByIdAndDelete(id).exec();
     if (!closure) {
-      throw new Error(CLOSURE_NOT_FOUND);
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
     const historyRecord = generateHistoryObject(
       DELETE_CLOSURE,

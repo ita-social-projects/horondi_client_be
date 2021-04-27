@@ -2,7 +2,7 @@ const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   COMMENT_NOT_FOUND,
@@ -50,7 +50,7 @@ class CommentsService extends FilterHelper {
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     return comment;
   }
@@ -69,7 +69,7 @@ class CommentsService extends FilterHelper {
   async getAllCommentsByProduct({ productId }) {
     const product = await Product.findById(productId).exec();
     if (!product) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     const comments = await Comment.find({ product: productId }).exec();
     return comments;
@@ -78,7 +78,7 @@ class CommentsService extends FilterHelper {
   async getAllCommentsByUser(userId) {
     const comments = await Comment.find({ user: userId }).exec();
     if (!comments.length) {
-      throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
+      throw new RuleError(COMMENT_FOR_NOT_EXISTING_USER, BAD_REQUEST);
     }
     return comments;
   }
@@ -88,7 +88,7 @@ class CommentsService extends FilterHelper {
       new: true,
     }).exec();
     if (!updatedComment) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     return updatedComment;
   }
@@ -96,7 +96,7 @@ class CommentsService extends FilterHelper {
   async addComment(id, data) {
     const product = await Product.findById(id).exec();
     if (!product) {
-      throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
+      throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, BAD_REQUEST);
     }
     return new Comment(data).save();
   }
@@ -104,7 +104,7 @@ class CommentsService extends FilterHelper {
   async deleteComment(id) {
     const deletedComment = await Comment.findByIdAndDelete(id).exec();
     if (!deletedComment) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     return deletedComment;
   }
@@ -113,7 +113,7 @@ class CommentsService extends FilterHelper {
     const product = await Product.findById(id).exec();
 
     if (!product) {
-      throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
+      throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, BAD_REQUEST);
     }
     const { userRates } = product;
     let { rateCount } = product;

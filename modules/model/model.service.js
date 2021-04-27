@@ -10,6 +10,10 @@ const {
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
 const uploadService = require('../upload/upload.service');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 class ModelsService {
   async getAllModels({ skip, limit }) {
@@ -29,7 +33,7 @@ class ModelsService {
 
   async getModelById(id) {
     if (!ObjectId.isValid(id)) {
-      throw new Error(MODEL_NOT_VALID);
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
 
     const foundModel = await Model.findById(id).exec();
@@ -37,7 +41,7 @@ class ModelsService {
     if (foundModel) {
       return foundModel;
     }
-    throw new Error(MODEL_NOT_FOUND);
+    throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
   }
 
   async getModelsForConstructor() {
@@ -46,14 +50,14 @@ class ModelsService {
 
   async getModelsByCategory(id) {
     if (!ObjectId.isValid(id)) {
-      throw new Error(CATEGORY_NOT_VALID);
+      throw new RuleError(CATEGORY_NOT_VALID, BAD_REQUEST);
     }
     return Model.find({ category: id });
   }
 
   async addModel(data, upload) {
     if (await this.checkModelExist(data)) {
-      throw new Error(MODEL_ALREADY_EXIST);
+      throw new RuleError(MODEL_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (upload) {
@@ -68,7 +72,7 @@ class ModelsService {
   async updateModel(id, newModel, upload) {
     const model = await Model.findById(id).exec();
     if (!model) {
-      throw new Error(MODEL_NOT_FOUND);
+      throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
 
     if (upload) {
@@ -88,7 +92,7 @@ class ModelsService {
   async deleteModel(id) {
     const model = await Model.findByIdAndDelete(id).exec();
     if (!model) {
-      throw new Error(MODEL_NOT_FOUND);
+      throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
     model.constructorBasic.forEach(async basic => {
       await ConstructorBasic.findByIdAndDelete(basic).exec();

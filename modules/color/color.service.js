@@ -1,5 +1,6 @@
 const Color = require('./color.model');
 const Material = require('../material/material.model');
+const RuleError = require('../../errors/rule.error');
 const {
   COLOR_ALREADY_EXIST,
   COLOR_NOT_FOUND,
@@ -18,6 +19,9 @@ const {
 const {
   HISTORY_OBJ_KEYS: { NAME, COLOR_HEX, SIMPLE_NAME },
 } = require('../../consts/history-obj-keys');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 class ColorService {
   async getAllColors() {
@@ -29,13 +33,13 @@ class ColorService {
     if (color) {
       return color;
     }
-    throw new Error(COLOR_NOT_FOUND);
+    throw new RuleError(COLOR_NOT_FOUND, NOT_FOUND);
   }
 
   async addColor(colorData, { _id: adminId }) {
     const hex = await Color.find({ colorHex: colorData.colorHex }).exec();
     if (hex.length) {
-      throw new Error(COLOR_ALREADY_EXIST);
+      throw new RuleError(COLOR_ALREADY_EXIST, BAD_REQUEST);
     }
     const newColor = await new Color(colorData).save();
 
@@ -56,7 +60,7 @@ class ColorService {
   async deleteColor(id, { _id: adminId }) {
     const color = await Color.findById(id).exec();
     if (!color) {
-      throw new Error(COLOR_NOT_FOUND);
+      throw new RuleError(COLOR_NOT_FOUND, NOT_FOUND);
     }
     const materials = await Material.find({
       colors: {

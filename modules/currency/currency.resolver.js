@@ -1,4 +1,5 @@
 const currencyService = require('./currency.service');
+const RuleError = require('../../errors/rule.error');
 const {
   CURRENCY_NOT_FOUND,
 } = require('../../error-messages/currency.messages');
@@ -12,10 +13,7 @@ const currencyQuery = {
     try {
       return await currencyService.getCurrencyById(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -25,10 +23,7 @@ const currencyMutation = {
     try {
       return await currencyService.addCurrency(args.currency);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -36,10 +31,7 @@ const currencyMutation = {
     try {
       return await currencyService.deleteCurrency(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -47,10 +39,7 @@ const currencyMutation = {
     try {
       return await currencyService.updateCurrency(args.id, args.currency);
     } catch (e) {
-      return {
-        statusCode: e.message === CURRENCY_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

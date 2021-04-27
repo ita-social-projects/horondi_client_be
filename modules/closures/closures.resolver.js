@@ -3,6 +3,7 @@ const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const closureQuery = {
   getAllClosure: (parent, args) => ClosureService.getAllClosure(args),
@@ -10,10 +11,7 @@ const closureQuery = {
     try {
       return await ClosureService.getClosureById(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -23,10 +21,7 @@ const closureMutation = {
     try {
       return await ClosureService.addClosure(args.closure, args.upload, user);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updateClosure: async (parent, args, { user }) => {
@@ -38,20 +33,14 @@ const closureMutation = {
         user
       );
     } catch (e) {
-      return {
-        statusCode: e.message === CLOSURE_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteClosure: async (parent, args, { user }) => {
     try {
       return await ClosureService.deleteClosure(args.id, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

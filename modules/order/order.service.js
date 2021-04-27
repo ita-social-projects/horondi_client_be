@@ -6,7 +6,7 @@ const {
   ORDER_PAYMENT_STATUS: { PAID },
 } = require('../../consts/order-payment-status');
 const {
-  STATUS_CODES: { BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   ORDER_NOT_FOUND,
@@ -37,7 +37,7 @@ class OrdersService {
   async getOrderByPaidOrderNumber(orderNumber) {
     const order = await Order.findOne({ orderNumber }).exec();
 
-    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!order) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
 
     return order;
   }
@@ -61,20 +61,22 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const foundOrder = await Order.findById(id).exec();
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
 
     return foundOrder;
   }
 
   async updateOrder(order, id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const orderToUpdate = await Order.findById(id).exec();
 
-    if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
+    if (!orderToUpdate) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
 
     const { items } = order;
 
@@ -123,11 +125,12 @@ class OrdersService {
   }
 
   async deleteOrder(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
     return foundOrder;
   }
 

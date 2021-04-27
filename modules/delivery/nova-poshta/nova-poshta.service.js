@@ -1,4 +1,5 @@
 const axios = require('axios');
+const RuleError = require('../../../errors/rule.error');
 
 const {
   ORDER_CREATION_FAILED,
@@ -32,6 +33,9 @@ const {
 const {
   PAYMENT_METHOD: { CASH },
 } = require('../../../consts/payments');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../../consts/status-codes');
 
 class NovaPoshtaService {
   async getNovaPoshtaRequest(properties, model, method) {
@@ -208,7 +212,7 @@ class NovaPoshtaService {
     const document = res.data.data[0];
 
     if (!document) {
-      throw Error(ORDER_CREATION_FAILED);
+      throw new RuleError(ORDER_CREATION_FAILED, BAD_REQUEST);
     }
 
     return {
