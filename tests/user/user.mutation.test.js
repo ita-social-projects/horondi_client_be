@@ -1,5 +1,8 @@
 const { gql } = require('@apollo/client');
+const generateTokens = require('../../utils/create-tokens');
 
+const User = require('../../modules/user/user.model');
+const { SECRET, TOKEN_EXPIRES_IN } = require('../../dotenvValidator');
 const {
   newAdmin,
   testUser,
@@ -288,9 +291,8 @@ describe('Register admin', () => {
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                email
-                token
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -320,9 +322,8 @@ describe('Register admin', () => {
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                email
-                token
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -351,9 +352,8 @@ describe('Register admin', () => {
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                email
-                token
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -384,10 +384,8 @@ describe('Register admin', () => {
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                _id
-                email
-                invitationalToken
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -405,10 +403,15 @@ describe('Register admin', () => {
       })
       .catch(err => err);
     const data = result.data.registerAdmin;
-    userId = data._id;
-    expect(data.email).toEqual(newAdminEmail);
+    const admin = await User.findOne({ email: newAdminEmail }).exec();
+    userId = admin._id;
+    const { accessToken } = generateTokens(userId, {
+      expiresIn: TOKEN_EXPIRES_IN,
+      secret: SECRET,
+    });
+    invitationalToken = accessToken;
+    expect(data.isSuccess).toEqual(true);
 
-    invitationalToken = data.invitationalToken;
     done();
   });
 
