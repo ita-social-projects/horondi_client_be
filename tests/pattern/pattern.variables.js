@@ -42,7 +42,7 @@ const mutationPatternToAdd = (materialId, modelId) => ({
   },
   additionalPrice: 1,
   available: true,
-  default: true,
+  customizable: true,
 });
 
 const queryPatternToAdd = (materialId, modelId) => ({
@@ -74,7 +74,7 @@ const queryPatternToAdd = (materialId, modelId) => ({
   },
   additionalPrice: 1,
   available: true,
-  default: false,
+  customizable: false,
 });
 
 const createdPattern = (materialId, modelId) => ({
@@ -106,7 +106,7 @@ const createdPattern = (materialId, modelId) => ({
   },
   additionalPrice: finalPrice,
   available: true,
-  default: true,
+  customizable: true,
 });
 
 const patternToUpdate = (materialId, modelId) => ({
@@ -138,7 +138,7 @@ const patternToUpdate = (materialId, modelId) => ({
   },
   additionalPrice: 1,
   available: true,
-  default: false,
+  customizable: false,
 });
 
 const patternAfterUpdate = (materialId, modelId) => ({
@@ -170,7 +170,7 @@ const patternAfterUpdate = (materialId, modelId) => ({
   },
   additionalPrice: finalPrice,
   available: true,
-  default: false,
+  customizable: false,
 });
 
 module.exports = {

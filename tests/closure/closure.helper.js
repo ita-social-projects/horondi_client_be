@@ -24,7 +24,7 @@ const createClosure = async (closure, operations) => {
               }
             }
             available
-            default
+            customizable
             additionalPrice {
               currency
               value
@@ -67,7 +67,7 @@ const updateClosure = async (id, closure, operations) => {
               }
             }
             available
-            default
+            customizable
             additionalPrice {
               currency
               value
@@ -133,7 +133,7 @@ const getClosureById = async (id, operations) => {
               }
             }
             available
-            default
+            customizable
             additionalPrice {
               currency
               value

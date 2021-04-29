@@ -8,7 +8,7 @@ const closureType = `
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 `;
 
@@ -28,7 +28,7 @@ const closureInputs = `
     image: Upload
     additionalPrice: Int
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 
   input ClosureFeatureSetInput {

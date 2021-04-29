@@ -8,7 +8,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  crudStrapValidator,
+  inputStrapValidator,
 } = require('../../validators/constructor-items-inputs.validator');
 
 const strapPermissionsQuery = {
@@ -19,11 +19,11 @@ const strapPermissionsQuery = {
 
 const strapPermissionsMutations = {
   addStrap: and(
-    inputDataValidation(STRAP, crudStrapValidator),
+    inputDataValidation(STRAP, inputStrapValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   updateStrap: and(
-    inputDataValidation(STRAP, crudStrapValidator),
+    inputDataValidation(STRAP, inputStrapValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteStrap: hasRoles([ADMIN, SUPERADMIN]),

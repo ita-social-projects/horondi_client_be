@@ -25,7 +25,7 @@ const patternSchema = new mongoose.Schema({
   constructorImg: String,
   additionalPrice: [CurrencySet],
   available: Boolean,
-  default: Boolean,
+  customizable: Boolean,
 });
 
 module.exports = mongoose.model(PATTERN, patternSchema);

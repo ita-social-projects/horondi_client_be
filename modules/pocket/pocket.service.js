@@ -1,6 +1,7 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const { checkIfItemExist } = require('../../utils/exist-checker');
 const RuleError = require('../../errors/rule.error');
 const {
   POCKET_ALREADY_EXIST,
@@ -58,7 +59,8 @@ class PocketService {
 
   async getPocketsByModel(id) {
     const pocket = Pocket.find({ model: id }).exec();
-    if (pocket.length === 0) {
+
+    if (!pocket) {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
     return pocket;
@@ -101,11 +103,9 @@ class PocketService {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
-    const existChecker = await Promise.resolve(
-      this.checkIfPocketExist(pocket, id)
-    );
+    const checkResult = checkIfItemExist(pocket, Pocket);
 
-    if (existChecker) {
+    if (checkResult) {
       throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -142,9 +142,9 @@ class PocketService {
   }
 
   async addPocket(pocket, image, { _id: adminId }) {
-    const existChecker = await Promise.resolve(this.checkIfPocketExist(pocket));
+    const checkResult = checkIfItemExist(pocket, Pocket);
 
-    if (existChecker) {
+    if (checkResult) {
       throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -179,18 +179,6 @@ class PocketService {
     await addHistoryRecord(historyRecord);
 
     return newPocket;
-  }
-
-  async checkIfPocketExist(data, id) {
-    let pocketCount = await Pocket.countDocuments({
-      _id: { $ne: id },
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    }).exec();
-    return pocketCount > 0;
   }
 }
 

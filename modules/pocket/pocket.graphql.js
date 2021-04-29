@@ -8,7 +8,7 @@ const pocketType = `
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 `;
 
@@ -42,7 +42,7 @@ const pocketInput = `
     image: Upload
     additionalPrice: Int
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 `;
 

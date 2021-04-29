@@ -6,7 +6,7 @@ module.exports = {
       {},
       {
         $set: patternExtraFields,
-        $unset: { material: '', handmade: '' },
+        $unset: { material: '', handmade: '', default: '' },
       }
     );
   },

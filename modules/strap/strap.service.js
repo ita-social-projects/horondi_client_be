@@ -2,6 +2,7 @@ const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
+const { checkIfItemExist } = require('../../utils/exist-checker');
 const {
   STRAP_NOT_FOUND,
   STRAP_ALREADY_EXIST,
@@ -58,9 +59,11 @@ class StrapService {
 
   async getStrapsByModel(id) {
     const strap = Strap.find({ model: id }).exec();
-    if (strap.length === 0) {
+
+    if (!strap) {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
+
     return strap;
   }
 
@@ -99,15 +102,14 @@ class StrapService {
 
   async updateStrap(id, strap, image, { _id: adminId }) {
     const strapToUpdate = await Strap.findById(id).exec();
+
     if (!strapToUpdate) {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    const existChecker = await Promise.resolve(
-      this.checkIfStrapExist(strap, id)
-    );
+    const checkResult = checkIfItemExist(strap, Strap);
 
-    if (existChecker) {
+    if (checkResult) {
       throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -142,8 +144,9 @@ class StrapService {
   }
 
   async addStrap(strap, image, { _id: adminId }) {
-    const existChecker = await Promise.resolve(this.checkIfStrapExist(strap));
-    if (existChecker) {
+    const checkResult = checkIfItemExist(strap, Strap);
+
+    if (checkResult) {
       throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -178,18 +181,6 @@ class StrapService {
     await addHistoryRecord(historyRecord);
 
     return newStrap;
-  }
-
-  async checkIfStrapExist(data, id) {
-    let strapCount = await Strap.countDocuments({
-      _id: { $ne: id },
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    }).exec();
-    return strapCount > 0;
   }
 }
 

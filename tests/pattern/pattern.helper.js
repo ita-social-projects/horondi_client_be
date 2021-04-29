@@ -30,7 +30,7 @@ const createPattern = async (pattern, operations) => {
               value
             }
             available
-            default
+            customizable
           }
           ... on Error {
             message
@@ -96,7 +96,7 @@ const getAllPatterns = async operations => {
               value
             }
             available
-            default
+            customizable
           }
         }
       }
@@ -134,7 +134,7 @@ const getPatternById = async (id, operations) => {
               value
             }
             available
-            default
+            customizable
           }
           ... on Error {
             message
@@ -176,7 +176,7 @@ const getAllPatternsPaginated = async (skip, limit, operations) => {
               value
             }
             available
-            default
+            customizable
           }
           count
         }

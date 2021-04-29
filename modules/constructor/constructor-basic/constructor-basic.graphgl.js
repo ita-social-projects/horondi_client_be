@@ -8,7 +8,7 @@ type ConstructorBasic {
     image:String
     basePrice: [CurrencySet]
     available: Boolean
-    default:Boolean
+    customizable: Boolean
   }
 `;
 
@@ -28,7 +28,7 @@ input ConstructorBasicInput {
     image: String
     basePrice: Int
     available: Boolean
-    default:Boolean
+    customizable: Boolean
   }
 
 input ConstructorBasicFeatureInput {

@@ -12,7 +12,7 @@ const newConstructorBottom = (materialId, colorId, modelId) => ({
   image: 'askjfsdgfaowifjsklfjlsfkjl',
   basePrice: 1,
   available: true,
-  default: true,
+  customizable: true,
 });
 const getConstructorData = (construrtor, { materialId, colorId, modelId }) => ({
   name: [
@@ -50,7 +50,7 @@ const getConstructorData = (construrtor, { materialId, colorId, modelId }) => ({
   },
   image: construrtor.image,
   available: construrtor.available,
-  default: construrtor.default,
+  customizable: construrtor.customizable,
   basePrice: [
     {
       currency: 'UAH',
@@ -73,7 +73,7 @@ const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   },
   image: 'sdvoaapvpsdasdafasd.jpg',
   available: true,
-  default: true,
+  customizable: true,
   basePrice: 1,
 });
 

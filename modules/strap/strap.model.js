@@ -22,7 +22,7 @@ const strapSchema = new mongoose.Schema({
   image: String,
   additionalPrice: [CurrencySet],
   available: Boolean,
-  default: Boolean,
+  customizable: Boolean,
 });
 
 module.exports = mongoose.model(STRAP, strapSchema);

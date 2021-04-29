@@ -8,7 +8,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../../consts');
 const {
-  crudConstructorBasicValidator,
+  inputConstructorElementValidator,
 } = require('../../../validators/constructor-items-inputs.validator');
 
 const constructorBasicPermissionsQuery = {
@@ -18,11 +18,11 @@ const constructorBasicPermissionsQuery = {
 
 const constructorBasicPermissionsMutations = {
   addConstructorBasic: and(
-    inputDataValidation(CONSTRUCTOR_BASIC, crudConstructorBasicValidator),
+    inputDataValidation(CONSTRUCTOR_BASIC, inputConstructorElementValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   updateConstructorBasic: and(
-    inputDataValidation(CONSTRUCTOR_BASIC, crudConstructorBasicValidator),
+    inputDataValidation(CONSTRUCTOR_BASIC, inputConstructorElementValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteConstructorBasic: hasRoles([ADMIN, SUPERADMIN]),

@@ -1,6 +1,7 @@
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
+const { checkIfItemExist } = require('../../utils/exist-checker');
 const RuleError = require('../../errors/rule.error');
 const {
   BACK_NOT_FOUND,
@@ -61,9 +62,10 @@ class BackService {
 
   async getBacksByModel(id) {
     const back = Back.find({ model: id }).exec();
-    if (back.length === 0) {
+    if (!back) {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
+
     return back;
   }
 
@@ -73,8 +75,9 @@ class BackService {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
-    const existChecker = await Promise.resolve(this.checkIfBackExist(back, id));
-    if (existChecker) {
+    const checkResult = checkIfItemExist(back, Back);
+
+    if (checkResult) {
       throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -144,8 +147,9 @@ class BackService {
   }
 
   async addBack(back, image, { _id: adminId }) {
-    const existChecker = await Promise.resolve(this.checkIfBackExist(back));
-    if (existChecker) {
+    const checkResult = checkIfItemExist(back, Back);
+
+    if (checkResult) {
       throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -180,19 +184,6 @@ class BackService {
     await addHistoryRecord(historyRecord);
 
     return newBack;
-  }
-
-  async checkIfBackExist(data, id) {
-    let backCount = await Back.countDocuments({
-      _id: { $ne: id },
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    }).exec();
-
-    return backCount > 0;
   }
 }
 

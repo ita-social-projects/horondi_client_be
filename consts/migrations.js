@@ -22,23 +22,23 @@ const banned = {
 
 const closureExtraFields = {
   optionType: 'CLOSURE',
-  model: '6043bf9e3e06ad3edcdb7b30',
+  model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
   features: {
-    material: '6043c2d13e06ad3edcdb7b33',
-    color: '6043a9cc3e06ad3edcdb7b0e',
+    material: ObjectId('6043c2d13e06ad3edcdb7b33'),
+    color: ObjectId('6043a9cc3e06ad3edcdb7b0e'),
   },
   image: 'small_id73cf0klxzut8v_гобелен-7.png',
-  default: true,
+  customizable: true,
 };
 
 const patternExtraFields = {
   optionType: 'PATTERN',
-  model: '6043bf9e3e06ad3edcdb7b30',
+  model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
   features: {
-    material: '6043b2ec3e06ad3edcdb7b17',
+    material: ObjectId('6043b2ec3e06ad3edcdb7b17'),
     handmade: false,
   },
-  default: true,
+  customizable: true,
 };
 
 const constructorBasicExtraFields = {
@@ -48,7 +48,7 @@ const constructorBasicExtraFields = {
     material: ObjectId('6043a1f33e06ad3edcdb7b09'),
     color: ObjectId('6043a1653e06ad3edcdb7b08'),
   },
-  default: false,
+  customizable: true,
 };
 
 const constructorBottomExtraFields = {
@@ -58,7 +58,7 @@ const constructorBottomExtraFields = {
     material: ObjectId('6043aaab3e06ad3edcdb7b11'),
     color: ObjectId('6043a9cc3e06ad3edcdb7b0e'),
   },
-  default: false,
+  customizable: true,
 };
 
 const constructorFrontPocketExtraFields = {

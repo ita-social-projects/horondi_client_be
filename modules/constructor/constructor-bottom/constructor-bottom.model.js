@@ -26,6 +26,6 @@ const constructorBottomSchema = new mongoose.Schema({
   image: String,
   basePrice: [CurrencySet],
   available: Boolean,
-  default: Boolean,
+  customizable: Boolean,
 });
 module.exports = mongoose.model(CONSTRUCTOR_BOTTOM, constructorBottomSchema);

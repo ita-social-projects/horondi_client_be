@@ -6,7 +6,7 @@ module.exports = {
       {},
       {
         $set: closureExtraFields,
-        $unset: { material: '' },
+        $unset: { material: '', default: '' },
       }
     );
   },

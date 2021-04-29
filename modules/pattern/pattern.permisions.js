@@ -8,7 +8,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  crudPatternValidator,
+  inputPatternValidator,
 } = require('../../validators/constructor-items-inputs.validator');
 
 const patternPermissionsQuery = {
@@ -18,11 +18,11 @@ const patternPermissionsQuery = {
 
 const patternPermissionsMutations = {
   addPattern: and(
-    inputDataValidation(PATTERN, crudPatternValidator),
+    inputDataValidation(PATTERN, inputPatternValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   updatePattern: and(
-    inputDataValidation(PATTERN, crudPatternValidator),
+    inputDataValidation(PATTERN, inputPatternValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deletePattern: hasRoles([ADMIN, SUPERADMIN]),

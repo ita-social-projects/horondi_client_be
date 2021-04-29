@@ -32,7 +32,7 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -108,7 +108,7 @@ const updateConstructorFrontPocket = async (
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -158,7 +158,7 @@ const getAllConstructorFrontPocket = async operations => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -202,7 +202,7 @@ const getConstructorFrontPocketById = async (id, operations) => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value

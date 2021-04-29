@@ -1,5 +1,6 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const { checkIfItemExist } = require('../../utils/exist-checker');
 const uploadService = require('../upload/upload.service');
 const RuleError = require('../../errors/rule.error');
 const {
@@ -67,11 +68,9 @@ class ConstructorService {
       constructorElement.image = await uploadSmallImage(upload);
     }
 
-    const constrElemChecker = await Promise.resolve(
-      this.checkConstructorElementExist(constructorElement, model)
-    );
+    const checkResult = checkIfItemExist(constructorElement, model);
 
-    if (constrElemChecker) {
+    if (checkResult) {
       return new RuleError(CONSTRUCTOR_ELEMENT_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -108,6 +107,7 @@ class ConstructorService {
     { _id: adminId }
   ) {
     const constructorFountElement = await model.findById(id);
+
     if (!constructorFountElement) {
       return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
     }
@@ -116,6 +116,7 @@ class ConstructorService {
       await uploadService.deleteFile(constructorFountElement.image);
       constructorElement.image = await uploadSmallImage(upload);
     }
+
     constructorElement.basePrice = await calculatePrice(
       constructorElement.basePrice
     );
@@ -174,17 +175,6 @@ class ConstructorService {
 
     await addHistoryRecord(historyRecord);
     return model.findByIdAndDelete(id);
-  }
-
-  async checkConstructorElementExist(data, model) {
-    let constructorBasicCount = await model.countDocuments({
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    });
-    return constructorBasicCount > 0;
   }
 }
 

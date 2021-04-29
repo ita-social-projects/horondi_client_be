@@ -8,7 +8,7 @@ const strapType = `
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 
 `;
@@ -28,7 +28,7 @@ const strapInputs = `
     image: Upload
     additionalPrice: Int
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 
   input StrapFeatureInput {

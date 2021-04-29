@@ -10,7 +10,7 @@ const newClosure = (materialId, colorId, modelId) => ({
     color: colorId,
   },
   available: true,
-  default: true,
+  customizable: true,
   additionalPrice: 1,
 });
 
@@ -26,7 +26,7 @@ const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
     color: { _id: colorId },
   },
   available: true,
-  default: true,
+  customizable: true,
   additionalPrice: [
     {
       currency: 'UAH',
@@ -48,7 +48,7 @@ const closureToUpdate = (materialId, colorId, modelId) => ({
     color: colorId,
   },
   available: true,
-  default: true,
+  customizable: true,
   additionalPrice: 40,
 });
 
@@ -64,7 +64,7 @@ const newClosureUpdated = (materialId, colorId, modelId) => ({
     color: { _id: colorId },
   },
   available: true,
-  default: true,
+  customizable: true,
   additionalPrice: [
     {
       currency: 'UAH',

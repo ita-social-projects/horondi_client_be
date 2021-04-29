@@ -10,6 +10,7 @@ const {
   MODEL_NOT_FOUND,
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
+const { checkIfItemExist } = require('../../utils/exist-checker');
 const uploadService = require('../upload/upload.service');
 const {
   HISTORY_ACTIONS: { ADD_MODEL, EDIT_MODEL, DELETE_MODEL },
@@ -79,7 +80,9 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
-    if (await this.checkModelExist(data)) {
+    const checkResult = checkIfItemExist(data, Model);
+
+    if (checkResult) {
       throw new Error(MODEL_ALREADY_EXIST);
     }
 
@@ -248,17 +251,6 @@ class ModelsService {
       { $pull: { constructorBottom: constructorElementID } },
       { safe: true, upsert: true }
     );
-  }
-
-  async checkModelExist(data) {
-    const modelCount = await Model.countDocuments({
-      name: {
-        $elemMatch: {
-          $or: [{ value: data.name[0].value }, { value: data.name[1].value }],
-        },
-      },
-    }).exec();
-    return modelCount > 0;
   }
 }
 

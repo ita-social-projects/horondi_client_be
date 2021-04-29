@@ -31,7 +31,7 @@ const createConstructorBasic = async (constructorElement, operations) => {
               }
             }
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -105,7 +105,7 @@ const updateConstructorBasic = async (
               }
             }
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -153,7 +153,7 @@ const getAllConstructorBasics = async operations => {
               }
             }
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -196,7 +196,7 @@ const getConstructorBasicById = async (id, operations) => {
               }
             }
             available
-            default
+            customizable
             basePrice {
               currency
               value

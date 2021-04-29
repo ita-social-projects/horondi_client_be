@@ -8,7 +8,7 @@ const backType = `
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 `;
 
@@ -28,7 +28,7 @@ const backInputs = `
     image: Upload
     additionalPrice: Int
     available: Boolean
-    default: Boolean
+    customizable: Boolean
   }
 
   input BackFeatureSetInput {

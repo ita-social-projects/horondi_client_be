@@ -13,7 +13,7 @@ const newConstructorFront = (materialId, colorId, modelId) => ({
   image: '/imageURL',
   basePrice: 0,
   available: true,
-  default: false,
+  customizable: false,
 });
 const newConstructorFrontUpdateInp = (materialId, colorId, modelId) => ({
   name: [
@@ -52,7 +52,7 @@ const newConstructorFrontUpdateInp = (materialId, colorId, modelId) => ({
     null,
   ],
   available: true,
-  default: false,
+  customizable: false,
 });
 
 const getConstructorData = (
@@ -94,7 +94,7 @@ const getConstructorData = (
   },
   image: construrtorFront.image,
   available: construrtorFront.available,
-  default: construrtorFront.default,
+  customizable: construrtorFront.customizable,
   basePrice: [
     {
       currency: 'UAH',
@@ -122,7 +122,7 @@ const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   },
   image: '/new img',
   available: true,
-  default: false,
+  customizable: false,
   basePrice: 1,
 });
 

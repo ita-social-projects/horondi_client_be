@@ -42,7 +42,7 @@ const constructorFrontPocketSchema = new mongoose.Schema({
   image: String,
   basePrice: [CurrencySet],
   available: Boolean,
-  default: Boolean,
+  customizable: Boolean,
 });
 
 module.exports = mongoose.model(

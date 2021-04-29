@@ -10,7 +10,7 @@ const patternType = `
       constructorImg: String
       additionalPrice: [CurrencySet]
       available: Boolean
-      default: Boolean
+      customizable: Boolean
     }
 `;
 
@@ -32,7 +32,7 @@ const patternInputs = `
       constructorImg: String
       additionalPrice: Int
       available: Boolean
-      default: Boolean
+      customizable: Boolean
     }
 
     input PatternFeatureSetInput {

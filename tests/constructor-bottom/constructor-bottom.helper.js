@@ -32,7 +32,7 @@ const createConstructorBottom = async (constructorElement, operations) => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -84,7 +84,7 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -151,7 +151,7 @@ const getConstructorBottomById = async (id, operations) => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value
@@ -200,7 +200,7 @@ const getAllConstructorBottom = async operations => {
             }
             image
             available
-            default
+            customizable
             basePrice {
               currency
               value

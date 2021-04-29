@@ -8,7 +8,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../../consts');
 const {
-  crudConstrFrontPocketValidator,
+  inputConstrFrontPocketValidator,
 } = require('../../../validators/constructor-items-inputs.validator');
 
 const constructorFrontPocketPermissionsQuery = {
@@ -20,14 +20,14 @@ const constructorFrontPocketPermissionsMutations = {
   addConstructorFrontPocket: and(
     inputDataValidation(
       CONSTRUCTOR_FRONT_POCKET,
-      crudConstrFrontPocketValidator
+      inputConstrFrontPocketValidator
     ),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   updateConstructorFrontPocket: and(
     inputDataValidation(
       CONSTRUCTOR_FRONT_POCKET,
-      crudConstrFrontPocketValidator
+      inputConstrFrontPocketValidator
     ),
     hasRoles([ADMIN, SUPERADMIN])
   ),

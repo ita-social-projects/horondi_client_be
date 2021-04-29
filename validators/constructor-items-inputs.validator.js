@@ -2,9 +2,6 @@ const Joi = require('joi');
 const {
   SIDES: { LEFT, RIGHT, BACK, FRONT },
 } = require('../consts/side-names');
-const {
-  RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
-} = require('../consts/restriction-expression-names');
 
 const nestedSideValidator = Joi.object({
   side: Joi.array().has(
@@ -24,7 +21,7 @@ const nestedNameValidator = Joi.object({
     .required(),
 });
 
-const crudPocketValidator = Joi.object({
+const inputPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -38,10 +35,10 @@ const crudPocketValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
-  default: Joi.boolean(),
+  customizable: Joi.boolean(),
 });
 
-const crudBackValidator = Joi.object({
+const inputOptionValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -60,32 +57,10 @@ const crudBackValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
-  default: Joi.boolean(),
+  customizable: Joi.boolean(),
 });
 
-const crudClosureValidator = Joi.object({
-  name: Joi.array().has(nestedNameValidator),
-  optionType: Joi.string()
-    .trim()
-    .uppercase(),
-  model: Joi.string(),
-  features: Joi.object({
-    material: Joi.string()
-      .trim()
-      .required(),
-    color: Joi.string()
-      .trim()
-      .required(),
-  }),
-  image: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
-  available: Joi.boolean().required(),
-  default: Joi.boolean(),
-});
-
-const crudStrapValidator = Joi.object({
+const inputStrapValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -103,10 +78,10 @@ const crudStrapValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
-  default: Joi.boolean(),
+  customizable: Joi.boolean(),
 });
 
-const crudPatternValidator = Joi.object({
+const inputPatternValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -128,10 +103,10 @@ const crudPatternValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean(),
-  default: Joi.boolean(),
+  customizable: Joi.boolean(),
 });
 
-const crudConstructorBasicValidator = Joi.object({
+const inputConstructorElementValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -152,34 +127,10 @@ const crudConstructorBasicValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
-  default: Joi.boolean(),
+  customizable: Joi.boolean(),
 });
 
-const crudConstructorBottomValidator = Joi.object({
-  name: Joi.array().has(nestedNameValidator),
-  optionType: Joi.string()
-    .trim()
-    .uppercase(),
-  model: Joi.string(),
-  features: Joi.object({
-    material: Joi.string()
-      .trim()
-      .required(),
-    color: Joi.string()
-      .trim()
-      .required(),
-  }),
-  image: Joi.string()
-    .trim()
-    .required(),
-  basePrice: Joi.number()
-    .optional()
-    .default(0),
-  available: Joi.boolean().required(),
-  default: Joi.boolean(),
-});
-
-const crudConstrFrontPocketValidator = Joi.object({
+const inputConstrFrontPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -203,16 +154,14 @@ const crudConstrFrontPocketValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
-  default: Joi.boolean(),
+  customizable: Joi.boolean(),
 });
 
 module.exports = {
-  crudPocketValidator,
-  crudBackValidator,
-  crudClosureValidator,
-  crudStrapValidator,
-  crudPatternValidator,
-  crudConstructorBasicValidator,
-  crudConstructorBottomValidator,
-  crudConstrFrontPocketValidator,
+  inputPocketValidator,
+  inputOptionValidator,
+  inputStrapValidator,
+  inputPatternValidator,
+  inputConstructorElementValidator,
+  inputConstrFrontPocketValidator,
 };

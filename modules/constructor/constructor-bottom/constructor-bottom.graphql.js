@@ -8,7 +8,7 @@ const constructorBottomType = `
     image: String
     basePrice: [CurrencySet]
     available: Boolean!
-    default:Boolean
+    customizable: Boolean
   }
 `;
 
@@ -28,7 +28,7 @@ const constructorBottomInputs = `
     image: String
     basePrice: Int
     available: Boolean
-    default:Boolean
+    customizable: Boolean
   }
 
   input ConstructorBottomFeatureInput {

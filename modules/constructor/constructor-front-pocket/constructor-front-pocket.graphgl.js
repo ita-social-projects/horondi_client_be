@@ -8,7 +8,7 @@ type ConstructorFrontPocket {
     image:String
     basePrice: [CurrencySet]
     available: Boolean
-    default:Boolean
+    customizable: Boolean
   }
 `;
 
@@ -29,7 +29,7 @@ input ConstructorFrontPocketInput {
   image: String
   basePrice: Int
   available: Boolean
-  default:Boolean
+  customizable: Boolean
 }
 
 input ConstructorFrPocketFeatureInput {

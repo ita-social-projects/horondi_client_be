@@ -2,6 +2,7 @@ const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
 const { calculatePrice } = require('../currency/currency.utils');
+const { checkIfItemExist } = require('../../utils/exist-checker');
 const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
@@ -65,11 +66,9 @@ class PatternsService {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
 
-    const existChecker = await Promise.resolve(
-      this.checkPatternExist(pattern, id)
-    );
+    const checkResult = checkIfItemExist(pattern, Pattern);
 
-    if (existChecker) {
+    if (checkResult) {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -123,9 +122,9 @@ class PatternsService {
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
-    const existChecker = await Promise.resolve(this.checkPatternExist(pattern));
+    const checkResult = checkIfItemExist(pattern, Pattern);
 
-    if (existChecker) {
+    if (checkResult) {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -203,18 +202,6 @@ class PatternsService {
 
       return foundPattern;
     }
-  }
-
-  async checkPatternExist(data, id) {
-    const patternsCount = await Pattern.countDocuments({
-      _id: { $ne: id },
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    }).exec();
-    return patternsCount > 0;
   }
 }
 

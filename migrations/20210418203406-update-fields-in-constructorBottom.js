@@ -8,7 +8,7 @@ module.exports = {
       { _id: ObjectId('604e33bcb17ecf65048afd73') },
       {
         $set: constructorBottomExtraFields,
-        $unset: { material: '', color: '' },
+        $unset: { material: '', color: '', default: '' },
       }
     );
   },
