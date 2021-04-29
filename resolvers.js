@@ -451,9 +451,9 @@ const resolvers = {
       constructorPattern: () =>
         patternService.getPatternById(parent.appliedOptions.constructorPattern),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el =>
-          pocketService.getPocketById(el)
-        ),
+        parent.eligibleOptions.constructorPocket.map(el => {
+          return pocketService.getPocketById(el);
+        }),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
       constructorClosure: () =>
