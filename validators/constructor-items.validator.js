@@ -46,6 +46,23 @@ const pocketValidator = Joi.object({
   default: Joi.boolean(),
 });
 
+const crudPocketValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: nestedSideValidator,
+  image: Joi.string()
+    .trim()
+    .required(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
 const backValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
@@ -66,6 +83,28 @@ const backValidator = Joi.object({
   additionalPrice: Joi.array()
     .has(nestedPriceValidator)
     .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
+const crudBackValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
   available: Joi.boolean().required(),
   default: Joi.boolean(),
 });
@@ -131,6 +170,27 @@ const strapValidator = Joi.object({
   additionalPrice: Joi.array()
     .has(nestedPriceValidator)
     .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
+const crudStrapValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
   available: Joi.boolean().required(),
   default: Joi.boolean(),
 });
@@ -219,6 +279,30 @@ const constructorBasicValidator = Joi.object({
   default: Joi.boolean(),
 });
 
+const crudConstructorBasicValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  basePrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
 const constructorBottomValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
@@ -239,6 +323,30 @@ const constructorBottomValidator = Joi.object({
   basePrice: Joi.array()
     .has(nestedPriceValidator)
     .optional(),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
+const crudConstructorBottomValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  basePrice: Joi.number()
+    .optional()
+    .default(0),
   available: Joi.boolean().required(),
   default: Joi.boolean(),
 });
@@ -270,6 +378,33 @@ const constructorFrontPocketValidator = Joi.object({
   default: Joi.boolean(),
 });
 
+const crudConstrFrontPocketValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .uppercase(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+    pattern: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string()
+    .trim()
+    .required(),
+  basePrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean().required(),
+  default: Joi.boolean(),
+});
+
 const restrictionValidator = Joi.object({
   compareByExpression: Joi.string()
     .trim()
@@ -289,14 +424,20 @@ const restrictionValidator = Joi.object({
 
 module.exports = {
   pocketValidator,
+  crudPocketValidator,
   backValidator,
+  crudBackValidator,
   closureValidator,
   crudClosureValidator,
   strapValidator,
+  crudStrapValidator,
   patternValidator,
   crudPatternValidator,
   constructorBasicValidator,
+  crudConstructorBasicValidator,
   constructorBottomValidator,
+  crudConstructorBottomValidator,
   constructorFrontPocketValidator,
+  crudConstrFrontPocketValidator,
   restrictionValidator,
 };

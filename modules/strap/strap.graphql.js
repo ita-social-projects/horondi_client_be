@@ -26,7 +26,7 @@ const strapInputs = `
     model: ID
     features: StrapFeatureInput
     image: Upload
-    additionalPrice: [CurrencySetInput]
+    additionalPrice: Int
     available: Boolean
     default: Boolean
   }

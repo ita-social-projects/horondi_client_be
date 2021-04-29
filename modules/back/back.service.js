@@ -1,11 +1,14 @@
 const Back = require('./back.model');
-const Model = require('../model/model.model');
-const uploadService = require('../upload/upload.utils');
+const uploadService = require('../upload/upload.service');
+const { calculatePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
 const {
   BACK_NOT_FOUND,
   BACK_ALREADY_EXIST,
 } = require('../../consts/back-messages');
+const {
+  FILE_SIZES: { SMALL },
+} = require('../../consts/file-sizes');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -70,18 +73,19 @@ class BackService {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
-    if (await this.checkIfBackExist(back, id)) {
+    const existChecker = await Promise.resolve(this.checkIfBackExist(back, id));
+    if (existChecker) {
       throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    if (!image) {
-      return await Back.findByIdAndUpdate(id, back, { new: true }).exec();
+    if (image) {
+      const uploadImage = await uploadService.uploadFile(image, [SMALL]);
+      back.image = uploadImage.fileNames.small;
     }
 
-    await uploadService.deleteFiles(image);
-
-    const uploadImage = await uploadService.uploadSmallImage(image);
-    back.image = uploadImage.fileNames.small;
+    if (back.additionalPrice) {
+      back.additionalPrice = await calculatePrice(back.additionalPrice);
+    }
 
     const updatedBack = await Back.findByIdAndUpdate(id, back).exec();
 
@@ -140,13 +144,18 @@ class BackService {
   }
 
   async addBack(back, image, { _id: adminId }) {
-    if (await this.checkIfBackExist(back)) {
+    const existChecker = await Promise.resolve(this.checkIfBackExist(back));
+    if (existChecker) {
       throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
       back.image = uploadImage.fileNames.small;
+    }
+
+    if (back.additionalPrice) {
+      back.additionalPrice = await calculatePrice(back.additionalPrice);
     }
 
     const newBack = await new Back(back).save();

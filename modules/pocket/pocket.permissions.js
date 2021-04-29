@@ -8,7 +8,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  pocketValidator,
+  crudPocketValidator,
 } = require('../../validators/constructor-items.validator');
 
 const pocketPermissionsQuery = {
@@ -19,11 +19,11 @@ const pocketPermissionsQuery = {
 
 const pocketPermissionsMutations = {
   addPocket: and(
-    inputDataValidation(POCKET, pocketValidator),
+    inputDataValidation(POCKET, crudPocketValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   updatePocket: and(
-    inputDataValidation(POCKET, pocketValidator),
+    inputDataValidation(POCKET, crudPocketValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deletePocket: hasRoles([ADMIN, SUPERADMIN]),

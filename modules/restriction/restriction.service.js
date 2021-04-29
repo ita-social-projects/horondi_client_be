@@ -90,7 +90,7 @@ class RestrictionService {
 
     await addHistoryRecord(historyRecord);
 
-    return await Restriction.findByIdAndUpdate(id, restriction, {
+    return Restriction.findByIdAndUpdate(id, restriction, {
       new: true,
     }).exec();
   }

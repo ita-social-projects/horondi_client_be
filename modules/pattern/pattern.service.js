@@ -64,7 +64,12 @@ class PatternsService {
     if (!patternToUpdate) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
-    if (await this.checkPatternExist(pattern, id)) {
+
+    const existChecker = await Promise.resolve(
+      this.checkPatternExist(pattern, id)
+    );
+
+    if (existChecker) {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -87,7 +92,7 @@ class PatternsService {
     );
     await addHistoryRecord(historyRecord);
     if (!image) {
-      return await Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
+      return Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
@@ -96,7 +101,7 @@ class PatternsService {
     pattern.constructorImg = constructorImg;
 
     if (!images && constructorImg) {
-      return await Pattern.findByIdAndUpdate(id, pattern).exec();
+      return Pattern.findByIdAndUpdate(id, pattern).exec();
     }
     const foundPattern = await Pattern.findById(id)
       .lean()
@@ -105,7 +110,7 @@ class PatternsService {
     await uploadService.deleteFiles(Object.values(foundPattern.images));
     await uploadService.deleteFiles([foundPattern.constructorImg]);
 
-    const updatedPattern = await Pattern.findByIdAndUpdate(
+    return Pattern.findByIdAndUpdate(
       id,
       {
         ...pattern,
@@ -115,12 +120,12 @@ class PatternsService {
         new: true,
       }
     ).exec();
-
-    return updatedPattern;
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
-    if (await this.checkPatternExist(pattern)) {
+    const existChecker = await Promise.resolve(this.checkPatternExist(pattern));
+
+    if (existChecker) {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 

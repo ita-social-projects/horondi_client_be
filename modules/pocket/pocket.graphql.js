@@ -40,7 +40,7 @@ const pocketInput = `
     model: ID
     features: PocketSideInput
     image: Upload
-    additionalPrice: [CurrencySetInput]
+    additionalPrice: Int
     available: Boolean
     default: Boolean
   }

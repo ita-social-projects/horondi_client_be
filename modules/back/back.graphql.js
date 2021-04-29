@@ -26,7 +26,7 @@ const backInputs = `
     model: ID
     features: BackFeatureSetInput
     image: Upload
-    additionalPrice: [CurrencySetInput]
+    additionalPrice: Int
     available: Boolean
     default: Boolean
   }

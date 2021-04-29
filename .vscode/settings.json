@@ -1,3 +1,6 @@
 {
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "sonarlint.connectedMode.project":  {
+        "projectKey": "ita-social-projects-horondi-client-be"
+      }
 }

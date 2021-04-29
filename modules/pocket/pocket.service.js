@@ -1,5 +1,6 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.utils');
+const { calculatePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
 const {
   POCKET_ALREADY_EXIST,
@@ -100,12 +101,20 @@ class PocketService {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
-    if (await this.checkIfPocketExist(pocket, id)) {
+    const existChecker = await Promise.resolve(
+      this.checkIfPocketExist(pocket, id)
+    );
+
+    if (existChecker) {
       throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
     }
 
+    if (pocket.additionalPrice) {
+      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
+    }
+
     if (!image) {
-      return await Pocket.findByIdAndUpdate(id, pocket, { new: true }).exec();
+      return Pocket.findByIdAndUpdate(id, pocket, { new: true }).exec();
     }
 
     await uploadService.deleteFiles(image);
@@ -127,19 +136,25 @@ class PocketService {
 
     await addHistoryRecord(historyRecord);
 
-    return await Pocket.findByIdAndUpdate(id, pocket, {
+    await Pocket.findByIdAndUpdate(id, pocket, {
       new: true,
     }).exec();
   }
 
   async addPocket(pocket, image, { _id: adminId }) {
-    if (await this.checkIfPocketExist(pocket)) {
+    const existChecker = await Promise.resolve(this.checkIfPocketExist(pocket));
+
+    if (existChecker) {
       throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
       pocket.image = uploadImage.fileNames.small;
+    }
+
+    if (pocket.additionalPrice) {
+      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
     }
 
     const newPocket = await new Pocket(pocket).save();

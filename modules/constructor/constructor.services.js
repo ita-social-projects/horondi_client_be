@@ -66,12 +66,19 @@ class ConstructorService {
     if (upload) {
       constructorElement.image = await uploadSmallImage(upload);
     }
-    if (await this.checkConstructorElementExist(constructorElement, model)) {
+
+    const constrElemChecker = await Promise.resolve(
+      this.checkConstructorElementExist(constructorElement, model)
+    );
+
+    if (constrElemChecker) {
       return new RuleError(CONSTRUCTOR_ELEMENT_ALREADY_EXIST, BAD_REQUEST);
     }
+
     constructorElement.basePrice = await calculatePrice(
       constructorElement.basePrice
     );
+
     const basic = await new model(constructorElement).save();
     const historyRecord = generateHistoryObject(
       ADD_CONSTRUCTOR_ELEMENT,
@@ -92,7 +99,7 @@ class ConstructorService {
 
     await addHistoryRecord(historyRecord);
 
-    return await model.findById(basic._id);
+    return model.findById(basic._id);
   }
 
   async updateConstructorElement(
@@ -166,7 +173,7 @@ class ConstructorService {
     );
 
     await addHistoryRecord(historyRecord);
-    return await model.findByIdAndDelete(id);
+    return model.findByIdAndDelete(id);
   }
 
   async checkConstructorElementExist(data, model) {

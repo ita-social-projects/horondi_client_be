@@ -1,5 +1,7 @@
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
+const uploadService = require('../upload/upload.service');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
   STRAP_NOT_FOUND,
   STRAP_ALREADY_EXIST,
@@ -101,12 +103,20 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    if (await this.checkIfStrapExist(strap, id)) {
+    const existChecker = await Promise.resolve(
+      this.checkIfStrapExist(strap, id)
+    );
+
+    if (existChecker) {
       throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
     }
 
+    if (strap.additionalPrice) {
+      strap.additionalPrice = await calculatePrice(strap.additionalPrice);
+    }
+
     if (!image) {
-      return await Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
+      return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
     }
 
     await uploadService.deleteFiles(image);
@@ -128,11 +138,12 @@ class StrapService {
 
     await addHistoryRecord(historyRecord);
 
-    return await Strap.findByIdAndUpdate(id, strap).exec();
+    return Strap.findByIdAndUpdate(id, strap).exec();
   }
 
   async addStrap(strap, image, { _id: adminId }) {
-    if (await this.checkIfStrapExist(strap)) {
+    const existChecker = await Promise.resolve(this.checkIfStrapExist(strap));
+    if (existChecker) {
       throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
     }
 
@@ -140,6 +151,11 @@ class StrapService {
       const uploadImage = await uploadService.uploadSmallImage(image);
       strap.image = uploadImage.fileNames.small;
     }
+
+    if (strap.additionalPrice) {
+      strap.additionalPrice = await calculatePrice(strap.additionalPrice);
+    }
+
     const newStrap = await new Strap(strap).save();
 
     const historyRecord = generateHistoryObject(
