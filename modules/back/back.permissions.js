@@ -9,7 +9,7 @@ const {
 } = require('../../consts');
 const {
   crudBackValidator,
-} = require('../../validators/constructor-items.validator');
+} = require('../../validators/constructor-items-inputs.validator');
 
 const backPermissionsQuery = {
   getAllBacks: allow,

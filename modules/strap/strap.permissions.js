@@ -9,7 +9,7 @@ const {
 } = require('../../consts');
 const {
   crudStrapValidator,
-} = require('../../validators/constructor-items.validator');
+} = require('../../validators/constructor-items-inputs.validator');
 
 const strapPermissionsQuery = {
   getAllStraps: allow,

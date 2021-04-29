@@ -8,9 +8,8 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  closureValidator,
   crudClosureValidator,
-} = require('../../validators/constructor-items.validator');
+} = require('../../validators/constructor-items-inputs.validator');
 
 const closurePermissionsQuery = {
   getAllClosure: allow,

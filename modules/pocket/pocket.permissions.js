@@ -9,7 +9,7 @@ const {
 } = require('../../consts');
 const {
   crudPocketValidator,
-} = require('../../validators/constructor-items.validator');
+} = require('../../validators/constructor-items-inputs.validator');
 
 const pocketPermissionsQuery = {
   getAllPockets: allow,

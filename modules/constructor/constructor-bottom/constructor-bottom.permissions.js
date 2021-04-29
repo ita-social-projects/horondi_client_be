@@ -9,7 +9,7 @@ const {
 } = require('../../../consts');
 const {
   crudConstructorBottomValidator,
-} = require('../../../validators/constructor-items.validator');
+} = require('../../../validators/constructor-items-inputs.validator');
 
 const сonstructorBottomPermissionsQuery = {
   getAllConstructorBottom: allow,
