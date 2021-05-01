@@ -130,7 +130,9 @@ class OrdersService {
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
-    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
+    if (!foundOrder) {
+      throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
+    }
     return foundOrder;
   }
 

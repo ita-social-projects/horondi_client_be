@@ -96,7 +96,7 @@ class CommentsService extends FilterHelper {
   async addComment(id, data) {
     const product = await Product.findById(id).exec();
     if (!product) {
-      throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, BAD_REQUEST);
+      throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
     return new Comment(data).save();
   }
@@ -113,7 +113,7 @@ class CommentsService extends FilterHelper {
     const product = await Product.findById(id).exec();
 
     if (!product) {
-      throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, BAD_REQUEST);
+      throw new RuleError(RATE_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
     const { userRates } = product;
     let { rateCount } = product;
