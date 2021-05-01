@@ -3,7 +3,7 @@ const pocketService = require('./pocket.service');
 const RuleError = require('../../errors/rule.error');
 
 const pocketQuery = {
-  getAllPockets: (parent, args) => {
+  getAllPockets: async (parent, args) => {
     try {
       const result = await pocketService.getAllPockets(args);
       return result;

@@ -3,7 +3,7 @@ const strapService = require('./strap.service');
 const RuleError = require('../../errors/rule.error');
 
 const strapQuery = {
-  getAllStraps: (parent, args) => {
+  getAllStraps: async (parent, args) => {
     try {
       const result = await strapService.getAllStraps(args);
       return result;
