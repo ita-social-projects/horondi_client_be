@@ -1,6 +1,7 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
+const FilterHelper = require('../../helpers/filter-helper');
 const { calculatePrice } = require('../currency/currency.utils');
 const { checkIfItemExist } = require('../../utils/exist-checker');
 const {
@@ -36,20 +37,38 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class PatternsService {
-  async getAllPatterns({ skip, limit }) {
-    const items = await Pattern.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
-    const count = await Pattern.find()
-      .countDocuments()
-      .exec();
+class PatternsService extends FilterHelper {
+  async getAllPatterns({ filter, pagination, sort }) {
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
 
-    return {
-      items,
-      count,
-    };
+      const [patterns] = await Pattern.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+
+      let patternCount;
+
+      const {
+        items,
+        calculations: [calculations],
+      } = patterns;
+
+      if (calculations) {
+        patternCount = calculations.count;
+      }
+
+      return {
+        items,
+        count: patternCount || 0,
+      };
+    } catch (e) {
+      throw new RuleError(e.message, e.statusCode);
+    }
   }
 
   async getPatternById(id) {
@@ -62,14 +81,9 @@ class PatternsService {
 
   async updatePattern({ id, pattern, image }, { _id: adminId }) {
     const patternToUpdate = await Pattern.findById(id).exec();
+
     if (!patternToUpdate) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
-    }
-
-    const checkResult = checkIfItemExist(pattern, Pattern);
-
-    if (checkResult) {
-      throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (pattern.additionalPrice) {
@@ -80,6 +94,7 @@ class PatternsService {
       patternToUpdate,
       pattern
     );
+
     const historyRecord = generateHistoryObject(
       EDIT_PATTERN,
       patternToUpdate.model?._id,
@@ -90,6 +105,7 @@ class PatternsService {
       adminId
     );
     await addHistoryRecord(historyRecord);
+
     if (!image) {
       return Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
     }
@@ -122,16 +138,14 @@ class PatternsService {
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
-    const checkResult = checkIfItemExist(pattern, Pattern);
+    const checkResult = await checkIfItemExist(pattern, Pattern);
 
     if (checkResult) {
       throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    if (await image.length) {
-      if ((await !image[0]) && !image[1]) {
-        throw new Error(IMAGE_NOT_PROVIDED);
-      }
+    if (!image) {
+      throw new Error(IMAGE_NOT_PROVIDED);
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);

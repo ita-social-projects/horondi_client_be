@@ -3,6 +3,7 @@ const uploadService = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
 const { checkIfItemExist } = require('../../utils/exist-checker');
 const RuleError = require('../../errors/rule.error');
+const FilterHelper = require('../../helpers/filter-helper');
 const {
   POCKET_ALREADY_EXIST,
   POCKET_NOT_FOUND,
@@ -33,20 +34,38 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class PocketService {
-  async getAllPockets({ skip, limit }) {
-    const items = await Pocket.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
-    const count = await Pocket.find()
-      .countDocuments()
-      .exec();
+class PocketService extends FilterHelper {
+  async getAllPockets({ filter, pagination, sort }) {
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
 
-    return {
-      items,
-      count,
-    };
+      const [pockets] = await Pocket.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+
+      let pocketCount;
+
+      const {
+        items,
+        calculations: [calculations],
+      } = pockets;
+
+      if (calculations) {
+        pocketCount = calculations.count;
+      }
+
+      return {
+        items,
+        count: pocketCount || 0,
+      };
+    } catch (e) {
+      throw new RuleError(e.message, e.statusCode);
+    }
   }
 
   async getPocketById(id) {
@@ -103,12 +122,6 @@ class PocketService {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
-    const checkResult = checkIfItemExist(pocket, Pocket);
-
-    if (checkResult) {
-      throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (pocket.additionalPrice) {
       pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
     }
@@ -142,7 +155,7 @@ class PocketService {
   }
 
   async addPocket(pocket, image, { _id: adminId }) {
-    const checkResult = checkIfItemExist(pocket, Pocket);
+    const checkResult = await checkIfItemExist(pocket, Pocket);
 
     if (checkResult) {
       throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);

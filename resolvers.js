@@ -130,7 +130,6 @@ const {
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const backService = require('./modules/back/back.service');
 const restrictionService = require('./modules/restriction/restriction.service');
-const { GraphQLBoolean } = require('graphql');
 
 const SCHEMA_NAMES = {
   history: 'History',

@@ -68,7 +68,7 @@ class ConstructorService {
       constructorElement.image = await uploadSmallImage(upload);
     }
 
-    const checkResult = checkIfItemExist(constructorElement, model);
+    const checkResult = await checkIfItemExist(constructorElement, model);
 
     if (checkResult) {
       return new RuleError(CONSTRUCTOR_ELEMENT_ALREADY_EXIST, BAD_REQUEST);

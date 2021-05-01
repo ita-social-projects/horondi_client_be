@@ -13,10 +13,10 @@ const {
 } = require('./pattern.helper');
 const {
   wrongId,
-  skip,
-  limit,
-  wrongLimit,
-  wrongSkip,
+  filter,
+  sort,
+  pagination,
+  wrongPagination,
   queryPatternToAdd,
 } = require('./pattern.variables');
 const { createColor, deleteColor } = require('../color/color.helper');
@@ -100,23 +100,25 @@ describe('Pattern queries', () => {
   });
   test('pattern pagination test', async () => {
     const paginatedPatterns = await getAllPatternsPaginated(
-      skip,
-      limit,
+      filter,
+      pagination,
+      sort,
       operations
     );
 
-    expect(paginatedPatterns.data.getAllPatterns.items).toHaveLength(1);
-    expect(paginatedPatterns.data.getAllPatterns.count).toEqual(1);
+    expect(paginatedPatterns.items).toHaveLength(1);
+    expect(paginatedPatterns.count).toEqual(1);
   });
   test('Expect negative values', async () => {
     const paginatedPatterns = await getAllPatternsPaginated(
-      wrongSkip,
-      wrongLimit,
+      filter,
+      wrongPagination,
+      sort,
       operations
     );
 
-    expect(paginatedPatterns.errors[0].message).toEqual(
-      'Skip value must be non-negative, but received: -1'
+    expect(paginatedPatterns.message).toEqual(
+      'Argument to $skip cannot be negative'
     );
   });
 

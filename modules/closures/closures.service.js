@@ -67,7 +67,7 @@ class ClosureService {
       data.image = uploadImage.fileNames.large;
     }
 
-    const checkResult = checkIfItemExist(data, Closure);
+    const checkResult = await checkIfItemExist(data, Closure);
 
     if (checkResult) {
       throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
@@ -102,7 +102,7 @@ class ClosureService {
   }
 
   async updateClosure(id, closure, upload, { _id: adminId }) {
-    const checkResult = checkIfItemExist(closure, Closure);
+    const checkResult = await checkIfItemExist(closure, Closure);
 
     if (checkResult) {
       throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);

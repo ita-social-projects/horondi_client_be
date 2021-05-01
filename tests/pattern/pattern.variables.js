@@ -1,10 +1,24 @@
 const wrongId = '5f311ec5f2983e390432a8c3';
-const skip = 0;
 const wrongSkip = -1;
 const wrongLimit = -5;
-const limit = 5;
 const testValue = 'test value';
 const updateValue = 'update value';
+const filter = {
+  _id: [],
+  search: '',
+};
+const sort = {
+  name: 1,
+};
+const pagination = {
+  skip: 0,
+  limit: 5,
+};
+const wrongPagination = {
+  skip: -1,
+  limit: 5,
+};
+
 const finalPrice = [
   {
     currency: 'UAH',
@@ -176,8 +190,10 @@ const patternAfterUpdate = (materialId, modelId) => ({
 module.exports = {
   patternToUpdate,
   wrongId,
-  skip,
-  limit,
+  filter,
+  sort,
+  pagination,
+  wrongPagination,
   wrongSkip,
   wrongLimit,
   finalPrice,

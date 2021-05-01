@@ -1,5 +1,6 @@
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
+const FilterHelper = require('../../helpers/filter-helper');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
 const { checkIfItemExist } = require('../../utils/exist-checker');
@@ -33,20 +34,38 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class StrapService {
-  async getAllStraps({ skip, limit }) {
-    const items = await Strap.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
-    const count = await Strap.find()
-      .countDocuments()
-      .exec();
+class StrapService extends FilterHelper {
+  async getAllStraps({ filter, pagination, sort }) {
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
 
-    return {
-      items,
-      count,
-    };
+      const [straps] = await Strap.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+
+      let strapCount;
+
+      const {
+        items,
+        calculations: [calculations],
+      } = straps;
+
+      if (calculations) {
+        strapCount = calculations.count;
+      }
+
+      return {
+        items,
+        count: strapCount || 0,
+      };
+    } catch (e) {
+      throw new RuleError(e.message, e.statusCode);
+    }
   }
 
   async getStrapById(id) {
@@ -107,12 +126,6 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    const checkResult = checkIfItemExist(strap, Strap);
-
-    if (checkResult) {
-      throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (strap.additionalPrice) {
       strap.additionalPrice = await calculatePrice(strap.additionalPrice);
     }
@@ -144,7 +157,7 @@ class StrapService {
   }
 
   async addStrap(strap, image, { _id: adminId }) {
-    const checkResult = checkIfItemExist(strap, Strap);
+    const checkResult = await checkIfItemExist(strap, Strap);
 
     if (checkResult) {
       throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);

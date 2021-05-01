@@ -1,5 +1,9 @@
 const { ObjectId } = require('mongoose').Types;
 
+const ruleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 const Model = require('./model.model');
 const ConstructorBasic = require('../constructor/constructor-basic/constructor-basic.model');
 const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
@@ -80,10 +84,10 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
-    const checkResult = checkIfItemExist(data, Model);
+    const checkResult = await checkIfItemExist(data, Model);
 
     if (checkResult) {
-      throw new Error(MODEL_ALREADY_EXIST);
+      throw new ruleError(MODEL_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (upload) {

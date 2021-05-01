@@ -147,11 +147,20 @@ const getPatternById = async (id, operations) => {
   });
   return res.data.getPatternById;
 };
-const getAllPatternsPaginated = async (skip, limit, operations) => {
-  return await operations.query({
+const getAllPatternsPaginated = async (
+  filter,
+  pagination,
+  sort,
+  operations
+) => {
+  const res = await operations.query({
     query: gql`
-      query($skip: Int, $limit: Int) {
-        getAllPatterns(skip: $skip, limit: $limit) {
+      query(
+        $filter: FilterInputComponent
+        $pagination: Pagination
+        $sort: SortInputComponent
+      ) {
+        getAllPatterns(filter: $filter, pagination: $pagination, sort: $sort) {
           items {
             name {
               lang
@@ -182,9 +191,12 @@ const getAllPatternsPaginated = async (skip, limit, operations) => {
         }
       }
     `,
-    variables: { skip, limit },
+    variables: { filter, pagination, sort },
   });
+
+  return res.data.getAllPatterns;
 };
+
 const updatePattern = async (id, pattern, operations) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -215,7 +227,7 @@ const updatePattern = async (id, pattern, operations) => {
               value
             }
             available
-            default
+            customizable
           }
           ... on Error {
             message
@@ -226,6 +238,7 @@ const updatePattern = async (id, pattern, operations) => {
     `,
     variables: { id, pattern },
   });
+
   return res.data.updatePattern;
 };
 

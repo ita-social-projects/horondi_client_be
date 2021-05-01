@@ -458,7 +458,10 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
-    getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
+    getAllPatterns(
+      filter: FilterInputComponent,
+      pagination: Pagination,
+			sort: SortInputComponent): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
     getOrderById(id: ID): OrderResult
@@ -542,16 +545,31 @@ const typeDefs = gql`
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
     getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
-    getAllPockets(limit: Int, skip: Int): PaginatedPockets!
+    getAllPockets(
+      filter: FilterInputComponent,
+      pagination: Pagination,
+			sort: SortInputComponent
+    ): PaginatedPockets!
     getPocketById(id: ID): PocketResult
     getPocketsByModel(id: ID): [Pocket]
-    getAllBacks(limit: Int, skip: Int): PaginatedBacks!
+    getAllBacks(
+      filter: FilterInputComponent,
+      pagination: Pagination,
+			sort: SortInputComponent): PaginatedBacks!
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [Back]
-    getAllStraps(limit: Int, skip: Int): PaginatedStraps!
+    getAllStraps(
+      filter: FilterInputComponent,
+      pagination: Pagination,
+			sort: SortInputComponent
+    ): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [Strap]
-    getAllRestrictions(limit: Int, skip: Int): PaginatedRestrictions!
+    getAllRestrictions(
+      filter: FilterInputComponent,
+      pagination: Pagination,
+			sort: SortInputComponent
+    ): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
 
   }

@@ -1,8 +1,8 @@
 const modelsService = require('./model.service');
-const { MODEL_NOT_FOUND } = require('../../error-messages/model.messages');
 const modelService = require('./model.service');
+const RuleError = require('../../errors/rule.error');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 
 const modelsQuery = {
@@ -39,10 +39,7 @@ const modelsMutation = {
     try {
       return await modelsService.addModel(args.model, args.upload, user);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -55,10 +52,7 @@ const modelsMutation = {
         user
       );
     } catch (e) {
-      return {
-        statusCode: e.message === MODEL_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -66,10 +60,7 @@ const modelsMutation = {
     try {
       return await modelsService.deleteModel(args.id, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -80,10 +71,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteModelConstructorBasic: async (parent, args) => {
@@ -93,10 +81,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   addModelConstructorPattern: async (parent, args) => {
@@ -106,10 +91,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteModelConstructorPattern: async (parent, args) => {
@@ -119,10 +101,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   addModelConstructorFrontPocket: async (parent, args) => {
@@ -132,10 +111,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteModelConstructorFrontPocket: async (parent, args) => {
@@ -145,10 +121,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   addModelConstructorBottom: async (parent, args) => {
@@ -158,10 +131,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteModelConstructorBottom: async (parent, args) => {
@@ -171,10 +141,7 @@ const modelsMutation = {
         args.constructorElementID
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: MODEL_NOT_FOUND,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

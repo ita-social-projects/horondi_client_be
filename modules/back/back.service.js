@@ -3,6 +3,7 @@ const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
 const { checkIfItemExist } = require('../../utils/exist-checker');
 const RuleError = require('../../errors/rule.error');
+const FilterHelper = require('../../helpers/filter-helper');
 const {
   BACK_NOT_FOUND,
   BACK_ALREADY_EXIST,
@@ -36,20 +37,38 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class BackService {
-  async getAllBacks({ skip, limit }) {
-    const items = await Back.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
-    const count = await Back.find()
-      .countDocuments()
-      .exec();
+class BackService extends FilterHelper {
+  async getAllBacks({ filter, pagination, sort }) {
+    try {
+      let filters = this.filterItems(filter);
+      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
 
-    return {
-      items,
-      count,
-    };
+      const [backs] = await Back.aggregate()
+        .collation({ locale: 'uk' })
+        .facet({
+          items: aggregatedItems,
+          calculations: [{ $match: filters }, { $count: 'count' }],
+        })
+        .exec();
+
+      let backCount;
+
+      const {
+        items,
+        calculations: [calculations],
+      } = backs;
+
+      if (calculations) {
+        backCount = calculations.count;
+      }
+
+      return {
+        items,
+        count: backCount || 0,
+      };
+    } catch (e) {
+      throw new RuleError(e.message, e.statusCode);
+    }
   }
 
   async getBackById(id) {
@@ -71,14 +90,9 @@ class BackService {
 
   async updateBack(id, back, image, { _id: adminId }) {
     const backToUpdate = await Back.findById(id).exec();
+
     if (!backToUpdate) {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
-    }
-
-    const checkResult = checkIfItemExist(back, Back);
-
-    if (checkResult) {
-      throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (image) {
@@ -147,7 +161,7 @@ class BackService {
   }
 
   async addBack(back, image, { _id: adminId }) {
-    const checkResult = checkIfItemExist(back, Back);
+    const checkResult = await checkIfItemExist(back, Back);
 
     if (checkResult) {
       throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
