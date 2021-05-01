@@ -375,7 +375,11 @@ class UserService extends FilterHelper {
   }
 
   async getUser(id) {
-    return this.getUserByFieldOrThrow(USER_ID, id);
+    const user = this.getUserByFieldOrThrow(USER_ID, id);
+    if (user) {
+      return user;
+    }
+    throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
   }
 
   async updateUserById(updatedUser, user, upload) {

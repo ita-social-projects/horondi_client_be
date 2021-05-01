@@ -200,6 +200,9 @@ class CategoryService extends FilterHelper {
     const category = await Category.findByIdAndDelete(deleteId)
       .lean()
       .exec();
+    if (!category) {
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+    }
     const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
@@ -234,7 +237,6 @@ class CategoryService extends FilterHelper {
 
       return category;
     }
-    throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
   }
 
   async getCategoriesWithModels() {

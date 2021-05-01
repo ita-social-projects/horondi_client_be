@@ -123,6 +123,9 @@ class NewsService {
 
   async deleteNews(id, { _id: adminId }) {
     const foundNews = await News.findByIdAndDelete(id).exec();
+    if (!foundNews) {
+      throw new RuleError(NEWS_NOT_FOUND, NOT_FOUND);
+    }
     await uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
 
     if (foundNews) {
@@ -140,7 +143,6 @@ class NewsService {
 
       return foundNews;
     }
-    throw new RuleError(NEWS_NOT_FOUND, NOT_FOUND);
   }
 
   async checkNewsExist(data, id) {
