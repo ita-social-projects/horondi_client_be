@@ -5,7 +5,8 @@ const RuleError = require('../../errors/rule.error');
 const strapQuery = {
   getAllStraps: (parent, args) => {
     try {
-      return strapService.getAllStraps(args);
+      const result = await strapService.getAllStraps(args);
+      return result;
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
