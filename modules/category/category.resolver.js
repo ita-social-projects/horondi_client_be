@@ -8,10 +8,27 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const categoryQuery = {
-  getAllCategories: (parent, args) => categoryService.getAllCategories(args),
-  getCategoriesForBurgerMenu: (parent, args) =>
-    categoryService.getCategoriesForBurgerMenu(),
-  getPopularCategories: () => categoryService.getPopularCategories(),
+  getAllCategories: async (parent, args) => {
+    try {
+      return await categoryService.getAllCategories(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getCategoriesForBurgerMenu: async (parent, args) => {
+    try {
+      return await categoryService.getCategoriesForBurgerMenu();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getPopularCategories: async () => {
+    try {
+      return await categoryService.getPopularCategories();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getCategoryById: async (parent, args) => {
     try {
       return await categoryService.getCategoryById(args.id);
@@ -19,7 +36,13 @@ const categoryQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getCategoriesWithModels: () => categoryService.getCategoriesWithModels(),
+  getCategoriesWithModels: async () => {
+    try {
+      return await categoryService.getCategoriesWithModels();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const categoryMutation = {

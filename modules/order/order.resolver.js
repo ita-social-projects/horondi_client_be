@@ -13,13 +13,34 @@ const ordersQuery = {
     }
     return new RuleError(e.message, e.statusCode);
   },
-  getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
-  getUserOrders: async (parent, args, context) =>
-    await ordersService.getUserOrders(context.user),
-  getOrdersStatistic: (parent, args) =>
-    ordersService.getOrdersStatistic(args.date),
-  getPaidOrdersStatistic: (parent, args) =>
-    ordersService.getPaidOrdersStatistic(args.date),
+  getAllOrders: async (parent, args) => {
+    try {
+      return await ordersService.getAllOrders(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getUserOrders: async (parent, args, context) => {
+    try {
+      return await ordersService.getUserOrders(context.user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getOrdersStatistic: async (parent, args) => {
+    try {
+      return await ordersService.getOrdersStatistic(args.date);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getPaidOrdersStatistic: async (parent, args) => {
+    try {
+      return await ordersService.getPaidOrdersStatistic(args.date);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getOrderByPaidOrderNumber: async (_, { paidOrderNumber }) => {
     try {
       return await ordersService.getOrderByPaidOrderNumber(paidOrderNumber);

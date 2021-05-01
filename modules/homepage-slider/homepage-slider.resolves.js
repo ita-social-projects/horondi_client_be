@@ -8,7 +8,13 @@ const {
 } = require('../../consts/status-codes');
 
 const homePageSlideQuery = {
-  getAllSlides: (parent, args) => homePageSliderService.getAllSlides(args),
+  getAllSlides: async (parent, args) => {
+    try {
+      return await homePageSliderService.getAllSlides(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getSlideById: async (parent, args) => {
     try {
       return await homePageSliderService.getSlideById(args.id);

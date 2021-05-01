@@ -5,7 +5,13 @@ const {
 } = require('../../consts/status-codes');
 
 const colorQuery = {
-  getAllColors: async () => colorService.getAllColors(),
+  getAllColors: async () => {
+    try {
+      return await colorService.getAllColors();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 
   getColorById: async (parent, { id }) => {
     try {

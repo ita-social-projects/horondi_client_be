@@ -8,17 +8,30 @@ const {
 } = require('../../consts/status-codes');
 
 const materialQuery = {
-  getAllMaterials: async (parent, args) =>
-    await materialService.getAllMaterials(args),
-  getMaterialById: async (parent, args) => {
-    const material = await materialService.getMaterialById(args.id);
-    if (material) {
-      return material;
+  getAllMaterials: async (parent, args) => {
+    try {
+      return await materialService.getAllMaterials(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   },
-  getMaterialsByPurpose: (parent, args) =>
-    materialService.getMaterialsByPurposes(args.purposes),
+  getMaterialById: async (parent, args) => {
+    try {
+      const material = await materialService.getMaterialById(args.id);
+      if (material) {
+        return material;
+      }
+    } catch (e) {
+      return new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    }
+  },
+  getMaterialsByPurpose: async (parent, args) => {
+    try {
+      return await materialService.getMaterialsByPurposes(args.purposes);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const materialMutation = {

@@ -8,7 +8,13 @@ const {
 } = require('../../consts/status-codes');
 
 const currencyQuery = {
-  getAllCurrencies: () => currencyService.getAllCurrencies(),
+  getAllCurrencies: async () => {
+    try {
+      return await currencyService.getAllCurrencies();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getCurrencyById: async (parent, args) => {
     try {
       return await currencyService.getCurrencyById(args.id);

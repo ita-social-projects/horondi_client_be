@@ -9,24 +9,45 @@ const {
 } = require('../../consts/status-codes');
 
 const contactQuery = {
-  getContacts: (parent, args) => contactService.getContacts(args),
-  getContactById: async (parent, args) =>
-    (await contactService.getContactById(args.id)) ||
-    new RuleError(CONTACT_NOT_FOUND, NOT_FOUND),
+  getContacts: async (parent, args) => {
+    try {
+      return await contactService.getContacts(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getContactById: async (parent, args) => {
+    try {
+      return await contactService.getContactById(args.id);
+    } catch (e) {
+      return new RuleError(CONTACT_NOT_FOUND, NOT_FOUND);
+    }
+  },
 };
 
 const contactMutation = {
-  addContact: async (parent, args) =>
-    (await contactService.addContact(args)) ||
-    new RuleError(CONTACT_ALREADY_EXIST, BAD_REQUEST),
+  addContact: async (parent, args) => {
+    try {
+      return await contactService.addContact(args);
+    } catch (e) {
+      return new RuleError(CONTACT_ALREADY_EXIST, BAD_REQUEST);
+    }
+  },
+  deleteContact: async (parent, args) => {
+    try {
+      return await contactService.deleteContact(args.id);
+    } catch (e) {
+      return new RuleError(CONTACT_NOT_FOUND, NOT_FOUND);
+    }
+  },
 
-  deleteContact: async (parent, args) =>
-    (await contactService.deleteContact(args.id)) ||
-    new RuleError(CONTACT_NOT_FOUND, NOT_FOUND),
-
-  updateContact: async (parent, args) =>
-    (await contactService.updateContact(args)) ||
-    new RuleError(CONTACT_NOT_FOUND, NOT_FOUND),
+  updateContact: async (parent, args) => {
+    try {
+      return await contactService.updateContact(args);
+    } catch (e) {
+      return new RuleError(CONTACT_NOT_FOUND, NOT_FOUND);
+    }
+  },
 };
 
 module.exports = { contactQuery, contactMutation };

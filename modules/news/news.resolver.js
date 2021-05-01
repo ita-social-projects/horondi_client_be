@@ -6,7 +6,13 @@ const {
 } = require('../../consts/status-codes');
 
 const newsQuery = {
-  getAllNews: (parent, args) => newsService.getAllNews(args),
+  getAllNews: async (parent, args) => {
+    try {
+      return await newsService.getAllNews(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getNewsById: async (parent, args) => {
     try {
       return await newsService.getNewsById(args.id);

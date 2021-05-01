@@ -6,7 +6,11 @@ const {
 
 const homePageImagesQuery = {
   getHomePageLooksImages: async () => {
-    return await homePageService.getHomePageLooksImages();
+    try {
+      return await homePageService.getHomePageLooksImages();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
   },
 };
 

@@ -6,7 +6,13 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const closureQuery = {
-  getAllClosure: (parent, args) => ClosureService.getAllClosure(args),
+  getAllClosure: async (parent, args) => {
+    try {
+      return await ClosureService.getAllClosure(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getClosureById: async (parent, args) => {
     try {
       return await ClosureService.getClosureById(args.id);

@@ -8,25 +8,42 @@ const {
 } = require('../../consts/status-codes');
 
 const emailChatQuestionQuery = {
-  getAllEmailQuestions: (parent, args) =>
-    emailChatService.getAllEmailQuestions(args),
-  getPendingEmailQuestionsCount: (parent, args) =>
-    emailChatService.getPendingEmailQuestionsCount(),
-  getEmailQuestionById: async (parent, args) => {
-    const question = await emailChatService
-      .getEmailQuestionById(args.id)
-      .exec();
-    if (question) {
-      return question;
+  getAllEmailQuestions: async (parent, args) => {
+    try {
+      return await emailChatService.getAllEmailQuestions(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
+  },
+  getPendingEmailQuestionsCount: async (parent, args) => {
+    try {
+      return await emailChatService.getPendingEmailQuestionsCount();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getEmailQuestionById: async (parent, args) => {
+    try {
+      const question = await emailChatService
+        .getEmailQuestionById(args.id)
+        .exec();
+      if (question) {
+        return question;
+      }
+    } catch (e) {
+      return new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
+    }
   },
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: async (parent, args) =>
-    await emailChatService.addEmailQuestion(args.question),
-
+  addEmailQuestion: async (parent, args) => {
+    try {
+      return await emailChatService.addEmailQuestion(args.question);
+    } catch (e) {
+      return new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
+    }
+  },
   makeEmailQuestionsSpam: async (parent, args) => {
     try {
       return await emailChatService.makeEmailQuestionsSpam(args);

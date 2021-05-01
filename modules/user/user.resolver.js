@@ -5,20 +5,48 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
-  getAllUsers: (parent, args) => userService.getAllUsers(args),
-  getUsersForStatistic: (parent, args, context) =>
-    userService.getUsersForStatistic(args),
-  getUserByToken: (parent, args, context) => context.user,
-  getUserById: (parent, args) => userService.getUser(args.id),
-  validateConfirmationToken: (parent, args) => {
+  getAllUsers: async (parent, args) => {
     try {
-      return userService.validateConfirmationToken(args.token);
-    } catch (err) {
+      return await userService.getAllUsers(args);
+    } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getPurchasedProducts: (parent, args) =>
-    userService.getPurchasedProducts(args.id),
+  getUsersForStatistic: async (parent, args, context) => {
+    try {
+      return await userService.getUsersForStatistic(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getUserByToken: async (parent, args, context) => {
+    try {
+      return await context.user;
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getUserById: async (parent, args) => {
+    try {
+      return await userService.getUser(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  validateConfirmationToken: async (parent, args) => {
+    try {
+      return await userService.validateConfirmationToken(args.token);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getPurchasedProducts: async (parent, args) => {
+    try {
+      return await userService.getPurchasedProducts(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 const userMutation = {
   blockUser: async (_, { userId }, { user }) => {
@@ -42,10 +70,27 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  googleUser: (parent, args) =>
-    userService.googleUser(args.idToken, args.staySignedIn),
-  loginUser: (parent, args) => userService.loginUser(args.loginInput),
-  loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
+  googleUser: async (parent, args) => {
+    try {
+      return await userService.googleUser(args.idToken, args.staySignedIn);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  loginUser: async (parent, args) => {
+    try {
+      return await userService.loginUser(args.loginInput);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  loginAdmin: async (parent, args) => {
+    try {
+      return await userService.loginAdmin(args.loginInput);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   deleteUser: async (parent, args) => {
     try {
       return await userService.deleteUser(args.id);
@@ -53,8 +98,17 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateUserById: (parent, args, context) =>
-    userService.updateUserById(args.user, context.user, args.upload),
+  updateUserById: async (parent, args, context) => {
+    try {
+      return await userService.updateUserById(
+        args.user,
+        context.user,
+        args.upload
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   regenerateAccessToken: async (parent, args) => {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
@@ -62,9 +116,20 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
-  recoverUser: (parent, args) =>
-    userService.recoverUser(args.email, args.language),
+  confirmUserEmail: async (parent, args) => {
+    try {
+      return await userService.confirmUser(args.token);
+    } catch (e) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
+  recoverUser: async (parent, args) => {
+    try {
+      return await userService.recoverUser(args.email, args.language);
+    } catch (e) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
   switchUserStatus: async (parent, args) => {
     try {
       return await userService.switchUserStatus(args.id);
@@ -72,10 +137,20 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  resetPassword: (parent, args) =>
-    userService.resetPassword(args.password, args.token),
-  checkIfTokenIsValid: (parent, args) =>
-    userService.checkIfTokenIsValid(args.token),
+  resetPassword: async (parent, args) => {
+    try {
+      return await userService.resetPassword(args.password, args.token);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  checkIfTokenIsValid: async (parent, args) => {
+    try {
+      return await userService.checkIfTokenIsValid(args.token);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   sendEmailConfirmation: async (parent, args) => {
     try {
       return await userService.sendConfirmationLetter(
@@ -114,14 +189,28 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  addProductToWishlist: (parent, args, context) =>
-    userService.addProductToWishlist(args.productId, args.key, context.user),
-  removeProductFromWishlist: (parent, args, context) =>
-    userService.removeProductFromWishlist(
-      args.productId,
-      args.key,
-      context.user
-    ),
+  addProductToWishlist: async (parent, args, context) => {
+    try {
+      return await userService.addProductToWishlist(
+        args.productId,
+        args.key,
+        context.user
+      );
+    } catch (e) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
+  removeProductFromWishlist: async (parent, args, context) => {
+    try {
+      return await userService.removeProductFromWishlist(
+        args.productId,
+        args.key,
+        context.user
+      );
+    } catch (e) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
 };
 
 module.exports = {

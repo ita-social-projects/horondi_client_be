@@ -7,7 +7,13 @@ const {
 } = require('../../consts/status-codes');
 
 const patternQuery = {
-  getAllPatterns: (parent, args) => patternService.getAllPatterns(args),
+  getAllPatterns: async (parent, args) => {
+    try {
+      return await patternService.getAllPatterns(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getPatternById: async (parent, args) => {
     try {
       return await patternService.getPatternById(args.id);

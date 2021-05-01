@@ -7,11 +7,20 @@ const {
 } = require('../../consts/status-codes');
 
 const modelsQuery = {
-  getAllModels: async (parent, args) => await modelsService.getAllModels(args),
-
-  getModelsByCategory: async (parent, args) =>
-    await modelsService.getModelsByCategory(args.id),
-
+  getAllModels: async (parent, args) => {
+    try {
+      return await modelsService.getAllModels(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getModelsByCategory: async (parent, args) => {
+    try {
+      return await modelsService.getModelsByCategory(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getModelById: async (parent, args) => {
     try {
       return await modelService.getModelById(args.id);

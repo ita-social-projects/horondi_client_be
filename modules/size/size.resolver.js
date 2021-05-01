@@ -5,8 +5,13 @@ const {
 } = require('../../consts/status-codes');
 
 const sizeQuery = {
-  getAllSizes: () => sizeService.getAllSizes(),
-
+  getAllSizes: async () => {
+    try {
+      return await sizeService.getAllSizes();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getSizeById: async (parent, { id }) => {
     try {
       return await sizeService.getSizeById(id);

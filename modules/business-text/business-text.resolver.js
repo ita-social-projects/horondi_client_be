@@ -8,8 +8,13 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const businessTextQuery = {
-  getAllBusinessTexts: () => businessTextService.getAllBusinessTexts(),
-
+  getAllBusinessTexts: async () => {
+    try {
+      return await businessTextService.getAllBusinessTexts();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getBusinessTextById: async (_, { id }) => {
     try {
       return await businessTextService.getBusinessTextById(id);
