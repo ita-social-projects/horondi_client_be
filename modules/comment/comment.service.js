@@ -50,7 +50,7 @@ class CommentsService extends FilterHelper {
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {
-      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return comment;
   }
@@ -68,19 +68,19 @@ class CommentsService extends FilterHelper {
 
   async getAllCommentsByProduct({ productId }) {
     const product = await Product.findById(productId).exec();
-    if (!product) {
-      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+    if (product) {
+      const comments = await Comment.find({ product: productId }).exec();
+      return comments;
     }
-    const comments = await Comment.find({ product: productId }).exec();
-    return comments;
+    throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
   }
 
   async getAllCommentsByUser(userId) {
     const comments = await Comment.find({ user: userId }).exec();
-    if (!comments.length) {
-      throw new RuleError(COMMENT_FOR_NOT_EXISTING_USER, BAD_REQUEST);
+    if (comments.length) {
+      return comments;
     }
-    return comments;
+    throw new RuleError(COMMENT_FOR_NOT_EXISTING_USER, BAD_REQUEST);
   }
 
   async updateComment(id, comment) {
@@ -88,7 +88,7 @@ class CommentsService extends FilterHelper {
       new: true,
     }).exec();
     if (!updatedComment) {
-      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return updatedComment;
   }

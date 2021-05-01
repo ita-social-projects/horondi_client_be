@@ -46,7 +46,7 @@ class HomePageImagesService {
     const imagesToUpdate = await LooksImages.findById(data.id)
       .lean()
       .exec();
-    if (!imagesToUpdate) throw new RuleError(IMAGE_NOT_FOUND, NOT_FOUND);
+    if (!imagesToUpdate) throw new RuleError(IMAGE_NOT_FOUND, BAD_REQUEST);
 
     return (
       data.images &&

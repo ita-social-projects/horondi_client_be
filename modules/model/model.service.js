@@ -33,7 +33,7 @@ class ModelsService {
 
   async getModelById(id) {
     if (!ObjectId.isValid(id)) {
-      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+      throw new RuleError(MODEL_NOT_VALID, NOT_FOUND);
     }
 
     const foundModel = await Model.findById(id).exec();

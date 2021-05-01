@@ -84,7 +84,11 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id);
+    const foundMaterial = await Material.findById(id).exec();
+    if (foundMaterial) {
+      return foundMaterial;
+    }
+    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   }
 
   async updateMaterial(id, material, { _id: adminId }) {

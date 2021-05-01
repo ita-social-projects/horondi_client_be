@@ -61,13 +61,11 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id))
-      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
-
     const foundOrder = await Order.findById(id).exec();
-    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
-
-    return foundOrder;
+    if (foundOrder) {
+      return foundOrder;
+    }
+    throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
   }
 
   async updateOrder(order, id) {
@@ -130,10 +128,10 @@ class OrdersService {
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
-    if (!foundOrder) {
-      throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
+    if (foundOrder) {
+      return foundOrder;
     }
-    return foundOrder;
+    throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
   }
 
   async getUserOrders(user) {
