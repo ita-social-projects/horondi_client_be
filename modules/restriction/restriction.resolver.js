@@ -32,8 +32,7 @@ const restrictionMutation = {
 const restrictionQuery = {
   getAllRestrictions: async (parent, args) => {
     try {
-      const result = await restrictionService.getAllRestrictions(args);
-      return result;
+      return await restrictionService.getAllRestrictions(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

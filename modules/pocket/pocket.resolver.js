@@ -5,8 +5,7 @@ const RuleError = require('../../errors/rule.error');
 const pocketQuery = {
   getAllPockets: async (parent, args) => {
     try {
-      const result = await pocketService.getAllPockets(args);
-      return result;
+      return await pocketService.getAllPockets(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
