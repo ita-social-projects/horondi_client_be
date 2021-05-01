@@ -1,7 +1,6 @@
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
 const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
 const generateTokens = require('../../utils/create-tokens');
@@ -285,9 +284,7 @@ class UserService extends FilterHelper {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     if (user.recoveryToken !== token) {
-      throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(AUTHENTICATION_TOKEN_NOT_VALID, BAD_REQUEST);
     }
     return true;
   }
@@ -417,13 +414,11 @@ class UserService extends FilterHelper {
     );
 
     if (user.role === USER) {
-      throw new UserInputError(INVALID_PERMISSIONS, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(INVALID_PERMISSIONS, BAD_REQUEST);
     }
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
@@ -446,7 +441,7 @@ class UserService extends FilterHelper {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
     const match = await bcrypt.compare(
@@ -455,7 +450,7 @@ class UserService extends FilterHelper {
     );
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
@@ -519,7 +514,7 @@ class UserService extends FilterHelper {
   async loginGoogleUser({ email, staySignedIn }) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
     const { accessToken, refreshToken } = generateTokens(
@@ -541,7 +536,7 @@ class UserService extends FilterHelper {
 
   async registerGoogleUser({ firstName, lastName, email, credentials }) {
     if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const user = new User({
@@ -557,7 +552,7 @@ class UserService extends FilterHelper {
 
   async registerUser({ firstName, lastName, email, password }, language) {
     if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -593,7 +588,7 @@ class UserService extends FilterHelper {
   async sendConfirmationLetter(email, language) {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
-      throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, BAD_REQUEST);
     }
     const { accessToken } = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
@@ -609,7 +604,7 @@ class UserService extends FilterHelper {
 
   async deleteUser(id) {
     const res = await User.findByIdAndDelete(id).exec();
-    return res || new Error(USER_NOT_FOUND);
+    return res || new RuleError(USER_NOT_FOUND, NOT_FOUND);
   }
 
   async confirmUser(token) {
@@ -629,7 +624,7 @@ class UserService extends FilterHelper {
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
     const { accessToken } = generateTokens(user._id, {
@@ -657,9 +652,7 @@ class UserService extends FilterHelper {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     if (user.recoveryToken !== token) {
-      throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(RESET_PASSWORD_TOKEN_NOT_VALID, BAD_REQUEST);
     }
 
     const dayHasPassed =
@@ -671,9 +664,7 @@ class UserService extends FilterHelper {
       }).exec();
     }
     if (user.recoveryAttempts >= 3) {
-      throw new UserInputError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
-        statusCode: FORBIDDEN,
-      });
+      throw new RuleError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, FORBIDDEN);
     }
     const updates = {
       $set: {
@@ -835,9 +826,7 @@ class UserService extends FilterHelper {
       jwt.verify(token, SECRET);
       return { isSuccess: true };
     } catch (err) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(INVALID_ADMIN_INVITATIONAL_TOKEN, BAD_REQUEST);
     }
   }
 
