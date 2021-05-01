@@ -445,7 +445,7 @@ class UserService extends FilterHelper {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
     const match = await bcrypt.compare(
@@ -454,7 +454,7 @@ class UserService extends FilterHelper {
     );
 
     if (!match) {
-      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
@@ -518,7 +518,7 @@ class UserService extends FilterHelper {
   async loginGoogleUser({ email, staySignedIn }) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
     const { accessToken, refreshToken } = generateTokens(
@@ -556,7 +556,7 @@ class UserService extends FilterHelper {
 
   async registerUser({ firstName, lastName, email, password }, language) {
     if (await User.findOne({ email }).exec()) {
-      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
