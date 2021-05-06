@@ -70,6 +70,7 @@ const {
   roles: { USER },
 } = require('../../consts');
 const RuleError = require('../../errors/rule.error');
+const { USER_IS_BLOCKED } = require('../../error-messages/user.messages');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts/');
@@ -411,19 +412,22 @@ class UserService extends FilterHelper {
 
   async loginAdmin({ email, password }) {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
+
+    if (user?.banned?.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
+    }
+
     const match = await bcrypt.compare(
       password,
       user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
     if (user.role === USER) {
-      throw new UserInputError(INVALID_PERMISSIONS, {
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(INVALID_PERMISSIONS, BAD_REQUEST);
     }
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
