@@ -48,7 +48,13 @@ const userMutation = {
   googleUser: (parent, args) =>
     userService.googleUser(args.idToken, args.staySignedIn),
   loginUser: (parent, args) => userService.loginUser(args.loginInput),
-  loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
+  loginAdmin: async (_, { loginInput }) => {
+    try {
+      return await userService.loginAdmin(loginInput);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   deleteUser: async (parent, args) => {
     try {
       return await userService.deleteUser(args.id);
