@@ -2,27 +2,23 @@ const restrictionService = require('./restriction.service');
 const RuleError = require('../../errors/rule.error');
 
 const restrictionMutation = {
-  addRestriction: async (parent, args, { user }) => {
+  addRestriction: async (_, { restriction }, { user }) => {
     try {
-      return await restrictionService.addRestriction(args.restriction, user);
+      return await restrictionService.addRestriction(restriction, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateRestriction: async (parent, args, { user }) => {
+  updateRestriction: async (_, { id, restriction }, { user }) => {
     try {
-      return await restrictionService.updateRestriction(
-        args.id,
-        args.restriction,
-        user
-      );
+      return await restrictionService.updateRestriction(id, restriction, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteRestriction: async (parent, args, { user }) => {
+  deleteRestriction: async (_, { id }, { user }) => {
     try {
-      return await restrictionService.deleteRestriction(args.id, user);
+      return await restrictionService.deleteRestriction(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -30,16 +26,16 @@ const restrictionMutation = {
 };
 
 const restrictionQuery = {
-  getAllRestrictions: async (parent, args) => {
+  getAllRestrictions: async (_, args) => {
     try {
       return await restrictionService.getAllRestrictions(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getRestrictionById: async (parent, args) => {
+  getRestrictionById: async (_, { id }) => {
     try {
-      return await restrictionService.getRestrictionById(args.id);
+      return await restrictionService.getRestrictionById(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

@@ -6,14 +6,14 @@ const {
 } = require('../../consts/status-codes');
 
 const modelsQuery = {
-  getAllModels: async (parent, args) => await modelsService.getAllModels(args),
+  getAllModels: async (_, args) => await modelsService.getAllModels(args),
 
-  getModelsByCategory: async (parent, args) =>
-    await modelsService.getModelsByCategory(args.id),
+  getModelsByCategory: async (_, { id }) =>
+    await modelsService.getModelsByCategory(id),
 
-  getModelById: async (parent, args) => {
+  getModelById: async (_, { id }) => {
     try {
-      return await modelService.getModelById(args.id);
+      return await modelService.getModelById(id);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -22,7 +22,7 @@ const modelsQuery = {
     }
   },
 
-  getModelsForConstructor: async (parent, args) => {
+  getModelsForConstructor: async (_, args) => {
     try {
       return await modelService.getModelsForConstructor();
     } catch (e) {
@@ -35,110 +35,108 @@ const modelsQuery = {
 };
 
 const modelsMutation = {
-  addModel: async (parent, args, { user }) => {
+  addModel: async (_, { model, upload }, { user }) => {
     try {
-      return await modelsService.addModel(args.model, args.upload, user);
+      return await modelsService.addModel(model, upload, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updateModel: async (parent, args, { user }) => {
+  updateModel: async (_, { id, model, upload }, { user }) => {
     try {
-      return await modelService.updateModel(
-        args.id,
-        args.model,
-        args.upload,
-        user
-      );
+      return await modelService.updateModel(id, model, upload, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
 
-  deleteModel: async (parent, args, { user }) => {
+  deleteModel: async (_, { id }, { user }) => {
     try {
-      return await modelsService.deleteModel(args.id, user);
+      return await modelsService.deleteModel(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
 
-  addModelConstructorBasic: async (parent, args) => {
+  addModelConstructorBasic: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.addModelConstructorBasic(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteModelConstructorBasic: async (parent, args) => {
+  deleteModelConstructorBasic: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.deleteModelConstructorBasic(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  addModelConstructorPattern: async (parent, args) => {
+  addModelConstructorPattern: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.addModelConstructorPattern(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteModelConstructorPattern: async (parent, args) => {
+  deleteModelConstructorPattern: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.deleteModelConstructorPattern(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  addModelConstructorFrontPocket: async (parent, args) => {
+  addModelConstructorFrontPocket: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.addModelConstructorFrontPocket(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteModelConstructorFrontPocket: async (parent, args) => {
+  deleteModelConstructorFrontPocket: async (
+    _,
+    { id, constructorElementID }
+  ) => {
     try {
       return await modelsService.deleteModelConstructorFrontPocket(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  addModelConstructorBottom: async (parent, args) => {
+  addModelConstructorBottom: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.addModelConstructorBottom(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteModelConstructorBottom: async (parent, args) => {
+  deleteModelConstructorBottom: async (_, { id, constructorElementID }) => {
     try {
       return await modelsService.deleteModelConstructorBottom(
-        args.id,
-        args.constructorElementID
+        id,
+        constructorElementID
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

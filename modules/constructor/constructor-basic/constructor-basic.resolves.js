@@ -3,9 +3,17 @@ const RuleError = require('../../../errors/rule.error');
 const ConstructorBasic = require('./constructor-basic.model');
 
 const constructorBasicQuery = {
-  getAllConstructorBasics: (parent, args) =>
-    constructorService.getAllConstructorElements(args, ConstructorBasic),
-  getConstructorBasicById: async (parent, args) => {
+  getAllConstructorBasics: async (_, args) => {
+    try {
+      return await constructorService.getAllConstructorElements(
+        args,
+        ConstructorBasic
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getConstructorBasicById: async (_, args) => {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
@@ -18,7 +26,7 @@ const constructorBasicQuery = {
 };
 
 const constructorBasicMutation = {
-  addConstructorBasic: async (parent, args, { user }) => {
+  addConstructorBasic: async (_, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
@@ -30,7 +38,7 @@ const constructorBasicMutation = {
     }
   },
 
-  updateConstructorBasic: async (parent, args, { user }) => {
+  updateConstructorBasic: async (_, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
@@ -41,7 +49,7 @@ const constructorBasicMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteConstructorBasic: async (parent, args, { user }) => {
+  deleteConstructorBasic: async (_, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,

@@ -1,13 +1,9 @@
 const Closure = require('./closures.model');
 const RuleError = require('../../errors/rule.error');
-const {
-  CLOSURE_NOT_FOUND,
-  CLOSURE_ALREADY_EXIST,
-} = require('../../error-messages/closures.messages');
+const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 const { calculatePrice } = require('../currency/currency.utils');
-const { checkIfItemExist } = require('../../utils/exist-checker');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
@@ -35,7 +31,6 @@ const {
     MODEL,
   },
 } = require('../../consts/history-obj-keys');
-const { check } = require('prettier');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {
@@ -67,12 +62,6 @@ class ClosureService {
       data.image = uploadImage.fileNames.large;
     }
 
-    const checkResult = await checkIfItemExist(data, Closure);
-
-    if (checkResult) {
-      throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (data.additionalPrice) {
       data.additionalPrice = await calculatePrice(data.additionalPrice);
     }
@@ -102,11 +91,6 @@ class ClosureService {
   }
 
   async updateClosure(id, closure, upload, { _id: adminId }) {
-    const checkResult = await checkIfItemExist(closure, Closure);
-
-    if (checkResult) {
-      throw new RuleError(CLOSURE_ALREADY_EXIST, BAD_REQUEST);
-    }
     if (upload) {
       const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
       data.image = uploadImage.fileNames.large;

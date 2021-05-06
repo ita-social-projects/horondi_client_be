@@ -1,6 +1,11 @@
 const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
+const StrapModel = require('./strap.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../utils/rules');
 const {
   INPUT_FIELDS: { STRAP },
 } = require('../../consts/input-fields');
@@ -20,7 +25,8 @@ const strapPermissionsQuery = {
 const strapPermissionsMutations = {
   addStrap: and(
     inputDataValidation(STRAP, inputStrapValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(STRAP, StrapModel)
   ),
   updateStrap: and(
     inputDataValidation(STRAP, inputStrapValidator),

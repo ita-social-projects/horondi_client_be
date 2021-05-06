@@ -1,6 +1,11 @@
 const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
+const BackModel = require('./back.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../utils/rules');
 const {
   INPUT_FIELDS: { BACK },
 } = require('../../consts/input-fields');
@@ -20,7 +25,8 @@ const backPermissionsQuery = {
 const backPermissionsMutations = {
   addBack: and(
     inputDataValidation(BACK, inputOptionValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(BACK, BackModel)
   ),
   updateBack: and(
     inputDataValidation(BACK, inputOptionValidator),

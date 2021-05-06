@@ -3,23 +3,23 @@ const strapService = require('./strap.service');
 const RuleError = require('../../errors/rule.error');
 
 const strapQuery = {
-  getAllStraps: async (parent, args) => {
+  getAllStraps: async (_, args) => {
     try {
       return await strapService.getAllStraps(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getStrapById: async (parent, args) => {
+  getStrapById: async (_, { id }) => {
     try {
-      return await strapService.getStrapById(args.id);
+      return await strapService.getStrapById(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getStrapsByModel: async (parent, args) => {
+  getStrapsByModel: async (_, { id }) => {
     try {
-      return await strapService.getStrapsByModel(args.id);
+      return await strapService.getStrapsByModel(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -27,28 +27,23 @@ const strapQuery = {
 };
 
 const strapMutation = {
-  addStrap: async (parent, args, { user }) => {
+  addStrap: async (_, { strap, image }, { user }) => {
     try {
-      return await strapService.addStrap(args.strap, args.image, user);
+      return await strapService.addStrap(strap, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateStrap: async (parent, args, { user }) => {
+  updateStrap: async (_, { id, strap, image }, { user }) => {
     try {
-      return await strapService.updateStrap(
-        args.id,
-        args.strap,
-        args.image,
-        user
-      );
+      return await strapService.updateStrap(id, strap, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteStrap: async (parent, args, { user }) => {
+  deleteStrap: async (_, { id }, { user }) => {
     try {
-      return await strapService.deleteStrap(args.id, user);
+      return await strapService.deleteStrap(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

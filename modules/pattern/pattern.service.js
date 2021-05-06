@@ -3,14 +3,12 @@ const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
 const FilterHelper = require('../../helpers/filter-helper');
 const { calculatePrice } = require('../currency/currency.utils');
-const { checkIfItemExist } = require('../../utils/exist-checker');
 const {
-  PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
@@ -138,12 +136,6 @@ class PatternsService extends FilterHelper {
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
-    const checkResult = await checkIfItemExist(pattern, Pattern);
-
-    if (checkResult) {
-      throw new RuleError(PATTERN_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (!image) {
       throw new Error(IMAGE_NOT_PROVIDED);
     }

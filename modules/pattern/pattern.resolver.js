@@ -6,10 +6,10 @@ const {
 } = require('../../consts/status-codes');
 
 const patternQuery = {
-  getAllPatterns: (parent, args) => patternService.getAllPatterns(args),
-  getPatternById: async (parent, args) => {
+  getAllPatterns: (_, args) => patternService.getAllPatterns(args),
+  getPatternById: async (_, { id }) => {
     try {
-      return await patternService.getPatternById(args.id);
+      return await patternService.getPatternById(id);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -20,7 +20,7 @@ const patternQuery = {
 };
 
 const patternMutation = {
-  addPattern: async (parent, args, { user }) => {
+  addPattern: async (_, args, { user }) => {
     try {
       return await patternService.addPattern(args, user);
     } catch (e) {
@@ -31,9 +31,9 @@ const patternMutation = {
     }
   },
 
-  deletePattern: async (parent, args, { user }) => {
+  deletePattern: async (_, { id }, { user }) => {
     try {
-      return await patternService.deletePattern(args.id, user);
+      return await patternService.deletePattern(id, user);
     } catch (e) {
       return {
         statusCode: NOT_FOUND,
@@ -42,7 +42,7 @@ const patternMutation = {
     }
   },
 
-  updatePattern: async (parent, args, { user }) => {
+  updatePattern: async (_, args, { user }) => {
     try {
       return await patternService.updatePattern(args, user);
     } catch (e) {

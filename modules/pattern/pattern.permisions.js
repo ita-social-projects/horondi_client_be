@@ -1,6 +1,11 @@
 const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
+const PatternModel = require('./pattern.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../utils/rules');
 const {
   INPUT_FIELDS: { PATTERN },
 } = require('../../consts/input-fields');
@@ -19,7 +24,8 @@ const patternPermissionsQuery = {
 const patternPermissionsMutations = {
   addPattern: and(
     inputDataValidation(PATTERN, inputPatternValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(PATTERN, PatternModel)
   ),
   updatePattern: and(
     inputDataValidation(PATTERN, inputPatternValidator),

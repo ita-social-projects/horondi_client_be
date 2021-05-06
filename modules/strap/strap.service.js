@@ -3,13 +3,9 @@ const RuleError = require('../../errors/rule.error');
 const FilterHelper = require('../../helpers/filter-helper');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
-const { checkIfItemExist } = require('../../utils/exist-checker');
+const { STRAP_NOT_FOUND } = require('../../error-messages/strap.messages');
 const {
-  STRAP_NOT_FOUND,
-  STRAP_ALREADY_EXIST,
-} = require('../../error-messages/strap.messages');
-const {
-  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_STRAP, EDIT_STRAP, DELETE_STRAP },
@@ -157,12 +153,6 @@ class StrapService extends FilterHelper {
   }
 
   async addStrap(strap, image, { _id: adminId }) {
-    const checkResult = await checkIfItemExist(strap, Strap);
-
-    if (checkResult) {
-      throw new RuleError(STRAP_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
       strap.image = uploadImage.fileNames.small;

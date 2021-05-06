@@ -1,15 +1,11 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
-const { checkIfItemExist } = require('../../utils/exist-checker');
 const RuleError = require('../../errors/rule.error');
 const FilterHelper = require('../../helpers/filter-helper');
+const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
 const {
-  POCKET_ALREADY_EXIST,
-  POCKET_NOT_FOUND,
-} = require('../../error-messages/pocket.messages');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_POCKET, EDIT_POCKET, DELETE_POCKET },
@@ -155,12 +151,6 @@ class PocketService extends FilterHelper {
   }
 
   async addPocket(pocket, image, { _id: adminId }) {
-    const checkResult = await checkIfItemExist(pocket, Pocket);
-
-    if (checkResult) {
-      throw new RuleError(POCKET_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
       pocket.image = uploadImage.fileNames.small;

@@ -1,6 +1,11 @@
 const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
+const PocketModel = require('./pocket.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../utils/rules');
 const {
   INPUT_FIELDS: { POCKET },
 } = require('../../consts/input-fields');
@@ -20,7 +25,8 @@ const pocketPermissionsQuery = {
 const pocketPermissionsMutations = {
   addPocket: and(
     inputDataValidation(POCKET, inputPocketValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(POCKET, PocketModel)
   ),
   updatePocket: and(
     inputDataValidation(POCKET, inputPocketValidator),

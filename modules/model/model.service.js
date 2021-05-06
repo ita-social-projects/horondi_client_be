@@ -1,20 +1,14 @@
 const { ObjectId } = require('mongoose').Types;
 
-const ruleError = require('../../errors/rule.error');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../consts/status-codes');
 const Model = require('./model.model');
 const ConstructorBasic = require('../constructor/constructor-basic/constructor-basic.model');
 const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
 const ConstructorFrontPocket = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
 const {
   CATEGORY_NOT_VALID,
-  MODEL_ALREADY_EXIST,
   MODEL_NOT_FOUND,
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
-const { checkIfItemExist } = require('../../utils/exist-checker');
 const uploadService = require('../upload/upload.service');
 const {
   HISTORY_ACTIONS: { ADD_MODEL, EDIT_MODEL, DELETE_MODEL },
@@ -84,12 +78,6 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
-    const checkResult = await checkIfItemExist(data, Model);
-
-    if (checkResult) {
-      throw new ruleError(MODEL_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];

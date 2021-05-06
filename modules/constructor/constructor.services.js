@@ -1,14 +1,12 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
-const { checkIfItemExist } = require('../../utils/exist-checker');
 const uploadService = require('../upload/upload.service');
 const RuleError = require('../../errors/rule.error');
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
-  CONSTRUCTOR_ELEMENT_ALREADY_EXIST,
 } = require('../../error-messages/constructor-element-messages');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: {
@@ -66,12 +64,6 @@ class ConstructorService {
   ) {
     if (upload) {
       constructorElement.image = await uploadSmallImage(upload);
-    }
-
-    const checkResult = await checkIfItemExist(constructorElement, model);
-
-    if (checkResult) {
-      return new RuleError(CONSTRUCTOR_ELEMENT_ALREADY_EXIST, BAD_REQUEST);
     }
 
     constructorElement.basePrice = await calculatePrice(

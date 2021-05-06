@@ -3,9 +3,17 @@ const RuleError = require('../../../errors/rule.error');
 const ConstructorFrontPocket = require('./constructor-front-pocket.model');
 
 const constructorFrontPocketQuery = {
-  getAllConstructorFrontPocket: (parent, args) =>
-    constructorService.getAllConstructorElements(args, ConstructorFrontPocket),
-  getConstructorFrontPocketById: async (parent, args) => {
+  getAllConstructorFrontPocket: async (_, args) => {
+    try {
+      return await constructorService.getAllConstructorElements(
+        args,
+        ConstructorFrontPocket
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getConstructorFrontPocketById: async (_, args) => {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
@@ -18,7 +26,7 @@ const constructorFrontPocketQuery = {
 };
 
 const constructorFrontPocketMutation = {
-  addConstructorFrontPocket: async (parent, args, { user }) => {
+  addConstructorFrontPocket: async (_, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
@@ -30,7 +38,7 @@ const constructorFrontPocketMutation = {
     }
   },
 
-  updateConstructorFrontPocket: async (parent, args, { user }) => {
+  updateConstructorFrontPocket: async (_, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
@@ -41,7 +49,7 @@ const constructorFrontPocketMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteConstructorFrontPocket: async (parent, args, { user }) => {
+  deleteConstructorFrontPocket: async (_, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,

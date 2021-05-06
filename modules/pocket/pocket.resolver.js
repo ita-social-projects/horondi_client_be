@@ -3,23 +3,23 @@ const pocketService = require('./pocket.service');
 const RuleError = require('../../errors/rule.error');
 
 const pocketQuery = {
-  getAllPockets: async (parent, args) => {
+  getAllPockets: async (_, args) => {
     try {
       return await pocketService.getAllPockets(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getPocketById: async (parent, args) => {
+  getPocketById: async (_, { id }) => {
     try {
-      return await pocketService.getPocketById(args.id);
+      return await pocketService.getPocketById(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getPocketsByModel: async (parent, args) => {
+  getPocketsByModel: async (_, { id }) => {
     try {
-      return await pocketService.getPocketsByModel(args.id);
+      return await pocketService.getPocketsByModel(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -27,28 +27,23 @@ const pocketQuery = {
 };
 
 const pocketMutation = {
-  addPocket: async (parent, args, { user }) => {
+  addPocket: async (_, { pocket, upload }, { user }) => {
     try {
-      return await pocketService.addPocket(args.pocket, args.upload, user);
+      return await pocketService.addPocket(pocket, upload, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updatePocket: async (parent, args, { user }) => {
+  updatePocket: async (_, { id, pocket, image }, { user }) => {
     try {
-      return await pocketService.updatePocket(
-        args.id,
-        args.pocket,
-        args.image,
-        user
-      );
+      return await pocketService.updatePocket(id, pocket, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deletePocket: async (parent, args, { user }) => {
+  deletePocket: async (_, { id }, { user }) => {
     try {
-      return await pocketService.deletePocket(args.id, user);
+      return await pocketService.deletePocket(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

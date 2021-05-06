@@ -1,6 +1,11 @@
 const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation, hasRoles } = require('../../../utils/rules');
+const ConstructorBasicModel = require('./constructor-basic.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../../utils/rules');
 const {
   INPUT_FIELDS: { CONSTRUCTOR_BASIC },
 } = require('../../../consts/input-fields');
@@ -19,7 +24,8 @@ const constructorBasicPermissionsQuery = {
 const constructorBasicPermissionsMutations = {
   addConstructorBasic: and(
     inputDataValidation(CONSTRUCTOR_BASIC, inputConstructorElementValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(CONSTRUCTOR_BASIC, ConstructorBasicModel)
   ),
   updateConstructorBasic: and(
     inputDataValidation(CONSTRUCTOR_BASIC, inputConstructorElementValidator),

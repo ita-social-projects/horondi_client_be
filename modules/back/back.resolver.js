@@ -3,17 +3,23 @@ const backService = require('./back.service');
 const RuleError = require('../../errors/rule.error');
 
 const backQuery = {
-  getAllBacks: (parent, args) => backService.getAllBacks(args),
-  getBackById: async (parent, args) => {
+  getAllBacks: async (_, args) => {
     try {
-      return await backService.getBackById(args.id);
+      return await backService.getAllBacks(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getBacksByModel: async (parent, args) => {
+  getBackById: async (_, { id }) => {
     try {
-      return await backService.getBacksByModel(args.id);
+      return await backService.getBackById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getBacksByModel: async (_, { id }) => {
+    try {
+      return await backService.getBacksByModel(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -21,23 +27,23 @@ const backQuery = {
 };
 
 const backMutation = {
-  addBack: async (parent, args, { user }) => {
+  addBack: async (_, { back, image }, { user }) => {
     try {
-      return await backService.addBack(args.back, args.image, user);
+      return await backService.addBack(back, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateBack: async (parent, args, { user }) => {
+  updateBack: async (_, { id, back, image }, { user }) => {
     try {
-      return await backService.updateBack(args.id, args.back, args.image, user);
+      return await backService.updateBack(id, back, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteBack: async (parent, args, { user }) => {
+  deleteBack: async (_, { id }, { user }) => {
     try {
-      return await backService.deleteBack(args.id, user);
+      return await backService.deleteBack(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

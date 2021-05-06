@@ -1,6 +1,11 @@
 const { allow, and } = require('graphql-shield');
 
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
+const ClosureModel = require('./closures.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../utils/rules');
 const {
   INPUT_FIELDS: { CLOSURE },
 } = require('../../consts/input-fields');
@@ -19,7 +24,8 @@ const closurePermissionsQuery = {
 const closurePermissionsMutations = {
   addClosure: and(
     inputDataValidation(CLOSURE, inputOptionValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(CLOSURE, ClosureModel)
   ),
   updateClosure: and(
     inputDataValidation(CLOSURE, inputOptionValidator),

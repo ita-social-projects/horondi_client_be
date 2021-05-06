@@ -1,18 +1,14 @@
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
-const { checkIfItemExist } = require('../../utils/exist-checker');
 const RuleError = require('../../errors/rule.error');
 const FilterHelper = require('../../helpers/filter-helper');
-const {
-  BACK_NOT_FOUND,
-  BACK_ALREADY_EXIST,
-} = require('../../consts/back-messages');
+const { BACK_NOT_FOUND } = require('../../consts/back-messages');
 const {
   FILE_SIZES: { SMALL },
 } = require('../../consts/file-sizes');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_BACK, EDIT_BACK, DELETE_BACK },
@@ -73,10 +69,11 @@ class BackService extends FilterHelper {
 
   async getBackById(id) {
     const foundBack = await Back.findById(id).exec();
-    if (foundBack) {
-      return foundBack;
+    if (!foundBack) {
+      throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
-    throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
+
+    return foundBack;
   }
 
   async getBacksByModel(id) {
@@ -161,12 +158,6 @@ class BackService extends FilterHelper {
   }
 
   async addBack(back, image, { _id: adminId }) {
-    const checkResult = await checkIfItemExist(back, Back);
-
-    if (checkResult) {
-      throw new RuleError(BACK_ALREADY_EXIST, BAD_REQUEST);
-    }
-
     if (image) {
       const uploadImage = await uploadService.uploadSmallImage(image);
       back.image = uploadImage.fileNames.small;

@@ -3,7 +3,7 @@ const RuleError = require('../../../errors/rule.error');
 const ConstructorBottom = require('./constructor-bottom.model');
 
 const constructorBottomQuery = {
-  getConstructorBottomById: async (parent, args) => {
+  getConstructorBottomById: async (_, args) => {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
@@ -14,12 +14,20 @@ const constructorBottomQuery = {
     }
   },
 
-  getAllConstructorBottom: async (parent, args) =>
-    await constructorService.getAllConstructorElements(args, ConstructorBottom),
+  getAllConstructorBottom: async (_, args) => {
+    try {
+      return await constructorService.getAllConstructorElements(
+        args,
+        ConstructorBottom
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const constructorBottomMutation = {
-  addConstructorBottom: async (parent, args, { user }) => {
+  addConstructorBottom: async (_, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
@@ -31,7 +39,7 @@ const constructorBottomMutation = {
     }
   },
 
-  updateConstructorBottom: async (parent, args, { user }) => {
+  updateConstructorBottom: async (_, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
@@ -43,7 +51,7 @@ const constructorBottomMutation = {
     }
   },
 
-  deleteConstructorBottom: async (parent, args, { user }) => {
+  deleteConstructorBottom: async (_, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,
