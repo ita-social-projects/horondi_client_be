@@ -3,9 +3,9 @@ const backService = require('./back.service');
 const RuleError = require('../../errors/rule.error');
 
 const backQuery = {
-  getAllBacks: async (_, args) => {
+  getAllBacks: async (_, { limit, skip, filter }) => {
     try {
-      return await backService.getAllBacks(args);
+      return await backService.getAllBacks(limit, skip, filter);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

@@ -1,8 +1,9 @@
+const _ = require('lodash');
+
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
-const FilterHelper = require('../../helpers/filter-helper');
 const { BACK_NOT_FOUND } = require('../../consts/back-messages');
 const {
   FILE_SIZES: { SMALL },
@@ -33,38 +34,56 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class BackService extends FilterHelper {
-  async getAllBacks({ filter, pagination, sort }) {
-    try {
-      let filters = this.filterItems(filter);
-      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+class BackService {
+  async getAllBacks(limit, skip, filter) {
+    const filterOptions = {};
+    console.log(filter);
+    if (filter.name) {
+      const name = filter.name.trim();
 
-      const [backs] = await Back.aggregate()
-        .collation({ locale: 'uk' })
-        .facet({
-          items: aggregatedItems,
-          calculations: [{ $match: filters }, { $count: 'count' }],
-        })
-        .exec();
-
-      let backCount;
-
-      const {
-        items,
-        calculations: [calculations],
-      } = backs;
-
-      if (calculations) {
-        backCount = calculations.count;
-      }
-
-      return {
-        items,
-        count: backCount || 0,
-      };
-    } catch (e) {
-      throw new RuleError(e.message, e.statusCode);
+      filterOptions.$or = [
+        { 'name.value': { $regex: `${name}`, $options: 'i' } },
+        { text: { $regex: `${name}`, $options: 'i' } },
+      ];
     }
+
+    if (filter.model.length) {
+      filterOptions.model = { $in: filter.model };
+    }
+
+    if (filter.available) {
+      filterOptions.available = { $in: filter.available };
+    }
+
+    if (filter.material.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
+
+    if (filter.color.length) {
+      filterOptions['features.color'] = { $in: filter.color };
+    }
+
+    console.log(filterOptions);
+    const backs = await Back.find(filterOptions)
+      .populate()
+      .exec();
+    console.log(backs);
+    const items = _.take(
+      _.drop(
+        _.filter(backs, item => item.name),
+        skip
+      ),
+      limit
+    );
+
+    const count = _.filter(backs, back => back.name).length;
+    console.log(items);
+    console.log(count);
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getBackById(id) {

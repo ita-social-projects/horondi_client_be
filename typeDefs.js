@@ -552,10 +552,7 @@ const typeDefs = gql`
     ): PaginatedPockets!
     getPocketById(id: ID): PocketResult
     getPocketsByModel(id: ID): [Pocket]
-    getAllBacks(
-      filter: FilterInputComponent,
-      pagination: Pagination,
-			sort: SortInputComponent): PaginatedBacks!
+    getAllBacks( limit:Int!, skip:Int!, filter:BackFilterInput): PaginatedBacks
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [Back]
     getAllStraps(

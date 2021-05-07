@@ -163,6 +163,7 @@ const SCHEMA_NAMES = {
   constructorFrontPocket: 'ConstructorFrontPocket',
   pocket: 'Pocket',
   back: 'Back',
+  paginatedBacks: 'PaginatedBacks',
   strap: 'Strap',
 };
 
@@ -839,6 +840,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.back;
+      }
+      return 'Error';
+    },
+  },
+  PaginatedBacks: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedBacks;
       }
       return 'Error';
     },

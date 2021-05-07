@@ -35,6 +35,14 @@ const backInputs = `
     material: ID
     color: ID
   }
+
+  input BackFilterInput{
+    name:String
+    model:[String]
+    available:String
+    material:[String]
+    color:[String]
+  }
 `;
 
 module.exports = {
