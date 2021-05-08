@@ -18,6 +18,7 @@ const productsQuery = {
   },
   getProducts: async (parent, args) => {
     try {
+      console.log(args);
       return await productsService.getProducts(args);
     } catch (e) {
       return {

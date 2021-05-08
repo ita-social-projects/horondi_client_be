@@ -19,6 +19,11 @@ author: AuthorInput
 date: String
 show: Boolean
 languages: [String]
-}`;
+}
 
-module.exports = { newsType, newsInput };
+input NewsFilterInput{
+    search:String
+  }
+`;
+
+module.exports = {newsType, newsInput};
