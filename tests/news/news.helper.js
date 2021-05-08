@@ -106,12 +106,12 @@ const deleteNews = async (id, operations) => {
     .catch(e => e);
   return res.data.deleteNews;
 };
-const getAllNews = async (skip, limit, operations) => {
+const getAllNews = async (skip, limit,filter, operations) => {
   const res = await operations
     .query({
       query: gql`
-        query($skip: Int, $limit: Int) {
-          getAllNews(skip: $skip, limit: $limit) {
+        query($skip: Int, $limit: Int, $filter:NewsFilterInput) {
+          getAllNews(skip: $skip, limit: $limit, filter:$filter) {
             items {
               _id
               author {
@@ -134,7 +134,7 @@ const getAllNews = async (skip, limit, operations) => {
           }
         }
       `,
-      variables: { skip, limit },
+      variables: { skip, limit, filter },
     })
     .catch(e => e);
   return res.data.getAllNews;
