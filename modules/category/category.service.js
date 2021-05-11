@@ -48,7 +48,7 @@ class CategoryService extends FilterHelper {
       .skip(pagination?.skip)
       .exec();
 
-    const count = await Category.find(filterOptions).countDocuments();
+    const count = Category.find(filterOptions).countDocuments();
     return {
       items,
       count,
