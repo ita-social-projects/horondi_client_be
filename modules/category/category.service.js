@@ -34,34 +34,25 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class CategoryService extends FilterHelper {
-  async getAllCategories({ filter, pagination, sort }) {
-    try {
-      let filters = this.filterItems(filter);
-      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
-      const [categories] = await Category.aggregate()
-        .collation({ locale: 'uk' })
-        .facet({
-          items: aggregatedItems,
-          calculations: [{ $match: filters }, { $count: 'count' }],
-        })
-        .exec();
-      let categoryCount;
+  async getAllCategories({ filter, pagination }) {
+    const filterOptions = {};
 
-      const {
-        items,
-        calculations: [calculations],
-      } = categories;
-
-      if (calculations) {
-        categoryCount = calculations.count;
-      }
-      return {
-        items,
-        count: categoryCount || 0,
+    if (filter?.search) {
+      filterOptions['name.0.value'] = {
+        $regex: `${filter.search.trim()}`,
+        $options: 'i',
       };
-    } catch (e) {
-      console.log(e.message);
     }
+    const items = await Category.find(filterOptions)
+      .limit(pagination?.limit)
+      .skip(pagination?.skip)
+      .exec();
+
+    const count = await Category.find(filterOptions).countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getCategoryById(id) {
