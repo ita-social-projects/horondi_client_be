@@ -5,9 +5,16 @@ const {
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const categoryQuery = {
-  getAllCategories: (parent, args) => categoryService.getAllCategories(args),
+  getAllCategories: async (parent, args) => {
+    try {
+      return await categoryService.getAllCategories(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getCategoriesForBurgerMenu: (parent, args) =>
     categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),

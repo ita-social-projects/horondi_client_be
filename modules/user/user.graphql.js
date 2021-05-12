@@ -181,7 +181,7 @@ input UserForStatisticsInput {
 const userFilterInput = `
 input UserFilterInput {
     roles: [String!]
-    banned: [Boolean!]
+    banned: [String]
     search: String
 }
 `;

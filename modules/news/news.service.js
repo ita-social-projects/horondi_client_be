@@ -24,11 +24,21 @@ const {
 const { objectType } = require('../../consts');
 
 class NewsService {
-  async getAllNews({ skip, limit }) {
-    const items = await News.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    async getAllNews({skip, limit, filter: {search}}) {
+        const filterOptions = {};
+
+        if (search) {
+            const searchString = search.trim();
+
+            filterOptions.$or = [
+                {'author.name.value': {$regex: `${searchString}`, $options: 'i'}},
+                {'title.value': {$regex: `${searchString}`, $options: 'i'}},
+            ];
+        }
+        const items = await News.find(filterOptions)
+            .skip(skip)
+            .limit(limit)
+            .exec();
 
     const count = await News.find()
       .countDocuments()

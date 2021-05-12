@@ -11,39 +11,46 @@ const {
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
+let { minDate } = require('../../consts/date-range');
 
-const FilterHelper = require('../../helpers/filter-helper');
-const {
-  LOCALES: { UK },
-} = require('../../consts/locations');
-const {
-  COUNTS: { COUNT },
-} = require('../../consts/comments-operations');
+class CommentsService {
+  async getAllComments({ filter, pagination: { skip, limit } }) {
+    const filterOptions = {};
+    let maxDate = Date.now();
 
-class CommentsService extends FilterHelper {
-  async getAllComments({ filter, pagination }) {
-    let filters = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filters, pagination);
-    const [comments] = await Comment.aggregate()
-      .collation({ locale: UK })
-      .facet({
-        items: aggregatedItems,
-        calculations: [{ $match: filters }, { $count: COUNT }],
-      })
+    if (filter?.show?.length) {
+      filterOptions.show = { $in: filter.show };
+    }
+
+    if (filter?.date?.dateFrom) {
+      minDate = new Date(filter.date.dateFrom);
+    }
+
+    if (filter?.date?.dateTo) {
+      maxDate = new Date(filter.date.dateTo);
+    }
+
+    filterOptions.date = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
+
+    if (filter?.search) {
+      const search = filter.search.trim();
+      filterOptions.text = { $regex: `${search}`, $options: 'i' };
+    }
+
+    const items = await Comment.find(filterOptions)
+      .sort({ date: -1 })
+      .limit(limit)
+      .skip(skip)
       .exec();
 
-    let commentsCount;
+    const count = Comment.find(filterOptions).countDocuments();
 
-    const {
-      items,
-      calculations: [calculations],
-    } = comments;
-    if (calculations) {
-      commentsCount = calculations.count;
-    }
     return {
       items,
-      count: commentsCount || 0,
+      count,
     };
   }
 
@@ -147,4 +154,5 @@ class CommentsService extends FilterHelper {
     return rateToAdd;
   }
 }
+
 module.exports = new CommentsService();

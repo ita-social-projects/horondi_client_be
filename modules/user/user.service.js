@@ -42,7 +42,6 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
-  SESSION_TIMEOUT,
   REFRESH_TOKEN_IS_NOT_VALID,
   YOU_CANT_BLOCK_YOURSELF,
   USER_IS_ALREADY_BLOCKED,
@@ -87,9 +86,7 @@ const {
   generateHistoryChangesData,
 } = require('../../utils/hisrory');
 const { addHistoryRecord } = require('../history/history.service');
-const {
-  LANGUAGE_INDEX: { UA },
-} = require('../../consts/languages');
+
 const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
@@ -299,10 +296,7 @@ class UserService extends FilterHelper {
     }).exec();
 
     if (!checkedUser) {
-      throw new UserInputError(USER_NOT_FOUND, {
-        key,
-        statusCode: BAD_REQUEST,
-      });
+      throw new RuleError(USER_NOT_FOUND, BAD_REQUEST);
     }
 
     return checkedUser;

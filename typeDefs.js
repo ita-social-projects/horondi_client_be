@@ -1,113 +1,113 @@
-const { gql } = require('apollo-server-express');
+const {gql} = require('apollo-server-express');
 
 const {
-  historyType,
-  historyFilterInput,
+    historyType,
+    historyFilterInput,
 } = require('./modules/history/history.graphql');
-const { newsType, newsInput } = require('./modules/news/news.graphql');
+const {newsType, newsInput} = require('./modules/news/news.graphql');
 const {
-  userType,
-  userInput,
-  userUpdateInput,
-  userRegisterInput,
-  userFilterInput,
-  userSortInput,
-  LoginInput,
-  adminConfirmInput,
-  adminRegisterInput,
-  resendEmailToConfirmAdminInput,
-  confirmSuperadminCreationInput,
-  UserForStatisticsInput,
-  paginatedUsersType,
-  tokenType,
-  purchasedProductsType,
-  cartType,
-  cartInput,
+    userType,
+    userInput,
+    userUpdateInput,
+    userRegisterInput,
+    userFilterInput,
+    userSortInput,
+    LoginInput,
+    adminConfirmInput,
+    adminRegisterInput,
+    resendEmailToConfirmAdminInput,
+    confirmSuperadminCreationInput,
+    UserForStatisticsInput,
+    paginatedUsersType,
+    tokenType,
+    purchasedProductsType,
+    cartType,
+    cartInput,
 } = require('./modules/user/user.graphql');
 const {
-  productType,
-  productInput,
+    productType,
+    productInput,
 } = require('./modules/product/product.graphql');
-const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
-const { modelType, modelInput } = require('./modules/model/model.graphql');
+const {orderTypes, orderInputs} = require('./modules/order/order.graphql');
+const {modelType, modelInput} = require('./modules/model/model.graphql');
 const {
-  categoryType,
-  categoryInput,
-  FilterInputComponent,
-  SortInputComponent,
-  paginatedCategory,
+    categoryType,
+    categoryInput,
+    FilterInputComponent,
+    SortInputComponent,
+    paginatedCategory,
 } = require('./modules/category/category.graphql');
 const {
-  materialType,
-  materialInput,
-  materialFilterInput,
+    materialType,
+    materialInput,
+    materialFilterInput,
 } = require('./modules/material/material.graphql');
 const {
-  patternType,
-  patternInput,
+    patternType,
+    patternInput,
 } = require('./modules/pattern/pattern.graphql');
 const {
-  currencyType,
-  currencyInput,
+    currencyType,
+    currencyInput,
 } = require('./modules/currency/currency.graphql.js');
 const {
-  commentType,
-  commentInput,
+    commentType,
+    commentInput,
 } = require('./modules/comment/comment.graphql');
 const {
-  businessTextType,
-  businessTextInput,
+    businessTextType,
+    businessTextInput,
 } = require('./modules/business-text/business-text.graphql');
 const {
-  contactType,
-  contactInput,
+    contactType,
+    contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
-  novaPoshtaType,
-  novaPoshtaInput,
+    novaPoshtaType,
+    novaPoshtaInput,
 } = require('./modules/delivery/nova-poshta/nova-poshta.graphql');
 const {
-  emailQuestionType,
-  emailQuestionInput,
+    emailQuestionType,
+    emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
 const {
-  paymentType,
-  paymentStatus,
-  paymentInput,
+    paymentType,
+    paymentStatus,
+    paymentInput,
 } = require('./modules/payment/payment.graphql');
 const {
-  homePageImagesType,
+    homePageImagesType,
 } = require('./modules/homepage-images/home-page-images.graphql');
 const {
-  homePageSlideType,
-  homePageSlideInput,
+    homePageSlideType,
+    homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const {
-  constructorBottomInput,
-  constructorBottomType,
+    constructorBottomInput,
+    constructorBottomType,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
-const { headerType, headerInput } = require('./modules/header/header.graphql');
+const {headerType, headerInput} = require('./modules/header/header.graphql');
 const {
-  closureType,
-  closureInput,
+    closureType,
+    closureInput,
 } = require('./modules/closures/closures.graphql');
-const { defaultPaginationParams } = require('./consts');
-const { sizeType, sizeInput } = require('./modules/size/size.graphql');
-const { colorType, colorInput } = require('./modules/color/color.graphql');
+const {defaultPaginationParams} = require('./consts');
+const {sizeType, sizeInput} = require('./modules/size/size.graphql');
+const {colorType, colorInput} = require('./modules/color/color.graphql');
 const {
-  constructorBasicType,
-  constructorBasicInput,
+    constructorBasicType,
+    constructorBasicInput,
 } = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
 const {
-  constructorFrontPocketType,
-  constructorFrontPocketInput,
+    constructorFrontPocketType,
+    constructorFrontPocketInput,
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 const {
-  ukrPoshtaEnum,
-  ukrPostaType,
+    ukrPoshtaEnum,
+    ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 
-const { skip, limit } = defaultPaginationParams;
+const {skip, limit} = defaultPaginationParams;
 
 const typeDefs = gql`
   ${historyType}
@@ -378,21 +378,21 @@ const typeDefs = gql`
     getCategoryById(id: ID): CategoryResult
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(
-      filter: MaterialFilterInput,
       limit: Int, 
       skip: Int
+      filter: MaterialFilterInput,
     ): PaginatedMaterials!
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
-    getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
+    getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
-    getAllNews(limit: Int, skip: Int): PaginatedNews!
+    getAllNews(limit: Int, skip: Int, filter:NewsFilterInput): PaginatedNews!
     getNewsById(id: ID): NewsResult
     getAllUsers(
       filter: UserFilterInput
@@ -415,7 +415,7 @@ const typeDefs = gql`
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
     getAllComments(
-      filter: FilterInputComponent
+      filter: CommentFilterInput
       pagination: Pagination
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
@@ -456,7 +456,7 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes: [Size]  
+    getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size
     getAllClosure(limit: Int, skip: Int): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!

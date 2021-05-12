@@ -11,12 +11,9 @@ const {
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
-  ORDER_IS_NOT_PAID,
 } = require('../../error-messages/orders.messages');
-const {
-  userDateFormat,
-  roles: { USER },
-} = require('../../consts');
+const { userDateFormat } = require('../../consts');
+let { minDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
@@ -42,18 +39,63 @@ class OrdersService {
     return order;
   }
 
-  async getAllOrders({ skip, limit, filter = {} }) {
-    const { orderStatus } = filter;
+  async getAllOrders({ skip, limit, filter = {}, sort }) {
+    let maxDate = Date.now();
+    const { status, paymentStatus, date, search } = filter;
+    const filterObject = {};
 
-    const filters = orderStatus ? { status: { $in: orderStatus } } : {};
+    if (status?.length) {
+      filterObject.status = { $in: status };
+    }
 
-    const items = await Order.find(filters)
-      .sort({ dateOfCreation: -1 })
+    if (paymentStatus?.length) {
+      filterObject.paymentStatus = { $in: paymentStatus };
+    }
+
+    if (date?.dateFrom) {
+      minDate = new Date(date.dateFrom);
+    }
+
+    if (date?.dateTo) {
+      maxDate = new Date(date.dateTo);
+    }
+
+    filterObject.dateOfCreation = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
+
+    if (search) {
+      const [firstParam, secondParam] = search.trim().split(' ');
+
+      filterObject.$or = [
+        {
+          'user.firstName': {
+            $regex: `${firstParam || secondParam}`,
+            $options: 'i',
+          },
+        },
+        {
+          'user.lastName': {
+            $regex: `${firstParam || secondParam}`,
+            $options: 'i',
+          },
+        },
+        {
+          orderNumber: {
+            $regex: `${firstParam || secondParam}`,
+            $options: 'i',
+          },
+        },
+      ];
+    }
+    const items = await Order.find(filterObject)
+      .sort(sort)
       .skip(skip)
       .limit(limit)
       .exec();
 
-    const count = await Order.find(filters).countDocuments();
+    const count = Order.find(filterObject).countDocuments();
     return {
       items,
       count,

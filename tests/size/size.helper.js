@@ -78,6 +78,7 @@ const getAllSizes = async operations => {
     query: gql`
       query {
         getAllSizes {
+        items{
           name
           simpleName {
             lang
@@ -94,10 +95,11 @@ const getAllSizes = async operations => {
             value
           }
         }
+        }
       }
     `,
   });
-  return result.data.getAllSizes;
+  return result.data.getAllSizes?.items;
 };
 const getSizeById = async (id, operations) => {
   const result = await operations.query({
