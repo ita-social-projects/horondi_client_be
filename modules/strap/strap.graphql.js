@@ -34,6 +34,13 @@ const strapInputs = `
   input StrapFeatureInput {
     color: ID
   }
+
+  input StrapFilterInput{
+    name:String
+    model:[String]
+    available:String
+    color:[String]
+  }
 `;
 
 module.exports = {

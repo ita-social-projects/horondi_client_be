@@ -122,7 +122,7 @@ const {
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 const {
   pocketType,
-  pocketInput,
+  pocketInputs,
   sideEnum,
   pocketSide,
   pocketSideInput,
@@ -458,10 +458,7 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
-    getAllPatterns(
-      filter: FilterInputComponent,
-      pagination: Pagination,
-			sort: SortInputComponent): PaginatedPatterns!
+    getAllPatterns(limit:Int!, skip:Int!, filter:PatternFilterInput): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
     getOrderById(id: ID): OrderResult
@@ -545,21 +542,13 @@ const typeDefs = gql`
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
     getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
-    getAllPockets(
-      filter: FilterInputComponent,
-      pagination: Pagination,
-			sort: SortInputComponent
-    ): PaginatedPockets!
+    getAllPockets(limit:Int!, skip:Int!, filter:PocketFilterInput): PaginatedPockets!
     getPocketById(id: ID): PocketResult
     getPocketsByModel(id: ID): [Pocket]
     getAllBacks( limit:Int!, skip:Int!, filter:BackFilterInput): PaginatedBacks
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [Back]
-    getAllStraps(
-      filter: FilterInputComponent,
-      pagination: Pagination,
-			sort: SortInputComponent
-    ): PaginatedStraps!
+    getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [Strap]
     getAllRestrictions(
@@ -642,7 +631,7 @@ const typeDefs = gql`
   ${constructorBasicInputs}
   ${constructorFrontPocketInputs}
   ${constructorBottomInputs}
-  ${pocketInput}
+  ${pocketInputs}
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}

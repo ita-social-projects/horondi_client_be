@@ -3,9 +3,9 @@ const pocketService = require('./pocket.service');
 const RuleError = require('../../errors/rule.error');
 
 const pocketQuery = {
-  getAllPockets: async (_, args) => {
+  getAllPockets: async (_, { limit, skip, filter }) => {
     try {
-      return await pocketService.getAllPockets(args);
+      return await pocketService.getAllPockets(limit, skip, filter);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

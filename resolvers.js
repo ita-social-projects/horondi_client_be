@@ -138,6 +138,7 @@ const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
+  paginatedPatterns: 'PaginatedPatterns',
   material: 'Material',
   materials: 'Materials',
   currency: 'Currency',
@@ -162,9 +163,11 @@ const SCHEMA_NAMES = {
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
   pocket: 'Pocket',
+  paginatedPockets: 'PaginatedPockets',
   back: 'Back',
   paginatedBacks: 'PaginatedBacks',
   strap: 'Strap',
+  paginatedStraps: 'PaginatedStraps',
 };
 
 const resolvers = {
@@ -661,6 +664,16 @@ const resolvers = {
       return 'Error';
     },
   },
+
+  PaginatedPatterns: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPatterns;
+      }
+      return 'Error';
+    },
+  },
+
   ProductResult: {
     __resolveType: obj => {
       if (obj.name) {
@@ -836,6 +849,15 @@ const resolvers = {
     },
   },
 
+  PaginatedPockets: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPockets;
+      }
+      return 'Error';
+    },
+  },
+
   BackResult: {
     __resolveType: obj => {
       if (obj.name) {
@@ -844,6 +866,7 @@ const resolvers = {
       return 'Error';
     },
   },
+
   PaginatedBacks: {
     __resolveType: obj => {
       if (obj.items) {
@@ -857,6 +880,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.strap;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedStraps: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedStraps;
       }
       return 'Error';
     },

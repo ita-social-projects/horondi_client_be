@@ -33,7 +33,7 @@ const sideEnum = `
     }
 `;
 
-const pocketInput = `
+const pocketInputs = `
   input PocketInput {
     name: [LanguageInput]
     optionType: String
@@ -44,11 +44,18 @@ const pocketInput = `
     available: Boolean
     customizable: Boolean
   }
+
+  input PocketFilterInput{
+    name:String
+    model:[String]
+    available:String
+    side:[String]
+  }
 `;
 
 module.exports = {
   pocketType,
-  pocketInput,
+  pocketInputs,
   pocketSide,
   pocketSideInput,
   sideEnum,

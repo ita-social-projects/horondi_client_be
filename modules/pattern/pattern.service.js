@@ -1,7 +1,8 @@
+const _ = require('lodash');
+
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
-const FilterHelper = require('../../helpers/filter-helper');
 const { calculatePrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
@@ -35,38 +36,34 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class PatternsService extends FilterHelper {
-  async getAllPatterns({ filter, pagination, sort }) {
-    try {
-      let filters = this.filterItems(filter);
-      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+class PatternsService {
+  async getAllPatterns(limit, skip, filter) {
+    let filters = this.filterItems(filter);
+    let aggregatedItems = this.aggregateItems(filters, pagination, sort);
 
-      const [patterns] = await Pattern.aggregate()
-        .collation({ locale: 'uk' })
-        .facet({
-          items: aggregatedItems,
-          calculations: [{ $match: filters }, { $count: 'count' }],
-        })
-        .exec();
+    const [patterns] = await Pattern.aggregate()
+      .collation({ locale: 'uk' })
+      .facet({
+        items: aggregatedItems,
+        calculations: [{ $match: filters }, { $count: 'count' }],
+      })
+      .exec();
 
-      let patternCount;
+    let patternCount;
 
-      const {
-        items,
-        calculations: [calculations],
-      } = patterns;
+    const {
+      items,
+      calculations: [calculations],
+    } = patterns;
 
-      if (calculations) {
-        patternCount = calculations.count;
-      }
-
-      return {
-        items,
-        count: patternCount || 0,
-      };
-    } catch (e) {
-      throw new RuleError(e.message, e.statusCode);
+    if (calculations) {
+      patternCount = calculations.count;
     }
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getPatternById(id) {

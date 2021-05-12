@@ -39,6 +39,15 @@ const patternInputs = `
       material: ID
       handmade: Boolean
     }
+
+    input PatternFilterInput{
+      name:String
+      description:String
+      model:[String]
+      available:String
+      material:[String]
+      handmade:String
+    }
 `;
 
 module.exports = {

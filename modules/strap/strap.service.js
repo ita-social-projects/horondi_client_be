@@ -1,6 +1,7 @@
+const _ = require('lodash');
+
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
-const FilterHelper = require('../../helpers/filter-helper');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
 const { STRAP_NOT_FOUND } = require('../../error-messages/strap.messages');
@@ -30,38 +31,47 @@ const {
   },
 } = require('../../consts/history-obj-keys');
 
-class StrapService extends FilterHelper {
-  async getAllStraps({ filter, pagination, sort }) {
-    try {
-      let filters = this.filterItems(filter);
-      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+class StrapService {
+  async getAllStraps(limit, skip, filter) {
+    const filterOptions = {};
 
-      const [straps] = await Strap.aggregate()
-        .collation({ locale: 'uk' })
-        .facet({
-          items: aggregatedItems,
-          calculations: [{ $match: filters }, { $count: 'count' }],
-        })
-        .exec();
+    if (filter.name) {
+      const name = filter.name.trim();
 
-      let strapCount;
-
-      const {
-        items,
-        calculations: [calculations],
-      } = straps;
-
-      if (calculations) {
-        strapCount = calculations.count;
-      }
-
-      return {
-        items,
-        count: strapCount || 0,
-      };
-    } catch (e) {
-      throw new RuleError(e.message, e.statusCode);
+      filterOptions.$or = [
+        { 'name.value': { $regex: `${name}`, $options: 'i' } },
+        { text: { $regex: `${name}`, $options: 'i' } },
+      ];
     }
+
+    if (filter.model.length) {
+      filterOptions.model = { $in: filter.model };
+    }
+
+    if (filter.available) {
+      filterOptions.available = { $in: filter.available };
+    }
+
+    if (filter.color.length) {
+      filterOptions['features.color'] = { $in: filter.color };
+    }
+
+    const straps = await Strap.find(filterOptions).exec();
+
+    const items = _.take(
+      _.drop(
+        _.filter(straps, item => item.name),
+        skip
+      ),
+      limit
+    );
+
+    const count = _.filter(straps, strap => strap.name).length;
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getStrapById(id) {

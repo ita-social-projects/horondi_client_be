@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
@@ -37,7 +35,7 @@ const {
 class BackService {
   async getAllBacks(limit, skip, filter) {
     const filterOptions = {};
-    console.log(filter);
+
     if (filter.name) {
       const name = filter.name.trim();
 
@@ -63,25 +61,15 @@ class BackService {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
-    console.log(filterOptions);
     const backs = await Back.find(filterOptions)
-      .populate()
+      .skip(skip)
+      .limit(limit)
       .exec();
-    console.log(backs);
-    const items = _.take(
-      _.drop(
-        _.filter(backs, item => item.name),
-        skip
-      ),
-      limit
-    );
 
-    const count = _.filter(backs, back => back.name).length;
-    console.log(items);
-    console.log(count);
+    const count = Back.countDocuments().exec();
 
     return {
-      items,
+      backs,
       count,
     };
   }
