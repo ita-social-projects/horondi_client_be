@@ -12,10 +12,8 @@ const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
-const {
-  userDateFormat,
-  roles: { USER },
-} = require('../../consts');
+const { userDateFormat } = require('../../consts');
+let { minDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
@@ -42,6 +40,7 @@ class OrdersService {
   }
 
   async getAllOrders({ skip, limit, filter = {}, sort }) {
+    let maxDate = Date.now();
     const { status, paymentStatus, date, search } = filter;
     const filterObject = {};
 
@@ -54,16 +53,17 @@ class OrdersService {
     }
 
     if (date?.dateFrom) {
-      filterObject.dateOfCreation = {
-        $gte: date.dateFrom.toString(),
-      };
+      minDate = new Date(date.dateFrom);
     }
 
     if (date?.dateTo) {
-      filterObject.dateOfCreation = {
-        $lte: date.dateTo.toString(),
-      };
+      maxDate = new Date(date.dateTo);
     }
+
+    filterObject.dateOfCreation = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
 
     if (search) {
       const [firstParam, secondParam] = search.trim().split(' ');

@@ -11,25 +11,29 @@ const {
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
+let { minDate } = require('../../consts/date-range');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
     const filterOptions = {};
+    let maxDate = Date.now();
 
     if (filter?.show?.length) {
       filterOptions.show = { $in: filter.show };
     }
 
     if (filter?.date?.dateFrom) {
-      filterOptions.date = {
-        $gte: filter.date.dateFrom.toString(),
-      };
+      minDate = new Date(filter.date.dateFrom);
     }
+
     if (filter?.date?.dateTo) {
-      filterOptions.date = {
-        $lte: filter.date.dateTo.toString(),
-      };
+      maxDate = new Date(filter.date.dateTo);
     }
+
+    filterOptions.date = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
 
     if (filter?.search) {
       const search = filter.search.trim();
@@ -37,6 +41,7 @@ class CommentsService {
     }
 
     const items = await Comment.find(filterOptions)
+      .sort({ date: -1 })
       .limit(limit)
       .skip(skip)
       .exec();
