@@ -16,10 +16,12 @@ class FilterHelper {
 
     if (banned?.length) {
       const [isBanned, all] = banned;
+
       if (!all) {
-        filter['banned.blockPeriod'] = !isBanned
-          ? { $in: [UNLOCKED] }
-          : { $in: [INFINITE, TWO_MONTH, ONE_MONTH] };
+        filter['banned.blockPeriod'] =
+          isBanned === 'false'
+            ? { $in: [UNLOCKED] }
+            : { $in: [INFINITE, TWO_MONTH, ONE_MONTH] };
       }
     }
 
@@ -37,7 +39,6 @@ class FilterHelper {
     if (search && search.trim()) {
       filter.$or = this.searchItems(search.trim());
     }
-
     return filter;
   }
 
