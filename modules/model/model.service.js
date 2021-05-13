@@ -38,8 +38,32 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class ModelsService {
-  async getAllModels({ skip, limit }) {
-    const items = await Model.find()
+  async getAllModels(limit, skip, filter = {}, sort = {}) {
+    const filterOptions = {};
+
+    if (filter.name) {
+      const name = filter.name.trim();
+
+      filterOptions.$or = [
+        { 'name.value': { $regex: `${name}`, $options: 'i' } },
+        { 'description.value': { $regex: `${name}`, $options: 'i' } },
+      ];
+    }
+
+    if (filter.available) {
+      filterOptions.available = filter.available;
+    }
+
+    if (filter.availableForConstructor) {
+      filterOptions.availableForConstructor = filter.availableForConstructor;
+    }
+
+    if (filter.category.length) {
+      filterOptions.category = { $in: filter.category };
+    }
+
+    const items = await Model.find(filterOptions)
+      .sort(sort)
       .skip(skip)
       .limit(limit)
       .exec();
@@ -47,6 +71,7 @@ class ModelsService {
     const count = await Model.find()
       .countDocuments()
       .exec();
+
     return {
       items,
       count,

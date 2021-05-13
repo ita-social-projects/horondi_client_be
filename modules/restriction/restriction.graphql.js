@@ -30,6 +30,10 @@ const restrictionInputs = `
     feature: String
   }
 
+  input RestrictionFilterInput{
+    compareByExpression: String
+  }
+
 `;
 
 module.exports = {

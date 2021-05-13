@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
@@ -49,24 +47,19 @@ class PocketService {
     }
 
     if (filter.available) {
-      filterOptions.available = { $in: filter.available };
+      filterOptions.available = filter.available;
     }
 
     if (filter.side.length) {
       filterOptions['features.side'] = { $in: filter.side };
     }
 
-    const pockets = await Pocket.find(filterOptions).exec();
+    const items = await Pocket.find(filterOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
 
-    const items = _.take(
-      _.drop(
-        _.filter(pockets, item => item.name),
-        skip
-      ),
-      limit
-    );
-
-    const count = _.filter(pockets, pocket => pocket.name).length;
+    const count = Pocket.countDocuments().exec();
 
     return {
       items,

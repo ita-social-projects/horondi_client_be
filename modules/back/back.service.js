@@ -50,7 +50,7 @@ class BackService {
     }
 
     if (filter.available) {
-      filterOptions.available = { $in: filter.available };
+      filterOptions.available = filter.available;
     }
 
     if (filter.material.length) {
@@ -61,7 +61,7 @@ class BackService {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
-    const backs = await Back.find(filterOptions)
+    const items = await Back.find(filterOptions)
       .skip(skip)
       .limit(limit)
       .exec();
@@ -69,7 +69,7 @@ class BackService {
     const count = Back.countDocuments().exec();
 
     return {
-      backs,
+      items,
       count,
     };
   }

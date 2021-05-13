@@ -6,8 +6,13 @@ const {
 } = require('../../consts/status-codes');
 
 const modelsQuery = {
-  getAllModels: async (_, args) => await modelsService.getAllModels(args),
-
+  getAllModels: async (_, { limit, skip, filter, sort }) => {
+    try {
+      return await modelsService.getAllModels(limit, skip, filter, sort);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getModelsByCategory: async (_, { id }) =>
     await modelsService.getModelsByCategory(id),
 

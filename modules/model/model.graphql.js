@@ -63,6 +63,14 @@ input OptionInput {
   constructorClosure: [ID]
   constructorStrap: [ID]
 }
+
+input ModelFilterInput{
+  name:String
+  description:String
+  category:[String]
+  available:String
+  availableForConstructor:String
+}
   
 `;
 

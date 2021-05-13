@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
@@ -38,27 +36,39 @@ const {
 
 class PatternsService {
   async getAllPatterns(limit, skip, filter) {
-    let filters = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+    const filterOptions = {};
 
-    const [patterns] = await Pattern.aggregate()
-      .collation({ locale: 'uk' })
-      .facet({
-        items: aggregatedItems,
-        calculations: [{ $match: filters }, { $count: 'count' }],
-      })
+    if (filter.name) {
+      const name = filter.name.trim();
+
+      filterOptions.$or = [
+        { 'name.value': { $regex: `${name}`, $options: 'i' } },
+        { 'description.value': { $regex: `${name}`, $options: 'i' } },
+      ];
+    }
+
+    if (filter.model.length) {
+      filterOptions.model = { $in: filter.model };
+    }
+
+    if (filter.available) {
+      filterOptions.available = filter.available;
+    }
+
+    if (filter.handmade) {
+      filterOptions['features.handmade'] = filter.handmade;
+    }
+
+    if (filter.material.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
+
+    const items = await Pattern.find(filterOptions)
+      .skip(skip)
+      .limit(limit)
       .exec();
 
-    let patternCount;
-
-    const {
-      items,
-      calculations: [calculations],
-    } = patterns;
-
-    if (calculations) {
-      patternCount = calculations.count;
-    }
+    const count = Pattern.countDocuments().exec();
 
     return {
       items,

@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
 const uploadService = require('../upload/upload.service');
@@ -49,24 +47,19 @@ class StrapService {
     }
 
     if (filter.available) {
-      filterOptions.available = { $in: filter.available };
+      filterOptions.available = filter.available;
     }
 
     if (filter.color.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
-    const straps = await Strap.find(filterOptions).exec();
+    const items = await Strap.find(filterOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
 
-    const items = _.take(
-      _.drop(
-        _.filter(straps, item => item.name),
-        skip
-      ),
-      limit
-    );
-
-    const count = _.filter(straps, strap => strap.name).length;
+    const count = Strap.countDocuments().exec();
 
     return {
       items,

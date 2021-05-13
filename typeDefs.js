@@ -501,7 +501,7 @@ const typeDefs = gql`
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
-    getAllModels(limit: Int, skip: Int): PaginatedModels
+    getAllModels(limit: Int, skip: Int, filter: ModelFilterInput, sort:JSONObject): PaginatedModels
     getModelsByCategory(id: ID!): [Model]
     getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
@@ -551,11 +551,7 @@ const typeDefs = gql`
     getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [Strap]
-    getAllRestrictions(
-      filter: FilterInputComponent,
-      pagination: Pagination,
-			sort: SortInputComponent
-    ): PaginatedRestrictions!
+    getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
 
   }

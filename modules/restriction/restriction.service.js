@@ -1,6 +1,5 @@
 const Restriction = require('./restriction.model');
 const RuleError = require('../../errors/rule.error');
-const FilterHelper = require('../../helpers/filter-helper');
 const {
   restrictionMessages: { RESTRICTION_NOT_FOUND },
 } = require('../../consts/restriction.messages');
@@ -20,38 +19,25 @@ const {
   HISTORY_OBJ_KEYS: { COMPARE_BY_EXPRESSION, OPTIONS },
 } = require('../../consts/history-obj-keys');
 
-class RestrictionService extends FilterHelper {
-  async getAllRestrictions({ filter, pagination, sort }) {
-    try {
-      let filters = this.filterItems(filter);
-      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
+class RestrictionService {
+  async getAllRestrictions(limit, skip, filter) {
+    const filterOptions = {};
 
-      const [restrictions] = await Restriction.aggregate()
-        .collation({ locale: 'uk' })
-        .facet({
-          items: aggregatedItems,
-          calculations: [{ $match: filters }, { $count: 'count' }],
-        })
-        .exec();
-
-      let restrictionCount;
-
-      const {
-        items,
-        calculations: [calculations],
-      } = restrictions;
-
-      if (calculations) {
-        restrictionCount = calculations.count;
-      }
-
-      return {
-        items,
-        count: restrictionCount || 0,
-      };
-    } catch (e) {
-      throw new RuleError(e.message, e.statusCode);
+    if (filter.compareByExpression) {
+      filterOptions.compareByExpression = filter.compareByExpression;
     }
+
+    const items = await Restriction.find(filterOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = Restriction.countDocuments().exec();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getRestrictionById(id) {
