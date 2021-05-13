@@ -12,6 +12,10 @@ const sizeType = `
     available: Boolean!
     additionalPrice: [CurrencySet]!
   }
+  type SizeItems {
+    items:[Size]
+    count:Int
+   }
 `;
 
 const sizeInput = `
@@ -26,6 +30,11 @@ const sizeInput = `
     weightInKg: Float!
     available: Boolean!
     additionalPrice: Int!
+  }
+  input SizeFilterInput{
+    available:[String]
+    searchBySimpleName:String
+    name:[String]
   }
 `;
 

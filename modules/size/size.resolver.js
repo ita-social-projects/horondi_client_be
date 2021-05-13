@@ -2,9 +2,16 @@ const sizeService = require('./size.service');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const sizeQuery = {
-  getAllSizes: () => sizeService.getAllSizes(),
+  getAllSizes: async (_, { limit, skip, filter }) => {
+    try {
+      return await sizeService.getAllSizes(limit, skip, filter);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 
   getSizeById: async (parent, { id }) => {
     try {

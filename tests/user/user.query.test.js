@@ -127,8 +127,7 @@ describe('queries', () => {
   test('should throw Error User with provided _id not found', async done => {
     const res = await getUserById(wrongId, operations);
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('USER_NOT_FOUND');
+    expect(res.data.getUserById.message).toBe('USER_NOT_FOUND');
     done();
   });
 

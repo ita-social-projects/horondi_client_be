@@ -189,11 +189,13 @@ class ProductsService {
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
-          name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
+          name: {
+            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
+          },
         },
         {
           description: {
-            $elemMatch: { value: { $regex: new RegExp(search, 'i') } },
+            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
           },
         },
       ];

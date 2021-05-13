@@ -8,9 +8,11 @@ const {
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
+let { minDate } = require('../../consts/date-range');
 
 class HistoryService {
   async getAllHistoryRecords(limit, skip, filter) {
+    let maxDate = Date.now();
     const filterOptions = {};
     const filterUserOptions = {};
 
@@ -21,7 +23,7 @@ class HistoryService {
       filterUserOptions.role = { $in: filter.role };
     }
     if (filter.fullName) {
-      const [name, surname] = filter.fullName.split(' ');
+      const [name, surname] = filter.fullName.trim().split(' ');
 
       filterUserOptions.$or = [
         { firstName: { $regex: `${name || surname}`, $options: 'i' } },
@@ -29,21 +31,22 @@ class HistoryService {
       ];
     }
     if (filter.date.dateFrom) {
-      filterOptions.createdAt = {
-        $gte: filter.date.dateFrom.toString(),
-      };
+      minDate = new Date(filter.date.dateFrom);
     }
     if (filter.date.dateTo) {
-      filterOptions.createdAt = {
-        $lte: filter.date.dateTo.toString(),
-      };
+      maxDate = new Date(filter.date.dateTo);
     }
+    filterOptions.createdAt = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
 
     const historyRecords = await HistoryModel.find(filterOptions)
       .populate({
         path: 'userId',
         match: filterUserOptions,
       })
+      .sort({ createdAt: -1 })
       .exec();
 
     const items = _.take(

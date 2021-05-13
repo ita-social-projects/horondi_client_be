@@ -21,7 +21,13 @@ input CommentInput {
 }
 input CommentUpdateInput {
   ${sharedInputFields}
-}`;
+}
+input CommentFilterInput{
+    date:DateRangeInput
+    show:[String]
+    search:String
+  }
+`;
 
 module.exports = {
   commentType,

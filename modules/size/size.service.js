@@ -31,8 +31,36 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class SizeService {
-  async getAllSizes() {
-    return await Size.find().exec();
+  async getAllSizes(limit, skip, filter) {
+    const filterOptions = {};
+
+    if (filter?.name?.length) {
+      filterOptions.name = { $in: filter.name };
+    }
+    if (filter?.available?.length) {
+      filterOptions.available = { $in: filter.available };
+    }
+    if (filter?.searchBySimpleName) {
+      const search = filter.searchBySimpleName.trim();
+
+      filterOptions['simpleName.value'] = {
+        $regex: `${search}`,
+        $options: 'i',
+      };
+    }
+    const items = await Size.find(filterOptions)
+      .limit(limit)
+      .skip(skip)
+      .exec();
+
+    const count = await Size.find(filterOptions)
+      .countDocuments()
+      .exec();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getSizeById(id) {
