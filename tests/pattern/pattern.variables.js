@@ -4,8 +4,11 @@ const wrongLimit = -5;
 const testValue = 'test value';
 const updateValue = 'update value';
 const filter = {
-  _id: [],
-  search: '',
+  name: '',
+  model: [],
+  available: '',
+  material: [],
+  handmade: '',
 };
 const sort = {
   name: 1,

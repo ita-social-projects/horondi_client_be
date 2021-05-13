@@ -8,6 +8,10 @@ const {
   finalPrice,
 } = require('./pattern.variables');
 const {
+  ITEM_ALREADY_EXISTS,
+  ITEM_NOT_FOUND,
+} = require('../../error-messages/common.messages');
+const {
   PATTERN_ALREADY_EXIST,
   PATTERN_NOT_FOUND,
 } = require('../../error-messages/pattern.messages');
@@ -91,7 +95,7 @@ describe('Pattern Mutation Tests', () => {
       operations
     );
 
-    expect(res).toHaveProperty('message', PATTERN_ALREADY_EXIST);
+    expect(res).toHaveProperty('message', ITEM_ALREADY_EXISTS);
     expect(res).toHaveProperty('statusCode', BAD_REQUEST);
   });
 
@@ -118,21 +122,21 @@ describe('Pattern Mutation Tests', () => {
       operations
     );
 
-    expect(res).toHaveProperty('statusCode', NOT_FOUND);
-    expect(res).toHaveProperty('message', PATTERN_NOT_FOUND);
+    expect(res.statusCode).toBe(NOT_FOUND);
+    expect(res.message).toBe(PATTERN_NOT_FOUND);
   });
 
   test('#5 Should Delete Pattern From Database', async () => {
     const deletedData = await deletePattern(patternId, operations);
 
-    expect(deletedData.data.deletePattern._id).toEqual(patternId);
+    expect(deletedData._id).toEqual(patternId);
   });
 
   test('#6 Should Return Error If We Try To Delete Not Existing Pattern', async () => {
     const res = await deletePattern(wrongId, operations);
 
-    expect(res.data.deletePattern).toHaveProperty('statusCode', NOT_FOUND);
-    expect(res.data.deletePattern).toHaveProperty('message', PATTERN_NOT_FOUND);
+    expect(res).toHaveProperty('statusCode', NOT_FOUND);
+    expect(res).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
 
   afterAll(async done => {

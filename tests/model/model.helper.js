@@ -1,7 +1,7 @@
 const { gql } = require('@apollo/client');
 
 const createModel = async (model, operations) => {
-  const createModel = await operations.mutate({
+  const createdModel = await operations.mutate({
     mutation: gql`
       mutation($model: ModelInput!) {
         addModel(model: $model) {
@@ -38,7 +38,7 @@ const createModel = async (model, operations) => {
     variables: { model },
   });
 
-  return createModel.data.addModel;
+  return createdModel.data.addModel;
 };
 const updateModel = async (id, model, operations) => {
   const updatedModel = await operations.mutate({
@@ -67,11 +67,11 @@ const updateModel = async (id, model, operations) => {
       id,
     },
   });
-
+  console.log(updatedModel);
   return updatedModel.data.updateModel;
 };
 const deleteModel = async (id, operations) => {
-  const deleteModel = await operations.mutate({
+  const deletedModel = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteModel(id: $id) {
@@ -96,10 +96,10 @@ const deleteModel = async (id, operations) => {
     variables: { id },
   });
 
-  return deleteModel.data.deleteModel;
+  return deletedModel.data.deleteModel;
 };
 const getModelsByCategory = async (category, operations) => {
-  return await operations.query({
+  const result = await operations.query({
     query: gql`
       query($category: ID!) {
         getModelsByCategory(id: $category) {
@@ -127,9 +127,11 @@ const getModelsByCategory = async (category, operations) => {
       category,
     },
   });
+
+  return result.data.getModelsByCategory;
 };
 const getModelById = async (id, operations) => {
-  return await operations.query({
+  const result = await operations.query({
     query: gql`
       query($id: ID!) {
         getModelById(id: $id) {
@@ -163,6 +165,8 @@ const getModelById = async (id, operations) => {
       id,
     },
   });
+
+  return result.data.getModelById;
 };
 
 module.exports = {

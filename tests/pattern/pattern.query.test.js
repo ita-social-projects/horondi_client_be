@@ -76,7 +76,12 @@ describe('Pattern queries', () => {
   });
 
   test('Should receive all patterns', async () => {
-    const allPatterns = await getAllPatterns(operations);
+    const allPatterns = await getAllPatterns(
+      pagination.limit,
+      pagination.skip,
+      filter,
+      operations
+    );
     expect(allPatterns.items).toEqual([
       {
         ...res,
@@ -100,9 +105,9 @@ describe('Pattern queries', () => {
   });
   test('pattern pagination test', async () => {
     const paginatedPatterns = await getAllPatternsPaginated(
+      pagination.limit,
+      pagination.skip,
       filter,
-      pagination,
-      sort,
       operations
     );
 
@@ -111,14 +116,14 @@ describe('Pattern queries', () => {
   });
   test('Expect negative values', async () => {
     const paginatedPatterns = await getAllPatternsPaginated(
+      pagination.limit,
+      wrongPagination.skip,
       filter,
-      wrongPagination,
-      sort,
       operations
     );
 
     expect(paginatedPatterns.message).toEqual(
-      'Argument to $skip cannot be negative'
+      'Skip value must be non-negative, but received: -1'
     );
   });
 

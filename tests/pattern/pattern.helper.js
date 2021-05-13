@@ -44,7 +44,7 @@ const createPattern = async (pattern, operations) => {
   return res.data.addPattern;
 };
 const deletePattern = async (id, operations) => {
-  return await operations.mutate({
+  const deletedPattern = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deletePattern(id: $id) {
@@ -65,12 +65,14 @@ const deletePattern = async (id, operations) => {
       id,
     },
   });
+
+  return deletedPattern.data.deletePattern;
 };
-const getAllPatterns = async operations => {
+const getAllPatterns = async (limit, skip, filter, operations) => {
   const res = await operations.query({
     query: gql`
-      query {
-        getAllPatterns {
+      query($limit: Int!, $skip: Int!, $filter: PatternFilterInput!) {
+        getAllPatterns(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
             name {
@@ -101,6 +103,7 @@ const getAllPatterns = async operations => {
         }
       }
     `,
+    variables: { limit, skip, filter },
   });
   return res.data.getAllPatterns;
 };
@@ -147,20 +150,11 @@ const getPatternById = async (id, operations) => {
   });
   return res.data.getPatternById;
 };
-const getAllPatternsPaginated = async (
-  filter,
-  pagination,
-  sort,
-  operations
-) => {
+const getAllPatternsPaginated = async (limit, skip, filter, operations) => {
   const res = await operations.query({
     query: gql`
-      query(
-        $filter: FilterInputComponent
-        $pagination: Pagination
-        $sort: SortInputComponent
-      ) {
-        getAllPatterns(filter: $filter, pagination: $pagination, sort: $sort) {
+      query($limit: Int!, $skip: Int!, $filter: PatternFilterInput!) {
+        getAllPatterns(limit: $limit, skip: $skip, filter: $filter) {
           items {
             name {
               lang
@@ -191,7 +185,7 @@ const getAllPatternsPaginated = async (
         }
       }
     `,
-    variables: { filter, pagination, sort },
+    variables: { limit, skip, filter },
   });
 
   return res.data.getAllPatterns;
