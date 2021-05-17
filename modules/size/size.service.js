@@ -4,7 +4,6 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const { calculatePrice } = require('../currency/currency.utils');
-const { calculatePrice } = require('../currency/currency.utils');
 const {
   SIZES_NOT_FOUND,
   SIZE_NOT_FOUND,
