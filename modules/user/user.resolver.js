@@ -49,7 +49,7 @@ const userMutation = {
     userService.googleUser(args.idToken, args.staySignedIn),
   loginUser: async (_, { loginInput }) => {
     try {
-      return userService.loginUser(loginInput);
+      return await userService.loginUser(loginInput);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
