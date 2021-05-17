@@ -457,7 +457,7 @@ class UserService extends FilterHelper {
     );
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
