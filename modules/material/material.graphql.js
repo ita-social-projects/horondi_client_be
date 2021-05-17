@@ -38,7 +38,10 @@ const materialInput = `
 
 const materialFilterInput = `
   input MaterialFilterInput {
-    colors: [String!]
+    colors: [String]
+    available:[String]
+    purpose:[String]
+    name:String
   }
 `;
 

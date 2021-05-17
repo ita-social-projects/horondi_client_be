@@ -25,10 +25,21 @@ const {
 const {
   HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
 } = require('../../consts/history-obj-keys');
+const { objectType } = require('../../consts');
 
 class NewsService {
-  async getAllNews({ skip, limit }) {
-    const items = await News.find()
+  async getAllNews({ skip, limit, filter: { search } }) {
+    const filterOptions = {};
+
+    if (search) {
+      const searchString = search.trim();
+
+      filterOptions.$or = [
+        { 'author.name.value': { $regex: `${searchString}`, $options: 'i' } },
+        { 'title.value': { $regex: `${searchString}`, $options: 'i' } },
+      ];
+    }
+    const items = await News.find(filterOptions)
       .skip(skip)
       .limit(limit)
       .exec();
@@ -58,12 +69,12 @@ class NewsService {
     }
 
     if (upload.length) {
-      if (upload[0]) {
-        await uploadService.deleteFile(news.author.image);
+      if (upload[0] && typeof upload[0] === objectType) {
+        await uploadService.deleteFile(foundNews.author.image);
         news.author.image = await uploadLargeImage(upload[0]);
       }
-      if (upload[1]) {
-        await uploadService.deleteFile(news.image);
+      if (upload[1] && typeof upload[1] === objectType) {
+        await uploadService.deleteFile(foundNews.image);
         news.image = await uploadLargeImage(upload[1]);
       }
     }

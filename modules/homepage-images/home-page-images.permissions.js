@@ -8,7 +8,7 @@ const homePageImagesPermissionsQuery = {
   getHomePageLooksImages: allow,
 };
 const homePageImagesPermissionsMutations = {
-  updateHomePageLooksImage: hasRoles(ADMIN, SUPERADMIN),
+  updateHomePageLooksImage: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = {

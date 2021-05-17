@@ -20,6 +20,7 @@ type User{
     comments: [ID]
     banned: UserBlockPeriod
     confirmed: Boolean
+    isSuccess: Boolean
 }
 
 type UserBlockPeriod {
@@ -180,7 +181,7 @@ input UserForStatisticsInput {
 const userFilterInput = `
 input UserFilterInput {
     roles: [String!]
-    banned: [Boolean!]
+    banned: [String]
     search: String
 }
 `;

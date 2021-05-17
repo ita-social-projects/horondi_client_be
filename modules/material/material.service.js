@@ -7,7 +7,6 @@ const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
-const Currency = require('../currency/currency.model');
 const { calculatePrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
@@ -43,21 +42,29 @@ class MaterialsService {
     };
   }
 
-  filterItems(filterInput) {
-    const filter = {};
-    const { colors } = filterInput;
+  async getAllMaterials({
+    filter: { purpose, colors, available, name },
+    skip,
+    limit,
+  }) {
+    const filtersObj = {};
 
-    if (colors && colors.length) {
-      filter.colors = { $in: colors };
+    if (purpose?.length) {
+      filtersObj.purpose = { $in: purpose };
+    }
+    if (colors?.length) {
+      filtersObj.colors = { $in: colors };
+    }
+    if (available?.length) {
+      filtersObj.available = { $in: available };
+    }
+    if (name) {
+      const search = name.trim();
+
+      filtersObj['name.value'] = { $regex: `${search}`, $options: 'i' };
     }
 
-    return filter;
-  }
-
-  async getAllMaterials({ filter, skip, limit }) {
-    const filters = this.filterItems(filter);
-
-    const items = await Material.find(filters)
+    const items = await Material.find(filtersObj)
       .skip(skip)
       .limit(limit)
       .exec();
@@ -84,11 +91,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    const foundMaterial = await Material.findById(id).exec();
-    if (foundMaterial) {
-      return foundMaterial;
-    }
-    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    return Material.findById(id);
   }
 
   async updateMaterial(id, material, { _id: adminId }) {
@@ -96,11 +99,11 @@ class MaterialsService {
 
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
-      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+      throw new Error(MATERIAL_NOT_FOUND);
     }
 
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
-      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
+      throw new Error(MATERIAL_ALREADY_EXIST);
     }
     const updatedMaterial = await Material.findByIdAndUpdate(
       id,
@@ -132,7 +135,7 @@ class MaterialsService {
 
   async addMaterial({ material }, { _id: adminId }) {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
-      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
+      throw new Error(MATERIAL_ALREADY_EXIST);
     }
     material.additionalPrice = calculatePrice(material.additionalPrice);
 
@@ -185,7 +188,7 @@ class MaterialsService {
 
       return foundMaterial;
     }
-    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    throw new Error(MATERIAL_NOT_FOUND);
   }
 
   async checkMaterialExistOrDuplicated(data, id) {

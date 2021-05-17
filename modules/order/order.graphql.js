@@ -147,6 +147,13 @@ input ItemOptionsInput{
   size: ID!
   sidePocket: Boolean
 }
+input OrderFilterInput{
+    date:DateRangeInput
+    status:[String]
+    search:String
+    paymentStatus:[String]
+  }
+
 `;
 
 module.exports = {

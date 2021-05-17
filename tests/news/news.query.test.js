@@ -22,7 +22,7 @@ describe('News queries tests', () => {
   });
 
   test('#1 Should Receive All News', async () => {
-    const allNews = await getAllNews(skip, limit, operations);
+    const allNews = await getAllNews(skip, limit, { search: '' }, operations);
 
     expect(allNews).toBeDefined();
     expect(allNews.items[0].title).toBeInstanceOf(Array);

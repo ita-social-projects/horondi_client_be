@@ -3,6 +3,7 @@ const RuleError = require('../../errors/rule.error');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const sizeQuery = {
   getAllSizes: async () => {

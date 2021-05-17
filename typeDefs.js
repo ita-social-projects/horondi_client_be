@@ -378,21 +378,21 @@ const typeDefs = gql`
     getCategoryById(id: ID): CategoryResult
     getCategoriesForBurgerMenu: [BurgerMenu]
     getAllMaterials(
-      filter: MaterialFilterInput,
       limit: Int, 
       skip: Int
+      filter: MaterialFilterInput,
     ): PaginatedMaterials!
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit: Int, skip: Int): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
-    getAllOrders(limit: Int, skip: Int, filter: FilterInput): PaginatedOrders!
+    getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
-    getAllNews(limit: Int, skip: Int): PaginatedNews!
+    getAllNews(limit: Int, skip: Int, filter:NewsFilterInput): PaginatedNews!
     getNewsById(id: ID): NewsResult
     getAllUsers(
       filter: UserFilterInput
@@ -415,7 +415,7 @@ const typeDefs = gql`
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
     getAllComments(
-      filter: FilterInputComponent
+      filter: CommentFilterInput
       pagination: Pagination
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
@@ -456,7 +456,7 @@ const typeDefs = gql`
     getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes: [Size]  
+    getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size
     getAllClosure(limit: Int, skip: Int): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!
@@ -674,9 +674,9 @@ const typeDefs = gql`
       items:[ CartFromLSInput!],
       id: ID!
       ): UserResult
-    registerAdmin(user: AdminRegisterInput!): UserResult
-    resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): UserResult
-    confirmSuperadminCreation(user: confirmSuperadminCreationInput!): UserResult
+    registerAdmin(user: AdminRegisterInput!): LogicalResult!
+    resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): LogicalResult!
+    confirmSuperadminCreation(user: confirmSuperadminCreationInput!): LogicalResult!
     loginUser(loginInput: LoginInput!): User
     loginAdmin(loginInput: LoginInput!): User
     deleteUser(id: ID!): UserResult

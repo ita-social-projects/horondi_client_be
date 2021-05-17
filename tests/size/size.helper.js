@@ -78,26 +78,28 @@ const getAllSizes = async operations => {
     query: gql`
       query {
         getAllSizes {
-          name
-          simpleName {
-            lang
-            value
-          }
-          heightInCm
-          widthInCm
-          depthInCm
-          volumeInLiters
-          weightInKg
-          available
-          additionalPrice {
-            currency
-            value
+          items {
+            name
+            simpleName {
+              lang
+              value
+            }
+            heightInCm
+            widthInCm
+            depthInCm
+            volumeInLiters
+            weightInKg
+            available
+            additionalPrice {
+              currency
+              value
+            }
           }
         }
       }
     `,
   });
-  return result.data.getAllSizes;
+  return result.data.getAllSizes?.items;
 };
 const getSizeById = async (id, operations) => {
   const result = await operations.query({

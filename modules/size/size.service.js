@@ -4,6 +4,7 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const { calculatePrice } = require('../currency/currency.utils');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
   SIZES_NOT_FOUND,
   SIZE_NOT_FOUND,
@@ -33,19 +34,45 @@ const {
     VOLUME_IN_LITERS,
   },
 } = require('../../consts/history-obj-keys');
-
 class SizeService {
-  async getAllSizes() {
-    return await Size.find().exec();
+  async getAllSizes(limit, skip, filter) {
+    const filterOptions = {};
+
+    if (filter?.name?.length) {
+      filterOptions.name = { $in: filter.name };
+    }
+    if (filter?.available?.length) {
+      filterOptions.available = { $in: filter.available };
+    }
+    if (filter?.searchBySimpleName) {
+      const search = filter.searchBySimpleName.trim();
+
+      filterOptions['simpleName.value'] = {
+        $regex: `${search}`,
+        $options: 'i',
+      };
+    }
+    const items = await Size.find(filterOptions)
+      .limit(limit)
+      .skip(skip)
+      .exec();
+
+    const count = await Size.find(filterOptions)
+      .countDocuments()
+      .exec();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getSizeById(id) {
     const size = await Size.findById(id).exec();
-
     if (size) {
       return size;
     }
-    throw new RuleError(SIZES_NOT_FOUND, NOT_FOUND);
+    throw new Error(SIZES_NOT_FOUND);
   }
 
   async addSize(sizeData, { _id: adminId }) {
@@ -82,7 +109,7 @@ class SizeService {
       .lean()
       .exec();
     if (!foundSize) {
-      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+      throw new Error(SIZE_NOT_FOUND);
     }
     const historyRecord = generateHistoryObject(
       DELETE_SIZE,
@@ -114,7 +141,7 @@ class SizeService {
       .exec();
 
     if (!sizeToUpdate) {
-      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+      throw new Error(SIZE_NOT_FOUND);
     }
     input.additionalPrice = await calculatePrice(input.additionalPrice);
 
