@@ -74,7 +74,13 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
+  confirmUserEmail: async (_, { token }) => {
+    try {
+      return await userService.confirmUser(token);
+    } catch (err) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
   recoverUser: (parent, args) =>
     userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {

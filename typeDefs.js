@@ -1,113 +1,113 @@
-const {gql} = require('apollo-server-express');
+const { gql } = require('apollo-server-express');
 
 const {
-    historyType,
-    historyFilterInput,
+  historyType,
+  historyFilterInput,
 } = require('./modules/history/history.graphql');
-const {newsType, newsInput} = require('./modules/news/news.graphql');
+const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
-    userType,
-    userInput,
-    userUpdateInput,
-    userRegisterInput,
-    userFilterInput,
-    userSortInput,
-    LoginInput,
-    adminConfirmInput,
-    adminRegisterInput,
-    resendEmailToConfirmAdminInput,
-    confirmSuperadminCreationInput,
-    UserForStatisticsInput,
-    paginatedUsersType,
-    tokenType,
-    purchasedProductsType,
-    cartType,
-    cartInput,
+  userType,
+  userInput,
+  userUpdateInput,
+  userRegisterInput,
+  userFilterInput,
+  userSortInput,
+  LoginInput,
+  adminConfirmInput,
+  adminRegisterInput,
+  resendEmailToConfirmAdminInput,
+  confirmSuperadminCreationInput,
+  UserForStatisticsInput,
+  paginatedUsersType,
+  tokenType,
+  purchasedProductsType,
+  cartType,
+  cartInput,
 } = require('./modules/user/user.graphql');
 const {
-    productType,
-    productInput,
+  productType,
+  productInput,
 } = require('./modules/product/product.graphql');
-const {orderTypes, orderInputs} = require('./modules/order/order.graphql');
-const {modelType, modelInput} = require('./modules/model/model.graphql');
+const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
+const { modelType, modelInput } = require('./modules/model/model.graphql');
 const {
-    categoryType,
-    categoryInput,
-    FilterInputComponent,
-    SortInputComponent,
-    paginatedCategory,
+  categoryType,
+  categoryInput,
+  FilterInputComponent,
+  SortInputComponent,
+  paginatedCategory,
 } = require('./modules/category/category.graphql');
 const {
-    materialType,
-    materialInput,
-    materialFilterInput,
+  materialType,
+  materialInput,
+  materialFilterInput,
 } = require('./modules/material/material.graphql');
 const {
-    patternType,
-    patternInput,
+  patternType,
+  patternInput,
 } = require('./modules/pattern/pattern.graphql');
 const {
-    currencyType,
-    currencyInput,
+  currencyType,
+  currencyInput,
 } = require('./modules/currency/currency.graphql.js');
 const {
-    commentType,
-    commentInput,
+  commentType,
+  commentInput,
 } = require('./modules/comment/comment.graphql');
 const {
-    businessTextType,
-    businessTextInput,
+  businessTextType,
+  businessTextInput,
 } = require('./modules/business-text/business-text.graphql');
 const {
-    contactType,
-    contactInput,
+  contactType,
+  contactInput,
 } = require('./modules/contact/contact.graphql');
 const {
-    novaPoshtaType,
-    novaPoshtaInput,
+  novaPoshtaType,
+  novaPoshtaInput,
 } = require('./modules/delivery/nova-poshta/nova-poshta.graphql');
 const {
-    emailQuestionType,
-    emailQuestionInput,
+  emailQuestionType,
+  emailQuestionInput,
 } = require('./modules/email-chat/email-question.graphql');
 const {
-    paymentType,
-    paymentStatus,
-    paymentInput,
+  paymentType,
+  paymentStatus,
+  paymentInput,
 } = require('./modules/payment/payment.graphql');
 const {
-    homePageImagesType,
+  homePageImagesType,
 } = require('./modules/homepage-images/home-page-images.graphql');
 const {
-    homePageSlideType,
-    homePageSlideInput,
+  homePageSlideType,
+  homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const {
-    constructorBottomInput,
-    constructorBottomType,
+  constructorBottomInput,
+  constructorBottomType,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
-const {headerType, headerInput} = require('./modules/header/header.graphql');
+const { headerType, headerInput } = require('./modules/header/header.graphql');
 const {
-    closureType,
-    closureInput,
+  closureType,
+  closureInput,
 } = require('./modules/closures/closures.graphql');
-const {defaultPaginationParams} = require('./consts');
-const {sizeType, sizeInput} = require('./modules/size/size.graphql');
-const {colorType, colorInput} = require('./modules/color/color.graphql');
+const { defaultPaginationParams } = require('./consts');
+const { sizeType, sizeInput } = require('./modules/size/size.graphql');
+const { colorType, colorInput } = require('./modules/color/color.graphql');
 const {
-    constructorBasicType,
-    constructorBasicInput,
+  constructorBasicType,
+  constructorBasicInput,
 } = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
 const {
-    constructorFrontPocketType,
-    constructorFrontPocketInput,
+  constructorFrontPocketType,
+  constructorFrontPocketInput,
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 const {
-    ukrPoshtaEnum,
-    ukrPostaType,
+  ukrPoshtaEnum,
+  ukrPostaType,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.graphql');
 
-const {skip, limit} = defaultPaginationParams;
+const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
   ${historyType}
@@ -685,7 +685,7 @@ const typeDefs = gql`
     updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
-    confirmUserEmail(token: String!): Boolean
+    confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean

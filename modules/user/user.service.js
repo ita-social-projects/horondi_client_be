@@ -554,8 +554,10 @@ class UserService extends FilterHelper {
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+    const candidate = await User.findOne({ email }).exec();
+
+    if (candidate) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -611,17 +613,35 @@ class UserService extends FilterHelper {
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
-    const updates = {
+    const { userId } = jwt.verify(token, CONFIRMATION_SECRET);
+
+    if (!userId) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    const { accessToken, refreshToken } = generateTokens(
+      userId,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      true
+    );
+
+    await User.findByIdAndUpdate(userId, {
       $set: {
         confirmed: true,
       },
       $unset: {
         confirmationToken: '',
       },
+    }).exec();
+
+    return {
+      token: accessToken,
+      refreshToken,
+      confirmed: true,
     };
-    await User.findByIdAndUpdate(decoded.userId, updates).exec();
-    return true;
   }
 
   async recoverUser(email, language) {
