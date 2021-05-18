@@ -31,7 +31,6 @@ const commentSchema = new mongoose.Schema({
       },
       refToReplyComment: {
         type: mongoose.Schema.Types.ObjectId,
-        default: '',
       },
       createdAt: {
         type: Date,

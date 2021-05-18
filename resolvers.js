@@ -243,6 +243,7 @@ const resolvers = {
         answerer: userService.getUser(item.answerer),
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
+        refToReplyComment: item.refToReplyComment,
       })),
   },
   Product: {
