@@ -237,8 +237,14 @@ const resolvers = {
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
+    replyComments: parent =>
+      parent.replyComments.map(item => ({
+        replyText: item.replyText,
+        answerer: userService.getUser(item.answerer),
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      })),
   },
-
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
     comments: parent =>

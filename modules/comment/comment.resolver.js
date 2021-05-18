@@ -6,14 +6,11 @@ const {
 
 const commentsQuery = {
   getAllComments: (parent, args) => commentsService.getAllComments(args),
-  getCommentById: async (parent, args) => {
+  getCommentById: async (parent, { id }) => {
     try {
-      return await commentsService.getCommentById(args.id);
+      return await commentsService.getCommentById(id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -25,16 +22,11 @@ const commentsQuery = {
     }
   },
 
-  getAllCommentsByProduct: async (parent, args) => {
+  getAllCommentsByProduct: async (_, { productId }) => {
     try {
-      return await commentsService.getAllCommentsByProduct(args);
+      return await commentsService.getAllCommentsByProduct(productId);
     } catch (error) {
-      return [
-        {
-          statusCode: NOT_FOUND,
-          message: error.message,
-        },
-      ];
+      return new RuleError(error.message, error.statusCode);
     }
   },
 
@@ -53,14 +45,18 @@ const commentsQuery = {
 };
 
 const commentsMutation = {
-  addComment: async (parent, args) => {
+  addComment: async (_, { comment }) => {
     try {
-      return await commentsService.addComment(args.productId, args.comment);
+      return await commentsService.addComment(comment);
     } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+      return new RuleError(error.message, error.statusCode);
+    }
+  },
+  replyForComment: async (_, { commentId, replyComment }) => {
+    try {
+      return await commentsService.replyForComment(commentId, replyComment);
+    } catch (error) {
+      return new RuleError(error.message, error.statusCode);
     }
   },
 

@@ -6,6 +6,15 @@ date: String!
 user: User
 product: Product
 show: Boolean
+replyComments:[ReplyComments]
+}
+
+type ReplyComments{
+  replyText:String
+  answerer: User
+  refToReplyComment: ID
+  createdAt: Date
+  updatedAt: Date
 }
 `;
 
@@ -26,6 +35,11 @@ input CommentFilterInput{
     date:DateRangeInput
     show:[String]
     search:String
+  }
+  input ReplyCommentInput {
+    refToReplyComment: ID
+    replyText: String!
+    answerer: ID!
   }
 `;
 

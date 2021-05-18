@@ -1,6 +1,7 @@
 const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
+const User = require('../user/user.model');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -57,7 +58,7 @@ class CommentsService {
   async getCommentById(id) {
     const comment = await Comment.findById(id).exec();
     if (!comment) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return comment;
   }
@@ -73,13 +74,13 @@ class CommentsService {
     return comments;
   }
 
-  async getAllCommentsByProduct({ productId }) {
+  async getAllCommentsByProduct(productId) {
     const product = await Product.findById(productId).exec();
+
     if (!product) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId }).exec();
-    return comments;
+    return Comment.find({ product: productId }).exec();
   }
 
   async getAllCommentsByUser(userId) {
@@ -100,12 +101,33 @@ class CommentsService {
     return updatedComment;
   }
 
-  async addComment(id, data) {
-    const product = await Product.findById(id).exec();
+  async addComment(data) {
+    const product = await Product.findById(data.product).exec();
+
     if (!product) {
-      throw new Error(COMMENT_FOR_NOT_EXISTING_PRODUCT);
+      throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
     return new Comment(data).save();
+  }
+
+  async replyForComment(commentId, replyComment) {
+    const isCommentExists = await Comment.findById(commentId).exec();
+
+    if (!isCommentExists) {
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+
+    return Comment.findByIdAndUpdate(
+      commentId,
+      {
+        $push: {
+          replyComments: replyComment,
+        },
+      },
+      {
+        new: true,
+      }
+    );
   }
 
   async deleteComment(id) {

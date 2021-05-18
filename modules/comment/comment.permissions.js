@@ -15,6 +15,7 @@ const commentPermissionsQuery = {
 const commentPermissionsMutations = {
   updateComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
   addComment: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
+  // replyForComment: isTheSameUser,
   deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
   addRate: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };
