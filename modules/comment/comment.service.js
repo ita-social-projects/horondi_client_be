@@ -213,7 +213,7 @@ class CommentsService {
         )
       : [...userRates, { ...data, user: user._id }];
 
-    return await Product.findByIdAndUpdate(
+    return Product.findByIdAndUpdate(
       id,
       {
         rateCount,
