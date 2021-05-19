@@ -87,7 +87,7 @@ describe('Model queries', () => {
   test('Should throw error CATEGORY_NOT_VALID', async () => {
     const res = await getModelsByCategory(notValidId, operations);
 
-    expect(res).toBe(CATEGORY_NOT_VALID);
+    expect(res.message).toBe(CATEGORY_NOT_VALID);
   });
   test('Should return empty array when category doesnt exist', async () => {
     const res = await getModelsByCategory(wrongId, operations);
