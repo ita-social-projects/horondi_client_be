@@ -2,6 +2,9 @@ const Joi = require('joi');
 const {
   SIDES: { LEFT, RIGHT, BACK, FRONT },
 } = require('../consts/side-names');
+const {
+  RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
+} = require('../consts/restriction-expression-names');
 
 const nestedSideValidator = Joi.object({
   side: Joi.array().has(
@@ -157,6 +160,23 @@ const inputConstrFrontPocketValidator = Joi.object({
   customizable: Joi.boolean(),
 });
 
+const restrictionValidator = Joi.object({
+  compareByExpression: Joi.string()
+    .trim()
+    .valid(IS_EQUAL, IS_NOT_EQUAL)
+    .required(),
+  options: Joi.array().items(
+    Joi.object({
+      option: Joi.string()
+        .trim()
+        .required(),
+      feature: Joi.string()
+        .trim()
+        .required(),
+    })
+  ),
+});
+
 module.exports = {
   inputPocketValidator,
   inputOptionValidator,
@@ -164,4 +184,5 @@ module.exports = {
   inputPatternValidator,
   inputConstructorElementValidator,
   inputConstrFrontPocketValidator,
+  restrictionValidator,
 };

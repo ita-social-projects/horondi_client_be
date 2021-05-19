@@ -9,7 +9,7 @@ const {
 } = require('../../consts');
 const {
   restrictionValidator,
-} = require('../../validators/constructor-items.validator');
+} = require('../../validators/constructor-items-inputs.validator');
 
 const restrictionPermissionsMutations = {
   addRestriction: and(
