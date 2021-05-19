@@ -442,7 +442,11 @@ class UserService extends FilterHelper {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+    }
+
+    if (user?.banned?.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
     const match = await bcrypt.compare(
@@ -451,7 +455,7 @@ class UserService extends FilterHelper {
     );
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
@@ -526,7 +530,6 @@ class UserService extends FilterHelper {
       },
       staySignedIn
     );
-
     return {
       ...user._doc,
       _id: user._id,

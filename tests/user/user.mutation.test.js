@@ -89,7 +89,7 @@ describe('mutations', () => {
     expect(res.data.registerUser.message).toBe(USER_ALREADY_EXIST);
     done();
   });
-  test('should authorize and recive user token', async done => {
+  test('should authorize and receive user token', async done => {
     const { email, pass } = testUser;
 
     const res = await loginUser(email, pass, operations);
@@ -106,16 +106,12 @@ describe('mutations', () => {
   });
   test('should throw error User with provided email not found', async done => {
     const res = await loginUser(wrongEmail, testUser.pass, operations);
-
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe(WRONG_CREDENTIALS);
+    expect(res.data.loginUser.message).toBe(WRONG_CREDENTIALS);
     done();
   });
   test('should throw error Wrong password', async done => {
     const res = await loginUser(testUser.email, wrongPassword, operations);
-
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
+    expect(res.data.loginUser.message).toBe(WRONG_CREDENTIALS);
     done();
   });
   test('should get invalid permissions when try to update user', async done => {
