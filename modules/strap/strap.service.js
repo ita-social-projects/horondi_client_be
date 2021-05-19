@@ -2,6 +2,9 @@ const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
+const {
+  commonFiltersHandler,
+} = require('../../utils/constructorOptionCommonFilters');
 const { STRAP_NOT_FOUND } = require('../../error-messages/strap.messages');
 const {
   STATUS_CODES: { NOT_FOUND },
@@ -33,22 +36,7 @@ class StrapService {
   async getAllStraps(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter?.name) {
-      const name = filter.name.trim();
-
-      filterOptions.$or = [
-        { 'name.value': { $regex: `${name}`, $options: 'i' } },
-        { text: { $regex: `${name}`, $options: 'i' } },
-      ];
-    }
-
-    if (filter?.model.length) {
-      filterOptions.model = { $in: filter.model };
-    }
-
-    if (filter?.available.length) {
-      filterOptions.available = { $in: filter.available };
-    }
+    await commonFiltersHandler(filter, filterOptions);
 
     if (filter?.color.length) {
       filterOptions['features.color'] = { $in: filter.color };

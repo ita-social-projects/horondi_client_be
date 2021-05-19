@@ -13,8 +13,13 @@ const modelsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getModelsByCategory: async (_, { id }) =>
-    await modelsService.getModelsByCategory(id),
+  getModelsByCategory: async (_, { id }) => {
+    try {
+      return await modelsService.getModelsByCategory(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 
   getModelById: async (_, { id }) => {
     try {

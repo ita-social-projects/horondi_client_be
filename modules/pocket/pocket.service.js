@@ -1,5 +1,8 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.utils');
+const {
+  commonFiltersHandler,
+} = require('../../utils/constructorOptionCommonFilters');
 const { calculatePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
 const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
@@ -33,22 +36,7 @@ class PocketService {
   async getAllPockets(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter?.name) {
-      const name = filter.name.trim();
-
-      filterOptions.$or = [
-        { 'name.value': { $regex: `${name}`, $options: 'i' } },
-        { text: { $regex: `${name}`, $options: 'i' } },
-      ];
-    }
-
-    if (filter?.model.length) {
-      filterOptions.model = { $in: filter.model };
-    }
-
-    if (filter?.available.length) {
-      filterOptions.available = { $in: filter.available };
-    }
+    await commonFiltersHandler(filter, filterOptions);
 
     if (filter?.side.length) {
       filterOptions['features.side'] = { $in: filter.side };

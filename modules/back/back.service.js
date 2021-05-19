@@ -1,6 +1,9 @@
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
 const { calculatePrice } = require('../currency/currency.utils');
+const {
+  commonFiltersHandler,
+} = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
 const { BACK_NOT_FOUND } = require('../../consts/back-messages');
 const {
@@ -36,22 +39,7 @@ class BackService {
   async getAllBacks(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter?.name) {
-      const name = filter.name.trim();
-
-      filterOptions.$or = [
-        { 'name.value': { $regex: `${name}`, $options: 'i' } },
-        { text: { $regex: `${name}`, $options: 'i' } },
-      ];
-    }
-
-    if (filter?.model.length) {
-      filterOptions.model = { $in: filter.model };
-    }
-
-    if (filter?.available.length) {
-      filterOptions.available = { $in: filter.available };
-    }
+    await commonFiltersHandler(filter, filterOptions);
 
     if (filter?.material.length) {
       filterOptions['features.material'] = { $in: filter.material };
