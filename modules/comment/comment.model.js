@@ -20,12 +20,24 @@ const commentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: USER,
   },
+  email: {
+    type: String,
+  },
+  userName: {
+    type: String,
+  },
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: PRODUCT,
   },
   replyComments: [
     {
+      answererEmail: {
+        type: String,
+      },
+      answererName: {
+        type: String,
+      },
       replyText: {
         type: String,
       },

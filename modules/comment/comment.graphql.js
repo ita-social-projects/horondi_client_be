@@ -26,7 +26,9 @@ const sharedInputFields = `
 const commentInput = `
 input CommentInput {
   ${sharedInputFields}
-  user: ID!
+  user: ID
+  userName: String
+  email: String
   product: ID!
 }
 input CommentUpdateInput {
@@ -42,9 +44,11 @@ input CommentFilterInput{
     search:String
   }
   input ReplyCommentInput {
+    answererEmail: String
+    answererName: String
     refToReplyComment: ID
     replyText: String!
-    answerer: ID!
+    answerer: ID
   }
 `;
 
