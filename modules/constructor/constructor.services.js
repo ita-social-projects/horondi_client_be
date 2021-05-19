@@ -41,9 +41,7 @@ const {
 
 class ConstructorService {
   async getAllConstructorElements({ limit, skip, filter }, model) {
-    const filterOptions = {};
-
-    commonFiltersHandler(filter, filterOptions);
+    const filterOptions = commonFiltersHandler(filter);
 
     if (filter?.material.length) {
       filterOptions['features.material'] = { $in: filter.material };

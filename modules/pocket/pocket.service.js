@@ -34,9 +34,7 @@ const {
 
 class PocketService {
   async getAllPockets(limit, skip, filter) {
-    const filterOptions = {};
-
-    commonFiltersHandler(filter, filterOptions);
+    const filterOptions = commonFiltersHandler(filter);
 
     if (filter?.side.length) {
       filterOptions['features.side'] = { $in: filter.side };
@@ -47,7 +45,7 @@ class PocketService {
       .limit(limit)
       .exec();
 
-    const count = Pocket.countDocuments(filterOptions).exec();
+    const count = await Pocket.countDocuments(filterOptions).exec();
 
     return {
       items,

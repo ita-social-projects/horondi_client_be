@@ -32,7 +32,7 @@ class RestrictionService {
       .limit(limit)
       .exec();
 
-    const count = Restriction.countDocuments(filterOptions).exec();
+    const count = await Restriction.countDocuments(filterOptions).exec();
 
     return {
       items,

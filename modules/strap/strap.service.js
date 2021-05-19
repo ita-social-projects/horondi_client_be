@@ -34,9 +34,7 @@ const {
 
 class StrapService {
   async getAllStraps(limit, skip, filter) {
-    const filterOptions = {};
-
-    commonFiltersHandler(filter, filterOptions);
+    const filterOptions = commonFiltersHandler(filter);
 
     if (filter?.color.length) {
       filterOptions['features.color'] = { $in: filter.color };

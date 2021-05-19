@@ -1,4 +1,6 @@
-const commonFiltersHandler = (filter, filterOptions) => {
+const commonFiltersHandler = filter => {
+  const filterOptions = {};
+
   if (filter?.name) {
     const name = filter.name.trim();
 
@@ -15,6 +17,8 @@ const commonFiltersHandler = (filter, filterOptions) => {
   if (filter?.available.length) {
     filterOptions.available = { $in: filter.available };
   }
+
+  return filterOptions;
 };
 
 module.exports = {
