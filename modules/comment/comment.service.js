@@ -132,13 +132,13 @@ class CommentsService {
       {
         new: true,
       }
-    );
+    ).exec();
   }
 
   async updateReplyComment(replyCommentId, replyCommentData) {
     const isReplyCommentPresent = await Comment.findOne({
       'replyComments._id': replyCommentId,
-    });
+    }).exec();
 
     if (!isReplyCommentPresent) {
       throw new RuleError(REPLY_COMMENT_IS_NOT_PRESENT, NOT_FOUND);
@@ -155,13 +155,13 @@ class CommentsService {
         },
       },
       { new: true }
-    );
+    ).exec();
   }
 
   async deleteReplyComment(replyCommentId) {
     const isReplyCommentPresent = await Comment.findOne({
       'replyComments._id': replyCommentId,
-    });
+    }).exec();
 
     if (!isReplyCommentPresent) {
       throw new RuleError(REPLY_COMMENT_IS_NOT_PRESENT, NOT_FOUND);
@@ -175,7 +175,7 @@ class CommentsService {
         },
       },
       { new: true }
-    );
+    ).exec();
   }
 
   async deleteComment(id) {
@@ -184,7 +184,7 @@ class CommentsService {
     if (!deletedComment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
-    return Comment.findByIdAndDelete(id, { new: true });
+    return Comment.findByIdAndDelete(id, { new: true }).exec();
   }
 
   async addRate(id, data, user) {
