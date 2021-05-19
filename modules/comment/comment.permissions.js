@@ -1,9 +1,18 @@
-const { allow, or } = require('graphql-shield');
+const { allow, or, and } = require('graphql-shield');
 
-const { hasRoles, isTheSameUser, isAuthorized } = require('../../utils/rules');
+const {
+  hasRoles,
+  isTheSameUser,
+  isAuthorized,
+  inputDataValidation,
+} = require('../../utils/rules');
 const {
   roles: { ADMIN, SUPERADMIN, USER },
 } = require('../../consts');
+const { replyCommentValidator } = require('../../validators/comment.validator');
+const {
+  INPUT_FIELDS: { REPLY_COMMENT_DATA },
+} = require('../../consts/input-fields');
 
 const commentPermissionsQuery = {
   getCommentById: allow,
@@ -13,10 +22,18 @@ const commentPermissionsQuery = {
 };
 
 const commentPermissionsMutations = {
-  updateComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
-  addComment: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
-  // replyForComment: isTheSameUser,
-  deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
+  updateComment: hasRoles([ADMIN, SUPERADMIN, USER]),
+  addComment: and(
+    inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
+    or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER]))
+  ),
+  replyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
+  updateReplyForComment: and(
+    inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
+  deleteReplyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   addRate: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };
 

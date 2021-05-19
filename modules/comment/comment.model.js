@@ -12,6 +12,10 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: USER,
@@ -24,6 +28,10 @@ const commentSchema = new mongoose.Schema({
     {
       replyText: {
         type: String,
+      },
+      showReplyComment: {
+        type: Boolean,
+        default: false,
       },
       answerer: {
         type: mongoose.Schema.Types.ObjectId,

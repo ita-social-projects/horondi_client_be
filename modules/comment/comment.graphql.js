@@ -2,7 +2,8 @@ const commentType = `
 type Comment {
 _id: ID!
 text: String!
-date: String!
+date: Date!
+updatedAt: Date!
 user: User
 product: Product
 show: Boolean
@@ -30,6 +31,10 @@ input CommentInput {
 }
 input CommentUpdateInput {
   ${sharedInputFields}
+}
+input ReplyCommentUpdateInput {
+  replyText: String
+  showReplyComment: Boolean
 }
 input CommentFilterInput{
     date:DateRangeInput

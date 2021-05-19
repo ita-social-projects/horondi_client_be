@@ -244,6 +244,7 @@ const resolvers = {
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
         refToReplyComment: item.refToReplyComment,
+        showReplyComment: item.showReplyComment,
       })),
   },
   Product: {

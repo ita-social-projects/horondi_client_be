@@ -1,7 +1,6 @@
 const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
-const User = require('../user/user.model');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -11,6 +10,7 @@ const {
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
+  REPLY_COMMENT_IS_NOT_PRESENT,
 } = require('../../error-messages/comment.messages');
 let { minDate } = require('../../consts/date-range');
 
@@ -92,11 +92,16 @@ class CommentsService {
   }
 
   async updateComment(id, comment) {
-    const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
-      new: true,
-    }).exec();
+    const updatedComment = await Comment.findByIdAndUpdate(
+      id,
+      { ...comment, updatedAt: Date.now() },
+      {
+        new: true,
+      }
+    ).exec();
+
     if (!updatedComment) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return updatedComment;
   }
@@ -130,12 +135,56 @@ class CommentsService {
     );
   }
 
-  async deleteComment(id) {
-    const deletedComment = await Comment.findByIdAndDelete(id).exec();
-    if (!deletedComment) {
-      throw new Error(COMMENT_NOT_FOUND);
+  async updateReplyComment(replyCommentId, replyCommentData) {
+    const isReplyCommentPresent = await Comment.findOne({
+      'replyComments._id': replyCommentId,
+    });
+
+    if (!isReplyCommentPresent) {
+      throw new RuleError(REPLY_COMMENT_IS_NOT_PRESENT, NOT_FOUND);
     }
-    return deletedComment;
+
+    return Comment.findOneAndUpdate(
+      { 'replyComments._id': replyCommentId },
+      {
+        $set: {
+          'replyComments.$.replyText': replyCommentData?.replyText,
+          'replyComments.$.showReplyComment':
+            replyCommentData?.showReplyComment,
+          'replyComments.$.updatedAt': Date.now(),
+        },
+      },
+      { new: true }
+    );
+  }
+
+  async deleteReplyComment(replyCommentId) {
+    const isReplyCommentPresent = await Comment.findOne({
+      'replyComments._id': replyCommentId,
+    });
+
+    if (!isReplyCommentPresent) {
+      throw new RuleError(REPLY_COMMENT_IS_NOT_PRESENT, NOT_FOUND);
+    }
+
+    return Comment.findOneAndUpdate(
+      { 'replyComments._id': replyCommentId },
+      {
+        $pull: {
+          replyComments: { _id: replyCommentId },
+        },
+      },
+      { new: true }
+    );
+  }
+
+  async deleteComment(id) {
+    const deletedComment = await Comment.findById(id).exec();
+
+    if (!deletedComment) {
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+    return Comment.findByIdAndDelete(id, { new: true });
   }
 
   async addRate(id, data, user) {
@@ -164,7 +213,7 @@ class CommentsService {
         )
       : [...userRates, { ...data, user: user._id }];
 
-    const rateToAdd = await Product.findByIdAndUpdate(
+    return await Product.findByIdAndUpdate(
       id,
       {
         rateCount,
@@ -173,7 +222,6 @@ class CommentsService {
       },
       { new: true }
     ).exec();
-    return rateToAdd;
   }
 }
 
