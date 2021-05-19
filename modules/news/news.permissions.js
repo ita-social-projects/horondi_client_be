@@ -1,7 +1,14 @@
-const { allow } = require('graphql-shield');
+const { allow, and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
+const { newsInputValidator } = require('../../validators/news.validator');
+const { inputDataValidation } = require('../../utils/rules');
+
 const { ADMIN, SUPERADMIN } = roles;
+
+const {
+  DB_COLLECTIONS_NAMES: { NEWS },
+} = require('../../consts/db-collections-names');
 
 const newsPermissionsQuery = {
   getAllNews: allow,
@@ -9,9 +16,15 @@ const newsPermissionsQuery = {
 };
 
 const newsPermissionsMutations = {
-  addNews: hasRoles([ADMIN, SUPERADMIN]),
+  addNews: and(
+    inputDataValidation(NEWS, newsInputValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   deleteNews: hasRoles([ADMIN, SUPERADMIN]),
-  updateNews: hasRoles([ADMIN, SUPERADMIN]),
+  updateNews: and(
+    inputDataValidation(NEWS, newsInputValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
 };
 
 module.exports = { newsPermissionsQuery, newsPermissionsMutations };
