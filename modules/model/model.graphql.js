@@ -68,8 +68,8 @@ input ModelFilterInput{
   name:String
   description:String
   category:[String]
-  available:String
-  availableForConstructor:String
+  available:[String]
+  availableForConstructor:[String]
 }
   
 `;

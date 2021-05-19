@@ -7,7 +7,7 @@ const {
   checkIfItemExists,
 } = require('../../../utils/rules');
 const {
-  INPUT_FIELDS: { CONSTRUCTOR_FRONT_POCKET },
+  INPUT_FIELDS: { CONSTRUCTOR_FRONT_POCKET, CONSTRUCTOR_ELEMENT },
 } = require('../../../consts/input-fields');
 const {
   roles: { ADMIN, SUPERADMIN },
@@ -28,7 +28,7 @@ const constructorFrontPocketPermissionsMutations = {
       inputConstrFrontPocketValidator
     ),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(CONSTRUCTOR_FRONT_POCKET, ConstructorFrontPocketModel)
+    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorFrontPocketModel)
   ),
   updateConstructorFrontPocket: and(
     inputDataValidation(

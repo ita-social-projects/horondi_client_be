@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
-const { setupApp } = require('../helper-functions');
-const {
-  FRONT_POCKET_NOT_FOUND,
-  FRONT_POCKET_ALREADY_EXIST,
-} = require('../../error-messages/constructor-front-pocket-messages');
 
+const { setupApp } = require('../helper-functions');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 const {
   createConstructorFrontPocket,
   deleteConstructorFrontPocket,
@@ -26,19 +23,15 @@ const {
 const { getMaterial } = require('../materials/material.variables');
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
-  CONSTRUCTOR_ELEMENT_ALREADY_EXIST,
 } = require('../../error-messages/constructor-element-messages');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const {
-  createCategory,
-  deleteCategory,
-} = require('../category/category.helper');
+const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
+const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
@@ -114,7 +107,7 @@ describe('constructor mutations', () => {
     );
 
     expect(error).toBeDefined();
-    expect(error.message).toEqual(CONSTRUCTOR_ELEMENT_ALREADY_EXIST);
+    expect(error.message).toEqual(ITEM_ALREADY_EXISTS);
     expect(error.statusCode).toEqual(BAD_REQUEST);
   });
   test('#3 Should update existing Constructor Front Pocket ', async () => {
@@ -130,7 +123,7 @@ describe('constructor mutations', () => {
       _id: constructorFrontId,
     });
   });
-  test('#4 Update Constructor Front Pocket should return FRONT_POCKET_NOT_FOUND', async () => {
+  test('#4 Update Constructor Front Pocket should return CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const result = await updateConstructorFrontPocket(
       constructorInput,
       wrongId,
@@ -139,12 +132,12 @@ describe('constructor mutations', () => {
 
     expect(result.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
-  test('#5 delete Constructor Front Pocket should return error FRONT_POCKET_NOT_FOUND', async () => {
+  test('#5 delete Constructor Front Pocket should return error CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const deletedConstructor = await deleteConstructorFrontPocket(
       wrongId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorFrontPocket.message;
+    const result = deletedConstructor.message;
     expect(result).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
   test('#6 Should delete Constructor Front Pocket and return id', async () => {
@@ -152,7 +145,7 @@ describe('constructor mutations', () => {
       constructorFrontId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorFrontPocket._id;
+    const result = deletedConstructor._id;
 
     expect(result).toBe(constructorFrontId);
   });

@@ -7,7 +7,7 @@ const {
   checkIfItemExists,
 } = require('../../../utils/rules');
 const {
-  INPUT_FIELDS: { CONSTRUCTOR_BASIC },
+  INPUT_FIELDS: { CONSTRUCTOR_BASIC, CONSTRUCTOR_ELEMENT },
 } = require('../../../consts/input-fields');
 const {
   roles: { ADMIN, SUPERADMIN },
@@ -25,7 +25,7 @@ const constructorBasicPermissionsMutations = {
   addConstructorBasic: and(
     inputDataValidation(CONSTRUCTOR_BASIC, inputConstructorElementValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(CONSTRUCTOR_BASIC, ConstructorBasicModel)
+    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorBasicModel)
   ),
   updateConstructorBasic: and(
     inputDataValidation(CONSTRUCTOR_BASIC, inputConstructorElementValidator),

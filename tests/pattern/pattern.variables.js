@@ -6,13 +6,11 @@ const updateValue = 'update value';
 const filter = {
   name: '',
   model: [],
-  available: '',
+  available: [],
   material: [],
-  handmade: '',
+  handmade: [],
 };
-const sort = {
-  name: 1,
-};
+
 const pagination = {
   skip: 0,
   limit: 5,
@@ -194,7 +192,6 @@ module.exports = {
   patternToUpdate,
   wrongId,
   filter,
-  sort,
   pagination,
   wrongPagination,
   wrongSkip,

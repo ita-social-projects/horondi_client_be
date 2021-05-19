@@ -38,7 +38,7 @@ class PatternsService {
   async getAllPatterns(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter.name) {
+    if (filter?.name) {
       const name = filter.name.trim();
 
       filterOptions.$or = [
@@ -47,19 +47,19 @@ class PatternsService {
       ];
     }
 
-    if (filter.model.length) {
+    if (filter?.model.length) {
       filterOptions.model = { $in: filter.model };
     }
 
-    if (filter.available) {
-      filterOptions.available = filter.available;
+    if (filter?.available.length) {
+      filterOptions.available = { $in: filter.available };
     }
 
-    if (filter.handmade) {
-      filterOptions['features.handmade'] = filter.handmade;
+    if (filter?.handmade.length) {
+      filterOptions['features.handmade'] = { $in: filter.handmade };
     }
 
-    if (filter.material.length) {
+    if (filter?.material.length) {
       filterOptions['features.material'] = { $in: filter.material };
     }
 
@@ -68,7 +68,7 @@ class PatternsService {
       .limit(limit)
       .exec();
 
-    const count = Pattern.countDocuments().exec();
+    const count = await Pattern.countDocuments(filterOptions).exec();
 
     return {
       items,

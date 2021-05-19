@@ -168,7 +168,7 @@ const getConstructorBottomById = async (id, operations) => {
   });
   return constructorBottomById.data.getConstructorBottomById;
 };
-const getAllConstructorBottom = async operations => {
+const getAllConstructorBottom = async ({ limit, skip, filter }, operations) => {
   const allConstructorBottom = await operations.query({
     query: gql`
       query($limit: Int, $skip: Int) {
@@ -209,6 +209,7 @@ const getAllConstructorBottom = async operations => {
         }
       }
     `,
+    variables: { limit, skip, filter },
   });
   return allConstructorBottom.data.getAllConstructorBottom.items;
 };

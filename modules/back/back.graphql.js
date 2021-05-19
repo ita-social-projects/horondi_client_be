@@ -39,7 +39,7 @@ const backInputs = `
   input BackFilterInput{
     name:String
     model:[String]
-    available:String
+    available:[String]
     material:[String]
     color:[String]
   }

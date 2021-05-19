@@ -38,7 +38,7 @@ const strapInputs = `
   input StrapFilterInput{
     name:String
     model:[String]
-    available:String
+    available:[String]
     color:[String]
   }
 `;

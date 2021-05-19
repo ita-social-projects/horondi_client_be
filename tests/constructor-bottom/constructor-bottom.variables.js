@@ -77,7 +77,21 @@ const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   basePrice: 1,
 });
 
+const filter = {
+  name: '',
+  model: [],
+  material: [],
+  color: [],
+  available: [],
+};
+
+const skip = 0;
+const limit = 5;
+
 module.exports = {
+  filter,
+  skip,
+  limit,
   newConstructorBottom,
   getConstructorData,
   getConstructorDataForUpt,

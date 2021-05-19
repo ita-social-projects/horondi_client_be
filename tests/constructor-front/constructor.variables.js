@@ -1,4 +1,17 @@
 const wrongId = '6009dcd5f9855555907ebf5e';
+
+const filter = {
+  name: '',
+  model: [],
+  material: [],
+  color: [],
+  pattern: [],
+  available: [],
+};
+
+const skip = 0;
+const limit = 5;
+
 const newConstructorFront = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Щось' },
@@ -132,4 +145,7 @@ module.exports = {
   newConstructorFrontUpdateInp,
   getConstructorDataForUpt,
   wrongId,
+  filter,
+  skip,
+  limit,
 };

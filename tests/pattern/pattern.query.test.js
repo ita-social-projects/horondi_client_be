@@ -14,7 +14,6 @@ const {
 const {
   wrongId,
   filter,
-  sort,
   pagination,
   wrongPagination,
   queryPatternToAdd,

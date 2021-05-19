@@ -1,5 +1,6 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const { calculatePrice } = require('../currency/currency.utils');
+const constructorFrPocketModel = require('./constructor-front-pocket/constructor-front-pocket.model');
 const uploadService = require('../upload/upload.service');
 const RuleError = require('../../errors/rule.error');
 const {
@@ -36,12 +37,48 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class ConstructorService {
-  async getAllConstructorElements({ skip, limit }, model) {
+  async getAllConstructorElements({ limit, skip, filter }, model) {
+    const filterOptions = {};
+
+    if (filter?.name) {
+      const name = filter.name.trim();
+
+      filterOptions.$or = [
+        { 'name.value': { $regex: `${name}`, $options: 'i' } },
+        { text: { $regex: `${name}`, $options: 'i' } },
+      ];
+    }
+
+    if (filter?.model.length) {
+      filterOptions.model = { $in: filter.model };
+    }
+
+    if (filter?.available.length) {
+      filterOptions.available = { $in: filter.available };
+    }
+
+    if (filter?.material.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
+
+    if (filter?.color.length) {
+      filterOptions['features.color'] = { $in: filter.color };
+    }
+
+    if (model === constructorFrPocketModel) {
+      if (filter?.pattern.length) {
+        filterOptions['features.pattern'] = { $in: filter.pattern };
+      }
+    }
+
     const items = await model
-      .find()
+      .find(filterOptions)
       .skip(skip)
-      .limit(limit);
-    const count = await model.find().countDocuments();
+      .limit(limit)
+      .exec();
+
+    const count = await model.countDocuments(filterOptions).exec();
+
     return {
       items,
       count,
@@ -71,6 +108,7 @@ class ConstructorService {
     );
 
     const basic = await new model(constructorElement).save();
+
     const historyRecord = generateHistoryObject(
       ADD_CONSTRUCTOR_ELEMENT,
       basic.model,

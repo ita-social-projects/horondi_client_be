@@ -7,10 +7,7 @@ const { createColor, deleteColor } = require('../color/color.helper');
 const { getMaterial } = require('../materials/material.variables');
 const { color, wrongId } = require('../color/color.variables');
 const { setupApp } = require('../helper-functions');
-const {
-  CONSTRUCTOR_BOTTOM_NOT_FOUND,
-  CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
-} = require('../../error-messages/constructor-bottom.messages');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 const {
   createConstructorBottom,
   updateConstructorBottom,
@@ -23,19 +20,18 @@ const {
 } = require('./constructor-bottom.variables');
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
-  CONSTRUCTOR_ELEMENT_ALREADY_EXIST,
 } = require('../../error-messages/constructor-element-messages');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
-const { createModel, deleteModel } = require('../model/model.helper');
+const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const {
   createCategory,
   deleteCategory,
 } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
+const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
@@ -120,9 +116,7 @@ describe('Constructor mutations', () => {
     );
 
     expect(createConstructorAgain.message).toBeDefined();
-    expect(createConstructorAgain.message).toEqual(
-      CONSTRUCTOR_ELEMENT_ALREADY_EXIST
-    );
+    expect(createConstructorAgain.message).toEqual(ITEM_ALREADY_EXISTS);
     done();
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async done => {

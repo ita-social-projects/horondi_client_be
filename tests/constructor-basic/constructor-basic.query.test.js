@@ -13,6 +13,9 @@ const {
 } = require('./constructor-basic.helper');
 const {
   wrongId,
+  filter,
+  limit,
+  skip,
   newConstructorBasic,
   getConstructorData,
 } = require('./constructor-basic.variables');
@@ -91,6 +94,7 @@ describe('constructor mutations', () => {
 
   test('#1 Should return all ConstructorBasics', async done => {
     const receivedAllConstructorBasics = await getAllConstructorBasics(
+      { limit, skip, filter },
       operations
     );
     expect(receivedAllConstructorBasics.items).toBeDefined();

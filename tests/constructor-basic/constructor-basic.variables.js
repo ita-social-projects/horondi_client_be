@@ -1,4 +1,15 @@
 const wrongId = '6009dcd5f9855555907ebf5e';
+const filter = {
+  name: '',
+  model: [],
+  material: [],
+  color: [],
+  available: [],
+};
+
+const skip = 0;
+const limit = 5;
+
 const newConstructorBasic = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'варіант 1' },
@@ -87,6 +98,9 @@ const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
 
 module.exports = {
   wrongId,
+  filter,
+  skip,
+  limit,
   newConstructorBasic,
   getConstructorData,
   getConstructorDataForUpt,

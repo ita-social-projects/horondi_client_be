@@ -33,7 +33,7 @@ class StrapService {
   async getAllStraps(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter.name) {
+    if (filter?.name) {
       const name = filter.name.trim();
 
       filterOptions.$or = [
@@ -42,15 +42,15 @@ class StrapService {
       ];
     }
 
-    if (filter.model.length) {
+    if (filter?.model.length) {
       filterOptions.model = { $in: filter.model };
     }
 
-    if (filter.available) {
-      filterOptions.available = filter.available;
+    if (filter?.available.length) {
+      filterOptions.available = { $in: filter.available };
     }
 
-    if (filter.color.length) {
+    if (filter?.color.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
@@ -59,7 +59,7 @@ class StrapService {
       .limit(limit)
       .exec();
 
-    const count = Strap.countDocuments().exec();
+    const count = await Strap.countDocuments(filterOptions).exec();
 
     return {
       items,

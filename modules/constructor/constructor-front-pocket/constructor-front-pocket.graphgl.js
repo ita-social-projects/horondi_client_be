@@ -37,6 +37,15 @@ input ConstructorFrPocketFeatureInput {
   color: ID
   pattern: ID
 }
+
+input ConstructorFrPocketFilterInput {
+  name:String
+  model:[String]
+  material:[String]
+  color:[String]
+  pattern:[String]
+  available:[String]
+}
 `;
 
 module.exports = {

@@ -36,7 +36,7 @@ class BackService {
   async getAllBacks(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter.name) {
+    if (filter?.name) {
       const name = filter.name.trim();
 
       filterOptions.$or = [
@@ -45,19 +45,19 @@ class BackService {
       ];
     }
 
-    if (filter.model.length) {
+    if (filter?.model.length) {
       filterOptions.model = { $in: filter.model };
     }
 
-    if (filter.available) {
-      filterOptions.available = filter.available;
+    if (filter?.available.length) {
+      filterOptions.available = { $in: filter.available };
     }
 
-    if (filter.material.length) {
+    if (filter?.material.length) {
       filterOptions['features.material'] = { $in: filter.material };
     }
 
-    if (filter.color.length) {
+    if (filter?.color.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
@@ -66,7 +66,7 @@ class BackService {
       .limit(limit)
       .exec();
 
-    const count = Back.countDocuments().exec();
+    const count = await Back.countDocuments(filterOptions).exec();
 
     return {
       items,
@@ -76,6 +76,7 @@ class BackService {
 
   async getBackById(id) {
     const foundBack = await Back.findById(id).exec();
+
     if (!foundBack) {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
@@ -84,7 +85,8 @@ class BackService {
   }
 
   async getBacksByModel(id) {
-    const back = Back.find({ model: id }).exec();
+    const back = await Back.find({ model: id }).exec();
+
     if (!back) {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
@@ -104,7 +106,7 @@ class BackService {
       back.image = uploadImage.fileNames.small;
     }
 
-    if (back.additionalPrice) {
+    if (back?.additionalPrice) {
       back.additionalPrice = await calculatePrice(back.additionalPrice);
     }
 
@@ -136,32 +138,30 @@ class BackService {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
-    const deletedImage = await uploadService.deleteFiles(
-      Object.values(foundBack.image)
+    if (foundBack.image) {
+      return uploadService.deleteFiles(Object.values(foundBack.image));
+    }
+
+    const historyRecord = generateHistoryObject(
+      DELETE_BACK,
+      foundBack.model,
+      foundBack.name[UA].value,
+      foundBack._id,
+      generateHistoryChangesData(foundBack, [
+        NAME,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      [],
+      adminId
     );
 
-    if (await Promise.allSettled(deletedImage)) {
-      const historyRecord = generateHistoryObject(
-        DELETE_BACK,
-        foundBack.model,
-        foundBack.name[UA].value,
-        foundBack._id,
-        generateHistoryChangesData(foundBack, [
-          NAME,
-          OPTION_TYPE,
-          MODEL,
-          FEATURES,
-          AVAILABLE,
-          ADDITIONAL_PRICE,
-        ]),
-        [],
-        adminId
-      );
+    await addHistoryRecord(historyRecord);
 
-      await addHistoryRecord(historyRecord);
-
-      return Back.findByIdAndDelete(id);
-    }
+    return Back.findByIdAndDelete(id);
   }
 
   async addBack(back, image, { _id: adminId }) {

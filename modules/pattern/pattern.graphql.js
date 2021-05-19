@@ -44,9 +44,9 @@ const patternInputs = `
       name:String
       description:String
       model:[String]
-      available:String
+      available:[String]
       material:[String]
-      handmade:String
+      handmade:[String]
     }
 `;
 

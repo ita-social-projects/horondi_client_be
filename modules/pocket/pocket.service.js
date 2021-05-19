@@ -33,7 +33,7 @@ class PocketService {
   async getAllPockets(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter.name) {
+    if (filter?.name) {
       const name = filter.name.trim();
 
       filterOptions.$or = [
@@ -42,15 +42,15 @@ class PocketService {
       ];
     }
 
-    if (filter.model.length) {
+    if (filter?.model.length) {
       filterOptions.model = { $in: filter.model };
     }
 
-    if (filter.available) {
-      filterOptions.available = filter.available;
+    if (filter?.available.length) {
+      filterOptions.available = { $in: filter.available };
     }
 
-    if (filter.side.length) {
+    if (filter?.side.length) {
       filterOptions['features.side'] = { $in: filter.side };
     }
 
@@ -59,7 +59,7 @@ class PocketService {
       .limit(limit)
       .exec();
 
-    const count = Pocket.countDocuments().exec();
+    const count = Pocket.countDocuments(filterOptions).exec();
 
     return {
       items,

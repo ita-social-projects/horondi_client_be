@@ -67,7 +67,6 @@ const updateModel = async (id, model, operations) => {
       id,
     },
   });
-  console.log(updatedModel);
   return updatedModel.data.updateModel;
 };
 const deleteModel = async (id, operations) => {
@@ -98,6 +97,49 @@ const deleteModel = async (id, operations) => {
 
   return deletedModel.data.deleteModel;
 };
+
+const getAllModels = async (limit, skip, filter, sort, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query(
+        $limit: Int
+        $skip: Int
+        $filter: ModelFilterInput
+        $sort: JSONObject
+      ) {
+        getAllModels(limit: $limit, skip: $skip, filter: $filter, sort: $sort) {
+          items {
+            _id
+            name {
+              lang
+              value
+            }
+            description {
+              lang
+              value
+            }
+            category {
+              name {
+                value
+                lang
+              }
+            }
+            images {
+              large
+              medium
+              small
+              thumbnail
+            }
+          }
+        }
+      }
+    `,
+    variables: { limit, skip, filter, sort },
+  });
+
+  return res.data.getAllModels;
+};
+
 const getModelsByCategory = async (category, operations) => {
   const result = await operations.query({
     query: gql`
@@ -127,6 +169,10 @@ const getModelsByCategory = async (category, operations) => {
       category,
     },
   });
+
+  if (result.data.getModelsByCategory === null) {
+    return result.errors[0].message;
+  }
 
   return result.data.getModelsByCategory;
 };
@@ -172,6 +218,7 @@ const getModelById = async (id, operations) => {
 module.exports = {
   createModel,
   deleteModel,
+  getAllModels,
   getModelsByCategory,
   getModelById,
   updateModel,

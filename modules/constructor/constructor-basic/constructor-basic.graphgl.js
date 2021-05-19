@@ -35,6 +35,14 @@ input ConstructorBasicFeatureInput {
   material: ID
   color:ID
 }
+
+input ConstructorBasicFilterInput {
+  name:String
+  model:[String]
+  material:[String]
+  color:[String]
+  available:[String]
+}
 `;
 
 module.exports = {

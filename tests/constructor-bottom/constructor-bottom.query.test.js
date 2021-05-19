@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createMaterial } = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
 const { setupApp } = require('../helper-functions');
 const { createConstructorBottom } = require('./constructor-bottom.helper');
 const { getMaterial } = require('../materials/material.variables');
@@ -11,11 +8,13 @@ const { color, wrongId } = require('../color/color.variables');
 const {
   newConstructorBottom,
   getConstructorData,
+  filter,
+  limit,
+  skip,
 } = require('./constructor-bottom.variables');
 const {
   getAllConstructorBottom,
   getConstructorBottomById,
-  deleteConstructorBottom,
 } = require('./constructor-bottom.helper');
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
@@ -23,14 +22,11 @@ const {
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
-const { createModel, deleteModel } = require('../model/model.helper');
+const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const {
-  createCategory,
-  deleteCategory,
-} = require('../category/category.helper');
+const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
+const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
@@ -82,7 +78,10 @@ describe('Constructor query', () => {
     done();
   });
   test('should return all ConstructorBasics', async done => {
-    const allConstructorBottom = await getAllConstructorBottom(operations);
+    const allConstructorBottom = await getAllConstructorBottom(
+      { limit, skip, filter },
+      operations
+    );
     expect(allConstructorBottom).toBeDefined();
     expect(allConstructorBottom.length).toBeGreaterThan(0);
     done();

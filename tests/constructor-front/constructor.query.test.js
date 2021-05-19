@@ -10,6 +10,9 @@ const {
   getConstructorData,
   newConstructorFront,
   wrongId,
+  filter,
+  skip,
+  limit,
 } = require('./constructor.variables');
 const { createColor, deleteColor } = require('../color/color.helper');
 const {
@@ -83,6 +86,7 @@ describe('constructor mutations', () => {
 
   test('#1 Should return all Constructor Front Pocket', async () => {
     const receivedAllConstructorFrontPocket = await getAllConstructorFrontPocket(
+      { limit, skip, filter },
       operations
     );
     expect(receivedAllConstructorFrontPocket.items).toBeDefined();

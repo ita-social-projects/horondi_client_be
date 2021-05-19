@@ -3,10 +3,10 @@ const RuleError = require('../../../errors/rule.error');
 const ConstructorBasic = require('./constructor-basic.model');
 
 const constructorBasicQuery = {
-  getAllConstructorBasics: async (_, args) => {
+  getAllConstructorBasics: async (_, { limit, skip, filter }) => {
     try {
       return await constructorService.getAllConstructorElements(
-        args,
+        { limit, skip, filter },
         ConstructorBasic
       );
     } catch (e) {

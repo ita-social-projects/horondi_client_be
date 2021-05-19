@@ -23,10 +23,10 @@ const {
 } = require('../materials/material.variables');
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
-  CONSTRUCTOR_ELEMENT_ALREADY_EXIST,
 } = require('../../error-messages/constructor-element-messages');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
 const { color } = require('../color/color.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
@@ -57,8 +57,6 @@ let operations,
 
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/upload/upload.service.js');
-// const uploadService = require('../upload/upload.service');
-// const { uploadSmallImage } = require('../upload/upload.utils');
 
 describe('constructor mutations', () => {
   beforeAll(async () => {
@@ -111,16 +109,14 @@ describe('constructor mutations', () => {
     });
     done();
   });
-  test('#3 ConstructorBasic should return Error ConstructorBasic already exist', async done => {
+  test('#3 ConstructorBasic should return Error item already exists', async done => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
       operations
     );
 
     expect(createConstructor).toBeDefined();
-    expect(createConstructor.message).toEqual(
-      CONSTRUCTOR_ELEMENT_ALREADY_EXIST
-    );
+    expect(createConstructor.message).toEqual(ITEM_ALREADY_EXISTS);
     expect(createConstructor.statusCode).toEqual(BAD_REQUEST);
     done();
   });
@@ -154,9 +150,8 @@ describe('constructor mutations', () => {
       wrongId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorBasic.message;
 
-    expect(result).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
+    expect(deletedConstructor.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
     done();
   });
   test('#6 Should delete constructor basic and return id', async done => {
@@ -164,9 +159,8 @@ describe('constructor mutations', () => {
       constructorBasicId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorBasic._id;
 
-    expect(result).toBe(constructorBasicId);
+    expect(deletedConstructor._id).toBe(constructorBasicId);
     done();
   });
 

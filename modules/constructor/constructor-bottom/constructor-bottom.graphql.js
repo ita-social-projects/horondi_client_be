@@ -35,6 +35,14 @@ const constructorBottomInputs = `
     material: ID
     color: ID
   }
+
+  input ConstructorBottomFilterInput {
+    name:String
+    model:[String]
+    color:[String]
+    material:[String]
+    available:[String]
+  }
 `;
 
 module.exports = {

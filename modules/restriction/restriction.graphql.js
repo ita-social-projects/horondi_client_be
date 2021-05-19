@@ -31,7 +31,7 @@ const restrictionInputs = `
   }
 
   input RestrictionFilterInput{
-    compareByExpression: String
+    compareByExpression: [String]
   }
 
 `;

@@ -48,7 +48,7 @@ const pocketInputs = `
   input PocketFilterInput{
     name:String
     model:[String]
-    available:String
+    available:[String]
     side:[String]
   }
 `;

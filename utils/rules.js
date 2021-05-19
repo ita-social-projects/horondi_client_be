@@ -76,7 +76,6 @@ const checkIfItemExists = (data, currentModel) =>
   rule()(async (_, args) => {
     const foundItem = await currentModel
       .findOne({
-        _id: { $ne: args[data].id },
         name: {
           $elemMatch: {
             $or: args[data].name.map(({ value }) => ({ value })),

@@ -536,12 +536,12 @@ const typeDefs = gql`
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
-    getAllConstructorBasics(limit: Int, skip: Int): PaginatedConstructorBasics!
+    getAllConstructorBasics(limit: Int, skip: Int, filter: ConstructorBasicFilterInput): PaginatedConstructorBasics!
     getConstructorBasicById(id: ID!): ConstructorBasicResult
-    getAllConstructorFrontPocket(limit: Int, skip: Int): PaginatedConstructorFrontPocket!
+    getAllConstructorFrontPocket(limit: Int, skip: Int, filter: ConstructorFrPocketFilterInput): PaginatedConstructorFrontPocket!
     getConstructorFrontPocketById(id: ID!): ConstructorFrontPocketResult  
     getConstructorBottomById(id: ID!): ConstructorBottomResult  
-    getAllConstructorBottom(limit: Int, skip: Int): PaginatedConstructorBottom!
+    getAllConstructorBottom(limit: Int, skip: Int, filter: ConstructorBottomFilterInput): PaginatedConstructorBottom!
     getAllPockets(limit:Int!, skip:Int!, filter:PocketFilterInput): PaginatedPockets!
     getPocketById(id: ID): PocketResult
     getPocketsByModel(id: ID): [Pocket]

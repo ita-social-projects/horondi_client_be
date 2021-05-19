@@ -23,8 +23,8 @@ class RestrictionService {
   async getAllRestrictions(limit, skip, filter) {
     const filterOptions = {};
 
-    if (filter.compareByExpression) {
-      filterOptions.compareByExpression = filter.compareByExpression;
+    if (filter?.compareByExpression.length) {
+      filterOptions.compareByExpression = { $in: filter.compareByExpression };
     }
 
     const items = await Restriction.find(filterOptions)
@@ -32,7 +32,7 @@ class RestrictionService {
       .limit(limit)
       .exec();
 
-    const count = Restriction.countDocuments().exec();
+    const count = Restriction.countDocuments(filterOptions).exec();
 
     return {
       items,

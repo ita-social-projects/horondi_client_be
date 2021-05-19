@@ -13,6 +13,7 @@ const INPUT_FIELDS = {
   RESTRICTION: 'restriction',
   BACK: 'back',
   CLOSURE: 'closure',
+  CONSTRUCTOR_ELEMENT: 'constructorElement',
   CONSTRUCTOR_BASIC: 'constructorBasic',
   CONSTRUCTOR_BOTTOM: 'constructorBottom',
   CONSTRUCTOR_FRONT_POCKET: 'constructorFrontPocket',

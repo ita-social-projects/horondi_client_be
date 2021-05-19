@@ -50,7 +50,7 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
   return constructorFrontPocket.data.addConstructorFrontPocket;
 };
 const deleteConstructorFrontPocket = async (id, operations) => {
-  return await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteConstructorFrontPocket(id: $id) {
@@ -67,6 +67,8 @@ const deleteConstructorFrontPocket = async (id, operations) => {
       id,
     },
   });
+
+  return result.data.deleteConstructorFrontPocket;
 };
 
 const updateConstructorFrontPocket = async (
@@ -126,7 +128,10 @@ const updateConstructorFrontPocket = async (
   return constructorFrontPocket.data.updateConstructorFrontPocket;
 };
 
-const getAllConstructorFrontPocket = async operations => {
+const getAllConstructorFrontPocket = async (
+  { limit, skip, filter },
+  operations
+) => {
   const res = await operations.query({
     query: gql`
       query($limit: Int, $skip: Int) {
@@ -167,6 +172,7 @@ const getAllConstructorFrontPocket = async operations => {
         }
       }
     `,
+    variables: { limit, skip, filter },
   });
   return res.data.getAllConstructorFrontPocket;
 };

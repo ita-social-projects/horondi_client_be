@@ -23,15 +23,16 @@ const {
   deleteMaterial,
 } = require('../materials/material.helper');
 const { color } = require('../color/color.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createColor } = require('../color/color.helper');
 const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
+const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -88,7 +89,7 @@ describe('Closure mutations', () => {
       operations
     );
     expect(closureData).toBeDefined();
-    expect(closureData).toHaveProperty('message', CLOSURE_ALREADY_EXIST);
+    expect(closureData).toHaveProperty('message', ITEM_ALREADY_EXISTS);
     expect(closureData).toHaveProperty('statusCode', 400);
   });
   test('should receive error CLOSURE_NOT_FOUND when update', async () => {
@@ -118,20 +119,6 @@ describe('Closure mutations', () => {
       ...finalClosure,
     });
     done();
-  });
-  test('should receive error CLOSURE_ALREADY_EXIST when update', async () => {
-    const closureDataToUpdate = await updateClosure(
-      closureId,
-      closureToUpdate(materialId, colorId, modelId),
-      operations
-    );
-
-    expect(closureDataToUpdate).toBeDefined();
-    expect(closureDataToUpdate).toHaveProperty(
-      'message',
-      CLOSURE_ALREADY_EXIST
-    );
-    expect(closureDataToUpdate).toHaveProperty('statusCode', 400);
   });
   test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
     closureData = await deleteClosure(wrongId, operations);

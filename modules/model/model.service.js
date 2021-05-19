@@ -41,7 +41,7 @@ class ModelsService {
   async getAllModels(limit, skip, filter = {}, sort = {}) {
     const filterOptions = {};
 
-    if (filter.name) {
+    if (filter?.name) {
       const name = filter.name.trim();
 
       filterOptions.$or = [
@@ -50,15 +50,17 @@ class ModelsService {
       ];
     }
 
-    if (filter.available) {
-      filterOptions.available = filter.available;
+    if (filter?.available.length) {
+      filterOptions.available = { $in: filter.available };
     }
 
-    if (filter.availableForConstructor) {
-      filterOptions.availableForConstructor = filter.availableForConstructor;
+    if (filter?.availableForConstructor.length) {
+      filterOptions.availableForConstructor = {
+        $in: filter.availableForConstructor,
+      };
     }
 
-    if (filter.category.length) {
+    if (filter?.category.length) {
       filterOptions.category = { $in: filter.category };
     }
 
@@ -69,7 +71,7 @@ class ModelsService {
       .exec();
 
     const count = await Model.find()
-      .countDocuments()
+      .countDocuments(filterOptions)
       .exec();
 
     return {
