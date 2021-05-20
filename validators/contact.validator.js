@@ -9,7 +9,7 @@ const languageSchemaValidator = {
     .required(),
   value: Joi.string()
     .trim()
-    .min(6)
+    .min(10)
     .max(1000)
     .required(),
 };
@@ -32,7 +32,7 @@ const contactInputValidator = Joi.object({
   images: Joi.array(),
   link: Joi.string()
     .trim()
-    .min(2)
+    .min(10)
     .max(1000)
     .required(),
 });
