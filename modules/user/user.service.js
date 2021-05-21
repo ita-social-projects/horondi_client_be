@@ -50,10 +50,11 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
+  TOKEN_IS_EXPIRIED,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
 } = require('../../consts/status-codes');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
@@ -613,12 +614,23 @@ class UserService extends FilterHelper {
   }
 
   async confirmUser(token) {
+
     const { userId } = jwt.verify(token, CONFIRMATION_SECRET);
 
     if (!userId) {
+      throw new RuleError(TOKEN_IS_EXPIRIED, UNAUTHORIZED);
+    }
+ 
+    const candidate = await User.findById(userId);
+
+    if (!candidate) {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
+    if (candidate.confirmed) {
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
+    }
+   
     const { accessToken, refreshToken } = generateTokens(
       userId,
       {
