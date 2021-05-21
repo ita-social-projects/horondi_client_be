@@ -614,13 +614,13 @@ class UserService extends FilterHelper {
   }
 
   async confirmUser(token) {
-
+    
     const { userId } = jwt.verify(token, CONFIRMATION_SECRET);
 
     if (!userId) {
       throw new RuleError(TOKEN_IS_EXPIRIED, UNAUTHORIZED);
     }
- 
+
     const candidate = await User.findById(userId);
 
     if (!candidate) {
@@ -630,7 +630,7 @@ class UserService extends FilterHelper {
     if (candidate.confirmed) {
       throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
     }
-   
+
     const { accessToken, refreshToken } = generateTokens(
       userId,
       {
