@@ -152,9 +152,9 @@ describe('Comment queries', () => {
     const res = await getAllCommentsByProduct(productWrongId, operations);
     const receivedComments = res.data.getAllCommentsByProduct;
 
-    expect(receivedComments).toBeDefined();
-    expect(receivedComments.statusCode).toBe(404);
-    expect(receivedComments.message).toBe(COMMENT_NOT_FOUND);
+    expect(receivedComments[0]).toBeDefined();
+    expect(receivedComments[0].statusCode).toBe(404);
+    expect(receivedComments[0].message).toBe(COMMENT_NOT_FOUND);
     done();
   });
 
