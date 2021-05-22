@@ -12,12 +12,13 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
 } = require('../../error-messages/comment.messages');
-let { minDate } = require('../../consts/date-range');
+let { minDefaultDate } = require('../../consts/date-range');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
     const filterOptions = {};
-    let maxDate = Date.now();
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
 
     if (filter?.show?.length) {
       filterOptions.show = { $in: filter.show };
