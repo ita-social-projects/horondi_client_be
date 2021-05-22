@@ -10,6 +10,11 @@ const INPUT_FIELDS = {
   SKIP: 'skip',
   DATE: 'date',
   MODEL: 'model',
+  CURRENCY: 'currency',
+  HEADER: 'header',
+  QUESTION: 'question',
+  TEXT: 'text',
+  SIZE: 'size',
 };
 
 module.exports = {

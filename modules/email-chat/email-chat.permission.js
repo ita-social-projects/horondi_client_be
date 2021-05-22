@@ -1,8 +1,16 @@
-const { allow } = require('graphql-shield');
+const { and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const {
   roles: { SUPERADMIN, ADMIN },
 } = require('../../consts');
+const {
+  questionInputValidator,
+  answerInputValidator,
+} = require('../../validators/email-question.validator');
+const { inputDataValidation } = require('../../utils/rules');
+const {
+  INPUT_FIELDS: { QUESTION, TEXT },
+} = require('../../consts/input-fields');
 
 const emailChatQuestionQuery = {
   getAllEmailQuestions: hasRoles([SUPERADMIN, ADMIN]),
@@ -11,9 +19,12 @@ const emailChatQuestionQuery = {
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: allow,
+  addEmailQuestion: inputDataValidation(QUESTION, questionInputValidator),
   makeEmailQuestionsSpam: hasRoles([SUPERADMIN, ADMIN]),
-  answerEmailQuestion: hasRoles([SUPERADMIN, ADMIN]),
+  answerEmailQuestion: and(
+    inputDataValidation(TEXT, answerInputValidator),
+    hasRoles([SUPERADMIN, ADMIN])
+  ),
   deleteEmailQuestions: hasRoles([SUPERADMIN, ADMIN]),
 };
 
