@@ -75,13 +75,13 @@ class CommentsService {
     return comments;
   }
 
-  async getAllCommentsByProduct(productId) {
+  async getAllCommentsByProduct({ productId }) {
     const product = await Product.findById(productId).exec();
-
     if (!product) {
-      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+      throw new Error(COMMENT_NOT_FOUND);
     }
-    return Comment.find({ product: productId }).exec();
+    const comments = await Comment.find({ product: productId }).exec();
+    return comments;
   }
 
   async getAllCommentsByUser(userId) {

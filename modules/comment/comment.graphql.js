@@ -1,9 +1,9 @@
 const commentType = `
 type Comment {
-_id: ID!
-text: String!
-date: Date!
-updatedAt: Date!
+_id: ID
+text: String
+date: Date
+updatedAt: Date
 user: User
 product: Product
 show: Boolean

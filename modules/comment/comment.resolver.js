@@ -22,11 +22,16 @@ const commentsQuery = {
     }
   },
 
-  getAllCommentsByProduct: async (_, { productId }) => {
+  getAllCommentsByProduct: async (parent, args) => {
     try {
-      return await commentsService.getAllCommentsByProduct(productId);
+      return await commentsService.getAllCommentsByProduct(args);
     } catch (error) {
-      return new RuleError(error.message, error.statusCode);
+      return [
+        {
+          statusCode: NOT_FOUND,
+          message: error.message,
+        },
+      ];
     }
   },
 
