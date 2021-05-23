@@ -162,7 +162,7 @@ class ConstructorService {
   }
 
   async deleteConstructorElement(id, model, { _id: adminId }) {
-    const constructorElement = await model.findById(id);
+    const constructorElement = await model.findByIdAndDelete(id).exec();
 
     if (!constructorElement) {
       return new RuleError(CONSTRUCTOR_ELEMENT_NOT_FOUND, NOT_FOUND);
@@ -190,7 +190,8 @@ class ConstructorService {
     );
 
     await addHistoryRecord(historyRecord);
-    return model.findByIdAndDelete(id);
+
+    return constructorElement;
   }
 }
 

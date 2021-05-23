@@ -2,7 +2,7 @@ const constructorBottomType = `
   type ConstructorBottom {
     _id: ID!
     name: [Language]!
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: ConstructorBottomFeatureSet
     image: String

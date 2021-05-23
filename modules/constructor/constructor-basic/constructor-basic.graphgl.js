@@ -2,7 +2,7 @@ const constructorBasicType = `
 type ConstructorBasic {
     _id: ID!
     name: [Language]
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: ConstructorBasicFeatureSet
     image:String

@@ -80,7 +80,9 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    await uploadService.deleteFiles(Object.values(foundStrap.image));
+    if (foundStrap.image) {
+      await uploadService.deleteFiles(Object.values(foundStrap.image));
+    }
 
     const historyRecord = generateHistoryObject(
       DELETE_STRAP,
@@ -138,7 +140,7 @@ class StrapService {
 
     await addHistoryRecord(historyRecord);
 
-    return Strap.findByIdAndUpdate(id, strap).exec();
+    return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
   }
 
   async addStrap(strap, image, { _id: adminId }) {

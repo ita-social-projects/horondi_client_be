@@ -2,7 +2,7 @@ const strapType = `
   type Strap {
     _id: ID
     name: [Language]
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: StrapFeature
     image: String

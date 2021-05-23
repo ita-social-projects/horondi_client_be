@@ -2,7 +2,7 @@ const pocketType = `
   type Pocket {
     _id: ID!
     name: [Language]
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: [PocketSide]
     image: String

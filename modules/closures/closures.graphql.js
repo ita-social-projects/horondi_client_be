@@ -2,7 +2,7 @@ const closureType = `
   type Closure {
     _id: ID
     name: [Language]
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: ClosureFeatureSet
     image: String

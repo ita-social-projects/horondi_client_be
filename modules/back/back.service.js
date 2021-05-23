@@ -96,7 +96,9 @@ class BackService {
       back.additionalPrice = await calculatePrice(back.additionalPrice);
     }
 
-    const updatedBack = await Back.findByIdAndUpdate(id, back).exec();
+    const updatedBack = await Back.findByIdAndUpdate(id, back, {
+      new: true,
+    }).exec();
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
 

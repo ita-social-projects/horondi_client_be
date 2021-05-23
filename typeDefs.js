@@ -198,6 +198,17 @@ const typeDefs = gql`
     user
   }
 
+  enum OptionTypeEnum {
+    BACK
+    CLOSURE
+    CONSTRUCTOR_BASIC
+    CONSTRUCTOR_BOTTOM
+    CONSTRUCTOR_FRONT_POCKET
+    PATTERN
+    POCKET
+    STRAP
+  }
+
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -502,7 +513,7 @@ const typeDefs = gql`
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
     getAllModels(limit: Int, skip: Int, filter: ModelFilterInput, sort:JSONObject): PaginatedModels
-    getModelsByCategory(id: ID!): [Model]
+    getModelsByCategory(id: ID!): [ModelResult]
     getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
     getContacts(limit: Int, skip: Int): PaginatedContacts!
@@ -544,13 +555,13 @@ const typeDefs = gql`
     getAllConstructorBottom(limit: Int, skip: Int, filter: ConstructorBottomFilterInput): PaginatedConstructorBottom!
     getAllPockets(limit:Int!, skip:Int!, filter:PocketFilterInput): PaginatedPockets!
     getPocketById(id: ID): PocketResult
-    getPocketsByModel(id: ID): [Pocket]
+    getPocketsByModel(id: ID): [PocketResult]
     getAllBacks( limit:Int!, skip:Int!, filter:BackFilterInput): PaginatedBacks
     getBackById(id: ID): BackResult
-    getBacksByModel(id: ID): [Back]
+    getBacksByModel(id: ID): [BackResult]
     getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
     getStrapById(id: ID): StrapResult
-    getStrapsByModel(id: ID): [Strap]
+    getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
 

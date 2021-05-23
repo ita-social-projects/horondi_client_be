@@ -150,6 +150,7 @@ class PatternsService {
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
     const constructorImg = await uploadSmallImage(image[1]);
+
     pattern.constructorImg = constructorImg;
 
     if (pattern.additionalPrice) {
@@ -184,6 +185,7 @@ class PatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(id)
       .lean()
       .exec();
+
     if (!foundPattern) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
@@ -191,6 +193,7 @@ class PatternsService {
     const deletedImages = await uploadService.deleteFiles(
       Object.values(foundPattern.images)
     );
+
     await uploadService.deleteFiles([foundPattern.constructorImg]);
     if (await Promise.allSettled(deletedImages)) {
       const historyRecord = generateHistoryObject(

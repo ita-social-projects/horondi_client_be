@@ -2,7 +2,7 @@ const patternType = `
     type Pattern {
       _id: ID!
       name: [Language]
-      optionType: String
+      optionType: OptionTypeEnum
       model: Model
       features: PatternFeatureSet
       description: [Language]

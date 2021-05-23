@@ -2,7 +2,7 @@ const backType = `
   type Back {
     _id: ID!
     name: [Language]
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: BackFeatureSet
     image: String

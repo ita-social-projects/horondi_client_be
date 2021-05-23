@@ -145,22 +145,28 @@ const getModelsByCategory = async (category, operations) => {
     query: gql`
       query($category: ID!) {
         getModelsByCategory(id: $category) {
-          category {
-            _id
+          ... on Model {
+            category {
+              _id
+            }
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+            images {
+              large
+              medium
+              small
+              thumbnail
+            }
           }
-          name {
-            value
-            lang
-          }
-          description {
-            value
-            lang
-          }
-          images {
-            large
-            medium
-            small
-            thumbnail
+          ... on Error {
+            message
+            statusCode
           }
         }
       }

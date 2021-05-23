@@ -179,11 +179,12 @@ class ModelsService {
       throw new Error(MODEL_NOT_FOUND);
     }
 
-    const images = Object.values(modelToDelete.images).filter(
-      item => typeof item === 'string' && item
-    );
-    if (images.length) {
-      uploadService.deleteFiles(images);
+    if (modelToDelete.images) {
+      await uploadService.deleteFiles(
+        Object.values(modelToDelete.images).filter(
+          item => typeof item === 'string' && item
+        )
+      );
     }
 
     const historyRecord = generateHistoryObject(

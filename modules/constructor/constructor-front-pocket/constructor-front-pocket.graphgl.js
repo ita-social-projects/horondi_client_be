@@ -2,7 +2,7 @@ const constructorFrontPocketType = `
 type ConstructorFrontPocket {
     _id: ID!
     name: [Language]
-    optionType: String
+    optionType: OptionTypeEnum
     model: Model
     features: ConstructorFrPocketFeatureSet
     image:String

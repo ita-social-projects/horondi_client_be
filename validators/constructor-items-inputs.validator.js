@@ -5,6 +5,18 @@ const {
 const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
+const {
+  CONSTRUCTOR_OPTION_TYPES: {
+    BACK_OPTION,
+    CLOSURE,
+    CONSTRUCTOR_BASIC,
+    CONSTRUCTOR_BOTTOM,
+    CONSTRUCTOR_FRONT_POCKET,
+    PATTERN,
+    POCKET,
+    STRAP,
+  },
+} = require('../consts/constructor-option-types');
 
 const nestedSideValidator = Joi.object({
   side: Joi.array().has(
@@ -28,12 +40,13 @@ const inputPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .uppercase(),
+    .valid(POCKET)
+    .required(),
   model: Joi.string(),
   features: nestedSideValidator,
   image: Joi.string()
     .trim()
-    .required(),
+    .optional(),
   additionalPrice: Joi.number()
     .optional()
     .default(0),
@@ -45,7 +58,8 @@ const inputOptionValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .uppercase(),
+    .valid(BACK_OPTION, CLOSURE)
+    .required(),
   model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
@@ -67,7 +81,8 @@ const inputStrapValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .uppercase(),
+    .valid(STRAP)
+    .required(),
   model: Joi.string(),
   features: Joi.object({
     color: Joi.string()
@@ -76,7 +91,7 @@ const inputStrapValidator = Joi.object({
   }),
   image: Joi.string()
     .trim()
-    .required(),
+    .optional(),
   additionalPrice: Joi.number()
     .optional()
     .default(0),
@@ -88,7 +103,8 @@ const inputPatternValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .uppercase(),
+    .valid(PATTERN)
+    .required(),
   model: Joi.string(),
   features: Joi.object({
     material: Joi.string(),
@@ -113,7 +129,8 @@ const inputConstructorElementValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .uppercase(),
+    .valid(CONSTRUCTOR_BASIC, CONSTRUCTOR_BOTTOM)
+    .required(),
   model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
@@ -137,7 +154,8 @@ const inputConstrFrontPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .uppercase(),
+    .valid(CONSTRUCTOR_FRONT_POCKET)
+    .required(),
   model: Joi.string(),
   features: Joi.object({
     material: Joi.string()
