@@ -1,3 +1,7 @@
+const { _ } = require('lodash');
+
+const { hyphen, exception, dictionary } = require('../consts/transliteration');
+
 const {
   dayInMiliseconds,
   userDateFormat,
@@ -133,9 +137,22 @@ const reduceByDaysCount = (names, counts, days) => {
   }
 };
 
+const transliterate = words => {
+  const transliterated_words = words
+    .split('')
+    .map(char => {
+      return char === exception ? '' : dictionary[char] || char;
+    })
+    .join('')
+    .toLowerCase();
+
+  return _.words(transliterated_words).join(hyphen);
+};
+
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
   changeDataFormat,
   countItemsOccurency,
+  transliterate,
 };

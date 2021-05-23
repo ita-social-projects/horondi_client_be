@@ -18,7 +18,10 @@ const banned = {
   },
 };
 
+const slug = { slug: '' };
+
 module.exports = {
   sizeName,
   banned,
+  slug,
 };
