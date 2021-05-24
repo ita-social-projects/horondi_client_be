@@ -1,3 +1,5 @@
+const Joi = require('joi');
+
 const languageValidator = function(langMin, langMax, valueMin, valueMax) {
   return {
     lang: Joi.string()
