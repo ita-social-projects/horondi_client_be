@@ -12,7 +12,10 @@ const {
 const EmailChatSchema = new mongoose.Schema({
   text: String,
   senderName: String,
-  language: Number,
+  language: {
+    type: Number,
+    default: 0,
+  },
   date: {
     type: Date,
     default: Date.now,
