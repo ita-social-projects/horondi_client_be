@@ -78,23 +78,23 @@ const getAllSizes = async operations => {
     query: gql`
       query {
         getAllSizes {
-        items{
-          name
-          simpleName {
-            lang
-            value
+          items {
+            name
+            simpleName {
+              lang
+              value
+            }
+            heightInCm
+            widthInCm
+            depthInCm
+            volumeInLiters
+            weightInKg
+            available
+            additionalPrice {
+              currency
+              value
+            }
           }
-          heightInCm
-          widthInCm
-          depthInCm
-          volumeInLiters
-          weightInKg
-          available
-          additionalPrice {
-            currency
-            value
-          }
-        }
         }
       }
     `,

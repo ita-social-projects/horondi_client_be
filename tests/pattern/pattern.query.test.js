@@ -1,5 +1,9 @@
+const mongoose = require('mongoose');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const { setupApp } = require('../helper-functions');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 const {
   createPattern,
   deletePattern,
@@ -9,63 +13,120 @@ const {
 } = require('./pattern.helper');
 const {
   wrongId,
-  skip,
-  limit,
-  wrongLimit,
-  wrongSkip,
+  filter,
+  pagination,
+  wrongPagination,
   queryPatternToAdd,
 } = require('./pattern.variables');
+const { createColor, deleteColor } = require('../color/color.helper');
+const { color } = require('../color/color.variables');
+const {
+  createMaterial,
+  deleteMaterial,
+} = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
+const { createModel, deleteModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize, deleteSize } = require('../size/size.helper');
+const {
+  SIZES_TO_CREATE: { size1 },
+} = require('../size/size.variables');
 
-let patternId;
-let operations;
+let patternId,
+  res,
+  colorId,
+  operations,
+  categoryId,
+  sizeId,
+  modelId,
+  materialId;
 
 jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
 
 describe('Pattern queries', () => {
-  beforeAll(async () => {
+  beforeAll(async done => {
     operations = await setupApp();
-    const res = await createPattern(queryPatternToAdd, operations);
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+    const materialData = await createMaterial(getMaterial(colorId), operations);
+    materialId = materialData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const sizeData = await createSize(size1, operations);
+    sizeId = sizeData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    res = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
     patternId = res._id;
+    done();
   });
 
   test('Should receive all patterns', async () => {
-    const res = await getAllPatterns(operations);
-
-    expect(res).toEqual({
-      items: [queryPatternToAdd],
-    });
+    const allPatterns = await getAllPatterns(
+      pagination.limit,
+      pagination.skip,
+      filter,
+      operations
+    );
+    expect(allPatterns.items).toEqual([
+      {
+        ...res,
+      },
+    ]);
   });
   test('Should receive one pattern', async () => {
-    const res = await getPatternById(patternId, operations);
+    const pattern = await getPatternById(patternId, operations);
 
-    expect(res).toEqual(queryPatternToAdd);
+    expect(pattern).toEqual({
+      ...res,
+      _id: patternId,
+    });
   });
   test('request not existing pattern should throw error', async () => {
-    const res = await getPatternById(wrongId, operations);
+    const pattern = await getPatternById(wrongId, operations);
 
-    expect(res).toBeDefined();
-    expect(res).toHaveProperty('statusCode', 404);
-    expect(res).toHaveProperty('message', PATTERN_NOT_FOUND);
+    expect(pattern).toBeDefined();
+    expect(pattern).toHaveProperty('statusCode', NOT_FOUND);
+    expect(pattern).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
   test('pattern pagination test', async () => {
-    const res = await getAllPatternsPaginated(skip, limit, operations);
-
-    expect(res.data.getAllPatterns.items).toHaveLength(1);
-    expect(res.data.getAllPatterns.count).toEqual(1);
-  });
-  test('Expect negative values', async () => {
-    const res = await getAllPatternsPaginated(
-      wrongSkip,
-      wrongLimit,
+    const paginatedPatterns = await getAllPatternsPaginated(
+      pagination.limit,
+      pagination.skip,
+      filter,
       operations
     );
 
-    expect(res.errors[0].message).toEqual(
+    expect(paginatedPatterns.items).toHaveLength(1);
+    expect(paginatedPatterns.count).toEqual(1);
+  });
+  test('Expect negative values', async () => {
+    const paginatedPatterns = await getAllPatternsPaginated(
+      pagination.limit,
+      wrongPagination.skip,
+      filter,
+      operations
+    );
+
+    expect(paginatedPatterns.message).toEqual(
       'Skip value must be non-negative, but received: -1'
     );
   });
 
-  afterAll(async () => {
-    await deletePattern(patternId, operations);
+  afterAll(async done => {
+    mongoose.connection.db.dropDatabase(done);
   });
 });

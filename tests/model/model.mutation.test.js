@@ -8,9 +8,12 @@ const {
   createCategory,
 } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
-const MODEL_ALREADY_EXIST = 'MODEL_ALREADY_EXIST';
 let modelId;
 let categoryName;
 let categoryId;
@@ -53,12 +56,12 @@ describe('Model mutations', () => {
       }))
     );
   });
-  test('Should throw error MODEL_ALREADY_EXIST', async () => {
+  test('Should throw error ITEM_ALREADY_EXISTS', async () => {
     const error = await createModel(newModel(categoryId, sizeId), operations);
 
     expect(error).toBeDefined();
-    expect(error).toHaveProperty('statusCode', 400);
-    expect(error).toHaveProperty('message', MODEL_ALREADY_EXIST);
+    expect(error).toHaveProperty('statusCode', BAD_REQUEST);
+    expect(error).toHaveProperty('message', ITEM_ALREADY_EXISTS);
   });
   test('Should throw error MODEL_NOT_FOUND', async () => {
     const error = await deleteModel(wrongId, operations);

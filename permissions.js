@@ -64,6 +64,11 @@ const {
 } = require('./modules/header/header.permisions');
 
 const {
+  restrictionPermissionsMutations,
+  restrictionPermissionsQuery,
+} = require('./modules/restriction/restriction.permissions');
+
+const {
   homePageImagesPermissionsMutations,
   homePageImagesPermissionsQuery,
 } = require('./modules/homepage-images/home-page-images.permissions');
@@ -109,6 +114,21 @@ const {
 } = require('./modules/comment/comment.permissions');
 
 const {
+  pocketPermissionsMutations,
+  pocketPermissionsQuery,
+} = require('./modules/pocket/pocket.permissions');
+
+const {
+  backPermissionsMutations,
+  backPermissionsQuery,
+} = require('./modules/back/back.permissions');
+
+const {
+  strapPermissionsQuery,
+  strapPermissionsMutations,
+} = require('./modules/strap/strap.permissions');
+
+const {
   orderPermissionsMutation,
   orderPermissionsQuery,
 } = require('./modules/order/order.permissions');
@@ -129,6 +149,7 @@ const permissions = shield(
       ...newsPermissionsQuery,
       ...categoryPermissionsQuery,
       ...modelPermissionsQuery,
+      ...restrictionPermissionsQuery,
       ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
       ...closurePermissionsQuery,
@@ -138,7 +159,10 @@ const permissions = shield(
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
+      ...pocketPermissionsQuery,
+      ...backPermissionsQuery,
       ...orderPermissionsQuery,
+      ...strapPermissionsQuery,
       ...emailChatQuestionQuery,
     },
     Mutation: {
@@ -151,6 +175,7 @@ const permissions = shield(
       ...newsPermissionsMutations,
       ...categoryPermissionsMutations,
       ...modelPermissionsMutations,
+      ...restrictionPermissionsMutations,
       ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
       ...closurePermissionsMutations,
@@ -160,7 +185,10 @@ const permissions = shield(
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
+      ...pocketPermissionsMutations,
+      ...backPermissionsMutations,
       ...orderPermissionsMutation,
+      ...strapPermissionsMutations,
       ...businessTextMutation,
       ...emailChatQuestionMutation,
       ...currencyMutation,

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const CurrencySet = require('../../models/CurrencySet').schema;
 const Language = require('../../models/Language').schema;
 const {
-  DB_COLLECTIONS_NAMES: { SIZE },
+  DB_COLLECTIONS_NAMES: { SIZE, MODEL },
 } = require('../../consts/db-collections-names');
 
 const sizeSchema = new mongoose.Schema({
@@ -11,6 +11,10 @@ const sizeSchema = new mongoose.Schema({
     type: String,
   },
   simpleName: [Language],
+  model: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: MODEL,
+  },
   heightInCm: {
     type: Number,
   },

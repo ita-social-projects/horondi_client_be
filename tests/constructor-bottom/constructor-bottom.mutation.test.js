@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   createMaterial,
   deleteMaterial,
@@ -6,32 +7,50 @@ const { createColor, deleteColor } = require('../color/color.helper');
 const { getMaterial } = require('../materials/material.variables');
 const { color, wrongId } = require('../color/color.variables');
 const { setupApp } = require('../helper-functions');
-const {
-  CONSTRUCTOR_BOTTOM_NOT_FOUND,
-  CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
-} = require('../../error-messages/constructor-bottom.messages');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 const {
   createConstructorBottom,
   updateConstructorBottom,
   deleteConstructorBottom,
 } = require('./constructor-bottom.helper');
-
 const {
   newConstructorBottom,
   getConstructorData,
   getConstructorDataForUpt,
 } = require('./constructor-bottom.variables');
+const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+} = require('../../error-messages/constructor-element-messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const { createModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize } = require('../size/size.helper');
+const {
+  SIZES_TO_CREATE: { size1 },
+} = require('../size/size.variables');
 
-let operations;
-let colorId;
-let materialInput;
-let materialId;
-let addConstructor;
-let constructorId;
-let currentConstructorBottom;
-let newDataConstructorBottom;
+let operations,
+  colorId,
+  sizeId,
+  categoryId,
+  modelId,
+  materialInput,
+  materialId,
+  addConstructor,
+  constructorId,
+  currentConstructorBottom,
+  newDataConstructorBottom;
 
+jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
 
 describe('Constructor mutations', () => {
   beforeAll(async done => {
@@ -41,9 +60,26 @@ describe('Constructor mutations', () => {
     materialInput = getMaterial(colorId);
     const materialData = await createMaterial(materialInput, operations);
     materialId = materialData._id;
-    addConstructor = newConstructorBottom(colorId, materialId);
-    currentConstructorBottom = getConstructorData(addConstructor);
-    newDataConstructorBottom = getConstructorDataForUpt(colorId, materialId);
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const sizeData = await createSize(size1, operations);
+    sizeId = sizeData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    addConstructor = newConstructorBottom(materialId, colorId, modelId);
+    currentConstructorBottom = getConstructorData(addConstructor, {
+      materialId,
+      colorId,
+      modelId,
+    });
+    newDataConstructorBottom = getConstructorDataForUpt(
+      materialId,
+      colorId,
+      modelId
+    );
     done();
   });
 
@@ -80,9 +116,7 @@ describe('Constructor mutations', () => {
     );
 
     expect(createConstructorAgain.message).toBeDefined();
-    expect(createConstructorAgain.message).toEqual(
-      CONSTRUCTOR_BOTTOM_ALREADY_EXIST
-    );
+    expect(createConstructorAgain.message).toEqual(ITEM_ALREADY_EXISTS);
     done();
   });
   test('should return Error (not found) when updating not existing constructor-bottom', async done => {
@@ -92,7 +126,7 @@ describe('Constructor mutations', () => {
       operations
     );
 
-    expect(updateConstructor.message).toBe(CONSTRUCTOR_BOTTOM_NOT_FOUND);
+    expect(updateConstructor.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
     done();
   });
 
@@ -101,14 +135,11 @@ describe('Constructor mutations', () => {
       constructorId,
       operations
     );
-
     expect(deletedConstructor._id).toBe(constructorId);
     done();
   });
 
   afterAll(async done => {
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    done();
+    mongoose.connection.db.dropDatabase(done);
   });
 });
