@@ -10,6 +10,8 @@ const INPUT_FIELDS = {
   SKIP: 'skip',
   DATE: 'date',
   MODEL: 'model',
+  BUSINESS_TEXT: 'businessText',
+  COLOR: 'color',
 };
 
 module.exports = {

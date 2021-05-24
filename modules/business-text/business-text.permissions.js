@@ -8,8 +8,8 @@ const {
   roles: { SUPERADMIN, ADMIN },
 } = require('../../consts');
 const {
-  DB_COLLECTIONS_NAMES: { BUSINESS_TEXT },
-} = require('../../consts/db-collections-names');
+  INPUT_FIELDS: { BUSINESS_TEXT },
+} = require('../../consts/input-fields');
 
 const businessTextMutation = {
   addBusinessText: and(

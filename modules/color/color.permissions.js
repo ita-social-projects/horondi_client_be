@@ -5,8 +5,8 @@ const { ADMIN, SUPERADMIN } = roles;
 const { colorValidator } = require('../../validators/business-text.validator');
 const { inputDataValidation } = require('../../utils/rules');
 const {
-  DB_COLLECTIONS_NAMES: { COLOR },
-} = require('../../consts/db-collections-names');
+  INPUT_FIELDS: { COLOR },
+} = require('../../consts/input-fields');
 
 const colorPermissionsQuery = {
   getAllColors: allow,
