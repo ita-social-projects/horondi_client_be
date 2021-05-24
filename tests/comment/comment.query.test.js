@@ -108,14 +108,7 @@ describe('Comment queries', () => {
       operations
     );
     productId = productData._id;
-    const userData = await registerUser(
-      firstName,
-      lastName,
-      email,
-      pass,
-      language,
-      operations
-    );
+    await registerUser(firstName, lastName, email, pass, language, operations);
     const authRes = await loginUser(email, pass, operations);
     userId = authRes.data.loginUser._id;
     const commentData = await addComment(

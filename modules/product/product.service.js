@@ -152,7 +152,7 @@ class ProductsService {
       category,
       isHotItem,
       models,
-      currency
+      currency,
     } = args;
 
     if (isHotItem) {
@@ -189,7 +189,9 @@ class ProductsService {
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
-          name: { $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } } },
+          name: {
+            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
+          },
         },
         {
           description: {
@@ -292,7 +294,7 @@ class ProductsService {
       await addHistoryRecord(historyRecord);
     }
 
-    return await Product.findByIdAndUpdate(id, productData, {
+    return Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
   }
