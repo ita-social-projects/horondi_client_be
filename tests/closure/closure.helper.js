@@ -11,11 +11,24 @@ const createClosure = async (closure, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            available
+            customizable
             additionalPrice {
               currency
               value
             }
-            available
           }
           ... on Error {
             message
@@ -28,7 +41,6 @@ const createClosure = async (closure, operations) => {
       closure,
     },
   });
-
   return createdClosure.data.addClosure;
 };
 const updateClosure = async (id, closure, operations) => {
@@ -42,11 +54,24 @@ const updateClosure = async (id, closure, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            available
+            customizable
             additionalPrice {
               currency
               value
             }
-            available
           }
           ... on Error {
             message
@@ -60,9 +85,9 @@ const updateClosure = async (id, closure, operations) => {
       id,
     },
   });
-
   return updatedClosure.data.updateClosure;
 };
+
 const deleteClosure = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -95,11 +120,24 @@ const getClosureById = async (id, operations) => {
               lang
               value
             }
+            optionType
+            model {
+              _id
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            available
+            customizable
             additionalPrice {
               currency
               value
             }
-            available
           }
           ... on Error {
             statusCode

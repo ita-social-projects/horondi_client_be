@@ -21,7 +21,6 @@ const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
@@ -310,11 +309,10 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    const purchasedProducts = paidOrders.reduce((acc, order) => {
+    return paidOrders.reduce((acc, order) => {
       acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
       return acc;
     }, []);
-    return purchasedProducts;
   }
 
   async getAllUsers({ filter, pagination, sort }) {
@@ -445,7 +443,11 @@ class UserService extends FilterHelper {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+    }
+
+    if (user?.banned?.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
     const match = await bcrypt.compare(
@@ -454,7 +456,7 @@ class UserService extends FilterHelper {
     );
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
     const { accessToken, refreshToken } = generateTokens(
       user._id,
@@ -529,7 +531,6 @@ class UserService extends FilterHelper {
       },
       staySignedIn
     );
-
     return {
       ...user._doc,
       _id: user._id,

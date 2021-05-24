@@ -22,8 +22,10 @@ const {
   HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
 } = require('../../consts/history-obj-keys');
 const { objectType } = require('../../consts');
+const { transliterate } = require('../helper-functions');
 
 class NewsService {
+<<<<<<< HEAD
   async getAllNews({ skip, limit, filter }) {
     const filterOptions = {};
 
@@ -34,6 +36,16 @@ class NewsService {
         {
           'author.name.value': { $regex: `${searchString}`, $options: 'i' },
         },
+=======
+  async getAllNews({ skip, limit, filter: { search } }) {
+    const filterOptions = {};
+
+    if (search) {
+      const searchString = search.trim();
+
+      filterOptions.$or = [
+        { 'author.name.value': { $regex: `${searchString}`, $options: 'i' } },
+>>>>>>> f52ab8a4072090d14b34fa0737c4afab2404ba6c
         { 'title.value': { $regex: `${searchString}`, $options: 'i' } },
       ];
     }
@@ -113,7 +125,9 @@ class NewsService {
     data.author.image = await uploadLargeImage(upload[0]);
     data.image = await uploadLargeImage(upload[1]);
 
-    const newNews = await new News(data).save();
+    const slug = transliterate(data.title[0].value);
+
+    const newNews = await new News({ ...data, slug }).save();
 
     const historyRecord = generateHistoryObject(
       ADD_NEWS,

@@ -2,6 +2,7 @@ const newsType = `
 type News {
 _id: ID!
 title: [Language]
+slug: String
 text: [Language]
 image: String
 author: Author
@@ -26,4 +27,4 @@ input NewsFilterInput{
   }
 `;
 
-module.exports = {newsType, newsInput};
+module.exports = { newsType, newsInput };

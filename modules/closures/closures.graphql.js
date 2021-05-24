@@ -2,22 +2,43 @@ const closureType = `
   type Closure {
     _id: ID
     name: [Language]
-    material: Material
+    optionType: OptionTypeEnum
+    model: Model
+    features: ClosureFeatureSet
     image: String
     additionalPrice: [CurrencySet]
     available: Boolean
+    customizable: Boolean
   }
 `;
-const closureInput = `
+
+const closureFeatureSet = `
+  type ClosureFeatureSet {
+    material: Material
+    color: Color
+  }
+`;
+
+const closureInputs = `
   input ClosureInput {
     name: [LanguageInput]
-    material: ID
+    optionType: String
+    model: ID
+    features: ClosureFeatureSetInput
     image: Upload
-    additionalPrice: [CurrencySetInput]
+    additionalPrice: Int
     available: Boolean
+    customizable: Boolean
+  }
+
+  input ClosureFeatureSetInput {
+    material: ID
+    color: ID
   }
 `;
+
 module.exports = {
-  closureInput,
+  closureInputs,
   closureType,
+  closureFeatureSet,
 };

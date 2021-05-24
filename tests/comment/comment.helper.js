@@ -3,8 +3,8 @@ const { gql } = require('@apollo/client');
 const addComment = async (productId, comment, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($productId: ID!, $comment: CommentInput!) {
-        addComment(productId: $productId, comment: $comment) {
+      mutation($comment: CommentInput!) {
+        addComment(comment: $comment) {
           ... on Comment {
             _id
             text
@@ -132,7 +132,7 @@ const getAllCommentsByUser = async (userId, operations) => {
   return res.data.getAllCommentsByUser;
 };
 const getAllCommentsByProduct = async (productId, operations) => {
-  return await operations.query({
+  const res = await operations.query({
     query: gql`
       query($productId: ID!) {
         getAllCommentsByProduct(productId: $productId) {
@@ -157,6 +157,8 @@ const getAllCommentsByProduct = async (productId, operations) => {
       productId,
     },
   });
+
+  return res;
 };
 const getCommentById = async (id, operations) => {
   const res = await operations.query({
