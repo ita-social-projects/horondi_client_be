@@ -26,4 +26,4 @@ input NewsFilterInput{
   }
 `;
 
-module.exports = {newsType, newsInput};
+module.exports = { newsType, newsInput };

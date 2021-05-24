@@ -80,12 +80,18 @@ describe('Comment queries', () => {
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
-    const patternData = await createPattern(queryPatternToAdd, operations);
+    const patternData = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
     patternId = patternData._id;
-    const closureData = await createClosure(newClosure(materialId), operations);
+    const closureData = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
-      newConstructorBasic(materialId, colorId),
+      newConstructorBasic(materialId, colorId, modelId),
       operations
     );
     constructorBasicId = constructorBasicData._id;
@@ -108,14 +114,7 @@ describe('Comment queries', () => {
       operations
     );
     productId = productData._id;
-    const userData = await registerUser(
-      firstName,
-      lastName,
-      email,
-      pass,
-      language,
-      operations
-    );
+    await registerUser(firstName, lastName, email, pass, language, operations);
     const authRes = await loginUser(email, pass, operations);
     userId = authRes.data.loginUser._id;
     const commentData = await addComment(

@@ -100,54 +100,30 @@ const deleteOrder = async (id, operations) => {
   });
 };
 const getAllOrders = async operations => {
-  const res = await operations.query({
-    query: gql`
+  const res = await operations.mutate({
+    mutation: gql`
       query {
-        getAllOrders {
+        getAllOrders(limit: 10, skip: 0, filter: {}, sort: {}) {
           items {
-            status
+            _id
             user {
               firstName
               lastName
               email
               phoneNumber
             }
-            userComment
-            items {
-              model {
-                _id
-                category {
-                  name {
-                    value
-                    lang
-                  }
-                }
-              }
-              quantity
-              options {
-                size {
-                  name
-                  heightInCm
-                  widthInCm
-                  depthInCm
-                  weightInKg
-                }
-              }
-              fixedPrice {
-                currency
-                value
-              }
-            }
-            delivery {
-              invoiceNumber
-              courierOffice
-              cost {
-                currency
-                value
-              }
-            }
-
+            status
             paymentStatus
+            orderNumber
+            dateOfCreation
+            totalItemsPrice {
+              currency
+              value
+            }
+            totalPriceToPay {
+              currency
+              value
+            }
           }
           count
         }

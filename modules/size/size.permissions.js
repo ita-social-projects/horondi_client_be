@@ -13,6 +13,7 @@ const sizePermissionsQuery = {
   getAllSizes: allow,
   getSizeById: allow,
 };
+
 const sizePermissionsMutations = {
   addSize: and(
     inputDataValidation(SIZE, sizeInputValidator),

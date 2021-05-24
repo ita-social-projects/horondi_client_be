@@ -1,7 +1,20 @@
-const { allow } = require('graphql-shield');
-const { hasRoles } = require('../../../utils/rules');
-const { roles } = require('../../../consts');
-const { ADMIN, SUPERADMIN } = roles;
+const { allow, and } = require('graphql-shield');
+
+const ConstructorFrontPocketModel = require('./constructor-front-pocket.model');
+const {
+  inputDataValidation,
+  hasRoles,
+  checkIfItemExists,
+} = require('../../../utils/rules');
+const {
+  INPUT_FIELDS: { CONSTRUCTOR_FRONT_POCKET, CONSTRUCTOR_ELEMENT },
+} = require('../../../consts/input-fields');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../../consts');
+const {
+  inputConstrFrontPocketValidator,
+} = require('../../../validators/constructor-items-inputs.validator');
 
 const constructorFrontPocketPermissionsQuery = {
   getAllConstructorFrontPocket: allow,
@@ -9,8 +22,21 @@ const constructorFrontPocketPermissionsQuery = {
 };
 
 const constructorFrontPocketPermissionsMutations = {
-  addConstructorFrontPocket: hasRoles([ADMIN, SUPERADMIN]),
-  updateConstructorFrontPocket: hasRoles([ADMIN, SUPERADMIN]),
+  addConstructorFrontPocket: and(
+    inputDataValidation(
+      CONSTRUCTOR_FRONT_POCKET,
+      inputConstrFrontPocketValidator
+    ),
+    hasRoles([ADMIN, SUPERADMIN]),
+    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorFrontPocketModel)
+  ),
+  updateConstructorFrontPocket: and(
+    inputDataValidation(
+      CONSTRUCTOR_FRONT_POCKET,
+      inputConstrFrontPocketValidator
+    ),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   deleteConstructorFrontPocket: hasRoles([ADMIN, SUPERADMIN]),
 };
 

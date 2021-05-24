@@ -9,27 +9,40 @@ const {
   RANGES: { MIN, MAX },
 } = require('../../../consts/ranges');
 const {
-  DB_COLLECTIONS_NAMES: { CONSTRUCTOR_FRONT_POCKET, MATERIAL, COLOR },
+  DB_COLLECTIONS_NAMES: {
+    CONSTRUCTOR_FRONT_POCKET,
+    MATERIAL,
+    COLOR,
+    MODEL,
+    PATTERN,
+  },
 } = require('../../../consts/db-collections-names');
 
 const constructorFrontPocketSchema = new mongoose.Schema({
   name: [Language],
-  material: {
+  optionType: String,
+  model: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: MATERIAL,
+    ref: MODEL,
   },
-  color: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: COLOR,
+  features: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: MATERIAL,
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: COLOR,
+    },
+    pattern: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: PATTERN,
+    },
   },
-  image: {
-    type: String,
-    minlength: [MIN, IMAGE_NOT_PROVIDED],
-    maxlength: [MAX, IMAGE_NOT_PROVIDED],
-  },
+  image: String,
   basePrice: [CurrencySet],
   available: Boolean,
-  default: Boolean,
+  customizable: Boolean,
 });
 
 module.exports = mongoose.model(

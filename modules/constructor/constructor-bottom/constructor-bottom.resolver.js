@@ -1,76 +1,65 @@
 const constructorService = require('../constructor.services');
-const {
-  CONSTRUCTOR_BOTTOM_NOT_FOUND,
-  CONSTRUCTOR_BOTTOM_ALREADY_EXIST,
-} = require('../../../error-messages/constructor-bottom.messages');
+const RuleError = require('../../../errors/rule.error');
 const ConstructorBottom = require('./constructor-bottom.model');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../../consts/status-codes');
 
 const constructorBottomQuery = {
-  getConstructorBottomById: async (parent, args) => {
+  getConstructorBottomById: async (_, args) => {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
         ConstructorBottom
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  getAllConstructorBottom: async (parent, args) =>
-    await constructorService.getAllConstructorElements(args, ConstructorBottom),
+  getAllConstructorBottom: async (_, args) => {
+    try {
+      return await constructorService.getAllConstructorElements(
+        args,
+        ConstructorBottom
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const constructorBottomMutation = {
-  addConstructorBottom: async (parent, args) => {
+  addConstructorBottom: async (_, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
         ConstructorBottom,
-        CONSTRUCTOR_BOTTOM_ALREADY_EXIST
+        user
       );
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updateConstructorBottom: async (parent, args) => {
+  updateConstructorBottom: async (_, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
         ConstructorBottom,
-        CONSTRUCTOR_BOTTOM_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode:
-          e.message === CONSTRUCTOR_BOTTOM_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  deleteConstructorBottom: async (parent, args) => {
+  deleteConstructorBottom: async (_, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,
         ConstructorBottom,
-        CONSTRUCTOR_BOTTOM_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
