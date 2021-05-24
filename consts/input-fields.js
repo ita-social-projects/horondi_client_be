@@ -10,6 +10,7 @@ const INPUT_FIELDS = {
   SKIP: 'skip',
   DATE: 'date',
   MODEL: 'model',
+  CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
