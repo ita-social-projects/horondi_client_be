@@ -143,8 +143,7 @@ const transliterate = words => {
     .map(char => {
       return char === exception ? '' : dictionary[char] || char;
     })
-    .join('')
-    .toLowerCase();
+    .join('');
 
   return _.words(transliterated_words).join(hyphen);
 };
