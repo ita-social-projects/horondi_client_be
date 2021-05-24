@@ -21,7 +21,6 @@ const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
@@ -309,11 +308,10 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    const purchasedProducts = paidOrders.reduce((acc, order) => {
+    return paidOrders.reduce((acc, order) => {
       acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
       return acc;
     }, []);
-    return purchasedProducts;
   }
 
   async getAllUsers({ filter, pagination, sort }) {

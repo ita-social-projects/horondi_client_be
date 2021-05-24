@@ -21,6 +21,7 @@ const INPUT_FIELDS = {
   PATTERN: 'pattern',
   SIZE: 'size',
   MODEL: 'model',
+  REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
 module.exports = {

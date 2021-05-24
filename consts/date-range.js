@@ -1,3 +1,3 @@
-let minDate = 1589219112000;
+let minDefaultDate = new Date(1589219112000);
 
-module.exports = { minDate };
+module.exports = { minDefaultDate };
