@@ -1,21 +1,12 @@
 const Joi = require('joi');
 
-const schemaValidator = {
-  lang: Joi.string()
-    .min(2)
-    .max(2)
-    .required(),
-  value: Joi.string()
-    .min(6)
-    .max(1000)
-    .required(),
-};
+const { languageValidator } = require('./language.validator');
 
 const newsInputValidator = Joi.object({
-  title: Joi.array().items(schemaValidator),
-  text: Joi.array().items(schemaValidator),
+  title: Joi.array().items(languageValidator(2, 2, 6, 1000)),
+  text: Joi.array().items(languageValidator(2, 2, 6, 1000)),
   author: Joi.object({
-    name: Joi.array().items(schemaValidator),
+    name: Joi.array().items(languageValidator(2, 2, 6, 30)),
   }),
   date: Joi.string().trim(),
   show: Joi.boolean(),

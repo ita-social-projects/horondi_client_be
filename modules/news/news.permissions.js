@@ -8,8 +8,8 @@ const { newsInputValidator } = require('../../validators/news.validator');
 const { inputDataValidation } = require('../../utils/rules');
 
 const {
-  DB_COLLECTIONS_NAMES: { NEWS },
-} = require('../../consts/db-collections-names');
+  INPUT_FIELDS: { NEWS },
+} = require('../../consts/input-fields');
 
 const newsPermissionsQuery = {
   getAllNews: allow,

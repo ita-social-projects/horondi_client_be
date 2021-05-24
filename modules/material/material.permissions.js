@@ -7,11 +7,12 @@ const {
 const {
   materialInputValidator,
 } = require('../../validators/material.validator');
+
 const { inputDataValidation } = require('../../utils/rules');
 
 const {
-  DB_COLLECTIONS_NAMES: { MATERIAL },
-} = require('../../consts/db-collections-names');
+  INPUT_FIELDS: { MATERIAL },
+} = require('../../consts/input-fields');
 
 const materialPermissionsQuery = {
   getAllMaterials: hasRoles([ADMIN, SUPERADMIN]),

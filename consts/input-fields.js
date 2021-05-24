@@ -28,6 +28,8 @@ const INPUT_FIELDS = {
   SIZE: 'size',
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
+  MATERIAL: 'material',
+  NEWS: 'news',
 };
 
 module.exports = {
