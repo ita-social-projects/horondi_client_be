@@ -1,10 +1,10 @@
 const { allow, and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
-const { roles } = require('../../consts');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
 const { newsInputValidator } = require('../../validators/news.validator');
 const { inputDataValidation } = require('../../utils/rules');
-
-const { ADMIN, SUPERADMIN } = roles;
 
 const {
   DB_COLLECTIONS_NAMES: { NEWS },

@@ -2,18 +2,20 @@ const Joi = require('joi');
 
 const languageSchemaValidator = {
   lang: Joi.string()
-    .trim()
+    .min(0)
+    .max(2)
     .required(),
-  value: Joi.string().trim(),
+  value: Joi.string()
+    .min(6)
+    .max(1000)
+    .required(),
 };
 
 const newsInputValidator = Joi.object({
   title: Joi.array().items(languageSchemaValidator),
   text: Joi.array().items(languageSchemaValidator),
-  image: Joi.string().trim(),
   author: Joi.object({
     name: Joi.array().items(languageSchemaValidator),
-    image: Joi.string().trim(),
   }),
   date: Joi.string().trim(),
   show: Joi.boolean(),
