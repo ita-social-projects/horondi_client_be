@@ -19,6 +19,10 @@ class UploadService {
   async deleteFiles(files) {
     return [true, true];
   }
+
+  async deleteFile(file) {
+    return true;
+  }
 }
 
 module.exports = new UploadService();

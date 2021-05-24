@@ -1,57 +1,44 @@
 const ClosureService = require('./closures.service');
-const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../consts/status-codes');
+
+const RuleError = require('../../errors/rule.error');
 
 const closureQuery = {
-  getAllClosure: (parent, args) => ClosureService.getAllClosure(args),
-  getClosureById: async (parent, args) => {
+  getAllClosure: async (_, args) => {
     try {
-      return await ClosureService.getClosureById(args.id);
+      return await ClosureService.getAllClosure(args);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getClosureById: async (_, { id }) => {
+    try {
+      return await ClosureService.getClosureById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const closureMutation = {
-  addClosure: async (parent, args, { user }) => {
+  addClosure: async (_, { closure, upload }, { user }) => {
     try {
-      return await ClosureService.addClosure(args.closure, args.upload, user);
+      return await ClosureService.addClosure(closure, upload, user);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  updateClosure: async (parent, args, { user }) => {
+  updateClosure: async (_, { id, closure, upload }, { user }) => {
     try {
-      return await ClosureService.updateClosure(
-        args.id,
-        args.closure,
-        args.upload,
-        user
-      );
+      return await ClosureService.updateClosure(id, closure, upload, user);
     } catch (e) {
-      return {
-        statusCode: e.message === CLOSURE_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteClosure: async (parent, args, { user }) => {
+  deleteClosure: async (_, { id }, { user }) => {
     try {
-      return await ClosureService.deleteClosure(args.id, user);
+      return await ClosureService.deleteClosure(id, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

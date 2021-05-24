@@ -34,6 +34,10 @@ const {
   modelsMutation,
 } = require('./modules/model/model.resolver');
 const {
+  restrictionMutation,
+  restrictionQuery,
+} = require('./modules/restriction/restriction.resolver');
+const {
   patternQuery,
   patternMutation,
 } = require('./modules/pattern/pattern.resolver');
@@ -91,6 +95,15 @@ const {
   constructorBottomQuery,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.resolver');
 
+const {
+  pocketMutation,
+  pocketQuery,
+} = require('./modules/pocket/pocket.resolver');
+
+const { strapMutation, strapQuery } = require('./modules/strap/strap.resolver');
+
+const { backQuery, backMutation } = require('./modules/back/back.resolver');
+
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 
 const categoryService = require('./modules/category/category.service');
@@ -109,9 +122,14 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
+const pocketService = require('./modules/pocket/pocket.service');
+const strapService = require('./modules/strap/strap.service');
+
 const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
+const backService = require('./modules/back/back.service');
+const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
   history: 'History',
@@ -120,6 +138,7 @@ const SCHEMA_NAMES = {
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
+  paginatedPatterns: 'PaginatedPatterns',
   material: 'Material',
   materials: 'Materials',
   currency: 'Currency',
@@ -128,6 +147,7 @@ const SCHEMA_NAMES = {
   businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
+  restriction: 'Restriction',
   contact: 'Contact',
   order: 'Order',
   user: 'User',
@@ -142,6 +162,12 @@ const SCHEMA_NAMES = {
   constructorBottom: 'ConstructorBottom',
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
+  pocket: 'Pocket',
+  paginatedPockets: 'PaginatedPockets',
+  back: 'Back',
+  paginatedBacks: 'PaginatedBacks',
+  strap: 'Strap',
+  paginatedStraps: 'PaginatedStraps',
 };
 
 const resolvers = {
@@ -169,6 +195,8 @@ const resolvers = {
     ...businessTextQuery,
 
     ...modelsQuery,
+
+    ...restrictionQuery,
 
     ...contactQuery,
 
@@ -199,6 +227,12 @@ const resolvers = {
     ...constructorFrontPocketQuery,
 
     ...colorQuery,
+
+    ...pocketQuery,
+
+    ...backQuery,
+
+    ...strapQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -358,46 +392,119 @@ const resolvers = {
       }),
   },
   Pattern: {
-    material: parent => materialService.getMaterialById(parent.material),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      handmade: parent.features.handmade,
+    }),
   },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
     sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
-    constructorBottom: parent =>
-      parent.constructorBottom.map(el =>
-        constructorServices.getConstructorElementById(
-          el,
-          constructorBottomModel
-        )
+    eligibleOptions: parent => ({
+      constructorBottom: () =>
+        parent.eligibleOptions.constructorBottom.map(el =>
+          constructorServices.getConstructorElementById(
+            el,
+            constructorBottomModel
+          )
+        ),
+      constructorBasic: () =>
+        parent.eligibleOptions.constructorBasic.map(el =>
+          constructorServices.getConstructorElementById(
+            el,
+            constructorBasicModel
+          )
+        ),
+      constructorFrontPocket: () =>
+        parent.eligibleOptions.constructorFrontPocket.map(el =>
+          constructorServices.getConstructorElementById(
+            el,
+            constructorFrontPocketModel
+          )
+        ),
+      constructorPattern: () =>
+        parent.eligibleOptions.constructorPattern.map(el =>
+          patternService.getPatternById(el)
+        ),
+      constructorPocket: () =>
+        parent.eligibleOptions.constructorPocket.map(el =>
+          pocketService.getPocketById(el)
+        ),
+      constructorBack: () =>
+        parent.eligibleOptions.constructorBack.map(el =>
+          backService.getBackById(el)
+        ),
+      constructorClosure: () =>
+        parent.eligibleOptions.constructorClosure.map(el =>
+          closuresService.getClosureById(el)
+        ),
+      constructorStrap: () =>
+        parent.eligibleOptions.constructorStrap.map(el =>
+          strapService.getStrapById(el)
+        ),
+    }),
+    appliedOptions: parent => ({
+      constructorBottom: constructorServices.getConstructorElementById(
+        parent.appliedOptions.constructorBottom,
+        constructorBottomModel
       ),
-    constructorBasic: parent =>
-      parent.constructorBasic.map(el =>
-        constructorServices.getConstructorElementById(el, constructorBasicModel)
-      ),
-    constructorFrontPocket: parent =>
-      parent.constructorFrontPocket.map(el =>
+      constructorBasic: () =>
         constructorServices.getConstructorElementById(
-          el,
+          parent.appliedOptions.constructorBasic,
+          constructorBasicModel
+        ),
+      constructorFrontPocket: () =>
+        constructorServices.getConstructorElementById(
+          parent.appliedOptions.constructorFrontPocket,
           constructorFrontPocketModel
-        )
-      ),
-    constructorPattern: parent =>
-      parent.constructorPattern.map(el => patternService.getPatternById(el)),
+        ),
+      constructorPattern: () =>
+        patternService.getPatternById(parent.appliedOptions.constructorPattern),
+      constructorPocket: () =>
+        parent.eligibleOptions.constructorPocket.map(el => {
+          return pocketService.getPocketById(el);
+        }),
+      constructorBack: () =>
+        backService.getBackById(parent.appliedOptions.constructorBack),
+      constructorClosure: () =>
+        closuresService.getClosureById(
+          parent.appliedOptions.constructorClosure
+        ),
+      constructorStrap: () =>
+        strapService.getStrapById(parent.appliedOptions.constructorStrap),
+    }),
+    restrictions: parent =>
+      restrictionService.getRestrictionById(parent.restriction),
   },
   Closure: {
-    material: parent => materialService.getMaterialById(parent.material),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
   ConstructorBottom: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
   ConstructorBasic: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
   ConstructorFrontPocket: {
-    material: parent => materialService.getMaterialById(parent.material),
-    color: parent => colorService.getColorById(parent.color),
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+      pattern: () => patternService.getPatternById(parent.features.pattern),
+    }),
   },
 
   UserRate: {
@@ -417,6 +524,22 @@ const resolvers = {
   },
   EmailAnswer: {
     admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
+  },
+  Pocket: {
+    model: parent => modelService.getModelById(parent.model),
+  },
+  Back: {
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
+  },
+  Strap: {
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
+      color: () => colorService.getColorById(parent.features.color),
+    }),
   },
 
   Mutation: {
@@ -444,6 +567,8 @@ const resolvers = {
 
     ...modelsMutation,
 
+    ...restrictionMutation,
+
     ...contactMutation,
 
     ...ordersMutation,
@@ -467,6 +592,12 @@ const resolvers = {
     ...constructorFrontPocketMutation,
 
     ...constructorBottomMutation,
+
+    ...pocketMutation,
+
+    ...backMutation,
+
+    ...strapMutation,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -541,6 +672,16 @@ const resolvers = {
       return 'Error';
     },
   },
+
+  PaginatedPatterns: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPatterns;
+      }
+      return 'Error';
+    },
+  },
+
   ProductResult: {
     __resolveType: obj => {
       if (obj.name) {
@@ -585,6 +726,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.model;
+      }
+      return 'Error';
+    },
+  },
+  RestrictionResult: {
+    __resolveType: obj => {
+      if (obj.compareByExpression) {
+        return SCHEMA_NAMES.restriction;
       }
       return 'Error';
     },
@@ -694,6 +843,60 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructorFrontPocket;
+      }
+      return 'Error';
+    },
+  },
+
+  PocketResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.pocket;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedPockets: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPockets;
+      }
+      return 'Error';
+    },
+  },
+
+  BackResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.back;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedBacks: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedBacks;
+      }
+      return 'Error';
+    },
+  },
+
+  StrapResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.strap;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedStraps: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedStraps;
       }
       return 'Error';
     },
