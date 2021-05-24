@@ -13,7 +13,7 @@ const {
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
 const { userDateFormat } = require('../../consts');
-let { minDate } = require('../../consts/date-range');
+let { minDefaultDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
@@ -40,7 +40,12 @@ class OrdersService {
   }
 
   async getAllOrders({ skip, limit, filter = {}, sort }) {
-    let maxDate = Date.now();
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
+
+    if (!Object.keys(sort).length) {
+      sort.dateOfCreation = -1;
+    }
     const { status, paymentStatus, date, search } = filter;
     const filterObject = {};
 

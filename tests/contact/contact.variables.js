@@ -38,12 +38,12 @@ const updatedContact = {
 const newContact = {
   phoneNumber: '380964422333',
   openHours: [
-    { lang: 'uk', value: 'ПН ...' },
-    { lang: 'en', value: 'FR ...' },
+    { lang: 'uk', value: 'ПН ...Новий контакт' },
+    { lang: 'en', value: 'FR ...New contact' },
   ],
   address: [
-    { lang: 'uk', value: 'Вулиця 4' },
-    { lang: 'en', value: 'Street 4' },
+    { lang: 'uk', value: 'Вулиця 4 Нова вулиця' },
+    { lang: 'en', value: 'Street 4 New Street' },
   ],
   email: 'test@test.com',
   images: [

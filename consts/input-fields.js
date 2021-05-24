@@ -11,6 +11,7 @@ const INPUT_FIELDS = {
   DATE: 'date',
   MODEL: 'model',
   CONTACT: 'contact',
+  REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
 module.exports = {
