@@ -70,7 +70,16 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  googleUser: async (parent, args) => {
+  googleUser: (parent, args) =>
+    userService.googleUser(args.idToken, args.staySignedIn),
+  loginUser: async (_, { loginInput }) => {
+    try {
+      return await userService.loginUser(loginInput);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  loginAdmin: async (_, { loginInput }) => {
     try {
       return await userService.googleUser(args.idToken, args.staySignedIn);
     } catch (e) {

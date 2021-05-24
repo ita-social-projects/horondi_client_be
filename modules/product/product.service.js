@@ -294,7 +294,7 @@ class ProductsService {
       await addHistoryRecord(historyRecord);
     }
 
-    return await Product.findByIdAndUpdate(id, productData, {
+    return Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
   }

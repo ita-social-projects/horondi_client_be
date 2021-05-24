@@ -710,9 +710,12 @@ const typeDefs = gql`
     ): ProductResult
     deleteImages(id: ID!, images: [String!]!): PrimaryImage
     "Comment Mutation"
-    addComment(productId: ID!, comment: CommentInput!): CommentResult
+    addComment(comment: CommentInput!): CommentResult
+    replyForComment(commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
     deleteComment(id: ID!): CommentResult
+    deleteReplyForComment(replyCommentId: ID!): CommentResult
     updateComment(id: ID!, comment: CommentUpdateInput!): CommentResult
+    updateReplyForComment(replyCommentId: ID!, replyCommentData: ReplyCommentUpdateInput!): CommentResult
     "BusinessText Mutation"
     addBusinessText(
       businessText: BusinessTextInput!

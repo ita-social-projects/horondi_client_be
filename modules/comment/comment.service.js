@@ -10,13 +10,15 @@ const {
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
+  REPLY_COMMENT_IS_NOT_PRESENT,
 } = require('../../error-messages/comment.messages');
-let { minDate } = require('../../consts/date-range');
+let { minDefaultDate } = require('../../consts/date-range');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
     const filterOptions = {};
-    let maxDate = Date.now();
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
 
     if (filter?.show?.length) {
       filterOptions.show = { $in: filter.show };
@@ -91,29 +93,99 @@ class CommentsService {
   }
 
   async updateComment(id, comment) {
-    const updatedComment = await Comment.findByIdAndUpdate(id, comment, {
-      new: true,
-    }).exec();
+    const updatedComment = await Comment.findByIdAndUpdate(
+      id,
+      { ...comment, updatedAt: Date.now() },
+      {
+        new: true,
+      }
+    ).exec();
+
     if (!updatedComment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return updatedComment;
   }
 
-  async addComment(id, data) {
-    const product = await Product.findById(id).exec();
+  async addComment(data) {
+    const product = await Product.findById(data.product).exec();
+
     if (!product) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
     return new Comment(data).save();
   }
 
-  async deleteComment(id) {
-    const deletedComment = await Comment.findByIdAndDelete(id).exec();
-    if (!deletedComment) {
-      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+  async replyForComment(commentId, replyComment) {
+    const isCommentExists = await Comment.findById(commentId).exec();
+
+    if (!isCommentExists) {
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
-    return deletedComment;
+
+    return Comment.findByIdAndUpdate(
+      commentId,
+      {
+        $push: {
+          replyComments: replyComment,
+        },
+      },
+      {
+        new: true,
+      }
+    ).exec();
+  }
+
+  async updateReplyComment(replyCommentId, replyCommentData) {
+    const isReplyCommentPresent = await Comment.findOne({
+      'replyComments._id': replyCommentId,
+    }).exec();
+
+    if (!isReplyCommentPresent) {
+      throw new RuleError(REPLY_COMMENT_IS_NOT_PRESENT, NOT_FOUND);
+    }
+
+    return Comment.findOneAndUpdate(
+      { 'replyComments._id': replyCommentId },
+      {
+        $set: {
+          'replyComments.$.replyText': replyCommentData?.replyText,
+          'replyComments.$.showReplyComment':
+            replyCommentData?.showReplyComment,
+          'replyComments.$.updatedAt': Date.now(),
+        },
+      },
+      { new: true }
+    ).exec();
+  }
+
+  async deleteReplyComment(replyCommentId) {
+    const isReplyCommentPresent = await Comment.findOne({
+      'replyComments._id': replyCommentId,
+    }).exec();
+
+    if (!isReplyCommentPresent) {
+      throw new RuleError(REPLY_COMMENT_IS_NOT_PRESENT, NOT_FOUND);
+    }
+
+    return Comment.findOneAndUpdate(
+      { 'replyComments._id': replyCommentId },
+      {
+        $pull: {
+          replyComments: { _id: replyCommentId },
+        },
+      },
+      { new: true }
+    ).exec();
+  }
+
+  async deleteComment(id) {
+    const deletedComment = await Comment.findById(id).exec();
+
+    if (!deletedComment) {
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+    return Comment.findByIdAndDelete(id, { new: true }).exec();
   }
 
   async addRate(id, data, user) {
@@ -142,7 +214,7 @@ class CommentsService {
         )
       : [...userRates, { ...data, user: user._id }];
 
-    const rateToAdd = await Product.findByIdAndUpdate(
+    return Product.findByIdAndUpdate(
       id,
       {
         rateCount,
@@ -151,7 +223,6 @@ class CommentsService {
       },
       { new: true }
     ).exec();
-    return rateToAdd;
   }
 }
 

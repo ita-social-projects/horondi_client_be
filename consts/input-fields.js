@@ -10,6 +10,7 @@ const INPUT_FIELDS = {
   SKIP: 'skip',
   DATE: 'date',
   MODEL: 'model',
+  REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
 module.exports = {
