@@ -5,7 +5,7 @@ const {
   userNameRegExp,
   passwordRegExp,
   numberRegExp,
-  zipcode,
+  zipcodeRegExp,
 } = require('../consts/regexp');
 
 const createUserValidator = Joi.object({
@@ -115,7 +115,7 @@ const updateUserValidator = Joi.object({
       .allow(''),
     zipcode: Joi.string()
       .trim()
-      .regex(zipcode)
+      .regex(zipcodeRegExp)
       .allow(''),
     street: Joi.string()
       .trim()

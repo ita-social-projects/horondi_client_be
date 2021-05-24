@@ -9,7 +9,6 @@ const questionInputValidator = Joi.object({
     .required(),
   text: Joi.string()
     .min(2)
-    .max(700)
     .trim()
     .required(),
   email: Joi.string()
@@ -18,7 +17,6 @@ const questionInputValidator = Joi.object({
     .required(),
   language: Joi.number()
     .valid(0, 1)
-    .default(0)
     .required(),
 });
 
