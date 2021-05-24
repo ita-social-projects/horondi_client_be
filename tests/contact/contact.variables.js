@@ -2,12 +2,12 @@ const notExistContactId = '5f311ec5f2983e390432a8c3';
 const contact = {
   phoneNumber: '380960022333',
   openHours: [
-    { lang: 'uk', value: 'ПН ...' },
-    { lang: 'en', value: 'FR ...' },
+    { lang: 'uk', value: 'ПН ...........' },
+    { lang: 'en', value: 'FR ...........' },
   ],
   address: [
-    { lang: 'uk', value: 'Вулиця 3' },
-    { lang: 'en', value: 'Street 3' },
+    { lang: 'uk', value: 'Вулиця 3........' },
+    { lang: 'en', value: 'Street 3........' },
   ],
   email: 'test@test.com',
   images: [
@@ -20,8 +20,8 @@ const contact = {
 const updatedContact = {
   phoneNumber: '380960022334',
   openHours: [
-    { lang: 'uk', value: 'ПН ...' },
-    { lang: 'en', value: 'FR ...' },
+    { lang: 'uk', value: 'ПН ....Update' },
+    { lang: 'en', value: 'FR ...Update' },
   ],
   address: [
     { lang: 'uk', value: 'updatedВулиця' },
