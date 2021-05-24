@@ -15,6 +15,7 @@ const INPUT_FIELDS = {
   QUESTION: 'question',
   TEXT: 'text',
   SIZE: 'size',
+  CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
