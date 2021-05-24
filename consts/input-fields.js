@@ -15,6 +15,7 @@ const INPUT_FIELDS = {
   QUESTION: 'question',
   TEXT: 'text',
   SIZE: 'size',
+  REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
 module.exports = {
