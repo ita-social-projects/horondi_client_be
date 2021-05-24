@@ -622,7 +622,7 @@ class UserService extends FilterHelper {
       throw new RuleError(TOKEN_IS_EXPIRIED, UNAUTHORIZED);
     }
 
-    const candidate = await User.findById(userId);
+    const candidate = await User.findById(userId).exec();
 
     if (!candidate) {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
