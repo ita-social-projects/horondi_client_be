@@ -12,6 +12,7 @@ const {
 
 const NewsSchema = new mongoose.Schema({
   title: [Language],
+  slug: String,
   text: [Language],
   image: String,
   author: {

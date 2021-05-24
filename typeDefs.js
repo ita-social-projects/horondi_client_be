@@ -29,10 +29,6 @@ const {
   productInput,
 } = require('./modules/product/product.graphql');
 const { orderTypes, orderInputs } = require('./modules/order/order.graphql');
-<<<<<<< HEAD
-const { modelType, modelInput } = require('./modules/model/model.graphql');
-const {
-=======
 const {
   modelType,
   optionTypes,
@@ -44,7 +40,6 @@ const {
   restrictionInputs,
 } = require('./modules/restriction/restriction.graphql');
 const {
->>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
   categoryType,
   categoryInput,
   FilterInputComponent,
@@ -58,12 +53,8 @@ const {
 } = require('./modules/material/material.graphql');
 const {
   patternType,
-<<<<<<< HEAD
-  patternInput,
-=======
   patternInputs,
   patternFeatureSet,
->>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
 } = require('./modules/pattern/pattern.graphql');
 const {
   currencyType,
@@ -102,37 +93,21 @@ const {
   homePageSlideInput,
 } = require('./modules/homepage-slider/homepage-slider.graphql');
 const {
-<<<<<<< HEAD
-  constructorBottomInput,
-  constructorBottomType,
-=======
   constructorBottomInputs,
   constructorBottomType,
   constructorBottomFeatureSet,
->>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
 const { headerType, headerInput } = require('./modules/header/header.graphql');
 const {
   closureType,
-<<<<<<< HEAD
-  closureInput,
-=======
   closureInputs,
   closureFeatureSet,
->>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
 } = require('./modules/closures/closures.graphql');
 const { defaultPaginationParams } = require('./consts');
 const { sizeType, sizeInput } = require('./modules/size/size.graphql');
 const { colorType, colorInput } = require('./modules/color/color.graphql');
 const {
   constructorBasicType,
-<<<<<<< HEAD
-  constructorBasicInput,
-} = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
-const {
-  constructorFrontPocketType,
-  constructorFrontPocketInput,
-=======
   constructorBasicInputs,
   constructorBasicFeatureSet,
 } = require('./modules/constructor/constructor-basic/constructor-basic.graphgl');
@@ -140,7 +115,6 @@ const {
   constructorFrontPocketType,
   constructorFrontPocketInputs,
   constructorFrPocketFeatureSet,
->>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.graphgl');
 const {
   ukrPoshtaEnum,
@@ -213,7 +187,6 @@ const typeDefs = gql`
   ${strapType}
   ${strapFeatureType}
  
-
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -223,7 +196,6 @@ const typeDefs = gql`
     admin
     user
   }
-
   enum OptionTypeEnum {
     BACK
     CLOSURE
@@ -234,7 +206,6 @@ const typeDefs = gql`
     POCKET
     STRAP
   }
-
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -399,36 +370,29 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
-
   type PaginatedClosure {
       items: [Closure]
       count: Int
   }
-
   type PaginatedPockets {
     items: [Pocket]
     count: Int
   }
-
   type PaginatedBacks {
     items: [Back]
     count: Int
   }
-
   type PaginatedStraps {
     items: [Strap]
     count: Int
   }
-
   type PaginatedRestrictions {
     items: [Restriction]
     count: Int
   }
-
   type Materials {
     items: [Material]
   }
-
   type PaginatedConstructorBasics {
       items: [ConstructorBasic]
       count: Int
@@ -590,7 +554,6 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
-
   }
   input Pagination {
       skip: Int = ${skip}
@@ -668,7 +631,6 @@ const typeDefs = gql`
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}
-
   input LanguageInput {
     lang: String!
     value: String
@@ -947,7 +909,6 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
-
   }
 `;
 

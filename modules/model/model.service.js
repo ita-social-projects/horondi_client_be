@@ -1,9 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
 const Model = require('./model.model');
-const ConstructorBasic = require('../constructor/constructor-basic/constructor-basic.model');
-const ConstructorBottom = require('../constructor/constructor-bottom/constructor-bottom.model');
-const ConstructorFrontPocket = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
 const {
   CATEGORY_NOT_VALID,
   MODEL_NOT_FOUND,
@@ -50,17 +47,17 @@ class ModelsService {
       ];
     }
 
-    if (filter?.available.length) {
+    if (filter?.available?.length) {
       filterOptions.available = { $in: filter.available };
     }
 
-    if (filter?.availableForConstructor.length) {
+    if (filter?.availableForConstructor?.length) {
       filterOptions.availableForConstructor = {
         $in: filter.availableForConstructor,
       };
     }
 
-    if (filter?.category.length) {
+    if (filter?.category?.length) {
       filterOptions.category = { $in: filter.category };
     }
 

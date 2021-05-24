@@ -22,29 +22,17 @@ const {
   HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
 } = require('../../consts/history-obj-keys');
 const { objectType } = require('../../consts');
+const { transliterate } = require('../helper-functions');
 
 class NewsService {
-<<<<<<< HEAD
-  async getAllNews({ skip, limit, filter }) {
-    const filterOptions = {};
-
-    if (filter?.search) {
-      const searchString = filter.search.trim();
-
-      filterOptions.$or = [
-        {
-          'author.name.value': { $regex: `${searchString}`, $options: 'i' },
-        },
-=======
   async getAllNews({ skip, limit, filter: { search } }) {
     const filterOptions = {};
 
-    if (search) {
+    if (filter?.search) {
       const searchString = search.trim();
 
       filterOptions.$or = [
         { 'author.name.value': { $regex: `${searchString}`, $options: 'i' } },
->>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
         { 'title.value': { $regex: `${searchString}`, $options: 'i' } },
       ];
     }
@@ -124,7 +112,9 @@ class NewsService {
     data.author.image = await uploadLargeImage(upload[0]);
     data.image = await uploadLargeImage(upload[1]);
 
-    const newNews = await new News(data).save();
+    const slug = transliterate(data.title[0].value);
+
+    const newNews = await new News({ ...data, slug }).save();
 
     const historyRecord = generateHistoryObject(
       ADD_NEWS,
