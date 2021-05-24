@@ -111,9 +111,12 @@ const modelRefactoredFields = {
   ],
 };
 
+const slug = { slug: '' };
+
 module.exports = {
   sizeName,
   banned,
+  slug,
   closureExtraFields,
   patternExtraFields,
   constructorBasicExtraFields,
