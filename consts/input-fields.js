@@ -12,6 +12,7 @@ const INPUT_FIELDS = {
   MODEL: 'model',
   BUSINESS_TEXT: 'businessText',
   COLOR: 'color',
+  REPLY_COMMENT_DATA: 'replyCommentData',
 };
 
 module.exports = {
