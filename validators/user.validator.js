@@ -5,6 +5,7 @@ const {
   userNameRegExp,
   passwordRegExp,
   numberRegExp,
+  zipcodeRegExp,
 } = require('../consts/regexp');
 
 const createUserValidator = Joi.object({
@@ -79,41 +80,58 @@ const registerAdminValidator = Joi.object({
 const updateUserValidator = Joi.object({
   firstName: Joi.string()
     .trim()
-    .regex(userNameRegExp),
+    .regex(userNameRegExp)
+    .required(),
   lastName: Joi.string()
     .trim()
-    .regex(userNameRegExp),
+    .regex(userNameRegExp)
+    .required(),
   email: Joi.string()
     .trim()
-    .email(),
+    .email()
+    .required(),
   password: Joi.string()
     .trim()
     .regex(passwordRegExp),
   phoneNumber: Joi.string()
     .trim()
-    .regex(numberRegExp),
+    .regex(numberRegExp)
+    .allow(''),
   address: Joi.object({
     country: Joi.string()
       .trim()
-      .alphanum(),
+      .min(2)
+      .max(40)
+      .allow(''),
     region: Joi.string()
       .trim()
-      .alphanum(),
+      .min(2)
+      .max(40)
+      .allow(''),
     city: Joi.string()
       .trim()
-      .alphanum(),
+      .min(2)
+      .max(40)
+      .allow(''),
     zipcode: Joi.string()
       .trim()
-      .alphanum(),
+      .regex(zipcodeRegExp)
+      .allow(''),
     street: Joi.string()
       .trim()
-      .alphanum(),
+      .min(2)
+      .max(40)
+      .allow(''),
     buildingNumber: Joi.string()
       .trim()
-      .alphanum(),
+      .min(1)
+      .max(6)
+      .allow(''),
     appartment: Joi.string()
       .trim()
-      .alphanum(),
+      .min(1)
+      .max(6)
+      .allow(''),
   }),
 }).unknown();
 

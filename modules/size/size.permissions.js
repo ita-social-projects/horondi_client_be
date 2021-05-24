@@ -6,8 +6,8 @@ const { sizeInputValidator } = require('../../validators/size.validator');
 const { inputDataValidation } = require('../../utils/rules');
 
 const {
-  DB_COLLECTIONS_NAMES: { SIZE },
-} = require('../../consts/db-collections-names');
+  INPUT_FIELDS: { SIZE },
+} = require('../../consts/input-fields');
 
 const sizePermissionsQuery = {
   getAllSizes: allow,

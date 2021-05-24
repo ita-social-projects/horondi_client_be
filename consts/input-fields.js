@@ -21,6 +21,11 @@ const INPUT_FIELDS = {
   PATTERN: 'pattern',
   SIZE: 'size',
   MODEL: 'model',
+  CURRENCY: 'currency',
+  HEADER: 'header',
+  QUESTION: 'question',
+  TEXT: 'text',
+  SIZE: 'size',
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
 };
