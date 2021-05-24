@@ -3,6 +3,7 @@ const { hasRoles } = require('../../utils/rules');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
+
 const { newsInputValidator } = require('../../validators/news.validator');
 const { inputDataValidation } = require('../../utils/rules');
 
