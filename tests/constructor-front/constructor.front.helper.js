@@ -11,15 +11,32 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
             available
-            default
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -33,7 +50,7 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
   return constructorFrontPocket.data.addConstructorFrontPocket;
 };
 const deleteConstructorFrontPocket = async (id, operations) => {
-  return await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteConstructorFrontPocket(id: $id) {
@@ -50,7 +67,10 @@ const deleteConstructorFrontPocket = async (id, operations) => {
       id,
     },
   });
+
+  return result.data.deleteConstructorFrontPocket;
 };
+
 const updateConstructorFrontPocket = async (
   constructorInput,
   constructorId,
@@ -69,15 +89,32 @@ const updateConstructorFrontPocket = async (
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
             available
-            default
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -91,7 +128,10 @@ const updateConstructorFrontPocket = async (
   return constructorFrontPocket.data.updateConstructorFrontPocket;
 };
 
-const getAllConstructorFrontPocket = async operations => {
+const getAllConstructorFrontPocket = async (
+  { limit, skip, filter },
+  operations
+) => {
   const res = await operations.query({
     query: gql`
       query($limit: Int, $skip: Int) {
@@ -102,24 +142,37 @@ const getAllConstructorFrontPocket = async operations => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
-              name {
-                lang
-                value
-              }
-              purpose
-              available
             }
-            color {
-              _id
-              colorHex
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
+            available
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
         }
       }
     `,
+    variables: { limit, skip, filter },
   });
   return res.data.getAllConstructorFrontPocket;
 };
@@ -134,15 +187,32 @@ const getConstructorFrontPocketById = async (id, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
+            }
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             image
-            color {
-              _id
-            }
             available
-            default
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode

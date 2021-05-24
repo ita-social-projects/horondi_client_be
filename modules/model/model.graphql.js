@@ -1,37 +1,81 @@
 const modelType = `  
 type Model {
     _id: ID!
-    category: Category!,
-    name: [Language],
-    description: [Language],
-    images: ImageSet,
-    priority: Int,
-    show: Boolean,
-    availableForConstructor: Boolean,
-    constructorBasic:[ConstructorBasic]
-    constructorPattern:[Pattern],
-    constructorFrontPocket:[ConstructorFrontPocket],
-    constructorBottom:[ConstructorBottom]
+    category: Category!
+    name: [Language]
+    description: [Language]
+    images: ImageSet
+    priority: Int
+    show: Boolean
+    availableForConstructor: Boolean
+    eligibleOptions: Option
+    appliedOptions: AppliedOption
+    restrictions: [Restriction]
     sizes: [Size]
   }
 `;
-const modelInput = `
+
+const optionTypes = `
+  type Option {
+    constructorBasic:[ConstructorBasic]
+    constructorPattern:[Pattern]
+    constructorFrontPocket:[ConstructorFrontPocket]
+    constructorBottom:[ConstructorBottom]
+    constructorPocket: [Pocket]
+    constructorBack: [Back]
+    constructorClosure: [Closure]
+    constructorStrap: [Strap]
+  }
+
+  type AppliedOption {
+    constructorBasic: ConstructorBasic
+    constructorPattern: Pattern
+    constructorFrontPocket: ConstructorFrontPocket
+    constructorBottom: ConstructorBottom
+    constructorPocket: [Pocket]
+    constructorBack: Back
+    constructorClosure: Closure
+    constructorStrap: Strap
+  }
+`;
+
+const modelInputs = `
 input ModelInput {
-    category: ID!,
-    name: [LanguageInput],
-    description: [LanguageInput],
-    images: ImageSetInput,
-    priority: Int,
-    show: Boolean,
+    category: ID!
+    name: [LanguageInput]
+    description: [LanguageInput]
+    images: ImageSetInput
+    priority: Int
+    show: Boolean
     sizes: [ID]
-    availableForConstructor: Boolean,
-    constructorBasic:[ID],
-    constructorPattern:[ID],
-    constructorFrontPocket:[ID],
-    constructorBottom:[ID]
-  }`;
+    availableForConstructor: Boolean
+    eligibleOptions: OptionInput
+    restrictions: [ID]
+  }
+  
+input OptionInput {
+  constructorBasic:[ID]
+  constructorPattern:[ID]
+  constructorFrontPocket:[ID]
+  constructorBottom:[ID]
+  constructorPocket: [ID]
+  constructorBack: [ID]
+  constructorClosure: [ID]
+  constructorStrap: [ID]
+}
+
+input ModelFilterInput{
+  name:String
+  description:String
+  category:[String]
+  available:[String]
+  availableForConstructor:[String]
+}
+  
+`;
 
 module.exports = {
   modelType,
-  modelInput,
+  optionTypes,
+  modelInputs,
 };

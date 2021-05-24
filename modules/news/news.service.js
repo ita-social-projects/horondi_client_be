@@ -24,6 +24,7 @@ const {
 const { objectType } = require('../../consts');
 
 class NewsService {
+<<<<<<< HEAD
   async getAllNews({ skip, limit, filter }) {
     const filterOptions = {};
 
@@ -34,6 +35,16 @@ class NewsService {
         {
           'author.name.value': { $regex: `${searchString}`, $options: 'i' },
         },
+=======
+  async getAllNews({ skip, limit, filter: { search } }) {
+    const filterOptions = {};
+
+    if (search) {
+      const searchString = search.trim();
+
+      filterOptions.$or = [
+        { 'author.name.value': { $regex: `${searchString}`, $options: 'i' } },
+>>>>>>> 37dcad847d1fb203839ff765cd1fd5b919c72149
         { 'title.value': { $regex: `${searchString}`, $options: 'i' } },
       ];
     }

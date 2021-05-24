@@ -74,6 +74,7 @@ let patternId;
 let constructorBasicId;
 let colorId;
 let sizeId;
+let userId;
 let productRate;
 let productRateCount;
 let productUserRates;
@@ -90,12 +91,18 @@ describe('Comment queries', () => {
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
-    const patternData = await createPattern(queryPatternToAdd, operations);
+    const patternData = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
     patternId = patternData._id;
-    const closureData = await createClosure(newClosure(materialId), operations);
+    const closureData = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
-      newConstructorBasic(materialId, colorId),
+      newConstructorBasic(materialId, colorId, modelId),
       operations
     );
     constructorBasicId = constructorBasicData._id;

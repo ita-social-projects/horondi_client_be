@@ -8,7 +8,7 @@ const PHONE_RANGES = {
 };
 const LINK_RANGES = {
   MIN_LINK: 2,
-  MAX_LINK: 30,
+  MAX_LINK: 1000,
 };
 
 module.exports = {

@@ -1,5 +1,21 @@
 const wrongId = '60102a6d0ed5be43dc9f7f1d';
 const notValidId = '60102a6d0ed5b3dc9f7f1d';
+const filter = {
+  name: '',
+  category: [],
+  available: [],
+  availableForConstructor: [],
+};
+
+const sort = {
+  category: 1,
+};
+
+const pagination = {
+  skip: 0,
+  limit: 5,
+};
+
 const newModel = (categoryId, sizeId) => ({
   category: categoryId,
   priority: 2,
@@ -46,4 +62,7 @@ module.exports = {
   newModelUpdated,
   wrongId,
   notValidId,
+  filter,
+  sort,
+  pagination,
 };

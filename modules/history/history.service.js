@@ -8,11 +8,13 @@ const {
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
-let { minDate } = require('../../consts/date-range');
+let { minDefaultDate } = require('../../consts/date-range');
 
 class HistoryService {
   async getAllHistoryRecords(limit, skip, filter) {
-    let maxDate = Date.now();
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
+
     const filterOptions = {};
     const filterUserOptions = {};
 
