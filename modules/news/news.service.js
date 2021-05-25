@@ -22,23 +22,24 @@ const {
   HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
 } = require('../../consts/history-obj-keys');
 const { objectType } = require('../../consts');
+const { transliterate } = require('../helper-functions');
 
 class NewsService {
-    async getAllNews({skip, limit, filter: {search}}) {
-        const filterOptions = {};
+  async getAllNews({ skip, limit, filter }) {
+    const filterOptions = {};
 
-        if (search) {
-            const searchString = search.trim();
+    if (filter?.search) {
+      const searchString = filter.search.trim();
 
-            filterOptions.$or = [
-                {'author.name.value': {$regex: `${searchString}`, $options: 'i'}},
-                {'title.value': {$regex: `${searchString}`, $options: 'i'}},
-            ];
-        }
-        const items = await News.find(filterOptions)
-            .skip(skip)
-            .limit(limit)
-            .exec();
+      filterOptions.$or = [
+        { 'author.name.value': { $regex: `${searchString}`, $options: 'i' } },
+        { 'title.value': { $regex: `${searchString}`, $options: 'i' } },
+      ];
+    }
+    const items = await News.find(filterOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
 
     const count = await News.find()
       .countDocuments()
@@ -111,7 +112,9 @@ class NewsService {
     data.author.image = await uploadLargeImage(upload[0]);
     data.image = await uploadLargeImage(upload[1]);
 
-    const newNews = await new News(data).save();
+    const slug = transliterate(data.title[0].value);
+
+    const newNews = await new News({ ...data, slug }).save();
 
     const historyRecord = generateHistoryObject(
       ADD_NEWS,

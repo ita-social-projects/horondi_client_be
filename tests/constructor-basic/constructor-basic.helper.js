@@ -11,15 +11,31 @@ const createConstructorBasic = async (constructorElement, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
-
             available
-            default
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -30,10 +46,12 @@ const createConstructorBasic = async (constructorElement, operations) => {
     `,
     variables: { constructorElement },
   });
+
   return constructorBasic.data.addConstructorBasic;
 };
+
 const deleteConstructorBasic = async (id, operations) => {
-  return await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteConstructorBasic(id: $id) {
@@ -50,7 +68,10 @@ const deleteConstructorBasic = async (id, operations) => {
       id,
     },
   });
+
+  return result.data.deleteConstructorBasic;
 };
+
 const updateConstructorBasic = async (
   constructorInput,
   constructorId,
@@ -69,15 +90,31 @@ const updateConstructorBasic = async (
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
-
             available
-            default
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode
@@ -90,35 +127,49 @@ const updateConstructorBasic = async (
   });
   return constructorBasic.data.updateConstructorBasic;
 };
-const getAllConstructorBasics = async operations => {
+const getAllConstructorBasics = async ({ limit, skip, filter }, operations) => {
   const res = await operations.query({
     query: gql`
-      query($limit: Int, $skip: Int) {
-        getAllConstructorBasics(limit: $limit, skip: $skip) {
+      query($limit: Int, $skip: Int, $filter: ConstructorBasicFilterInput) {
+        getAllConstructorBasics(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
             name {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
-              name {
-                lang
-                value
-              }
-              purpose
-              available
             }
-            color {
-              _id
-              colorHex
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
+            }
+            available
+            customizable
+            basePrice {
+              currency
+              value
             }
           }
         }
       }
     `,
+    variables: { limit, skip, filter },
   });
+
   return res.data.getAllConstructorBasics;
 };
 const getConstructorBasicById = async (id, operations) => {
@@ -132,15 +183,31 @@ const getConstructorBasicById = async (id, operations) => {
               lang
               value
             }
-            material {
+            optionType
+            model {
               _id
             }
-
-            color {
-              _id
+            features {
+              material {
+                _id
+                name {
+                  lang
+                  value
+                }
+                purpose
+                available
+              }
+              color {
+                _id
+                colorHex
+              }
             }
             available
-            default
+            customizable
+            basePrice {
+              currency
+              value
+            }
           }
           ... on Error {
             statusCode

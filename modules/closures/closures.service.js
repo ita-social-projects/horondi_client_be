@@ -1,8 +1,10 @@
 const Closure = require('./closures.model');
+const RuleError = require('../../errors/rule.error');
+const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
+const { calculatePrice } = require('../currency/currency.utils');
 const {
-  CLOSURE_NOT_FOUND,
-  CLOSURE_ALREADY_EXIST,
-} = require('../../error-messages/closures.messages');
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
   FILE_SIZES: { LARGE },
@@ -20,7 +22,14 @@ const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { NAME, MATERIAL, ADDITIONAL_PRICE, AVAILABLE },
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    ADDITIONAL_PRICE,
+    AVAILABLE,
+    FEATURES,
+    OPTION_TYPE,
+    MODEL,
+  },
 } = require('../../consts/history-obj-keys');
 
 class ClosureService {
@@ -44,7 +53,7 @@ class ClosureService {
     if (foundClosure) {
       return foundClosure;
     }
-    throw new Error(CLOSURE_NOT_FOUND);
+    throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
   }
 
   async addClosure(data, upload, { _id: adminId }) {
@@ -53,20 +62,23 @@ class ClosureService {
       data.image = uploadImage.fileNames.large;
     }
 
-    if (await this.checkClosureExist(data)) {
-      throw new Error(CLOSURE_ALREADY_EXIST);
+    if (data.additionalPrice) {
+      data.additionalPrice = await calculatePrice(data.additionalPrice);
     }
+
     const newClosure = await new Closure(data).save();
 
     const historyRecord = generateHistoryObject(
       ADD_CLOSURE,
-      '',
+      newClosure.model?._id,
       newClosure.name[UA].value,
       newClosure._id,
       [],
       generateHistoryChangesData(newClosure, [
         NAME,
-        MATERIAL,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
@@ -79,9 +91,6 @@ class ClosureService {
   }
 
   async updateClosure(id, closure, upload, { _id: adminId }) {
-    if (await this.checkClosureExist(closure)) {
-      throw new Error(CLOSURE_ALREADY_EXIST);
-    }
     if (upload) {
       const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
       data.image = uploadImage.fileNames.large;
@@ -90,7 +99,11 @@ class ClosureService {
     const closureMaterial = await Closure.findById(id).exec();
 
     if (!closureMaterial) {
-      throw new Error(CLOSURE_NOT_FOUND);
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (closure.additionalPrice) {
+      closure.additionalPrice = await calculatePrice(closure.additionalPrice);
     }
 
     const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
@@ -104,7 +117,7 @@ class ClosureService {
 
     const historyRecord = generateHistoryObject(
       EDIT_CLOSURE,
-      '',
+      closureMaterial.model?._id,
       closureMaterial.name[UA].value,
       closureMaterial._id,
       beforeChanges,
@@ -119,16 +132,18 @@ class ClosureService {
   async deleteClosure(id, { _id: adminId }) {
     const closure = await Closure.findByIdAndDelete(id).exec();
     if (!closure) {
-      throw new Error(CLOSURE_NOT_FOUND);
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
     const historyRecord = generateHistoryObject(
       DELETE_CLOSURE,
-      '',
+      closure.model?._id,
       closure.name[UA].value,
       closure._id,
       generateHistoryChangesData(closure, [
         NAME,
-        MATERIAL,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
@@ -138,19 +153,7 @@ class ClosureService {
 
     await addHistoryRecord(historyRecord);
 
-    await addHistoryRecord(historyRecord);
     return closure;
-  }
-
-  async checkClosureExist(data) {
-    let closureCount = await Closure.countDocuments({
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    }).exec();
-    return closureCount > 0;
   }
 }
 

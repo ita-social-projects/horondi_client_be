@@ -1,9 +1,10 @@
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
+
+const { tokenChecker } = require('../../helpers/tokenChecker');
+const User = require('./user.model');
 const generateTokens = require('../../utils/create-tokens');
 const {
   EmailActions: {
@@ -21,7 +22,6 @@ const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
@@ -50,10 +50,11 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
+  TOKEN_IS_EXPIRIED,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
 } = require('../../consts/status-codes');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
@@ -309,11 +310,10 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    const purchasedProducts = paidOrders.reduce((acc, order) => {
+    return paidOrders.reduce((acc, order) => {
       acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
       return acc;
     }, []);
-    return purchasedProducts;
   }
 
   async getAllUsers({ filter, pagination, sort }) {
@@ -557,8 +557,10 @@ class UserService extends FilterHelper {
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+    const candidate = await User.findOne({ email }).exec();
+
+    if (candidate) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -614,20 +616,44 @@ class UserService extends FilterHelper {
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
-    const updates = {
+    const { userId } = await tokenChecker(token, CONFIRMATION_SECRET);
+
+    const candidate = await User.findById(userId).exec();
+
+    if (!candidate) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (candidate.confirmed) {
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
+    }
+
+    const { accessToken, refreshToken } = generateTokens(
+      userId,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      true
+    );
+
+    await User.findByIdAndUpdate(userId, {
       $set: {
         confirmed: true,
       },
       $unset: {
         confirmationToken: '',
       },
+    }).exec();
+
+    return {
+      token: accessToken,
+      refreshToken,
+      confirmed: true,
     };
-    await User.findByIdAndUpdate(decoded.userId, updates).exec();
-    return true;
   }
 
-  async recoverUser(email, language) {
+  async recoverUser(email) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });

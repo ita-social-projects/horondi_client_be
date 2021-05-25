@@ -65,20 +65,27 @@ describe('Order queries', () => {
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
-    const patternData = await createPattern(queryPatternToAdd, operations);
-    patternId = patternData._id;
-    const closureData = await createClosure(newClosure(materialId), operations);
-    closureId = closureData._id;
-    const constructorBasicData = await createConstructorBasic(
-      newConstructorBasic(materialId, colorId),
-      operations
-    );
-    constructorBasicId = constructorBasicData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
       operations
     );
     modelId = modelData._id;
+    const patternData = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
+    patternId = patternData._id;
+    const closureData = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
+    closureId = closureData._id;
+    const constructorBasicData = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId, modelId),
+      operations
+    );
+    constructorBasicId = constructorBasicData._id;
+
     const productData = await createProduct(
       newProductInputData(
         categoryId,

@@ -5,11 +5,11 @@ Object {
   "address": Array [
     Object {
       "lang": "uk",
-      "value": "Вулиця 4",
+      "value": "Вулиця 4 Нова вулиця",
     },
     Object {
       "lang": "en",
-      "value": "Street 4",
+      "value": "Street 4 New Street",
     },
   ],
   "email": "test@test.com",
@@ -17,11 +17,11 @@ Object {
   "openHours": Array [
     Object {
       "lang": "uk",
-      "value": "ПН ...",
+      "value": "ПН ...Новий контакт",
     },
     Object {
       "lang": "en",
-      "value": "FR ...",
+      "value": "FR ...New contact",
     },
   ],
   "phoneNumber": "380964422333",
