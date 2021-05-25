@@ -10,8 +10,14 @@ const INPUT_FIELDS = {
   SKIP: 'skip',
   DATE: 'date',
   MODEL: 'model',
+  CURRENCY: 'currency',
+  HEADER: 'header',
+  QUESTION: 'question',
+  TEXT: 'text',
+  SIZE: 'size',
+  CONTACT: 'contact',
+  REPLY_COMMENT_DATA: 'replyCommentData',
   HOME_PAGE_SLIDE: 'slide',
-  HOME_PAGE_IMAGE: 'image',
 };
 
 module.exports = {
