@@ -187,7 +187,6 @@ const typeDefs = gql`
   ${strapType}
   ${strapFeatureType}
  
-
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -197,7 +196,6 @@ const typeDefs = gql`
     admin
     user
   }
-
   enum OptionTypeEnum {
     BACK
     CLOSURE
@@ -208,7 +206,6 @@ const typeDefs = gql`
     POCKET
     STRAP
   }
-
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -373,36 +370,29 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
-
   type PaginatedClosure {
       items: [Closure]
       count: Int
   }
-
   type PaginatedPockets {
     items: [Pocket]
     count: Int
   }
-
   type PaginatedBacks {
     items: [Back]
     count: Int
   }
-
   type PaginatedStraps {
     items: [Strap]
     count: Int
   }
-
   type PaginatedRestrictions {
     items: [Restriction]
     count: Int
   }
-
   type Materials {
     items: [Material]
   }
-
   type PaginatedConstructorBasics {
       items: [ConstructorBasic]
       count: Int
@@ -564,7 +554,6 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
-
   }
   input Pagination {
       skip: Int = ${skip}
@@ -642,7 +631,6 @@ const typeDefs = gql`
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}
-
   input LanguageInput {
     lang: String!
     value: String
@@ -786,7 +774,7 @@ const typeDefs = gql`
     updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
-    confirmUserEmail(token: String!): Boolean
+    confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
@@ -921,7 +909,6 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
-
   }
 `;
 
