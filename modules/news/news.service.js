@@ -25,11 +25,11 @@ const { objectType } = require('../../consts');
 const { transliterate } = require('../helper-functions');
 
 class NewsService {
-  async getAllNews({ skip, limit, filter: { search } }) {
+  async getAllNews({ skip, limit, filter}) {
     const filterOptions = {};
 
     if (filter?.search) {
-      const searchString = search.trim();
+      const searchString = filter.search.trim();
 
       filterOptions.$or = [
         { 'author.name.value': { $regex: `${searchString}`, $options: 'i' } },
