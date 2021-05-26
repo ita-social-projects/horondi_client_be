@@ -15,22 +15,41 @@ const {
 } = require('../../consts/delivery-services');
 
 class EmailChatService {
-  async getAllEmailQuestions({ filter = {}, skip }) {
-    const { emailQuestionStatus } = filter;
+  async getAllEmailQuestions({ filter = {}, pagination: { skip, limit } }) {
+    debugger;
+    const filterOptions = {};
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
 
-    const filters = emailQuestionStatus
-      ? { status: { $in: emailQuestionStatus } }
-      : {};
+    if (filter?.show?.length) {
+      filterOptions.show = { $in: filter.show };
+    }
 
-    const questions = await EmailChat.find(filters)
-      .skip(skip || 0)
-      .limit(10)
-      .sort(DATE)
+    if (filter?.date?.dateFrom) {
+      minDate = new Date(filter.date.dateFrom);
+    }
+
+    if (filter?.date?.dateTo) {
+      maxDate = new Date(filter.date.dateTo);
+    }
+
+    filterOptions.date = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
+
+    if (filter?.search) {
+      const search = filter.search.trim();
+      filterOptions.text = { $regex: `${search}`, $options: 'i' };
+    }
+
+    const questions = await EmailChat.find(filterOptions)
+      .sort({ date: -1 })
+      .limit(limit)
+      .skip(skip)
       .exec();
 
-    const count = await EmailChat.find(filters)
-      .countDocuments()
-      .exec();
+    const count = await EmailChat.find(filterOptions).countDocuments();
 
     return {
       questions,

@@ -521,8 +521,8 @@ const typeDefs = gql`
     checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
-      filter: FilterInput
-      skip: Int
+      filter: CommentFilterInput
+      pagination: Pagination
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]
