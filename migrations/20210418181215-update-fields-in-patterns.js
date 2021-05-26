@@ -12,8 +12,14 @@ module.exports = {
   },
 
   async down(db, client) {
-    await db
-      .collection('patterns')
-      .updateMany({}, { $unset: { patternExtraFields: 1 } }, false, true);
+    await db.collection('patterns').updateMany(
+      {},
+      {
+        $set: { material: '', handmade: '', default: '' },
+        $unset: { patternExtraFields: 1 },
+      },
+      false,
+      true
+    );
   },
 };
