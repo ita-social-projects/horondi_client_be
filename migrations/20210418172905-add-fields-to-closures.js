@@ -12,8 +12,14 @@ module.exports = {
   },
 
   async down(db, client) {
-    await db
-      .collection('closures')
-      .updateMany({}, { $unset: { closureExtraFields: 1 } }, false, true);
+    await db.collection('closures').updateMany(
+      {},
+      {
+        $set: { material: '', default: '' },
+        $unset: { closureExtraFields: 1 },
+      },
+      false,
+      true
+    );
   },
 };

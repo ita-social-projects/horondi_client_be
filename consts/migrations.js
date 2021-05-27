@@ -41,7 +41,7 @@ const patternExtraFields = {
   customizable: true,
 };
 
-const constructorBasicExtraFields = {
+const constructorBasicOneExtraFields = {
   optionType: 'CONSTRUCTOR_BASIC',
   model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
   features: {
@@ -51,7 +51,47 @@ const constructorBasicExtraFields = {
   customizable: true,
 };
 
-const constructorBottomExtraFields = {
+const constructorBasicTwoExtraFields = {
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
+  features: {
+    material: ObjectId('6043a1f33e06ad3edcdb7b09'),
+    color: ObjectId('6043a9bb3e06ad3edcdb7b0d'),
+  },
+  customizable: true,
+};
+
+const constructorBasicThreeExtraFields = {
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
+  features: {
+    material: ObjectId('6043a1f33e06ad3edcdb7b09'),
+    color: ObjectId('6043a1653e06ad3edcdb7b08'),
+  },
+  customizable: true,
+};
+
+const constructorBottomOneExtraFields = {
+  optionType: 'CONSTRUCTOR_BOTTOM',
+  model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
+  features: {
+    material: ObjectId('6043ac5d3e06ad3edcdb7b13'),
+    color: ObjectId('6043aa9c3e06ad3edcdb7b10'),
+  },
+  customizable: true,
+};
+
+const constructorBottomTwoExtraFields = {
+  optionType: 'CONSTRUCTOR_BOTTOM',
+  model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
+  features: {
+    material: ObjectId('6043ac5d3e06ad3edcdb7b13'),
+    color: ObjectId('6043a9cc3e06ad3edcdb7b0e'),
+  },
+  customizable: true,
+};
+
+const constructorBottomThreeExtraFields = {
   optionType: 'CONSTRUCTOR_BOTTOM',
   model: ObjectId('6043bf9e3e06ad3edcdb7b30'),
   features: {
@@ -85,14 +125,14 @@ const modelRefactoredFields = {
       ObjectId('6043b9f73e06ad3edcdb7b1d'),
       ObjectId('6043ba373e06ad3edcdb7b1e'),
     ],
-    constructorFrontPocket: [],
+    constructorFrontPocket: [ObjectId('604e3341b17ecf65048afd6f')],
     constructorBottom: [
       ObjectId('604e3385b17ecf65048afd71'),
       ObjectId('604e33a0b17ecf65048afd72'),
       ObjectId('604e33bcb17ecf65048afd73'),
     ],
-    constructorPocket: [ObjectId('60796dc9a7ed703b609f2752')],
-    constructorBack: [ObjectId('6079a024034de634b8c3d9d4')],
+    constructorPocket: [],
+    constructorBack: [],
     constructorClosure: [ObjectId('6043c8acc60c2e4b940189ae')],
     constructorStrap: [],
   },
@@ -105,10 +145,7 @@ const modelRefactoredFields = {
     constructorClosure: '',
     constructorStrap: '',
   },
-  restrictions: [
-    ObjectId('60745ee1bbe56534c851ea1f'),
-    ObjectId('60797c0c8982222408148480'),
-  ],
+  restrictions: [],
 };
 
 const slug = { slug: '' };
@@ -119,8 +156,12 @@ module.exports = {
   slug,
   closureExtraFields,
   patternExtraFields,
-  constructorBasicExtraFields,
-  constructorBottomExtraFields,
+  constructorBasicOneExtraFields,
+  constructorBasicTwoExtraFields,
+  constructorBasicThreeExtraFields,
+  constructorBottomOneExtraFields,
+  constructorBottomTwoExtraFields,
+  constructorBottomThreeExtraFields,
   constructorFrontPocketExtraFields,
   modelRefactoredFields,
 };
