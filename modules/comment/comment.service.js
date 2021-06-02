@@ -12,7 +12,7 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
 } = require('../../error-messages/comment.messages');
-let { minDefaultDate } = require('../../consts/date-range');
+const { minDefaultDate } = require('../../consts/date-range');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
@@ -200,8 +200,8 @@ class CommentsService {
     const { rate } =
       userRates.find(rating => String(rating.user) === String(user._id)) || {};
 
-    const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
-    if (!rate) {
+    const rateSum = product.rate * rateCount + data.rate;
+    if (rate > 0) {
       rateCount++;
     }
     const newRate = rateSum / rateCount;

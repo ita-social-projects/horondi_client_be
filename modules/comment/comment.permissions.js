@@ -11,7 +11,7 @@ const {
 } = require('../../consts');
 const { replyCommentValidator } = require('../../validators/comment.validator');
 const {
-  INPUT_FIELDS: { COMMENT, REPLY_COMMENT_DATA },
+  INPUT_FIELDS: { REPLY_COMMENT_DATA },
 } = require('../../consts/input-fields');
 
 const commentPermissionsQuery = {

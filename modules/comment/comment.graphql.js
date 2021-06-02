@@ -10,6 +10,7 @@ email: String
 product: Product
 show: Boolean
 replyComments:[ReplyComments]
+rate: Int
 }
 
 type ReplyComments{
@@ -33,6 +34,7 @@ input CommentInput {
   userName: String
   email: String
   product: ID!
+  rate:Int
 }
 input CommentUpdateInput {
   ${sharedInputFields}
