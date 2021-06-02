@@ -5,9 +5,11 @@
     "commonjs": true,
     "jest/globals": true,
     "es6": true,
-    "node": true
+    "node": true,
+    
   },
-  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended"],
+  "plugins": ["prettier","jest"],
+  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended","plugin:prettier/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,6 +18,7 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "prettier/prettier": "error",
     "linebreak-style": 0,
     "semi": "off",
     "no-var": "warn",
@@ -127,5 +130,8 @@
       }
     ],
     "no-confusing-arrow": 0
+  
   }
+  
 }
+
