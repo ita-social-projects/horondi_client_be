@@ -5,6 +5,8 @@ text: String
 date: Date
 updatedAt: Date
 user: User
+userName: String
+email: String
 product: Product
 show: Boolean
 replyComments:[ReplyComments]
@@ -16,6 +18,7 @@ type ReplyComments{
   refToReplyComment: ID
   createdAt: Date
   updatedAt: Date
+  showReplyComment: Boolean
 }
 `;
 

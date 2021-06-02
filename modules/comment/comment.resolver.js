@@ -82,9 +82,9 @@ const commentsMutation = {
     }
   },
 
-  deleteComment: async (parent, { id }) => {
+  deleteComment: async (_, { commentID }) => {
     try {
-      return await commentsService.deleteComment(id);
+      return await commentsService.deleteComment(commentID);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }

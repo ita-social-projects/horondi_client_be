@@ -20,6 +20,7 @@ const {
   countItemsOccurency,
   changeDataFormat,
   reduceByDaysCount,
+  deleteEmailDuplicates,
 } = require('../helper-functions');
 
 const {
@@ -183,7 +184,13 @@ class OrdersService {
 
     return await Order.find({ _id: orders }).exec();
   }
+  async getOrdersByProduct(id) {
+    const emailList = await Order.find({
+      items: { $elemMatch: { product: id } },
+    }).exec();
 
+    return deleteEmailDuplicates(emailList);
+  }
   filterOrders({ days, isPaid }) {
     const filter = {};
 

@@ -185,7 +185,7 @@ class CommentsService {
     if (!deletedComment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
-    return Comment.findByIdAndDelete(id, { new: true }).exec();
+    return Comment.findByIdAndDelete(id).exec();
   }
 
   async addRate(id, data, user) {

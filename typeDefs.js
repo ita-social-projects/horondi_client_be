@@ -464,6 +464,7 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
+    getOrdersByProduct(id:ID!): [Order!]
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
@@ -800,9 +801,9 @@ const typeDefs = gql`
     deleteImages(id: ID!, images: [String!]!): PrimaryImage
     "Comment Mutation"
     addComment(comment: CommentInput!): CommentResult
-    replyForComment(commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
-    deleteComment(id: ID!): CommentResult
-    deleteReplyForComment(replyCommentId: ID!): CommentResult
+    replyForComment(id:ID,commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
+    deleteComment(id: ID,commentID:ID!): CommentResult
+    deleteReplyForComment(id:ID,replyCommentId: ID!): CommentResult
     updateComment(id: ID!, comment: CommentUpdateInput!): CommentResult
     updateReplyForComment(replyCommentId: ID!, replyCommentData: ReplyCommentUpdateInput!): CommentResult
     "BusinessText Mutation"

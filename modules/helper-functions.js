@@ -148,10 +148,15 @@ const transliterate = words => {
   return _.words(transliterated_words).join(hyphen);
 };
 
+const deleteEmailDuplicates = arr => {
+  return [...new Map(arr.map(item => [item.user.email, item])).values()];
+};
+
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
   changeDataFormat,
   countItemsOccurency,
   transliterate,
+  deleteEmailDuplicates,
 };
