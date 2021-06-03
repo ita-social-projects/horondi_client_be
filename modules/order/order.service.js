@@ -9,7 +9,6 @@ const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
-const { USER_NOT_FOUND } = require('../../error-messages/user.messages');
 const { userDateFormat } = require('../../consts');
 const { minDefaultDate } = require('../../consts/date-range');
 
@@ -108,9 +107,9 @@ class OrdersService {
   async getOrderById(id) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_FOUND);
 
-    if (!foundOrder) throw new Error(USER_NOT_FOUND);
-
     const foundOrder = await Order.findById(id).exec();
+
+    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
 
     return foundOrder;
   }
