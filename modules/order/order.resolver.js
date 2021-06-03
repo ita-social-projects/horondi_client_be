@@ -17,8 +17,14 @@ const ordersQuery = {
     };
   },
   getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
-  getUserOrders: async (parent, args, context) =>
-    await ordersService.getUserOrders(context.user),
+  getUserOrders: async (parent, args, context) => {
+    try {
+      return await ordersService.getUserOrders(context.user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
   getOrdersStatistic: (parent, args) =>
     ordersService.getOrdersStatistic(args.date),
   getPaidOrdersStatistic: (parent, args) =>
@@ -33,9 +39,9 @@ const ordersQuery = {
 };
 
 const ordersMutation = {
-  addOrder: async (parent, args) => {
+  addOrder: async (_, { order }, context) => {
     try {
-      return await ordersService.addOrder(args.order);
+      return await ordersService.addOrder(order, context);
     } catch (e) {
       return {
         statusCode: BAD_REQUEST,
