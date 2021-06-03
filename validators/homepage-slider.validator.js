@@ -1,11 +1,11 @@
 const Joi = require('joi');
 
 const homepageSliderValidator = Joi.object({
+  link: Joi.string()
+    .min(2)
+    .required()
+    .trim(),
   title: Joi.array().items({
-    link: Joi.string()
-      .min(2)
-      .required()
-      .trim(),
     lang: Joi.string()
       .min(2)
       .required()
