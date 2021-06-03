@@ -106,11 +106,11 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id)) throw new Error(USER_NOT_FOUND);
-
-    const foundOrder = await Order.findById(id).exec();
+    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_FOUND);
 
     if (!foundOrder) throw new Error(USER_NOT_FOUND);
+
+    const foundOrder = await Order.findById(id).exec();
 
     return foundOrder;
   }
