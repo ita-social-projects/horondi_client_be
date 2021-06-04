@@ -273,6 +273,7 @@ const resolvers = {
     user: parent => userService.getUser(parent.user),
     replyComments: parent =>
       parent.replyComments.map(item => ({
+        _id: item._id,
         replyText: item.replyText,
         answerer: userService.getUser(item.answerer),
         createdAt: item.createdAt,
@@ -347,6 +348,7 @@ const resolvers = {
             },
           };
         }
+        return null;
       }),
   },
   Order: {
@@ -462,9 +464,9 @@ const resolvers = {
       constructorPattern: () =>
         patternService.getPatternById(parent.appliedOptions.constructorPattern),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el => {
-          return pocketService.getPocketById(el);
-        }),
+        parent.eligibleOptions.constructorPocket.map(el =>
+          pocketService.getPocketById(el)
+        ),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
       constructorClosure: () =>

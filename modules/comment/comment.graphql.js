@@ -14,7 +14,8 @@ rate: Int
 }
 
 type ReplyComments{
-  replyText:String
+  _id: ID
+  replyText: String
   answerer: User
   refToReplyComment: ID
   createdAt: Date

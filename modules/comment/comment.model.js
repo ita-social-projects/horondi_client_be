@@ -63,6 +63,7 @@ const commentSchema = new mongoose.Schema({
     },
   ],
   show: Boolean,
+  rate: Number,
 });
 
 module.exports = mongoose.model(COMMENT, commentSchema);
