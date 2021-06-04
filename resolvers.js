@@ -170,6 +170,10 @@ const SCHEMA_NAMES = {
   paginatedStraps: 'PaginatedStraps',
 };
 
+const {
+  constructorPocketHelper,
+} = require('./helpers/constructor-pocket-helper');
+
 const resolvers = {
   Query: {
     ...historyQuery,
@@ -430,9 +434,7 @@ const resolvers = {
           patternService.getPatternById(el)
         ),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el =>
-          pocketService.getPocketById(el)
-        ),
+        constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         parent.eligibleOptions.constructorBack.map(el =>
           backService.getBackById(el)
@@ -464,9 +466,7 @@ const resolvers = {
       constructorPattern: () =>
         patternService.getPatternById(parent.appliedOptions.constructorPattern),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el =>
-          pocketService.getPocketById(el)
-        ),
+        constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
       constructorClosure: () =>
