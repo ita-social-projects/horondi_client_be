@@ -4,6 +4,7 @@ const commentWrongId = '5faa3d306071ad276cc3d63c';
 const wrongData = '123siSTm#';
 const rate = 4;
 const updatedRate = 1;
+const updatedRateResult = 2.5;
 const newComment = userId => ({
   text: 'Test text',
   user: userId,
@@ -23,4 +24,5 @@ module.exports = {
   productWrongId,
   rate,
   updatedRate,
+  updatedRateResult,
 };

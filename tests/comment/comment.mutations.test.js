@@ -13,6 +13,7 @@ const {
   updatedComment,
   rate,
   updatedRate,
+  updatedRateResult,
 } = require('./comment.variables');
 const {
   deleteComment,
@@ -206,6 +207,17 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('rate', rate);
     expect(receivedComment).toHaveProperty('rateCount', 1);
+    expect(receivedComment.userRates.length).toEqual(1);
+  });
+
+  it('should update rate of the product', async () => {
+    const receivedComment = await addRate(productId, updatedRate, operations);
+
+    expect(receivedComment).toMatchSnapshot();
+    expect(receivedComment).not.toBeNull();
+    expect(receivedComment).toBeDefined();
+    expect(receivedComment).toHaveProperty('rate', updatedRateResult);
+    expect(receivedComment).toHaveProperty('rateCount', 2);
     expect(receivedComment.userRates.length).toEqual(1);
   });
 
