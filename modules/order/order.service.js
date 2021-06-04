@@ -105,11 +105,9 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_FOUND);
-
     const foundOrder = await Order.findById(id).exec();
 
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     return foundOrder;
   }
@@ -144,10 +142,15 @@ class OrdersService {
     ).exec();
   }
 
-  async addOrder(data, { user }) {
+  async addOrder(data, user) {
     const { items } = data;
-    const { _id } = user;
-    data.user = { ...data.user, id: _id };
+
+    if (typeof user !== 'undefined') {
+      const { _id } = user;
+      data.user = { ...data.user, id: _id };
+    } else {
+      data.user = { ...data.user, id: null };
+    }
 
     await addProductsToStatistic(items);
 
@@ -181,7 +184,7 @@ class OrdersService {
   async getUserOrders({ id }) {
     const userOrders = await Order.find({ 'user.id': id }).exec();
 
-    if (!userOrders) throw new Error(ORDER_NOT_FOUND);
+    if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     return userOrders;
   }

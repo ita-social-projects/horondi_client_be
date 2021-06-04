@@ -17,9 +17,9 @@ const ordersQuery = {
     };
   },
   getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
-  getUserOrders: async (parent, args, context) => {
+  getUserOrders: async (_, args, { user }) => {
     try {
-      return await ordersService.getUserOrders(context.user);
+      return await ordersService.getUserOrders(user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -39,17 +39,14 @@ const ordersQuery = {
 };
 
 const ordersMutation = {
-  addOrder: async (_, { order }, context) => {
+  addOrder: async (_, { order }, { user }) => {
     try {
-      return await ordersService.addOrder(order, context);
+      return await ordersService.addOrder(order, user);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteOrder: async (parent, args) => {
+  deleteOrder: async (_, args) => {
     const deletedOrder = await ordersService.deleteOrder(args.id);
     if (deletedOrder) {
       return deletedOrder;
