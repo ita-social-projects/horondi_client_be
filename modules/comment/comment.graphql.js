@@ -13,6 +13,7 @@ replyComments:[ReplyComments]
 }
 
 type ReplyComments{
+  _id: ID
   replyText:String
   answerer: User
   refToReplyComment: ID

@@ -273,6 +273,7 @@ const resolvers = {
     user: parent => userService.getUser(parent.user),
     replyComments: parent =>
       parent.replyComments.map(item => ({
+        _id: item._id,
         replyText: item.replyText,
         answerer: userService.getUser(item.answerer),
         createdAt: item.createdAt,
