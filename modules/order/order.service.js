@@ -145,11 +145,11 @@ class OrdersService {
   async addOrder(data, user) {
     const { items } = data;
 
-    if (typeof user !== 'undefined') {
+    if (!user) {
+      data.user = { ...data.user, id: null };
+    } else {
       const { _id } = user;
       data.user = { ...data.user, id: _id };
-    } else {
-      data.user = { ...data.user, id: null };
     }
 
     await addProductsToStatistic(items);
