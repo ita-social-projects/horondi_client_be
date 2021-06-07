@@ -13,7 +13,6 @@ const {
   updatedComment,
   rate,
   updatedRate,
-  updatedRateResult,
 } = require('./comment.variables');
 const {
   deleteComment,
@@ -216,8 +215,8 @@ describe('Comment queries', () => {
     expect(receivedComment).toMatchSnapshot();
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('rate', updatedRateResult);
-    expect(receivedComment).toHaveProperty('rateCount', 2);
+    expect(receivedComment).toHaveProperty('rate', updatedRate);
+    expect(receivedComment).toHaveProperty('rateCount', 1);
     expect(receivedComment.userRates.length).toEqual(1);
   });
 
