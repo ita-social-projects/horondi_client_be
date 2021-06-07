@@ -18,9 +18,6 @@
     "ecmaVersion": 2018
   },
   "rules": {
-    "indent": "off",
-    "react/jsx-indent": "off",
-    "react/jsx-indent-props": "off",
     "prettier/prettier": "error",
     "linebreak-style": 0,
     "semi": "off",
