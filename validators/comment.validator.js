@@ -8,9 +8,7 @@ const commentValidator = Joi.object({
   user: Joi.string().required(),
   product: Joi.string().required(),
   show: Joi.boolean(),
-  rate: Joi.number()
-    .valid(1, 2, 3, 4, 5)
-    .required(),
+  rate: Joi.number().valid(1, 2, 3, 4, 5),
 });
 
 const replyCommentValidator = Joi.object({
