@@ -1,10 +1,8 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+const { ObjectId } = require('mongoose').Types;
 
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
-const {
-  ORDER_PAYMENT_STATUS: { PAID },
-} = require('../../consts/order-payment-status');
+
 const {
   STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -13,14 +11,13 @@ const {
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
 const { userDateFormat } = require('../../consts');
-let { minDefaultDate } = require('../../consts/date-range');
+const { minDefaultDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
   countItemsOccurency,
   changeDataFormat,
   reduceByDaysCount,
-  deleteEmailDuplicates,
 } = require('../helper-functions');
 
 const {
@@ -134,7 +131,7 @@ class OrdersService {
       totalItemsPrice
     );
 
-    order = {
+    const orderUpdate = {
       ...order,
       totalItemsPrice,
       totalPriceToPay,
@@ -142,7 +139,7 @@ class OrdersService {
 
     return await Order.findByIdAndUpdate(
       id,
-      { ...order, lastUpdatedDate: Date.now() },
+      { ...orderUpdate, lastUpdatedDate: Date.now() },
       { new: true }
     ).exec();
   }
@@ -184,13 +181,7 @@ class OrdersService {
 
     return await Order.find({ _id: orders }).exec();
   }
-  async getOrdersByProduct(id) {
-    const emailList = await Order.find({
-      items: { $elemMatch: { product: id } },
-    }).exec();
 
-    return deleteEmailDuplicates(emailList);
-  }
   filterOrders({ days, isPaid }) {
     const filter = {};
 

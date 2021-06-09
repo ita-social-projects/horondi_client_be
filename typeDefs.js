@@ -464,7 +464,6 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders: [Order!]
-    getOrdersByProduct(id:ID!): [Order!]
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!

@@ -50,16 +50,24 @@ const commentsQuery = {
 };
 
 const commentsMutation = {
-  addComment: async (_, { comment }) => {
+  addComment: async (_, { comment }, { user }) => {
     try {
-      return await commentsService.addComment(comment);
+      return await commentsService.addComment(comment, user);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
   },
-  replyForComment: async (_, { commentId, replyCommentData }) => {
+  replyForComment: async (
+    _,
+    { commentId, replyCommentData, productId },
+    { user }
+  ) => {
     try {
-      return await commentsService.replyForComment(commentId, replyCommentData);
+      return await commentsService.replyForComment(
+        commentId,
+        replyCommentData,
+        user
+      );
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }

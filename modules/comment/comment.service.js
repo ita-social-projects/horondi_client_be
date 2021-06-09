@@ -1,6 +1,8 @@
 const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
+const Order = require('../order/order.model');
+const User = require('../user/user.model');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -107,20 +109,52 @@ class CommentsService {
     return updatedComment;
   }
 
-  async addComment(data) {
+  async addComment(data, user) {
     const product = await Product.findById(data.product).exec();
 
     if (!product) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
-    return new Comment(data).save();
+    const order = await Order.find({
+      'items.product': data.product,
+      'user.email': user.email,
+    }).exec();
+
+    if (order.length > 0) {
+      data.isSelled = true;
+    }
+    const comment = await new Comment(data).save();
+
+    User.findByIdAndUpdate(
+      user._id,
+      { $push: { comments: comment._id } },
+      { new: true }
+    ).exec();
+    Product.findByIdAndUpdate(
+      data.product,
+      {
+        $push: { comments: comment._id },
+      },
+      { new: true }
+    ).exec();
+    return comment;
   }
 
-  async replyForComment(commentId, replyComment) {
+  async replyForComment(commentId, replyComment, user) {
     const isCommentExists = await Comment.findById(commentId).exec();
 
     if (!isCommentExists) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+
+    const order = await Order.find({
+      'items.product': replyComment.productId,
+      'user.email': user.email,
+    }).exec();
+
+    if (order.length > 0) {
+      replyComment.isSelled = true;
+      replyComment.qwerty = true;
     }
 
     return Comment.findByIdAndUpdate(

@@ -60,10 +60,22 @@ const commentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+      isSelled: {
+        type: Boolean,
+        default: false,
+      },
+      qwerty: {
+        type: Boolean,
+        default: false,
+      },
     },
   ],
   show: Boolean,
   rate: Number,
+  isSelled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model(COMMENT, commentSchema);

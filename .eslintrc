@@ -7,16 +7,8 @@
     "es6": true,
     "node": true,
   },
-  "extends": [
-    "airbnb-base",
-    "eslint:recommended",
-    "plugin:jest/recommended",
-    "plugin:prettier/recommended"
-  ],
-  "plugins": [
-    "prettier",
-    "jest"
-  ],
+  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended","plugin:prettier/recommended"],
+  "plugins": ["prettier","jest"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"

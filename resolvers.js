@@ -122,7 +122,6 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
-const pocketService = require('./modules/pocket/pocket.service');
 const strapService = require('./modules/strap/strap.service');
 
 const {
@@ -323,36 +322,33 @@ const resolvers = {
             },
           };
         }
-        if (item.fromConstructor) {
-          return {
-            productFromConstructor: {
-              product: productsService.getProductById(
-                item.fromConstructor.product
-              ),
-              constructorBasics: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorBasics,
-                constructorBasicModel
-              ),
-              constructorBottom: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorBottom,
-                constructorBottomModel
-              ),
-              constructorFrontPocket: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorFrontPocket,
-                constructorFrontPocketModel
-              ),
-              constructorPattern: patternService.getPatternById(
-                item.fromConstructor.constructorPattern
-              ),
-            },
-            price: item.price,
-            quantity: item.quantity,
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-            },
-          };
-        }
-        return null;
+        return {
+          productFromConstructor: {
+            product: productsService.getProductById(
+              item.fromConstructor.product
+            ),
+            constructorBasics: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorBasics,
+              constructorBasicModel
+            ),
+            constructorBottom: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorBottom,
+              constructorBottomModel
+            ),
+            constructorFrontPocket: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorFrontPocket,
+              constructorFrontPocketModel
+            ),
+            constructorPattern: patternService.getPatternById(
+              item.fromConstructor.constructorPattern
+            ),
+          },
+          price: item.price,
+          quantity: item.quantity,
+          options: {
+            size: sizeService.getSizeById(item.options.size),
+          },
+        };
       }),
   },
   Order: {

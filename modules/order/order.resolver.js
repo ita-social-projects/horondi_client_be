@@ -19,7 +19,6 @@ const ordersQuery = {
   getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
   getUserOrders: async (parent, args, context) =>
     await ordersService.getUserOrders(context.user),
-  getOrdersByProduct: async (_, { id }) => ordersService.getOrdersByProduct(id),
   getOrdersStatistic: (parent, args) =>
     ordersService.getOrdersStatistic(args.date),
   getPaidOrdersStatistic: (parent, args) =>

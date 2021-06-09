@@ -9,9 +9,12 @@ const {
 const {
   roles: { ADMIN, SUPERADMIN, USER },
 } = require('../../consts');
-const { replyCommentValidator } = require('../../validators/comment.validator');
 const {
-  INPUT_FIELDS: { REPLY_COMMENT_DATA },
+  replyCommentValidator,
+  commentValidator,
+} = require('../../validators/comment.validator');
+const {
+  INPUT_FIELDS: { REPLY_COMMENT_DATA, COMMENT },
 } = require('../../consts/input-fields');
 
 const commentPermissionsQuery = {
@@ -23,7 +26,7 @@ const commentPermissionsQuery = {
 
 const commentPermissionsMutations = {
   updateComment: hasRoles([ADMIN, SUPERADMIN]),
-  addComment: allow,
+  addComment: and(isAuthorized, inputDataValidation(COMMENT, commentValidator)),
   replyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   updateReplyForComment: and(
     inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),

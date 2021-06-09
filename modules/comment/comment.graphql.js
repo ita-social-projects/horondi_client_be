@@ -5,12 +5,11 @@ text: String
 date: Date
 updatedAt: Date
 user: User
-userName: String
-email: String
 product: Product
 show: Boolean
 replyComments:[ReplyComments]
 rate: Int
+isSelled: Boolean
 }
 
 type ReplyComments{
@@ -21,6 +20,8 @@ type ReplyComments{
   createdAt: Date
   updatedAt: Date
   showReplyComment: Boolean
+  isSelled: Boolean
+  qwerty: Boolean
 }
 `;
 
@@ -32,8 +33,6 @@ const commentInput = `
 input CommentInput {
   ${sharedInputFields}
   user: ID
-  userName: String
-  email: String
   product: ID!
   rate:Int
 }
@@ -55,6 +54,7 @@ input CommentFilterInput{
     refToReplyComment: ID
     replyText: String!
     answerer: ID
+    productId: ID
   }
 `;
 
