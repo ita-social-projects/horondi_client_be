@@ -8,8 +8,8 @@
     "node": true,
     
   },
-  "plugins": ["prettier","jest"],
   "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended","plugin:prettier/recommended"],
+  "plugins": ["prettier","jest"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -74,18 +74,6 @@
     "lines-between-class-members": [1, "always"],
     "consistent-return": 0,
     "no-this-before-super": 2,
-    "indent": [
-      2,
-      2,
-      {
-        "ignoreComments": true,
-        "VariableDeclarator": {
-          "var": 2,
-          "let": 2,
-          "const": 3
-        }
-      }
-    ],
     "max-len": [
       2,
       {
