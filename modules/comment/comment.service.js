@@ -14,6 +14,9 @@ const {
   REPLY_COMMENT_IS_NOT_PRESENT,
 } = require('../../error-messages/comment.messages');
 const { minDefaultDate } = require('../../consts/date-range');
+const {
+  ORDER_STATUSES: { DELIVERED },
+} = require('../../consts/order-statuses');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
@@ -119,7 +122,7 @@ class CommentsService {
       'user.email': user.email,
     }).exec();
 
-    if (order.length > 0) {
+    if (order.some(item => item.status === DELIVERED)) {
       data.isSelled = true;
     }
     return new Comment(data).save();
@@ -137,7 +140,7 @@ class CommentsService {
       'user.email': user.email,
     }).exec();
 
-    if (order.length > 0) {
+    if (order.some(item => item.status === DELIVERED)) {
       replyComment.isSelled = true;
     }
 
