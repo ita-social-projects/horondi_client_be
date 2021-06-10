@@ -21,7 +21,6 @@ type ReplyComments{
   updatedAt: Date
   showReplyComment: Boolean
   isSelled: Boolean
-  qwerty: Boolean
 }
 `;
 
@@ -49,8 +48,6 @@ input CommentFilterInput{
     search:String
   }
   input ReplyCommentInput {
-    answererEmail: String
-    answererName: String
     refToReplyComment: ID
     replyText: String!
     answerer: ID

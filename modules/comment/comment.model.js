@@ -32,12 +32,6 @@ const commentSchema = new mongoose.Schema({
   },
   replyComments: [
     {
-      answererEmail: {
-        type: String,
-      },
-      answererName: {
-        type: String,
-      },
       replyText: {
         type: String,
       },
@@ -64,13 +58,12 @@ const commentSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
       },
-      qwerty: {
-        type: Boolean,
-        default: false,
-      },
     },
   ],
-  show: Boolean,
+  show: {
+    type: Boolean,
+    default: false,
+  },
   rate: Number,
   isSelled: {
     type: Boolean,

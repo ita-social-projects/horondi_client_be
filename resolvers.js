@@ -283,6 +283,7 @@ const resolvers = {
         updatedAt: item.updatedAt,
         refToReplyComment: item.refToReplyComment,
         showReplyComment: item.showReplyComment,
+        isSelled: item.isSelled,
       })),
   },
   Product: {

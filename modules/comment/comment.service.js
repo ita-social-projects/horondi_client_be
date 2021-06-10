@@ -2,7 +2,6 @@ const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
 const Order = require('../order/order.model');
-const User = require('../user/user.model');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -123,21 +122,7 @@ class CommentsService {
     if (order.length > 0) {
       data.isSelled = true;
     }
-    const comment = await new Comment(data).save();
-
-    User.findByIdAndUpdate(
-      user._id,
-      { $push: { comments: comment._id } },
-      { new: true }
-    ).exec();
-    Product.findByIdAndUpdate(
-      data.product,
-      {
-        $push: { comments: comment._id },
-      },
-      { new: true }
-    ).exec();
-    return comment;
+    return new Comment(data).save();
   }
 
   async replyForComment(commentId, replyComment, user) {
@@ -154,7 +139,6 @@ class CommentsService {
 
     if (order.length > 0) {
       replyComment.isSelled = true;
-      replyComment.qwerty = true;
     }
 
     return Comment.findByIdAndUpdate(

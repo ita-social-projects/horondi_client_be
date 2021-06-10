@@ -25,9 +25,18 @@ const commentPermissionsQuery = {
 };
 
 const commentPermissionsMutations = {
-  updateComment: hasRoles([ADMIN, SUPERADMIN]),
-  addComment: and(isAuthorized, inputDataValidation(COMMENT, commentValidator)),
-  replyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
+  updateComment: and(
+    inputDataValidation(COMMENT, commentValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
+  addComment: and(
+    inputDataValidation(COMMENT, commentValidator),
+    isTheSameUser
+  ),
+  replyForComment: and(
+    inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
+    isTheSameUser
+  ),
   updateReplyForComment: and(
     inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
     hasRoles([ADMIN, SUPERADMIN])
