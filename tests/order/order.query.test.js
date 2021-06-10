@@ -137,9 +137,9 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('status', status);
   });
   test('Should throw error ORDER_NOT_FOUND', async () => {
-    const { errors } = await getOrderById(wrongId, operations);
+    const res = await getOrderById(wrongId, operations);
 
-    expect(errors[0].message).toEqual(ORDER_NOT_FOUND);
+    expect(res.data.getOrderById.message).toBe('ORDER_NOT_FOUND');
   });
   afterAll(async () => {
     await deleteOrder(orderId, operations);

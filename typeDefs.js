@@ -459,7 +459,7 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
-    getAllPatterns(limit:Int!, skip:Int!, filter:PatternFilterInput): PaginatedPatterns!
+    getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult

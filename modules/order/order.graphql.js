@@ -88,6 +88,7 @@ type ItemOptions{
   sidePocket: Boolean
 }
 `;
+
 const orderInputs = ` 
 input OrderInput {
   status: Status
@@ -153,7 +154,6 @@ input OrderFilterInput{
     search:String
     paymentStatus:[String]
   }
-
 `;
 
 module.exports = {
