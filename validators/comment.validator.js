@@ -5,10 +5,17 @@ const commentValidator = Joi.object({
     .trim()
     .min(2)
     .required(),
-  user: Joi.string().required(),
+  user: Joi.string(),
   product: Joi.string().required(),
   show: Joi.boolean(),
   rate: Joi.number().valid(0, 1, 2, 3, 4, 5),
+});
+
+const commentUpdateValidator = Joi.object({
+  text: Joi.string()
+    .trim()
+    .min(2),
+  show: Joi.boolean(),
 });
 
 const replyCommentValidator = Joi.object({
@@ -21,7 +28,16 @@ const replyCommentValidator = Joi.object({
   productId: Joi.string(),
 });
 
+const replyCommentUpdateValidator = Joi.object({
+  replyText: Joi.string()
+    .trim()
+    .min(2),
+  showReplyComment: Joi.boolean(),
+});
+
 module.exports = {
   replyCommentValidator,
   commentValidator,
+  commentUpdateValidator,
+  replyCommentUpdateValidator,
 };

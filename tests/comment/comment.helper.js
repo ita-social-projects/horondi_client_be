@@ -3,8 +3,8 @@ const { gql } = require('@apollo/client');
 const addComment = async (productId, comment, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($comment: CommentInput!) {
-        addComment(comment: $comment) {
+      mutation($id: ID, $comment: CommentInput!) {
+        addComment(id: $id, comment: $comment) {
           ... on Comment {
             _id
             text
@@ -26,6 +26,7 @@ const addComment = async (productId, comment, operations) => {
     variables: {
       productId,
       comment: { ...comment, product: productId },
+      id: comment.user,
     },
   });
   return res.data.addComment;

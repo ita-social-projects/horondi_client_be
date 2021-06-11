@@ -12,6 +12,8 @@ const {
 const {
   replyCommentValidator,
   commentValidator,
+  commentUpdateValidator,
+  replyCommentUpdateValidator,
 } = require('../../validators/comment.validator');
 const {
   INPUT_FIELDS: { REPLY_COMMENT_DATA, COMMENT },
@@ -26,7 +28,7 @@ const commentPermissionsQuery = {
 
 const commentPermissionsMutations = {
   updateComment: and(
-    inputDataValidation(COMMENT, commentValidator),
+    inputDataValidation(COMMENT, commentUpdateValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   addComment: and(
@@ -38,7 +40,7 @@ const commentPermissionsMutations = {
     isTheSameUser
   ),
   updateReplyForComment: and(
-    inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
+    inputDataValidation(REPLY_COMMENT_DATA, replyCommentUpdateValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
