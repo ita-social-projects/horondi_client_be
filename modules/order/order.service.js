@@ -112,8 +112,12 @@ class OrdersService {
     return foundOrder;
   }
 
-  async updateOrder(order, id) {
+  async updateOrder(order, id, user) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+
+    const { _id } = user;
+
+    order.user = { ...order.user, id: _id };
 
     const orderToUpdate = await Order.findById(id).exec();
 
