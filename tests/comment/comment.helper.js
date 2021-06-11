@@ -9,6 +9,7 @@ const addComment = async (productId, comment, operations) => {
             _id
             text
             show
+            isSelled
             user {
               _id
             }
@@ -85,13 +86,14 @@ const updateComment = async (id, updatedComment, operations) => {
   });
   return res.data.updateComment;
 };
-const deleteComment = async (id, operations) => {
-  await operations.mutate({
+const deleteComment = async (id, commentID, operations) => {
+  const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
-        deleteComment(id: $id) {
+      mutation($id: ID, $commentID: ID!) {
+        deleteComment(id: $id, commentID: $commentID) {
           ... on Comment {
             _id
+            text
           }
           ... on Error {
             statusCode
@@ -100,8 +102,9 @@ const deleteComment = async (id, operations) => {
         }
       }
     `,
-    variables: { id },
+    variables: { id, commentID },
   });
+  return res.data.deleteComment;
 };
 const getAllCommentsByUser = async (userId, operations) => {
   const res = await operations.query({
@@ -190,6 +193,100 @@ const getCommentById = async (id, operations) => {
 
   return res.data.getCommentById;
 };
+const addReplyComment = async (productId, comment, operations, commentId) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation(
+        $id: ID
+        $commentId: ID!
+        $replyCommentData: ReplyCommentInput!
+      ) {
+        replyForComment(
+          id: $id
+          commentId: $commentId
+          replyCommentData: $replyCommentData
+        ) {
+          ... on Comment {
+            _id
+            replyComments {
+              _id
+              replyText
+              refToReplyComment
+              showReplyComment
+              isSelled
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      productId,
+      replyCommentData: { ...comment, productId },
+      id: comment.answerer,
+      commentId,
+    },
+  });
+  return res.data.replyForComment;
+};
+const deleteReplyComment = async (id, replyCommentId, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID, $replyCommentId: ID!) {
+        deleteReplyForComment(id: $id, replyCommentId: $replyCommentId) {
+          ... on Comment {
+            _id
+            replyComments {
+              replyText
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, replyCommentId },
+  });
+  return res.data.deleteReplyForComment;
+};
+const updateReplyComment = async (id, updatedReplyComment, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation(
+        $replyCommentId: ID!
+        $replyCommentData: ReplyCommentUpdateInput!
+      ) {
+        updateReplyForComment(
+          replyCommentId: $replyCommentId
+          replyCommentData: $replyCommentData
+        ) {
+          ... on Comment {
+            _id
+            replyComments {
+              _id
+              replyText
+              showReplyComment
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      replyCommentId: id,
+      replyCommentData: { ...updatedReplyComment },
+    },
+  });
+  return res.data.updateReplyForComment;
+};
 
 module.exports = {
   addComment,
@@ -199,4 +296,7 @@ module.exports = {
   getCommentById,
   updateComment,
   addRate,
+  addReplyComment,
+  deleteReplyComment,
+  updateReplyComment,
 };

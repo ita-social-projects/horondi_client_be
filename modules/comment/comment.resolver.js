@@ -57,11 +57,7 @@ const commentsMutation = {
       return new RuleError(error.message, error.statusCode);
     }
   },
-  replyForComment: async (
-    _,
-    { commentId, replyCommentData, productId },
-    { user }
-  ) => {
+  replyForComment: async (_, { commentId, replyCommentData }, { user }) => {
     try {
       return await commentsService.replyForComment(
         commentId,
