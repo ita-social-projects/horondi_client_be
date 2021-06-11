@@ -112,18 +112,18 @@ class OrdersService {
     return foundOrder;
   }
 
-  async updateOrder(order, id, user) {
+  async updateOrder(order, id) {
     if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
-
-    const { _id } = user;
-
-    order.user = { ...order.user, id: _id };
 
     const orderToUpdate = await Order.findById(id).exec();
 
-    if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
+    if (!orderToUpdate) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     const { items } = order;
+
+    const _id = orderToUpdate.user.id;
+
+    order.user = { ...order.user, id: _id };
 
     await updateProductStatistic(orderToUpdate, order);
 

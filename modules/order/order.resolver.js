@@ -56,9 +56,10 @@ const ordersMutation = {
       message: ORDER_NOT_FOUND,
     };
   },
-  updateOrder: async (parent, args, { user }) => {
+  updateOrder: async (_, args) => {
     try {
-      return await ordersService.updateOrder(args.order, args.id, user);
+      const { order, id } = args;
+      return await ordersService.updateOrder(order, id);
     } catch (e) {
       return {
         statusCode: e.message === ORDER_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
