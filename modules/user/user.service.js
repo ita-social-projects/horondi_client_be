@@ -50,11 +50,10 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
-  TOKEN_IS_EXPIRIED,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
 } = require('../../consts/status-codes');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
@@ -73,7 +72,7 @@ const RuleError = require('../../errors/rule.error');
 const { USER_IS_BLOCKED } = require('../../error-messages/user.messages');
 const {
   roles: { ADMIN, SUPERADMIN },
-} = require('../../consts/');
+} = require('../../consts');
 const {
   HISTORY_ACTIONS: {
     BLOCK_USER: BLOCK_USER_ACTION,
@@ -130,7 +129,7 @@ class UserService extends FilterHelper {
               },
             },
           },
-          { new: true },
+          { new: true }
         ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
@@ -152,7 +151,7 @@ class UserService extends FilterHelper {
               },
             },
           },
-          { new: true },
+          { new: true }
         ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
@@ -173,7 +172,7 @@ class UserService extends FilterHelper {
               },
             },
           },
-          { new: true },
+          { new: true }
         ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
@@ -182,11 +181,14 @@ class UserService extends FilterHelper {
 
         break;
       }
+      default: {
+        break;
+      }
     }
 
     const { beforeChanges, afterChanges } = getChanges(
       userToBlock,
-      blockedUser,
+      blockedUser
     );
 
     const historyRecord = generateHistoryObject(
@@ -196,7 +198,7 @@ class UserService extends FilterHelper {
       userToBlock._id,
       beforeChanges,
       afterChanges,
-      adminId,
+      adminId
     );
     await addHistoryRecord(historyRecord);
 
@@ -239,7 +241,7 @@ class UserService extends FilterHelper {
             },
           },
         },
-        { new: true },
+        { new: true }
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
@@ -255,14 +257,14 @@ class UserService extends FilterHelper {
             },
           },
         },
-        { new: true },
+        { new: true }
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
     }
     const { beforeChanges, afterChanges } = getChanges(
       userToUnlock,
-      unlockedUser,
+      unlockedUser
     );
 
     const historyRecord = generateHistoryObject(
@@ -272,7 +274,7 @@ class UserService extends FilterHelper {
       userToUnlock._id,
       beforeChanges,
       afterChanges,
-      adminId,
+      adminId
     );
     await addHistoryRecord(historyRecord);
 
@@ -310,15 +312,22 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    return paidOrders.reduce((acc, order) => {
-      acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
-      return acc;
-    }, []);
+    return paidOrders.reduce(
+      (acc, order) => [
+        ...acc,
+        ...order.items.map(item => ({ _id: item.productId })),
+      ],
+      []
+    );
   }
 
   async getAllUsers({ filter, pagination, sort }) {
-    let filteredItems = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
+    const filteredItems = this.filterItems(filter);
+    const aggregatedItems = this.aggregateItems(
+      filteredItems,
+      pagination,
+      sort
+    );
 
     const [users] = await User.aggregate([
       {
@@ -357,14 +366,14 @@ class UserService extends FilterHelper {
       .lean()
       .exec();
     const formatedData = users.map(el =>
-      changeDataFormat(el.registrationDate, userDateFormat),
+      changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurency = countItemsOccurency(formatedData);
     const counts = Object.values(userOccurency);
     const names = Object.keys(userOccurency);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
-      0,
+      0
     );
 
     const { labels, count } = reduceByDaysCount(names, counts, filter.days);
@@ -382,8 +391,8 @@ class UserService extends FilterHelper {
       if (user.images.length) {
         await deleteFiles(
           Object.values(user.images).filter(
-            item => typeof item === 'string' && item,
-          ),
+            item => typeof item === 'string' && item
+          )
         );
       }
       const uploadResult = await uploadFiles([upload]);
@@ -400,7 +409,7 @@ class UserService extends FilterHelper {
         ...user._doc,
         ...updatedUser,
       },
-      { new: true },
+      { new: true }
     );
   }
 
@@ -413,7 +422,7 @@ class UserService extends FilterHelper {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass,
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
     if (user.role === USER) {
@@ -429,7 +438,7 @@ class UserService extends FilterHelper {
         expiresIn: TOKEN_EXPIRES_IN,
         secret: SECRET,
       },
-      true,
+      true
     );
 
     return {
@@ -453,7 +462,7 @@ class UserService extends FilterHelper {
 
     const match = await bcrypt.compare(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass,
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
     if (!match) {
@@ -465,7 +474,7 @@ class UserService extends FilterHelper {
         expiresIn: TOKEN_EXPIRES_IN,
         secret: SECRET,
       },
-      staySignedIn,
+      staySignedIn
     );
 
     return {
@@ -486,7 +495,7 @@ class UserService extends FilterHelper {
     const { accessToken, refreshToken } = generateTokens(
       userId,
       { expiresIn: TOKEN_EXPIRES_IN, secret: SECRET },
-      true,
+      true
     );
     return { refreshToken, token: accessToken };
   }
@@ -530,7 +539,7 @@ class UserService extends FilterHelper {
         expiresIn: TOKEN_EXPIRES_IN,
         secret: SECRET,
       },
-      staySignedIn,
+      staySignedIn
     );
     return {
       ...user._doc,
@@ -616,7 +625,6 @@ class UserService extends FilterHelper {
   }
 
   async confirmUser(token) {
-
     const { userId } = await tokenChecker(token, CONFIRMATION_SECRET);
 
     const candidate = await User.findById(userId).exec();
@@ -635,7 +643,7 @@ class UserService extends FilterHelper {
         expiresIn: TOKEN_EXPIRES_IN,
         secret: SECRET,
       },
-      true,
+      true
     );
 
     await User.findByIdAndUpdate(userId, {
@@ -749,7 +757,7 @@ class UserService extends FilterHelper {
           otp_code: null,
         },
       },
-      { new: true },
+      { new: true }
     ).exec();
 
     return { isSuccess: true };
@@ -768,16 +776,16 @@ class UserService extends FilterHelper {
       user._id,
       {
         $set: {
-          otp_code: otp_code,
+          otp_code,
         },
       },
-      { new: true },
+      { new: true }
     ).exec();
 
     await emailService.sendEmail(
       user.email,
       CONFIRM_CREATION_SUPERADMIN_EMAIL,
-      { otp_code },
+      { otp_code }
     );
 
     return { isSuccess: true };
@@ -795,7 +803,7 @@ class UserService extends FilterHelper {
       {
         expiresIn: TOKEN_EXPIRES_IN,
         secret: SECRET,
-      },
+      }
     );
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
@@ -847,7 +855,7 @@ class UserService extends FilterHelper {
         LAST_NAME,
         EMAIL,
       ]),
-      user._id,
+      user._id
     );
 
     await addHistoryRecord(historyRecord);
