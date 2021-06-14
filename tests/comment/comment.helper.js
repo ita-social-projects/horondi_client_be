@@ -287,7 +287,50 @@ const updateReplyComment = async (id, updatedReplyComment, operations) => {
   });
   return res.data.updateReplyForComment;
 };
-
+const getAllComments = async (filter, pagination, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($filter: CommentFilterInput, $pagination: Pagination) {
+        getAllComments(filter: $filter, pagination: $pagination) {
+          ... on PaginatedComments {
+            count
+            items {
+              _id
+              text
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      filter,
+      pagination,
+    },
+  });
+  return res.data.getAllComments;
+};
+const getRecentComments = async (limit, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($limit: Int!) {
+        getRecentComments(limit: $limit) {
+          ... on Comment {
+            _id
+            text
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      limit,
+    },
+  });
+  return res.data.getRecentComments;
+};
 module.exports = {
   addComment,
   deleteComment,
@@ -299,4 +342,6 @@ module.exports = {
   addReplyComment,
   deleteReplyComment,
   updateReplyComment,
+  getAllComments,
+  getRecentComments,
 };

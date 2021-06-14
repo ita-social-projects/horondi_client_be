@@ -20,6 +20,7 @@ const commentUpdateValidator = Joi.object({
 
 const replyCommentValidator = Joi.object({
   replyText: Joi.string()
+    .trim()
     .min(2)
     .required(),
   refToReplyComment: Joi.string(),

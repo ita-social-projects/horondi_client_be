@@ -4,6 +4,10 @@ const commentWrongId = '5faa3d306071ad276cc3d63c';
 const wrongData = '123siSTm#';
 const rate = 4;
 const updatedRate = 1;
+const countComments = 1;
+const limitCount = 1;
+const filterComment = { show: ['false'], search: 'test text' };
+const paginationComment = { skip: 0, limit: 10 };
 
 const newComment = userId => ({
   text: 'Test text',
@@ -24,18 +28,12 @@ const updatedReplyComment = {
   replyText: 'updated text',
   showReplyComment: true,
 };
-const newOrderInputData = (
-  productId,
-  modelId,
-  sizeId,
-  constructorId,
-  email
-) => ({
+const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   status: 'DELIVERED',
   user: {
     firstName: 'Arsen',
     lastName: 'Wenger',
-    email,
+    email: 'test@gmail.com',
     phoneNumber: '380950000000',
   },
   userComment: 'The bag is pretty good',
@@ -93,4 +91,8 @@ module.exports = {
   newOrderInputData,
   newReplyComment,
   updatedReplyComment,
+  countComments,
+  limitCount,
+  filterComment,
+  paginationComment,
 };

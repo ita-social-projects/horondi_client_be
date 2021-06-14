@@ -84,8 +84,9 @@ class CommentsService {
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId }).exec();
-    return comments;
+    return Comment.find({ product: productId })
+      .sort({ date: -1 })
+      .exec();
   }
 
   async getAllCommentsByUser(userId) {
@@ -119,7 +120,7 @@ class CommentsService {
     }
     const order = await Order.find({
       'items.product': data.product,
-      'user.email': user.email,
+      'user.id': user._id,
     }).exec();
 
     if (order.some(item => item.status === DELIVERED)) {
@@ -137,7 +138,7 @@ class CommentsService {
 
     const order = await Order.find({
       'items.product': replyComment.productId,
-      'user.email': user.email,
+      'user.id': user._id,
     }).exec();
 
     if (order.some(item => item.status === DELIVERED)) {

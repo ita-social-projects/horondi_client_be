@@ -1,6 +1,7 @@
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_USER,
+  COMMENTS_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
@@ -8,6 +9,10 @@ const {
   commentWrongId,
   userWrongId,
   productWrongId,
+  countComments,
+  limitCount,
+  filterComment,
+  paginationComment,
 } = require('./comment.variables');
 const {
   deleteComment,
@@ -15,6 +20,8 @@ const {
   getAllCommentsByUser,
   getAllCommentsByProduct,
   getCommentById,
+  getAllComments,
+  getRecentComments,
 } = require('./comment.helper');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
@@ -127,6 +134,35 @@ describe('Comment queries', () => {
     commentId = commentData._id;
   });
 
+  it('Should receive all comments', async () => {
+    const receivedComments = await getAllComments(
+      filterComment,
+      paginationComment,
+      operations
+    );
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments).toHaveProperty('count', countComments);
+      expect(receivedComments.items[0]).toHaveProperty('_id', commentId);
+      expect(receivedComments.items[0]).toHaveProperty(
+        'text',
+        newComment(adminId).text
+      );
+      done();
+    });
+  });
+  it('Should receive recent comments', async () => {
+    const receivedComments = await getRecentComments(limitCount, operations);
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments[0]).toHaveProperty('_id', commentId);
+      expect(receivedComments[0]).toHaveProperty(
+        'text',
+        newComment(adminId).text
+      );
+      done();
+    });
+  });
   it('Should receive all comments written by selected user', async () => {
     const res = await getAllCommentsByUser(adminId, operations);
     return new Promise(done => {
@@ -198,8 +234,18 @@ describe('Comment queries', () => {
       done();
     });
   });
+  it('Should receive recent comments with error', async () => {
+    await deleteComment(adminId, commentId, operations);
+    const receivedComments = await getRecentComments(limitCount, operations);
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments.statusCode).toBe(404);
+      expect(receivedComments.message).toBe(COMMENTS_NOT_FOUND);
+      done();
+    });
+  });
   afterAll(async () => {
-    await deleteComment(commentId, operations);
+    await deleteComment(adminId, commentId, operations);
     await deleteProduct(productId, operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
