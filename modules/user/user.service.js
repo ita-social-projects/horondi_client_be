@@ -314,13 +314,13 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    return paidOrders.reduce((acc, order) => {
-      const result = [
+    return paidOrders.reduce(
+      (acc, order) => [
         ...acc,
         ...order.items.map(item => ({ _id: item.productId })),
-      ];
-      return result;
-    }, []);
+      ],
+      []
+    );
   }
 
   async getAllUsers({ filter, pagination, sort }) {
