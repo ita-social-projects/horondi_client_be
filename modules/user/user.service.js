@@ -120,7 +120,6 @@ class UserService extends FilterHelper {
 
     switch (userToBlock.banned.blockCount) {
       case NO_ONE_TIME: {
-        console.log('userToBlock', userToBlock);
         blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
