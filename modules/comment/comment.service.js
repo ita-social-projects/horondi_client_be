@@ -12,7 +12,7 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
 } = require('../../error-messages/comment.messages');
-let { minDefaultDate } = require('../../consts/date-range');
+const { minDefaultDate } = require('../../consts/date-range');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
@@ -80,8 +80,7 @@ class CommentsService {
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId }).exec();
-    return comments;
+    return Comment.find({ product: productId }).exec();
   }
 
   async getAllCommentsByUser(userId) {
