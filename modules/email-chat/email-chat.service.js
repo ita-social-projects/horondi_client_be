@@ -13,22 +13,47 @@ const {
 const {
   DELIVERY_SERVICES_INITIAL_VALUES: { ID, DATE, INITIAL_TEXT, UKR, EN },
 } = require('../../consts/delivery-services');
+const { minDefaultDate } = require('../../consts/date-range');
 
 class EmailChatService {
   async getAllEmailQuestions({ filter = {}, skip }) {
-    const { emailQuestionStatus } = filter;
+    const { emailQuestionStatus, search, date } = filter;
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
 
-    const filters = emailQuestionStatus
+    const filterOptions = emailQuestionStatus
       ? { status: { $in: emailQuestionStatus } }
       : {};
 
-    const questions = await EmailChat.find(filters)
+    if (date?.dateFrom) {
+      minDate = new Date(filter.date.dateFrom);
+    }
+
+    if (date?.dateTo) {
+      maxDate = new Date(filter.date.dateTo);
+    }
+
+    filterOptions.date = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
+
+    if (search && search.trim()) {
+      const search = filter.search.trim();
+      filterOptions.$or = [
+        { senderName: { $regex: new RegExp(search, 'i') } },
+        { text: { $regex: new RegExp(search, 'i') } },
+        { email: { $regex: new RegExp(search, 'i') } },
+      ];
+    }
+
+    const questions = await EmailChat.find(filterOptions)
       .skip(skip || 0)
       .limit(10)
       .sort(DATE)
       .exec();
 
-    const count = await EmailChat.find(filters)
+    const count = await EmailChat.find(filterOptions)
       .countDocuments()
       .exec();
 
@@ -99,7 +124,7 @@ class EmailChatService {
       }
     ).exec();
 
-    const language = question.language;
+    const { language } = question;
     const subject = `[HORONDI] ${!language ? UKR : EN}`;
     const message = {
       from: MAIL_USER,
