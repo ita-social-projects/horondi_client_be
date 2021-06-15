@@ -185,8 +185,11 @@ class OrdersService {
     return foundOrder;
   }
 
-  async getUserOrders({ id }) {
-    const userOrders = await Order.find({ 'user.id': id }).exec();
+  async getUserOrders({ skip, limit }, { id }) {
+    const userOrders = await Order.find({ 'user.id': id })
+      .limit(limit)
+      .skip(skip)
+      .exec();
 
     if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 

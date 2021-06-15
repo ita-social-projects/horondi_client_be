@@ -16,18 +16,17 @@ const ordersQuery = {
       message: ORDER_NOT_FOUND,
     };
   },
-  getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
-  getUserOrders: async (_, args, { user }) => {
+  getAllOrders: async (_, args) => await ordersService.getAllOrders(args),
+  getUserOrders: async (_, { pagination }, { user }) => {
     try {
-      return await ordersService.getUserOrders(user);
+      return await ordersService.getUserOrders(pagination, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
 
-  getOrdersStatistic: (parent, args) =>
-    ordersService.getOrdersStatistic(args.date),
-  getPaidOrdersStatistic: (parent, args) =>
+  getOrdersStatistic: (_, args) => ordersService.getOrdersStatistic(args.date),
+  getPaidOrdersStatistic: (_, args) =>
     ordersService.getPaidOrdersStatistic(args.date),
   getOrderByPaidOrderNumber: async (_, { paidOrderNumber }) => {
     try {
