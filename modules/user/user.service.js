@@ -50,11 +50,11 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
-  TOKEN_IS_EXPIRIED,
+  ORDER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
 } = require('../../consts/status-codes');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
@@ -73,7 +73,7 @@ const RuleError = require('../../errors/rule.error');
 const { USER_IS_BLOCKED } = require('../../error-messages/user.messages');
 const {
   roles: { ADMIN, SUPERADMIN },
-} = require('../../consts/');
+} = require('../../consts');
 const {
   HISTORY_ACTIONS: {
     BLOCK_USER: BLOCK_USER_ACTION,
@@ -92,6 +92,7 @@ const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
 const { generateOtpCode } = require('../../utils/user');
+const Order = require('../order/order.model');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -119,6 +120,7 @@ class UserService extends FilterHelper {
 
     switch (userToBlock.banned.blockCount) {
       case NO_ONE_TIME: {
+        console.log('userToBlock', userToBlock);
         blockedUser = await User.findByIdAndUpdate(
           userToBlock._id,
           {
@@ -182,6 +184,9 @@ class UserService extends FilterHelper {
 
         break;
       }
+      default:
+        blockedUser = userToBlock;
+        break;
     }
 
     const { beforeChanges, afterChanges } = getChanges(
@@ -311,14 +316,21 @@ class UserService extends FilterHelper {
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
     return paidOrders.reduce((acc, order) => {
-      acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
-      return acc;
+      const result = [
+        ...acc,
+        ...order.items.map(item => ({ _id: item.productId })),
+      ];
+      return result;
     }, []);
   }
 
   async getAllUsers({ filter, pagination, sort }) {
-    let filteredItems = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
+    const filteredItems = this.filterItems(filter);
+    const aggregatedItems = this.aggregateItems(
+      filteredItems,
+      pagination,
+      sort
+    );
 
     const [users] = await User.aggregate([
       {
@@ -767,7 +779,7 @@ class UserService extends FilterHelper {
       user._id,
       {
         $set: {
-          otp_code: otp_code,
+          otp_code,
         },
       },
       { new: true }
@@ -878,6 +890,14 @@ class UserService extends FilterHelper {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  async getCountUserOrders(user) {
+    const orders = await Order.find({ 'user.id': user._id }).exec();
+
+    if (!orders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    return { countOrder: orders.length };
   }
 }
 
