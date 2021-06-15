@@ -25,7 +25,7 @@ const { objectType } = require('../../consts');
 const { transliterate } = require('../helper-functions');
 
 class NewsService {
-  async getAllNews({ skip, limit, filter}) {
+  async getAllNews({ skip, limit, filter }) {
     const filterOptions = {};
 
     if (filter?.search) {

@@ -14,8 +14,6 @@ const HomePageSlideSchema = new mongoose.Schema({
   description: [Language],
   link: {
     type: String,
-    minlength: [1, LINK_TOO_SHORT],
-    maxlength: [30, LINK_TOO_LONG],
   },
   images: ImageSet,
   order: Number,

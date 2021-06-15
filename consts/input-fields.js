@@ -28,6 +28,7 @@ const INPUT_FIELDS = {
   SIZE: 'size',
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
+  HOME_PAGE_SLIDE: 'slide',
 };
 
 module.exports = {
