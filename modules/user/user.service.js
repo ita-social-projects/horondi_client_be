@@ -184,7 +184,6 @@ class UserService extends FilterHelper {
         break;
       }
       default:
-        blockedUser = userToBlock;
         break;
     }
 
