@@ -522,7 +522,7 @@ const typeDefs = gql`
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: QuestionsInput
-      skip: Int
+      pagination: Pagination
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]

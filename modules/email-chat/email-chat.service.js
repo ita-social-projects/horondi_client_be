@@ -16,7 +16,7 @@ const {
 const { minDefaultDate } = require('../../consts/date-range');
 
 class EmailChatService {
-  async getAllEmailQuestions({ filter = {}, skip }) {
+  async getAllEmailQuestions({ filter = {}, pagination: { skip, limit } }) {
     const { emailQuestionStatus, search, date } = filter;
     let maxDate = new Date();
     let minDate = minDefaultDate;
@@ -49,7 +49,7 @@ class EmailChatService {
 
     const questions = await EmailChat.find(filterOptions)
       .skip(skip || 0)
-      .limit(10)
+      .limit(limit)
       .sort(DATE)
       .exec();
 
