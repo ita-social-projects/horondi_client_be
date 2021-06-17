@@ -499,7 +499,7 @@ const typeDefs = gql`
       productId: ID!,
       limit:Int,
       skip:Int
-    ): PaginatedCommentsResult!
+    ): PaginatedCommentsResult
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]

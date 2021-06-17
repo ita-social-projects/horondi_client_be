@@ -134,7 +134,7 @@ const SCHEMA_NAMES = {
   history: 'History',
   historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
-  paginatedCommentsResult: 'PaginatedCommentsResult',
+  paginatedComments: 'PaginatedComments',
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
@@ -275,19 +275,18 @@ const resolvers = {
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
-    replyComments: [],
     replyCommentsCount: parent => parent.replyComments.length,
-    // replyComments: parent =>
-    //   parent.replyComments.map(item => ({
-    //     _id: item._id,
-    //     replyText: item.replyText,
-    //     answerer: userService.getUser(item.answerer),
-    //     createdAt: item.createdAt,
-    //     updatedAt: item.updatedAt,
-    //     refToReplyComment: item.refToReplyComment,
-    //     showReplyComment: item.showReplyComment,
-    //     isSelled: item.isSelled,
-    //   })),
+    replyComments: parent =>
+      parent.replyComments.map(item => ({
+        _id: item._id,
+        replyText: item.replyText,
+        answerer: userService.getUser(item.answerer),
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        refToReplyComment: item.refToReplyComment,
+        showReplyComment: item.showReplyComment,
+        isSelled: item.isSelled,
+      })),
   },
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
@@ -642,7 +641,7 @@ const resolvers = {
   PaginatedCommentsResult: {
     __resolveType: obj => {
       if (obj.items) {
-        return SCHEMA_NAMES.paginatedCommentsResult;
+        return SCHEMA_NAMES.paginatedComments;
       }
       return 'Error';
     },
