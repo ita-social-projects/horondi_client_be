@@ -2,6 +2,7 @@ const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
 } = require('../../dotenvValidator');
+
 const wrongId = '23ee481430a0056b8e5cc015';
 const superAdminUser = {
   email: SUPER_ADMIN_EMAIL,

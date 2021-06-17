@@ -53,10 +53,14 @@ describe('Contacts mutations test', () => {
     expect(res).toHaveProperty('statusCode', 404);
   });
   test('should delete contact', async () => {
-    await deleteContact(contactsId, operations);
+    const res = await deleteContact(contactsId, operations);
+
+    expect(res).toBeDefined();
+    expect(res).not.toBeNull();
+    expect(res).toHaveProperty('_id', contactsId);
   });
 
-  it('should return error when delete not existing contact ', async () => {
+  it('should return error when delete not existing contact', async () => {
     const res = await deleteContact(notExistContactId, operations);
 
     expect(res).toBeDefined();

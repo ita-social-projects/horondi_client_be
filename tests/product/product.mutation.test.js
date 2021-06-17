@@ -11,7 +11,7 @@ const {
   createProduct,
   deleteProduct,
   updateProduct,
-} = require('../product/product.helper');
+} = require('./product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,

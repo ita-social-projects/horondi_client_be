@@ -53,8 +53,8 @@ const updateHomePageLooksImage = async (id, operations) => {
   });
   return res.data.updateHomePageLooksImage;
 };
-const deleteHomePageLooksImage = async (id, operations) => {
-  return await operations.mutate({
+const deleteHomePageLooksImage = async (id, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteHomePageLooksImage(id: $id) {
@@ -76,7 +76,6 @@ const deleteHomePageLooksImage = async (id, operations) => {
     `,
     variables: { id },
   });
-};
 const getHomePageImages = async operations => {
   const res = await operations.query({
     query: gql`

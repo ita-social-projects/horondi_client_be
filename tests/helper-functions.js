@@ -1,8 +1,8 @@
-const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
-const config = require('./config.test.app');
 const { createTestClient } = require('apollo-server-testing');
 const bcrypt = require('bcryptjs');
+const config = require('./config.test.app');
+const User = require('../modules/user/user.model');
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
@@ -14,7 +14,7 @@ const {
 const { FIRST_NAME, LAST_NAME } = require('../consts/test-admin');
 
 const registerAdmin = async (email, password) => {
-  await User.deleteOne({ email: email });
+  await User.deleteOne({ email });
   const admin = new User();
   admin.firstName = FIRST_NAME;
   admin.lastName = LAST_NAME;
