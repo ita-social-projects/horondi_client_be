@@ -122,7 +122,6 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
-const pocketService = require('./modules/pocket/pocket.service');
 const strapService = require('./modules/strap/strap.service');
 
 const {
@@ -169,6 +168,10 @@ const SCHEMA_NAMES = {
   strap: 'Strap',
   paginatedStraps: 'PaginatedStraps',
 };
+
+const {
+  constructorPocketHelper,
+} = require('./helpers/constructor-pocket-helper');
 
 const resolvers = {
   Query: {
@@ -426,9 +429,7 @@ const resolvers = {
           patternService.getPatternById(el)
         ),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el =>
-          pocketService.getPocketById(el)
-        ),
+        constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         parent.eligibleOptions.constructorBack.map(el =>
           backService.getBackById(el)
@@ -460,9 +461,7 @@ const resolvers = {
       constructorPattern: () =>
         patternService.getPatternById(parent.appliedOptions.constructorPattern),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el =>
-          pocketService.getPocketById(el)
-        ),
+        constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
       constructorClosure: () =>
