@@ -318,35 +318,33 @@ const resolvers = {
             },
           };
         }
-        if (item.fromConstructor) {
-          return {
-            productFromConstructor: {
-              product: productsService.getProductById(
-                item.fromConstructor.product
-              ),
-              constructorBasics: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorBasics,
-                constructorBasicModel
-              ),
-              constructorBottom: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorBottom,
-                constructorBottomModel
-              ),
-              constructorFrontPocket: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorFrontPocket,
-                constructorFrontPocketModel
-              ),
-              constructorPattern: patternService.getPatternById(
-                item.fromConstructor.constructorPattern
-              ),
-            },
-            price: item.price,
-            quantity: item.quantity,
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-            },
-          };
-        }
+        return {
+          productFromConstructor: {
+            product: productsService.getProductById(
+              item.fromConstructor.product
+            ),
+            constructorBasics: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorBasics,
+              constructorBasicModel
+            ),
+            constructorBottom: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorBottom,
+              constructorBottomModel
+            ),
+            constructorFrontPocket: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorFrontPocket,
+              constructorFrontPocketModel
+            ),
+            constructorPattern: patternService.getPatternById(
+              item.fromConstructor.constructorPattern
+            ),
+          },
+          price: item.price,
+          quantity: item.quantity,
+          options: {
+            size: sizeService.getSizeById(item.options.size),
+          },
+        };
       }),
   },
   Order: {
@@ -462,9 +460,9 @@ const resolvers = {
       constructorPattern: () =>
         patternService.getPatternById(parent.appliedOptions.constructorPattern),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el => {
-          return pocketService.getPocketById(el);
-        }),
+        parent.eligibleOptions.constructorPocket.map(el =>
+          pocketService.getPocketById(el)
+        ),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
       constructorClosure: () =>

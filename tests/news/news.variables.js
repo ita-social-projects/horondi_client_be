@@ -1,5 +1,5 @@
-let skip = 0;
-let limit = 0;
+const skip = 0;
+const limit = 0;
 const wrongId = '5fa8f2ad0785350940d8953e';
 const news = {
   title: [

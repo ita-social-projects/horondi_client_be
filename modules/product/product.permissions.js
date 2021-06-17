@@ -1,9 +1,9 @@
+const { and } = require('graphql-shield');
 const {
   productInputValidator,
   deleteProductValidator,
 } = require('../../validators/product.validator');
 const { inputDataValidation } = require('../../utils/rules');
-const { and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const {
   PRODUCT_FEATURES: { PRODUCT, ID },

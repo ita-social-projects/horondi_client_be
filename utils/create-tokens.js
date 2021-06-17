@@ -10,12 +10,11 @@ const generateTokens = (userId, params, withRefresh = false) => {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
     return { accessToken, refreshToken };
-  } else {
-    const accessToken = jwt.sign({ userId }, params.secret, {
-      expiresIn: params.expiresIn,
-    });
-    const refreshToken = null;
-    return { accessToken, refreshToken };
   }
+  const accessToken = jwt.sign({ userId }, params.secret, {
+    expiresIn: params.expiresIn,
+  });
+  const refreshToken = null;
+  return { accessToken, refreshToken };
 };
 module.exports = generateTokens;

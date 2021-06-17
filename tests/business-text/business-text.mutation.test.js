@@ -22,7 +22,7 @@ describe('Business page queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
-  test(' should add business text to database', async () => {
+  test('should add business text to database', async () => {
     businessText = await addBusinessText(newBusinessText, operations);
     businessTextId = businessText._id;
 
@@ -31,9 +31,8 @@ describe('Business page queries', () => {
     expect(businessText.title).toBeInstanceOf(Array);
     expect(businessText).toHaveProperty('text', newBusinessText.text);
     expect(businessText.text).toBeInstanceOf(Array);
-    expect(businessText.code).isPrototypeOf(String);
   });
-  test(' adding a new page with existing code should return error', async () => {
+  test('adding a new page with existing code should return error', async () => {
     const alreadyExistsException = await addBusinessText(
       newBusinessText,
       operations
@@ -45,7 +44,7 @@ describe('Business page queries', () => {
     );
     expect(alreadyExistsException).toHaveProperty('statusCode', 400);
   });
-  test(' update business text', async () => {
+  test('update business text', async () => {
     const receivedBusinessText = await updateBusinessText(
       businessTextId,
       updatedBusinessText,
@@ -66,7 +65,7 @@ describe('Business page queries', () => {
       updatedBusinessText.text
     );
   });
-  test(' update not existing businessText should return error', async () => {
+  test('update not existing businessText should return error', async () => {
     const notExistBusinessText = await updateBusinessText(
       notExistBusinessTextId,
       updatedBusinessText,
@@ -79,7 +78,7 @@ describe('Business page queries', () => {
     );
     expect(notExistBusinessText).toHaveProperty('statusCode', 404);
   });
-  test(' delete not existing business text should return error', async () => {
+  test('delete not existing business text should return error', async () => {
     const res = await deleteBusinessText(notExistBusinessTextId, operations);
 
     expect(res.data.deleteBusinessText).toBeDefined();
@@ -91,7 +90,7 @@ describe('Business page queries', () => {
     );
   });
 
-  test(' delete businessText', async () => {
+  test('delete businessText', async () => {
     const res = await deleteBusinessText(businessTextId, operations);
 
     businessText = res.data.deleteBusinessText;

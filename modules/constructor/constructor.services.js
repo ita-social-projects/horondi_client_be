@@ -82,7 +82,7 @@ class ConstructorService {
 
   async addConstructorElement(
     { constructorElement, upload },
-    model,
+    Model,
     { _id: adminId }
   ) {
     if (upload) {
@@ -93,7 +93,7 @@ class ConstructorService {
       constructorElement.basePrice
     );
 
-    const basic = await new model(constructorElement).save();
+    const basic = await new Model(constructorElement).save();
 
     const historyRecord = generateHistoryObject(
       ADD_CONSTRUCTOR_ELEMENT,
@@ -114,7 +114,7 @@ class ConstructorService {
 
     await addHistoryRecord(historyRecord);
 
-    return model.findById(basic._id);
+    return Model.findById(basic._id);
   }
 
   async updateConstructorElement(

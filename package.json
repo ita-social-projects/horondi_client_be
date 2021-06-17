@@ -71,6 +71,7 @@
     "mongoose": "^5.9.18",
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
+    "node-cron": "^3.0.0",
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.10",
     "nodemailer-smtp-transport": "^2.7.4",
@@ -109,7 +110,6 @@
     "jest": "^26.3.0",
     "jest-sonar-reporter": "^2.0.0",
     "lint-staged": "^10.2.9",
-    "node-cron": "^3.0.0",
     "nodemon": "^2.0.4",
     "prettier": "1.19.1"
   },

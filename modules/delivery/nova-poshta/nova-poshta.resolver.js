@@ -1,7 +1,4 @@
 const deliveryService = require('./nova-poshta.service');
-const {
-  ORDER_CREATION_FAILED,
-} = require('../../../error-messages/delivery.message');
 
 const novaPoshtaQuery = {
   getNovaPoshtaCities: async (parent, args) =>

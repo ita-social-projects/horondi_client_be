@@ -4,7 +4,7 @@ const ProductModel = require('../product/product.model');
 const ConstructorBasicModel = require('../constructor/constructor-basic/constructor-basic.model');
 const ConstructorBottomModel = require('../constructor/constructor-bottom/constructor-bottom.model');
 const ConstructorFrontPocketModel = require('../constructor/constructor-front-pocket/constructor-front-pocket.model');
-const PatternModel = require('../../modules/pattern/pattern.model');
+const PatternModel = require('../pattern/pattern.model');
 const RuleError = require('../../errors/rule.error');
 const {
   CART_MESSAGES: {
@@ -25,9 +25,9 @@ const {
 } = require('../../error-messages/constructor-front-pocket-messages');
 const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const {
-  STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
-const { getSizeById } = require('../../modules/size/size.service');
+const { getSizeById } = require('../size/size.service');
 const {
   totalCartSum,
   setTotalCartSum,
@@ -120,31 +120,11 @@ class CartService {
             upsert: true,
           }
         ).exec();
-      } else {
-        return UserModel.findOneAndUpdate(
-          { _id: id },
-          {
-            'cart.totalPrice': totalPrice,
-            $push: {
-              'cart.items': {
-                product: _id,
-                'options.size': sizeId,
-                price: productPriceWithSize,
-              },
-            },
-          },
-          {
-            new: true,
-            safe: true,
-            upsert: true,
-          }
-        ).exec();
       }
-    } else {
       return UserModel.findOneAndUpdate(
         { _id: id },
         {
-          'cart.totalPrice': productPriceWithSize,
+          'cart.totalPrice': totalPrice,
           $push: {
             'cart.items': {
               product: _id,
@@ -160,6 +140,24 @@ class CartService {
         }
       ).exec();
     }
+    return UserModel.findOneAndUpdate(
+      { _id: id },
+      {
+        'cart.totalPrice': productPriceWithSize,
+        $push: {
+          'cart.items': {
+            product: _id,
+            'options.size': sizeId,
+            price: productPriceWithSize,
+          },
+        },
+      },
+      {
+        new: true,
+        safe: true,
+        upsert: true,
+      }
+    ).exec();
   }
 
   async addConstructorProductItemToCart(
@@ -264,33 +262,11 @@ class CartService {
             new: true,
           }
         ).exec();
-      } else {
-        return UserModel.findOneAndUpdate(
-          { _id: id },
-          {
-            'cart.totalPrice': totalPrice,
-            $push: {
-              'cart.items': {
-                'fromConstructor.product': _id,
-                'fromConstructor.constructorBasics': constructorBasics,
-                'fromConstructor.constructorBottom': constructorBottom,
-                'fromConstructor.constructorFrontPocket': constructorFrontPocket,
-                'fromConstructor.constructorPattern': constructorPattern,
-                'options.size': sizeId,
-                price: productPriceWithSize,
-              },
-            },
-          },
-          {
-            new: true,
-          }
-        ).exec();
       }
-    } else {
       return UserModel.findOneAndUpdate(
         { _id: id },
         {
-          'cart.totalPrice': productPriceWithSize,
+          'cart.totalPrice': totalPrice,
           $push: {
             'cart.items': {
               'fromConstructor.product': _id,
@@ -308,6 +284,26 @@ class CartService {
         }
       ).exec();
     }
+    return UserModel.findOneAndUpdate(
+      { _id: id },
+      {
+        'cart.totalPrice': productPriceWithSize,
+        $push: {
+          'cart.items': {
+            'fromConstructor.product': _id,
+            'fromConstructor.constructorBasics': constructorBasics,
+            'fromConstructor.constructorBottom': constructorBottom,
+            'fromConstructor.constructorFrontPocket': constructorFrontPocket,
+            'fromConstructor.constructorPattern': constructorPattern,
+            'options.size': sizeId,
+            price: productPriceWithSize,
+          },
+        },
+      },
+      {
+        new: true,
+      }
+    ).exec();
   }
 
   async updateCartItemQuantity(quantity, sizeId, id, { _id }) {
@@ -328,12 +324,10 @@ class CartService {
     }
 
     const newPriceForProduct = itemFromCart.cart.items[0].price.map(
-      ({ value, currency }) => {
-        return {
-          value: (value / itemFromCart.cart.items[0].quantity) * quantity,
-          currency,
-        };
-      }
+      ({ value, currency }) => ({
+        value: (value / itemFromCart.cart.items[0].quantity) * quantity,
+        currency,
+      })
     );
 
     if (cart.items?.length > 1) {
@@ -362,22 +356,21 @@ class CartService {
         },
         { new: true }
       ).exec();
-    } else {
-      return UserModel.findOneAndUpdate(
-        {
-          _id: id,
-          'cart.items._id': itemFromCart.cart.items[0]._id,
-        },
-        {
-          $set: {
-            'cart.totalPrice': newPriceForProduct,
-            'cart.items.$.price': newPriceForProduct,
-            'cart.items.$.quantity': quantity,
-          },
-        },
-        { new: true }
-      ).exec();
     }
+    return UserModel.findOneAndUpdate(
+      {
+        _id: id,
+        'cart.items._id': itemFromCart.cart.items[0]._id,
+      },
+      {
+        $set: {
+          'cart.totalPrice': newPriceForProduct,
+          'cart.items.$.price': newPriceForProduct,
+          'cart.items.$.quantity': quantity,
+        },
+      },
+      { new: true }
+    ).exec();
   }
 
   async updateCartConstructorProductItemQuantity(
@@ -392,12 +385,10 @@ class CartService {
     const { cart } = await UserModel.findById(id, 'cart -_id').exec();
 
     const newPriceForConstructorProduct = constructorData.cart.items[0].price.map(
-      ({ value, currency }) => {
-        return {
-          value: (value / constructorData.cart.items[0].quantity) * quantity,
-          currency,
-        };
-      }
+      ({ value, currency }) => ({
+        value: (value / constructorData.cart.items[0].quantity) * quantity,
+        currency,
+      })
     );
 
     if (cart.items?.length > 1) {
@@ -426,22 +417,21 @@ class CartService {
         },
         { new: true }
       ).exec();
-    } else {
-      return UserModel.findOneAndUpdate(
-        {
-          _id: id,
-          'cart.items._id': constructorData.cart.items[0]._id,
-        },
-        {
-          $set: {
-            'cart.totalPrice': newPriceForConstructorProduct,
-            'cart.items.$.price': newPriceForConstructorProduct,
-            'cart.items.$.quantity': quantity,
-          },
-        },
-        { new: true }
-      ).exec();
     }
+    return UserModel.findOneAndUpdate(
+      {
+        _id: id,
+        'cart.items._id': constructorData.cart.items[0]._id,
+      },
+      {
+        $set: {
+          'cart.totalPrice': newPriceForConstructorProduct,
+          'cart.items.$.price': newPriceForConstructorProduct,
+          'cart.items.$.quantity': quantity,
+        },
+      },
+      { new: true }
+    ).exec();
   }
 
   async mergeCartFromLS(cartFromLS, id) {
