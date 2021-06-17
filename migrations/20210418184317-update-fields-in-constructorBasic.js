@@ -1,4 +1,4 @@
-const ObjectId = require('mongoose').Types.ObjectId();
+const { ObjectId } = require('mongoose').Types;
 
 const { constructorBasicOneExtraFields } = require('../consts/migrations');
 
