@@ -1,4 +1,5 @@
 const { _ } = require('lodash');
+const Order = require('./order/order.model');
 
 const { hyphen, exception, dictionary } = require('../consts/transliteration');
 
@@ -142,10 +143,17 @@ const transliterate = words => {
   return _.words(transliterated_words).join(hyphen);
 };
 
+const isUserBoughtPoduct = (productId, userId) =>
+  Order.find({
+    'items.product': productId,
+    'user.id': userId,
+  }).exec();
+
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
   changeDataFormat,
   countItemsOccurency,
   transliterate,
+  isUserBoughtPoduct,
 };

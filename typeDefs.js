@@ -406,6 +406,7 @@ const typeDefs = gql`
       count: Int
   }
   union PaginatedProductsResult = PaginatedProducts | Error
+  union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -494,9 +495,11 @@ const typeDefs = gql`
       pagination: Pagination
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(
-      productId: ID!
-    ): [CommentResult]
+    getCommentsByProduct(
+      productId: ID!,
+      limit:Int,
+      skip:Int
+    ): PaginatedCommentsResult!
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]

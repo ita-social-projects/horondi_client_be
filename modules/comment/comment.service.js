@@ -17,6 +17,7 @@ const { minDefaultDate } = require('../../consts/date-range');
 const {
   ORDER_STATUSES: { DELIVERED },
 } = require('../../consts/order-statuses');
+const { isUserBoughtPoduct } = require('../helper-functions');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
@@ -79,14 +80,31 @@ class CommentsService {
     return comments;
   }
 
-  async getAllCommentsByProduct({ productId }) {
+  async getCommentsByProduct(productId, skip, limit, user) {
     const product = await Product.findById(productId).exec();
     if (!product) {
       throw new Error(COMMENT_NOT_FOUND);
     }
-    return Comment.find({ product: productId })
+    let filterOptions = {};
+
+    if (user) {
+      filterOptions = {
+        $or: [{ show: { $in: [true] } }, { user: user._id }],
+      };
+    } else {
+      filterOptions = { show: { $in: [true] } };
+    }
+    const count = Comment.find(filterOptions).countDocuments();
+    const items = await Comment.find(filterOptions)
       .sort({ date: -1 })
+      .limit(limit)
+      .skip(skip)
       .exec();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getAllCommentsByUser(userId) {
@@ -118,10 +136,7 @@ class CommentsService {
     if (!product) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
-    const order = await Order.find({
-      'items.product': data.product,
-      'user.id': user._id,
-    }).exec();
+    const order = await isUserBoughtPoduct(data.product, user._id);
 
     if (order.some(item => item.status === DELIVERED)) {
       data.isSelled = true;
@@ -136,10 +151,7 @@ class CommentsService {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
 
-    const order = await Order.find({
-      'items.product': replyComment.productId,
-      'user.id': user._id,
-    }).exec();
+    const order = await isUserBoughtPoduct(replyComment.productId, user._id);
 
     if (order.some(item => item.status === DELIVERED)) {
       replyComment.isSelled = true;

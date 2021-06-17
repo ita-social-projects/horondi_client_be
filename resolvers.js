@@ -134,6 +134,7 @@ const SCHEMA_NAMES = {
   history: 'History',
   historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
+  paginatedCommentsResult: 'PaginatedCommentsResult',
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
@@ -274,22 +275,22 @@ const resolvers = {
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
-    replyComments: parent =>
-      parent.replyComments.map(item => ({
-        _id: item._id,
-        replyText: item.replyText,
-        answerer: userService.getUser(item.answerer),
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        refToReplyComment: item.refToReplyComment,
-        showReplyComment: item.showReplyComment,
-        isSelled: item.isSelled,
-      })),
+    replyComments: [],
+    replyCommentsCount: parent => parent.replyComments.length,
+    // replyComments: parent =>
+    //   parent.replyComments.map(item => ({
+    //     _id: item._id,
+    //     replyText: item.replyText,
+    //     answerer: userService.getUser(item.answerer),
+    //     createdAt: item.createdAt,
+    //     updatedAt: item.updatedAt,
+    //     refToReplyComment: item.refToReplyComment,
+    //     showReplyComment: item.showReplyComment,
+    //     isSelled: item.isSelled,
+    //   })),
   },
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
-    comments: parent =>
-      commentsService.getAllCommentsByProduct({ productId: parent._id }),
     model: parent => modelService.getModelById(parent.model),
     mainMaterial: parent => ({
       material: () =>
@@ -634,6 +635,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedProducts;
+      }
+      return 'Error';
+    },
+  },
+  PaginatedCommentsResult: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedCommentsResult;
       }
       return 'Error';
     },

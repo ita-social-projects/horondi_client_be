@@ -22,9 +22,18 @@ const commentsQuery = {
     }
   },
 
-  getAllCommentsByProduct: async (parent, args) => {
+  getCommentsByProduct: async (
+    parent,
+    { productId, skip, limit },
+    { user }
+  ) => {
     try {
-      return await commentsService.getAllCommentsByProduct(args);
+      return await commentsService.getCommentsByProduct(
+        productId,
+        skip,
+        limit,
+        user
+      );
     } catch (error) {
       return [
         {

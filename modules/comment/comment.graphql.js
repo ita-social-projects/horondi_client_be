@@ -8,6 +8,7 @@ user: User
 product: Product
 show: Boolean
 replyComments:[ReplyComments]
+replyCommentsCount:Int
 rate: Int
 isSelled: Boolean
 }
