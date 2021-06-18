@@ -521,7 +521,7 @@ const typeDefs = gql`
     checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
-      filter: QuestionsInput
+      filter: QuestionsFilterInput
       pagination: Pagination
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
@@ -578,7 +578,7 @@ const typeDefs = gql`
     emailQuestionStatus: [String]
     orderStatus: [String]
   }
-  input QuestionsInput { 
+  input QuestionsFilterInput { 
     search: String,
     emailQuestionStatus: [String], 
     date: DateRangeInput
