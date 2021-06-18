@@ -6,8 +6,8 @@ const {
 } = require('../../consts/status-codes');
 
 const ordersQuery = {
-  getOrderById: async (parent, args) => {
-    const order = await ordersService.getOrderById(args.id);
+  getOrderById: async (parent, { id }) => {
+    const order = await ordersService.getOrderById(id);
     if (order) {
       return order;
     }
@@ -25,9 +25,9 @@ const ordersQuery = {
     }
   },
 
-  getOrdersStatistic: (_, args) => ordersService.getOrdersStatistic(args.date),
-  getPaidOrdersStatistic: (_, args) =>
-    ordersService.getPaidOrdersStatistic(args.date),
+  getOrdersStatistic: (_, { date }) => ordersService.getOrdersStatistic(date),
+  getPaidOrdersStatistic: (_, { date }) =>
+    ordersService.getPaidOrdersStatistic(date),
   getOrderByPaidOrderNumber: async (_, { paidOrderNumber }) => {
     try {
       return await ordersService.getOrderByPaidOrderNumber(paidOrderNumber);

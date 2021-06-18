@@ -27,8 +27,8 @@ const userQuery = {
       };
     }
   },
-  getPurchasedProducts: (parent, args) =>
-    userService.getPurchasedProducts(args.id),
+  getPurchasedProducts: (parent, { id }) =>
+    userService.getPurchasedProducts(id),
 };
 const userMutation = {
   blockUser: async (_, { userId }, { user }) => {
