@@ -4,12 +4,12 @@ const {
 } = require('../../consts/image-sizes');
 
 const uploadLargeImage = async file => {
-  let result = await uploadService.uploadFile(file, [IMAGE_LARGE]);
+  const result = await uploadService.uploadFile(file, [IMAGE_LARGE]);
   return result.fileNames.large;
 };
 
 const uploadSmallImage = async file => {
-  let result = await uploadService.uploadFile(file, [IMAGE_SMALL]);
+  const result = await uploadService.uploadFile(file, [IMAGE_SMALL]);
   return result.fileNames.small;
 };
 

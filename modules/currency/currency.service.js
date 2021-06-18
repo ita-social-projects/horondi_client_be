@@ -11,8 +11,8 @@ const {
 class CurrencyService {
   constructor() {
     this.currencyTypes = {
-      UAH: UAH,
-      USD: USD,
+      UAH,
+      USD,
     };
   }
 

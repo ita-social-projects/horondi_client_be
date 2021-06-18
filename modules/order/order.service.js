@@ -1,10 +1,7 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+const { ObjectId } = require('mongoose').Types;
 
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
-const {
-  ORDER_PAYMENT_STATUS: { PAID },
-} = require('../../consts/order-payment-status');
 const {
   STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -13,7 +10,7 @@ const {
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
 const { userDateFormat } = require('../../consts');
-let { minDefaultDate } = require('../../consts/date-range');
+const { minDefaultDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
@@ -108,10 +105,9 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
-
     const foundOrder = await Order.findById(id).exec();
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     return foundOrder;
   }
@@ -133,7 +129,7 @@ class OrdersService {
       totalItemsPrice
     );
 
-    order = {
+    const orderUpdate = {
       ...order,
       totalItemsPrice,
       totalPriceToPay,
@@ -141,13 +137,20 @@ class OrdersService {
 
     return await Order.findByIdAndUpdate(
       id,
-      { ...order, lastUpdatedDate: Date.now() },
+      { ...orderUpdate, lastUpdatedDate: Date.now() },
       { new: true }
     ).exec();
   }
 
-  async addOrder(data) {
+  async addOrder(data, user) {
     const { items } = data;
+
+    if (!user) {
+      data.user = { ...data.user, id: null };
+    } else {
+      const { _id } = user;
+      data.user = { ...data.user, id: _id };
+    }
 
     await addProductsToStatistic(items);
 
@@ -178,10 +181,12 @@ class OrdersService {
     return foundOrder;
   }
 
-  async getUserOrders(user) {
-    const { orders } = user;
+  async getUserOrders({ id }) {
+    const userOrders = await Order.find({ 'user.id': id }).exec();
 
-    return await Order.find({ _id: orders }).exec();
+    if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    return userOrders;
   }
 
   filterOrders({ days, isPaid }) {

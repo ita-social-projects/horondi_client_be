@@ -5,9 +5,11 @@
     "commonjs": true,
     "jest/globals": true,
     "es6": true,
-    "node": true
+    "node": true,
+    
   },
-  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended"],
+  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended","plugin:prettier/recommended"],
+  "plugins": ["prettier","jest"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,6 +18,7 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "prettier/prettier": "error",
     "linebreak-style": 0,
     "semi": "off",
     "no-var": "warn",
@@ -71,18 +74,6 @@
     "lines-between-class-members": [1, "always"],
     "consistent-return": 0,
     "no-this-before-super": 2,
-    "indent": [
-      2,
-      2,
-      {
-        "ignoreComments": true,
-        "VariableDeclarator": {
-          "var": 2,
-          "let": 2,
-          "const": 3
-        }
-      }
-    ],
     "max-len": [
       2,
       {
@@ -127,5 +118,8 @@
       }
     ],
     "no-confusing-arrow": 0
+  
   }
+  
 }
+

@@ -1,14 +1,12 @@
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
-  COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
 } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
   newComment,
   commentWrongId,
-  userWrongId,
   productWrongId,
   updatedComment,
   rate,
@@ -21,11 +19,7 @@ const {
   addRate,
 } = require('./comment.helper');
 const { newProductInputData } = require('../product/product.variables');
-const {
-  createProduct,
-  deleteProduct,
-  getProductById,
-} = require('../product/product.helper');
+const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -75,9 +69,6 @@ let constructorBasicId;
 let colorId;
 let sizeId;
 let userId;
-let productRate;
-let productRateCount;
-let productUserRates;
 
 describe('Comment queries', () => {
   beforeAll(async () => {
@@ -125,24 +116,13 @@ describe('Comment queries', () => {
       operations
     );
     productId = productData._id;
-    const res = await getProductById(productId, operations);
-    const receivedProduct = res.data.getProductById;
-    productRate = receivedProduct.rate;
-    productRateCount = receivedProduct.rateCount;
-    productUserRates = receivedProduct.userRates;
-    const userData = await registerUser(
-      firstName,
-      lastName,
-      email,
-      pass,
-      language,
-      operations
-    );
+
+    await registerUser(firstName, lastName, email, pass, language, operations);
     const authRes = await loginUser(email, pass, operations);
     userId = authRes.data.loginUser._id;
   });
 
-  it(' should add a new comment', async () => {
+  it('should add a new comment', async () => {
     const receivedComment = await addComment(
       productId,
       newComment(userId),
@@ -157,7 +137,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('user', { _id: userId });
     expect(receivedComment).toHaveProperty('show', newComment(userId).show);
   });
-  it(' should return error if to add comment to not existing product', async () => {
+  it('should return error if to add comment to not existing product', async () => {
     const receivedComment = await addComment(
       productWrongId,
       newComment(userId),
@@ -186,7 +166,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('user', { _id: userId });
     expect(receivedComment).toHaveProperty('product', { _id: productId });
   });
-  it(' should return error if id of comment to update is not correct', async () => {
+  it('should return error if id of comment to update is not correct', async () => {
     const receivedComment = await updateComment(
       commentWrongId,
       updatedComment,

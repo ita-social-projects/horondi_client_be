@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createMaterial } = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
 const { getMaterial } = require('../materials/material.variables');
 const { color, wrongId } = require('../color/color.variables');
 const { setupApp } = require('../helper-functions');
@@ -21,39 +18,34 @@ const {
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
 } = require('../../error-messages/constructor-element-messages');
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
+
 const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const {
-  createCategory,
-  deleteCategory,
-} = require('../category/category.helper');
+const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
 
-let operations,
-  colorId,
-  sizeId,
-  categoryId,
-  modelId,
-  materialInput,
-  materialId,
-  addConstructor,
-  constructorId,
-  currentConstructorBottom,
-  newDataConstructorBottom;
+let operations;
+let colorId;
+let sizeId;
+let categoryId;
+let modelId;
+let materialInput;
+let materialId;
+let addConstructor;
+let constructorId;
+let currentConstructorBottom;
+let newDataConstructorBottom;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/currency/currency.model.js');
 
 describe('Constructor mutations', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -80,10 +72,9 @@ describe('Constructor mutations', () => {
       colorId,
       modelId
     );
-    done();
   });
 
-  test('should create constructor-bottom', async done => {
+  test('should create constructor-bottom', async () => {
     const createConstructorBottomData = await createConstructorBottom(
       addConstructor,
       operations
@@ -95,10 +86,9 @@ describe('Constructor mutations', () => {
       ...currentConstructorBottom,
       _id: constructorId,
     });
-    done();
   });
 
-  test('should update existing constructor-bottom', async done => {
+  test('should update existing constructor-bottom', async () => {
     const updatedData = await updateConstructorBottom(
       constructorId,
       newDataConstructorBottom,
@@ -107,9 +97,8 @@ describe('Constructor mutations', () => {
 
     expect(updatedData).toBeDefined();
     expect(updatedData.image).not.toEqual(currentConstructorBottom.image);
-    done();
   });
-  test('should return Error (already exist) when creating same constructor-bottom again', async done => {
+  test('should return Error (already exist) when creating same constructor-bottom again', async () => {
     const createConstructorAgain = await createConstructorBottom(
       newDataConstructorBottom,
       operations
@@ -117,9 +106,8 @@ describe('Constructor mutations', () => {
 
     expect(createConstructorAgain.message).toBeDefined();
     expect(createConstructorAgain.message).toEqual(ITEM_ALREADY_EXISTS);
-    done();
   });
-  test('should return Error (not found) when updating not existing constructor-bottom', async done => {
+  test('should return Error (not found) when updating not existing constructor-bottom', async () => {
     const updateConstructor = await updateConstructorBottom(
       wrongId,
       addConstructor,
@@ -127,19 +115,17 @@ describe('Constructor mutations', () => {
     );
 
     expect(updateConstructor.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
-    done();
   });
 
-  test('should delete constructor-bottom and return id', async done => {
+  test('should delete constructor-bottom and return id', async () => {
     const deletedConstructor = await deleteConstructorBottom(
       constructorId,
       operations
     );
     expect(deletedConstructor._id).toBe(constructorId);
-    done();
   });
 
-  afterAll(async done => {
-    mongoose.connection.db.dropDatabase(done);
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

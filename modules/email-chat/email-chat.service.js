@@ -99,7 +99,7 @@ class EmailChatService {
       }
     ).exec();
 
-    const language = question.language;
+    const { language } = question;
     const subject = `[HORONDI] ${!language ? UKR : EN}`;
     const message = {
       from: MAIL_USER,

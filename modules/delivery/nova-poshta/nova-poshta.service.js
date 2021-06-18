@@ -52,13 +52,11 @@ class NovaPoshtaService {
       GET_CITIES
     );
 
-    return res.data.data.slice(0, 10).map(city => {
-      return {
-        description: city.Description,
-        ref: city.Ref,
-        cityID: city.CityID,
-      };
-    });
+    return res.data.data.slice(0, 10).map(city => ({
+      description: city.Description,
+      ref: city.Ref,
+      cityID: city.CityID,
+    }));
   }
 
   async getNovaPoshtaStreets(cityRef, streetName) {
@@ -71,14 +69,12 @@ class NovaPoshtaService {
       GET_STREET
     );
 
-    return res.data.data.slice(0, 10).map(street => {
-      return {
-        description: street.Description,
-        ref: street.Ref,
-        streetsTypeRef: street.StreetsTypeRef,
-        streetsType: street.StreetsType,
-      };
-    });
+    return res.data.data.slice(0, 10).map(street => ({
+      description: street.Description,
+      ref: street.Ref,
+      streetsTypeRef: street.StreetsTypeRef,
+      streetsType: street.StreetsType,
+    }));
   }
 
   async getNovaPoshtaWarehouses(city) {
@@ -90,26 +86,24 @@ class NovaPoshtaService {
       GET_WAREHOUSES
     );
 
-    return res.data.data.map(warehouse => {
-      return {
-        description: warehouse.Description,
-        shortAddress: warehouse.ShortAddress,
-        number: warehouse.Number,
-        placeMaxWeightAllowed: warehouse.PlaceMaxWeightAllowed,
-        totalMaxWeightAllowed: warehouse.TotalMaxWeightAllowed,
-        phone: warehouse.Phone,
-        ref: warehouse.Ref,
-        schedule: {
-          monday: warehouse.Schedule.Monday,
-          tuesday: warehouse.Schedule.Tuesday,
-          wednesday: warehouse.Schedule.Wednesday,
-          thursday: warehouse.Schedule.Thursday,
-          friday: warehouse.Schedule.Friday,
-          saturday: warehouse.Schedule.Saturday,
-          sunday: warehouse.Schedule.Sunday,
-        },
-      };
-    });
+    return res.data.data.map(warehouse => ({
+      description: warehouse.Description,
+      shortAddress: warehouse.ShortAddress,
+      number: warehouse.Number,
+      placeMaxWeightAllowed: warehouse.PlaceMaxWeightAllowed,
+      totalMaxWeightAllowed: warehouse.TotalMaxWeightAllowed,
+      phone: warehouse.Phone,
+      ref: warehouse.Ref,
+      schedule: {
+        monday: warehouse.Schedule.Monday,
+        tuesday: warehouse.Schedule.Tuesday,
+        wednesday: warehouse.Schedule.Wednesday,
+        thursday: warehouse.Schedule.Thursday,
+        friday: warehouse.Schedule.Friday,
+        saturday: warehouse.Schedule.Saturday,
+        sunday: warehouse.Schedule.Sunday,
+      },
+    }));
   }
 
   async getNovaPoshtaPrices(data) {
@@ -137,14 +131,12 @@ class NovaPoshtaService {
       GET_DOCUMENT_PRICE
     );
 
-    return res.data.data.map(price => {
-      return {
-        assessedCost: price.AssessedCost,
-        cost: price.Cost,
-        costRedelivery: price.CostRedelivery,
-        costPack: price.CostPack,
-      };
-    });
+    return res.data.data.map(price => ({
+      assessedCost: price.AssessedCost,
+      cost: price.Cost,
+      costRedelivery: price.CostRedelivery,
+      costPack: price.CostPack,
+    }));
   }
 
   async createNovaPoshtaOrder(data) {

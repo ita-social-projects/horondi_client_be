@@ -9,7 +9,5 @@ const generateEmailToken = payload => {
 };
 
 module.exports = {
-  generateRefreshToken,
-  generateAccessToken,
   generateEmailToken,
 };
