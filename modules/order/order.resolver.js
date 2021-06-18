@@ -45,8 +45,8 @@ const ordersMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteOrder: async (_, args) => {
-    const deletedOrder = await ordersService.deleteOrder(args.id);
+  deleteOrder: async (_, { id }) => {
+    const deletedOrder = await ordersService.deleteOrder(id);
     if (deletedOrder) {
       return deletedOrder;
     }
@@ -55,9 +55,8 @@ const ordersMutation = {
       message: ORDER_NOT_FOUND,
     };
   },
-  updateOrder: async (_, args) => {
+  updateOrder: async (_, { order, id }) => {
     try {
-      const { order, id } = args;
       return await ordersService.updateOrder(order, id);
     } catch (e) {
       return {
