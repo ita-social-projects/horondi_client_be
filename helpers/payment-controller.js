@@ -25,17 +25,14 @@ const paymentController = async (action, data) => {
     return fondy.Checkout(data).then(({ response_status, checkout_url }) => {
       if (response_status === SUCCESS) {
         return checkout_url;
-      } else {
-        throw new RuleError(PAYMENT_CHECKOUT_URL_IS_NOT_AVAILABLE, FORBIDDEN);
       }
+      throw new RuleError(PAYMENT_CHECKOUT_URL_IS_NOT_AVAILABLE, FORBIDDEN);
     });
   }
   if (action === CHECK_PAYMENT_STATUS) {
     return fondy
       .Status(data)
-      .then(res => {
-        return res;
-      })
+      .then(res => res)
       .catch(error => error);
   }
 };

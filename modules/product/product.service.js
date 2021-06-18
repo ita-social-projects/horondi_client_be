@@ -113,9 +113,9 @@ class ProductsService {
       .lean()
       .exec();
     const products = await this.getProducts({});
-    const sortedByPrices = [...products.items].sort((a, b) => {
-      return a.basePrice[1].value - b.basePrice[1].value;
-    });
+    const sortedByPrices = [...products.items].sort(
+      (a, b) => a.basePrice[1].value - b.basePrice[1].value
+    );
     const minPrice = sortedByPrices[0].basePrice;
     const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
 
@@ -265,12 +265,11 @@ class ProductsService {
     if (filesToUpload.length) {
       const previousImagesLinks = [];
       const newFiles = [];
-      filesToUpload.map(e => {
+      filesToUpload.forEach(e => {
         if (e?.large) {
           previousImagesLinks.push(e);
-        } else {
-          newFiles.push(e);
         }
+        newFiles.push(e);
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);

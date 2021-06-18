@@ -1,3 +1,7 @@
+const azureStorage = require('azure-storage');
+const getStream = require('into-stream');
+const Jimp = require('jimp');
+const uniqid = require('uniqid');
 const {
   STORAGE_ACCOUNT,
   ACCESS_KEY,
@@ -5,10 +9,6 @@ const {
   IMAGE_LINK,
   CONTRIBUTING,
 } = require('../../dotenvValidator');
-const azureStorage = require('azure-storage');
-const getStream = require('into-stream');
-const Jimp = require('jimp');
-const uniqid = require('uniqid');
 const { imageQualities, IMAGES_CONTAINER } = require('../../consts');
 const {
   IMAGE_SIZES: { IMAGE_LARGE, IMAGE_MEDIUM, IMAGE_SMALL, IMAGE_THUMBNAIL },

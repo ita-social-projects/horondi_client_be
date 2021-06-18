@@ -4,7 +4,6 @@ const {
   createConstructorFrontPocket,
   getAllConstructorFrontPocket,
   getConstructorFrontPocketById,
-  deleteConstructorFrontPocket,
 } = require('./constructor.front.helper');
 const {
   getConstructorData,
@@ -14,11 +13,8 @@ const {
   skip,
   limit,
 } = require('./constructor.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { color } = require('../color/color.variables');
 const { getMaterial } = require('../materials/material.variables');
 const {
@@ -27,28 +23,25 @@ const {
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
-const { createModel, deleteModel } = require('../model/model.helper');
+const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const {
-  createCategory,
-  deleteCategory,
-} = require('../category/category.helper');
+const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
+const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
 
-let operations,
-  colorId,
-  materialId,
-  modelId,
-  sizeId,
-  categoryId,
-  constructorInput,
-  constructorFrontId,
-  constructorFrontPocket,
-  currentConstructorFrontPocket;
+let operations;
+let colorId;
+let materialId;
+let modelId;
+let sizeId;
+let categoryId;
+let constructorInput;
+let constructorFrontId;
+let constructorFrontPocket;
+let currentConstructorFrontPocket;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -114,7 +107,7 @@ describe('constructor mutations', () => {
     expect(receivedError.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
 
-  afterAll(async done => {
-    mongoose.connection.db.dropDatabase(done);
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

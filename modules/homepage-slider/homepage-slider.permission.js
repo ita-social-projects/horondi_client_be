@@ -1,5 +1,5 @@
-const { hasRoles, inputDataValidation } = require('../../utils/rules');
 const { and } = require('graphql-shield');
+const { hasRoles, inputDataValidation } = require('../../utils/rules');
 const {
   roles: { SUPERADMIN, ADMIN },
 } = require('../../consts');
