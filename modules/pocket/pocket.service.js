@@ -3,7 +3,7 @@ const uploadService = require('../upload/upload.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateBasePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
 const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
 const {
@@ -108,7 +108,7 @@ class PocketService {
     }
 
     if (pocket.additionalPrice) {
-      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
+      pocket.additionalPrice = await calculateBasePrice(pocket.additionalPrice);
     }
 
     if (!image) {
@@ -146,7 +146,7 @@ class PocketService {
     }
 
     if (pocket.additionalPrice) {
-      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
+      pocket.additionalPrice = await calculateBasePrice(pocket.additionalPrice);
     }
 
     const newPocket = await new Pocket(pocket).save();

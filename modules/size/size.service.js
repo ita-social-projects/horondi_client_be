@@ -1,5 +1,5 @@
 const Size = require('./size.model');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   SIZES_NOT_FOUND,
   SIZE_NOT_FOUND,
@@ -73,7 +73,7 @@ class SizeService {
   }
 
   async addSize(sizeData, { _id: adminId }) {
-    sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
+    sizeData.additionalPrice = await calculateAdditionalPrice(sizeData.additionalPrice);
     const newSize = await new Size(sizeData).save();
 
     const historyRecord = generateHistoryObject(
@@ -140,7 +140,7 @@ class SizeService {
     if (!sizeToUpdate) {
       throw new Error(SIZE_NOT_FOUND);
     }
-    input.additionalPrice = await calculatePrice(input.additionalPrice);
+    input.additionalPrice = await calculateAdditionalPrice(input.additionalPrice);
 
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
 

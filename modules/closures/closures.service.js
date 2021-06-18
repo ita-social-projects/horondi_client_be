@@ -1,7 +1,7 @@
 const Closure = require('./closures.model');
 const RuleError = require('../../errors/rule.error');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -63,7 +63,7 @@ class ClosureService {
     }
 
     if (data.additionalPrice) {
-      data.additionalPrice = await calculatePrice(data.additionalPrice);
+      data.additionalPrice = await calculateAdditionalPrice(data.additionalPrice);
     }
 
     const newClosure = await new Closure(data).save();
@@ -103,7 +103,7 @@ class ClosureService {
     }
 
     if (closure.additionalPrice) {
-      closure.additionalPrice = await calculatePrice(closure.additionalPrice);
+      closure.additionalPrice = await calculateAdditionalPrice(closure.additionalPrice);
     }
 
     const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {

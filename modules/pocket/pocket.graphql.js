@@ -40,7 +40,7 @@ const pocketInputs = `
     model: ID
     features: PocketSideInput
     image: Upload
-    additionalPrice: Int
+    additionalPrice: Float
     available: Boolean
     customizable: Boolean
   }

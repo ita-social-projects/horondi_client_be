@@ -1,7 +1,7 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
@@ -92,7 +92,7 @@ class PatternsService {
     }
 
     if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
+      pattern.additionalPrice = await calculateAdditionalPrice(pattern.additionalPrice);
     }
 
     const { beforeChanges, afterChanges } = getChanges(
@@ -154,7 +154,7 @@ class PatternsService {
     pattern.constructorImg = constructorImg;
 
     if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
+      pattern.additionalPrice = await calculateAdditionalPrice(pattern.additionalPrice);
     }
 
     const newPattern = await new Pattern({ ...pattern, images }).save();

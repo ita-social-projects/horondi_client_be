@@ -13,7 +13,7 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { uploadProductImages } = require('./product.utils');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateBasePrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
@@ -278,7 +278,7 @@ class ProductsService {
       productData.images.additional = [...additional, ...previousImagesLinks];
     }
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
     if (productData) {
       const { beforeChanges, afterChanges } = getChanges(product, productData);
 
@@ -306,7 +306,7 @@ class ProductsService {
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
 
     productData.model = await modelService.getModelById(productData.model);
 

@@ -206,6 +206,10 @@ const typeDefs = gql`
     POCKET
     STRAP
   }
+  enum additionalPriceType {
+    RELATIVE_INDICATOR
+    ABSOLUTE_INDICATOR
+  }
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -214,7 +218,12 @@ const typeDefs = gql`
     value: String
   }
   type CurrencySet {
-    currency: String!
+    currency: String
+    value: Float!
+  }
+  type AdditionalCurrencySet {
+    currency: String
+    type: additionalPriceType!
     value: Float!
   }
   type ImageSet {
@@ -306,7 +315,7 @@ const typeDefs = gql`
     name: [Language!]
     description: [Language!]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
   type PaginatedProducts {
     items: [Product]
@@ -638,6 +647,10 @@ const typeDefs = gql`
   input CurrencySetInput {
     currency: String!
     value: Float!
+  }
+  input additionalPriceInput {
+    value: Float!
+    type: additionalPriceType
   }
   input AddressInput {
     country: String

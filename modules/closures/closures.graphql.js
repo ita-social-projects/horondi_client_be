@@ -6,7 +6,7 @@ const closureType = `
     model: Model
     features: ClosureFeatureSet
     image: String
-    additionalPrice: [CurrencySet]
+    additionalPrice: [AdditionalCurrencySet]
     available: Boolean
     customizable: Boolean
   }
@@ -26,7 +26,7 @@ const closureInputs = `
     model: ID
     features: ClosureFeatureSetInput
     image: Upload
-    additionalPrice: Int
+    additionalPrice: additionalPriceInput!
     available: Boolean
     customizable: Boolean
   }

@@ -150,6 +150,22 @@ const modelRefactoredFields = {
 
 const slug = { slug: '' };
 
+const additionalPrice = {
+    additionalPrice: [
+      {
+        value: 0,
+        type: '',
+        currency: '',
+      },
+      {
+        value: 0,
+        type: '',
+        currency: '',
+      },
+    ],
+  }
+;
+
 module.exports = {
   sizeName,
   banned,
@@ -164,4 +180,5 @@ module.exports = {
   constructorBottomThreeExtraFields,
   constructorFrontPocketExtraFields,
   modelRefactoredFields,
+  additionalPrice,
 };

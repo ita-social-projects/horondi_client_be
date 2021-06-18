@@ -39,7 +39,6 @@ const productInputValidator = Joi.object({
   images: Joi.array(),
   availableCount: Joi.number().integer(),
   basePrice: Joi.number()
-    .integer()
     .min(0)
     .required(),
   available: Joi.bool(),

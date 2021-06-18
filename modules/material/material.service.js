@@ -3,7 +3,7 @@ const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
@@ -93,6 +93,8 @@ class MaterialsService {
   async updateMaterial(id, material, { _id: adminId }) {
     const { additionalPrice, ...rest } = material;
 
+    console.log(material)
+
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
@@ -105,7 +107,7 @@ class MaterialsService {
       id,
       {
         ...rest,
-        additionalPrice: [calculatePrice(additionalPrice)],
+        additionalPrice: await calculateAdditionalPrice(additionalPrice),
       },
       { new: true }
     ).exec();
@@ -133,7 +135,7 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    material.additionalPrice = calculatePrice(material.additionalPrice);
+    material.additionalPrice = await calculateAdditionalPrice(material.additionalPrice);
 
     const newMaterial = await new Material(material).save();
 

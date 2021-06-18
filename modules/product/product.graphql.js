@@ -62,7 +62,7 @@ const productInput = `
     sizes:[ID]!
     images: [Upload]
     availableCount: Int
-    basePrice: Int!
+    basePrice: Float!
     available: Boolean
     isHotItem: Boolean
   }

@@ -6,7 +6,7 @@ const materialType = `
       purpose: PurposeEnum
       colors: [Color]
       available: Boolean
-      additionalPrice: [CurrencySet]
+      additionalPrice: [AdditionalCurrencySet]
     }
     type MaterialByPurpose {
       main: [Material]
@@ -32,7 +32,7 @@ const materialInput = `
       purpose: PurposeEnum!
       colors: [ID!]
       available: Boolean
-      additionalPrice: Int
+      additionalPrice: additionalPriceInput!
     }
 `;
 
