@@ -21,9 +21,11 @@ class EmailChatService {
     let maxDate = new Date();
     let minDate = minDefaultDate;
 
-    const filterOptions = emailQuestionStatus
-      ? { status: { $in: emailQuestionStatus } }
-      : {};
+    const filterOptions = {};
+
+    if (emailQuestionStatus) {
+      filterOptions.status = { $in: emailQuestionStatus };
+    }
 
     if (date?.dateFrom) {
       minDate = new Date(filter.date.dateFrom);
