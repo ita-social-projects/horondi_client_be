@@ -1,14 +1,10 @@
 const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
-const {
-  CLOSURE_NOT_FOUND,
-  CLOSURE_ALREADY_EXIST,
-} = require('../../error-messages/closures.messages');
+const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 const {
   deleteClosure,
   createClosure,
   updateClosure,
-  getClosureById,
 } = require('./closure.helper');
 const {
   wrongId,
@@ -18,10 +14,7 @@ const {
   closureToUpdate,
 } = require('./closure.variables');
 const { getMaterial } = require('../materials/material.variables');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { color } = require('../color/color.variables');
 const { createColor } = require('../color/color.helper');
 const { createModel } = require('../model/model.helper');
@@ -38,14 +31,14 @@ jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/currency/currency.model.js');
 
-let operations,
-  closureData,
-  closureId,
-  materialId,
-  colorId,
-  modelId,
-  categoryId,
-  sizeId;
+let operations;
+let closureData;
+let closureId;
+let materialId;
+let colorId;
+let modelId;
+let categoryId;
+let sizeId;
 
 describe('Closure mutations', () => {
   beforeAll(async () => {
@@ -103,7 +96,7 @@ describe('Closure mutations', () => {
     expect(closureData).toHaveProperty('message', CLOSURE_NOT_FOUND);
     expect(closureData).toHaveProperty('statusCode', 404);
   });
-  test('should update closure', async done => {
+  test('should update closure', async () => {
     const updatedClosure = await updateClosure(
       closureId,
       closureToUpdate(materialId, colorId, modelId),
@@ -118,7 +111,6 @@ describe('Closure mutations', () => {
       additionalPrice: finalClosure.additionalPrice,
       ...finalClosure,
     });
-    done();
   });
   test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
     closureData = await deleteClosure(wrongId, operations);
@@ -127,14 +119,14 @@ describe('Closure mutations', () => {
     expect(closureData).toHaveProperty('message', CLOSURE_NOT_FOUND);
     expect(closureData).toHaveProperty('statusCode', 404);
   });
-  test('should receive error CLOSURE_NOT_FOUND when delete', async () => {
+  test('should delete closure', async () => {
     closureData = await deleteClosure(closureId, operations);
 
     expect(closureData).toBeDefined();
     expect(closureData).toHaveProperty('_id', closureId);
   });
 
-  afterAll(async done => {
-    mongoose.connection.db.dropDatabase(done);
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

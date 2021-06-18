@@ -6,7 +6,6 @@ const {
 } = require('../../consts/status-codes');
 const {
   createPattern,
-  deletePattern,
   getAllPatterns,
   getPatternById,
   getAllPatternsPaginated,
@@ -18,40 +17,34 @@ const {
   wrongPagination,
   queryPatternToAdd,
 } = require('./pattern.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { getMaterial } = require('../materials/material.variables');
-const { createModel, deleteModel } = require('../model/model.helper');
+const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const {
-  createCategory,
-  deleteCategory,
-} = require('../category/category.helper');
+const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
+const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
 
-let patternId,
-  res,
-  colorId,
-  operations,
-  categoryId,
-  sizeId,
-  modelId,
-  materialId;
+let patternId;
+let res;
+let colorId;
+let operations;
+let categoryId;
+let sizeId;
+let modelId;
+let materialId;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/currency/currency.model.js');
 
 describe('Pattern queries', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -71,7 +64,6 @@ describe('Pattern queries', () => {
       operations
     );
     patternId = res._id;
-    done();
   });
 
   test('Should receive all patterns', async () => {
@@ -126,7 +118,7 @@ describe('Pattern queries', () => {
     );
   });
 
-  afterAll(async done => {
-    mongoose.connection.db.dropDatabase(done);
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

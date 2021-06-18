@@ -25,7 +25,6 @@ const INPUT_FIELDS = {
   HEADER: 'header',
   QUESTION: 'question',
   TEXT: 'text',
-  SIZE: 'size',
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
   HOME_PAGE_SLIDE: 'slide',

@@ -2,14 +2,14 @@ const Joi = require('joi');
 
 const languageSchemaValidator = {
   lang: Joi.string()
-      .min(2)
-      .required()
-      .trim(),
-    value: Joi.string()
-      .min(2)
-      .required()
-      .trim(),
-}
+    .min(2)
+    .required()
+    .trim(),
+  value: Joi.string()
+    .min(2)
+    .required()
+    .trim(),
+};
 
 const homepageSliderValidator = Joi.object({
   link: Joi.string()

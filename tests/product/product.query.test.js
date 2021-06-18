@@ -9,7 +9,7 @@ const {
   deleteProduct,
   getProductById,
   getAllProductsWithSkipAndLimit,
-} = require('../product/product.helper');
+} = require('./product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -108,7 +108,7 @@ describe('Product mutations', () => {
 
   test('#1 Should receive product by id', async () => {
     const products = await getProductById(productId, operations);
-    let res = products.data.getProductById;
+    const res = products.data.getProductById;
 
     expect(products).toBeDefined();
     expect(res).toHaveProperty('name', currentProduct.name);

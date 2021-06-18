@@ -5,10 +5,7 @@ const {
   deleteHomePageLooksImage,
   updateHomePageLooksImage,
 } = require('./homepage-images.helper');
-const {
-  INVALID_PERMISSIONS,
-  IMAGE_NOT_FOUND,
-} = require('../../error-messages/home-page-messages');
+const { IMAGE_NOT_FOUND } = require('../../error-messages/home-page-messages');
 
 jest.mock('../../modules/upload/upload.service');
 
