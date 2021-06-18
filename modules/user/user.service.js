@@ -901,8 +901,8 @@ class UserService extends FilterHelper {
     return this.updateCartOrWishlist(user._id, key, newList, productId);
   }
 
-  async getCountUserOrders(user) {
-    const orders = await Order.find({ 'user.id': user._id }).exec();
+  async getCountUserOrders(_id) {
+    const orders = await Order.find({ 'user.id': _id }).exec();
 
     if (!orders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
