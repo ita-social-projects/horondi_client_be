@@ -1,6 +1,6 @@
 const config = {
   mongodb: {
-    url: 'YOUR_DATABASE_URL',
+    url: 'mongodb://localhost:27017/horondi?authSource=admin',
     databaseName: 'horondi',
 
     options: {
