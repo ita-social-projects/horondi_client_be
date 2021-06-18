@@ -39,11 +39,11 @@ class EmailChatService {
     };
 
     if (search && search.trim()) {
-      const search = filter.search.trim();
+      const searchItem = filter.search.trim();
       filterOptions.$or = [
-        { senderName: { $regex: new RegExp(search, 'i') } },
-        { text: { $regex: new RegExp(search, 'i') } },
-        { email: { $regex: new RegExp(search, 'i') } },
+        { senderName: { $regex: new RegExp(searchItem, 'i') } },
+        { text: { $regex: new RegExp(searchItem, 'i') } },
+        { email: { $regex: new RegExp(searchItem, 'i') } },
       ];
     }
 
