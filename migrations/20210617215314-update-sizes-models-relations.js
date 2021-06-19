@@ -79,7 +79,7 @@ module.exports = {
     );
     // S => Bananka
     await db.collection('sizes').updateOne(
-      { _id: ObjectId('60467f00873045422c1dbf92') },
+      { _id: ObjectId('60467e30873045422c1dbf91') },
       {
         $set: {
           modelId: ObjectId('60467f00873045422c1dbf92'),

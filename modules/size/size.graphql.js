@@ -2,7 +2,6 @@ const sizeType = `
   type Size {
     _id: ID!
     name: String!
-    simpleName:[Language]!
     model: Model
     heightInCm: Int!
     widthInCm: Int!
