@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Size = require('./size.model');
 const { calculatePrice } = require('../currency/currency.utils');
 const {
@@ -33,6 +34,7 @@ const {
 class SizeService {
   async getAllSizes(limit, skip, filter) {
     const filterOptions = {};
+    const modelOptions = {};
 
     if (filter?.name?.length) {
       filterOptions.name = { $in: filter.name };
@@ -40,22 +42,30 @@ class SizeService {
     if (filter?.available?.length) {
       filterOptions.available = { $in: filter.available };
     }
+
+    const records = await Size.find(filterOptions)
+      .populate('modelId')
+      .exec();
+
     if (filter?.searchBySimpleName) {
       const search = filter.searchBySimpleName.trim();
 
-      filterOptions['simpleName.value'] = {
-        $regex: `${search}`,
-        $options: 'i',
-      };
+      modelOptions.regExp = new RegExp(search.trim(), 'i');
     }
-    const items = await Size.find(filterOptions)
-      .limit(limit)
-      .skip(skip)
-      .exec();
 
-    const count = await Size.find(filterOptions)
-      .countDocuments()
-      .exec();
+    const items = _.take(
+      _.drop(
+        filter?.searchBySimpleName
+          ? _.filter(records, record =>
+              modelOptions?.regExp.test(record.modelId.name[0].value)
+            )
+          : records,
+        skip
+      ),
+      limit
+    );
+
+    const count = _.filter(records, record => record.modelId).length;
 
     return {
       items,
@@ -73,6 +83,8 @@ class SizeService {
   }
 
   async addSize(sizeData, { _id: adminId }) {
+    console.log(123);
+    console.log('sizedata', sizeData);
     sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
     const newSize = await new Size(sizeData).save();
 
