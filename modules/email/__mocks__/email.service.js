@@ -1,6 +1,6 @@
 class EmailService {
   async sendEmail() {
-    return;
+    return null;
   }
 }
 

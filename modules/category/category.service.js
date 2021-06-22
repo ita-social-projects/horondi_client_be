@@ -129,12 +129,10 @@ class CategoryService extends FilterHelper {
 
     const data = categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
-      const modelsFields = models.map(async model => {
-        return {
-          name: model.name,
-          _id: model._id,
-        };
-      });
+      const modelsFields = models.map(async model => ({
+        name: model.name,
+        _id: model._id,
+      }));
       return {
         category: {
           name: [...category.name],
@@ -250,7 +248,7 @@ class CategoryService extends FilterHelper {
 
   getCategoriesStats(categories, total) {
     let popularSum = 0;
-    let res = { names: [], counts: [], relations: [] };
+    const res = { names: [], counts: [], relations: [] };
 
     categories
       .filter((_, idx) => idx < 3)

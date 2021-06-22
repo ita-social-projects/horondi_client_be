@@ -64,11 +64,8 @@ const userMutation = {
   deleteUser: async (parent, args) => {
     try {
       return await userService.deleteUser(args.id);
-    } catch (err) {
-      return {
-        statusCode: err.statusCode,
-        message: err.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updateUserById: (parent, args, context) =>

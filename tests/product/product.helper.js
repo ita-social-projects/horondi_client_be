@@ -22,8 +22,8 @@ const createProduct = async (product, operations) => {
 
   return createdProduct.data.addProduct;
 };
-const updateProduct = async (id, product, operations) => {
-  return await operations.mutate({
+const updateProduct = async (id, product, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $product: ProductInput!) {
         updateProduct(id: $id, product: $product, upload: []) {
@@ -91,9 +91,8 @@ const updateProduct = async (id, product, operations) => {
       product,
     },
   });
-};
-const getProductById = async (id, operations) => {
-  return await operations.query({
+const getProductById = async (id, operations) =>
+  await operations.query({
     query: gql`
       query($id: ID!) {
         getProductById(id: $id) {
@@ -172,9 +171,8 @@ const getProductById = async (id, operations) => {
       id,
     },
   });
-};
-const deleteProduct = async (id, operations) => {
-  return await operations.mutate({
+const deleteProduct = async (id, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteProduct(id: $id) {
@@ -191,9 +189,8 @@ const deleteProduct = async (id, operations) => {
       id,
     },
   });
-};
-const getAllProductsWithSkipAndLimit = async (skip, limit, operations) => {
-  return await operations.query({
+const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
+  await operations.query({
     variables: { skip, limit },
     query: gql`
       query($skip: Int, $limit: Int) {
@@ -210,7 +207,6 @@ const getAllProductsWithSkipAndLimit = async (skip, limit, operations) => {
       }
     `,
   });
-};
 
 module.exports = {
   deleteProduct,

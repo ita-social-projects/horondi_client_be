@@ -21,7 +21,6 @@ const {
 const {
   HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
 } = require('../../consts/history-obj-keys');
-const { objectType } = require('../../consts');
 const { transliterate } = require('../helper-functions');
 
 class NewsService {

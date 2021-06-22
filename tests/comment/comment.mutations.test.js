@@ -185,6 +185,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('text', updatedComment.text);
   });
+
   it('should return error if id of comment to update is not correct', async () => {
     const receivedComment = await updateComment(
       commentWrongId,

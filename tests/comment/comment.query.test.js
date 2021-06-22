@@ -140,7 +140,6 @@ describe('Comment queries', () => {
     );
     commentId = commentData._id;
   });
-
   it('Should receive all comments', async () => {
     const receivedComments = await getAllComments(
       filterComment,

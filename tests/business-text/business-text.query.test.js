@@ -25,7 +25,7 @@ describe('Business page queries', () => {
     businessText = await addBusinessText(newBusinessText, operations);
   });
 
-  test(' Should receive all business texts', async () => {
+  test('Should receive all business texts', async () => {
     const allTexts = await getAllBusinessTexts(operations);
 
     expect(allTexts).toMatchSnapshot();
@@ -36,7 +36,7 @@ describe('Business page queries', () => {
       text: newBusinessText.text,
     });
   });
-  test(' Should receive selected business text', async () => {
+  test('Should receive selected business text', async () => {
     const receivedBusinessText = await getBusinessTextById(
       businessText._id,
       operations
@@ -50,7 +50,7 @@ describe('Business page queries', () => {
     expect(receivedBusinessText.text).toBeInstanceOf(Array);
     expect(receivedBusinessText).toHaveProperty('text', newBusinessText.text);
   });
-  test(' Returning not existing business text should return error message', async () => {
+  test('Returning not existing business text should return error message', async () => {
     const notExistingBusinessText = await getBusinessTextById(
       notExistBusinessTextId,
       operations
@@ -63,7 +63,7 @@ describe('Business page queries', () => {
       BUSINESS_TEXT_NOT_FOUND
     );
   });
-  test(' Should receive selected business text by code', async () => {
+  test('Should receive selected business text by code', async () => {
     const businessText = await getBusinessTextByCode(code, operations);
 
     expect(businessText).toBeDefined();
@@ -73,7 +73,7 @@ describe('Business page queries', () => {
     expect(businessText.text).toBeInstanceOf(Array);
     expect(businessText).toHaveProperty('text', newBusinessText.text);
   });
-  test(' Should return error if page by code not found', async () => {
+  test('Should return error if page by code not found', async () => {
     const notExistsBusinessText = await getBusinessTextByCode(
       wrongCode,
       operations

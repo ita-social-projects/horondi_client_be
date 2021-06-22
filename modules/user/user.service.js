@@ -69,7 +69,10 @@ const {
   roles: { USER },
 } = require('../../consts');
 const RuleError = require('../../errors/rule.error');
-const { USER_IS_BLOCKED } = require('../../error-messages/user.messages');
+const {
+  USER_IS_BLOCKED,
+  SUPER_ADMIN_IS_IMMUTABLE,
+} = require('../../error-messages/user.messages');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
@@ -620,8 +623,16 @@ class UserService extends FilterHelper {
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id).exec();
-    return res || new Error(USER_NOT_FOUND);
+    const user = await User.findById(id).exec();
+
+    if (!user) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (user.role === SUPERADMIN) {
+      throw new RuleError(SUPER_ADMIN_IS_IMMUTABLE, FORBIDDEN);
+    }
+    return User.findByIdAndDelete(id).exec();
   }
 
   async confirmUser(token) {
