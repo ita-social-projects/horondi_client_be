@@ -3,7 +3,7 @@ const {
   CURRENCY: { USD, UAH },
 } = require('../consts/currency');
 
-const calculateCartItemPriceWithSize = (sizePrice, quantity = 1) => [
+const calculateItemPriceWithSize = (sizePrice, quantity = 1) => [
   {
     currency: UAH,
     value: sizePrice[UAH_VALUE].value * quantity,
@@ -13,7 +13,7 @@ const calculateCartItemPriceWithSize = (sizePrice, quantity = 1) => [
     value: sizePrice[USD_VALUE].value * quantity,
   },
 ];
-const calculateConstructorCartItemPriceWithSize = (
+const calculateConstructorItemPriceWithSize = (
   sizePrice,
   constructorBasicsPrice,
   constructorBottomPrice,
@@ -41,6 +41,6 @@ const calculateConstructorCartItemPriceWithSize = (
 ];
 
 module.exports = {
-  calculateCartItemPriceWithSize,
-  calculateConstructorCartItemPriceWithSize,
+  calculateItemPriceWithSize,
+  calculateConstructorItemPriceWithSize,
 };

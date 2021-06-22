@@ -7,12 +7,12 @@ const ConstructorFrontPocketModel = require('../constructor/constructor-front-po
 const PatternModel = require('../pattern/pattern.model');
 const RuleError = require('../../errors/rule.error');
 const {
-  CART_MESSAGES: {
-    PRODUCT_IS_NOT_EXIST_IN_CART,
-    CART_IS_ALREADY_CLEANED,
-    CART_IS_NOT_FOUND,
+  WISHLIST_MESSAGES: {
+    PRODUCT_ALREADY_EXIST_IN_WISHLIST,
+    WISHLIST_IS_ALREADY_CLEANED,
+    WISHLIST_IS_NOT_FOUND,
   },
-} = require('../../error-messages/cart.messages');
+} = require('../../error-messages/wishlist.messages');
 const { SIZE_NOT_FOUND } = require('../../error-messages/size.messages');
 const {
   BASIC_NOT_FOUND,
@@ -38,96 +38,88 @@ const {
   calculateConstructorItemPriceWithSize,
 } = require('../../helpers/calculateItemPrice');
 const {
-  TOTAL_SUM_METHOD: { ADD_ITEM, REMOVE_ITEM },
+  TOTAL_SUM_METHOD: { ADD_ITEM },
 } = require('../../consts/total-sum-method');
 const {
-  DB_COLLECTIONS_NAMES: { CART },
+  DB_COLLECTIONS_NAMES: { WISHLIST },
 } = require('../../consts/db-collections-names');
 
-class CartService {
-  async cleanCart(id) {
-    const { cart } = await UserModel.findOne({ _id: id }, 'cart -_id').exec();
+class WishlistService {
+  async cleanWishlist(id) {
+    const { wishlist } = await UserModel.findOne(
+      { _id: id },
+      'wishlist -_id'
+    ).exec();
 
-    if (!cart) throw new RuleError(CART_IS_ALREADY_CLEANED, BAD_REQUEST);
+    if (!wishlist)
+      throw new RuleError(WISHLIST_IS_ALREADY_CLEANED, BAD_REQUEST);
 
     return UserModel.findOneAndUpdate(
       { _id: id },
-      { $unset: { cart: 1 } }
+      { $unset: { wishlist: 1 } }
     ).exec();
   }
 
-  async getCartByUserId(id) {
-    const cartByUserId = await UserModel.findOne({ _id: id }, 'cart ').exec();
+  async getWishlistByUserId(id) {
+    const wishlistByUserId = await UserModel.findOne(
+      { _id: id },
+      'wishlist '
+    ).exec();
 
-    if (!cartByUserId.cart) {
-      throw new RuleError(CART_IS_NOT_FOUND, NOT_FOUND);
+    if (!wishlistByUserId.wishlist) {
+      throw new RuleError(WISHLIST_IS_NOT_FOUND, NOT_FOUND);
     }
 
-    const cartSum = await getTotalSum(cartByUserId.cart.items, id, CART);
+    const wishlistSum = await getTotalSum(
+      wishlistByUserId.wishlist.items,
+      id,
+      WISHLIST
+    );
 
     return UserModel.findByIdAndUpdate(
       id,
-      { $set: { 'cart.totalPrice': cartSum } },
+      { $set: { 'wishlist.totalPrice': wishlistSum } },
       { new: true }
     ).exec();
   }
 
-  async addProductToCart(sizeId, id, { _id }) {
-    const isProductAlreadyExistsInCart = await UserModel.findOne(
+  async addProductToWishlist(sizeId, id, { _id }) {
+    const isProductAlreadyExistsInWishlist = await UserModel.findOne(
       {
         _id: id,
-        'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
+        'wishlist.items': {
+          $elemMatch: { product: _id, 'options.size': sizeId },
+        },
       },
-      'cart.items.$'
+      'wishlist.items.$'
     ).exec();
 
-    const { additionalPrice } = await getSizeById(sizeId);
+    if (isProductAlreadyExistsInWishlist) {
+      throw new RuleError(PRODUCT_ALREADY_EXIST_IN_WISHLIST, BAD_REQUEST);
+    }
 
-    if (!additionalPrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    const { additionalPrice: sizePrice } = await getSizeById(sizeId);
 
-    const productPriceWithSize = calculateItemPriceWithSize(additionalPrice);
+    if (!sizePrice) {
+      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    }
 
-    const { cart } = await UserModel.findById(id, 'cart -_id').exec();
+    const productPriceWithSize = calculateItemPriceWithSize(sizePrice);
 
-    if (cart?.items?.length) {
+    const { wishlist } = await UserModel.findById(id, 'wishlist -_id').exec();
+
+    if (wishlist?.items?.length) {
       const totalPrice = totalSum(
         ADD_ITEM,
         productPriceWithSize,
-        cart.totalPrice
+        wishlist.totalPrice
       );
-
-      if (isProductAlreadyExistsInCart) {
-        const incrementProductPrice = totalSum(
-          ADD_ITEM,
-          productPriceWithSize,
-          isProductAlreadyExistsInCart.cart.items[0].price
-        );
-        return UserModel.findOneAndUpdate(
-          {
-            _id: id,
-            'cart.items._id': isProductAlreadyExistsInCart.cart.items[0]._id,
-          },
-          {
-            $set: {
-              'cart.totalPrice': totalPrice,
-              'cart.items.$.price': incrementProductPrice,
-              'cart.items.$.quantity':
-                isProductAlreadyExistsInCart.cart.items[0].quantity + 1,
-            },
-          },
-          {
-            new: true,
-            safe: true,
-            upsert: true,
-          }
-        ).exec();
-      }
       return UserModel.findOneAndUpdate(
         { _id: id },
         {
-          'cart.totalPrice': totalPrice,
+          'wishlist.totalPrice': totalPrice,
           $push: {
-            'cart.items': {
+            'wishlist.items': {
               product: _id,
               'options.size': sizeId,
               price: productPriceWithSize,
@@ -144,9 +136,9 @@ class CartService {
     return UserModel.findOneAndUpdate(
       { _id: id },
       {
-        'cart.totalPrice': productPriceWithSize,
+        'wishlist.totalPrice': productPriceWithSize,
         $push: {
-          'cart.items': {
+          'wishlist.items': {
             product: _id,
             'options.size': sizeId,
             price: productPriceWithSize,
@@ -161,7 +153,7 @@ class CartService {
     ).exec();
   }
 
-  async addConstructorProductItemToCart(
+  async addConstructorProductItemToWishlist(
     {
       constructorBasics,
       constructorBottom,
@@ -175,7 +167,7 @@ class CartService {
     const isItemAlreadyExists = await UserModel.findOne(
       {
         _id: id,
-        'cart.items': {
+        'wishlist.items': {
           $elemMatch: {
             'fromConstructor.product': _id,
             'fromConstructor.constructorBasics': constructorBasics,
@@ -186,12 +178,18 @@ class CartService {
           },
         },
       },
-      'cart.items.$'
+      'wishlist.items.$'
     ).exec();
+
+    if (isItemAlreadyExists) {
+      throw new RuleError(PRODUCT_ALREADY_EXIST_IN_WISHLIST, BAD_REQUEST);
+    }
 
     const { additionalPrice: sizePrice } = await getSizeById(sizeId);
 
-    if (!sizePrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    if (!sizePrice) {
+      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    }
 
     const {
       basePrice: constructorBasicsPrice,
@@ -225,58 +223,35 @@ class CartService {
 
     if (!isPatternPresent) throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
 
-    const { cart } = await UserModel.findById(id, 'cart -_id').exec();
+    const { wishlist } = await UserModel.findById(id, 'wishlist -_id').exec();
 
-    const productPriceWithSize = calculateConstructorItemPriceWithSize(
+    const constructorProductPrice = calculateConstructorItemPriceWithSize(
       sizePrice,
       constructorBasicsPrice,
       constructorBottomPrice,
       constructorFrontPocketPrice
     );
 
-    if (cart?.items?.length) {
+    if (wishlist?.items?.length) {
       const totalPrice = totalSum(
         ADD_ITEM,
-        productPriceWithSize,
-        cart.totalPrice
+        constructorProductPrice,
+        wishlist.totalPrice
       );
-      if (isItemAlreadyExists) {
-        const incrementProductPrice = totalSum(
-          ADD_ITEM,
-          productPriceWithSize,
-          isItemAlreadyExists.cart.items[0].price
-        );
-        return UserModel.findOneAndUpdate(
-          {
-            _id: id,
-            'cart.items._id': isItemAlreadyExists.cart.items[0]._id,
-          },
-          {
-            $set: {
-              'cart.totalPrice': totalPrice,
-              'cart.items.$.price': incrementProductPrice,
-              'cart.items.$.quantity':
-                isItemAlreadyExists.cart.items[0].quantity + 1,
-            },
-          },
-          {
-            new: true,
-          }
-        ).exec();
-      }
+
       return UserModel.findOneAndUpdate(
         { _id: id },
         {
-          'cart.totalPrice': totalPrice,
+          'wishlist.totalPrice': totalPrice,
           $push: {
-            'cart.items': {
+            'wishlist.items': {
               'fromConstructor.product': _id,
               'fromConstructor.constructorBasics': constructorBasics,
               'fromConstructor.constructorBottom': constructorBottom,
               'fromConstructor.constructorFrontPocket': constructorFrontPocket,
               'fromConstructor.constructorPattern': constructorPattern,
               'options.size': sizeId,
-              price: productPriceWithSize,
+              price: constructorProductPrice,
             },
           },
         },
@@ -288,16 +263,16 @@ class CartService {
     return UserModel.findOneAndUpdate(
       { _id: id },
       {
-        'cart.totalPrice': productPriceWithSize,
+        'wishlist.totalPrice': constructorProductPrice,
         $push: {
-          'cart.items': {
+          'wishlist.items': {
             'fromConstructor.product': _id,
             'fromConstructor.constructorBasics': constructorBasics,
             'fromConstructor.constructorBottom': constructorBottom,
             'fromConstructor.constructorFrontPocket': constructorFrontPocket,
             'fromConstructor.constructorPattern': constructorPattern,
             'options.size': sizeId,
-            price: productPriceWithSize,
+            price: constructorProductPrice,
           },
         },
       },
@@ -307,133 +282,9 @@ class CartService {
     ).exec();
   }
 
-  async updateCartItemQuantity(quantity, sizeId, id, { _id }) {
-    const { cart } = await UserModel.findById(id, 'cart -_id').exec();
-
-    if (!cart) throw new RuleError(CART_IS_NOT_FOUND, NOT_FOUND);
-
-    const itemFromCart = await UserModel.findOne(
-      {
-        _id: id,
-        'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
-      },
-      'cart.items.$'
-    ).exec();
-
-    if (!itemFromCart) {
-      throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
-    }
-
-    const newPriceForProduct = itemFromCart.cart.items[0].price.map(
-      ({ value, currency }) => ({
-        value: (value / itemFromCart.cart.items[0].quantity) * quantity,
-        currency,
-      })
-    );
-
-    if (cart.items?.length > 1) {
-      const oldTotalSum = totalSum(
-        REMOVE_ITEM,
-        itemFromCart.cart.items[0].price,
-        cart.totalPrice
-      );
-      const newTotalSum = totalSum(ADD_ITEM, newPriceForProduct, oldTotalSum);
-
-      return UserModel.findOneAndUpdate(
-        {
-          _id: id,
-          'cart.items._id': itemFromCart.cart.items[0]._id,
-        },
-        {
-          $set: {
-            'cart.totalPrice': newTotalSum,
-            'cart.items.$.price': newPriceForProduct,
-            'cart.items.$.quantity': quantity,
-          },
-        },
-        { new: true }
-      ).exec();
-    }
-    return UserModel.findOneAndUpdate(
-      {
-        _id: id,
-        'cart.items._id': itemFromCart.cart.items[0]._id,
-      },
-      {
-        $set: {
-          'cart.totalPrice': newPriceForProduct,
-          'cart.items.$.price': newPriceForProduct,
-          'cart.items.$.quantity': quantity,
-        },
-      },
-      { new: true }
-    ).exec();
-  }
-
-  async updateCartConstructorProductItemQuantity(
-    quantity,
-    constructorData,
-    id
-  ) {
-    if (!constructorData) {
-      throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
-    }
-
-    const { cart } = await UserModel.findById(id, 'cart -_id').exec();
-
-    const newPriceForConstructorProduct = constructorData.cart.items[0].price.map(
-      ({ value, currency }) => ({
-        value: (value / constructorData.cart.items[0].quantity) * quantity,
-        currency,
-      })
-    );
-
-    if (cart.items?.length > 1) {
-      const oldTotalSum = totalSum(
-        REMOVE_ITEM,
-        constructorData.cart.items[0].price,
-        cart.totalPrice
-      );
-      const newTotalSum = totalSum(
-        ADD_ITEM,
-        newPriceForConstructorProduct,
-        oldTotalSum
-      );
-
-      return UserModel.findOneAndUpdate(
-        {
-          _id: id,
-          'cart.items._id': constructorData.cart.items[0]._id,
-        },
-        {
-          $set: {
-            'cart.totalPrice': newTotalSum,
-            'cart.items.$.price': newPriceForConstructorProduct,
-            'cart.items.$.quantity': quantity,
-          },
-        },
-        { new: true }
-      ).exec();
-    }
-    return UserModel.findOneAndUpdate(
-      {
-        _id: id,
-        'cart.items._id': constructorData.cart.items[0]._id,
-      },
-      {
-        $set: {
-          'cart.totalPrice': newPriceForConstructorProduct,
-          'cart.items.$.price': newPriceForConstructorProduct,
-          'cart.items.$.quantity': quantity,
-        },
-      },
-      { new: true }
-    ).exec();
-  }
-
-  async mergeCartFromLS(cartFromLS, id) {
+  async mergeWishlistFromLS(wishlistFromLS, id) {
     await Promise.all(
-      cartFromLS.map(async item => {
+      wishlistFromLS.map(async item => {
         const { additionalPrice: sizePrice } = await SizeModel.findById(
           item.options.size
         ).exec();
@@ -442,32 +293,28 @@ class CartService {
           const isProductPresent = await ProductModel.findById(
             item.product
           ).exec();
-          const isProductAlreadyInCart = await UserModel.findOne(
+          const isProductAlreadyInWishlist = await UserModel.findOne(
             {
               _id: id,
-              'cart.items': {
+              'wishlist.items': {
                 $elemMatch: {
                   product: item.product,
                   'options.size': item.options.size,
                 },
               },
             },
-            'cart.items.$'
+            'wishlist.items.$'
           ).exec();
 
-          if (sizePrice && !isProductAlreadyInCart && isProductPresent) {
-            const itemPrice = calculateItemPriceWithSize(
-              sizePrice,
-              item.quantity
-            );
+          if (sizePrice && !isProductAlreadyInWishlist && isProductPresent) {
+            const itemPrice = calculateItemPriceWithSize(sizePrice);
 
             await UserModel.findOneAndUpdate(
               { _id: id },
               {
                 $push: {
-                  'cart.items': {
+                  'wishlist.items': {
                     product: item.product,
-                    quantity: item.quantity,
                     'options.size': item.options.size,
                     price: itemPrice,
                   },
@@ -481,10 +328,10 @@ class CartService {
             item.productFromConstructor.product
           ).exec();
 
-          const isConstructorAlreadyInCart = await UserModel.findOne(
+          const isConstructorAlreadyInWishlist = await UserModel.findOne(
             {
               _id: id,
-              'cart.items': {
+              'wishlist.items': {
                 $elemMatch: {
                   'fromConstructor.product':
                     item.productFromConstructor.product,
@@ -500,7 +347,7 @@ class CartService {
                 },
               },
             },
-            'cart.items.$'
+            'wishlist.items.$'
           ).exec();
 
           const {
@@ -527,7 +374,7 @@ class CartService {
 
           if (
             isProductPresent &&
-            !isConstructorAlreadyInCart &&
+            !isConstructorAlreadyInWishlist &&
             constructorBasicsPrice &&
             constructorBottomPrice &&
             constructorFrontPocketPrice &&
@@ -537,15 +384,14 @@ class CartService {
               sizePrice,
               constructorBasicsPrice,
               constructorBottomPrice,
-              constructorFrontPocketPrice,
-              item.quantity
+              constructorFrontPocketPrice
             );
 
             await UserModel.findOneAndUpdate(
               { _id: id },
               {
                 $push: {
-                  'cart.items': {
+                  'wishlist.items': {
                     'fromConstructor.product':
                       item.productFromConstructor.product,
                     'fromConstructor.constructorBasics':
@@ -556,7 +402,6 @@ class CartService {
                       item.productFromConstructor.constructorFrontPocket,
                     'fromConstructor.constructorPattern':
                       item.productFromConstructor.constructorPattern,
-                    quantity: item.quantity,
                     'options.size': item.options.size,
                     price: itemPrice,
                   },
@@ -568,42 +413,43 @@ class CartService {
       })
     );
 
-    const { cart } = await UserModel.findById(id, 'cart ').exec();
+    const { wishlist } = await UserModel.findById(id, 'wishlist ').exec();
 
-    const totalPrice = await setTotalSum(cart.items);
+    const totalPrice = await setTotalSum(wishlist.items);
 
     return UserModel.findByIdAndUpdate(
       id,
-      { $set: { 'cart.totalPrice': totalPrice } },
+      { $set: { 'wishlist.totalPrice': totalPrice } },
       { new: true }
     ).exec();
   }
 
-  async removeProductItemsFromCart(item, id) {
+  async removeProductItemsFromWishlist(item, id) {
     if (item?.product) {
-      const isProductExistsInCart = await UserModel.findOne(
+      const isProductExistsInWishlist = await UserModel.findOne(
         {
           _id: id,
-          'cart.items': {
+          'wishlist.items': {
             $elemMatch: {
               product: item.product,
               'options.size': item.options.size,
             },
           },
         },
-        'cart.items.$'
+        'wishlist.items.$'
       ).exec();
 
-      if (isProductExistsInCart) {
+      if (isProductExistsInWishlist) {
         await UserModel.findOneAndUpdate(
           {
             _id: id,
-            'cart.items._id': isProductExistsInCart.cart.items[0]._id,
+            'wishlist.items._id':
+              isProductExistsInWishlist.wishlist.items[0]._id,
           },
           {
             $pull: {
-              'cart.items': {
-                _id: isProductExistsInCart.cart.items[0]._id,
+              'wishlist.items': {
+                _id: isProductExistsInWishlist.wishlist.items[0]._id,
               },
             },
           }
@@ -611,10 +457,10 @@ class CartService {
       }
     }
     if (item?.productFromConstructor) {
-      const isConstructorExistsInCart = await UserModel.findOne(
+      const isConstructorExistsInWishlist = await UserModel.findOne(
         {
           _id: id,
-          'cart.items': {
+          'wishlist.items': {
             $elemMatch: {
               'fromConstructor.product': item.productFromConstructor.product,
               'fromConstructor.constructorBasics':
@@ -629,19 +475,20 @@ class CartService {
             },
           },
         },
-        'cart.items.$'
+        'wishlist.items.$'
       ).exec();
 
-      if (isConstructorExistsInCart) {
+      if (isConstructorExistsInWishlist) {
         await UserModel.findOneAndUpdate(
           {
             _id: id,
-            'cart.items._id': isConstructorExistsInCart.cart.items[0]._id,
+            'wishlist.items._id':
+              isConstructorExistsInWishlist.wishlist.items[0]._id,
           },
           {
             $pull: {
-              'cart.items': {
-                _id: isConstructorExistsInCart.cart.items[0]._id,
+              'wishlist.items': {
+                _id: isConstructorExistsInWishlist.wishlist.items[0]._id,
               },
             },
           }
@@ -649,16 +496,16 @@ class CartService {
       }
     }
 
-    const { cart } = await UserModel.findById(id, 'cart ').exec();
+    const { wishlist } = await UserModel.findById(id, 'wishlist ').exec();
 
-    const totalPrice = await setTotalSum(cart?.items);
+    const totalPrice = await setTotalSum(wishlist?.items);
 
     return UserModel.findByIdAndUpdate(
       id,
-      { $set: { 'cart.totalPrice': totalPrice } },
+      { $set: { 'wishlist.totalPrice': totalPrice } },
       { new: true }
     ).exec();
   }
 }
 
-module.exports = new CartService();
+module.exports = new WishlistService();

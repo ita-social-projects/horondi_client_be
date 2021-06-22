@@ -35,6 +35,7 @@ const DB_COLLECTIONS_NAMES = {
   ORDER: 'Order',
   CART: 'Cart',
   HISTORY: 'History',
+  WISHLIST: 'Wishlist',
 };
 
 module.exports = {

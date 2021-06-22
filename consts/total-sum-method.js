@@ -1,8 +1,8 @@
-const CART_TOTAL_SUM_METHOD = {
+const TOTAL_SUM_METHOD = {
   ADD_ITEM: 'ADD_ITEM',
   REMOVE_ITEM: 'REMOVE_ITEM',
 };
 
 module.exports = {
-  CART_TOTAL_SUM_METHOD,
+  TOTAL_SUM_METHOD,
 };
