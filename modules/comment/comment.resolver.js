@@ -21,26 +21,37 @@ const commentsQuery = {
       return new RuleError(error.message, error.statusCode);
     }
   },
-
-  getCommentsByProduct: async (
+  getReplyCommentsByComment: async (
     parent,
-    { productId, skip, limit },
+    { filter, pagination: { skip, limit } },
     { user }
   ) => {
     try {
-      return await commentsService.getCommentsByProduct(
-        productId,
+      return await commentsService.getReplyCommentsByComment(
+        filter,
         skip,
         limit,
         user
       );
-    } catch (error) {
-      return [
-        {
-          statusCode: NOT_FOUND,
-          message: error.message,
-        },
-      ];
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
+  getCommentsByProduct: async (
+    parent,
+    { filter, pagination: { skip, limit } },
+    { user }
+  ) => {
+    try {
+      return await commentsService.getCommentsByProduct(
+        filter,
+        skip,
+        limit,
+        user
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 

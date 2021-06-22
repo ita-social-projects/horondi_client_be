@@ -54,6 +54,21 @@ input CommentFilterInput{
     answerer: ID
     productId: ID
   }
+  input ProductCommentFilterInput{
+    filters:Boolean
+    productId:ID
+    date:DateRangeInput
+    show:[String]
+    search:String
+  }
+  input ReplyCommentFilterInput{
+    filters:Boolean
+    commentId:ID
+    createdAt:DateRangeInput
+    search:String
+    showReplyComment: [String]
+    isSelled: [String]
+  }
 `;
 
 module.exports = {

@@ -23,6 +23,7 @@ const commentPermissionsQuery = {
   getCommentById: allow,
   getCommentsByProduct: allow,
   getAllCommentsByUser: allow,
+  getReplyCommentsByComment: allow,
   getRecentComments: hasRoles([ADMIN, SUPERADMIN]),
 };
 

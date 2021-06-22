@@ -496,9 +496,12 @@ const typeDefs = gql`
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
     getCommentsByProduct(
-      productId: ID!,
-      limit:Int,
-      skip:Int
+      filter: ProductCommentFilterInput
+      pagination: Pagination
+    ): PaginatedCommentsResult
+    getReplyCommentsByComment(
+      filter: ReplyCommentFilterInput
+      pagination: Pagination
     ): PaginatedCommentsResult
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]

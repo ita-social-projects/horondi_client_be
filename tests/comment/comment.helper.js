@@ -135,34 +135,70 @@ const getAllCommentsByUser = async (userId, operations) => {
   });
   return res.data.getAllCommentsByUser;
 };
-const getAllCommentsByProduct = async (productId, operations) => {
+const getCommentsByProduct = async (filter, pagination, operations) => {
   const res = await operations.query({
     query: gql`
-      query($productId: ID!) {
-        getAllCommentsByProduct(productId: $productId) {
-          ... on Comment {
-            text
-            product {
+      query($filter: ProductCommentFilterInput, $pagination: Pagination) {
+        getCommentsByProduct(filter: $filter, pagination: $pagination) {
+          ... on PaginatedComments {
+            items {
               _id
+              text
+              show
+              user {
+                _id
+              }
             }
-            show
-            user {
-              _id
-            }
+            count
           }
           ... on Error {
-            message
             statusCode
+            message
           }
         }
       }
     `,
     variables: {
-      productId,
+      filter,
+      pagination,
     },
   });
 
-  return res;
+  return res.data.getCommentsByProduct;
+};
+const getReplyCommentsByProduct = async (filter, pagination, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($filter: ReplyCommentFilterInput, $pagination: Pagination) {
+        getReplyCommentsByComment(filter: $filter, pagination: $pagination) {
+          ... on PaginatedComments {
+            items {
+              _id
+              replyComments {
+                _id
+                replyText
+                showReplyComment
+                answerer {
+                  _id
+                }
+              }
+            }
+            count
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      filter,
+      pagination,
+    },
+  });
+
+  return res.data.getReplyCommentsByComment;
 };
 const getCommentById = async (id, operations) => {
   const res = await operations.query({
@@ -335,7 +371,7 @@ module.exports = {
   addComment,
   deleteComment,
   getAllCommentsByUser,
-  getAllCommentsByProduct,
+  getCommentsByProduct,
   getCommentById,
   updateComment,
   addRate,
@@ -344,4 +380,5 @@ module.exports = {
   updateReplyComment,
   getAllComments,
   getRecentComments,
+  getReplyCommentsByProduct,
 };

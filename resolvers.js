@@ -109,7 +109,6 @@ const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
@@ -275,7 +274,17 @@ const resolvers = {
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
-    replyCommentsCount: parent => parent.replyComments.length,
+    replyCommentsCount: (parent, _, { user }) => {
+      if (user?.role === 'user') {
+        return parent.replyComments.filter(
+          item =>
+            item.answerer.toString() === user._id.toString() ||
+            item.showReplyComment === true
+        ).length;
+      }
+      return parent.replyComments.filter(item => item.showReplyComment === true)
+        .length;
+    },
     replyComments: parent =>
       parent.replyComments.map(item => ({
         _id: item._id,

@@ -2,6 +2,7 @@ const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_USER,
   COMMENTS_NOT_FOUND,
+  REPLY_COMMENTS_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
@@ -12,16 +13,21 @@ const {
   countComments,
   limitCount,
   filterComment,
+  updatedComment,
   paginationComment,
+  newReplyComment,
 } = require('./comment.variables');
 const {
   deleteComment,
   addComment,
   getAllCommentsByUser,
-  getAllCommentsByProduct,
+  getCommentsByProduct,
   getCommentById,
   getAllComments,
   getRecentComments,
+  updateComment,
+  getReplyCommentsByProduct,
+  addReplyComment,
 } = require('./comment.helper');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
@@ -74,6 +80,7 @@ let constructorBasicId;
 let colorId;
 let sizeId;
 let adminId;
+let replyId;
 
 describe('Comment queries', () => {
   beforeAll(async () => {
@@ -184,30 +191,39 @@ describe('Comment queries', () => {
     });
   });
   it('Should receive all comments for one product', async () => {
-    const res = await getAllCommentsByProduct(productId, operations);
-    const receivedComments = res.data.getAllCommentsByProduct;
+    const receivedComments = await getCommentsByProduct(
+      { productId, filters: true, ...filterComment },
+      paginationComment,
+      operations
+    );
     return new Promise(done => {
       expect(receivedComments).toBeDefined();
-      expect(receivedComments[0]).toHaveProperty('product', { _id: productId });
-      expect(receivedComments[0]).toHaveProperty(
+      expect(receivedComments).toHaveProperty('count', 1);
+      expect(receivedComments.items[0]).toHaveProperty(
         'text',
         newComment(adminId).text
       );
-      expect(receivedComments[0]).toHaveProperty('user', { _id: adminId });
-      expect(receivedComments[0]).toHaveProperty(
+      expect(receivedComments.items[0]).toHaveProperty('user', {
+        _id: adminId,
+      });
+      expect(receivedComments.items[0]).toHaveProperty(
         'show',
         newComment(adminId).show
       );
       done();
     });
   });
-  it('Should receive COMMENT_NOT_FOUND for get all comments for one product', async () => {
-    const res = await getAllCommentsByProduct(productWrongId, operations);
-    const receivedComments = res.data.getAllCommentsByProduct;
+
+  it('Should receive COMMENTS_NOT_FOUND for get all comments for one product', async () => {
+    const receivedComments = await getCommentsByProduct(
+      { productId: productWrongId, filters: true },
+      paginationComment,
+      operations
+    );
     return new Promise(done => {
-      expect(receivedComments[0]).toBeDefined();
-      expect(receivedComments[0].statusCode).toBe(404);
-      expect(receivedComments[0].message).toBe(COMMENT_NOT_FOUND);
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments.statusCode).toBe(404);
+      expect(receivedComments.message).toBe(COMMENTS_NOT_FOUND);
       done();
     });
   });
@@ -222,6 +238,81 @@ describe('Comment queries', () => {
         user: { _id: adminId },
         show: newComment(adminId).show,
       });
+      done();
+    });
+  });
+
+  it('Should receive all comments for one product with user', async () => {
+    await updateComment(commentId, updatedComment, operations);
+    const receivedComments = await getCommentsByProduct(
+      { productId, filters: false },
+      paginationComment,
+      operations
+    );
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments).toHaveProperty('count', 1);
+      expect(receivedComments.items[0]).toHaveProperty(
+        'text',
+        updatedComment.text
+      );
+      expect(receivedComments.items[0]).toHaveProperty('user', {
+        _id: adminId,
+      });
+      expect(receivedComments.items[0]).toHaveProperty(
+        'show',
+        updatedComment.show
+      );
+      done();
+    });
+  });
+  it('Should receive all reply comments for one comment', async () => {
+    const receivedReplyComments = await addReplyComment(
+      productId,
+      newReplyComment(adminId, commentId),
+      operations,
+      commentId
+    );
+    replyId = receivedReplyComments.replyComments[0]._id;
+    const receivedComments = await getReplyCommentsByProduct(
+      { commentId, filters: true },
+      paginationComment,
+      operations
+    );
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments).toHaveProperty('count', 1);
+      expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
+        '_id',
+        replyId
+      );
+      expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
+        'replyText',
+        newReplyComment(adminId, commentId).replyText
+      );
+      expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
+        'answerer',
+        {
+          _id: adminId,
+        }
+      );
+      expect(receivedComments.items[0]).toHaveProperty(
+        'showReplyComment',
+        newReplyComment(adminId, commentId).showReplyComment
+      );
+      done();
+    });
+  });
+  it('Should receive error for all reply comments for one comment', async () => {
+    const receivedComments = await getReplyCommentsByProduct(
+      { commentId: commentWrongId, filters: true },
+      paginationComment,
+      operations
+    );
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments.statusCode).toBe(404);
+      expect(receivedComments.message).toBe(REPLY_COMMENTS_NOT_FOUND);
       done();
     });
   });
@@ -240,7 +331,7 @@ describe('Comment queries', () => {
     return new Promise(done => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
-      expect(receivedComments.message).toBe(COMMENTS_NOT_FOUND);
+      expect(receivedComments.message).toBe(COMMENT_NOT_FOUND);
       done();
     });
   });

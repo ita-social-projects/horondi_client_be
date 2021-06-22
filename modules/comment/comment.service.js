@@ -1,7 +1,6 @@
 const Comment = require('./comment.model');
 const RuleError = require('../../errors/rule.error');
 const Product = require('../product/product.model');
-const Order = require('../order/order.model');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -12,6 +11,7 @@ const {
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
+  REPLY_COMMENTS_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
 const { minDefaultDate } = require('../../consts/date-range');
 const {
@@ -75,25 +75,54 @@ class CommentsService {
       .limit(limit)
       .exec();
     if (!comments?.length) {
-      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return comments;
   }
 
-  async getCommentsByProduct(productId, skip, limit, user) {
-    const product = await Product.findById(productId).exec();
+  async getCommentsByProduct(filter, skip, limit, user) {
+    const product = await Product.findById(filter.productId).exec();
     if (!product) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     let filterOptions = {};
 
-    if (user) {
+    if (filter.filters) {
+      let maxDate = new Date();
+      let minDate = minDefaultDate;
+
+      if (filter?.show?.length) {
+        filterOptions.show = { $in: filter.show };
+      }
+
+      if (filter?.date?.dateFrom) {
+        minDate = new Date(filter.date.dateFrom);
+      }
+
+      if (filter?.date?.dateTo) {
+        maxDate = new Date(filter.date.dateTo);
+      }
+
+      filterOptions.date = {
+        $gte: minDate,
+        $lte: maxDate,
+      };
+
+      if (filter?.search) {
+        const search = filter.search.trim();
+        filterOptions.text = { $regex: `${search}`, $options: 'i' };
+      }
+    } else if (user) {
       filterOptions = {
-        $or: [{ show: { $in: [true] } }, { user: user._id }],
+        $and: [
+          { $or: [{ show: { $in: [true] } }, { user: user._id }] },
+          { product: filter.productId },
+        ],
       };
     } else {
-      filterOptions = { show: { $in: [true] } };
+      filterOptions = { show: { $in: [true] }, product: filter.productId };
     }
+
     const count = Comment.find(filterOptions).countDocuments();
     const items = await Comment.find(filterOptions)
       .sort({ date: -1 })
@@ -104,6 +133,29 @@ class CommentsService {
     return {
       items,
       count,
+    };
+  }
+
+  async getReplyCommentsByComment(filter, skip, limit, user) {
+    const comment = await Comment.findById(filter.commentId).exec();
+    if (!comment) {
+      throw new RuleError(REPLY_COMMENTS_NOT_FOUND, NOT_FOUND);
+    }
+    if (user) {
+      comment.replyComments = comment.replyComments.filter(
+        item =>
+          item.showReplyComment === true ||
+          item.answerer.toString() === user._id.toString()
+      );
+    } else {
+      comment.replyComments = comment.replyComments.filter(
+        item => item.showReplyComment === true
+      );
+    }
+    comment.replyComments = comment.replyComments.slice(skip, skip + limit);
+    return {
+      items: [comment],
+      count: comment.replyComments.length,
     };
   }
 
