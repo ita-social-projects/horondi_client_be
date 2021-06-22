@@ -6,8 +6,8 @@ const {
 } = require('../../consts/status-codes');
 
 const ordersQuery = {
-  getOrderById: async (parent, args) => {
-    const order = await ordersService.getOrderById(args.id);
+  getOrderById: async (parent, { id }) => {
+    const order = await ordersService.getOrderById(id);
     if (order) {
       return order;
     }
@@ -16,19 +16,18 @@ const ordersQuery = {
       message: ORDER_NOT_FOUND,
     };
   },
-  getAllOrders: async (parent, args) => await ordersService.getAllOrders(args),
-  getUserOrders: async (_, args, { user }) => {
+  getAllOrders: async (_, args) => await ordersService.getAllOrders(args),
+  getUserOrders: async (_, { pagination }, { user }) => {
     try {
-      return await ordersService.getUserOrders(user);
+      return await ordersService.getUserOrders(pagination, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
 
-  getOrdersStatistic: (parent, args) =>
-    ordersService.getOrdersStatistic(args.date),
-  getPaidOrdersStatistic: (parent, args) =>
-    ordersService.getPaidOrdersStatistic(args.date),
+  getOrdersStatistic: (_, { date }) => ordersService.getOrdersStatistic(date),
+  getPaidOrdersStatistic: (_, { date }) =>
+    ordersService.getPaidOrdersStatistic(date),
   getOrderByPaidOrderNumber: async (_, { paidOrderNumber }) => {
     try {
       return await ordersService.getOrderByPaidOrderNumber(paidOrderNumber);
@@ -46,8 +45,8 @@ const ordersMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteOrder: async (_, args) => {
-    const deletedOrder = await ordersService.deleteOrder(args.id);
+  deleteOrder: async (_, { id }) => {
+    const deletedOrder = await ordersService.deleteOrder(id);
     if (deletedOrder) {
       return deletedOrder;
     }
@@ -56,9 +55,8 @@ const ordersMutation = {
       message: ORDER_NOT_FOUND,
     };
   },
-  updateOrder: async (_, args) => {
+  updateOrder: async (_, { order, id }) => {
     try {
-      const { order, id } = args;
       return await ordersService.updateOrder(order, id);
     } catch (e) {
       return {
