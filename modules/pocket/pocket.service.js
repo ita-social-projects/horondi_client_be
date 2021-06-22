@@ -1,5 +1,5 @@
 const Pocket = require('./pocket.model');
-const uploadService = require('../upload/upload.utils');
+const uploadService = require('../upload/upload.service');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -141,8 +141,8 @@ class PocketService {
 
   async addPocket(pocket, image, { _id: adminId }) {
     if (image) {
-      const uploadImage = await uploadService.uploadSmallImage(image);
-      pocket.image = uploadImage.fileNames.small;
+      const uploadImage = await uploadService.uploadFile(image);
+      pocket.images = uploadImage.fileNames;
     }
 
     if (pocket.additionalPrice) {

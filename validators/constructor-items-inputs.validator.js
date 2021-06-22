@@ -15,6 +15,7 @@ const {
     PATTERN,
     POCKET,
     STRAP,
+    SIDE,
   },
 } = require('../consts/constructor-option-types');
 
@@ -40,18 +41,19 @@ const inputPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .valid(POCKET)
+    .valid(POCKET, SIDE)
     .required(),
-  model: Joi.string(),
-  features: nestedSideValidator,
+  // model: Joi.string(),
+  // features: nestedSideValidator,
   image: Joi.string()
     .trim()
     .optional(),
   additionalPrice: Joi.number()
     .optional()
     .default(0),
-  available: Joi.boolean().required(),
-  customizable: Joi.boolean(),
+  restriction: Joi.boolean(),
+  // available: Joi.boolean().required(),
+  // customizable: Joi.boolean(),
 });
 
 const inputOptionValidator = Joi.object({

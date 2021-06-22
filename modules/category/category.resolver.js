@@ -33,6 +33,7 @@ const categoryQuery = {
 
 const categoryMutation = {
   addCategory: async (parent, args, { user }) => {
+    console.log('addCategory', args);
     try {
       return await categoryService.addCategory(
         args.category,

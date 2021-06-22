@@ -5,10 +5,11 @@ const pocketType = `
     optionType: OptionTypeEnum
     model: Model
     features: [PocketSide]
-    image: String
+    images: ImageSet
     additionalPrice: [CurrencySet]
     available: Boolean
     customizable: Boolean
+    restriction: Boolean
   }
 `;
 
@@ -37,12 +38,9 @@ const pocketInputs = `
   input PocketInput {
     name: [LanguageInput]
     optionType: String
-    model: ID
-    features: PocketSideInput
-    image: Upload
+    restriction: Boolean
+    images: ImageSetInput
     additionalPrice: Int
-    available: Boolean
-    customizable: Boolean
   }
 
   input PocketFilterInput{
