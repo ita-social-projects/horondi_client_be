@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
   service: GMAIL_EMAIL_SERVICE,
   host: MAIL_HOST,
   port: MAIL_PORT,
-  secure: false,
+  secure: true,
   auth: {
     user: MAIL_USER,
     pass: MAIL_PASS,
