@@ -4,7 +4,9 @@ const {
   CHAT_NOT_FOUND,
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
-const { sendEmail } = require('../../utils/sendGrid-email');
+const {
+  EmailActions: { SEND_EMAIL_ANSWER },
+} = require('../../consts/email-actions');
 const { emailQuestionAnswerMessage } = require('../../utils/localization');
 const { MAIL_USER } = require('../../dotenvValidator');
 const {
@@ -14,6 +16,11 @@ const {
   DELIVERY_SERVICES_INITIAL_VALUES: { ID, DATE, INITIAL_TEXT, UKR, EN },
 } = require('../../consts/delivery-services');
 const { minDefaultDate } = require('../../consts/date-range');
+const emailService = require('../email/email.service');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 class EmailChatService {
   async getAllEmailQuestions({ filter = {}, pagination: { skip, limit } }) {
@@ -109,9 +116,10 @@ class EmailChatService {
   async answerEmailQuestion({ questionId, adminId, text }) {
     const question = await this.getEmailQuestionById(questionId).exec();
     const admin = await userService.getUserByFieldOrThrow(ID, adminId);
-
+    const { userEmail, senderName, text: emailContent } = question;
+    console.log(question);
     if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
+      throw new RuleError(QUESTION_NOT_FOUND, BAD_REQUEST);
     }
 
     question.status = ANSWERED;
@@ -126,15 +134,12 @@ class EmailChatService {
       }
     ).exec();
 
-    const { language } = question;
-    const subject = `[HORONDI] ${!language ? UKR : EN}`;
-    const message = {
-      from: MAIL_USER,
-      to: question.email,
-      subject,
-      html: emailQuestionAnswerMessage(updatedQuestion, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(userEmail, SEND_EMAIL_ANSWER, {
+      senderName,
+      question: emailContent,
+      answer: text,
+      admin,
+    });
 
     return updatedQuestion;
   }
