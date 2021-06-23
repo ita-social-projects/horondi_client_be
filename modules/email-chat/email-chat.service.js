@@ -115,7 +115,7 @@ class EmailChatService {
     const question = await this.getEmailQuestionById(questionId).exec();
     const admin = await userService.getUserByFieldOrThrow(ID, adminId);
     const { userEmail, senderName, text: emailContent } = question;
-    console.log(question);
+
     if (!question) {
       throw new RuleError(QUESTION_NOT_FOUND, BAD_REQUEST);
     }
