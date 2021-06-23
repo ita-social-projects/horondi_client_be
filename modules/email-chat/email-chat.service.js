@@ -7,13 +7,11 @@ const {
 const {
   EmailActions: { SEND_EMAIL_ANSWER },
 } = require('../../consts/email-actions');
-const { emailQuestionAnswerMessage } = require('../../utils/localization');
-const { MAIL_USER } = require('../../dotenvValidator');
 const {
   EMAIL_MESSAGES_STATUSES: { SPAM, ANSWERED },
 } = require('../../consts/email-statuses');
 const {
-  DELIVERY_SERVICES_INITIAL_VALUES: { ID, DATE, INITIAL_TEXT, UKR, EN },
+  DELIVERY_SERVICES_INITIAL_VALUES: { ID, DATE, INITIAL_TEXT },
 } = require('../../consts/delivery-services');
 const { minDefaultDate } = require('../../consts/date-range');
 const emailService = require('../email/email.service');
