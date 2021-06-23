@@ -15,7 +15,6 @@ const {
 
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 let modelId;
-let categoryName;
 let categoryId;
 let operations;
 let sizeId;
@@ -35,7 +34,6 @@ describe('Model mutations', () => {
       operations
     );
     categoryId = createdCategory._id;
-    categoryName = createdCategory.name;
   });
 
   test('Should create model', async () => {

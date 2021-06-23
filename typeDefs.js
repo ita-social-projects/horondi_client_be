@@ -405,6 +405,9 @@ const typeDefs = gql`
       items: [ConstructorFrontPocket]
       count: Int
   }
+  type countOrderResult {
+    countOrder: Int
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
@@ -463,7 +466,8 @@ const typeDefs = gql`
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult
-    getUserOrders: [Order!]
+    getUserOrders(pagination: Pagination): [Order!]
+    getCountUserOrders(id: ID): countOrderResult
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!

@@ -117,9 +117,13 @@ class OrdersService {
 
     const orderToUpdate = await Order.findById(id).exec();
 
-    if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
+    if (!orderToUpdate) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     const { items } = order;
+
+    const _id = orderToUpdate.user.id;
+
+    order.user = { ...order.user, id: _id };
 
     await updateProductStatistic(orderToUpdate, order);
 
@@ -181,8 +185,11 @@ class OrdersService {
     return foundOrder;
   }
 
-  async getUserOrders({ id }) {
-    const userOrders = await Order.find({ 'user.id': id }).exec();
+  async getUserOrders({ skip, limit }, { id }) {
+    const userOrders = await Order.find({ 'user.id': id })
+      .limit(limit)
+      .skip(skip)
+      .exec();
 
     if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 

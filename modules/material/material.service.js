@@ -33,8 +33,8 @@ const {
 class MaterialsService {
   constructor() {
     this.currencyTypes = {
-      UAH: UAH,
-      USD: USD,
+      UAH,
+      USD,
     };
   }
 

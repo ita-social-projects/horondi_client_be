@@ -7,7 +7,7 @@ const {
   isAuthorized,
 } = require('../../utils/rules');
 const {
-  INPUT_FIELDS: { ORDER, LIMIT, SKIP, FILTER, DATE },
+  INPUT_FIELDS: { ORDER, LIMIT, SKIP, DATE },
 } = require('../../consts/input-fields');
 
 const { ADMIN, SUPERADMIN, USER } = roles;

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Business page queries  Should receive all business texts 1`] = `
+exports[`Business page queries Should receive all business texts 1`] = `
 Array [
   Object {
     "code": "new-code",
@@ -28,7 +28,7 @@ Array [
 ]
 `;
 
-exports[`Business page queries  Should receive selected business text 1`] = `
+exports[`Business page queries Should receive selected business text 1`] = `
 Object {
   "code": "new-code",
   "text": Array [

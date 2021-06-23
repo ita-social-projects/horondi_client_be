@@ -2,7 +2,9 @@ const { verify } = require('jsonwebtoken');
 
 const RuleError = require('../errors/rule.error');
 const { TOKEN_IS_EXPIRIED } = require('../error-messages/user.messages');
-const { STATUS_CODES: { UNAUTHORIZED } } = require('../consts/status-codes');
+const {
+  STATUS_CODES: { UNAUTHORIZED },
+} = require('../consts/status-codes');
 
 const tokenChecker = async (token, secret) => {
   try {
