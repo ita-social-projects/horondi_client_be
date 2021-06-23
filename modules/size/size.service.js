@@ -83,8 +83,6 @@ class SizeService {
   }
 
   async addSize(sizeData, { _id: adminId }) {
-    console.log(123);
-    console.log('sizedata', sizeData);
     sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
     const newSize = await new Size(sizeData).save();
 
