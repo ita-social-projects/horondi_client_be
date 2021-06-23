@@ -50,6 +50,7 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
+  ORDER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -94,6 +95,7 @@ const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
 const { generateOtpCode } = require('../../utils/user');
+const Order = require('../order/order.model');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -897,6 +899,14 @@ class UserService extends FilterHelper {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  async getCountUserOrders(_id) {
+    const orders = await Order.find({ 'user.id': _id }).exec();
+
+    if (!orders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    return { countOrder: orders.length };
   }
 }
 
