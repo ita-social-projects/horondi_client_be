@@ -13,6 +13,7 @@ const {
   THREE_DAYS,
   TWO_WEEKS,
 } = require('../consts');
+const { minDefaultDate } = require('../consts/date-range');
 
 const removeDaysFromData = (days, currentDate) =>
   currentDate - days * dayInMiliseconds;
@@ -149,6 +150,35 @@ const isUserBoughtPoduct = (productId, userId) =>
     'user.id': userId,
   }).exec();
 
+const filterOptionComments = filter => {
+  const filterOptions = {};
+  let maxDate = new Date();
+  let minDate = minDefaultDate;
+
+  if (filter?.show?.length) {
+    filterOptions.show = { $in: filter.show };
+  }
+
+  if (filter?.date?.dateFrom) {
+    minDate = new Date(filter.date.dateFrom);
+  }
+
+  if (filter?.date?.dateTo) {
+    maxDate = new Date(filter.date.dateTo);
+  }
+
+  filterOptions.date = {
+    $gte: minDate,
+    $lte: maxDate,
+  };
+
+  if (filter?.search) {
+    const search = filter.search.trim();
+    filterOptions.text = { $regex: `${search}`, $options: 'i' };
+  }
+  return filterOptions;
+};
+
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
@@ -156,4 +186,5 @@ module.exports = {
   countItemsOccurency,
   transliterate,
   isUserBoughtPoduct,
+  filterOptionComments,
 };

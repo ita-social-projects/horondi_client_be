@@ -13,7 +13,7 @@ const {
   REPLY_COMMENT_IS_NOT_PRESENT,
   REPLY_COMMENTS_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
-const { minDefaultDate } = require('../../consts/date-range');
+const { filterOptionComments } = require('../helper-functions');
 const {
   ORDER_STATUSES: { DELIVERED },
 } = require('../../consts/order-statuses');
@@ -21,31 +21,7 @@ const { isUserBoughtPoduct } = require('../helper-functions');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
-    const filterOptions = {};
-    let maxDate = new Date();
-    let minDate = minDefaultDate;
-
-    if (filter?.show?.length) {
-      filterOptions.show = { $in: filter.show };
-    }
-
-    if (filter?.date?.dateFrom) {
-      minDate = new Date(filter.date.dateFrom);
-    }
-
-    if (filter?.date?.dateTo) {
-      maxDate = new Date(filter.date.dateTo);
-    }
-
-    filterOptions.date = {
-      $gte: minDate,
-      $lte: maxDate,
-    };
-
-    if (filter?.search) {
-      const search = filter.search.trim();
-      filterOptions.text = { $regex: `${search}`, $options: 'i' };
-    }
+    const filterOptions = filterOptionComments(filter);
 
     const items = await Comment.find(filterOptions)
       .sort({ date: -1 })
@@ -88,30 +64,7 @@ class CommentsService {
     let filterOptions = {};
 
     if (filter.filters) {
-      let maxDate = new Date();
-      let minDate = minDefaultDate;
-
-      if (filter?.show?.length) {
-        filterOptions.show = { $in: filter.show };
-      }
-
-      if (filter?.date?.dateFrom) {
-        minDate = new Date(filter.date.dateFrom);
-      }
-
-      if (filter?.date?.dateTo) {
-        maxDate = new Date(filter.date.dateTo);
-      }
-
-      filterOptions.date = {
-        $gte: minDate,
-        $lte: maxDate,
-      };
-
-      if (filter?.search) {
-        const search = filter.search.trim();
-        filterOptions.text = { $regex: `${search}`, $options: 'i' };
-      }
+      filterOptions = filterOptionComments(filter);
     } else if (user) {
       filterOptions = {
         $and: [
