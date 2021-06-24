@@ -135,31 +135,31 @@ class CommentsService {
     return updatedComment;
   }
 
-  async addComment(data, user) {
+  async addComment(data, { _id: userId }) {
     const product = await Product.findById(data.product).exec();
 
     if (!product) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
-    const order = await isUserBoughtPoduct(data.product, user._id);
+    const order = await isUserBoughtPoduct(data.product, userId);
 
     if (order.some(item => item.status === DELIVERED)) {
-      data.isSelled = true;
+      data.verifiedPurchase = true;
     }
     return new Comment(data).save();
   }
 
-  async replyForComment(commentId, replyComment, user) {
+  async replyForComment(commentId, replyComment, { _id: userId }) {
     const isCommentExists = await Comment.findById(commentId).exec();
 
     if (!isCommentExists) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
 
-    const order = await isUserBoughtPoduct(replyComment.productId, user._id);
+    const order = await isUserBoughtPoduct(replyComment.productId, userId);
 
     if (order.some(item => item.status === DELIVERED)) {
-      replyComment.isSelled = true;
+      replyComment.verifiedPurchase = true;
     }
 
     return Comment.findByIdAndUpdate(

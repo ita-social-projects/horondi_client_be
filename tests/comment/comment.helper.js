@@ -9,7 +9,7 @@ const addComment = async (productId, comment, operations) => {
             _id
             text
             show
-            isSelled
+            verifiedPurchase
             user {
               _id
             }
@@ -249,7 +249,7 @@ const addReplyComment = async (productId, comment, operations, commentId) => {
               replyText
               refToReplyComment
               showReplyComment
-              isSelled
+              verifiedPurchase
             }
           }
           ... on Error {

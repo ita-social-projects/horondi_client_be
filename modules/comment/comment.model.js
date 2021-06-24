@@ -54,7 +54,7 @@ const commentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
-      isSelled: {
+      verifiedPurchase: {
         type: Boolean,
         default: false,
       },
@@ -65,7 +65,7 @@ const commentSchema = new mongoose.Schema({
     default: false,
   },
   rate: Number,
-  isSelled: {
+  verifiedPurchase: {
     type: Boolean,
     default: false,
   },

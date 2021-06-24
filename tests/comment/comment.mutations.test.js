@@ -147,7 +147,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('text', newComment(adminId).text);
     expect(receivedComment).toHaveProperty('user', { _id: adminId });
     expect(receivedComment).toHaveProperty('show', newComment(adminId).show);
-    expect(receivedComment).toHaveProperty('isSelled', false);
+    expect(receivedComment).toHaveProperty('verifiedPurchase', false);
   });
   it('should return error if to add comment to not existing product', async () => {
     const receivedComment = await addComment(
@@ -218,7 +218,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('text', newComment(adminId).text);
     expect(receivedComment).toHaveProperty('user', { _id: adminId });
     expect(receivedComment).toHaveProperty('show', newComment(adminId).show);
-    expect(receivedComment).toHaveProperty('isSelled', true);
+    expect(receivedComment).toHaveProperty('verifiedPurchase', true);
   });
 
   it('should add reply to comment with bought order icon', async () => {
@@ -240,7 +240,10 @@ describe('Comment queries', () => {
       'refToReplyComment',
       newReplyComment(adminId, commentId).refToReplyComment
     );
-    expect(receivedComment.replyComments[0]).toHaveProperty('isSelled', true);
+    expect(receivedComment.replyComments[0]).toHaveProperty(
+      'verifiedPurchase',
+      true
+    );
   });
   it('should return error if id of comment to add reply is not correct', async () => {
     const receivedComment = await addReplyComment(

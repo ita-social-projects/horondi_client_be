@@ -10,7 +10,7 @@ show: Boolean
 replyComments:[ReplyComments]
 replyCommentsCount:Int
 rate: Int
-isSelled: Boolean
+verifiedPurchase: Boolean
 }
 
 type ReplyComments{
@@ -21,7 +21,7 @@ type ReplyComments{
   createdAt: Date
   updatedAt: Date
   showReplyComment: Boolean
-  isSelled: Boolean
+  verifiedPurchase: Boolean
 }
 `;
 
@@ -67,7 +67,7 @@ input CommentFilterInput{
     createdAt:DateRangeInput
     search:String
     showReplyComment: [String]
-    isSelled: [String]
+    verifiedPurchase: [String]
   }
 `;
 
