@@ -17,9 +17,6 @@ const {
 } = require('../../utils/hisrory');
 const { addHistoryRecord } = require('../history/history.service');
 const {
-  LANGUAGE_INDEX: { UA },
-} = require('../../consts/languages');
-const {
   HISTORY_OBJ_KEYS: {
     NAME,
     AVAILABLE,
@@ -34,7 +31,7 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class SizeService {
-  async getAllSizes(limit = 0, skip = 0, filter = {}) {
+  async getAllSizes(limit, skip = 0, filter = {}) {
     const filterOptions = {};
     const modelOptions = {};
 
@@ -55,17 +52,23 @@ class SizeService {
       modelOptions.regExp = new RegExp(search.trim(), 'i');
     }
 
-    const items = _.take(
-      _.drop(
-        filter?.searchBySimpleName
-          ? _.filter(records, record =>
-              modelOptions?.regExp.test(record.modelId.name[0].value)
-            )
-          : records,
-        skip
-      ),
-      limit
-    );
+    const items = limit
+      ? _.take(
+          _.drop(
+            filter?.searchBySimpleName
+              ? _.filter(records, record =>
+                  modelOptions?.regExp.test(record.modelId.name[0].value)
+                )
+              : records,
+            skip
+          ),
+          limit
+        )
+      : filter?.searchBySimpleName
+      ? _.filter(records, record =>
+          modelOptions?.regExp.test(record.modelId.name[0].value)
+        )
+      : records;
 
     const count = _.filter(records, record => record.modelId).length;
 
@@ -87,34 +90,32 @@ class SizeService {
   }
 
   async addSize(sizeData, { _id: adminId }) {
-    console.log('sizedata', sizeData);
     sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
     const newSize = await new Size(sizeData).save();
-    await Model.findByIdAndUpdate(sizeData.modelId, {
+    const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
       $push: { sizes: newSize._id },
     });
-    console.log(newSize);
-    // const historyRecord = generateHistoryObject(
-    //   ADD_SIZE,
-    //   newSize.name,
-    //   newSize.simpleName[UA].value,
-    //   newSize._id,
-    //   [],
-    //   generateHistoryChangesData(newSize, [
-    //     NAME,
-    //     AVAILABLE,
-    //     SIMPLE_NAME,
-    //     HEIGHT_IN_CM,
-    //     WEIGHT_IN_KG,
-    //     WIDTH_IN_CM,
-    //     ADDITIONAL_PRICE,
-    //     DEPTH_IN_CM,
-    //     VOLUME_IN_LITERS,
-    //   ]),
-    //   adminId
-    // );
-    // console.log(newSize);
-    // await addHistoryRecord(historyRecord);
+
+    const historyRecord = generateHistoryObject(
+      ADD_SIZE,
+      newSize.name,
+      foundModel.name[0].value,
+      newSize._id,
+      [],
+      generateHistoryChangesData(newSize, [
+        NAME,
+        AVAILABLE,
+        SIMPLE_NAME,
+        HEIGHT_IN_CM,
+        WEIGHT_IN_KG,
+        WIDTH_IN_CM,
+        ADDITIONAL_PRICE,
+        DEPTH_IN_CM,
+        VOLUME_IN_LITERS,
+      ]),
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
 
     return newSize;
   }
@@ -123,70 +124,82 @@ class SizeService {
     const foundSize = await Size.findByIdAndDelete(id)
       .lean()
       .exec();
-    console.log(id, foundSize);
+    const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
+      $pull: { sizes: id },
+    });
     if (!foundSize) {
       throw new Error(SIZE_NOT_FOUND);
     }
-    // const historyRecord = generateHistoryObject(
-    //   DELETE_SIZE,
-    //   foundSize.name,
-    //   foundSize.simpleName[UA].value,
-    //   foundSize._id,
-    //   generateHistoryChangesData(foundSize, [
-    //     NAME,
-    //     AVAILABLE,
-    //     SIMPLE_NAME,
-    //     HEIGHT_IN_CM,
-    //     WEIGHT_IN_KG,
-    //     WIDTH_IN_CM,
-    //     ADDITIONAL_PRICE,
-    //     DEPTH_IN_CM,
-    //     VOLUME_IN_LITERS,
-    //   ]),
-    //   [],
-    //   adminId
-    // );
+    const historyRecord = generateHistoryObject(
+      DELETE_SIZE,
+      foundSize.name,
+      foundModel.name[0].value,
+      foundSize._id,
+      generateHistoryChangesData(foundSize, [
+        NAME,
+        AVAILABLE,
+        SIMPLE_NAME,
+        HEIGHT_IN_CM,
+        WEIGHT_IN_KG,
+        WIDTH_IN_CM,
+        ADDITIONAL_PRICE,
+        DEPTH_IN_CM,
+        VOLUME_IN_LITERS,
+      ]),
+      [],
+      adminId
+    );
 
-    // await addHistoryRecord(historyRecord);
+    await addHistoryRecord(historyRecord);
     return foundSize;
   }
 
   async updateSize(id, input, { _id: adminId }) {
-    console.log('update input', input);
     const sizeToUpdate = await Size.findById(id)
       .lean()
       .exec();
     const modelToUpdate = await Model.findById(input.modelId)
       .lean()
       .exec();
+
     input.modelId = mongoose.Types.ObjectId(input.modelId);
 
-    console.log(id, sizeToUpdate);
     if (!sizeToUpdate) {
       throw new Error(SIZE_NOT_FOUND);
     }
     if (!modelToUpdate) {
       throw new Error();
     }
-    input.additionalPrice = await calculatePrice(input.additionalPrice);
 
+    input.additionalPrice = await calculatePrice(input.additionalPrice);
+    if (
+      JSON.stringify(sizeToUpdate.modelId) !== JSON.stringify(input.modelId)
+    ) {
+      await Model.findByIdAndUpdate(sizeToUpdate.modelId, {
+        $pull: { sizes: id },
+      });
+
+      await Model.findByIdAndUpdate(input.modelId, {
+        $push: {
+          sizes: id,
+        },
+      });
+    }
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
-    const updatedModel = await Model.findByIdAndUpdate(input.modelId, {
-      $push: { sizes: id },
-    });
-    console.log(updatedModel);
+
     const { beforeChanges, afterChanges } = getChanges(sizeToUpdate, input);
 
-    // const historyRecord = generateHistoryObject(
-    //   EDIT_SIZE,
-    //   sizeToUpdate.name,
-    //   sizeToUpdate.simpleName[UA].value,
-    //   sizeToUpdate._id,
-    //   beforeChanges,
-    //   afterChanges,
-    //   adminId
-    // );
-    // await addHistoryRecord(historyRecord);
+    const historyRecord = generateHistoryObject(
+      EDIT_SIZE,
+      sizeToUpdate.name,
+      modelToUpdate.name[0].value,
+      sizeToUpdate._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
 
     return updatedSize;
   }
