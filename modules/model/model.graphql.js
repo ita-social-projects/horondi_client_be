@@ -65,8 +65,7 @@ input OptionInput {
 }
 
 input ModelFilterInput{
-  name:String
-  description:String
+  search: String
   category:[String]
   available:[String]
   availableForConstructor:[String]

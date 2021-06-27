@@ -506,7 +506,7 @@ const typeDefs = gql`
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
-    getAllModels(limit: Int, skip: Int, filter: ModelFilterInput, sort:JSONObject): PaginatedModels
+    getAllModels(filter: ModelFilterInput, pagination: Pagination, sort:JSONObject): PaginatedModels
     getModelsByCategory(id: ID!): [ModelResult]
     getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult

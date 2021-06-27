@@ -35,11 +35,12 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class ModelsService {
-  async getAllModels(limit, skip, filter = {}, sort = {}) {
+  async getAllModels(filter = {}, pagination, sort = {}) {
+    const { skip, limit } = pagination;
     const filterOptions = {};
 
-    if (filter?.name) {
-      const name = filter.name.trim();
+    if (filter?.search) {
+      const name = filter.search.trim();
 
       filterOptions.$or = [
         { 'name.value': { $regex: `${name}`, $options: 'i' } },
@@ -48,7 +49,7 @@ class ModelsService {
     }
 
     if (filter?.available?.length) {
-      filterOptions.available = { $in: filter.available };
+      filterOptions.show = { $in: filter.available };
     }
 
     if (filter?.availableForConstructor?.length) {
