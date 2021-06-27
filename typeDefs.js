@@ -33,6 +33,7 @@ const {
   modelType,
   optionTypes,
   modelInputs,
+  modelSortInput,
 } = require('./modules/model/model.graphql');
 const {
   restrictionTypes,
@@ -506,7 +507,7 @@ const typeDefs = gql`
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
-    getAllModels(filter: ModelFilterInput, pagination: Pagination, sort:JSONObject): PaginatedModels
+    getAllModels(filter: ModelFilterInput, pagination: Pagination, sort: ModelSortInput): PaginatedModels
     getModelsByCategory(id: ID!): [ModelResult]
     getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
@@ -613,6 +614,7 @@ const typeDefs = gql`
   ${businessTextInput}
 	${userFilterInput}
 	${userSortInput}
+  ${modelSortInput}
 	${FilterInputComponent}
 	${SortInputComponent}
   ${adminConfirmInput}
