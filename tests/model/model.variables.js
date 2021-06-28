@@ -1,14 +1,14 @@
 const wrongId = '60102a6d0ed5be43dc9f7f1d';
 const notValidId = '60102a6d0ed5b3dc9f7f1d';
 const filter = {
-  name: '',
+  search: '',
   category: [],
   available: [],
   availableForConstructor: [],
 };
 
 const sort = {
-  category: 1,
+  name: 1,
 };
 
 const pagination = {
