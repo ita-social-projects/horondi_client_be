@@ -35,7 +35,7 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class ModelsService {
-  async getAllModels(filter = {}, pagination, sort = {}) {
+  async getAllModels(filter, pagination, sort = {}) {
     const { skip, limit } = pagination;
     const filterOptions = {};
 
