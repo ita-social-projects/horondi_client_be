@@ -98,36 +98,10 @@ const cartProductInput = `
     sidePocket: Boolean
   }
 `;
-const wishlistProductType = `
-  type CartProduct{
-    _id: ID!
-    name: [Language]
-    bagBottom: CartProductBagBottom
-    dimension: CartProductDimensions
-    image: String
-    totalPrice: [CurrencySet]
-    selectedSize: String
-    sidePocket: Boolean
-  }
-`;
-const wishlistProductInput = `
-  input CartProductInput {
-    _id: ID!
-    name: [LanguageInput]
-    bagBottom: CartProductBagBottomInput
-    dimensions: CartProductDimensionsInput
-    image: String
-    totalPrice: [CurrencySetInput]
-    selectedSize: String
-    sidePocket: Boolean
-  }
-`;
 
 module.exports = {
   productType,
   productInput,
-  cartProductType,
   cartProductInput,
-  wishlistProductType,
-  wishlistProductInput,
+  cartProductType,
 };

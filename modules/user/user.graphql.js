@@ -120,6 +120,65 @@ const cartInput = `
   }
 `;
 
+const wishlistType = `
+  type Wishlist {
+    items: [WishlistItem]
+    totalPrice: [CurrencySet]
+    reminderEmailCount: Int
+  }
+
+  type WishlistItem {
+    product: Product
+    productFromConstructor: ProductFromConstructor
+    price: [CurrencySet]
+    options: Options
+  }
+  
+   type Options {
+    size: Size
+  } 
+  
+    type ProductFromConstructor {
+    product: Product
+    constructorBasics: ConstructorBasic
+    constructorBottom: ConstructorBottom    
+    constructorFrontPocket: ConstructorFrontPocket    
+    constructorPattern: Pattern
+  }
+`;
+const wishlistInput = ` 
+  input WishlistInput {
+    constructorBasics: ID!
+    constructorBottom: ID!
+    constructorFrontPocket: ID!
+    constructorPattern: ID!
+  }
+
+  input WishlistFromLSInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    options: OptionsInput
+  }
+  
+  input RemoveItemsFromWishlistInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    options: OptionsInput
+  }
+  
+  input OptionsInput {
+   size: ID!
+  } 
+  
+  input ProductFromConstructorInput {
+    product: ID
+    constructorBasics: ID
+    constructorBottom: ID    
+    constructorFrontPocket: ID    
+    constructorPattern: ID
+  }
+`;
+
 const userUpdateInput = `
 input UserUpdateInput {
     _id: ID
@@ -230,4 +289,6 @@ module.exports = {
   purchasedProductsType,
   cartType,
   cartInput,
+  wishlistType,
+  wishlistInput,
 };
