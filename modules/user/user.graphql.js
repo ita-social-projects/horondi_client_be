@@ -124,7 +124,6 @@ const wishlistType = `
   type Wishlist {
     items: [WishlistItem]
     totalPrice: [CurrencySet]
-    reminderEmailCount: Int
   }
 
   type WishlistItem {
@@ -132,18 +131,6 @@ const wishlistType = `
     productFromConstructor: ProductFromConstructor
     price: [CurrencySet]
     options: Options
-  }
-  
-   type Options {
-    size: Size
-  } 
-  
-    type ProductFromConstructor {
-    product: Product
-    constructorBasics: ConstructorBasic
-    constructorBottom: ConstructorBottom    
-    constructorFrontPocket: ConstructorFrontPocket    
-    constructorPattern: Pattern
   }
 `;
 const wishlistInput = ` 
@@ -164,18 +151,6 @@ const wishlistInput = `
     product: ID
     productFromConstructor: ProductFromConstructorInput
     options: OptionsInput
-  }
-  
-  input OptionsInput {
-   size: ID!
-  } 
-  
-  input ProductFromConstructorInput {
-    product: ID
-    constructorBasics: ID
-    constructorBottom: ID    
-    constructorFrontPocket: ID    
-    constructorPattern: ID
   }
 `;
 
