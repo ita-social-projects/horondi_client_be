@@ -186,8 +186,9 @@ class UserService extends FilterHelper {
 
         break;
       }
-      default:
+      default: {
         break;
+      }
     }
 
     const { beforeChanges, afterChanges } = getChanges(
