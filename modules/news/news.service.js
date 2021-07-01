@@ -21,7 +21,6 @@ const {
 const {
   HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
 } = require('../../consts/history-obj-keys');
-const { objectType } = require('../../consts');
 const { transliterate } = require('../helper-functions');
 
 class NewsService {
@@ -66,11 +65,11 @@ class NewsService {
     }
 
     if (upload.length) {
-      if (upload[0] && typeof upload[0] === objectType) {
+      if (upload[0] && typeof upload[0] === 'object') {
         await uploadService.deleteFile(foundNews.author.image);
         news.author.image = await uploadLargeImage(upload[0]);
       }
-      if (upload[1] && typeof upload[1] === objectType) {
+      if (upload[1] && typeof upload[1] === 'object') {
         await uploadService.deleteFile(foundNews.image);
         news.image = await uploadLargeImage(upload[1]);
       }

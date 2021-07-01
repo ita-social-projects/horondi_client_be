@@ -1,5 +1,3 @@
-const ObjectId = require('mongodb').ObjectID;
-
 const { modelRefactoredFields } = require('../consts/migrations');
 
 module.exports = {

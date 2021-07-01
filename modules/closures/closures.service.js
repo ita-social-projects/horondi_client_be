@@ -92,8 +92,7 @@ class ClosureService {
 
   async updateClosure(id, closure, upload, { _id: adminId }) {
     if (upload) {
-      const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
-      data.image = uploadImage.fileNames.large;
+      await uploadService.uploadFile(upload, [LARGE]);
     }
 
     const closureMaterial = await Closure.findById(id).exec();

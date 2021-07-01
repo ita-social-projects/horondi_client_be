@@ -35,7 +35,7 @@ class HomePageImagesService {
       this.deleteImages(looksImage.images);
     }
 
-    return await LooksImages.findByIdAndDelete(id).exec();
+    return await LooksImages.findByIdAndDelete(data.id).exec();
   }
 
   async updateHomePageLooksImage(data) {

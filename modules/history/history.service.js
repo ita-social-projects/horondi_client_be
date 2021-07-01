@@ -8,7 +8,7 @@ const {
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
-let { minDefaultDate } = require('../../consts/date-range');
+const { minDefaultDate } = require('../../consts/date-range');
 
 class HistoryService {
   async getAllHistoryRecords(limit, skip, filter) {

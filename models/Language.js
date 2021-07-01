@@ -9,7 +9,7 @@ const languageSchema = new mongoose.Schema({
   lang: {
     type: String,
     validate: {
-      validator: function(v) {
+      validator(v) {
         return /^[а-яїієґ0-9\s]+$/i.test(v) || /^[a-z0-9\s]+$/i.test(v);
       },
       message: INPUT_NOT_VALID,
