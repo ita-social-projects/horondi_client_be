@@ -4,11 +4,8 @@ const pocketType = `
     name: [Language]
     optionType: OptionTypeEnum
     model: Model
-    features: [PocketSide]
     images: ImageSet
     additionalPrice: [CurrencySet]
-    available: Boolean
-    customizable: Boolean
     restriction: Boolean
   }
 `;
@@ -44,6 +41,7 @@ const pocketInputs = `
   }
 
   input PocketFilterInput{
+    search: String
     name:String
     model:[String]
     available:[String]

@@ -34,10 +34,13 @@ const {
 
 class PocketService {
   async getAllPockets(limit, skip, filter) {
-    const filterOptions = commonFiltersHandler(filter);
+    const filterOptions = {};
 
-    if (filter?.side.length) {
-      filterOptions['features.side'] = { $in: filter.side };
+    if (filter?.search) {
+      filterOptions['name.0.value'] = {
+        $regex: `${filter.search.trim()}`,
+        $options: 'i',
+      };
     }
 
     const items = await Pocket.find(filterOptions)
@@ -103,6 +106,7 @@ class PocketService {
 
   async updatePocket(id, pocket, image, { _id: adminId }) {
     const pocketToUpdate = await Pocket.findById(id).exec();
+
     if (!pocketToUpdate) {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
@@ -111,14 +115,17 @@ class PocketService {
       pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
     }
 
-    if (!image) {
-      return Pocket.findByIdAndUpdate(id, pocket, { new: true }).exec();
+    if (image) {
+      if (pocketToUpdate.images) {
+        const images = Object.values(pocketToUpdate.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+      const uploadResult = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadResult[0];
+      pocket.images = imageResults.fileNames;
     }
-
-    await uploadService.deleteFiles(image);
-
-    const uploadImage = await uploadService.uploadSmallImage(image);
-    pocket.image = uploadImage.fileNames.small;
 
     const { beforeChanges, afterChanges } = getChanges(pocketToUpdate, pocket);
 
@@ -134,7 +141,7 @@ class PocketService {
 
     await addHistoryRecord(historyRecord);
 
-    await Pocket.findByIdAndUpdate(id, pocket, {
+    return await Pocket.findByIdAndUpdate(id, pocket, {
       new: true,
     }).exec();
   }

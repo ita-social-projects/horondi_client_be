@@ -28,8 +28,6 @@ const pocketQuery = {
 
 const pocketMutation = {
   addPocket: async (_, { pocket, images }, { user }) => {
-    console.log(pocket);
-    console.log(images);
     try {
       return await pocketService.addPocket(pocket, images, user);
     } catch (e) {
