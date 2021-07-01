@@ -11,8 +11,11 @@ const {
   getSizeById,
   deleteSize,
 } = require('./size.helper');
-const { createModel } = require('../model/model.helper');
-const { createCategory } = require('../category/category.helper');
+const { createModel, deleteModel } = require('../model/model.helper');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { newModel } = require('../model/model.variables');
 
@@ -52,6 +55,8 @@ describe('Sizes queries', () => {
   });
 
   afterAll(async () => {
+    await deleteCategory(categoryId, operations);
+    await deleteModel(modelId, operations);
     await deleteSize(sizeId, operations);
   });
 });

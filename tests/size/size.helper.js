@@ -8,6 +8,9 @@ const createSize = async (size, operations) => {
           ... on Size {
             _id
             name
+            modelId {
+              _id
+            }
             heightInCm
             widthInCm
             depthInCm
@@ -41,6 +44,9 @@ const deleteSize = async (id, operations) => {
           ... on Size {
             _id
             name
+            modelId {
+              _id
+            }
             heightInCm
             widthInCm
             depthInCm

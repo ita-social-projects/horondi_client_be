@@ -1,5 +1,7 @@
 const { setupApp } = require('../helper-functions');
 const {
+  createPlainSize,
+  createTestSize,
   SIZES_TO_CREATE,
   SIZES_TO_TEST,
   WRONG_ID,
@@ -11,43 +13,56 @@ const {
   updateSize,
   deleteSize,
 } = require('./size.helper');
+const { createModel } = require('../model/model.helper');
+const { createCategory } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { newModel } = require('../model/model.variables');
 
+jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/upload/upload.service');
 
 let operations;
 let sizeId;
 let size_updated;
+let categoryId;
+let modelId;
 
 describe('Sizes mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
+
+    const category = await createCategory(newCategoryInputData, operations);
+    categoryId = category._id;
+    const model = await createModel(newModel(categoryId), operations);
+    modelId = model._id;
   });
 
   test('should add size', async () => {
-    const result = await createSize(SIZES_TO_CREATE.size1, operations);
+    const result = await createSize(createPlainSize(modelId).size1, operations);
     sizeId = result._id;
 
     expect(result).toEqual({
       _id: sizeId,
-      ...SIZES_TO_TEST.size1,
+      ...createTestSize(modelId).size1,
     });
   });
 
   test('should update size by ID and input', async () => {
-    await updateSize(sizeId, SIZES_TO_CREATE.size2, operations);
+    await updateSize(sizeId, createPlainSize(modelId).size2, operations);
     const resultGetSizeById = await getSizeById(sizeId, operations);
     size_updated = resultGetSizeById;
 
     expect(resultGetSizeById).toEqual({
       _id: sizeId,
-      ...SIZES_TO_TEST.size2,
+      ...createTestSize(modelId).size2,
     });
   });
 
   test('should receive error message SIZE_NOT_FOUND while updating', async () => {
     const result = await updateSize(
       WRONG_ID,
-      SIZES_TO_CREATE.size1,
+      createPlainSize(modelId).size1,
       operations
     );
 
