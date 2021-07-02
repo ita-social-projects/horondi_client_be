@@ -54,7 +54,7 @@ class HomePageSliderService {
     }
 
     if (!upload) {
-      return await HomePageSlider.findByIdAndUpdate(id, slide, {
+      return HomePageSlider.findByIdAndUpdate(id, slide, {
         new: true,
       }).exec();
     }
@@ -65,14 +65,14 @@ class HomePageSliderService {
     const images = imageResults.fileNames;
 
     if (!images) {
-      return await HomePageSlider.findByIdAndUpdate(id, slide).exec();
+      return HomePageSlider.findByIdAndUpdate(id, slide).exec();
     }
     const foundSlide = await HomePageSlider.findById(id)
       .lean()
       .exec();
     uploadService.deleteFiles(Object.values(foundSlide.images));
 
-    return await HomePageSlider.findByIdAndUpdate(
+    return HomePageSlider.findByIdAndUpdate(
       id,
       {
         ...slide,

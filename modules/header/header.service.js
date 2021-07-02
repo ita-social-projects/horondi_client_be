@@ -21,7 +21,7 @@ const {
 
 class HeadersService {
   async getAllHeaders() {
-    return await Header.find().exec();
+    return Header.find().exec();
   }
 
   async getHeaderById(id) {

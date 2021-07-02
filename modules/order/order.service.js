@@ -139,7 +139,7 @@ class OrdersService {
       totalPriceToPay,
     };
 
-    return await Order.findByIdAndUpdate(
+    return Order.findByIdAndUpdate(
       id,
       { ...orderUpdate, lastUpdatedDate: Date.now() },
       { new: true }
