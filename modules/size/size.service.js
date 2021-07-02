@@ -129,7 +129,7 @@ class SizeService {
       throw new Error(SIZE_NOT_FOUND);
     }
 
-    const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
+    const foundModel = Model.findByIdAndUpdate(foundSize.modelId, {
       $pull: { sizes: id },
     });
     const historyRecord = generateHistoryObject(
