@@ -21,17 +21,37 @@ const commentsQuery = {
       return new RuleError(error.message, error.statusCode);
     }
   },
-
-  getAllCommentsByProduct: async (parent, args) => {
+  getReplyCommentsByComment: async (
+    parent,
+    { filter, pagination: { skip, limit } },
+    { user }
+  ) => {
     try {
-      return await commentsService.getAllCommentsByProduct(args);
-    } catch (error) {
-      return [
-        {
-          statusCode: NOT_FOUND,
-          message: error.message,
-        },
-      ];
+      return await commentsService.getReplyCommentsByComment(
+        filter,
+        skip,
+        limit,
+        user
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
+  getCommentsByProduct: async (
+    parent,
+    { filter, pagination: { skip, limit } },
+    { user }
+  ) => {
+    try {
+      return await commentsService.getCommentsByProduct(
+        filter,
+        skip,
+        limit,
+        user
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -50,16 +70,20 @@ const commentsQuery = {
 };
 
 const commentsMutation = {
-  addComment: async (_, { comment }) => {
+  addComment: async (_, { comment }, { user }) => {
     try {
-      return await commentsService.addComment(comment);
+      return await commentsService.addComment(comment, user);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
   },
-  replyForComment: async (_, { commentId, replyCommentData }) => {
+  replyForComment: async (_, { commentId, replyCommentData }, { user }) => {
     try {
-      return await commentsService.replyForComment(commentId, replyCommentData);
+      return await commentsService.replyForComment(
+        commentId,
+        replyCommentData,
+        user
+      );
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
@@ -82,9 +106,9 @@ const commentsMutation = {
     }
   },
 
-  deleteComment: async (parent, { id }) => {
+  deleteComment: async (_, { commentID }) => {
     try {
-      return await commentsService.deleteComment(id);
+      return await commentsService.deleteComment(commentID);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }

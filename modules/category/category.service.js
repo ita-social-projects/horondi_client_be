@@ -34,7 +34,7 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class CategoryService extends FilterHelper {
-  async getAllCategories({ filter, pagination }) {
+  async getAllCategories({ filter = {}, pagination }) {
     const filterOptions = {};
 
     if (filter?.search) {
@@ -93,7 +93,7 @@ class CategoryService extends FilterHelper {
     }
 
     if (!upload || !Object.keys(upload).length) {
-      return await Category.findByIdAndUpdate(id, category, {
+      return Category.findByIdAndUpdate(id, category, {
         new: true,
       }).exec();
     }
@@ -101,14 +101,14 @@ class CategoryService extends FilterHelper {
 
     const images = uploadResult.fileNames;
     if (!images) {
-      return await Category.findByIdAndUpdate(id, category).exec();
+      return Category.findByIdAndUpdate(id, category).exec();
     }
     const foundCategory = await Category.findById(id)
       .lean()
       .exec();
     uploadService.deleteFiles(Object.values(foundCategory.images));
 
-    return await Category.findByIdAndUpdate(
+    return Category.findByIdAndUpdate(
       id,
       {
         ...category,
