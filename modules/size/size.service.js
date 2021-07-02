@@ -94,7 +94,7 @@ class SizeService {
     const newSize = await new Size(sizeData).save();
     const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
       $push: { sizes: newSize._id },
-    });
+    }).exec();
 
     const historyRecord = generateHistoryObject(
       ADD_SIZE,
@@ -130,7 +130,7 @@ class SizeService {
     }
     const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
       $pull: { sizes: id },
-    });
+    }).exec();
     const historyRecord = generateHistoryObject(
       DELETE_SIZE,
       foundSize.name,
