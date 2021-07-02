@@ -21,7 +21,7 @@ const {
 
 class ColorService {
   async getAllColors() {
-    return await Color.find().exec();
+    return Color.find().exec();
   }
 
   async getColorById(id) {

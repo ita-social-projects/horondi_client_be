@@ -29,7 +29,7 @@ const {
 
 class UkrPoshtaService {
   async getUkrPoshtaRequest(urlParams, method, data) {
-    return await axios({
+    return axios({
       method,
       url: encodeURI(UKR_POSHTA_API_LINK + urlParams),
       data,
@@ -41,7 +41,7 @@ class UkrPoshtaService {
   }
 
   async getUkrPoshtaAddressRequest(urlParams) {
-    return await axios({
+    return axios({
       method: GET,
       url: encodeURI(UKR_POSHTA_ADDRESS_API_LINK + urlParams),
       headers: {

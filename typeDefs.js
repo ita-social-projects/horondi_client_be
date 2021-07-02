@@ -35,6 +35,7 @@ const {
   modelType,
   optionTypes,
   modelInputs,
+  modelSortInput,
 } = require('./modules/model/model.graphql');
 const {
   restrictionTypes,
@@ -412,6 +413,7 @@ const typeDefs = gql`
     countOrder: Int
   }
   union PaginatedProductsResult = PaginatedProducts | Error
+  union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -502,15 +504,20 @@ const typeDefs = gql`
       pagination: Pagination
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(
-      productId: ID!
-    ): [CommentResult]
+    getCommentsByProduct(
+      filter: ProductCommentFilterInput
+      pagination: Pagination
+    ): PaginatedCommentsResult
+    getReplyCommentsByComment(
+      filter: ReplyCommentFilterInput
+      pagination: Pagination
+    ): PaginatedCommentsResult
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
-    getAllModels(limit: Int, skip: Int, filter: ModelFilterInput, sort:JSONObject): PaginatedModels
+    getAllModels(filter: ModelFilterInput, pagination: Pagination, sort: ModelSortInput): PaginatedModels
     getModelsByCategory(id: ID!): [ModelResult]
     getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
@@ -618,6 +625,7 @@ const typeDefs = gql`
   ${businessTextInput}
 	${userFilterInput}
 	${userSortInput}
+  ${modelSortInput}
 	${FilterInputComponent}
 	${SortInputComponent}
   ${adminConfirmInput}
@@ -829,10 +837,10 @@ const typeDefs = gql`
     ): ProductResult
     deleteImages(id: ID!, images: [String!]!): PrimaryImage
     "Comment Mutation"
-    addComment(comment: CommentInput!): CommentResult
-    replyForComment(commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
-    deleteComment(id: ID!): CommentResult
-    deleteReplyForComment(replyCommentId: ID!): CommentResult
+    addComment(id:ID,comment: CommentInput!): CommentResult
+    replyForComment(id:ID,commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
+    deleteComment(id: ID,commentID:ID!): CommentResult
+    deleteReplyForComment(id:ID,replyCommentId: ID!): CommentResult
     updateComment(id: ID!, comment: CommentUpdateInput!): CommentResult
     updateReplyForComment(replyCommentId: ID!, replyCommentData: ReplyCommentUpdateInput!): CommentResult
     "BusinessText Mutation"
