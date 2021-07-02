@@ -98,16 +98,15 @@ const deleteModel = async (id, operations) => {
   return deletedModel.data.deleteModel;
 };
 
-const getAllModels = async (limit, skip, filter, sort, operations) => {
+const getAllModels = async (filter, pagination, sort, operations) => {
   const res = await operations.query({
     query: gql`
       query(
-        $limit: Int
-        $skip: Int
         $filter: ModelFilterInput
-        $sort: JSONObject
+        $pagination: Pagination
+        $sort: ModelSortInput
       ) {
-        getAllModels(limit: $limit, skip: $skip, filter: $filter, sort: $sort) {
+        getAllModels(filter: $filter, pagination: $pagination, sort: $sort) {
           items {
             _id
             name {
@@ -134,7 +133,7 @@ const getAllModels = async (limit, skip, filter, sort, operations) => {
         }
       }
     `,
-    variables: { limit, skip, filter, sort },
+    variables: { filter, pagination, sort },
   });
 
   return res.data.getAllModels;

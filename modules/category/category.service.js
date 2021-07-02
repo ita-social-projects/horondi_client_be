@@ -34,7 +34,7 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class CategoryService extends FilterHelper {
-  async getAllCategories({ filter, pagination }) {
+  async getAllCategories({ filter = {}, pagination }) {
     const filterOptions = {};
 
     if (filter?.search) {
