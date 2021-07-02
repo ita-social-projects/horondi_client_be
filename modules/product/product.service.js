@@ -78,7 +78,7 @@ const {
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id).exec();
+    return Product.findById(id).exec();
   }
 
   async getProductsFilters() {
@@ -451,12 +451,12 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId).exec();
-    return await Product.find({ _id: { $in: wishlist } }).exec();
+    return Product.find({ _id: { $in: wishlist } }).exec();
   }
 
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId).exec();
-    return await Product.find({ _id: { $in: cart } }).exec();
+    return Product.find({ _id: { $in: cart } }).exec();
   }
 }
 

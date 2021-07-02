@@ -27,6 +27,7 @@ const INPUT_FIELDS = {
   TEXT: 'text',
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
+  COMMENT: 'comment',
   HOME_PAGE_SLIDE: 'slide',
 };
 

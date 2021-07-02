@@ -57,13 +57,7 @@ describe('Model queries', () => {
   });
 
   test('Should receive all models', async () => {
-    const allModels = await getAllModels(
-      pagination.limit,
-      pagination.skip,
-      filter,
-      sort,
-      operations
-    );
+    const allModels = await getAllModels(filter, pagination, sort, operations);
 
     expect(allModels.items).toEqual([
       {

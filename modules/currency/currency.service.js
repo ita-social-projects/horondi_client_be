@@ -17,7 +17,7 @@ class CurrencyService {
   }
 
   async getAllCurrencies() {
-    return await Currency.find().exec();
+    return Currency.find().exec();
   }
 
   async getCurrencyById(id) {
@@ -36,7 +36,7 @@ class CurrencyService {
     if (await this.checkCurrencyExist(currency, id)) {
       throw new Error(CURRENCY_ALREADY_EXIST);
     }
-    return await Currency.findByIdAndUpdate(id, currency, {
+    return Currency.findByIdAndUpdate(id, currency, {
       new: true,
     }).exec();
   }
