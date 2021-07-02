@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_USER,
@@ -42,7 +43,7 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { registerUser, deleteUser, loginUser } = require('../user/user.helper');
 const { testUser } = require('../user/user.variables');
@@ -72,14 +73,19 @@ describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const { firstName, lastName, email, pass, language } = testUser;
-    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = sizeData._id;
+
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
+
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -95,11 +101,11 @@ describe('Comment queries', () => {
       operations
     );
     constructorBasicId = constructorBasicData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
       operations
     );
-    modelId = modelData._id;
+    sizeId = sizeData._id;
     const productData = await createProduct(
       newProductInputData(
         categoryId,
@@ -179,16 +185,6 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
   });
   afterAll(async () => {
-    await deleteComment(commentId, operations);
-    await deleteUser(userId, operations);
-    await deleteProduct(productId, operations);
-    await deleteModel(modelId, operations);
-    await deleteConstructorBasic(constructorBasicId, operations);
-    await deleteMaterial(materialId, operations);
-    await deleteColor(colorId, operations);
-    await deleteClosure(closureId, operations);
-    await deletePattern(patternId, operations);
-    await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
+    mongoose.connection.db.dropDatabase();
   });
 });

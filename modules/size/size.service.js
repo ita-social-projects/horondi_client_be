@@ -92,14 +92,14 @@ class SizeService {
   async addSize(sizeData, { _id: adminId }) {
     sizeData.additionalPrice = await calculatePrice(sizeData.additionalPrice);
     const newSize = await new Size(sizeData).save();
-    Model.findByIdAndUpdate(sizeData.modelId, {
+    const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
       $push: { sizes: newSize._id },
     });
 
     const historyRecord = generateHistoryObject(
       ADD_SIZE,
       newSize.name,
-      '',
+      foundModel.name[0].value,
       newSize._id,
       [],
       generateHistoryChangesData(newSize, [
@@ -128,8 +128,7 @@ class SizeService {
     if (!foundSize) {
       throw new Error(SIZE_NOT_FOUND);
     }
-
-    const foundModel = Model.findByIdAndUpdate(foundSize.modelId, {
+    const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
       $pull: { sizes: id },
     });
     const historyRecord = generateHistoryObject(
@@ -170,18 +169,18 @@ class SizeService {
       throw new Error(SIZE_NOT_FOUND);
     }
     if (!modelToUpdate) {
-      throw new Error(SIZE_NOT_FOUND);
+      throw new Error();
     }
 
     input.additionalPrice = await calculatePrice(input.additionalPrice);
     if (
       JSON.stringify(sizeToUpdate.modelId) !== JSON.stringify(input.modelId)
     ) {
-      Model.findByIdAndUpdate(sizeToUpdate.modelId, {
+      await Model.findByIdAndUpdate(sizeToUpdate.modelId, {
         $pull: { sizes: id },
       });
 
-      Model.findByIdAndUpdate(input.modelId, {
+      await Model.findByIdAndUpdate(input.modelId, {
         $push: {
           sizes: id,
         },
