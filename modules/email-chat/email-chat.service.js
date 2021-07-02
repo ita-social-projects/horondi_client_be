@@ -79,7 +79,7 @@ class EmailChatService {
   }
 
   async getPendingEmailQuestionsCount() {
-    return await EmailChat.find({ status: 'PENDING' })
+    return EmailChat.find({ status: 'PENDING' })
       .countDocuments()
       .exec();
   }
@@ -100,7 +100,7 @@ class EmailChatService {
       question.answer.text = INITIAL_TEXT;
       question.answer.date = Date.now();
 
-      return await EmailChat.findByIdAndUpdate(id, question, {
+      return EmailChat.findByIdAndUpdate(id, question, {
         new: true,
       }).exec();
     });
