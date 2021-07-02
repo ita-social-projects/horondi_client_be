@@ -6,7 +6,6 @@ module.exports = {
       .collection('sizes')
       .updateMany({}, { $unset: { simpleName: 1 } }, false, true);
     await db.collection('sizes').updateOne(
-      // L => Rolltop
       { _id: ObjectId('604394a2a7532c33dcb326d5') },
       {
         $set: {
@@ -14,7 +13,6 @@ module.exports = {
         },
       }
     );
-    // M => Rolltop
     await db.collection('sizes').updateOne(
       { _id: ObjectId('604394cba7532c33dcb326d6') },
       {
@@ -24,7 +22,6 @@ module.exports = {
       }
     );
     await db.collection('sizes').updateOne(
-      // S => Rolltop
       { _id: ObjectId('60439516a7532c33dcb326d7') },
       {
         $set: {
@@ -32,7 +29,6 @@ module.exports = {
         },
       }
     );
-    // M => Wallet
     await db.collection('sizes').updateOne(
       { _id: ObjectId('604395a8a7532c33dcb326d8') },
       {
@@ -41,7 +37,6 @@ module.exports = {
         },
       }
     );
-    // L => New
     await db.collection('sizes').updateOne(
       { _id: ObjectId('604395c9a7532c33dcb326d9') },
       {
@@ -50,7 +45,6 @@ module.exports = {
         },
       }
     );
-    // M => New
     await db.collection('sizes').updateOne(
       { _id: ObjectId('60439642a7532c33dcb326da') },
       {
@@ -59,7 +53,6 @@ module.exports = {
         },
       }
     );
-    // L => Garbuz
     await db.collection('sizes').updateOne(
       { _id: ObjectId('6043966ea7532c33dcb326db') },
       {
@@ -68,7 +61,6 @@ module.exports = {
         },
       }
     );
-    // M => Garbuz
     await db.collection('sizes').updateOne(
       { _id: ObjectId('60467d0b873045422c1dbf8f') },
       {
@@ -77,7 +69,6 @@ module.exports = {
         },
       }
     );
-    // S => Bananka
     await db.collection('sizes').updateOne(
       { _id: ObjectId('60467e30873045422c1dbf91') },
       {
@@ -86,7 +77,6 @@ module.exports = {
         },
       }
     );
-    // M => Symka
     await db.collection('sizes').updateOne(
       { _id: ObjectId('604787abfc3c0b3b34fd485a') },
       {

@@ -60,7 +60,7 @@ class ModelsService {
     if (filter?.category?.length) {
       filterOptions.category = { $in: filter.category };
     }
-
+    console.log(filter.category);
     const items = await Model.find(filterOptions)
       .sort(sort)
       .skip(skip)

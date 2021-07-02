@@ -1,6 +1,7 @@
 const config = {
   mongodb: {
-    url: 'mongodb://localhost:27017/horondi?authSource=admin',
+    url:
+      'mongodb+srv://test123:test123@cluster0.6qrzg.mongodb.net/horondi?retryWrites=true&w=majority',
     databaseName: 'horondi',
 
     options: {
