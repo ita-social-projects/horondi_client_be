@@ -44,7 +44,6 @@ class ModelsService {
 
       filterOptions.$or = [
         { 'name.value': { $regex: `${name}`, $options: 'i' } },
-        { 'description.value': { $regex: `${name}`, $options: 'i' } },
       ];
     }
 
