@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   createPlainSize,
@@ -83,5 +84,9 @@ describe('Sizes mutations', () => {
     const result = await deleteSize(WRONG_ID, operations);
 
     expect(result).toEqual(ERROR_NOT_FOUND);
+  });
+
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

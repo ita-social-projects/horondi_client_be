@@ -14,7 +14,7 @@ const {
   getAllModels,
 } = require('./model.helper');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { setupApp } = require('../helper-functions');
 const {
   deleteCategory,
@@ -41,8 +41,7 @@ const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 describe('Model queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const createdSize = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = createdSize._id;
+
     const createdCategory = await createCategory(
       newCategoryInputData,
       operations
@@ -50,6 +49,11 @@ describe('Model queries', () => {
     categoryId = createdCategory._id;
     createdModel = await createModel(newModel(categoryId, sizeId), operations);
     modelId = createdModel._id;
+    const createdSize = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = createdSize._id;
   });
 
   test('Should receive all models', async () => {

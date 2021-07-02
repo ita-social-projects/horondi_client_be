@@ -67,6 +67,7 @@ describe('Constructor query', () => {
       operations
     );
   });
+
   test('should return all ConstructorBasics', async () => {
     const allConstructorBottom = await getAllConstructorBottom(
       { limit, skip, filter },
