@@ -11,24 +11,9 @@ const { RIGHT, LEFT, FRONT, BACK } = require('../../consts/side-names');
 const pocketSchema = new mongoose.Schema({
   name: [Language],
   optionType: String,
-  // model: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: MODEL,
-  // },
-  // features: {
-  //   side: [
-  //     {
-  //       type: String,
-  //       enum: [RIGHT, LEFT, FRONT, BACK],
-  //       required: true,
-  //     },
-  //   ],
-  // },
   images: ImageSet,
   additionalPrice: [CurrencySet],
   restriction: Boolean,
-  // available: Boolean,
-  // customizable: Boolean,
 });
 
 module.exports = mongoose.model(POCKET, pocketSchema);

@@ -1,8 +1,5 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.service');
-const {
-  commonFiltersHandler,
-} = require('../../utils/constructorOptionCommonFilters');
 const { calculatePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
 const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
