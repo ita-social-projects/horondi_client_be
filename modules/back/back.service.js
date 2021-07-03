@@ -7,9 +7,6 @@ const {
 const RuleError = require('../../errors/rule.error');
 const { BACK_NOT_FOUND } = require('../../consts/back-messages');
 const {
-  FILE_SIZES: { SMALL },
-} = require('../../consts/file-sizes');
-const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
@@ -87,13 +84,21 @@ class BackService {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
-    if (image) {
-      const uploadImage = await uploadService.uploadFile(image, [SMALL]);
-      back.image = uploadImage.fileNames.small;
-    }
-
     if (back?.additionalPrice) {
       back.additionalPrice = await calculatePrice(back.additionalPrice);
+    }
+
+    if (image) {
+      if (backToUpdate.images) {
+        const images = Object.values(backToUpdate.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+
+      const uploadImage = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadImage[0];
+      back.images = imageResults.fileNames;
     }
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
@@ -153,9 +158,11 @@ class BackService {
   }
 
   async addBack(back, image, { _id: adminId }) {
+    console.log(image);
     if (image) {
-      const uploadImage = await uploadService.uploadSmallImage(image);
-      back.image = uploadImage.fileNames.small;
+      const uploadImage = await uploadService.uploadFile(image);
+
+      back.images = uploadImage.fileNames;
     }
 
     if (back.additionalPrice) {
