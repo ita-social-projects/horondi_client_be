@@ -13,7 +13,7 @@ const {
 
 class BusinessTextService {
   async getAllBusinessTexts() {
-    return await BusinessText.find().exec();
+    return BusinessText.find().exec();
   }
 
   async getBusinessTextById(id) {

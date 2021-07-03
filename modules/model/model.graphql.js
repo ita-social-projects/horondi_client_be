@@ -65,17 +65,23 @@ input OptionInput {
 }
 
 input ModelFilterInput{
-  name:String
-  description:String
+  search: String
   category:[String]
   available:[String]
   availableForConstructor:[String]
 }
-  
+`;
+
+const modelSortInput = `
+input ModelSortInput {
+  name: Int
+  priority: Int
+}
 `;
 
 module.exports = {
   modelType,
   optionTypes,
+  modelSortInput,
   modelInputs,
 };

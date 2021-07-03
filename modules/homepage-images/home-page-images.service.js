@@ -35,7 +35,7 @@ class HomePageImagesService {
       this.deleteImages(looksImage.images);
     }
 
-    return await LooksImages.findByIdAndDelete(data.id).exec();
+    return LooksImages.findByIdAndDelete(data.id).exec();
   }
 
   async updateHomePageLooksImage(data) {
@@ -64,7 +64,7 @@ class HomePageImagesService {
   async saveUpdatedLooksImages(id, imageToUpload) {
     const images = await this.uploadImages([imageToUpload]);
 
-    return await LooksImages.findByIdAndUpdate(
+    return LooksImages.findByIdAndUpdate(
       id,
       { images: images[0] },
       {
@@ -78,7 +78,7 @@ class HomePageImagesService {
 
     if (!deletedImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
 
-    return await Promise.allSettled(deletedImages);
+    return Promise.allSettled(deletedImages);
   }
 }
 
