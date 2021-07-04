@@ -241,6 +241,7 @@ describe('Cart queries', () => {
   });
   afterAll(async () => {
     await deleteProduct(productId, operations);
+    await deleteProduct(productId2, operations);
     await deleteModel(modelId, operations);
     await deleteMaterial(materialId, operations);
     await deleteMaterial(materialId, operations);
