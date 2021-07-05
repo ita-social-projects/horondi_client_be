@@ -158,7 +158,6 @@ class BackService {
   }
 
   async addBack(back, image, { _id: adminId }) {
-    console.log(image);
     if (image) {
       const uploadImage = await uploadService.uploadFile(image);
 
