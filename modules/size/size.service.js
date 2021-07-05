@@ -33,7 +33,7 @@ const {
 class SizeService {
   async getAllSizes(limit, skip = 0, filter = {}) {
     const filterOptions = {};
-    const modelOptions = {};
+    const items = [];
 
     if (filter?.name?.length) {
       filterOptions.name = { $in: filter.name };
@@ -44,33 +44,40 @@ class SizeService {
 
     const records = await Size.find(filterOptions)
       .populate('modelId')
+      .skip(skip)
+      .limit(limit)
       .exec();
 
     if (filter?.searchBySimpleName) {
       const search = filter.searchBySimpleName.trim();
+      const regExCondition = new RegExp(search.trim(), 'i');
 
-      modelOptions.regExp = new RegExp(search.trim(), 'i');
+      if (limit) {
+        items.push(
+          ..._.take(
+            _.drop(
+              _.filter(records, record =>
+                regExCondition.test(record.modelId.name[0].value)
+              ),
+              skip
+            ),
+            limit
+          )
+        );
+      } else {
+        items.push(
+          _.filter(records, record =>
+            regExCondition.test(record.modelId.name[0].value)
+          )
+        );
+      }
+    } else {
+      items.push(...records);
     }
 
-    const items = limit
-      ? _.take(
-          _.drop(
-            filter?.searchBySimpleName
-              ? _.filter(records, record =>
-                  modelOptions?.regExp.test(record.modelId.name[0].value)
-                )
-              : records,
-            skip
-          ),
-          limit
-        )
-      : filter?.searchBySimpleName
-      ? _.filter(records, record =>
-          modelOptions?.regExp.test(record.modelId.name[0].value)
-        )
-      : records;
-
-    const count = _.filter(records, record => record.modelId).length;
+    const count = await Size.find(filterOptions)
+      .countDocuments()
+      .exec();
 
     return {
       items,
