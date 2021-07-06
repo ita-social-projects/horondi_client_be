@@ -43,8 +43,6 @@ const inputPocketValidator = Joi.object({
     .trim()
     .valid(POCKET, SIDE)
     .required(),
-  // model: Joi.string(),
-  // features: nestedSideValidator,
   image: Joi.string()
     .trim()
     .optional(),
@@ -52,8 +50,6 @@ const inputPocketValidator = Joi.object({
     .optional()
     .default(0),
   restriction: Joi.boolean(),
-  // available: Joi.boolean().required(),
-  // customizable: Joi.boolean(),
 });
 
 const inputOptionValidator = Joi.object({
