@@ -53,6 +53,7 @@ input CommentFilterInput{
     replyText: String!
     answerer: ID
     productId: ID
+    showReplyComment: Boolean
   }
   input ProductCommentFilterInput{
     filters:Boolean

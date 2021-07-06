@@ -94,7 +94,10 @@ class CommentsService {
     if (!comment) {
       throw new RuleError(REPLY_COMMENTS_NOT_FOUND, NOT_FOUND);
     }
-    if (user) {
+    if (filter.filters) {
+      const arr = comment.replyComments;
+      comment.replyComments = arr;
+    } else if (user) {
       comment.replyComments = comment.replyComments.filter(
         item =>
           item.showReplyComment === true ||
