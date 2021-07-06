@@ -16,12 +16,12 @@ const {
   inputConstructorElementValidator,
 } = require('../../../validators/constructor-items-inputs.validator');
 
-const сonstructorBottomPermissionsQuery = {
+const constructorBottomPermissionsQuery = {
   getAllConstructorBottom: allow,
   getConstructorBottomById: allow,
 };
 
-const сonstructorBottomPermissionsMutations = {
+const constructorBottomPermissionsMutations = {
   addConstructorBottom: and(
     inputDataValidation(CONSTRUCTOR_BOTTOM, inputConstructorElementValidator),
     hasRoles([ADMIN, SUPERADMIN]),
@@ -35,6 +35,6 @@ const сonstructorBottomPermissionsMutations = {
 };
 
 module.exports = {
-  сonstructorBottomPermissionsQuery,
-  сonstructorBottomPermissionsMutations,
+  constructorBottomPermissionsQuery,
+  constructorBottomPermissionsMutations,
 };

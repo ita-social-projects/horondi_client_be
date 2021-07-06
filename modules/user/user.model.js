@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
 const Cart = require('../cart/cart.model').schema;
+const Wishlist = require('../wishlist/wishlist.model').schema;
 const {
   PHONE_NUMBER_NOT_VALID,
 } = require('../../error-messages/common.messages');
 
 const {
-  DB_COLLECTIONS_NAMES: { USER: USER_DB, PRODUCT, COMMENT, ORDER },
+  DB_COLLECTIONS_NAMES: { USER: USER_DB, COMMENT, ORDER },
 } = require('../../consts/db-collections-names');
 const {
   roles: { USER, ADMIN, SUPERADMIN },
@@ -53,13 +54,8 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  wishlist: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: PRODUCT,
-    },
-  ],
   cart: Cart,
+  wishlist: Wishlist,
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,

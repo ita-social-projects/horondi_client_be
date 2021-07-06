@@ -1,6 +1,6 @@
 const {
-  CART_TOTAL_SUM_METHOD: { ADD_ITEM },
-} = require('../consts/cart-total-sum-method');
+  TOTAL_SUM_METHOD: { ADD_ITEM, REMOVE_ITEM },
+} = require('../consts/total-sum-method');
 const {
   CURRENCY_VALUE: { UAH_VALUE, USD_VALUE },
   CURRENCY: { USD, UAH },
@@ -10,19 +10,25 @@ const ConstructorBottomModel = require('../modules/constructor/constructor-botto
 const ConstructorFrontPocketModel = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const { getSizeById } = require('../modules/size/size.service');
 const UserModel = require('../modules/user/user.model');
+const {
+  DB_COLLECTIONS_NAMES: { CART, WISHLIST },
+} = require('../consts/db-collections-names');
 
-const totalCartSum = (calculateMethod, newItemSum, cartSum) =>
-  calculateMethod === ADD_ITEM
-    ? Object.values(
+const totalSum = (calculateMethod, newItemSum, cartSum) => {
+  switch (calculateMethod) {
+    case ADD_ITEM: {
+      return Object.values(
         [...newItemSum, ...cartSum].reduce((acc, { currency, value }) => {
           acc[currency] = {
             currency,
-            value: (acc[currency] ? acc[currency].value : 0) + value,
+            value: value + (acc[currency] ? acc[currency].value : 0),
           };
           return acc;
         }, {})
-      )
-    : Object.values(
+      );
+    }
+    case REMOVE_ITEM: {
+      return Object.values(
         [...newItemSum, ...cartSum].reduce((acc, { currency, value }) => {
           acc[currency] = {
             currency,
@@ -31,8 +37,14 @@ const totalCartSum = (calculateMethod, newItemSum, cartSum) =>
           return acc;
         }, {})
       );
+    }
+    default: {
+      return cartSum;
+    }
+  }
+};
 
-const getTotalCartSum = (items, userId) =>
+const getTotalSum = (items, userId, target) =>
   items.reduce(
     async (acc, item) => {
       const sum = await acc;
@@ -52,18 +64,11 @@ const getTotalCartSum = (items, userId) =>
             value: sizePrice[USD_VALUE].value * item.quantity,
           },
         ];
-        await UserModel.findOneAndUpdate(
-          {
-            _id: userId,
-            'cart.items.product': item.product,
-            'cart.items.options.size': item.options.size,
-          },
-          {
-            $set: {
-              'cart.items.$.price': item.price,
-            },
-          }
-        ).exec();
+        if (target === CART) {
+          await updateCartItemPrice(item, userId);
+        } else if (target === WISHLIST) {
+          await updateWishlistItemPrice(item, userId);
+        }
       }
       if (item.fromConstructor.product) {
         const {
@@ -104,18 +109,11 @@ const getTotalCartSum = (items, userId) =>
               item.quantity,
           },
         ];
-        await UserModel.findOneAndUpdate(
-          {
-            _id: userId,
-            'cart.items.fromConstructor.product': item.fromConstructor.product,
-            'cart.items.options.size': item.options.size,
-          },
-          {
-            $set: {
-              'cart.items.$.price': item.price,
-            },
-          }
-        ).exec();
+        if (target === CART) {
+          await updateCartConstructorItemPrice(item, userId);
+        } else if (target === WISHLIST) {
+          await updateWishlistConstructorItemPrice(item, userId);
+        }
       }
 
       return [
@@ -141,7 +139,7 @@ const getTotalCartSum = (items, userId) =>
     ]
   );
 
-const setTotalCartSum = items =>
+const setTotalSum = items =>
   items.reduce(
     (acc, item) => [
       {
@@ -159,8 +157,68 @@ const setTotalCartSum = items =>
     ]
   );
 
+const updateCartItemPrice = async (item, userId) => {
+  await UserModel.findOneAndUpdate(
+    {
+      _id: userId,
+      'cart.items.product': item.product,
+      'cart.items.options.size': item.options.size,
+    },
+    {
+      $set: {
+        'cart.items.$.price': item.price,
+      },
+    }
+  ).exec();
+};
+
+const updateWishlistItemPrice = async (item, userId) => {
+  await UserModel.findOneAndUpdate(
+    {
+      _id: userId,
+      'wishlist.items.product': item.product,
+      'wishlist.items.options.size': item.options.size,
+    },
+    {
+      $set: {
+        'wishlist.items.$.price': item.price,
+      },
+    }
+  ).exec();
+};
+
+const updateCartConstructorItemPrice = async (item, userId) => {
+  await UserModel.findOneAndUpdate(
+    {
+      _id: userId,
+      'cart.items.fromConstructor.product': item.fromConstructor.product,
+      'cart.items.options.size': item.options.size,
+    },
+    {
+      $set: {
+        'cart.items.$.price': item.price,
+      },
+    }
+  ).exec();
+};
+
+const updateWishlistConstructorItemPrice = async (item, userId) => {
+  await UserModel.findOneAndUpdate(
+    {
+      _id: userId,
+      'wishlist.items.fromConstructor.product': item.fromConstructor.product,
+      'wishlist.items.options.size': item.options.size,
+    },
+    {
+      $set: {
+        'wishlist.items.$.price': item.price,
+      },
+    }
+  ).exec();
+};
+
 module.exports = {
-  totalCartSum,
-  getTotalCartSum,
-  setTotalCartSum,
+  totalSum,
+  getTotalSum,
+  setTotalSum,
 };
