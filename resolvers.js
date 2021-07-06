@@ -106,6 +106,11 @@ const { backQuery, backMutation } = require('./modules/back/back.resolver');
 
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 
+const {
+  wishlistMutation,
+  wishlistQuery,
+} = require('./modules/wishlist/wishlist.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -178,6 +183,8 @@ const resolvers = {
     ...historyQuery,
 
     ...cartQuery,
+
+    ...wishlistQuery,
 
     ...currencyQuery,
 
@@ -552,6 +559,8 @@ const resolvers = {
 
   Mutation: {
     ...cartMutation,
+
+    ...wishlistMutation,
 
     ...uploadMutation,
 

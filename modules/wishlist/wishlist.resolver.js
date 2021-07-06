@@ -1,5 +1,5 @@
 const {
-  addProductToWishlist,
+  addProductItemToWishlist,
   cleanWishlist,
   getWishlistByUserId,
   addConstructorProductItemToWishlist,
@@ -20,9 +20,9 @@ const wishlistQuery = {
 };
 
 const wishlistMutation = {
-  addProductToWishlist: async (_, { sizeId, id, product }) => {
+  addProductItemToWishlist: async (_, { sizeId, id, product }) => {
     try {
-      return await addProductToWishlist(sizeId, id, product);
+      return await addProductItemToWishlist(sizeId, id, product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

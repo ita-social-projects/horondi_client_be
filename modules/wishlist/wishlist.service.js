@@ -83,7 +83,7 @@ class WishlistService {
     ).exec();
   }
 
-  async addProductToWishlist(sizeId, id, { _id }) {
+  async addProductItemToWishlist(sizeId, id, { _id }) {
     const isProductAlreadyExistsInWishlist = await UserModel.findOne(
       {
         _id: id,

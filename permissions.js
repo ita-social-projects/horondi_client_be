@@ -99,14 +99,19 @@ const {
 } = require('./modules/constructor/constructor-front-pocket/constructor-front-pocket.permission');
 
 const {
-  сonstructorBottomPermissionsQuery,
-  сonstructorBottomPermissionsMutations,
+  constructorBottomPermissionsQuery,
+  constructorBottomPermissionsMutations,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
 
 const {
   cartPermissionsMutations,
   cartPermissionsQuery,
 } = require('./modules/cart/cart.permissions');
+
+const {
+  wishlistPermissionsMutations,
+  wishlistPermissionsQuery,
+} = require('./modules/wishlist/wishlist.permissions');
 
 const {
   commentPermissionsMutations,
@@ -142,6 +147,7 @@ const permissions = shield(
     Query: {
       ...historyPermissionsQuery,
       ...cartPermissionsQuery,
+      ...wishlistPermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
@@ -155,7 +161,7 @@ const permissions = shield(
       ...closurePermissionsQuery,
       ...sizePermissionsQuery,
       ...colorPermissionsQuery,
-      ...сonstructorBottomPermissionsQuery,
+      ...constructorBottomPermissionsQuery,
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
@@ -168,6 +174,7 @@ const permissions = shield(
     Mutation: {
       ...productPermissionsMutation,
       ...cartPermissionsMutations,
+      ...wishlistPermissionsMutations,
       ...userPermissionsMutation,
       ...patternPermissionsMutations,
       ...materialPermissionsMutations,
@@ -181,7 +188,7 @@ const permissions = shield(
       ...closurePermissionsMutations,
       ...sizePermissionsMutations,
       ...colorPermissionsMutations,
-      ...сonstructorBottomPermissionsMutations,
+      ...constructorBottomPermissionsMutations,
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,

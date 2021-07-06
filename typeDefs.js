@@ -785,14 +785,14 @@ const typeDefs = gql`
       items:[ CartFromLSInput!],
       id: ID!
       ): UserResult
-    addProductToWishlist(productId: ID!, sizeId: ID!, id: ID!): UserResult
+    addProductItemToWishlist(productId: ID!, sizeId: ID!, id: ID!): UserResult
     cleanWishlist(id: ID!): UserResult
     addConstructorProductItemToWishlist(
-    productId: ID!,
-    sizeId:ID!,
-     constructorData: WishlistInput!, 
-     id: ID!
-     ): UserResult
+      productId: ID!,
+      sizeId:ID!,
+       constructorData: WishlistInput!, 
+       id: ID!
+       ): UserResult
     removeProductItemsFromWishlist(
       items: RemoveItemsFromWishlistInput!,
       id: ID!

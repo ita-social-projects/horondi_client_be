@@ -10,7 +10,7 @@ const wishlistPermissionsQuery = {
 };
 
 const wishlistPermissionsMutations = {
-  addProductToWishlist: and(isTheSameUser, isProductToWishlistCorrect),
+  addProductItemToWishlist: and(isTheSameUser, isProductToWishlistCorrect),
   cleanWishlist: isTheSameUser,
   addConstructorProductItemToWishlist: and(
     isTheSameUser,
