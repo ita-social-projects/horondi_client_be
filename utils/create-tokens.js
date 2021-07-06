@@ -3,19 +3,21 @@ const { REFRESH_TOKEN_EXPIRES_IN, SECRET } = require('../dotenvValidator');
 
 const generateTokens = (userId, params, withRefresh = false) => {
   if (withRefresh) {
-    const accessToken = jwt.sign({ userId }, params.secret, {
+    const accessTokenWithRefresh = jwt.sign({ userId }, params.secret, {
       expiresIn: params.expiresIn,
     });
-    const refreshToken = jwt.sign({ userId }, SECRET, {
+    const refreshTokenWithRefresh = jwt.sign({ userId }, SECRET, {
       expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
-    return { accessToken, refreshToken };
-  } else {
-    const accessToken = jwt.sign({ userId }, params.secret, {
-      expiresIn: params.expiresIn,
-    });
-    const refreshToken = null;
-    return { accessToken, refreshToken };
+    return {
+      accessToken: accessTokenWithRefresh,
+      refreshToken: refreshTokenWithRefresh,
+    };
   }
+  const accessToken = jwt.sign({ userId }, params.secret, {
+    expiresIn: params.expiresIn,
+  });
+  const refreshToken = null;
+  return { accessToken, refreshToken };
 };
 module.exports = generateTokens;

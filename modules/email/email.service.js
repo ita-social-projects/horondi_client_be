@@ -23,6 +23,7 @@ class EmailService {
       templateInfo.templateFileName,
       context
     );
+
     await transporter.sendMail({
       from: MAIL_USER,
       to: email,

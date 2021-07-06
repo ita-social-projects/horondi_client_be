@@ -1,4 +1,4 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+const { ObjectId } = require('mongoose').Types;
 const { PAYMENT_SECRET } = require('../../dotenvValidator');
 const { generatePaymentSignature } = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');

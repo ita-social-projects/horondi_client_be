@@ -56,9 +56,8 @@ const inputDataValidation = (data, validationSchema) =>
 
     if (!error) {
       return true;
-    } else {
-      return new RuleError(error.details[0].message, FORBIDDEN);
     }
+    return new RuleError(error.details[0].message, FORBIDDEN);
   });
 
 const isProductToCartCorrect = rule()(async (_, args) => {
@@ -67,9 +66,8 @@ const isProductToCartCorrect = rule()(async (_, args) => {
   if (isProductExists && isProductExists.available) {
     args.product = isProductExists;
     return true;
-  } else {
-    return new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
   }
+  return new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
 });
 
 const checkIfItemExists = (data, currentModel) =>

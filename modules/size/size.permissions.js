@@ -1,6 +1,7 @@
 const { allow, and } = require('graphql-shield');
 const { hasRoles } = require('../../utils/rules');
 const { roles } = require('../../consts');
+
 const { ADMIN, SUPERADMIN } = roles;
 const { sizeInputValidator } = require('../../validators/size.validator');
 const { inputDataValidation } = require('../../utils/rules');

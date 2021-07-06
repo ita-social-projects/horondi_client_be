@@ -4,9 +4,8 @@ const {
 } = require('../../consts/status-codes');
 
 const homePageImagesQuery = {
-  getHomePageLooksImages: async () => {
-    return await homePageService.getHomePageLooksImages();
-  },
+  getHomePageLooksImages: async () =>
+    await homePageService.getHomePageLooksImages(),
 };
 
 const homePageImagesMutation = {
