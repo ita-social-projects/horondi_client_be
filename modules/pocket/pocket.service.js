@@ -138,11 +138,9 @@ class PocketService {
 
     await addHistoryRecord(historyRecord);
 
-    const result = await Pocket.findByIdAndUpdate(id, pocket, {
+    return Pocket.findByIdAndUpdate(id, pocket, {
       new: true,
     }).exec();
-
-    return result;
   }
 
   async addPocket(pocket, image, { _id: adminId }) {
