@@ -5,28 +5,15 @@ const CurrencySet = require('../../models/CurrencySet').schema;
 const {
   DB_COLLECTIONS_NAMES: { MODEL, POCKET },
 } = require('../../consts/db-collections-names');
+const ImageSet = require('../common/ImageSet').schema;
 const { RIGHT, LEFT, FRONT, BACK } = require('../../consts/side-names');
 
 const pocketSchema = new mongoose.Schema({
   name: [Language],
   optionType: String,
-  model: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: MODEL,
-  },
-  features: {
-    side: [
-      {
-        type: String,
-        enum: [RIGHT, LEFT, FRONT, BACK],
-        required: true,
-      },
-    ],
-  },
-  image: String,
+  images: ImageSet,
   additionalPrice: [CurrencySet],
-  available: Boolean,
-  customizable: Boolean,
+  restriction: Boolean,
 });
 
 module.exports = mongoose.model(POCKET, pocketSchema);

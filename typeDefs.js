@@ -209,6 +209,7 @@ const typeDefs = gql`
     PATTERN
     POCKET
     STRAP
+    SIDE
   }
   ${sideEnum}
   ${expressionEnum}
@@ -932,7 +933,7 @@ const typeDefs = gql`
     addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
     deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
     "Pocket Mutation"
-    addPocket(pocket: PocketInput!, image: Upload):PocketResult
+    addPocket(pocket: PocketInput!, images: Upload):PocketResult
     updatePocket(id: ID, pocket: PocketInput!, image: Upload):PocketResult
     deletePocket(id: ID):PocketResult
     "Back Mutation"
