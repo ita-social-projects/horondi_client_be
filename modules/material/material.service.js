@@ -29,6 +29,10 @@ const {
     ADDITIONAL_PRICE,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { MAIN_MATERIAL, BOTTOM_MATERIAL, INNER_MATERIAL },
+} = require('../../consts/input-fields');
 
 class MaterialsService {
   constructor() {
@@ -91,26 +95,27 @@ class MaterialsService {
   }
 
   async updateMaterial(id, material, { _id: adminId }) {
-    const { additionalPrice, ...rest } = material;
-
-    console.log(material)
-
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
       throw new Error(MATERIAL_NOT_FOUND);
     }
-
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    const updatedMaterial = await Material.findByIdAndUpdate(
-      id,
-      {
-        ...rest,
-        additionalPrice: await calculateAdditionalPrice(additionalPrice),
-      },
-      { new: true }
-    ).exec();
+
+    if (material.additionalPrice) {
+      material.additionalPrice = await calculateAdditionalPrice(
+        material.additionalPrice
+      );
+    }
+
+    const updatedMaterial = await Material.findByIdAndUpdate(id, material, {
+      new: true,
+    }).exec();
+
+    await updatePrices(materialToUpdate, material, MAIN_MATERIAL, id);
+    await updatePrices(materialToUpdate, material, INNER_MATERIAL, id);
+    await updatePrices(materialToUpdate, material, BOTTOM_MATERIAL, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       materialToUpdate,
@@ -135,7 +140,9 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new Error(MATERIAL_ALREADY_EXIST);
     }
-    material.additionalPrice = await calculateAdditionalPrice(material.additionalPrice);
+    material.additionalPrice = await calculateAdditionalPrice(
+      material.additionalPrice
+    );
 
     const newMaterial = await new Material(material).save();
 

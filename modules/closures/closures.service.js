@@ -31,6 +31,10 @@ const {
     MODEL,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { CLOSURE },
+} = require('../../consts/input-fields');
 
 class ClosureService {
   async getAllClosure({ skip, limit }) {
@@ -63,7 +67,9 @@ class ClosureService {
     }
 
     if (data.additionalPrice) {
-      data.additionalPrice = await calculateAdditionalPrice(data.additionalPrice);
+      data.additionalPrice = await calculateAdditionalPrice(
+        data.additionalPrice
+      );
     }
 
     const newClosure = await new Closure(data).save();
@@ -102,12 +108,16 @@ class ClosureService {
     }
 
     if (closure.additionalPrice) {
-      closure.additionalPrice = await calculateAdditionalPrice(closure.additionalPrice);
+      closure.additionalPrice = await calculateAdditionalPrice(
+        closure.additionalPrice
+      );
     }
 
     const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
       new: true,
     }).exec();
+
+    await updatePrices(closureMaterial, closure, CLOSURE, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       closureMaterial,

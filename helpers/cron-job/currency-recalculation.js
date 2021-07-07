@@ -10,27 +10,45 @@ const SizeModel = require('../../modules/size/size.model');
 const PatternModel = require('../../modules/pattern/pattern.model');
 const MaterialModel = require('../../modules/material/material.model');
 const ClosuresModel = require('../../modules/closures/closures.model');
-const { CRON_PERIOD: { EVERY_NIGHT } } = require('../../consts/cron-period');
-const { cronRecalculateAdditionalPrice, cronRecalculateBasePrice, cronRecalculatePocketBack } = require('../../utils/cron-recalculate-helper');
+const {
+  CRON_PERIOD: { EVERY_NIGHT },
+} = require('../../consts/cron-period');
+const {
+  cronRecalculateAdditionalPrice,
+  cronRecalculateBasePrice,
+  cronRecalculatePocketBack,
+  cronRecalculateProductSizePrices,
+} = require('../../utils/cron-recalculate-helper');
 
-const modelsWithBasePrice = [ProductModel, ConstructorBasicModel, ConstructorBottomModel, ConstructorFrontPocketModel];
-const modelsWithAdditionalPrice = [SizeModel, PatternModel, MaterialModel, ClosuresModel];
+const modelsWithBasePrice = [
+  ProductModel,
+  ConstructorBasicModel,
+  ConstructorBottomModel,
+  ConstructorFrontPocketModel,
+];
+const modelsWithAdditionalPrice = [
+  SizeModel,
+  PatternModel,
+  MaterialModel,
+  ClosuresModel,
+];
 const modelsPocketAndBack = [PocketModel, BackModel];
 
 const currencyRecalculation = () =>
   schedule(EVERY_NIGHT, async () => {
-
-    for (let model of modelsWithBasePrice) {
+    for (const model of modelsWithBasePrice) {
       await cronRecalculateBasePrice(model);
     }
 
-    for (let model of modelsPocketAndBack) {
+    for (const model of modelsPocketAndBack) {
       await cronRecalculatePocketBack(model);
     }
 
-    for (let model of modelsWithAdditionalPrice) {
+    for (const model of modelsWithAdditionalPrice) {
       await cronRecalculateAdditionalPrice(model);
     }
+
+    await cronRecalculateProductSizePrices(ProductModel);
   });
 
 module.exports = { currencyRecalculation };

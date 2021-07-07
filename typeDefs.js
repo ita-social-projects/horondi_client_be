@@ -414,6 +414,10 @@ const typeDefs = gql`
       items: [ConstructorFrontPocket]
       count: Int
   }
+  type FinalPricesForSizes {
+      size: Size
+      price: [CurrencySet]
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error

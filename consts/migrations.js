@@ -1,5 +1,12 @@
 const { ObjectId } = require('mongoose').Types;
 
+const {
+  ADDITIONAL_PRICE_TYPES: { ABSOLUTE_INDICATOR },
+} = require('./additional-price-types');
+const {
+  CURRENCY: { UAH, USD },
+} = require('./currency');
+
 const sizeName = {
   simpleName: [
     {
@@ -151,20 +158,37 @@ const modelRefactoredFields = {
 const slug = { slug: '' };
 
 const additionalPrice = {
-    additionalPrice: [
-      {
-        value: 0,
-        type: '',
-        currency: '',
-      },
-      {
-        value: 0,
-        type: '',
-        currency: '',
-      },
-    ],
-  }
-;
+  additionalPrice: [
+    {
+      value: 0,
+      type: ABSOLUTE_INDICATOR,
+      currency: UAH,
+    },
+    {
+      value: 0,
+      type: ABSOLUTE_INDICATOR,
+      currency: USD,
+    },
+  ],
+};
+
+const sizes = {
+  sizes: [
+    {
+      size: ObjectId('60439516a7532c33dcb326d7'),
+      price: [
+        {
+          value: 0,
+          currency: UAH,
+        },
+        {
+          value: 0,
+          currency: USD,
+        },
+      ],
+    },
+  ],
+};
 
 module.exports = {
   sizeName,
@@ -181,4 +205,5 @@ module.exports = {
   constructorFrontPocketExtraFields,
   modelRefactoredFields,
   additionalPrice,
+  sizes,
 };

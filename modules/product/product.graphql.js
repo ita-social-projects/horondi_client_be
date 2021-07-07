@@ -13,7 +13,7 @@ const productType = `
     closure: Closure
     pattern: Pattern
     basePrice: [CurrencySet]!
-    sizes: [Size]!
+    sizes: [FinalPricesForSizes]!
     available: Boolean!
     isHotItem: Boolean
     purchasedCount: Int

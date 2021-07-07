@@ -1,4 +1,5 @@
 const Size = require('./size.model');
+const Product = require('../product/product.model');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   SIZES_NOT_FOUND,
@@ -29,6 +30,9 @@ const {
     VOLUME_IN_LITERS,
   },
 } = require('../../consts/history-obj-keys');
+const {
+  finalPriceRecalculation,
+} = require('../../utils/final-price-calculation');
 
 class SizeService {
   async getAllSizes(limit, skip, filter) {
@@ -65,7 +69,6 @@ class SizeService {
 
   async getSizeById(id) {
     const size = await Size.findById(id).exec();
-
     if (size) {
       return size;
     }
@@ -73,7 +76,9 @@ class SizeService {
   }
 
   async addSize(sizeData, { _id: adminId }) {
-    sizeData.additionalPrice = await calculateAdditionalPrice(sizeData.additionalPrice);
+    sizeData.additionalPrice = await calculateAdditionalPrice(
+      sizeData.additionalPrice
+    );
     const newSize = await new Size(sizeData).save();
 
     const historyRecord = generateHistoryObject(
@@ -140,9 +145,27 @@ class SizeService {
     if (!sizeToUpdate) {
       throw new Error(SIZE_NOT_FOUND);
     }
-    input.additionalPrice = await calculateAdditionalPrice(input.additionalPrice);
+    input.additionalPrice = await calculateAdditionalPrice(
+      input.additionalPrice
+    );
 
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
+
+    if (
+      sizeToUpdate.additionalPrice[1].value !== input.additionalPrice[1].value
+    ) {
+      const products = await Product.find({
+        'sizes.size': id,
+      })
+        .distinct('_id')
+        .exec();
+
+      for (const productId of products) {
+        await Product.findByIdAndUpdate(productId, {
+          sizes: await finalPriceRecalculation(productId),
+        });
+      }
+    }
 
     const { beforeChanges, afterChanges } = getChanges(sizeToUpdate, input);
 

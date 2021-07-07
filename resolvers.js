@@ -306,7 +306,11 @@ const resolvers = {
     }),
     pattern: parent => patternService.getPatternById(parent.pattern),
     closure: parent => closuresService.getClosureById(parent.closure),
-    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+    sizes: parent =>
+      parent.sizes.map(size => ({
+        size: sizeService.getSizeById(size.size),
+        price: size.price,
+      })),
   },
   Cart: {
     items: parent =>

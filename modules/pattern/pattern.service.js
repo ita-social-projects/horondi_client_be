@@ -33,6 +33,10 @@ const {
     OPTION_TYPE,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { PATTERN },
+} = require('../../consts/input-fields');
 
 class PatternsService {
   async getAllPatterns(limit, skip, filter) {
@@ -85,14 +89,16 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }, { _id: adminId }) {
-    const patternToUpdate = await Pattern.findById(id).exec();
+    let patternToUpdate = await Pattern.findById(id).exec();
 
     if (!patternToUpdate) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
 
     if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculateAdditionalPrice(pattern.additionalPrice);
+      pattern.additionalPrice = await calculateAdditionalPrice(
+        pattern.additionalPrice
+      );
     }
 
     const { beforeChanges, afterChanges } = getChanges(
@@ -111,8 +117,14 @@ class PatternsService {
     );
     await addHistoryRecord(historyRecord);
 
+    patternToUpdate = await Pattern.findById(id).exec();
+
     if (!image) {
-      return Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
+      const updatedPattern = await Pattern.findByIdAndUpdate(id, pattern, {
+        new: true,
+      }).exec();
+      await updatePrices(patternToUpdate, pattern, PATTERN, id);
+      return updatedPattern;
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
@@ -130,7 +142,7 @@ class PatternsService {
     await uploadService.deleteFiles(Object.values(foundPattern.images));
     await uploadService.deleteFiles([foundPattern.constructorImg]);
 
-    return Pattern.findByIdAndUpdate(
+    const updatedPattern = await Pattern.findByIdAndUpdate(
       id,
       {
         ...pattern,
@@ -140,6 +152,10 @@ class PatternsService {
         new: true,
       }
     ).exec();
+
+    await updatePrices(patternToUpdate, pattern, PATTERN, id);
+
+    return updatedPattern;
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
@@ -149,12 +165,12 @@ class PatternsService {
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
-    const constructorImg = await uploadSmallImage(image[1]);
-
-    pattern.constructorImg = constructorImg;
+    pattern.constructorImg = await uploadSmallImage(image[1]);
 
     if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculateAdditionalPrice(pattern.additionalPrice);
+      pattern.additionalPrice = await calculateAdditionalPrice(
+        pattern.additionalPrice
+      );
     }
 
     const newPattern = await new Pattern({ ...pattern, images }).save();

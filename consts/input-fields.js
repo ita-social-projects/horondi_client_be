@@ -28,6 +28,9 @@ const INPUT_FIELDS = {
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
   HOME_PAGE_SLIDE: 'slide',
+  MAIN_MATERIAL: 'mainMaterial.material',
+  INNER_MATERIAL: 'innerMaterial.material',
+  BOTTOM_MATERIAL: 'bottomMaterial.material',
 };
 
 module.exports = {
