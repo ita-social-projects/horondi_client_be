@@ -11,36 +11,17 @@ const {
   COMMENT_FOR_NOT_EXISTING_USER,
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
+  REPLY_COMMENTS_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
-const { minDefaultDate } = require('../../consts/date-range');
+const { filterOptionComments } = require('../helper-functions');
+const {
+  ORDER_STATUSES: { DELIVERED },
+} = require('../../consts/order-statuses');
+const { isUserBoughtPoduct } = require('../helper-functions');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit } }) {
-    const filterOptions = {};
-    let maxDate = new Date();
-    let minDate = minDefaultDate;
-
-    if (filter?.show?.length) {
-      filterOptions.show = { $in: filter.show };
-    }
-
-    if (filter?.date?.dateFrom) {
-      minDate = new Date(filter.date.dateFrom);
-    }
-
-    if (filter?.date?.dateTo) {
-      maxDate = new Date(filter.date.dateTo);
-    }
-
-    filterOptions.date = {
-      $gte: minDate,
-      $lte: maxDate,
-    };
-
-    if (filter?.search) {
-      const search = filter.search.trim();
-      filterOptions.text = { $regex: `${search}`, $options: 'i' };
-    }
+    const filterOptions = filterOptionComments(filter);
 
     const items = await Comment.find(filterOptions)
       .sort({ date: -1 })
@@ -70,18 +51,65 @@ class CommentsService {
       .limit(limit)
       .exec();
     if (!comments?.length) {
-      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return comments;
   }
 
-  async getAllCommentsByProduct({ productId }) {
-    const product = await Product.findById(productId).exec();
+  async getCommentsByProduct(filter, skip, limit, user) {
+    const product = await Product.findById(filter.productId).exec();
     if (!product) {
-      throw new Error(COMMENT_NOT_FOUND);
+      throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
     }
-    const comments = await Comment.find({ product: productId }).exec();
-    return comments;
+    let filterOptions = {};
+
+    if (filter.filters) {
+      filterOptions = filterOptionComments(filter);
+    } else if (user) {
+      filterOptions = {
+        $and: [
+          { $or: [{ show: { $in: [true] } }, { user: user._id }] },
+          { product: filter.productId },
+        ],
+      };
+    } else {
+      filterOptions = { show: { $in: [true] }, product: filter.productId };
+    }
+
+    const count = Comment.find(filterOptions).countDocuments();
+    const items = await Comment.find(filterOptions)
+      .sort({ date: -1 })
+      .limit(limit)
+      .skip(skip)
+      .exec();
+
+    return {
+      items,
+      count,
+    };
+  }
+
+  async getReplyCommentsByComment(filter, skip, limit, user) {
+    const comment = await Comment.findById(filter.commentId).exec();
+    if (!comment) {
+      throw new RuleError(REPLY_COMMENTS_NOT_FOUND, NOT_FOUND);
+    }
+    if (user) {
+      comment.replyComments = comment.replyComments.filter(
+        item =>
+          item.showReplyComment === true ||
+          item.answerer.toString() === user._id.toString()
+      );
+    } else {
+      comment.replyComments = comment.replyComments.filter(
+        item => item.showReplyComment === true
+      );
+    }
+    comment.replyComments = comment.replyComments.slice(skip, skip + limit);
+    return {
+      items: [comment],
+      count: comment.replyComments.length,
+    };
   }
 
   async getAllCommentsByUser(userId) {
@@ -107,20 +135,31 @@ class CommentsService {
     return updatedComment;
   }
 
-  async addComment(data) {
+  async addComment(data, { _id: userId }) {
     const product = await Product.findById(data.product).exec();
 
     if (!product) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
+    const order = await isUserBoughtPoduct(data.product, userId);
+
+    if (order.some(item => item.status === DELIVERED)) {
+      data.verifiedPurchase = true;
+    }
     return new Comment(data).save();
   }
 
-  async replyForComment(commentId, replyComment) {
+  async replyForComment(commentId, replyComment, { _id: userId }) {
     const isCommentExists = await Comment.findById(commentId).exec();
 
     if (!isCommentExists) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+
+    const order = await isUserBoughtPoduct(replyComment.productId, userId);
+
+    if (order.some(item => item.status === DELIVERED)) {
+      replyComment.verifiedPurchase = true;
     }
 
     return Comment.findByIdAndUpdate(
@@ -185,7 +224,7 @@ class CommentsService {
     if (!deletedComment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
-    return Comment.findByIdAndDelete(id, { new: true }).exec();
+    return Comment.findByIdAndDelete(id).exec();
   }
 
   async addRate(id, data, user) {

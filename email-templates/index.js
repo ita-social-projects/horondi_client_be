@@ -41,6 +41,10 @@ const htmlTemplates = {
     subject: '[HORONDI] Confirmation creating superadmin',
     templateFileName: 'confirm-creation-superadmin-email',
   },
+  [EmailActions.SEND_EMAIL_ANSWER]: {
+    subject: '[HORONDI] Your question has been answered',
+    templateFileName: 'answer-email-question',
+  },
 };
 
 module.exports = { htmlTemplates };

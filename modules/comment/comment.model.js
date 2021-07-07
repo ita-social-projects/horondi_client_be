@@ -32,12 +32,6 @@ const commentSchema = new mongoose.Schema({
   },
   replyComments: [
     {
-      answererEmail: {
-        type: String,
-      },
-      answererName: {
-        type: String,
-      },
       replyText: {
         type: String,
       },
@@ -60,9 +54,21 @@ const commentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+      verifiedPurchase: {
+        type: Boolean,
+        default: false,
+      },
     },
   ],
-  show: Boolean,
+  show: {
+    type: Boolean,
+    default: false,
+  },
+  rate: Number,
+  verifiedPurchase: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model(COMMENT, commentSchema);

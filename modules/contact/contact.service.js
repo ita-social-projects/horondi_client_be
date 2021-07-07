@@ -63,7 +63,7 @@ class ContactService {
       this.deleteMapImages(contact);
     }
 
-    return await Contact.findByIdAndDelete(id).exec();
+    return Contact.findByIdAndDelete(id).exec();
   }
 
   async uploadMapImages(data) {
@@ -78,7 +78,7 @@ class ContactService {
   async saveUpdatedContact(data) {
     const images = await this.uploadMapImages(data);
 
-    return await Contact.findByIdAndUpdate(
+    return Contact.findByIdAndUpdate(
       data.id,
       {
         ...data.contact,
