@@ -2,7 +2,7 @@ const ConstructorBasic = require('../modules/constructor/constructor-basic/const
 const ConstructorFrontPocket = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
 const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
 const Size = require('../modules/size/size.model');
-const { CURRENCY, CURRENCY_VALUE } = require('./../consts/currency');
+const { CURRENCY, CURRENCY_VALUE } = require('../consts/currency');
 const productModel = require('../modules/product/product.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },

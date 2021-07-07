@@ -9,7 +9,6 @@ const {
 const {
   UKR_POSHTA_API_LINK,
   UKR_POSHTA_API_KEY,
-  UKR_POSHTA_STATUS_KEY,
   UKR_POSHTA_COUNTERPARTY_TOKEN,
   UKR_POSHTA_COUNTERPARTY_UUID,
   UKR_POSHTA_ADDRESS_API_LINK,
@@ -30,7 +29,7 @@ const {
 
 class UkrPoshtaService {
   async getUkrPoshtaRequest(urlParams, method, data) {
-    return await axios({
+    return axios({
       method,
       url: encodeURI(UKR_POSHTA_API_LINK + urlParams),
       data,
@@ -40,8 +39,9 @@ class UkrPoshtaService {
       },
     });
   }
+
   async getUkrPoshtaAddressRequest(urlParams) {
-    return await axios({
+    return axios({
       method: GET,
       url: encodeURI(UKR_POSHTA_ADDRESS_API_LINK + urlParams),
       headers: {
@@ -49,6 +49,7 @@ class UkrPoshtaService {
       },
     });
   }
+
   async createUkrPoshtaAddress(address) {
     const createdAddress = await this.getUkrPoshtaRequest(
       ADDRESSES,
@@ -105,18 +106,21 @@ class UkrPoshtaService {
     const res = await this.getUkrPoshtaAddressRequest(getUkrPoshtaRegionsUrl);
     return res.data.Entries.Entry;
   }
+
   async getUkrPoshtaDistrictsByRegionId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaDistrictsByRegionIdUrl + id}`
     );
     return res.data.Entries.Entry;
   }
+
   async getUkrPoshtaCitiesByDistrictId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaCitiesByDistrictIdUrl + id}`
     );
     return res.data.Entries.Entry;
   }
+
   async getUkrPoshtaPostofficesCityId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaPostofficesCityIdUrl + id}`

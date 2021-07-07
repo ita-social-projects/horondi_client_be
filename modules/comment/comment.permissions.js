@@ -9,27 +9,39 @@ const {
 const {
   roles: { ADMIN, SUPERADMIN, USER },
 } = require('../../consts');
-const { replyCommentValidator } = require('../../validators/comment.validator');
 const {
-  INPUT_FIELDS: { REPLY_COMMENT_DATA },
+  replyCommentValidator,
+  commentValidator,
+  commentUpdateValidator,
+  replyCommentUpdateValidator,
+} = require('../../validators/comment.validator');
+const {
+  INPUT_FIELDS: { REPLY_COMMENT_DATA, COMMENT },
 } = require('../../consts/input-fields');
 
 const commentPermissionsQuery = {
   getCommentById: allow,
-  getAllCommentsByProduct: allow,
+  getCommentsByProduct: allow,
   getAllCommentsByUser: allow,
+  getReplyCommentsByComment: allow,
   getRecentComments: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 const commentPermissionsMutations = {
-  updateComment: hasRoles([ADMIN, SUPERADMIN]),
-  addComment: and(
-    inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
-    or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER]))
+  updateComment: and(
+    inputDataValidation(COMMENT, commentUpdateValidator),
+    hasRoles([ADMIN, SUPERADMIN])
   ),
-  replyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
-  updateReplyForComment: and(
+  addComment: and(
+    inputDataValidation(COMMENT, commentValidator),
+    isTheSameUser
+  ),
+  replyForComment: and(
     inputDataValidation(REPLY_COMMENT_DATA, replyCommentValidator),
+    isTheSameUser
+  ),
+  updateReplyForComment: and(
+    inputDataValidation(REPLY_COMMENT_DATA, replyCommentUpdateValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { SECRET } = require('../dotenvValidator');
+
 const verifyUser = token => {
   if (!token) return;
   try {

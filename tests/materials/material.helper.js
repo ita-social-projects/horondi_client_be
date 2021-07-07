@@ -85,8 +85,8 @@ const getAllMaterials = async operations => {
 
   return allMaterials.data.getAllMaterials;
 };
-const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) => {
-  return await operations.query({
+const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
+  await operations.query({
     variables: { skip, limit },
     query: gql`
       query($skip: Int, $limit: Int) {
@@ -120,9 +120,8 @@ const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) => {
       }
     `,
   });
-};
-const getMaterialById = async (id, operations) => {
-  return await operations.query({
+const getMaterialById = async (id, operations) =>
+  await operations.query({
     query: gql`
       query($id: ID!) {
         getMaterialById(id: $id) {
@@ -159,7 +158,6 @@ const getMaterialById = async (id, operations) => {
     `,
     variables: { id },
   });
-};
 const updateMaterial = async (id, material, operations) => {
   const updatedMaterial = await operations.mutate({
     mutation: gql`
@@ -214,8 +212,8 @@ const updateMaterial = async (id, material, operations) => {
 
   return updatedMaterial.data.updateMaterial;
 };
-const deleteMaterial = async (id, operations) => {
-  return await operations.mutate({
+const deleteMaterial = async (id, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteMaterial(id: $id) {
@@ -233,7 +231,6 @@ const deleteMaterial = async (id, operations) => {
       id,
     },
   });
-};
 
 module.exports = {
   deleteMaterial,
