@@ -20,7 +20,7 @@ const newModel = (categoryId, sizeId) => ({
   category: categoryId,
   priority: 2,
   show: true,
-  sizes: [sizeId],
+  sizes: [],
   name: [
     { value: 'Тест', lang: 'uk' },
     { value: 'Test', lang: 'en' },
@@ -40,7 +40,7 @@ const newModelUpdated = (categoryId, sizeId) => ({
   category: categoryId,
   priority: 3,
   show: true,
-  sizes: [sizeId],
+  sizes: [],
   name: [
     { value: 'Обновлено', lang: 'uk' },
     { value: 'Updated', lang: 'en' },
