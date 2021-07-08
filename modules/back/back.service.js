@@ -6,9 +6,6 @@ const {
 } = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
 const { BACK_NOT_FOUND } = require('../../consts/back-messages');
-// const {
-//   FILE_SIZES: { SMALL },
-// } = require('../../consts/file-sizes');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
