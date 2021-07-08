@@ -1,6 +1,13 @@
 const { setupApp } = require('../helper-functions');
 const { createSize, updateSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const {
+  createCategory,
+  deleteCategory,
+} = require('../category/category.helper');
+const { createModel, deleteModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const { newCategoryInputData } = require('../category/category.variables');
+const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -21,21 +28,33 @@ const {
   HISTORY_RECORD_IS_NOT_PRESENT,
 } = require('../../error-messages/history');
 
+jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 
 describe('history query tests', () => {
   let operations;
   let sizeId;
   let recordId;
+  let modelId;
+  let categoryId;
 
   beforeAll(async () => {
     operations = await setupApp();
-    const size = await createSize(SIZES_TO_CREATE.size1, operations);
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    const size = await createSize(createPlainSize(modelId).size1, operations);
     sizeId = size._id;
-    await updateSize(sizeId, SIZES_TO_CREATE.size2, operations);
+    await updateSize(sizeId, createPlainSize(modelId).size2, operations);
   });
 
   afterAll(async () => {
+    await deleteModel(modelId, operations);
+    await deleteCategory(categoryId, operations);
     await deleteSize(sizeId, operations);
   });
 

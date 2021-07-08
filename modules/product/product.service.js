@@ -268,8 +268,9 @@ class ProductsService {
       filesToUpload.forEach(e => {
         if (e?.large) {
           previousImagesLinks.push(e);
+        } else {
+          newFiles.push(e);
         }
-        newFiles.push(e);
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
