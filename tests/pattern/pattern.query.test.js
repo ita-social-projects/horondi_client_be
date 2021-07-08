@@ -28,6 +28,7 @@ const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
+  createPlainSize,
 } = require('../size/size.variables');
 
 let patternId;
@@ -52,13 +53,17 @@ describe('Pattern queries', () => {
     materialId = materialData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const sizeData = await createSize(size1, operations);
-    sizeId = sizeData._id;
+
     const modelData = await createModel(
       newModel(categoryId, sizeId),
       operations
     );
     modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
     res = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations

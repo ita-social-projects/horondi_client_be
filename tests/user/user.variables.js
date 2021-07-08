@@ -106,8 +106,9 @@ const INVALID_FIRST_NAME =
 const INVALID_LAST_NAME =
   '"lastName" with value "O" fails to match the required pattern: ';
 const INVALID_PASSWORD =
-  '"password" with value "You" fails to match the required pattern: /^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,30}$/';
+  '"password" with value "You" fails to match the required pattern: /^(?=.*[a-zA-Zа-яА-Яіїє])^(?=.*[A-ZА-ЯІЇЄ])(?=.*\\d)[a-zA-Zа-яА-ЯіїєІЇЄ\\d]{6,30}$/';
 const INVALID_ROLE = '"role" must be one of [admin, superadmin]';
+
 module.exports = {
   newAdmin,
   superAdminUser,

@@ -26,6 +26,7 @@ const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
+  createPlainSize,
 } = require('../size/size.variables');
 
 let operations;
@@ -54,13 +55,10 @@ describe('Constructor mutations', () => {
     materialId = materialData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const sizeData = await createSize(size1, operations);
-    sizeId = sizeData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
-      operations
-    );
+
+    const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
+
     addConstructor = newConstructorBottom(materialId, colorId, modelId);
     currentConstructorBottom = getConstructorData(addConstructor, {
       materialId,
