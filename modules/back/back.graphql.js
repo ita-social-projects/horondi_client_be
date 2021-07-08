@@ -5,7 +5,7 @@ const backType = `
     optionType: OptionTypeEnum
     model: Model
     features: BackFeatureSet
-    image: String
+    images: ImageSet
     additionalPrice: [CurrencySet]
     available: Boolean
     customizable: Boolean
