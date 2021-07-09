@@ -28,6 +28,10 @@ const materialOptions = {
   ],
   purpose: 'INNER',
   available: true,
+  additionalPrice: {
+    type: 'ABSOLUTE_INDICATOR',
+    value: 0,
+  },
 };
 
 module.exports = {
