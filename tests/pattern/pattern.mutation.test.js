@@ -28,6 +28,7 @@ const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
 const {
+  createPlainSize,
   SIZES_TO_CREATE: { size1 },
 } = require('../size/size.variables');
 
@@ -53,13 +54,13 @@ describe('Pattern Mutation Tests', () => {
     materialId = materialData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const sizeData = await createSize(size1, operations);
-    sizeId = sizeData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
+    const modelData = await createModel(newModel(categoryId), operations);
+    modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
       operations
     );
-    modelId = modelData._id;
+    sizeId = sizeData._id;
     patternData = await createPattern(
       mutationPatternToAdd(materialId, modelId),
       operations

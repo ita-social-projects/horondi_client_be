@@ -30,6 +30,7 @@ const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
 const {
   SIZES_TO_CREATE: { size1 },
+  createPlainSize,
 } = require('../size/size.variables');
 
 jest.mock('../../modules/upload/upload.service');
@@ -59,13 +60,19 @@ describe('constructor mutations', () => {
     materialId = receivedMaterial._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const sizeData = await createSize(size1, operations);
-    sizeId = sizeData._id;
+
     const modelData = await createModel(
       newModel(categoryId, sizeId),
       operations
     );
+
     modelId = modelData._id;
+
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
     constructorInput = newConstructorBasic(materialId, colorId, modelId);
 
     constructorBasic = await createConstructorBasic(

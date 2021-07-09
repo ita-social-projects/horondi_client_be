@@ -10,8 +10,7 @@ const sizeSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  simpleName: [Language],
-  model: {
+  modelId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: MODEL,
   },

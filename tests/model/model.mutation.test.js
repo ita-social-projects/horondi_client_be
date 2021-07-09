@@ -1,7 +1,7 @@
 const { newModel, newModelUpdated, wrongId } = require('./model.variables');
 const { createModel, deleteModel, updateModel } = require('./model.helper');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
 const { setupApp } = require('../helper-functions');
 const {
   deleteCategory,
@@ -27,8 +27,6 @@ jest.mock('../../modules/currency/currency.utils.js');
 describe('Model mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const createdSize = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = createdSize._id;
     const createdCategory = await createCategory(
       newCategoryInputData,
       operations
@@ -39,7 +37,11 @@ describe('Model mutations', () => {
   test('Should create model', async () => {
     const model = await createModel(newModel(categoryId, sizeId), operations);
     modelId = model._id;
-
+    const createdSize = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = createdSize._id;
     expect(model).toBeDefined();
     expect(model).toHaveProperty(
       'name',

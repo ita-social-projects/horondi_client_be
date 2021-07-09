@@ -35,10 +35,9 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class ModelsService {
-  async getAllModels(filter, pagination, sort = {}) {
+  async getAllModels(filter = {}, pagination = {}, sort = {}) {
     const { skip, limit } = pagination;
     const filterOptions = {};
-
     if (filter?.search) {
       const name = filter.search.trim();
 
@@ -63,8 +62,8 @@ class ModelsService {
 
     const items = await Model.find(filterOptions)
       .sort(sort)
-      .skip(skip)
-      .limit(limit)
+      .skip(skip || 0)
+      .limit(limit || 0)
       .exec();
 
     const count = await Model.find()

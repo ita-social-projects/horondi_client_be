@@ -271,6 +271,10 @@ const resolvers = {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
 
+  Size: {
+    model: parent => modelService.getModelById(parent.modelId),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
