@@ -61,8 +61,7 @@ const inputOptionValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .valid(BACK_OPTION, CLOSURE)
-    .required(),
+    .valid(BACK_OPTION, CLOSURE),
   model: Joi.string(),
   features: Joi.object({
     material: Joi.string()

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -51,12 +52,13 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { loginAdmin } = require('../user/user.helper');
 const { superAdminUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { deleteOrder, createOrder } = require('../order/order.helpers');
+const { testUser } = require('../user/user.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -83,14 +85,19 @@ let replyId;
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = sizeData._id;
+    const { firstName, lastName, email, pass, language } = testUser;
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
+
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -106,11 +113,11 @@ describe('Comment queries', () => {
       operations
     );
     constructorBasicId = constructorBasicData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
       operations
     );
-    modelId = modelData._id;
+    sizeId = sizeData._id;
     const productData = await createProduct(
       newProductInputData(
         categoryId,

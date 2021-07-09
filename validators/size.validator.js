@@ -7,14 +7,8 @@ const sizeInputValidator = Joi.object({
     .min(1)
     .max(3)
     .required(),
-  simpleName: Joi.array().items({
-    lang: Joi.string()
-      .trim()
-      .required(),
-    value: Joi.string()
-      .trim()
-      .required(),
-  }),
+  model: Joi.string(),
+  modelId: Joi.string(),
   heightInCm: Joi.number()
     .integer()
     .min(1)
