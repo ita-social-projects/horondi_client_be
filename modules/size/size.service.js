@@ -237,4 +237,4 @@ class SizeService {
   }
 }
 
-exports = new SizeService();
+module.exports = new SizeService();

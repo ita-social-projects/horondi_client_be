@@ -37,7 +37,10 @@ const createPlainSize = modelId => ({
     volumeInLiters: 5,
     weightInKg: 0.8,
     available: true,
-    additionalPrice: 50,
+    additionalPrice: {
+      value: 50,
+      type: 'ABSOLUTE_INDICATOR',
+    },
   },
   size2: {
     name: 'M',
@@ -48,7 +51,10 @@ const createPlainSize = modelId => ({
     volumeInLiters: 7,
     weightInKg: 0.6,
     available: true,
-    additionalPrice: 40,
+    additionalPrice: {
+      value: 40,
+      type: 'ABSOLUTE_INDICATOR',
+    },
   },
 });
 
@@ -109,9 +115,12 @@ const createTestSize = modelId => ({
     additionalPrice: [
       {
         currency: 'UAH',
-        value: 0,
+        value: 270,
       },
-      null,
+      {
+        currency: 'USD',
+        value: 10,
+      },
     ],
   },
   size2: {
@@ -128,9 +137,12 @@ const createTestSize = modelId => ({
     additionalPrice: [
       {
         currency: 'UAH',
-        value: 0,
+        value: 270,
       },
-      null,
+      {
+        currency: 'USD',
+        value: 10,
+      },
     ],
   },
 });
