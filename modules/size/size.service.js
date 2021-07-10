@@ -215,7 +215,7 @@ class SizeService {
       for (const productId of products) {
         await Product.findByIdAndUpdate(productId, {
           sizes: await finalPriceRecalculation(productId),
-        });
+        }).exec();
       }
     }
 
