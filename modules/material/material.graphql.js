@@ -22,6 +22,7 @@ const materialType = `
       BOTTOM
       PATTERN
       CLOSURE
+      BACK
     }
 `;
 
