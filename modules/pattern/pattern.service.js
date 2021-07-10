@@ -120,11 +120,15 @@ class PatternsService {
     patternToUpdate = await Pattern.findById(id).exec();
 
     if (!image) {
-      const updatedPattern = await Pattern.findByIdAndUpdate(id, pattern, {
-        new: true,
-      }).exec();
+      const updatedPatternWithoutImage = await Pattern.findByIdAndUpdate(
+        id,
+        pattern,
+        {
+          new: true,
+        }
+      ).exec();
       await updatePrices(patternToUpdate, pattern, PATTERN, id);
-      return updatedPattern;
+      return updatedPatternWithoutImage;
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
