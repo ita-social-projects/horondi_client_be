@@ -58,6 +58,16 @@ const productSchema = new mongoose.Schema({
       ref: COLOR,
     },
   },
+  backMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: MATERIAL,
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: COLOR,
+    },
+  },
   strapLengthInCm: Number,
   images: PrimaryImage,
   pattern: {

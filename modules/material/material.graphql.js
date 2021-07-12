@@ -12,6 +12,7 @@ const materialType = `
       main: [Material]
       inner: [Material]
       bottom: [Material]
+      back: [Material]
       pattern: [Material]
       closure: [Material]
     }
@@ -22,6 +23,7 @@ const materialType = `
       BOTTOM
       PATTERN
       CLOSURE
+      BACK
     }
 `;
 
