@@ -147,9 +147,7 @@ class PocketService {
       pocket.images = uploadImage.fileNames;
     }
 
-    if (pocket.additionalPrice) {
-      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
-    }
+    pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
 
     const newPocket = await new Pocket(pocket).save();
 
