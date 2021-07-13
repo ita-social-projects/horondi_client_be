@@ -20,11 +20,14 @@ const {
 const { isUserBoughtPoduct } = require('../helper-functions');
 
 class CommentsService {
-  async getAllComments({ filter, pagination: { skip, limit } }) {
+  async getAllComments({ filter, pagination: { skip, limit }, sort }) {
     const filterOptions = filterOptionComments(filter);
-
+    let sortLabel = sort;
+    if (Object.keys(sort).includes('replyComments')) {
+      sortLabel = { 'replyComments.createdAt': sort.replyComments };
+    }
     const items = await Comment.find(filterOptions)
-      .sort({ date: -1 })
+      .sort(sortLabel)
       .limit(limit)
       .skip(skip)
       .exec();
@@ -89,14 +92,35 @@ class CommentsService {
     };
   }
 
-  async getReplyCommentsByComment(filter, skip, limit, user) {
+  async getReplyCommentsByComment(filter, skip, limit, user, sort) {
     const comment = await Comment.findById(filter.commentId).exec();
     if (!comment) {
       throw new RuleError(REPLY_COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     if (filter.filters) {
-      const arr = comment.replyComments;
-      comment.replyComments = arr;
+      if (filter?.showReplyComment?.length) {
+        comment.replyComments = comment.replyComments.filter(item =>
+          filter.showReplyComment.includes(item.showReplyComment.toString())
+        );
+      }
+      if (filter?.search !== '') {
+        comment.replyComments = comment.replyComments.filter(
+          item =>
+            item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) >
+            -1
+        );
+      }
+      if (
+        Object.keys(filter?.createdAt).length > 0 &&
+        filter?.createdAt?.dateFrom !== '' &&
+        filter?.createdAt?.dateTo !== ''
+      ) {
+        comment.replyComments = comment.replyComments.filter(
+          item =>
+            new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
+            new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
+        );
+      }
     } else if (user) {
       comment.replyComments = comment.replyComments.filter(
         item =>
@@ -106,6 +130,15 @@ class CommentsService {
     } else {
       comment.replyComments = comment.replyComments.filter(
         item => item.showReplyComment === true
+      );
+    }
+    if (parseInt(sort?.date) === 1) {
+      comment.replyComments = comment.replyComments.sort(
+        (a, b) => a.createdAt - b.createdAt
+      );
+    } else if (parseInt(sort?.date) === -1) {
+      comment.replyComments = comment.replyComments.sort(
+        (a, b) => b.createdAt - a.createdAt
       );
     }
     comment.replyComments = comment.replyComments.slice(skip, skip + limit);

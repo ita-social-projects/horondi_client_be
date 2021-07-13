@@ -72,7 +72,21 @@ input CommentFilterInput{
   }
 `;
 
+const commentsSortInput = `
+input CommentsSortInput {
+  date: Int
+  replyComments: Int
+}
+`;
+const replyCommentsSortInput = `
+input ReplyCommentsSortInput {
+  date: Int
+}
+`;
+
 module.exports = {
   commentType,
   commentInput,
+  commentsSortInput,
+  replyCommentsSortInput,
 };

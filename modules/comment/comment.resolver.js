@@ -23,7 +23,7 @@ const commentsQuery = {
   },
   getReplyCommentsByComment: async (
     parent,
-    { filter, pagination: { skip, limit } },
+    { filter, pagination: { skip, limit }, sort },
     { user }
   ) => {
     try {
@@ -31,7 +31,8 @@ const commentsQuery = {
         filter,
         skip,
         limit,
-        user
+        user,
+        sort
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

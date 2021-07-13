@@ -323,11 +323,15 @@ const updateReplyComment = async (id, updatedReplyComment, operations) => {
   });
   return res.data.updateReplyForComment;
 };
-const getAllComments = async (filter, pagination, operations) => {
+const getAllComments = async (filter, pagination, sort, operations) => {
   const res = await operations.query({
     query: gql`
-      query($filter: CommentFilterInput, $pagination: Pagination) {
-        getAllComments(filter: $filter, pagination: $pagination) {
+      query(
+        $filter: CommentFilterInput
+        $pagination: Pagination
+        $sort: CommentsSortInput
+      ) {
+        getAllComments(filter: $filter, pagination: $pagination, sort: $sort) {
           ... on PaginatedComments {
             count
             items {
@@ -341,6 +345,7 @@ const getAllComments = async (filter, pagination, operations) => {
     variables: {
       filter,
       pagination,
+      sort,
     },
   });
   return res.data.getAllComments;

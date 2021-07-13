@@ -17,6 +17,7 @@ const {
   updatedComment,
   paginationComment,
   newReplyComment,
+  sortComment,
 } = require('./comment.variables');
 const {
   deleteComment,
@@ -152,6 +153,7 @@ describe('Comment queries', () => {
     const receivedComments = await getAllComments(
       filterComment,
       paginationComment,
+      sortComment,
       operations
     );
     return new Promise(done => {
@@ -282,7 +284,7 @@ describe('Comment queries', () => {
     );
     replyId = receivedReplyComments.replyComments[0]._id;
     const receivedComments = await getReplyCommentsByProduct(
-      { commentId, filters: true },
+      { commentId, filters: true, search: '', createdAt: {} },
       paginationComment,
       operations
     );
