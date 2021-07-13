@@ -34,7 +34,6 @@ const {
 
 class BackService {
   async getAllBacks(limit, skip, filter) {
-    console.log(filter);
     const filterOptions = commonFiltersHandler(filter);
 
     if (filter?.material?.length) {
