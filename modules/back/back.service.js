@@ -96,9 +96,8 @@ class BackService {
       const imageResults = await uploadImage[0];
       back.images = imageResults.fileNames;
     }
-    if (back?.additionalPrice) {
-      back.additionalPrice = await calculatePrice(back.additionalPrice);
-    }
+
+    back.additionalPrice = await calculatePrice(back.additionalPrice);
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
@@ -162,9 +161,7 @@ class BackService {
       back.images = uploadImage.fileNames;
     }
 
-    if (back.additionalPrice) {
-      back.additionalPrice = await calculatePrice(back.additionalPrice);
-    }
+    back.additionalPrice = await calculatePrice(back.additionalPrice);
 
     const newBack = await new Back(back).save();
 
