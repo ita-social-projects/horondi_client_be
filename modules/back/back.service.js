@@ -36,11 +36,11 @@ class BackService {
   async getAllBacks(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
 
-    if (filter?.material.length) {
+    if (filter?.material?.length) {
       filterOptions['features.material'] = { $in: filter.material };
     }
 
-    if (filter?.color.length) {
+    if (filter?.color?.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
@@ -96,9 +96,8 @@ class BackService {
       const imageResults = await uploadImage[0];
       back.images = imageResults.fileNames;
     }
-    if (back?.additionalPrice) {
-      back.additionalPrice = await calculatePrice(back.additionalPrice);
-    }
+
+    back.additionalPrice = await calculatePrice(back.additionalPrice);
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
@@ -162,9 +161,7 @@ class BackService {
       back.images = uploadImage.fileNames;
     }
 
-    if (back.additionalPrice) {
-      back.additionalPrice = await calculatePrice(back.additionalPrice);
-    }
+    back.additionalPrice = await calculatePrice(back.additionalPrice);
 
     const newBack = await new Back(back).save();
 
