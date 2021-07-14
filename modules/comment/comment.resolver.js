@@ -13,7 +13,13 @@ const commentsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
+  getReplyCommentById: async (_, { id }) => {
+    try {
+      return await commentsService.getReplyCommentById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getRecentComments: async (_, { limit }) => {
     try {
       return await commentsService.getRecentComments(limit);

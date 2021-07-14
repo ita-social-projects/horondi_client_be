@@ -12,6 +12,7 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
   REPLY_COMMENTS_NOT_FOUND,
+  REPLY_COMMENT_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
 const { filterOptionComments } = require('../helper-functions');
 const {
@@ -46,6 +47,20 @@ class CommentsService {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
     return comment;
+  }
+
+  async getReplyCommentById(id) {
+    const replyComment = await Comment.findOne({
+      'replyComments._id': id,
+    }).exec();
+
+    if (!replyComment) {
+      throw new RuleError(REPLY_COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+    replyComment.replyComments = replyComment.replyComments.filter(
+      el => el._id.toString() === id
+    );
+    return replyComment;
   }
 
   async getRecentComments(limit) {
@@ -103,7 +118,7 @@ class CommentsService {
           filter.showReplyComment.includes(item.showReplyComment.toString())
         );
       }
-      if (filter?.search !== '') {
+      if (filter?.search && filter?.search !== '') {
         comment.replyComments = comment.replyComments.filter(
           item =>
             item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) >
@@ -111,6 +126,7 @@ class CommentsService {
         );
       }
       if (
+        filter?.createdAt &&
         Object.keys(filter?.createdAt).length > 0 &&
         filter?.createdAt?.dateFrom !== '' &&
         filter?.createdAt?.dateTo !== ''
@@ -141,10 +157,12 @@ class CommentsService {
         (a, b) => b.createdAt - a.createdAt
       );
     }
+    const countAll = comment.replyComments.length;
     comment.replyComments = comment.replyComments.slice(skip, skip + limit);
     return {
       items: [comment],
       count: comment.replyComments.length,
+      countAll,
     };
   }
 

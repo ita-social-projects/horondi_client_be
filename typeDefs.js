@@ -351,6 +351,7 @@ const typeDefs = gql`
   type PaginatedComments {
     items: [Comment]
     count: Int
+    countAll: Int
   }
   type SuccessfulResponse {
     isSuccess: Boolean
@@ -504,6 +505,7 @@ const typeDefs = gql`
       sort : CommentsSortInput
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
+    getReplyCommentById(id: ID!): CommentResult
     getCommentsByProduct(
       filter: ProductCommentFilterInput
       pagination: Pagination
