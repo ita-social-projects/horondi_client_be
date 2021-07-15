@@ -27,6 +27,7 @@ const productInputValidator = Joi.object({
   mainMaterial: constructorMaterialsValidator,
   innerMaterial: constructorMaterialsValidator,
   bottomMaterial: constructorMaterialsValidator,
+  backMaterial: constructorMaterialsValidator,
   strapLengthInCm: Joi.number()
     .integer()
     .min(0)
