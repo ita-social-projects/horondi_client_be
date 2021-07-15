@@ -181,6 +181,33 @@ const filterOptionComments = filter => {
   }
   return filterOptions;
 };
+const filteredReplyComments = (filter, arr) => {
+  let reply = arr;
+  if (filter?.showReplyComment?.length) {
+    reply = reply.filter(item =>
+      filter.showReplyComment.includes(item.showReplyComment.toString())
+    );
+  }
+  if (filter?.search && filter?.search !== '') {
+    reply = reply.filter(
+      item =>
+        item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) > -1
+    );
+  }
+  if (
+    filter?.createdAt &&
+    Object.keys(filter?.createdAt).length > 0 &&
+    filter?.createdAt?.dateFrom !== '' &&
+    filter?.createdAt?.dateTo !== ''
+  ) {
+    reply = reply.filter(
+      item =>
+        new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
+        new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
+    );
+  }
+  return reply;
+};
 
 module.exports = {
   reduceByDaysCount,
@@ -190,4 +217,5 @@ module.exports = {
   transliterate,
   isUserBoughtPoduct,
   filterOptionComments,
+  filteredReplyComments,
 };

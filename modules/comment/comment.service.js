@@ -14,11 +14,14 @@ const {
   REPLY_COMMENTS_NOT_FOUND,
   REPLY_COMMENT_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
-const { filterOptionComments } = require('../helper-functions');
 const {
   ORDER_STATUSES: { DELIVERED },
 } = require('../../consts/order-statuses');
-const { isUserBoughtPoduct } = require('../helper-functions');
+const {
+  isUserBoughtPoduct,
+  filteredReplyComments,
+  filterOptionComments,
+} = require('../helper-functions');
 
 class CommentsService {
   async getAllComments({ filter, pagination: { skip, limit }, sort }) {
@@ -119,30 +122,10 @@ class CommentsService {
       throw new RuleError(REPLY_COMMENTS_NOT_FOUND, NOT_FOUND);
     }
     if (filter.filters) {
-      if (filter?.showReplyComment?.length) {
-        comment.replyComments = comment.replyComments.filter(item =>
-          filter.showReplyComment.includes(item.showReplyComment.toString())
-        );
-      }
-      if (filter?.search && filter?.search !== '') {
-        comment.replyComments = comment.replyComments.filter(
-          item =>
-            item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) >
-            -1
-        );
-      }
-      if (
-        filter?.createdAt &&
-        Object.keys(filter?.createdAt).length > 0 &&
-        filter?.createdAt?.dateFrom !== '' &&
-        filter?.createdAt?.dateTo !== ''
-      ) {
-        comment.replyComments = comment.replyComments.filter(
-          item =>
-            new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
-            new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
-        );
-      }
+      comment.replyComments = filteredReplyComments(
+        filter,
+        comment.replyComments
+      );
     } else if (user) {
       comment.replyComments = comment.replyComments.filter(
         item =>
