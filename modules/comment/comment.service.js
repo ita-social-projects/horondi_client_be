@@ -74,7 +74,7 @@ class CommentsService {
     return comments;
   }
 
-  async getCommentsByProduct(filter, skip, limit, user) {
+  async getCommentsByProduct(filter, skip, limit, user, sort) {
     const product = await Product.findById(filter.productId).exec();
     if (!product) {
       throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
@@ -93,10 +93,16 @@ class CommentsService {
     } else {
       filterOptions = { show: { $in: [true] }, product: filter.productId };
     }
-
+    let sortLabel = sort;
+    if (sortLabel && Object.keys(sort).includes('replyComments')) {
+      sortLabel = { 'replyComments.createdAt': sort.replyComments };
+    }
+    if (sortLabel === undefined) {
+      sortLabel = { date: -1 };
+    }
     const count = Comment.find(filterOptions).countDocuments();
     const items = await Comment.find(filterOptions)
-      .sort({ date: -1 })
+      .sort(sortLabel)
       .limit(limit)
       .skip(skip)
       .exec();

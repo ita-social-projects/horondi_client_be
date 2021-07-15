@@ -372,6 +372,38 @@ const getRecentComments = async (limit, operations) => {
   });
   return res.data.getRecentComments;
 };
+const getReplyCommentById = async (id, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getReplyCommentById(id: $id) {
+          ... on Comment {
+            _id
+            replyComments {
+              _id
+              replyText
+              showReplyComment
+              createdAt
+              verifiedPurchase
+              refToReplyComment
+              answerer {
+                _id
+              }
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+  return res.data.getReplyCommentById;
+};
 module.exports = {
   addComment,
   deleteComment,
@@ -386,4 +418,5 @@ module.exports = {
   getAllComments,
   getRecentComments,
   getReplyCommentsByProduct,
+  getReplyCommentById,
 };

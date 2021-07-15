@@ -176,6 +176,9 @@ const filterOptionComments = filter => {
     const search = filter.search.trim();
     filterOptions.text = { $regex: `${search}`, $options: 'i' };
   }
+  if (filter?.productId) {
+    filterOptions.product = filter.productId;
+  }
   return filterOptions;
 };
 

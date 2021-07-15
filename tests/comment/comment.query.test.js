@@ -4,6 +4,7 @@ const {
   COMMENT_FOR_NOT_EXISTING_USER,
   COMMENTS_NOT_FOUND,
   REPLY_COMMENTS_NOT_FOUND,
+  REPLY_COMMENT_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
@@ -30,6 +31,7 @@ const {
   updateComment,
   getReplyCommentsByProduct,
   addReplyComment,
+  getReplyCommentById,
 } = require('./comment.helper');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
@@ -322,6 +324,41 @@ describe('Comment queries', () => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(REPLY_COMMENTS_NOT_FOUND);
+      done();
+    });
+  });
+  it('Should receive reply comment by id', async () => {
+    const receivedComments = await getReplyCommentById(replyId, operations);
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments.replyComments[0]).toHaveProperty('_id', replyId);
+      expect(receivedComments.replyComments[0]).toHaveProperty(
+        'replyText',
+        newReplyComment(adminId, commentId).replyText
+      );
+      expect(receivedComments.replyComments[0]).toHaveProperty('answerer', {
+        _id: adminId,
+      });
+      expect(receivedComments).toHaveProperty(
+        'showReplyComment',
+        newReplyComment(adminId, commentId).showReplyComment
+      );
+      done();
+    });
+  });
+  it('Should receive reply comment with error', async () => {
+    const receivedComments = await getReplyCommentById(
+      commentWrongId,
+      operations
+    );
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments).toHaveProperty('statusCode', 404);
+      expect(receivedComments).toHaveProperty(
+        'message',
+        REPLY_COMMENT_NOT_FOUND
+      );
       done();
     });
   });

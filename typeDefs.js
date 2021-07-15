@@ -509,6 +509,7 @@ const typeDefs = gql`
     getCommentsByProduct(
       filter: ProductCommentFilterInput
       pagination: Pagination
+      sort : CommentsSortInput
     ): PaginatedCommentsResult
     getReplyCommentsByComment(
       filter: ReplyCommentFilterInput,
