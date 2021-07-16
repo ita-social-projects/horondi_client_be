@@ -323,11 +323,15 @@ const updateReplyComment = async (id, updatedReplyComment, operations) => {
   });
   return res.data.updateReplyForComment;
 };
-const getAllComments = async (filter, pagination, operations) => {
+const getAllComments = async (filter, pagination, sort, operations) => {
   const res = await operations.query({
     query: gql`
-      query($filter: CommentFilterInput, $pagination: Pagination) {
-        getAllComments(filter: $filter, pagination: $pagination) {
+      query(
+        $filter: CommentFilterInput
+        $pagination: Pagination
+        $sort: CommentsSortInput
+      ) {
+        getAllComments(filter: $filter, pagination: $pagination, sort: $sort) {
           ... on PaginatedComments {
             count
             items {
@@ -341,6 +345,7 @@ const getAllComments = async (filter, pagination, operations) => {
     variables: {
       filter,
       pagination,
+      sort,
     },
   });
   return res.data.getAllComments;
@@ -367,6 +372,38 @@ const getRecentComments = async (limit, operations) => {
   });
   return res.data.getRecentComments;
 };
+const getReplyCommentById = async (id, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getReplyCommentById(id: $id) {
+          ... on Comment {
+            _id
+            replyComments {
+              _id
+              replyText
+              showReplyComment
+              createdAt
+              verifiedPurchase
+              refToReplyComment
+              answerer {
+                _id
+              }
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+  return res.data.getReplyCommentById;
+};
 module.exports = {
   addComment,
   deleteComment,
@@ -381,4 +418,5 @@ module.exports = {
   getAllComments,
   getRecentComments,
   getReplyCommentsByProduct,
+  getReplyCommentById,
 };

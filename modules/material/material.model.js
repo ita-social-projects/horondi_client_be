@@ -5,7 +5,7 @@ const {
   DB_COLLECTIONS_NAMES: { MATERIAL, COLOR },
 } = require('../../consts/db-collections-names');
 const {
-  materialPurposes: { MAIN, INNER, BOTTOM, PATTERN, CLOSURE },
+  materialPurposes: { MAIN, INNER, BOTTOM, PATTERN, CLOSURE, BACK },
 } = require('../../consts/material-purposes');
 
 const materialSchema = new mongoose.Schema({
@@ -13,7 +13,7 @@ const materialSchema = new mongoose.Schema({
   description: [Language],
   purpose: {
     type: String,
-    enum: [MAIN, INNER, BOTTOM, PATTERN, CLOSURE],
+    enum: [MAIN, INNER, BOTTOM, PATTERN, CLOSURE, BACK],
     required: true,
   },
   colors: [

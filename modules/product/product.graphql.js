@@ -8,6 +8,7 @@ const productType = `
     mainMaterial: ProductMaterialType!
     innerMaterial: ProductMaterialType!
     bottomMaterial: ProductMaterialType
+    backMaterial: ProductMaterialType
     strapLengthInCm: Int!
     images: ProductImages
     closure: Closure
@@ -38,6 +39,8 @@ const productType = `
     innerMaterialColor: [Color]
     bottomMaterial: [Material]
     bottomMaterialColor: [Color]
+    backMaterial: [Material]
+    backMaterialColor: [Color]
     maxPrice: [CurrencySet]
     minPrice: [CurrencySet]
    }
@@ -56,6 +59,7 @@ const productInput = `
     mainMaterial: ProductMaterialsInput!
     innerMaterial: ProductMaterialsInput!
     bottomMaterial: ProductMaterialsInput
+    backMaterial: ProductMaterialsInput
     strapLengthInCm: Int!
     pattern: ID!
     closure: ID!
