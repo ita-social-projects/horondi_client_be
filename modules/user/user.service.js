@@ -686,7 +686,9 @@ class UserService extends FilterHelper {
       secret: SECRET,
     });
     user.recoveryToken = accessToken;
-    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { accessToken });
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+      token: accessToken,
+    });
     await user.save();
     return true;
   }
@@ -703,7 +705,7 @@ class UserService extends FilterHelper {
 
   async resetPassword(password, token) {
     const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
+    const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
@@ -724,10 +726,17 @@ class UserService extends FilterHelper {
         statusCode: FORBIDDEN,
       });
     }
+    const encryptedPassword = await bcrypt.hash(password, 12);
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
         recoveryAttempts: !user.recoveryAttempts ? 1 : ++user.recoveryAttempts,
+        credentials: [
+          {
+            source: HORONDI,
+            tokenPass: encryptedPassword,
+          },
+        ],
       },
       $unset: {
         recoveryToken: '',
