@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   BACK_NOT_FOUND,
@@ -10,12 +11,13 @@ const {
   newBackInputDataUpdate,
 } = require('./back.variables');
 const { getMaterial } = require('../materials/material.variables');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createMaterial } = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
+const { createModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const { createCategory } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -25,84 +27,44 @@ let operations;
 let backId;
 let materialId;
 let colorId;
+let categoryId;
+let modelId;
+let backInput;
 
 describe('Closure queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    const colorData = await createColor(color, operations);
+    colorId = colorData._id;
+
+    const materialData = await createMaterial(getMaterial(colorId), operations);
+    materialId = materialData._id;
+
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+
+    const modelData = await createModel(newModel(categoryId), operations);
+    modelId = modelData._id;
+
+    backInput = newBackInputData(materialId, colorId, modelId);
   });
 
   test('should create back', async () => {
-    const colorData = await createColor(color, operations);
-    colorId = colorData._id;
-    const materialData = await createMaterial(getMaterial(colorId), operations);
-    materialId = materialData._id;
-    const result = await createBack(
-      newBackInputData(materialId, colorId),
-      operations
-    );
+    const result = await createBack(backInput, operations);
     backId = result._id;
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty(
-      'available',
-      newBackInputData(materialId, colorId).available
-    );
-    expect(result).toHaveProperty(
-      'name',
-      newBackInputData(materialId, colorId).name
-    );
+    expect(result).toHaveProperty('available', backInput.available);
+    expect(result).toHaveProperty('name', backInput.name);
   });
   test('should get BACK_ALREADY_EXIST err msg for create', async () => {
-    const result = await createBack(
-      newBackInputData(materialId, colorId),
-      operations
-    );
+    const result = await createBack(backInput, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', BACK_ALREADY_EXIST);
     expect(result).toHaveProperty('statusCode', 400);
   });
-  test('should update back', async () => {
-    const result = await updateBack(
-      backId,
-      newBackInputDataUpdate(materialId, colorId),
-      operations
-    );
-
-    expect(result).toBeDefined();
-    expect(result).toHaveProperty(
-      'available',
-      newBackInputDataUpdate(materialId, colorId).available
-    );
-    expect(result).toHaveProperty(
-      'name',
-      newBackInputDataUpdate(materialId, colorId).name
-    );
-  });
-  test('should get BACK_NOT_FOUND err msg for create', async () => {
-    const result = await updateBack(
-      wrongId,
-      newBackInputDataUpdate(materialId, colorId),
-      operations
-    );
-
-    expect(result).toBeDefined();
-    expect(result).toHaveProperty('message', BACK_NOT_FOUND);
-    expect(result).toHaveProperty('statusCode', 404);
-  });
-  test('should get BACK_NOT_FOUND err msg for delete', async () => {
-    const result = await deleteBack(wrongId, operations);
-
-    expect(result).toBeDefined();
-    expect(result).toHaveProperty('statusCode', 404);
-  });
-  test('should delete back', async () => {
-    const result = await deleteBack(backId, operations);
-
-    expect(result).toBeDefined();
-  });
   afterAll(async () => {
-    await deleteColor(colorId, operations);
-    await deleteMaterial(materialId, operations);
+    mongoose.connection.db.dropDatabase();
   });
 });

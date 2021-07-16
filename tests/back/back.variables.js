@@ -1,4 +1,4 @@
-const newBackInputData = (materialId, colorId) => ({
+const newBackInputData = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Бек тест' },
     { lang: 'en', value: 'Back test' },
@@ -7,16 +7,19 @@ const newBackInputData = (materialId, colorId) => ({
     material: materialId,
     color: colorId,
   },
+  model: modelId,
   images: {
-    large: 'large_4051mu10kqv2xdlz_91.png',
-    medium: 'medium_4051mu10kqv2xdlz_91.png',
-    small: 'small_4051mu10kqv2xdlz_91.png',
-    thumbnail: 'thumbnail_4051mu10kqv2xdlz_91.png',
+    small: 'small_new',
+    thumbnail: 'thumbnail_new',
+    large: 'large_new',
+    medium: 'medium_new',
   },
   available: true,
+  customizable: true,
   additionalPrice: 1,
+  optionType: 'BACK',
 });
-const newBackInputDataUpdate = (materialId, colorId) => ({
+const newBackInputDataUpdate = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Бек змінено' },
     { lang: 'en', value: 'Back changed' },
@@ -25,12 +28,8 @@ const newBackInputDataUpdate = (materialId, colorId) => ({
     material: materialId,
     color: colorId,
   },
-  images: {
-    large: 'large_4051mu10kqv2xdlz_91.png',
-    medium: 'medium_4051mu10kqv2xdlz_91.png',
-    small: 'small_4051mu10kqv2xdlz_91.png',
-    thumbnail: 'thumbnail_4051mu10kqv2xdlz_91.png',
-  },
+  model: modelId,
+  image: '/imageURL',
   available: true,
   additionalPrice: 1,
 });

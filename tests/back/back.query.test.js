@@ -14,6 +14,8 @@ const {
   getBackById,
 } = require('./back.helper');
 const { wrongId, newBackInputData } = require('./back.variables');
+const { createModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');

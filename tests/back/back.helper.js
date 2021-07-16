@@ -1,10 +1,10 @@
 const { gql } = require('@apollo/client');
 
 const createBack = async (back, operations) => {
-  const createdBack = await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
-      mutation($back: BackInput!, $upload: Upload) {
-        addBack(back: $back, upload: $upload) {
+      mutation($back: BackInput!) {
+        addBack(back: $back) {
           ... on Back {
             _id
             name {
@@ -20,8 +20,16 @@ const createBack = async (back, operations) => {
                 }
               }
             }
+            images {
+              large
+              medium
+              small
+              thumbnail
+            }
             available
+            customizable
             additionalPrice
+            optionType
           }
           ... on Error {
             message
@@ -30,16 +38,12 @@ const createBack = async (back, operations) => {
         }
       }
     `,
-    variables: {
-      back,
-      upload: '../___test__/model/dog.img',
-    },
+    variables: { back },
   });
-
-  return createdBack.data.addBack;
+  return result.data.addBack;
 };
 const updateBack = async (id, back, operations) => {
-  const updatedBack = await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $back: BackInput!, $upload: Upload) {
         updateBack(id: $id, back: $back, upload: $upload) {
@@ -58,6 +62,7 @@ const updateBack = async (id, back, operations) => {
                     }
                   }
                 }
+                image
                 available
                 additionalPrice
               }
@@ -71,14 +76,13 @@ const updateBack = async (id, back, operations) => {
     variables: {
       id,
       back,
-      upload: '../___test__/model/dog.img',
     },
   });
 
-  return updatedBack.data.updateBack;
+  return result.data.updateBack;
 };
 const getAllBacks = async operations => {
-  const allBacks = await operations.query({
+  const result = await operations.query({
     query: gql`
       query {
         getAllBacks {
@@ -86,6 +90,9 @@ const getAllBacks = async operations => {
             name {
               lang
               value
+            }
+            model {
+              _id
             }
             features {
                 material {
@@ -96,9 +103,7 @@ const getAllBacks = async operations => {
                 }
               }
             }
-            images{
-              large
-            }
+            image
             available
             additionalPrice
           }
@@ -108,10 +113,10 @@ const getAllBacks = async operations => {
     `,
   });
 
-  return allBacks.data.getAllBacks.items;
+  return result.data.getAllBacks.items;
 };
 const getBackById = async (id, operations) => {
-  const backById = await operations.query({
+  const result = await operations.query({
     query: gql`
       query($id: ID!) {
         getBackById(id: $id) {
@@ -143,10 +148,10 @@ const getBackById = async (id, operations) => {
     variables: { id },
   });
 
-  return backById.data.getBackById;
+  return result.data.getBackById;
 };
 const deleteBack = async (id, operations) => {
-  const res = await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteBack(deleteId: $id, switchId: $id) {
@@ -164,7 +169,7 @@ const deleteBack = async (id, operations) => {
       id,
     },
   });
-  return res.data.deleteBack;
+  return result.data.deleteBack;
 };
 
 module.exports = {
