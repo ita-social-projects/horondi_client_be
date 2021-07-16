@@ -110,7 +110,7 @@ describe('Pattern queries', () => {
     expect(paginatedPatterns.items).toHaveLength(1);
     expect(paginatedPatterns.count).toEqual(1);
   });
-  test('Expect negative values', async () => {
+  test.skip('Expect negative values', async () => {
     const paginatedPatterns = await getAllPatternsPaginated(
       pagination.limit,
       wrongPagination.skip,
