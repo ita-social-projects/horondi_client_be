@@ -108,9 +108,7 @@ class PocketService {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
-    if (pocket.additionalPrice) {
-      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
-    }
+    pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
 
     if (image) {
       if (pocketToUpdate.images) {
@@ -149,9 +147,7 @@ class PocketService {
       pocket.images = uploadImage.fileNames;
     }
 
-    if (pocket.additionalPrice) {
-      pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
-    }
+    pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
 
     const newPocket = await new Pocket(pocket).save();
 
