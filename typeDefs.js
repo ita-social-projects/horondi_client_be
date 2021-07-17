@@ -64,6 +64,8 @@ const {
 const {
   commentType,
   commentInput,
+  commentsSortInput,
+  replyCommentsSortInput,
 } = require('./modules/comment/comment.graphql');
 const {
   businessTextType,
@@ -349,6 +351,7 @@ const typeDefs = gql`
   type PaginatedComments {
     items: [Comment]
     count: Int
+    countAll: Int
   }
   type SuccessfulResponse {
     isSuccess: Boolean
@@ -497,17 +500,21 @@ const typeDefs = gql`
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
     getAllComments(
-      filter: CommentFilterInput
-      pagination: Pagination
+      filter: CommentFilterInput,
+      pagination: Pagination,
+      sort : CommentsSortInput
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
+    getReplyCommentById(id: ID!): CommentResult
     getCommentsByProduct(
       filter: ProductCommentFilterInput
       pagination: Pagination
+      sort : CommentsSortInput
     ): PaginatedCommentsResult
     getReplyCommentsByComment(
-      filter: ReplyCommentFilterInput
-      pagination: Pagination
+      filter: ReplyCommentFilterInput,
+      pagination: Pagination,
+      sort : ReplyCommentsSortInput
     ): PaginatedCommentsResult
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
@@ -616,6 +623,8 @@ const typeDefs = gql`
   ${productInput}
   ${cartInput}
   ${commentInput}
+  ${commentsSortInput}
+  ${replyCommentsSortInput}
   ${LoginInput}
   ${userRegisterInput}
   ${businessTextInput}
