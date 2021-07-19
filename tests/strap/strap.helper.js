@@ -223,6 +223,7 @@ const getAllStraps = async (limit, skip, filter, operations) => {
               value
             }
           }
+          count
         }
       }
     `,
