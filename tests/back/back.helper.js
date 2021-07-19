@@ -1,7 +1,7 @@
 const { gql } = require('@apollo/client');
 
 const createBack = async (back, operations) => {
-  const result = await operations.mutate({
+  const backInfo = await operations.mutate({
     mutation: gql`
       mutation($back: BackInput!) {
         addBack(back: $back) {
@@ -12,24 +12,29 @@ const createBack = async (back, operations) => {
               value
             }
             features {
-                material {
-                  _id
-                }
-                color {
-                  _id
-                }
+              material {
+                _id
+              }
+              color {
+                _id
               }
             }
             images {
-              large
-              medium
               small
+              medium
+              large
               thumbnail
+            }
+            model {
+              _id
             }
             available
             customizable
-            additionalPrice
             optionType
+            additionalPrice {
+              value
+              currency
+            }
           }
           ... on Error {
             message
@@ -40,36 +45,44 @@ const createBack = async (back, operations) => {
     `,
     variables: { back },
   });
-  return result.data.addBack;
+  return backInfo.data.addBack;
 };
 const updateBack = async (id, back, operations) => {
-  const result = await operations.mutate({
+  const backInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $back: BackInput!, $upload: Upload) {
-        updateBack(id: $id, back: $back, upload: $upload) {
-            ... on Back {
+      mutation($id: ID!, $back: BackInput!) {
+        updateBack(id: $id, back: $back) {
+          ... on Back {
+            _id
+            name {
+              lang
+              value
+            }
+            features {
+              material {
                 _id
-                name {
-                  lang
-                  value
-                }
-                features {
-                    material {
-                      _id
-                    }
-                    color {
-                      _id
-                    }
-                  }
-                }
-                image
-                available
-                additionalPrice
               }
-              ... on Error {
-                message
-                statusCode
+              color {
+                _id
               }
+            }
+            images {
+              small
+              medium
+              large
+              thumbnail
+            }
+            model {
+              _id
+            }
+            available
+            customizable
+            optionType
+          }
+          ... on Error {
+            message
+            statusCode
+          }
         }
       }
     `,
@@ -79,44 +92,43 @@ const updateBack = async (id, back, operations) => {
     },
   });
 
-  return result.data.updateBack;
+  return backInfo.data.updateBack;
 };
-const getAllBacks = async operations => {
-  const result = await operations.query({
+const getAllBacks = async ({ limit, skip, filter }, operations) => {
+  const backInfo = await operations.query({
     query: gql`
-      query {
-        getAllBacks {
+      query($limit: Int!, $skip: Int!, $filter: BackFilterInput) {
+        getAllBacks(limit: $limit, skip: $skip, filter: $filter) {
+          items {
             _id
             name {
               lang
               value
             }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
             model {
               _id
             }
-            features {
-                material {
-                  _id
-                }
-                color {
-                  _id
-                }
-              }
-            }
-            image
             available
-            additionalPrice
+            customizable
+            optionType
           }
-          count
         }
       }
     `,
+    variables: { limit, skip, filter },
   });
-
-  return result.data.getAllBacks.items;
+  return backInfo.data.getAllBacks.items;
 };
 const getBackById = async (id, operations) => {
-  const result = await operations.query({
+  const backInfo = await operations.query({
     query: gql`
       query($id: ID!) {
         getBackById(id: $id) {
@@ -127,16 +139,19 @@ const getBackById = async (id, operations) => {
               value
             }
             features {
-                material {
-                  _id
-                }
-                color {
-                  _id
-                }
+              material {
+                _id
+              }
+              color {
+                _id
               }
             }
+            model {
+              _id
+            }
             available
-            additionalPrice
+            customizable
+            optionType
           }
           ... on Error {
             message
@@ -147,14 +162,50 @@ const getBackById = async (id, operations) => {
     `,
     variables: { id },
   });
-
-  return result.data.getBackById;
+  return backInfo.data.getBackById;
+};
+const getBacksByModel = async (id, operations) => {
+  const backInfo = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getBacksByModel(id: $id) {
+          ... on Back {
+            _id
+            name {
+              lang
+              value
+            }
+            features {
+              material {
+                _id
+              }
+              color {
+                _id
+              }
+            }
+            model {
+              _id
+            }
+            available
+            customizable
+            optionType
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { id },
+  });
+  return backInfo.data.getBacksByModel;
 };
 const deleteBack = async (id, operations) => {
-  const result = await operations.mutate({
+  const backInfo = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
-        deleteBack(deleteId: $id, switchId: $id) {
+        deleteBack(id: $id) {
           ... on Back {
             _id
           }
@@ -169,7 +220,7 @@ const deleteBack = async (id, operations) => {
       id,
     },
   });
-  return result.data.deleteBack;
+  return backInfo.data.deleteBack;
 };
 
 module.exports = {
@@ -178,4 +229,5 @@ module.exports = {
   getAllBacks,
   getBackById,
   updateBack,
+  getBacksByModel,
 };

@@ -8,20 +8,14 @@ const newBackInputData = (materialId, colorId, modelId) => ({
     color: colorId,
   },
   model: modelId,
-  images: {
-    small: 'small_new',
-    thumbnail: 'thumbnail_new',
-    large: 'large_new',
-    medium: 'medium_new',
-  },
   available: true,
-  customizable: true,
-  additionalPrice: 1,
+  customizable: false,
   optionType: 'BACK',
 });
+
 const newBackInputDataUpdate = (materialId, colorId, modelId) => ({
   name: [
-    { lang: 'ua', value: 'Бек змінено' },
+    { lang: 'ua', value: 'Спинка змінено' },
     { lang: 'en', value: 'Back changed' },
   ],
   features: {
@@ -29,13 +23,29 @@ const newBackInputDataUpdate = (materialId, colorId, modelId) => ({
     color: colorId,
   },
   model: modelId,
-  image: '/imageURL',
   available: true,
-  additionalPrice: 1,
+  customizable: true,
+  additionalPrice: 3,
+  optionType: 'BACK',
 });
+
 const wrongId = '5fb412d8663cf10bec9faa1a';
 
+const filter = {
+  name: '',
+  model: [],
+  available: [],
+  material: [],
+  color: [],
+};
+
+const skip = 0;
+const limit = 5;
+
 module.exports = {
+  skip,
+  limit,
+  filter,
   newBackInputData,
   newBackInputDataUpdate,
   wrongId,

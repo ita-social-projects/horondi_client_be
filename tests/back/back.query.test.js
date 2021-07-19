@@ -1,82 +1,104 @@
+const mongoose = require('mongoose');
+
 const { setupApp } = require('../helper-functions');
 const { BACK_NOT_FOUND } = require('../../consts/back-messages');
 const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
-const { getMaterial } = require('../materials/material.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
-const { color } = require('../color/color.variables');
-const {
-  deleteBack,
   createBack,
   getAllBacks,
   getBackById,
+  getBacksByModel,
 } = require('./back.helper');
-const { wrongId, newBackInputData } = require('./back.variables');
+const {
+  wrongId,
+  filter,
+  newBackInputData,
+  limit,
+  skip,
+} = require('./back.variables');
+const { createColor } = require('../color/color.helper');
+const { color } = require('../color/color.variables');
+const { createMaterial } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
 const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-
-jest.mock('../../modules/upload/upload.service');
-jest.mock('../../modules/currency/currency.model.js');
-jest.mock('../../modules/currency/currency.utils.js');
+const { createCategory } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize } = require('../size/size.helper');
+const { createPlainSize } = require('../size/size.variables');
 
 let operations;
-let backId;
-let materialId;
 let colorId;
+let sizeId;
+let modelId;
+let categoryId;
+let materialInput;
+let materialId;
+let backInput;
+let createdModel;
+let backDataForQuery;
 
-describe('Closure queries', () => {
+jest.mock('../../modules/upload/upload.service');
+jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
+
+describe('Back query test', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
-    const materialData = await createMaterial(getMaterial(colorId), operations);
+    materialInput = getMaterial(colorId);
+    const materialData = await createMaterial(materialInput, operations);
     materialId = materialData._id;
-    const backData = await createBack(
-      newBackInputData(materialId, colorId),
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+
+    createdModel = newModel(categoryId, sizeId);
+
+    const modelData = await createModel(createdModel, operations);
+    modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
       operations
     );
-    backId = backData._id;
-  });
+    sizeId = sizeData._id;
 
+    backInput = newBackInputData(materialId, colorId, modelId);
+
+    backDataForQuery = await createBack(backInput, operations);
+  });
   test('should get all backs', async () => {
-    const result = await getAllBacks(operations);
+    const result = await getAllBacks({ limit, skip, filter }, operations);
 
     expect(result).toBeDefined();
-    expect(result[0]).toHaveProperty(
-      'available',
-      newBackInputData(materialId, colorId).available
-    );
-    expect(result[0]).toHaveProperty(
-      'name',
-      newBackInputData(materialId, colorId).name
-    );
+    expect(result.length).toBeGreaterThan(0);
   });
   test('should get back by id', async () => {
-    const result = await getBackById(backId, operations);
+    const result = await getBackById(backDataForQuery._id, operations);
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty(
-      'available',
-      newBackInputData(materialId, colorId).available
-    );
-    expect(result).toHaveProperty(
-      'name',
-      newBackInputData(materialId, colorId).name
-    );
+    expect(result).toHaveProperty('available', backInput.available);
+    expect(result).toHaveProperty('name', backInput.name);
   });
-  test('should get BACK_NOT_FOUND error msg', async () => {
+  test('should get backs by model', async () => {
+    const result = await getBacksByModel(modelId, operations);
+
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+  });
+  test('getBackById should get BACK_NOT_FOUND error msg', async () => {
     const result = await getBackById(wrongId, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', BACK_NOT_FOUND);
     expect(result).toHaveProperty('statusCode', 404);
   });
+  test('getBacksByModel should return empty array', async () => {
+    const result = await getBacksByModel(wrongId, operations);
 
+    expect(result).toBeDefined();
+    expect(result.length).toBe(0);
+  });
   afterAll(async () => {
-    await deleteBack(backId, operations);
-    await deleteColor(colorId, operations);
-    await deleteMaterial(materialId, operations);
+    mongoose.connection.db.dropDatabase();
   });
 });
