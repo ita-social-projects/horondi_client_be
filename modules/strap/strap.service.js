@@ -123,7 +123,7 @@ class StrapService {
 
     await uploadService.deleteFiles(image);
 
-    const uploadImage = await uploadService.uploadSmallImage(image);
+    const uploadImage = await uploadService.uploadFile(image);
     strap.image = uploadImage.fileNames.small;
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
@@ -145,7 +145,7 @@ class StrapService {
 
   async addStrap(strap, image, { _id: adminId }) {
     if (image) {
-      const uploadImage = await uploadService.uploadSmallImage(image);
+      const uploadImage = await uploadService.uploadFile(image);
       strap.image = uploadImage.fileNames.small;
     }
 
