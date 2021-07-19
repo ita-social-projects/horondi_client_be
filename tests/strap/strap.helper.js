@@ -43,11 +43,11 @@ const createStrap = async (strap, operations) => {
   return createdStrap.data.addStrap;
 };
 
-const updateStrap = async (id, strap, operations) => {
+const updateStrap = async (id, strap, image, operations) => {
   const updatedStrap = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $strap: StrapInput!) {
-        updateStrap(id: $id, strap: $strap) {
+      mutation($id: ID!, $strap: StrapInput!, $image: Upload) {
+        updateStrap(id: $id, strap: $strap, image: $image) {
           ... on Strap {
             _id
             name {
@@ -81,6 +81,7 @@ const updateStrap = async (id, strap, operations) => {
     variables: {
       strap,
       id,
+      image,
     },
   });
 
