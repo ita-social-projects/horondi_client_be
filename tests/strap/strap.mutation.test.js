@@ -5,9 +5,11 @@ const { STRAP_NOT_FOUND } = require('../../error-messages/strap.messages');
 const { deleteStrap, createStrap, updateStrap } = require('./strap.helper');
 const {
   wrongId,
+  newImgString,
   newStrap,
   strapWithConvertedPrice,
   newStrapUpdated,
+  newStrapUpdatedWithImage,
   strapToUpdate,
 } = require('./strap.variables');
 const { color } = require('../color/color.variables');
@@ -83,6 +85,7 @@ describe('Strap mutations', () => {
     strapData = await updateStrap(
       wrongId,
       strapToUpdate(colorId, modelId),
+      null,
       operations
     );
 
@@ -95,10 +98,29 @@ describe('Strap mutations', () => {
     const updatedStrap = await updateStrap(
       strapId,
       strapToUpdate(colorId, modelId),
+      null,
       operations
     );
 
     const finalStrap = newStrapUpdated(colorId, modelId);
+
+    expect(updatedStrap).toBeDefined();
+    expect(updatedStrap).toEqual({
+      _id: strapId,
+      additionalPrice: finalStrap.additionalPrice,
+      ...finalStrap,
+    });
+  });
+
+  test('should update strap with IMAGE', async () => {
+    const updatedStrap = await updateStrap(
+      strapId,
+      strapToUpdate(colorId, modelId),
+      'newImgString',
+      operations
+    );
+
+    const finalStrap = newStrapUpdatedWithImage(colorId, modelId);
 
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({

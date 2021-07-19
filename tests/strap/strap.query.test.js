@@ -96,7 +96,7 @@ describe('Strap queries', () => {
   });
 
   test('should throw error strap by Model STRAP_NOT_FOUND', async () => {
-    const result = await getStrapsByModel(wrongId, operations);
+    const result = await getStrapsByModel(wrongModelId, operations);
 
     expect(result).toBeDefined();
   });
