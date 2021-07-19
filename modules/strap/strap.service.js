@@ -62,7 +62,7 @@ class StrapService {
   }
 
   async getStrapsByModel(id) {
-    const strap = Strap.find({ model: id }).exec();
+    const strap = await Strap.find({ model: id }).exec();
 
     if (!strap) {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
