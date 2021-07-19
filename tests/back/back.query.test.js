@@ -46,9 +46,11 @@ describe('Back query test', () => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
+    filter.color.push(colorId);
     materialInput = getMaterial(colorId);
     const materialData = await createMaterial(materialInput, operations);
     materialId = materialData._id;
+    filter.material.push(materialId);
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
 
@@ -71,6 +73,13 @@ describe('Back query test', () => {
 
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
+  });
+  test('getAllBacks should return empty array', async () => {
+    filter.material = [wrongId];
+    const result = await getAllBacks({ limit, skip, filter }, operations);
+
+    expect(result).toBeDefined();
+    expect(result.length).toBe(0);
   });
   test('should get back by id', async () => {
     const result = await getBackById(backDataForQuery._id, operations);

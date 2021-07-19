@@ -75,7 +75,6 @@ describe('Back mutation tests', () => {
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', ITEM_ALREADY_EXISTS);
-    expect(result).toHaveProperty('statusCode', 400);
   });
   test('should update back', async () => {
     const updateBackTest = await updateBack(

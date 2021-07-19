@@ -3,8 +3,8 @@ const { gql } = require('@apollo/client');
 const createBack = async (back, operations) => {
   const backInfo = await operations.mutate({
     mutation: gql`
-      mutation($back: BackInput!) {
-        addBack(back: $back) {
+      mutation($back: BackInput!, $image: Upload) {
+        addBack(back: $back, image: $image) {
           ... on Back {
             _id
             name {
@@ -43,15 +43,15 @@ const createBack = async (back, operations) => {
         }
       }
     `,
-    variables: { back },
+    variables: { back, image: 'img.png' },
   });
   return backInfo.data.addBack;
 };
 const updateBack = async (id, back, operations) => {
   const backInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $back: BackInput!) {
-        updateBack(id: $id, back: $back) {
+      mutation($id: ID!, $back: BackInput!, $image: Upload) {
+        updateBack(id: $id, back: $back, image: $image) {
           ... on Back {
             _id
             name {
@@ -89,6 +89,7 @@ const updateBack = async (id, back, operations) => {
     variables: {
       id,
       back,
+      image: 'img-upd.png',
     },
   });
 
@@ -148,6 +149,12 @@ const getBackById = async (id, operations) => {
             }
             model {
               _id
+            }
+            images {
+              small
+              medium
+              large
+              thumbnail
             }
             available
             customizable
