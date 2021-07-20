@@ -70,10 +70,6 @@ class BackService {
   async getBacksByModel(id) {
     const back = await Back.find({ model: id }).exec();
 
-    if (!back) {
-      throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
-    }
-
     return back;
   }
 
@@ -129,8 +125,8 @@ class BackService {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
-    if (foundBack.image) {
-      return uploadService.deleteFiles(Object.values(foundBack.image));
+    if (foundBack.images) {
+      await uploadService.deleteFiles(foundBack.images);
     }
 
     const historyRecord = generateHistoryObject(

@@ -7,6 +7,7 @@ const {
   getAllBacks,
   getBackById,
   getBacksByModel,
+  deleteBack,
 } = require('./back.helper');
 const {
   wrongId,
@@ -100,12 +101,6 @@ describe('Back query test', () => {
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', BACK_NOT_FOUND);
     expect(result).toHaveProperty('statusCode', 404);
-  });
-  test('getBacksByModel should return empty array', async () => {
-    const result = await getBacksByModel(wrongId, operations);
-
-    expect(result).toBeDefined();
-    expect(result.length).toBe(0);
   });
   afterAll(async () => {
     mongoose.connection.db.dropDatabase();
