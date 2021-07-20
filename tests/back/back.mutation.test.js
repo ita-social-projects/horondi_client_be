@@ -63,7 +63,7 @@ describe('Back mutation tests', () => {
   });
 
   test('should create back', async () => {
-    const createBackTest = await createBack(backInput, operations);
+    const createBackTest = await createBack(backInput, 'image.jpg', operations);
     backId = createBackTest._id;
 
     expect(createBackTest).toBeDefined();
@@ -71,7 +71,7 @@ describe('Back mutation tests', () => {
     expect(createBackTest).toHaveProperty('name', backInput.name);
   });
   test('should get ITEM_ALREADY_EXISTS err msg for create', async () => {
-    const result = await createBack(backInput, operations);
+    const result = await createBack(backInput, 'image.jpg', operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', ITEM_ALREADY_EXISTS);
@@ -80,6 +80,18 @@ describe('Back mutation tests', () => {
     const updateBackTest = await updateBack(
       backId,
       backUpdateInput,
+      'img-new.jpg',
+      operations
+    );
+
+    expect(updateBackTest).toBeDefined();
+    expect(updateBackTest).toHaveProperty('name', backUpdateInput.name);
+  });
+  test('should update back without image', async () => {
+    const updateBackTest = await updateBack(
+      backId,
+      backUpdateInput,
+      '',
       operations
     );
 
@@ -94,7 +106,12 @@ describe('Back mutation tests', () => {
     expect(result).toHaveProperty('statusCode', 404);
   });
   test('update back should return error BACK_NOT_FOUND', async () => {
-    const result = await updateBack(wrongId, backUpdateInput, operations);
+    const result = await updateBack(
+      wrongId,
+      backUpdateInput,
+      'img-new.jpg',
+      operations
+    );
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', BACK_NOT_FOUND);

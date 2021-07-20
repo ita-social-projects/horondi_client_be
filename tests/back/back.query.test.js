@@ -7,7 +7,6 @@ const {
   getAllBacks,
   getBackById,
   getBacksByModel,
-  deleteBack,
 } = require('./back.helper');
 const {
   wrongId,
@@ -67,9 +66,17 @@ describe('Back query test', () => {
 
     backInput = newBackInputData(materialId, colorId, modelId);
 
-    backDataForQuery = await createBack(backInput, operations);
+    backDataForQuery = await createBack(backInput, 'img.jpg', operations);
   });
   test('should get all backs', async () => {
+    const result = await getAllBacks({ limit, skip, filter }, operations);
+
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+  });
+  test('GetAllBacks with empty filter', async () => {
+    filter.material = [];
+    filter.color = [];
     const result = await getAllBacks({ limit, skip, filter }, operations);
 
     expect(result).toBeDefined();

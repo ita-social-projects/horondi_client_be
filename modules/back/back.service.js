@@ -125,8 +125,8 @@ class BackService {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
     }
 
-    if (foundBack.images) {
-      await uploadService.deleteFiles(foundBack.images);
+    if (foundBack.image) {
+      return await uploadService.deleteFiles(foundBack.image);
     }
 
     const historyRecord = generateHistoryObject(
