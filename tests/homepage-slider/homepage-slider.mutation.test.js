@@ -1,6 +1,10 @@
 const { setupApp } = require('../helper-functions');
 
-const { wrongId, looksSlide } = require('./homepage-slider.variables');
+const {
+  wrongId,
+  looksSlide,
+  looksSlideUpdate,
+} = require('./homepage-slider.variables');
 
 const {
   addHomePageSlide,
@@ -25,11 +29,10 @@ let operations;
 describe('Homepage looks slider mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    looksSlideId = (await addHomePageSlide(looksSlide, true, operations))._id;
   });
 
   it('Should create slide', async () => {
-    looksSlideId = (await addHomePageSlide(looksSlide, true, operations))._id;
-
     expect(looksSlideId).toBeDefined();
   });
 
@@ -48,11 +51,35 @@ describe('Homepage looks slider mutations', () => {
     const updateResult = await updateHomePageSlide(
       wrongId,
       looksSlide,
+      true,
       operations
     );
 
     expect(updateResult).toHaveProperty('message', SLIDE_NOT_FOUND);
     expect(updateResult).toHaveProperty('statusCode', NOT_FOUND);
+  });
+
+  it('Update slide without upload should update', async () => {
+    const updateResult = await updateHomePageSlide(
+      looksSlideId,
+      looksSlide,
+      false,
+      operations
+    );
+
+    expect(updateResult).toBeDefined();
+  });
+
+  it('Update slide with all parameters should work', async () => {
+    const updateResult = await updateHomePageSlide(
+      looksSlideId,
+      looksSlideUpdate,
+      true,
+      operations
+    );
+
+    expect(updateResult).toBeDefined();
+    expect(updateResult).toHaveProperty('link', looksSlideUpdate.link);
   });
 
   it('Passing invalid ID to delete should return error', async () => {

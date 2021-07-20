@@ -68,8 +68,6 @@ describe('Homepage looks images queries', () => {
       operations
     );
 
-    console.log(homePageSlides);
-
     expect(homePageSlides).toBeDefined();
     expect(homePageSlides.count).toBe(maxCountOfAddingItems);
     expect(homePageSlides.items).toEqual([]);

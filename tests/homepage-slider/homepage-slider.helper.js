@@ -41,7 +41,7 @@ const addHomePageSlide = async (slide, upload, operations) => {
   return res.data.addSlide;
 };
 
-const updateHomePageSlide = async (id, slide, operations) => {
+const updateHomePageSlide = async (id, slide, upload, operations) => {
   const res = await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $slide: HomePageSlideInput!, $upload: Upload) {
@@ -76,7 +76,7 @@ const updateHomePageSlide = async (id, slide, operations) => {
     variables: {
       id,
       slide,
-      upload: '__tests__/homepage-images/img.png',
+      upload: upload ? '__tests__/homepage-images/img.png' : undefined,
     },
   });
 
