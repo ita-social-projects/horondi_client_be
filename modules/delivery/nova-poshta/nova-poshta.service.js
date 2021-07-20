@@ -1,7 +1,5 @@
 const axios = require('axios');
-const {
-  CONFIRMATION_SECRET,
-} = require('../../dotenvValidator');
+
 const {
   ORDER_CREATION_FAILED,
 } = require('../../../error-messages/delivery.message');
