@@ -131,12 +131,16 @@ class EmailChatService {
       }
     ).exec();
 
-    await emailService.sendEmail(email, SEND_EMAIL_ANSWER, {
-      senderName,
-      question: emailContent,
-      answer: text,
-      admin,
-    });
+    try {
+      await emailService.sendEmail(email, SEND_EMAIL_ANSWER, {
+        senderName,
+        question: emailContent,
+        answer: text,
+        admin,
+      });
+    } catch (error) {
+      console.log('error', error.message);
+    }
 
     return updatedQuestion;
   }
