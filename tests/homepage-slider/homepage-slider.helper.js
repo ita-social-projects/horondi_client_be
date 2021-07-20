@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
 
-const addHomePageSlide = async (slide, operations) => {
+const addHomePageSlide = async (slide, upload, operations) => {
   const res = await operations.mutate({
     mutation: gql`
       mutation($slide: HomePageSlideInput!, $upload: Upload) {
@@ -34,11 +34,11 @@ const addHomePageSlide = async (slide, operations) => {
     `,
     variables: {
       slide,
-      upload: '__tests__/homepage-images/img.png',
+      upload: upload ? '__tests__/homepage-images/img.png' : undefined,
     },
   });
 
-  return res.data.addSlide._id;
+  return res.data.addSlide;
 };
 
 const updateHomePageSlide = async (id, slide, operations) => {
@@ -79,18 +79,25 @@ const updateHomePageSlide = async (id, slide, operations) => {
       upload: '__tests__/homepage-images/img.png',
     },
   });
+
   return res.data.updateSlide;
 };
 
-const deleteHomePageSlide = async (id, operations) =>
-  await operations.mutate({
+const deleteHomePageSlide = async (id, operations) => {
+  const res = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteSlide(id: $id) {
           ... on HomePageSlide {
             _id
-            title
-            description
+            title {
+              lang
+              value
+            }
+            description {
+              lang
+              value
+            }
             link
             images {
               large
@@ -98,6 +105,8 @@ const deleteHomePageSlide = async (id, operations) =>
               small
               thumbnail
             }
+            order
+            show
           }
           ... on Error {
             statusCode
@@ -110,6 +119,9 @@ const deleteHomePageSlide = async (id, operations) =>
       id,
     },
   });
+
+  return res.data.deleteSlide;
+};
 
 const getAllHomePageSlides = async (limit, skip, operations) => {
   const res = await operations.query({
@@ -148,8 +160,6 @@ const getAllHomePageSlides = async (limit, skip, operations) => {
     },
   });
 
-  console.log(res.data.getAllSlides.count);
-
   return res.data.getAllSlides;
 };
 
@@ -177,6 +187,10 @@ const getSlideById = async (id, operations) => {
             }
             order
             show
+          }
+          ... on Error {
+            statusCode
+            message
           }
         }
       }

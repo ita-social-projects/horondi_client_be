@@ -1,11 +1,23 @@
 const looksSlide = {
   title: [
-    { lang: 'ua', value: 'Бек тест' },
-    { lang: 'en', value: 'Back test' },
+    {
+      lang: 'ua',
+      value: 'Бек тест',
+    },
+    {
+      lang: 'en',
+      value: 'Back test',
+    },
   ],
   description: [
-    { lang: 'ua', value: 'Бек тест' },
-    { lang: 'en', value: 'Back test' },
+    {
+      lang: 'ua',
+      value: 'Бек тест',
+    },
+    {
+      lang: 'en',
+      value: 'Back test',
+    },
   ],
   link: 'asdasd',
   images: {
@@ -26,9 +38,13 @@ const updatedLooksSlide = {
   },
 };
 const wrongId = '5f9ab9acc1446000240e9f6a';
+const invalidId = '33а№4;%%"!№';
+const maxCountOfAddingItems = 3;
 
 module.exports = {
   looksSlide,
   updatedLooksSlide,
   wrongId,
+  invalidId,
+  maxCountOfAddingItems,
 };

@@ -1,12 +1,27 @@
-const { it } = require('date-fns/locale');
 const { setupApp } = require('../helper-functions');
-const { looksSlide } = require('./homepage-slider.variables');
+
+const {
+  looksSlide,
+  maxCountOfAddingItems,
+  wrongId,
+  invalidId,
+} = require('./homepage-slider.variables');
+
 const {
   addHomePageSlide,
   deleteHomePageSlide,
   getAllHomePageSlides,
   getSlideById,
 } = require('./homepage-slider.helper');
+
+const {
+  SLIDE_NOT_VALID,
+  SLIDE_NOT_FOUND,
+} = require('../../error-messages/home-page-slider.messages');
+
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 jest.mock('../../modules/upload/upload.service');
 
@@ -17,8 +32,11 @@ describe('Homepage looks images queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
 
-    for (let i = 0; i < 3; i++) {
-      looksSlidesIds.push(await addHomePageSlide(looksSlide, operations));
+    for (let i = 0; i < maxCountOfAddingItems; i++) {
+      const looksSlideId = (
+        await addHomePageSlide(looksSlide, true, operations)
+      )._id;
+      looksSlidesIds.push(looksSlideId);
     }
   });
 
@@ -30,16 +48,31 @@ describe('Homepage looks images queries', () => {
   });
 
   it('Should receive error', async () => {
-    const homePageSlide = await getSlideById('wrong id', operations);
-    console.log(homePageSlide);
-    expect(homePageSlide).toBeDefined();
+    const homePageSlide = await getSlideById(invalidId, operations);
+
+    expect(homePageSlide).toHaveProperty('message', SLIDE_NOT_VALID);
+    expect(homePageSlide).toHaveProperty('statusCode', NOT_FOUND);
+  });
+
+  it('Passing invalid ID on getting should return error', async () => {
+    const homePageSlide = await getSlideById(wrongId, operations);
+
+    expect(homePageSlide).toHaveProperty('message', SLIDE_NOT_FOUND);
+    expect(homePageSlide).toHaveProperty('statusCode', NOT_FOUND);
   });
 
   it('Should receive all look slides', async () => {
-    const homePageSlides = await getAllHomePageSlides(3, 3, operations);
+    const homePageSlides = await getAllHomePageSlides(
+      maxCountOfAddingItems + 1,
+      100,
+      operations
+    );
+
+    console.log(homePageSlides);
 
     expect(homePageSlides).toBeDefined();
-    expect(homePageSlides.items.length).toBe(3);
+    expect(homePageSlides.count).toBe(maxCountOfAddingItems);
+    expect(homePageSlides.items).toEqual([]);
   });
 
   afterAll(async () => {
