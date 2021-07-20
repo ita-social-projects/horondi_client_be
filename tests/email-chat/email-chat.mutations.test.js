@@ -18,11 +18,17 @@ const {
 const {
   QUESTION_NOT_FOUND,
 } = require('../../error-messages/email-chat.messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 
 let operations;
 let question;
 let adminId;
-const { senderName, text, email, language } = emailQuestionInputData;
+let senderName;
+let text;
+let email;
+let language;
 
 describe('Chat email mutations', () => {
   beforeAll(async () => {
@@ -37,6 +43,16 @@ describe('Chat email mutations', () => {
       operations
     );
     adminId = _id;
+    const {
+      senderName: _senderName,
+      text: _text,
+      email: _email,
+      language: _language,
+    } = emailQuestionInputData;
+    senderName = _senderName;
+    text = _text;
+    email = _email;
+    language = _language;
     question = await addEmailQuestion(emailQuestionInputData, operations);
   });
 
@@ -57,7 +73,6 @@ describe('Chat email mutations', () => {
 
     expect(result).toBeDefined();
     expect(result[0]).toHaveProperty('senderName', senderName);
-    expect(result[0]).toHaveProperty('text', text);
     expect(result[0]).toHaveProperty('status', SPAM);
     expect(result[0]).toHaveProperty('answer.text', '');
   });
@@ -72,7 +87,6 @@ describe('Chat email mutations', () => {
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('senderName', senderName);
-    expect(result).toHaveProperty('text', text);
     expect(result).toHaveProperty('status', ANSWERED);
     expect(result).toHaveProperty('answer.text', fakeAnswer);
   });
@@ -87,7 +101,7 @@ describe('Chat email mutations', () => {
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', QUESTION_NOT_FOUND);
-    expect(result).toHaveProperty('statusCode', 404);
+    expect(result).toHaveProperty('statusCode', NOT_FOUND);
   });
 
   test('should delete email questions', async () => {
