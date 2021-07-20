@@ -5,6 +5,12 @@ const User = require('../user/user.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
 const {
+  getAllUsersEmailsByWishlistProduct,
+} = require('../wishlist/wishlist.service');
+const {
+  mailingWishlistProductAvailableAgain,
+} = require('../../helpers/mailing-wishlist-product-available-again');
+const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
   PRODUCT_HAS_NOT_CHANGED,
@@ -281,6 +287,16 @@ class ProductsService {
     productData.basePrice = await calculatePrice(basePrice);
     if (productData) {
       const { beforeChanges, afterChanges } = getChanges(product, productData);
+      if (
+        _.find(beforeChanges, el => el.available === false) &&
+        _.find(afterChanges, el => el.available === true)
+      ) {
+        const usersList = await getAllUsersEmailsByWishlistProduct(id);
+
+        if (usersList.length) {
+          await mailingWishlistProductAvailableAgain(usersList);
+        }
+      }
 
       const historyRecord = generateHistoryObject(
         EDIT_PRODUCT,

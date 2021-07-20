@@ -1,0 +1,37 @@
+extends template
+block subheaderText
+    p.unfinishedCartOperations Товар знову в наявності
+block content
+    div.contentUnfinishedCartOperations
+        div.productTableContent
+            p.congrats= `Вітаємо ${firstName}. #[br] Товар з вашого списку бажань знову в наявності: #[br]`
+            table.productTable
+                tr.tableHead
+                    th Фото
+                    th Назва
+                    th Ціна
+                    if wishlistItem.product
+                        tr.tableBody
+                            td
+                                a(href=`${frontendUrl}/product/${wishlistItem.product._id}`)
+                                    img.tableImg(src= `${imageUrl}${wishlistItem.product.images.primary.large}`)
+                            td
+                                p= wishlistItem.product.name[0].value
+                                p= `Розмір - ${wishlistItem.options.size.name}`
+                            td= `${wishlistItem.price[0].value} ${wishlistItem.price[0].currency}`
+                    else if wishlistItem.fromConstructor
+                        tr.tableBody
+                            td
+                                a(href=`${frontendUrl}/product/${wishlistItem.product._id}`)
+                                    img.tableImg(src= `${imageUrl}large_21r21sdeokmxcw0i8_Rolltop_blue.png`)
+                            td
+                                a(href=`${frontendUrl}/product/${wishlistItem.product._id}`)
+                                    p= wishlistItem.fromConstructor.product.name[0].value
+                                p= `Розмір - ${wishlistItem.options.size.name}`
+                            td= `${wishlistItem.price[0].wishlistItem} ${wishlistItem.price[0].currency}`
+
+            p.completeOperationsText Не пропустіть нагоду замовити те що ви так хотіли.
+            button.confirm
+                a(href=`${frontendUrl}/product/${wishlistItem.product._id}`) Відкрити товар
+            p.operationsLink або перейдіть за посиланням нижче:
+            a.operationsLink(href= `${frontendUrl}/product/${wishlistItem.product._id}`) #{`${frontendUrl}/product/${wishlistItem.product._id}`}

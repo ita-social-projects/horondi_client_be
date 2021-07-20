@@ -25,6 +25,10 @@ const htmlTemplates = {
     subject: '[HORONDI] Incomplete operations in cart',
     templateFileName: 'incomplete-operations',
   },
+  [EmailActions.PRODUCT_AVAILABLE_AGAIN_WISHLIST]: {
+    subject: '[HORONDI] Product in wishlist is available again',
+    templateFileName: 'product-is-available-again',
+  },
   [EmailActions.SUCCESSFUL_ORDER]: {
     subject: '[HORONDI] Successful made order',
     templateFileName: 'successful-order',

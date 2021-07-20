@@ -506,6 +506,26 @@ class WishlistService {
       { new: true }
     ).exec();
   }
+
+  async getAllUsersEmailsByWishlistProduct(productId) {
+    return await UserModel.find(
+      { 'wishlist.items.product': productId },
+      'wishlist email'
+    )
+      .populate({
+        path: 'wishlist.items.product',
+        select: 'name images ',
+      })
+      .populate({
+        path: 'wishlist.items.fromConstructor.product',
+        select: 'name images ',
+      })
+      .populate({
+        path: 'wishlist.items.options.size ',
+        select: 'name',
+      })
+      .exec();
+  }
 }
 
 module.exports = new WishlistService();
