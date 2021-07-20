@@ -86,7 +86,6 @@ describe('Chat email mutations', () => {
     );
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('senderName', senderName);
     expect(result).toHaveProperty('status', ANSWERED);
     expect(result).toHaveProperty('answer.text', fakeAnswer);
   });
