@@ -112,6 +112,24 @@ describe('Strap mutations', () => {
     });
   });
 
+  test('should update strap with IMAGE', async () => {
+    const updatedStrap = await updateStrap(
+      strapId,
+      strapToUpdate(colorId, modelId),
+      newImgString,
+      operations
+    );
+
+    const finalStrap = newStrapUpdatedWithImage(colorId, modelId);
+
+    expect(updatedStrap).toBeDefined();
+    expect(updatedStrap).toEqual({
+      _id: strapId,
+      additionalPrice: finalStrap.additionalPrice,
+      ...finalStrap,
+    });
+  });
+
   test('should receive error STRAP_NOT_FOUND when delete', async () => {
     strapData = await deleteStrap(wrongId, operations);
 
