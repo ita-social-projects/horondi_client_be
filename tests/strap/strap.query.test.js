@@ -48,6 +48,8 @@ describe('Strap queries', () => {
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
 
+    filter.color.push(colorId);
+
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
 
@@ -101,7 +103,17 @@ describe('Strap queries', () => {
     expect(result).toBeDefined();
   });
 
+  test('should receive All Straps with COLOR', async () => {
+    const result = await getAllStraps(limit, skip, filter, operations);
+
+    expect(result).toBeDefined();
+    expect(result.items[0]).toHaveProperty('_id', strapId);
+    expect(result.items.length).toBeGreaterThan(0);
+    expect(result.items).toBeInstanceOf(Array);
+  });
+
   test('should receive All Straps', async () => {
+    filter.color = [];
     const result = await getAllStraps(limit, skip, filter, operations);
 
     expect(result).toBeDefined();
