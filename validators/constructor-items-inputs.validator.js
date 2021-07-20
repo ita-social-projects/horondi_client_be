@@ -1,10 +1,15 @@
 const Joi = require('joi');
+
 const {
   SIDES: { LEFT, RIGHT, BACK, FRONT },
 } = require('../consts/side-names');
 const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
+const {
+  additionalPriceInputValidator,
+} = require('./additional-price-input.validators');
+
 const {
   CONSTRUCTOR_OPTION_TYPES: {
     BACK_OPTION,
@@ -67,9 +72,7 @@ const inputOptionValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
@@ -115,9 +118,7 @@ const inputPatternValidator = Joi.object({
     thumbnail: Joi.string(),
   }),
   constructorImg: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean(),
   customizable: Joi.boolean(),
 });

@@ -81,8 +81,12 @@ const productSchema = new mongoose.Schema({
   basePrice: [CurrencySet],
   sizes: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: SIZE,
+      size: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: SIZE,
+      },
+      price: [CurrencySet],
+      _id: false,
     },
   ],
   available: Boolean,

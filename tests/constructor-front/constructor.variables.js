@@ -60,9 +60,12 @@ const newConstructorFrontUpdateInp = (materialId, colorId, modelId) => ({
   basePrice: [
     {
       currency: 'UAH',
-      value: 0,
+      value: 2700,
     },
-    null,
+    {
+      currency: 'USD',
+      value: 100,
+    },
   ],
   available: true,
   customizable: false,
@@ -111,9 +114,12 @@ const getConstructorData = (
   basePrice: [
     {
       currency: 'UAH',
-      value: 0,
+      value: 2700,
     },
-    null,
+    {
+      currency: 'USD',
+      value: 100,
+    },
   ],
 });
 const getConstructorDataForUpt = (materialId, colorId, modelId) => ({

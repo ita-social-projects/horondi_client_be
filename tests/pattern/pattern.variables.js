@@ -23,9 +23,12 @@ const wrongPagination = {
 const finalPrice = [
   {
     currency: 'UAH',
-    value: 0,
+    value: 270,
   },
-  null,
+  {
+    currency: 'USD',
+    value: 10,
+  },
 ];
 
 const mutationPatternToAdd = (materialId, modelId) => ({
@@ -55,7 +58,10 @@ const mutationPatternToAdd = (materialId, modelId) => ({
     material: materialId,
     handmade: false,
   },
-  additionalPrice: 1,
+  additionalPrice: {
+    value: 1,
+    type: 'ABSOLUTE_INDICATOR',
+  },
   available: true,
   customizable: true,
 });
@@ -87,7 +93,10 @@ const queryPatternToAdd = (materialId, modelId) => ({
     material: materialId,
     handmade: false,
   },
-  additionalPrice: 1,
+  additionalPrice: {
+    value: 1,
+    type: 'ABSOLUTE_INDICATOR',
+  },
   available: true,
   customizable: false,
 });
@@ -151,7 +160,10 @@ const patternToUpdate = (materialId, modelId) => ({
     material: materialId,
     handmade: false,
   },
-  additionalPrice: 1,
+  additionalPrice: {
+    value: 1,
+    type: 'ABSOLUTE_INDICATOR',
+  },
   available: true,
   customizable: false,
 });

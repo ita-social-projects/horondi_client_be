@@ -1,5 +1,5 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateBasePrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -89,7 +89,7 @@ class ConstructorService {
       constructorElement.image = await uploadSmallImage(upload);
     }
 
-    constructorElement.basePrice = await calculatePrice(
+    constructorElement.basePrice = await calculateBasePrice(
       constructorElement.basePrice
     );
 
@@ -133,7 +133,7 @@ class ConstructorService {
       constructorElement.image = await uploadSmallImage(upload);
     }
 
-    constructorElement.basePrice = await calculatePrice(
+    constructorElement.basePrice = await calculateBasePrice(
       constructorElement.basePrice
     );
 

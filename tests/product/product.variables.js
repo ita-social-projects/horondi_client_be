@@ -7,7 +7,7 @@ const newProductInputData = (
   colorId,
   patternId,
   closureId,
-  sizeId
+  sizeId,
 ) => ({
   category: categoryId,
   model: modelId,
@@ -47,7 +47,7 @@ const newProductInputDataForUpdate = (
   colorId,
   patternId,
   closureId,
-  sizeId
+  sizeId,
 ) => ({
   category: categoryId,
   model: modelId,
@@ -105,7 +105,20 @@ const newProductInputDataForCompare = product => ({
   availableCount: product.availableCount,
   pattern: { _id: product.pattern },
   strapLengthInCm: product.strapLengthInCm,
-  sizes: [{ _id: product.sizes[0] }],
+  sizes: [
+    { size: { _id: product.sizes[0] } },
+    {
+      price: [
+        {
+          currency: 'UAH',
+          value: 2700,
+        },
+        {
+          currency: 'USD',
+          value: 100,
+        },
+      ],
+    }],
   innerMaterial: {
     material: {
       _id: product.innerMaterial.material,

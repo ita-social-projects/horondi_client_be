@@ -8,6 +8,7 @@ const createMaterial = async (material, operations) => {
         $available: Boolean
         $description: [LanguageInput]
         $name: [LanguageInput]
+        $additionalPrice: additionalPriceInput!
       ) {
         addMaterial(
           material: {
@@ -16,6 +17,7 @@ const createMaterial = async (material, operations) => {
             available: $available
             description: $description
             name: $name
+            additionalPrice: $additionalPrice
           }
         ) {
           ... on Material {
@@ -167,6 +169,7 @@ const updateMaterial = async (id, material, operations) => {
         $available: Boolean
         $description: [LanguageInput]
         $name: [LanguageInput]
+        $additionalPrice: additionalPriceInput!
       ) {
         updateMaterial(
           id: $id
@@ -176,6 +179,7 @@ const updateMaterial = async (id, material, operations) => {
             available: $available
             description: $description
             name: $name
+            additionalPrice: $additionalPrice
           }
         ) {
           ... on Material {

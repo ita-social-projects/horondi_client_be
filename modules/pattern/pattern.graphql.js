@@ -8,7 +8,7 @@ const patternType = `
       description: [Language]
       images: ImageSet
       constructorImg: String
-      additionalPrice: [CurrencySet]
+      additionalPrice: [AdditionalCurrencySet]
       available: Boolean
       customizable: Boolean
     }
@@ -30,7 +30,7 @@ const patternInputs = `
       features: PatternFeatureSetInput
       images:ImageSetInput
       constructorImg: String
-      additionalPrice: Int
+      additionalPrice: additionalPriceInput!
       available: Boolean
       customizable: Boolean
     }
