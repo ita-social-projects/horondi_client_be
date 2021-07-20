@@ -68,9 +68,7 @@ class BackService {
   }
 
   async getBacksByModel(id) {
-    const back = await Back.find({ model: id }).exec();
-
-    return back;
+    return await Back.find({ model: id }).exec();
   }
 
   async updateBack(id, back, image, { _id: adminId }) {
