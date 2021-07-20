@@ -138,6 +138,10 @@ const {
   strapFeatureType,
   strapInputs,
 } = require('./modules/strap/strap.graphql');
+const {
+  positionType,
+  positionInputs,
+} = require('./modules/position/position.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -187,7 +191,7 @@ const typeDefs = gql`
   ${backFeatureSet}
   ${strapType}
   ${strapFeatureType}
- 
+  ${positionType}
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -444,6 +448,7 @@ const typeDefs = gql`
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
+  union PositionResult = Position | Error
   type Query {
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
@@ -649,6 +654,7 @@ const typeDefs = gql`
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}
+  ${positionInputs}
   input LanguageInput {
     lang: String!
     value: String
@@ -927,6 +933,7 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
+    addPosition(position: PositionInput!): PositionResult 
   }
 `;
 
