@@ -68,7 +68,13 @@ class BackService {
   }
 
   async getBacksByModel(id) {
-    return await Back.find({ model: id }).exec();
+    const back = await Back.find({ model: id }).exec();
+
+    if (!back) {
+      throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);
+    }
+
+    return back;
   }
 
   async updateBack(id, back, image, { _id: adminId }) {

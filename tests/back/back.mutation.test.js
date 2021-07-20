@@ -87,7 +87,7 @@ describe('Back mutation tests', () => {
     expect(updateBackTest).toBeDefined();
     expect(updateBackTest).toHaveProperty('name', backUpdateInput.name);
   });
-  test('should update back without image', async () => {
+  test('should update back without adding image', async () => {
     const updateBackTest = await updateBack(
       backId,
       backUpdateInput,
@@ -118,6 +118,31 @@ describe('Back mutation tests', () => {
     expect(result).toHaveProperty('statusCode', 404);
   });
   test('should delete back', async () => {
+    const deletedBack = await deleteBack(backId, operations);
+
+    const result = deletedBack._id;
+    expect(result).toBe(backId);
+  });
+  test('should create back without image', async () => {
+    const createBackTest = await createBack(backInput, '', operations);
+    backId = createBackTest._id;
+
+    expect(createBackTest).toBeDefined();
+    expect(createBackTest).toHaveProperty('available', backInput.available);
+    expect(createBackTest).toHaveProperty('name', backInput.name);
+  });
+  test('should update back without image', async () => {
+    const updateBackTest = await updateBack(
+      backId,
+      backUpdateInput,
+      '',
+      operations
+    );
+
+    expect(updateBackTest).toBeDefined();
+    expect(updateBackTest).toHaveProperty('name', backUpdateInput.name);
+  });
+  test('should delete back without image', async () => {
     const deletedBack = await deleteBack(backId, operations);
 
     const result = deletedBack._id;
