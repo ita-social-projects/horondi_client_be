@@ -26,7 +26,7 @@ const {
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
-  countItemsOccurency,
+  countItemsOccurrence,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
@@ -370,12 +370,12 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formatedData = users.map(el =>
+    const formattedData = users.map(el =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
-    const userOccurency = countItemsOccurency(formatedData);
-    const counts = Object.values(userOccurency);
-    const names = Object.keys(userOccurency);
+    const userOccurrence = countItemsOccurrence(formattedData);
+    const counts = Object.values(userOccurrence);
+    const names = Object.keys(userOccurrence);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
       0
@@ -565,9 +565,7 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
-    const savedUser = await user.save();
-
-    return savedUser;
+    return await user.save();
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
