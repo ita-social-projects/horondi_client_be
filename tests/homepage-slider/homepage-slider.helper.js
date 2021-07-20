@@ -111,27 +111,44 @@ const deleteHomePageSlide = async (id, operations) =>
     },
   });
 
-const getAllHomePageSlides = async operations => {
+const getAllHomePageSlides = async (limit, skip, operations) => {
   const res = await operations.query({
     query: gql`
-      query {
-        getAllSlides {
-          _id
-          title
-          description
-          link
-          images {
-            large
-            medium
-            small
-            thumbnail
+      query($limit: Int, $skip: Int) {
+        getAllSlides(limit: $limit, skip: $skip) {
+          ... on PaginatedHomePageSlides {
+            items {
+              _id
+              title {
+                lang
+                value
+              }
+              description {
+                lang
+                value
+              }
+              link
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+              order
+              show
+            }
+            count
           }
-          order
-          show
         }
       }
     `,
+    variables: {
+      limit,
+      skip,
+    },
   });
+
+  console.log(res.data.getAllSlides.count);
 
   return res.data.getAllSlides;
 };

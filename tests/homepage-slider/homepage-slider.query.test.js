@@ -1,9 +1,10 @@
+const { it } = require('date-fns/locale');
 const { setupApp } = require('../helper-functions');
 const { looksSlide } = require('./homepage-slider.variables');
 const {
   addHomePageSlide,
   deleteHomePageSlide,
-  // getAllHomePageSlides,
+  getAllHomePageSlides,
   getSlideById,
 } = require('./homepage-slider.helper');
 
@@ -21,17 +22,24 @@ describe('Homepage looks images queries', () => {
     }
   });
 
-  it('Should receive all looks slides', async () => {
+  it('Should receive looks slide', async () => {
     const homePageSlide = await getSlideById(looksSlidesIds[0], operations);
 
     expect(homePageSlide).toBeDefined();
     expect(homePageSlide).toHaveProperty('images', looksSlide.images);
   });
 
-  it('Should two el in arr', () => {
-    console.log(looksSlidesIds.length);
-    expect(looksSlidesIds).toBeDefined();
-    expect(looksSlidesIds.length).toBe(3);
+  it('Should receive error', async () => {
+    const homePageSlide = await getSlideById('wrong id', operations);
+    console.log(homePageSlide);
+    expect(homePageSlide).toBeDefined();
+  });
+
+  it('Should receive all look slides', async () => {
+    const homePageSlides = await getAllHomePageSlides(3, 3, operations);
+
+    expect(homePageSlides).toBeDefined();
+    expect(homePageSlides.items.length).toBe(3);
   });
 
   afterAll(async () => {
