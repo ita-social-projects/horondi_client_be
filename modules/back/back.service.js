@@ -130,7 +130,7 @@ class BackService {
     }
 
     if (foundBack.image) {
-      return await uploadService.deleteFiles(foundBack.image);
+      return uploadService.deleteFiles(foundBack.image);
     }
 
     const historyRecord = generateHistoryObject(
