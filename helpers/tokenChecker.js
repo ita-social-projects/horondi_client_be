@@ -1,7 +1,7 @@
 const { verify } = require('jsonwebtoken');
 const {
   CONFIRMATION_SECRET,
-} = require('../dotenvValidator');
+} = require('../../dotenvValidator');
 const RuleError = require('../errors/rule.error');
 const { TOKEN_IS_EXPIRIED } = require('../error-messages/user.messages');
 const {
