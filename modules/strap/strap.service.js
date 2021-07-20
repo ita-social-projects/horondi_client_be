@@ -124,8 +124,6 @@ class StrapService {
 
     await uploadService.deleteFiles(image);
 
-    // const uploadImage = await uploadService.uploadSmallImage(image);
-    // const uploadImage = await uploadService.uploadFile(image);
     const uploadImage = await uploadSmallImage(image);
 
     strap.image = uploadImage.fileNames.small;

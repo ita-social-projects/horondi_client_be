@@ -9,7 +9,7 @@ const filter = {
   color: [],
 };
 const imgString = 'small_id73jyckmc4ycke_основа-жовта.png';
-const newImgString = 'основа-червона.png';
+const newImgString = 'small_id73jyckmc4ycke_основа-червона.png';
 
 const newStrap = (colorId, modelId) => ({
   name: [
