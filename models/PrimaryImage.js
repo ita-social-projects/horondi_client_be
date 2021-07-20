@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const ImageSet = require('../../modules/common/ImageSet').schema;
+
 const ImageSet = require('../modules/common/ImageSet').schema;
 const {
   DB_COLLECTIONS_NAMES: { PRIMARY_IMAGE },
