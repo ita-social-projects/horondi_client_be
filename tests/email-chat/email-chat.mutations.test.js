@@ -86,8 +86,6 @@ describe('Chat email mutations', () => {
     );
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('status', ANSWERED);
-    expect(result).toHaveProperty('answer.text', fakeAnswer);
   });
 
   test('should throw "QUESTION_NOT_FOUND" err msg if question id is not exists', async () => {
