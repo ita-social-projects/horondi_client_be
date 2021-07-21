@@ -133,7 +133,7 @@ describe('Strap mutations', () => {
       operations
     );
 
-    const finalStrap = newStrapUpdatedWithImage(colorId, modelId);
+    const finalStrap = newStrapUpdatedWithImage(colorId, modelId, newImgString);
 
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({

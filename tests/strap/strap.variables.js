@@ -62,7 +62,7 @@ const strapToUpdate = (colorId, modelId) => ({
   image: imgString,
   available: true,
   customizable: true,
-  additionalPrice: 40,
+  additionalPrice: 50,
 });
 
 const newStrapUpdated = (colorId, modelId) => ({
@@ -87,7 +87,7 @@ const newStrapUpdated = (colorId, modelId) => ({
   ],
 });
 
-const newStrapUpdatedWithImage = (colorId, modelId) => ({
+const newStrapUpdatedWithImage = (colorId, modelId, imageStr) => ({
   name: [
     { lang: 'uk', value: 'змінено' },
     { lang: 'en', value: 'updated' },
@@ -97,7 +97,7 @@ const newStrapUpdatedWithImage = (colorId, modelId) => ({
   features: {
     color: { _id: colorId },
   },
-  image: newImgString,
+  image: imageStr,
   available: true,
   customizable: true,
   additionalPrice: [
