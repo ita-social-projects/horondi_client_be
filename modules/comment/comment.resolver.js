@@ -13,7 +13,13 @@ const commentsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
+  getReplyCommentById: async (_, { id }) => {
+    try {
+      return await commentsService.getReplyCommentById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getRecentComments: async (_, { limit }) => {
     try {
       return await commentsService.getRecentComments(limit);
@@ -23,7 +29,7 @@ const commentsQuery = {
   },
   getReplyCommentsByComment: async (
     parent,
-    { filter, pagination: { skip, limit } },
+    { filter, pagination: { skip, limit }, sort },
     { user }
   ) => {
     try {
@@ -31,7 +37,8 @@ const commentsQuery = {
         filter,
         skip,
         limit,
-        user
+        user,
+        sort
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -40,7 +47,7 @@ const commentsQuery = {
 
   getCommentsByProduct: async (
     parent,
-    { filter, pagination: { skip, limit } },
+    { filter, pagination: { skip, limit }, sort },
     { user }
   ) => {
     try {
@@ -48,7 +55,8 @@ const commentsQuery = {
         filter,
         skip,
         limit,
-        user
+        user,
+        sort
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

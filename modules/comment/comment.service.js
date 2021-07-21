@@ -12,19 +12,26 @@ const {
   RATE_FOR_NOT_EXISTING_PRODUCT,
   REPLY_COMMENT_IS_NOT_PRESENT,
   REPLY_COMMENTS_NOT_FOUND,
+  REPLY_COMMENT_NOT_FOUND,
 } = require('../../error-messages/comment.messages');
-const { filterOptionComments } = require('../helper-functions');
 const {
   ORDER_STATUSES: { DELIVERED },
 } = require('../../consts/order-statuses');
-const { isUserBoughtPoduct } = require('../helper-functions');
+const {
+  isUserBoughtPoduct,
+  filteredReplyComments,
+  filterOptionComments,
+} = require('../helper-functions');
 
 class CommentsService {
-  async getAllComments({ filter, pagination: { skip, limit } }) {
+  async getAllComments({ filter, pagination: { skip, limit }, sort }) {
     const filterOptions = filterOptionComments(filter);
-
+    let sortLabel = sort;
+    if (Object.keys(sort).includes('replyComments')) {
+      sortLabel = { 'replyComments.createdAt': sort.replyComments };
+    }
     const items = await Comment.find(filterOptions)
-      .sort({ date: -1 })
+      .sort(sortLabel)
       .limit(limit)
       .skip(skip)
       .exec();
@@ -45,6 +52,20 @@ class CommentsService {
     return comment;
   }
 
+  async getReplyCommentById(id) {
+    const replyComment = await Comment.findOne({
+      'replyComments._id': id,
+    }).exec();
+
+    if (!replyComment) {
+      throw new RuleError(REPLY_COMMENT_NOT_FOUND, NOT_FOUND);
+    }
+    replyComment.replyComments = replyComment.replyComments.filter(
+      el => el._id.toString() === id
+    );
+    return replyComment;
+  }
+
   async getRecentComments(limit) {
     const comments = await Comment.find()
       .sort({ date: -1 })
@@ -56,7 +77,7 @@ class CommentsService {
     return comments;
   }
 
-  async getCommentsByProduct(filter, skip, limit, user) {
+  async getCommentsByProduct(filter, skip, limit, user, sort) {
     const product = await Product.findById(filter.productId).exec();
     if (!product) {
       throw new RuleError(COMMENTS_NOT_FOUND, NOT_FOUND);
@@ -75,10 +96,16 @@ class CommentsService {
     } else {
       filterOptions = { show: { $in: [true] }, product: filter.productId };
     }
-
+    let sortLabel = sort;
+    if (sortLabel && Object.keys(sort).includes('replyComments')) {
+      sortLabel = { 'replyComments.createdAt': sort.replyComments };
+    }
+    if (sortLabel === undefined) {
+      sortLabel = { date: -1 };
+    }
     const count = Comment.find(filterOptions).countDocuments();
     const items = await Comment.find(filterOptions)
-      .sort({ date: -1 })
+      .sort(sortLabel)
       .limit(limit)
       .skip(skip)
       .exec();
@@ -89,12 +116,17 @@ class CommentsService {
     };
   }
 
-  async getReplyCommentsByComment(filter, skip, limit, user) {
+  async getReplyCommentsByComment(filter, skip, limit, user, sort) {
     const comment = await Comment.findById(filter.commentId).exec();
     if (!comment) {
       throw new RuleError(REPLY_COMMENTS_NOT_FOUND, NOT_FOUND);
     }
-    if (user) {
+    if (filter.filters) {
+      comment.replyComments = filteredReplyComments(
+        filter,
+        comment.replyComments
+      );
+    } else if (user) {
       comment.replyComments = comment.replyComments.filter(
         item =>
           item.showReplyComment === true ||
@@ -105,10 +137,21 @@ class CommentsService {
         item => item.showReplyComment === true
       );
     }
+    if (parseInt(sort?.date) === 1) {
+      comment.replyComments = comment.replyComments.sort(
+        (a, b) => a.createdAt - b.createdAt
+      );
+    } else if (parseInt(sort?.date) === -1) {
+      comment.replyComments = comment.replyComments.sort(
+        (a, b) => b.createdAt - a.createdAt
+      );
+    }
+    const countAll = comment.replyComments.length;
     comment.replyComments = comment.replyComments.slice(skip, skip + limit);
     return {
       items: [comment],
       count: comment.replyComments.length,
+      countAll,
     };
   }
 
