@@ -28,7 +28,7 @@ jest.mock('../../modules/upload/upload.service');
 const looksSlidesIds = [];
 let operations;
 
-describe('Homepage looks images queries', () => {
+describe('Homepage looks slider queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
 
