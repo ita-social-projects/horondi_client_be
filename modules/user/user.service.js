@@ -565,7 +565,7 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
-    return await user.save();
+    return user.save();
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
