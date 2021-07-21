@@ -6,6 +6,7 @@ const { deleteStrap, createStrap, updateStrap } = require('./strap.helper');
 const {
   wrongId,
   newImgString,
+  imgString,
   newStrap,
   strapWithConvertedPrice,
   newStrapUpdated,
@@ -59,12 +60,20 @@ describe('Strap mutations', () => {
     );
     sizeId = sizeData._id;
 
-    strapData = await createStrap(newStrap(colorId, modelId), operations);
+    strapData = await createStrap(
+      newStrap(colorId, modelId),
+      imgString,
+      operations
+    );
     strapId = strapData._id;
   });
 
   test('should create strap', async () => {
-    const convertedObj = await strapWithConvertedPrice(colorId, modelId);
+    const convertedObj = await strapWithConvertedPrice(
+      colorId,
+      modelId,
+      newImgString
+    );
 
     expect(strapData).toBeDefined();
     expect(strapData).toEqual({
@@ -74,7 +83,11 @@ describe('Strap mutations', () => {
   });
 
   test('should receive error STRAP_ALREADY_EXISTS when create strap', async () => {
-    strapData = await createStrap(newStrap(colorId, modelId), operations);
+    strapData = await createStrap(
+      newStrap(colorId, modelId),
+      newImgString,
+      operations
+    );
 
     expect(strapData).toBeDefined();
     expect(strapData).toHaveProperty('message', ITEM_ALREADY_EXISTS);

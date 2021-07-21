@@ -10,6 +10,8 @@ const {
 } = require('./strap.helper');
 const {
   wrongId,
+  imgString,
+  newImgString,
   skip,
   filter,
   limit,
@@ -65,13 +67,21 @@ describe('Strap queries', () => {
     );
     sizeId = sizeData._id;
 
-    strapData = await createStrap(newStrap(colorId, modelId), operations);
+    strapData = await createStrap(
+      newStrap(colorId, modelId),
+      imgString,
+      operations
+    );
     strapId = strapData._id;
   });
 
   test('should receive strap by ID', async () => {
     const result = await getStrapById(strapId, operations);
-    const convertedObj = await strapWithConvertedPrice(colorId, modelId);
+    const convertedObj = await strapWithConvertedPrice(
+      colorId,
+      modelId,
+      newImgString
+    );
 
     expect(result).toBeDefined();
     expect(result).toEqual({

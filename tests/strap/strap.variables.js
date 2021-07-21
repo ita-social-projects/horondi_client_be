@@ -21,13 +21,13 @@ const newStrap = (colorId, modelId) => ({
   features: {
     color: colorId,
   },
-  image: imgString,
+  image: 'empty',
   available: true,
   customizable: true,
   additionalPrice: 1,
 });
 
-const strapWithConvertedPrice = (colorId, modelId) => ({
+const strapWithConvertedPrice = (colorId, modelId, imageStr) => ({
   name: [
     { lang: 'uk', value: 'тест' },
     { lang: 'en', value: 'test' },
@@ -37,7 +37,7 @@ const strapWithConvertedPrice = (colorId, modelId) => ({
   features: {
     color: { _id: colorId },
   },
-  image: imgString,
+  image: imageStr,
   available: true,
   customizable: true,
   additionalPrice: [

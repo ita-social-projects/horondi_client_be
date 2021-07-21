@@ -1,10 +1,10 @@
 const { gql } = require('@apollo/client');
 
-const createStrap = async (strap, operations) => {
+const createStrap = async (strap, image, operations) => {
   const createdStrap = await operations.mutate({
     mutation: gql`
-      mutation($strap: StrapInput!) {
-        addStrap(strap: $strap) {
+      mutation($strap: StrapInput!, $image: Upload) {
+        addStrap(strap: $strap, image: $image) {
           ... on Strap {
             _id
             name {
@@ -37,6 +37,7 @@ const createStrap = async (strap, operations) => {
     `,
     variables: {
       strap,
+      image,
     },
   });
 
