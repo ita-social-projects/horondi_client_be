@@ -63,9 +63,7 @@ class StrapService {
   }
 
   async getStrapsByModel(id) {
-    const strap = await Strap.find({ model: id }).exec();
-
-    return strap;
+    return await Strap.find({ model: id }).exec();
   }
 
   async deleteStrap(id, { _id: adminId }) {
