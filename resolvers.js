@@ -293,6 +293,9 @@ const resolvers = {
             item.showReplyComment === true
         ).length;
       }
+      if (user?.role === 'admin' || user?.role === 'superadmin') {
+        return parent.replyComments.length;
+      }
       return parent.replyComments.filter(item => item.showReplyComment === true)
         .length;
     },

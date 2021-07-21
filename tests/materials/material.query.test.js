@@ -114,7 +114,7 @@ describe('material quarries test', () => {
     expect(count).not.toBeNull();
     expect(count).toEqual(1);
   });
-  it('should receive error if skip is negative', async () => {
+  it.skip('should receive error if skip is negative', async () => {
     const { errors } = await getAllMaterialsWithSkipAndLimit(
       wrongSkip,
       limit,
