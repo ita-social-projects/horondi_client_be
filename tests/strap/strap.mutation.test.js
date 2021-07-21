@@ -7,6 +7,8 @@ const {
   wrongId,
   newImgString,
   imgString,
+  wrongIdForError,
+  wrongModelIdForError,
   newStrap,
   strapWithConvertedPrice,
   newStrapUpdated,
@@ -156,6 +158,40 @@ describe('Strap mutations', () => {
 
     expect(strapData).toBeDefined();
     expect(strapData).toHaveProperty('_id', strapId);
+  });
+
+  test('should return error when try create strap', async () => {
+    strapData = await deleteStrap(strapId, operations);
+    const newStrapData = await createStrap(
+      newStrap(colorId, wrongModelIdForError),
+      null,
+      operations
+    );
+    console.log(newStrapData);
+    expect(newStrapData).toBeDefined();
+    expect(newStrapData).toHaveProperty('message');
+    expect(newStrapData).toHaveProperty('statusCode');
+  });
+
+  test('should return error when try update strap', async () => {
+    const updatedStrap = await updateStrap(
+      strapId,
+      strapToUpdate(colorId, wrongModelIdForError),
+      newImgString,
+      operations
+    );
+
+    expect(updatedStrap).toBeDefined();
+    expect(updatedStrap).toHaveProperty('message');
+    expect(updatedStrap).toHaveProperty('statusCode');
+  });
+
+  test('should return error when try delete strap', async () => {
+    strapData = await deleteStrap(wrongIdForError, operations);
+
+    expect(strapData).toBeDefined();
+    expect(strapData).toHaveProperty('message');
+    expect(strapData).toHaveProperty('statusCode');
   });
 
   afterAll(async () => {

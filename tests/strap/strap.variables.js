@@ -1,4 +1,6 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
+const wrongIdForError = 'id';
+const wrongModelIdForError = 'modelId';
 const wrongModelId = '60f4472533486a0f20bcd1af';
 const skip = 0;
 const limit = 2;
@@ -115,6 +117,8 @@ module.exports = {
   strapToUpdate,
   newStrapUpdated,
   newStrapUpdatedWithImage,
+  wrongModelIdForError,
+  wrongIdForError,
   wrongId,
   wrongModelId,
   limit,
