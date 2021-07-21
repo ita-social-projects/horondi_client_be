@@ -16,6 +16,8 @@ const {
   filter,
   limit,
   wrongModelId,
+  wrongIdForError,
+  wrongModelIdForError,
   newStrap,
   strapWithConvertedPrice,
 } = require('./strap.variables');
@@ -130,6 +132,31 @@ describe('Strap queries', () => {
     expect(result.items[0]).toHaveProperty('_id', strapId);
     expect(result.items.length).toBeGreaterThan(0);
     expect(result.items).toBeInstanceOf(Array);
+  });
+
+  test('should receive Error when try All Straps with COLOR', async () => {
+    const filter = {};
+    const result = await getAllStraps(limit, skip, filter, operations);
+
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('message');
+    expect(result).toHaveProperty('statusCode');
+  });
+
+  test('should receive Error when try getStrapById', async () => {
+    const result = await getStrapById(wrongIdForError, operations);
+
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('message');
+    expect(result).toHaveProperty('statusCode');
+  });
+
+  test('should receive Error when try get strap by Model', async () => {
+    const result = await getStrapsByModel(wrongModelIdForError, operations);
+
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('message');
+    expect(result).toHaveProperty('statusCode');
   });
 
   afterAll(async () => {
