@@ -70,7 +70,7 @@ describe('Strap mutations', () => {
     strapId = strapData._id;
   });
 
-  test('should create strap', async () => {
+  test('#1. should create strap', async () => {
     const convertedObj = await strapWithConvertedPrice(
       colorId,
       modelId,
@@ -84,7 +84,7 @@ describe('Strap mutations', () => {
     });
   });
 
-  test('should receive error STRAP_ALREADY_EXISTS when create strap', async () => {
+  test('#2. should receive Error STRAP_ALREADY_EXISTS when create strap', async () => {
     strapData = await createStrap(
       newStrap(colorId, modelId),
       newImgString,
@@ -96,7 +96,7 @@ describe('Strap mutations', () => {
     expect(strapData).toHaveProperty('statusCode', 400);
   });
 
-  test('should receive error STRAP_NOT_FOUND when update', async () => {
+  test('#3. should receive Error STRAP_NOT_FOUND when update', async () => {
     strapData = await updateStrap(
       wrongId,
       strapToUpdate(colorId, modelId),
@@ -109,7 +109,7 @@ describe('Strap mutations', () => {
     expect(strapData).toHaveProperty('statusCode', 404);
   });
 
-  test('should update strap', async () => {
+  test('#4. should update strap', async () => {
     const updatedStrap = await updateStrap(
       strapId,
       strapToUpdate(colorId, modelId),
@@ -127,7 +127,7 @@ describe('Strap mutations', () => {
     });
   });
 
-  test('should update strap with IMAGE', async () => {
+  test('#5. should update strap with IMAGE', async () => {
     const updatedStrap = await updateStrap(
       strapId,
       strapToUpdate(colorId, modelId),
@@ -145,7 +145,7 @@ describe('Strap mutations', () => {
     });
   });
 
-  test('should receive error STRAP_NOT_FOUND when delete', async () => {
+  test('#6. should receive Error STRAP_NOT_FOUND when delete', async () => {
     strapData = await deleteStrap(wrongId, operations);
 
     expect(strapData).toBeDefined();
@@ -153,27 +153,27 @@ describe('Strap mutations', () => {
     expect(strapData).toHaveProperty('statusCode', 404);
   });
 
-  test('should delete strap', async () => {
+  test('#7. should delete strap', async () => {
     strapData = await deleteStrap(strapId, operations);
 
     expect(strapData).toBeDefined();
     expect(strapData).toHaveProperty('_id', strapId);
   });
 
-  test('should return error when try create strap', async () => {
+  test('#8. should return Error when try create strap', async () => {
     strapData = await deleteStrap(strapId, operations);
     const newStrapData = await createStrap(
       newStrap(colorId, wrongModelIdForError),
       null,
       operations
     );
-    console.log(newStrapData);
+
     expect(newStrapData).toBeDefined();
     expect(newStrapData).toHaveProperty('message');
     expect(newStrapData).toHaveProperty('statusCode');
   });
 
-  test('should return error when try update strap', async () => {
+  test('#9. should return Error when try update strap', async () => {
     const updatedStrap = await updateStrap(
       strapId,
       strapToUpdate(colorId, wrongModelIdForError),
@@ -186,7 +186,7 @@ describe('Strap mutations', () => {
     expect(updatedStrap).toHaveProperty('statusCode');
   });
 
-  test('should return error when try delete strap', async () => {
+  test('#10. should Return error when try delete strap', async () => {
     strapData = await deleteStrap(wrongIdForError, operations);
 
     expect(strapData).toBeDefined();

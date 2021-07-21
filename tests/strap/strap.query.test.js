@@ -77,7 +77,7 @@ describe('Strap queries', () => {
     strapId = strapData._id;
   });
 
-  test('should receive strap by ID', async () => {
+  test('#1. should receive strap by ID', async () => {
     const result = await getStrapById(strapId, operations);
     const convertedObj = await strapWithConvertedPrice(
       colorId,
@@ -92,7 +92,7 @@ describe('Strap queries', () => {
     });
   });
 
-  test('should throw error STRAP_NOT_FOUND', async () => {
+  test('#2. should throw Error STRAP_NOT_FOUND', async () => {
     const result = await getStrapById(wrongId, operations);
 
     expect(result).toBeDefined();
@@ -100,7 +100,7 @@ describe('Strap queries', () => {
     expect(result).toHaveProperty('statusCode', 404);
   });
 
-  test('should receive strap by Model', async () => {
+  test('#3. should receive strap by Model', async () => {
     const result = await getStrapsByModel(modelId, operations);
 
     expect(result).toBeDefined();
@@ -109,13 +109,13 @@ describe('Strap queries', () => {
     expect(result).toBeInstanceOf(Array);
   });
 
-  test('should throw error strap by Model STRAP_NOT_FOUND', async () => {
+  test('#4. should throw Error strap by Model STRAP_NOT_FOUND', async () => {
     const result = await getStrapsByModel(wrongModelId, operations);
 
     expect(result).toBeDefined();
   });
 
-  test('should receive All Straps with COLOR', async () => {
+  test('#5. should receive All Straps with COLOR', async () => {
     const result = await getAllStraps(limit, skip, filter, operations);
 
     expect(result).toBeDefined();
@@ -124,7 +124,7 @@ describe('Strap queries', () => {
     expect(result.items).toBeInstanceOf(Array);
   });
 
-  test('should receive All Straps', async () => {
+  test('#6. should receive All Straps', async () => {
     filter.color = [];
     const result = await getAllStraps(limit, skip, filter, operations);
 
@@ -134,7 +134,7 @@ describe('Strap queries', () => {
     expect(result.items).toBeInstanceOf(Array);
   });
 
-  test('should receive Error when try All Straps with COLOR', async () => {
+  test('#7. should receive Error when try All Straps with COLOR', async () => {
     const filter = {};
     const result = await getAllStraps(limit, skip, filter, operations);
 
@@ -143,7 +143,7 @@ describe('Strap queries', () => {
     expect(result).toHaveProperty('statusCode');
   });
 
-  test('should receive Error when try getStrapById', async () => {
+  test('#8. should receive Error when try getStrapById', async () => {
     const result = await getStrapById(wrongIdForError, operations);
 
     expect(result).toBeDefined();
@@ -151,7 +151,7 @@ describe('Strap queries', () => {
     expect(result).toHaveProperty('statusCode');
   });
 
-  test('should receive Error when try get strap by Model', async () => {
+  test('#9. should receive Error when try get strap by Model', async () => {
     const result = await getStrapsByModel(wrongModelIdForError, operations);
 
     expect(result).toBeDefined();
