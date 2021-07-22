@@ -1,5 +1,5 @@
 const positionType = `
-  type Position {
+  type Position{
     _id: ID!
     name: [Language]
     available: Boolean
@@ -7,7 +7,13 @@ const positionType = `
 `;
 
 const positionInputs = `
-  input PositionInput {
+  input PositionInput{
+    name: [LanguageInput!]
+    available: Boolean
+  }
+
+  input PositionsFilterInput{
+    search: String
     name: [LanguageInput!]
     available: Boolean
   }

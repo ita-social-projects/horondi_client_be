@@ -1,93 +1,141 @@
 const Position = require('./position.model');
-// const Material = require('../material/material.model');
+
+const RuleError = require('../../errors/rule.error');
 const {
-  COLOR_ALREADY_EXIST,
-  COLOR_NOT_FOUND,
-} = require('../../error-messages/color.massage');
+  POSITION_NOT_FOUND,
+  POSITION_ALREADY_EXIST,
+} = require('../../error-messages/positions.massage');
 const {
-  HISTORY_ACTIONS: { ADD_COLOR, DELETE_COLOR },
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const {
+  HISTORY_ACTIONS: { ADD_POSITION, DELETE_POSITION, EDIT_POSITION },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   generateHistoryChangesData,
+  getChanges,
 } = require('../../utils/hisrory');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { NAME, COLOR_HEX, SIMPLE_NAME },
+  HISTORY_OBJ_KEYS: { NAME, POSITIONS },
 } = require('../../consts/history-obj-keys');
 
 class PositionService {
-  //   async getAllColors() {
-  //     return Position.find().exec();
-  //   }
+  async checkPositionExist(data) {
+    const positionCount = await Position.countDocuments({
+      name: {
+        $elemMatch: {
+          $or: data.name.map(({ value }) => ({ value })),
+        },
+      },
+    }).exec();
+    return positionCount > 0;
+  }
 
-  //   async getColorById(id) {
-  //     const color = await Position.findById(id).exec();
-  //     if (color) {
-  //       return color;
-  //     }
-  //     throw new Error(COLOR_NOT_FOUND);
-  //   }
+  async getAllPositions(limit, skip, filter) {
+    const filterOptions = {};
+
+    if (filter?.search) {
+      filterOptions['name.0.value'] = {
+        $regex: `${filter.search.trim()}`,
+        $options: 'i',
+      };
+    }
+
+    const items = await Position.find(filterOptions)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = await Position.countDocuments(filterOptions).exec();
+
+    return { items, count };
+  }
+
+  async getPositionById(id) {
+    const position = await Position.findById(id).exec();
+    if (position) {
+      return position;
+    }
+    throw new RuleError(POSITION_NOT_FOUND, NOT_FOUND);
+  }
 
   async addPosition(positionData, { _id: adminId }) {
-    console.log('position', positionData);
+    if (await this.checkPositionExist(positionData)) {
+      throw new RuleError(POSITION_ALREADY_EXIST);
+    }
 
-    // const hex = await Position.find({ colorHex: colorData.colorHex }).exec();
-    // if (hex.length) {
-    //   throw new Error(COLOR_ALREADY_EXIST);
-    // }
     const newPosition = await new Position(positionData).save();
 
-    console.log('newPosition', newPosition);
+    const historyRecord = generateHistoryObject(
+      ADD_POSITION,
+      null,
+      newPosition.name[UA].value,
+      newPosition._id,
+      [],
+      generateHistoryChangesData(newPosition, [NAME, POSITIONS]),
+      adminId
+    );
 
-    // const historyRecord = generateHistoryObject(
-    //   ADD_COLOR,
-    //   newColor.name[UA].value,
-    //   newColor.simpleName[UA].value,
-    //   newColor._id,
-    //   [],
-    //   generateHistoryChangesData(newColor, [NAME, SIMPLE_NAME, COLOR_HEX]),
-    //   adminId
-    // );
+    await addHistoryRecord(historyRecord);
 
-    // await addHistoryRecord(historyRecord);
     return newPosition;
   }
 
-  //   async deleteColor(id, { _id: adminId }) {
-  //     const color = await Position.findById(id).exec();
-  //     if (!color) {
-  //       throw new Error(COLOR_NOT_FOUND);
-  //     }
-  //     const materials = await Material.find({
-  //       colors: {
-  //         $in: id,
-  //       },
-  //     }).exec();
+  async deletePosition(id, { _id: adminId }) {
+    const position = await Position.findById(id).exec();
+    if (!position) {
+      throw new Error(POSITION_NOT_FOUND);
+    }
+    const deletedPosition = await Position.findByIdAndDelete(id).exec();
 
-  //     if (materials.length) {
-  //       return { items: materials };
-  //     }
+    const historyRecord = generateHistoryObject(
+      DELETE_POSITION,
+      null,
+      deletedPosition.name[UA].value,
+      deletedPosition._id,
+      generateHistoryChangesData(deletedPosition, [NAME, POSITIONS]),
+      [],
+      adminId
+    );
 
-  //     const deletedPisition = await Position.findByIdAndDelete(id).exec();
+    await addHistoryRecord(historyRecord);
 
-  // const historyRecord = generateHistoryObject(
-  //   DELETE_COLOR,
-  //   deletedColor.name[UA].value,
-  //   deletedColor.simpleName[UA].value,
-  //   deletedColor._id,
-  //   generateHistoryChangesData(deletedColor, [NAME, SIMPLE_NAME, COLOR_HEX]),
-  //   [],
-  //   adminId
-  // );
+    return deletedPosition;
+  }
 
-  // await addHistoryRecord(historyRecord);
+  async updatePosition(id, position, { _id: adminId }) {
+    const positionToUpdate = await Position.findById(id).exec();
 
-  //     return deletedPosition;
-  //   }
+    if (!positionToUpdate) {
+      throw new RuleError(POSITION_NOT_FOUND, NOT_FOUND);
+    }
+
+    const { beforeChanges, afterChanges } = getChanges(
+      positionToUpdate,
+      position
+    );
+
+    const historyRecord = generateHistoryObject(
+      EDIT_POSITION,
+      null,
+      positionToUpdate.name[UA].value,
+      positionToUpdate._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return Position.findByIdAndUpdate(id, position, {
+      new: true,
+    }).exec();
+  }
 }
 
 module.exports = new PositionService();

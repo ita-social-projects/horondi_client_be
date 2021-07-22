@@ -417,6 +417,10 @@ const typeDefs = gql`
   type countOrderResult {
     countOrder: Int
   }
+  type PaginatedPositions {
+    items: [Position]
+    count: Int
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
@@ -578,6 +582,8 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
+    getAllPositions(limit:Int!, skip:Int!, filter:PositionsFilterInput): PaginatedPositions!
+    getPositionById(id: ID): PositionResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -943,6 +949,8 @@ const typeDefs = gql`
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
     addPosition(position: PositionInput!): PositionResult 
+    deletePosition(id: ID):PositionResult
+    updatePosition(id: ID, position: PositionInput!): PositionResult
   }
 `;
 

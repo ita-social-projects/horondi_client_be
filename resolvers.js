@@ -127,7 +127,6 @@ const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
 const strapService = require('./modules/strap/strap.service');
-const positionService = require('./modules/position/position.service');
 
 const {
   ukrPoshtaQuery,
@@ -174,6 +173,7 @@ const SCHEMA_NAMES = {
   strap: 'Strap',
   paginatedStraps: 'PaginatedStraps',
   position: 'Position',
+  paginatedPositions: 'PaginatedPositions',
 };
 
 const {
@@ -243,6 +243,8 @@ const resolvers = {
     ...backQuery,
 
     ...strapQuery,
+
+    ...positionQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -938,6 +940,16 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.position;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedPositions: {
+    __resolveType: obj => {
+      console.log(obj);
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPositions;
       }
       return 'Error';
     },
