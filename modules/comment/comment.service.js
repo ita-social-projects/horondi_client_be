@@ -18,7 +18,7 @@ const {
   ORDER_STATUSES: { DELIVERED },
 } = require('../../consts/order-statuses');
 const {
-  isUserBoughtPoduct,
+  isUserBoughtProduct,
   filteredReplyComments,
   filterOptionComments,
 } = require('../helper-functions');
@@ -184,7 +184,7 @@ class CommentsService {
     if (!product) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
-    const order = await isUserBoughtPoduct(data.product, userId);
+    const order = await isUserBoughtProduct(data.product, userId);
 
     if (order.some(item => item.status === DELIVERED)) {
       data.verifiedPurchase = true;
@@ -199,7 +199,7 @@ class CommentsService {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
 
-    const order = await isUserBoughtPoduct(replyComment.productId, userId);
+    const order = await isUserBoughtProduct(replyComment.productId, userId);
 
     if (order.some(item => item.status === DELIVERED)) {
       replyComment.verifiedPurchase = true;

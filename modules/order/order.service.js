@@ -14,7 +14,7 @@ const { minDefaultDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
-  countItemsOccurency,
+  countItemsOccurrence,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
@@ -215,9 +215,9 @@ class OrdersService {
   }
 
   getOrdersStats(orders) {
-    const ordersOccurency = countItemsOccurency(orders);
-    const counts = Object.values(ordersOccurency);
-    const names = Object.keys(ordersOccurency);
+    const ordersOccurrence = countItemsOccurrence(orders);
+    const counts = Object.values(ordersOccurrence);
+    const names = Object.keys(ordersOccurrence);
 
     return { counts, names };
   }
