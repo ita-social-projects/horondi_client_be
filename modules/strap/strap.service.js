@@ -56,6 +56,7 @@ class StrapService {
 
   async getStrapById(id) {
     const foundStrap = await Strap.findById(id).exec();
+
     if (foundStrap) {
       return foundStrap;
     }
