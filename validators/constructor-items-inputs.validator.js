@@ -9,6 +9,7 @@ const {
 const {
   additionalPriceInputValidator,
 } = require('./additional-price-input.validators');
+const { optionType } = require('../consts');
 
 const {
   CONSTRUCTOR_OPTION_TYPES: {
@@ -72,7 +73,11 @@ const inputOptionValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: additionalPriceInputValidator,
+  additionalPrice: Joi.when(optionType, {
+      is: BACK_OPTION,
+      then: Joi.number(),
+      otherwise: additionalPriceInputValidator,
+    }),
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
