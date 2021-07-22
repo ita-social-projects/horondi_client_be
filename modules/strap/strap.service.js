@@ -64,13 +64,7 @@ class StrapService {
   }
 
   async getStrapsByModel(id) {
-    const strap = await Strap.find({ model: id }).exec();
-
-    if (!strap.length) {
-      throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
-    }
-
-    return strap;
+    return Strap.find({ model: id }).exec();
   }
 
   async deleteStrap(id, { _id: adminId }) {

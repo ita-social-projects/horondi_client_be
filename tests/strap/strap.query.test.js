@@ -113,8 +113,6 @@ describe('Strap queries', () => {
     const result = await getStrapsByModel(wrongModelId, operations);
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('message', STRAP_NOT_FOUND);
-    expect(result).toHaveProperty('statusCode', 404);
   });
 
   test('#5. should receive All Straps with COLOR', async () => {
