@@ -89,7 +89,7 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }, { _id: adminId }) {
-    let patternToUpdate = await Pattern.findById(id).exec();
+    const patternToUpdate = await Pattern.findById(id).exec();
 
     if (!patternToUpdate) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
@@ -97,13 +97,15 @@ class PatternsService {
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
+        pattern.additionalPrice,
       );
     }
 
+    await updatePrices(patternToUpdate, pattern, PATTERN, id);
+
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
-      pattern
+      pattern,
     );
 
     const historyRecord = generateHistoryObject(
@@ -113,22 +115,18 @@ class PatternsService {
       patternToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
-    patternToUpdate = await Pattern.findById(id).exec();
-
     if (!image) {
-      const updatedPatternWithoutImage = await Pattern.findByIdAndUpdate(
+      return Pattern.findByIdAndUpdate(
         id,
         pattern,
         {
           new: true,
-        }
+        },
       ).exec();
-      await updatePrices(patternToUpdate, pattern, PATTERN, id);
-      return updatedPatternWithoutImage;
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
@@ -146,7 +144,7 @@ class PatternsService {
     await uploadService.deleteFiles(Object.values(foundPattern.images));
     await uploadService.deleteFiles([foundPattern.constructorImg]);
 
-    const updatedPattern = await Pattern.findByIdAndUpdate(
+    return Pattern.findByIdAndUpdate(
       id,
       {
         ...pattern,
@@ -154,12 +152,8 @@ class PatternsService {
       },
       {
         new: true,
-      }
+      },
     ).exec();
-
-    await updatePrices(patternToUpdate, pattern, PATTERN, id);
-
-    return updatedPattern;
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
@@ -173,7 +167,7 @@ class PatternsService {
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
+        pattern.additionalPrice,
       );
     }
 
@@ -193,7 +187,7 @@ class PatternsService {
         ADDITIONAL_PRICE,
         AVAILABLE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -211,7 +205,7 @@ class PatternsService {
     }
 
     const deletedImages = await uploadService.deleteFiles(
-      Object.values(foundPattern.images)
+      Object.values(foundPattern.images),
     );
 
     await uploadService.deleteFiles([foundPattern.constructorImg]);
@@ -231,7 +225,7 @@ class PatternsService {
           AVAILABLE,
         ]),
         [],
-        adminId
+        adminId,
       );
 
       await addHistoryRecord(historyRecord);
