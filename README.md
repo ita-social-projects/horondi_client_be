@@ -259,14 +259,21 @@ if issue is in work it should be placed in proper column on dashboard according 
 [![@grebiniuk](https://avatars.githubusercontent.com/u/32039216?s=200)](https://github.com/grebiniuk)
 [![@AnastasiiaKolodiazhna](https://avatars.githubusercontent.com/u/47612654?s=200)](https://github.com/AnastasiiaKolodiazhna)
 [![@twihell](https://avatars.githubusercontent.com/u/14165251?s=200)](https://github.com/twihell)
+[![@ostgit12](https://avatars.githubusercontent.com/u/56637675?s=200)](https://github.com/ostgit12)
 [![@100vbaSasha](https://avatars.githubusercontent.com/u/55619101?s=200)](https://github.com/100vbaSasha)
 [![@Walleriy](https://avatars.githubusercontent.com/u/39501370?s=200)](https://github.com/Walleriy)
 [![@AndronShermeta](https://avatars.githubusercontent.com/u/73708298?s=200)](https://github.com/AndronShermeta)
-[![@khrystynaDm1307](https://avatars.githubusercontent.com/u/53223985?s=200)](https://github.com/khrystynaDm1307)
 [![@YuriiDubnytskyi](https://avatars.githubusercontent.com/u/41127730?s=200)](https://github.com/YuriiDubnytskyi)
 [![@Renfort](https://avatars.githubusercontent.com/u/60984686?s=200)](https://github.com/Renfort)
 [![@sergklukvin](https://avatars.githubusercontent.com/u/76059218?s=200)](https://github.com/sergklukvin)
 [![@mvmoshchovskyi](https://avatars.githubusercontent.com/u/48692693?s=200)](https://github.com/mvmoshchovskyi)
+[![@Vlodkojr](https://avatars.githubusercontent.com/u/45718327?s=200)](https://github.com/Vlodkojr)
+[![@Elugormo](https://avatars.githubusercontent.com/u/53963530?s=200)](https://github.com/Elugormo)
+[![@Mabonik](https://avatars.githubusercontent.com/u/61788391?s=200)](https://github.com/Mabonik)
+[![@NetkachovaAnastasiya](https://avatars.githubusercontent.com/u/60103758?s=200)](https://github.com/NetkachovaAnastasiya)
+[![@Serhii-Ahafonov](https://avatars.githubusercontent.com/u/61708033?s=200)](https://github.com/Serhii-Ahafonov)
+[![@Palidovych](https://avatars.githubusercontent.com/u/54260733?s=200)](https://github.com/Palidovych)
+
 
 ### Quality control team
 
