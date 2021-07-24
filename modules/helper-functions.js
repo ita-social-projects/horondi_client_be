@@ -4,7 +4,7 @@ const Order = require('./order/order.model');
 const { hyphen, exception, dictionary } = require('../consts/transliteration');
 
 const {
-  dayInMiliseconds,
+  dayInMilliseconds,
   userDateFormat,
   YEAR,
   QUARTER,
@@ -16,12 +16,12 @@ const {
 const { minDefaultDate } = require('../consts/date-range');
 
 const removeDaysFromData = (days, currentDate) =>
-  currentDate - days * dayInMiliseconds;
+  currentDate - days * dayInMilliseconds;
 
 const changeDataFormat = (data, options) =>
   new Date(data).toLocaleString('en-US', options);
 
-const countItemsOccurency = items =>
+const countItemsOccurrence = items =>
   items.reduce((acc, el) => {
     acc[el] = (acc[el] || 0) + 1;
     return acc;
@@ -144,7 +144,7 @@ const transliterate = words => {
   return _.words(transliterated_words).join(hyphen);
 };
 
-const isUserBoughtPoduct = (productId, userId) =>
+const isUserBoughtProduct = (productId, userId) =>
   Order.find({
     'items.product': productId,
     'user.id': userId,
@@ -213,9 +213,9 @@ module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
   changeDataFormat,
-  countItemsOccurency,
+  countItemsOccurrence,
   transliterate,
-  isUserBoughtPoduct,
+  isUserBoughtProduct,
   filterOptionComments,
   filteredReplyComments,
 };

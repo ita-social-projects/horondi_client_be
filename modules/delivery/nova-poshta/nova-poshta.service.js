@@ -3,7 +3,7 @@ const axios = require('axios');
 const {
   ORDER_CREATION_FAILED,
 } = require('../../../error-messages/delivery.message');
-const { horondiAddress, horondyCityRef } = require('../../../consts');
+const { horondiAddress, horondiCityRef } = require('../../../consts');
 const {
   NOVA_POSHTA_API_LINK,
   NOVA_POSHTA_API_KEY,
@@ -108,7 +108,7 @@ class NovaPoshtaService {
 
   async getNovaPoshtaPrices(data) {
     const {
-      citySender = horondyCityRef,
+      citySender = horondiCityRef,
       cityRecipient,
       weight,
       serviceType = WAREHOUSE_DOORS,
@@ -141,7 +141,7 @@ class NovaPoshtaService {
 
   async createNovaPoshtaOrder(data) {
     const {
-      citySender = horondyCityRef,
+      citySender = horondiCityRef,
       weight,
       payerType = SENDER,
       paymentMethod = CASH,
