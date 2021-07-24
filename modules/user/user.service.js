@@ -506,7 +506,7 @@ class UserService extends FilterHelper {
   }
 
   async googleUser(idToken, staySignedIn) {
-    const client = new OAuth2Client();
+    const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
       audience: REACT_APP_GOOGLE_CLIENT_ID,
