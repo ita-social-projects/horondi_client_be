@@ -508,9 +508,9 @@ class WishlistService {
   }
 
   async getAllUsersEmailsByWishlistProduct(productId) {
-    return await UserModel.find(
+    return UserModel.find(
       { 'wishlist.items.product': productId },
-      'wishlist email'
+      'wishlist email firstName'
     )
       .populate({
         path: 'wishlist.items.product',
