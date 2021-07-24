@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 const {
-  getAllUsersEmailsByWishlistProduct,
+  getAllUsersByWishlistProduct,
 } = require('../modules/wishlist/wishlist.service');
 const { sendEmail } = require('../modules/email/email.service');
 const { IMAGE_LINK } = require('../dotenvValidator');
@@ -30,7 +30,7 @@ const sendEmailsIfProductAvailableAgain = async (
     _.find(beforeChanges, el => el.available === false) &&
     _.find(afterChanges, el => el.available === true)
   ) {
-    const usersList = await getAllUsersEmailsByWishlistProduct(id);
+    const usersList = await getAllUsersByWishlistProduct(id);
     if (usersList.length) {
       await mailingWishlistProductAvailableAgain(usersList);
     }

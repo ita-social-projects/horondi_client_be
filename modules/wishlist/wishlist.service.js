@@ -507,7 +507,7 @@ class WishlistService {
     ).exec();
   }
 
-  async getAllUsersEmailsByWishlistProduct(productId) {
+  async getAllUsersByWishlistProduct(productId) {
     return UserModel.find(
       { 'wishlist.items.product': productId },
       'wishlist email firstName'
