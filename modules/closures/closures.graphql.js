@@ -5,7 +5,7 @@ const closureType = `
     optionType: OptionTypeEnum
     model: Model
     features: ClosureFeatureSet
-    image: String
+    images: ImageSet
     additionalPrice: [CurrencySet]
     available: Boolean
     customizable: Boolean
@@ -25,7 +25,7 @@ const closureInputs = `
     optionType: String
     model: ID
     features: ClosureFeatureSetInput
-    image: Upload
+    images: ImageSetInput
     additionalPrice: Int
     available: Boolean
     customizable: Boolean

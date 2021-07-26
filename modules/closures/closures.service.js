@@ -7,9 +7,6 @@ const {
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
-  FILE_SIZES: { LARGE },
-} = require('../../consts/file-sizes');
-const {
   HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
 } = require('../../consts/history-actions');
 const {
@@ -56,17 +53,15 @@ class ClosureService {
     throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
   }
 
-  async addClosure(data, upload, { _id: adminId }) {
-    if (upload) {
-      const uploadImage = await uploadService.uploadFile(upload, [LARGE]);
-      data.image = uploadImage.fileNames.large;
+  async addClosure(closure, image, { _id: adminId }) {
+    console.log(image);
+    if (image) {
+      const uploadImage = await uploadService.uploadFile(image);
+      closure.images = uploadImage.fileNames;
     }
+    closure.additionalPrice = await calculatePrice(closure.additionalPrice);
 
-    if (data.additionalPrice) {
-      data.additionalPrice = await calculatePrice(data.additionalPrice);
-    }
-
-    const newClosure = await new Closure(data).save();
+    const newClosure = await new Closure(closure).save();
 
     const historyRecord = generateHistoryObject(
       ADD_CLOSURE,
@@ -90,24 +85,25 @@ class ClosureService {
     return newClosure;
   }
 
-  async updateClosure(id, closure, upload, { _id: adminId }) {
-    if (upload) {
-      await uploadService.uploadFile(upload, [LARGE]);
-    }
-
+  async updateClosure(id, closure, image, { _id: adminId }) {
     const closureMaterial = await Closure.findById(id).exec();
-
+    console.log(image);
     if (!closureMaterial) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
+    closure.additionalPrice = await calculatePrice(closure.additionalPrice);
 
-    if (closure.additionalPrice) {
-      closure.additionalPrice = await calculatePrice(closure.additionalPrice);
+    if (image) {
+      if (closureMaterial.images) {
+        const images = Object.values(closureMaterial.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+      const uploadResult = await uploadService.uploadFile([image]);
+      const imageResults = await uploadResult[0];
+      closure.images = imageResults.fileNames;
     }
-
-    const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
-      new: true,
-    }).exec();
 
     const { beforeChanges, afterChanges } = getChanges(
       closureMaterial,
@@ -125,7 +121,9 @@ class ClosureService {
     );
     await addHistoryRecord(historyRecord);
 
-    return updatedClosure;
+    return await Closure.findByIdAndUpdate(id, closure, {
+      new: true,
+    }).exec();
   }
 
   async deleteClosure(id, { _id: adminId }) {

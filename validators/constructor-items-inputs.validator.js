@@ -70,7 +70,7 @@ const inputOptionValidator = Joi.object({
   additionalPrice: Joi.number()
     .optional()
     .default(0),
-  available: Joi.boolean().required(),
+  available: Joi.boolean(),
   customizable: Joi.boolean(),
 });
 

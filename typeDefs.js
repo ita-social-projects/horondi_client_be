@@ -880,8 +880,8 @@ const typeDefs = gql`
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
     "Closure Mutation"
-    addClosure(closure: ClosureInput!, upload: Upload): ClosureResult
-    updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
+    addClosure(closure: ClosureInput!, images: Upload): ClosureResult
+    updateClosure(id: ID!, closure: ClosureInput!, image: Upload): ClosureResult  
     deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
     addSize(size: SizeInput!): SizeResult!
