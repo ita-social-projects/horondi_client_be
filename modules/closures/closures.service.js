@@ -86,35 +86,36 @@ class ClosureService {
   }
 
   async updateClosure(id, closure, image, { _id: adminId }) {
-    const closureMaterial = await Closure.findById(id).exec();
-    console.log(image);
-    if (!closureMaterial) {
+    const closureToUpdate = await Closure.findById(id).exec();
+
+    if (!closureToUpdate) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
     closure.additionalPrice = await calculatePrice(closure.additionalPrice);
 
     if (image) {
-      if (closureMaterial.images) {
-        const images = Object.values(closureMaterial.images).filter(
+      if (closureToUpdate.images) {
+        const images = Object.values(closureToUpdate.images).filter(
           item => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }
-      const uploadResult = await uploadService.uploadFile([image]);
-      const imageResults = await uploadResult[0];
+
+      const uploadImage = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadImage[0];
       closure.images = imageResults.fileNames;
     }
 
     const { beforeChanges, afterChanges } = getChanges(
-      closureMaterial,
+      closureToUpdate,
       closure
     );
 
     const historyRecord = generateHistoryObject(
       EDIT_CLOSURE,
-      closureMaterial.model?._id,
-      closureMaterial.name[UA].value,
-      closureMaterial._id,
+      closureToUpdate.model?._id,
+      closureToUpdate.name[UA].value,
+      closureToUpdate._id,
       beforeChanges,
       afterChanges,
       adminId
