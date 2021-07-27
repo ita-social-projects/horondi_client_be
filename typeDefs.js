@@ -545,7 +545,7 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size
-    getAllClosure(limit:Int!, skip:Int!, filter:ClosureFilterInput): PaginatedClosure!
+    getAllClosure(limit:Int, skip:Int, filter:ClosureFilterInput): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
