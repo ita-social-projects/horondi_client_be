@@ -1,0 +1,37 @@
+extends template-en
+block subheaderText
+    p.paymentText Order payment
+block content
+    div.contentPaymentText
+        div.productTableContent
+            p.congrats Congratulations! #[br] You are only one step back from receiving your order: #[br]
+            table.productTable
+                caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
+                tr.tableHead
+                    th Photo
+                    th Name
+                    th Quantity
+                    th Price
+                each val in items
+                    if val.product
+                        tr.tableBody
+                            td
+                                img.tableImg(src= `${imagesUrl}${val.product.images.primary.large}`)
+                            td
+                                p= val.product.name[0].value
+                                p= `Size - ${val.options.size.name}`
+                            td= val.quantity
+                            td= `${val.fixedPrice[0].value} ${val.fixedPrice[0].currency}`
+                    else if val.fromConstructor
+                        tr.tableBody
+                            td
+                                img.tableImg(src= `${imagesUrl}large_21r21sdeokmxcw0i8_Rolltop_blue.png`)
+                            td
+                                p= val.fromConstructor.product.name[0].value
+                                p= `Size - ${val.options.size.name}`
+                            td= val.quantity
+                            td= `${val.fixedPrice[0].value} ${val.fixedPrice[0].currency}`
+        button.confirm
+            a(href=paymentUrl) Pay for the order
+        p.operationsLink or follow the link below:
+        a.aoperationsLink(href=paymentUrl) #{paymentUrl}

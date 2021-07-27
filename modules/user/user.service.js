@@ -26,7 +26,7 @@ const {
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
-  countItemsOccurency,
+  countItemsOccurrence,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
@@ -370,12 +370,12 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formatedData = users.map(el =>
+    const formattedData = users.map(el =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
-    const userOccurency = countItemsOccurency(formatedData);
-    const counts = Object.values(userOccurency);
-    const names = Object.keys(userOccurency);
+    const userOccurrence = countItemsOccurrence(formattedData);
+    const counts = Object.values(userOccurrence);
+    const names = Object.keys(userOccurrence);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
       0
@@ -506,7 +506,7 @@ class UserService extends FilterHelper {
   }
 
   async googleUser(idToken, staySignedIn) {
-    const client = new OAuth2Client();
+    const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
       audience: REACT_APP_GOOGLE_CLIENT_ID,
@@ -565,9 +565,7 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
-    const savedUser = await user.save();
-
-    return savedUser;
+    return user.save();
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
@@ -600,6 +598,7 @@ class UserService extends FilterHelper {
     savedUser.confirmationToken = accessToken;
 
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
       token: accessToken,
     });
     await savedUser.save();
@@ -619,6 +618,7 @@ class UserService extends FilterHelper {
     user.confirmationToken = accessToken;
     await user.save();
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
       token: accessToken,
     });
     return true;
@@ -675,7 +675,7 @@ class UserService extends FilterHelper {
     };
   }
 
-  async recoverUser(email) {
+  async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
@@ -687,6 +687,7 @@ class UserService extends FilterHelper {
     });
     user.recoveryToken = accessToken;
     await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+      language,
       token: accessToken,
     });
     await user.save();

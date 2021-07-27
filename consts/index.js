@@ -18,9 +18,9 @@ const defaultPaginationParams = {
   limit: 10,
 };
 
-const horondyCityRef = 'db5c88f5-391c-11dd-90d9-001a92567626';
+const horondiCityRef = 'db5c88f5-391c-11dd-90d9-001a92567626';
 
-const dayInMiliseconds = 86400000;
+const dayInMilliseconds = 86400000;
 const monthInMilliseconds = 2592000000;
 
 const userDateFormat = { month: 'short', day: 'numeric' };
@@ -66,9 +66,9 @@ module.exports = {
   roles,
   availableForRegistrationRoles,
   horondiAddress,
-  horondyCityRef,
+  horondiCityRef,
   monthInMilliseconds,
-  dayInMiliseconds,
+  dayInMilliseconds,
   userDateFormat,
   defaultPaginationParams,
   OTHERS,

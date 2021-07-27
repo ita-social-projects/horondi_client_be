@@ -140,6 +140,10 @@ const {
   strapFeatureType,
   strapInputs,
 } = require('./modules/strap/strap.graphql');
+const {
+  positionType,
+  positionInputs,
+} = require('./modules/position/position.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -189,7 +193,7 @@ const typeDefs = gql`
   ${backFeatureSet}
   ${strapType}
   ${strapFeatureType}
- 
+  ${positionType}
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -426,6 +430,10 @@ const typeDefs = gql`
   type countOrderResult {
     countOrder: Int
   }
+  type PaginatedPositions {
+    items: [Position]
+    count: Int
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
@@ -460,6 +468,7 @@ const typeDefs = gql`
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
+  union PositionResult = Position | Error
   type Query {
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
@@ -548,7 +557,7 @@ const typeDefs = gql`
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
-    getPaymentCheckout(data: PaymentInput!): OrderResult
+    getPaymentCheckout(data: PaymentInput!, language: Int!): OrderResult
     getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
     checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
@@ -586,6 +595,8 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
+    getAllPositions(limit:Int!, skip:Int!, filter:PositionsFilterInput): PaginatedPositions!
+    getPositionById(id: ID): PositionResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -671,6 +682,7 @@ const typeDefs = gql`
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}
+  ${positionInputs}
   input LanguageInput {
     lang: String!
     value: String
@@ -953,6 +965,9 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
+    addPosition(position: PositionInput!): PositionResult 
+    deletePosition(id: ID):PositionResult
+    updatePosition(id: ID, position: PositionInput!): PositionResult
   }
 `;
 

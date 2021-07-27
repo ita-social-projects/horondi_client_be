@@ -101,7 +101,7 @@ class BackService {
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
-    }).exec();
+    }).exec();pa
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
 
