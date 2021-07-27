@@ -506,7 +506,7 @@ class UserService extends FilterHelper {
   }
 
   async googleUser(idToken, staySignedIn) {
-    const client = new OAuth2Client();
+    const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
       audience: REACT_APP_GOOGLE_CLIENT_ID,
@@ -598,6 +598,7 @@ class UserService extends FilterHelper {
     savedUser.confirmationToken = accessToken;
 
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
       token: accessToken,
     });
     await savedUser.save();
@@ -617,6 +618,7 @@ class UserService extends FilterHelper {
     user.confirmationToken = accessToken;
     await user.save();
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
       token: accessToken,
     });
     return true;
@@ -673,7 +675,7 @@ class UserService extends FilterHelper {
     };
   }
 
-  async recoverUser(email) {
+  async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
@@ -685,6 +687,7 @@ class UserService extends FilterHelper {
     });
     user.recoveryToken = accessToken;
     await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+      language,
       token: accessToken,
     });
     await user.save();

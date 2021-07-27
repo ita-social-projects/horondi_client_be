@@ -117,7 +117,7 @@ class EmailChatService {
       throw new RuleError(QUESTION_NOT_FOUND, BAD_REQUEST);
     }
     const admin = await userService.getUserByFieldOrThrow(ID, adminId);
-    const { email, senderName, text: emailContent } = question;
+    const { language, email, senderName, text: emailContent } = question;
 
     question.status = ANSWERED;
     question.answer.admin = admin;
@@ -132,6 +132,7 @@ class EmailChatService {
     ).exec();
 
     await emailService.sendEmail(email, SEND_EMAIL_ANSWER, {
+      language,
       senderName,
       question: emailContent,
       answer: text,
