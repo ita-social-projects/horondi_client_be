@@ -106,6 +106,11 @@ const { backQuery, backMutation } = require('./modules/back/back.resolver');
 
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 
+const {
+  positionMutation,
+  positionQuery,
+} = require('./modules/position/position.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -167,6 +172,8 @@ const SCHEMA_NAMES = {
   paginatedBacks: 'PaginatedBacks',
   strap: 'Strap',
   paginatedStraps: 'PaginatedStraps',
+  position: 'Position',
+  paginatedPositions: 'PaginatedPositions',
 };
 
 const {
@@ -236,6 +243,8 @@ const resolvers = {
     ...backQuery,
 
     ...strapQuery,
+
+    ...positionQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -613,6 +622,8 @@ const resolvers = {
     ...backMutation,
 
     ...strapMutation,
+
+    ...positionMutation,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -920,6 +931,25 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedStraps;
+      }
+      return 'Error';
+    },
+  },
+
+  PositionResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.position;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedPositions: {
+    __resolveType: obj => {
+      console.log(obj);
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPositions;
       }
       return 'Error';
     },

@@ -29,6 +29,7 @@ const INPUT_FIELDS = {
   REPLY_COMMENT_DATA: 'replyCommentData',
   COMMENT: 'comment',
   HOME_PAGE_SLIDE: 'slide',
+  POSITION: 'position',
 };
 
 module.exports = {
