@@ -35,6 +35,13 @@ const closureInputs = `
     material: ID
     color: ID
   }
+  
+    input ClosureFilterInput{
+    search: String
+    name:String
+    model:[String]
+    available:[String]
+  }
 `;
 
 module.exports = {

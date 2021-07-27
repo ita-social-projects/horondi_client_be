@@ -30,15 +30,22 @@ const {
 } = require('../../consts/history-obj-keys');
 
 class ClosureService {
-  async getAllClosure({ skip, limit }) {
-    const items = await Closure.find()
+  async getAllClosure(limit, skip, filter) {
+    const filterOptions = {};
+
+    if (filter?.search) {
+      filterOptions['name.0.value'] = {
+        $regex: `${filter.search.trim()}`,
+        $options: 'i',
+      };
+    }
+    const items = await Closure.find(filterOptions)
       .skip(skip)
       .limit(limit)
       .exec();
 
-    const count = await Closure.find()
-      .countDocuments()
-      .exec();
+    const count = await Closure.countDocuments(filterOptions).exec();
+
     return {
       items,
       count,
