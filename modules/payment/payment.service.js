@@ -29,7 +29,7 @@ const {
 } = require('../../consts/email-actions');
 
 class PaymentService {
-  async getPaymentCheckout({ orderId, currency, amount }) {
+  async getPaymentCheckout({ orderId, currency, amount }, { language }) {
     if (!ObjectId.isValid(orderId))
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
@@ -65,6 +65,7 @@ class PaymentService {
         })
         .exec();
       await sendEmail(order.user.email, PAYMENT_ORDER, {
+        language,
         items: order.items,
         totalPrice: order.totalItemsPrice,
         paymentUrl: order.paymentUrl,
