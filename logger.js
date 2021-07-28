@@ -5,11 +5,12 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.colorize({ all: true }),
-    winston.format.printf(({ message, timestamp }) => {
+    winston.format.printf(({ level, message, timestamp }) => {
       try {
-        const winstonMessage = JSON.parse(`${message}`);
-        console.log('sdfgdsfgdsfgdsfgdsfg');
-        return `Date=${timestamp} key=${winstonMessage.key} value=${winstonMessage.value} `;
+        const winstonMessage = JSON.parse(message.match(/{.*}/g)[0]);
+        return `${level} -> Date=${timestamp || Date.now()} key=${
+          winstonMessage.key
+        } value=${winstonMessage.value}`;
       } catch (err) {
         return message;
       }
