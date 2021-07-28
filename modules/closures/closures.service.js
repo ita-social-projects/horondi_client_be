@@ -132,6 +132,10 @@ class ClosureService {
       new: true,
     }).exec();
 
+    if (!updatedClosure) {
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
+    }
+
     return updatedClosure;
   }
 
