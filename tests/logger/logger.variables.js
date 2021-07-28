@@ -1,4 +1,5 @@
 const winston = require('winston');
+const Path = require('path');
 
 const { dotenvVariables } = require('../../dotenvValidator');
 
@@ -14,10 +15,13 @@ const logString = JSON.stringify({
 
 const matchLogString = `key=${dotenvVariables[0]} value=`;
 
+const logFilename = Path.resolve(__dirname, '../../combined.log');
+
 module.exports = {
   regularLogMessage,
   logLevels,
   totalLevelsCount,
   logString,
   matchLogString,
+  logFilename,
 };

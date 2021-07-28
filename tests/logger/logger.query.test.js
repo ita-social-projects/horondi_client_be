@@ -1,12 +1,15 @@
 const logger = require('../../logger');
 const loggerHttp = require('../../loggerHttp');
 
+const { getLogsFromFile } = require('./logger.helper');
+
 const {
   regularLogMessage,
   logLevels,
   totalLevelsCount,
   logString,
   matchLogString,
+  logFilename,
 } = require('./logger.variables');
 
 let logMockFn;
@@ -54,6 +57,11 @@ describe('Logger looks query', () => {
       expect.stringMatching(regularLogMessage)
     );
     expect(mockStdoutWrite).toHaveBeenCalledTimes(2);
+  });
+
+  it('Should write logs to file', async () => {
+    const logs = await getLogsFromFile(logFilename);
+    expect(logFilename).toBe(logs);
   });
 
   afterEach(() => {
