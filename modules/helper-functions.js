@@ -4,7 +4,7 @@ const Order = require('./order/order.model');
 const { hyphen, exception, dictionary } = require('../consts/transliteration');
 
 const {
-  dayInMiliseconds,
+  dayInMilliseconds,
   userDateFormat,
   YEAR,
   QUARTER,
@@ -16,12 +16,12 @@ const {
 const { minDefaultDate } = require('../consts/date-range');
 
 const removeDaysFromData = (days, currentDate) =>
-  currentDate - days * dayInMiliseconds;
+  currentDate - days * dayInMilliseconds;
 
 const changeDataFormat = (data, options) =>
   new Date(data).toLocaleString('en-US', options);
 
-const countItemsOccurency = items =>
+const countItemsOccurrence = items =>
   items.reduce((acc, el) => {
     acc[el] = (acc[el] || 0) + 1;
     return acc;
@@ -144,7 +144,7 @@ const transliterate = words => {
   return _.words(transliterated_words).join(hyphen);
 };
 
-const isUserBoughtPoduct = (productId, userId) =>
+const isUserBoughtProduct = (productId, userId) =>
   Order.find({
     'items.product': productId,
     'user.id': userId,
@@ -176,15 +176,46 @@ const filterOptionComments = filter => {
     const search = filter.search.trim();
     filterOptions.text = { $regex: `${search}`, $options: 'i' };
   }
+  if (filter?.productId) {
+    filterOptions.product = filter.productId;
+  }
   return filterOptions;
+};
+const filteredReplyComments = (filter, arr) => {
+  let reply = arr;
+  if (filter?.showReplyComment?.length) {
+    reply = reply.filter(item =>
+      filter.showReplyComment.includes(item.showReplyComment.toString())
+    );
+  }
+  if (filter?.search && filter?.search !== '') {
+    reply = reply.filter(
+      item =>
+        item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) > -1
+    );
+  }
+  if (
+    filter?.createdAt &&
+    Object.keys(filter?.createdAt).length > 0 &&
+    filter?.createdAt?.dateFrom !== '' &&
+    filter?.createdAt?.dateTo !== ''
+  ) {
+    reply = reply.filter(
+      item =>
+        new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
+        new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
+    );
+  }
+  return reply;
 };
 
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
   changeDataFormat,
-  countItemsOccurency,
+  countItemsOccurrence,
   transliterate,
-  isUserBoughtPoduct,
+  isUserBoughtProduct,
   filterOptionComments,
+  filteredReplyComments,
 };

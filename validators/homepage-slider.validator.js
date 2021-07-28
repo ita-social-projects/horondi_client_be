@@ -17,6 +17,7 @@ const homepageSliderValidator = Joi.object({
     .required()
     .trim(),
   title: Joi.array().items(languageSchemaValidator),
+  order: Joi.number().required(),
   description: Joi.array().items(languageSchemaValidator),
   images: Joi.object({
     large: Joi.string().trim(),

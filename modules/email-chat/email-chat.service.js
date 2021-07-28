@@ -113,12 +113,11 @@ class EmailChatService {
 
   async answerEmailQuestion({ questionId, adminId, text }) {
     const question = await this.getEmailQuestionById(questionId).exec();
-    const admin = await userService.getUserByFieldOrThrow(ID, adminId);
-    const { email, senderName, text: emailContent } = question;
-
     if (!question) {
       throw new RuleError(QUESTION_NOT_FOUND, BAD_REQUEST);
     }
+    const admin = await userService.getUserByFieldOrThrow(ID, adminId);
+    const { language, email, senderName, text: emailContent } = question;
 
     question.status = ANSWERED;
     question.answer.admin = admin;
@@ -133,6 +132,7 @@ class EmailChatService {
     ).exec();
 
     await emailService.sendEmail(email, SEND_EMAIL_ANSWER, {
+      language,
       senderName,
       question: emailContent,
       answer: text,

@@ -8,6 +8,7 @@ const countComments = 1;
 const limitCount = 1;
 const filterComment = { show: ['false'], search: 'test text' };
 const paginationComment = { skip: 0, limit: 10 };
+const sortComment = { date: -1 };
 
 const newComment = userId => ({
   text: 'Test text',
@@ -95,4 +96,5 @@ module.exports = {
   limitCount,
   filterComment,
   paginationComment,
+  sortComment,
 };

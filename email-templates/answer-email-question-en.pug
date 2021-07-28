@@ -1,0 +1,9 @@
+extends template-en
+block subheaderText
+    p.answerReceivedText Your question has been answered
+block content
+    div.answerDiv
+        p Greetings, #{senderName}! You left your question on HORONDI.
+        p Your question: #[strong #{question}]
+        p Answer: #[strong #{answer}]
+        p.condition If, by chance, you haven't left this question, please disregard this letter and accept our gratitude.
