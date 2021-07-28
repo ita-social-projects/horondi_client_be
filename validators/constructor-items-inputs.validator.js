@@ -65,6 +65,16 @@ const inputClosureValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  customizable: Joi.boolean(),
 });
 
 const inputOptionValidator = Joi.object({
