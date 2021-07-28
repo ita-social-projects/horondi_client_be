@@ -128,9 +128,11 @@ class ClosureService {
     );
     await addHistoryRecord(historyRecord);
 
-    return await Closure.findByIdAndUpdate(id, closure, {
+    const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
       new: true,
     }).exec();
+
+    return updatedClosure;
   }
 
   async deleteClosure(id, { _id: adminId }) {
