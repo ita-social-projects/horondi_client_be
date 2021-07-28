@@ -8,6 +8,7 @@ const logger = winston.createLogger({
     winston.format.printf(({ message, timestamp }) => {
       try {
         const winstonMessage = JSON.parse(`${message}`);
+        console.log('sdfgdsfgdsfgdsfgdsfg');
         return `Date=${timestamp} key=${winstonMessage.key} value=${winstonMessage.value} `;
       } catch (err) {
         return message;

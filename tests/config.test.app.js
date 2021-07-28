@@ -9,6 +9,7 @@ const formatError = require('../utils/format-error');
 const verifyUser = require('../utils/verify-user');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
+const loggerHttp = require('../loggerHttp');
 
 connectDB();
 
@@ -36,7 +37,15 @@ const config = {
     }
   },
   plugins: [errorOutputPlugin],
-  formatError,
+  formatError: formatError(err => {
+    loggerHttp.error(
+      JSON.stringify({
+        key: err.extensions.code,
+        value: err.message,
+      }),
+      { metadata: err.extensions.exception.stacktrace }
+    );
+  }),
   introspection: true,
   cors: { origin: '*' },
 };
