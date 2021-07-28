@@ -1,19 +1,25 @@
 const logger = require('../../logger');
 const loggerHttp = require('../../loggerHttp');
 
-const { dotenvVariables } = require('../../dotenvValidator');
-
 const {
   regularLogMessage,
   logLevels,
   totalLevelsCount,
+  logString,
+  matchLogString,
 } = require('./logger.variables');
 
 let logMockFn;
+let mockStdoutWrite;
+let mockStdout;
 
 describe('Logger looks query', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     logMockFn = jest.fn(() => regularLogMessage);
+    mockStdoutWrite = jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation(() => true);
+    mockStdout = jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
   it('Should receive loggers', () => {
@@ -29,14 +35,31 @@ describe('Logger looks query', () => {
   });
 
   it('Should write message to console', () => {
-    const log = logger.info(
-      JSON.stringify({
-        key: dotenvVariables[0],
-        value: process.env[dotenvVariables[0]],
-      })
-    );
+    const log = logger.log('info', logString);
 
     expect(log).not.toBeUndefined();
-    expect(log).toEqual(expect.any('format'));
+    expect(mockStdoutWrite).toHaveBeenCalledWith(
+      expect.stringMatching(matchLogString)
+    );
+    expect(mockStdoutWrite).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should write full string', () => {
+    const log = logger.info(regularLogMessage);
+    const log2 = logger.error(regularLogMessage);
+
+    expect(log).not.toBeUndefined();
+    expect(log2).not.toBeUndefined();
+    expect(mockStdoutWrite).toHaveBeenCalledWith(
+      expect.stringMatching(regularLogMessage)
+    );
+    expect(mockStdoutWrite).toHaveBeenCalledTimes(2);
+  });
+
+  afterEach(() => {
+    mockStdoutWrite.mockRestore();
+    mockStdoutWrite.mockClear();
+    mockStdout.mockRestore();
+    mockStdout.mockClear();
   });
 });
