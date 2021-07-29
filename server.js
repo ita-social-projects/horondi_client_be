@@ -51,7 +51,7 @@ const server = new ApolloServer({
         method: req.method,
         baseUrl: req.baseUrl,
         date: req.fresh,
-        ip: req.remoteAddress,
+        ip: req.connection.remoteAddress,
       }),
     });
 
