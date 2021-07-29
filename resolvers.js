@@ -127,6 +127,7 @@ const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
 const strapService = require('./modules/strap/strap.service');
+const positionService = require('./modules/position/position.service');
 
 const {
   ukrPoshtaQuery,
@@ -550,7 +551,10 @@ const resolvers = {
     admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
   Pocket: {
-    model: parent => modelService.getModelById(parent.model),
+    positions: parent =>
+      parent.positions.map(position =>
+        positionService.getPositionById(position)
+      ),
   },
   Back: {
     model: parent => modelService.getModelById(parent.model),
