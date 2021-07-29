@@ -1,4 +1,4 @@
-const formatError = (logFunction = () => {}) => err => {
+const formatError = logFunction => err => {
   const { originalError } = err;
 
   if (originalError && originalError.name === 'RuleError') {
@@ -10,7 +10,7 @@ const formatError = (logFunction = () => {}) => err => {
 
   try {
     logFunction(err);
-  } catch (err) {
+  } catch (error) {
     console.error('Error: logging of error');
   }
 
