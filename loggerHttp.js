@@ -1,9 +1,17 @@
 const winston = require('winston');
-const { MONGO_URL } = require('./dotenvValidator');
+const { MONGO_URL, NODE_ENV } = require('./dotenvValidator');
 
 require('winston-mongodb');
 
 const OneWeekInSeconds = 604800;
+
+let errorLogFilename = 'error.log';
+let logFilename = 'combined.log';
+
+if (NODE_ENV === 'test') {
+  errorLogFilename = 'test-error.log';
+  logFilename = 'test-combined.log';
+}
 
 const mongoLogOptions = {
   name: 'log_info',
@@ -24,8 +32,8 @@ const loggerHttp = winston.createLogger({
 
   defaultMeta: { service: 'user-service' },
   transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new winston.transports.File({ filename: errorLogFilename, level: 'error' }),
+    new winston.transports.File({ filename: logFilename }),
     new winston.transports.MongoDB(mongoLogOptions),
   ],
 });
