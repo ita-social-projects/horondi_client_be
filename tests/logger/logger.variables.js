@@ -13,9 +13,17 @@ const logString = JSON.stringify({
   value: process.env[dotenvVariables[0]],
 });
 
+const messageString = JSON.stringify({
+  method: 'req.method',
+  baseUrl: 'req.baseUrl',
+  date: 'req.fresh',
+  ip: 'req.remoteAddress',
+});
+
 const matchLogString = `key=${dotenvVariables[0]} value=`;
 
-const logFilename = Path.resolve(__dirname, '../../combined.log');
+const logFilename = Path.resolve(__dirname, '../../test-combined.log');
+const errorLogFilename = Path.resolve(__dirname, '../../test-error.log');
 
 module.exports = {
   regularLogMessage,
@@ -24,4 +32,6 @@ module.exports = {
   logString,
   matchLogString,
   logFilename,
+  errorLogFilename,
+  messageString,
 };

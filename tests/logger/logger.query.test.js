@@ -1,7 +1,11 @@
 const logger = require('../../logger');
 const loggerHttp = require('../../loggerHttp');
 
-const { getLogsFromFile } = require('./logger.helper');
+const {
+  getLogsFromFile,
+  checkLogFiles,
+  clearLogFiles,
+} = require('./logger.helper');
 
 const {
   regularLogMessage,
@@ -10,11 +14,14 @@ const {
   logString,
   matchLogString,
   logFilename,
+  errorLogFilename,
+  messageString,
 } = require('./logger.variables');
 
 let logMockFn;
 let mockStdoutWrite;
 let mockStdout;
+let mockFilestream;
 
 describe('Logger looks query', () => {
   beforeEach(() => {
@@ -23,6 +30,9 @@ describe('Logger looks query', () => {
       .spyOn(process.stdout, 'write')
       .mockImplementation(() => true);
     mockStdout = jest.spyOn(console, 'log').mockImplementation(() => {});
+    mockFilestream = jest
+      .spyOn(loggerHttp, 'log')
+      .mockImplementation(() => true);
   });
 
   it('Should receive loggers', () => {
@@ -59,15 +69,45 @@ describe('Logger looks query', () => {
     expect(mockStdoutWrite).toHaveBeenCalledTimes(2);
   });
 
-  it('Should write logs to file', async () => {
-    const logs = await getLogsFromFile(logFilename);
-    expect(logFilename).toBe(logs);
+  it('Should create log files', async () => {
+    loggerHttp.log({ level: 'info', message: messageString });
+    loggerHttp.error(logString);
+    expect(checkLogFiles(errorLogFilename, logFilename)).toBeTruthy();
   });
 
-  afterEach(() => {
+  it('Should write logs to file', async () => {
+    const logsCount = 5;
+
+    for (let i = 0; i < logsCount; i++) {
+      loggerHttp.log({ level: 'info', message: messageString });
+      loggerHttp.error(logString);
+    }
+
+    const logs = await getLogsFromFile(logFilename);
+    const errLogs = await getLogsFromFile(errorLogFilename);
+
+    expect(mockFilestream).toHaveBeenCalledTimes(logsCount);
+    expect(logs.length).toBeGreaterThanOrEqual(2);
+    expect(errLogs.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('Should write log to database and file without errors', () => {
+    const logFn = () => {
+      loggerHttp.log({ level: 'info', message: messageString });
+      loggerHttp.error(logString);
+    };
+    expect(() => {
+      logFn();
+    }).not.toThrow();
+  });
+
+  afterEach(async () => {
     mockStdoutWrite.mockRestore();
     mockStdoutWrite.mockClear();
     mockStdout.mockRestore();
     mockStdout.mockClear();
+    mockFilestream.mockRestore();
+    mockFilestream.mockClear();
+    await clearLogFiles(errorLogFilename, logFilename);
   });
 });
