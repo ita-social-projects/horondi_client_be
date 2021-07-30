@@ -17,7 +17,7 @@ const mongoLogOptions = {
   name: 'log_info',
   storeHost: true,
   db: MONGO_URL,
-  expire: OneWeekInSeconds,
+  expire: Math.floor(OneWeekInSeconds / 7), // 1 day
   collection: 'logs',
   capped: true,
 };
