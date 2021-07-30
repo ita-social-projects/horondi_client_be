@@ -582,7 +582,7 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
-    getAllPositions(limit:Int!, skip:Int!, filter:PositionsFilterInput): PaginatedPositions!
+    getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
     getPositionById(id: ID): PositionResult
   }
   input Pagination {
