@@ -1,17 +1,9 @@
 const winston = require('winston');
-const { MONGO_URL, NODE_ENV } = require('./dotenvValidator');
+const { MONGO_URL } = require('./dotenvValidator');
 
 require('winston-mongodb');
 
 const OneWeekInSeconds = 604800;
-
-let errorLogFilename = 'error.log';
-let logFilename = 'combined.log';
-
-if (NODE_ENV === 'test') {
-  errorLogFilename = 'test-error.log';
-  logFilename = 'test-combined.log';
-}
 
 const mongoLogOptions = {
   name: 'log_info',
