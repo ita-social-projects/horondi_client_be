@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const logger = require('../../logger');
 const loggerHttp = require('../../loggerHttp');
 
@@ -111,9 +109,5 @@ describe('Logger looks query', () => {
     mockFilestream.mockRestore();
     mockFilestream.mockClear();
     await clearLogFiles(errorLogFilename, logFilename);
-  });
-
-  afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
   });
 });
