@@ -87,7 +87,8 @@
     "start-server-and-test": "^1.11.3",
     "uniqid": "^5.2.0",
     "util": "^0.12.3",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "winston-mongodb": "^5.0.7"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^1.17.7",
