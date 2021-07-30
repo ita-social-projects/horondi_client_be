@@ -2,12 +2,6 @@ const logger = require('../../logger');
 const loggerHttp = require('../../loggerHttp');
 
 const {
-  getLogsFromFile,
-  checkLogFiles,
-  clearLogFiles,
-} = require('./logger.helper');
-
-const {
   regularLogMessage,
   logLevels,
   totalLevelsCount,
@@ -69,12 +63,6 @@ describe('Logger looks query', () => {
     expect(mockStdoutWrite).toHaveBeenCalledTimes(2);
   });
 
-  it('Should create log files', async () => {
-    loggerHttp.log({ level: 'info', message: messageString });
-    loggerHttp.error(logString);
-    expect(checkLogFiles(errorLogFilename, logFilename)).toBeTruthy();
-  });
-
   it('Should write logs to file', async () => {
     const logsCount = 5;
 
@@ -82,9 +70,6 @@ describe('Logger looks query', () => {
       loggerHttp.log({ level: 'info', message: messageString });
       loggerHttp.error(logString);
     }
-
-    const logs = await getLogsFromFile(logFilename);
-    const errLogs = await getLogsFromFile(errorLogFilename);
 
     expect(mockFilestream).toHaveBeenCalledTimes(logsCount);
   });
@@ -99,13 +84,12 @@ describe('Logger looks query', () => {
     }).not.toThrow();
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     mockStdoutWrite.mockRestore();
     mockStdoutWrite.mockClear();
     mockStdout.mockRestore();
     mockStdout.mockClear();
     mockFilestream.mockRestore();
     mockFilestream.mockClear();
-    await clearLogFiles(errorLogFilename, logFilename);
   });
 });
