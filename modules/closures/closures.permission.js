@@ -13,7 +13,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  inputOptionValidator,
+  inputClosureValidator,
 } = require('../../validators/constructor-items-inputs.validator');
 
 const closurePermissionsQuery = {
@@ -23,12 +23,12 @@ const closurePermissionsQuery = {
 
 const closurePermissionsMutations = {
   addClosure: and(
-    inputDataValidation(CLOSURE, inputOptionValidator),
+    inputDataValidation(CLOSURE, inputClosureValidator),
     hasRoles([ADMIN, SUPERADMIN]),
     checkIfItemExists(CLOSURE, ClosureModel)
   ),
   updateClosure: and(
-    inputDataValidation(CLOSURE, inputOptionValidator),
+    inputDataValidation(CLOSURE, inputClosureValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteClosure: hasRoles([ADMIN, SUPERADMIN]),

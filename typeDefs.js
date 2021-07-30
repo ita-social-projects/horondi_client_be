@@ -561,7 +561,7 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size
-    getAllClosure(limit: Int, skip: Int): PaginatedClosure!
+    getAllClosure(limit:Int, skip:Int, filter:ClosureFilterInput): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
@@ -901,8 +901,8 @@ const typeDefs = gql`
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
     "Closure Mutation"
-    addClosure(closure: ClosureInput!, upload: Upload): ClosureResult
-    updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
+    addClosure(closure: ClosureInput!, images: Upload): ClosureResult
+    updateClosure(id: ID!, closure: ClosureInput!, image: Upload): ClosureResult  
     deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
     addSize(size: SizeInput!): SizeResult!
