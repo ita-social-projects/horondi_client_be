@@ -79,7 +79,11 @@ const server = new ApolloServer({
         key: err.extensions.code,
         value: err.message,
       }),
-      { metadata: err.extensions.exception.stacktrace }
+      {
+        metadata: err.extensions.exception
+          ? err.extensions.exception.stacktrace
+          : [],
+      }
     );
   }),
   introspection: true,

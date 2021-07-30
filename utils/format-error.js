@@ -11,7 +11,7 @@ const formatError = logFunction => err => {
   try {
     logFunction(err);
   } catch (error) {
-    console.error('Error: logging of error');
+    console.error(error);
   }
 
   return err;
