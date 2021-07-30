@@ -53,6 +53,9 @@ jobs:
           PAYMENT_API_LINK: ${{secrets.PAYMENT_API_LINK}}
           REACT_APP_GOOGLE_CLIENT_ID: ${{secrets.REACT_APP_GOOGLE_CLIENT_ID}}
  
+      - name: The eslint checking
+        run: npm run lint:fix
+
       - name: fix code coverage paths
         run: | 
           sed -i 's/\/home\/runner\/work\/horondi_client_be\/horondi_client_be\//\/github\/workspace\//g' test-report.xml
