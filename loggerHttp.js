@@ -31,11 +31,7 @@ const loggerHttp = winston.createLogger({
   ),
 
   defaultMeta: { service: 'user-service' },
-  transports: [
-    // new winston.transports.File({ filename: errorLogFilename, level: 'error' }),
-    // new winston.transports.File({ filename: logFilename }),
-    new winston.transports.MongoDB(mongoLogOptions),
-  ],
+  transports: [new winston.transports.MongoDB(mongoLogOptions)],
 });
 
 module.exports = loggerHttp;
