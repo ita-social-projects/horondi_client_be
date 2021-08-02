@@ -24,7 +24,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -127,7 +127,7 @@ class CategoryService extends FilterHelper {
       sort: {},
     });
 
-    const data = categories.items.map(async category => {
+    return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => ({
         name: model.name,
@@ -141,8 +141,6 @@ class CategoryService extends FilterHelper {
         models: modelsFields,
       };
     });
-
-    return data;
   }
 
   async addCategory(data, upload, { _id: adminId }) {

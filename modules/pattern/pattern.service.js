@@ -17,7 +17,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -149,9 +149,7 @@ class PatternsService {
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
-    const constructorImg = await uploadSmallImage(image[1]);
-
-    pattern.constructorImg = constructorImg;
+    pattern.constructorImg = await uploadSmallImage(image[1]);
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
