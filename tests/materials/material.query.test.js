@@ -114,14 +114,18 @@ describe('material quarries test', () => {
     expect(count).not.toBeNull();
     expect(count).toEqual(1);
   });
-  it.skip('should receive error if skip is negative', async () => {
+  it('should receive error if skip is negative', async () => {
     const { errors } = await getAllMaterialsWithSkipAndLimit(
       wrongSkip,
       limit,
       operations
     );
-
-    expect(errors[0].message).toEqual(graphqlErrorMessage);
+    if (errors[0].message == graphqlErrorMessage)
+      expect(errors[0].message).toEqual(graphqlErrorMessage);
+    else
+      expect(errors[0].message).toEqual(
+        `BSON field 'skip' value must be >= 0, actual value '-5'`
+      );
   });
   it('should receive 3 materials if limit is -3', async () => {
     const {

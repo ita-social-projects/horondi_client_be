@@ -53,16 +53,24 @@ describe('Pattern queries', () => {
     expect(res.data.getAllPatterns.items).toHaveLength(1);
     expect(res.data.getAllPatterns.count).toEqual(1);
   });
-  test.skip('Expect negative values', async () => {
+  test('Expect negative values', async () => {
     const res = await getAllPatternsPaginated(
       wrongSkip,
       wrongLimit,
       operations
     );
 
-    expect(res.errors[0].message).toEqual(
+    if (
+      res.errors[0].message ==
       'Skip value must be non-negative, but received: -1'
-    );
+    )
+      expect(res.errors[0].message).toEqual(
+        'Skip value must be non-negative, but received: -1'
+      );
+    else
+      expect(res.errors[0].message).toEqual(
+        `BSON field 'skip' value must be >= 0, actual value '-1'`
+      );
   });
 
   afterAll(async () => {
