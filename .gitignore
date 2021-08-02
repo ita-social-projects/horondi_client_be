@@ -12,6 +12,9 @@ test-report.xml
 # testing
 /coverage
 /logs
+test-error.log
+test-combined.log
+
 # production
 
 # misc

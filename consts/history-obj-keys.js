@@ -54,6 +54,7 @@ const HISTORY_OBJ_KEYS = {
   RESTRICTIONS: 'restrictions',
   COMPARE_BY_EXPRESSION: 'compareByExpression',
   OPTIONS: 'options',
+  POSITIONS: 'positions',
 };
 
 module.exports = {

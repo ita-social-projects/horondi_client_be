@@ -1,0 +1,9 @@
+extends template-en
+block subheaderText
+    p.blockUserText Your account has been blocked
+block content
+    div.blockUserContent
+        if period!=='infinite'
+            p We regret to inform you, #[br]#[br] Your account has violated our terms and was blocked for #{period} days. #[br]#[br] We hope that you will recheck our terms of use and won't get into such situation once again.
+        else
+            p We regret to inform you, #[br]#[br] Your account has violated out terms three times and has been blocked forever.
