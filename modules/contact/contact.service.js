@@ -30,10 +30,11 @@ class ContactService {
   async addContact(data) {
     const images = await uploadContactImages(data);
 
-    return await new Contact({
+    const contact = new Contact({
       ...data.contact,
       images,
     }).save();
+    return contact;
   }
 
   async updateContact(data) {
@@ -43,13 +44,17 @@ class ContactService {
 
     if (!contact) return null;
 
-    return contact.images.length === 2 &&
+    if (
+      contact.images.length === 2 &&
       data.mapImages.length === 2 &&
       this.deleteMapImages(contact)
-      ? await this.saveUpdatedContact(data)
-      : await Contact.findByIdAndUpdate(data.id, data.contact, {
-          new: true,
-        }).exec();
+    ) {
+      await this.saveUpdatedContact(data);
+    } else {
+      await Contact.findByIdAndUpdate(data.id, data.contact, {
+        new: true,
+      }).exec();
+    }
   }
 
   async deleteContact(id) {
@@ -101,8 +106,8 @@ class ContactService {
       ...Object.values(contact.images[ZERO_INDEX].value),
       ...Object.values(contact.images[FIRST_INDEX].value),
     ]);
-
-    return await Promise.allSettled(deletedImages);
+    const deletingResults = Promise.allSettled(deletedImages);
+    return deletingResults;
   }
 }
 
