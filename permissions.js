@@ -142,6 +142,11 @@ const {
   productPermissionsMutation,
 } = require('./modules/product/product.permissions');
 
+const {
+  positionPermissionsQuery,
+  positionPermissionsMutations,
+} = require('./modules/position/position.permissions');
+
 const permissions = shield(
   {
     Query: {
@@ -170,6 +175,7 @@ const permissions = shield(
       ...orderPermissionsQuery,
       ...strapPermissionsQuery,
       ...emailChatQuestionQuery,
+      ...positionPermissionsQuery,
     },
     Mutation: {
       ...productPermissionsMutation,
@@ -201,6 +207,7 @@ const permissions = shield(
       ...currencyMutation,
       ...homePageSlideMutation,
       ...uploadMutation,
+      ...positionPermissionsMutations,
     },
   },
   {

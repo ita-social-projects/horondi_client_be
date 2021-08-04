@@ -1,10 +1,10 @@
-extends template
+extends template-ua
 block subheaderText
-    p.paymentText Оплата замовлення
+    p.unfinishedCartOperations Незавершені покупки
 block content
-    div.contentPaymentText
+    div.contentUnfinishedCartOperations
         div.productTableContent
-            p.congrats Вітаємо! #[br] Залишився ще один крок для отримання Вашого замовлення: #[br]
+            p.congrats У Вас залишились товари в корзині: #[br]
             table.productTable
                 caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
                 tr.tableHead
@@ -17,21 +17,23 @@ block content
                         tr.tableBody
                             td
                                 img.tableImg(src= `${imagesUrl}${val.product.images.primary.large}`)
-                            td
+                            td 
                                 p= val.product.name[0].value
                                 p= `Розмір - ${val.options.size.name}`
                             td= val.quantity
-                            td= `${val.fixedPrice[0].value} ${val.fixedPrice[0].currency}`
+                            td= `${val.price[0].value} ${val.price[0].currency}`
                     else if val.fromConstructor
                         tr.tableBody
                             td
                                 img.tableImg(src= `${imagesUrl}large_21r21sdeokmxcw0i8_Rolltop_blue.png`)
-                            td
+                            td 
                                 p= val.fromConstructor.product.name[0].value
                                 p= `Розмір - ${val.options.size.name}`
                             td= val.quantity
-                            td= `${val.fixedPrice[0].value} ${val.fixedPrice[0].currency}`
-        button.confirm
-            a(href=paymentUrl) Оплатити замовлення
-        p.operationsLink або перейдіть за посиланням нижче:
-        a.aoperationsLink(href=paymentUrl) #{paymentUrl}
+                            td= `${val.price[0].value} ${val.price[0].currency}`
+            
+            p.completeOperationsText Завершіть будь ласка свої покупки
+            button.confirm
+                a(href=`${frontendUrl}/cart`) Завершити покупки
+            p.operationsLink або перейдіть за посиланням нижче:
+            a.aoperationsLink(href= `${frontendUrl}/cart`) #{`${frontendUrl}/cart`}

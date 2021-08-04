@@ -1,0 +1,7 @@
+extends template-en
+block subheaderText
+    p.registrationText Confirmation password
+block content
+    div.contentRegistrationText
+        p.congrats Greetings! #[br] To confirm the Administrator account, enter the code: 
+        p.code #{otp_code}
