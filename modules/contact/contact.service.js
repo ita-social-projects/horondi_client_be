@@ -30,11 +30,10 @@ class ContactService {
   async addContact(data) {
     const images = await uploadContactImages(data);
 
-    const contact = new Contact({
+    return new Contact({
       ...data.contact,
       images,
     }).save();
-    return await contact;
   }
 
   async updateContact(data) {
@@ -106,8 +105,8 @@ class ContactService {
       ...Object.values(contact.images[ZERO_INDEX].value),
       ...Object.values(contact.images[FIRST_INDEX].value),
     ]);
-    const deletingResults = Promise.allSettled(deletedImages);
-    return await deletingResults;
+
+    return Promise.allSettled(deletedImages);
   }
 }
 
