@@ -207,6 +207,7 @@ class ProductsService {
       .exec();
 
     const count = await Product.find(filters).countDocuments();
+
     return {
       items,
       count,
