@@ -20,6 +20,24 @@ const generateHistoryObject = (
   userId,
 });
 
+const generateHistoryObjectWithoutModel = (
+  action,
+  subjectName,
+  subjectId,
+  valueBeforeChange,
+  valueAfterChange,
+  userId = ''
+) => ({
+  action,
+  subject: {
+    name: subjectName,
+    subjectId,
+  },
+  valueBeforeChange,
+  valueAfterChange,
+  userId,
+});
+
 const getChanges = (objBefore, objWithChanges) => {
   const beforeChanges = [];
   const afterChanges = [];
@@ -50,4 +68,5 @@ module.exports = {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
+  generateHistoryObjectWithoutModel,
 };

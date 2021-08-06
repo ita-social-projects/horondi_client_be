@@ -12,6 +12,7 @@ const INPUT_FIELDS = {
   POCKET: 'pocket',
   RESTRICTION: 'restriction',
   BACK: 'back',
+  BOTTOM: 'bottom',
   CLOSURE: 'closure',
   CONSTRUCTOR_ELEMENT: 'constructorElement',
   CONSTRUCTOR_BASIC: 'constructorBasic',

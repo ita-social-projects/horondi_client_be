@@ -104,6 +104,11 @@ const { strapMutation, strapQuery } = require('./modules/strap/strap.resolver');
 
 const { backQuery, backMutation } = require('./modules/back/back.resolver');
 
+const {
+  bottomQuery,
+  bottomMutation,
+} = require('./modules/bottom/bottom.resolver');
+
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 
 const {
@@ -133,6 +138,7 @@ const {
   ukrPoshtaQuery,
 } = require('./modules/delivery/ukr-poshta/ukr-poshta.resolver');
 const backService = require('./modules/back/back.service');
+const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
@@ -171,6 +177,8 @@ const SCHEMA_NAMES = {
   paginatedPockets: 'PaginatedPockets',
   back: 'Back',
   paginatedBacks: 'PaginatedBacks',
+  bottom: 'Bottom',
+  paginatedBottoms: 'PaginatedBottoms',
   strap: 'Strap',
   paginatedStraps: 'PaginatedStraps',
   position: 'Position',
@@ -242,6 +250,8 @@ const resolvers = {
     ...pocketQuery,
 
     ...backQuery,
+
+    ...bottomQuery,
 
     ...strapQuery,
 
@@ -462,6 +472,10 @@ const resolvers = {
         parent.eligibleOptions.constructorBack.map(el =>
           backService.getBackById(el)
         ),
+      constrBottom: () =>
+        parent.eligibleOptions.constrBottom.map(el =>
+          bottomService.getBottomById(el)
+        ),
       constructorClosure: () =>
         parent.eligibleOptions.constructorClosure.map(el =>
           closuresService.getClosureById(el)
@@ -492,6 +506,8 @@ const resolvers = {
         constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
+      constrBottom: () =>
+        bottomService.getBottomById(parent.appliedOptions.constrBottom),
       constructorClosure: () =>
         closuresService.getClosureById(
           parent.appliedOptions.constructorClosure
@@ -563,6 +579,12 @@ const resolvers = {
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
+  Bottom: {
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
+  },
   Strap: {
     model: parent => modelService.getModelById(parent.model),
     features: parent => ({
@@ -624,6 +646,8 @@ const resolvers = {
     ...pocketMutation,
 
     ...backMutation,
+
+    ...bottomMutation,
 
     ...strapMutation,
 
@@ -917,6 +941,24 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBacks;
+      }
+      return 'Error';
+    },
+  },
+
+  BottomResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.bottom;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedBottoms: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedBottoms;
       }
       return 'Error';
     },
