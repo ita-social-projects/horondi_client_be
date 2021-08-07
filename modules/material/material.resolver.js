@@ -8,7 +8,7 @@ const {
 
 const materialQuery = {
   getAllMaterials: async (parent, args) =>
-    await materialService.getAllMaterials(args),
+    materialService.getAllMaterials(args),
   getMaterialById: async (parent, args) => {
     const material = await materialService.getMaterialById(args.id);
     if (material) {

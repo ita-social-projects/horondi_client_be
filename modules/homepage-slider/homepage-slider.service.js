@@ -44,7 +44,7 @@ class HomePageSliderService {
     if (!upload) {
       throw new Error(IMAGE_NOT_PROVIDED);
     }
-    return await new HomePageSlider(data).save();
+    return new HomePageSlider(data).save();
   }
 
   async updateSlide({ id, slide, upload }) {

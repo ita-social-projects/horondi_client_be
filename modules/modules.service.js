@@ -11,28 +11,37 @@ class ModulesService {
     return res || new Error(ERROR_MESSAGE);
   }
 
-  async addItem(data, ERROR_MESSAGE) {
-    if (await this.checkItemExist(data)) {
-      throw new Error(ERROR_MESSAGE);
-    }
-    return new this.ItemModule(data).save();
+  addItem(data, ERROR_MESSAGE) {
+    return this.checkItemExist(data).then(isExists => {
+      if (isExists) {
+        throw new Error(ERROR_MESSAGE);
+      }
+      return new this.ItemModule(data).save();
+    });
   }
 
   async getAllItems() {
-    return await this.ItemModule.find();
+    return this.ItemModule.find();
   }
 
-  async updateItem(id, data, errors) {
-    const item = await this.ItemModule.findById(id);
-    if (!item) {
-      throw new Error(errors[0]);
-    }
-    if (await this.checkItemExist(data, id)) {
-      throw new Error(errors[1]);
-    }
-    const model = await modelService.getModelById(data.model);
-    data.model = model.name;
-    return Product.findByIdAndUpdate(id, data, { new: true });
+  updateItem(id, data, errors) {
+    return this.ItemModule.findById(id)
+      .then(item => {
+        if (!item) {
+          throw new Error(errors[0]);
+        }
+        return this.checkItemExist(data, id);
+      })
+      .then(isExists => {
+        if (isExists) {
+          throw new Error(errors[1]);
+        }
+        return modelService.getModelById(data.model);
+      })
+      .then(model => {
+        data.model = model.name;
+        return Product.findByIdAndUpdate(id, data, { new: true });
+      });
   }
 
   async checkItemExist(data, id) {
