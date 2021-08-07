@@ -357,6 +357,11 @@ const typeDefs = gql`
     count: Int
     countAll: Int
   }
+  type PaginatedReplies {
+    items: [ReplyComments]
+    count: Int
+    countAll: Int
+  }
   type SuccessfulResponse {
     isSuccess: Boolean
   }
@@ -480,6 +485,7 @@ const typeDefs = gql`
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
+    getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): [Order!]
     getCountUserOrders(id: ID): countOrderResult
@@ -513,6 +519,12 @@ const typeDefs = gql`
       pagination: Pagination,
       sort : CommentsSortInput
     ): PaginatedComments!
+    getCommentsByUser(
+      filter: CommentFilterInput,
+      pagination: Pagination,
+      sort : CommentsSortInput,
+      userId: ID!
+    ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
     getReplyCommentById(id: ID!): CommentResult
     getCommentsByProduct(
@@ -525,6 +537,12 @@ const typeDefs = gql`
       pagination: Pagination,
       sort : ReplyCommentsSortInput
     ): PaginatedCommentsResult
+    getCommentsRepliesByUser(
+      filter: ReplyCommentFilterInput,
+      pagination: Pagination,
+      sort : ReplyCommentsSortInput,
+      userId: ID!
+    ): PaginatedReplies!
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
