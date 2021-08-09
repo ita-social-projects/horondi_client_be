@@ -194,10 +194,11 @@ describe('Comment queries', () => {
   });
   it('should return empty array of comments for unexciting id', async () => {
     const res = await getAllCommentsByUser(userWrongId, operations);
+    console.log(res);
     return new Promise(done => {
       expect(res[0]).toBeDefined();
-      expect(res[0].statusCode).toBe(404);
-      expect(res[0].message).toBe(COMMENT_FOR_NOT_EXISTING_USER);
+      expect(res[0]).toHaveProperty('statusCode', 404);
+      expect(res[0]).toHaveProperty('message', COMMENT_FOR_NOT_EXISTING_USER);
       done();
     });
   });

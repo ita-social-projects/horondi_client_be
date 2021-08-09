@@ -178,10 +178,12 @@ describe('Product mutations', () => {
     expect(products.statusCode).toBe(400);
   });
   test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
-    const receivedData = await deleteProduct(badProductId, operations);
-    const res = receivedData.errors[0].message;
-
-    expect(res).toBe(PRODUCT_NOT_FOUND);
+    const result = await deleteProduct(badProductId, operations);
+    expect(result).toBeDefined();
+    expect(result.data.deleteProduct).toHaveProperty(
+      'message',
+      PRODUCT_NOT_FOUND
+    );
   });
   test('#6 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProduct(productId, operations);

@@ -129,8 +129,9 @@ describe('Product mutations', () => {
     const products = await getProductById(badProductId, operations);
     const res = products.data.getProductById;
 
-    expect(res.message).toBe(PRODUCT_NOT_FOUND);
-    expect(res.statusCode).toBe(404);
+    expect(res).toBeDefined();
+    expect(res).toHaveProperty('message', PRODUCT_NOT_FOUND);
+    expect(res).toHaveProperty('statusCode', 404);
   });
 
   afterAll(async () => {

@@ -1,4 +1,8 @@
-const { wrongId, color, ERROR_NOT_FOUND } = require('./color.variables');
+const { wrongId, color } = require('./color.variables');
+const { COLOR_NOT_FOUND } = require('../../error-messages/color.massage');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 const { setupApp } = require('../helper-functions');
 const {
   createColor,
@@ -38,8 +42,9 @@ describe('Colors queries', () => {
 
   test('Should recive error message COLOR_NOT_FOUND while getting by wrong ID', async () => {
     const result = await getColorById(wrongId, operations);
-
-    expect(result).toEqual(ERROR_NOT_FOUND);
+    expect(result).toBeDefined();
+    expect(result).toHaveProperty('message', COLOR_NOT_FOUND);
+    expect(result).toHaveProperty('statusCode', NOT_FOUND);
   });
 
   afterAll(async () => {

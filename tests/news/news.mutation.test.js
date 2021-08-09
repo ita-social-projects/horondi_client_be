@@ -103,7 +103,7 @@ describe('News mutations tests', () => {
 
   test('#7 Delete Not Existing News Should Return Error', async () => {
     const deleteResponse = await deleteNews(wrongId, operations);
-
+    console.log(deleteResponse);
     expect(deleteResponse).toBeDefined();
     expect(deleteResponse).not.toBeNull();
     expect(deleteResponse).toHaveProperty('statusCode', 404);

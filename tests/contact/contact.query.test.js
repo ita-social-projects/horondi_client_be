@@ -1,4 +1,7 @@
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 const { newContact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 const {
@@ -83,8 +86,8 @@ describe('Contacts queries', () => {
     const res = await getContactById(notExistContactId, operations);
 
     expect(res).toBeDefined();
-    expect(res).toHaveProperty('statusCode', 404);
     expect(res).toHaveProperty('message', CONTACT_NOT_FOUND);
+    expect(res).toHaveProperty('statusCode', NOT_FOUND);
   });
 
   afterAll(async () => {

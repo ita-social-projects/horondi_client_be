@@ -4,6 +4,9 @@ const {
   CATEGORY_ALREADY_EXIST,
 } = require('../../error-messages/category.messages');
 const {
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+} = require('../../consts/status-codes');
+const {
   deleteCategory,
   createCategory,
   updateCategory,
@@ -38,7 +41,7 @@ describe('Closure queries', () => {
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', CATEGORY_ALREADY_EXIST);
-    expect(result).toHaveProperty('statusCode', 400);
+    expect(result).toHaveProperty('statusCode', BAD_REQUEST);
   });
   test('should update category', async () => {
     const result = await updateCategory(
@@ -64,13 +67,13 @@ describe('Closure queries', () => {
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', CATEGORY_NOT_FOUND);
-    expect(result).toHaveProperty('statusCode', 404);
+    expect(result).toHaveProperty('statusCode', NOT_FOUND);
   });
   test('should get CATEGORY_NOT_FOUND err msg for delete', async () => {
     const result = await deleteCategory(wrongId, operations);
 
     expect(result).toBeDefined();
-    expect(result).toHaveProperty('statusCode', 404);
+    expect(result).toHaveProperty('statusCode', NOT_FOUND);
   });
   test('should delete category', async () => {
     const result = await deleteCategory(categoryId, operations);
