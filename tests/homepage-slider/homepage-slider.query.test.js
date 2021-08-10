@@ -20,7 +20,7 @@ const {
 } = require('../../error-messages/home-page-slider.messages');
 
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 
 jest.mock('../../modules/upload/upload.service');
