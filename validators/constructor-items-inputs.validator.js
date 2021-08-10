@@ -35,7 +35,24 @@ const nestedNameValidator = Joi.object({
     .trim()
     .required(),
 });
-
+const inputBasicsValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  image: Joi.string()
+    .trim()
+    .optional(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean().required(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+});
 const inputPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
@@ -226,4 +243,5 @@ module.exports = {
   inputConstrFrontPocketValidator,
   restrictionValidator,
   inputClosureValidator,
+  inputBasicsValidator,
 };

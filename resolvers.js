@@ -111,6 +111,11 @@ const {
   positionQuery,
 } = require('./modules/position/position.resolver');
 
+const {
+  basicsQuery,
+  basicsMutations,
+} = require('./modules/basics/basics.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -128,6 +133,7 @@ const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
 const strapService = require('./modules/strap/strap.service');
 const positionService = require('./modules/position/position.service');
+const basicsService = require('./modules/basics/basics.service');
 
 const {
   ukrPoshtaQuery,
@@ -175,6 +181,8 @@ const SCHEMA_NAMES = {
   paginatedStraps: 'PaginatedStraps',
   position: 'Position',
   paginatedPositions: 'PaginatedPositions',
+  basics: 'Basics',
+  paginatedBasics: 'PaginatedBasics',
 };
 
 const {
@@ -246,6 +254,8 @@ const resolvers = {
     ...strapQuery,
 
     ...positionQuery,
+
+    ...basicsQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -569,6 +579,12 @@ const resolvers = {
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
+  Basics: {
+    features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
+      color: () => colorService.getColorById(parent.features.color),
+    }),
+  },
 
   Mutation: {
     ...cartMutation,
@@ -628,6 +644,8 @@ const resolvers = {
     ...strapMutation,
 
     ...positionMutation,
+
+    ...basicsMutations,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -953,6 +971,24 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPositions;
+      }
+      return 'Error';
+    },
+  },
+
+  BasicsResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.basics;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedBasics: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedBasics;
       }
       return 'Error';
     },
