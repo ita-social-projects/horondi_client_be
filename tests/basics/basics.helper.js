@@ -46,8 +46,8 @@ const createBasics = async (basic, image, operations) => {
 const updateBasics = async (id, basic, images, operations) => {
   const basicsInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $basic: BasicsInput, $images: Upload) {
-        updateBasics(id: $id, basic: $basic, images: $images) {
+      mutation($id: ID!, $basic: BasicsInput!, $image: Upload) {
+        updateBasics(id: $id, basic: $basic, image: $image) {
           ... on Basics {
             _id
             name {

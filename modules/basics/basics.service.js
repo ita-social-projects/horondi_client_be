@@ -22,7 +22,7 @@ const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { NAME, ADDITIONAL_PRICE, AVAILABLE, FEATURES, MODEL },
+  HISTORY_OBJ_KEYS: { NAME, ADDITIONAL_PRICE, AVAILABLE, FEATURES },
 } = require('../../consts/history-obj-keys');
 
 class BasicsService {
@@ -142,7 +142,7 @@ class BasicsService {
       throw new RuleError(BASICS_NOT_FOUND, NOT_FOUND);
     }
 
-    if (foundBasic.image) {
+    if (foundBasic.images) {
       return uploadService.deleteFiles(Object.values(foundBasic.image));
     }
 

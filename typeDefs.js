@@ -969,7 +969,7 @@ const typeDefs = gql`
     updatePosition(id: ID, position: PositionInput!): PositionResult
     "Basics Mutations"
     addBasics(basic: BasicsInput!, image: Upload): BasicsResult
-    updateBasics(id: ID, basic: BasicsInput!): BasicsResult
+    updateBasics(id: ID, basic: BasicsInput!, image: Upload): BasicsResult
     deleteBasics(id: ID): BasicsResult
   }
 `;

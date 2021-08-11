@@ -18,8 +18,6 @@ const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
 const { createMaterial } = require('../materials/material.helper');
 const { getMaterial } = require('../materials/material.variables');
-const { createCategory } = require('../category/category.helper');
-const { newCategoryInputData } = require('../category/category.variables');
 
 let operations;
 let colorId;
@@ -42,22 +40,20 @@ describe('Basics query test', () => {
     const materialData = await createMaterial(materialInput, operations);
     materialId = materialData._id;
     filter.material.push(materialId);
-    const categoryData = await createCategory(newCategoryInputData, operations);
-    categoryId = categoryData._id;
 
     basicsInput = newBasicsInputData(materialId, colorId);
 
     basicsDataForQuery = await createBasics(basicsInput, 'img.jpg', operations);
   });
 
-  test('should get all basics', async () => {
+  it('should get all basics', async () => {
     const result = await getAllBasics({ limit, skip, filter }, operations);
 
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
   });
 
-  test('should get basics by id', async () => {
+  it('should get basics by id', async () => {
     const result = await getBasicsById(basicsDataForQuery._id, operations);
 
     expect(result).toBeDefined();
@@ -65,7 +61,7 @@ describe('Basics query test', () => {
     expect(result).toHaveProperty('name', basicsInput.name);
   });
 
-  test('getBasicsById should get BASICS_NOT_FOUND error msg', async () => {
+  it('getBasicsById should get BASICS_NOT_FOUND error msg', async () => {
     const result = await getBasicsById(wrongId, operations);
 
     expect(result).toBeDefined();

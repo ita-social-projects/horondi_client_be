@@ -20,7 +20,7 @@ const newBasicsInputDataUpdate = (materialId, colorId) => ({
     color: colorId,
   },
   available: false,
-  addtionalPrice: 4,
+  additionalPrice: 4,
 });
 
 const wrongId = '611255923321a940581140c0';
