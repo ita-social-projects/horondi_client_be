@@ -48,12 +48,11 @@ class ContactService {
       data.mapImages.length === 2 &&
       this.deleteMapImages(contact)
     ) {
-      await this.saveUpdatedContact(data);
-    } else {
-      await Contact.findByIdAndUpdate(data.id, data.contact, {
-        new: true,
-      }).exec();
+      return this.saveUpdatedContact(data);
     }
+    return Contact.findByIdAndUpdate(data.id, data.contact, {
+      new: true,
+    }).exec();
   }
 
   async deleteContact(id) {
