@@ -23,10 +23,7 @@ const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
 
-const {
-  SIZES_TO_CREATE: { size1 },
-  createPlainSize,
-} = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 
 jest.mock('../../modules/upload/upload.service');

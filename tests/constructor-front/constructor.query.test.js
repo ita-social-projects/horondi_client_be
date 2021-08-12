@@ -27,17 +27,11 @@ const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize } = require('../size/size.helper');
-const {
-  SIZES_TO_CREATE: { size1 },
-  createPlainSize,
-} = require('../size/size.variables');
 
 let operations;
 let colorId;
 let materialId;
 let modelId;
-let sizeId;
 let categoryId;
 let constructorInput;
 let constructorFrontId;
@@ -60,11 +54,6 @@ describe('constructor mutations', () => {
 
     const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
     constructorInput = newConstructorFront(materialId, colorId, modelId);
     constructorFrontPocket = await createConstructorFrontPocket(
       constructorInput,

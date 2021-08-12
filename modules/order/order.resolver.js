@@ -16,7 +16,7 @@ const ordersQuery = {
       message: ORDER_NOT_FOUND,
     };
   },
-  getAllOrders: async (_, args) => await ordersService.getAllOrders(args),
+  getAllOrders: async (_, args) => ordersService.getAllOrders(args),
   getUserOrders: async (_, { pagination }, { user }) => {
     try {
       return await ordersService.getUserOrders(pagination, user);

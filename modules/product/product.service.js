@@ -207,6 +207,7 @@ class ProductsService {
       .exec();
 
     const count = await Product.find(filters).countDocuments();
+
     return {
       items,
       count,
@@ -228,17 +229,18 @@ class ProductsService {
         thumbnail: THUMBNAIL_SAD_BACKPACK,
       },
     };
-    filesToUpload.length
-      ? (productData.images.additional = [])
-      : (productData.images.additional = [
-          {
-            large: LARGE_SAD_BACKPACK,
-            medium: MEDIUM_SAD_BACKPACK,
-            small: SMALL_SAD_BACKPACK,
-            thumbnail: THUMBNAIL_SAD_BACKPACK,
-          },
-        ]);
-
+    if (filesToUpload.length) {
+      productData.images.additional = [];
+    } else {
+      productData.images.additional = [
+        {
+          large: LARGE_SAD_BACKPACK,
+          medium: MEDIUM_SAD_BACKPACK,
+          small: SMALL_SAD_BACKPACK,
+          thumbnail: THUMBNAIL_SAD_BACKPACK,
+        },
+      ];
+    }
     const product = await Product.findById(id)
       .lean()
       .exec();

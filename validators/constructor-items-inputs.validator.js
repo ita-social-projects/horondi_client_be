@@ -1,8 +1,5 @@
 const Joi = require('joi');
 const {
-  SIDES: { LEFT, RIGHT, BACK, FRONT },
-} = require('../consts/side-names');
-const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
 const {
@@ -18,15 +15,6 @@ const {
     STRAP,
   },
 } = require('../consts/constructor-option-types');
-
-const nestedSideValidator = Joi.object({
-  side: Joi.array().has(
-    Joi.string()
-      .trim()
-      .valid(RIGHT, LEFT, FRONT, BACK)
-      .required()
-  ),
-});
 
 const nestedNameValidator = Joi.object({
   lang: Joi.string()

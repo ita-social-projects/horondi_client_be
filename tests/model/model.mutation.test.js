@@ -1,7 +1,7 @@
 const { newModel, newModelUpdated, wrongId } = require('./model.variables');
 const { createModel, deleteModel, updateModel } = require('./model.helper');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { setupApp } = require('../helper-functions');
 const {
   deleteCategory,
