@@ -22,7 +22,8 @@ class HomePageImagesService {
 
   addHomePageLooksImage(data) {
     return this.uploadImages([data.images]).then(resizedImage => {
-      if (!resizedImage) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+      if (!resizedImage)
+        throw new RuleError(IMAGES_WERE_NOT_CONVERTED, BAD_REQUEST);
 
       return new LooksImages({ images: resizedImage[0] }).save();
     });

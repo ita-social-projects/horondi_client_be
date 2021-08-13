@@ -1,5 +1,8 @@
 const userService = require('./user.service');
 const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
 
 const userQuery = {
   getCountUserOrders: async (_, args, { user }) => {
@@ -17,8 +20,11 @@ const userQuery = {
   validateConfirmationToken: (parent, args) => {
     try {
       return userService.validateConfirmationToken(args.token);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
+    } catch (err) {
+      return {
+        statusCode: BAD_REQUEST,
+        message: err.message,
+      };
     }
   },
   getPurchasedProducts: (parent, { id }) =>
