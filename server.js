@@ -22,8 +22,19 @@ const {
   SUPER_ADMIN_PASSWORD,
   NODE_ENV,
 } = require('./dotenvValidator');
+
+const {
+  MAIL_USER,
+  MAIL_PASS,
+  MAIL_HOST,
+  MAIL_PORT,
+  GMAIL_EMAIL_SERVICE,
+} = require('./dotenvValidator');
+
 const { registerAdmin } = require('./tests/helper-functions');
 const RuleError = require('./errors/rule.error');
+
+const MailerChecker = require('./utils/mailer');
 
 connectDB();
 
@@ -106,7 +117,31 @@ server.applyMiddleware({
   },
 });
 
+async function checkMailerConnection() {
+  const mailerChecker = new MailerChecker({
+    service: GMAIL_EMAIL_SERVICE,
+    host: MAIL_HOST,
+    port: MAIL_PORT,
+    secure: true,
+    auth: {
+      user: MAIL_USER,
+      pass: 'MAIL_PASS',
+    },
+  });
+
+  return await mailerChecker.checkConnection();
+}
+
 app.listen(PORT, () => {
+  checkMailerConnection()
+    .then(() => {
+      logger.notice('MAILER CONNECTION CORRECT.');
+    })
+    .catch(err => {
+      logger.error(`MAILER CONNECT ERROR: ${err.message}`);
+      loggerHttp.error(JSON.stringify({ key: err.code, value: err.message }));
+    });
+
   cronJob();
   logger.log({
     level: 'notice',

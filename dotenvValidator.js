@@ -23,6 +23,7 @@ const dotenvVariables = [
   'MAIL_PASS',
   'MAIL_HOST',
   'MAIL_PORT',
+  'MAIL_API_KEY',
   'RECOVERY_EXPIRE',
   'FRONT_BASE_URI',
   'TEST_BASE_URI',
