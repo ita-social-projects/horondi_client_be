@@ -2,35 +2,17 @@ const RuleError = require('../../../errors/rule.error');
 const deliveryService = require('./nova-poshta.service');
 
 const novaPoshtaQuery = {
-  getNovaPoshtaCities: async (parent, args) => {
-    try {
-      return await deliveryService.getNovaPoshtaCities(args.city);
-    } catch (error) {
-      return new RuleError(error.message, error.statusCode);
-    }
-  },
+  getNovaPoshtaCities: async (parent, args) =>
+    deliveryService.getNovaPoshtaCities(args.city),
 
-  getNovaPoshtaStreets: async (parent, args) => {
-    try {
-      return await deliveryService.getNovaPoshtaStreets(
-        args.cityRef,
-        args.street
-      );
-    } catch (error) {
-      return new RuleError(error.message, error.statusCode);
-    }
-  },
+  getNovaPoshtaStreets: async (parent, args) =>
+    deliveryService.getNovaPoshtaStreets(args.cityRef, args.street),
 
-  getNovaPoshtaWarehouses: async (parent, args) => {
-    try {
-      return await deliveryService.getNovaPoshtaWarehouses(args.city);
-    } catch (error) {
-      return new RuleError(error.message, error.statusCode);
-    }
-  },
+  getNovaPoshtaWarehouses: async (parent, args) =>
+    deliveryService.getNovaPoshtaWarehouses(args.city),
 
   getNovaPoshtaPrices: async (parent, args) =>
-    await deliveryService.getNovaPoshtaPrices(args.data),
+    deliveryService.getNovaPoshtaPrices(args.data),
 };
 
 module.exports = { novaPoshtaQuery };

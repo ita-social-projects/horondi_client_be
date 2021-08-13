@@ -20,13 +20,12 @@ class HomePageImagesService {
     return looksImages;
   }
 
-  async addHomePageLooksImage(data) {
-    const resizedImage = await this.uploadImages([data.images]);
+  addHomePageLooksImage(data) {
+    return this.uploadImages([data.images]).then(resizedImage => {
+      if (!resizedImage) throw new Error(IMAGES_WERE_NOT_CONVERTED);
 
-    if (!resizedImage)
-      throw new RuleError(IMAGES_WERE_NOT_CONVERTED, BAD_REQUEST);
-
-    return await new LooksImages({ images: resizedImage[0] }).save();
+      return new LooksImages({ images: resizedImage[0] }).save();
+    });
   }
 
   async deleteHomePageLooksImage(data) {
@@ -67,16 +66,16 @@ class HomePageImagesService {
     return resizedImages;
   }
 
-  async saveUpdatedLooksImages(id, imageToUpload) {
-    const images = await this.uploadImages([imageToUpload]);
-
-    return LooksImages.findByIdAndUpdate(
-      id,
-      { images: images[0] },
-      {
-        new: true,
-      }
-    ).exec();
+  saveUpdatedLooksImages(id, imageToUpload) {
+    return this.uploadImages([imageToUpload]).then(images =>
+      LooksImages.findByIdAndUpdate(
+        id,
+        { images: images[0] },
+        {
+          new: true,
+        }
+      ).exec()
+    );
   }
 
   async deleteImages(imagesToDelete) {
