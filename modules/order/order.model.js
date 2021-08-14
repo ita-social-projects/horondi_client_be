@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: CREATED,
   },
-  user: {
+  recipient: {
     firstName: {
       type: String,
     },
@@ -35,10 +35,10 @@ const orderSchema = new mongoose.Schema({
     phoneNumber: {
       type: String,
     },
-    id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: USER,
-    },
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: USER,
   },
   dateOfCreation: {
     type: Date,

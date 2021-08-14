@@ -125,6 +125,10 @@ class OrdersService {
 
     order.user = { ...order.user, id: _id };
 
+    // const _id = orderToUpdate?.user_id;
+    //
+    // order = { ...order, user_id: _id };
+
     await updateProductStatistic(orderToUpdate, order);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
@@ -155,6 +159,13 @@ class OrdersService {
       const { _id } = user;
       data.user = { ...data.user, id: _id };
     }
+
+    // if (!user) {
+    //   data = { ...data, user_id: null };
+    // } else {
+    //   const { _id } = user;
+    //   data = { ...data, user_id: _id };
+    // }
 
     await addProductsToStatistic(items);
 
