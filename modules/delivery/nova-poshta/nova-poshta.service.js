@@ -35,7 +35,7 @@ const {
 
 class NovaPoshtaService {
   async getNovaPoshtaRequest(properties, model, method) {
-    return await axios.post(NOVA_POSHTA_API_LINK, {
+    return axios.post(NOVA_POSHTA_API_LINK, {
       modelName: model,
       calledMethod: method,
       methodProperties: properties,

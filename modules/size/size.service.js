@@ -185,13 +185,13 @@ class SizeService {
     ) {
       await Model.findByIdAndUpdate(sizeToUpdate.modelId, {
         $pull: { sizes: id },
-      });
+      }).exec();
 
       await Model.findByIdAndUpdate(input.modelId, {
         $push: {
           sizes: id,
         },
-      });
+      }).exec();
     }
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
 
