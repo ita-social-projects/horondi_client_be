@@ -678,7 +678,7 @@ class UserService extends FilterHelper {
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
+      return true;
     }
 
     const { accessToken } = generateTokens(user._id, {

@@ -73,12 +73,9 @@ class Mailer {
 
   async sendMail(opts) {
     try {
-      const data = await this.transporter.sendMail(opts);
-      console.log(data);
-      return data;
+      await this.transporter.sendMail(opts);
     } catch (err) {
       this.onError && this.onError(err);
-      return true;
     }
   }
 }

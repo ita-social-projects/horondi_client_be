@@ -24,7 +24,6 @@ const contextExtension = {
 };
 
 const onSendMailError = err => {
-  console.error(err);
   loggerHttp.error(JSON.stringify({ key: err.code, value: err.message }));
 };
 
