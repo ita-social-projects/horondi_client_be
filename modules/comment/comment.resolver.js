@@ -2,13 +2,7 @@ const commentsService = require('./comment.service');
 const RuleError = require('../../errors/rule.error');
 
 const commentsQuery = {
-  getAllComments: (parent, args) => {
-    try {
-      return commentsService.getAllComments(args);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
+  getAllComments: (parent, args) => commentsService.getAllComments(args),
 
   getCommentById: async (parent, { id }) => {
     try {

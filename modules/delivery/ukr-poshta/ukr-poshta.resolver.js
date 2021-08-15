@@ -4,7 +4,7 @@ const RuleError = require('../../../errors/rule.error');
 const ukrPoshtaQuery = {
   getUkrPoshtaRegions: async () => {
     try {
-      return deliveryService.getUkrPoshtaRegions();
+      return await deliveryService.getUkrPoshtaRegions();
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -12,7 +12,7 @@ const ukrPoshtaQuery = {
 
   getUkrPoshtaDistrictsByRegionId: async (parent, args) => {
     try {
-      return deliveryService.getUkrPoshtaDistrictsByRegionId(args.id);
+      return await deliveryService.getUkrPoshtaDistrictsByRegionId(args.id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -20,7 +20,7 @@ const ukrPoshtaQuery = {
 
   getUkrPoshtaCitiesByDistrictId: async (parent, args) => {
     try {
-      return deliveryService.getUkrPoshtaCitiesByDistrictId(args.id);
+      return await deliveryService.getUkrPoshtaCitiesByDistrictId(args.id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -28,7 +28,7 @@ const ukrPoshtaQuery = {
 
   getUkrPoshtaPostofficesCityId: async (parent, args) => {
     try {
-      return deliveryService.getUkrPoshtaPostofficesCityId(args.id);
+      return await deliveryService.getUkrPoshtaPostofficesCityId(args.id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

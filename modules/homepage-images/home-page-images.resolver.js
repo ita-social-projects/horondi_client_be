@@ -4,7 +4,7 @@ const RuleError = require('../../errors/rule.error');
 const homePageImagesQuery = {
   getHomePageLooksImages: async () => {
     try {
-      return homePageService.getHomePageLooksImages();
+      return await homePageService.getHomePageLooksImages();
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
