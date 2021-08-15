@@ -1,15 +1,6 @@
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 
-const {
-  MAIL_USER,
-  GMAIL_EMAIL_SERVICE,
-  GMAIL_API_ID,
-  GMAIL_API_SECRET,
-  GMAIL_API_REDIRECT_URI,
-  GMAIL_API_REFRESH_TOKEN,
-} = require('../dotenvValidator');
-
 const necesarryMailCredentials = [
   'clientId',
   'clientSecret',
@@ -20,7 +11,7 @@ const necesarryMailCredentials = [
 ];
 
 class Mailer {
-  constructor(opts = {}, onError) {
+  constructor(opts, onError) {
     if (!opts) {
       throw new Error('Mailer parameters required');
     }
@@ -68,14 +59,29 @@ class Mailer {
   }
 
   async reconnect() {
-    await this.createTransport();
+    this.closeConnection();
+    return await this.createTransport();
   }
 
   async sendMail(opts) {
+    let result = {};
+
     try {
-      await this.transporter.sendMail(opts);
+      result = await this.transporter.sendMail(opts);
     } catch (err) {
       this.onError && this.onError(err);
+    }
+
+    this.closeConnection();
+    return result;
+  }
+
+  closeConnection() {
+    try {
+      this.transporter.close();
+      return true;
+    } catch (err) {
+      return false;
     }
   }
 }

@@ -115,6 +115,10 @@ function dotenvValidator(processEnv) {
     UKR_POSHTA_COUNTERPARTY_UUID: joi.string(),
     CONTRIBUTING: joi.boolean(),
     GMAIL_EMAIL_SERVICE: joi.string(),
+    GMAIL_API_ID: joi.string(),
+    GMAIL_API_SECRET: joi.string(),
+    GMAIL_API_REDIRECT_URI: joi.string().uri(),
+    GMAIL_API_REFRESH_TOKEN: joi.string(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });

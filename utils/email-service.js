@@ -1,4 +1,3 @@
-const nodemailer = require('nodemailer');
 const path = require('path');
 
 const EmailTemplates = require('email-templates');
@@ -6,6 +5,15 @@ const Mailer = require('./mailer');
 
 const loggerHttp = require('../loggerHttp');
 const logger = require('../logger');
+
+const {
+  INVALID_CONNECTION,
+  INVALID_AUTH,
+} = require('../error-messages/email.messages');
+
+const {
+  STATUS_CODES: { NOT_FOUND, UNAUTHORIZED },
+} = require('../consts/status-codes');
 
 const {
   MAIL_USER,
@@ -42,20 +50,17 @@ const mailer = new Mailer(
 (async () => {
   try {
     await mailer.createTransport();
-    (await mailer.verifyConnection())
-      ? logger.notice('MAILER CONNECTION CORRECT.')
-      : loggerHttp.error(
-          JSON.stringify({
-            key: '403',
-            value: 'Cannot authenticate mail client',
-          })
-        );
+    if (await mailer.verifyConnection()) {
+      logger.notice('MAILER CONNECTION CORRECT.');
+    } else {
+      loggerHttp.error(
+        JSON.stringify({ key: UNAUTHORIZED, value: INVALID_AUTH })
+      );
+      await mailer.reconnect();
+    }
   } catch (err) {
     loggerHttp.error(
-      JSON.stringify({
-        key: err.code,
-        value: err.message,
-      })
+      JSON.stringify({ key: NOT_FOUND, value: INVALID_CONNECTION })
     );
   }
 })();
