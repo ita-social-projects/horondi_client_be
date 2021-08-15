@@ -34,9 +34,6 @@ const bottomInputs = `
 
   input BottomFilterInput{
     name:String
-    available:[String]
-    material:[String]
-    color:[String]
   }
 `;
 

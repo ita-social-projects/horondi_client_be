@@ -30,9 +30,6 @@ const wrongId = '5fb412d8663cf10bec9faa1a';
 
 const filter = {
   name: '',
-  available: [],
-  material: [],
-  color: [],
 };
 
 const skip = 0;

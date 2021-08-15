@@ -35,11 +35,9 @@ describe('Bottom query test', () => {
     operations = await setupApp();
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
-    filter.color.push(colorId);
     materialInput = getMaterial(colorId);
     const materialData = await createMaterial(materialInput, operations);
     materialId = materialData._id;
-    filter.material.push(materialId);
 
     bottomInput = newBottomInputData(materialId, colorId);
 
@@ -52,15 +50,14 @@ describe('Bottom query test', () => {
     expect(result.length).toBeGreaterThan(0);
   });
   test('getAllBottoms with empty filter', async () => {
-    filter.material = [];
-    filter.color = [];
+    filter.name = '';
     const result = await getAllBottoms({ limit, skip, filter }, operations);
 
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
   });
   test('getAllBottoms should return empty array', async () => {
-    filter.material = [wrongId];
+    filter.name = 'sss';
     const result = await getAllBottoms({ limit, skip, filter }, operations);
 
     expect(result).toBeDefined();
