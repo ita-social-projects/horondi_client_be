@@ -1,4 +1,3 @@
-const { NotBeforeError } = require('jsonwebtoken');
 const BusinessText = require('./business-text.model');
 const {
   BUSINESS_TEXT_NOT_FOUND,
