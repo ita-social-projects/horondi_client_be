@@ -1,11 +1,15 @@
 const commentsService = require('./comment.service');
 const RuleError = require('../../errors/rule.error');
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
 
 const commentsQuery = {
-  getAllComments: (parent, args) => commentsService.getAllComments(args),
+  getAllComments: (parent, args) => {
+    try {
+      return commentsService.getAllComments(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
   getCommentById: async (parent, { id }) => {
     try {
       return await commentsService.getCommentById(id);
@@ -69,7 +73,7 @@ const commentsQuery = {
     } catch (error) {
       return [
         {
-          statusCode: NOT_FOUND,
+          statusCode: error.statusCode,
           message: error.message,
         },
       ];
@@ -137,11 +141,8 @@ const commentsMutation = {
         args.userRate,
         context.user
       );
-    } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

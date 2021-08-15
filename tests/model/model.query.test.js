@@ -22,7 +22,7 @@ const {
 } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 
 jest.mock('../../modules/upload/upload.service');
@@ -111,7 +111,7 @@ describe('Model queries', () => {
     const error = await getModelById(notValidId, operations);
 
     expect(error.message).toBe(MODEL_NOT_VALID);
-    expect(error.statusCode).toBe(NOT_FOUND);
+    expect(error.statusCode).toBe(BAD_REQUEST);
   });
   test('Should throw error MODEL_NOT_FOUND', async () => {
     const error = await getModelById(wrongId, operations);
