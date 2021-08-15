@@ -91,9 +91,7 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    const material = await new Promise(resolve =>
-      resolve(Material.findById(id))
-    );
+    const material = await Promise.resolve(Material.findById(id));
     if (!material) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     return material;
   }
