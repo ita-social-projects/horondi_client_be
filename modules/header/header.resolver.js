@@ -5,7 +5,7 @@ const {
 } = require('../../consts/status-codes');
 
 const headerQuery = {
-  getAllHeaders: async (parent, args) => await headerService.getAllHeaders(),
+  getAllHeaders: async (parent, args) => headerService.getAllHeaders(),
   getHeaderById: async (parent, args) => {
     try {
       return await headerService.getHeaderById(args.id);

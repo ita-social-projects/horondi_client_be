@@ -3,8 +3,6 @@ const { setupApp } = require('../helper-functions');
 const {
   createPlainSize,
   createTestSize,
-  SIZES_TO_CREATE,
-  SIZES_TO_TEST,
   WRONG_ID,
   ERROR_NOT_FOUND,
 } = require('./size.variables');

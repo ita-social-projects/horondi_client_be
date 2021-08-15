@@ -7,7 +7,7 @@ const {
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { newCategoryInputData } = require('../category/category.variables');
-const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');

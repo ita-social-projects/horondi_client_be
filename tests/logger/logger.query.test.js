@@ -7,8 +7,6 @@ const {
   totalLevelsCount,
   logString,
   matchLogString,
-  logFilename,
-  errorLogFilename,
   messageString,
 } = require('./logger.variables');
 

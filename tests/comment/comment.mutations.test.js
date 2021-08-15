@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -58,7 +57,6 @@ const { loginAdmin } = require('../user/user.helper');
 const { superAdminUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { deleteOrder, createOrder } = require('../order/order.helpers');
-const { testUser } = require('../user/user.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -85,7 +83,6 @@ let replyId;
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const { firstName, lastName, email, pass, language } = testUser;
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);

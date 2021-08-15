@@ -47,7 +47,7 @@ let adminId;
 let cartItems;
 let adminEmail;
 let adminPassword;
-let cartId;
+const zeroIndex = 0;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -101,18 +101,12 @@ describe('Cart queries', () => {
     adminPassword = superAdminUser.password;
     const authRes = await loginAdmin(adminEmail, adminPassword, operations);
     adminId = authRes.data.loginAdmin._id;
-    const productSentToCart = await addProductToCart(
-      productId,
-      adminId,
-      sizeId,
-      operations
-    );
-    cartId = productSentToCart._id;
+    await addProductToCart(productId, adminId, sizeId, operations);
   });
 
   it('should return cart by user id', async () => {
     const res = await getCartByUserId(adminId, operations);
-    cartItems = res.cart.items[0];
+    cartItems = res.cart.items[zeroIndex];
 
     expect(cartItems).toBeDefined();
     expect(cartItems.product._id).toBe(productId);

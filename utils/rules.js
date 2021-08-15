@@ -54,10 +54,7 @@ const inputDataValidation = (data, validationSchema) =>
   rule()((_, args) => {
     const { error } = Joi.validate(args[data], validationSchema);
 
-    if (!error) {
-      return true;
-    }
-    return new RuleError(error.details[0].message, FORBIDDEN);
+    return !error ? true : new RuleError(error.details[0].message, FORBIDDEN);
   });
 
 const isProductToCartCorrect = rule()(async (_, args) => {
