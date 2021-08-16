@@ -1,7 +1,7 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
 const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   status: 'CREATED',
-  user: {
+  recipient: {
     firstName: 'Arsen',
     lastName: 'Wenger',
     email: 'test@gmail.com',
@@ -51,7 +51,7 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
 });
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   status: 'SENT',
-  user: {
+  recipient: {
     firstName: 'Updated',
     lastName: 'Updated',
     email: 'test.updated@gmail.com',
