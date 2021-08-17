@@ -122,11 +122,11 @@ class OrdersService {
 
     const { items } = order;
 
-    const _id = orderToUpdate.user.id;
+    const userId = orderToUpdate?.user_id;
 
-    order.user = { ...order.user, id: _id };
+    const data = { ...order, user_id: userId || null };
 
-    await updateProductStatistic(orderToUpdate, order);
+    await updateProductStatistic(orderToUpdate, data);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const totalPriceToPay = await calculateTotalPriceToPay(
@@ -147,16 +147,10 @@ class OrdersService {
     ).exec();
   }
 
-  async addOrder(data, user) {
-    const { items } = data;
+  async addOrder(order, user) {
+    const { items } = order;
 
-    if (!user) {
-      data.user = { ...data.user, id: null };
-    } else {
-      const { _id } = user;
-      data.user = { ...data.user, id: _id };
-    }
-
+    const data = { ...order, user_id: user ? user._id : null };
     await addProductsToStatistic(items);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
@@ -167,14 +161,14 @@ class OrdersService {
       totalItemsPrice
     );
 
-    const order = {
+    const newOrder = {
       ...data,
       totalItemsPrice,
       totalPriceToPay,
       orderNumber,
     };
 
-    return new Order(order).save();
+    return new Order(newOrder).save();
   }
 
   async deleteOrder(id) {
@@ -188,11 +182,10 @@ class OrdersService {
   }
 
   async getUserOrders({ skip, limit }, { id }) {
-    const userOrders = await Order.find({ 'user.id': id })
+    const userOrders = await Order.find({ user_id: id })
       .limit(limit)
       .skip(skip)
       .exec();
-
     if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     return userOrders;

@@ -150,6 +150,8 @@ const modelRefactoredFields = {
 
 const slug = { slug: '' };
 
+const user_id = { user_id: null };
+
 module.exports = {
   sizeName,
   banned,
@@ -164,4 +166,5 @@ module.exports = {
   constructorBottomThreeExtraFields,
   constructorFrontPocketExtraFields,
   modelRefactoredFields,
+  user_id,
 };
