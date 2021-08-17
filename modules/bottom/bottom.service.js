@@ -15,7 +15,7 @@ const {
 const {
   getChanges,
   generateHistoryChangesData,
-  generateHistoryObjectWithoutModel,
+  generateHistoryObject,
 } = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
@@ -86,8 +86,9 @@ class BottomService {
 
     const { beforeChanges, afterChanges } = getChanges(bottomToUpdate, bottom);
 
-    const historyRecord = generateHistoryObjectWithoutModel(
+    const historyRecord = generateHistoryObject(
       EDIT_BOTTOM,
+      bottomToUpdate.model?._id,
       bottomToUpdate.name[UA].value,
       bottomToUpdate._id,
       beforeChanges,
@@ -109,8 +110,9 @@ class BottomService {
       throw new RuleError(BOTTOM_NOT_FOUND, NOT_FOUND);
     }
 
-    const historyRecord = generateHistoryObjectWithoutModel(
+    const historyRecord = generateHistoryObject(
       DELETE_BOTTOM,
+      foundBottom.model?._id,
       foundBottom.name[UA].value,
       foundBottom._id,
       generateHistoryChangesData(foundBottom, [
@@ -139,8 +141,9 @@ class BottomService {
 
     const newBottom = await new Bottom(bottom).save();
 
-    const historyRecord = generateHistoryObjectWithoutModel(
+    const historyRecord = generateHistoryObject(
       ADD_BOTTOM,
+      newBottom.model?._id,
       newBottom.name[UA].value,
       newBottom._id,
       [],
