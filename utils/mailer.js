@@ -41,6 +41,8 @@ class Mailer {
   async createTransport() {
     this.transporter = nodemailer.createTransport({
       service: this.opts.emailService,
+      secure: true,
+      requireTLS: true,
       auth: {
         type: 'OAuth2',
         user: this.opts.clientEmail,
