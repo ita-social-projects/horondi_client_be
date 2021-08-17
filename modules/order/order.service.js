@@ -3,7 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
 const {
-  STATUS_CODES: { BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   ORDER_NOT_FOUND,
@@ -113,7 +113,8 @@ class OrdersService {
   }
 
   async updateOrder(order, id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const orderToUpdate = await Order.findById(id).exec();
 
@@ -177,11 +178,12 @@ class OrdersService {
   }
 
   async deleteOrder(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
     return foundOrder;
   }
 

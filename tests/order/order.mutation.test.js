@@ -168,9 +168,12 @@ describe('Order queries', () => {
     expect(message).toBe(ORDER_NOT_FOUND);
   });
   test('Should throw error ORDER_NOT_FOUND after try to delete', async () => {
-    const { errors } = await deleteOrder(wrongId, operations);
+    const deletedUnexistingOrder = await deleteOrder(wrongId, operations);
 
-    expect(errors[0].message).toEqual(ORDER_NOT_FOUND);
+    expect(deletedUnexistingOrder.data.deleteOrder).toHaveProperty(
+      'message',
+      ORDER_NOT_FOUND
+    );
   });
   test('Should delete order', async () => {
     const deletedOrder = await deleteOrder(orderId, operations);
