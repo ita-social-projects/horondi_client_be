@@ -16,7 +16,7 @@ const createOrder = async (order, operations) => {
             }
             status
             paymentStatus
-            user {
+            recipient {
               firstName
               lastName
               email
@@ -105,7 +105,7 @@ const getAllOrders = async operations => {
         getAllOrders(limit: 10, skip: 0, filter: {}, sort: {}) {
           items {
             _id
-            user {
+            recipient {
               firstName
               lastName
               email
@@ -208,7 +208,7 @@ const updateOrderById = async (order, id, operations) => {
             }
             status
             paymentStatus
-            user {
+            recipient {
               firstName
               lastName
               email

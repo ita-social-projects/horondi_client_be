@@ -1,10 +1,5 @@
 const businessTextService = require('./business-text.service');
-const {
-  BUSINESS_TEXT_NOT_FOUND,
-} = require('../../error-messages/business-text.messages');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const businessTextQuery = {
   getAllBusinessTexts: () => businessTextService.getAllBusinessTexts(),
@@ -13,20 +8,14 @@ const businessTextQuery = {
     try {
       return await businessTextService.getBusinessTextById(id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   getBusinessTextByCode: async (_, { code }) => {
     try {
       return await businessTextService.getBusinessTextByCode(code);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -36,10 +25,7 @@ const businessTextMutation = {
     try {
       return await businessTextService.addBusinessText(businessText, files);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -47,10 +33,7 @@ const businessTextMutation = {
     try {
       return await businessTextService.deleteBusinessText(args.id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updateBusinessText: async (parent, args) => {
@@ -61,11 +44,7 @@ const businessTextMutation = {
         args.files
       );
     } catch (e) {
-      return {
-        statusCode:
-          e.message === BUSINESS_TEXT_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

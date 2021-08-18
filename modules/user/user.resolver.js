@@ -114,10 +114,7 @@ const userMutation = {
         args.language
       );
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   registerAdmin: async (_, { user }, { user: admin }) => {

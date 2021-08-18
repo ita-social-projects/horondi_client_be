@@ -6,6 +6,10 @@ const {
   SLIDE_NOT_VALID,
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/home-page-slider.messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class HomePageSliderService {
   async getAllSlides({ skip, limit }) {
@@ -26,13 +30,13 @@ class HomePageSliderService {
 
   async getSlideById(id) {
     if (!ObjectId.isValid(id)) {
-      throw new Error(SLIDE_NOT_VALID);
+      throw new RuleError(SLIDE_NOT_VALID, BAD_REQUEST);
     }
     const foundSlide = await HomePageSlider.findById(id).exec();
     if (foundSlide) {
       return foundSlide;
     }
-    throw new Error(SLIDE_NOT_FOUND);
+    throw new RuleError(SLIDE_NOT_FOUND, NOT_FOUND);
   }
 
   async addSlide(data, upload) {
@@ -42,7 +46,7 @@ class HomePageSliderService {
       data.images = imageResults.fileNames;
     }
     if (!upload) {
-      throw new Error(IMAGE_NOT_PROVIDED);
+      throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
     }
     return new HomePageSlider(data).save();
   }
@@ -50,7 +54,7 @@ class HomePageSliderService {
   async updateSlide({ id, slide, upload }) {
     const slideToUpdate = await HomePageSlider.findById(id).exec();
     if (!slideToUpdate) {
-      throw new Error(SLIDE_NOT_FOUND);
+      throw new RuleError(SLIDE_NOT_FOUND, NOT_FOUND);
     }
 
     if (!upload) {
@@ -89,7 +93,7 @@ class HomePageSliderService {
       .lean()
       .exec();
     if (!foundSlide) {
-      throw new Error(SLIDE_NOT_FOUND);
+      throw new RuleError(SLIDE_NOT_FOUND, NOT_FOUND);
     }
 
     const deletedImages = await uploadService.deleteFiles(
