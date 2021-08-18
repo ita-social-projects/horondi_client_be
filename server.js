@@ -31,10 +31,6 @@ if (NODE_ENV === 'test') {
   registerAdmin(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
 }
 
-dotenvVariables.forEach(key => {
-  logger.log('info', JSON.stringify({ key, value: process.env[key] }));
-});
-
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
   permissions
