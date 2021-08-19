@@ -31,7 +31,7 @@ const updatedReplyComment = {
 };
 const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   status: 'DELIVERED',
-  user: {
+  recipient: {
     firstName: 'Arsen',
     lastName: 'Wenger',
     email: 'test@gmail.com',

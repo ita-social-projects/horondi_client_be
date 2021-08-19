@@ -4,7 +4,8 @@ type Order {
   orderNumber: String
   paymentUrl: String
   status: Status
-  user: OrderUser
+  recipient: OrderUser
+  user_id:User
   dateOfCreation: String
   lastUpdatedDate: String
   userComment: String
@@ -92,13 +93,14 @@ type ItemOptions{
 const orderInputs = ` 
 input OrderInput {
   status: Status
-  user: OrderUserInput,
+  recipient: OrderUserInput,
   delivery: DeliveryInput,
   items: [OrderItemInput],
   paymentMethod: PaymentEnum
   userComment: String
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
+  user_id:String
 }
 
 input OrderUserInput {
