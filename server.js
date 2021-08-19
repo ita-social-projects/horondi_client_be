@@ -22,6 +22,7 @@ const {
   SUPER_ADMIN_PASSWORD,
   NODE_ENV,
 } = require('./dotenvValidator');
+
 const { registerAdmin } = require('./tests/helper-functions');
 const RuleError = require('./errors/rule.error');
 
