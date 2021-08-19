@@ -27,6 +27,11 @@ jobs:
           MAIL_PASS: ${{secrets.MAIL_PASS}}
           MAIL_HOST: ${{secrets.MAIL_HOST}}
           MAIL_PORT: ${{secrets.MAIL_PORT}}
+          GMAIL_EMAIL_SERVICE: ${{secrets.GMAIL_EMAIL_SERVICE}}
+          GMAIL_API_ID: ${{secrets.GMAIL_API_ID}}
+          GMAIL_API_SECRET: ${{secrets.GMAIL_API_SECRET}}
+          GMAIL_API_REDIRECT_URI: ${{secrets.GMAIL_API_REDIRECT_URI}}
+          GMAIL_API_REFRESH_TOKEN: ${{secrets.GMAIL_API_REFRESH_TOKEN}}
           SECRET: ${{secrets.SECRET}}
           CONFIRMATION_SECRET: ${{secrets.CONFIRMATION_SECRET}}
           EXPIRES_IN: ${{secrets.EXPIRES_IN}}
