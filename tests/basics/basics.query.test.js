@@ -9,11 +9,7 @@ const {
   wrongId,
   newBasicsInputData,
 } = require('./basics.variables');
-const {
-  createBasics,
-  getBasicsById,
-  getAllBasics,
-} = require('./basics.helper');
+const { createBasics, getBasicById, getAllBasics } = require('./basics.helper');
 const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
 const { createMaterial } = require('../materials/material.helper');
@@ -54,15 +50,15 @@ describe('Basics query test', () => {
   });
 
   it('should get basics by id', async () => {
-    const result = await getBasicsById(basicsDataForQuery._id, operations);
+    const result = await getBasicById(basicsDataForQuery._id, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('available', basicsInput.available);
     expect(result).toHaveProperty('name', basicsInput.name);
   });
 
-  it('getBasicsById should get BASICS_NOT_FOUND error msg', async () => {
-    const result = await getBasicsById(wrongId, operations);
+  it('getBasicById should get BASICS_NOT_FOUND error msg', async () => {
+    const result = await getBasicById(wrongId, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', BASICS_NOT_FOUND);

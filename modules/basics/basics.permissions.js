@@ -7,7 +7,7 @@ const {
   checkIfItemExists,
 } = require('../../utils/rules');
 const {
-  INPUT_FIELDS: { BASICS },
+  INPUT_FIELDS: { BASIC },
 } = require('../../consts/input-fields');
 const {
   roles: { ADMIN, SUPERADMIN },
@@ -18,20 +18,20 @@ const {
 
 const basicsPermissionsQuery = {
   getAllBasics: allow,
-  getBasicsById: allow,
+  getBasicById: allow,
 };
 
 const basicsPermissionsMutations = {
-  addBasics: and(
-    inputDataValidation(BASICS, inputBasicsValidator),
+  addBasic: and(
+    inputDataValidation(BASIC, inputBasicsValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(BASICS, BasicsModel)
+    checkIfItemExists(BASIC, BasicsModel)
   ),
-  update: and(
-    inputDataValidation(BASICS, inputBasicsValidator),
+  updateBasic: and(
+    inputDataValidation(BASIC, inputBasicsValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  delete: hasRoles([ADMIN, SUPERADMIN]),
+  deleteBasic: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = {

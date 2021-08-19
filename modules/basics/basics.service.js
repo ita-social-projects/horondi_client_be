@@ -10,7 +10,7 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_BASICS, EDIT_BASICS, DELETE_BASICS },
+  HISTORY_ACTIONS: { ADD_BASIC, EDIT_BASIC, DELETE_BASIC },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -50,7 +50,7 @@ class BasicsService {
     };
   }
 
-  async getBasicsById(id) {
+  async getBasicById(id) {
     const foundBasic = await Basics.findById(id).exec();
 
     if (!foundBasic) {
@@ -60,7 +60,7 @@ class BasicsService {
     return foundBasic;
   }
 
-  async updateBasics(id, basic, image, { _id: adminId }) {
+  async updateBasic(id, basic, image, { _id: adminId }) {
     const basicToUpdate = await Basics.findById(id).exec();
 
     if (!basicToUpdate) {
@@ -89,7 +89,7 @@ class BasicsService {
     const { beforeChanges, afterChanges } = getChanges(basicToUpdate, basic);
 
     const historyRecord = generateHistoryObject(
-      EDIT_BASICS,
+      EDIT_BASIC,
       basicToUpdate.model?._id,
       basicToUpdate.name[UA].value,
       basicToUpdate._id,
@@ -103,7 +103,7 @@ class BasicsService {
     return updatedBasic;
   }
 
-  async addBasics(basic, image, { _id: adminId }) {
+  async addBasic(basic, image, { _id: adminId }) {
     if (image) {
       const uploadImage = await uploadService.uploadFile(image);
       basic.images = uploadImage.fileNames;
@@ -114,7 +114,7 @@ class BasicsService {
     const newBasic = await new Basics(basic).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_BASICS,
+      ADD_BASIC,
       newBasic.model?._id,
       newBasic.name[UA].value,
       newBasic._id,
@@ -133,7 +133,7 @@ class BasicsService {
     return newBasic;
   }
 
-  async deleteBasics(id, { _id: adminId }) {
+  async deleteBasic(id, { _id: adminId }) {
     const foundBasic = await Basics.findById(id)
       .lean()
       .exec();
@@ -143,11 +143,11 @@ class BasicsService {
     }
 
     if (foundBasic.images) {
-      return uploadService.deleteFiles(Object.values(foundBasic.image));
+      uploadService.deleteFiles(Object.values(foundBasic.images));
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_BASICS,
+      DELETE_BASIC,
       foundBasic.model,
       foundBasic.name[UA].value,
       foundBasic._id,

@@ -596,8 +596,8 @@ const typeDefs = gql`
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
     getPositionById(id: ID): PositionResult
-    getAllBasics(limit: Int, skip: Int, filter: BasicsFilterInput): PaginatedBasics!
-    getBasicsById(id: ID): BasicsResult
+    getAllBasics(limit: Int!, skip: Int!, filter: BasicsFilterInput): PaginatedBasics!
+    getBasicById(id: ID): BasicsResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -968,9 +968,9 @@ const typeDefs = gql`
     deletePosition(id: ID):PositionResult
     updatePosition(id: ID, position: PositionInput!): PositionResult
     "Basics Mutations"
-    addBasics(basic: BasicsInput!, image: Upload): BasicsResult
-    updateBasics(id: ID, basic: BasicsInput!, image: Upload): BasicsResult
-    deleteBasics(id: ID): BasicsResult
+    addBasic(basic: BasicsInput!, image: Upload): BasicsResult
+    updateBasic(id: ID!, basic: BasicsInput!, image: Upload): BasicsResult
+    deleteBasic(id: ID!): BasicsResult
   }
 `;
 

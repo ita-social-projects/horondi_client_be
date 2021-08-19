@@ -7,7 +7,7 @@ const {
   newBasicsInputData,
   newBasicsInputDataUpdate,
 } = require('./basics.variables');
-const { createBasics, updateBasics, deleteBasics } = require('./basics.helper');
+const { createBasics, updateBasic, deleteBasic } = require('./basics.helper');
 const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
 const { createMaterial } = require('../materials/material.helper');
@@ -52,26 +52,26 @@ describe('Basics Mutation tests', () => {
   });
 
   it('should update basic', async () => {
-    const updateBasicsTest = await updateBasics(
+    const updateBasicTest = await updateBasic(
       basicsId,
       basicsUpdateInput,
       'img-new.jpg',
       operations
     );
 
-    expect(updateBasicsTest).toBeDefined();
-    expect(updateBasicsTest).toHaveProperty('name', basicsUpdateInput.name);
+    expect(updateBasicTest).toBeDefined();
+    expect(updateBasicTest).toHaveProperty('name', basicsUpdateInput.name);
   });
   it('should update basic without image', async () => {
-    const updateBasicsTest = await updateBasics(
+    const updateBasicTest = await updateBasic(
       basicsId,
       basicsUpdateInput,
       '',
       operations
     );
 
-    expect(updateBasicsTest).toBeDefined();
-    expect(updateBasicsTest).toHaveProperty('name', basicsUpdateInput.name);
+    expect(updateBasicTest).toBeDefined();
+    expect(updateBasicTest).toHaveProperty('name', basicsUpdateInput.name);
   });
 
   it('should create basics without image', async () => {
@@ -84,7 +84,7 @@ describe('Basics Mutation tests', () => {
   });
 
   it('should update basic with errors', async () => {
-    const result = await updateBasics(
+    const result = await updateBasic(
       wrongId,
       basicsUpdateInput,
       'img-new.jpg',
@@ -97,7 +97,7 @@ describe('Basics Mutation tests', () => {
   });
 
   it('delete basics should return error', async () => {
-    const result = await deleteBasics(wrongId, operations);
+    const result = await deleteBasic(wrongId, operations);
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('message', BASICS_NOT_FOUND);
@@ -105,7 +105,7 @@ describe('Basics Mutation tests', () => {
   });
 
   it('should delete basics without image', async () => {
-    const deletedBasics = await deleteBasics(basicsId, operations);
+    const deletedBasics = await deleteBasic(basicsId, operations);
 
     const result = deletedBasics._id;
     expect(result).toBe(basicsId);

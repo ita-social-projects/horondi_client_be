@@ -4,7 +4,7 @@ const createBasics = async (basic, image, operations) => {
   const basicsInfo = await operations.mutate({
     mutation: gql`
       mutation($basic: BasicsInput!, $image: Upload) {
-        addBasics(basic: $basic, image: $image) {
+        addBasic(basic: $basic, image: $image) {
           ... on Basics {
             _id
             name {
@@ -40,14 +40,14 @@ const createBasics = async (basic, image, operations) => {
     `,
     variables: { basic, image },
   });
-  return basicsInfo.data.addBasics;
+  return basicsInfo.data.addBasic;
 };
 
-const updateBasics = async (id, basic, images, operations) => {
+const updateBasic = async (id, basic, images, operations) => {
   const basicsInfo = await operations.mutate({
     mutation: gql`
       mutation($id: ID!, $basic: BasicsInput!, $image: Upload) {
-        updateBasics(id: $id, basic: $basic, image: $image) {
+        updateBasic(id: $id, basic: $basic, image: $image) {
           ... on Basics {
             _id
             name {
@@ -87,14 +87,14 @@ const updateBasics = async (id, basic, images, operations) => {
       images,
     },
   });
-  return basicsInfo.data.updateBasics;
+  return basicsInfo.data.updateBasic;
 };
 
-const deleteBasics = async (id, operations) => {
+const deleteBasic = async (id, operations) => {
   const basicsInfo = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
-        deleteBasics(id: $id) {
+        deleteBasic(id: $id) {
           ... on Basics {
             _id
           }
@@ -109,7 +109,7 @@ const deleteBasics = async (id, operations) => {
       id,
     },
   });
-  return basicsInfo.data.deleteBasics;
+  return basicsInfo.data.deleteBasic;
 };
 
 const getAllBasics = async ({ limit, skip, filter }, operations) => {
@@ -141,11 +141,11 @@ const getAllBasics = async ({ limit, skip, filter }, operations) => {
   return basicsInfo.data.getAllBasics.items;
 };
 
-const getBasicsById = async (id, operations) => {
+const getBasicById = async (id, operations) => {
   const basicsInfo = await operations.query({
     query: gql`
       query($id: ID!) {
-        getBasicsById(id: $id) {
+        getBasicById(id: $id) {
           ... on Basics {
             _id
             name {
@@ -177,13 +177,13 @@ const getBasicsById = async (id, operations) => {
     `,
     variables: { id },
   });
-  return basicsInfo.data.getBasicsById;
+  return basicsInfo.data.getBasicById;
 };
 
 module.exports = {
   createBasics,
-  updateBasics,
-  deleteBasics,
+  updateBasic,
+  deleteBasic,
   getAllBasics,
-  getBasicsById,
+  getBasicById,
 };

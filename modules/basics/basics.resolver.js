@@ -5,9 +5,9 @@ const RuleError = require('../../errors/rule.error');
 const basicsQuery = {
   getAllBasics: async (_, { limit, skip, filter }) =>
     basicsService.getAllBasics(limit, skip, filter),
-  getBasicsById: async (_, { id }) => {
+  getBasicById: async (_, { id }) => {
     try {
-      return await basicsService.getBasicsById(id);
+      return await basicsService.getBasicById(id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -15,18 +15,23 @@ const basicsQuery = {
 };
 
 const basicsMutations = {
-  addBasics: async (_, { basic, image }, { user }) =>
-    basicsService.addBasics(basic, image, user),
-  updateBasics: async (_, { id, basic, image }, { user }) => {
+  addBasic: async (_, { basic, image }, { user }) => {
     try {
-      return await basicsService.updateBasics(id, basic, image, user);
+      return basicsService.addBasic(basic, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteBasics: async (_, { id }, { user }) => {
+  updateBasic: async (_, { id, basic, image }, { user }) => {
     try {
-      return await basicsService.deleteBasics(id, user);
+      return await basicsService.updateBasic(id, basic, image, user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  deleteBasic: async (_, { id }, { user }) => {
+    try {
+      return await basicsService.deleteBasic(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

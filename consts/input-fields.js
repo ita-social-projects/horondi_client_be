@@ -30,7 +30,7 @@ const INPUT_FIELDS = {
   COMMENT: 'comment',
   HOME_PAGE_SLIDE: 'slide',
   POSITION: 'position',
-  BASICS: 'basics',
+  BASIC: 'basic',
 };
 
 module.exports = {

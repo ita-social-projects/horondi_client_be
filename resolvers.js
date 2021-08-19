@@ -133,7 +133,6 @@ const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
 const strapService = require('./modules/strap/strap.service');
 const positionService = require('./modules/position/position.service');
-const basicsService = require('./modules/basics/basics.service');
 
 const {
   ukrPoshtaQuery,
