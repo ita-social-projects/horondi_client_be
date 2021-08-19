@@ -509,7 +509,7 @@ class UserService extends FilterHelper {
     const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: REACT_APP_GOOGLE_CLIENT_ID,
+      expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
