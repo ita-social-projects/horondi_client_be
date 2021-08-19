@@ -677,20 +677,20 @@ class UserService extends FilterHelper {
 
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
-    if (!user) {
-      return true;
+
+    if (user) {
+      const { accessToken } = generateTokens(user._id, {
+        expiresIn: RECOVERY_EXPIRE,
+        secret: SECRET,
+      });
+      user.recoveryToken = accessToken;
+      await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+        language,
+        token: accessToken,
+      });
+      await user.save();
     }
 
-    const { accessToken } = generateTokens(user._id, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: SECRET,
-    });
-    user.recoveryToken = accessToken;
-    await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
-      language,
-      token: accessToken,
-    });
-    await user.save();
     return true;
   }
 

@@ -35,7 +35,7 @@ class Mailer {
     );
     oAuth2Client.setCredentials({ refresh_token: this.opts.refreshToken });
 
-    return await oAuth2Client.getAccessToken();
+    return oAuth2Client.getAccessToken();
   }
 
   async createTransport() {
@@ -57,12 +57,12 @@ class Mailer {
   }
 
   async verifyConnection(transporter) {
-    return await (transporter || this.transporter).verify();
+    return (transporter || this.transporter).verify();
   }
 
   async reconnect() {
     this.closeConnection();
-    return await this.createTransport();
+    return this.createTransport();
   }
 
   async sendMail(opts) {

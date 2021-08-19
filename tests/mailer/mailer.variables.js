@@ -16,7 +16,13 @@ const transportOptions = {
   refreshToken: GMAIL_API_REFRESH_TOKEN,
 };
 
-const messageOptions = {};
+const messageOptions = {
+  from: MAIL_USER,
+  to: MAIL_USER,
+  subject: 'Message title',
+  text: 'Plaintext version of the message',
+  html: '<p>HTML version of the message</p>',
+};
 
 const wrongMessageOptions = {
   from: MAIL_USER,
