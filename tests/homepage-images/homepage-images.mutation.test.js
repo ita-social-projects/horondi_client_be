@@ -25,7 +25,7 @@ describe('Homepage looks images mutations', () => {
     const updateResult = await updateHomePageLooksImage(wrongId, operations);
 
     expect(updateResult).toHaveProperty('message', IMAGE_NOT_FOUND);
-    expect(updateResult).toHaveProperty('statusCode', 400);
+    expect(updateResult).toHaveProperty('statusCode', 404);
   });
 
   afterAll(async () => {

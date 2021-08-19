@@ -89,7 +89,7 @@ class PositionService {
   async deletePosition(id, { _id: adminId }) {
     const position = await Position.findById(id).exec();
     if (!position) {
-      throw new Error(POSITION_NOT_FOUND);
+      throw new RuleError(POSITION_NOT_FOUND, NOT_FOUND);
     }
     const deletedPosition = await Position.findByIdAndDelete(id).exec();
 

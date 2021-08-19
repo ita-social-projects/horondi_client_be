@@ -7,7 +7,7 @@ const {
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
@@ -144,7 +144,7 @@ class PatternsService {
 
   async addPattern({ pattern, image }, { _id: adminId }) {
     if (!image) {
-      throw new Error(IMAGE_NOT_PROVIDED);
+      throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);

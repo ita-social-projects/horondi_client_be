@@ -17,7 +17,7 @@ const { minDefaultDate } = require('../../consts/date-range');
 const emailService = require('../email/email.service');
 const RuleError = require('../../errors/rule.error');
 const {
-  STATUS_CODES: { BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
 
 class EmailChatService {
@@ -70,10 +70,10 @@ class EmailChatService {
     };
   }
 
-  getEmailQuestionById(id) {
-    const question = EmailChat.findById(id);
+  async getEmailQuestionById(id) {
+    const question = await EmailChat.findById(id).exec();
     if (!question) {
-      throw new Error(QUESTION_NOT_FOUND);
+      throw new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
     }
     return question;
   }
@@ -112,7 +112,7 @@ class EmailChatService {
   }
 
   async answerEmailQuestion({ questionId, adminId, text }) {
-    const question = await this.getEmailQuestionById(questionId).exec();
+    const question = await this.getEmailQuestionById(questionId);
     if (!question) {
       throw new RuleError(QUESTION_NOT_FOUND, BAD_REQUEST);
     }
@@ -153,7 +153,7 @@ class EmailChatService {
         ...item.value._doc,
       }));
     } catch (e) {
-      throw new Error(CHAT_NOT_FOUND);
+      throw new RuleError(CHAT_NOT_FOUND, NOT_FOUND);
     }
   }
 }
