@@ -116,9 +116,7 @@ class OrdersService {
     const { status, paymentStatus, date } = filter;
     const filterObject = {};
 
-    const user = await User.findById(userId).exec();
-
-    filterObject['user.email'] = user.email;
+    filterObject['user.id'] = userId;
 
     if (status?.length) {
       filterObject.status = { $in: status };
