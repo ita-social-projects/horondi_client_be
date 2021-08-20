@@ -118,9 +118,17 @@ describe('Pattern queries', () => {
       operations
     );
 
-    expect(paginatedPatterns.message).toEqual(
+    if (
+      res.errors[0].message ==
       'Skip value must be non-negative, but received: -1'
-    );
+    )
+      expect(res.errors[0].message).toEqual(
+        'Skip value must be non-negative, but received: -1'
+      );
+    else
+      expect(res.errors[0].message).toEqual(
+        `BSON field 'skip' value must be >= 0, actual value '-1'`
+      );
   });
 
   afterAll(async () => {
