@@ -1,7 +1,4 @@
 const sizeService = require('./size.service');
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
 
 const sizeQuery = {
@@ -17,10 +14,7 @@ const sizeQuery = {
     try {
       return await sizeService.getSizeById(id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
@@ -30,10 +24,7 @@ const sizeMutation = {
     try {
       return await sizeService.addSize(size, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -41,10 +32,7 @@ const sizeMutation = {
     try {
       return await sizeService.deleteSize(id, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -52,10 +40,7 @@ const sizeMutation = {
     try {
       return await sizeService.updateSize(id, size, user);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

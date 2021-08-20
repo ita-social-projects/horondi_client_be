@@ -1,8 +1,5 @@
 const Joi = require('joi');
 const {
-  SIDES: { LEFT, RIGHT, BACK, FRONT },
-} = require('../consts/side-names');
-const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
 const {
@@ -15,18 +12,8 @@ const {
     PATTERN,
     POCKET,
     STRAP,
-    SIDE,
   },
 } = require('../consts/constructor-option-types');
-
-const nestedSideValidator = Joi.object({
-  side: Joi.array().has(
-    Joi.string()
-      .trim()
-      .valid(RIGHT, LEFT, FRONT, BACK)
-      .required()
-  ),
-});
 
 const nestedNameValidator = Joi.object({
   lang: Joi.string()
@@ -41,7 +28,7 @@ const inputPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
-    .valid(POCKET, SIDE)
+    .valid(POCKET)
     .required(),
   image: Joi.string()
     .trim()
@@ -50,6 +37,32 @@ const inputPocketValidator = Joi.object({
     .optional()
     .default(0),
   restriction: Joi.boolean(),
+  positions: Joi.array(),
+});
+
+const inputClosureValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .valid(CLOSURE)
+    .required(),
+  image: Joi.string()
+    .trim()
+    .optional(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean().required(),
+  model: Joi.string(),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  customizable: Joi.boolean(),
 });
 
 const inputOptionValidator = Joi.object({
@@ -200,4 +213,5 @@ module.exports = {
   inputConstructorElementValidator,
   inputConstrFrontPocketValidator,
   restrictionValidator,
+  inputClosureValidator,
 };

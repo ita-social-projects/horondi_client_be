@@ -28,10 +28,7 @@ const { newModel } = require('../model/model.variables');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
-const {
-  SIZES_TO_CREATE: { size1 },
-  createPlainSize,
-} = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');

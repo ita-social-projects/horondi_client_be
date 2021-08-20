@@ -66,6 +66,7 @@ let value;
 let adminEmail;
 let adminPassword;
 let cart;
+const zeroIndex = 0;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -146,7 +147,7 @@ describe('Cart queries', () => {
       sizeId,
       operations
     );
-    cart = productSentToCart.cart.items[0];
+    cart = productSentToCart.cart.items[zeroIndex];
     const productSentToCart2 = await addProductToCart(
       productId2,
       adminId,
@@ -176,7 +177,7 @@ describe('Cart queries', () => {
       sizeId,
       operations
     );
-    cart = productSentToCart.cart.items[0];
+    cart = productSentToCart.cart.items[zeroIndex];
 
     expect(cart.quantity).toBe(2);
   });
@@ -187,7 +188,7 @@ describe('Cart queries', () => {
       adminId,
       operations
     );
-    cart = cartQuantityUpdated.cart.items[0];
+    cart = cartQuantityUpdated.cart.items[zeroIndex];
     expect(cart.quantity).toBe(value);
   });
   it('Should throw error in case of wrong removing product from cart', async () => {
@@ -214,7 +215,7 @@ describe('Cart queries', () => {
       adminId,
       operations
     );
-    cart = cartQuantityUpdated.cart.items[0];
+    cart = cartQuantityUpdated.cart.items[zeroIndex];
 
     expect(cart.quantity).toBe(value);
   });

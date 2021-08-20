@@ -51,7 +51,7 @@ describe('Homepage looks slider queries', () => {
     const homePageSlide = await getSlideById(invalidId, operations);
 
     expect(homePageSlide).toHaveProperty('message', SLIDE_NOT_VALID);
-    expect(homePageSlide).toHaveProperty('statusCode', NOT_FOUND);
+    expect(homePageSlide).toHaveProperty('statusCode', BAD_REQUEST);
   });
 
   it('Passing invalid ID on getting should return error', async () => {

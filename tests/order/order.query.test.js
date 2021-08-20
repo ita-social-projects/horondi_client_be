@@ -108,7 +108,7 @@ describe('Order queries', () => {
   });
 
   const {
-    user,
+    recipient,
     userComment,
     delivery,
     paymentStatus,
@@ -121,7 +121,7 @@ describe('Order queries', () => {
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders[0]).toHaveProperty('user', user);
+    expect(orders[0]).toHaveProperty('recipient', recipient);
   });
   test('should receive order by id', async () => {
     const {

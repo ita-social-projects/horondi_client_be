@@ -1,11 +1,14 @@
 const homePageService = require('./home-page-images.service');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const homePageImagesQuery = {
-  getHomePageLooksImages: async () =>
-    await homePageService.getHomePageLooksImages(),
+  getHomePageLooksImages: async () => {
+    try {
+      return await homePageService.getHomePageLooksImages();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const homePageImagesMutation = {
@@ -13,7 +16,7 @@ const homePageImagesMutation = {
     try {
       return await homePageService.updateHomePageLooksImage(args);
     } catch (e) {
-      return { statusCode: BAD_REQUEST, message: e.message };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -21,7 +24,7 @@ const homePageImagesMutation = {
     try {
       return await homePageService.addHomePageLooksImage(args);
     } catch (e) {
-      return { statusCode: BAD_REQUEST, message: e.message };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -29,7 +32,7 @@ const homePageImagesMutation = {
     try {
       return await homePageService.deleteHomePageLooksImage(args);
     } catch (e) {
-      return { statusCode: NOT_FOUND, message: e.message };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

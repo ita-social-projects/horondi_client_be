@@ -24,7 +24,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -32,6 +32,10 @@ const {
 const {
   HISTORY_OBJ_KEYS: { CODE, NAME },
 } = require('../../consts/history-obj-keys');
+const {
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class CategoryService extends FilterHelper {
   async getAllCategories({ filter = {}, pagination }) {
@@ -60,18 +64,18 @@ class CategoryService extends FilterHelper {
     if (category) {
       return category;
     }
-    throw new Error(CATEGORY_NOT_FOUND);
+    throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
   }
 
   async updateCategory({ id, category, upload }, { _id: adminId }) {
     const categoryToUpdate = await Category.findById(id).exec();
 
     if (!categoryToUpdate) {
-      throw new Error(CATEGORY_NOT_FOUND);
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkCategoryExist(category, id)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+      throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (category) {
@@ -127,7 +131,7 @@ class CategoryService extends FilterHelper {
       sort: {},
     });
 
-    const data = categories.items.map(async category => {
+    return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => ({
         name: model.name,
@@ -141,17 +145,15 @@ class CategoryService extends FilterHelper {
         models: modelsFields,
       };
     });
-
-    return data;
   }
 
   async addCategory(data, upload, { _id: adminId }) {
     if (!upload) {
-      throw new Error(IMAGES_NOT_PROVIDED);
+      throw new RuleError(IMAGES_NOT_PROVIDED, BAD_REQUEST);
     }
 
     if (await this.checkCategoryExist(data)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+      throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const savedCategory = await new Category(data).save();
@@ -185,6 +187,9 @@ class CategoryService extends FilterHelper {
     const category = await Category.findByIdAndDelete(deleteId)
       .lean()
       .exec();
+
+    if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+
     const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
@@ -219,8 +224,6 @@ class CategoryService extends FilterHelper {
 
       return category;
     }
-
-    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async getCategoriesWithModels() {

@@ -40,7 +40,7 @@ class UploadService {
     const stream = getStream(buffer);
     const streamLength = buffer.length;
 
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       blobService.createBlockBlobFromStream(
         containerName,
         imageName,
@@ -119,7 +119,7 @@ class UploadService {
   }
 
   async deleteFile(fileName) {
-    return await new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) =>
       blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
         if (err) {
           reject(err);
