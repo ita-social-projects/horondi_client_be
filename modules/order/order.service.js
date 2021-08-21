@@ -116,7 +116,7 @@ class OrdersService {
     const { status, paymentStatus, date } = filter;
     const filterObject = {};
 
-    filterObject['user.id'] = userId;
+    filterObject.user_id = userId;
 
     if (status?.length) {
       filterObject.status = { $in: status };

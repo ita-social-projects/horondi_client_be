@@ -33,7 +33,6 @@ const {
 } = require('../../consts/status-codes');
 
 jest.mock('../../modules/email/email.service');
-jest.setTimeout(10000);
 
 let userId;
 let token;

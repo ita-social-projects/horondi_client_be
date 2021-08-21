@@ -28,7 +28,6 @@ const {
 } = require('../helpers/users');
 
 jest.mock('../../modules/email/email.service');
-jest.setTimeout(30000);
 
 let token;
 let userId;
