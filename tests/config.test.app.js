@@ -11,10 +11,13 @@ const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
 const { initLogger: initLoggerHttp } = require('../loggerHttp');
 const { currencyWorker } = require('../currency.worker');
+const { NODE_ENV } = require('../dotenvValidator');
 
 let loggerHttp;
 
 (async () => {
+  if (NODE_ENV !== 'test') return;
+
   const dbConnection = await connectDB();
   currencyWorker(dbConnection.db);
   loggerHttp = initLoggerHttp(dbConnection.getClient());
