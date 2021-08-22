@@ -9,9 +9,16 @@ const formatError = require('../utils/format-error');
 const verifyUser = require('../utils/verify-user');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
-const loggerHttp = require('../loggerHttp');
+const LoggerHttp = require('../loggerHttp');
+const { currencyWorker } = require('../currency.worker');
 
-connectDB();
+let loggerHttp;
+
+(async () => {
+  const dbConnection = await connectDB();
+  currencyWorker(dbConnection.db);
+  loggerHttp = LoggerHttp(dbConnection.getClient());
+})();
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
