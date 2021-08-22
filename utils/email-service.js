@@ -3,7 +3,7 @@ const path = require('path');
 const EmailTemplates = require('email-templates');
 const Mailer = require('./mailer');
 
-const RuleError = require('../errors/rule.error');
+const { getLogger: getLoggerHttp } = require('../loggerHttp');
 const logger = require('../logger');
 
 const {
@@ -32,7 +32,7 @@ const contextExtension = {
 };
 
 const onSendMailError = err => {
-  throw new RuleError(err.message, err.code);
+  getLoggerHttp().error(JSON.stringify({ key: err.code, value: err.message }));
 };
 
 const mailer = new Mailer(
@@ -53,14 +53,15 @@ const mailer = new Mailer(
     if (await mailer.verifyConnection()) {
       logger.notice('MAILER CONNECTION CORRECT.');
     } else {
-      throw new RuleError(INVALID_AUTH, UNAUTHORIZED);
-    }
-
-    if (!mailer.transporter) {
+      getLoggerHttp().error(
+        JSON.stringify({ key: UNAUTHORIZED, value: INVALID_AUTH })
+      );
       await mailer.reconnect();
     }
   } catch (err) {
-    throw new RuleError(INVALID_CONNECTION, NOT_FOUND);
+    getLoggerHttp().error(
+      JSON.stringify({ key: NOT_FOUND, value: INVALID_CONNECTION })
+    );
   }
 })();
 

@@ -7,8 +7,6 @@ const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
 const verifyUser = require('./utils/verify-user');
 const permissions = require('./permissions');
-const logger = require('./logger');
-const LoggerHttp = require('./loggerHttp');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
@@ -16,21 +14,25 @@ const { currencyWorker } = require('./currency.worker');
 const { checkPaymentStatus } = require('./modules/payment/payment.service');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { cronJob } = require('./helpers/cron-job');
+
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
   NODE_ENV,
 } = require('./dotenvValidator');
 
+const logger = require('./logger');
+const { initLogger: initLoggerHttp } = require('./loggerHttp');
+
 const { registerAdmin } = require('./tests/helper-functions');
 const RuleError = require('./errors/rule.error');
 
-let loggerHttp;
+let loggerHttp = null;
 
 (async () => {
   const dbConnection = await connectDB();
   currencyWorker(dbConnection.db);
-  loggerHttp = LoggerHttp(dbConnection.getClient());
+  loggerHttp = initLoggerHttp(dbConnection.getClient());
 })();
 
 if (NODE_ENV === 'test') {

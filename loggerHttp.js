@@ -4,7 +4,9 @@ require('winston-mongodb');
 
 const OneWeekInSeconds = 604800;
 
-module.exports = mongo => {
+let loggerHttp = null;
+
+function initLogger(mongo) {
   const mongoLogOptions = {
     name: 'log_info',
     storeHost: true,
@@ -14,7 +16,7 @@ module.exports = mongo => {
     capped: true,
   };
 
-  return winston.createLogger({
+  loggerHttp = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
       winston.format.timestamp(),
@@ -25,4 +27,15 @@ module.exports = mongo => {
     defaultMeta: { service: 'user-service' },
     transports: [new winston.transports.MongoDB(mongoLogOptions)],
   });
+
+  return loggerHttp;
+}
+
+function getLogger() {
+  return loggerHttp;
+}
+
+module.exports = {
+  getLogger,
+  initLogger,
 };

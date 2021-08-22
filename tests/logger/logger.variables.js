@@ -1,6 +1,6 @@
 const winston = require('winston');
 
-const { dotenvVariables } = require('../../dotenvValidator');
+const { dotenvVariables, MONGO_URL } = require('../../dotenvValidator');
 
 const regularLogMessage = 'Simple message';
 
@@ -28,4 +28,5 @@ module.exports = {
   logString,
   matchLogString,
   messageString,
+  dbUri: MONGO_URL,
 };

@@ -9,7 +9,7 @@ const formatError = require('../utils/format-error');
 const verifyUser = require('../utils/verify-user');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
-const LoggerHttp = require('../loggerHttp');
+const { initLogger: initLoggerHttp } = require('../loggerHttp');
 const { currencyWorker } = require('../currency.worker');
 
 let loggerHttp;
@@ -17,7 +17,7 @@ let loggerHttp;
 (async () => {
   const dbConnection = await connectDB();
   currencyWorker(dbConnection.db);
-  loggerHttp = LoggerHttp(dbConnection.getClient());
+  loggerHttp = initLoggerHttp(dbConnection.getClient());
 })();
 
 const schema = applyMiddleware(
