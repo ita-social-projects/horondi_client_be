@@ -3,7 +3,6 @@ const { OAuth2Client } = require('google-auth-library');
 const JWTClient = require('../../utils/jwt-client');
 const BcryptClient = require('../../utils/bcrypt-client');
 
-const { tokenChecker } = require('../../helpers/tokenChecker');
 const User = require('./user.model');
 
 const {
@@ -51,10 +50,13 @@ const {
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
   ORDER_NOT_FOUND,
+  TOKEN_IS_EXPIRIED,
+  USER_IS_BLOCKED,
+  SUPER_ADMIN_IS_IMMUTABLE,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
 } = require('../../consts/status-codes');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
@@ -70,10 +72,6 @@ const {
   roles: { USER },
 } = require('../../consts');
 const RuleError = require('../../errors/rule.error');
-const {
-  USER_IS_BLOCKED,
-  SUPER_ADMIN_IS_IMMUTABLE,
-} = require('../../error-messages/user.messages');
 const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
@@ -629,7 +627,14 @@ class UserService extends FilterHelper {
   }
 
   async confirmUser(token) {
-    const { userId } = await tokenChecker(token, CONFIRMATION_SECRET);
+    let userId = null;
+
+    try {
+      const decoded = JWTClient.decodeToken(token, CONFIRMATION_SECRET);
+      userId = decoded.userId;
+    } catch (err) {
+      throw new RuleError(TOKEN_IS_EXPIRIED, UNAUTHORIZED);
+    }
 
     const candidate = await User.findById(userId).exec();
 
