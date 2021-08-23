@@ -61,7 +61,7 @@ describe('Email API queries', () => {
       expect(mailer.getAccessToken).toBeDefined();
     });
 
-    test('Should return access token', async () => {
+    test.skip('Should return access token', async () => {
       const accessToken = (await mailer.getAccessToken()).token;
 
       expect(accessToken).toBeDefined();
@@ -69,11 +69,11 @@ describe('Email API queries', () => {
       expect(accessToken.length).toBeGreaterThan(25);
     });
 
-    test('Should create transport', async () => {
+    test.skip('Should create transport', async () => {
       expect(typeof (await createTransport(mailer))).toBe('object');
     });
 
-    test('Should verify connection', async () => {
+    test.skip('Should verify connection', async () => {
       await createTransport(mailer);
       expect(await verifyConnection(mailer)).toBeTruthy();
     });
@@ -82,7 +82,7 @@ describe('Email API queries', () => {
       expect(mailer.closeConnection).toBeDefined();
     });
 
-    test('Should reconnect', async () => {
+    test.skip('Should reconnect', async () => {
       const oldTransport = { ...mailer.transporter };
       const newTransport = await reconnect(mailer);
       expect(oldTransport).not.toEqual(newTransport);
