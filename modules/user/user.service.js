@@ -1,6 +1,6 @@
 const { UserInputError } = require('apollo-server');
-const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
+const JWTClient = require('../../utils/jwt-client');
 const BcryptClient = require('../../utils/bcrypt-client');
 
 const { tokenChecker } = require('../../helpers/tokenChecker');
@@ -287,7 +287,7 @@ class UserService extends FilterHelper {
   }
 
   async checkIfTokenIsValid(token) {
-    const decoded = jwt.verify(token, SECRET);
+    const decoded = JWTClient.decodeToken(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -705,7 +705,7 @@ class UserService extends FilterHelper {
   }
 
   async resetPassword(password, token) {
-    const decoded = jwt.verify(token, SECRET);
+    const decoded = JWTClient.decodeToken(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
@@ -888,7 +888,7 @@ class UserService extends FilterHelper {
 
   validateConfirmationToken(token) {
     try {
-      jwt.verify(token, SECRET);
+      JWTClient.decodeToken(token, SECRET);
       return { isSuccess: true };
     } catch (err) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {

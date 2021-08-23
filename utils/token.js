@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
+const JWTClient = require('./jwt-client');
 const { EMAIL_TOKEN_SECRET } = require('../dotenvValidator');
 
 const generateEmailToken = payload =>
-  jwt.sign(payload, EMAIL_TOKEN_SECRET, {
+  JWTClient.createToken(payload, EMAIL_TOKEN_SECRET, {
     expiresIn: '1d',
   });
 
