@@ -1,7 +1,7 @@
 const { UserInputError } = require('apollo-server');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
+const BcryptClient = require('../../utils/bcrypt-client');
 
 const { tokenChecker } = require('../../helpers/tokenChecker');
 const User = require('./user.model');
@@ -425,7 +425,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const match = await bcrypt.compare(
+    const match = await BcryptClient.comparePassword(
       password,
       user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
@@ -465,7 +465,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const match = await bcrypt.compare(
+    const match = await BcryptClient.comparePassword(
       password,
       user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
@@ -575,7 +575,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await BcryptClient.hashPassword(password, 12);
 
     const user = new User({
       firstName,
@@ -727,7 +727,7 @@ class UserService extends FilterHelper {
         statusCode: FORBIDDEN,
       });
     }
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await BcryptClient.hashPassword(password, 12);
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
@@ -850,7 +850,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await BcryptClient.hashPassword(password, 12);
 
     await User.findByIdAndUpdate(userDetails.userId, {
       $set: {
