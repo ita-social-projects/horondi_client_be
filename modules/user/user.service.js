@@ -30,7 +30,6 @@ const {
   reduceByDaysCount,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
-const verifyUser = require('../../utils/verify-user');
 const {
   USER_ALREADY_EXIST,
   USER_NOT_FOUND,
@@ -481,7 +480,7 @@ class UserService extends FilterHelper {
   }
 
   async regenerateAccessToken(refreshTokenForVerify) {
-    const { userId } = verifyUser(refreshTokenForVerify);
+    const { userId } = JWTClient.decodeToken(refreshTokenForVerify, SECRET);
 
     if (!userId) {
       throw new RuleError(REFRESH_TOKEN_IS_NOT_VALID, FORBIDDEN);
@@ -828,7 +827,7 @@ class UserService extends FilterHelper {
 
   async completeAdminRegister(updatedUser, token) {
     const { password } = updatedUser;
-    const userDetails = verifyUser(token);
+    const userDetails = JWTClient.decodeToken(token, SECRET);
 
     if (!userDetails) {
       throw new RuleError(INVALID_ADMIN_INVITATIONAL_TOKEN, BAD_REQUEST);
@@ -877,14 +876,12 @@ class UserService extends FilterHelper {
   }
 
   validateConfirmationToken(token) {
-    try {
-      JWTClient.decodeToken(token, SECRET);
-      return { isSuccess: true };
-    } catch (err) {
+    if (!JWTClient.decodeToken(token, SECRET)) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
         statusCode: BAD_REQUEST,
       });
     }
+    return { isSuccess: true };
   }
 
   async updateCartOrWishlist(userId, key, list, productId) {

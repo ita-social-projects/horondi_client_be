@@ -38,7 +38,12 @@ class JWTClient {
   }
 
   static decodeToken(token, secret) {
-    return jwt.verify(token, secret);
+    if (!token) return;
+    try {
+      return jwt.verify(token, secret);
+    } catch (err) {
+      return '';
+    }
   }
 }
 
