@@ -5,7 +5,7 @@ const BcryptClient = require('../../utils/bcrypt-client');
 
 const { tokenChecker } = require('../../helpers/tokenChecker');
 const User = require('./user.model');
-const generateTokens = require('../../utils/create-tokens');
+
 const {
   EmailActions: {
     CONFIRM_EMAIL,
@@ -437,14 +437,10 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
-    const { accessToken, refreshToken } = generateTokens(
-      user._id,
-      {
-        expiresIn: TOKEN_EXPIRES_IN,
-        secret: SECRET,
-      },
-      true
-    );
+
+    const { accessToken, refreshToken } = new JWTClient(
+      user._id
+    ).generateTokens(SECRET, TOKEN_EXPIRES_IN);
 
     return {
       ...user._doc,
@@ -473,20 +469,16 @@ class UserService extends FilterHelper {
     if (!match) {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
-    const { accessToken, refreshToken } = generateTokens(
-      user._id,
-      {
-        expiresIn: TOKEN_EXPIRES_IN,
-        secret: SECRET,
-      },
-      staySignedIn
-    );
+
+    const { accessToken, refreshToken } = new JWTClient(
+      user._id
+    ).generateTokens(SECRET, TOKEN_EXPIRES_IN);
 
     return {
       ...user._doc,
       _id: user._id,
       token: accessToken,
-      refreshToken,
+      refreshToken: staySignedIn ? refreshToken : null,
     };
   }
 
@@ -497,11 +489,12 @@ class UserService extends FilterHelper {
       throw new RuleError(REFRESH_TOKEN_IS_NOT_VALID, FORBIDDEN);
     }
     await this.getUserByFieldOrThrow('_id', userId);
-    const { accessToken, refreshToken } = generateTokens(
-      userId,
-      { expiresIn: TOKEN_EXPIRES_IN, secret: SECRET },
-      true
+
+    const { accessToken, refreshToken } = new JWTClient(userId).generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
     );
+
     return { refreshToken, token: accessToken };
   }
 
@@ -538,19 +531,15 @@ class UserService extends FilterHelper {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
-    const { accessToken, refreshToken } = generateTokens(
-      user._id,
-      {
-        expiresIn: TOKEN_EXPIRES_IN,
-        secret: SECRET,
-      },
-      staySignedIn
-    );
+    const { accessToken, refreshToken } = new JWTClient(
+      user._id
+    ).generateTokens(SECRET, TOKEN_EXPIRES_IN);
+
     return {
       ...user._doc,
       _id: user._id,
       token: accessToken,
-      refreshToken,
+      refreshToken: staySignedIn ? refreshToken : null,
     };
   }
 
@@ -590,10 +579,10 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const { accessToken } = generateTokens(savedUser._id, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: CONFIRMATION_SECRET,
-    });
+    const accessToken = new JWTClient(savedUser._id).generateAccessToken(
+      CONFIRMATION_SECRET,
+      RECOVERY_EXPIRE
+    );
 
     savedUser.confirmationToken = accessToken;
 
@@ -611,10 +600,12 @@ class UserService extends FilterHelper {
     if (user.confirmed) {
       throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, BAD_REQUEST);
     }
-    const { accessToken } = generateTokens(user._id, {
-      secret: CONFIRMATION_SECRET,
-      expiresIn: RECOVERY_EXPIRE,
-    });
+
+    const accessToken = new JWTClient(user._id).generateAccessToken(
+      CONFIRMATION_SECRET,
+      RECOVERY_EXPIRE
+    );
+
     user.confirmationToken = accessToken;
     await user.save();
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
@@ -650,13 +641,9 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
     }
 
-    const { accessToken, refreshToken } = generateTokens(
-      userId,
-      {
-        expiresIn: TOKEN_EXPIRES_IN,
-        secret: SECRET,
-      },
-      true
+    const { accessToken, refreshToken } = new JWTClient(userId).generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
     );
 
     await User.findByIdAndUpdate(userId, {
@@ -679,10 +666,11 @@ class UserService extends FilterHelper {
     const user = await User.findOne({ email }).exec();
 
     if (user) {
-      const { accessToken } = generateTokens(user._id, {
-        expiresIn: RECOVERY_EXPIRE,
-        secret: SECRET,
-      });
+      const accessToken = new JWTClient(user._id).generateAccessToken(
+        SECRET,
+        RECOVERY_EXPIRE
+      );
+
       user.recoveryToken = accessToken;
       await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
         language,
@@ -764,10 +752,11 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const { accessToken: invitationalToken } = generateTokens(savedUser._id, {
-      expiresIn: TOKEN_EXPIRES_IN,
-      secret: SECRET,
-    });
+
+    const invitationalToken = new JWTClient(savedUser._id).generateAccessToken(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
       token: invitationalToken,
@@ -821,13 +810,9 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const { accessToken: invitationalToken } = generateTokens(
-      isAdminExists._id,
-      {
-        expiresIn: TOKEN_EXPIRES_IN,
-        secret: SECRET,
-      }
-    );
+    const invitationalToken = new JWTClient(
+      isAdminExists._id
+    ).generateAccessToken(SECRET, TOKEN_EXPIRES_IN);
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
       token: invitationalToken,
