@@ -2,12 +2,15 @@ const { gql } = require('@apollo/client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   INVALID_PERMISSIONS,
+  WRONG_CREDENTIALS,
 } = require('../../error-messages/user.messages');
 const {
   superAdminUser,
   testUser,
   testUsersSet,
   wrongId,
+  filter,
+  googleToken,
 } = require('./user.variables');
 const {
   registerUser,
@@ -16,9 +19,13 @@ const {
   getUserByToken,
   getUserById,
   deleteUser,
+  googleUser,
   loginAdmin,
   getAllUsersWithToken,
   validateConfirmationToken,
+  getPurchasedProducts,
+  getUsersForStatistic,
+  getCountUserOrders,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -120,6 +127,32 @@ describe('queries', () => {
     expect(res.data.getUserById.message).toBe('USER_NOT_FOUND');
   });
 
+  test('should get count user orders by id', async () => {
+    const result = await getCountUserOrders(userId, operations);
+
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toEqual(0);
+  });
+
+  test('get count orders should throw Error User with provided _id not found', async () => {
+    const result = await getCountUserOrders(wrongId, operations);
+
+    expect(result.message).toBeDefined();
+    expect(result.message).toBe('USER_NOT_FOUND');
+  });
+
+  test('should get user for statistic', async () => {
+    const result = await getUsersForStatistic(filter, operations);
+
+    expect(result.getUsersForStatistic.total).toBeDefined();
+  });
+
+  test('should get purchased products', async () => {
+    const result = await getPurchasedProducts(userId, operations);
+
+    expect(result).toBeDefined();
+  });
+
   afterAll(async () => {
     await deleteUser(userId, operations);
   });
@@ -131,6 +164,7 @@ describe('Testing obtaining information restrictions', () => {
   let userPassword;
   let adminPassword;
   let firstName;
+  let wrongPassword;
   let lastName;
   let adminToken;
   let adminEmail;
@@ -140,6 +174,7 @@ describe('Testing obtaining information restrictions', () => {
     operations = await setupApp();
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
+    wrongPassword = 'qw23ertY123';
     adminEmail = superAdminUser.email;
     adminPassword = superAdminUser.password;
     firstName = 'Pepo';
@@ -168,6 +203,24 @@ describe('Testing obtaining information restrictions', () => {
     adminToken = adminInfo.token;
 
     expect(adminInfo.loginAdmin).not.toEqual(null);
+  });
+
+  test('login admin should throw error INVALID_PREMISSIONS', async () => {
+    const result = await loginAdmin(userLogin, userPassword, operations);
+
+    expect(result.data.loginAdmin.message).toBe(INVALID_PERMISSIONS);
+  });
+
+  test('login admin should throw error WRONG_CREDENTIALS', async () => {
+    const result = await loginAdmin(adminEmail, wrongPassword, operations);
+
+    expect(result.data.loginAdmin.message).toBe(WRONG_CREDENTIALS);
+  });
+
+  test('Google user must login', async () => {
+    const result = await googleUser(googleToken, true, operations);
+
+    expect(result).toBeDefined();
   });
   test('Any user doesn`t allowed to obtain information about all users', async () => {
     operations = await setupApp({ token: userToken });

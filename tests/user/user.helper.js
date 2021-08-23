@@ -173,6 +173,43 @@ const loginUser = async (email, pass, operations) => {
   });
   return loginedUser;
 };
+const googleUser = async (idToken, staySignedIn, operations) => {
+  const googleUser = await operations.mutate({
+    mutation: gql`
+      mutation($idToken: String!, $staySignedIn: Boolean) {
+        googleUser(idToken: $idToken, staySignedIn: $staySignedIn) {
+          token
+          _id
+        }
+      }
+    `,
+    variables: {
+      idToken,
+      staySignedIn,
+    },
+  });
+  return googleUser.data.googleUser;
+};
+const regenerateAccessToken = async (refreshToken, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($refreshToken: String!) {
+        regenerateAccessToken(refreshToken: $refreshToken) {
+          ... on Token {
+            token
+            refreshToken
+            accessToken
+          }
+        }
+      }
+    `,
+    variables: {
+      refreshToken,
+    },
+  });
+  console.log(res);
+  return res.data.regenerateAccessToken;
+};
 const getAllUsers = async operations => {
   const allUsers = await operations.query({
     query: gql`
@@ -200,6 +237,21 @@ const getAllUsers = async operations => {
   });
 
   return allUsers;
+};
+const getCountUserOrders = async (userId, operations) => {
+  const count = await operations.query({
+    query: gql`
+      query($userId: ID!) {
+        getCountUserOrders(id: $userId) {
+          countOrder
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return count.data.getCountUserOrders;
 };
 const getUserByToken = async operations => {
   const user = await operations.query({
@@ -231,6 +283,26 @@ const getUserByToken = async operations => {
 
   return user;
 };
+const getUsersForStatistic = async (filter, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($filter: UserForStatisticsInput) {
+        getUsersForStatistic(filter: $filter) {
+          ... on StatisticBar {
+            labels
+            counts
+            total
+          }
+        }
+      }
+    `,
+    variables: {
+      filter,
+    },
+  });
+
+  return res.data;
+};
 const getUserById = async (userId, operations) =>
   await operations.query({
     query: gql`
@@ -257,6 +329,21 @@ const getUserById = async (userId, operations) =>
       userId,
     },
   });
+const getPurchasedProducts = async (userId, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($userId: ID!) {
+        getPurchasedProducts(id: $userId) {
+          _id
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return res.data.getPurchasedProducts;
+};
 const deleteUser = async (userId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -273,6 +360,48 @@ const deleteUser = async (userId, operations) => {
     },
   });
   return res;
+};
+const blockUser = async (userId, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($userId: ID!) {
+        blockUser(userId: $userId) {
+          ... on User {
+            _id
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return res.data.blockUser;
+};
+const unlockUser = async (userId, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($userId: ID!) {
+        unlockUser(userId: $userId) {
+          ... on User {
+            _id
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return res.data.unlockUser;
 };
 const completeAdminRegister = async (
   token,
@@ -386,12 +515,19 @@ module.exports = {
   loginUser,
   getAllUsers,
   getUserByToken,
+  getCountUserOrders,
   getUserById,
   deleteUser,
   loginAdmin,
+  googleUser,
+  blockUser,
+  unlockUser,
   getAllUsersWithToken,
+  getUsersForStatistic,
   validateConfirmationToken,
+  regenerateAccessToken,
   updateUserById,
+  getPurchasedProducts,
   switchUserStatus,
   completeAdminRegister,
 };

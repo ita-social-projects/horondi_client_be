@@ -11,12 +11,16 @@ const {
   INVALID_LAST_NAME,
   INVALID_PASSWORD,
   INVALID_ROLE,
+  wrongId,
 } = require('./user.variables');
 const {
   registerUser,
   loginUser,
+  blockUser,
+  unlockUser,
   deleteUser,
   switchUserStatus,
+  regenerateAccessToken,
   updateUserById,
   completeAdminRegister,
 } = require('./user.helper');
@@ -27,6 +31,8 @@ const {
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
   USER_NOT_FOUND,
+  USER_IS_ALREADY_BLOCKED,
+  USER_IS_ALREADY_UNLOCKED,
 } = require('../../error-messages/user.messages');
 const {
   STATUS_CODES: { FORBIDDEN },
@@ -100,6 +106,11 @@ describe('mutations', () => {
     expect(res.data.loginUser).toHaveProperty('email', testUser.email);
     expect(res.data.loginUser).toHaveProperty('registrationDate');
   });
+  test('should regenerate access token', async () => {
+    const res = await regenerateAccessToken(token, operations);
+
+    expect(res).toBeDefined();
+  });
   test('should throw error User with provided email not found', async () => {
     const res = await loginUser(wrongEmail, testUser.pass, operations);
     expect(res.data.loginUser.message).toBe(WRONG_CREDENTIALS);
@@ -150,6 +161,44 @@ describe('mutations', () => {
 
     expect(response.isSuccess).toEqual(true);
   });
+  test('should block User', async () => {
+    const result = await blockUser(userId, operations);
+
+    expect(result.User).toBeDefined();
+    expect(result.User._id).toBe(userId);
+  });
+
+  test('should throw error USER_IS_ALREADY_BLOCKED', async () => {
+    const result = await blockUser(userId, operations);
+
+    expect(result.message).toBe(USER_IS_ALREADY_BLOCKED);
+  });
+
+  test('should throw error USER_NOT_FOUND', async () => {
+    const result = await blockUser(wrongId, operations);
+
+    expect(result.message).toBe(USER_NOT_FOUND);
+  });
+
+  test('should unlock User', async () => {
+    const result = await unlockUser(userId, operations);
+
+    expect(result.User).toBeDefined();
+    expect(result.User.User._id).toBe(userId);
+  });
+
+  test('should throw erro USER_IS_ALREADY_UNLOCKED', async () => {
+    const result = await unlockUser(userId, operations);
+
+    expect(result.message).toBe(USER_IS_ALREADY_UNLOCKED);
+  });
+
+  test('should throw erro USER_NOT_FOUND', async () => {
+    const result = await unlockUser(wrongId, operations);
+
+    expect(result.message).toBe(USER_NOT_FOUND);
+  });
+
   test('should not delete user without super-admin role', async () => {
     operations = await setupApp({ token: 'jgjcdvjkbvdnfjlvdvlf' });
     const res = await deleteUser(userId, operations);
@@ -247,12 +296,18 @@ describe('User`s mutation restictions tests', () => {
     operations = await setupApp();
     await deleteUser(res.data.registerUser._id, operations);
   });
-
   test('Admin can delete user', async () => {
     operations = await setupApp();
     const res = await deleteUser(userId, operations);
 
     expect(res.data.deleteUser._id).toBeDefined();
+  });
+
+  test('deleting user should throw error USER_NOT_FOUND', async () => {
+    operations = await setupApp();
+    const res = await deleteUser(wrongId, operations);
+
+    expect(res.data.deleteUser.message).toBe(USER_NOT_FOUND);
   });
 });
 
