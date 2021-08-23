@@ -6,7 +6,7 @@ const {
 } = require('../dotenvValidator');
 
 class JWTClient {
-  constructor(userId = '') {
+  constructor(userId) {
     this.userId = userId;
   }
 
@@ -33,16 +33,18 @@ class JWTClient {
     };
   }
 
-  static createToken(payload, secret, expiresIn = 0) {
+  static createToken(payload, secret, expiresIn) {
     return jwt.sign(payload, secret, { expiresIn });
   }
 
   static decodeToken(token, secret) {
-    if (!token) return;
+    let decoded = '';
+    if (!token) return decoded;
     try {
-      return jwt.verify(token, secret);
+      decoded = jwt.verify(token, secret);
+      return decoded;
     } catch (err) {
-      return '';
+      return decoded;
     }
   }
 }
