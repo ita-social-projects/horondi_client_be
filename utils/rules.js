@@ -80,7 +80,7 @@ const checkIfItemExists = (data, currentModel) =>
       .exec();
 
     if (foundItem) {
-      throw new RuleError(ITEM_ALREADY_EXISTS, BAD_REQUEST);
+      return new RuleError(ITEM_ALREADY_EXISTS, BAD_REQUEST);
     }
     return true;
   });
