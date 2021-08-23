@@ -9,9 +9,19 @@ const formatError = require('../utils/format-error');
 const verifyUser = require('../utils/verify-user');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
-const loggerHttp = require('../loggerHttp');
+const { initLogger: initLoggerHttp } = require('../loggerHttp');
+const { currencyWorker } = require('../currency.worker');
+const { NODE_ENV } = require('../dotenvValidator');
 
-connectDB();
+let loggerHttp;
+
+(async () => {
+  if (NODE_ENV !== 'test') return;
+
+  const dbConnection = await connectDB();
+  currencyWorker(dbConnection.db);
+  loggerHttp = initLoggerHttp(dbConnection.getClient());
+})();
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
