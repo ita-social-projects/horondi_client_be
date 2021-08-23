@@ -6,11 +6,7 @@ const {
 } = require('../dotenvValidator');
 
 class JWTClient {
-  constructor(userId) {
-    if (!userId) {
-      throw new Error('JWT CLIENT ERROR: Please enter userData!');
-    }
-
+  constructor(userId = '') {
     this.userId = userId;
   }
 
