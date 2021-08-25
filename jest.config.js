@@ -9,6 +9,6 @@ module.exports = {
     '/node_modules/',
     'jest.config.js',
     'migrate-mongo-config.js',
-    'migrations/',
+    'migrations/'
   ],
 };
