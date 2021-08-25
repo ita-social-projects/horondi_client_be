@@ -6,11 +6,14 @@ const {
   badProductId,
   newProductInputData,
   newProductInputDataForUpdate,
+  productUploadedImages,
 } = require('./product.variables');
 const {
   createProduct,
   deleteProduct,
   updateProduct,
+  deleteProductImages,
+  uploadProductImages,
 } = require('./product.helper');
 const {
   deleteConstructorBasic,
@@ -127,6 +130,7 @@ describe('Product mutations', () => {
         closureId,
         sizeId
       ),
+      productUploadedImages.primary,
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -150,6 +154,7 @@ describe('Product mutations', () => {
         closureId,
         sizeId
       ),
+      productUploadedImages.primary,
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -185,7 +190,26 @@ describe('Product mutations', () => {
       PRODUCT_NOT_FOUND
     );
   });
-  test('#6 Should delete Product and return it`s id', async () => {
+
+  test('#6 Should add Product images', async () => {
+    const receivedData = await uploadProductImages();
+
+    expect(uploadProductImages).toBeDefined();
+    expect(receivedData.primary).toBeDefined();
+    expect(receivedData.additional).toBeDefined();
+    expect(receivedData).toEqual(productUploadedImages);
+  });
+
+  test('#7 Should delete Product images', async () => {
+    const receivedData = await deleteProductImages(productId, operations);
+
+    console.log(receivedData);
+    const res = receivedData.data.deleteImages.primary;
+
+    expect(res).toBeDefined();
+  });
+
+  test('#8 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProduct(productId, operations);
     const res = receivedData.data.deleteProduct._id;
 
