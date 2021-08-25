@@ -202,8 +202,6 @@ describe('Product mutations', () => {
 
   test('#7 Should delete Product images', async () => {
     const receivedData = await deleteProductImages(productId, operations);
-
-    console.log(receivedData);
     const res = receivedData.data.deleteImages.primary;
 
     expect(res).toBeDefined();
