@@ -3,12 +3,22 @@ const {
   badProductId,
   newProductInputData,
   newProductInputDataForCompare,
+  badCategoryId,
+  filterArgs,
+  correctFilter,
 } = require('./product.variables');
 const {
   createProduct,
   deleteProduct,
   getProductById,
   getAllProductsWithSkipAndLimit,
+  getAllProductCategoriesForFilter,
+  getModelsByCategory,
+  getPopularProducts,
+  getProductsForWishlist,
+  getProductsForCart,
+  getFilter,
+  getCurrency,
 } = require('./product.helper');
 const {
   deleteConstructorBasic,
@@ -38,6 +48,12 @@ const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
+const { deleteUser } = require('../user/user.helper');
+const { createUser } = require('../helpers/users');
+const { testUsersSet } = require('../user/user.variables');
+const {
+  CATEGORY_NOT_FOUND,
+} = require('../../error-messages/category.messages');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -56,8 +72,9 @@ let constructorBasicId;
 let closureId;
 let productInput;
 let currentProduct;
+let userId;
 
-describe('Product mutations', () => {
+describe('Product queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
 
@@ -75,6 +92,7 @@ describe('Product mutations', () => {
       operations
     );
     modelId = modelData._id;
+    userId = await createUser(operations, testUsersSet[0]);
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
       operations
@@ -133,6 +151,55 @@ describe('Product mutations', () => {
     expect(res.statusCode).toBe(404);
   });
 
+  test('#4 Should return filter info', async () => {
+    const filterOptions = await getAllProductCategoriesForFilter(operations);
+    const res = filterOptions.data.getProductsFilters.categories;
+    expect(Array.isArray(res)).toBeTruthy();
+  });
+
+  test('#5 Should return models', async () => {
+    const models = await getModelsByCategory(categoryId, operations);
+    const res = models.data.getModelsByCategory;
+    expect(res.some(model => model._id === modelId)).toBeTruthy();
+  });
+
+  test('#6 Should return popular products', async () => {
+    const popularProducts = await getPopularProducts(operations);
+    const res = popularProducts.data.getPopularProducts.labels;
+    expect(Array.isArray(res)).toBeTruthy();
+  });
+
+  test('#7 Should return products from user wishlist', async () => {
+    const productsFromWishlist = await getProductsForWishlist(userId);
+    expect(Array.isArray(productsFromWishlist)).toBeTruthy();
+  });
+
+  test('#8 Should return products from user cart', async () => {
+    const productsFromCart = await getProductsForCart(userId);
+    expect(Array.isArray(productsFromCart)).toBeTruthy();
+  });
+
+  test('#9 Should throw error when category id wrong', async () => {
+    const getModelData = await getModelsByCategory(badCategoryId, operations);
+    const res = getModelData.data.getModelsByCategory.message;
+    expect(res).not.toBe(CATEGORY_NOT_FOUND);
+  });
+
+  test('#10 Should return filter', async () => {
+    const filter = await getFilter(filterArgs);
+    expect(filter).toEqual(correctFilter);
+  });
+
+  test('#11 Should return currency', async () => {
+    const currencyUA = getCurrency(0, 26, 1);
+    const currencyUSD = getCurrency(1, 26, 1);
+    const currencyUNDEF = getCurrency(2, 26, 1);
+
+    expect(currencyUA).toBe(26);
+    expect(currencyUSD).toBe(1);
+    expect(currencyUNDEF).toBe('');
+  });
+
   afterAll(async () => {
     await deleteProduct(productId, operations);
     await deleteModel(modelId, operations);
@@ -143,5 +210,6 @@ describe('Product mutations', () => {
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+    await deleteUser(userId, operations);
   });
 });
