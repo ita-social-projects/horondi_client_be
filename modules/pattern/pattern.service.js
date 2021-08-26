@@ -7,7 +7,7 @@ const {
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
@@ -17,7 +17,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -97,7 +97,7 @@ class PatternsService {
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice,
+        pattern.additionalPrice
       );
     }
 
@@ -105,7 +105,7 @@ class PatternsService {
 
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
-      pattern,
+      pattern
     );
 
     const historyRecord = generateHistoryObject(
@@ -115,18 +115,14 @@ class PatternsService {
       patternToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId,
+      adminId
     );
     await addHistoryRecord(historyRecord);
 
     if (!image) {
-      return Pattern.findByIdAndUpdate(
-        id,
-        pattern,
-        {
-          new: true,
-        },
-      ).exec();
+      return Pattern.findByIdAndUpdate(id, pattern, {
+        new: true,
+      }).exec();
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
@@ -152,13 +148,13 @@ class PatternsService {
       },
       {
         new: true,
-      },
+      }
     ).exec();
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
     if (!image) {
-      throw new Error(IMAGE_NOT_PROVIDED);
+      throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
@@ -167,7 +163,7 @@ class PatternsService {
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice,
+        pattern.additionalPrice
       );
     }
 
@@ -187,7 +183,7 @@ class PatternsService {
         ADDITIONAL_PRICE,
         AVAILABLE,
       ]),
-      adminId,
+      adminId
     );
 
     await addHistoryRecord(historyRecord);
@@ -205,7 +201,7 @@ class PatternsService {
     }
 
     const deletedImages = await uploadService.deleteFiles(
-      Object.values(foundPattern.images),
+      Object.values(foundPattern.images)
     );
 
     await uploadService.deleteFiles([foundPattern.constructorImg]);
@@ -225,7 +221,7 @@ class PatternsService {
           AVAILABLE,
         ]),
         [],
-        adminId,
+        adminId
       );
 
       await addHistoryRecord(historyRecord);

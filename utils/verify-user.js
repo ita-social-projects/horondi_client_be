@@ -4,10 +4,9 @@ const { SECRET } = require('../dotenvValidator');
 const verifyUser = token => {
   if (!token) return;
   try {
-    const decoded = jwt.verify(token, SECRET);
-    return decoded;
+    return jwt.verify(token, SECRET);
   } catch (err) {
-    return false;
+    return '';
   }
 };
 module.exports = verifyUser;

@@ -88,7 +88,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 
 const {
@@ -509,7 +509,7 @@ class UserService extends FilterHelper {
     const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: REACT_APP_GOOGLE_CLIENT_ID,
+      expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
@@ -609,7 +609,7 @@ class UserService extends FilterHelper {
   async sendConfirmationLetter(email, language) {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
-      throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, BAD_REQUEST);
     }
     const { accessToken } = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
@@ -677,20 +677,20 @@ class UserService extends FilterHelper {
 
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
+
+    if (user) {
+      const { accessToken } = generateTokens(user._id, {
+        expiresIn: RECOVERY_EXPIRE,
+        secret: SECRET,
+      });
+      user.recoveryToken = accessToken;
+      await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+        language,
+        token: accessToken,
+      });
+      await user.save();
     }
 
-    const { accessToken } = generateTokens(user._id, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: SECRET,
-    });
-    user.recoveryToken = accessToken;
-    await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
-      language,
-      token: accessToken,
-    });
-    await user.save();
     return true;
   }
 

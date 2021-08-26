@@ -190,6 +190,8 @@ const sizes = {
   ],
 };
 
+const user_id = { user_id: null };
+
 module.exports = {
   sizeName,
   banned,
@@ -206,4 +208,5 @@ module.exports = {
   modelRefactoredFields,
   additionalPrice,
   sizes,
+  user_id,
 };

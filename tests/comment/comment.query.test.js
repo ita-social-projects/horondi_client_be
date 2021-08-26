@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_USER,
@@ -59,12 +58,11 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE, createPlainSize } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { loginAdmin } = require('../user/user.helper');
 const { superAdminUser } = require('../user/user.variables');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
-const { testUser } = require('../user/user.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -90,7 +88,6 @@ let replyId;
 describe('Comment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const { firstName, lastName, email, pass, language } = testUser;
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;

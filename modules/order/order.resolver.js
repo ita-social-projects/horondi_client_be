@@ -1,22 +1,15 @@
 const ordersService = require('./order.service');
-const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
 const RuleError = require('../../errors/rule.error');
-const {
-  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
-} = require('../../consts/status-codes');
 
 const ordersQuery = {
   getOrderById: async (parent, { id }) => {
-    const order = await ordersService.getOrderById(id);
-    if (order) {
-      return order;
+    try {
+      return await ordersService.getOrderById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: ORDER_NOT_FOUND,
-    };
   },
-  getAllOrders: async (_, args) => await ordersService.getAllOrders(args),
+  getAllOrders: async (_, args) => ordersService.getAllOrders(args),
   getUserOrders: async (_, { pagination }, { user }) => {
     try {
       return await ordersService.getUserOrders(pagination, user);
@@ -46,23 +39,17 @@ const ordersMutation = {
     }
   },
   deleteOrder: async (_, { id }) => {
-    const deletedOrder = await ordersService.deleteOrder(id);
-    if (deletedOrder) {
-      return deletedOrder;
+    try {
+      return await ordersService.deleteOrder(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: ORDER_NOT_FOUND,
-    };
   },
   updateOrder: async (_, { order, id }) => {
     try {
       return await ordersService.updateOrder(order, id);
     } catch (e) {
-      return {
-        statusCode: e.message === ORDER_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

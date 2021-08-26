@@ -15,7 +15,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   HISTORY_OBJ_KEYS: {
@@ -33,6 +33,11 @@ const {
 const {
   finalPriceRecalculation,
 } = require('../../utils/final-price-calculation');
+
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class SizeService {
   async getAllSizes(limit, skip = 0, filter = {}) {
@@ -61,18 +66,18 @@ class SizeService {
           ..._.take(
             _.drop(
               _.filter(records, record =>
-                regExCondition.test(record.modelId.name[0].value),
+                regExCondition.test(record.modelId.name[0].value)
               ),
-              skip,
+              skip
             ),
-            limit,
-          ),
+            limit
+          )
         );
       } else {
         items.push(
           _.filter(records, record =>
-            regExCondition.test(record.modelId.name[0].value),
-          ),
+            regExCondition.test(record.modelId.name[0].value)
+          )
         );
       }
     } else {
@@ -97,12 +102,12 @@ class SizeService {
     if (size) {
       return size;
     }
-    throw new Error(SIZES_NOT_FOUND);
+    throw new RuleError(SIZES_NOT_FOUND, NOT_FOUND);
   }
 
   async addSize(sizeData, { _id: adminId }) {
     sizeData.additionalPrice = await calculateAdditionalPrice(
-      sizeData.additionalPrice,
+      sizeData.additionalPrice
     );
     const newSize = await new Size(sizeData).save();
     const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
@@ -126,7 +131,7 @@ class SizeService {
         DEPTH_IN_CM,
         VOLUME_IN_LITERS,
       ]),
-      adminId,
+      adminId
     );
     await addHistoryRecord(historyRecord);
 
@@ -139,7 +144,7 @@ class SizeService {
       .exec();
 
     if (!foundSize) {
-      throw new Error(SIZE_NOT_FOUND);
+      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
     }
     const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
       $pull: { sizes: id },
@@ -161,7 +166,7 @@ class SizeService {
         VOLUME_IN_LITERS,
       ]),
       [],
-      adminId,
+      adminId
     );
 
     await addHistoryRecord(historyRecord);
@@ -179,27 +184,27 @@ class SizeService {
     input.modelId = mongoose.Types.ObjectId(input.modelId);
 
     if (!sizeToUpdate) {
-      throw new Error(SIZE_NOT_FOUND);
+      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
     }
     if (!modelToUpdate) {
-      throw new Error();
+      throw new RuleError();
     }
 
     input.additionalPrice = await calculateAdditionalPrice(
-      input.additionalPrice,
+      input.additionalPrice
     );
     if (
       JSON.stringify(sizeToUpdate.modelId) !== JSON.stringify(input.modelId)
     ) {
       await Model.findByIdAndUpdate(sizeToUpdate.modelId, {
         $pull: { sizes: id },
-      });
+      }).exec();
 
       await Model.findByIdAndUpdate(input.modelId, {
         $push: {
           sizes: id,
         },
-      });
+      }).exec();
     }
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
 
@@ -228,7 +233,7 @@ class SizeService {
       sizeToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId,
+      adminId
     );
 
     await addHistoryRecord(historyRecord);

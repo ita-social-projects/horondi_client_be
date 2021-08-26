@@ -16,7 +16,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -101,7 +101,7 @@ class BackService {
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
-    }).exec();pa
+    }).exec();
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
 

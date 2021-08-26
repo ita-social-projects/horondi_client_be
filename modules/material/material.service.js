@@ -14,7 +14,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -33,6 +33,10 @@ const { updatePrices } = require('../product/product.service');
 const {
   INPUT_FIELDS: { MAIN_MATERIAL, BOTTOM_MATERIAL, INNER_MATERIAL },
 } = require('../../consts/input-fields');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class MaterialsService {
   constructor() {
@@ -91,16 +95,18 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id);
+    const material = await Promise.resolve(Material.findById(id));
+    if (!material) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    return material;
   }
 
   async updateMaterial(id, material, { _id: adminId }) {
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
-      throw new Error(MATERIAL_NOT_FOUND);
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (material.additionalPrice) {
@@ -138,7 +144,7 @@ class MaterialsService {
 
   async addMaterial({ material }, { _id: adminId }) {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
     material.additionalPrice = await calculateAdditionalPrice(
       material.additionalPrice
@@ -193,7 +199,7 @@ class MaterialsService {
 
       return foundMaterial;
     }
-    throw new Error(MATERIAL_NOT_FOUND);
+    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   }
 
   async checkMaterialExistOrDuplicated(data, id) {

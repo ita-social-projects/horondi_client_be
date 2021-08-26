@@ -1,10 +1,5 @@
 const { setupApp } = require('../helper-functions');
-const {
-  SIZES_TO_CREATE,
-  SIZES_TO_TEST,
-  createPlainSize,
-  createTestSize,
-} = require('./size.variables');
+const { createPlainSize, createTestSize } = require('./size.variables');
 const {
   createSize,
   getAllSizes,

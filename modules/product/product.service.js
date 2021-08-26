@@ -42,7 +42,7 @@ const {
 const { getCurrencySign } = require('../../utils/product-service');
 const RuleError = require('../../errors/rule.error');
 const {
-  STATUS_CODES: { FORBIDDEN },
+  STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
@@ -51,7 +51,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -82,7 +82,11 @@ const {
 
 class ProductsService {
   async getProductById(id) {
-    return Product.findById(id).exec();
+    const product = await Product.findById(id).exec();
+    if (!product) {
+      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+    }
+    return product;
   }
 
   async getProductsFilters() {
@@ -142,7 +146,7 @@ class ProductsService {
   async getModelsByCategory(id) {
     const product = await Product.find({ category: id }).exec();
     if (product.length === 0) {
-      throw new Error(CATEGORY_NOT_FOUND);
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
     return product;
   }
@@ -211,6 +215,7 @@ class ProductsService {
       .exec();
 
     const count = await Product.find(filters).countDocuments();
+
     return {
       items,
       count,
@@ -232,17 +237,18 @@ class ProductsService {
         thumbnail: THUMBNAIL_SAD_BACKPACK,
       },
     };
-    filesToUpload.length
-      ? (productData.images.additional = [])
-      : (productData.images.additional = [
-          {
-            large: LARGE_SAD_BACKPACK,
-            medium: MEDIUM_SAD_BACKPACK,
-            small: SMALL_SAD_BACKPACK,
-            thumbnail: THUMBNAIL_SAD_BACKPACK,
-          },
-        ]);
-
+    if (filesToUpload.length) {
+      productData.images.additional = [];
+    } else {
+      productData.images.additional = [
+        {
+          large: LARGE_SAD_BACKPACK,
+          medium: MEDIUM_SAD_BACKPACK,
+          small: SMALL_SAD_BACKPACK,
+          thumbnail: THUMBNAIL_SAD_BACKPACK,
+        },
+      ];
+    }
     const product = await Product.findById(id)
       .lean()
       .exec();
@@ -306,7 +312,7 @@ class ProductsService {
 
   async addProduct(productData, filesToUpload, { _id: adminId }) {
     if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
     }
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
@@ -362,7 +368,7 @@ class ProductsService {
       .lean()
       .exec();
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
     }
     const { images } = product;
     const { primary, additional } = images;

@@ -3,9 +3,9 @@ const ClosureService = require('./closures.service');
 const RuleError = require('../../errors/rule.error');
 
 const closureQuery = {
-  getAllClosure: async (_, args) => {
+  getAllClosure: async (_, { limit, skip, filter }) => {
     try {
-      return await ClosureService.getAllClosure(args);
+      return await ClosureService.getAllClosure(limit, skip, filter);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -20,16 +20,16 @@ const closureQuery = {
 };
 
 const closureMutation = {
-  addClosure: async (_, { closure, upload }, { user }) => {
+  addClosure: async (_, { closure, images }, { user }) => {
     try {
-      return await ClosureService.addClosure(closure, upload, user);
+      return await ClosureService.addClosure(closure, images, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateClosure: async (_, { id, closure, upload }, { user }) => {
+  updateClosure: async (_, { id, closure, image }, { user }) => {
     try {
-      return await ClosureService.updateClosure(id, closure, upload, user);
+      return await ClosureService.updateClosure(id, closure, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

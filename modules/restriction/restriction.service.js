@@ -13,7 +13,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   HISTORY_OBJ_KEYS: { COMPARE_BY_EXPRESSION, OPTIONS },

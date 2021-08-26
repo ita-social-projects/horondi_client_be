@@ -64,7 +64,7 @@ class PaymentService {
           select: 'name',
         })
         .exec();
-      await sendEmail(order.user.email, PAYMENT_ORDER, {
+      await sendEmail(order.recipient.email, PAYMENT_ORDER, {
         language,
         items: order.items,
         totalPrice: order.totalItemsPrice,
@@ -97,7 +97,9 @@ class PaymentService {
 
       const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
 
-      const order = await OrderModel.findOne({ orderNumber: order_id }).exec();
+      const order = await OrderModel.findOne({
+        orderNumber: order_id.toString(),
+      }).exec();
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
