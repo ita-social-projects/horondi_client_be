@@ -1,5 +1,5 @@
 const { gql } = require('@apollo/client');
-const generateTokens = require('../../utils/create-tokens');
+const { jwtClient } = require('../../client/jwt-client');
 
 const User = require('../../modules/user/user.model');
 const { SECRET, TOKEN_EXPIRES_IN } = require('../../dotenvValidator');
@@ -380,10 +380,10 @@ describe('Register admin', () => {
     const data = result.data.registerAdmin;
     const admin = await User.findOne({ email: newAdminEmail }).exec();
     userId = admin._id;
-    const { accessToken } = generateTokens(userId, {
-      expiresIn: TOKEN_EXPIRES_IN,
-      secret: SECRET,
-    });
+
+    jwtClient.setData({ userId });
+    const accessToken = jwtClient.generateAccessToken(SECRET, TOKEN_EXPIRES_IN);
+
     invitationalToken = accessToken;
     expect(data.isSuccess).toEqual(true);
   });

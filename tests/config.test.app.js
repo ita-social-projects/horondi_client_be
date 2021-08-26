@@ -6,12 +6,12 @@ const resolvers = require('../resolvers');
 const permissions = require('../permissions');
 const errorOutputPlugin = require('../plugins/error-output.plugin');
 const formatError = require('../utils/format-error');
-const verifyUser = require('../utils/verify-user');
+const { jwtClient } = require('../client/jwt-client');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
 const { initLogger: initLoggerHttp } = require('../loggerHttp');
 const { currencyWorker } = require('../currency.worker');
-const { NODE_ENV } = require('../dotenvValidator');
+const { NODE_ENV, SECRET } = require('../dotenvValidator');
 
 let loggerHttp;
 
@@ -33,7 +33,7 @@ const config = {
   context: async ({ req }) => {
     const { token } = req.headers || '';
     if (token) {
-      const user = verifyUser(token);
+      const user = jwtClient.decodeToken(token, SECRET);
       if (!user) {
         return {
           statusCode: 401,
