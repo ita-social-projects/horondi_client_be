@@ -33,6 +33,11 @@ const orderPermissionsQuery = {
     inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
+  getOrdersByUser: and(
+    inputDataValidation(LIMIT, getAllOrdersValidator.limitValidator),
+    inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   getPaidOrdersStatistic: and(
     inputDataValidation(DATE, getOrdersStatisticValidator),
     hasRoles([ADMIN, SUPERADMIN])
