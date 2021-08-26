@@ -1,19 +1,26 @@
 const mongoose = require('mongoose');
+
 const { MONGO_URL } = require('../dotenvValidator');
+const logger = require('../logger');
 
 const connectDB = async () => {
-  const db = MONGO_URL;
+  let connection = null;
+
   try {
-    await mongoose.connect(db, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-    });
-    console.log('MongoDB Connected...');
+    mongoose.set('useNewUrlParser', true);
+    mongoose.set('useUnifiedTopology', true);
+    mongoose.set('useCreateIndex', true);
+    mongoose.set('useFindAndModify', true);
+
+    await mongoose.connect(MONGO_URL);
+    connection = await mongoose.createConnection(MONGO_URL);
+
+    logger.log({ level: 'notice', message: 'MongoDB Connected...' });
   } catch (err) {
-    console.error(err);
+    logger.error(JSON.stringify({ key: 'Mongodb', value: err.message }));
   }
+
+  return connection;
 };
 
 module.exports = connectDB;
