@@ -35,7 +35,7 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
@@ -60,8 +60,7 @@ let closureId;
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = sizeData._id;
+
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
@@ -73,6 +72,11 @@ describe('Order queries', () => {
       operations
     );
     modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -109,7 +113,7 @@ describe('Order queries', () => {
     paymentStatus,
     userComment,
     items,
-    user,
+    recipient,
   } = newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
   test('Should create order', async () => {
@@ -122,7 +126,7 @@ describe('Order queries', () => {
     expect(order).toBeDefined();
     expect(items).toBeInstanceOf(Array);
     expect(order).toHaveProperty('status', status);
-    expect(order).toHaveProperty('user', user);
+    expect(order).toHaveProperty('recipient', recipient);
     expect(order).toHaveProperty('userComment', userComment);
     expect(order).toHaveProperty('paymentStatus', paymentStatus);
     expect(order).toHaveProperty('delivery', delivery);
@@ -133,7 +137,7 @@ describe('Order queries', () => {
     delivery: updatedDelivery,
     paymentStatus: updatedPaymentStatus,
     userComment: updatedUserComment,
-    user: updatedUser,
+    recipient: updatedUser,
     status: updatedStatus,
   } = newOrderUpdated(productId, modelId, sizeId, constructorBasicId);
 
@@ -146,7 +150,7 @@ describe('Order queries', () => {
 
     expect(updatedOrder).toBeTruthy();
     expect(updatedOrder).toHaveProperty('status', updatedStatus);
-    expect(updatedOrder.user).toEqual(updatedUser);
+    expect(updatedOrder.recipient).toEqual(updatedUser);
     expect(updatedOrder).toHaveProperty('userComment', updatedUserComment);
     expect(updatedOrder).toHaveProperty('paymentStatus', updatedPaymentStatus);
     expect(updatedOrder.delivery).toEqual(updatedDelivery);
@@ -164,9 +168,12 @@ describe('Order queries', () => {
     expect(message).toBe(ORDER_NOT_FOUND);
   });
   test('Should throw error ORDER_NOT_FOUND after try to delete', async () => {
-    const { errors } = await deleteOrder(wrongId, operations);
+    const deletedUnexistingOrder = await deleteOrder(wrongId, operations);
 
-    expect(errors[0].message).toEqual(ORDER_NOT_FOUND);
+    expect(deletedUnexistingOrder.data.deleteOrder).toHaveProperty(
+      'message',
+      ORDER_NOT_FOUND
+    );
   });
   test('Should delete order', async () => {
     const deletedOrder = await deleteOrder(orderId, operations);

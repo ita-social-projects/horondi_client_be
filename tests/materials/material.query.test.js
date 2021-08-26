@@ -3,10 +3,8 @@ const {
 } = require('../../error-messages/material.messages');
 const {
   materialDoesNotExistId,
-  graphqlErrorMessage,
   limit,
   skip,
-  wrongSkip,
   wrongLimit,
   limitZero,
   getMaterial,
@@ -113,15 +111,6 @@ describe('material quarries test', () => {
     expect(items).toHaveLength(1);
     expect(count).not.toBeNull();
     expect(count).toEqual(1);
-  });
-  it('should receive error if skip is negative', async () => {
-    const { errors } = await getAllMaterialsWithSkipAndLimit(
-      wrongSkip,
-      limit,
-      operations
-    );
-
-    expect(errors[0].message).toEqual(graphqlErrorMessage);
   });
   it('should receive 3 materials if limit is -3', async () => {
     const {

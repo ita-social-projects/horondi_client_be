@@ -27,9 +27,9 @@ const pocketQuery = {
 };
 
 const pocketMutation = {
-  addPocket: async (_, { pocket, upload }, { user }) => {
+  addPocket: async (_, { pocket, images }, { user }) => {
     try {
-      return await pocketService.addPocket(pocket, upload, user);
+      return await pocketService.addPocket(pocket, images, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

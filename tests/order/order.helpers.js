@@ -16,7 +16,7 @@ const createOrder = async (order, operations) => {
             }
             status
             paymentStatus
-            user {
+            recipient {
               firstName
               lastName
               email
@@ -80,8 +80,8 @@ const createOrder = async (order, operations) => {
 
   return createdOrder.data.addOrder;
 };
-const deleteOrder = async (id, operations) => {
-  return await operations.mutate({
+const deleteOrder = async (id, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteOrder(id: $id) {
@@ -98,7 +98,6 @@ const deleteOrder = async (id, operations) => {
       id,
     },
   });
-};
 const getAllOrders = async operations => {
   const res = await operations.mutate({
     mutation: gql`
@@ -106,7 +105,7 @@ const getAllOrders = async operations => {
         getAllOrders(limit: 10, skip: 0, filter: {}, sort: {}) {
           items {
             _id
-            user {
+            recipient {
               firstName
               lastName
               email
@@ -132,8 +131,8 @@ const getAllOrders = async operations => {
   });
   return res.data.getAllOrders.items;
 };
-const getOrderById = async (id, operations) => {
-  return await operations.query({
+const getOrderById = async (id, operations) =>
+  await operations.query({
     query: gql`
       query($id: ID!) {
         getOrderById(id: $id) {
@@ -193,7 +192,6 @@ const getOrderById = async (id, operations) => {
       id,
     },
   });
-};
 const updateOrderById = async (order, id, operations) => {
   const updatedData = await operations.mutate({
     mutation: gql`
@@ -210,7 +208,7 @@ const updateOrderById = async (order, id, operations) => {
             }
             status
             paymentStatus
-            user {
+            recipient {
               firstName
               lastName
               email

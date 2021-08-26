@@ -5,6 +5,13 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
+  getCountUserOrders: async (_, args, { user }) => {
+    try {
+      return await userService.getCountUserOrders(user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUsersForStatistic: (parent, args, context) =>
     userService.getUsersForStatistic(args),
@@ -20,8 +27,8 @@ const userQuery = {
       };
     }
   },
-  getPurchasedProducts: (parent, args) =>
-    userService.getPurchasedProducts(args.id),
+  getPurchasedProducts: (parent, { id }) =>
+    userService.getPurchasedProducts(id),
 };
 const userMutation = {
   blockUser: async (_, { userId }, { user }) => {
@@ -45,7 +52,7 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  googleUser: (parent, args) =>
+  googleUser: (_, args) =>
     userService.googleUser(args.idToken, args.staySignedIn),
   loginUser: async (_, { loginInput }) => {
     try {
@@ -64,11 +71,8 @@ const userMutation = {
   deleteUser: async (parent, args) => {
     try {
       return await userService.deleteUser(args.id);
-    } catch (err) {
-      return {
-        statusCode: err.statusCode,
-        message: err.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updateUserById: (parent, args, context) =>
@@ -80,7 +84,13 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
+  confirmUserEmail: async (_, { token }) => {
+    try {
+      return await userService.confirmUser(token);
+    } catch (err) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
   recoverUser: (parent, args) =>
     userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
@@ -104,10 +114,7 @@ const userMutation = {
         args.language
       );
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   registerAdmin: async (_, { user }, { user: admin }) => {

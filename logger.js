@@ -1,12 +1,19 @@
 const winston = require('winston');
 
 const logger = winston.createLogger({
-  level: 'info',
+  levels: winston.config.syslog.levels,
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.printf(({ message, timestamp }) => {
-      const winstonMessage = JSON.parse(message + '');
-      return `Date=${timestamp} key=${winstonMessage.key} value=${winstonMessage.value} `;
+    winston.format.colorize({ all: true }),
+    winston.format.printf(({ level, message, timestamp }) => {
+      try {
+        const winstonMessage = JSON.parse(message.match(/{.*}/g)[0]);
+        return `${level} -> Date=${timestamp || Date.now()} key=${
+          winstonMessage.key
+        } value=${winstonMessage.value}`;
+      } catch (err) {
+        return message;
+      }
     })
   ),
 

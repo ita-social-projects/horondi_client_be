@@ -106,10 +106,14 @@ const { backQuery, backMutation } = require('./modules/back/back.resolver');
 
 const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
 
+const {
+  positionMutation,
+  positionQuery,
+} = require('./modules/position/position.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const commentsService = require('./modules/comment/comment.service');
 const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
@@ -122,8 +126,8 @@ const closuresService = require('./modules/closures/closures.service');
 const patternService = require('./modules/pattern/pattern.service');
 const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
-const pocketService = require('./modules/pocket/pocket.service');
 const strapService = require('./modules/strap/strap.service');
+const positionService = require('./modules/position/position.service');
 
 const {
   ukrPoshtaQuery,
@@ -135,6 +139,7 @@ const SCHEMA_NAMES = {
   history: 'History',
   historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
+  paginatedComments: 'PaginatedComments',
   category: 'Category',
   news: 'News',
   pattern: 'Pattern',
@@ -168,7 +173,13 @@ const SCHEMA_NAMES = {
   paginatedBacks: 'PaginatedBacks',
   strap: 'Strap',
   paginatedStraps: 'PaginatedStraps',
+  position: 'Position',
+  paginatedPositions: 'PaginatedPositions',
 };
+
+const {
+  constructorPocketHelper,
+} = require('./helpers/constructor-pocket-helper');
 
 const resolvers = {
   Query: {
@@ -233,6 +244,8 @@ const resolvers = {
     ...backQuery,
 
     ...strapQuery,
+
+    ...positionQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -268,23 +281,41 @@ const resolvers = {
     wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
 
+  Size: {
+    model: parent => modelService.getModelById(parent.modelId),
+  },
+
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
+    replyCommentsCount: (parent, _, { user }) => {
+      if (user?.role === 'user') {
+        return parent.replyComments.filter(
+          item =>
+            item.answerer.toString() === user._id.toString() ||
+            item.showReplyComment === true
+        ).length;
+      }
+      if (user?.role === 'admin' || user?.role === 'superadmin') {
+        return parent.replyComments.length;
+      }
+      return parent.replyComments.filter(item => item.showReplyComment === true)
+        .length;
+    },
     replyComments: parent =>
       parent.replyComments.map(item => ({
+        _id: item._id,
         replyText: item.replyText,
         answerer: userService.getUser(item.answerer),
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
         refToReplyComment: item.refToReplyComment,
         showReplyComment: item.showReplyComment,
+        verifiedPurchase: item.verifiedPurchase,
       })),
   },
   Product: {
     category: parent => categoryService.getCategoryById(parent.category),
-    comments: parent =>
-      commentsService.getAllCommentsByProduct({ productId: parent._id }),
     model: parent => modelService.getModelById(parent.model),
     mainMaterial: parent => ({
       material: () =>
@@ -318,35 +349,33 @@ const resolvers = {
             },
           };
         }
-        if (item.fromConstructor) {
-          return {
-            productFromConstructor: {
-              product: productsService.getProductById(
-                item.fromConstructor.product
-              ),
-              constructorBasics: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorBasics,
-                constructorBasicModel
-              ),
-              constructorBottom: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorBottom,
-                constructorBottomModel
-              ),
-              constructorFrontPocket: constructorServices.getConstructorElementById(
-                item.fromConstructor.constructorFrontPocket,
-                constructorFrontPocketModel
-              ),
-              constructorPattern: patternService.getPatternById(
-                item.fromConstructor.constructorPattern
-              ),
-            },
-            price: item.price,
-            quantity: item.quantity,
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-            },
-          };
-        }
+        return {
+          productFromConstructor: {
+            product: productsService.getProductById(
+              item.fromConstructor.product
+            ),
+            constructorBasics: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorBasics,
+              constructorBasicModel
+            ),
+            constructorBottom: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorBottom,
+              constructorBottomModel
+            ),
+            constructorFrontPocket: constructorServices.getConstructorElementById(
+              item.fromConstructor.constructorFrontPocket,
+              constructorFrontPocketModel
+            ),
+            constructorPattern: patternService.getPatternById(
+              item.fromConstructor.constructorPattern
+            ),
+          },
+          price: item.price,
+          quantity: item.quantity,
+          options: {
+            size: sizeService.getSizeById(item.options.size),
+          },
+        };
       }),
   },
   Order: {
@@ -428,9 +457,7 @@ const resolvers = {
           patternService.getPatternById(el)
         ),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el =>
-          pocketService.getPocketById(el)
-        ),
+        constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         parent.eligibleOptions.constructorBack.map(el =>
           backService.getBackById(el)
@@ -462,9 +489,7 @@ const resolvers = {
       constructorPattern: () =>
         patternService.getPatternById(parent.appliedOptions.constructorPattern),
       constructorPocket: () =>
-        parent.eligibleOptions.constructorPocket.map(el => {
-          return pocketService.getPocketById(el);
-        }),
+        constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
         backService.getBackById(parent.appliedOptions.constructorBack),
       constructorClosure: () =>
@@ -526,7 +551,10 @@ const resolvers = {
     admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
   Pocket: {
-    model: parent => modelService.getModelById(parent.model),
+    positions: parent =>
+      parent.positions.map(position =>
+        positionService.getPositionById(position)
+      ),
   },
   Back: {
     model: parent => modelService.getModelById(parent.model),
@@ -598,6 +626,8 @@ const resolvers = {
     ...backMutation,
 
     ...strapMutation,
+
+    ...positionMutation,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -635,6 +665,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedProducts;
+      }
+      return 'Error';
+    },
+  },
+  PaginatedCommentsResult: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedComments;
       }
       return 'Error';
     },
@@ -897,6 +935,24 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedStraps;
+      }
+      return 'Error';
+    },
+  },
+
+  PositionResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.position;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedPositions: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedPositions;
       }
       return 'Error';
     },

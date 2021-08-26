@@ -164,7 +164,7 @@ const getConstructorBottomById = async (id, operations) => {
         }
       }
     `,
-    variables: { id: id },
+    variables: { id },
   });
   return constructorBottomById.data.getConstructorBottomById;
 };

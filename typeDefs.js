@@ -33,6 +33,7 @@ const {
   modelType,
   optionTypes,
   modelInputs,
+  modelSortInput,
 } = require('./modules/model/model.graphql');
 const {
   restrictionTypes,
@@ -63,6 +64,8 @@ const {
 const {
   commentType,
   commentInput,
+  commentsSortInput,
+  replyCommentsSortInput,
 } = require('./modules/comment/comment.graphql');
 const {
   businessTextType,
@@ -137,6 +140,10 @@ const {
   strapFeatureType,
   strapInputs,
 } = require('./modules/strap/strap.graphql');
+const {
+  positionType,
+  positionInputs,
+} = require('./modules/position/position.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -186,8 +193,7 @@ const typeDefs = gql`
   ${backFeatureSet}
   ${strapType}
   ${strapFeatureType}
- 
-
+  ${positionType}
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -197,7 +203,6 @@ const typeDefs = gql`
     admin
     user
   }
-
   enum OptionTypeEnum {
     BACK
     CLOSURE
@@ -207,8 +212,8 @@ const typeDefs = gql`
     PATTERN
     POCKET
     STRAP
+    SIDE
   }
-
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -350,6 +355,7 @@ const typeDefs = gql`
   type PaginatedComments {
     items: [Comment]
     count: Int
+    countAll: Int
   }
   type SuccessfulResponse {
     isSuccess: Boolean
@@ -373,36 +379,29 @@ const typeDefs = gql`
       items: [HomePageSlide]
       count: Int
   }
-
   type PaginatedClosure {
       items: [Closure]
       count: Int
   }
-
   type PaginatedPockets {
     items: [Pocket]
     count: Int
   }
-
   type PaginatedBacks {
     items: [Back]
     count: Int
   }
-
   type PaginatedStraps {
     items: [Strap]
     count: Int
   }
-
   type PaginatedRestrictions {
     items: [Restriction]
     count: Int
   }
-
   type Materials {
     items: [Material]
   }
-
   type PaginatedConstructorBasics {
       items: [ConstructorBasic]
       count: Int
@@ -415,7 +414,15 @@ const typeDefs = gql`
       items: [ConstructorFrontPocket]
       count: Int
   }
+  type countOrderResult {
+    countOrder: Int
+  }
+  type PaginatedPositions {
+    items: [Position]
+    count: Int
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
+  union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
@@ -448,6 +455,7 @@ const typeDefs = gql`
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
+  union PositionResult = Position | Error
   type Query {
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
@@ -469,11 +477,12 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
-    getAllPatterns(limit:Int!, skip:Int!, filter:PatternFilterInput): PaginatedPatterns!
+    getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrderById(id: ID): OrderResult
-    getUserOrders: [Order!]
+    getUserOrders(pagination: Pagination): [Order!]
+    getCountUserOrders(id: ID): countOrderResult
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
@@ -500,19 +509,28 @@ const typeDefs = gql`
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
     getAllComments(
-      filter: CommentFilterInput
-      pagination: Pagination
+      filter: CommentFilterInput,
+      pagination: Pagination,
+      sort : CommentsSortInput
     ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
-    getAllCommentsByProduct(
-      productId: ID!
-    ): [CommentResult]
+    getReplyCommentById(id: ID!): CommentResult
+    getCommentsByProduct(
+      filter: ProductCommentFilterInput
+      pagination: Pagination
+      sort : CommentsSortInput
+    ): PaginatedCommentsResult
+    getReplyCommentsByComment(
+      filter: ReplyCommentFilterInput,
+      pagination: Pagination,
+      sort : ReplyCommentsSortInput
+    ): PaginatedCommentsResult
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
-    getAllModels(limit: Int, skip: Int, filter: ModelFilterInput, sort:JSONObject): PaginatedModels
+    getAllModels(filter: ModelFilterInput, pagination: Pagination, sort: ModelSortInput): PaginatedModels
     getModelsByCategory(id: ID!): [ModelResult]
     getModelsForConstructor: [Model]
     getModelById(id: ID!): ModelResult
@@ -526,13 +544,13 @@ const typeDefs = gql`
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
-    getPaymentCheckout(data: PaymentInput!): OrderResult
+    getPaymentCheckout(data: PaymentInput!, language: Int!): OrderResult
     getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
     checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
-      filter: FilterInput
-      skip: Int
+      filter: QuestionsFilterInput
+      pagination: Pagination
     ): PaginatedEmailQuestion!
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]
@@ -543,7 +561,7 @@ const typeDefs = gql`
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size
-    getAllClosure(limit: Int, skip: Int): PaginatedClosure!
+    getAllClosure(limit:Int, skip:Int, filter:ClosureFilterInput): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
     getColorById(id: ID!): ColorResult!
@@ -564,7 +582,8 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
-
+    getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
+    getPositionById(id: ID): PositionResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -589,6 +608,11 @@ const typeDefs = gql`
     emailQuestionStatus: [String]
     orderStatus: [String]
   }
+  input QuestionsFilterInput { 
+    search: String,
+    emailQuestionStatus: [String], 
+    date: DateRangeInput
+  }
   input RoleEnumInput {
     role: String
   }
@@ -610,11 +634,14 @@ const typeDefs = gql`
   ${productInput}
   ${cartInput}
   ${commentInput}
+  ${commentsSortInput}
+  ${replyCommentsSortInput}
   ${LoginInput}
   ${userRegisterInput}
   ${businessTextInput}
 	${userFilterInput}
 	${userSortInput}
+  ${modelSortInput}
 	${FilterInputComponent}
 	${SortInputComponent}
   ${adminConfirmInput}
@@ -642,7 +669,7 @@ const typeDefs = gql`
   ${pocketSideInput}
   ${backInputs}
   ${strapInputs}
-
+  ${positionInputs}
   input LanguageInput {
     lang: String!
     value: String
@@ -786,7 +813,7 @@ const typeDefs = gql`
     updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
     updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
-    confirmUserEmail(token: String!): Boolean
+    confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean
     switchUserStatus(id: ID!): LogicalResult!
     resetPassword(password: String!, token: String!): Boolean
@@ -811,10 +838,10 @@ const typeDefs = gql`
     ): ProductResult
     deleteImages(id: ID!, images: [String!]!): PrimaryImage
     "Comment Mutation"
-    addComment(comment: CommentInput!): CommentResult
-    replyForComment(commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
-    deleteComment(id: ID!): CommentResult
-    deleteReplyForComment(replyCommentId: ID!): CommentResult
+    addComment(id:ID,comment: CommentInput!): CommentResult
+    replyForComment(id:ID,commentId: ID!, replyCommentData:ReplyCommentInput!): CommentResult
+    deleteComment(id: ID,commentID:ID!): CommentResult
+    deleteReplyForComment(id:ID,replyCommentId: ID!): CommentResult
     updateComment(id: ID!, comment: CommentUpdateInput!): CommentResult
     updateReplyForComment(replyCommentId: ID!, replyCommentData: ReplyCommentUpdateInput!): CommentResult
     "BusinessText Mutation"
@@ -874,8 +901,8 @@ const typeDefs = gql`
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
     deleteSlide(id: ID!): HomePageSlideResult  
     "Closure Mutation"
-    addClosure(closure: ClosureInput!, upload: Upload): ClosureResult
-    updateClosure(id: ID!, closure: ClosureInput!, upload: Upload): ClosureResult  
+    addClosure(closure: ClosureInput!, images: Upload): ClosureResult
+    updateClosure(id: ID!, closure: ClosureInput!, image: Upload): ClosureResult  
     deleteClosure(id: ID!): ClosureResult  
     "Sizes Mutation"
     addSize(size: SizeInput!): SizeResult!
@@ -906,7 +933,7 @@ const typeDefs = gql`
     addModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult
     deleteModelConstructorBottom(id:ID!, constructorElementID:ID!):ModelResult 
     "Pocket Mutation"
-    addPocket(pocket: PocketInput!, image: Upload):PocketResult
+    addPocket(pocket: PocketInput!, images: Upload):PocketResult
     updatePocket(id: ID, pocket: PocketInput!, image: Upload):PocketResult
     deletePocket(id: ID):PocketResult
     "Back Mutation"
@@ -921,7 +948,9 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
-
+    addPosition(position: PositionInput!): PositionResult 
+    deletePosition(id: ID):PositionResult
+    updatePosition(id: ID, position: PositionInput!): PositionResult
   }
 `;
 

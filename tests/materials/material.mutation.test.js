@@ -101,7 +101,7 @@ describe('material mutations tests', () => {
     expect(updatedMaterial).toHaveProperty('message', MATERIAL_NOT_FOUND);
   });
 
-  it('should return error when update material with already existing name will ', async () => {
+  it('should return error when update material with already existing name will', async () => {
     const { _id: testMaterialId } = await createMaterial(material, operations);
     const secondRes = await updateMaterial(
       testMaterialId,
@@ -122,7 +122,7 @@ describe('material mutations tests', () => {
     expect(res).toHaveProperty('_id', materialId);
   });
 
-  it('should return error when delete not existing material ', async () => {
+  it('should return error when delete not existing material', async () => {
     const deletedMaterial = await deleteMaterial(
       materialDoesNotExistId,
       operations
@@ -135,6 +135,7 @@ describe('material mutations tests', () => {
 
   afterAll(async () => {
     await deleteColor(colorId, operations);
+    await deleteMaterial(materialId, operations);
     return { deleteColor };
   });
 });

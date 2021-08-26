@@ -8,9 +8,8 @@ const createSize = async (size, operations) => {
           ... on Size {
             _id
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm
@@ -45,9 +44,8 @@ const deleteSize = async (id, operations) => {
           ... on Size {
             _id
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm
@@ -80,9 +78,8 @@ const getAllSizes = async operations => {
         getAllSizes {
           items {
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm
@@ -108,9 +105,8 @@ const getSizeById = async (id, operations) => {
         getSizeById(id: $id) {
           _id
           name
-          simpleName {
-            lang
-            value
+          modelId {
+            _id
           }
           heightInCm
           widthInCm
@@ -140,9 +136,8 @@ const updateSize = async (id, size, operations) => {
           ... on Size {
             _id
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm

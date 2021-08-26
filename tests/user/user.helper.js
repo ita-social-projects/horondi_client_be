@@ -231,8 +231,8 @@ const getUserByToken = async operations => {
 
   return user;
 };
-const getUserById = async (userId, operations) => {
-  return await operations.query({
+const getUserById = async (userId, operations) =>
+  await operations.query({
     query: gql`
       query($userId: ID!) {
         getUserById(id: $userId) {
@@ -257,7 +257,6 @@ const getUserById = async (userId, operations) => {
       userId,
     },
   });
-};
 const deleteUser = async (userId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -307,8 +306,8 @@ const completeAdminRegister = async (
   });
   return result;
 };
-const switchUserStatus = async (userId, operations) => {
-  return await operations.mutate({
+const switchUserStatus = async (userId, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         switchUserStatus(id: $id) {
@@ -326,9 +325,8 @@ const switchUserStatus = async (userId, operations) => {
       id: userId,
     },
   });
-};
-const loginAdmin = async (email, password, operations) => {
-  return await operations.mutate({
+const loginAdmin = async (email, password, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
@@ -344,9 +342,8 @@ const loginAdmin = async (email, password, operations) => {
       },
     },
   });
-};
-const getAllUsersWithToken = async (token, operations) => {
-  return await operations.query({
+const getAllUsersWithToken = async (token, operations) =>
+  await operations.query({
     query: gql`
       {
         getAllUsers {
@@ -365,9 +362,8 @@ const getAllUsersWithToken = async (token, operations) => {
       },
     },
   });
-};
-const validateConfirmationToken = async (token, operations) => {
-  return await operations.query({
+const validateConfirmationToken = async (token, operations) =>
+  await operations.query({
     query: gql`
       query($token: String!) {
         validateConfirmationToken(token: $token) {
@@ -384,7 +380,6 @@ const validateConfirmationToken = async (token, operations) => {
       token,
     },
   });
-};
 
 module.exports = {
   registerUser,

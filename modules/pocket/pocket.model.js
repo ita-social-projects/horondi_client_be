@@ -3,30 +3,22 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const {
-  DB_COLLECTIONS_NAMES: { MODEL, POCKET },
+  DB_COLLECTIONS_NAMES: { POCKET, POSITION },
 } = require('../../consts/db-collections-names');
-const { RIGHT, LEFT, FRONT, BACK } = require('../../consts/side-names');
+const ImageSet = require('../common/ImageSet').schema;
 
 const pocketSchema = new mongoose.Schema({
   name: [Language],
-  optionType: String,
-  model: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: MODEL,
-  },
-  features: {
-    side: [
-      {
-        type: String,
-        enum: [RIGHT, LEFT, FRONT, BACK],
-        required: true,
-      },
-    ],
-  },
-  image: String,
+  images: ImageSet,
   additionalPrice: [CurrencySet],
-  available: Boolean,
-  customizable: Boolean,
+  restriction: Boolean,
+  positions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: POSITION,
+    },
+  ],
+  optionType: String,
 });
 
 module.exports = mongoose.model(POCKET, pocketSchema);

@@ -7,7 +7,7 @@ const {
   IMAGE_NOT_PROVIDED,
 } = require('../../error-messages/pattern.messages');
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
@@ -17,7 +17,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -144,14 +144,12 @@ class PatternsService {
 
   async addPattern({ pattern, image }, { _id: adminId }) {
     if (!image) {
-      throw new Error(IMAGE_NOT_PROVIDED);
+      throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
     const images = uploadResult.fileNames;
-    const constructorImg = await uploadSmallImage(image[1]);
-
-    pattern.constructorImg = constructorImg;
+    pattern.constructorImg = await uploadSmallImage(image[1]);
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);

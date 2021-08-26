@@ -1,14 +1,11 @@
 const modelsService = require('./model.service');
 const modelService = require('./model.service');
 const RuleError = require('../../errors/rule.error');
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
 
 const modelsQuery = {
-  getAllModels: async (_, { limit, skip, filter, sort }) => {
+  getAllModels: async (_, { filter, pagination, sort }) => {
     try {
-      return await modelsService.getAllModels(limit, skip, filter, sort);
+      return await modelsService.getAllModels(filter, pagination, sort);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -25,10 +22,7 @@ const modelsQuery = {
     try {
       return await modelService.getModelById(id);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -36,10 +30,7 @@ const modelsQuery = {
     try {
       return await modelService.getModelsForConstructor();
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

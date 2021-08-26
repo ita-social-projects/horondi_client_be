@@ -28,6 +28,12 @@ type UserBlockPeriod {
   blockCount: Int
   updatedAt: Date
 }
+
+type UserConfirmed {
+   token: String,
+   refreshToken:String,
+   confirmed:Boolean
+}
 `;
 
 const paginatedUsersType = `

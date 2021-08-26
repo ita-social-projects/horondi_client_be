@@ -53,12 +53,13 @@ const isTheSameUser = and(
 const inputDataValidation = (data, validationSchema) =>
   rule()((_, args) => {
     const { error } = Joi.validate(args[data], validationSchema);
+    let result = true;
 
-    if (!error) {
-      return true;
-    } else {
-      return new RuleError(error.details[0].message, FORBIDDEN);
+    if (error) {
+      result = new RuleError(error.details[0].message, FORBIDDEN);
     }
+
+    return result;
   });
 
 const isProductToCartCorrect = rule()(async (_, args) => {
@@ -67,9 +68,8 @@ const isProductToCartCorrect = rule()(async (_, args) => {
   if (isProductExists && isProductExists.available) {
     args.product = isProductExists;
     return true;
-  } else {
-    return new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
   }
+  return new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
 });
 
 const checkIfItemExists = (data, currentModel) =>

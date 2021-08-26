@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const ImageSet = require('../common/ImageSet').schema;
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const {
@@ -23,7 +23,7 @@ const closureSchema = new mongoose.Schema({
       ref: COLOR,
     },
   },
-  image: String,
+  images: ImageSet,
   additionalPrice: [CurrencySet],
   available: Boolean,
   customizable: Boolean,

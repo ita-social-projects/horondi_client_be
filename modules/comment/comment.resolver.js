@@ -1,11 +1,9 @@
 const commentsService = require('./comment.service');
 const RuleError = require('../../errors/rule.error');
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
 
 const commentsQuery = {
   getAllComments: (parent, args) => commentsService.getAllComments(args),
+
   getCommentById: async (parent, { id }) => {
     try {
       return await commentsService.getCommentById(id);
@@ -13,7 +11,13 @@ const commentsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
+  getReplyCommentById: async (_, { id }) => {
+    try {
+      return await commentsService.getReplyCommentById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getRecentComments: async (_, { limit }) => {
     try {
       return await commentsService.getRecentComments(limit);
@@ -21,17 +25,39 @@ const commentsQuery = {
       return new RuleError(error.message, error.statusCode);
     }
   },
-
-  getAllCommentsByProduct: async (parent, args) => {
+  getReplyCommentsByComment: async (
+    parent,
+    { filter, pagination: { skip, limit }, sort },
+    { user }
+  ) => {
     try {
-      return await commentsService.getAllCommentsByProduct(args);
-    } catch (error) {
-      return [
-        {
-          statusCode: NOT_FOUND,
-          message: error.message,
-        },
-      ];
+      return await commentsService.getReplyCommentsByComment(
+        filter,
+        skip,
+        limit,
+        user,
+        sort
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
+  getCommentsByProduct: async (
+    parent,
+    { filter, pagination: { skip, limit }, sort },
+    { user }
+  ) => {
+    try {
+      return await commentsService.getCommentsByProduct(
+        filter,
+        skip,
+        limit,
+        user,
+        sort
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
@@ -41,7 +67,7 @@ const commentsQuery = {
     } catch (error) {
       return [
         {
-          statusCode: NOT_FOUND,
+          statusCode: error.statusCode,
           message: error.message,
         },
       ];
@@ -50,16 +76,20 @@ const commentsQuery = {
 };
 
 const commentsMutation = {
-  addComment: async (_, { comment }) => {
+  addComment: async (_, { comment }, { user }) => {
     try {
-      return await commentsService.addComment(comment);
+      return await commentsService.addComment(comment, user);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
   },
-  replyForComment: async (_, { commentId, replyCommentData }) => {
+  replyForComment: async (_, { commentId, replyCommentData }, { user }) => {
     try {
-      return await commentsService.replyForComment(commentId, replyCommentData);
+      return await commentsService.replyForComment(
+        commentId,
+        replyCommentData,
+        user
+      );
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
@@ -82,9 +112,9 @@ const commentsMutation = {
     }
   },
 
-  deleteComment: async (parent, { id }) => {
+  deleteComment: async (_, { commentID }) => {
     try {
-      return await commentsService.deleteComment(id);
+      return await commentsService.deleteComment(commentID);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
@@ -105,11 +135,8 @@ const commentsMutation = {
         args.userRate,
         context.user
       );
-    } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

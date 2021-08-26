@@ -14,7 +14,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -33,22 +33,25 @@ const {
     AVAILABLE,
   },
 } = require('../../consts/history-obj-keys');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class ModelsService {
-  async getAllModels(limit, skip, filter = {}, sort = {}) {
+  async getAllModels(filter = {}, pagination = {}, sort = {}) {
+    const { skip, limit } = pagination;
     const filterOptions = {};
-
-    if (filter?.name) {
-      const name = filter.name.trim();
+    if (filter?.search) {
+      const name = filter.search.trim();
 
       filterOptions.$or = [
         { 'name.value': { $regex: `${name}`, $options: 'i' } },
-        { 'description.value': { $regex: `${name}`, $options: 'i' } },
       ];
     }
 
     if (filter?.available?.length) {
-      filterOptions.available = { $in: filter.available };
+      filterOptions.show = { $in: filter.available };
     }
 
     if (filter?.availableForConstructor?.length) {
@@ -63,8 +66,8 @@ class ModelsService {
 
     const items = await Model.find(filterOptions)
       .sort(sort)
-      .skip(skip)
-      .limit(limit)
+      .skip(skip || 0)
+      .limit(limit || 0)
       .exec();
 
     const count = await Model.find()
@@ -79,7 +82,7 @@ class ModelsService {
 
   async getModelById(id) {
     if (!ObjectId.isValid(id)) {
-      throw new Error(MODEL_NOT_VALID);
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
 
     const foundModel = await Model.findById(id).exec();
@@ -87,7 +90,7 @@ class ModelsService {
     if (foundModel) {
       return foundModel;
     }
-    throw new Error(MODEL_NOT_FOUND);
+    throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
   }
 
   async getModelsForConstructor() {
@@ -96,7 +99,7 @@ class ModelsService {
 
   async getModelsByCategory(id) {
     if (!ObjectId.isValid(id)) {
-      throw new Error(CATEGORY_NOT_VALID);
+      throw new RuleError(CATEGORY_NOT_VALID, BAD_REQUEST);
     }
     return Model.find({ category: id });
   }
@@ -139,7 +142,7 @@ class ModelsService {
   async updateModel(id, newModel, upload, { _id: adminId }) {
     const modelToUpdate = await Model.findById(id).exec();
     if (!modelToUpdate) {
-      throw new Error(MODEL_NOT_FOUND);
+      throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
 
     if (upload) {
@@ -173,7 +176,7 @@ class ModelsService {
   async deleteModel(id, { _id: adminId }) {
     const modelToDelete = await Model.findByIdAndDelete(id).exec();
     if (!modelToDelete) {
-      throw new Error(MODEL_NOT_FOUND);
+      throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
 
     if (modelToDelete.images) {

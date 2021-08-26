@@ -4,6 +4,7 @@ const materialPurposes = {
   BOTTOM: 'BOTTOM',
   PATTERN: 'PATTERN',
   CLOSURE: 'CLOSURE',
+  BACK: 'BACK',
 };
 
 module.exports = {

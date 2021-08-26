@@ -7,14 +7,8 @@ const {
   patternAfterUpdate,
   finalPrice,
 } = require('./pattern.variables');
-const {
-  ITEM_ALREADY_EXISTS,
-  ITEM_NOT_FOUND,
-} = require('../../error-messages/common.messages');
-const {
-  PATTERN_ALREADY_EXIST,
-  PATTERN_NOT_FOUND,
-} = require('../../error-messages/pattern.messages');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
+const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -24,37 +18,26 @@ const {
   deletePattern,
   updatePattern,
 } = require('./pattern.helper');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { getMaterial } = require('../materials/material.variables');
-const { createModel, deleteModel } = require('../model/model.helper');
+const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const {
-  createCategory,
-  deleteCategory,
-} = require('../category/category.helper');
+const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
-const {
-  SIZES_TO_CREATE: { size1 },
-} = require('../size/size.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/currency/currency.model.js');
 
-let patternId,
-  operations,
-  sizeId,
-  categoryId,
-  modelId,
-  materialId,
-  colorId,
-  patternData;
+let patternId;
+let operations;
+let categoryId;
+let modelId;
+let materialId;
+let colorId;
+let patternData;
 
 describe('Pattern Mutation Tests', () => {
   beforeAll(async () => {
@@ -65,12 +48,7 @@ describe('Pattern Mutation Tests', () => {
     materialId = materialData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const sizeData = await createSize(size1, operations);
-    sizeId = sizeData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
-      operations
-    );
+    const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
     patternData = await createPattern(
       mutationPatternToAdd(materialId, modelId),
@@ -139,7 +117,7 @@ describe('Pattern Mutation Tests', () => {
     expect(res).toHaveProperty('message', PATTERN_NOT_FOUND);
   });
 
-  afterAll(async done => {
-    mongoose.connection.db.dropDatabase(done);
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

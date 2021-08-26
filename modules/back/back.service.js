@@ -7,9 +7,6 @@ const {
 const RuleError = require('../../errors/rule.error');
 const { BACK_NOT_FOUND } = require('../../consts/back-messages');
 const {
-  FILE_SIZES: { SMALL },
-} = require('../../consts/file-sizes');
-const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
@@ -19,7 +16,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -39,11 +36,11 @@ class BackService {
   async getAllBacks(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
 
-    if (filter?.material.length) {
+    if (filter?.material?.length) {
       filterOptions['features.material'] = { $in: filter.material };
     }
 
-    if (filter?.color.length) {
+    if (filter?.color?.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
@@ -88,13 +85,19 @@ class BackService {
     }
 
     if (image) {
-      const uploadImage = await uploadService.uploadFile(image, [SMALL]);
-      back.image = uploadImage.fileNames.small;
+      if (backToUpdate.images) {
+        const images = Object.values(backToUpdate.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+
+      const uploadImage = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadImage[0];
+      back.images = imageResults.fileNames;
     }
 
-    if (back?.additionalPrice) {
-      back.additionalPrice = await calculatePrice(back.additionalPrice);
-    }
+    back.additionalPrice = await calculatePrice(back.additionalPrice);
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
@@ -154,13 +157,11 @@ class BackService {
 
   async addBack(back, image, { _id: adminId }) {
     if (image) {
-      const uploadImage = await uploadService.uploadSmallImage(image);
-      back.image = uploadImage.fileNames.small;
+      const uploadImage = await uploadService.uploadFile(image);
+      back.images = uploadImage.fileNames;
     }
 
-    if (back.additionalPrice) {
-      back.additionalPrice = await calculatePrice(back.additionalPrice);
-    }
+    back.additionalPrice = await calculatePrice(back.additionalPrice);
 
     const newBack = await new Back(back).save();
 

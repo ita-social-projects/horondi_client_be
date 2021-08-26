@@ -14,12 +14,9 @@ const {
   getConstructorData,
   getConstructorDataForUpt,
 } = require('./constructor.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { getMaterial } = require('../materials/material.variables');
 const {
   CONSTRUCTOR_ELEMENT_NOT_FOUND,
@@ -27,26 +24,24 @@ const {
 const {
   STATUS_CODES: { BAD_REQUEST },
 } = require('../../consts/status-codes');
-const { createModel, deleteModel } = require('../model/model.helper');
+const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { createSize } = require('../size/size.helper');
-const {
-  SIZES_TO_CREATE: { size1 },
-} = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 
-let operations,
-  colorId,
-  sizeId,
-  categoryId,
-  modelId,
-  materialId,
-  constructorInput,
-  constructorFrontId,
-  currentConstructorFront = {},
-  constructorUpdateInput,
-  currentconstructorUpdate;
+let operations;
+let colorId;
+let sizeId;
+let categoryId;
+let modelId;
+let materialId;
+let constructorInput;
+let constructorFrontId;
+let currentConstructorFront = {};
+let constructorUpdateInput;
+let currentconstructorUpdate;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -61,13 +56,17 @@ describe('constructor mutations', () => {
     materialId = materialData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const sizeData = await createSize(size1, operations);
-    sizeId = sizeData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
       operations
     );
     modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
+
     constructorInput = newConstructorFront(materialId, colorId, modelId);
 
     constructorUpdateInput = getConstructorDataForUpt(
@@ -110,7 +109,7 @@ describe('constructor mutations', () => {
     expect(error.message).toEqual(ITEM_ALREADY_EXISTS);
     expect(error.statusCode).toEqual(BAD_REQUEST);
   });
-  test('#3 Should update existing Constructor Front Pocket ', async () => {
+  test('#3 Should update existing Constructor Front Pocket', async () => {
     const updateConstructor = await updateConstructorFrontPocket(
       constructorUpdateInput,
       constructorFrontId,
@@ -150,7 +149,7 @@ describe('constructor mutations', () => {
     expect(result).toBe(constructorFrontId);
   });
 
-  afterAll(async done => {
-    mongoose.connection.db.dropDatabase(done);
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

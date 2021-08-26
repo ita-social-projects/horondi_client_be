@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
 const Cart = require('../cart/cart.model').schema;
@@ -7,20 +6,12 @@ const {
   PHONE_NUMBER_NOT_VALID,
 } = require('../../error-messages/common.messages');
 
-const { UserInputError } = require('apollo-server');
-
-const {
-  SUPER_ADMIN_IS_IMMUTABLE,
-} = require('../../error-messages/user.messages');
 const {
   DB_COLLECTIONS_NAMES: { USER: USER_DB, PRODUCT, COMMENT, ORDER },
 } = require('../../consts/db-collections-names');
 const {
   roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts/index');
-const {
-  STATUS_CODES: { FORBIDDEN },
-} = require('../../consts/status-codes');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED },
   USER_BLOCK_COUNT: { NO_ONE_TIME },
@@ -44,7 +35,7 @@ const userSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     validate: {
-      validator: function(v) {
+      validator(v) {
         return /^\+?3?8?(0\d{9})$/.test(v);
       },
       message: PHONE_NUMBER_NOT_VALID,
@@ -107,19 +98,6 @@ const userSchema = new mongoose.Schema({
   },
   recoveryToken: String,
   confirmationToken: String,
-});
-
-userSchema.pre('findOneAndDelete', async function(next) {
-  const query = this.getQuery();
-  const user = await this.model.findOne(query);
-
-  if (user.role === SUPERADMIN) {
-    throw new UserInputError(SUPER_ADMIN_IS_IMMUTABLE, {
-      statusCode: FORBIDDEN,
-    });
-  }
-
-  next();
 });
 
 module.exports = mongoose.model(USER_DB, userSchema);

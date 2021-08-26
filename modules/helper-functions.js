@@ -1,9 +1,10 @@
 const { _ } = require('lodash');
+const Order = require('./order/order.model');
 
 const { hyphen, exception, dictionary } = require('../consts/transliteration');
 
 const {
-  dayInMiliseconds,
+  dayInMilliseconds,
   userDateFormat,
   YEAR,
   QUARTER,
@@ -11,15 +12,16 @@ const {
   WEEK,
   THREE_DAYS,
   TWO_WEEKS,
-} = require('../consts/');
+} = require('../consts');
+const { minDefaultDate } = require('../consts/date-range');
 
 const removeDaysFromData = (days, currentDate) =>
-  currentDate - days * dayInMiliseconds;
+  currentDate - days * dayInMilliseconds;
 
 const changeDataFormat = (data, options) =>
   new Date(data).toLocaleString('en-US', options);
 
-const countItemsOccurency = items =>
+const countItemsOccurrence = items =>
   items.reduce((acc, el) => {
     acc[el] = (acc[el] || 0) + 1;
     return acc;
@@ -50,13 +52,11 @@ const transformLabel = (days, dateSet) => {
 
   if (days === YEAR) {
     return startMonth.slice(0, 3);
-  } else {
-    if (startMonth.slice(0, 3) === endMonth.slice(0, 3)) {
-      return `${startMonth}-${endMonth.slice(4)}`;
-    } else {
-      return `${startMonth}-${endMonth}`;
-    }
   }
+  if (startMonth.slice(0, 3) === endMonth.slice(0, 3)) {
+    return `${startMonth}-${endMonth.slice(4)}`;
+  }
+  return `${startMonth}-${endMonth}`;
 };
 
 const reduceByYear = (days, calendar) => {
@@ -87,8 +87,8 @@ const reduceByMonths = (days, calendar, range) => {
   return months;
 };
 
-const reduceDatesObjectArr = (days, item) => {
-  return item.reduce(
+const reduceDatesObjectArr = (days, item) =>
+  item.reduce(
     (acc, curr) => ({
       range: acc.range,
       counts: acc.counts + curr.counts,
@@ -98,7 +98,6 @@ const reduceDatesObjectArr = (days, item) => {
       counts: 0,
     }
   );
-};
 
 const reduceByDaysCount = (names, counts, days) => {
   if (names.length && counts.length) {
@@ -132,26 +131,91 @@ const reduceByDaysCount = (names, counts, days) => {
       labels: result.map(el => el.range),
       count: result.map(el => el.counts),
     };
-  } else {
-    return { labels: [], count: [] };
   }
+  return { labels: [], count: [] };
 };
 
 const transliterate = words => {
   const transliterated_words = words
     .split('')
-    .map(char => {
-      return char === exception ? '' : dictionary[char] || char;
-    })
+    .map(char => (char === exception ? '' : dictionary[char] || char))
     .join('');
 
   return _.words(transliterated_words).join(hyphen);
+};
+
+const isUserBoughtProduct = (productId, userId) =>
+  Order.find({
+    'items.product': productId,
+    'user.id': userId,
+  }).exec();
+
+const filterOptionComments = filter => {
+  const filterOptions = {};
+  let maxDate = new Date();
+  let minDate = minDefaultDate;
+
+  if (filter?.show?.length) {
+    filterOptions.show = { $in: filter.show };
+  }
+
+  if (filter?.date?.dateFrom) {
+    minDate = new Date(filter.date.dateFrom);
+  }
+
+  if (filter?.date?.dateTo) {
+    maxDate = new Date(filter.date.dateTo);
+  }
+
+  filterOptions.date = {
+    $gte: minDate,
+    $lte: maxDate,
+  };
+
+  if (filter?.search) {
+    const search = filter.search.trim();
+    filterOptions.text = { $regex: `${search}`, $options: 'i' };
+  }
+  if (filter?.productId) {
+    filterOptions.product = filter.productId;
+  }
+  return filterOptions;
+};
+const filteredReplyComments = (filter, arr) => {
+  let reply = arr;
+  if (filter?.showReplyComment?.length) {
+    reply = reply.filter(item =>
+      filter.showReplyComment.includes(item.showReplyComment.toString())
+    );
+  }
+  if (filter?.search && filter?.search !== '') {
+    reply = reply.filter(
+      item =>
+        item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) > -1
+    );
+  }
+  if (
+    filter?.createdAt &&
+    Object.keys(filter?.createdAt).length > 0 &&
+    filter?.createdAt?.dateFrom !== '' &&
+    filter?.createdAt?.dateTo !== ''
+  ) {
+    reply = reply.filter(
+      item =>
+        new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
+        new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
+    );
+  }
+  return reply;
 };
 
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
   changeDataFormat,
-  countItemsOccurency,
+  countItemsOccurrence,
   transliterate,
+  isUserBoughtProduct,
+  filterOptionComments,
+  filteredReplyComments,
 };

@@ -1,4 +1,3 @@
-const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
 const {
   deleteOrder,
   createOrder,
@@ -32,7 +31,7 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
@@ -57,19 +56,20 @@ let closureId;
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = sizeData._id;
+
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
+    const modelData = await createModel(newModel(categoryId), operations);
+    modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
       operations
     );
-    modelId = modelData._id;
+    sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -108,7 +108,7 @@ describe('Order queries', () => {
   });
 
   const {
-    user,
+    recipient,
     userComment,
     delivery,
     paymentStatus,
@@ -121,7 +121,7 @@ describe('Order queries', () => {
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
-    expect(orders[0]).toHaveProperty('user', user);
+    expect(orders[0]).toHaveProperty('recipient', recipient);
   });
   test('should receive order by id', async () => {
     const {
@@ -137,9 +137,9 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('status', status);
   });
   test('Should throw error ORDER_NOT_FOUND', async () => {
-    const { errors } = await getOrderById(wrongId, operations);
+    const res = await getOrderById(wrongId, operations);
 
-    expect(errors[0].message).toEqual(ORDER_NOT_FOUND);
+    expect(res.data.getOrderById.message).toBe('ORDER_NOT_FOUND');
   });
   afterAll(async () => {
     await deleteOrder(orderId, operations);

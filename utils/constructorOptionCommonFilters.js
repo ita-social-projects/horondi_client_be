@@ -10,14 +10,13 @@ const commonFiltersHandler = filter => {
     ];
   }
 
-  if (filter?.model.length) {
+  if (filter?.model?.length) {
     filterOptions.model = { $in: filter.model };
   }
 
   if (filter?.available.length) {
     filterOptions.available = { $in: filter.available };
   }
-
   return filterOptions;
 };
 

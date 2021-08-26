@@ -1,23 +1,20 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+const { ObjectId } = require('mongoose').Types;
 
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
 const {
-  ORDER_PAYMENT_STATUS: { PAID },
-} = require('../../consts/order-payment-status');
-const {
-  STATUS_CODES: { BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
 const { userDateFormat } = require('../../consts');
-let { minDefaultDate } = require('../../consts/date-range');
+const { minDefaultDate } = require('../../consts/date-range');
 
 const {
   removeDaysFromData,
-  countItemsOccurency,
+  countItemsOccurrence,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
@@ -108,24 +105,28 @@ class OrdersService {
   }
 
   async getOrderById(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
-
     const foundOrder = await Order.findById(id).exec();
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     return foundOrder;
   }
 
   async updateOrder(order, id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const orderToUpdate = await Order.findById(id).exec();
 
-    if (!orderToUpdate) throw new Error(ORDER_NOT_FOUND);
+    if (!orderToUpdate) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     const { items } = order;
 
-    await updateProductStatistic(orderToUpdate, order);
+    const userId = orderToUpdate?.user_id;
+
+    const data = { ...order, user_id: userId || null };
+
+    await updateProductStatistic(orderToUpdate, data);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const totalPriceToPay = await calculateTotalPriceToPay(
@@ -133,22 +134,23 @@ class OrdersService {
       totalItemsPrice
     );
 
-    order = {
+    const orderUpdate = {
       ...order,
       totalItemsPrice,
       totalPriceToPay,
     };
 
-    return await Order.findByIdAndUpdate(
+    return Order.findByIdAndUpdate(
       id,
-      { ...order, lastUpdatedDate: Date.now() },
+      { ...orderUpdate, lastUpdatedDate: Date.now() },
       { new: true }
     ).exec();
   }
 
-  async addOrder(data) {
-    const { items } = data;
+  async addOrder(order, user) {
+    const { items } = order;
 
+    const data = { ...order, user_id: user ? user._id : null };
     await addProductsToStatistic(items);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
@@ -159,29 +161,34 @@ class OrdersService {
       totalItemsPrice
     );
 
-    const order = {
+    const newOrder = {
       ...data,
       totalItemsPrice,
       totalPriceToPay,
       orderNumber,
     };
 
-    return new Order(order).save();
+    return new Order(newOrder).save();
   }
 
   async deleteOrder(id) {
-    if (!ObjectId.isValid(id)) throw new Error(ORDER_NOT_VALID);
+    if (!ObjectId.isValid(id))
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
-    if (!foundOrder) throw new Error(ORDER_NOT_FOUND);
+    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
     return foundOrder;
   }
 
-  async getUserOrders(user) {
-    const { orders } = user;
+  async getUserOrders({ skip, limit }, { id }) {
+    const userOrders = await Order.find({ user_id: id })
+      .limit(limit)
+      .skip(skip)
+      .exec();
+    if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
-    return await Order.find({ _id: orders }).exec();
+    return userOrders;
   }
 
   filterOrders({ days, isPaid }) {
@@ -203,9 +210,9 @@ class OrdersService {
   }
 
   getOrdersStats(orders) {
-    const ordersOccurency = countItemsOccurency(orders);
-    const counts = Object.values(ordersOccurency);
-    const names = Object.keys(ordersOccurency);
+    const ordersOccurrence = countItemsOccurrence(orders);
+    const counts = Object.values(ordersOccurrence);
+    const names = Object.keys(ordersOccurrence);
 
     return { counts, names };
   }
