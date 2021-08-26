@@ -60,7 +60,38 @@ const commentsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
+  getCommentsByUser: async (
+    parent,
+    { filter, pagination: { skip, limit }, sort, userId }
+  ) => {
+    try {
+      return await commentsService.getCommentsByUser(
+        filter,
+        skip,
+        limit,
+        userId,
+        sort
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getCommentsRepliesByUser: async (
+    parent,
+    { filter, pagination: { skip, limit }, sort, userId }
+  ) => {
+    try {
+      return await commentsService.getCommentsRepliesByUser(
+        filter,
+        skip,
+        limit,
+        userId,
+        sort
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getAllCommentsByUser: async (parent, args) => {
     try {
       return await commentsService.getAllCommentsByUser(args.userId);

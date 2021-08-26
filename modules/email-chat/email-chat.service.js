@@ -144,8 +144,8 @@ class EmailChatService {
 
   async deleteEmailQuestions(questionsToDelete) {
     try {
-      const result = questionsToDelete.map(
-        async id => await EmailChat.findByIdAndDelete(id).exec()
+      const result = questionsToDelete.map(async id =>
+        EmailChat.findByIdAndDelete(id).exec()
       );
 
       const deletedQuestions = await Promise.allSettled(result);

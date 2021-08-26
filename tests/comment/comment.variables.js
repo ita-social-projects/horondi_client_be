@@ -9,7 +9,27 @@ const limitCount = 1;
 const filterComment = { show: ['false'], search: 'test text' };
 const paginationComment = { skip: 0, limit: 10 };
 const sortComment = { date: -1 };
+const dateRange = { dateFrom: '', dateTo: '' };
 
+const getCommentsByUserInput = {
+  filter: {
+    date: dateRange,
+    show: [],
+    search: '',
+  },
+  pagination: paginationComment,
+  sort: sortComment,
+};
+const getCommentsRepliesByUserInput = {
+  filter: {
+    createdAt: dateRange,
+    filters: true,
+    showReplyComment: [],
+    search: '',
+  },
+  pagination: paginationComment,
+  sort: sortComment,
+};
 const newComment = userId => ({
   text: 'Test text',
   user: userId,
@@ -81,6 +101,8 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
 });
 
 module.exports = {
+  getCommentsByUserInput,
+  getCommentsRepliesByUserInput,
   userWrongId,
   newComment,
   wrongData,

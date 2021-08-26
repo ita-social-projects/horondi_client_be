@@ -69,7 +69,6 @@ class ClosureService {
       const uploadImage = await uploadService.uploadFile(image);
       closure.images = uploadImage.fileNames;
     }
-    // closure.additionalPrice = await calculatePrice(closure.additionalPrice);
     if (closure.additionalPrice) {
       closure.additionalPrice = await calculateAdditionalPrice(
         closure.additionalPrice
@@ -105,7 +104,7 @@ class ClosureService {
     if (!closureToUpdate) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
-    // closure.additionalPrice = await calculatePrice(closure.additionalPrice);
+
     if (closure.additionalPrice) {
       closure.additionalPrice = await calculateAdditionalPrice(
         closure.additionalPrice

@@ -63,7 +63,6 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.setTimeout(10000);
 
 let commentId;
 let operations;

@@ -2,6 +2,7 @@ const { ObjectId } = require('mongoose').Types;
 
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
+const User = require('../user/user.model');
 const {
   STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -91,6 +92,53 @@ class OrdersService {
         },
       ];
     }
+    const items = await Order.find(filterObject)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = Order.find(filterObject).countDocuments();
+    return {
+      items,
+      count,
+    };
+  }
+
+  async getOrdersByUser(filter, skip, limit, sort, userId) {
+    let maxDate = new Date();
+    let minDate = minDefaultDate;
+
+    if (!Object.keys(sort).length) {
+      sort.dateOfCreation = -1;
+    }
+
+    const { status, paymentStatus, date } = filter;
+    const filterObject = {};
+
+    filterObject.user_id = userId;
+
+    if (status?.length) {
+      filterObject.status = { $in: status };
+    }
+
+    if (paymentStatus?.length) {
+      filterObject.paymentStatus = { $in: paymentStatus };
+    }
+
+    if (date?.dateFrom) {
+      minDate = new Date(date.dateFrom);
+    }
+
+    if (date?.dateTo) {
+      maxDate = new Date(date.dateTo);
+    }
+
+    filterObject.dateOfCreation = {
+      $gte: minDate,
+      $lte: maxDate,
+    };
+
     const items = await Order.find(filterObject)
       .sort(sort)
       .skip(skip)

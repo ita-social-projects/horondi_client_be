@@ -189,7 +189,6 @@ const sizes = {
     },
   ],
 };
-
 const user_id = { user_id: null };
 
 module.exports = {

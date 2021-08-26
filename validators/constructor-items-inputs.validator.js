@@ -1,5 +1,4 @@
 const Joi = require('joi');
-
 const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
