@@ -7,6 +7,8 @@ const {
 } = require('../../error-messages/comment.messages');
 const { setupApp } = require('../helper-functions');
 const {
+  getCommentsByUserInput,
+  getCommentsRepliesByUserInput,
   newComment,
   commentWrongId,
   userWrongId,
@@ -26,6 +28,8 @@ const {
   getCommentsByProduct,
   getCommentById,
   getAllComments,
+  getCommentsByUser,
+  getCommentsRepliesByUser,
   getRecentComments,
   updateComment,
   getReplyCommentsByProduct,
@@ -69,7 +73,6 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.setTimeout(10000);
 
 let commentId;
 let operations;
@@ -162,6 +165,60 @@ describe('Comment queries', () => {
       expect(receivedComments.items[0]).toHaveProperty(
         'text',
         newComment(adminId).text
+      );
+      done();
+    });
+  });
+  it('Should receive all comments by user', async () => {
+    const { filter, sort, pagination } = getCommentsByUserInput;
+    const receivedComments = await getCommentsByUser(
+      filter,
+      pagination,
+      sort,
+      adminId,
+      operations
+    );
+    return new Promise(done => {
+      expect(receivedComments).toBeDefined();
+      expect(receivedComments).toHaveProperty('count', countComments);
+      expect(receivedComments.items[0]).toHaveProperty('_id', commentId);
+      expect(receivedComments.items[0]).toHaveProperty(
+        'text',
+        newComment(adminId).text
+      );
+      done();
+    });
+  });
+  it('Should receive all replies by user', async () => {
+    const { filter, sort, pagination } = getCommentsRepliesByUserInput;
+
+    const createdReply = await addReplyComment(
+      productId,
+      newReplyComment(adminId, commentId),
+      operations,
+      commentId
+    );
+    replyId = createdReply.replyComments[0]._id;
+
+    const receivedReplies = await getCommentsRepliesByUser(
+      filter,
+      pagination,
+      sort,
+      adminId,
+      operations
+    );
+
+    return new Promise(done => {
+      expect(receivedReplies).toBeDefined();
+      expect(receivedReplies).toHaveProperty('count', 1);
+      expect(receivedReplies.items[0]).toHaveProperty('_id', replyId);
+      expect(receivedReplies.items[0]).toHaveProperty(
+        'refToReplyComment',
+        commentId
+      );
+      expect(receivedReplies.items[0]).toHaveProperty(
+        'replyText',
+        newReplyComment(adminId, commentId).replyText
       );
       done();
     });
@@ -289,7 +346,7 @@ describe('Comment queries', () => {
     );
     return new Promise(done => {
       expect(receivedComments).toBeDefined();
-      expect(receivedComments).toHaveProperty('count', 1);
+      expect(receivedComments).toHaveProperty('count', 2);
       expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
         '_id',
         replyId

@@ -2,9 +2,14 @@ const {
   deleteOrder,
   createOrder,
   getOrderById,
+  getOrdersByUser,
   getAllOrders,
 } = require('./order.helpers');
-const { wrongId, newOrderInputData } = require('./order.variables');
+const {
+  wrongId,
+  newOrderInputData,
+  getOrdersByUserInput,
+} = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
@@ -35,6 +40,8 @@ const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
+const { superAdminUser } = require('../user/user.variables');
+const { loginAdmin } = require('../user/user.helper');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -52,10 +59,21 @@ let categoryId;
 let patternId;
 let constructorBasicId;
 let closureId;
+let userId;
 
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    const {
+      data: {
+        loginAdmin: { _id },
+      },
+    } = await loginAdmin(
+      superAdminUser.email,
+      superAdminUser.password,
+      operations
+    );
+    userId = _id;
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -101,10 +119,11 @@ describe('Order queries', () => {
     );
     productId = productData._id;
     const orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId),
+      newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId),
       operations
     );
     orderId = orderData._id;
+    userId = orderData.user_id._id;
   });
 
   const {
@@ -123,6 +142,17 @@ describe('Order queries', () => {
     expect(orders).toBeInstanceOf(Array);
     expect(orders[0]).toHaveProperty('recipient', recipient);
   });
+
+  test('Should receive all orders by user_id', async () => {
+    const { filter, sort } = getOrdersByUserInput;
+    const orders = await getOrdersByUser(filter, sort, userId, operations);
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
+  });
+
   test('should receive order by id', async () => {
     const {
       data: { getOrderById: order },
@@ -136,11 +166,13 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('paymentStatus', paymentStatus);
     expect(order).toHaveProperty('status', status);
   });
+
   test('Should throw error ORDER_NOT_FOUND', async () => {
     const res = await getOrderById(wrongId, operations);
 
     expect(res.data.getOrderById.message).toBe('ORDER_NOT_FOUND');
   });
+
   afterAll(async () => {
     await deleteOrder(orderId, operations);
     await deleteProduct(productId, operations);
