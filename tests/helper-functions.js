@@ -1,6 +1,6 @@
 const { ApolloServer } = require('apollo-server-express');
 const { createTestClient } = require('apollo-server-testing');
-const BcryptClient = require('../utils/bcrypt-client');
+const { bcryptClient } = require('../client/bcrypt-client');
 const config = require('./config.test.app');
 const User = require('../modules/user/user.model');
 const {
@@ -23,7 +23,7 @@ const registerAdmin = async (email, password) => {
   admin.credentials = [
     {
       source: HORONDI,
-      tokenPass: await BcryptClient.hashPassword(password, 12),
+      tokenPass: await bcryptClient.hashPassword(password, 12),
     },
   ];
   await admin.save();

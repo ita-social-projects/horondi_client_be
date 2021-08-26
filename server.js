@@ -5,7 +5,7 @@ const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
-const JWTClient = require('./utils/jwt-client');
+const { jwtClient } = require('./client/jwt-client');
 const permissions = require('./permissions');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
@@ -62,7 +62,7 @@ const server = new ApolloServer({
 
     if (token) {
       try {
-        const { userId } = JWTClient.decodeToken(token, SECRET);
+        const { userId } = jwtClient.decodeToken(token, SECRET);
 
         if (!userId) {
           loggerHttp.error(formatErrorForLogger(INVALID_PERMISSIONS));

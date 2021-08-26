@@ -1,7 +1,7 @@
 const { UserInputError } = require('apollo-server');
 const { OAuth2Client } = require('google-auth-library');
-const JWTClient = require('../../utils/jwt-client');
-const BcryptClient = require('../../utils/bcrypt-client');
+const { jwtClient } = require('../../client/jwt-client');
+const { bcryptClient } = require('../../client/bcrypt-client');
 
 const User = require('./user.model');
 
@@ -284,7 +284,7 @@ class UserService extends FilterHelper {
   }
 
   async checkIfTokenIsValid(token) {
-    const decoded = JWTClient.decodeToken(token, SECRET);
+    const decoded = jwtClient.decodeToken(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
 
     if (user.recoveryToken !== token) {
@@ -422,7 +422,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const match = await BcryptClient.comparePassword(
+    const match = await bcryptClient.comparePassword(
       password,
       user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
@@ -435,9 +435,11 @@ class UserService extends FilterHelper {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
-    const { accessToken, refreshToken } = new JWTClient(
-      user._id
-    ).generateTokens(SECRET, TOKEN_EXPIRES_IN);
+    jwtClient.setData({ userId: user._id });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     return {
       ...user._doc,
@@ -458,7 +460,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const match = await BcryptClient.comparePassword(
+    const match = await bcryptClient.comparePassword(
       password,
       user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
@@ -467,9 +469,11 @@ class UserService extends FilterHelper {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
-    const { accessToken, refreshToken } = new JWTClient(
-      user._id
-    ).generateTokens(SECRET, TOKEN_EXPIRES_IN);
+    jwtClient.setData({ userId: user._id });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     return {
       ...user._doc,
@@ -480,14 +484,15 @@ class UserService extends FilterHelper {
   }
 
   async regenerateAccessToken(refreshTokenForVerify) {
-    const { userId } = JWTClient.decodeToken(refreshTokenForVerify, SECRET);
+    const { userId } = jwtClient.decodeToken(refreshTokenForVerify, SECRET);
 
     if (!userId) {
       throw new RuleError(REFRESH_TOKEN_IS_NOT_VALID, FORBIDDEN);
     }
     await this.getUserByFieldOrThrow('_id', userId);
 
-    const { accessToken, refreshToken } = new JWTClient(userId).generateTokens(
+    jwtClient.setData({ userId });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
       TOKEN_EXPIRES_IN
     );
@@ -528,9 +533,11 @@ class UserService extends FilterHelper {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
-    const { accessToken, refreshToken } = new JWTClient(
-      user._id
-    ).generateTokens(SECRET, TOKEN_EXPIRES_IN);
+    jwtClient.setData({ userId: user._id });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     return {
       ...user._doc,
@@ -561,7 +568,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    const encryptedPassword = await BcryptClient.hashPassword(password, 12);
+    const encryptedPassword = await bcryptClient.hashPassword(password, 12);
 
     const user = new User({
       firstName,
@@ -576,7 +583,8 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    const accessToken = new JWTClient(savedUser._id).generateAccessToken(
+    jwtClient.setData({ userId: savedUser._id });
+    const accessToken = jwtClient.generateAccessToken(
       CONFIRMATION_SECRET,
       RECOVERY_EXPIRE
     );
@@ -598,7 +606,8 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, BAD_REQUEST);
     }
 
-    const accessToken = new JWTClient(user._id).generateAccessToken(
+    jwtClient.setData({ userId: user._id });
+    const accessToken = jwtClient.generateAccessToken(
       CONFIRMATION_SECRET,
       RECOVERY_EXPIRE
     );
@@ -629,7 +638,7 @@ class UserService extends FilterHelper {
     let userId = null;
 
     try {
-      const decoded = JWTClient.decodeToken(token, CONFIRMATION_SECRET);
+      const decoded = jwtClient.decodeToken(token, CONFIRMATION_SECRET);
       userId = decoded.userId;
     } catch (err) {
       throw new RuleError(TOKEN_IS_EXPIRIED, UNAUTHORIZED);
@@ -645,7 +654,8 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
     }
 
-    const { accessToken, refreshToken } = new JWTClient(userId).generateTokens(
+    jwtClient.setData({ userId });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
       TOKEN_EXPIRES_IN
     );
@@ -670,7 +680,8 @@ class UserService extends FilterHelper {
     const user = await User.findOne({ email }).exec();
 
     if (user) {
-      const accessToken = new JWTClient(user._id).generateAccessToken(
+      jwtClient.setData({ userId: user._id });
+      const accessToken = jwtClient.generateAccessToken(
         SECRET,
         RECOVERY_EXPIRE
       );
@@ -697,7 +708,7 @@ class UserService extends FilterHelper {
   }
 
   async resetPassword(password, token) {
-    const decoded = JWTClient.decodeToken(token, SECRET);
+    const decoded = jwtClient.decodeToken(token, SECRET);
     const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
@@ -719,7 +730,7 @@ class UserService extends FilterHelper {
         statusCode: FORBIDDEN,
       });
     }
-    const encryptedPassword = await BcryptClient.hashPassword(password, 12);
+    const encryptedPassword = await bcryptClient.hashPassword(password, 12);
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
@@ -757,7 +768,8 @@ class UserService extends FilterHelper {
 
     const savedUser = await user.save();
 
-    const invitationalToken = new JWTClient(savedUser._id).generateAccessToken(
+    jwtClient.setData({ userId: savedUser._id });
+    const invitationalToken = jwtClient.generateAccessToken(
       SECRET,
       TOKEN_EXPIRES_IN
     );
@@ -814,9 +826,11 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const invitationalToken = new JWTClient(
-      isAdminExists._id
-    ).generateAccessToken(SECRET, TOKEN_EXPIRES_IN);
+    jwtClient.setData({ userId: isAdminExists._id });
+    const invitationalToken = jwtClient.generateAccessToken(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
       token: invitationalToken,
@@ -827,7 +841,7 @@ class UserService extends FilterHelper {
 
   async completeAdminRegister(updatedUser, token) {
     const { password } = updatedUser;
-    const userDetails = JWTClient.decodeToken(token, SECRET);
+    const userDetails = jwtClient.decodeToken(token, SECRET);
 
     if (!userDetails) {
       throw new RuleError(INVALID_ADMIN_INVITATIONAL_TOKEN, BAD_REQUEST);
@@ -839,7 +853,7 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const encryptedPassword = await BcryptClient.hashPassword(password, 12);
+    const encryptedPassword = await bcryptClient.hashPassword(password, 12);
 
     await User.findByIdAndUpdate(userDetails.userId, {
       $set: {
@@ -876,7 +890,7 @@ class UserService extends FilterHelper {
   }
 
   validateConfirmationToken(token) {
-    if (!JWTClient.decodeToken(token, SECRET)) {
+    if (!jwtClient.decodeToken(token, SECRET)) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
         statusCode: BAD_REQUEST,
       });

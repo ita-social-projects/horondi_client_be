@@ -6,7 +6,7 @@ const resolvers = require('../resolvers');
 const permissions = require('../permissions');
 const errorOutputPlugin = require('../plugins/error-output.plugin');
 const formatError = require('../utils/format-error');
-const JWTClient = require('../utils/jwt-client');
+const { jwtClient } = require('../client/jwt-client');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
 const { initLogger: initLoggerHttp } = require('../loggerHttp');
@@ -33,7 +33,7 @@ const config = {
   context: async ({ req }) => {
     const { token } = req.headers || '';
     if (token) {
-      const user = JWTClient.decodeToken(token, SECRET);
+      const user = jwtClient.decodeToken(token, SECRET);
       if (!user) {
         return {
           statusCode: 401,

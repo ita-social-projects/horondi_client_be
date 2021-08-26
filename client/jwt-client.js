@@ -10,8 +10,12 @@ class JWTClient {
     this.userId = userId;
   }
 
+  setData(data) {
+    this.userId = data.userId;
+  }
+
   generateAccessToken(secret, expiresIn) {
-    return JWTClient.createToken(
+    return this.createToken(
       { userId: this.userId },
       secret || SECRET,
       expiresIn || TOKEN_EXPIRES_IN
@@ -19,7 +23,7 @@ class JWTClient {
   }
 
   generateRefreshToken(secret, expiresIn) {
-    return JWTClient.createToken(
+    return this.createToken(
       { userId: this.userId },
       secret || SECRET,
       expiresIn || REFRESH_TOKEN_EXPIRES_IN
@@ -33,11 +37,11 @@ class JWTClient {
     };
   }
 
-  static createToken(payload, secret, expiresIn) {
+  createToken(payload, secret, expiresIn) {
     return jwt.sign(payload, secret, { expiresIn });
   }
 
-  static decodeToken(token, secret) {
+  decodeToken(token, secret) {
     let decoded = '';
     if (!token) return decoded;
     try {
@@ -49,4 +53,7 @@ class JWTClient {
   }
 }
 
-module.exports = JWTClient;
+module.exports = {
+  jwtClient: new JWTClient(),
+  JWTClient,
+};
