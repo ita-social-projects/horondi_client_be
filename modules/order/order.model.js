@@ -9,7 +9,7 @@ const {
   ORDER_STATUSES: { CREATED },
 } = require('../../consts/order-statuses');
 const {
-  DB_COLLECTIONS_NAMES: { ORDER },
+  DB_COLLECTIONS_NAMES: { ORDER, USER },
 } = require('../../consts/db-collections-names');
 
 const orderSchema = new mongoose.Schema({
@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: CREATED,
   },
-  user: {
+  recipient: {
     firstName: {
       type: String,
     },
@@ -35,6 +35,10 @@ const orderSchema = new mongoose.Schema({
     phoneNumber: {
       type: String,
     },
+  },
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: USER,
   },
   dateOfCreation: {
     type: Date,

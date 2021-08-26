@@ -14,7 +14,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -29,12 +29,16 @@ const {
     ADDITIONAL_PRICE,
   },
 } = require('../../consts/history-obj-keys');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class MaterialsService {
   constructor() {
     this.currencyTypes = {
-      UAH: UAH,
-      USD: USD,
+      UAH,
+      USD,
     };
   }
 
@@ -87,7 +91,9 @@ class MaterialsService {
   }
 
   async getMaterialById(id) {
-    return Material.findById(id);
+    const material = await Promise.resolve(Material.findById(id));
+    if (!material) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    return material;
   }
 
   async updateMaterial(id, material, { _id: adminId }) {
@@ -95,11 +101,11 @@ class MaterialsService {
 
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
-      throw new Error(MATERIAL_NOT_FOUND);
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
     const updatedMaterial = await Material.findByIdAndUpdate(
       id,
@@ -131,7 +137,7 @@ class MaterialsService {
 
   async addMaterial({ material }, { _id: adminId }) {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
     material.additionalPrice = calculatePrice(material.additionalPrice);
 
@@ -184,7 +190,7 @@ class MaterialsService {
 
       return foundMaterial;
     }
-    throw new Error(MATERIAL_NOT_FOUND);
+    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   }
 
   async checkMaterialExistOrDuplicated(data, id) {

@@ -180,9 +180,10 @@ const orderValidator = Joi.object({
       DELIVERED,
       null
     ),
-  user: nestedUserValidator,
+  recipient: nestedUserValidator,
   delivery: nestedDeliveryValidator,
   items: Joi.array().has(nestedItemValidator),
+  user_id: Joi.string(),
   paymentMethod: Joi.string()
     .trim()
     .valid(CARD, CASH)

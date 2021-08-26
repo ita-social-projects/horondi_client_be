@@ -245,25 +245,89 @@ if issue is in work it should be placed in proper column on dashboard according 
 [![@kapoliub](https://avatars1.githubusercontent.com/u/56438696?s=200&u=be8c7bba587c6df08accc16d42868293f3c3705b&v=4)](https://github.com/kapoliub)
 [![@NikitaDenysenko](https://avatars0.githubusercontent.com/u/53399334?s=200&u=66fced143733258460a0058d26ccc83a1b3fa174&v=4)](https://github.com/NikitaDenysenko)
 [![@ivan-bonk](https://avatars3.githubusercontent.com/u/44017234?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/ivan-bonk)
+[![@Kiyooooko](https://avatars.githubusercontent.com/u/68334137?s=200&u=1733556a0317cf4326376e429f278c29b1a27602&v=4)](https://github.com/Kiyooooko)
+[![@M1ndForce](https://avatars.githubusercontent.com/u/66359796?s=200&u=323af6a850ed6821968978d2cfd637c23f8e9bf9&v=4)](https://github.com/M1ndForce)
+[![@AndriyLymych](https://avatars.githubusercontent.com/u/48614659?s=200&u=2570ac9922e671d796fd4163b0d3340119df528e&v=4)](https://github.com/AndriyLymych)
+[![@jul4ajka](https://avatars.githubusercontent.com/u/19712929?s=200&u=a77ab7d0d6213212ae25560ecb9d19bb8af9a003&v=4)](https://github.com/jul4ajka)
+[![@MMashivskij](https://avatars.githubusercontent.com/u/54583764?s=200&u=dc606bf0c27c3f9f5133a12db5534c9d948b470e&v=4)](https://github.com/MMashivskij)
+[![@Haytham1337](https://avatars.githubusercontent.com/u/36926670?s=200&u=230bf6465c39383069786fdfb1ac1fe27185aecb&v=4)](https://github.com/Haytham1337)
+[![@RevylaV](https://avatars.githubusercontent.com/u/51852361?s=200&u=99815076ec15cb804b541d5c1b336ae28d53061d&v=4)](https://github.com/RevylaV)
+[![@dmytro07](https://avatars.githubusercontent.com/u/62848596?s=200)](https://github.com/dmytro07)
+[![@yuliiakucher](https://avatars.githubusercontent.com/u/61886864?s=200)](https://github.com/yuliiakucher)
+[![@fulljsdev](https://avatars.githubusercontent.com/u/77093538?s=200)](https://github.com/fulljsdev)
+[![@IlyaBelik](https://avatars.githubusercontent.com/u/37375602?s=200)](https://github.com/IlyaBelik)
+[![@grebiniuk](https://avatars.githubusercontent.com/u/32039216?s=200)](https://github.com/grebiniuk)
+[![@AnastasiiaKolodiazhna](https://avatars.githubusercontent.com/u/47612654?s=200)](https://github.com/AnastasiiaKolodiazhna)
+[![@twihell](https://avatars.githubusercontent.com/u/14165251?s=200)](https://github.com/twihell)
+[![@ostgit12](https://avatars.githubusercontent.com/u/56637675?s=200)](https://github.com/ostgit12)
+[![@100vbaSasha](https://avatars.githubusercontent.com/u/55619101?s=200)](https://github.com/100vbaSasha)
+[![@Walleriy](https://avatars.githubusercontent.com/u/39501370?s=200)](https://github.com/Walleriy)
+[![@AndronShermeta](https://avatars.githubusercontent.com/u/73708298?s=200)](https://github.com/AndronShermeta)
+[![@YuriiDubnytskyi](https://avatars.githubusercontent.com/u/41127730?s=200)](https://github.com/YuriiDubnytskyi)
+[![@Renfort](https://avatars.githubusercontent.com/u/60984686?s=200)](https://github.com/Renfort)
+[![@sergklukvin](https://avatars.githubusercontent.com/u/76059218?s=200)](https://github.com/sergklukvin)
+[![@mvmoshchovskyi](https://avatars.githubusercontent.com/u/48692693?s=200)](https://github.com/mvmoshchovskyi)
+[![@Vlodkojr](https://avatars.githubusercontent.com/u/45718327?s=200)](https://github.com/Vlodkojr)
+[![@Elugormo](https://avatars.githubusercontent.com/u/53963530?s=200)](https://github.com/Elugormo)
+[![@Mabonik](https://avatars.githubusercontent.com/u/61788391?s=200)](https://github.com/Mabonik)
+[![@NetkachovaAnastasiya](https://avatars.githubusercontent.com/u/60103758?s=200)](https://github.com/NetkachovaAnastasiya)
+[![@Serhii-Ahafonov](https://avatars.githubusercontent.com/u/61708033?s=200)](https://github.com/Serhii-Ahafonov)
+[![@Palidovych](https://avatars.githubusercontent.com/u/54260733?s=200)](https://github.com/Palidovych)
+[![@halaburdataras](https://avatars.githubusercontent.com/u/36608907?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/halaburdataras)
+[![@chortex](https://avatars.githubusercontent.com/u/39667486?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/chortex)
+[![@TanyaTop](https://avatars.githubusercontent.com/u/71588357?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/TanyaTop)
+[![@oni-hash](https://avatars.githubusercontent.com/u/60193440?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/oni-hash)
+[![@Hai-Vasyl](https://avatars.githubusercontent.com/u/64915099?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Hai-Vasyl)
+[![@Wasya1212](https://avatars.githubusercontent.com/u/15053168?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Wasya1212)
+[![@BohdanShchur](https://avatars.githubusercontent.com/u/50678261?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/BohdanShchur)
 
 ### Quality control team
-
 [![@HrytsykOlya](https://avatars1.githubusercontent.com/u/65678737?s=200&u=181e62bf4f25b07122f06ce677e73ddd34021391&v=4)](https://github.com/HrytsykOlya)
+[![@LiliiK](https://avatars.githubusercontent.com/u/65678768?s=200&u=2c968beb250d7b155441ab05d28e0a7be616606b&v=4)](https://github.com/LiliiK)
+[![@IrynaVakhula](https://avatars.githubusercontent.com/u/65680712?s=200&u=d0785408325af9d2c9d8dcb9a18e71c11fa005a8&v=4)](https://github.com/IrynaVakhula)
+[![@MartaZyhmund](https://avatars.githubusercontent.com/u/65674403?s=200&u=ff0b2c38b52b422ac58138ad9f38f2b81b7d8957&v=4)](https://github.com/MartaZyhmund)
+[![@asIgnat](https://avatars.githubusercontent.com/u/62054774?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/asIgnat)
+[![@rrarock](https://avatars.githubusercontent.com/u/84689435?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/rrarock)
+[![@olesmack](https://avatars.githubusercontent.com/u/84582793?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/olesmack)
+[![@NataliaAndriiets](https://avatars.githubusercontent.com/u/84592689?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/NataliaAndriiets)
+[![@xfightr](https://avatars.githubusercontent.com/u/85612818?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/xfightr)
 
 ### ISTQB team
 
 [![@olya011](https://avatars3.githubusercontent.com/u/49495443?s=200&u=285aa0df8435a6ec16edb6ba26b4718d82693bf9&v=4)](https://github.com/olya011)
+[![@Vika-Bodnar](https://avatars2.githubusercontent.com/u/71330682?s=200&u=6c3b98868d6197bd41e3182c24c477343d355e04&v=4)](https://github.com/Vika-Bodnar)
+[![@chelochev](https://avatars0.githubusercontent.com/u/66883720?s=200&u=7eec35db41587211874a2bfe962cbb6ca4e8e99a&v=4)](https://github.com/chelochev)
+[![@Mary-Red](https://avatars0.githubusercontent.com/u/55394709?s=200&u=bcb5ad20d943f981a5a0d8ed09fb33bb9e878fc3&v=4)](https://github.com/Mary-Red)
+[![@GalyaGirnyak](https://avatars.githubusercontent.com/u/75363667?s=200&u=5602aefda507989d28b8bfba247dd05a8a81431b&v=4)](https://github.com/GalyaGirnyak)
+[![@kirkchernyshkov](https://avatars.githubusercontent.com/u/75264827?s=200&u=ba90664860143e53146be7f6956483d9b883618f&v=4)](https://github.com/kirkchernyshkov)
+[![@runner-on-waves](https://avatars.githubusercontent.com/u/75261055?s=200&u=d2b87ed36b47dcc16b934cf0ad2aab1327155fb8&v=4)](https://github.com/runner-on-waves)
+[Serhii Datsiuk](https://github.com/SerhiiDatsiuk)
+[![@MariyaRashkevych](https://avatars.githubusercontent.com/u/6838192?s=200)](https://github.com/MariyaRashkevych)
+[![@MarianaZemba](https://avatars.githubusercontent.com/u/79637539?s=200)](https://github.com/MarianaZemba)
+[![@anastas184](https://avatars.githubusercontent.com/u/61836366?s=200)](https://github.com/anastas184)
+[![@OleksiySverdlov](https://avatars.githubusercontent.com/u/77245713?s=200)](https://github.com/OleksiySverdlov)
+[![@MariiaHnatiuk](https://avatars.githubusercontent.com/u/80684837?s=200)](https://github.com/MariiaHnatiuk)
+[![@Nikcoll-in](https://avatars.githubusercontent.com/u/80674462?s=200)](https://github.com/Nikcoll-in)
+[![@Evgeniya-Volkova](https://avatars.githubusercontent.com/u/76967400?s=200)](https://github.com/Evgeniya-Volkova)
+[![@nadiya17](https://avatars.githubusercontent.com/u/47214428?s=200)](https://github.com/nadiya17)
+[YevgeniiSt](https://github.com/YevgeniiSt)
+
 
 ### Database team
 
 [![@YukiAmeka](https://avatars2.githubusercontent.com/u/42378468?s=200&u=c749e6713546c371b801786ecdd678dd1d152f42&v=4)](https://github.com/YukiAmeka)
+[![@yaremich](https://avatars.githubusercontent.com/u/58247822?s=200&u=db2f3b6459c080079c5c5e4b52da61cd18b4e223&v=4)](https://github.com/yaremich)
+[![@Meamzy](https://avatars.githubusercontent.com/u/48360177?s=200&u=db2f3b6459c080079c5c5e4b52da61cd18b4e223&v=4)](https://github.com/Meamzy)
 
 ### DevOps team
 
 [![@SofiaDemyanovska](https://avatars1.githubusercontent.com/u/48492789?s=200&u=cb0520a8498667594ded0db8e29cdd3ec5529578&v=4)](https://github.com/SofiaDemyanovska)
 [![@ikoblyk](https://avatars3.githubusercontent.com/u/45568834?s=200&u=5d8790e8e58a7966e2d6d6bc6a4f0d15c8cb2e9c&v=4)](https://github.com/IKoblyk)
 [![@vitaliy-pavlyshyn](https://avatars0.githubusercontent.com/u/24523962?s=200&u=db2f3b6459c080079c5c5e4b52da61cd18b4e223&v=4)](https://github.com/vitaliy-pavlyshyn)
+[![@rholovchak](https://avatars.githubusercontent.com/u/68376355?s=200)](https://github.com/rholovchak)
 
+### Designer team
+[![@Nikadsgn](https://avatars.githubusercontent.com/u/87034205?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Nikadsgn)
 ---
 
 ## FAQ

@@ -1,4 +1,4 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+const { ObjectId } = require('mongoose').Types;
 const { PAYMENT_SECRET } = require('../../dotenvValidator');
 const { generatePaymentSignature } = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
@@ -29,7 +29,7 @@ const {
 } = require('../../consts/email-actions');
 
 class PaymentService {
-  async getPaymentCheckout({ orderId, currency, amount }) {
+  async getPaymentCheckout({ orderId, currency, amount }, { language }) {
     if (!ObjectId.isValid(orderId))
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
 
@@ -64,7 +64,8 @@ class PaymentService {
           select: 'name',
         })
         .exec();
-      await sendEmail(order.user.email, PAYMENT_ORDER, {
+      await sendEmail(order.recipient.email, PAYMENT_ORDER, {
+        language,
         items: order.items,
         totalPrice: order.totalItemsPrice,
         paymentUrl: order.paymentUrl,
@@ -96,7 +97,9 @@ class PaymentService {
 
       const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
 
-      const order = await OrderModel.findOne({ orderNumber: order_id }).exec();
+      const order = await OrderModel.findOne({
+        orderNumber: order_id.toString(),
+      }).exec();
 
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 

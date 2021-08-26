@@ -3,12 +3,6 @@ const mongoose = require('mongoose');
 const Language = require('../../../models/Language').schema;
 const CurrencySet = require('../../../models/CurrencySet').schema;
 const {
-  IMAGE_NOT_PROVIDED,
-} = require('../../../error-messages/constructor-front-pocket-messages');
-const {
-  RANGES: { MIN, MAX },
-} = require('../../../consts/ranges');
-const {
   DB_COLLECTIONS_NAMES: {
     CONSTRUCTOR_FRONT_POCKET,
     MATERIAL,

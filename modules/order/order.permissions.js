@@ -1,12 +1,16 @@
-const { and } = require('graphql-shield');
+const { and, or } = require('graphql-shield');
 const { roles } = require('../../consts');
 
-const { inputDataValidation, hasRoles } = require('../../utils/rules');
 const {
-  INPUT_FIELDS: { ORDER, LIMIT, SKIP, FILTER, DATE },
+  inputDataValidation,
+  hasRoles,
+  isAuthorized,
+} = require('../../utils/rules');
+const {
+  INPUT_FIELDS: { ORDER, LIMIT, SKIP, DATE },
 } = require('../../consts/input-fields');
 
-const { ADMIN, SUPERADMIN } = roles;
+const { ADMIN, SUPERADMIN, USER } = roles;
 
 const {
   orderValidator,
@@ -29,6 +33,11 @@ const orderPermissionsQuery = {
     inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
+  getOrdersByUser: and(
+    inputDataValidation(LIMIT, getAllOrdersValidator.limitValidator),
+    inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
+    hasRoles([ADMIN, SUPERADMIN])
+  ),
   getPaidOrdersStatistic: and(
     inputDataValidation(DATE, getOrdersStatisticValidator),
     hasRoles([ADMIN, SUPERADMIN])
@@ -37,6 +46,7 @@ const orderPermissionsQuery = {
     inputDataValidation(DATE, getOrdersStatisticValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
+  getOrderById: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };
 
 module.exports = { orderPermissionsMutation, orderPermissionsQuery };

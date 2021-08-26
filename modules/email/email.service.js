@@ -13,6 +13,7 @@ const {
 
 class EmailService {
   async sendEmail(email, action, context = {}) {
+    const { language } = context;
     const templateInfo = htmlTemplates[action];
     if (!templateInfo) {
       throw new RuleError(TEMPLATE_NOT_FOUND, NOT_FOUND);
@@ -20,9 +21,12 @@ class EmailService {
 
     Object.assign(context, contextExtension);
     const html = await emailTemplates.render(
-      templateInfo.templateFileName,
+      language
+        ? templateInfo.templateFileName[0]
+        : templateInfo.templateFileName[1],
       context
     );
+
     await transporter.sendMail({
       from: MAIL_USER,
       to: email,

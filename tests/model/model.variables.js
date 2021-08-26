@@ -1,14 +1,14 @@
 const wrongId = '60102a6d0ed5be43dc9f7f1d';
 const notValidId = '60102a6d0ed5b3dc9f7f1d';
 const filter = {
-  name: '',
+  search: '',
   category: [],
   available: [],
   availableForConstructor: [],
 };
 
 const sort = {
-  category: 1,
+  name: 1,
 };
 
 const pagination = {
@@ -20,7 +20,7 @@ const newModel = (categoryId, sizeId) => ({
   category: categoryId,
   priority: 2,
   show: true,
-  sizes: [sizeId],
+  sizes: [],
   name: [
     { value: 'Тест', lang: 'uk' },
     { value: 'Test', lang: 'en' },
@@ -40,7 +40,7 @@ const newModelUpdated = (categoryId, sizeId) => ({
   category: categoryId,
   priority: 3,
   show: true,
-  sizes: [sizeId],
+  sizes: [],
   name: [
     { value: 'Обновлено', lang: 'uk' },
     { value: 'Updated', lang: 'en' },

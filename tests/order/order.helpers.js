@@ -16,13 +16,15 @@ const createOrder = async (order, operations) => {
             }
             status
             paymentStatus
-            user {
+            recipient {
               firstName
               lastName
               email
               phoneNumber
             }
-
+            user_id {
+              _id
+            }
             userComment
             delivery {
               byCourier
@@ -80,8 +82,8 @@ const createOrder = async (order, operations) => {
 
   return createdOrder.data.addOrder;
 };
-const deleteOrder = async (id, operations) => {
-  return await operations.mutate({
+const deleteOrder = async (id, operations) =>
+  operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteOrder(id: $id) {
@@ -98,7 +100,6 @@ const deleteOrder = async (id, operations) => {
       id,
     },
   });
-};
 const getAllOrders = async operations => {
   const res = await operations.mutate({
     mutation: gql`
@@ -106,7 +107,7 @@ const getAllOrders = async operations => {
         getAllOrders(limit: 10, skip: 0, filter: {}, sort: {}) {
           items {
             _id
-            user {
+            recipient {
               firstName
               lastName
               email
@@ -132,8 +133,58 @@ const getAllOrders = async operations => {
   });
   return res.data.getAllOrders.items;
 };
-const getOrderById = async (id, operations) => {
-  return await operations.query({
+
+const getOrdersByUser = async (filter, sort, userId, operations) => {
+  const res = await operations.mutate({
+    query: gql`
+      query(
+        $limit: Int
+        $skip: Int
+        $filter: OrderFilterInput
+        $sort: JSONObject
+        $userId: ID!
+      ) {
+        getOrdersByUser(
+          limit: $limit
+          skip: $skip
+          filter: $filter
+          sort: $sort
+          userId: $userId
+        ) {
+          items {
+            _id
+            recipient {
+              firstName
+              lastName
+              email
+              phoneNumber
+            }
+            status
+            paymentStatus
+            orderNumber
+            dateOfCreation
+            totalItemsPrice {
+              currency
+              value
+            }
+          }
+          count
+        }
+      }
+    `,
+    variables: {
+      limit: 5,
+      skip: 0,
+      filter,
+      sort,
+      userId,
+    },
+  });
+  return res.data.getOrdersByUser.items;
+};
+
+const getOrderById = async (id, operations) =>
+  operations.query({
     query: gql`
       query($id: ID!) {
         getOrderById(id: $id) {
@@ -193,7 +244,6 @@ const getOrderById = async (id, operations) => {
       id,
     },
   });
-};
 const updateOrderById = async (order, id, operations) => {
   const updatedData = await operations.mutate({
     mutation: gql`
@@ -210,7 +260,7 @@ const updateOrderById = async (order, id, operations) => {
             }
             status
             paymentStatus
-            user {
+            recipient {
               firstName
               lastName
               email
@@ -275,6 +325,7 @@ module.exports = {
   createOrder,
   deleteOrder,
   getAllOrders,
+  getOrdersByUser,
   getOrderById,
   updateOrderById,
 };

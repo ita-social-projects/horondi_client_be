@@ -7,6 +7,7 @@ const CONSTRUCTOR_OPTION_TYPES = {
   PATTERN: 'PATTERN',
   POCKET: 'POCKET',
   STRAP: 'STRAP',
+  OPTION: 'OPTION',
 };
 
 module.exports = {

@@ -16,7 +16,7 @@ const {
 const {
   HISTORY_ACTIONS: { UNLOCK_USER: UNLOCK_ACTION },
 } = require('../../consts/history-actions');
-const { getChanges, generateHistoryObject } = require('../../utils/hisrory');
+const { getChanges, generateHistoryObject } = require('../../utils/history');
 
 const unlockUsers = () =>
   schedule(EVERY_TWELVE_HOURS, async () => {

@@ -1,9 +1,10 @@
 const { UserInputError } = require('apollo-server');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
+
+const { tokenChecker } = require('../../helpers/tokenChecker');
+const User = require('./user.model');
 const generateTokens = require('../../utils/create-tokens');
 const {
   EmailActions: {
@@ -25,7 +26,7 @@ const {
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
-  countItemsOccurency,
+  countItemsOccurrence,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
@@ -49,6 +50,7 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
+  ORDER_NOT_FOUND,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -68,10 +70,13 @@ const {
   roles: { USER },
 } = require('../../consts');
 const RuleError = require('../../errors/rule.error');
-const { USER_IS_BLOCKED } = require('../../error-messages/user.messages');
+const {
+  USER_IS_BLOCKED,
+  SUPER_ADMIN_IS_IMMUTABLE,
+} = require('../../error-messages/user.messages');
 const {
   roles: { ADMIN, SUPERADMIN },
-} = require('../../consts/');
+} = require('../../consts');
 const {
   HISTORY_ACTIONS: {
     BLOCK_USER: BLOCK_USER_ACTION,
@@ -83,13 +88,14 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 
 const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
 const { generateOtpCode } = require('../../utils/user');
+const Order = require('../order/order.model');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -178,6 +184,9 @@ class UserService extends FilterHelper {
           period: blockedUser.banned.blockPeriod,
         });
 
+        break;
+      }
+      default: {
         break;
       }
     }
@@ -308,15 +317,22 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    return paidOrders.reduce((acc, order) => {
-      acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
-      return acc;
-    }, []);
+    return paidOrders.reduce(
+      (acc, order) => [
+        ...acc,
+        ...order.items.map(item => ({ _id: item.productId })),
+      ],
+      []
+    );
   }
 
   async getAllUsers({ filter, pagination, sort }) {
-    let filteredItems = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
+    const filteredItems = this.filterItems(filter);
+    const aggregatedItems = this.aggregateItems(
+      filteredItems,
+      pagination,
+      sort
+    );
 
     const [users] = await User.aggregate([
       {
@@ -354,12 +370,12 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formatedData = users.map(el =>
+    const formattedData = users.map(el =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
-    const userOccurency = countItemsOccurency(formatedData);
-    const counts = Object.values(userOccurency);
-    const names = Object.keys(userOccurency);
+    const userOccurrence = countItemsOccurrence(formattedData);
+    const counts = Object.values(userOccurrence);
+    const names = Object.keys(userOccurrence);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
       0
@@ -490,10 +506,10 @@ class UserService extends FilterHelper {
   }
 
   async googleUser(idToken, staySignedIn) {
-    const client = new OAuth2Client();
+    const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: REACT_APP_GOOGLE_CLIENT_ID,
+      expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
@@ -549,14 +565,14 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
-    const savedUser = await user.save();
-
-    return savedUser;
+    return user.save();
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
+    const candidate = await User.findOne({ email }).exec();
+
+    if (candidate) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const encryptedPassword = await bcrypt.hash(password, 12);
@@ -582,6 +598,7 @@ class UserService extends FilterHelper {
     savedUser.confirmationToken = accessToken;
 
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
       token: accessToken,
     });
     await savedUser.save();
@@ -592,7 +609,7 @@ class UserService extends FilterHelper {
   async sendConfirmationLetter(email, language) {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
-      throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, BAD_REQUEST);
     }
     const { accessToken } = generateTokens(user._id, {
       secret: CONFIRMATION_SECRET,
@@ -601,43 +618,79 @@ class UserService extends FilterHelper {
     user.confirmationToken = accessToken;
     await user.save();
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
       token: accessToken,
     });
     return true;
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id).exec();
-    return res || new Error(USER_NOT_FOUND);
+    const user = await User.findById(id).exec();
+
+    if (!user) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (user.role === SUPERADMIN) {
+      throw new RuleError(SUPER_ADMIN_IS_IMMUTABLE, FORBIDDEN);
+    }
+    return User.findByIdAndDelete(id).exec();
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
-    const updates = {
+    const { userId } = await tokenChecker(token, CONFIRMATION_SECRET);
+
+    const candidate = await User.findById(userId).exec();
+
+    if (!candidate) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (candidate.confirmed) {
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
+    }
+
+    const { accessToken, refreshToken } = generateTokens(
+      userId,
+      {
+        expiresIn: TOKEN_EXPIRES_IN,
+        secret: SECRET,
+      },
+      true
+    );
+
+    await User.findByIdAndUpdate(userId, {
       $set: {
         confirmed: true,
       },
       $unset: {
         confirmationToken: '',
       },
+    }).exec();
+
+    return {
+      token: accessToken,
+      refreshToken,
+      confirmed: true,
     };
-    await User.findByIdAndUpdate(decoded.userId, updates).exec();
-    return true;
   }
 
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: NOT_FOUND });
+
+    if (user) {
+      const { accessToken } = generateTokens(user._id, {
+        expiresIn: RECOVERY_EXPIRE,
+        secret: SECRET,
+      });
+      user.recoveryToken = accessToken;
+      await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+        language,
+        token: accessToken,
+      });
+      await user.save();
     }
 
-    const { accessToken } = generateTokens(user._id, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: SECRET,
-    });
-    user.recoveryToken = accessToken;
-    await emailService.sendEmail(user.email, RECOVER_PASSWORD, { accessToken });
-    await user.save();
     return true;
   }
 
@@ -653,7 +706,7 @@ class UserService extends FilterHelper {
 
   async resetPassword(password, token) {
     const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
+    const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
@@ -674,10 +727,17 @@ class UserService extends FilterHelper {
         statusCode: FORBIDDEN,
       });
     }
+    const encryptedPassword = await bcrypt.hash(password, 12);
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
         recoveryAttempts: !user.recoveryAttempts ? 1 : ++user.recoveryAttempts,
+        credentials: [
+          {
+            source: HORONDI,
+            tokenPass: encryptedPassword,
+          },
+        ],
       },
       $unset: {
         recoveryToken: '',
@@ -739,7 +799,7 @@ class UserService extends FilterHelper {
       user._id,
       {
         $set: {
-          otp_code: otp_code,
+          otp_code,
         },
       },
       { new: true }
@@ -850,6 +910,14 @@ class UserService extends FilterHelper {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  async getCountUserOrders(_id) {
+    const orders = await Order.find({ 'user.id': _id }).exec();
+
+    if (!orders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+
+    return { countOrder: orders.length };
   }
 }
 

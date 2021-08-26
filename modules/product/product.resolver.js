@@ -1,29 +1,19 @@
 const productsService = require('./product.service');
-const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
-const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
-} = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
-    const product = await productsService.getProductById(args.id);
-    if (product) {
-      return product;
+    try {
+      return await productsService.getProductById(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: PRODUCT_NOT_FOUND,
-    };
   },
   getProducts: async (parent, args) => {
     try {
       return await productsService.getProducts(args);
     } catch (e) {
-      return {
-        statusCode: NOT_FOUND,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   getModelsByCategory: (parent, args) =>
@@ -37,21 +27,15 @@ const productsMutation = {
     try {
       return await productsService.addProduct(args.product, args.upload, user);
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteProduct: async (parent, args, { user }) => {
-    const deletedProduct = await productsService.deleteProduct(args.id, user);
-    if (deletedProduct) {
-      return deletedProduct;
+    try {
+      return await productsService.deleteProduct(args.id, user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: NOT_FOUND,
-      message: PRODUCT_NOT_FOUND,
-    };
   },
   updateProduct: async (parent, args, { user }) => {
     try {
@@ -70,10 +54,7 @@ const productsMutation = {
     try {
       return await productsService.deleteImages(args.id, args.images);
     } catch (e) {
-      return {
-        statusCode: e.message === PRODUCT_NOT_FOUND ? NOT_FOUND : BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

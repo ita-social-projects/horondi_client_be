@@ -8,12 +8,13 @@ const {
 const uploadService = require('../upload/upload.service');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
-  STATUS_CODES: { BAD_REQUEST },
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class BusinessTextService {
   async getAllBusinessTexts() {
-    return await BusinessText.find().exec();
+    return BusinessText.find().exec();
   }
 
   async getBusinessTextById(id) {
@@ -21,7 +22,7 @@ class BusinessTextService {
     if (businessText) {
       return businessText;
     }
-    throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
   }
 
   async getBusinessTextByCode(code) {
@@ -29,7 +30,7 @@ class BusinessTextService {
     if (businessText) {
       return businessText;
     }
-    throw new Error(BUSINESS_TEXT_NOT_FOUND);
+    throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
   }
 
   async updateBusinessText(id, businessText, files) {
@@ -38,14 +39,14 @@ class BusinessTextService {
     const existingPage = pages.find(el => el._id.toString() !== id);
 
     if (!oldPage) {
-      throw new Error(BUSINESS_TEXT_NOT_FOUND);
+      throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
     }
 
     if (existingPage) {
-      return {
-        message: BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
-        statusCode: BAD_REQUEST,
-      };
+      return new RuleError(
+        BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
+        BAD_REQUEST
+      );
     }
 
     const newPage = files.length
@@ -74,7 +75,7 @@ class BusinessTextService {
     const existingPages = await this.checkBusinessTextExistByCode(businessText);
 
     if (existingPages.length) {
-      throw new Error(BUSINESS_TEXT_ALREADY_EXIST);
+      throw new RuleError(BUSINESS_TEXT_ALREADY_EXIST, BAD_REQUEST);
     }
 
     let newPage = '';
@@ -89,7 +90,7 @@ class BusinessTextService {
     const oldPage = await this.getBusinessTextById(id);
 
     if (!oldPage) {
-      throw new Error(BUSINESS_TEXT_NOT_FOUND);
+      throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
     }
 
     const imagesToDelete = this.findImagesInText(oldPage);
@@ -158,7 +159,7 @@ class BusinessTextService {
     );
 
     if (!isAllImagesDeleted) {
-      throw new Error(IMAGES_DELETING_FAILS);
+      throw new RuleError(IMAGES_DELETING_FAILS, BAD_REQUEST);
     }
   }
 

@@ -1,4 +1,4 @@
-const formatError = err => {
+const formatError = logFunction => err => {
   const { originalError } = err;
 
   if (originalError && originalError.name === 'RuleError') {
@@ -6,6 +6,12 @@ const formatError = err => {
       message: originalError.message,
       statusCode: originalError.statusCode,
     };
+  }
+
+  try {
+    logFunction(err);
+  } catch (error) {
+    console.error(error);
   }
 
   return err;

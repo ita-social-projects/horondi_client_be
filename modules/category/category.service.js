@@ -24,7 +24,7 @@ const {
   generateHistoryObject,
   getChanges,
   generateHistoryChangesData,
-} = require('../../utils/hisrory');
+} = require('../../utils/history');
 const { addHistoryRecord } = require('../history/history.service');
 const {
   LANGUAGE_INDEX: { UA },
@@ -32,9 +32,13 @@ const {
 const {
   HISTORY_OBJ_KEYS: { CODE, NAME },
 } = require('../../consts/history-obj-keys');
+const {
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class CategoryService extends FilterHelper {
-  async getAllCategories({ filter, pagination }) {
+  async getAllCategories({ filter = {}, pagination }) {
     const filterOptions = {};
 
     if (filter?.search) {
@@ -60,18 +64,18 @@ class CategoryService extends FilterHelper {
     if (category) {
       return category;
     }
-    throw new Error(CATEGORY_NOT_FOUND);
+    throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
   }
 
   async updateCategory({ id, category, upload }, { _id: adminId }) {
     const categoryToUpdate = await Category.findById(id).exec();
 
     if (!categoryToUpdate) {
-      throw new Error(CATEGORY_NOT_FOUND);
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkCategoryExist(category, id)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+      throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
     if (category) {
@@ -93,7 +97,7 @@ class CategoryService extends FilterHelper {
     }
 
     if (!upload || !Object.keys(upload).length) {
-      return await Category.findByIdAndUpdate(id, category, {
+      return Category.findByIdAndUpdate(id, category, {
         new: true,
       }).exec();
     }
@@ -101,14 +105,14 @@ class CategoryService extends FilterHelper {
 
     const images = uploadResult.fileNames;
     if (!images) {
-      return await Category.findByIdAndUpdate(id, category).exec();
+      return Category.findByIdAndUpdate(id, category).exec();
     }
     const foundCategory = await Category.findById(id)
       .lean()
       .exec();
     uploadService.deleteFiles(Object.values(foundCategory.images));
 
-    return await Category.findByIdAndUpdate(
+    return Category.findByIdAndUpdate(
       id,
       {
         ...category,
@@ -127,14 +131,12 @@ class CategoryService extends FilterHelper {
       sort: {},
     });
 
-    const data = categories.items.map(async category => {
+    return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
-      const modelsFields = models.map(async model => {
-        return {
-          name: model.name,
-          _id: model._id,
-        };
-      });
+      const modelsFields = models.map(async model => ({
+        name: model.name,
+        _id: model._id,
+      }));
       return {
         category: {
           name: [...category.name],
@@ -143,17 +145,15 @@ class CategoryService extends FilterHelper {
         models: modelsFields,
       };
     });
-
-    return data;
   }
 
   async addCategory(data, upload, { _id: adminId }) {
     if (!upload) {
-      throw new Error(IMAGES_NOT_PROVIDED);
+      throw new RuleError(IMAGES_NOT_PROVIDED, BAD_REQUEST);
     }
 
     if (await this.checkCategoryExist(data)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+      throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const savedCategory = await new Category(data).save();
@@ -187,6 +187,9 @@ class CategoryService extends FilterHelper {
     const category = await Category.findByIdAndDelete(deleteId)
       .lean()
       .exec();
+
+    if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+
     const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
@@ -221,8 +224,6 @@ class CategoryService extends FilterHelper {
 
       return category;
     }
-
-    throw new Error(CATEGORY_NOT_FOUND);
   }
 
   async getCategoriesWithModels() {
@@ -250,7 +251,7 @@ class CategoryService extends FilterHelper {
 
   getCategoriesStats(categories, total) {
     let popularSum = 0;
-    let res = { names: [], counts: [], relations: [] };
+    const res = { names: [], counts: [], relations: [] };
 
     categories
       .filter((_, idx) => idx < 3)

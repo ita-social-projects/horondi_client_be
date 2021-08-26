@@ -6,12 +6,15 @@ const {
   badProductId,
   newProductInputData,
   newProductInputDataForUpdate,
+  productUploadedImages,
 } = require('./product.variables');
 const {
   createProduct,
   deleteProduct,
   updateProduct,
-} = require('../product/product.helper');
+  deleteProductImages,
+  uploadProductImages,
+} = require('./product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -36,7 +39,7 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
@@ -61,8 +64,7 @@ let productInput;
 describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = sizeData._id;
+
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
@@ -77,6 +79,11 @@ describe('Product mutations', () => {
       operations
     );
     modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -123,6 +130,7 @@ describe('Product mutations', () => {
         closureId,
         sizeId
       ),
+      productUploadedImages.primary,
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -146,6 +154,7 @@ describe('Product mutations', () => {
         closureId,
         sizeId
       ),
+      productUploadedImages.primary,
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -175,11 +184,30 @@ describe('Product mutations', () => {
   });
   test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
     const receivedData = await deleteProduct(badProductId, operations);
-    const res = receivedData.errors[0].message;
 
-    expect(res).toBe(PRODUCT_NOT_FOUND);
+    expect(receivedData.data.deleteProduct).toHaveProperty(
+      'message',
+      PRODUCT_NOT_FOUND
+    );
   });
-  test('#6 Should delete Product and return it`s id', async () => {
+
+  test('#6 Should add Product images', async () => {
+    const receivedData = await uploadProductImages();
+
+    expect(uploadProductImages).toBeDefined();
+    expect(receivedData.primary).toBeDefined();
+    expect(receivedData.additional).toBeDefined();
+    expect(receivedData).toEqual(productUploadedImages);
+  });
+
+  test('#7 Should delete Product images', async () => {
+    const receivedData = await deleteProductImages(productId, operations);
+    const res = receivedData.data.deleteImages.primary;
+
+    expect(res).toBeDefined();
+  });
+
+  test('#8 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProduct(productId, operations);
     const res = receivedData.data.deleteProduct._id;
 
