@@ -7,7 +7,7 @@ const htmlTemplates = {
   },
   [EmailActions.RECOVER_PASSWORD]: {
     subject: '[HORONDI] Instructions for password recovery',
-    templateFileName: ['recover-password-en', 'confirm-email-ua'],
+    templateFileName: ['recover-password-en', 'recover-password-ua'],
   },
   [EmailActions.SUCCESSFUL_CONFIRM]: {
     subject: '[HORONDI] Successful email confirmation',
