@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { gql } = require('@apollo/client');
 
-const generateTokens = require('../../utils/create-tokens');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct } = require('../product/product.helper');
 const { createColor } = require('../color/color.helper');
@@ -18,6 +17,7 @@ const { createSize } = require('../size/size.helper');
 const { createPlainSize } = require('../size/size.variables');
 const { createPattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
+const { jwtClient } = require('../../client/jwt-client');
 
 const User = require('../../modules/user/user.model');
 const {
@@ -210,10 +210,10 @@ describe('mutations', () => {
   });
   test('should recover User', async () => {
     const res = await recoverUser(testUser.email, 0, operations);
-    const { accessToken } = generateTokens(userId, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: SECRET,
-    });
+
+    jwtClient.setData({ userId });
+    const { accessToken } = jwtClient.generateTokens(SECRET, RECOVERY_EXPIRE);
+
     recoveryToken = accessToken;
 
     expect(res).toBe(true);
@@ -247,11 +247,14 @@ describe('mutations', () => {
   });
   test('should send Email Confirmation', async () => {
     const res = await sendEmailConfirmation(testUser.email, 0, operations);
-    const { accessToken } = generateTokens(userId, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: CONFIRMATION_SECRET,
-    });
+    jwtClient.setData({ userId });
+    const { accessToken } = jwtClient.generateTokens(
+      CONFIRMATION_SECRET,
+      RECOVERY_EXPIRE
+    );
+
     confirmationToken = accessToken;
+    console.log(accessToken);
 
     expect(res.data.sendEmailConfirmation).toBe(true);
   });
@@ -647,10 +650,10 @@ describe('Register admin', () => {
     const data = result.data.registerAdmin;
     const admin = await User.findOne({ email: newAdminEmail }).exec();
     userId = admin._id;
-    const { accessToken } = generateTokens(userId, {
-      expiresIn: TOKEN_EXPIRES_IN,
-      secret: SECRET,
-    });
+
+    jwtClient.setData({ userId });
+    const accessToken = jwtClient.generateAccessToken(SECRET, TOKEN_EXPIRES_IN);
+
     invitationalToken = accessToken;
     expect(data.isSuccess).toEqual(true);
   });
