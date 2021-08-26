@@ -25,11 +25,13 @@ const INPUT_FIELDS = {
   HEADER: 'header',
   QUESTION: 'question',
   TEXT: 'text',
-  SIZE: 'size',
   CONTACT: 'contact',
   REPLY_COMMENT_DATA: 'replyCommentData',
   MATERIAL: 'material',
   NEWS: 'news',
+  COMMENT: 'comment',
+  HOME_PAGE_SLIDE: 'slide',
+  POSITION: 'position',
 };
 
 module.exports = {

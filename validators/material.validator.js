@@ -4,11 +4,35 @@ const {
   materialPurposes: { MAIN, INNER, BOTTOM, PATTERN, CLOSURE },
 } = require('../consts/material-purposes');
 
-const { languageValidator } = require('./language.validator');
+const {
+  name_LANG_MIN_CHARS,
+  name_LANG_MAX_CHARS,
+  name_VALUE_MIN_CHARS,
+  name_VALUE_MAX_CHARS,
+  descript_title_text_LANG_MIN_CHARS,
+  descript_title_text_LANG_MAX_CHARS,
+  descript_title_text_VALUE_MIN_CHARS,
+  descript_title_text_VALUE_MAX_CHARS,
+  languageValidator,
+} = require('./language.validator');
 
 const materialInputValidator = Joi.object({
-  name: Joi.array().items(languageValidator(2, 2, 6, 30)),
-  description: Joi.array().items(languageValidator(2, 2, 6, 1000)),
+  name: Joi.array().items(
+    languageValidator(
+      name_LANG_MIN_CHARS,
+      name_LANG_MAX_CHARS,
+      name_VALUE_MIN_CHARS,
+      name_VALUE_MAX_CHARS
+    )
+  ),
+  description: Joi.array().items(
+    languageValidator(
+      descript_title_text_LANG_MIN_CHARS,
+      descript_title_text_LANG_MAX_CHARS,
+      descript_title_text_VALUE_MIN_CHARS,
+      descript_title_text_VALUE_MAX_CHARS
+    )
+  ),
   purpose: Joi.string()
     .trim()
     .valid(MAIN, INNER, BOTTOM, PATTERN, CLOSURE)

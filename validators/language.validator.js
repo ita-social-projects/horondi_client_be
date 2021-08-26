@@ -1,5 +1,14 @@
 const Joi = require('joi');
 
+const name_LANG_MIN_CHARS = 2;
+const name_LANG_MAX_CHARS = 2;
+const name_VALUE_MIN_CHARS = 6;
+const name_VALUE_MAX_CHARS = 30;
+const descript_title_text_LANG_MIN_CHARS = 2;
+const descript_title_text_LANG_MAX_CHARS = 2;
+const descript_title_text_VALUE_MIN_CHARS = 6;
+const descript_title_text_VALUE_MAX_CHARS = 1000;
+
 const languageValidator = function(langMin, langMax, valueMin, valueMax) {
   return {
     lang: Joi.string()
@@ -13,4 +22,14 @@ const languageValidator = function(langMin, langMax, valueMin, valueMax) {
   };
 };
 
-module.exports = { languageValidator };
+module.exports = {
+  name_LANG_MIN_CHARS,
+  name_LANG_MAX_CHARS,
+  name_VALUE_MIN_CHARS,
+  name_VALUE_MAX_CHARS,
+  descript_title_text_LANG_MIN_CHARS,
+  descript_title_text_LANG_MAX_CHARS,
+  descript_title_text_VALUE_MIN_CHARS,
+  descript_title_text_VALUE_MAX_CHARS,
+  languageValidator,
+};

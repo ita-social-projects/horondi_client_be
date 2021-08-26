@@ -11,6 +11,10 @@ const {
   INPUT_FIELDS: { NEWS },
 } = require('../../consts/input-fields');
 
+const { roles } = require('../../consts');
+
+const { ADMIN, SUPERADMIN } = roles;
+
 const newsPermissionsQuery = {
   getAllNews: allow,
   getNewsById: allow,
