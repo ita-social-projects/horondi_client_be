@@ -287,7 +287,7 @@ class UserService extends FilterHelper {
 
   async checkIfTokenIsValid(token) {
     const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
+    const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {

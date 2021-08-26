@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { gql } = require('@apollo/client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
@@ -360,10 +361,6 @@ describe('Filter users', () => {
   });
 
   afterAll(async () => {
-    await Promise.all(
-      usersId.map(async id => {
-        await deleteUser(id, operations);
-      })
-    );
+    mongoose.connection.db.dropDatabase();
   });
 });

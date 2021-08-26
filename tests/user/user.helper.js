@@ -29,6 +29,8 @@ const registerUser = async (
           _id
           firstName
           lastName
+          invitationalToken
+          refreshToken
           email
           role
           registrationDate
@@ -207,7 +209,6 @@ const regenerateAccessToken = async (refreshToken, operations) => {
       refreshToken,
     },
   });
-  console.log(res);
   return res.data.regenerateAccessToken;
 };
 const getAllUsers = async operations => {
@@ -380,6 +381,7 @@ const blockUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.blockUser;
 };
 const unlockUser = async (userId, operations) => {
@@ -403,6 +405,144 @@ const unlockUser = async (userId, operations) => {
   });
   return res.data.unlockUser;
 };
+const confirmUserEmail = async (token, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($token: String!) {
+        confirmUserEmail(token: $token) {
+          token
+          refreshToken
+          confirmed
+        }
+      }
+    `,
+    variables: {
+      token,
+    },
+  });
+  return res.data.confirmUserEmail;
+};
+const recoverUser = async (email, language, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($email: String!, $language: Int!) {
+        recoverUser(email: $email, language: $language)
+      }
+    `,
+    variables: {
+      email,
+      language,
+    },
+  });
+  return res.data.recoverUser;
+};
+
+const resetPassword = async (password, token, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($password: String!, $token: String!) {
+        resetPassword(password: $password, token: $token)
+      }
+    `,
+    variables: {
+      password,
+      token,
+    },
+  });
+  return res;
+};
+
+const checkIfTokenIsValid = async (token, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($token: String!) {
+        checkIfTokenIsValid(token: $token)
+      }
+    `,
+    variables: {
+      token,
+    },
+  });
+  return res;
+};
+const sendEmailConfirmation = async (email, language, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($email: String!, $language: Int!) {
+        sendEmailConfirmation(email: $email, language: $language)
+      }
+    `,
+    variables: {
+      email,
+      language,
+    },
+  });
+  return res;
+};
+const resendEmailToConfirmAdmin = async (user, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($user: resendEmailToConfirmAdminInput!) {
+        resendEmailToConfirmAdmin(user: $user) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      user,
+    },
+  });
+  return res;
+};
+const confirmSuperadminCreation = async (user, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($user: confirmSuperadminCreationInput!) {
+        confirmSuperadminCreation(user: $user) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      user,
+    },
+  });
+  return res;
+};
+const addProductToWishlist = async (id, key, productId, user, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $key: String!, $productId: ID!) {
+        addProductToWishlist(id: $id, productId: $productId, key: $key) {
+          _id
+        }
+      }
+    `,
+    variables: {
+      id,
+      key,
+      productId,
+    },
+    context: {
+      user,
+    },
+  });
+  console.log(res);
+  return res;
+};
+
 const completeAdminRegister = async (
   token,
   firstName,
@@ -522,6 +662,12 @@ module.exports = {
   googleUser,
   blockUser,
   unlockUser,
+  confirmUserEmail,
+  resendEmailToConfirmAdmin,
+  recoverUser,
+  checkIfTokenIsValid,
+  resetPassword,
+  sendEmailConfirmation,
   getAllUsersWithToken,
   getUsersForStatistic,
   validateConfirmationToken,
@@ -530,4 +676,6 @@ module.exports = {
   getPurchasedProducts,
   switchUserStatus,
   completeAdminRegister,
+  confirmSuperadminCreation,
+  addProductToWishlist,
 };
