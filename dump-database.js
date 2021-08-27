@@ -20,12 +20,12 @@ let remoteDatabaseName = null;
 let remoteDatabaseUrl = null;
 let localDatabaseName = null;
 
-rl.question('Enter remote database name\n', name => {
-  remoteDatabaseName = name;
+rl.question('Enter remote database name\n', nameRemote => {
+  remoteDatabaseName = nameRemote;
   rl.question('Enter remote database url\n', url => {
     remoteDatabaseUrl = url;
-    rl.question("Enter how's your new database will called\n", name => {
-      localDatabaseName = name;
+    rl.question("Enter how's your new database will called\n", localName => {
+      localDatabaseName = localName;
       rl.close();
     });
   });
