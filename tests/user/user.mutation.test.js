@@ -211,14 +211,13 @@ describe('mutations', () => {
   test('should recover User', async () => {
     const res = await recoverUser(testUser.email, 0, operations);
 
-    jwtClient.setData({ userId });
-    const { accessToken } = jwtClient.generateTokens(SECRET, RECOVERY_EXPIRE);
-
-    recoveryToken = accessToken;
-
     expect(res).toBe(true);
   });
   test('should return true on token valid', async () => {
+    const userInfo = await loginUser(testUser.email, testUser.pass, operations);
+
+    recoveryToken = userInfo.data.loginUser.recoveryToken;
+    token = userInfo.data.loginUser.token;
     const res = await checkIfTokenIsValid(recoveryToken, operations);
 
     expect(res.data.checkIfTokenIsValid).toBe(true);
@@ -247,14 +246,6 @@ describe('mutations', () => {
   });
   test('should send Email Confirmation', async () => {
     const res = await sendEmailConfirmation(testUser.email, 0, operations);
-    jwtClient.setData({ userId });
-    const { accessToken } = jwtClient.generateTokens(
-      CONFIRMATION_SECRET,
-      RECOVERY_EXPIRE
-    );
-
-    confirmationToken = accessToken;
-    console.log(accessToken);
 
     expect(res.data.sendEmailConfirmation).toBe(true);
   });
@@ -264,13 +255,22 @@ describe('mutations', () => {
     expect(result.message).toBe(TOKEN_IS_EXPIRIED);
   });
   test('should confirmUserEmail', async () => {
+    const userInfo = await loginUser(
+      testUser.email,
+      testUser.setupApppass,
+      operations
+    );
+
+    confirmationToken = userInfo.data.loginUser.confirmationToken;
+    token = userInfo.data.loginUser.token;
+
     const result = await confirmUserEmail(confirmationToken, operations);
 
     expect(result.confirmed).toBe(true);
 
     token = result.token;
   });
-  test('should add product to wishlist', async () => {
+  test.skip('should add product to wishlist', async () => {
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);

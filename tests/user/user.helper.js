@@ -148,6 +148,8 @@ const loginUser = async (email, pass, operations) => {
           email
           password
           phoneNumber
+          confirmationToken
+          recoveryToken
           address {
             zipcode
             buildingNumber

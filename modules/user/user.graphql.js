@@ -12,6 +12,8 @@ type User{
     token: String
     refreshToken: String
     invitationalToken: String
+    recoveryToken: String
+    confirmationToken: String
     credentials: [Credential]
     registrationDate: String
     wishlist: [Product]
