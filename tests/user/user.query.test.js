@@ -42,10 +42,10 @@ let userId;
 let operations;
 let loginedUser;
 
+const { firstName, lastName, email, pass, language } = testUser;
+
 describe('queries', () => {
   beforeAll(async () => {
-    const { firstName, lastName, email, pass, language } = testUser;
-
     operations = await setupApp();
     const register = await registerUser(
       firstName,
@@ -57,7 +57,7 @@ describe('queries', () => {
     );
     userId = register.data.registerUser._id;
 
-    const authRes = await loginUser(email, pass, operations);
+    const authRes = await loginUser(email, pass, true, operations);
     loginedUser = authRes.data.loginUser;
     token = loginedUser.token;
   });
@@ -69,7 +69,6 @@ describe('queries', () => {
   });
 
   test('should receive user by token', async () => {
-    const { email } = testUser;
     operations = await setupApp({
       firstName: 'Test',
       lastName: 'User',
@@ -108,7 +107,6 @@ describe('queries', () => {
   });
 
   test('should receive user by id', async () => {
-    const { email } = testUser;
     operations = await setupApp();
     const res = await getUserById(userId, operations);
 
@@ -191,7 +189,7 @@ describe('Testing obtaining information restrictions', () => {
     userId = register.data.registerUser._id;
   });
   test('User must login', async () => {
-    const result = await loginUser(userLogin, userPassword, operations);
+    const result = await loginUser(userLogin, userPassword, false, operations);
     const userInfo = result.data.loginUser;
     userToken = userInfo.token;
 
@@ -237,7 +235,12 @@ describe('Testing obtaining information restrictions', () => {
     expect(data.length).toBeGreaterThanOrEqual(2);
   });
   test('User can obtain the information about himself', async () => {
-    const userLoginInfo = await loginUser(userLogin, userPassword, operations);
+    const userLoginInfo = await loginUser(
+      userLogin,
+      userPassword,
+      true,
+      operations
+    );
     const result = await getUserById(
       userLoginInfo.data.loginUser._id,
       operations
@@ -274,23 +277,20 @@ describe('Filter users', () => {
     byName: { asc: { name: 1 }, desc: { name: -1 } },
     byEmail: { asc: { email: 1 }, desc: { email: -1 } },
   };
-  const usersId = [];
-
   beforeAll(async () => {
     operations = await setupApp();
 
-    for (let i = 0; i < testUsersSet.length; i++) {
-      usersId.push(await createUser(operations, testUsersSet[i]));
+    for (const user of testUsersSet) {
+      await createUser(operations, user);
     }
 
     const users = await getAllUsersQuery(operations);
 
-    for (let i = 0; i < users.length; i++) {
+    for (const user of users) {
       if (
         testUsersSet.some(
           el =>
-            el.firstName === users[i].firstName &&
-            el.banned.blockPeriod === '30'
+            el.firstName === user.firstName && el.banned.blockPeriod === '30'
         )
       ) {
         await operations.mutate({
@@ -307,7 +307,7 @@ describe('Filter users', () => {
             }
           `,
           variables: {
-            id: users[i]._id,
+            id: user._id,
           },
         });
       }

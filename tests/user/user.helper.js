@@ -135,17 +135,24 @@ const updateUserById = async (
 
   return updatedUser;
 };
-const loginUser = async (email, pass, operations) => {
+const loginUser = async (email, pass, staySignedIn, operations) => {
   const loginedUser = await operations.mutate({
     mutation: gql`
-      mutation($email: String!, $password: String!) {
-        loginUser(loginInput: { email: $email, password: $password }) {
+      mutation($email: String!, $password: String!, $staySignedIn: Boolean) {
+        loginUser(
+          loginInput: {
+            email: $email
+            password: $password
+            staySignedIn: $staySignedIn
+          }
+        ) {
           token
           firstName
           lastName
           comments
           _id
           email
+          role
           password
           phoneNumber
           confirmationToken
@@ -173,6 +180,7 @@ const loginUser = async (email, pass, operations) => {
     variables: {
       email,
       password: pass,
+      staySignedIn,
     },
   });
   return loginedUser;
@@ -383,7 +391,6 @@ const blockUser = async (userId, operations) => {
       userId,
     },
   });
-
   return res.data.blockUser;
 };
 const unlockUser = async (userId, operations) => {
@@ -523,27 +530,6 @@ const confirmSuperadminCreation = async (user, operations) => {
   });
   return res;
 };
-const addProductToWishlist = async (id, key, productId, user, operations) => {
-  const res = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!, $key: String!, $productId: ID!) {
-        addProductToWishlist(id: $id, productId: $productId, key: $key) {
-          _id
-        }
-      }
-    `,
-    variables: {
-      id,
-      key,
-      productId,
-    },
-    context: {
-      user,
-    },
-  });
-  console.log(res);
-  return res;
-};
 
 const completeAdminRegister = async (
   token,
@@ -679,5 +665,4 @@ module.exports = {
   switchUserStatus,
   completeAdminRegister,
   confirmSuperadminCreation,
-  addProductToWishlist,
 };

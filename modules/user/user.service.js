@@ -48,7 +48,6 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
-  ORDER_NOT_FOUND,
   TOKEN_IS_EXPIRIED,
   USER_IS_BLOCKED,
   SUPER_ADMIN_IS_IMMUTABLE,
@@ -613,7 +612,6 @@ class UserService extends FilterHelper {
     );
 
     user.confirmationToken = accessToken;
-    console.log(accessToken);
     await user.save();
     await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
       language,
