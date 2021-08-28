@@ -28,12 +28,11 @@ const {
 class BasicsService {
   async getAllBasics(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
-
-    if (filter?.material?.length) {
+    if (filter?.material.length) {
       filterOptions['features.material'] = { $in: filter.material };
     }
 
-    if (filter?.color?.length) {
+    if (filter?.color.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
@@ -62,7 +61,6 @@ class BasicsService {
 
   async updateBasic(id, basic, image, { _id: adminId }) {
     const basicToUpdate = await Basics.findById(id).exec();
-
     if (!basicToUpdate) {
       throw new RuleError(BASICS_NOT_FOUND, NOT_FOUND);
     }

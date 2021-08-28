@@ -17,7 +17,6 @@ const { getMaterial } = require('../materials/material.variables');
 
 let operations;
 let colorId;
-let categoryId;
 let materialInput;
 let materialId;
 let basicsInput;
@@ -36,13 +35,21 @@ describe('Basics query test', () => {
     const materialData = await createMaterial(materialInput, operations);
     materialId = materialData._id;
     filter.material.push(materialId);
-
     basicsInput = newBasicsInputData(materialId, colorId);
 
     basicsDataForQuery = await createBasics(basicsInput, 'img.jpg', operations);
   });
 
   it('should get all basics', async () => {
+    const result = await getAllBasics({ limit, skip, filter }, operations);
+
+    expect(result).toBeDefined();
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('GetAllBasics with empty filter', async () => {
+    filter.material = [];
+    filter.color = [];
     const result = await getAllBasics({ limit, skip, filter }, operations);
 
     expect(result).toBeDefined();
