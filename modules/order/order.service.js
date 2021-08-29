@@ -37,7 +37,7 @@ class OrdersService {
     return order;
   }
 
-  async getAllOrders({ skip, limit, filter = {}, sort }) {
+  async getAllOrders({ skip, limit, filter, sort }) {
     let maxDate = new Date();
     let minDate = minDefaultDate;
 
@@ -227,16 +227,6 @@ class OrdersService {
 
     if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
     return foundOrder;
-  }
-
-  async getUserOrders({ skip, limit }, { id }) {
-    const userOrders = await Order.find({ user_id: id })
-      .limit(limit)
-      .skip(skip)
-      .exec();
-    if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-
-    return userOrders;
   }
 
   filterOrders({ days, isPaid }) {
