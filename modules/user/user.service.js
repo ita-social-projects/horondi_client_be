@@ -449,7 +449,7 @@ class UserService extends FilterHelper {
     };
   }
 
-  async loginUser({ email, password, staySignedIn }) {
+  async loginUser({ email, password, rememberMe }) {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
@@ -479,7 +479,7 @@ class UserService extends FilterHelper {
       ...user._doc,
       _id: user._id,
       token: accessToken,
-      refreshToken: staySignedIn ? refreshToken : null,
+      refreshToken: rememberMe ? refreshToken : null,
     };
   }
 
@@ -500,7 +500,7 @@ class UserService extends FilterHelper {
     return { refreshToken, token: accessToken };
   }
 
-  async googleUser(idToken, staySignedIn) {
+  async googleUser(idToken, rememberMe) {
     const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
@@ -523,11 +523,11 @@ class UserService extends FilterHelper {
     }
     return this.loginGoogleUser({
       email: dataUser.email,
-      staySignedIn,
+      rememberMe,
     });
   }
 
-  async loginGoogleUser({ email, staySignedIn }) {
+  async loginGoogleUser({ email, rememberMe }) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
@@ -543,7 +543,7 @@ class UserService extends FilterHelper {
       ...user._doc,
       _id: user._id,
       token: accessToken,
-      refreshToken: staySignedIn ? refreshToken : null,
+      refreshToken: rememberMe ? refreshToken : null,
     };
   }
 

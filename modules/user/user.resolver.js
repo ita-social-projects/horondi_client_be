@@ -53,7 +53,7 @@ const userMutation = {
     }
   },
   googleUser: (_, args) =>
-    userService.googleUser(args.idToken, args.staySignedIn),
+    userService.googleUser(args.idToken, args.rememberMe),
   loginUser: async (_, { loginInput }) => {
     try {
       return await userService.loginUser(loginInput);
