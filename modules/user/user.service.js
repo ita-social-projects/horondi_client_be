@@ -48,7 +48,6 @@ const {
   ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
   ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
   INVALID_OTP_CODE,
-  ORDER_NOT_FOUND,
   TOKEN_IS_EXPIRIED,
   USER_IS_BLOCKED,
   SUPER_ADMIN_IS_IMMUTABLE,
@@ -285,7 +284,7 @@ class UserService extends FilterHelper {
 
   async checkIfTokenIsValid(token) {
     const decoded = jwtClient.decodeToken(token, SECRET);
-    const user = await this.getUserByFieldOrThrow(USER_EMAIL, decoded.email);
+    const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {
@@ -914,9 +913,8 @@ class UserService extends FilterHelper {
   }
 
   async getCountUserOrders(_id) {
-    const orders = await Order.find({ 'user.id': _id }).exec();
-
-    if (!orders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    await this.getUserByFieldOrThrow(USER_ID, _id);
+    const orders = await Order.find({ user_id: _id }).exec();
 
     return { countOrder: orders.length };
   }
