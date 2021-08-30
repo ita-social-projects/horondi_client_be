@@ -1,13 +1,17 @@
+const mongoose = require('mongoose');
 const { gql } = require('@apollo/client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   INVALID_PERMISSIONS,
+  WRONG_CREDENTIALS,
 } = require('../../error-messages/user.messages');
 const {
   superAdminUser,
   testUser,
   testUsersSet,
   wrongId,
+  filter,
+  googleToken,
 } = require('./user.variables');
 const {
   registerUser,
@@ -16,9 +20,13 @@ const {
   getUserByToken,
   getUserById,
   deleteUser,
+  googleUser,
   loginAdmin,
   getAllUsersWithToken,
   validateConfirmationToken,
+  getPurchasedProducts,
+  getUsersForStatistic,
+  getCountUserOrders,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -34,10 +42,10 @@ let userId;
 let operations;
 let loginedUser;
 
+const { firstName, lastName, email, pass, language } = testUser;
+
 describe('queries', () => {
   beforeAll(async () => {
-    const { firstName, lastName, email, pass, language } = testUser;
-
     operations = await setupApp();
     const register = await registerUser(
       firstName,
@@ -49,7 +57,7 @@ describe('queries', () => {
     );
     userId = register.data.registerUser._id;
 
-    const authRes = await loginUser(email, pass, operations);
+    const authRes = await loginUser(email, pass, true, operations);
     loginedUser = authRes.data.loginUser;
     token = loginedUser.token;
   });
@@ -61,7 +69,6 @@ describe('queries', () => {
   });
 
   test('should receive user by token', async () => {
-    const { email } = testUser;
     operations = await setupApp({
       firstName: 'Test',
       lastName: 'User',
@@ -100,7 +107,6 @@ describe('queries', () => {
   });
 
   test('should receive user by id', async () => {
-    const { email } = testUser;
     operations = await setupApp();
     const res = await getUserById(userId, operations);
 
@@ -119,6 +125,32 @@ describe('queries', () => {
     expect(res.data.getUserById.message).toBe('USER_NOT_FOUND');
   });
 
+  test('should get count user orders by id', async () => {
+    const result = await getCountUserOrders(userId, operations);
+
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toEqual(0);
+  });
+
+  test('get count orders should throw Error User with provided _id not found', async () => {
+    const result = await getCountUserOrders(wrongId, operations);
+
+    expect(result.message).toBeDefined();
+    expect(result.message).toBe('USER_NOT_FOUND');
+  });
+
+  test('should get user for statistic', async () => {
+    const result = await getUsersForStatistic(filter, operations);
+
+    expect(result.getUsersForStatistic.total).toBeDefined();
+  });
+
+  test('should get purchased products', async () => {
+    const result = await getPurchasedProducts(userId, operations);
+
+    expect(result).toBeDefined();
+  });
+
   afterAll(async () => {
     await deleteUser(userId, operations);
   });
@@ -130,6 +162,7 @@ describe('Testing obtaining information restrictions', () => {
   let userPassword;
   let adminPassword;
   let firstName;
+  let wrongPassword;
   let lastName;
   let adminToken;
   let adminEmail;
@@ -139,6 +172,7 @@ describe('Testing obtaining information restrictions', () => {
     operations = await setupApp();
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
+    wrongPassword = 'qw23ertY123';
     adminEmail = superAdminUser.email;
     adminPassword = superAdminUser.password;
     firstName = 'Pepo';
@@ -155,7 +189,7 @@ describe('Testing obtaining information restrictions', () => {
     userId = register.data.registerUser._id;
   });
   test('User must login', async () => {
-    const result = await loginUser(userLogin, userPassword, operations);
+    const result = await loginUser(userLogin, userPassword, false, operations);
     const userInfo = result.data.loginUser;
     userToken = userInfo.token;
 
@@ -167,6 +201,24 @@ describe('Testing obtaining information restrictions', () => {
     adminToken = adminInfo.token;
 
     expect(adminInfo.loginAdmin).not.toEqual(null);
+  });
+
+  test('login admin should throw error INVALID_PREMISSIONS', async () => {
+    const result = await loginAdmin(userLogin, userPassword, operations);
+
+    expect(result.data.loginAdmin.message).toBe(INVALID_PERMISSIONS);
+  });
+
+  test('login admin should throw error WRONG_CREDENTIALS', async () => {
+    const result = await loginAdmin(adminEmail, wrongPassword, operations);
+
+    expect(result.data.loginAdmin.message).toBe(WRONG_CREDENTIALS);
+  });
+
+  test('Google user must login', async () => {
+    const result = await googleUser(googleToken, true, operations);
+
+    expect(result).toBeDefined();
   });
   test('Any user doesn`t allowed to obtain information about all users', async () => {
     operations = await setupApp({ token: userToken });
@@ -183,7 +235,12 @@ describe('Testing obtaining information restrictions', () => {
     expect(data.length).toBeGreaterThanOrEqual(2);
   });
   test('User can obtain the information about himself', async () => {
-    const userLoginInfo = await loginUser(userLogin, userPassword, operations);
+    const userLoginInfo = await loginUser(
+      userLogin,
+      userPassword,
+      true,
+      operations
+    );
     const result = await getUserById(
       userLoginInfo.data.loginUser._id,
       operations
@@ -220,23 +277,20 @@ describe('Filter users', () => {
     byName: { asc: { name: 1 }, desc: { name: -1 } },
     byEmail: { asc: { email: 1 }, desc: { email: -1 } },
   };
-  const usersId = [];
-
   beforeAll(async () => {
     operations = await setupApp();
 
-    for (let i = 0; i < testUsersSet.length; i++) {
-      usersId.push(await createUser(operations, testUsersSet[i]));
+    for (const user of testUsersSet) {
+      await createUser(operations, user);
     }
 
     const users = await getAllUsersQuery(operations);
 
-    for (let i = 0; i < users.length; i++) {
+    for (const user of users) {
       if (
         testUsersSet.some(
           el =>
-            el.firstName === users[i].firstName &&
-            el.banned.blockPeriod === '30'
+            el.firstName === user.firstName && el.banned.blockPeriod === '30'
         )
       ) {
         await operations.mutate({
@@ -253,7 +307,7 @@ describe('Filter users', () => {
             }
           `,
           variables: {
-            id: users[i]._id,
+            id: user._id,
           },
         });
       }
@@ -306,10 +360,6 @@ describe('Filter users', () => {
   });
 
   afterAll(async () => {
-    await Promise.all(
-      usersId.map(async id => {
-        await deleteUser(id, operations);
-      })
-    );
+    mongoose.connection.db.dropDatabase();
   });
 });

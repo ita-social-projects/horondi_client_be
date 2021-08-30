@@ -860,7 +860,7 @@ const typeDefs = gql`
     ): LogicalResult!
       addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
       removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
-       googleUser(idToken: String!, staySignedIn: Boolean): User
+       googleUser(idToken: String!, rememberMe: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult

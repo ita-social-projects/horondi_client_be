@@ -36,7 +36,7 @@ const loginUserValidator = Joi.object({
     .trim()
     .regex(passwordRegExp)
     .required(),
-  staySignedIn: Joi.bool(),
+  rememberMe: Joi.bool(),
 });
 
 const emailUserValidator = Joi.string()
