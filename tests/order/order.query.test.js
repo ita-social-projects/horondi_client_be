@@ -7,6 +7,7 @@ const {
   getPaidOrdersStatistic,
   getOrdersStatistic,
   getOrderByPaidOrderNumber,
+  getUserOrders,
 } = require('./order.helpers');
 const {
   wrongId,
@@ -162,6 +163,15 @@ describe('Order queries', () => {
     expect(orderByOrderNumber).toBeDefined();
     expect(orderByOrderNumber.orderNumber).toBe(orders[0].orderNumber);
     expect(orderByOrderNumber.dateOfCreation).toBe(orders[0].dateOfCreation);
+  });
+
+  test('Should receive user orders', async () => {
+    const orders = await getUserOrders(operations);
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
   });
 
   test('Should receive paid order statistics', async () => {

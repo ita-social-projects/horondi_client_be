@@ -23,7 +23,13 @@ const ordersQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
+  getUserOrders: async (_, { pagination }, { user }) => {
+    try {
+      return await ordersService.getUserOrders(pagination, user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getOrdersStatistic: (_, { date }) => ordersService.getOrdersStatistic(date),
   getPaidOrdersStatistic: (_, { date }) =>
     ordersService.getPaidOrdersStatistic(date),

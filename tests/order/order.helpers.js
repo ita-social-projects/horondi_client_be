@@ -82,6 +82,7 @@ const createOrder = async (order, operations) => {
 
   return createdOrder.data.addOrder;
 };
+
 const deleteOrder = async (id, operations) =>
   operations.mutate({
     mutation: gql`
@@ -117,6 +118,35 @@ const getPaidOrdersStatistic = async operations => {
     },
   });
   return res.data.getPaidOrdersStatistic;
+};
+
+const getUserOrders = async operations => {
+  const res = await operations.mutate({
+    query: gql`
+      query($pagination: Pagination) {
+        getUserOrders(pagination: $pagination) {
+          _id
+          recipient {
+            firstName
+            lastName
+            email
+            phoneNumber
+          }
+          status
+          paymentStatus
+          orderNumber
+          dateOfCreation
+        }
+      }
+    `,
+    variables: {
+      pagination: {
+        skip: 0,
+        limit: 1,
+      },
+    },
+  });
+  return res.data.getUserOrders;
 };
 
 const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
@@ -405,4 +435,5 @@ module.exports = {
   getOrdersByUser,
   getOrderById,
   updateOrderById,
+  getUserOrders,
 };
