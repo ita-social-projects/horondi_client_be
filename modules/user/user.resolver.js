@@ -7,7 +7,7 @@ const RuleError = require('../../errors/rule.error');
 const userQuery = {
   getCountUserOrders: async (_, args, { user }) => {
     try {
-      return await userService.getCountUserOrders(user);
+      return await userService.getCountUserOrders(args.id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -53,7 +53,7 @@ const userMutation = {
     }
   },
   googleUser: (_, args) =>
-    userService.googleUser(args.idToken, args.staySignedIn),
+    userService.googleUser(args.idToken, args.rememberMe),
   loginUser: async (_, { loginInput }) => {
     try {
       return await userService.loginUser(loginInput);
