@@ -139,7 +139,7 @@ const LoginInput = `
 input LoginInput {
     password: String!
     email: String!
-    staySignedIn: Boolean
+    rememberMe: Boolean
 }`;
 
 const userRegisterInput = `
