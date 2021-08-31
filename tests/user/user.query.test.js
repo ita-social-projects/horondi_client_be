@@ -132,11 +132,11 @@ describe('queries', () => {
     expect(result.countOrder).toEqual(0);
   });
 
-  test('get count orders should throw Error User with provided _id not found', async () => {
+  test('get count orders should return 0 when user with provided id not found', async () => {
     const result = await getCountUserOrders(wrongId, operations);
 
-    expect(result.message).toBeDefined();
-    expect(result.message).toBe('USER_NOT_FOUND');
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toBe(0);
   });
 
   test('should get user for statistic', async () => {
