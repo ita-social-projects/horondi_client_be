@@ -17,13 +17,6 @@ const pocketQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getPocketsByModel: async (_, { id }) => {
-    try {
-      return await pocketService.getPocketsByModel(id);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
 };
 
 const pocketMutation = {

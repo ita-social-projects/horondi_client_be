@@ -61,15 +61,6 @@ class PocketService {
     throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
   }
 
-  async getPocketsByModel(id) {
-    const pocket = Pocket.find({ model: id }).exec();
-
-    if (!pocket) {
-      throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
-    }
-    return pocket;
-  }
-
   async deletePocket(id, { _id: adminId }) {
     const foundPocket = await Pocket.findByIdAndDelete(id)
       .lean()
