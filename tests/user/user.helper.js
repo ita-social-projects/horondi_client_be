@@ -135,15 +135,15 @@ const updateUserById = async (
 
   return updatedUser;
 };
-const loginUser = async (email, pass, staySignedIn, operations) => {
+const loginUser = async (email, pass, rememberMe, operations) => {
   const loginedUser = await operations.mutate({
     mutation: gql`
-      mutation($email: String!, $password: String!, $staySignedIn: Boolean) {
+      mutation($email: String!, $password: String!, $rememberMe: Boolean) {
         loginUser(
           loginInput: {
             email: $email
             password: $password
-            staySignedIn: $staySignedIn
+            rememberMe: $rememberMe
           }
         ) {
           token
@@ -180,16 +180,16 @@ const loginUser = async (email, pass, staySignedIn, operations) => {
     variables: {
       email,
       password: pass,
-      staySignedIn,
+      rememberMe,
     },
   });
   return loginedUser;
 };
-const googleUser = async (idToken, staySignedIn, operations) => {
+const googleUser = async (idToken, rememberMe, operations) => {
   const googleUser = await operations.mutate({
     mutation: gql`
-      mutation($idToken: String!, $staySignedIn: Boolean) {
-        googleUser(idToken: $idToken, staySignedIn: $staySignedIn) {
+      mutation($idToken: String!, $rememberMe: Boolean) {
+        googleUser(idToken: $idToken, rememberMe: $rememberMe) {
           token
           _id
         }
@@ -197,7 +197,7 @@ const googleUser = async (idToken, staySignedIn, operations) => {
     `,
     variables: {
       idToken,
-      staySignedIn,
+      rememberMe,
     },
   });
   return googleUser.data.googleUser;
