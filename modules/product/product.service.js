@@ -210,7 +210,9 @@ class ProductsService {
       .sort(sort)
       .exec();
 
-    const count = await Product.find(filters).countDocuments();
+    const count = await Product.find(filters)
+      .countDocuments()
+      .exec();
 
     return {
       items,

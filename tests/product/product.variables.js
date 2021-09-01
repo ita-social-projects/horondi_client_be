@@ -1,4 +1,5 @@
 const badProductId = '6009dcd5f9855555907ebf5e';
+const badCategoryId = '6009dcd5567s5555907ebf5e';
 const newProductInputData = (
   categoryId,
   modelId,
@@ -132,9 +133,51 @@ const newProductInputDataForCompare = product => ({
   },
 });
 
+const productUploadedImages = {
+  primary: {
+    large: 'large_1_test-file',
+    medium: 'medium_1_test-file',
+    small: 'small_1_test-file',
+    thumbnail: 'thumbnail_1_test-file',
+  },
+  additional: {
+    large: 'largeXL_1_test-file',
+    medium: 'mediumXL_1_test-file',
+    small: 'smallXL_1_test-file',
+    thumbnail: 'thumbnailXL_1_test-file',
+  },
+};
+
+const filterArgs = {
+  pattern: '6009dcd5f9855555907ebf5e',
+  colors: 'red',
+  price: '200',
+  category: '6009dcd5f9855555907ebf5e',
+  isHotItem: true,
+  models: [],
+  currency: 'ua',
+};
+
+const correctFilter = {
+  isHotItem: true,
+  category: { $in: '6009dcd5f9855555907ebf5e' },
+  colors: { $in: 'red' },
+  pattern: { $in: '6009dcd5f9855555907ebf5e' },
+  basePrice: {
+    $elemMatch: {
+      currency: '',
+      value: { $gte: '2', $lte: '0' },
+    },
+  },
+};
+
 module.exports = {
   badProductId,
   newProductInputData,
   newProductInputDataForCompare,
   newProductInputDataForUpdate,
+  productUploadedImages,
+  badCategoryId,
+  filterArgs,
+  correctFilter,
 };

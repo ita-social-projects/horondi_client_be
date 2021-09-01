@@ -22,7 +22,9 @@ const createOrder = async (order, operations) => {
               email
               phoneNumber
             }
-
+            user_id {
+              _id
+            }
             userComment
             delivery {
               byCourier
@@ -81,7 +83,7 @@ const createOrder = async (order, operations) => {
   return createdOrder.data.addOrder;
 };
 const deleteOrder = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteOrder(id: $id) {
@@ -131,8 +133,58 @@ const getAllOrders = async operations => {
   });
   return res.data.getAllOrders.items;
 };
+
+const getOrdersByUser = async (filter, sort, userId, operations) => {
+  const res = await operations.mutate({
+    query: gql`
+      query(
+        $limit: Int
+        $skip: Int
+        $filter: OrderFilterInput
+        $sort: JSONObject
+        $userId: ID!
+      ) {
+        getOrdersByUser(
+          limit: $limit
+          skip: $skip
+          filter: $filter
+          sort: $sort
+          userId: $userId
+        ) {
+          items {
+            _id
+            recipient {
+              firstName
+              lastName
+              email
+              phoneNumber
+            }
+            status
+            paymentStatus
+            orderNumber
+            dateOfCreation
+            totalItemsPrice {
+              currency
+              value
+            }
+          }
+          count
+        }
+      }
+    `,
+    variables: {
+      limit: 5,
+      skip: 0,
+      filter,
+      sort,
+      userId,
+    },
+  });
+  return res.data.getOrdersByUser.items;
+};
+
 const getOrderById = async (id, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
       query($id: ID!) {
         getOrderById(id: $id) {
@@ -273,6 +325,7 @@ module.exports = {
   createOrder,
   deleteOrder,
   getAllOrders,
+  getOrdersByUser,
   getOrderById,
   updateOrderById,
 };
