@@ -12,6 +12,8 @@ type User{
     token: String
     refreshToken: String
     invitationalToken: String
+    recoveryToken: String
+    confirmationToken: String
     credentials: [Credential]
     registrationDate: String
     wishlist: [Product]
@@ -139,7 +141,7 @@ const LoginInput = `
 input LoginInput {
     password: String!
     email: String!
-    staySignedIn: Boolean
+    rememberMe: Boolean
 }`;
 
 const userRegisterInput = `
