@@ -3,6 +3,7 @@
   1) mongodb community server - https://www.mongodb.com/try/download/community
   2) mongodb database tools - https://www.mongodb.com/try/download/database-tools
   3) be insure that you already have global commands mongodump and mongorestore
+  4) when applicatiion is asking you about compass URL you should copy default URL from your Compass DB connection
 */
 
 const os = require('os');
