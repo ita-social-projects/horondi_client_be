@@ -14,19 +14,18 @@ describe('Upload utils tests', () => {
       .mockImplementation(() => null);
   });
 
-  it('Should upload large image', async () => {
-    const file = new TestFile().testFile;
-
-    const uploadResult = await uploadLargeImage(file);
-
-    expect(trueUploadSpy).toHaveBeenCalled();
-    expect(uploadResult).toBeDefined();
-  });
-
   it('Should upload small image', async () => {
     const file = new TestFile().testFile;
 
     const uploadResult = await uploadSmallImage(file);
+
+    expect(trueUploadSpy).toHaveBeenCalled();
+    expect(uploadResult).toBeDefined();
+  });
+  it('Should upload large image', async () => {
+    const file = new TestFile().testFile;
+
+    const uploadResult = await uploadLargeImage(file);
 
     expect(trueUploadSpy).toHaveBeenCalled();
     expect(uploadResult).toBeDefined();
