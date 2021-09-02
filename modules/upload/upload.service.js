@@ -24,6 +24,7 @@ if (!CONTRIBUTING) {
   );
   containerName = IMAGES_CONTAINER;
 }
+
 class UploadService {
   async uploadResizedImage(size, imageName, image) {
     const resizedImage = image.resize(size, Jimp.AUTO);
