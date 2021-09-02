@@ -10,6 +10,13 @@ describe('Upload mutations tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
+
+  it('Should not delete file if it is not exist', async () => {
+    const [deleteResult] = await deleteFiles(deleteTestFilenames, operations);
+
+    expect(deleteResult).toBe('false');
+  });
+
   it('Should upload file', async () => {
     const trueUploadSpy = jest
       .spyOn(uploadService, 'uploadResizedImage')
@@ -19,11 +26,5 @@ describe('Upload mutations tests', () => {
 
     expect(trueUploadSpy).toHaveBeenCalled();
     expect(uploadResult).toBeDefined();
-  });
-
-  it('Should not delete file if it is not exist', async () => {
-    const [deleteResult] = await deleteFiles(deleteTestFilenames, operations);
-
-    expect(deleteResult).toBe('false');
   });
 });
