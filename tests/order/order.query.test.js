@@ -4,11 +4,15 @@ const {
   getOrderById,
   getOrdersByUser,
   getAllOrders,
+  getPaidOrdersStatistic,
+  getOrdersStatistic,
+  getOrderByPaidOrderNumber,
+  getUserOrders,
 } = require('./order.helpers');
 const {
   wrongId,
   newOrderInputData,
-  getOrdersByUserInput,
+  getOrdersInput,
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
@@ -60,6 +64,7 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let userId;
+const date = { dateFrom: '', dateTo: '' };
 
 describe('Order queries', () => {
   beforeAll(async () => {
@@ -118,10 +123,12 @@ describe('Order queries', () => {
       operations
     );
     productId = productData._id;
+    date.dateFrom = new Date();
     const orderData = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId),
       operations
     );
+    date.dateTo = new Date();
     orderId = orderData._id;
     userId = orderData.user_id._id;
   });
@@ -135,7 +142,91 @@ describe('Order queries', () => {
   } = newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
   test('Should receive all orders', async () => {
-    const orders = await getAllOrders(operations);
+    const { filter, sort } = getOrdersInput;
+    const orders = await getAllOrders(filter, sort, operations);
+
+    expect(orders).toBeDefined();
+    expect(orders.length).toBeGreaterThan(0);
+    expect(orders).toBeInstanceOf(Array);
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+  });
+
+  test('Should receive order by orderNumber', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getAllOrders(filter, sort, operations);
+
+    const orderByOrderNumber = await getOrderByPaidOrderNumber(
+      orders[0].orderNumber,
+      operations
+    );
+
+    expect(orderByOrderNumber).toBeDefined();
+    expect(orderByOrderNumber.orderNumber).toBe(orders[0].orderNumber);
+    expect(orderByOrderNumber.dateOfCreation).toBe(orders[0].dateOfCreation);
+  });
+
+  test('Should receive user orders', async () => {
+    const orders = await getUserOrders(operations);
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
+  });
+
+  test('Should receive paid order statistics', async () => {
+    const statistics = await getPaidOrdersStatistic(operations);
+
+    expect(statistics).toBeDefined();
+    expect(statistics.counts.length).toBe(0);
+    expect(statistics.total).toBe(0);
+  });
+
+  test('Should receive order statistics', async () => {
+    const statistics = await getOrdersStatistic(operations);
+
+    expect(statistics).toBeDefined();
+    expect(statistics.counts.length).toBe(1);
+    expect(statistics.names[0]).toBe(status);
+  });
+
+  test('Should receive all orders, (without sort option)', async () => {
+    const { filter } = getOrdersInput;
+    const orders = await getAllOrders(filter, {}, operations);
+
+    expect(orders).toBeDefined();
+    expect(orders.length).toBeGreaterThan(0);
+    expect(orders).toBeInstanceOf(Array);
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+  });
+
+  test('Should receive all orders, (with filter.status option)', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getAllOrders({ ...filter, status }, sort, operations);
+
+    expect(orders).toBeDefined();
+    expect(orders.length).toBeGreaterThan(0);
+    expect(orders).toBeInstanceOf(Array);
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+  });
+
+  test('Should receive all orders, (with filter.paymentStatus option)', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getAllOrders(
+      { ...filter, paymentStatus },
+      sort,
+      operations
+    );
+
+    expect(orders).toBeDefined();
+    expect(orders.length).toBeGreaterThan(0);
+    expect(orders).toBeInstanceOf(Array);
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+  });
+
+  test('Should receive all orders, (with filter.date option)', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getAllOrders({ ...filter, date }, sort, operations);
 
     expect(orders).toBeDefined();
     expect(orders.length).toBeGreaterThan(0);
@@ -144,8 +235,63 @@ describe('Order queries', () => {
   });
 
   test('Should receive all orders by user_id', async () => {
-    const { filter, sort } = getOrdersByUserInput;
+    const { filter, sort } = getOrdersInput;
     const orders = await getOrdersByUser(filter, sort, userId, operations);
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
+  });
+
+  test('Should receive all orders by user_id (without sort option)', async () => {
+    const { filter } = getOrdersInput;
+    const orders = await getOrdersByUser(filter, {}, userId, operations);
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
+  });
+
+  test('Should receive all orders by user_id (with filter.status option)', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getOrdersByUser(
+      { ...filter, status: [status] },
+      sort,
+      userId,
+      operations
+    );
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
+  });
+
+  test('Should receive all orders by user_id (with filter.paymentStatus option)', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getOrdersByUser(
+      { ...filter, paymentStatus: [paymentStatus] },
+      sort,
+      userId,
+      operations
+    );
+
+    expect(orders).toBeDefined();
+    expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('paymentStatus', paymentStatus);
+    expect(orders[0]).toHaveProperty('status', status);
+  });
+
+  test('Should receive all orders by user_id (with filter.date option)', async () => {
+    const { filter, sort } = getOrdersInput;
+    const orders = await getOrdersByUser(
+      { ...filter, date },
+      sort,
+      userId,
+      operations
+    );
 
     expect(orders).toBeDefined();
     expect(orders[0]).toHaveProperty('recipient', recipient);
