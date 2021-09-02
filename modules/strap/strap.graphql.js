@@ -6,7 +6,7 @@ const strapType = `
     model: Model
     features: StrapFeature
     image: String
-    additionalPrice: [CurrencySet]
+    additionalPrice: [AdditionalCurrencySet]
     available: Boolean
     customizable: Boolean
   }
@@ -26,7 +26,7 @@ const strapInputs = `
     model: ID
     features: StrapFeatureInput
     image: Upload
-    additionalPrice: Int
+    additionalPrice: additionalPriceInput!
     available: Boolean
     customizable: Boolean
   }

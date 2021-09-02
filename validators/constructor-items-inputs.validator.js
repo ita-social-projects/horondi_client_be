@@ -33,9 +33,7 @@ const inputBasicsValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   features: Joi.object({
     material: Joi.string()
@@ -124,9 +122,7 @@ const inputStrapValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
