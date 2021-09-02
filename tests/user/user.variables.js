@@ -3,7 +3,18 @@ const {
   SUPER_ADMIN_PASSWORD,
 } = require('../../dotenvValidator');
 
+const wrongEmail = 'udernotfound@gmail.com';
+const wrongPassword = '12345678pT';
 const wrongId = '23ee481430a0056b8e5cc015';
+
+const invalidFirstName = 'H';
+const invalidLastName = 'O';
+const invalidPassword = 'You';
+const invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
+    VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
+    GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
+    5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
+
 const superAdminUser = {
   email: SUPER_ADMIN_EMAIL,
   password: SUPER_ADMIN_PASSWORD,
@@ -101,6 +112,19 @@ const user = {
   language: 1,
 };
 
+const newUser = {
+  firstName: 'One',
+  lastName: 'User',
+  email: 'secretEmail@sec.com',
+  password: 'qwerTY12345',
+};
+
+const filter = {
+  days: 1,
+};
+
+const googleToken = 'asd.dsa.cds';
+
 const INVALID_FIRST_NAME =
   '"firstName" with value "H" fails to match the required pattern: ';
 const INVALID_LAST_NAME =
@@ -114,8 +138,17 @@ module.exports = {
   superAdminUser,
   testUser,
   testUsersSet,
+  googleToken,
   user,
+  newUser,
   wrongId,
+  wrongPassword,
+  wrongEmail,
+  filter,
+  invalidFirstName,
+  invalidLastName,
+  invalidPassword,
+  invalidToken,
   INVALID_FIRST_NAME,
   INVALID_LAST_NAME,
   INVALID_PASSWORD,

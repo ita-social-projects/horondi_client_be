@@ -33,6 +33,7 @@ const INPUT_FIELDS = {
   MAIN_MATERIAL: 'mainMaterial.material',
   INNER_MATERIAL: 'innerMaterial.material',
   BOTTOM_MATERIAL: 'bottomMaterial.material',
+  BASIC: 'basic',
 };
 
 module.exports = {

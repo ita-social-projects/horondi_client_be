@@ -5,7 +5,7 @@ const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
 const userService = require('./modules/user/user.service');
-const verifyUser = require('./utils/verify-user');
+const { jwtClient } = require('./client/jwt-client');
 const permissions = require('./permissions');
 const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
@@ -19,6 +19,7 @@ const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
   NODE_ENV,
+  SECRET,
 } = require('./dotenvValidator');
 
 const logger = require('./logger');
@@ -61,7 +62,7 @@ const server = new ApolloServer({
 
     if (token) {
       try {
-        const { userId } = verifyUser(token);
+        const { userId } = jwtClient.decodeToken(token, SECRET);
 
         if (!userId) {
           loggerHttp.error(formatErrorForLogger(INVALID_PERMISSIONS));
