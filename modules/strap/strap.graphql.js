@@ -6,11 +6,10 @@ const strapType = `
     model: Model
     features: StrapFeature
     image: String
-    additionalPrice: [AdditionalCurrencySet]
+    additionalPrice: [AdditionalCurrencySet]!
     available: Boolean
     customizable: Boolean
   }
-
 `;
 
 const strapFeatureType = `
