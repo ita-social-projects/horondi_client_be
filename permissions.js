@@ -141,6 +141,10 @@ const {
   positionPermissionsQuery,
   positionPermissionsMutations,
 } = require('./modules/position/position.permissions');
+const {
+  basicsPermissionsQuery,
+  basicsPermissionsMutations,
+} = require('./modules/basics/basics.permissions');
 
 const permissions = shield(
   {
@@ -170,6 +174,7 @@ const permissions = shield(
       ...strapPermissionsQuery,
       ...emailChatQuestionQuery,
       ...positionPermissionsQuery,
+      ...basicsPermissionsQuery,
     },
     Mutation: {
       ...productPermissionsMutation,
@@ -201,6 +206,7 @@ const permissions = shield(
       ...homePageSlideMutation,
       ...uploadMutation,
       ...positionPermissionsMutations,
+      ...basicsPermissionsMutations,
     },
   },
   {

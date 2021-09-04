@@ -144,6 +144,11 @@ const {
   positionType,
   positionInputs,
 } = require('./modules/position/position.graphql');
+const {
+  basicsType,
+  basicsInputs,
+  basicsFeatureSet,
+} = require('./modules/basics/basics.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -194,6 +199,8 @@ const typeDefs = gql`
   ${strapType}
   ${strapFeatureType}
   ${positionType}
+  ${basicsType}
+  ${basicsFeatureSet}
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -439,6 +446,10 @@ const typeDefs = gql`
     items: [Position]
     count: Int
   }
+  type PaginatedBasics {
+    items: [Basics]
+    count: Int
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
@@ -474,6 +485,7 @@ const typeDefs = gql`
   union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   union PositionResult = Position | Error
+  union BasicsResult = Basics | Error
   type Query {
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
@@ -615,6 +627,8 @@ const typeDefs = gql`
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
     getPositionById(id: ID): PositionResult
+    getAllBasics(limit: Int!, skip: Int!, filter: BasicsFilterInput): PaginatedBasics!
+    getBasicById(id: ID): BasicsResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -701,6 +715,7 @@ const typeDefs = gql`
   ${backInputs}
   ${strapInputs}
   ${positionInputs}
+  ${basicsInputs}
   input LanguageInput {
     lang: String!
     value: String
@@ -983,9 +998,14 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
+    "Positions Mutations"
     addPosition(position: PositionInput!): PositionResult 
     deletePosition(id: ID):PositionResult
     updatePosition(id: ID, position: PositionInput!): PositionResult
+    "Basics Mutations"
+    addBasic(basic: BasicsInput!, image: Upload): BasicsResult
+    updateBasic(id: ID!, basic: BasicsInput!, image: Upload): BasicsResult
+    deleteBasic(id: ID!): BasicsResult
   }
 `;
 

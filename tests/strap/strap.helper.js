@@ -24,7 +24,7 @@ const createStrap = async (strap, image, operations) => {
             available
             customizable
             additionalPrice {
-              currency
+              type
               value
             }
           }
@@ -68,7 +68,7 @@ const updateStrap = async (id, strap, image, operations) => {
             available
             customizable
             additionalPrice {
-              currency
+              type
               value
             }
           }
@@ -136,7 +136,7 @@ const getStrapById = async (id, operations) => {
             available
             customizable
             additionalPrice {
-              currency
+              type
               value
             }
           }
@@ -178,7 +178,7 @@ const getStrapsByModel = async (id, operations) => {
             available
             customizable
             additionalPrice {
-              currency
+              type
               value
             }
           }
@@ -221,7 +221,7 @@ const getAllStraps = async (limit, skip, filter, operations) => {
             available
             customizable
             additionalPrice {
-              currency
+              type
               value
             }
           }

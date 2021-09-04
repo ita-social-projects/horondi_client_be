@@ -37,6 +37,7 @@ const DB_COLLECTIONS_NAMES = {
   CART: 'Cart',
   HISTORY: 'History',
   POSITION: 'Position',
+  BASICS: 'Basics',
 };
 
 module.exports = {
