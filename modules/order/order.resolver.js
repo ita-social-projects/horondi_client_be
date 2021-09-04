@@ -10,6 +10,19 @@ const ordersQuery = {
     }
   },
   getAllOrders: async (_, args) => ordersService.getAllOrders(args),
+  getOrdersByUser: async (_, { filter, skip, limit, sort, userId }) => {
+    try {
+      return await ordersService.getOrdersByUser(
+        filter,
+        skip,
+        limit,
+        sort,
+        userId
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getUserOrders: async (_, { pagination }, { user }) => {
     try {
       return await ordersService.getUserOrders(pagination, user);

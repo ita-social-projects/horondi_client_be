@@ -45,16 +45,10 @@ const strapWithConvertedPrice = (colorId, modelId, imageStr) => ({
   image: imageStr,
   available: true,
   customizable: true,
-  additionalPrice: [
-    {
-      value: 270,
-      type: 'ABSOLUTE_INDICATOR',
-    },
-    {
-      value: 10,
-      type: 'ABSOLUTE_INDICATOR',
-    },
-  ],
+  additionalPrice: {
+    value: 40,
+    type: 'ABSOLUTE_INDICATOR',
+  },
 });
 
 const strapToUpdate = (colorId, modelId) => ({
@@ -71,7 +65,7 @@ const strapToUpdate = (colorId, modelId) => ({
   available: true,
   customizable: true,
   additionalPrice: {
-    value: 70,
+    value: 40,
     type: 'ABSOLUTE_INDICATOR',
   },
 });
@@ -89,16 +83,10 @@ const newStrapUpdated = (colorId, modelId) => ({
   image: imgString,
   available: true,
   customizable: true,
-  additionalPrice: [
-    {
-      value: 270,
-      type: 'ABSOLUTE_INDICATOR',
-    },
-    {
-      value: 10,
-      type: 'ABSOLUTE_INDICATOR',
-    },
-  ],
+  additionalPrice: {
+    value: 40,
+    type: 'ABSOLUTE_INDICATOR',
+  },
 });
 
 const newStrapUpdatedWithImage = (colorId, modelId, imageStr) => ({
@@ -114,16 +102,10 @@ const newStrapUpdatedWithImage = (colorId, modelId, imageStr) => ({
   image: imageStr,
   available: true,
   customizable: true,
-  additionalPrice: [
-    {
-      value: 270,
-      type: 'ABSOLUTE_INDICATOR',
-    },
-    {
-      value: 10,
-      type: 'ABSOLUTE_INDICATOR',
-    },
-  ],
+  additionalPrice: {
+    value: 40,
+    type: 'ABSOLUTE_INDICATOR',
+  },
 });
 
 module.exports = {
