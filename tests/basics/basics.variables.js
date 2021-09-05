@@ -8,6 +8,10 @@ const newBasicsInputData = (materialId, colorId) => ({
     color: colorId,
   },
   available: true,
+  additionalPrice: {
+    value: 50,
+    type: 'ABSOLUTE_INDICATOR',
+  },
 });
 
 const newBasicsInputDataUpdate = (materialId, colorId) => ({
