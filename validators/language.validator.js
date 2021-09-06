@@ -9,7 +9,12 @@ const descript_title_text_LANG_MAX_CHARS = 2;
 const descript_title_text_VALUE_MIN_CHARS = 2;
 const descript_title_text_VALUE_MAX_CHARS = 1000;
 
-const languageValidator = function(langMin, langMax, valueMin, valueMax) {
+const languageValidator = function langValidator(
+  langMin,
+  langMax,
+  valueMin,
+  valueMax
+) {
   return {
     lang: Joi.string()
       .min(langMin)
