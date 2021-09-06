@@ -37,7 +37,7 @@ class OrdersService {
     return order;
   }
 
-  async getAllOrders({ skip, limit, filter, sort }) {
+  async getAllOrders({ skip, limit, filter = {}, sort }) {
     let maxDate = new Date();
     let minDate = minDefaultDate;
 
