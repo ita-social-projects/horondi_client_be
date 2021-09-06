@@ -86,7 +86,6 @@
     "react": "^16.13.1",
     "rotating-file-stream": "^2.0.2",
     "short-unique-id": "^3.2.3",
-    "simplesmtp": "^0.3.35",
     "start-server-and-test": "^1.11.3",
     "uniqid": "^5.2.0",
     "util": "^0.12.3",
