@@ -14,7 +14,7 @@ const commonFiltersHandler = filter => {
     filterOptions.model = { $in: filter.model };
   }
 
-  if (filter?.available.length) {
+  if (filter?.available?.length) {
     filterOptions.available = { $in: filter.available };
   }
   return filterOptions;

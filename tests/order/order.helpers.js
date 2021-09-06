@@ -82,6 +82,7 @@ const createOrder = async (order, operations) => {
 
   return createdOrder.data.addOrder;
 };
+
 const deleteOrder = async (id, operations) =>
   operations.mutate({
     mutation: gql`
@@ -100,11 +101,108 @@ const deleteOrder = async (id, operations) =>
       id,
     },
   });
-const getAllOrders = async operations => {
+
+const getPaidOrdersStatistic = async operations => {
   const res = await operations.mutate({
-    mutation: gql`
-      query {
-        getAllOrders(limit: 10, skip: 0, filter: {}, sort: {}) {
+    query: gql`
+      query($date: Int!) {
+        getPaidOrdersStatistic(date: $date) {
+          labels
+          counts
+          total
+        }
+      }
+    `,
+    variables: {
+      date: 0,
+    },
+  });
+  return res.data.getPaidOrdersStatistic;
+};
+
+const getUserOrders = async operations => {
+  const res = await operations.mutate({
+    query: gql`
+      query($pagination: Pagination) {
+        getUserOrders(pagination: $pagination) {
+          _id
+          recipient {
+            firstName
+            lastName
+            email
+            phoneNumber
+          }
+          status
+          paymentStatus
+          orderNumber
+          dateOfCreation
+        }
+      }
+    `,
+    variables: {
+      pagination: {
+        skip: 0,
+        limit: 1,
+      },
+    },
+  });
+  return res.data.getUserOrders;
+};
+
+const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
+  const res = await operations.mutate({
+    query: gql`
+      query($paidOrderNumber: String!) {
+        getOrderByPaidOrderNumber(paidOrderNumber: $paidOrderNumber) {
+          ... on Order {
+            _id
+            orderNumber
+            paymentUrl
+            dateOfCreation
+            isPaid
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      paidOrderNumber,
+    },
+  });
+  return res.data.getOrderByPaidOrderNumber;
+};
+
+const getOrdersStatistic = async operations => {
+  const res = await operations.mutate({
+    query: gql`
+      query($date: Int!) {
+        getOrdersStatistic(date: $date) {
+          names
+          counts
+          relations
+        }
+      }
+    `,
+    variables: {
+      date: 0,
+    },
+  });
+  return res.data.getOrdersStatistic;
+};
+
+const getAllOrders = async (filter, sort, operations) => {
+  const res = await operations.mutate({
+    query: gql`
+      query(
+        $limit: Int
+        $skip: Int
+        $filter: OrderFilterInput
+        $sort: JSONObject
+      ) {
+        getAllOrders(limit: $limit, skip: $skip, filter: $filter, sort: $sort) {
           items {
             _id
             recipient {
@@ -130,6 +228,12 @@ const getAllOrders = async operations => {
         }
       }
     `,
+    variables: {
+      limit: 5,
+      skip: 0,
+      filter,
+      sort,
+    },
   });
   return res.data.getAllOrders.items;
 };
@@ -325,7 +429,11 @@ module.exports = {
   createOrder,
   deleteOrder,
   getAllOrders,
+  getPaidOrdersStatistic,
+  getOrdersStatistic,
+  getOrderByPaidOrderNumber,
   getOrdersByUser,
   getOrderById,
   updateOrderById,
+  getUserOrders,
 };

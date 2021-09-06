@@ -25,7 +25,8 @@
     "docker-db-start": "cd ./docker && docker-compose up -d",
     "docker-db-stop": "cd ./docker && docker-compose down",
     "test-docker": "npm run docker-db-stop && npm run docker-db-start && npm run test",
-    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\""
+    "restore-db": "cd ./docker && docker-compose exec -T database sh -c \"mongorestore dump/horondi --db=horondi --uri=mongodb://root:root@localhost/horondi?authSource=admin\"",
+    "dump-db": "node dump-database.js"
   },
   "author": "",
   "license": "ISC",
@@ -76,7 +77,7 @@
     "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.10",
     "nodemailer-smtp-transport": "^2.7.4",
-    "npm-force-resolutions": "0.0.3",
+    "npm-force-resolutions": "^0.0.3",
     "passport": "^0.4.1",
     "passport-facebook-token": "^3.3.0",
     "passport-google-token": "^0.1.2",
