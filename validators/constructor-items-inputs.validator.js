@@ -3,6 +3,11 @@ const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
 const {
+  additionalPriceInputValidator,
+} = require('./additional-price-input.validators');
+const { optionType } = require('../consts');
+
+const {
   CONSTRUCTOR_OPTION_TYPES: {
     BACK_OPTION,
     CLOSURE,
@@ -28,9 +33,7 @@ const inputBasicsValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   features: Joi.object({
     material: Joi.string()
@@ -66,9 +69,7 @@ const inputClosureValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   model: Joi.string(),
   features: Joi.object({
@@ -97,9 +98,11 @@ const inputOptionValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: Joi.when(optionType, {
+    is: BACK_OPTION,
+    then: Joi.number(),
+    otherwise: additionalPriceInputValidator,
+  }),
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
@@ -119,9 +122,7 @@ const inputStrapValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
@@ -145,9 +146,7 @@ const inputPatternValidator = Joi.object({
     thumbnail: Joi.string(),
   }),
   constructorImg: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean(),
   customizable: Joi.boolean(),
 });

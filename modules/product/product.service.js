@@ -13,7 +13,7 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { uploadProductImages } = require('./product.utils');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateBasePrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
@@ -75,6 +75,10 @@ const {
     IS_HOT_ITEM,
   },
 } = require('../../consts/history-obj-keys');
+const {
+  finalPriceCalculation,
+  finalPriceRecalculation,
+} = require('../../utils/final-price-calculation');
 
 class ProductsService {
   async getProductById(id) {
@@ -286,7 +290,8 @@ class ProductsService {
       productData.images.additional = [...additional, ...previousImagesLinks];
     }
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
+    productData.sizes = await finalPriceRecalculation(id);
     if (productData) {
       const { beforeChanges, afterChanges } = getChanges(product, productData);
 
@@ -314,7 +319,7 @@ class ProductsService {
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
 
     productData.model = await modelService.getModelById(productData.model);
 
@@ -323,7 +328,10 @@ class ProductsService {
       additional,
     };
 
+    productData.sizes = await finalPriceCalculation(productData);
+
     const newProduct = await new Product(productData).save();
+
     if (productData) {
       const historyRecord = generateHistoryObject(
         ADD_PRODUCT,
@@ -466,6 +474,29 @@ class ProductsService {
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId).exec();
     return Product.find({ _id: { $in: cart } }).exec();
+  }
+
+  async updatePrices(previousPriceValue, nextPriceValue, path, id) {
+    if (
+      previousPriceValue.additionalPrice[1]?.value !==
+        nextPriceValue.additionalPrice[1]?.value ||
+      previousPriceValue.additionalPrice[0].value !==
+        nextPriceValue.additionalPrice.value
+    ) {
+      const products = await Product.find({
+        [`${path}`]: {
+          $eq: id,
+        },
+      })
+        .distinct('_id')
+        .exec();
+
+      for (const productId of products) {
+        await Product.findByIdAndUpdate(productId, {
+          sizes: await finalPriceRecalculation(productId),
+        }).exec();
+      }
+    }
   }
 }
 

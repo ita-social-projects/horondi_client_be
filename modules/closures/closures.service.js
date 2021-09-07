@@ -1,7 +1,7 @@
 const Closure = require('./closures.model');
 const RuleError = require('../../errors/rule.error');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -28,6 +28,10 @@ const {
     MODEL,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { CLOSURE },
+} = require('../../consts/input-fields');
 
 class ClosureService {
   async getAllClosure(limit, skip, filter) {
@@ -65,8 +69,11 @@ class ClosureService {
       const uploadImage = await uploadService.uploadFile(image);
       closure.images = uploadImage.fileNames;
     }
-    closure.additionalPrice = await calculatePrice(closure.additionalPrice);
-
+    if (closure.additionalPrice) {
+      closure.additionalPrice = await calculateAdditionalPrice(
+        closure.additionalPrice
+      );
+    }
     const newClosure = await new Closure(closure).save();
 
     const historyRecord = generateHistoryObject(
@@ -97,7 +104,12 @@ class ClosureService {
     if (!closureToUpdate) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
-    closure.additionalPrice = await calculatePrice(closure.additionalPrice);
+
+    if (closure.additionalPrice) {
+      closure.additionalPrice = await calculateAdditionalPrice(
+        closure.additionalPrice
+      );
+    }
 
     if (image) {
       if (closureToUpdate.images) {
