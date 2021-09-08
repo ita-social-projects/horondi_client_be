@@ -186,10 +186,120 @@ const updateCartItemQuantity = async (items, value, adminId, operations) => {
   });
   return res.data.updateCartItemQuantity;
 };
+const addConstructorProductItemToCart = async (
+  productId,
+  sizeId,
+  constructorData,
+  adminId,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+        mutation($productId: ID!, $sizeId: ID!, $constructorData: CartInput!, $id: ID!) {
+          addConstructorProductItemToCart(productId: $productId, sizeId: $sizeId, constructorData: $constructorData, id:$id) {
+                ... on User {
+                    _id
+                    cart {
+                        ${cartReqBody}
+                        totalPrice{
+                        currency
+                        value
+                        }
+                    }
+                }
+                ... on Error {
+                message
+                statusCode
+                }
+            }
+        }`,
+    variables: {
+      productId,
+      sizeId,
+      constructorData,
+      id: adminId,
+    },
+  });
+  return res.data.addConstructorProductItemToCart;
+};
+const updateCartConstructorProductItemQuantity = async (
+  value,
+  productId,
+  sizeId,
+  constructorData,
+  adminId,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+        mutation($quantity: ID!, $productId: ID!, $sizeId: ID!, $constructorData: CartInput!, $id: ID!) {
+          updateCartConstructorProductItemQuantity(quantity: $quantity, productId: $productId, sizeId: $sizeId, constructorData: $constructorData, id:$id) {
+                ... on User {
+                    _id
+                    firstName,
+                    lastName,
+                    email,
+                    cart {
+                        ${cartReqBody}
+                        totalPrice{
+                        currency
+                        value
+                        }
+                    }
+                }
+                ... on Error {
+                message
+                statusCode
+                }
+            }
+        }`,
+    variables: {
+      quantity: value,
+      productId,
+      sizeId,
+      constructorData,
+      id: adminId,
+    },
+  });
+  return res.data.updateCartConstructorProductItemQuantity;
+};
+const mergeCartFromLS = async (items, adminId, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+        mutation($items: [ CartFromLSInput!], $id:ID!) {
+          mergeCartFromLS(items: $items, id:$id) {
+                ... on User {
+                _id
+                firstName
+                cart {
+                ${cartReqBody}
+                    totalPrice{
+                    currency
+                    value
+                    }
+                }
+                }
+                ... on Error {
+                    message
+                    statusCode
+                }
+            }
+        }`,
+    variables: {
+      items,
+      id: adminId,
+    },
+  });
+  return res.data.mergeCartFromLS;
+};
+
 module.exports = {
   addProductToCart,
   removeProductItemsFromCart,
   cleanCart,
   updateCartItemQuantity,
   getCartByUserId,
+  addConstructorProductItemToCart,
+  updateCartConstructorProductItemQuantity,
+  mergeCartFromLS,
 };
