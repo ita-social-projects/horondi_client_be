@@ -291,7 +291,7 @@ class ProductsService {
     }
     const { basePrice } = productData;
     productData.basePrice = await calculateBasePrice(basePrice);
-    productData.sizes = await finalPriceRecalculation(id);
+    productData.sizes = await finalPriceCalculation(productData);
     if (productData) {
       const { beforeChanges, afterChanges } = getChanges(product, productData);
 

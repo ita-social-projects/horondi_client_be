@@ -11,12 +11,12 @@ const {
 } = require('../consts/additional-price-types');
 
 const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
-  let relativePrices = _.reduce(
+  const relativePrices = _.reduce(
     additionalPrices,
     (sum, additionalPriceSet) => {
       let sumRelativePrice = sum;
 
-      if (additionalPriceSet[0].type === RELATIVE_INDICATOR) {
+      if (additionalPriceSet[0]?.type === RELATIVE_INDICATOR) {
         sumRelativePrice *= additionalPriceSet[0].value;
       }
       return sumRelativePrice;
@@ -25,15 +25,16 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
   );
 
   const pricesForSizes = _.map(sizePrices, sizeAdditionalPrice => {
-    if (sizeAdditionalPrice.additionalPrice[0].type === RELATIVE_INDICATOR) {
-      relativePrices *= sizeAdditionalPrice.additionalPrice[0].value;
+    let tempPrice = relativePrices;
+    if (sizeAdditionalPrice.additionalPrice[0]?.type === RELATIVE_INDICATOR) {
+      tempPrice *= sizeAdditionalPrice.additionalPrice[0].value;
     }
 
-    if (sizeAdditionalPrice.additionalPrice[0].type === ABSOLUTE_INDICATOR) {
-      relativePrices += sizeAdditionalPrice.additionalPrice[1].value;
+    if (sizeAdditionalPrice.additionalPrice[0]?.type === ABSOLUTE_INDICATOR) {
+      tempPrice += sizeAdditionalPrice.additionalPrice[1].value;
     }
 
-    return { _id: sizeAdditionalPrice._id, price: relativePrices };
+    return { _id: sizeAdditionalPrice._id, price: tempPrice };
   });
 
   return Promise.all(
@@ -42,7 +43,7 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
         additionalPrices,
         (sum, additionalPriceSet) => {
           let sumAbsolutePrice = sum;
-          if (additionalPriceSet[0].type === ABSOLUTE_INDICATOR) {
+          if (additionalPriceSet[0]?.type === ABSOLUTE_INDICATOR) {
             sumAbsolutePrice += additionalPriceSet[1].value;
           }
           return sumAbsolutePrice;
