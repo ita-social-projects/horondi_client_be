@@ -23,6 +23,7 @@ const optionTypes = `
     constructorBottom:[ConstructorBottom]
     constructorPocket: [Pocket]
     constructorBack: [Back]
+    constrBottom: [Bottom]
     constructorClosure: [Closure]
     constructorStrap: [Strap]
   }
@@ -34,6 +35,7 @@ const optionTypes = `
     constructorBottom: ConstructorBottom
     constructorPocket: [Pocket]
     constructorBack: Back
+    constrBottom: Bottom
     constructorClosure: Closure
     constructorStrap: Strap
   }
@@ -60,6 +62,7 @@ input OptionInput {
   constructorBottom:[ID]
   constructorPocket: [ID]
   constructorBack: [ID]
+  constrBottom: [ID]
   constructorClosure: [ID]
   constructorStrap: [ID]
 }

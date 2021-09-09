@@ -1,6 +1,8 @@
 const Joi = require('joi');
 
-const { additionalPriceInputValidator } = require('./additional-price-input.validators');
+const {
+  additionalPriceInputValidator,
+} = require('./additional-price-input.validators');
 
 const sizeInputValidator = Joi.object({
   name: Joi.string()

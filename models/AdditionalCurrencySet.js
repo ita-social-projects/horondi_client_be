@@ -4,10 +4,7 @@ const {
   DB_COLLECTIONS_NAMES: { ADDITIONAL_CURRENCY_SET },
 } = require('../consts/db-collections-names');
 const {
-  ADDITIONAL_PRICE_TYPES: {
-    ABSOLUTE_INDICATOR,
-    RELATIVE_INDICATOR,
-  },
+  ADDITIONAL_PRICE_TYPES: { ABSOLUTE_INDICATOR, RELATIVE_INDICATOR },
 } = require('../consts/additional-price-types');
 
 const additionalCurrencySetSchema = new mongoose.Schema({
@@ -25,4 +22,7 @@ const additionalCurrencySetSchema = new mongoose.Schema({
   id: false,
 });
 
-module.exports = mongoose.model(ADDITIONAL_CURRENCY_SET, additionalCurrencySetSchema);
+module.exports = mongoose.model(
+  ADDITIONAL_CURRENCY_SET,
+  additionalCurrencySetSchema
+);

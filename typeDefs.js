@@ -145,6 +145,11 @@ const {
   positionInputs,
 } = require('./modules/position/position.graphql');
 const {
+  bottomType,
+  bottomInputs,
+  bottomFeatureSet,
+} = require('./modules/bottom/bottom.graphql');
+const {
   basicsType,
   basicsInputs,
   basicsFeatureSet,
@@ -196,6 +201,8 @@ const typeDefs = gql`
   ${pocketSide}
   ${backType}
   ${backFeatureSet}
+  ${bottomType}
+  ${bottomFeatureSet}
   ${strapType}
   ${strapFeatureType}
   ${positionType}
@@ -212,6 +219,7 @@ const typeDefs = gql`
   }
   enum OptionTypeEnum {
     BACK
+    BOTTOM
     CLOSURE
     CONSTRUCTOR_BASIC
     CONSTRUCTOR_BOTTOM
@@ -412,6 +420,10 @@ const typeDefs = gql`
     items: [Back]
     count: Int
   }
+  type PaginatedBottoms {
+    items: [Bottom]
+    count: Int
+  }
   type PaginatedStraps {
     items: [Strap]
     count: Int
@@ -479,6 +491,7 @@ const typeDefs = gql`
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   union PocketResult = Pocket | Error
   union BackResult = Back | Error
+  union BottomResult = Bottom | Error
   union StrapResult = Strap | Error
   
   union HistoryResult = History | Error
@@ -619,6 +632,8 @@ const typeDefs = gql`
     getAllBacks( limit:Int!, skip:Int!, filter:BackFilterInput): PaginatedBacks
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [BackResult]
+    getAllBottoms( limit:Int!, skip:Int!, filter:BottomFilterInput): PaginatedBottoms
+    getBottomById(id: ID): BottomResult
     getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [StrapResult]
@@ -712,6 +727,7 @@ const typeDefs = gql`
   ${pocketInputs}
   ${pocketSideInput}
   ${backInputs}
+  ${bottomInputs}
   ${strapInputs}
   ${positionInputs}
   ${basicsInputs}
@@ -989,6 +1005,10 @@ const typeDefs = gql`
     addBack(back: BackInput!, image: Upload):BackResult
     updateBack(id: ID, back: BackInput!, image: Upload):BackResult
     deleteBack(id: ID):BackResult
+    "Bottom Mutation"
+    addBottom(bottom: BottomInput!, image: Upload):BottomResult
+    updateBottom(id: ID, bottom: BottomInput!, image: Upload):BottomResult
+    deleteBottom(id: ID):BottomResult
     "Strap Mutation"
     addStrap(strap: StrapInput!, image: Upload): StrapResult
     updateStrap(id: ID, strap: StrapInput!, image: Upload):StrapResult

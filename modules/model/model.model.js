@@ -12,6 +12,7 @@ const {
     MODEL,
     POCKET,
     BACK,
+    BOTTOM,
     CLOSURE,
     STRAP,
     RESTRICTION,
@@ -50,6 +51,7 @@ const modelSchema = new mongoose.Schema({
     ],
     constructorPocket: [{ type: mongoose.Schema.Types.ObjectId, ref: POCKET }],
     constructorBack: [{ type: mongoose.Schema.Types.ObjectId, ref: BACK }],
+    constrBottom: [{ type: mongoose.Schema.Types.ObjectId, ref: BOTTOM }],
     constructorClosure: [
       { type: mongoose.Schema.Types.ObjectId, ref: CLOSURE },
     ],
@@ -71,6 +73,7 @@ const modelSchema = new mongoose.Schema({
     },
     constructorPocket: [{ type: mongoose.Schema.Types.ObjectId, ref: POCKET }],
     constructorBack: { type: mongoose.Schema.Types.ObjectId, ref: BACK },
+    constrBottom: { type: mongoose.Schema.Types.ObjectId, ref: BOTTOM },
     constructorClosure: { type: mongoose.Schema.Types.ObjectId, ref: CLOSURE },
     constructorStrap: { type: mongoose.Schema.Types.ObjectId, ref: STRAP },
   },
