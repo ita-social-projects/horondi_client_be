@@ -4,7 +4,6 @@
 /.pnp
 .pnp.js
 /.history
-package-lock.json
 error.log
 combined.log
 test-report.xml

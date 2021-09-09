@@ -30,7 +30,6 @@ const ordersQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
   getOrdersStatistic: (_, { date }) => ordersService.getOrdersStatistic(date),
   getPaidOrdersStatistic: (_, { date }) =>
     ordersService.getPaidOrdersStatistic(date),
