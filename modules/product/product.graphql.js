@@ -14,7 +14,7 @@ const productType = `
     closure: Closure
     pattern: Pattern
     basePrice: [CurrencySet]!
-    sizes: [Size]!
+    sizes: [FinalPricesForSizes]!
     available: Boolean!
     isHotItem: Boolean
     purchasedCount: Int
@@ -66,7 +66,7 @@ const productInput = `
     sizes:[ID]!
     images: [Upload]
     availableCount: Int
-    basePrice: Int!
+    basePrice: Float!
     available: Boolean
     isHotItem: Boolean
   }

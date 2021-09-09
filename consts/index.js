@@ -56,6 +56,8 @@ const getUkrPoshtaPostofficesCityIdUrl = `get_postoffices_by_postcode_cityid_cit
 
 const objectType = 'object';
 
+const optionType = 'optionType';
+
 module.exports = {
   getUkrPoshtaRegionsUrl,
   getUkrPoshtaDistrictsByRegionIdUrl,
@@ -81,4 +83,5 @@ module.exports = {
   SOURCES,
   USER_FIELDS,
   objectType,
+  optionType
 };

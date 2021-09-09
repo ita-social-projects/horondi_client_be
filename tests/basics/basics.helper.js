@@ -27,8 +27,8 @@ const createBasics = async (basic, image, operations) => {
             }
             available
             additionalPrice {
+              type
               value
-              currency
             }
           }
           ... on Error {
@@ -70,8 +70,8 @@ const updateBasic = async (id, basic, images, operations) => {
             }
             available
             additionalPrice {
+              type
               value
-              currency
             }
           }
           ... on Error {
