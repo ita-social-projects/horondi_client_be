@@ -149,6 +149,11 @@ const {
   bottomInputs,
   bottomFeatureSet,
 } = require('./modules/bottom/bottom.graphql');
+const {
+  basicsType,
+  basicsInputs,
+  basicsFeatureSet,
+} = require('./modules/basics/basics.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -201,6 +206,8 @@ const typeDefs = gql`
   ${strapType}
   ${strapFeatureType}
   ${positionType}
+  ${basicsType}
+  ${basicsFeatureSet}
   ${historyFilterInput}
   scalar Upload
   scalar JSONObject
@@ -222,6 +229,10 @@ const typeDefs = gql`
     STRAP
     SIDE
   }
+  enum additionalPriceType {
+    RELATIVE_INDICATOR
+    ABSOLUTE_INDICATOR
+  }
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -230,7 +241,12 @@ const typeDefs = gql`
     value: String
   }
   type CurrencySet {
-    currency: String!
+    currency: String
+    value: Float!
+  }
+  type AdditionalCurrencySet {
+    currency: String
+    type: additionalPriceType!
     value: Float!
   }
   type ImageSet {
@@ -322,7 +338,7 @@ const typeDefs = gql`
     name: [Language!]
     description: [Language!]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
   type PaginatedProducts {
     items: [Product]
@@ -362,6 +378,11 @@ const typeDefs = gql`
   }
   type PaginatedComments {
     items: [Comment]
+    count: Int
+    countAll: Int
+  }
+  type PaginatedReplies {
+    items: [ReplyComments]
     count: Int
     countAll: Int
   }
@@ -426,11 +447,19 @@ const typeDefs = gql`
       items: [ConstructorFrontPocket]
       count: Int
   }
+  type FinalPricesForSizes {
+      size: Size
+      price: [CurrencySet]
+  }
   type countOrderResult {
     countOrder: Int
   }
   type PaginatedPositions {
     items: [Position]
+    count: Int
+  }
+  type PaginatedBasics {
+    items: [Basics]
     count: Int
   }
   union PaginatedProductsResult = PaginatedProducts | Error
@@ -469,6 +498,7 @@ const typeDefs = gql`
   union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
   union PositionResult = Position | Error
+  union BasicsResult = Basics | Error
   type Query {
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
@@ -493,6 +523,7 @@ const typeDefs = gql`
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
     getPatternById(id: ID): PatternResult
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
+    getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): [Order!]
     getCountUserOrders(id: ID): countOrderResult
@@ -526,6 +557,12 @@ const typeDefs = gql`
       pagination: Pagination,
       sort : CommentsSortInput
     ): PaginatedComments!
+    getCommentsByUser(
+      filter: CommentFilterInput,
+      pagination: Pagination,
+      sort : CommentsSortInput,
+      userId: ID!
+    ): PaginatedComments!
     getCommentById(id: ID!): CommentResult
     getReplyCommentById(id: ID!): CommentResult
     getCommentsByProduct(
@@ -538,6 +575,12 @@ const typeDefs = gql`
       pagination: Pagination,
       sort : ReplyCommentsSortInput
     ): PaginatedCommentsResult
+    getCommentsRepliesByUser(
+      filter: ReplyCommentFilterInput,
+      pagination: Pagination,
+      sort : ReplyCommentsSortInput,
+      userId: ID!
+    ): PaginatedReplies!
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
     getAllBusinessTexts: [BusinessText]
@@ -599,6 +642,8 @@ const typeDefs = gql`
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
     getPositionById(id: ID): PositionResult
+    getAllBasics(limit: Int!, skip: Int!, filter: BasicsFilterInput): PaginatedBasics!
+    getBasicById(id: ID): BasicsResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -686,6 +731,7 @@ const typeDefs = gql`
   ${bottomInputs}
   ${strapInputs}
   ${positionInputs}
+  ${basicsInputs}
   input LanguageInput {
     lang: String!
     value: String
@@ -693,6 +739,10 @@ const typeDefs = gql`
   input CurrencySetInput {
     currency: String!
     value: Float!
+  }
+  input additionalPriceInput {
+    value: Float!
+    type: additionalPriceType
   }
   input AddressInput {
     country: String
@@ -841,7 +891,7 @@ const typeDefs = gql`
     ): LogicalResult!
       addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
       removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
-       googleUser(idToken: String!, staySignedIn: Boolean): User
+       googleUser(idToken: String!, rememberMe: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
@@ -968,9 +1018,14 @@ const typeDefs = gql`
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult
     deleteRestriction(id: ID): RestrictionResult
+    "Positions Mutations"
     addPosition(position: PositionInput!): PositionResult 
     deletePosition(id: ID):PositionResult
     updatePosition(id: ID, position: PositionInput!): PositionResult
+    "Basics Mutations"
+    addBasic(basic: BasicsInput!, image: Upload): BasicsResult
+    updateBasic(id: ID!, basic: BasicsInput!, image: Upload): BasicsResult
+    deleteBasic(id: ID!): BasicsResult
   }
 `;
 

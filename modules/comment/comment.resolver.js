@@ -1,11 +1,9 @@
 const commentsService = require('./comment.service');
 const RuleError = require('../../errors/rule.error');
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
 
 const commentsQuery = {
   getAllComments: (parent, args) => commentsService.getAllComments(args),
+
   getCommentById: async (parent, { id }) => {
     try {
       return await commentsService.getCommentById(id);
@@ -62,14 +60,45 @@ const commentsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-
+  getCommentsByUser: async (
+    parent,
+    { filter, pagination: { skip, limit }, sort, userId }
+  ) => {
+    try {
+      return await commentsService.getCommentsByUser(
+        filter,
+        skip,
+        limit,
+        userId,
+        sort
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getCommentsRepliesByUser: async (
+    parent,
+    { filter, pagination: { skip, limit }, sort, userId }
+  ) => {
+    try {
+      return await commentsService.getCommentsRepliesByUser(
+        filter,
+        skip,
+        limit,
+        userId,
+        sort
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getAllCommentsByUser: async (parent, args) => {
     try {
       return await commentsService.getAllCommentsByUser(args.userId);
     } catch (error) {
       return [
         {
-          statusCode: NOT_FOUND,
+          statusCode: error.statusCode,
           message: error.message,
         },
       ];
@@ -137,11 +166,8 @@ const commentsMutation = {
         args.userRate,
         context.user
       );
-    } catch (error) {
-      return {
-        statusCode: NOT_FOUND,
-        message: error.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

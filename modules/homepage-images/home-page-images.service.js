@@ -6,19 +6,24 @@ const {
   IMAGES_WERE_NOT_CONVERTED,
   IMAGE_NOT_FOUND,
 } = require('../../error-messages/home-page-messages');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class HomePageImagesService {
   async getHomePageLooksImages() {
     const looksImages = await LooksImages.find().exec();
 
-    if (!looksImages) throw new Error(IMAGE_NOT_FOUND);
+    if (!looksImages) throw new RuleError(IMAGE_NOT_FOUND, NOT_FOUND);
 
     return looksImages;
   }
 
   addHomePageLooksImage(data) {
     return this.uploadImages([data.images]).then(resizedImage => {
-      if (!resizedImage) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+      if (!resizedImage)
+        throw new RuleError(IMAGES_WERE_NOT_CONVERTED, BAD_REQUEST);
 
       return new LooksImages({ images: resizedImage[0] }).save();
     });
@@ -29,7 +34,7 @@ class HomePageImagesService {
       .lean()
       .exec();
 
-    if (!looksImage) throw new Error(IMAGE_NOT_FOUND);
+    if (!looksImage) throw new RuleError(IMAGE_NOT_FOUND, NOT_FOUND);
 
     if (looksImage && looksImage.images) {
       this.deleteImages(looksImage.images);
@@ -42,7 +47,7 @@ class HomePageImagesService {
     const imagesToUpdate = await LooksImages.findById(data.id)
       .lean()
       .exec();
-    if (!imagesToUpdate) throw new Error(IMAGE_NOT_FOUND);
+    if (!imagesToUpdate) throw new RuleError(IMAGE_NOT_FOUND, NOT_FOUND);
 
     return (
       data.images &&
@@ -56,7 +61,8 @@ class HomePageImagesService {
     const imagesResult = await Promise.allSettled(uploadResult);
     const resizedImages = imagesResult.map(item => item.value.fileNames);
 
-    if (!resizedImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    if (!resizedImages)
+      throw new RuleError(IMAGES_WERE_NOT_CONVERTED, BAD_REQUEST);
 
     return resizedImages;
   }
@@ -76,7 +82,8 @@ class HomePageImagesService {
   async deleteImages(imagesToDelete) {
     const deletedImages = await uploadService.deleteFiles([imagesToDelete]);
 
-    if (!deletedImages) throw new Error(IMAGES_WERE_NOT_CONVERTED);
+    if (!deletedImages)
+      throw new RuleError(IMAGES_WERE_NOT_CONVERTED, BAD_REQUEST);
 
     return Promise.allSettled(deletedImages);
   }

@@ -5,13 +5,8 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
-  getCountUserOrders: async (_, args, { user }) => {
-    try {
-      return await userService.getCountUserOrders(user);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
+  getCountUserOrders: async (_, args, { user }) =>
+    userService.getCountUserOrders(user),
   getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUsersForStatistic: (parent, args, context) =>
     userService.getUsersForStatistic(args),
@@ -53,7 +48,7 @@ const userMutation = {
     }
   },
   googleUser: (_, args) =>
-    userService.googleUser(args.idToken, args.staySignedIn),
+    userService.googleUser(args.idToken, args.rememberMe),
   loginUser: async (_, { loginInput }) => {
     try {
       return await userService.loginUser(loginInput);
@@ -114,10 +109,7 @@ const userMutation = {
         args.language
       );
     } catch (e) {
-      return {
-        statusCode: BAD_REQUEST,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   registerAdmin: async (_, { user }, { user: admin }) => {

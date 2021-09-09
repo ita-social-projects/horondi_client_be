@@ -64,7 +64,7 @@ class PaymentService {
           select: 'name',
         })
         .exec();
-      await sendEmail(order.user.email, PAYMENT_ORDER, {
+      await sendEmail(order.recipient.email, PAYMENT_ORDER, {
         language,
         items: order.items,
         totalPrice: order.totalItemsPrice,

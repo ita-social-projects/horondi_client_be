@@ -1,7 +1,25 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
-const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
-  status: 'CREATED',
-  user: {
+const orderStatus = 'CREATED';
+const paymentStatus = 'CREATED';
+const getOrdersInput = {
+  filter: {
+    date: { dateFrom: '', dateTo: '' },
+    paymentStatus: [],
+    search: '',
+    status: [],
+  },
+  sort: { dateOfCreation: -1 },
+};
+
+const newOrderInputData = (
+  productId,
+  modelId,
+  sizeId,
+  constructorId,
+  userId
+) => ({
+  status: orderStatus,
+  recipient: {
     firstName: 'Arsen',
     lastName: 'Wenger',
     email: 'test@gmail.com',
@@ -47,11 +65,12 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
     },
   ],
   paymentMethod: 'CASH',
-  paymentStatus: 'CREATED',
+  paymentStatus,
+  user_id: userId,
 });
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   status: 'SENT',
-  user: {
+  recipient: {
     firstName: 'Updated',
     lastName: 'Updated',
     email: 'test.updated@gmail.com',
@@ -102,6 +121,9 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
 
 module.exports = {
   newOrderInputData,
+  getOrdersInput,
   wrongId,
   newOrderUpdated,
+  orderStatus,
+  paymentStatus,
 };

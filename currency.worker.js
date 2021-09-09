@@ -1,10 +1,10 @@
 const axios = require('axios');
 const Agenda = require('agenda');
 const currencyService = require('./modules/currency/currency.service');
-const { MONGO_URL, CURRENCY_API_URL } = require('./dotenvValidator');
+const { CURRENCY_API_URL } = require('./dotenvValidator');
 
-const currencyWorker = () => {
-  const agenda = new Agenda({ db: { address: MONGO_URL } });
+const currencyWorker = async mongo => {
+  const agenda = new Agenda({ mongo });
   agenda.define('set currency to database', async job => {
     try {
       const currency = await axios.get(CURRENCY_API_URL);

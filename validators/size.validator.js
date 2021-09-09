@@ -1,5 +1,9 @@
 const Joi = require('joi');
 
+const {
+  additionalPriceInputValidator,
+} = require('./additional-price-input.validators');
+
 const sizeInputValidator = Joi.object({
   name: Joi.string()
     .min(1)
@@ -32,9 +36,7 @@ const sizeInputValidator = Joi.object({
     .max(5)
     .required(),
   available: Joi.boolean().required(),
-  additionalPrice: Joi.number()
-    .integer()
-    .required(),
+  additionalPrice: additionalPriceInputValidator,
 });
 
 module.exports = {

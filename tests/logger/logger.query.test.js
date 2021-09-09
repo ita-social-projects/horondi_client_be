@@ -1,5 +1,5 @@
 const logger = require('../../logger');
-const loggerHttp = require('../../loggerHttp');
+const { initLogger } = require('../../loggerHttp');
 
 const {
   regularLogMessage,
@@ -8,7 +8,10 @@ const {
   logString,
   matchLogString,
   messageString,
+  dbUri,
 } = require('./logger.variables');
+
+const loggerHttp = initLogger(dbUri);
 
 let logMockFn;
 let mockStdoutWrite;

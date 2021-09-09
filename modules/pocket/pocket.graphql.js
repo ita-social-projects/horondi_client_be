@@ -37,7 +37,7 @@ const pocketInputs = `
     optionType: String
     restriction: Boolean
     images: ImageSetInput
-    additionalPrice: Int
+    additionalPrice: Float
     positions: [ID]
   }
 

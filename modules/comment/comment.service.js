@@ -158,9 +158,60 @@ class CommentsService {
   async getAllCommentsByUser(userId) {
     const comments = await Comment.find({ user: userId }).exec();
     if (!comments.length) {
-      throw new Error(COMMENT_FOR_NOT_EXISTING_USER);
+      throw new RuleError(COMMENT_FOR_NOT_EXISTING_USER, NOT_FOUND);
     }
     return comments;
+  }
+
+  async getCommentsByUser(filter, skip, limit, userId, sort) {
+    const filterOptions = filterOptionComments(filter);
+    filterOptions.user = userId;
+    let sortLabel = sort;
+
+    if (Object.keys(sort).includes('replyComments')) {
+      sortLabel = { 'replyComments.createdAt': sort.replyComments };
+    }
+    const items = await Comment.find(filterOptions)
+      .sort(sortLabel)
+      .limit(limit)
+      .skip(skip)
+      .exec();
+
+    const count = Comment.find(filterOptions).countDocuments();
+
+    return {
+      items,
+      count,
+    };
+  }
+
+  async getCommentsRepliesByUser(filter, skip, limit, userId, sort) {
+    const comments = await Comment.find({
+      'replyComments.answerer': userId,
+    }).exec();
+    let replies = comments.reduce((acumulator, doc) => {
+      const replyComments = doc.replyComments.filter(
+        item => item.answerer !== userId
+      );
+
+      return [...acumulator, ...replyComments];
+    }, []);
+
+    if (filter.filters) {
+      replies = filteredReplyComments(filter, replies);
+    }
+
+    if (parseInt(sort?.date) === 1) {
+      replies = replies.sort((a, b) => a.createdAt - b.createdAt);
+    } else if (parseInt(sort?.date) === -1) {
+      replies = replies.sort((a, b) => b.createdAt - a.createdAt);
+    }
+    const count = replies.length;
+    replies = replies.slice(skip, skip + limit);
+    return {
+      items: replies,
+      count,
+    };
   }
 
   async updateComment(id, comment) {
@@ -274,7 +325,7 @@ class CommentsService {
     const product = await Product.findById(id).exec();
 
     if (!product) {
-      throw new Error(RATE_FOR_NOT_EXISTING_PRODUCT);
+      throw new RuleError(RATE_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
     }
     const { userRates } = product;
     let { rateCount } = product;

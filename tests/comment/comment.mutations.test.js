@@ -63,7 +63,6 @@ jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.setTimeout(10000);
 
 let commentId;
 let operations;
@@ -215,14 +214,13 @@ describe('Comment queries', () => {
       operations
     );
     commentId = receivedComment._id;
-
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty('product', { _id: productId });
     expect(receivedComment).toHaveProperty('text', newComment(adminId).text);
     expect(receivedComment).toHaveProperty('user', { _id: adminId });
     expect(receivedComment).toHaveProperty('show', newComment(adminId).show);
-    expect(receivedComment).toHaveProperty('verifiedPurchase', true);
+    expect(receivedComment).toHaveProperty('verifiedPurchase', false);
   });
 
   it('should add reply to comment with bought order icon', async () => {
@@ -246,7 +244,7 @@ describe('Comment queries', () => {
     );
     expect(receivedComment.replyComments[0]).toHaveProperty(
       'verifiedPurchase',
-      true
+      false
     );
   });
   it('should return error if id of comment to add reply is not correct', async () => {

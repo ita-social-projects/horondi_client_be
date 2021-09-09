@@ -53,8 +53,13 @@ const isTheSameUser = and(
 const inputDataValidation = (data, validationSchema) =>
   rule()((_, args) => {
     const { error } = Joi.validate(args[data], validationSchema);
+    let result = true;
 
-    return !error ? true : new RuleError(error.details[0].message, FORBIDDEN);
+    if (error) {
+      result = new RuleError(error.details[0].message, FORBIDDEN);
+    }
+
+    return result;
   });
 
 const isProductToCartCorrect = rule()(async (_, args) => {

@@ -350,6 +350,95 @@ const getAllComments = async (filter, pagination, sort, operations) => {
   });
   return res.data.getAllComments;
 };
+const getCommentsByUser = async (
+  filter,
+  pagination,
+  sort,
+  userId,
+  operations
+) => {
+  const res = await operations.query({
+    query: gql`
+      query(
+        $filter: CommentFilterInput
+        $pagination: Pagination
+        $sort: CommentsSortInput
+        $userId: ID!
+      ) {
+        getCommentsByUser(
+          filter: $filter
+          pagination: $pagination
+          sort: $sort
+          userId: $userId
+        ) {
+          items {
+            _id
+            text
+            date
+            replyCommentsCount
+            product {
+              _id
+              name {
+                value
+              }
+            }
+            show
+          }
+          count
+        }
+      }
+    `,
+    variables: {
+      filter,
+      pagination,
+      sort,
+      userId,
+    },
+  });
+  return res.data.getCommentsByUser;
+};
+const getCommentsRepliesByUser = async (
+  filter,
+  pagination,
+  sort,
+  userId,
+  operations
+) => {
+  const res = await operations.query({
+    query: gql`
+      query(
+        $filter: ReplyCommentFilterInput
+        $pagination: Pagination
+        $sort: ReplyCommentsSortInput
+        $userId: ID!
+      ) {
+        getCommentsRepliesByUser(
+          filter: $filter
+          pagination: $pagination
+          sort: $sort
+          userId: $userId
+        ) {
+          items {
+            _id
+            replyText
+            createdAt
+            refToReplyComment
+            verifiedPurchase
+            showReplyComment
+          }
+          count
+        }
+      }
+    `,
+    variables: {
+      filter,
+      pagination,
+      sort,
+      userId,
+    },
+  });
+  return res.data.getCommentsRepliesByUser;
+};
 const getRecentComments = async (limit, operations) => {
   const res = await operations.query({
     query: gql`
@@ -416,6 +505,8 @@ module.exports = {
   deleteReplyComment,
   updateReplyComment,
   getAllComments,
+  getCommentsByUser,
+  getCommentsRepliesByUser,
   getRecentComments,
   getReplyCommentsByProduct,
   getReplyCommentById,

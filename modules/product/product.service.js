@@ -13,7 +13,7 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { uploadProductImages } = require('./product.utils');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateBasePrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
@@ -42,7 +42,7 @@ const {
 const { getCurrencySign } = require('../../utils/product-service');
 const RuleError = require('../../errors/rule.error');
 const {
-  STATUS_CODES: { FORBIDDEN },
+  STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
@@ -75,10 +75,18 @@ const {
     IS_HOT_ITEM,
   },
 } = require('../../consts/history-obj-keys');
+const {
+  finalPriceCalculation,
+  finalPriceRecalculation,
+} = require('../../utils/final-price-calculation');
 
 class ProductsService {
   async getProductById(id) {
-    return Product.findById(id).exec();
+    const product = await Product.findById(id).exec();
+    if (!product) {
+      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+    }
+    return product;
   }
 
   async getProductsFilters() {
@@ -138,7 +146,7 @@ class ProductsService {
   async getModelsByCategory(id) {
     const product = await Product.find({ category: id }).exec();
     if (product.length === 0) {
-      throw new Error(CATEGORY_NOT_FOUND);
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
     return product;
   }
@@ -206,7 +214,9 @@ class ProductsService {
       .sort(sort)
       .exec();
 
-    const count = await Product.find(filters).countDocuments();
+    const count = await Product.find(filters)
+      .countDocuments()
+      .exec();
 
     return {
       items,
@@ -280,7 +290,8 @@ class ProductsService {
       productData.images.additional = [...additional, ...previousImagesLinks];
     }
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
+    productData.sizes = await finalPriceCalculation(productData);
     if (productData) {
       const { beforeChanges, afterChanges } = getChanges(product, productData);
 
@@ -303,12 +314,12 @@ class ProductsService {
 
   async addProduct(productData, filesToUpload, { _id: adminId }) {
     if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
     }
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
 
     productData.model = await modelService.getModelById(productData.model);
 
@@ -317,7 +328,10 @@ class ProductsService {
       additional,
     };
 
+    productData.sizes = await finalPriceCalculation(productData);
+
     const newProduct = await new Product(productData).save();
+
     if (productData) {
       const historyRecord = generateHistoryObject(
         ADD_PRODUCT,
@@ -356,7 +370,7 @@ class ProductsService {
       .lean()
       .exec();
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
     }
     const { images } = product;
     const { primary, additional } = images;
@@ -460,6 +474,29 @@ class ProductsService {
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId).exec();
     return Product.find({ _id: { $in: cart } }).exec();
+  }
+
+  async updatePrices(previousPriceValue, nextPriceValue, path, id) {
+    if (
+      previousPriceValue.additionalPrice[1]?.value !==
+        nextPriceValue.additionalPrice[1]?.value ||
+      previousPriceValue.additionalPrice[0].value !==
+        nextPriceValue.additionalPrice.value
+    ) {
+      const products = await Product.find({
+        [`${path}`]: {
+          $eq: id,
+        },
+      })
+        .distinct('_id')
+        .exec();
+
+      for (const productId of products) {
+        await Product.findByIdAndUpdate(productId, {
+          sizes: await finalPriceRecalculation(productId),
+        }).exec();
+      }
+    }
   }
 }
 
