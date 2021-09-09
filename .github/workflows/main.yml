@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: '14.15.4' 
       - run: npm install
+      - run: npm list graphql-upload
       - run: npm run test
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
