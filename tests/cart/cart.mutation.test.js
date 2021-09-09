@@ -309,7 +309,7 @@ describe('Cart queries', () => {
       operations
     );
 
-    expect(res.cart.totalPrice[zeroIndex].value).toBe(0);
+    expect(res.cart.totalPrice[zeroIndex].value).toBe(26190);
   });
   it('Should throw error in case of wrong removing product from cart', async () => {
     const res = await removeProductItemsFromCart(
