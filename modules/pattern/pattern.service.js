@@ -1,7 +1,7 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
@@ -33,6 +33,10 @@ const {
     OPTION_TYPE,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { PATTERN },
+} = require('../../consts/input-fields');
 
 class PatternsService {
   async getAllPatterns(limit, skip, filter) {
@@ -92,8 +96,12 @@ class PatternsService {
     }
 
     if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
+      pattern.additionalPrice = await calculateAdditionalPrice(
+        pattern.additionalPrice
+      );
     }
+
+    await updatePrices(patternToUpdate, pattern, PATTERN, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
@@ -112,7 +120,9 @@ class PatternsService {
     await addHistoryRecord(historyRecord);
 
     if (!image) {
-      return Pattern.findByIdAndUpdate(id, pattern, { new: true }).exec();
+      return Pattern.findByIdAndUpdate(id, pattern, {
+        new: true,
+      }).exec();
     }
 
     const uploadResult = await uploadService.uploadFile(image[0]);
@@ -152,7 +162,9 @@ class PatternsService {
     pattern.constructorImg = await uploadSmallImage(image[1]);
 
     if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculatePrice(pattern.additionalPrice);
+      pattern.additionalPrice = await calculateAdditionalPrice(
+        pattern.additionalPrice
+      );
     }
 
     const newPattern = await new Pattern({ ...pattern, images }).save();

@@ -1,7 +1,7 @@
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
 const uploadService = require('../upload/upload.service');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const { uploadSmallImage } = require('../upload/upload.utils');
 const {
   commonFiltersHandler,
@@ -116,7 +116,9 @@ class StrapService {
     }
 
     if (strap.additionalPrice) {
-      strap.additionalPrice = await calculatePrice(strap.additionalPrice);
+      strap.additionalPrice = await calculateAdditionalPrice(
+        strap.additionalPrice
+      );
     }
 
     if (!image) {
@@ -150,7 +152,9 @@ class StrapService {
     }
 
     if (strap.additionalPrice) {
-      strap.additionalPrice = await calculatePrice(strap.additionalPrice);
+      strap.additionalPrice = await calculateAdditionalPrice(
+        strap.additionalPrice
+      );
     }
 
     const newStrap = await new Strap(strap).save();

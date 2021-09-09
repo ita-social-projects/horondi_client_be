@@ -26,7 +26,7 @@ input ConstructorBasicInput {
     model: ID
     features: ConstructorBasicFeatureInput
     image: String
-    basePrice: Int
+    basePrice: Float
     available: Boolean
     customizable: Boolean
   }
