@@ -30,6 +30,9 @@ const INPUT_FIELDS = {
   COMMENT: 'comment',
   HOME_PAGE_SLIDE: 'slide',
   POSITION: 'position',
+  MAIN_MATERIAL: 'mainMaterial.material',
+  INNER_MATERIAL: 'innerMaterial.material',
+  BOTTOM_MATERIAL: 'bottomMaterial.material',
   BASIC: 'basic',
 };
 
