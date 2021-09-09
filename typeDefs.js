@@ -616,7 +616,6 @@ const typeDefs = gql`
     getAllConstructorBottom(limit: Int, skip: Int, filter: ConstructorBottomFilterInput): PaginatedConstructorBottom!
     getAllPockets(limit:Int!, skip:Int!, filter:PocketFilterInput): PaginatedPockets!
     getPocketById(id: ID): PocketResult
-    getPocketsByModel(id: ID): [PocketResult]
     getAllBacks( limit:Int!, skip:Int!, filter:BackFilterInput): PaginatedBacks
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [BackResult]

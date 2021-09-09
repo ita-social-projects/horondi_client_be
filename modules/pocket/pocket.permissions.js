@@ -19,7 +19,6 @@ const {
 const pocketPermissionsQuery = {
   getAllPockets: allow,
   getPocketById: allow,
-  getPocketsByModel: allow,
 };
 
 const pocketPermissionsMutations = {
