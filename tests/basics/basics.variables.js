@@ -8,6 +8,10 @@ const newBasicsInputData = (materialId, colorId) => ({
     color: colorId,
   },
   available: true,
+  additionalPrice: {
+    value: 50,
+    type: 'ABSOLUTE_INDICATOR',
+  },
 });
 
 const newBasicsInputDataUpdate = (materialId, colorId) => ({
@@ -20,7 +24,10 @@ const newBasicsInputDataUpdate = (materialId, colorId) => ({
     color: colorId,
   },
   available: false,
-  additionalPrice: 4,
+  additionalPrice: {
+    value: 50,
+    type: 'ABSOLUTE_INDICATOR',
+  },
 });
 
 const wrongId = '611255923321a940581140c0';

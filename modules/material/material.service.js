@@ -3,7 +3,7 @@ const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
@@ -29,6 +29,10 @@ const {
     ADDITIONAL_PRICE,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { MAIN_MATERIAL, BOTTOM_MATERIAL, INNER_MATERIAL },
+} = require('../../consts/input-fields');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
@@ -97,24 +101,27 @@ class MaterialsService {
   }
 
   async updateMaterial(id, material, { _id: adminId }) {
-    const { additionalPrice, ...rest } = material;
-
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
       throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
-
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
       throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
-    const updatedMaterial = await Material.findByIdAndUpdate(
-      id,
-      {
-        ...rest,
-        additionalPrice: [calculatePrice(additionalPrice)],
-      },
-      { new: true }
-    ).exec();
+
+    if (material.additionalPrice) {
+      material.additionalPrice = await calculateAdditionalPrice(
+        material.additionalPrice
+      );
+    }
+
+    const updatedMaterial = await Material.findByIdAndUpdate(id, material, {
+      new: true,
+    }).exec();
+
+    await updatePrices(materialToUpdate, material, MAIN_MATERIAL, id);
+    await updatePrices(materialToUpdate, material, INNER_MATERIAL, id);
+    await updatePrices(materialToUpdate, material, BOTTOM_MATERIAL, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       materialToUpdate,
@@ -139,7 +146,9 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
-    material.additionalPrice = calculatePrice(material.additionalPrice);
+    material.additionalPrice = await calculateAdditionalPrice(
+      material.additionalPrice
+    );
 
     const newMaterial = await new Material(material).save();
 

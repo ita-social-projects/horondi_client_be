@@ -26,7 +26,7 @@ const constructorBottomInputs = `
     model: ID
     features: ConstructorBottomFeatureInput
     image: String
-    basePrice: Int
+    basePrice: Float
     available: Boolean
     customizable: Boolean
   }
