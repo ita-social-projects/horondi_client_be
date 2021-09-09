@@ -14,6 +14,12 @@ class TestFile {
         filename: 'TestImage.png',
         mimetype: 'image/jpg',
       },
+      file: {
+        createReadStream: () => this.file,
+        stream: this.file,
+        filename: 'TestImage.png',
+        mimetype: 'image/jpg',
+      },
     };
   }
 }
