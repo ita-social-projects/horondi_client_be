@@ -92,7 +92,9 @@ const updateProduct = async (id, product, primary, operations) =>
               _id
             }
             sizes {
-              _id
+              size {
+                _id
+              }
             }
             availableCount
           }
@@ -171,7 +173,9 @@ const getProductById = async (id, operations) =>
               _id
             }
             sizes {
-              _id
+              size {
+                _id
+              }
             }
             availableCount
             userRates {

@@ -1,6 +1,6 @@
 const Pocket = require('./pocket.model');
+const { calculateBasePrice } = require('../currency/currency.utils');
 const uploadService = require('../upload/upload.service');
-const { calculatePrice } = require('../currency/currency.utils');
 const RuleError = require('../../errors/rule.error');
 const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
 const {
@@ -61,15 +61,6 @@ class PocketService {
     throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
   }
 
-  async getPocketsByModel(id) {
-    const pocket = Pocket.find({ model: id }).exec();
-
-    if (!pocket) {
-      throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
-    }
-    return pocket;
-  }
-
   async deletePocket(id, { _id: adminId }) {
     const foundPocket = await Pocket.findByIdAndDelete(id)
       .lean()
@@ -108,7 +99,7 @@ class PocketService {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
-    pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
+    pocket.additionalPrice = await calculateBasePrice(pocket.additionalPrice);
 
     if (image) {
       if (pocketToUpdate.images) {
@@ -147,7 +138,7 @@ class PocketService {
       pocket.images = uploadImage.fileNames;
     }
 
-    pocket.additionalPrice = await calculatePrice(pocket.additionalPrice);
+    pocket.additionalPrice = await calculateBasePrice(pocket.additionalPrice);
 
     const newPocket = await new Pocket(pocket).save();
 
