@@ -10,6 +10,7 @@ const { optionType } = require('../consts');
 const {
   CONSTRUCTOR_OPTION_TYPES: {
     BACK_OPTION,
+    BOTTOM_OPTION,
     CLOSURE,
     CONSTRUCTOR_BASIC,
     CONSTRUCTOR_BOTTOM,
@@ -105,6 +106,26 @@ const inputOptionValidator = Joi.object({
   }),
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
+});
+
+const inputBottomValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string()
+    .trim()
+    .valid(BOTTOM_OPTION),
+  features: Joi.object({
+    material: Joi.string()
+      .trim()
+      .required(),
+    color: Joi.string()
+      .trim()
+      .required(),
+  }),
+  image: Joi.string(),
+  additionalPrice: Joi.number()
+    .optional()
+    .default(0),
+  available: Joi.boolean().required(),
 });
 
 const inputStrapValidator = Joi.object({
@@ -224,6 +245,7 @@ const restrictionValidator = Joi.object({
 module.exports = {
   inputPocketValidator,
   inputOptionValidator,
+  inputBottomValidator,
   inputStrapValidator,
   inputPatternValidator,
   inputConstructorElementValidator,

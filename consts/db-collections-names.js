@@ -27,6 +27,7 @@ const DB_COLLECTIONS_NAMES = {
   MATERIAL: 'Material',
   POCKET: 'Pocket',
   BACK: 'Back',
+  BOTTOM: 'Bottom',
   STRAP: 'Strap',
   RESTRICTION: 'Restriction',
   HEADER: 'Header',

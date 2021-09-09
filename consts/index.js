@@ -83,5 +83,5 @@ module.exports = {
   SOURCES,
   USER_FIELDS,
   objectType,
-  optionType
+  optionType,
 };
