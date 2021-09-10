@@ -22,9 +22,9 @@ const cartQuery = {
 };
 
 const cartMutation = {
-  addProductToCart: async (_, { sizeId, id, product }) => {
+  addProductToCart: async (_, { sizeId, id, product, price }) => {
     try {
-      return await addProductToCart(sizeId, id, product);
+      return await addProductToCart(sizeId, id, product, price);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

@@ -6,11 +6,22 @@ const newProductInCart = (productId, sizeId) => ({
     },
   },
 });
+const price = [
+  {
+    currency: 'UAH',
+    value: 50,
+  },
+  {
+    currency: 'USD',
+    value: 2,
+  },
+];
 const testQuantity = 3;
 const sizeName = 'S';
 const userWrongId = '60d593c866a99333c0343a5b';
 const productWrongId = '60d593c866a9fh7tjb343a5b';
 const sizeWrongId = '60d593c866a99333c0343a5b';
+const expectedPrice = 25310;
 const newProductInputData2 = (
   categoryId,
   modelId,
@@ -59,4 +70,6 @@ module.exports = {
   sizeWrongId,
   newProductInputData2,
   userWrongId,
+  price,
+  expectedPrice,
 };

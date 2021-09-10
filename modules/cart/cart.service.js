@@ -69,7 +69,7 @@ class CartService {
     ).exec();
   }
 
-  async addProductToCart(sizeId, id, { _id }) {
+  async addProductToCart(sizeId, id, { _id }, price) {
     const isProductAlreadyExistsInCart = await UserModel.findOne(
       {
         _id: id,
@@ -78,13 +78,7 @@ class CartService {
       'cart.items.$'
     ).exec();
 
-    const { additionalPrice } = await getSizeById(sizeId);
-
-    if (!additionalPrice) throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
-
-    const productPriceWithSize = calculateCartItemPriceWithSize(
-      additionalPrice
-    );
+    const productPriceWithSize = calculateCartItemPriceWithSize(price);
 
     const { cart } = await UserModel.findById(id, 'cart -_id').exec();
 
@@ -329,7 +323,6 @@ class CartService {
         currency,
       })
     );
-
     if (cart.items?.length > 1) {
       const oldTotalSum = totalCartSum(
         REMOVE_ITEM,

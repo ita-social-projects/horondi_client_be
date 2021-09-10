@@ -34,6 +34,8 @@ const {
   productWrongId,
   sizeWrongId,
   newProductInputData2,
+  price,
+  expectedPrice,
 } = require('./cart.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
@@ -212,6 +214,7 @@ describe('Cart queries', () => {
       productId,
       adminId,
       sizeId,
+      price,
       operations
     );
     cart = productSentToCart.cart.items[zeroIndex];
@@ -219,6 +222,7 @@ describe('Cart queries', () => {
       productId2,
       adminId,
       sizeId,
+      price,
       operations
     );
 
@@ -229,21 +233,12 @@ describe('Cart queries', () => {
     });
     expect(productSentToCart2.cart.items).toHaveLength(2);
   });
-  it('Should throw error SIZES_NOT_FOUND while adding Product to cart', async () => {
-    const res = await addProductToCart(
-      productId,
-      adminId,
-      sizeWrongId,
-      operations
-    );
-
-    expect(res).toHaveProperty('message', SIZES_NOT_FOUND);
-  });
   it('Should increase product quantity after adding the same Product to cart', async () => {
     const productSentToCart = await addProductToCart(
       productId,
       adminId,
       sizeId,
+      price,
       operations
     );
     cart = productSentToCart.cart.items[zeroIndex];
@@ -309,7 +304,7 @@ describe('Cart queries', () => {
       operations
     );
 
-    expect(res.cart.totalPrice[zeroIndex].value).toBe(26190);
+    expect(res.cart.totalPrice[zeroIndex].value).toBe(expectedPrice);
   });
   it('Should throw error in case of wrong removing product from cart', async () => {
     const res = await removeProductItemsFromCart(

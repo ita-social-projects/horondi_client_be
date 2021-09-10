@@ -658,7 +658,7 @@ const typeDefs = gql`
     pattern: [String]
     materials: [String]
     colors: [String]
-    price: [Int]
+    price: [Float]
     category: [String]
     search: String
     isHotItem: Boolean
@@ -843,7 +843,7 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    addProductToCart(productId: ID!, sizeId: ID!, id: ID!): UserResult
+    addProductToCart(productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
     cleanCart(id: ID!): UserResult
     updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
     addConstructorProductItemToCart(
