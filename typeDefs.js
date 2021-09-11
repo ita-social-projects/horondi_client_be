@@ -145,6 +145,11 @@ const {
   positionInputs,
 } = require('./modules/position/position.graphql');
 const {
+  bottomType,
+  bottomInputs,
+  bottomFeatureSet,
+} = require('./modules/bottom/bottom.graphql');
+const {
   basicsType,
   basicsInputs,
   basicsFeatureSet,
@@ -196,6 +201,8 @@ const typeDefs = gql`
   ${pocketSide}
   ${backType}
   ${backFeatureSet}
+  ${bottomType}
+  ${bottomFeatureSet}
   ${strapType}
   ${strapFeatureType}
   ${positionType}
@@ -212,6 +219,7 @@ const typeDefs = gql`
   }
   enum OptionTypeEnum {
     BACK
+    BOTTOM
     CLOSURE
     CONSTRUCTOR_BASIC
     CONSTRUCTOR_BOTTOM
@@ -221,6 +229,10 @@ const typeDefs = gql`
     STRAP
     SIDE
   }
+  enum additionalPriceType {
+    RELATIVE_INDICATOR
+    ABSOLUTE_INDICATOR
+  }
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
@@ -229,7 +241,12 @@ const typeDefs = gql`
     value: String
   }
   type CurrencySet {
-    currency: String!
+    currency: String
+    value: Float!
+  }
+  type AdditionalCurrencySet {
+    currency: String
+    type: additionalPriceType!
     value: Float!
   }
   type ImageSet {
@@ -321,7 +338,7 @@ const typeDefs = gql`
     name: [Language!]
     description: [Language!]
     available: Boolean
-    additionalPrice: Int
+    additionalPrice: [CurrencySet]
   }
   type PaginatedProducts {
     items: [Product]
@@ -403,6 +420,10 @@ const typeDefs = gql`
     items: [Back]
     count: Int
   }
+  type PaginatedBottoms {
+    items: [Bottom]
+    count: Int
+  }
   type PaginatedStraps {
     items: [Strap]
     count: Int
@@ -425,6 +446,10 @@ const typeDefs = gql`
   type PaginatedConstructorFrontPocket {
       items: [ConstructorFrontPocket]
       count: Int
+  }
+  type FinalPricesForSizes {
+      size: Size
+      price: [CurrencySet]
   }
   type countOrderResult {
     countOrder: Int
@@ -466,6 +491,7 @@ const typeDefs = gql`
   union ConstructorFrontPocketResult = ConstructorFrontPocket | Error
   union PocketResult = Pocket | Error
   union BackResult = Back | Error
+  union BottomResult = Bottom | Error
   union StrapResult = Strap | Error
   
   union HistoryResult = History | Error
@@ -603,10 +629,11 @@ const typeDefs = gql`
     getAllConstructorBottom(limit: Int, skip: Int, filter: ConstructorBottomFilterInput): PaginatedConstructorBottom!
     getAllPockets(limit:Int!, skip:Int!, filter:PocketFilterInput): PaginatedPockets!
     getPocketById(id: ID): PocketResult
-    getPocketsByModel(id: ID): [PocketResult]
     getAllBacks( limit:Int!, skip:Int!, filter:BackFilterInput): PaginatedBacks
     getBackById(id: ID): BackResult
     getBacksByModel(id: ID): [BackResult]
+    getAllBottoms( limit:Int!, skip:Int!, filter:BottomFilterInput): PaginatedBottoms
+    getBottomById(id: ID): BottomResult
     getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [StrapResult]
@@ -700,6 +727,7 @@ const typeDefs = gql`
   ${pocketInputs}
   ${pocketSideInput}
   ${backInputs}
+  ${bottomInputs}
   ${strapInputs}
   ${positionInputs}
   ${basicsInputs}
@@ -710,6 +738,10 @@ const typeDefs = gql`
   input CurrencySetInput {
     currency: String!
     value: Float!
+  }
+  input additionalPriceInput {
+    value: Float!
+    type: additionalPriceType
   }
   input AddressInput {
     country: String
@@ -973,6 +1005,10 @@ const typeDefs = gql`
     addBack(back: BackInput!, image: Upload):BackResult
     updateBack(id: ID, back: BackInput!, image: Upload):BackResult
     deleteBack(id: ID):BackResult
+    "Bottom Mutation"
+    addBottom(bottom: BottomInput!, image: Upload):BottomResult
+    updateBottom(id: ID, bottom: BottomInput!, image: Upload):BottomResult
+    deleteBottom(id: ID):BottomResult
     "Strap Mutation"
     addStrap(strap: StrapInput!, image: Upload): StrapResult
     updateStrap(id: ID, strap: StrapInput!, image: Upload):StrapResult

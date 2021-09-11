@@ -10,7 +10,7 @@ const sizeType = `
     volumeInLiters: Int!
     weightInKg: Float!
     available: Boolean!
-    additionalPrice: [CurrencySet]!
+    additionalPrice: [AdditionalCurrencySet]!
   }
   type SizeItems {
     items:[Size]
@@ -29,7 +29,7 @@ const sizeInput = `
     volumeInLiters: Int!
     weightInKg: Float!
     available: Boolean!
-    additionalPrice: Int!
+    additionalPrice: additionalPriceInput!
   }
   input SizeFilterInput{
     available:[String]
