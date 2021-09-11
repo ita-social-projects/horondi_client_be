@@ -110,7 +110,6 @@ const inputStrapValidator = Joi.object({
     .trim()
     .valid(STRAP)
     .required(),
-  model: Joi.string(),
   features: Joi.object({
     color: Joi.string()
       .trim()
@@ -123,7 +122,6 @@ const inputStrapValidator = Joi.object({
     .optional()
     .default(0),
   available: Joi.boolean().required(),
-  customizable: Joi.boolean(),
 });
 
 const inputPatternValidator = Joi.object({

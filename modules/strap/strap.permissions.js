@@ -25,14 +25,9 @@ const strapPermissionsQuery = {
 const strapPermissionsMutations = {
   addStrap: and(
     inputDataValidation(STRAP, inputStrapValidator),
-    hasRoles([ADMIN, SUPERADMIN]),
     checkIfItemExists(STRAP, StrapModel)
   ),
-  updateStrap: and(
-    inputDataValidation(STRAP, inputStrapValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
-  deleteStrap: hasRoles([ADMIN, SUPERADMIN]),
+  updateStrap: and(inputDataValidation(STRAP, inputStrapValidator)),
 };
 
 module.exports = {
