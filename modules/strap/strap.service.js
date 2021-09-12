@@ -64,7 +64,7 @@ class StrapService {
     throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
   }
 
-  async deleteStrap(id) {
+  async deleteStrap(id, { _id: adminId }) {
     const foundStrap = await Strap.findByIdAndDelete(id)
       .lean()
       .exec();
@@ -77,30 +77,29 @@ class StrapService {
       await uploadService.deleteFiles([foundStrap.image]);
     }
 
-    // const historyRecord = generateHistoryObject(
-    //   DELETE_STRAP,
-    //   foundStrap.model,
-    //   foundStrap.name[UA].value,
-    //   foundStrap._id,
-    //   generateHistoryChangesData(foundStrap, [
-    //     NAME,
-    //     OPTION_TYPE,
-    //     MODEL,
-    //     FEATURES,
-    //     AVAILABLE,
-    //     ADDITIONAL_PRICE,
-    //   ]),
-    //   [],
-    //   adminId
-    // );
-    //
-    // await addHistoryRecord(historyRecord);
+    const historyRecord = generateHistoryObject(
+      DELETE_STRAP,
+      foundStrap.model,
+      foundStrap.name[UA].value,
+      foundStrap._id,
+      generateHistoryChangesData(foundStrap, [
+        NAME,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      [],
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
 
     return foundStrap;
   }
 
-  async updateStrap(id, strap, image) {
-    const adminId = 'askdjasj';
+  async updateStrap(id, strap, image, { _id: adminId }) {
     const strapToUpdate = await Strap.findById(id).exec();
 
     if (!strapToUpdate) {
@@ -133,14 +132,12 @@ class StrapService {
       adminId
     );
 
-    // await addHistoryRecord(historyRecord);
+    await addHistoryRecord(historyRecord);
 
     return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
   }
 
-  async addStrap(strap, image) {
-    const adminId = 'sadsad';
-    console.log(image);
+  async addStrap(strap, image, { _id: adminId }) {
     if (image) {
       strap.image = await uploadSmallImage(image);
     }
@@ -170,7 +167,7 @@ class StrapService {
       adminId
     );
 
-    // await addHistoryRecord(historyRecord);
+    await addHistoryRecord(historyRecord);
 
     return newStrap;
   }
