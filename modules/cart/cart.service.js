@@ -1,5 +1,4 @@
 const UserModel = require('../user/user.model');
-const SizeModel = require('../size/size.model');
 const ProductModel = require('../product/product.model');
 const ConstructorBasicModel = require('../constructor/constructor-basic/constructor-basic.model');
 const ConstructorBottomModel = require('../constructor/constructor-bottom/constructor-bottom.model');
@@ -430,9 +429,7 @@ class CartService {
   async mergeCartFromLS(cartFromLS, id) {
     await Promise.all(
       cartFromLS.map(async item => {
-        const { additionalPrice: sizePrice } = await SizeModel.findById(
-          item.options.size
-        ).exec();
+        const { price: cartPrice } = item.price;
 
         if (item.product) {
           const isProductPresent = await ProductModel.findById(
@@ -451,12 +448,7 @@ class CartService {
             'cart.items.$'
           ).exec();
 
-          if (sizePrice && !isProductAlreadyInCart && isProductPresent) {
-            const itemPrice = calculateCartItemPriceWithSize(
-              sizePrice,
-              item.quantity
-            );
-
+          if (cartPrice && !isProductAlreadyInCart && isProductPresent) {
             await UserModel.findOneAndUpdate(
               { _id: id },
               {
@@ -465,7 +457,7 @@ class CartService {
                     product: item.product,
                     quantity: item.quantity,
                     'options.size': item.options.size,
-                    price: itemPrice,
+                    price: cartPrice,
                   },
                 },
               }
@@ -530,7 +522,7 @@ class CartService {
             isPatternPresent
           ) {
             const itemPrice = calculateConstructorCartItemPriceWithSize(
-              sizePrice,
+              cartPrice,
               constructorBasicsPrice,
               constructorBottomPrice,
               constructorFrontPocketPrice,
