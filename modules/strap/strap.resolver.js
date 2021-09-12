@@ -17,13 +17,6 @@ const strapQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getStrapsByModel: async (_, { id }) => {
-    try {
-      return await strapService.getStrapsByModel(id);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
 };
 
 const strapMutation = {

@@ -12,9 +12,6 @@ const createStrap = async (strap, image, operations) => {
               value
             }
             optionType
-            model {
-              _id
-            }
             features {
               color {
                 _id
@@ -22,7 +19,6 @@ const createStrap = async (strap, image, operations) => {
             }
             image
             available
-            customizable
             additionalPrice {
               currency
               value
@@ -56,9 +52,6 @@ const updateStrap = async (id, strap, image, operations) => {
               value
             }
             optionType
-            model {
-              _id
-            }
             features {
               color {
                 _id
@@ -66,7 +59,6 @@ const updateStrap = async (id, strap, image, operations) => {
             }
             image
             available
-            customizable
             additionalPrice {
               currency
               value
@@ -124,9 +116,6 @@ const getStrapById = async (id, operations) => {
               value
             }
             optionType
-            model {
-              _id
-            }
             features {
               color {
                 _id
@@ -134,7 +123,6 @@ const getStrapById = async (id, operations) => {
             }
             image
             available
-            customizable
             additionalPrice {
               currency
               value
@@ -154,49 +142,6 @@ const getStrapById = async (id, operations) => {
   return result.data.getStrapById;
 };
 
-const getStrapsByModel = async (id, operations) => {
-  const result = await operations.query({
-    query: gql`
-      query($id: ID!) {
-        getStrapsByModel(id: $id) {
-          ... on Strap {
-            _id
-            name {
-              lang
-              value
-            }
-            optionType
-            model {
-              _id
-            }
-            features {
-              color {
-                _id
-              }
-            }
-            image
-            available
-            customizable
-            additionalPrice {
-              currency
-              value
-            }
-          }
-          ... on Error {
-            message
-            statusCode
-          }
-        }
-      }
-    `,
-    variables: {
-      id,
-    },
-  });
-
-  return result.data.getStrapsByModel;
-};
-
 const getAllStraps = async (limit, skip, filter, operations) => {
   const result = await operations.query({
     query: gql`
@@ -209,9 +154,6 @@ const getAllStraps = async (limit, skip, filter, operations) => {
               value
             }
             optionType
-            model {
-              _id
-            }
             features {
               color {
                 _id
@@ -219,7 +161,6 @@ const getAllStraps = async (limit, skip, filter, operations) => {
             }
             image
             available
-            customizable
             additionalPrice {
               currency
               value
@@ -243,7 +184,6 @@ module.exports = {
   deleteStrap,
   createStrap,
   getStrapById,
-  getStrapsByModel,
   getAllStraps,
   updateStrap,
 };
