@@ -206,6 +206,16 @@ describe('Cart queries', () => {
         options: {
           size: sizeId,
         },
+        price: [
+          {
+            currency: 'UAH',
+            value: 100,
+          },
+          {
+            currency: 'USD',
+            value: 5,
+          },
+        ],
       },
     ];
   });
