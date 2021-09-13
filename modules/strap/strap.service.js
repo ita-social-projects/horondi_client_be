@@ -112,13 +112,11 @@ class StrapService {
       );
     }
 
-    if (!image) {
-      return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
-    }
-
     await uploadService.deleteFiles([strap.image]);
 
-    strap.image = await uploadSmallImage(image);
+    if (image) {
+      strap.image = await uploadSmallImage(image);
+    }
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
 
