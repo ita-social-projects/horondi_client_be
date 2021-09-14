@@ -17,12 +17,6 @@ const {
 } = require('./strap.variables');
 const { color } = require('../color/color.variables');
 const { createColor } = require('../color/color.helper');
-const { createModel } = require('../model/model.helper');
-const { newModel } = require('../model/model.variables');
-const { createCategory } = require('../category/category.helper');
-const { newCategoryInputData } = require('../category/category.variables');
-const { createSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 
 jest.mock('../../modules/upload/upload.service');
@@ -34,8 +28,6 @@ let strapData;
 let strapId;
 let colorId;
 let modelId;
-let categoryId;
-let sizeId;
 
 describe('Strap mutations', () => {
   beforeAll(async () => {
@@ -43,36 +35,12 @@ describe('Strap mutations', () => {
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
-
-    const categoryData = await createCategory(newCategoryInputData, operations);
-    categoryId = categoryData._id;
-
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
-      operations
-    );
-    modelId = modelData._id;
-
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
-
-    strapData = await createStrap(
-      newStrap(colorId, modelId),
-      imgString,
-      operations
-    );
+    strapData = await createStrap(newStrap(colorId), imgString, operations);
     strapId = strapData._id;
   });
 
   test('#1. should create strap', async () => {
-    const convertedObj = await strapWithConvertedPrice(
-      colorId,
-      modelId,
-      newImgString
-    );
+    const convertedObj = await strapWithConvertedPrice(colorId, newImgString);
 
     expect(strapData).toBeDefined();
     expect(strapData).toEqual({
@@ -157,20 +125,7 @@ describe('Strap mutations', () => {
     expect(strapData).toHaveProperty('_id', strapId);
   });
 
-  test('#8. should return Error when try create strap', async () => {
-    strapData = await deleteStrap(strapId, operations);
-    const newStrapData = await createStrap(
-      newStrap(colorId, wrongModelIdForError),
-      null,
-      operations
-    );
-
-    expect(newStrapData).toBeDefined();
-    expect(newStrapData).toHaveProperty('message');
-    expect(newStrapData).toHaveProperty('statusCode');
-  });
-
-  test('#9. should return Error when try update strap', async () => {
+  test('#8. should return Error when try update strap', async () => {
     const updatedStrap = await updateStrap(
       strapId,
       strapToUpdate(colorId, wrongModelIdForError),
@@ -183,7 +138,7 @@ describe('Strap mutations', () => {
     expect(updatedStrap).toHaveProperty('statusCode');
   });
 
-  test('#10. should Return error when try delete strap', async () => {
+  test('#9. should Return error when try delete strap', async () => {
     strapData = await deleteStrap(wrongIdForError, operations);
 
     expect(strapData).toBeDefined();
