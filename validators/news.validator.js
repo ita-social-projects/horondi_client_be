@@ -38,7 +38,9 @@ const newsInputValidator = Joi.object({
         name_VALUE_MAX_CHARS
       )
     ),
+    image: Joi.any(),
   }),
+  image: Joi.any(),
   date: Joi.string().trim(),
   show: Joi.boolean(),
   languages: Joi.array().items(Joi.string().trim()),
