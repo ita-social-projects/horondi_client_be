@@ -61,7 +61,7 @@ class UploadService {
   }
 
   async uploadFile(file, sizes) {
-    const { createReadStream, filename } = await file.promise;
+    const { createReadStream, filename } = await file.file;
     const inputStream = createReadStream();
     let fileBuffer;
     const id = uniqid();
