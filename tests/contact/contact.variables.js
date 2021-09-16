@@ -29,11 +29,21 @@ const updatedContact = {
   ],
   email: 'updatedtest@updatedtest.com',
   images: [
-    { lang: 'uk', value: { medium: 'updatedmedium.jpg' } },
-    { lang: 'en', value: { medium: 'updatedmedium.jpg' } },
+    { lang: 'uk', value: { medium: 'update1.jpg' } },
+    { lang: 'en', value: { medium: 'update2.jpg' } },
+    { lang: 'en', value: { medium: 'medium.jpg' } },
   ],
   link: 'https://testURL.com',
 };
+ 
+const mapImages = [
+  {
+    lang: 'uk', image: 'update1.jpg'
+  },
+  {
+    lang: 'en', image: 'update4.jpg'
+  }
+]
 
 const newContact = {
   phoneNumber: '380964422333',
@@ -53,9 +63,13 @@ const newContact = {
   link: 'https://testURL.com',
 };
 
+const mapImagesNew = [];
+
 module.exports = {
   contact,
   updatedContact,
   notExistContactId,
   newContact,
+  mapImages,
+  mapImagesNew
 };
