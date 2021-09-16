@@ -73,11 +73,17 @@ const getCartByUserId = async (userId, operations) => {
   });
   return res.data.getCartByUserId;
 };
-const addProductToCart = async (productId, adminId, sizeId, operations) => {
+const addProductToCart = async (
+  productId,
+  adminId,
+  sizeId,
+  price,
+  operations
+) => {
   const res = await operations.mutate({
     mutation: gql`
-        mutation($productId: ID!, $sizeId: ID!, $id:ID!) {
-            addProductToCart(productId: $productId, sizeId: $sizeId, id:$id) {
+        mutation($productId: ID!, $sizeId: ID!, $id:ID!, $price: [CurrencySetInput]!) {
+            addProductToCart(productId: $productId, sizeId: $sizeId, id:$id, price: $price) {
                 ... on User {
                     _id
                     firstName,
@@ -101,6 +107,7 @@ const addProductToCart = async (productId, adminId, sizeId, operations) => {
       productId,
       sizeId,
       id: adminId,
+      price,
     },
   });
   return res.data.addProductToCart;

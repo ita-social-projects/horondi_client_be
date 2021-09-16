@@ -165,6 +165,9 @@ const nestedItemValidator = Joi.object({
   fixedPrice: Joi.array()
     .has(nestedCostValidator)
     .optional(),
+  price: Joi.array()
+    .has(nestedCostValidator)
+    .required(),
 });
 
 const orderValidator = Joi.object({

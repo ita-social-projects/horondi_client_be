@@ -1,6 +1,16 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
 const orderStatus = 'CREATED';
 const paymentStatus = 'CREATED';
+const price = [
+  {
+    currency: 'UAH',
+    value: 50,
+  },
+  {
+    currency: 'USD',
+    value: 2,
+  },
+];
 const getOrdersInput = {
   filter: {
     date: { dateFrom: '', dateTo: '' },
@@ -31,16 +41,7 @@ const newOrderInputData = (
     courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
-    cost: [
-      {
-        currency: 'UAH',
-        value: 7000,
-      },
-      {
-        currency: 'USD',
-        value: 240,
-      },
-    ],
+    cost: price,
   },
   items: [
     {
@@ -52,16 +53,8 @@ const newOrderInputData = (
       options: {
         size: sizeId,
       },
-      fixedPrice: [
-        {
-          currency: 'UAH',
-          value: 7000,
-        },
-        {
-          currency: 'USD',
-          value: 240,
-        },
-      ],
+      fixedPrice: price,
+      price,
     },
   ],
   paymentMethod: 'CASH',
@@ -82,16 +75,7 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
     courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
-    cost: [
-      {
-        currency: 'UAH',
-        value: 7000,
-      },
-      {
-        currency: 'USD',
-        value: 240,
-      },
-    ],
+    cost: price,
   },
   items: [
     {
@@ -103,16 +87,8 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
       options: {
         size: sizeId,
       },
-      fixedPrice: [
-        {
-          currency: 'UAH',
-          value: 7000,
-        },
-        {
-          currency: 'USD',
-          value: 240,
-        },
-      ],
+      fixedPrice: price,
+      price,
     },
   ],
   paymentMethod: 'CASH',

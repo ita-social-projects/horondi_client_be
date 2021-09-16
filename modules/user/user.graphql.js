@@ -101,6 +101,7 @@ const cartInput = `
     product: ID
     productFromConstructor: ProductFromConstructorInput
     quantity: Int!
+    price: [CurrencySetInput]
     options: OptionsInput!
   }
   input RemoveItemsFromCartInput {
