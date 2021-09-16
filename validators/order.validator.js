@@ -183,7 +183,7 @@ const orderValidator = Joi.object({
   recipient: nestedUserValidator,
   delivery: nestedDeliveryValidator,
   items: Joi.array().has(nestedItemValidator),
-  user_id: Joi.string(),
+  user_id: Joi.string().empty(null),
   paymentMethod: Joi.string()
     .trim()
     .valid(CARD, CASH)
