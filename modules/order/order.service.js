@@ -2,7 +2,6 @@ const { ObjectId } = require('mongoose').Types;
 
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
-const User = require('../user/user.model');
 const {
   STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');

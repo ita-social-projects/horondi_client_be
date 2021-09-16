@@ -7,6 +7,7 @@ module.exports = {
   collectCoverage: true,
   coveragePathIgnorePatterns: [
     '/node_modules/',
+    'dump-database.js',
     'jest.config.js',
     'migrate-mongo-config.js',
     'migrations/',

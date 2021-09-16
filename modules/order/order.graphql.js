@@ -145,6 +145,7 @@ input OrderItemInput {
   isFromConstructor: Boolean
   options: ItemOptionsInput
   fixedPrice: [CurrencyInputSet]
+  price: [CurrencyInputSet]
 }
 input ItemOptionsInput{
   size: ID!

@@ -37,19 +37,17 @@ const getTotalCartSum = (items, userId) =>
     async (acc, item) => {
       const sum = await acc;
 
-      const { additionalPrice: sizePrice } = await getSizeById(
-        item.options.size
-      );
+      const itemPrice = item.price;
 
       if (item.product) {
         item.price = [
           {
             currency: UAH,
-            value: sizePrice[UAH_VALUE].value * item.quantity,
+            value: itemPrice[UAH_VALUE].value,
           },
           {
             currency: USD,
-            value: sizePrice[USD_VALUE].value * item.quantity,
+            value: itemPrice[USD_VALUE].value,
           },
         ];
         await UserModel.findOneAndUpdate(
@@ -88,7 +86,7 @@ const getTotalCartSum = (items, userId) =>
           {
             currency: UAH,
             value:
-              (sizePrice[UAH_VALUE].value +
+              (itemPrice[UAH_VALUE].value +
                 constructorBasicsPrice[UAH_VALUE].value +
                 constructorBottomPrice[UAH_VALUE].value +
                 constructorFrontPocketPrice[UAH_VALUE].value) *
@@ -97,7 +95,7 @@ const getTotalCartSum = (items, userId) =>
           {
             currency: USD,
             value:
-              (sizePrice[USD_VALUE].value +
+              (itemPrice[USD_VALUE].value +
                 constructorBasicsPrice[USD_VALUE].value +
                 constructorBottomPrice[USD_VALUE].value +
                 constructorFrontPocketPrice[USD_VALUE].value) *
