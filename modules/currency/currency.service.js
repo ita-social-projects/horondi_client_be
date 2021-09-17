@@ -4,17 +4,24 @@ const {
   CURRENCY_ALREADY_EXIST,
   CURRENCY_NOT_FOUND,
 } = require('../../error-messages/currency.messages');
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../consts/currency');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class CurrencyService {
   constructor() {
     this.currencyTypes = {
-      UAH: 'UAH',
-      USD: 'USD',
+      UAH,
+      USD,
     };
   }
 
   async getAllCurrencies() {
-    return await Currency.find().exec();
+    return Currency.find().exec();
   }
 
   async getCurrencyById(id) {
@@ -22,25 +29,25 @@ class CurrencyService {
     if (foundCurrency) {
       return foundCurrency;
     }
-    throw new Error(CURRENCY_NOT_FOUND);
+    throw new RuleError(CURRENCY_NOT_FOUND, NOT_FOUND);
   }
 
   async updateCurrency(id, currency) {
     const currencyToUpdate = await Currency.findById(id).exec();
     if (!currencyToUpdate) {
-      throw new Error(CURRENCY_NOT_FOUND);
+      throw new RuleError(CURRENCY_NOT_FOUND, NOT_FOUND);
     }
     if (await this.checkCurrencyExist(currency, id)) {
-      throw new Error(CURRENCY_ALREADY_EXIST);
+      throw new RuleError(CURRENCY_ALREADY_EXIST, BAD_REQUEST);
     }
-    return await Currency.findByIdAndUpdate(id, currency, {
+    return Currency.findByIdAndUpdate(id, currency, {
       new: true,
     }).exec();
   }
 
   async addCurrency(data) {
     if (await this.checkCurrencyExist(data)) {
-      throw new Error(CURRENCY_ALREADY_EXIST);
+      throw new RuleError(CURRENCY_ALREADY_EXIST, BAD_REQUEST);
     }
     return new Currency(data).save();
   }
@@ -50,7 +57,7 @@ class CurrencyService {
     if (foundCurrency) {
       return foundCurrency;
     }
-    throw new Error(CURRENCY_NOT_FOUND);
+    throw new RuleError(CURRENCY_NOT_FOUND, NOT_FOUND);
   }
 
   async deleteAllCurrencies() {

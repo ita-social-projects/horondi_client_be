@@ -1,10 +1,14 @@
 const categoryService = require('./category.service');
-const {
-  CATEGORY_NOT_FOUND,
-} = require('../../error-messages/category.messages');
+const RuleError = require('../../errors/rule.error');
 
 const categoryQuery = {
-  getAllCategories: (parent, args) => categoryService.getAllCategories(args),
+  getAllCategories: async (parent, args) => {
+    try {
+      return await categoryService.getAllCategories(args);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getCategoriesForBurgerMenu: (parent, args) =>
     categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),
@@ -12,44 +16,36 @@ const categoryQuery = {
     try {
       return await categoryService.getCategoryById(args.id);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   getCategoriesWithModels: () => categoryService.getCategoriesWithModels(),
 };
 
 const categoryMutation = {
-  addCategory: async (parent, args) => {
+  addCategory: async (parent, args, { user }) => {
     try {
-      return await categoryService.addCategory(args.category, args.upload);
+      return await categoryService.addCategory(
+        args.category,
+        args.upload,
+        user
+      );
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteCategory: async (parent, args) => {
+  deleteCategory: async (parent, args, { user }) => {
     try {
-      return await categoryService.deleteCategory(args);
+      return await categoryService.deleteCategory(args, user);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  updateCategory: async (parent, args) => {
+  updateCategory: async (parent, args, { user }) => {
     try {
-      return await categoryService.updateCategory(args);
+      return await categoryService.updateCategory(args, user);
     } catch (e) {
-      return {
-        statusCode: e.message === CATEGORY_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

@@ -29,6 +29,8 @@ const registerUser = async (
           _id
           firstName
           lastName
+          invitationalToken
+          refreshToken
           email
           role
           registrationDate
@@ -63,7 +65,7 @@ const updateUserById = async (
   token,
   operations
 ) => {
-  return await operations.mutate({
+  const updatedUser = await operations.mutate({
     mutation: gql`
       mutation(
         $userId: ID!
@@ -130,20 +132,31 @@ const updateUserById = async (
       comments,
     },
   });
+
+  return updatedUser;
 };
-const loginUser = async (email, pass, operations) => {
-  return await operations.mutate({
+const loginUser = async (email, pass, rememberMe, operations) => {
+  const loginedUser = await operations.mutate({
     mutation: gql`
-      mutation($email: String!, $password: String!) {
-        loginUser(loginInput: { email: $email, password: $password }) {
+      mutation($email: String!, $password: String!, $rememberMe: Boolean) {
+        loginUser(
+          loginInput: {
+            email: $email
+            password: $password
+            rememberMe: $rememberMe
+          }
+        ) {
           token
           firstName
           lastName
           comments
           _id
           email
+          role
           password
           phoneNumber
+          confirmationToken
+          recoveryToken
           address {
             zipcode
             buildingNumber
@@ -154,14 +167,6 @@ const loginUser = async (email, pass, operations) => {
             country
           }
           registrationDate
-          cart {
-            dimensions {
-              volumeInLiters
-            }
-            _id
-            sidePocket
-            selectedSize
-          }
           wishlist {
             _id
           }
@@ -175,11 +180,49 @@ const loginUser = async (email, pass, operations) => {
     variables: {
       email,
       password: pass,
+      rememberMe,
     },
   });
+  return loginedUser;
+};
+const googleUser = async (idToken, rememberMe, operations) => {
+  const googleUser = await operations.mutate({
+    mutation: gql`
+      mutation($idToken: String!, $rememberMe: Boolean) {
+        googleUser(idToken: $idToken, rememberMe: $rememberMe) {
+          token
+          _id
+        }
+      }
+    `,
+    variables: {
+      idToken,
+      rememberMe,
+    },
+  });
+  return googleUser.data.googleUser;
+};
+const regenerateAccessToken = async (refreshToken, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($refreshToken: String!) {
+        regenerateAccessToken(refreshToken: $refreshToken) {
+          ... on Token {
+            token
+            refreshToken
+            accessToken
+          }
+        }
+      }
+    `,
+    variables: {
+      refreshToken,
+    },
+  });
+  return res.data.regenerateAccessToken;
 };
 const getAllUsers = async operations => {
-  return await operations.query({
+  const allUsers = await operations.query({
     query: gql`
       query {
         getAllUsers {
@@ -203,9 +246,26 @@ const getAllUsers = async operations => {
       }
     `,
   });
+
+  return allUsers;
+};
+const getCountUserOrders = async (userId, operations) => {
+  const count = await operations.query({
+    query: gql`
+      query($userId: ID!) {
+        getCountUserOrders(id: $userId) {
+          countOrder
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return count.data.getCountUserOrders;
 };
 const getUserByToken = async operations => {
-  return await operations.query({
+  const user = await operations.query({
     query: gql`
       query {
         getUserByToken {
@@ -231,9 +291,31 @@ const getUserByToken = async operations => {
       }
     `,
   });
+
+  return user;
 };
-const getUserById = async (userId, operations) => {
-  return await operations.query({
+const getUsersForStatistic = async (filter, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($filter: UserForStatisticsInput) {
+        getUsersForStatistic(filter: $filter) {
+          ... on StatisticBar {
+            labels
+            counts
+            total
+          }
+        }
+      }
+    `,
+    variables: {
+      filter,
+    },
+  });
+
+  return res.data;
+};
+const getUserById = async (userId, operations) =>
+  await operations.query({
     query: gql`
       query($userId: ID!) {
         getUserById(id: $userId) {
@@ -258,6 +340,20 @@ const getUserById = async (userId, operations) => {
       userId,
     },
   });
+const getPurchasedProducts = async (userId, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($userId: ID!) {
+        getPurchasedProducts(id: $userId) {
+          _id
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return res.data.getPurchasedProducts;
 };
 const deleteUser = async (userId, operations) => {
   const res = await operations.mutate({
@@ -276,6 +372,165 @@ const deleteUser = async (userId, operations) => {
   });
   return res;
 };
+const blockUser = async (userId, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($userId: ID!) {
+        blockUser(userId: $userId) {
+          ... on User {
+            _id
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return res.data.blockUser;
+};
+const unlockUser = async (userId, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($userId: ID!) {
+        unlockUser(userId: $userId) {
+          ... on User {
+            _id
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return res.data.unlockUser;
+};
+const confirmUserEmail = async (token, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($token: String!) {
+        confirmUserEmail(token: $token) {
+          token
+          refreshToken
+          confirmed
+        }
+      }
+    `,
+    variables: {
+      token,
+    },
+  });
+  return res.data.confirmUserEmail;
+};
+const recoverUser = async (email, language, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($email: String!, $language: Int!) {
+        recoverUser(email: $email, language: $language)
+      }
+    `,
+    variables: {
+      email,
+      language,
+    },
+  });
+  return res.data.recoverUser;
+};
+
+const resetPassword = async (password, token, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($password: String!, $token: String!) {
+        resetPassword(password: $password, token: $token)
+      }
+    `,
+    variables: {
+      password,
+      token,
+    },
+  });
+  return res;
+};
+
+const checkIfTokenIsValid = async (token, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($token: String!) {
+        checkIfTokenIsValid(token: $token)
+      }
+    `,
+    variables: {
+      token,
+    },
+  });
+  return res;
+};
+const sendEmailConfirmation = async (email, language, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($email: String!, $language: Int!) {
+        sendEmailConfirmation(email: $email, language: $language)
+      }
+    `,
+    variables: {
+      email,
+      language,
+    },
+  });
+  return res;
+};
+const resendEmailToConfirmAdmin = async (user, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($user: resendEmailToConfirmAdminInput!) {
+        resendEmailToConfirmAdmin(user: $user) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      user,
+    },
+  });
+  return res;
+};
+const confirmSuperadminCreation = async (user, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($user: confirmSuperadminCreationInput!) {
+        confirmSuperadminCreation(user: $user) {
+          ... on SuccessfulResponse {
+            isSuccess
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      user,
+    },
+  });
+  return res;
+};
+
 const completeAdminRegister = async (
   token,
   firstName,
@@ -308,8 +563,8 @@ const completeAdminRegister = async (
   });
   return result;
 };
-const switchUserStatus = async (userId, operations) => {
-  return await operations.mutate({
+const switchUserStatus = async (userId, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         switchUserStatus(id: $id) {
@@ -327,9 +582,8 @@ const switchUserStatus = async (userId, operations) => {
       id: userId,
     },
   });
-};
-const loginAdmin = async (email, password, operations) => {
-  return await operations.mutate({
+const loginAdmin = async (email, password, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
@@ -345,9 +599,8 @@ const loginAdmin = async (email, password, operations) => {
       },
     },
   });
-};
-const getAllUsersWithToken = async (token, operations) => {
-  return await operations.query({
+const getAllUsersWithToken = async (token, operations) =>
+  await operations.query({
     query: gql`
       {
         getAllUsers {
@@ -366,9 +619,8 @@ const getAllUsersWithToken = async (token, operations) => {
       },
     },
   });
-};
-const validateConfirmationToken = async (token, operations) => {
-  return await operations.query({
+const validateConfirmationToken = async (token, operations) =>
+  await operations.query({
     query: gql`
       query($token: String!) {
         validateConfirmationToken(token: $token) {
@@ -385,19 +637,32 @@ const validateConfirmationToken = async (token, operations) => {
       token,
     },
   });
-};
 
 module.exports = {
   registerUser,
   loginUser,
   getAllUsers,
   getUserByToken,
+  getCountUserOrders,
   getUserById,
   deleteUser,
   loginAdmin,
+  googleUser,
+  blockUser,
+  unlockUser,
+  confirmUserEmail,
+  resendEmailToConfirmAdmin,
+  recoverUser,
+  checkIfTokenIsValid,
+  resetPassword,
+  sendEmailConfirmation,
   getAllUsersWithToken,
+  getUsersForStatistic,
   validateConfirmationToken,
+  regenerateAccessToken,
   updateUserById,
+  getPurchasedProducts,
   switchUserStatus,
   completeAdminRegister,
+  confirmSuperadminCreation,
 };

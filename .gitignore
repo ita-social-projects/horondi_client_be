@@ -3,6 +3,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/.history
 package-lock.json
 error.log
 combined.log
@@ -11,6 +12,9 @@ test-report.xml
 # testing
 /coverage
 /logs
+test-error.log
+test-combined.log
+
 # production
 
 # misc

@@ -1,8 +1,18 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
+const {
+  LANGUAGES: { UK, EN },
+} = require('../../consts/languages');
+const {
+  BRAND_NAMES: { UK_NAME, EN_NAME },
+} = require('../../consts/brand-names');
+const {
+  DB_COLLECTIONS_NAMES: { NEWS },
+} = require('../../consts/db-collections-names');
 
 const NewsSchema = new mongoose.Schema({
   title: [Language],
+  slug: String,
   text: [Language],
   image: String,
   author: {
@@ -10,12 +20,12 @@ const NewsSchema = new mongoose.Schema({
       type: Array,
       default: [
         {
-          lang: 'uk',
-          value: 'Горонді',
+          lang: UK,
+          value: UK_NAME,
         },
         {
-          lang: 'en',
-          value: 'Horondi',
+          lang: EN,
+          value: EN_NAME,
         },
       ],
     },
@@ -29,4 +39,4 @@ const NewsSchema = new mongoose.Schema({
   languages: [String],
 });
 
-module.exports = mongoose.model('News', NewsSchema);
+module.exports = mongoose.model(NEWS, NewsSchema);

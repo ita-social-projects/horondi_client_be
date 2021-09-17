@@ -1,52 +1,45 @@
 const patternService = require('./pattern.service');
-const { PATTERN_NOT_FOUND } = require('../../error-messages/pattern.messages');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const RuleError = require('../../errors/rule.error');
 
 const patternQuery = {
-  getAllPatterns: (parent, args) => patternService.getAllPatterns(args),
-  getPatternById: async (parent, args) => {
+  getAllPatterns: async (_, { limit, skip, filter }) => {
     try {
-      return await patternService.getPatternById(args.id);
+      return await patternService.getAllPatterns(limit, skip, filter);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getPatternById: async (_, { id }) => {
+    try {
+      return await patternService.getPatternById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const patternMutation = {
-  addPattern: async (parent, args) => {
+  addPattern: async (_, args, { user }) => {
     try {
-      return await patternService.addPattern(args);
+      return await patternService.addPattern(args, user);
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  deletePattern: async (parent, args) => {
+  deletePattern: async (_, { id }, { user }) => {
     try {
-      return await patternService.deletePattern(args.id);
+      return await patternService.deletePattern(id, user);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updatePattern: async (parent, args) => {
+  updatePattern: async (_, args, { user }) => {
     try {
-      return await patternService.updatePattern(args);
+      return await patternService.updatePattern(args, user);
     } catch (e) {
-      return {
-        statusCode: e.message === PATTERN_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

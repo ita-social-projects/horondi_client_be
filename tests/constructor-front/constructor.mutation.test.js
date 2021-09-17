@@ -1,9 +1,7 @@
-const { setupApp } = require('../helper-functions');
-const {
-  FRONT_POCKET_NOT_FOUND,
-  FRONT_POCKET_ALREADY_EXIST,
-} = require('../../error-messages/constructor-front-pocket-messages');
+const mongoose = require('mongoose');
 
+const { setupApp } = require('../helper-functions');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 const {
   createConstructorFrontPocket,
   deleteConstructorFrontPocket,
@@ -16,24 +14,38 @@ const {
   getConstructorData,
   getConstructorDataForUpt,
 } = require('./constructor.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
+const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { getMaterial } = require('../materials/material.variables');
+const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+} = require('../../error-messages/constructor-element-messages');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
+const { createModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const { createCategory } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize } = require('../size/size.helper');
+const { createPlainSize } = require('../size/size.variables');
 
 let operations;
 let colorId;
-let materialID;
+let sizeId;
+let categoryId;
+let modelId;
+let materialId;
 let constructorInput;
-let constructorFrontID;
+let constructorFrontId;
 let currentConstructorFront = {};
 let constructorUpdateInput;
 let currentconstructorUpdate;
 
+jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
 
 describe('constructor mutations', () => {
   beforeAll(async () => {
@@ -41,12 +53,37 @@ describe('constructor mutations', () => {
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
-    materialID = materialData._id;
-    constructorInput = newConstructorFront(materialID, colorId);
+    materialId = materialData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
 
-    constructorUpdateInput = getConstructorDataForUpt(constructorInput);
-    currentconstructorUpdate = getConstructorData(constructorUpdateInput);
-    currentConstructorFront = getConstructorData(constructorInput);
+    constructorInput = newConstructorFront(materialId, colorId, modelId);
+
+    constructorUpdateInput = getConstructorDataForUpt(
+      materialId,
+      colorId,
+      modelId
+    );
+    currentconstructorUpdate = getConstructorData(constructorUpdateInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
+    currentConstructorFront = getConstructorData(constructorInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
   });
 
   test('#1 Should add Constructor Front Pocket', async () => {
@@ -54,12 +91,12 @@ describe('constructor mutations', () => {
       constructorInput,
       operations
     );
-    constructorFrontID = createConstructor._id;
+    constructorFrontId = createConstructor._id;
 
     expect(createConstructor).toBeDefined();
     expect(createConstructor).toEqual({
       ...currentConstructorFront,
-      _id: constructorFrontID,
+      _id: constructorFrontId,
     });
   });
   test('#2 Constructor Front Pocket should return Error Constructor Front Pocket already exist', async () => {
@@ -69,52 +106,50 @@ describe('constructor mutations', () => {
     );
 
     expect(error).toBeDefined();
-    expect(error.message).toEqual(FRONT_POCKET_ALREADY_EXIST);
-    expect(error.statusCode).toEqual(400);
+    expect(error.message).toEqual(ITEM_ALREADY_EXISTS);
+    expect(error.statusCode).toEqual(BAD_REQUEST);
   });
-  test('#3 Should update existing Constructor Front Pocket ', async () => {
+  test('#3 Should update existing Constructor Front Pocket', async () => {
     const updateConstructor = await updateConstructorFrontPocket(
       constructorUpdateInput,
-      constructorFrontID,
+      constructorFrontId,
       operations
     );
 
     expect(updateConstructor).toBeDefined();
     expect(updateConstructor).toEqual({
       ...currentconstructorUpdate,
-      _id: constructorFrontID,
+      _id: constructorFrontId,
     });
   });
-  test('#4 Update Constructor Front Pocket should return FRONT_POCKET_NOT_FOUND', async () => {
+  test('#4 Update Constructor Front Pocket should return CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const result = await updateConstructorFrontPocket(
       constructorInput,
       wrongId,
       operations
     );
 
-    expect(result.message).toBe(FRONT_POCKET_NOT_FOUND);
+    expect(result.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
-  test('#5 delete Constructor Front Pocket should return error FRONT_POCKET_NOT_FOUND', async () => {
+  test('#5 delete Constructor Front Pocket should return error CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const deletedConstructor = await deleteConstructorFrontPocket(
       wrongId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorFrontPocket.message;
-
-    expect(result).toBe(FRONT_POCKET_NOT_FOUND);
+    const result = deletedConstructor.message;
+    expect(result).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
   test('#6 Should delete Constructor Front Pocket and return id', async () => {
     const deletedConstructor = await deleteConstructorFrontPocket(
-      constructorFrontID,
+      constructorFrontId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorFrontPocket._id;
+    const result = deletedConstructor._id;
 
-    expect(result).toBe(constructorFrontID);
+    expect(result).toBe(constructorFrontId);
   });
 
   afterAll(async () => {
-    await deleteMaterial(materialID, operations);
-    await deleteColor(colorId, operations);
+    mongoose.connection.db.dropDatabase();
   });
 });

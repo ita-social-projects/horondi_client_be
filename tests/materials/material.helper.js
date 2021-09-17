@@ -8,6 +8,7 @@ const createMaterial = async (material, operations) => {
         $available: Boolean
         $description: [LanguageInput]
         $name: [LanguageInput]
+        $additionalPrice: additionalPriceInput!
       ) {
         addMaterial(
           material: {
@@ -16,6 +17,7 @@ const createMaterial = async (material, operations) => {
             available: $available
             description: $description
             name: $name
+            additionalPrice: $additionalPrice
           }
         ) {
           ... on Material {
@@ -85,8 +87,8 @@ const getAllMaterials = async operations => {
 
   return allMaterials.data.getAllMaterials;
 };
-const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) => {
-  return await operations.query({
+const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
+  await operations.query({
     variables: { skip, limit },
     query: gql`
       query($skip: Int, $limit: Int) {
@@ -120,9 +122,8 @@ const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) => {
       }
     `,
   });
-};
-const getMaterialById = async (id, operations) => {
-  return await operations.query({
+const getMaterialById = async (id, operations) =>
+  await operations.query({
     query: gql`
       query($id: ID!) {
         getMaterialById(id: $id) {
@@ -159,7 +160,6 @@ const getMaterialById = async (id, operations) => {
     `,
     variables: { id },
   });
-};
 const updateMaterial = async (id, material, operations) => {
   const updatedMaterial = await operations.mutate({
     mutation: gql`
@@ -169,6 +169,7 @@ const updateMaterial = async (id, material, operations) => {
         $available: Boolean
         $description: [LanguageInput]
         $name: [LanguageInput]
+        $additionalPrice: additionalPriceInput!
       ) {
         updateMaterial(
           id: $id
@@ -178,6 +179,7 @@ const updateMaterial = async (id, material, operations) => {
             available: $available
             description: $description
             name: $name
+            additionalPrice: $additionalPrice
           }
         ) {
           ... on Material {
@@ -214,8 +216,8 @@ const updateMaterial = async (id, material, operations) => {
 
   return updatedMaterial.data.updateMaterial;
 };
-const deleteMaterial = async (id, operations) => {
-  return await operations.mutate({
+const deleteMaterial = async (id, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteMaterial(id: $id) {
@@ -233,7 +235,6 @@ const deleteMaterial = async (id, operations) => {
       id,
     },
   });
-};
 
 module.exports = {
   deleteMaterial,

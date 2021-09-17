@@ -1,5 +1,5 @@
 const newsService = require('./news.service');
-const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
+const RuleError = require('../../errors/rule.error');
 
 const newsQuery = {
   getAllNews: (parent, args) => newsService.getAllNews(args),
@@ -7,43 +7,36 @@ const newsQuery = {
     try {
       return await newsService.getNewsById(args.id);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const newsMutation = {
-  addNews: async (parent, args) => {
+  addNews: async (parent, args, { user }) => {
     try {
-      return await newsService.addNews(args.news, args.upload);
+      return await newsService.addNews(args.news, args.upload, user);
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteNews: async (parent, args) => {
+  deleteNews: async (parent, args, { user }) => {
     try {
-      return await newsService.deleteNews(args.id);
+      return await newsService.deleteNews(args.id, user);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  updateNews: async (parent, args) => {
+  updateNews: async (parent, args, { user }) => {
     try {
-      return await newsService.updateNews(args.id, args.news, args.upload);
+      return await newsService.updateNews(
+        args.id,
+        args.news,
+        args.upload,
+        user
+      );
     } catch (e) {
-      return {
-        statusCode: e.message === NEWS_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

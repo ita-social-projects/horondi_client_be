@@ -12,15 +12,31 @@ type User{
     token: String
     refreshToken: String
     invitationalToken: String
+    recoveryToken: String
+    confirmationToken: String
     credentials: [Credential]
     registrationDate: String
     wishlist: [Product]
-    cart: [CartProduct]
+    cart: Cart
     orders:[ID]
     comments: [ID]
-    banned: Boolean
+    banned: UserBlockPeriod
     confirmed: Boolean
-}`;
+    isSuccess: Boolean
+}
+
+type UserBlockPeriod {
+  blockPeriod: String
+  blockCount: Int
+  updatedAt: Date
+}
+
+type UserConfirmed {
+   token: String,
+   refreshToken:String,
+   confirmed:Boolean
+}
+`;
 
 const paginatedUsersType = `
 type PaginatedUsersType {
@@ -42,22 +58,71 @@ input UserInput {
     wishlist: [ID]
     orders:[ID]
     comments: [ID]
+    cart: CartInput
     banned: Boolean
     confirmed: Boolean
 }`;
-const cartProductType = `
-type CartProduct {
-_id: ID!
-name: [Language]
-bagBottom: CartProductBagBottom
-dimensions: CartProductDimensions
-image: String
-totalPrice: [CurrencySet]
-quantity: Int
-selectedSize: String
-sidePocket: Boolean
-}
+const cartType = `
+  type Cart {
+    items: [CartItem]
+    totalPrice: [CurrencySet]
+    rememberMailCount: Int
+  }
+
+  type CartItem {
+    product: Product
+    productFromConstructor: ProductFromConstructor
+    quantity: Int
+    price: [CurrencySet]
+    options: Options
+  }
+  
+   type Options {
+    size: Size
+  } 
+  
+    type ProductFromConstructor {
+    product: Product
+    constructorBasics: ConstructorBasic
+    constructorBottom: ConstructorBottom    
+    constructorFrontPocket: ConstructorFrontPocket    
+    constructorPattern: Pattern
+  }
 `;
+const cartInput = ` 
+  input CartInput {
+    constructorBasics: ID!
+    constructorBottom: ID!
+    constructorFrontPocket: ID!
+    constructorPattern: ID!
+  }
+
+  input CartFromLSInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    quantity: Int!
+    price: [CurrencySetInput]
+    options: OptionsInput!
+  }
+  input RemoveItemsFromCartInput {
+    product: ID
+    productFromConstructor: ProductFromConstructorInput
+    options: OptionsInput
+  }
+  
+   input OptionsInput {
+    size: ID!
+  } 
+  
+    input ProductFromConstructorInput {
+      product: ID
+      constructorBasics: ID
+      constructorBottom: ID    
+      constructorFrontPocket: ID    
+      constructorPattern: ID
+  }
+`;
+
 const userUpdateInput = `
 input UserUpdateInput {
     _id: ID
@@ -77,7 +142,7 @@ const LoginInput = `
 input LoginInput {
     password: String!
     email: String!
-    staySignedIn: Boolean
+    rememberMe: Boolean
 }`;
 
 const userRegisterInput = `
@@ -92,8 +157,22 @@ const adminRegisterInput = `
 input AdminRegisterInput {
     email: String!
     role: String!
+    otp_code: String
 }
 `;
+
+const resendEmailToConfirmAdminInput = `
+input resendEmailToConfirmAdminInput {
+    email: String!
+}
+`;
+
+const confirmSuperadminCreationInput = `
+input confirmSuperadminCreationInput {
+    _id: ID!
+}
+`;
+
 const adminConfirmInput = `
 input AdminConfirmInput {
     firstName: String!
@@ -111,7 +190,7 @@ input UserForStatisticsInput {
 const userFilterInput = `
 input UserFilterInput {
     roles: [String!]
-    banned: [Boolean!]
+    banned: [String]
     search: String
 }
 `;
@@ -144,11 +223,14 @@ module.exports = {
   userFilterInput,
   LoginInput,
   adminRegisterInput,
+  resendEmailToConfirmAdminInput,
+  confirmSuperadminCreationInput,
   adminConfirmInput,
   UserForStatisticsInput,
   paginatedUsersType,
   userSortInput,
   tokenType,
   purchasedProductsType,
-  cartProductType,
+  cartType,
+  cartInput,
 };

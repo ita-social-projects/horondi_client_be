@@ -2,63 +2,91 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
+const {
+  DB_COLLECTIONS_NAMES: {
+    CATEGORY,
+    MODEL,
+    MATERIAL,
+    COLOR,
+    PATTERN,
+    CLOSURE,
+    SIZE,
+    USER,
+    COMMENT,
+    PRODUCT,
+  },
+} = require('../../consts/db-collections-names');
 
 const productSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+    ref: CATEGORY,
   },
   model: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Model',
+    ref: MODEL,
   },
   name: [Language],
   description: [Language],
   mainMaterial: {
     material: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Material',
+      ref: MATERIAL,
     },
     color: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Color',
+      ref: COLOR,
     },
   },
   innerMaterial: {
     material: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Material',
+      ref: MATERIAL,
     },
     color: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Color',
+      ref: COLOR,
     },
   },
   bottomMaterial: {
     material: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Material',
+      ref: MATERIAL,
     },
     color: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Color',
+      ref: COLOR,
+    },
+  },
+  backMaterial: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: MATERIAL,
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: COLOR,
     },
   },
   strapLengthInCm: Number,
   images: PrimaryImage,
   pattern: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Pattern',
+    ref: PATTERN,
   },
   closure: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Closure',
+    ref: CLOSURE,
   },
   basePrice: [CurrencySet],
   sizes: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Size',
+      size: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: SIZE,
+      },
+      price: [CurrencySet],
+      _id: false,
     },
   ],
   available: Boolean,
@@ -83,7 +111,7 @@ const productSchema = new mongoose.Schema({
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: USER,
       },
       rate: Number,
     },
@@ -92,11 +120,11 @@ const productSchema = new mongoose.Schema({
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment',
+        ref: COMMENT,
       },
     ],
     default: [],
   },
 });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model(PRODUCT, productSchema);

@@ -1,46 +1,38 @@
 const { UserInputError } = require('apollo-server');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('./user.model');
 const { OAuth2Client } = require('google-auth-library');
+const { jwtClient } = require('../../client/jwt-client');
+const { bcryptClient } = require('../../client/bcrypt-client');
+
+const User = require('./user.model');
+
 const {
-  validateRegisterInput,
-  validateLoginInput,
-  validateUpdateInput,
-  validateNewPassword,
-  validateSendConfirmation,
-  validateAdminRegisterInput,
-} = require('../../utils/validate-user');
-const generateToken = require('../../utils/create-token');
-const { sendEmail } = require('../../utils/sendGrid-email');
-const {
-  confirmationMessage,
-  recoveryMessage,
-  adminConfirmationMessage,
-} = require('../../utils/localization');
-const emailService = require('../confirm-email/confirmation-email.service');
+  EmailActions: {
+    CONFIRM_EMAIL,
+    RECOVER_PASSWORD,
+    BLOCK_USER,
+    UNLOCK_USER,
+    CONFIRM_ADMIN_EMAIL,
+    CONFIRM_CREATION_SUPERADMIN_EMAIL,
+  },
+} = require('../../consts/email-actions');
+const emailService = require('../email/email.service');
 const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
-  MAIL_USER,
-  NODE_ENV,
   REACT_APP_GOOGLE_CLIENT_ID,
+  TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
-  removeDaysFromData,
-  countItemsOccurency,
+  countItemsOccurrence,
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
 const productService = require('../product/product.service');
-const { generateRefreshToken } = require('../../utils/token');
-
 const {
   USER_ALREADY_EXIST,
   USER_NOT_FOUND,
-  INPUT_NOT_VALID,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
   PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED,
@@ -48,30 +40,255 @@ const {
   AUTHENTICATION_TOKEN_NOT_VALID,
   USER_EMAIL_ALREADY_CONFIRMED,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
-  ID_NOT_PROVIDED,
-  SESSION_TIMEOUT,
-  INVALID_TOKEN_TYPE,
+  REFRESH_TOKEN_IS_NOT_VALID,
+  YOU_CANT_BLOCK_YOURSELF,
+  USER_IS_ALREADY_BLOCKED,
+  USER_IS_ALREADY_UNLOCKED,
+  YOU_CANT_UNLOCK_YOURSELF,
+  ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN,
+  ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN,
+  INVALID_OTP_CODE,
+  TOKEN_IS_EXPIRIED,
+  USER_IS_BLOCKED,
+  SUPER_ADMIN_IS_IMMUTABLE,
 } = require('../../error-messages/user.messages');
-const { userDateFormat } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
+} = require('../../consts/status-codes');
+const {
+  USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
+  USER_BLOCK_COUNT: { NO_ONE_TIME, ONE_TIME, TWO_TIMES, THREE_TIMES },
+} = require('../../consts/user-block-period');
+const {
+  LOCALES: { UK },
+} = require('../../consts/locations');
+const {
+  SOURCES: { HORONDI, GOOGLE },
+  USER_FIELDS: { USER_EMAIL, USER_ID },
+  userDateFormat,
+  roles: { USER },
+} = require('../../consts');
+const RuleError = require('../../errors/rule.error');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
+const {
+  HISTORY_ACTIONS: {
+    BLOCK_USER: BLOCK_USER_ACTION,
+    UNLOCK_USER: UNLOCK_USER_ACTION,
+    REGISTER_ADMIN,
+  },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/history');
+const { addHistoryRecord } = require('../history/history.service');
 
-const ROLES = {
-  admin: 'admin',
-  user: 'user',
-};
-
-const SOURCES = {
-  horondi: 'horondi',
-};
+const {
+  HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
+} = require('../../consts/history-obj-keys');
+const { generateOtpCode } = require('../../utils/user');
+const Order = require('../order/order.model');
 
 class UserService extends FilterHelper {
+  async blockUser(userId, { _id: adminId, role }) {
+    let blockedUser;
+
+    const userToBlock = await User.findById(userId).exec();
+
+    if (!userToBlock) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+    if (userToBlock.banned.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_ALREADY_BLOCKED, FORBIDDEN);
+    }
+
+    if (userToBlock._id.toString() === adminId.toString()) {
+      throw new RuleError(YOU_CANT_BLOCK_YOURSELF, FORBIDDEN);
+    }
+
+    if (
+      (userToBlock.role === ADMIN || userToBlock.role === SUPERADMIN) &&
+      role !== SUPERADMIN
+    ) {
+      throw new RuleError(ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN, FORBIDDEN);
+    }
+
+    switch (userToBlock.banned.blockCount) {
+      case NO_ONE_TIME: {
+        blockedUser = await User.findByIdAndUpdate(
+          userToBlock._id,
+          {
+            $set: {
+              banned: {
+                blockPeriod: ONE_MONTH,
+                blockCount: ONE_TIME,
+                updatedAt: Date.now(),
+              },
+            },
+          },
+          { new: true }
+        ).exec();
+
+        await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
+          period: blockedUser.banned.blockPeriod,
+        });
+
+        break;
+      }
+
+      case ONE_TIME: {
+        blockedUser = await User.findByIdAndUpdate(
+          userToBlock._id,
+          {
+            $set: {
+              banned: {
+                blockPeriod: TWO_MONTH,
+                blockCount: TWO_TIMES,
+                updatedAt: Date.now(),
+              },
+            },
+          },
+          { new: true }
+        ).exec();
+
+        await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
+          period: blockedUser.banned.blockPeriod,
+        });
+
+        break;
+      }
+      case TWO_TIMES: {
+        blockedUser = await User.findByIdAndUpdate(
+          userToBlock._id,
+          {
+            $set: {
+              banned: {
+                blockPeriod: INFINITE,
+                blockCount: THREE_TIMES,
+                updatedAt: Date.now(),
+              },
+            },
+          },
+          { new: true }
+        ).exec();
+
+        await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
+          period: blockedUser.banned.blockPeriod,
+        });
+
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
+    const { beforeChanges, afterChanges } = getChanges(
+      userToBlock,
+      blockedUser
+    );
+
+    const historyRecord = generateHistoryObject(
+      BLOCK_USER_ACTION,
+      '',
+      `${userToBlock.firstName} ${userToBlock.lastName}`,
+      userToBlock._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return blockedUser;
+  }
+
+  async unlockUser(userId, { _id: adminId, role }) {
+    let unlockedUser;
+
+    const userToUnlock = await User.findById(userId).exec();
+
+    if (!userToUnlock) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (userToUnlock.banned.blockPeriod === UNLOCKED) {
+      throw new RuleError(USER_IS_ALREADY_UNLOCKED, FORBIDDEN);
+    }
+
+    if (userToUnlock._id.toString() === adminId.toString()) {
+      throw new RuleError(YOU_CANT_UNLOCK_YOURSELF, FORBIDDEN);
+    }
+
+    if (
+      (userToUnlock.role === ADMIN || userToUnlock.role === SUPERADMIN) &&
+      role !== SUPERADMIN
+    ) {
+      throw new RuleError(ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN, FORBIDDEN);
+    }
+
+    if (userToUnlock.banned.blockPeriod === INFINITE) {
+      unlockedUser = await User.findByIdAndUpdate(
+        userToUnlock._id,
+        {
+          $set: {
+            banned: {
+              blockPeriod: UNLOCKED,
+              blockCount: TWO_TIMES,
+              updatedAt: Date.now(),
+            },
+          },
+        },
+        { new: true }
+      ).exec();
+
+      await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
+    } else {
+      unlockedUser = await User.findByIdAndUpdate(
+        userToUnlock._id,
+        {
+          $set: {
+            banned: {
+              blockPeriod: UNLOCKED,
+              blockCount: userToUnlock.banned.blockCount,
+              updatedAt: Date.now(),
+            },
+          },
+        },
+        { new: true }
+      ).exec();
+
+      await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
+    }
+    const { beforeChanges, afterChanges } = getChanges(
+      userToUnlock,
+      unlockedUser
+    );
+
+    const historyRecord = generateHistoryObject(
+      UNLOCK_USER_ACTION,
+      '',
+      `${userToUnlock.firstName} ${userToUnlock.lastName}`,
+      userToUnlock._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return unlockedUser;
+  }
+
   async checkIfTokenIsValid(token) {
-    const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow('email', decoded.email);
+    const decoded = jwtClient.decodeToken(token, SECRET);
+    const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(AUTHENTICATION_TOKEN_NOT_VALID, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
     return true;
@@ -83,7 +300,7 @@ class UserService extends FilterHelper {
     }).exec();
 
     if (!checkedUser) {
-      throw new UserInputError(USER_NOT_FOUND, { key, statusCode: 400 });
+      throw new RuleError(USER_NOT_FOUND, BAD_REQUEST);
     }
 
     return checkedUser;
@@ -96,16 +313,22 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
-    const purchasedProducts = paidOrders.reduce((acc, order) => {
-      acc = [...acc, ...order.items.map(item => ({ _id: item.productId }))];
-      return acc;
-    }, []);
-    return purchasedProducts;
+    return paidOrders.reduce(
+      (acc, order) => [
+        ...acc,
+        ...order.items.map(item => ({ _id: item.productId })),
+      ],
+      []
+    );
   }
 
   async getAllUsers({ filter, pagination, sort }) {
-    let filteredItems = this.filterItems(filter);
-    let aggregatedItems = this.aggregateItems(filteredItems, pagination, sort);
+    const filteredItems = this.filterItems(filter);
+    const aggregatedItems = this.aggregateItems(
+      filteredItems,
+      pagination,
+      sort
+    );
 
     const [users] = await User.aggregate([
       {
@@ -114,7 +337,7 @@ class UserService extends FilterHelper {
         },
       },
     ])
-      .collation({ locale: 'uk' })
+      .collation({ locale: UK })
       .facet({
         items: aggregatedItems,
         calculations: [{ $match: filteredItems }, { $count: 'count' }],
@@ -143,12 +366,12 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formatedData = users.map(el =>
+    const formattedData = users.map(el =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
-    const userOccurency = countItemsOccurency(formatedData);
-    const counts = Object.values(userOccurency);
-    const names = Object.keys(userOccurency);
+    const userOccurrence = countItemsOccurrence(formattedData);
+    const counts = Object.values(userOccurrence);
+    const names = Object.keys(userOccurrence);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
       0
@@ -160,30 +383,10 @@ class UserService extends FilterHelper {
   }
 
   async getUser(id) {
-    return this.getUserByFieldOrThrow('_id', id);
+    return this.getUserByFieldOrThrow(USER_ID, id);
   }
 
   async updateUserById(updatedUser, user, upload) {
-    const { firstName, lastName, email } = updatedUser;
-
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
-
-    if (user.email !== updatedUser.email) {
-      const existingUser = await User.findOne({
-        email: updatedUser.email,
-      }).exec();
-      if (existingUser) {
-        throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
-      }
-    }
     if (!user.images) user.images = [];
     if (upload) {
       if (user.images.length) {
@@ -201,17 +404,6 @@ class UserService extends FilterHelper {
   }
 
   async updateUserByToken(updatedUser, user) {
-    const { firstName, lastName, email } = updatedUser;
-    const { errors } = await validateUpdateInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
-
     return User.findByIdAndUpdate(
       user._id,
       {
@@ -223,106 +415,95 @@ class UserService extends FilterHelper {
   }
 
   async loginAdmin({ email, password }) {
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
 
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    if (user?.banned?.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const user = await this.getUserByFieldOrThrow('email', email);
-    const match = await bcrypt.compare(
+    const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === SOURCES.horondi).tokenPass
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
-    if (user.role === ROLES.user) {
-      throw new UserInputError(INVALID_PERMISSIONS, { statusCode: 400 });
+    if (user.role === USER) {
+      throw new RuleError(INVALID_PERMISSIONS, BAD_REQUEST);
     }
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
-    const token = generateToken(user._id, user.email);
+    jwtClient.setData({ userId: user._id });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     return {
       ...user._doc,
       _id: user._id,
-      token,
+      token: accessToken,
+      refreshToken,
     };
   }
 
-  async loginUser({ email, password, staySignedIn }) {
-    let refreshToken;
-
-    const { errors } = await validateLoginInput.validateAsync({
-      email,
-      password,
-    });
-
-    if (errors) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
-    }
-
+  async loginUser({ email, password, rememberMe }) {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
-    const match = await bcrypt.compare(
+    if (user?.banned?.blockPeriod !== UNLOCKED) {
+      throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
+    }
+
+    const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === 'horondi').tokenPass
+      user.credentials.find(cred => cred.source === HORONDI).tokenPass
     );
 
     if (!match) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
     }
 
-    const token = generateToken(user._id, user.email);
-
-    if (staySignedIn) {
-      refreshToken = generateRefreshToken(user);
-    }
+    jwtClient.setData({ userId: user._id });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
     return {
       ...user._doc,
       _id: user._id,
-      refreshToken,
-      token,
+      token: accessToken,
+      refreshToken: rememberMe ? refreshToken : null,
     };
   }
 
-  async regenerateAccessToken(refreshToken) {
-    let decoded;
+  async regenerateAccessToken(refreshTokenForVerify) {
+    const { userId } = jwtClient.decodeToken(refreshTokenForVerify, SECRET);
 
-    try {
-      decoded = jwt.verify(refreshToken, SECRET);
-    } catch (err) {
-      throw new UserInputError(SESSION_TIMEOUT, { statusCode: 400 });
+    if (!userId) {
+      throw new RuleError(REFRESH_TOKEN_IS_NOT_VALID, FORBIDDEN);
     }
+    await this.getUserByFieldOrThrow('_id', userId);
 
-    if (!decoded.isRefreshToken) {
-      throw new UserInputError(INVALID_TOKEN_TYPE, { statusCode: 400 });
-    }
+    jwtClient.setData({ userId });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
-    await this.getUserByFieldOrThrow('email', decoded.email);
-
-    const token = generateToken(decoded.userId, decoded.email);
-
-    return {
-      token,
-    };
+    return { refreshToken, token: accessToken };
   }
 
-  async googleUser(idToken, staySignedIn) {
-    const client = new OAuth2Client();
+  async googleUser(idToken, rememberMe) {
+    const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: REACT_APP_GOOGLE_CLIENT_ID,
+      expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
@@ -333,7 +514,7 @@ class UserService extends FilterHelper {
         email: dataUser.email,
         credentials: [
           {
-            source: 'google',
+            source: GOOGLE,
             tokenPass: userid,
           },
         ],
@@ -341,34 +522,33 @@ class UserService extends FilterHelper {
     }
     return this.loginGoogleUser({
       email: dataUser.email,
-      staySignedIn,
+      rememberMe,
     });
   }
 
-  async loginGoogleUser({ email, staySignedIn }) {
-    let refreshToken;
-
+  async loginGoogleUser({ email, rememberMe }) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
-      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: 400 });
+      throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
     }
 
-    const token = generateToken(user._id, user.email);
+    jwtClient.setData({ userId: user._id });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
 
-    if (staySignedIn) {
-      refreshToken = generateRefreshToken(user);
-    }
     return {
       ...user._doc,
       _id: user._id,
-      token,
-      refreshToken,
+      token: accessToken,
+      refreshToken: rememberMe ? refreshToken : null,
     };
   }
 
   async registerGoogleUser({ firstName, lastName, email, credentials }) {
     if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
 
     const user = new User({
@@ -377,23 +557,17 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
-    const savedUser = await user.save();
-
-    return savedUser;
+    return user.save();
   }
 
   async registerUser({ firstName, lastName, email, password }, language) {
-    await validateRegisterInput.validateAsync({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    const candidate = await User.findOne({ email }).exec();
+
+    if (candidate) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await bcryptClient.hashPassword(password, 12);
 
     const user = new User({
       firstName,
@@ -401,102 +575,129 @@ class UserService extends FilterHelper {
       email,
       credentials: [
         {
-          source: 'horondi',
+          source: HORONDI,
           tokenPass: encryptedPassword,
         },
       ],
     });
     const savedUser = await user.save();
 
-    const token = generateToken(savedUser._id, savedUser.email, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: CONFIRMATION_SECRET,
+    jwtClient.setData({ userId: savedUser._id });
+    const accessToken = jwtClient.generateAccessToken(
+      CONFIRMATION_SECRET,
+      RECOVERY_EXPIRE
+    );
+
+    savedUser.confirmationToken = accessToken;
+
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
+      token: accessToken,
     });
-
-    savedUser.confirmationToken = token;
-
-    await savedUser.save();
-
-    const subject = '[HORONDI] Email confirmation';
-    const html = confirmationMessage(firstName, token, language);
-
-    await emailService.sendEmail({
-      user,
-      sendEmail,
-      subject,
-      html,
-    });
-
     await savedUser.save();
 
     return savedUser;
   }
 
   async sendConfirmationLetter(email, language) {
-    await validateSendConfirmation.validateAsync({ email, language });
-    const user = await this.getUserByFieldOrThrow('email', email);
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
     if (user.confirmed) {
-      throw new Error(USER_EMAIL_ALREADY_CONFIRMED);
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, BAD_REQUEST);
     }
-    const token = generateToken(user._id, user.email, {
-      secret: CONFIRMATION_SECRET,
-      expiresIn: RECOVERY_EXPIRE,
-    });
-    user.confirmationToken = token;
+
+    jwtClient.setData({ userId: user._id });
+    const accessToken = jwtClient.generateAccessToken(
+      CONFIRMATION_SECRET,
+      RECOVERY_EXPIRE
+    );
+
+    user.confirmationToken = accessToken;
     await user.save();
-    const message = {
-      from: MAIL_USER,
-      to: user.email,
-      subject: '[HORONDI] Email confirmation',
-      html: confirmationMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
+    await emailService.sendEmail(user.email, CONFIRM_EMAIL, {
+      language,
+      token: accessToken,
+    });
     return true;
   }
 
   async deleteUser(id) {
-    const res = await User.findByIdAndDelete(id).exec();
-    return res || new Error(USER_NOT_FOUND);
+    const user = await User.findById(id).exec();
+
+    if (!user) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (user.role === SUPERADMIN) {
+      throw new RuleError(SUPER_ADMIN_IS_IMMUTABLE, FORBIDDEN);
+    }
+    return User.findByIdAndDelete(id).exec();
   }
 
   async confirmUser(token) {
-    const decoded = jwt.verify(token, CONFIRMATION_SECRET);
-    const updates = {
+    let userId = null;
+
+    try {
+      const decoded = jwtClient.decodeToken(token, CONFIRMATION_SECRET);
+      userId = decoded.userId;
+    } catch (err) {
+      throw new RuleError(TOKEN_IS_EXPIRIED, UNAUTHORIZED);
+    }
+
+    const candidate = await User.findById(userId).exec();
+
+    if (!candidate) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (candidate.confirmed) {
+      throw new RuleError(USER_EMAIL_ALREADY_CONFIRMED, FORBIDDEN);
+    }
+
+    jwtClient.setData({ userId });
+    const { accessToken, refreshToken } = jwtClient.generateTokens(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
+
+    await User.findByIdAndUpdate(userId, {
       $set: {
         confirmed: true,
       },
       $unset: {
         confirmationToken: '',
       },
+    }).exec();
+
+    return {
+      token: accessToken,
+      refreshToken,
+      confirmed: true,
     };
-    await User.findByIdAndUpdate(decoded.userId, updates).exec();
-    return true;
   }
 
   async recoverUser(email, language) {
     const user = await User.findOne({ email }).exec();
-    if (!user) {
-      throw new UserInputError(USER_NOT_FOUND, { statusCode: 404 });
+
+    if (user) {
+      jwtClient.setData({ userId: user._id });
+      const accessToken = jwtClient.generateAccessToken(
+        SECRET,
+        RECOVERY_EXPIRE
+      );
+
+      user.recoveryToken = accessToken;
+      await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+        language,
+        token: accessToken,
+      });
+      await user.save();
     }
 
-    const token = generateToken(user._id, user.email, {
-      expiresIn: RECOVERY_EXPIRE,
-      secret: SECRET,
-    });
-    user.recoveryToken = token;
-    const message = {
-      from: MAIL_USER,
-      to: email,
-      subject: '[HORONDI] Instructions for password recovery',
-      html: recoveryMessage(user.firstName, token, language),
-    };
-    await sendEmail(message);
-    await user.save();
     return true;
   }
 
   async switchUserStatus(id) {
-    const user = await this.getUserByFieldOrThrow('_id', id);
+    const user = await this.getUserByFieldOrThrow(USER_ID, id);
 
     user.banned = !user.banned;
 
@@ -506,13 +707,12 @@ class UserService extends FilterHelper {
   }
 
   async resetPassword(password, token) {
-    await validateNewPassword.validateAsync({ password });
-    const decoded = jwt.verify(token, SECRET);
-    const user = await this.getUserByFieldOrThrow('email', decoded.email);
+    const decoded = jwtClient.decodeToken(token, SECRET);
+    const user = await this.getUserByFieldOrThrow(USER_ID, decoded.userId);
 
     if (user.recoveryToken !== token) {
       throw new UserInputError(RESET_PASSWORD_TOKEN_NOT_VALID, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
 
@@ -526,13 +726,20 @@ class UserService extends FilterHelper {
     }
     if (user.recoveryAttempts >= 3) {
       throw new UserInputError(PASSWORD_RECOVERY_ATTEMPTS_LIMIT_EXCEEDED, {
-        statusCode: 403,
+        statusCode: FORBIDDEN,
       });
     }
+    const encryptedPassword = await bcryptClient.hashPassword(password, 12);
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
         recoveryAttempts: !user.recoveryAttempts ? 1 : ++user.recoveryAttempts,
+        credentials: [
+          {
+            source: HORONDI,
+            tokenPass: encryptedPassword,
+          },
+        ],
       },
       $unset: {
         recoveryToken: '',
@@ -542,17 +749,15 @@ class UserService extends FilterHelper {
     return true;
   }
 
-  async registerAdmin(userInput) {
-    const { email, role } = userInput;
-
-    try {
-      await validateAdminRegisterInput.validateAsync({ email, role });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+  async registerAdmin({ email, role, code }, admin) {
+    if (code && code !== admin.otp_code) {
+      throw new RuleError(INVALID_OTP_CODE, FORBIDDEN);
     }
 
-    if (await User.findOne({ email }).exec()) {
-      throw new UserInputError(USER_ALREADY_EXIST, { statusCode: 400 });
+    const isAdminExists = await User.findOne({ email }).exec();
+
+    if (isAdminExists) {
+      throw new RuleError(USER_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const user = new User({
@@ -561,80 +766,135 @@ class UserService extends FilterHelper {
     });
 
     const savedUser = await user.save();
-    const invitationalToken = generateToken(savedUser._id, savedUser.email);
 
-    if (NODE_ENV === 'test') {
-      return { ...savedUser._doc, invitationalToken };
+    jwtClient.setData({ userId: savedUser._id });
+    const invitationalToken = jwtClient.generateAccessToken(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
+
+    await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
+      token: invitationalToken,
+    });
+
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          otp_code: null,
+        },
+      },
+      { new: true }
+    ).exec();
+
+    return { isSuccess: true };
+  }
+
+  async confirmSuperadminCreation(_id) {
+    const user = await User.findOne({ _id }).exec();
+
+    if (!user) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const message = {
-      from: MAIL_USER,
-      to: savedUser.email,
-      subject: '[Horondi] Invitation to become an admin',
-      html: adminConfirmationMessage(invitationalToken),
-    };
+    const otp_code = generateOtpCode();
 
-    await sendEmail(message);
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          otp_code,
+        },
+      },
+      { new: true }
+    ).exec();
 
-    return savedUser;
+    await emailService.sendEmail(
+      user.email,
+      CONFIRM_CREATION_SUPERADMIN_EMAIL,
+      { otp_code }
+    );
+
+    return { isSuccess: true };
+  }
+
+  async resendEmailToConfirmAdmin({ email }) {
+    const isAdminExists = await User.findOne({ email }).exec();
+
+    if (!isAdminExists) {
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
+    }
+
+    jwtClient.setData({ userId: isAdminExists._id });
+    const invitationalToken = jwtClient.generateAccessToken(
+      SECRET,
+      TOKEN_EXPIRES_IN
+    );
+
+    await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
+      token: invitationalToken,
+    });
+
+    return { isSuccess: true };
   }
 
   async completeAdminRegister(updatedUser, token) {
-    const { firstName, lastName, password } = updatedUser;
-    let decoded;
+    const { password } = updatedUser;
+    const userDetails = jwtClient.decodeToken(token, SECRET);
 
-    try {
-      await validateRegisterInput.validateAsync({
-        firstName,
-        lastName,
-        password,
-      });
-    } catch (err) {
-      throw new UserInputError(INPUT_NOT_VALID, { statusCode: 400 });
+    if (!userDetails) {
+      throw new RuleError(INVALID_ADMIN_INVITATIONAL_TOKEN, BAD_REQUEST);
     }
 
-    try {
-      decoded = jwt.verify(token, SECRET);
-    } catch (err) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: 400,
-      });
-    }
-
-    const user = await User.findOne({ email: decoded.email }).exec();
+    const user = await User.findOne({ _id: userDetails.userId }).exec();
 
     if (!user) {
-      throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: 400,
-      });
+      throw new RuleError(USER_NOT_FOUND, NOT_FOUND);
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 12);
+    const encryptedPassword = await bcryptClient.hashPassword(password, 12);
 
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.credentials = [
-      {
-        source: 'horondi',
-        tokenPass: encryptedPassword,
+    await User.findByIdAndUpdate(userDetails.userId, {
+      $set: {
+        ...updatedUser,
+        credentials: [
+          {
+            source: HORONDI,
+            tokenPass: encryptedPassword,
+          },
+        ],
+        confirmed: true,
       },
-    ];
-    user.confirmed = true;
+    }).exec();
 
-    await user.save();
+    const historyRecord = generateHistoryObject(
+      REGISTER_ADMIN,
+      '',
+      `${user.firstName} ${user.lastName}`,
+      user._id,
+      [],
+      generateHistoryChangesData(user, [
+        ROLE,
+        BANNED,
+        FIRST_NAME,
+        LAST_NAME,
+        EMAIL,
+      ]),
+      user._id
+    );
+
+    await addHistoryRecord(historyRecord);
 
     return { isSuccess: true };
   }
 
   validateConfirmationToken(token) {
-    try {
-      jwt.verify(token, SECRET);
-      return { isSuccess: true };
-    } catch (err) {
+    if (!jwtClient.decodeToken(token, SECRET)) {
       throw new UserInputError(INVALID_ADMIN_INVITATIONAL_TOKEN, {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
       });
     }
+    return { isSuccess: true };
   }
 
   async updateCartOrWishlist(userId, key, list, productId) {
@@ -650,6 +910,13 @@ class UserService extends FilterHelper {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  async getCountUserOrders(_id) {
+    await this.getUserByFieldOrThrow(USER_ID, _id);
+    const orders = await Order.find({ user_id: _id }).exec();
+
+    return { countOrder: orders.length };
   }
 }
 

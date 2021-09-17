@@ -8,9 +8,8 @@ const createSize = async (size, operations) => {
           ... on Size {
             _id
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm
@@ -45,9 +44,8 @@ const deleteSize = async (id, operations) => {
           ... on Size {
             _id
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm
@@ -78,26 +76,27 @@ const getAllSizes = async operations => {
     query: gql`
       query {
         getAllSizes {
-          name
-          simpleName {
-            lang
-            value
-          }
-          heightInCm
-          widthInCm
-          depthInCm
-          volumeInLiters
-          weightInKg
-          available
-          additionalPrice {
-            currency
-            value
+          items {
+            name
+            modelId {
+              _id
+            }
+            heightInCm
+            widthInCm
+            depthInCm
+            volumeInLiters
+            weightInKg
+            available
+            additionalPrice {
+              currency
+              value
+            }
           }
         }
       }
     `,
   });
-  return result.data.getAllSizes;
+  return result.data.getAllSizes?.items;
 };
 const getSizeById = async (id, operations) => {
   const result = await operations.query({
@@ -106,9 +105,8 @@ const getSizeById = async (id, operations) => {
         getSizeById(id: $id) {
           _id
           name
-          simpleName {
-            lang
-            value
+          modelId {
+            _id
           }
           heightInCm
           widthInCm
@@ -138,9 +136,8 @@ const updateSize = async (id, size, operations) => {
           ... on Size {
             _id
             name
-            simpleName {
-              lang
-              value
+            modelId {
+              _id
             }
             heightInCm
             widthInCm

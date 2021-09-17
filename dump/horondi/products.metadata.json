@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"horondi.products"}],"uuid":"1be29e0d288347bba8ae243450d8ea01","collectionName":"products"}

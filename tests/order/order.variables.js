@@ -1,7 +1,35 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
-const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
-  status: 'CREATED',
-  user: {
+const orderStatus = 'CREATED';
+const paymentStatus = 'CREATED';
+const price = [
+  {
+    currency: 'UAH',
+    value: 50,
+  },
+  {
+    currency: 'USD',
+    value: 2,
+  },
+];
+const getOrdersInput = {
+  filter: {
+    date: { dateFrom: '', dateTo: '' },
+    paymentStatus: [],
+    search: '',
+    status: [],
+  },
+  sort: { dateOfCreation: -1 },
+};
+
+const newOrderInputData = (
+  productId,
+  modelId,
+  sizeId,
+  constructorId,
+  userId
+) => ({
+  status: orderStatus,
+  recipient: {
     firstName: 'Arsen',
     lastName: 'Wenger',
     email: 'test@gmail.com',
@@ -9,19 +37,11 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
   },
   userComment: 'The bag is pretty good',
   delivery: {
-    courierOffice: '10',
+    byCourier: true,
+    courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
-    cost: [
-      {
-        currency: 'UAH',
-        value: 7000,
-      },
-      {
-        currency: 'USD',
-        value: 240,
-      },
-    ],
+    cost: price,
   },
   items: [
     {
@@ -33,23 +53,17 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
       options: {
         size: sizeId,
       },
-      fixedPrice: [
-        {
-          currency: 'UAH',
-          value: 7000,
-        },
-        {
-          currency: 'USD',
-          value: 240,
-        },
-      ],
+      fixedPrice: price,
+      price,
     },
   ],
-  paymentStatus: 'CREATED',
+  paymentMethod: 'CASH',
+  paymentStatus,
+  user_id: userId,
 });
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   status: 'SENT',
-  user: {
+  recipient: {
     firstName: 'Updated',
     lastName: 'Updated',
     email: 'test.updated@gmail.com',
@@ -57,19 +71,11 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
   },
   userComment: 'Updated',
   delivery: {
-    courierOffice: '12',
+    byCourier: true,
+    courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
-    cost: [
-      {
-        currency: 'UAH',
-        value: 7000,
-      },
-      {
-        currency: 'USD',
-        value: 240,
-      },
-    ],
+    cost: price,
   },
   items: [
     {
@@ -81,23 +87,19 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
       options: {
         size: sizeId,
       },
-      fixedPrice: [
-        {
-          currency: 'UAH',
-          value: 7000,
-        },
-        {
-          currency: 'USD',
-          value: 240,
-        },
-      ],
+      fixedPrice: price,
+      price,
     },
   ],
+  paymentMethod: 'CASH',
   paymentStatus: 'APPROVED',
 });
 
 module.exports = {
   newOrderInputData,
+  getOrdersInput,
   wrongId,
   newOrderUpdated,
+  orderStatus,
+  paymentStatus,
 };

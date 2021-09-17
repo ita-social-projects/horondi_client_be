@@ -14,6 +14,10 @@ const {
   CURRENCY: { UAH, USD },
 } = require('../consts/currency');
 
+const {
+  DB_COLLECTIONS_NAMES: { DELIVERY },
+} = require('../consts/db-collections-names');
+
 const deliverySchema = new mongoose.Schema({
   _id: false,
   sentOn: Date,
@@ -25,7 +29,12 @@ const deliverySchema = new mongoose.Schema({
   byCourier: Boolean,
   courierOffice: String,
   invoiceNumber: String,
+  region: String,
+  regionId: String,
+  district: String,
+  districtId: String,
   city: String,
+  cityId: String,
   street: String,
   house: String,
   flat: String,
@@ -39,4 +48,4 @@ const deliverySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Delivery', deliverySchema);
+module.exports = mongoose.model(DELIVERY, deliverySchema);

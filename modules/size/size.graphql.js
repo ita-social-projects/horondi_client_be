@@ -2,28 +2,39 @@ const sizeType = `
   type Size {
     _id: ID!
     name: String!
-    simpleName:[Language]!
+    model: Model
+    modelId: Model
     heightInCm: Int!
     widthInCm: Int!
     depthInCm: Int!
     volumeInLiters: Int!
     weightInKg: Float!
     available: Boolean!
-    additionalPrice: [CurrencySet]!
+    additionalPrice: [AdditionalCurrencySet]!
   }
+  type SizeItems {
+    items:[Size]
+    count:Int
+   }
 `;
 
 const sizeInput = `
   input SizeInput {
     name: String!
-    simpleName: [LanguageInput]!
+    model: ID
+    modelId: ID
     heightInCm: Int!
     widthInCm: Int!
     depthInCm: Int!
     volumeInLiters: Int!
     weightInKg: Float!
     available: Boolean!
-    additionalPrice: Int!
+    additionalPrice: additionalPriceInput!
+  }
+  input SizeFilterInput{
+    available:[String]
+    searchBySimpleName:String
+    name:[String]
   }
 `;
 

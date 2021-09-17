@@ -1,71 +1,63 @@
 const constructorService = require('../constructor.services');
-const {
-  FRONT_POCKET_NOT_FOUND,
-  FRONT_POCKET_ALREADY_EXIST,
-} = require('../../../error-messages/constructor-front-pocket-messages');
+const RuleError = require('../../../errors/rule.error');
 const ConstructorFrontPocket = require('./constructor-front-pocket.model');
 
 const constructorFrontPocketQuery = {
-  getAllConstructorFrontPocket: (parent, args) =>
-    constructorService.getAllConstructorElements(args, ConstructorFrontPocket),
-  getConstructorFrontPocketById: async (parent, args) => {
+  getAllConstructorFrontPocket: async (_, args) => {
+    try {
+      return await constructorService.getAllConstructorElements(
+        args,
+        ConstructorFrontPocket
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getConstructorFrontPocketById: async (_, args) => {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
-        ConstructorFrontPocket,
-        FRONT_POCKET_NOT_FOUND
+        ConstructorFrontPocket
       );
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const constructorFrontPocketMutation = {
-  addConstructorFrontPocket: async (parent, args) => {
+  addConstructorFrontPocket: async (_, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
         ConstructorFrontPocket,
-        FRONT_POCKET_ALREADY_EXIST
+        user
       );
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updateConstructorFrontPocket: async (parent, args) => {
+  updateConstructorFrontPocket: async (_, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
         ConstructorFrontPocket,
-        FRONT_POCKET_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode: e.message === FRONT_POCKET_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteConstructorFrontPocket: async (parent, args) => {
+  deleteConstructorFrontPocket: async (_, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,
         ConstructorFrontPocket,
-        FRONT_POCKET_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

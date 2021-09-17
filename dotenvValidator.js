@@ -23,6 +23,10 @@ const dotenvVariables = [
   'MAIL_PASS',
   'MAIL_HOST',
   'MAIL_PORT',
+  'GMAIL_API_ID',
+  'GMAIL_API_SECRET',
+  'GMAIL_API_REDIRECT_URI',
+  'GMAIL_API_REFRESH_TOKEN',
   'RECOVERY_EXPIRE',
   'FRONT_BASE_URI',
   'TEST_BASE_URI',
@@ -40,6 +44,8 @@ const dotenvVariables = [
   'UKR_POSHTA_COUNTERPARTY_UUID',
   'UKR_POSHTA_ADDRESS_API_LINK',
   'CONTRIBUTING',
+  'GMAIL_EMAIL_SERVICE',
+  'ADMIN_BASE_URI',
 ];
 
 function dotenvValidator(processEnv) {
@@ -81,6 +87,10 @@ function dotenvValidator(processEnv) {
       .string()
       .uri()
       .required(),
+    ADMIN_BASE_URI: joi
+      .string()
+      .uri()
+      .required(),
     TEST_BASE_URI: joi
       .string()
       .uri()
@@ -104,6 +114,11 @@ function dotenvValidator(processEnv) {
     UKR_POSHTA_COUNTERPARTY_TOKEN: joi.string(),
     UKR_POSHTA_COUNTERPARTY_UUID: joi.string(),
     CONTRIBUTING: joi.boolean(),
+    GMAIL_EMAIL_SERVICE: joi.string(),
+    GMAIL_API_ID: joi.string(),
+    GMAIL_API_SECRET: joi.string(),
+    GMAIL_API_REDIRECT_URI: joi.string().uri(),
+    GMAIL_API_REFRESH_TOKEN: joi.string(),
   });
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });

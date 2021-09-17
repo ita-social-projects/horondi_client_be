@@ -2,8 +2,10 @@ const orderTypes = `
 type Order {
   _id: ID!
   orderNumber: String
-  status: Status,
-  user: OrderUser
+  paymentUrl: String
+  status: Status
+  recipient: OrderUser
+  user_id:User
   dateOfCreation: String
   lastUpdatedDate: String
   userComment: String
@@ -24,6 +26,7 @@ enum PaymentStatusEnum {
   DECLINED
   REVERSED
   PROCESSING
+  PAID
 }
 
 enum PaymentEnum {
@@ -56,7 +59,12 @@ type Delivery {
   sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: String,
+  region: String,
+  regionId: String
+  district: String,
+  districtId: String
   city: String,
+  cityId: String
   street: String,
   house: String,
   flat: String,
@@ -81,16 +89,18 @@ type ItemOptions{
   sidePocket: Boolean
 }
 `;
+
 const orderInputs = ` 
 input OrderInput {
   status: Status
-  user: OrderUserInput,
+  recipient: OrderUserInput,
   delivery: DeliveryInput,
   items: [OrderItemInput],
   paymentMethod: PaymentEnum
   userComment: String
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
+  user_id:String
 }
 
 input OrderUserInput {
@@ -110,7 +120,12 @@ input DeliveryInput {
   sentBy: SendByEnum
   invoiceNumber: String
   courierOffice: String,
+  region: String,
+  regionId: String
+  district: String,
+  districtId: String
   city: String,
+  cityId: String
   street: String,
   house: String,
   flat: String,
@@ -130,11 +145,18 @@ input OrderItemInput {
   isFromConstructor: Boolean
   options: ItemOptionsInput
   fixedPrice: [CurrencyInputSet]
+  price: [CurrencyInputSet]
 }
 input ItemOptionsInput{
   size: ID!
   sidePocket: Boolean
 }
+input OrderFilterInput{
+    date:DateRangeInput
+    status:[String]
+    search:String
+    paymentStatus:[String]
+  }
 `;
 
 module.exports = {

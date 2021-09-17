@@ -1,4 +1,5 @@
-const { Error } = require('mongoose');
+const _ = require('lodash');
+
 const Product = require('./product.model');
 const User = require('../user/user.model');
 const modelService = require('../model/model.service');
@@ -6,53 +7,123 @@ const uploadService = require('../upload/upload.service');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
+  PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
 const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { uploadProductImages } = require('./product.utils');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateBasePrice } = require('../currency/currency.utils');
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../consts/currency');
+const {
+  PRODUCT_FEATURES: {
+    PRODUCT_CATEGORY,
+    PRODUCT_MODEL,
+    PRODUCT_PATTERN,
+    PRODUCT_CLOSURE,
+    PRODUCT_MAIN_MATERIAL,
+    PRODUCT_MAIN_COLOR,
+    PRODUCT_INNER_MATERIAL,
+    PRODUCT_INNER_COLOR,
+    PRODUCT_BOTTOM_MATERIAL,
+    PRODUCT_BOTTOM_COLOR,
+  },
+} = require('../../consts/product-features');
+const {
+  DEFAULT_IMAGES: {
+    LARGE_SAD_BACKPACK,
+    MEDIUM_SAD_BACKPACK,
+    SMALL_SAD_BACKPACK,
+    THUMBNAIL_SAD_BACKPACK,
+  },
+} = require('../../consts/default-images');
+const { getCurrencySign } = require('../../utils/product-service');
+const RuleError = require('../../errors/rule.error');
+const {
+  STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const {
+  HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/history');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: {
+    SIZES,
+    PURCHASED_COUNT,
+    AVAILABLE_COUNT,
+    CATEGORY,
+    MODEL,
+    NAME,
+    DESCRIPTION,
+    MAIN_MATERIAL,
+    INNER_MATERIAL,
+    BOTTOM_MATERIAL,
+    STRAP_LENGTH_IN_CM,
+    PATTERN,
+    CLOSURE,
+    AVAILABLE,
+    IS_HOT_ITEM,
+  },
+} = require('../../consts/history-obj-keys');
+const {
+  finalPriceCalculation,
+  finalPriceRecalculation,
+} = require('../../utils/final-price-calculation');
 
 class ProductsService {
   async getProductById(id) {
-    return await Product.findById(id).exec();
+    const product = await Product.findById(id).exec();
+    if (!product) {
+      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+    }
+    return product;
   }
 
   async getProductsFilters() {
-    const categories = await Product.distinct('category')
+    const categories = await Product.distinct(PRODUCT_CATEGORY)
       .lean()
       .exec();
-    const models = await Product.distinct('model')
+    const models = await Product.distinct(PRODUCT_MODEL)
       .lean()
       .exec();
-    const patterns = await Product.distinct('pattern')
+    const patterns = await Product.distinct(PRODUCT_PATTERN)
       .lean()
       .exec();
-    const closures = await Product.distinct('closure')
+    const closures = await Product.distinct(PRODUCT_CLOSURE)
       .lean()
       .exec();
-    const mainMaterial = await Product.distinct('mainMaterial.material')
+    const mainMaterial = await Product.distinct(PRODUCT_MAIN_MATERIAL)
       .lean()
       .exec();
-    const mainMaterialColor = await Product.distinct('mainMaterial.color')
+    const mainMaterialColor = await Product.distinct(PRODUCT_MAIN_COLOR)
       .lean()
       .exec();
-    const innerMaterial = await Product.distinct('innerMaterial.material')
+    const innerMaterial = await Product.distinct(PRODUCT_INNER_MATERIAL)
       .lean()
       .exec();
-    const innerMaterialColor = await Product.distinct('innerMaterial.color')
+    const innerMaterialColor = await Product.distinct(PRODUCT_INNER_COLOR)
       .lean()
       .exec();
-    const bottomMaterial = await Product.distinct('bottomMaterial.material')
+    const bottomMaterial = await Product.distinct(PRODUCT_BOTTOM_MATERIAL)
       .lean()
       .exec();
-    const bottomMaterialColor = await Product.distinct('bottomMaterial.color')
+    const bottomMaterialColor = await Product.distinct(PRODUCT_BOTTOM_COLOR)
       .lean()
       .exec();
     const products = await this.getProducts({});
-    const sortedByPrices = [...products.items].sort((a, b) => {
-      return a.basePrice[1].value - b.basePrice[1].value;
-    });
+    const sortedByPrices = [...products.items].sort(
+      (a, b) => a.basePrice[1].value - b.basePrice[1].value
+    );
     const minPrice = sortedByPrices[0].basePrice;
     const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
 
@@ -75,7 +146,7 @@ class ProductsService {
   async getModelsByCategory(id) {
     const product = await Product.find({ category: id }).exec();
     if (product.length === 0) {
-      throw new Error(CATEGORY_NOT_FOUND);
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
     return product;
   }
@@ -108,10 +179,9 @@ class ProductsService {
       filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
-      const currencySign = currency === 0 ? 'UAH' : currency === 1 ? 'USD' : '';
       filter.basePrice = {
         $elemMatch: {
-          currency: currencySign,
+          currency: getCurrencySign(currency, UAH, USD),
           value: {
             $gte: price[0],
             $lte: price[1],
@@ -127,11 +197,13 @@ class ProductsService {
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
-          name: { $elemMatch: { value: { $regex: new RegExp(search, 'i') } } },
+          name: {
+            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
+          },
         },
         {
           description: {
-            $elemMatch: { value: { $regex: new RegExp(search, 'i') } },
+            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
           },
         },
       ];
@@ -142,57 +214,112 @@ class ProductsService {
       .sort(sort)
       .exec();
 
-    const count = await Product.find(filters).countDocuments();
+    const count = await Product.find(filters)
+      .countDocuments()
+      .exec();
+
     return {
       items,
       count,
     };
   }
 
-  async updateProduct(id, productData, filesToUpload, primary) {
+  async updateProduct(
+    id,
+    productData,
+    filesToUpload,
+    primary,
+    { _id: adminId }
+  ) {
+    productData.images = {
+      primary: {
+        large: LARGE_SAD_BACKPACK,
+        medium: MEDIUM_SAD_BACKPACK,
+        small: SMALL_SAD_BACKPACK,
+        thumbnail: THUMBNAIL_SAD_BACKPACK,
+      },
+    };
+    if (filesToUpload.length) {
+      productData.images.additional = [];
+    } else {
+      productData.images.additional = [
+        {
+          large: LARGE_SAD_BACKPACK,
+          medium: MEDIUM_SAD_BACKPACK,
+          small: SMALL_SAD_BACKPACK,
+          thumbnail: THUMBNAIL_SAD_BACKPACK,
+        },
+      ];
+    }
     const product = await Product.findById(id)
       .lean()
       .exec();
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new RuleError(PRODUCT_NOT_FOUND, FORBIDDEN);
     }
-    if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+    if (_.isMatch(productData, product)) {
+      throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
     if (primary) {
-      await uploadService.deleteFiles(
-        Object.values(product.images.primary).filter(
-          item => typeof item === 'string'
-        )
-      );
-      const uploadResult = await uploadService.uploadFiles(primary);
-      const imagesResults = await uploadResult[0];
-      productData.images.primary = imagesResults.fileNames;
+      if (primary?.large) {
+        productData.images.primary = primary;
+      } else {
+        await uploadService.deleteFiles(
+          Object.values(product.images.primary).filter(
+            item => typeof item === 'string'
+          )
+        );
+        const uploadResult = await uploadService.uploadFiles(primary);
+        const imagesResults = await uploadResult[0];
+        productData.images.primary = imagesResults?.fileNames;
+      }
     }
     if (filesToUpload.length) {
-      const uploadResult = await uploadService.uploadFiles(filesToUpload);
-      const imagesResults = await Promise.allSettled(uploadResult);
-      const additional = imagesResults.map(res => res.value.fileNames);
-      productData.images.additional = [
-        ...product.images.additional,
-        ...additional,
-      ];
+      const previousImagesLinks = [];
+      const newFiles = [];
+      filesToUpload.forEach(e => {
+        if (e?.large) {
+          previousImagesLinks.push(e);
+        } else {
+          newFiles.push(e);
+        }
+      });
+      const newUploadResult = await uploadService.uploadFiles(newFiles);
+      const imagesResults = await Promise.allSettled(newUploadResult);
+      const additional = imagesResults.map(res => res?.value?.fileNames);
+      productData.images.additional = [...additional, ...previousImagesLinks];
     }
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
-    return await Product.findByIdAndUpdate(id, productData, {
+    productData.basePrice = await calculateBasePrice(basePrice);
+    productData.sizes = await finalPriceCalculation(productData);
+    if (productData) {
+      const { beforeChanges, afterChanges } = getChanges(product, productData);
+
+      const historyRecord = generateHistoryObject(
+        EDIT_PRODUCT,
+        product.model,
+        product.name[UA].value,
+        product._id,
+        beforeChanges,
+        afterChanges,
+        adminId
+      );
+      await addHistoryRecord(historyRecord);
+    }
+
+    return Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
   }
 
-  async addProduct(productData, filesToUpload) {
+  async addProduct(productData, filesToUpload, { _id: adminId }) {
     if (await this.checkProductExist(productData)) {
-      throw new Error(PRODUCT_ALREADY_EXIST);
+      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
     }
     const { primary, additional } = await uploadProductImages(filesToUpload);
 
     const { basePrice } = productData;
-    productData.basePrice = await calculatePrice(basePrice);
+    productData.basePrice = await calculateBasePrice(basePrice);
 
     productData.model = await modelService.getModelById(productData.model);
 
@@ -201,17 +328,49 @@ class ProductsService {
       additional,
     };
 
+    productData.sizes = await finalPriceCalculation(productData);
+
     const newProduct = await new Product(productData).save();
 
-    if (newProduct) return newProduct;
+    if (productData) {
+      const historyRecord = generateHistoryObject(
+        ADD_PRODUCT,
+        newProduct.model?._id,
+        newProduct.name[UA].value,
+        newProduct._id,
+        [],
+        generateHistoryChangesData(newProduct, [
+          SIZES,
+          PURCHASED_COUNT,
+          AVAILABLE_COUNT,
+          CATEGORY,
+          MODEL,
+          NAME,
+          DESCRIPTION,
+          MAIN_MATERIAL,
+          INNER_MATERIAL,
+          BOTTOM_MATERIAL,
+          STRAP_LENGTH_IN_CM,
+          PATTERN,
+          CLOSURE,
+          AVAILABLE,
+          IS_HOT_ITEM,
+        ]),
+        adminId
+      );
+
+      await addHistoryRecord(historyRecord);
+
+      return newProduct;
+    }
   }
 
-  async deleteProduct(id) {
+  async deleteProduct(id, { _id: adminId }) {
     const product = await Product.findById(id)
       .lean()
       .exec();
     if (!product) {
-      throw new Error(PRODUCT_NOT_FOUND);
+      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
     }
     const { images } = product;
     const { primary, additional } = images;
@@ -222,6 +381,34 @@ class ProductsService {
     ]);
 
     if (await Promise.allSettled(deletedImages)) {
+      const historyRecord = generateHistoryObject(
+        DELETE_PRODUCT,
+        product.model,
+        product.name[UA].value,
+        product._id,
+        generateHistoryChangesData(product, [
+          SIZES,
+          PURCHASED_COUNT,
+          AVAILABLE_COUNT,
+          CATEGORY,
+          MODEL,
+          NAME,
+          DESCRIPTION,
+          MAIN_MATERIAL,
+          INNER_MATERIAL,
+          BOTTOM_MATERIAL,
+          STRAP_LENGTH_IN_CM,
+          PATTERN,
+          CLOSURE,
+          AVAILABLE,
+          IS_HOT_ITEM,
+        ]),
+        [],
+        adminId
+      );
+
+      await addHistoryRecord(historyRecord);
+
       return Product.findByIdAndDelete(id);
     }
   }
@@ -281,12 +468,35 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId).exec();
-    return await Product.find({ _id: { $in: wishlist } }).exec();
+    return Product.find({ _id: { $in: wishlist } }).exec();
   }
 
   async getProductsForCart(userId) {
     const { cart } = await User.findById(userId).exec();
-    return await Product.find({ _id: { $in: cart } }).exec();
+    return Product.find({ _id: { $in: cart } }).exec();
+  }
+
+  async updatePrices(previousPriceValue, nextPriceValue, path, id) {
+    if (
+      previousPriceValue.additionalPrice[1]?.value !==
+        nextPriceValue.additionalPrice[1]?.value ||
+      previousPriceValue.additionalPrice[0].value !==
+        nextPriceValue.additionalPrice.value
+    ) {
+      const products = await Product.find({
+        [`${path}`]: {
+          $eq: id,
+        },
+      })
+        .distinct('_id')
+        .exec();
+
+      for (const productId of products) {
+        await Product.findByIdAndUpdate(productId, {
+          sizes: await finalPriceRecalculation(productId),
+        }).exec();
+      }
+    }
   }
 }
 

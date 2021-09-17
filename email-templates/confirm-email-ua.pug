@@ -1,0 +1,10 @@
+extends template-ua
+block subheaderText
+    p.registrationText Ви успішно зареєструвались
+block content
+    div.contentRegistrationText
+        p.congrats Вітаємо! #[br] Ви успішно зареєструвались в нашому магазині, залишилося тільки #[br] підтвердити вашу електронну адресу:
+        button.confirm
+            a(href=frontendUrl + `/confirmation/` + token) Підтвердити e-mail
+        p.link або перейдіть за посиланням нижче:
+        a.alink(href=frontendUrl + `/confirmation/` + token) #{frontendUrl + `/confirmation/` + token}

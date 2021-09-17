@@ -1,40 +1,50 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
+const { createMaterial } = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
 const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
-const { createColor, deleteColor } = require('../color/color.helper');
-const {
-  getConstructorBasicById,
   deleteConstructorBasic,
   updateConstructorBasic,
   createConstructorBasic,
 } = require('./constructor-basic.helper');
-const {
-  BASIC_ALREADY_EXIST,
-  BASIC_NOT_FOUND,
-} = require('../../error-messages/constructor-basic-messages');
-const { getMaterial } = require('../materials/material.variables');
-const { color } = require('../color/color.variables');
 const {
   wrongId,
   newConstructorBasic,
   getConstructorData,
   getConstructorDataForUpt,
 } = require('./constructor-basic.variables');
+const { getMaterial } = require('../materials/material.variables');
+const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+} = require('../../error-messages/constructor-element-messages');
+const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
+const { color } = require('../color/color.variables');
+const { createModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const { createCategory } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
+const { createSize } = require('../size/size.helper');
+const { createPlainSize } = require('../size/size.variables');
 
 let operations;
 let colorId;
 let materialInput;
 let receivedMaterial;
-let materialID;
+let materialId;
+let modelId;
+let categoryId;
+let sizeId;
 let constructorInput;
-let constructorBasicID;
+let constructorBasicId;
 let currentConstructorBasic = {};
 let constructorUpdateInput;
 let currentconstructorUpdate;
 
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/upload/upload.service.js');
 
 describe('constructor mutations', () => {
   beforeAll(async () => {
@@ -43,54 +53,77 @@ describe('constructor mutations', () => {
     colorId = colorData._id;
     materialInput = getMaterial(colorId);
     receivedMaterial = await createMaterial(materialInput, operations);
-    materialID = receivedMaterial._id;
-    constructorInput = newConstructorBasic(materialID, colorId);
+    materialId = receivedMaterial._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
 
-    constructorUpdateInput = getConstructorDataForUpt(constructorInput);
-    currentconstructorUpdate = getConstructorData(constructorUpdateInput);
-    currentConstructorBasic = getConstructorData(constructorInput);
+    const modelData = await createModel(
+      newModel(categoryId, sizeId),
+      operations
+    );
+    modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
+    constructorInput = newConstructorBasic(materialId, colorId, modelId);
+
+    constructorUpdateInput = getConstructorDataForUpt(
+      materialId,
+      colorId,
+      modelId
+    );
+    currentconstructorUpdate = getConstructorData(constructorUpdateInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
+    currentConstructorBasic = getConstructorData(constructorInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
   });
 
-  test('#1 Should add Constructor Basic', async done => {
+  test('#1 Should add Constructor Basic', async () => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
       operations
     );
-    constructorBasicID = createConstructor._id;
+
+    constructorBasicId = createConstructor._id;
 
     expect(createConstructor).toBeDefined();
     expect(createConstructor).toEqual({
       ...currentConstructorBasic,
-      _id: constructorBasicID,
+      _id: constructorBasicId,
     });
-    done();
   });
-  test('#3 ConstructorBasic should return Error ConstructorBasic already exist', async done => {
+  test('#3 ConstructorBasic should return Error item already exists', async () => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
       operations
     );
 
     expect(createConstructor).toBeDefined();
-    expect(createConstructor.message).toEqual(BASIC_ALREADY_EXIST);
-    expect(createConstructor.statusCode).toEqual(400);
-    done();
+    expect(createConstructor.message).toEqual(ITEM_ALREADY_EXISTS);
+    expect(createConstructor.statusCode).toEqual(BAD_REQUEST);
   });
-  test('#2 Should update existing constructorBasic ', async done => {
+  test('#2 Should update existing constructorBasic', async () => {
     const updateConstructor = await updateConstructorBasic(
       constructorUpdateInput,
-      constructorBasicID,
+      constructorBasicId,
       operations
     );
 
     expect(updateConstructor).toBeDefined();
     expect(updateConstructor).toEqual({
       ...currentconstructorUpdate,
-      _id: constructorBasicID,
+      _id: constructorBasicId,
     });
-    done();
   });
-  test('#4 UpdateConstructorBasic should return BASIC_NOT_FOUND', async done => {
+  test('#4 UpdateConstructorBasic should return CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const updateConstructor = await updateConstructorBasic(
       constructorInput,
       wrongId,
@@ -98,33 +131,26 @@ describe('constructor mutations', () => {
     );
     const result = updateConstructor.message;
 
-    expect(result).toBe(BASIC_NOT_FOUND);
-    done();
+    expect(result).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
-  test('#5 deleteConstructorBasic should return error BASIC_NOT_FOUND', async done => {
+  test('#5 deleteConstructorBasic should return error CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const deletedConstructor = await deleteConstructorBasic(
       wrongId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorBasic.message;
 
-    expect(result).toBe(BASIC_NOT_FOUND);
-    done();
+    expect(deletedConstructor.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
-  test('#6 Should delete constructor basic and return id', async done => {
+  test('#6 Should delete constructor basic and return id', async () => {
     const deletedConstructor = await deleteConstructorBasic(
-      constructorBasicID,
+      constructorBasicId,
       operations
     );
-    const result = deletedConstructor.data.deleteConstructorBasic._id;
 
-    expect(result).toBe(constructorBasicID);
-    done();
+    expect(deletedConstructor._id).toBe(constructorBasicId);
   });
 
-  afterAll(async done => {
-    await deleteMaterial(materialID, operations);
-    await deleteColor(colorId, operations);
-    done();
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

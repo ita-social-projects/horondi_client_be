@@ -1,16 +1,33 @@
 const mongoose = require('mongoose');
+const ImageSet = require('../common/ImageSet').schema;
 const Language = require('../../models/Language').schema;
-const CurrencySet = require('../../models/CurrencySet').schema;
+const AdditionalCurrencySet = require('../../models/AdditionalCurrencySet')
+  .schema;
+const {
+  DB_COLLECTIONS_NAMES: { CLOSURE, MATERIAL, COLOR, MODEL },
+} = require('../../consts/db-collections-names');
 
 const closureSchema = new mongoose.Schema({
   name: [Language],
-  material: {
+  optionType: String,
+  model: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Material',
+    ref: MODEL,
   },
-  image: String,
-  additionalPrice: [CurrencySet],
+  features: {
+    material: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: MATERIAL,
+    },
+    color: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: COLOR,
+    },
+  },
+  images: ImageSet,
+  additionalPrice: [AdditionalCurrencySet],
   available: Boolean,
+  customizable: Boolean,
 });
 
-module.exports = mongoose.model('Closure', closureSchema);
+module.exports = mongoose.model(CLOSURE, closureSchema);

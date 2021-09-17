@@ -1,71 +1,63 @@
 const constructorService = require('../constructor.services');
-const {
-  BASIC_NOT_FOUND,
-  BASIC_ALREADY_EXIST,
-} = require('../../../error-messages/constructor-basic-messages');
+const RuleError = require('../../../errors/rule.error');
 const ConstructorBasic = require('./constructor-basic.model');
 
 const constructorBasicQuery = {
-  getAllConstructorBasics: (parent, args) =>
-    constructorService.getAllConstructorElements(args, ConstructorBasic),
-  getConstructorBasicById: async (parent, args) => {
+  getAllConstructorBasics: async (_, { limit, skip, filter }) => {
+    try {
+      return await constructorService.getAllConstructorElements(
+        { limit, skip, filter },
+        ConstructorBasic
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getConstructorBasicById: async (_, args) => {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
-        ConstructorBasic,
-        BASIC_NOT_FOUND
+        ConstructorBasic
       );
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const constructorBasicMutation = {
-  addConstructorBasic: async (parent, args) => {
+  addConstructorBasic: async (_, args, { user }) => {
     try {
       return await constructorService.addConstructorElement(
         args,
         ConstructorBasic,
-        BASIC_ALREADY_EXIST
+        user
       );
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updateConstructorBasic: async (parent, args) => {
+  updateConstructorBasic: async (_, args, { user }) => {
     try {
       return await constructorService.updateConstructorElement(
         args,
         ConstructorBasic,
-        BASIC_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode: e.message === BASIC_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteConstructorBasic: async (parent, args) => {
+  deleteConstructorBasic: async (_, args, { user }) => {
     try {
       return await constructorService.deleteConstructorElement(
         args.id,
         ConstructorBasic,
-        BASIC_NOT_FOUND
+        user
       );
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

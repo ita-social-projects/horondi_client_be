@@ -2,6 +2,7 @@ const newsType = `
 type News {
 _id: ID!
 title: [Language]
+slug: String
 text: [Language]
 image: String
 author: Author
@@ -19,6 +20,11 @@ author: AuthorInput
 date: String
 show: Boolean
 languages: [String]
-}`;
+}
+
+input NewsFilterInput{
+    search:String
+  }
+`;
 
 module.exports = { newsType, newsInput };

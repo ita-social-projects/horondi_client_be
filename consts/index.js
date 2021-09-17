@@ -4,7 +4,7 @@ const roles = {
   SUPERADMIN: 'superadmin',
 };
 
-const availableForRegistrationRoles = [roles.ADMIN];
+const availableForRegistrationRoles = [roles.ADMIN, roles.SUPERADMIN];
 
 const horondiAddress = {
   street: 'Литвиненка',
@@ -18,9 +18,9 @@ const defaultPaginationParams = {
   limit: 10,
 };
 
-const horondyCityRef = 'db5c88f5-391c-11dd-90d9-001a92567626';
+const horondiCityRef = 'db5c88f5-391c-11dd-90d9-001a92567626';
 
-const dayInMiliseconds = 86400000;
+const dayInMilliseconds = 86400000;
 const monthInMilliseconds = 2592000000;
 
 const userDateFormat = { month: 'short', day: 'numeric' };
@@ -39,10 +39,24 @@ const imageQualities = {
   thumbnail: 128,
 };
 
+const IMAGES_CONTAINER = 'images';
+const SOURCES = {
+  HORONDI: 'horondi',
+  GOOGLE: 'google',
+};
+const USER_FIELDS = {
+  USER_EMAIL: 'email',
+  USER_ID: '_id',
+};
+
 const getUkrPoshtaRegionsUrl = 'get_regions_by_region_ua';
 const getUkrPoshtaDistrictsByRegionIdUrl = `get_districts_by_region_id_and_district_ua?region_id=`;
 const getUkrPoshtaCitiesByDistrictIdUrl = `get_city_by_region_id_and_district_id_and_city_ua?district_id=`;
 const getUkrPoshtaPostofficesCityIdUrl = `get_postoffices_by_postcode_cityid_cityvpzid?city_id=`;
+
+const objectType = 'object';
+
+const optionType = 'optionType';
 
 module.exports = {
   getUkrPoshtaRegionsUrl,
@@ -52,9 +66,9 @@ module.exports = {
   roles,
   availableForRegistrationRoles,
   horondiAddress,
-  horondyCityRef,
+  horondiCityRef,
   monthInMilliseconds,
-  dayInMiliseconds,
+  dayInMilliseconds,
   userDateFormat,
   defaultPaginationParams,
   OTHERS,
@@ -65,4 +79,9 @@ module.exports = {
   THREE_DAYS,
   TWO_WEEKS,
   imageQualities,
+  IMAGES_CONTAINER,
+  SOURCES,
+  USER_FIELDS,
+  objectType,
+  optionType,
 };

@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+
 const Language = require('./Language').schema;
 const CurrencySet = require('./CurrencySet').schema;
-const Color = require('./Color').schema;
+const Color = require('../modules/color/color.model').schema;
+const {
+  DB_COLLECTIONS_NAMES: { CLOSURE },
+} = require('../consts/db-collections-names');
 
 const closureSchema = new mongoose.Schema({
   name: [Language],
@@ -10,4 +14,4 @@ const closureSchema = new mongoose.Schema({
   additionalPrice: [CurrencySet],
 });
 
-module.exports = mongoose.model('Closure', closureSchema);
+module.exports = mongoose.model(CLOSURE, closureSchema);

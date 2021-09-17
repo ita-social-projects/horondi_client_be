@@ -1,4 +1,28 @@
 const { shield } = require('graphql-shield');
+
+const {
+  emailChatQuestionQuery,
+} = require('./modules/email-chat/email-chat.permission');
+
+const { uploadMutation } = require('./modules/upload/upload.permission');
+
+const {
+  homePageSlideMutation,
+} = require('./modules/homepage-slider/homepage-slider.permission');
+
+const { currencyMutation } = require('./modules/currency/currency.permission');
+
+const {
+  emailChatQuestionMutation,
+} = require('./modules/email-chat/email-chat.permission');
+
+const {
+  businessTextMutation,
+} = require('./modules/business-text/business-text.permissions');
+
+const {
+  historyPermissionsQuery,
+} = require('./modules/history/history.permissions');
 const {
   userPermissionsMutation,
   userPermissionsQuery,
@@ -40,6 +64,11 @@ const {
 } = require('./modules/header/header.permisions');
 
 const {
+  restrictionPermissionsMutations,
+  restrictionPermissionsQuery,
+} = require('./modules/restriction/restriction.permissions');
+
+const {
   homePageImagesPermissionsMutations,
   homePageImagesPermissionsQuery,
 } = require('./modules/homepage-images/home-page-images.permissions');
@@ -75,13 +104,58 @@ const {
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
 
 const {
+  cartPermissionsMutations,
+  cartPermissionsQuery,
+} = require('./modules/cart/cart.permissions');
+
+const {
   commentPermissionsMutations,
   commentPermissionsQuery,
 } = require('./modules/comment/comment.permissions');
 
+const {
+  pocketPermissionsMutations,
+  pocketPermissionsQuery,
+} = require('./modules/pocket/pocket.permissions');
+
+const {
+  backPermissionsMutations,
+  backPermissionsQuery,
+} = require('./modules/back/back.permissions');
+
+const {
+  bottomPermissionsMutations,
+  bottomPermissionsQuery,
+} = require('./modules/bottom/bottom.permissions');
+
+const {
+  strapPermissionsQuery,
+  strapPermissionsMutations,
+} = require('./modules/strap/strap.permissions');
+
+const {
+  orderPermissionsMutation,
+  orderPermissionsQuery,
+} = require('./modules/order/order.permissions');
+
+const {
+  productPermissionsMutation,
+} = require('./modules/product/product.permissions');
+
+const {
+  positionPermissionsQuery,
+  positionPermissionsMutations,
+} = require('./modules/position/position.permissions');
+const {
+  basicsPermissionsQuery,
+  basicsPermissionsMutations,
+} = require('./modules/basics/basics.permissions');
+
 const permissions = shield(
   {
     Query: {
+      ...historyPermissionsQuery,
+      ...cartPermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
@@ -89,6 +163,7 @@ const permissions = shield(
       ...newsPermissionsQuery,
       ...categoryPermissionsQuery,
       ...modelPermissionsQuery,
+      ...restrictionPermissionsQuery,
       ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
       ...closurePermissionsQuery,
@@ -98,8 +173,18 @@ const permissions = shield(
       ...constructorBasicPermissionsQuery,
       ...constructorFrontPocketPermissionsQuery,
       ...commentPermissionsQuery,
+      ...pocketPermissionsQuery,
+      ...backPermissionsQuery,
+      ...bottomPermissionsQuery,
+      ...orderPermissionsQuery,
+      ...strapPermissionsQuery,
+      ...emailChatQuestionQuery,
+      ...positionPermissionsQuery,
+      ...basicsPermissionsQuery,
     },
     Mutation: {
+      ...productPermissionsMutation,
+      ...cartPermissionsMutations,
       ...userPermissionsMutation,
       ...patternPermissionsMutations,
       ...materialPermissionsMutations,
@@ -107,6 +192,7 @@ const permissions = shield(
       ...newsPermissionsMutations,
       ...categoryPermissionsMutations,
       ...modelPermissionsMutations,
+      ...restrictionPermissionsMutations,
       ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
       ...closurePermissionsMutations,
@@ -116,6 +202,18 @@ const permissions = shield(
       ...constructorBasicPermissionsMutations,
       ...constructorFrontPocketPermissionsMutations,
       ...commentPermissionsMutations,
+      ...pocketPermissionsMutations,
+      ...backPermissionsMutations,
+      ...bottomPermissionsMutations,
+      ...orderPermissionsMutation,
+      ...strapPermissionsMutations,
+      ...businessTextMutation,
+      ...emailChatQuestionMutation,
+      ...currencyMutation,
+      ...homePageSlideMutation,
+      ...uploadMutation,
+      ...positionPermissionsMutations,
+      ...basicsPermissionsMutations,
     },
   },
   {

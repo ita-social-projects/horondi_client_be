@@ -1,16 +1,20 @@
-const newConstructorBottom = (colorId, materialId) => ({
+const newConstructorBottom = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Деяке імя' },
     { lang: 'en', value: 'Some name' },
   ],
-  material: materialId,
+  optionType: 'CONSTRUCTOR_BOTTOM',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   image: 'askjfsdgfaowifjsklfjlsfkjl',
   basePrice: 1,
-  color: colorId,
   available: true,
-  default: true,
+  customizable: true,
 });
-const getConstructorData = construrtor => ({
+const getConstructorData = (construrtor, { materialId, colorId, modelId }) => ({
   name: [
     {
       lang: construrtor.name[0].lang,
@@ -21,26 +25,76 @@ const getConstructorData = construrtor => ({
       value: construrtor.name[1].value,
     },
   ],
-  material: { _id: construrtor.material },
-  color: { _id: construrtor.color },
+  optionType: 'CONSTRUCTOR_BOTTOM',
+  model: { _id: modelId },
+  features: {
+    material: {
+      _id: materialId,
+      available: true,
+      name: [
+        {
+          lang: 'uk',
+          value: 'Матеріал test',
+        },
+        {
+          lang: 'en',
+          value: 'Material test',
+        },
+      ],
+      purpose: 'INNER',
+    },
+    color: {
+      _id: colorId,
+      colorHex: '#3r56tg',
+    },
+  },
   image: construrtor.image,
   available: construrtor.available,
-  default: construrtor.default,
+  customizable: construrtor.customizable,
+  basePrice: [
+    {
+      currency: 'UAH',
+      value: 2700,
+    },
+    {
+      currency: 'USD',
+      value: 100,
+    },
+  ],
 });
-const getConstructorDataForUpt = (materialId, colorId) => ({
+
+const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Деяке нове імя' },
     { lang: 'en', value: 'Some new name' },
   ],
-  material: materialId,
-  image: '/sdasdafasd',
-  basePrice: 1,
-  color: colorId,
+  optionType: 'CONSTRUCTOR_BOTTOM',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
+  image: 'sdvoaapvpsdasdafasd.jpg',
   available: true,
-  default: true,
+  customizable: true,
+  basePrice: 1,
 });
 
+const filter = {
+  name: '',
+  model: [],
+  material: [],
+  color: [],
+  available: [],
+};
+
+const skip = 0;
+const limit = 5;
+
 module.exports = {
+  filter,
+  skip,
+  limit,
   newConstructorBottom,
   getConstructorData,
   getConstructorDataForUpt,

@@ -10,36 +10,53 @@ const uploadService = require('../upload/upload.service');
 const modelService = require('../model/model.service');
 const { OTHERS } = require('../../consts');
 const FilterHelper = require('../../helpers/filter-helper');
+const {
+  PRODUCTS,
+  _ID,
+  CATEGORY,
+  FROM_PRODUCTS,
+  PURCHASED_COUNT,
+} = require('../../consts/category-fields');
+const {
+  HISTORY_ACTIONS: { ADD_CATEGORY, DELETE_CATEGORY, EDIT_CATEGORY },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/history');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: { CODE, NAME },
+} = require('../../consts/history-obj-keys');
+const {
+  STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class CategoryService extends FilterHelper {
-  async getAllCategories({ filter, pagination, sort }) {
-    try {
-      let filters = this.filterItems(filter);
-      let aggregatedItems = this.aggregateItems(filters, pagination, sort);
-      const [categories] = await Category.aggregate()
-        .collation({ locale: 'uk' })
-        .facet({
-          items: aggregatedItems,
-          calculations: [{ $match: filters }, { $count: 'count' }],
-        })
-        .exec();
-      let categoryCount;
+  async getAllCategories({ filter = {}, pagination }) {
+    const filterOptions = {};
 
-      const {
-        items,
-        calculations: [calculations],
-      } = categories;
-
-      if (calculations) {
-        categoryCount = calculations.count;
-      }
-      return {
-        items,
-        count: categoryCount || 0,
+    if (filter?.search) {
+      filterOptions['name.0.value'] = {
+        $regex: `${filter.search.trim()}`,
+        $options: 'i',
       };
-    } catch (e) {
-      console.log(e.message);
     }
+    const items = await Category.find(filterOptions)
+      .limit(pagination?.limit)
+      .skip(pagination?.skip)
+      .exec();
+
+    const count = Category.find(filterOptions).countDocuments();
+    return {
+      items,
+      count,
+    };
   }
 
   async getCategoryById(id) {
@@ -47,21 +64,40 @@ class CategoryService extends FilterHelper {
     if (category) {
       return category;
     }
-    throw new Error(CATEGORY_NOT_FOUND);
+    throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
   }
 
-  async updateCategory({ id, category, upload }) {
+  async updateCategory({ id, category, upload }, { _id: adminId }) {
     const categoryToUpdate = await Category.findById(id).exec();
+
     if (!categoryToUpdate) {
-      throw new Error(CATEGORY_NOT_FOUND);
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
 
     if (await this.checkCategoryExist(category, id)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+      throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
+    }
+
+    if (category) {
+      const { beforeChanges, afterChanges } = getChanges(
+        categoryToUpdate,
+        category
+      );
+
+      const historyRecord = generateHistoryObject(
+        EDIT_CATEGORY,
+        '',
+        categoryToUpdate.name[UA].value,
+        categoryToUpdate._id,
+        beforeChanges,
+        afterChanges,
+        adminId
+      );
+      await addHistoryRecord(historyRecord);
     }
 
     if (!upload || !Object.keys(upload).length) {
-      return await Category.findByIdAndUpdate(id, category, {
+      return Category.findByIdAndUpdate(id, category, {
         new: true,
       }).exec();
     }
@@ -69,14 +105,14 @@ class CategoryService extends FilterHelper {
 
     const images = uploadResult.fileNames;
     if (!images) {
-      return await Category.findByIdAndUpdate(id, category).exec();
+      return Category.findByIdAndUpdate(id, category).exec();
     }
     const foundCategory = await Category.findById(id)
       .lean()
       .exec();
     uploadService.deleteFiles(Object.values(foundCategory.images));
 
-    return await Category.findByIdAndUpdate(
+    return Category.findByIdAndUpdate(
       id,
       {
         ...category,
@@ -95,14 +131,12 @@ class CategoryService extends FilterHelper {
       sort: {},
     });
 
-    const data = categories.items.map(async category => {
+    return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
-      const modelsFields = models.map(async model => {
-        return {
-          name: model.name,
-          _id: model._id,
-        };
-      });
+      const modelsFields = models.map(async model => ({
+        name: model.name,
+        _id: model._id,
+      }));
       return {
         category: {
           name: [...category.name],
@@ -111,17 +145,15 @@ class CategoryService extends FilterHelper {
         models: modelsFields,
       };
     });
-
-    return data;
   }
 
-  async addCategory(data, upload) {
+  async addCategory(data, upload, { _id: adminId }) {
     if (!upload) {
-      throw new Error(IMAGES_NOT_PROVIDED);
+      throw new RuleError(IMAGES_NOT_PROVIDED, BAD_REQUEST);
     }
 
     if (await this.checkCategoryExist(data)) {
-      throw new Error(CATEGORY_ALREADY_EXIST);
+      throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
     const savedCategory = await new Category(data).save();
@@ -130,17 +162,34 @@ class CategoryService extends FilterHelper {
 
     savedCategory.images = uploadResult.fileNames;
 
-    return await savedCategory.save();
+    const newCategory = await savedCategory.save();
+
+    const historyRecord = generateHistoryObject(
+      ADD_CATEGORY,
+      '',
+      newCategory.name[UA].value,
+      newCategory._id,
+      [],
+      generateHistoryChangesData(newCategory, [NAME, CODE]),
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return newCategory;
   }
 
   async cascadeUpdateRelatives(filter, updateData) {
     await Product.updateMany(filter, updateData).exec();
     await Model.updateMany(filter, updateData).exec();
   }
-  async deleteCategory({ deleteId, switchId }) {
+
+  async deleteCategory({ deleteId, switchId }, { _id: adminId }) {
     const category = await Category.findByIdAndDelete(deleteId)
       .lean()
       .exec();
+
+    if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+
     const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
@@ -162,11 +211,21 @@ class CategoryService extends FilterHelper {
     }
 
     if (category) {
+      const historyRecord = generateHistoryObject(
+        DELETE_CATEGORY,
+        '',
+        category.name[UA].value,
+        category._id,
+        generateHistoryChangesData(category, [NAME, CODE]),
+        [],
+        adminId
+      );
+      await addHistoryRecord(historyRecord);
+
       return category;
     }
-
-    throw new Error(CATEGORY_NOT_FOUND);
   }
+
   async getCategoriesWithModels() {
     const { items } = await this.getAllCategories({});
     return items.map(category => {
@@ -174,6 +233,7 @@ class CategoryService extends FilterHelper {
       return category;
     });
   }
+
   async checkCategoryExist(data, id) {
     if (!data.name.length) {
       return false;
@@ -191,7 +251,7 @@ class CategoryService extends FilterHelper {
 
   getCategoriesStats(categories, total) {
     let popularSum = 0;
-    let res = { names: [], counts: [], relations: [] };
+    const res = { names: [], counts: [], relations: [] };
 
     categories
       .filter((_, idx) => idx < 3)
@@ -201,24 +261,39 @@ class CategoryService extends FilterHelper {
 
         res.names.push(name[0].value);
         res.counts.push(purchasedCount);
-        res.relations.push(relation);
+        res.relations.push(relation || 0);
       });
 
     const otherRelation = 100 - popularSum;
     const otherCount = Math.round((otherRelation * total) / 100);
-
     return {
       names: [...res.names, OTHERS],
-      counts: [...res.counts, otherCount],
-      relations: [...res.relations, otherRelation],
+      counts: [...res.counts, otherCount || 0],
+      relations: [...res.relations, otherRelation || 0],
     };
   }
 
   async getPopularCategories() {
     let total = 0;
-    const categories = await Category.find()
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: PRODUCTS,
+          localField: _ID,
+          foreignField: CATEGORY,
+          as: FROM_PRODUCTS,
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          purchasedCount: {
+            $sum: PURCHASED_COUNT,
+          },
+        },
+      },
+    ])
       .sort({ purchasedCount: -1 })
-      .lean()
       .exec();
 
     categories.forEach(({ purchasedCount }) => (total += purchasedCount));

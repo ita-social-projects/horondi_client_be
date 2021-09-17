@@ -1,53 +1,44 @@
 const ClosureService = require('./closures.service');
-const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
+
+const RuleError = require('../../errors/rule.error');
 
 const closureQuery = {
-  getAllClosure: (parent, args) => ClosureService.getAllClosure(args),
-  getClosureById: async (parent, args) => {
+  getAllClosure: async (_, { limit, skip, filter }) => {
     try {
-      return await ClosureService.getClosureById(args.id);
+      return await ClosureService.getAllClosure(limit, skip, filter);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  getClosureById: async (_, { id }) => {
+    try {
+      return await ClosureService.getClosureById(id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };
 
 const closureMutation = {
-  addClosure: async (parent, args) => {
+  addClosure: async (_, { closure, images }, { user }) => {
     try {
-      return await ClosureService.addClosure(args.closure, args.upload);
+      return await ClosureService.addClosure(closure, images, user);
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  updateClosure: async (parent, args) => {
+  updateClosure: async (_, { id, closure, image }, { user }) => {
     try {
-      return await ClosureService.updateClosure(
-        args.id,
-        args.closure,
-        args.upload
-      );
+      return await ClosureService.updateClosure(id, closure, image, user);
     } catch (e) {
-      return {
-        statusCode: e.message === CLOSURE_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteClosure: async (parent, args) => {
+  deleteClosure: async (_, { id }, { user }) => {
     try {
-      return await ClosureService.deleteClosure(args.id);
+      return await ClosureService.deleteClosure(id, user);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

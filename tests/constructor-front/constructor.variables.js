@@ -1,29 +1,80 @@
 const wrongId = '6009dcd5f9855555907ebf5e';
-const newConstructorFront = (materialID, colorID) => ({
+
+const filter = {
+  name: '',
+  model: [],
+  material: [],
+  color: [],
+  pattern: [],
+  available: [],
+};
+
+const skip = 0;
+const limit = 5;
+
+const newConstructorFront = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Щось' },
     { lang: 'en', value: 'Something' },
   ],
-  material: materialID,
-  color: colorID,
+  optionType: 'CONSTRUCTOR_FRONT_POCKET',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   image: '/imageURL',
   basePrice: 0,
   available: true,
-  default: false,
+  customizable: false,
 });
-const newConstructorFrontUpdateInp = (materialID, colorID) => ({
+const newConstructorFrontUpdateInp = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'Щось 2' },
     { lang: 'en', value: 'Something 2' },
   ],
-  material: materialID,
-  color: colorID,
+  optionType: 'CONSTRUCTOR_FRONT_POCKET',
+  model: { _id: modelId },
+  features: {
+    material: {
+      _id: materialId,
+      available: true,
+      name: [
+        {
+          lang: 'uk',
+          value: 'Матеріал test',
+        },
+        {
+          lang: 'en',
+          value: 'Material test',
+        },
+      ],
+      purpose: 'INNER',
+    },
+    color: {
+      _id: colorId,
+      colorHex: '#3r56tg',
+    },
+  },
   image: '/imageURL2',
-  basePrice: 0,
+  basePrice: [
+    {
+      currency: 'UAH',
+      value: 2700,
+    },
+    {
+      currency: 'USD',
+      value: 100,
+    },
+  ],
   available: true,
-  default: false,
+  customizable: false,
 });
-const getConstructorData = construrtorFront => ({
+
+const getConstructorData = (
+  construrtorFront,
+  { materialId, colorId, modelId }
+) => ({
   name: [
     {
       lang: construrtorFront.name[0].lang,
@@ -34,13 +85,44 @@ const getConstructorData = construrtorFront => ({
       value: construrtorFront.name[1].value,
     },
   ],
-  material: { _id: construrtorFront.material },
-  color: { _id: construrtorFront.color },
+  optionType: 'CONSTRUCTOR_FRONT_POCKET',
+  model: { _id: modelId },
+  features: {
+    material: {
+      _id: materialId,
+      available: true,
+      name: [
+        {
+          lang: 'uk',
+          value: 'Матеріал test',
+        },
+        {
+          lang: 'en',
+          value: 'Material test',
+        },
+      ],
+      purpose: 'INNER',
+    },
+    color: {
+      _id: colorId,
+      colorHex: '#3r56tg',
+    },
+  },
   image: construrtorFront.image,
   available: construrtorFront.available,
-  default: construrtorFront.default,
+  customizable: construrtorFront.customizable,
+  basePrice: [
+    {
+      currency: 'UAH',
+      value: 2700,
+    },
+    {
+      currency: 'USD',
+      value: 100,
+    },
+  ],
 });
-const getConstructorDataForUpt = ConstructorFrontPocket => ({
+const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   name: [
     {
       lang: 'ua',
@@ -51,11 +133,16 @@ const getConstructorDataForUpt = ConstructorFrontPocket => ({
       value: 'After',
     },
   ],
-  material: ConstructorFrontPocket.material,
-  color: ConstructorFrontPocket.color,
+  optionType: 'CONSTRUCTOR_FRONT_POCKET',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   image: '/new img',
   available: true,
-  default: false,
+  customizable: false,
+  basePrice: 1,
 });
 
 module.exports = {
@@ -64,4 +151,7 @@ module.exports = {
   newConstructorFrontUpdateInp,
   getConstructorDataForUpt,
   wrongId,
+  filter,
+  skip,
+  limit,
 };

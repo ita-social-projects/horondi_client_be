@@ -1,10 +1,16 @@
 const { gql } = require('@apollo/client');
 
+const productService = require('../../modules/product/product.service');
+const {
+  uploadProductImages: uploadImages,
+} = require('../../modules/product/product.utils');
+const { getCurrencySign } = require('../../utils/product-service');
+
 const createProduct = async (product, operations) => {
   const createdProduct = await operations.mutate({
     mutation: gql`
-      mutation($product: ProductInput!) {
-        addProduct(product: $product, upload: []) {
+      mutation($product: ProductInput!, $upload: Upload!) {
+        addProduct(product: $product, upload: $upload) {
           ... on Product {
             _id
           }
@@ -17,16 +23,27 @@ const createProduct = async (product, operations) => {
     `,
     variables: {
       product,
+      upload: ['__tests__/homepage-images/img.png'],
     },
   });
 
   return createdProduct.data.addProduct;
 };
-const updateProduct = async (id, product, operations) => {
-  return await operations.mutate({
+const updateProduct = async (id, product, primary, operations) =>
+  await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $product: ProductInput!) {
-        updateProduct(id: $id, product: $product, upload: []) {
+      mutation(
+        $id: ID!
+        $product: ProductInput!
+        $upload: Upload
+        $primary: Upload
+      ) {
+        updateProduct(
+          id: $id
+          product: $product
+          upload: $upload
+          primary: $primary
+        ) {
           ... on Product {
             _id
             category {
@@ -75,7 +92,9 @@ const updateProduct = async (id, product, operations) => {
               _id
             }
             sizes {
-              _id
+              size {
+                _id
+              }
             }
             availableCount
           }
@@ -89,11 +108,12 @@ const updateProduct = async (id, product, operations) => {
     variables: {
       id,
       product,
+      upload: ['__tests__/homepage-images/img.png'],
+      primary,
     },
   });
-};
-const getProductById = async (id, operations) => {
-  return await operations.query({
+const getProductById = async (id, operations) =>
+  await operations.query({
     query: gql`
       query($id: ID!) {
         getProductById(id: $id) {
@@ -153,7 +173,9 @@ const getProductById = async (id, operations) => {
               _id
             }
             sizes {
-              _id
+              size {
+                _id
+              }
             }
             availableCount
             userRates {
@@ -172,9 +194,8 @@ const getProductById = async (id, operations) => {
       id,
     },
   });
-};
-const deleteProduct = async (id, operations) => {
-  return await operations.mutate({
+const deleteProduct = async (id, operations) =>
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteProduct(id: $id) {
@@ -191,9 +212,8 @@ const deleteProduct = async (id, operations) => {
       id,
     },
   });
-};
-const getAllProductsWithSkipAndLimit = async (skip, limit, operations) => {
-  return await operations.query({
+const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
+  await operations.query({
     variables: { skip, limit },
     query: gql`
       query($skip: Int, $limit: Int) {
@@ -210,7 +230,87 @@ const getAllProductsWithSkipAndLimit = async (skip, limit, operations) => {
       }
     `,
   });
-};
+
+const getAllProductCategoriesForFilter = async operations =>
+  await operations.query({
+    query: gql`
+      query {
+        getProductsFilters {
+          categories {
+            _id
+          }
+        }
+      }
+    `,
+  });
+
+const getModelsByCategory = async (id, operations) =>
+  await operations.query({
+    variables: { id },
+    query: gql`
+      query($id: ID!) {
+        getModelsByCategory(id: $id) {
+          ... on Model {
+            _id
+            name {
+              lang
+              value
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+  });
+
+const getPopularProducts = async operations =>
+  await operations.query({
+    query: gql`
+      query {
+        getPopularProducts {
+          labels
+        }
+      }
+    `,
+  });
+
+const getProductsForWishlist = async userId =>
+  await productService.getProductsForWishlist(userId);
+
+const getProductsForCart = async userId =>
+  await productService.getProductsForCart(userId);
+
+const deleteProductImages = async (id, operations) =>
+  await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $images: [String!]!) {
+        deleteImages(id: $id, images: $images) {
+          ... on PrimaryImage {
+            primary {
+              large
+              medium
+              small
+              thumbnail
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+      images: ['__tests__/homepage-images/img.png'],
+    },
+  });
+
+const uploadProductImages = async () =>
+  await uploadImages(['__tests__/homepage-images/img.png']);
+
+const getFilter = async filterOpts => productService.filterItems(filterOpts);
+
+const getCurrency = (currency, UAH, USD) => getCurrencySign(currency, UAH, USD);
 
 module.exports = {
   deleteProduct,
@@ -218,4 +318,13 @@ module.exports = {
   getProductById,
   getAllProductsWithSkipAndLimit,
   updateProduct,
+  getAllProductCategoriesForFilter,
+  getModelsByCategory,
+  getPopularProducts,
+  getProductsForWishlist,
+  getProductsForCart,
+  deleteProductImages,
+  uploadProductImages,
+  getFilter,
+  getCurrency,
 };

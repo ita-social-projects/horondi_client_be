@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: '14' 
+          node-version: '14.15.4' 
       - run: npm install
       - run: npm run test
         env:
@@ -27,6 +27,11 @@ jobs:
           MAIL_PASS: ${{secrets.MAIL_PASS}}
           MAIL_HOST: ${{secrets.MAIL_HOST}}
           MAIL_PORT: ${{secrets.MAIL_PORT}}
+          GMAIL_EMAIL_SERVICE: ${{secrets.GMAIL_EMAIL_SERVICE}}
+          GMAIL_API_ID: ${{secrets.GMAIL_API_ID}}
+          GMAIL_API_SECRET: ${{secrets.GMAIL_API_SECRET}}
+          GMAIL_API_REDIRECT_URI: ${{secrets.GMAIL_API_REDIRECT_URI}}
+          GMAIL_API_REFRESH_TOKEN: ${{secrets.GMAIL_API_REFRESH_TOKEN}}
           SECRET: ${{secrets.SECRET}}
           CONFIRMATION_SECRET: ${{secrets.CONFIRMATION_SECRET}}
           EXPIRES_IN: ${{secrets.EXPIRES_IN}}
@@ -36,6 +41,7 @@ jobs:
           BASE_URI: ${{secrets.BASE_URI}}
           KEY_VAULTS_URI: ${{secrets.KEY_VAULTS_URI}}
           FRONT_BASE_URI: ${{secrets.FRONT_BASE_URI}}
+          ADMIN_BASE_URI: ${{secrets.ADMIN_BASE_URI}}
           TEST_BASE_URI: ${{secrets.TEST_BASE_URI}}
           IMAGE_LINK: ${{secrets.IMAGE_LINK}}
           STORAGE_ACCOUNT: ${{secrets.STORAGE_ACCOUNT}}
@@ -52,6 +58,9 @@ jobs:
           PAYMENT_API_LINK: ${{secrets.PAYMENT_API_LINK}}
           REACT_APP_GOOGLE_CLIENT_ID: ${{secrets.REACT_APP_GOOGLE_CLIENT_ID}}
  
+      - name: The eslint checking
+        run: npm run lint:fix
+
       - name: fix code coverage paths
         run: | 
           sed -i 's/\/home\/runner\/work\/horondi_client_be\/horondi_client_be\//\/github\/workspace\//g' test-report.xml

@@ -5,5 +5,11 @@ module.exports = {
   testRegex: 'tests/.*.test.js$',
   testResultsProcessor: 'jest-sonar-reporter',
   collectCoverage: true,
-  coveragePathIgnorePatterns: ['/node_modules/'],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    'dump-database.js',
+    'jest.config.js',
+    'migrate-mongo-config.js',
+    'migrations/',
+  ],
 };

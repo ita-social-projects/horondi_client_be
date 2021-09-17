@@ -3,19 +3,23 @@ const {
   contact,
   updatedContact,
   notExistContactId,
+  mapImages,
+  mapImagesNew
 } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
 const {
   addContact,
   updateContact,
   deleteContact,
+  saveUpdatedContact
 } = require('./contact.helper');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/contact/contact.utils.js');
 
 let operations;
-let contactsId;
+let contactsId = '';
+let updContactId = '';
 
 describe('Contacts mutations test', () => {
   beforeAll(async () => {
@@ -46,17 +50,47 @@ describe('Contacts mutations test', () => {
     const res = await updateContact(
       notExistContactId,
       updatedContact,
+      mapImages,
       operations
     );
 
     expect(res).toHaveProperty('message', CONTACT_NOT_FOUND);
     expect(res).toHaveProperty('statusCode', 404);
   });
-  test('should delete contact', async () => {
-    await deleteContact(contactsId, operations);
+  test('should upd with old img', async () => {
+    const res = await updateContact(
+      contactsId, 
+      updatedContact,
+      mapImages, 
+      operations
+    );
+    
+    expect(res).toHaveProperty('phoneNumber', updatedContact.phoneNumber);
+    expect(res).toHaveProperty('email', updatedContact.email);
+    expect(res).toHaveProperty('link', updatedContact.link);
   });
 
-  it('should return error when delete not existing contact ', async () => {
+  test('update with new image', async () => {
+    const res = await updateContact(
+      contactsId,
+      updatedContact,
+      mapImagesNew, 
+      operations
+    );
+
+    expect(res).toHaveProperty('phoneNumber', updatedContact.phoneNumber);
+    expect(res).toHaveProperty('email', updatedContact.email);
+  })
+
+  test('should delete contact', async () => {
+    const res = await deleteContact(contactsId, operations);
+
+    expect(res).toBeDefined();
+    expect(res).not.toBeNull();
+    expect(res).toHaveProperty('_id', contactsId);
+  });
+
+  it('should return error when delete not existing contact', async () => {
     const res = await deleteContact(notExistContactId, operations);
 
     expect(res).toBeDefined();

@@ -1,20 +1,55 @@
 const Closure = require('./closures.model');
+const RuleError = require('../../errors/rule.error');
+const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
-  CLOSURE_NOT_FOUND,
-  CLOSURE_ALREADY_EXIST,
-} = require('../../error-messages/closures.messages');
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
+const {
+  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/history');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    ADDITIONAL_PRICE,
+    AVAILABLE,
+    FEATURES,
+    OPTION_TYPE,
+    MODEL,
+  },
+} = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { CLOSURE },
+} = require('../../consts/input-fields');
 
 class ClosureService {
-  async getAllClosure({ skip, limit }) {
-    const items = await Closure.find()
+  async getAllClosure(limit, skip, filter) {
+    const filterOptions = {};
+
+    if (filter?.search) {
+      filterOptions['name.0.value'] = {
+        $regex: `${filter.search.trim()}`,
+        $options: 'i',
+      };
+    }
+    const items = await Closure.find(filterOptions)
       .skip(skip)
       .limit(limit)
       .exec();
 
-    const count = await Closure.find()
-      .countDocuments()
-      .exec();
+    const count = await Closure.countDocuments(filterOptions).exec();
+
     return {
       items,
       count,
@@ -26,54 +61,121 @@ class ClosureService {
     if (foundClosure) {
       return foundClosure;
     }
-    throw new Error(CLOSURE_NOT_FOUND);
+    throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
   }
 
-  async addClosure(data, upload) {
-    if (upload) {
-      const uploadImage = await uploadService.uploadFile(upload, ['large']);
-      data.image = uploadImage.fileNames.large;
+  async addClosure(closure, image, { _id: adminId }) {
+    if (image) {
+      const uploadImage = await uploadService.uploadFile(image);
+      closure.images = uploadImage.fileNames;
     }
+    if (closure.additionalPrice) {
+      closure.additionalPrice = await calculateAdditionalPrice(
+        closure.additionalPrice
+      );
+    }
+    const newClosure = await new Closure(closure).save();
 
-    if (await this.checkClosureExist(data)) {
-      throw new Error(CLOSURE_ALREADY_EXIST);
-    }
-    return await new Closure(data).save();
+    const historyRecord = generateHistoryObject(
+      ADD_CLOSURE,
+      newClosure.model?._id,
+      newClosure.name[UA].value,
+      newClosure._id,
+      [],
+      generateHistoryChangesData(newClosure, [
+        NAME,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return newClosure;
   }
 
-  async updateClosure(id, closure, upload) {
-    if (await this.checkClosureExist(closure)) {
-      throw new Error(CLOSURE_ALREADY_EXIST);
-    }
-    if (upload) {
-      const uploadImage = await uploadService.uploadFile(upload, ['large']);
-      data.image = uploadImage.fileNames.large;
+  async updateClosure(id, closure, image, { _id: adminId }) {
+    const closureToUpdate = await Closure.findById(id).exec();
+
+    if (!closureToUpdate) {
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
 
-    const closureMaterial = await Closure.findById(id).exec();
-    if (!closureMaterial) {
-      throw new Error(CLOSURE_NOT_FOUND);
+    if (closure.additionalPrice) {
+      closure.additionalPrice = await calculateAdditionalPrice(
+        closure.additionalPrice
+      );
     }
-    return await Closure.findByIdAndUpdate(id, closure, { new: true }).exec();
+
+    if (image) {
+      if (closureToUpdate.images) {
+        const images = Object.values(closureToUpdate.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+
+      const uploadImage = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadImage[0];
+      closure.images = imageResults.fileNames;
+    }
+
+    const { beforeChanges, afterChanges } = getChanges(
+      closureToUpdate,
+      closure
+    );
+
+    const historyRecord = generateHistoryObject(
+      EDIT_CLOSURE,
+      closureToUpdate.model?._id,
+      closureToUpdate.name[UA].value,
+      closureToUpdate._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    const updatedClosure = await Closure.findByIdAndUpdate(id, closure, {
+      new: true,
+    }).exec();
+
+    if (!updatedClosure) {
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
+    }
+
+    return updatedClosure;
   }
 
-  async deleteClosure(id) {
+  async deleteClosure(id, { _id: adminId }) {
     const closure = await Closure.findByIdAndDelete(id).exec();
     if (!closure) {
-      throw new Error(CLOSURE_NOT_FOUND);
+      throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
-    return closure;
-  }
+    const historyRecord = generateHistoryObject(
+      DELETE_CLOSURE,
+      closure.model?._id,
+      closure.name[UA].value,
+      closure._id,
+      generateHistoryChangesData(closure, [
+        NAME,
+        OPTION_TYPE,
+        MODEL,
+        FEATURES,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      [],
+      adminId
+    );
 
-  async checkClosureExist(data) {
-    let closureCount = await Closure.countDocuments({
-      name: {
-        $elemMatch: {
-          $or: data.name.map(({ value }) => ({ value })),
-        },
-      },
-    }).exec();
-    return closureCount > 0;
+    await addHistoryRecord(historyRecord);
+
+    return closure;
   }
 }
 

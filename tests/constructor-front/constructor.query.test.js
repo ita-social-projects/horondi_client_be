@@ -1,35 +1,46 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
-const {
-  FRONT_POCKET_NOT_FOUND,
-} = require('../../error-messages/constructor-front-pocket-messages');
 const {
   createConstructorFrontPocket,
   getAllConstructorFrontPocket,
   getConstructorFrontPocketById,
-  deleteConstructorFrontPocket,
 } = require('./constructor.front.helper');
 const {
   getConstructorData,
   newConstructorFront,
   wrongId,
+  filter,
+  skip,
+  limit,
 } = require('./constructor.variables');
-const { createColor, deleteColor } = require('../color/color.helper');
-const {
-  createMaterial,
-  deleteMaterial,
-} = require('../materials/material.helper');
+const { createColor } = require('../color/color.helper');
+const { createMaterial } = require('../materials/material.helper');
 const { color } = require('../color/color.variables');
 const { getMaterial } = require('../materials/material.variables');
+const {
+  CONSTRUCTOR_ELEMENT_NOT_FOUND,
+} = require('../../error-messages/constructor-element-messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const { createModel } = require('../model/model.helper');
+const { newModel } = require('../model/model.variables');
+const { createCategory } = require('../category/category.helper');
+const { newCategoryInputData } = require('../category/category.variables');
 
 let operations;
 let colorId;
-let materialID;
+let materialId;
+let modelId;
+let categoryId;
 let constructorInput;
-let constructorFrontID;
+let constructorFrontId;
 let constructorFrontPocket;
 let currentConstructorFrontPocket;
 
+jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
+jest.mock('../../modules/currency/currency.model.js');
 
 describe('constructor mutations', () => {
   beforeAll(async () => {
@@ -37,19 +48,29 @@ describe('constructor mutations', () => {
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
-    materialID = materialData._id;
-    constructorInput = newConstructorFront(materialID, colorId);
+    materialId = materialData._id;
+    const categoryData = await createCategory(newCategoryInputData, operations);
+    categoryId = categoryData._id;
+
+    const modelData = await createModel(newModel(categoryId), operations);
+    modelId = modelData._id;
+    constructorInput = newConstructorFront(materialId, colorId, modelId);
     constructorFrontPocket = await createConstructorFrontPocket(
       constructorInput,
       operations
     );
-    constructorFrontID = constructorFrontPocket._id;
+    constructorFrontId = constructorFrontPocket._id;
 
-    currentConstructorFrontPocket = getConstructorData(constructorInput);
+    currentConstructorFrontPocket = getConstructorData(constructorInput, {
+      materialId,
+      colorId,
+      modelId,
+    });
   });
 
   test('#1 Should return all Constructor Front Pocket', async () => {
     const receivedAllConstructorFrontPocket = await getAllConstructorFrontPocket(
+      { limit, skip, filter },
       operations
     );
     expect(receivedAllConstructorFrontPocket.items).toBeDefined();
@@ -57,29 +78,27 @@ describe('constructor mutations', () => {
   });
   test('#2 Should return  Constructor Front Pocket by Id', async () => {
     const receivedById = await getConstructorFrontPocketById(
-      constructorFrontID,
+      constructorFrontId,
       operations
     );
 
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({
       ...currentConstructorFrontPocket,
-      _id: constructorFrontID,
+      _id: constructorFrontId,
     });
   });
-
   test('#3 Should return  Error', async () => {
     const receivedError = await getConstructorFrontPocketById(
       wrongId,
       operations
     );
 
-    expect(receivedError.statusCode).toBe(404);
-    expect(receivedError.message).toBe(FRONT_POCKET_NOT_FOUND);
+    expect(receivedError.statusCode).toBe(NOT_FOUND);
+    expect(receivedError.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
   });
+
   afterAll(async () => {
-    await deleteConstructorFrontPocket(constructorFrontID, operations);
-    await deleteMaterial(materialID, operations);
-    await deleteColor(colorId, operations);
+    mongoose.connection.db.dropDatabase();
   });
 });

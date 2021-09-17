@@ -1,7 +1,5 @@
 const emailChatService = require('./email-chat.service');
-const {
-  QUESTION_NOT_FOUND,
-} = require('../../error-messages/email-chat.messages');
+const RuleError = require('../../errors/rule.error');
 
 const emailChatQuestionQuery = {
   getAllEmailQuestions: (parent, args) =>
@@ -9,42 +7,31 @@ const emailChatQuestionQuery = {
   getPendingEmailQuestionsCount: (parent, args) =>
     emailChatService.getPendingEmailQuestionsCount(),
   getEmailQuestionById: async (parent, args) => {
-    const question = await emailChatService
-      .getEmailQuestionById(args.id)
-      .exec();
-    if (question) {
-      return question;
+    try {
+      return await emailChatService.getEmailQuestionById(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: 404,
-      message: QUESTION_NOT_FOUND,
-    };
   },
 };
 
 const emailChatQuestionMutation = {
   addEmailQuestion: async (parent, args) =>
-    await emailChatService.addEmailQuestion(args.question),
+    emailChatService.addEmailQuestion(args.question),
 
   makeEmailQuestionsSpam: async (parent, args) => {
     try {
       return await emailChatService.makeEmailQuestionsSpam(args);
-    } catch (error) {
-      return {
-        statusCode: 404,
-        message: error.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
   answerEmailQuestion: async (parent, args) => {
     try {
       return await emailChatService.answerEmailQuestion(args);
-    } catch (error) {
-      return {
-        statusCode: 404,
-        message: error.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteEmailQuestions: async (parent, args) => {
@@ -52,11 +39,8 @@ const emailChatQuestionMutation = {
       return await emailChatService.deleteEmailQuestions(
         args.questionsToDelete
       );
-    } catch (error) {
-      return {
-        statusCode: 404,
-        message: error.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

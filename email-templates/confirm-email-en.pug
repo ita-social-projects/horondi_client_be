@@ -1,0 +1,10 @@
+extends template-en
+block subheaderText
+    p.registrationText You were successfully signed up
+block content
+    div.contentRegistrationText
+        p.congrats Congratulations! #[br] You were successfully signed up on HORONDI, the only thing left #[br] is to confirm your e-mail:
+        button.confirm
+            a(href=frontendUrl + `/confirmation/` + token) Confirm e-mail
+        p.link or follow the link:
+        a.alink(href=frontendUrl + `/confirmation/` + token) #{frontendUrl + `/confirmation/` + token}

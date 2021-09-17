@@ -1,33 +1,69 @@
-const { or, allow } = require('graphql-shield');
-const { isAuthorized, isTheSameUser, hasRoles } = require('../../utils/rules');
-const { roles } = require('../../consts');
+const { or, allow, and } = require('graphql-shield');
 
-const { ADMIN, SUPERADMIN } = roles;
+const {
+  isAuthorized,
+  isTheSameUser,
+  hasRoles,
+  inputDataValidation,
+} = require('../../utils/rules');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
+const {
+  createUserValidator,
+  loginUserValidator,
+  emailUserValidator,
+  resetPasswordValidator,
+  completeAdminRegisterValidator,
+  registerAdminValidator,
+  updateUserValidator,
+} = require('../../validators/user.validator');
+const {
+  INPUT_FIELDS: { USER, LOGIN_INPUT, EMAIL, PASSWORD },
+} = require('../../consts/input-fields');
 
 const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
+  getCountUserOrders: hasRoles([ADMIN, SUPERADMIN, USER]),
   getUsersForStatistic: hasRoles([ADMIN, SUPERADMIN]),
   getUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   getUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   validateConfirmationToken: allow,
 };
 const userPermissionsMutation = {
-  registerUser: allow,
-  loginUser: allow,
-  loginAdmin: allow,
+  blockUser: hasRoles([SUPERADMIN, ADMIN]),
+  unlockUser: hasRoles([SUPERADMIN, ADMIN]),
+  registerUser: inputDataValidation(USER, createUserValidator),
+  loginUser: inputDataValidation(LOGIN_INPUT, loginUserValidator),
+  loginAdmin: inputDataValidation(LOGIN_INPUT, loginUserValidator),
   deleteUser: hasRoles([SUPERADMIN]),
-  updateUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
-  updateUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
+  updateUserById: and(
+    inputDataValidation(USER, updateUserValidator),
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+  ),
+  updateUserByToken: and(
+    inputDataValidation(USER, updateUserValidator),
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+  ),
   regenerateAccessToken: allow,
   confirmUser: allow,
   confirmUserEmail: allow,
-  recoverUser: allow,
+  recoverUser: inputDataValidation(EMAIL, emailUserValidator),
   switchUserStatus: hasRoles([ADMIN, SUPERADMIN]),
-  resetPassword: allow,
+  resetPassword: inputDataValidation(PASSWORD, resetPasswordValidator),
   checkIfTokenIsValid: allow,
-  sendEmailConfirmation: isAuthorized,
-  registerAdmin: hasRoles([SUPERADMIN]),
-  completeAdminRegister: allow,
+  sendEmailConfirmation: and(
+    inputDataValidation(EMAIL, emailUserValidator),
+    isAuthorized
+  ),
+  registerAdmin: and(
+    inputDataValidation(USER, registerAdminValidator),
+    hasRoles([SUPERADMIN])
+  ),
+  completeAdminRegister: inputDataValidation(
+    USER,
+    completeAdminRegisterValidator
+  ),
   addProductToWishlist: isTheSameUser,
   removeProductFromWishlist: isTheSameUser,
 };

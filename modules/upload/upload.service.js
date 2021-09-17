@@ -1,3 +1,7 @@
+const azureStorage = require('azure-storage');
+const getStream = require('into-stream');
+const Jimp = require('jimp');
+const uniqid = require('uniqid');
 const {
   STORAGE_ACCOUNT,
   ACCESS_KEY,
@@ -5,11 +9,10 @@ const {
   IMAGE_LINK,
   CONTRIBUTING,
 } = require('../../dotenvValidator');
-const azureStorage = require('azure-storage');
-const getStream = require('into-stream');
-const Jimp = require('jimp');
-const uniqid = require('uniqid');
-const { imageQualities } = require('../../consts');
+const { imageQualities, IMAGES_CONTAINER } = require('../../consts');
+const {
+  IMAGE_SIZES: { IMAGE_LARGE, IMAGE_MEDIUM, IMAGE_SMALL, IMAGE_THUMBNAIL },
+} = require('../../consts/image-sizes');
 
 let blobService;
 let containerName;
@@ -19,7 +22,7 @@ if (!CONTRIBUTING) {
     ACCESS_KEY,
     AZURE_HOST
   );
-  containerName = 'images';
+  containerName = IMAGES_CONTAINER;
 }
 class UploadService {
   async uploadResizedImage(size, imageName, image) {
@@ -37,7 +40,7 @@ class UploadService {
     const stream = getStream(buffer);
     const streamLength = buffer.length;
 
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       blobService.createBlockBlobFromStream(
         containerName,
         imageName,
@@ -58,7 +61,7 @@ class UploadService {
   }
 
   async uploadFile(file, sizes) {
-    const { createReadStream, filename } = await file.promise;
+    const { createReadStream, filename } = await file.file;
     const inputStream = createReadStream();
     let fileBuffer;
     const id = uniqid();
@@ -92,21 +95,21 @@ class UploadService {
         fileNames,
       };
     }
-    this.uploadResizedImage(1920, createName('large'), image);
+    this.uploadResizedImage(1920, createName(IMAGE_LARGE), image);
 
-    this.uploadResizedImage(1080, createName('medium'), image);
+    this.uploadResizedImage(1080, createName(IMAGE_MEDIUM), image);
 
-    this.uploadResizedImage(768, createName('small'), image);
+    this.uploadResizedImage(768, createName(IMAGE_SMALL), image);
 
-    this.uploadResizedImage(128, createName('thumbnail'), image);
+    this.uploadResizedImage(128, createName(IMAGE_THUMBNAIL), image);
 
     return {
       prefixUrl: IMAGE_LINK,
       fileNames: {
-        large: createName('large'),
-        medium: createName('medium'),
-        small: createName('small'),
-        thumbnail: createName('thumbnail'),
+        large: createName(IMAGE_LARGE),
+        medium: createName(IMAGE_MEDIUM),
+        small: createName(IMAGE_SMALL),
+        thumbnail: createName(IMAGE_THUMBNAIL),
       },
     };
   }
@@ -116,7 +119,7 @@ class UploadService {
   }
 
   async deleteFile(fileName) {
-    return await new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) =>
       blobService.deleteBlobIfExists(containerName, fileName, (err, res) => {
         if (err) {
           reject(err);

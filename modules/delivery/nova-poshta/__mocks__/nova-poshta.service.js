@@ -6,6 +6,7 @@ class NovaPoshtaService {
       },
     ];
   }
+
   getNovaPoshtaPrices() {
     return [
       {

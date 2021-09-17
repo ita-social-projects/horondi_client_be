@@ -3,32 +3,72 @@ const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
-const Currency = require('../currency/currency.model');
-const { calculatePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
+const {
+  CURRENCY: { UAH, USD },
+} = require('../../consts/currency');
+const {
+  HISTORY_ACTIONS: { ADD_MATERIAL, DELETE_MATERIAL, EDIT_MATERIAL },
+} = require('../../consts/history-actions');
+const {
+  generateHistoryObject,
+  getChanges,
+  generateHistoryChangesData,
+} = require('../../utils/history');
+const { addHistoryRecord } = require('../history/history.service');
+const {
+  LANGUAGE_INDEX: { UA },
+} = require('../../consts/languages');
+const {
+  HISTORY_OBJ_KEYS: {
+    NAME,
+    COLORS,
+    DESCRIPTION,
+    PURPOSE,
+    AVAILABLE,
+    ADDITIONAL_PRICE,
+  },
+} = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { MAIN_MATERIAL, BOTTOM_MATERIAL, INNER_MATERIAL },
+} = require('../../consts/input-fields');
+const {
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 class MaterialsService {
   constructor() {
     this.currencyTypes = {
-      UAH: 'UAH',
-      USD: 'USD',
+      UAH,
+      USD,
     };
   }
 
-  filterItems(filterInput) {
-    const filter = {};
-    const { colors } = filterInput;
+  async getAllMaterials({
+    filter: { purpose, colors, available, name },
+    skip,
+    limit,
+  }) {
+    const filtersObj = {};
 
-    if (colors && colors.length) {
-      filter.colors = { $in: colors };
+    if (purpose?.length) {
+      filtersObj.purpose = { $in: purpose };
+    }
+    if (colors?.length) {
+      filtersObj.colors = { $in: colors };
+    }
+    if (available?.length) {
+      filtersObj.available = { $in: available };
+    }
+    if (name) {
+      const search = name.trim();
+
+      filtersObj['name.value'] = { $regex: `${search}`, $options: 'i' };
     }
 
-    return filter;
-  }
-
-  async getAllMaterials({ filter, skip, limit }) {
-    const filters = this.filterItems(filter);
-
-    const items = await Material.find(filters)
+    const items = await Material.find(filtersObj)
       .skip(skip)
       .limit(limit)
       .exec();
@@ -41,6 +81,7 @@ class MaterialsService {
       count,
     };
   }
+
   async getMaterialsByPurposes(purposes) {
     const materials = await this.getAllMaterials({ filter: {} });
     return materials.items.reduce((acc, material) => {
@@ -52,45 +93,113 @@ class MaterialsService {
       return acc;
     }, {});
   }
+
   async getMaterialById(id) {
-    return Material.findById(id);
+    const material = await Promise.resolve(Material.findById(id));
+    if (!material) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    return material;
   }
 
-  async updateMaterial(id, material) {
-    const { additionalPrice, ...rest } = material;
-
+  async updateMaterial(id, material, { _id: adminId }) {
     const materialToUpdate = await Material.findById(id).exec();
     if (!materialToUpdate) {
-      throw new Error(MATERIAL_NOT_FOUND);
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
-
     if (await this.checkMaterialExistOrDuplicated(material, id)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
-    return await Material.findByIdAndUpdate(
-      id,
-      {
-        ...rest,
-        additionalPrice: [calculatePrice(additionalPrice)],
-      },
-      { new: true }
-    ).exec();
+
+    if (material.additionalPrice) {
+      material.additionalPrice = await calculateAdditionalPrice(
+        material.additionalPrice
+      );
+    }
+
+    const updatedMaterial = await Material.findByIdAndUpdate(id, material, {
+      new: true,
+    }).exec();
+
+    await updatePrices(materialToUpdate, material, MAIN_MATERIAL, id);
+    await updatePrices(materialToUpdate, material, INNER_MATERIAL, id);
+    await updatePrices(materialToUpdate, material, BOTTOM_MATERIAL, id);
+
+    const { beforeChanges, afterChanges } = getChanges(
+      materialToUpdate,
+      material
+    );
+
+    const historyRecord = generateHistoryObject(
+      EDIT_MATERIAL,
+      materialToUpdate.purpose,
+      materialToUpdate.name[UA].value,
+      materialToUpdate._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
+
+    return updatedMaterial;
   }
 
-  async addMaterial({ material }) {
+  async addMaterial({ material }, { _id: adminId }) {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
-      throw new Error(MATERIAL_ALREADY_EXIST);
+      throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
-    material.additionalPrice = calculatePrice(material.additionalPrice);
-    return new Material(material).save();
+    material.additionalPrice = await calculateAdditionalPrice(
+      material.additionalPrice
+    );
+
+    const newMaterial = await new Material(material).save();
+
+    const historyRecord = generateHistoryObject(
+      ADD_MATERIAL,
+      newMaterial.purpose,
+      newMaterial.name[UA].value,
+      newMaterial._id,
+      [],
+      generateHistoryChangesData(newMaterial, [
+        NAME,
+        COLORS,
+        DESCRIPTION,
+        PURPOSE,
+        AVAILABLE,
+        ADDITIONAL_PRICE,
+      ]),
+      adminId
+    );
+
+    await addHistoryRecord(historyRecord);
+
+    return newMaterial;
   }
 
-  async deleteMaterial(id) {
+  async deleteMaterial(id, { _id: adminId }) {
     const foundMaterial = await Material.findByIdAndDelete(id).exec();
+
     if (foundMaterial) {
+      const historyRecord = generateHistoryObject(
+        DELETE_MATERIAL,
+        foundMaterial.purpose,
+        foundMaterial.name[UA].value,
+        foundMaterial._id,
+        generateHistoryChangesData(foundMaterial, [
+          NAME,
+          COLORS,
+          DESCRIPTION,
+          PURPOSE,
+          AVAILABLE,
+          ADDITIONAL_PRICE,
+        ]),
+        [],
+        adminId
+      );
+
+      await addHistoryRecord(historyRecord);
+
       return foundMaterial;
     }
-    throw new Error(MATERIAL_NOT_FOUND);
+    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   }
 
   async checkMaterialExistOrDuplicated(data, id) {

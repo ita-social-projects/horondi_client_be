@@ -1,15 +1,35 @@
 const wrongId = '6009dcd5f9855555907ebf5e';
-const newConstructorBasic = (materialID, colorID) => ({
+const filter = {
+  name: '',
+  model: [],
+  material: [],
+  color: [],
+  available: [],
+};
+
+const skip = 0;
+const limit = 5;
+
+const newConstructorBasic = (materialId, colorId, modelId) => ({
   name: [
     { lang: 'ua', value: 'варіант 1' },
     { lang: 'en', value: 'variant 1' },
   ],
-  material: materialID,
-  color: colorID,
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   available: true,
-  default: false,
+  customizable: true,
+  basePrice: 1,
 });
-const getConstructorData = construrtorBasic => ({
+
+const getConstructorData = (
+  construrtorBasic,
+  { materialId, colorId, modelId }
+) => ({
   name: [
     {
       lang: construrtorBasic.name[0].lang,
@@ -20,12 +40,44 @@ const getConstructorData = construrtorBasic => ({
       value: construrtorBasic.name[1].value,
     },
   ],
-  material: { _id: construrtorBasic.material },
-  color: { _id: construrtorBasic.color },
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: { _id: modelId },
+  features: {
+    material: {
+      _id: materialId,
+      available: true,
+      name: [
+        {
+          lang: 'uk',
+          value: 'Матеріал test',
+        },
+        {
+          lang: 'en',
+          value: 'Material test',
+        },
+      ],
+      purpose: 'INNER',
+    },
+    color: {
+      _id: colorId,
+      colorHex: '#3r56tg',
+    },
+  },
   available: construrtorBasic.available,
-  default: construrtorBasic.default,
+  customizable: construrtorBasic.customizable,
+  basePrice: [
+    {
+      currency: 'UAH',
+      value: 2700,
+    },
+    {
+      currency: 'USD',
+      value: 100,
+    },
+  ],
 });
-const getConstructorDataForUpt = construrtorBasic => ({
+
+const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
   name: [
     {
       lang: 'ua',
@@ -36,14 +88,22 @@ const getConstructorDataForUpt = construrtorBasic => ({
       value: 'After',
     },
   ],
-  material: construrtorBasic.material,
-  color: construrtorBasic.color,
+  optionType: 'CONSTRUCTOR_BASIC',
+  model: modelId,
+  features: {
+    material: materialId,
+    color: colorId,
+  },
   available: true,
-  default: false,
+  customizable: false,
+  basePrice: 1,
 });
 
 module.exports = {
   wrongId,
+  filter,
+  skip,
+  limit,
   newConstructorBasic,
   getConstructorData,
   getConstructorDataForUpt,

@@ -6,12 +6,15 @@ const {
   badProductId,
   newProductInputData,
   newProductInputDataForUpdate,
+  productUploadedImages,
 } = require('./product.variables');
 const {
   createProduct,
   deleteProduct,
   updateProduct,
-} = require('../product/product.helper');
+  deleteProductImages,
+  uploadProductImages,
+} = require('./product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -36,7 +39,7 @@ const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createSize, deleteSize } = require('../size/size.helper');
-const { SIZES_TO_CREATE } = require('../size/size.variables');
+const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
@@ -58,11 +61,10 @@ let constructorBasicId;
 let closureId;
 let productInput;
 
-describe('Order mutations', () => {
+describe('Product mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    const sizeData = await createSize(SIZES_TO_CREATE.size1, operations);
-    sizeId = sizeData._id;
+
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
@@ -72,20 +74,31 @@ describe('Order mutations', () => {
       operations
     );
     materialId = receivedMaterial._id;
-    const patternData = await createPattern(queryPatternToAdd, operations);
-    patternId = patternData._id;
-    const closureData = await createClosure(newClosure(materialId), operations);
-    closureId = closureData._id;
-    const receivedConstructorBasic = await createConstructorBasic(
-      newConstructorBasic(materialId, colorId),
-      operations
-    );
-    constructorBasicId = receivedConstructorBasic._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
       operations
     );
     modelId = modelData._id;
+    const sizeData = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = sizeData._id;
+    const patternData = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
+    patternId = patternData._id;
+    const closureData = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
+    closureId = closureData._id;
+    const receivedConstructorBasic = await createConstructorBasic(
+      newConstructorBasic(materialId, colorId, modelId),
+      operations
+    );
+    constructorBasicId = receivedConstructorBasic._id;
   });
   test('#1 Should create product', async () => {
     productInput = newProductInputData(
@@ -117,6 +130,7 @@ describe('Order mutations', () => {
         closureId,
         sizeId
       ),
+      productUploadedImages.primary,
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -140,13 +154,14 @@ describe('Order mutations', () => {
         closureId,
         sizeId
       ),
+      productUploadedImages.primary,
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
 
     expect(res).toBeDefined();
     expect(res.message).toBe(PRODUCT_NOT_FOUND);
-    expect(res.statusCode).toBe(404);
+    expect(res.statusCode).toBe(403);
   });
   test('#4 Should return Error PRODUCT_ALREADY_EXIST', async () => {
     const products = await createProduct(
@@ -169,11 +184,30 @@ describe('Order mutations', () => {
   });
   test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
     const receivedData = await deleteProduct(badProductId, operations);
-    const res = receivedData.errors[0].message;
 
-    expect(res).toBe(PRODUCT_NOT_FOUND);
+    expect(receivedData.data.deleteProduct).toHaveProperty(
+      'message',
+      PRODUCT_NOT_FOUND
+    );
   });
-  test('#6 Should delete Product and return it`s id', async () => {
+
+  test('#6 Should add Product images', async () => {
+    const receivedData = await uploadProductImages();
+
+    expect(uploadProductImages).toBeDefined();
+    expect(receivedData.primary).toBeDefined();
+    expect(receivedData.additional).toBeDefined();
+    expect(receivedData).toEqual(productUploadedImages);
+  });
+
+  test('#7 Should delete Product images', async () => {
+    const receivedData = await deleteProductImages(productId, operations);
+    const res = receivedData.data.deleteImages.primary;
+
+    expect(res).toBeDefined();
+  });
+
+  test('#8 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProduct(productId, operations);
     const res = receivedData.data.deleteProduct._id;
 

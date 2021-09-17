@@ -1,6 +1,6 @@
 const config = {
   mongodb: {
-    url: '//your db uri',
+    url: 'YOUR_DATABASE_URL',
     databaseName: 'horondi',
 
     options: {

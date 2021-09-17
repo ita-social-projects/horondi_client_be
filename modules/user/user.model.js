@@ -1,52 +1,41 @@
 const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Address = require('../common/Address').schema;
+const Cart = require('../cart/cart.model').schema;
 const {
-  FIRST_NAME_TOO_SHORT,
-  FIRST_NAME_TOO_LONG,
-  LAST_NAME_TOO_SHORT,
-  LAST_NAME_TOO_LONG,
   PHONE_NUMBER_NOT_VALID,
-  EMAIL_NOT_VALID,
-  EMAIL_IS_REQUIRED,
 } = require('../../error-messages/common.messages');
 
-const { UserInputError } = require('apollo-server');
-
 const {
-  SUPER_ADMIN_IS_IMMUTABLE,
-} = require('../../error-messages/user.messages');
+  DB_COLLECTIONS_NAMES: { USER: USER_DB, PRODUCT, COMMENT, ORDER },
+} = require('../../consts/db-collections-names');
+const {
+  roles: { USER, ADMIN, SUPERADMIN },
+} = require('../../consts/index');
+const {
+  USER_BLOCK_PERIOD: { UNLOCKED },
+  USER_BLOCK_COUNT: { NO_ONE_TIME },
+} = require('../../consts/user-block-period');
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    minlength: [2, FIRST_NAME_TOO_SHORT],
-    maxlength: [20, FIRST_NAME_TOO_LONG],
   },
   lastName: {
     type: String,
-    minlength: [2, LAST_NAME_TOO_SHORT],
-    maxlength: [20, LAST_NAME_TOO_LONG],
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'superadmin'],
-    default: 'user',
+    enum: [USER, ADMIN, SUPERADMIN],
+    default: USER,
   },
   email: {
     type: String,
-    validate: {
-      validator: function(v) {
-        return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v);
-      },
-      message: EMAIL_NOT_VALID,
-    },
-    required: [true, EMAIL_IS_REQUIRED],
   },
   phoneNumber: {
     type: String,
     validate: {
-      validator: function(v) {
+      validator(v) {
         return /^\+?3?8?(0\d{9})$/.test(v);
       },
       message: PHONE_NUMBER_NOT_VALID,
@@ -67,29 +56,41 @@ const userSchema = new mongoose.Schema({
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
+      ref: PRODUCT,
     },
   ],
+  cart: Cart,
   orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Order',
+      ref: ORDER,
     },
   ],
   comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
+      ref: COMMENT,
     },
   ],
   banned: {
-    type: Boolean,
-    default: false,
+    blockPeriod: {
+      type: String,
+      default: UNLOCKED,
+    },
+    blockCount: {
+      type: Number,
+      default: NO_ONE_TIME,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   confirmed: {
     type: Boolean,
     default: false,
   },
+  otp_code: String,
   recoveryAttempts: Number,
   lastRecoveryDate: {
     type: Date,
@@ -99,15 +100,4 @@ const userSchema = new mongoose.Schema({
   confirmationToken: String,
 });
 
-userSchema.pre('findOneAndDelete', async function(next) {
-  const query = this.getQuery();
-  const user = await this.model.findOne(query);
-
-  if (user.role === 'superadmin') {
-    throw new UserInputError(SUPER_ADMIN_IS_IMMUTABLE, { statusCode: 403 });
-  }
-
-  next();
-});
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model(USER_DB, userSchema);

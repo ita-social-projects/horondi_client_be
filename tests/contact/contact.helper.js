@@ -109,11 +109,11 @@ const getContactById = async (id, operations) => {
 
   return res.data.getContactById;
 };
-const updateContact = async (id, contact, operations) => {
+const updateContact = async (id, contact, mapImages, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $contact: contactInput!) {
-        updateContact(id: $id, contact: $contact) {
+      mutation($id: ID!, $contact: contactInput!, $mapImages: [MapImage]) {
+        updateContact(id: $id, contact: $contact, mapImages: $mapImages) {
           ... on Contact {
             _id
             phoneNumber
@@ -135,9 +135,9 @@ const updateContact = async (id, contact, operations) => {
         }
       }
     `,
-    variables: { id, contact },
+    variables: { id, contact, mapImages },
   });
-
+  
   return res.data.updateContact;
 };
 

@@ -6,12 +6,13 @@ const materialType = `
       purpose: PurposeEnum
       colors: [Color]
       available: Boolean
-      additionalPrice: [CurrencySet]
+      additionalPrice: [AdditionalCurrencySet]
     }
     type MaterialByPurpose {
       main: [Material]
       inner: [Material]
       bottom: [Material]
+      back: [Material]
       pattern: [Material]
       closure: [Material]
     }
@@ -22,6 +23,7 @@ const materialType = `
       BOTTOM
       PATTERN
       CLOSURE
+      BACK
     }
 `;
 
@@ -32,13 +34,16 @@ const materialInput = `
       purpose: PurposeEnum!
       colors: [ID!]
       available: Boolean
-      additionalPrice: Int
+      additionalPrice: additionalPriceInput!
     }
 `;
 
 const materialFilterInput = `
   input MaterialFilterInput {
-    colors: [String!]
+    colors: [String]
+    available:[String]
+    purpose:[String]
+    name:String
   }
 `;
 

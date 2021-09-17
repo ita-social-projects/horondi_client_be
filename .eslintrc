@@ -5,9 +5,10 @@
     "commonjs": true,
     "jest/globals": true,
     "es6": true,
-    "node": true
+    "node": true,
   },
-  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended"],
+  "extends": ["airbnb-base", "eslint:recommended","plugin:jest/recommended","plugin:prettier/recommended"],
+  "plugins": ["prettier","jest"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,6 +17,10 @@
     "ecmaVersion": 2018
   },
   "rules": {
+    "indent": "off",
+    "react/jsx-indent": "off",
+    "react/jsx-indent-props": "off",
+    "prettier/prettier": "error",
     "linebreak-style": 0,
     "semi": "off",
     "no-var": "warn",
@@ -32,7 +37,10 @@
     "no-alert": 0,
     "no-use-before-define": "off",
     "no-await-in-loop": 0,
-    "no-return-assign": ["error", "except-parens"],
+    "no-return-assign": [
+      "error",
+      "except-parens"
+    ],
     "no-restricted-syntax": [
       2,
       "ForInStatement",
@@ -46,12 +54,18 @@
       }
     ],
     "arrow-parens": 0,
-    "arrow-body-style": [2, "as-needed"],
+    "arrow-body-style": [
+      2,
+      "as-needed"
+    ],
     "no-unused-expressions": 0,
     "no-console": [
       0,
       {
-        "allow": ["warn", "error"]
+        "allow": [
+          "warn",
+          "error"
+        ]
       }
     ],
     "no-plusplus": 0,
@@ -68,21 +82,12 @@
     "no-case-declarations": 0,
     "lines-around-comment": 1,
     "no-multiple-empty-lines": 2,
-    "lines-between-class-members": [1, "always"],
+    "lines-between-class-members": [
+      1,
+      "always"
+    ],
     "consistent-return": 0,
     "no-this-before-super": 2,
-    "indent": [
-      2,
-      2,
-      {
-        "ignoreComments": true,
-        "VariableDeclarator": {
-          "var": 2,
-          "let": 2,
-          "const": 3
-        }
-      }
-    ],
     "max-len": [
       2,
       {
@@ -100,7 +105,10 @@
     "no-useless-return": 2,
     "no-multi-str": 2,
     "no-constant-condition": 1,
-    "no-extra-parens": [1, "functions"],
+    "no-extra-parens": [
+      1,
+      "functions"
+    ],
     "no-param-reassign": [
       2,
       {

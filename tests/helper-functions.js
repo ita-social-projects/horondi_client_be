@@ -1,23 +1,29 @@
-const User = require('../modules/user/user.model');
 const { ApolloServer } = require('apollo-server-express');
-const config = require('./config.test.app');
 const { createTestClient } = require('apollo-server-testing');
-const bcrypt = require('bcryptjs');
+const { bcryptClient } = require('../client/bcrypt-client');
+const config = require('./config.test.app');
+const User = require('../modules/user/user.model');
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
 } = require('../dotenvValidator');
+const {
+  SOURCES: { HORONDI },
+  roles: { SUPERADMIN },
+} = require('../consts');
+const { FIRST_NAME, LAST_NAME } = require('../consts/test-admin');
+
 const registerAdmin = async (email, password) => {
-  await User.deleteOne({ email: email });
+  await User.deleteOne({ email });
   const admin = new User();
-  admin.firstName = 'Super аdmin';
-  admin.lastName = 'Super admin full';
+  admin.firstName = FIRST_NAME;
+  admin.lastName = LAST_NAME;
   admin.email = email;
-  admin.role = 'superadmin';
+  admin.role = SUPERADMIN;
   admin.credentials = [
     {
-      source: 'horondi',
-      tokenPass: await bcrypt.hash(password, 12),
+      source: HORONDI,
+      tokenPass: await bcryptClient.hashPassword(password, 12),
     },
   ];
   await admin.save();

@@ -1,78 +1,48 @@
-const Product = require('../modules/product/product.model');
-const ConstructorBasic = require('../modules/constructor/constructor-basic/constructor-basic.model');
-const ConstructorFrontPocket = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
-const ConstructorBottom = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
-const Size = require('../modules/size/size.model');
-const crypto = require('crypto');
+const { CURRENCY, CURRENCY_VALUE } = require('../consts/currency');
+const productModel = require('../modules/product/product.model');
+const {
+  ORDER_STATUSES: { CANCELLED, REFUNDED },
+} = require('../consts/order-statuses');
 
 async function calculateTotalItemsPrice(items) {
   return items.reduce(
     async (prev, item) => {
       const sum = await prev;
-      const { quantity } = item;
-      const { additionalPrice } = await Size.findById(item.options.size).exec();
 
-      if (!item.fixedPrice?.length) {
-        if (item.isFromConstructor) {
-          const constructorBasics = await ConstructorBasic.findById(
-            item.constructorBasics
-          ).exec();
-          const constructorFrontPocket = await ConstructorFrontPocket.findById(
-            item.constructorFrontPocket
-          ).exec();
-          const constructorBottom = await ConstructorBottom.findById(
-            item.constructorBottom
-          ).exec();
-          item.fixedPrice = [
-            {
-              currency: 'UAH',
-              value:
-                constructorBasics.basePrice[0].value +
-                constructorFrontPocket.basePrice[0].value +
-                constructorBottom.basePrice[0].value +
-                additionalPrice[0].value,
-            },
-            {
-              currency: 'USD',
-              value:
-                constructorBasics.basePrice[1].value +
-                constructorFrontPocket.basePrice[1].value +
-                constructorBottom.basePrice[1].value +
-                additionalPrice[1].value,
-            },
-          ];
-        } else {
-          const { basePrice } = await Product.findById(item.product).exec();
-          item.fixedPrice = [
-            {
-              currency: 'UAH',
-              value: basePrice[0].value + additionalPrice[0].value,
-            },
-            {
-              currency: 'USD',
-              value: basePrice[1].value + additionalPrice[1].value,
-            },
-          ];
-        }
-      }
-      return [
+      const { price, quantity } = item;
+
+      item.fixedPrice = [
         {
-          currency: 'UAH',
-          value: item.fixedPrice[0].value * quantity + sum[0].value,
+          currency: CURRENCY.UAH,
+          value: price[CURRENCY_VALUE.UAH_VALUE].value / quantity,
         },
         {
-          currency: 'USD',
-          value: item.fixedPrice[1].value * quantity + sum[1].value,
+          currency: CURRENCY.USD,
+          value: price[CURRENCY_VALUE.USD_VALUE].value / quantity,
+        },
+      ];
+      return [
+        {
+          currency: CURRENCY.UAH,
+          value:
+            price[CURRENCY_VALUE.UAH_VALUE].value +
+            sum[CURRENCY_VALUE.UAH_VALUE].value,
+        },
+        {
+          currency: CURRENCY.USD,
+          value:
+            price[CURRENCY_VALUE.USD_VALUE].value +
+            sum[CURRENCY_VALUE.USD_VALUE].value,
         },
       ];
     },
     [
       {
-        currency: 'UAH',
+        currency: CURRENCY.UAH,
         value: 0,
       },
       {
-        currency: 'USD',
+        currency: CURRENCY.USD,
         value: 0,
       },
     ]
@@ -83,12 +53,67 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
   return totalItemsPrice;
 }
 
-function generateOrderId() {
-  return crypto.randomInt(100000000);
+function generateOrderNumber() {
+  const uid = new Date().getTime();
+  return uid.toString();
+}
+
+async function addProductsToStatistic(items) {
+  items.forEach(async item => {
+    if (item.quantity !== 0) {
+      const product = await productModel.findById(item.product).exec();
+      product.purchasedCount += item.quantity;
+      await product.save();
+    }
+  });
+}
+
+async function updateProductStatistic(orderToUpdate, newOrder) {
+  if (
+    (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
+    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+  ) {
+    return;
+  }
+  const oldItems = orderToUpdate.items.map(item => ({
+    product: item.product.toString(),
+    quantity: -item.quantity,
+  }));
+
+  if (newOrder.status === CANCELLED || newOrder.status === REFUNDED) {
+    await addProductsToStatistic(oldItems);
+  } else if (
+    newOrder.status !== CANCELLED &&
+    newOrder.status !== REFUNDED &&
+    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+  ) {
+    await addProductsToStatistic(newOrder.items);
+  } else {
+    const newItems = newOrder.items.map(item => ({
+      product: item.product,
+      quantity: item.quantity,
+    }));
+    const items = newItems.map(newItem => {
+      const index = oldItems.findIndex(el => el.product === newItem.product);
+      let quantity;
+      if (index !== -1) {
+        quantity = newItem.quantity + oldItems[index].quantity;
+        oldItems.splice(index, 1);
+      } else {
+        quantity = newItem.quantity;
+      }
+      return { product: newItem.product, quantity };
+    });
+
+    items.push(...oldItems);
+    await addProductsToStatistic(items);
+  }
 }
 
 module.exports = {
   calculateTotalPriceToPay,
-  generateOrderId,
+  generateOrderNumber,
   calculateTotalItemsPrice,
+  addProductsToStatistic,
+  updateProductStatistic,
 };

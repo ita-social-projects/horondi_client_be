@@ -1,56 +1,42 @@
 const materialService = require('./material.service');
-const {
-  MATERIAL_NOT_FOUND,
-} = require('../../error-messages/material.messages');
+const RuleError = require('../../errors/rule.error');
 
 const materialQuery = {
   getAllMaterials: async (parent, args) =>
-    await materialService.getAllMaterials(args),
+    materialService.getAllMaterials(args),
   getMaterialById: async (parent, args) => {
-    const material = await materialService.getMaterialById(args.id);
-    if (material) {
-      return material;
+    try {
+      return await materialService.getMaterialById(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: 404,
-      message: MATERIAL_NOT_FOUND,
-    };
   },
   getMaterialsByPurpose: (parent, args) =>
     materialService.getMaterialsByPurposes(args.purposes),
 };
 
 const materialMutation = {
-  addMaterial: async (parent, args) => {
+  addMaterial: async (parent, args, { user }) => {
     try {
-      return await materialService.addMaterial(args);
+      return await materialService.addMaterial(args, user);
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  deleteMaterial: async (parent, args) => {
+  deleteMaterial: async (parent, args, { user }) => {
     try {
-      return await materialService.deleteMaterial(args.id);
+      return await materialService.deleteMaterial(args.id, user);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 
-  updateMaterial: async (parent, args) => {
+  updateMaterial: async (parent, args, { user }) => {
     try {
-      return await materialService.updateMaterial(args.id, args.material);
+      return await materialService.updateMaterial(args.id, args.material, user);
     } catch (e) {
-      return {
-        statusCode: e.message === MATERIAL_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

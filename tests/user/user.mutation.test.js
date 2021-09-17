@@ -1,44 +1,94 @@
+const mongoose = require('mongoose');
 const { gql } = require('@apollo/client');
-const { newAdmin, testUser, user } = require('./user.variables');
+
+const { jwtClient } = require('../../client/jwt-client');
+
+const User = require('../../modules/user/user.model');
+const { SECRET, TOKEN_EXPIRES_IN } = require('../../dotenvValidator');
+const {
+  newAdmin,
+  testUser,
+  user,
+  newUser,
+  INVALID_FIRST_NAME,
+  INVALID_LAST_NAME,
+  INVALID_PASSWORD,
+  INVALID_ROLE,
+  wrongId,
+  invalidFirstName,
+  invalidLastName,
+  invalidPassword,
+  invalidToken,
+  wrongPassword,
+  wrongEmail,
+} = require('./user.variables');
 const {
   registerUser,
   loginUser,
+  blockUser,
+  unlockUser,
+  checkIfTokenIsValid,
+  recoverUser,
+  resetPassword,
+  sendEmailConfirmation,
   deleteUser,
+  confirmUserEmail,
+  resendEmailToConfirmAdmin,
   switchUserStatus,
+  regenerateAccessToken,
   updateUserById,
   completeAdminRegister,
+  confirmSuperadminCreation,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
-  INPUT_NOT_VALID,
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   USER_ALREADY_EXIST,
   WRONG_CREDENTIALS,
   INVALID_PERMISSIONS,
   USER_NOT_FOUND,
+  USER_IS_ALREADY_BLOCKED,
+  USER_IS_ALREADY_UNLOCKED,
+  REFRESH_TOKEN_IS_NOT_VALID,
+  RESET_PASSWORD_TOKEN_NOT_VALID,
+  AUTHENTICATION_TOKEN_NOT_VALID,
+  USER_EMAIL_ALREADY_CONFIRMED,
+  USER_IS_BLOCKED,
 } = require('../../error-messages/user.messages');
+const {
+  STATUS_CODES: { FORBIDDEN },
+} = require('../../consts/status-codes');
 
-jest.mock('../../modules/confirm-email/confirmation-email.service');
-jest.setTimeout(10000);
+jest.mock('../../modules/email/email.service');
 
 let userId;
 let token;
-let badId = '9c031d62a3c4909b216e1d87';
 let invitationalToken;
 let operations;
 let loginedUser;
-let wrongEmail = 'udernotfound@gmail.com';
-let wrongPassword = '12345678pT';
+let recoveryToken;
+let confirmationToken;
+
+const {
+  firstName,
+  lastName,
+  language,
+  email,
+  role,
+  phoneNumber,
+  address,
+  wishlist,
+  orders,
+  comments,
+  pass,
+} = testUser;
 
 describe('mutations', () => {
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
-    done();
   });
 
-  test('should register user', async done => {
-    const { firstName, lastName, email, pass, language } = testUser;
-
+  test('should register user', async () => {
     const res = await registerUser(
       firstName,
       lastName,
@@ -48,21 +98,15 @@ describe('mutations', () => {
       operations
     );
     userId = res.data.registerUser._id;
-
     expect(typeof res.data.registerUser._id).toBe('string');
-    expect(res.data.registerUser).toHaveProperty(
-      'firstName',
-      testUser.firstName
-    );
-    expect(res.data.registerUser).toHaveProperty('lastName', testUser.lastName);
-    expect(res.data.registerUser).toHaveProperty('email', testUser.email);
+    expect(res.data.registerUser).toHaveProperty('firstName', firstName);
+    expect(res.data.registerUser).toHaveProperty('lastName', lastName);
+    expect(res.data.registerUser).toHaveProperty('email', email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
-    done();
   });
-  test('should throw error User with provided email already exist', async done => {
-    const { firstName, lastName, email, pass, language } = testUser;
 
+  test('should throw error User with provided email already exist', async () => {
     const res = await registerUser(
       firstName,
       lastName,
@@ -72,50 +116,223 @@ describe('mutations', () => {
       operations
     );
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe(USER_ALREADY_EXIST);
-    done();
+    expect(res.data.registerUser.message).toBe(USER_ALREADY_EXIST);
   });
-  test('should authorize and recive user token', async done => {
-    const { email, pass } = testUser;
-
-    const res = await loginUser(email, pass, operations);
+  test('should authorize and receive user token', async () => {
+    const res = await loginUser(email, pass, false, operations);
     loginedUser = res.data.loginUser;
     token = res.data.loginUser.token;
 
     expect(res.data.loginUser).toHaveProperty('token');
     expect(typeof res.data.loginUser.token).toBe('string');
-    expect(res.data.loginUser).toHaveProperty('firstName', testUser.firstName);
-    expect(res.data.loginUser).toHaveProperty('lastName', testUser.lastName);
-    expect(res.data.loginUser).toHaveProperty('email', testUser.email);
+    expect(res.data.loginUser).toHaveProperty('firstName', firstName);
+    expect(res.data.loginUser).toHaveProperty('lastName', lastName);
+    expect(res.data.loginUser).toHaveProperty('email', email);
     expect(res.data.loginUser).toHaveProperty('registrationDate');
-    done();
   });
-  test('should throw error User with provided email not found', async done => {
-    const res = await loginUser(wrongEmail, testUser.pass, operations);
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe(WRONG_CREDENTIALS);
-    done();
-  });
-  test('should throw error Wrong password', async done => {
-    const res = await loginUser(testUser.email, wrongPassword, operations);
+  test('should block User', async () => {
+    const result = await blockUser(userId, operations);
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('WRONG_CREDENTIALS');
-    done();
+    expect(result).toBeDefined();
+    expect(result._id).toBe(userId);
   });
-  test('should update user by id', async done => {
-    const {
+
+  test('should throw error USER_IS_BLOCKED when trying to login user', async () => {
+    const result = await loginUser(email, pass, true, operations);
+
+    expect(result.data.loginUser.message).toBe(USER_IS_BLOCKED);
+  });
+
+  test('should throw error USER_IS_ALREADY_BLOCKED', async () => {
+    const result = await blockUser(userId, operations);
+
+    expect(result.message).toBe(USER_IS_ALREADY_BLOCKED);
+  });
+
+  test('should throw error USER_NOT_FOUND', async () => {
+    const result = await blockUser(wrongId, operations);
+
+    expect(result.message).toBe(USER_NOT_FOUND);
+  });
+  test('should unlock User', async () => {
+    const result = await unlockUser(userId, operations);
+
+    expect(result).toBeDefined();
+    expect(result._id).toBe(userId);
+  });
+
+  test('should block and unlock User forever', async () => {
+    await blockUser(userId, operations);
+    await unlockUser(userId, operations);
+    await blockUser(userId, operations);
+    const result = await unlockUser(userId, operations);
+
+    expect(result).toBeDefined();
+    expect(result._id).toBe(userId);
+  });
+
+  test('should throw error USER_IS_ALREADY_UNLOCKED', async () => {
+    const result = await unlockUser(userId, operations);
+
+    expect(result.message).toBe(USER_IS_ALREADY_UNLOCKED);
+  });
+
+  test('should throw error USER_NOT_FOUND on unlock user', async () => {
+    const result = await unlockUser(wrongId, operations);
+
+    expect(result.message).toBe(USER_NOT_FOUND);
+  });
+  test('should regenerate access token', async () => {
+    const res = await regenerateAccessToken(token, operations);
+
+    expect(res).toBeDefined();
+  });
+  test('should throw error REFRESH_TOKEN_IS_NOT_VALID', async () => {
+    const res = await regenerateAccessToken('asd', operations);
+
+    expect(res.message).toBe(REFRESH_TOKEN_IS_NOT_VALID);
+  });
+  test('should recover User', async () => {
+    const res = await recoverUser(email, 0, operations);
+
+    expect(res).toBe(true);
+  });
+  test('should return true on token valid', async () => {
+    const userInfo = await loginUser(email, pass, true, operations);
+
+    recoveryToken = userInfo.data.loginUser.recoveryToken;
+    token = userInfo.data.loginUser.token;
+    const res = await checkIfTokenIsValid(recoveryToken, operations);
+
+    expect(res.data.checkIfTokenIsValid).toBe(true);
+  });
+  test('should throw error on checking tokin valid', async () => {
+    const res = await checkIfTokenIsValid(token, operations);
+
+    expect(res.errors[0].message).toBe(AUTHENTICATION_TOKEN_NOT_VALID);
+  });
+  test('should recover User with wrong email', async () => {
+    const res = await recoverUser(wrongEmail, 0, operations);
+
+    expect(res).toBe(true);
+  });
+
+  test('should reset Password', async () => {
+    const res = await resetPassword(pass, recoveryToken, operations);
+
+    expect(res.data.resetPassword).toBe(true);
+  });
+
+  test('should throw error on reseting Password', async () => {
+    const res = await resetPassword(pass, token, operations);
+
+    expect(res.errors[0].message).toBe(RESET_PASSWORD_TOKEN_NOT_VALID);
+  });
+  test('should send Email Confirmation', async () => {
+    const res = await sendEmailConfirmation(email, 0, operations);
+
+    expect(res.data.sendEmailConfirmation).toBe(true);
+  });
+  test('should throw Error USER_NOT_FOUND on confirm user email', async () => {
+    const result = await confirmUserEmail(token, operations);
+
+    expect(result.message).toBe(USER_NOT_FOUND);
+  });
+  test('should confirmUserEmail', async () => {
+    const userInfo = await loginUser(email, pass, false, operations);
+
+    confirmationToken = userInfo.data.loginUser.confirmationToken;
+    token = userInfo.data.loginUser.token;
+
+    const result = await confirmUserEmail(confirmationToken, operations);
+
+    expect(result.confirmed).toBe(true);
+
+    token = result.token;
+  });
+
+  test('should throw error USER_EMAIL_ALREADY_CONFIRMED on sending', async () => {
+    const res = await sendEmailConfirmation(email, 0, operations);
+
+    expect(res.data.sendEmailConfirmation.message).toBe(
+      USER_EMAIL_ALREADY_CONFIRMED
+    );
+  });
+  test('should throw error USER_EMAIL_ALREADY_CONFIRMED on confirm', async () => {
+    const result = await confirmUserEmail(confirmationToken, operations);
+
+    expect(result.message).toBe(USER_EMAIL_ALREADY_CONFIRMED);
+  });
+  test('should resend Email To Confirm Admin', async () => {
+    const result = await resendEmailToConfirmAdmin({ email }, operations);
+
+    expect(result.data.resendEmailToConfirmAdmin.isSuccess).toBe(true);
+  });
+  test('should throw USER_NOT_FOUND error', async () => {
+    const result = await resendEmailToConfirmAdmin(
+      { email: wrongEmail },
+      operations
+    );
+
+    expect(result.data.resendEmailToConfirmAdmin.message).toBe(USER_NOT_FOUND);
+  });
+  test('should confirm Superadmin Creation', async () => {
+    const result = await confirmSuperadminCreation({ _id: userId }, operations);
+
+    expect(result.data.confirmSuperadminCreation.isSuccess).toBe(true);
+  });
+  test('should throw USER_NOT_FOUND error on superadmin', async () => {
+    const result = await confirmSuperadminCreation(
+      { _id: wrongId },
+      operations
+    );
+
+    expect(result.data.confirmSuperadminCreation.message).toBe(USER_NOT_FOUND);
+  });
+  test('should throw error User with provided email not found', async () => {
+    const res = await loginUser(wrongEmail, pass, true, operations);
+    expect(res.data.loginUser.message).toBe(WRONG_CREDENTIALS);
+  });
+  test('should throw error Wrong password', async () => {
+    const res = await loginUser(email, wrongPassword, true, operations);
+    expect(res.data.loginUser.message).toBe(WRONG_CREDENTIALS);
+  });
+  test('should get wrong credentials when try to update user', async () => {
+    operations = await setupApp(loginedUser);
+
+    const { country, city, street, buildingNumber } = address;
+
+    const res = await updateUserById(
+      wrongId,
       email,
       role,
       phoneNumber,
-      address,
+      country,
+      city,
+      street,
+      buildingNumber,
       wishlist,
       orders,
       comments,
-    } = testUser;
-    operations = await setupApp(loginedUser);
+      token,
+      operations
+    );
+
+    expect(res.data.updateUserById).toHaveProperty(
+      'message',
+      WRONG_CREDENTIALS
+    );
+    expect(res.data.updateUserById).toHaveProperty('statusCode', 401);
+  });
+  test('should update user', async () => {
+    const userInfo = await loginUser(email, pass, false, operations);
+
+    userId = userInfo.data.loginUser._id;
+    token = userInfo.data.loginUser.token;
+
+    operations = await setupApp();
+
     const { country, city, street, buildingNumber } = address;
 
     const res = await updateUserById(
@@ -135,102 +352,58 @@ describe('mutations', () => {
     );
 
     expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
-    expect(res.data.updateUserById).toHaveProperty('lastName', 'Updated');
-    expect(res.data.updateUserById).toHaveProperty('email', testUser.email);
-    expect(res.data.updateUserById).toHaveProperty(
-      'phoneNumber',
-      testUser.phoneNumber
-    );
-    expect(res.data.updateUserById).toHaveProperty('role', 'user');
-    expect(res.data.updateUserById).toHaveProperty('address', {
-      country: testUser.address.country,
-      city: testUser.address.city,
-      street: testUser.address.street,
-      buildingNumber: testUser.address.buildingNumber,
-    });
-    expect(res.data.updateUserById).toHaveProperty('orders', testUser.orders);
-    expect(res.data.updateUserById).toHaveProperty(
-      'comments',
-      testUser.comments
-    );
-    done();
   });
-  test('Should change user status', async done => {
+
+  test('Should change user status', async () => {
     operations = await setupApp();
     const result = await switchUserStatus(userId, operations);
     const { switchUserStatus: response } = result.data;
 
     expect(response.isSuccess).toEqual(true);
-    done();
   });
-  test('should not delete user without super-admin role', async done => {
+
+  test('should not delete user without super-admin role', async () => {
     operations = await setupApp({ token: 'jgjcdvjkbvdnfjlvdvlf' });
     const res = await deleteUser(userId, operations);
 
     expect(res.data.deleteUser.message).toEqual(INVALID_PERMISSIONS);
-    done();
   });
 
-  test('Should return error when switch status of non-existent user', async done => {
+  test('Should return error when switch status of non-existent user', async () => {
     operations = await setupApp();
-    const result = await switchUserStatus(badId, operations);
+    const result = await switchUserStatus(wrongId, operations);
     const { switchUserStatus: response } = result.data;
 
     expect(response.message).toEqual(USER_NOT_FOUND);
     expect(response.statusCode).toEqual(400);
-    done();
   });
 
-  afterAll(async done => {
+  afterAll(async () => {
     operations = await setupApp();
     await deleteUser(userId, operations);
-    done();
   });
 });
 
 describe('User`s mutation restictions tests', () => {
-  let userToken;
-  let firstName = user.firstName;
-  let lastName = user.lastName;
-  let email = user.email;
-  let password = user.pass;
-  let language = user.language;
-
-  beforeAll(async done => {
-    const res = await registerUser(
-      firstName,
-      lastName,
-      email,
-      password,
-      language,
-      operations
-    );
-    userId = res.data.registerUser._id;
-    done();
-  });
-
-  test('User must login', async done => {
-    const result = await loginUser(email, password, operations);
-    const loginedUser = result.data.loginUser;
-    userToken = loginedUser.token;
-
-    expect(loginedUser).not.toEqual(null);
-    done();
-  });
-
-  test('User doesn`t allowed to change another user`s data', async done => {
-    const user = {
-      firstName: 'One',
-      lastName: 'User',
-      email: 'secretEmail@sec.com',
-      password: 'qwerty12345',
-    };
+  beforeAll(async () => {
     const res = await registerUser(
       user.firstName,
       user.lastName,
       user.email,
-      user.password,
-      (language = 1),
+      user.pass,
+      user.language,
+      operations
+    );
+    userId = res.data.registerUser._id;
+  });
+
+  test('User doesn`t allowed to change another user`s data', async () => {
+    const res = await registerUser(
+      newUser.firstName,
+      newUser.lastName,
+      newUser.email,
+      newUser.password,
+      1,
       operations
     );
 
@@ -266,34 +439,38 @@ describe('User`s mutation restictions tests', () => {
 
     operations = await setupApp();
     await deleteUser(res.data.registerUser._id, operations);
-    done();
   });
-
-  test('Admin can delete user', async done => {
+  test('Admin can delete user', async () => {
     operations = await setupApp();
     const res = await deleteUser(userId, operations);
 
     expect(res.data.deleteUser._id).toBeDefined();
-    done();
+  });
+
+  test('deleting user should throw error USER_NOT_FOUND', async () => {
+    operations = await setupApp();
+    const res = await deleteUser(wrongId, operations);
+
+    expect(res.data.deleteUser.message).toBe(USER_NOT_FOUND);
   });
 });
 
 describe('Register admin', () => {
-  let role = 'admin';
-  let invalidEmail = 'invalid@com';
-  let invalidRole = 'superadmin';
+  const adminRole = 'admin';
+  const invalidEmail = 'invalid@com';
+  const invalidRole = 'user';
+  const superRole = 'superadmin';
 
-  let { email: newAdminEmail } = newAdmin;
+  const { email: newAdminEmail } = newAdmin;
 
-  test('Should throw an error when use already in-usage email while admin registration', async done => {
+  test('Should throw an error when use already in-usage email while admin registration', async () => {
     const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                email
-                token
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -305,7 +482,7 @@ describe('Register admin', () => {
         variables: {
           user: {
             email: 'superadmin@gmail.com',
-            role,
+            role: adminRole,
           },
         },
       })
@@ -314,18 +491,16 @@ describe('Register admin', () => {
     const data = result.data.registerAdmin;
     expect(data.message).toEqual(USER_ALREADY_EXIST);
     expect(data.statusCode).toEqual(400);
-    done();
   });
 
-  test('Should throw an error when use invalid email while admin registration', async done => {
+  test('Should throw an error when use invalid email while admin registration', async () => {
     const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                email
-                token
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -343,21 +518,18 @@ describe('Register admin', () => {
       })
       .catch(err => err);
     const data = result.data.registerAdmin;
-
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
-    done();
+    expect(data.message).toEqual(INVALID_ROLE);
+    expect(data.statusCode).toEqual(FORBIDDEN);
   });
 
-  test('Should throw an error when use invalid role', async done => {
+  test('Should throw an error when use invalid role', async () => {
     const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                email
-                token
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -369,7 +541,7 @@ describe('Register admin', () => {
         variables: {
           user: {
             email: invalidEmail,
-            role,
+            role: invalidRole,
           },
         },
       })
@@ -377,21 +549,18 @@ describe('Register admin', () => {
 
     const data = result.data.registerAdmin;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
-    done();
+    expect(data.message).toEqual(INVALID_ROLE);
+    expect(data.statusCode).toEqual(FORBIDDEN);
   });
 
-  test('Should create an user with custom role and generate a confirmation token', async done => {
+  test('Should create an user with custom role and generate a confirmation token', async () => {
     const result = await operations
       .mutate({
         mutation: gql`
           mutation($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
-              ... on User {
-                _id
-                email
-                invitationalToken
+              ... on SuccessfulResponse {
+                isSuccess
               }
               ... on Error {
                 message
@@ -403,40 +572,35 @@ describe('Register admin', () => {
         variables: {
           user: {
             email: newAdminEmail,
-            role,
+            role: superRole,
           },
         },
       })
       .catch(err => err);
     const data = result.data.registerAdmin;
-    userId = data._id;
-    expect(data.email).toEqual(newAdminEmail);
+    const admin = await User.findOne({ email: newAdminEmail }).exec();
+    userId = admin._id;
 
-    invitationalToken = data.invitationalToken;
-    done();
+    jwtClient.setData({ userId });
+    const accessToken = jwtClient.generateAccessToken(SECRET, TOKEN_EXPIRES_IN);
+
+    invitationalToken = accessToken;
+    expect(data.isSuccess).toEqual(true);
   });
 
-  afterAll(async done => {
+  afterAll(async () => {
     await deleteUser(userId, operations);
-    done();
   });
 });
 
 describe('Admin confirmation', () => {
-  let invalidFirstName = 'H';
-  let invalidLastName = 'O';
-  let invalidPassword = 'You';
-  let invalidToken = `ayJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2
-    VySWQiOiI1ZjU0ZDY1NDE0NWJiNzM3NzQxYmNmMDMiLCJlbWFpbCI6InN1c
-    GVyYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNTk5Mzk1NDEyfQ.
-    5z1BRqzxF41xmgKr3nDEDBjrv8TxrkOubAEZ3hEOZcw`;
-  let {
+  const {
     pass: newAdminPassword,
     firstName: newAdminFirstName,
     lastName: newAdminLastName,
   } = newAdmin;
 
-  test('Should throw an error when use invalid lastname', async done => {
+  test('Should throw an error when use invalid lastname', async () => {
     const result = await completeAdminRegister(
       invitationalToken,
       newAdminFirstName,
@@ -446,12 +610,11 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
-    done();
+    expect(data.message).toContain(INVALID_LAST_NAME);
+    expect(data.statusCode).toEqual(FORBIDDEN);
   });
 
-  test('Should throw an error when use invalid firstname', async done => {
+  test('Should throw an error when use invalid firstname', async () => {
     const result = await completeAdminRegister(
       invitationalToken,
       invalidFirstName,
@@ -461,27 +624,25 @@ describe('Admin confirmation', () => {
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
-    done();
+    expect(data.message).toContain(INVALID_FIRST_NAME);
+    expect(data.statusCode).toEqual(FORBIDDEN);
   });
 
-  test('Should throw an error when use invalid password', async done => {
+  test('Should throw an error when use invalid password', async () => {
     const result = await completeAdminRegister(
       invitationalToken,
-      invalidFirstName,
+      newAdminFirstName,
       newAdminLastName,
       invalidPassword,
       operations
     );
     const data = result.data.completeAdminRegister;
 
-    expect(data.message).toEqual(INPUT_NOT_VALID);
-    expect(data.statusCode).toEqual(400);
-    done();
+    expect(data.message).toEqual(INVALID_PASSWORD);
+    expect(data.statusCode).toEqual(FORBIDDEN);
   });
 
-  test('Should throw an error when use invalid token', async done => {
+  test('Should throw an error when use invalid token', async () => {
     const result = await completeAdminRegister(
       invalidToken,
       newAdminFirstName,
@@ -492,10 +653,9 @@ describe('Admin confirmation', () => {
     const data = result.data.completeAdminRegister;
 
     expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
-    done();
   });
 
-  test('Should confirm user with a custom role', async done => {
+  test('Should confirm user with a custom role', async () => {
     const result = await completeAdminRegister(
       invitationalToken,
       newAdminFirstName,
@@ -505,13 +665,12 @@ describe('Admin confirmation', () => {
     );
 
     expect(result).toBeTruthy();
-    done();
   });
 });
 
 describe('User filtering', () => {
-  test('Should receive users via using filters for roles', async done => {
-    const role = 'user';
+  test('Should receive users via using filters for roles', async () => {
+    const userRole = 'user';
 
     const result = await operations
       .query({
@@ -526,18 +685,17 @@ describe('User filtering', () => {
         `,
         variables: {
           filter: {
-            roles: [role],
+            roles: [userRole],
           },
         },
       })
       .catch(err => err);
     const data = result.data.getAllUsers.items;
 
-    expect(data.every(item => item.role === role)).toEqual(true);
-    done();
+    expect(data.every(item => item.role === userRole)).toEqual(true);
   });
 
-  test('Should receive admins and superadmins via using filters for roles', async done => {
+  test('Should receive admins and superadmins via using filters for roles', async () => {
     const roles = ['admin', 'superadmin'];
 
     const result = await operations
@@ -561,11 +719,9 @@ describe('User filtering', () => {
     const data = result.data.getAllUsers.items;
 
     expect(data.every(item => roles.includes(item.role))).toEqual(true);
-    done();
   });
 
-  afterAll(async done => {
-    await deleteUser(userId, operations);
-    done();
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

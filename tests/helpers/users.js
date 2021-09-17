@@ -59,7 +59,10 @@ const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
             firstName
             email
             role
-            banned
+            banned {
+              blockPeriod
+              blockCount
+            }
           }
         }
       }
@@ -72,9 +75,7 @@ const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
   return result.data.getAllUsers.items;
 };
 
-const chooseOnlyUsers = arr => {
-  return arr.filter(user => user.role === USER);
-};
+const chooseOnlyUsers = arr => arr.filter(user => user.role === USER);
 
 module.exports = {
   createUser,

@@ -1,13 +1,17 @@
+const mongoose = require('mongoose');
 const { gql } = require('@apollo/client');
 const {
   INVALID_ADMIN_INVITATIONAL_TOKEN,
   INVALID_PERMISSIONS,
+  WRONG_CREDENTIALS,
 } = require('../../error-messages/user.messages');
 const {
   superAdminUser,
   testUser,
   testUsersSet,
   wrongId,
+  filter,
+  googleToken,
 } = require('./user.variables');
 const {
   registerUser,
@@ -16,9 +20,13 @@ const {
   getUserByToken,
   getUserById,
   deleteUser,
+  googleUser,
   loginAdmin,
   getAllUsersWithToken,
   validateConfirmationToken,
+  getPurchasedProducts,
+  getUsersForStatistic,
+  getCountUserOrders,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -27,18 +35,17 @@ const {
   chooseOnlyUsers,
 } = require('../helpers/users');
 
-jest.mock('../../modules/confirm-email/confirmation-email.service');
-jest.setTimeout(10000);
+jest.mock('../../modules/email/email.service');
 
 let token;
 let userId;
 let operations;
 let loginedUser;
 
-describe('queries', () => {
-  beforeAll(async done => {
-    const { firstName, lastName, email, pass, language } = testUser;
+const { firstName, lastName, email, pass, language } = testUser;
 
+describe('queries', () => {
+  beforeAll(async () => {
     operations = await setupApp();
     const register = await registerUser(
       firstName,
@@ -50,80 +57,18 @@ describe('queries', () => {
     );
     userId = register.data.registerUser._id;
 
-    const authRes = await loginUser(email, pass, operations);
+    const authRes = await loginUser(email, pass, true, operations);
     loginedUser = authRes.data.loginUser;
     token = loginedUser.token;
-    operations = await setupApp(loginedUser);
-    await operations.mutate({
-      mutation: gql`
-        mutation($userId: ID!, $email: String!) {
-          updateUserById(
-            user: {
-              firstName: "Test"
-              lastName: "User"
-              email: $email
-              phoneNumber: "380666666666"
-              address: {
-                country: "Ukraine"
-                city: "Kiev"
-                street: "Shevchenka"
-                buildingNumber: "23"
-              }
-              wishlist: []
-              orders: []
-              comments: []
-            }
-            id: $userId
-          ) {
-            firstName
-            lastName
-            email
-            phoneNumber
-            role
-            address {
-              country
-              city
-              street
-              buildingNumber
-            }
-            orders
-            comments
-          }
-        }
-      `,
-      variables: {
-        userId,
-        email,
-      },
-    });
-    operations = await setupApp();
-    done();
   });
 
-  test('should recive all users', async done => {
-    const { email } = testUser;
+  test('should recive all users', async () => {
     const res = await getAllUsers(operations);
 
-    expect(res.data.getAllUsers.items).toContainEqual({
-      firstName: 'Test',
-      lastName: 'User',
-      email,
-      phoneNumber: '380666666666',
-      role: 'user',
-      address: {
-        country: 'Ukraine',
-        city: 'Kiev',
-        street: 'Shevchenka',
-        buildingNumber: '23',
-      },
-      orders: [],
-      comments: [],
-    });
-    done();
+    expect(res.data.getAllUsers.items[1]).toBeDefined();
   });
 
-  test('should recive user by token', async done => {
-    const { email } = testUser;
+  test('should receive user by token', async () => {
     operations = await setupApp({
       firstName: 'Test',
       lastName: 'User',
@@ -159,42 +104,55 @@ describe('queries', () => {
     });
     expect(res.data.getUserByToken).toHaveProperty('orders', []);
     expect(res.data.getUserByToken).toHaveProperty('comments', []);
-    done();
   });
 
-  test('should recive user by id', async done => {
-    const { email } = testUser;
+  test('should receive user by id', async () => {
     operations = await setupApp();
     const res = await getUserById(userId, operations);
 
     expect(res.data.getUserById).toHaveProperty('_id', userId);
-    expect(res.data.getUserById).toHaveProperty('firstName', 'Test');
-    expect(res.data.getUserById).toHaveProperty('lastName', 'User');
+    expect(res.data.getUserById).toHaveProperty('firstName');
+    expect(res.data.getUserById).toHaveProperty('lastName');
     expect(res.data.getUserById).toHaveProperty('email', email);
-    expect(res.data.getUserById).toHaveProperty('phoneNumber', '380666666666');
     expect(res.data.getUserById).toHaveProperty('role', 'user');
-    expect(res.data.getUserById).toHaveProperty('address', {
-      country: 'Ukraine',
-      city: 'Kiev',
-      street: 'Shevchenka',
-      buildingNumber: '23',
-    });
     expect(res.data.getUserById).toHaveProperty('orders');
     expect(res.data.getUserById).toHaveProperty('comments');
-    done();
   });
 
-  test('should throw Error User with provided _id not found', async done => {
+  test('should throw Error User with provided _id not found', async () => {
     const res = await getUserById(wrongId, operations);
 
-    expect(res.errors.length).toBe(1);
-    expect(res.errors[0].message).toBe('USER_NOT_FOUND');
-    done();
+    expect(res.data.getUserById.message).toBe('USER_NOT_FOUND');
   });
 
-  afterAll(async done => {
+  test('should get count user orders by id', async () => {
+    const result = await getCountUserOrders(userId, operations);
+
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toEqual(0);
+  });
+
+  test('get count orders should return 0 when user with provided id not found', async () => {
+    const result = await getCountUserOrders(wrongId, operations);
+
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toBe(0);
+  });
+
+  test('should get user for statistic', async () => {
+    const result = await getUsersForStatistic(filter, operations);
+
+    expect(result.getUsersForStatistic.total).toBeDefined();
+  });
+
+  test('should get purchased products', async () => {
+    const result = await getPurchasedProducts(userId, operations);
+
+    expect(result).toBeDefined();
+  });
+
+  afterAll(async () => {
     await deleteUser(userId, operations);
-    done();
   });
 });
 
@@ -204,63 +162,85 @@ describe('Testing obtaining information restrictions', () => {
   let userPassword;
   let adminPassword;
   let firstName;
+  let wrongPassword;
   let lastName;
   let adminToken;
   let adminEmail;
   let language;
 
-  beforeAll(async done => {
+  beforeAll(async () => {
+    operations = await setupApp();
     userLogin = 'example@gmail.com';
     userPassword = 'qwertY123';
+    wrongPassword = 'qw23ertY123';
     adminEmail = superAdminUser.email;
     adminPassword = superAdminUser.password;
     firstName = 'Pepo';
     lastName = 'Markelo';
+    language = 1;
     const register = await registerUser(
       firstName,
       lastName,
       userLogin,
       userPassword,
-      (language = 1),
+      language,
       operations
     );
     userId = register.data.registerUser._id;
-    done();
   });
-  test('User must login', async done => {
-    const result = await loginUser(userLogin, userPassword, operations);
+  test('User must login', async () => {
+    const result = await loginUser(userLogin, userPassword, false, operations);
     const userInfo = result.data.loginUser;
     userToken = userInfo.token;
 
     expect(userInfo).not.toEqual(null);
-    done();
   });
-  test('Admin must login', async done => {
+  test('Admin must login', async () => {
     const result = await loginAdmin(adminEmail, adminPassword, operations);
     const adminInfo = result.data.loginAdmin;
     adminToken = adminInfo.token;
 
     expect(adminInfo.loginAdmin).not.toEqual(null);
-    done();
   });
-  test('Any user doesn`t allowed to obtain information about all users', async done => {
+
+  test('login admin should throw error INVALID_PREMISSIONS', async () => {
+    const result = await loginAdmin(userLogin, userPassword, operations);
+
+    expect(result.data.loginAdmin.message).toBe(INVALID_PERMISSIONS);
+  });
+
+  test('login admin should throw error WRONG_CREDENTIALS', async () => {
+    const result = await loginAdmin(adminEmail, wrongPassword, operations);
+
+    expect(result.data.loginAdmin.message).toBe(WRONG_CREDENTIALS);
+  });
+
+  test('Google user must login', async () => {
+    const result = await googleUser(googleToken, true, operations);
+
+    expect(result).toBeDefined();
+  });
+  test('Any user doesn`t allowed to obtain information about all users', async () => {
     operations = await setupApp({ token: userToken });
     const result = await getAllUsersWithToken(userToken, operations);
 
     expect(result.data.getAllUsers.message).toBeDefined();
     expect(result.data.getAllUsers.message).toBe(INVALID_PERMISSIONS);
-    done();
   });
-  test('Admin can obtain all the information about users', async done => {
+  test('Admin can obtain all the information about users', async () => {
     operations = await setupApp();
     const result = await getAllUsersWithToken(adminToken, operations);
     const data = result.data.getAllUsers.items;
 
     expect(data.length).toBeGreaterThanOrEqual(2);
-    done();
   });
-  test('User can obtain the information about himself', async done => {
-    const userLoginInfo = await loginUser(userLogin, userPassword, operations);
+  test('User can obtain the information about himself', async () => {
+    const userLoginInfo = await loginUser(
+      userLogin,
+      userPassword,
+      true,
+      operations
+    );
     const result = await getUserById(
       userLoginInfo.data.loginUser._id,
       operations
@@ -269,10 +249,9 @@ describe('Testing obtaining information restrictions', () => {
 
     expect(userInfo.firstName).toEqual(firstName);
     expect(userInfo.lastName).toEqual(lastName);
-    done();
   });
-  test('Should throw an error when validate invalid token', async done => {
-    const invalidAdminToken = 'y' + adminToken.slice(1);
+  test('Should throw an error when validate invalid token', async () => {
+    const invalidAdminToken = `y${adminToken.slice(1)}`;
     const result = await validateConfirmationToken(
       invalidAdminToken,
       operations
@@ -280,44 +259,38 @@ describe('Testing obtaining information restrictions', () => {
     const data = result.data.validateConfirmationToken;
 
     expect(data.message).toEqual(INVALID_ADMIN_INVITATIONAL_TOKEN);
-    done();
   });
-  test('Should return successful response when token is valid', async done => {
+  test('Should return successful response when token is valid', async () => {
     const result = await validateConfirmationToken(adminToken, operations);
     const data = result.data.validateConfirmationToken;
 
     expect(data.isSuccess).toEqual(true);
-    done();
   });
 
-  afterAll(async done => {
+  afterAll(async () => {
     await deleteUser(userId, operations);
-    done();
   });
 });
 
 describe('Filter users', () => {
-  const ACTIVE = { banned: false };
-  const BANNED = { banned: true };
   const SORT = {
     byName: { asc: { name: 1 }, desc: { name: -1 } },
     byEmail: { asc: { email: 1 }, desc: { email: -1 } },
   };
-  let usersId = [];
-
-  beforeAll(async done => {
+  beforeAll(async () => {
     operations = await setupApp();
 
-    for (let i = 0; i < testUsersSet.length; i++) {
-      usersId.push(await createUser(operations, testUsersSet[i]));
+    for (const user of testUsersSet) {
+      await createUser(operations, user);
     }
 
-    let users = await getAllUsersQuery(operations);
+    const users = await getAllUsersQuery(operations);
 
-    for (let i = 0; i < users.length; i++) {
+    for (const user of users) {
       if (
         testUsersSet.some(
-          el => el.firstName === users[i].firstName && el.banned
+          el =>
+            el.firstName === user.firstName && el.banned.blockPeriod === '30'
         )
       ) {
         await operations.mutate({
@@ -334,26 +307,25 @@ describe('Filter users', () => {
             }
           `,
           variables: {
-            id: users[i]._id,
+            id: user._id,
           },
         });
       }
     }
-    done();
   });
 
-  test('should sort by name from a to z', async done => {
+  test('should sort by name from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.firstName).sort();
 
     let users = await getAllUsersQuery(operations, SORT.byName.asc);
 
     users = chooseOnlyUsers(users);
+
     expect(users).toBeDefined();
     expect(users.map(user => user.firstName)).toEqual(compareResult);
-    done();
   });
 
-  test('should sort by name from z to a', async done => {
+  test('should sort by name from z to a', async () => {
     const compareResult = testUsersSet
       .map(user => user.firstName)
       .sort()
@@ -364,20 +336,18 @@ describe('Filter users', () => {
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
     expect(users.map(user => user.firstName)).toEqual(compareResult);
-    done();
   });
 
-  test('should sort by email from a to z', async done => {
+  test('should sort by email from a to z', async () => {
     const compareResult = testUsersSet.map(user => user.email).sort();
     let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
     expect(users.map(user => user.email)).toEqual(compareResult);
-    done();
   });
 
-  test('should sort by emaill from z to a', async done => {
+  test('should sort by email from z to a', async () => {
     const compareResult = testUsersSet
       .map(user => user.email)
       .sort()
@@ -387,55 +357,9 @@ describe('Filter users', () => {
 
     expect(users).toBeDefined();
     expect(users.map(user => user.email)).toEqual(compareResult);
-    done();
   });
 
-  test('should show only banned users', async done => {
-    const compareResult = testUsersSet
-      .filter(user => user.banned)
-      .map(user => ({ firstName: user.firstName, banned: user.banned }));
-
-    let users = await getAllUsersQuery(operations, {}, BANNED);
-    users = chooseOnlyUsers(users).map(user => ({
-      firstName: user.firstName,
-      banned: user.banned,
-    }));
-
-    expect(users).toBeDefined();
-    users.forEach(user => {
-      expect(user).toEqual(
-        compareResult.find(el => el.firstName === user.firstName)
-      );
-    });
-    done();
-  });
-
-  test('should show only not banned users', async done => {
-    const compareResult = testUsersSet
-      .filter(user => !user.banned)
-      .map(user => ({ firstName: user.firstName, banned: user.banned }));
-
-    let users = await getAllUsersQuery(operations, {}, ACTIVE);
-
-    users = chooseOnlyUsers(users).map(user => ({
-      firstName: user.firstName,
-      banned: user.banned,
-    }));
-    expect(users).toBeDefined();
-    users.forEach(user => {
-      expect(user).toEqual(
-        compareResult.find(el => el.firstName === user.firstName)
-      );
-    });
-    done();
-  });
-
-  afterAll(async done => {
-    await Promise.all(
-      usersId.map(async id => {
-        await deleteUser(id, operations);
-      })
-    );
-    done();
+  afterAll(async () => {
+    mongoose.connection.db.dropDatabase();
   });
 });

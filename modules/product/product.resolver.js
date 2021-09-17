@@ -1,25 +1,19 @@
 const productsService = require('./product.service');
-const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
+const RuleError = require('../../errors/rule.error');
 
 const productsQuery = {
   getProductById: async (parent, args) => {
-    const product = await productsService.getProductById(args.id);
-    if (product) {
-      return product;
+    try {
+      return await productsService.getProductById(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: 404,
-      message: PRODUCT_NOT_FOUND,
-    };
   },
   getProducts: async (parent, args) => {
     try {
       return await productsService.getProducts(args);
     } catch (e) {
-      return {
-        statusCode: 404,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   getModelsByCategory: (parent, args) =>
@@ -29,49 +23,38 @@ const productsQuery = {
 };
 
 const productsMutation = {
-  addProduct: async (parent, args) => {
+  addProduct: async (parent, args, { user }) => {
     try {
-      return await productsService.addProduct(args.product, args.upload);
+      return await productsService.addProduct(args.product, args.upload, user);
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteProduct: async (parent, args) => {
-    const deletedProduct = await productsService.deleteProduct(args.id);
-    if (deletedProduct) {
-      return deletedProduct;
+  deleteProduct: async (parent, args, { user }) => {
+    try {
+      return await productsService.deleteProduct(args.id, user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
-    return {
-      statusCode: 404,
-      message: PRODUCT_NOT_FOUND,
-    };
   },
-  updateProduct: async (parent, args) => {
+  updateProduct: async (parent, args, { user }) => {
     try {
       return await productsService.updateProduct(
         args.id,
         args.product,
         args.upload,
-        args.primary
+        args.primary,
+        user
       );
     } catch (e) {
-      return {
-        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
   deleteImages: async (parent, args) => {
     try {
       return await productsService.deleteImages(args.id, args.images);
     } catch (e) {
-      return {
-        statusCode: e.message === PRODUCT_NOT_FOUND ? 404 : 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
 };

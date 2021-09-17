@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
+
 const Language = require('../../models/Language').schema;
 const {
   COLOR_HEX_TOO_SHORT,
   COLOR_HEX_TOO_LONG,
   COLOR_HEX_NOT_FOUND,
 } = require('../../error-messages/color.massage');
+const {
+  DB_COLLECTIONS_NAMES: { COLOR },
+} = require('../../consts/db-collections-names');
 
 const ColorSchema = new mongoose.Schema({
   name: [Language],
@@ -17,4 +21,4 @@ const ColorSchema = new mongoose.Schema({
   simpleName: [Language],
 });
 
-module.exports = mongoose.model('Color', ColorSchema);
+module.exports = mongoose.model(COLOR, ColorSchema);

@@ -1,6 +1,12 @@
 const userService = require('./user.service');
+const {
+  STATUS_CODES: { BAD_REQUEST },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
+  getCountUserOrders: async (_, args, { user }) =>
+    userService.getCountUserOrders(user),
   getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUsersForStatistic: (parent, args, context) =>
     userService.getUsersForStatistic(args),
@@ -11,29 +17,57 @@ const userQuery = {
       return userService.validateConfirmationToken(args.token);
     } catch (err) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: err.message,
       };
     }
   },
-  getPurchasedProducts: (parent, args) =>
-    userService.getPurchasedProducts(args.id),
+  getPurchasedProducts: (parent, { id }) =>
+    userService.getPurchasedProducts(id),
 };
 const userMutation = {
-  registerUser: (parent, args) =>
-    userService.registerUser(args.user, args.language),
-  googleUser: (parent, args) =>
-    userService.googleUser(args.idToken, args.staySignedIn),
-  loginUser: (parent, args) => userService.loginUser(args.loginInput),
-  loginAdmin: (parent, args) => userService.loginAdmin(args.loginInput),
+  blockUser: async (_, { userId }, { user }) => {
+    try {
+      return await userService.blockUser(userId, user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  unlockUser: async (_, { userId }, { user }) => {
+    try {
+      return await userService.unlockUser(userId, user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  registerUser: async (parent, args) => {
+    try {
+      return await userService.registerUser(args.user, args.language);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  googleUser: (_, args) =>
+    userService.googleUser(args.idToken, args.rememberMe),
+  loginUser: async (_, { loginInput }) => {
+    try {
+      return await userService.loginUser(loginInput);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+  loginAdmin: async (_, { loginInput }) => {
+    try {
+      return await userService.loginAdmin(loginInput);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   deleteUser: async (parent, args) => {
     try {
       return await userService.deleteUser(args.id);
-    } catch (err) {
-      return {
-        statusCode: err.statusCode,
-        message: err.message,
-      };
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
     }
   },
   updateUserById: (parent, args, context) =>
@@ -42,13 +76,16 @@ const userMutation = {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
     } catch (err) {
-      return {
-        statusCode: err.statusCode,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
-  confirmUserEmail: (parent, args) => userService.confirmUser(args.token),
+  confirmUserEmail: async (_, { token }) => {
+    try {
+      return await userService.confirmUser(token);
+    } catch (err) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
   recoverUser: (parent, args) =>
     userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
@@ -56,7 +93,7 @@ const userMutation = {
       return await userService.switchUserStatus(args.id);
     } catch (err) {
       return {
-        statusCode: 400,
+        statusCode: BAD_REQUEST,
         message: err.message,
       };
     }
@@ -72,30 +109,35 @@ const userMutation = {
         args.language
       );
     } catch (e) {
-      return {
-        statusCode: 400,
-        message: e.message,
-      };
+      return new RuleError(e.message, e.statusCode);
     }
   },
-  registerAdmin: async (parent, args) => {
+  registerAdmin: async (_, { user }, { user: admin }) => {
     try {
-      return await userService.registerAdmin(args.user);
+      return await userService.registerAdmin(user, admin);
     } catch (err) {
-      return {
-        statusCode: 400,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
     }
   },
-  completeAdminRegister: async (parent, args) => {
+  resendEmailToConfirmAdmin: async (_, { user }) => {
     try {
-      return await userService.completeAdminRegister(args.user, args.token);
+      return await userService.resendEmailToConfirmAdmin(user);
     } catch (err) {
-      return {
-        statusCode: 400,
-        message: err.message,
-      };
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
+  confirmSuperadminCreation: async (_, { user }) => {
+    try {
+      return await userService.confirmSuperadminCreation(user);
+    } catch (err) {
+      return new RuleError(err.message, err.statusCode);
+    }
+  },
+  completeAdminRegister: async (_, { user, token }) => {
+    try {
+      return await userService.completeAdminRegister(user, token);
+    } catch (err) {
+      return new RuleError(err.message, err.statusCode);
     }
   },
   addProductToWishlist: (parent, args, context) =>
