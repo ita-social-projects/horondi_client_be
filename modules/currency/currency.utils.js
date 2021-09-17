@@ -27,7 +27,7 @@ const calculateAdditionalPrice = async price => {
     case ABSOLUTE_INDICATOR: {
       return [
         {
-          value: Math.round(value * convertOptions[0].exchangeRate * 100) / 100,
+          value: Math.round(value * convertOptions[0].exchangeRate),
           type: ABSOLUTE_INDICATOR,
           currency: UAH,
         },

@@ -5,7 +5,7 @@ const bottomType = `
     optionType: OptionTypeEnum
     features: BottomFeatureSet
     images: ImageSet
-    additionalPrice: [CurrencySet]
+    additionalPrice: [AdditionalCurrencySet]
     available: Boolean
   }
 `;
@@ -23,7 +23,7 @@ const bottomInputs = `
     optionType: String
     features: BottomFeatureSetInput
     image: Upload
-    additionalPrice: Int
+    additionalPrice: additionalPriceInput!
     available: Boolean
   }
 
