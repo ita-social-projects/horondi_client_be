@@ -5,7 +5,7 @@ type Order {
   paymentUrl: String
   status: Status
   recipient: OrderUser
-  user_id: String
+  user_id: ID
   dateOfCreation: String
   lastUpdatedDate: String
   userComment: String
@@ -100,7 +100,7 @@ input OrderInput {
   userComment: String
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
-  user_id: String
+  user_id: ID
 }
 
 input OrderUserInput {
