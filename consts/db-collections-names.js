@@ -14,6 +14,7 @@ const DB_COLLECTIONS_NAMES = {
   COMMENT: 'Comment',
   ADDRESS: 'Address',
   IMAGE_SET: 'ImageSet',
+  CONSTRUCTOR: 'Constructor',
   CONSTRUCTOR_FRONT_POCKET: 'ConstructorFrontPocket',
   CONSTRUCTOR_BOTTOM: 'ConstructorBottom',
   CONSTRUCTOR_BASICS: 'ConstructorBasic',
