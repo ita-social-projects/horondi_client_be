@@ -1,6 +1,6 @@
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
-const { calculateBasePrice } = require('../currency/currency.utils');
+const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -97,7 +97,7 @@ class BackService {
       back.images = imageResults.fileNames;
     }
 
-    back.additionalPrice = await calculateBasePrice(back.additionalPrice);
+    back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
 
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
@@ -161,7 +161,7 @@ class BackService {
       back.images = uploadImage.fileNames;
     }
 
-    back.additionalPrice = await calculateBasePrice(back.additionalPrice);
+    back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
 
     const newBack = await new Back(back).save();
 

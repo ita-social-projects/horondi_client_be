@@ -33,7 +33,7 @@ const createBack = async (back, image, operations) => {
             optionType
             additionalPrice {
               value
-              currency
+              type
             }
           }
           ... on Error {
@@ -45,6 +45,7 @@ const createBack = async (back, image, operations) => {
     `,
     variables: { back, image },
   });
+  console.log('create back', backInfo);
   return backInfo.data.addBack;
 };
 const updateBack = async (id, back, image, operations) => {
@@ -74,6 +75,10 @@ const updateBack = async (id, back, image, operations) => {
             }
             model {
               _id
+            }
+            additionalPrice {
+              value
+              type
             }
             available
             customizable
@@ -117,6 +122,10 @@ const getAllBacks = async ({ limit, skip, filter }, operations) => {
             model {
               _id
             }
+            additionalPrice {
+              value
+              type
+            }
             available
             customizable
             optionType
@@ -155,6 +164,10 @@ const getBackById = async (id, operations) => {
               medium
               large
               thumbnail
+            }
+            additionalPrice {
+              value
+              type
             }
             available
             customizable

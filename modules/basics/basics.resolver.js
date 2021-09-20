@@ -15,9 +15,9 @@ const basicsQuery = {
 };
 
 const basicsMutations = {
-  addBasic: async (_, { basic, image }, { user }) => {
+  addBasic: (_, { basic, image }, { user }) => {
     try {
-      return await basicsService.addBasic(basic, image, user);
+      return basicsService.addBasic(basic, image, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
