@@ -240,6 +240,23 @@ const restrictionValidator = Joi.object({
   ),
 });
 
+const inputConstructorValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  model: Joi.string()
+    .trim()
+    .required(),
+  basics: Joi.array().required(),
+  bottoms: Joi.array().required(),
+  patterns: Joi.array().required(),
+  backs: Joi.array().required(),
+  straps: Joi.array().required(),
+  closures: Joi.array().required(),
+  pockets: Joi.array().required(),
+  image: Joi.string()
+    .trim()
+    .optional(),
+});
+
 module.exports = {
   inputPocketValidator,
   inputOptionValidator,
@@ -251,4 +268,5 @@ module.exports = {
   restrictionValidator,
   inputClosureValidator,
   inputBasicsValidator,
+  inputConstructorValidator,
 };
