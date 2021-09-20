@@ -13,6 +13,7 @@ const {
     STRAP,
     CLOSURE,
     POCKET,
+    POSITION,
   },
 } = require('../../consts/db-collections-names');
 
@@ -22,6 +23,7 @@ const constructorSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: MODEL,
   },
+  images: ImageSet,
   basics: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -58,13 +60,34 @@ const constructorSchema = new mongoose.Schema({
       ref: CLOSURE,
     },
   ],
-  pockets: [
+  pocketsWithRestrictions: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: POCKET,
+      currentPocketWithPosition: {
+        pocket: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: POCKET,
+        },
+        position: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: POSITION,
+        },
+      },
+      otherPocketsWithAvailablePositions: [
+        {
+          pocket: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: POCKET,
+          },
+          positions: [
+            {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: POSITION,
+            },
+          ],
+        },
+      ],
     },
   ],
-  images: ImageSet,
 });
 
 module.exports = mongoose.model(CONSTRUCTOR, constructorSchema);

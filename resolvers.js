@@ -633,8 +633,25 @@ const resolvers = {
     straps: parent => parent.straps.map(id => strapService.getStrapById(id)),
     closures: parent =>
       parent.closures.map(id => closuresService.getClosureById(id)),
-    pockets: parent =>
-      parent.pockets.map(id => pocketService.getPocketById(id)),
+    pocketsWithRestrictions: parent =>
+      parent.pocketsWithRestrictions.map(item => ({
+        currentPocketWithPosition: {
+          pocket: pocketService.getPocketById(
+            item.currentPocketWithPosition.pocket
+          ),
+          position: positionService.getPositionById(
+            item.currentPocketWithPosition.position
+          ),
+        },
+        otherPocketsWithAvailablePositions: item.otherPocketsWithAvailablePositions.map(
+          el => ({
+            pocket: pocketService.getPocketById(el.pocket),
+            positions: el.positions.map(position =>
+              positionService.getPositionById(position)
+            ),
+          })
+        ),
+      })),
   },
 
   Mutation: {

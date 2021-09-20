@@ -72,7 +72,7 @@ const inputConstructorValidator = Joi.object({
   backs: Joi.array().required(),
   straps: Joi.array().required(),
   closures: Joi.array().required(),
-  pockets: Joi.array().required(),
+  pocketsWithRestrictions: Joi.array().required(),
   image: Joi.string()
     .trim()
     .optional(),
