@@ -18,7 +18,20 @@ const newConstructorInputData = () => ({
   backs: ['60eadfb9e913fc3f88294bd9'],
   straps: ['613e043dd575811164aa56fc'],
   closures: ['6043c8acc60c2e4b940189ae'],
-  pockets: ['6043c8acc60c2e4b940189ae'],
+  pocketsWithRestrictions: [
+    {
+      currentPocketWithPosition: {
+        pocket: '60e5aa55190df500240e1656',
+        position: '60fff9f63affc3410c21ab54',
+      },
+      otherPocketsWithAvailablePositions: [
+        {
+          pocket: '60e5aa55190df500240e1656',
+          positions: ['60fff9f63affc3410c21ab54'],
+        },
+      ],
+    },
+  ],
 });
 const newConstructorInputDataUpdate = () => ({
   name: [
@@ -32,7 +45,20 @@ const newConstructorInputDataUpdate = () => ({
   backs: ['5fb412d8663cf10bec9faa1a'],
   straps: ['5fb412d8663cf10bec9faa1a'],
   closures: ['5fb412d8663cf10bec9faa1a'],
-  pockets: ['6043c8acc60c2e4b940189ae'],
+  pocketsWithRestrictions: [
+    {
+      currentPocketWithPosition: {
+        pocket: '5fb712d8663cf10bec9faa1a',
+        position: '5fb212d8663cf10bec9faa1a',
+      },
+      otherPocketsWithAvailablePositions: [
+        {
+          pocket: '5fb712d8663cf10bec9faa1a',
+          positions: ['5fb412d8663cf12bec9faa1a'],
+        },
+      ],
+    },
+  ],
 });
 
 module.exports = {

@@ -1,4 +1,19 @@
 const constructorType = `
+  type CurrentPocketWithPosition {
+    pocket: Pocket
+    position: Position
+  }
+  
+  type otherPocketsWithAvailablePositions {
+    pocket: Pocket
+    positions: [Position]
+  }
+  
+  type PocketsWithRestrictions {
+    currentPocketWithPosition: CurrentPocketWithPosition
+    otherPocketsWithAvailablePositions: [otherPocketsWithAvailablePositions]
+  }
+
   type Constructor {
     _id: ID
     name: [Language]
@@ -10,11 +25,26 @@ const constructorType = `
     backs: [Back]
     straps: [Strap]
     closures: [Closure]
-    pockets: [Pocket]
+    pocketsWithRestrictions: [PocketsWithRestrictions]
   }
 `;
 
-const constructorInputs = `  
+const constructorInputs = `
+  input currentPocketWithPositionInput{
+    pocket: ID!
+    position: ID!
+  }
+  
+  input otherPocketsWithAvailablePositionsInput{
+    pocket: ID!
+    positions: [ID!]
+  }
+  
+  input PocketsWithRestrictionsInput {
+    currentPocketWithPosition: currentPocketWithPositionInput!
+    otherPocketsWithAvailablePositions: [otherPocketsWithAvailablePositionsInput!]
+  }
+  
   input ConstructorInput {
     name: [LanguageInput!]
     model: ID!
@@ -25,7 +55,7 @@ const constructorInputs = `
     backs: [ID!]
     straps: [ID!]
     closures: [ID!]
-    pockets: [ID!]
+    pocketsWithRestrictions: [PocketsWithRestrictionsInput!]
   }
 
   input ConstructorFilterInput{
