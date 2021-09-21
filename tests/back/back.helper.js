@@ -33,7 +33,7 @@ const createBack = async (back, image, operations) => {
             optionType
             additionalPrice {
               value
-              currency
+              type
             }
           }
           ... on Error {
@@ -74,6 +74,10 @@ const updateBack = async (id, back, image, operations) => {
             }
             model {
               _id
+            }
+            additionalPrice {
+              value
+              type
             }
             available
             customizable
@@ -117,6 +121,10 @@ const getAllBacks = async ({ limit, skip, filter }, operations) => {
             model {
               _id
             }
+            additionalPrice {
+              value
+              type
+            }
             available
             customizable
             optionType
@@ -155,6 +163,10 @@ const getBackById = async (id, operations) => {
               medium
               large
               thumbnail
+            }
+            additionalPrice {
+              value
+              type
             }
             available
             customizable
