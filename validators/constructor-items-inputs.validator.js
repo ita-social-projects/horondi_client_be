@@ -54,9 +54,7 @@ const inputPocketValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   restriction: Joi.boolean(),
   positions: Joi.array(),
 });
@@ -118,9 +116,7 @@ const inputBottomValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
 });
 
