@@ -30,7 +30,7 @@ const createPocket = async (pocket, images, operations) => {
     `,
     variables: { pocket, images },
   });
-
+  console.log(pocketInfo);
   return pocketInfo.data.addPocket;
 };
 
