@@ -22,9 +22,7 @@ const createOrder = async (order, operations) => {
               email
               phoneNumber
             }
-            user_id {
-              _id
-            }
+            user_id
             userComment
             delivery {
               byCourier
@@ -133,6 +131,7 @@ const getUserOrders = async operations => {
             phoneNumber
           }
           status
+          user_id
           paymentStatus
           orderNumber
           dateOfCreation
@@ -212,6 +211,7 @@ const getAllOrders = async (filter, sort, operations) => {
               phoneNumber
             }
             status
+            user_id
             paymentStatus
             orderNumber
             dateOfCreation
@@ -264,6 +264,7 @@ const getOrdersByUser = async (filter, sort, userId, operations) => {
               phoneNumber
             }
             status
+            user_id
             paymentStatus
             orderNumber
             dateOfCreation
@@ -296,6 +297,7 @@ const getOrderById = async (id, operations) =>
             status
             paymentStatus
             userComment
+            user_id
             delivery {
               byCourier
               sentBy
@@ -363,6 +365,7 @@ const updateOrderById = async (order, id, operations) => {
               currency
             }
             status
+            user_id
             paymentStatus
             recipient {
               firstName
