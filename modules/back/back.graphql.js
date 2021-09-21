@@ -6,7 +6,7 @@ const backType = `
     model: Model
     features: BackFeatureSet
     images: ImageSet
-    additionalPrice: [CurrencySet]
+    additionalPrice: [AdditionalCurrencySet]
     available: Boolean
     customizable: Boolean
   }
@@ -26,7 +26,7 @@ const backInputs = `
     model: ID
     features: BackFeatureSetInput
     image: Upload
-    additionalPrice: Float
+    additionalPrice: additionalPriceInput!
     available: Boolean
     customizable: Boolean
   }
