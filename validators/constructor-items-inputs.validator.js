@@ -84,7 +84,7 @@ const inputClosureValidator = Joi.object({
   customizable: Joi.boolean(),
 });
 
-const inputOptionValidator = Joi.object({
+const inputBackValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -99,11 +99,7 @@ const inputOptionValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: Joi.when(optionType, {
-    is: BACK_OPTION,
-    then: Joi.number(),
-    otherwise: additionalPriceInputValidator,
-  }),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
@@ -242,7 +238,7 @@ const restrictionValidator = Joi.object({
 
 module.exports = {
   inputPocketValidator,
-  inputOptionValidator,
+  inputBackValidator,
   inputBottomValidator,
   inputStrapValidator,
   inputPatternValidator,

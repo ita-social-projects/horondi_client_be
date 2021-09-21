@@ -7,6 +7,10 @@ const newBackInputData = (materialId, colorId, modelId) => ({
     material: materialId,
     color: colorId,
   },
+  additionalPrice: {
+    type: 'ABSOLUTE_INDICATOR',
+    value: 3,
+  },
   model: modelId,
   available: true,
   customizable: false,
@@ -25,7 +29,10 @@ const newBackInputDataUpdate = (materialId, colorId, modelId) => ({
   model: modelId,
   available: true,
   customizable: true,
-  additionalPrice: 3,
+  additionalPrice: {
+    type: 'ABSOLUTE_INDICATOR',
+    value: 5,
+  },
   optionType: 'BACK',
 });
 
