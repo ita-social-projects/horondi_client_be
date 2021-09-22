@@ -154,6 +154,10 @@ const {
   basicsInputs,
   basicsFeatureSet,
 } = require('./modules/basics/basics.graphql');
+const {
+  constructorType,
+  constructorInputs,
+} = require('./modules/constructor_new/constructor.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -209,6 +213,7 @@ const typeDefs = gql`
   ${basicsType}
   ${basicsFeatureSet}
   ${historyFilterInput}
+  ${constructorType}
   scalar Upload
   scalar JSONObject
   scalar Date
@@ -428,6 +433,10 @@ const typeDefs = gql`
     items: [Strap]
     count: Int
   }
+  type PaginatedConstructors {
+    items: [Constructor]
+    count: Int
+  }
   type PaginatedRestrictions {
     items: [Restriction]
     count: Int
@@ -493,6 +502,7 @@ const typeDefs = gql`
   union BackResult = Back | Error
   union BottomResult = Bottom | Error
   union StrapResult = Strap | Error
+  union ConstructorResult = Constructor | Error
   
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
@@ -637,6 +647,9 @@ const typeDefs = gql`
     getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [StrapResult]
+    getAllConstructors(limit:Int!, skip:Int!, filter:ConstructorFilterInput): PaginatedConstructors!
+    getConstructorById(id: ID): ConstructorResult
+    getConstructorByModel(id: ID): [ConstructorResult]
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
@@ -731,6 +744,7 @@ const typeDefs = gql`
   ${strapInputs}
   ${positionInputs}
   ${basicsInputs}
+  ${constructorInputs}
   input LanguageInput {
     lang: String!
     value: String
@@ -1013,6 +1027,10 @@ const typeDefs = gql`
     addStrap(strap: StrapInput!, image: Upload): StrapResult
     updateStrap(id: ID, strap: StrapInput!, image: Upload):StrapResult
     deleteStrap(id: ID):StrapResult
+    "Constructor Mutation"
+    addConstructor(constructor: ConstructorInput!, image: Upload): ConstructorResult
+    updateConstructor(id: ID!, constructor: ConstructorInput!, image: Upload):ConstructorResult
+    deleteConstructor(id: ID!):ConstructorResult
     "Restriction Mutation"
     addRestriction(restriction: RestrictionInput!): RestrictionResult
     updateRestriction(id: ID, restriction: RestrictionInput!): RestrictionResult

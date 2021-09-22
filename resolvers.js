@@ -121,6 +121,11 @@ const {
   basicsMutations,
 } = require('./modules/basics/basics.resolver');
 
+const {
+  constructorQuery,
+  constructorMutation,
+} = require('./modules/constructor_new/constructor.resolver');
+
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
@@ -138,6 +143,8 @@ const modelService = require('./modules/model/model.service');
 const colorService = require('./modules/color/color.service');
 const strapService = require('./modules/strap/strap.service');
 const positionService = require('./modules/position/position.service');
+const basicsService = require('./modules/basics/basics.service');
+const pocketService = require('./modules/pocket/pocket.service');
 
 const {
   ukrPoshtaQuery,
@@ -190,6 +197,8 @@ const SCHEMA_NAMES = {
   paginatedPositions: 'PaginatedPositions',
   basics: 'Basics',
   paginatedBasics: 'PaginatedBasics',
+  constructor: 'Constructor',
+  paginatedConstructors: 'PaginatedConstructors',
 };
 
 const {
@@ -265,6 +274,8 @@ const resolvers = {
     ...positionQuery,
 
     ...basicsQuery,
+
+    ...constructorQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -611,6 +622,21 @@ const resolvers = {
     }),
   },
 
+  Constructor: {
+    model: parent => modelService.getModelById(parent.model),
+    basics: parent => parent.basics.map(id => basicsService.getBasicById(id)),
+    bottoms: parent =>
+      parent.bottoms.map(id => bottomService.getBottomById(id)),
+    patterns: parent =>
+      parent.patterns.map(id => patternService.getPatternById(id)),
+    backs: parent => parent.backs.map(id => backService.getBackById(id)),
+    straps: parent => parent.straps.map(id => strapService.getStrapById(id)),
+    closures: parent =>
+      parent.closures.map(id => closuresService.getClosureById(id)),
+    pockets: parent =>
+      parent.pockets.map(id => pocketService.getPocketById(id)),
+  },
+
   Mutation: {
     ...cartMutation,
 
@@ -673,6 +699,8 @@ const resolvers = {
     ...positionMutation,
 
     ...basicsMutations,
+
+    ...constructorMutation,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -1034,6 +1062,24 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBasics;
+      }
+      return 'Error';
+    },
+  },
+
+  ConstructorResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.constructor;
+      }
+      return 'Error';
+    },
+  },
+
+  PaginatedConstructors: {
+    __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.paginatedConstructors;
       }
       return 'Error';
     },
