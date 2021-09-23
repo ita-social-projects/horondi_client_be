@@ -130,7 +130,7 @@ describe('Order queries', () => {
     );
     date.dateTo = new Date();
     orderId = orderData._id;
-    userId = orderData.user_id._id;
+    userId = orderData.user_id;
   });
 
   const {
