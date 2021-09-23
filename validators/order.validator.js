@@ -165,6 +165,9 @@ const nestedItemValidator = Joi.object({
   fixedPrice: Joi.array()
     .has(nestedCostValidator)
     .optional(),
+  price: Joi.array()
+    .has(nestedCostValidator)
+    .required(),
 });
 
 const orderValidator = Joi.object({
@@ -183,7 +186,7 @@ const orderValidator = Joi.object({
   recipient: nestedUserValidator,
   delivery: nestedDeliveryValidator,
   items: Joi.array().has(nestedItemValidator),
-  user_id: Joi.string(),
+  user_id: Joi.string().empty(null),
   paymentMethod: Joi.string()
     .trim()
     .valid(CARD, CASH)
