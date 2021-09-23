@@ -137,7 +137,8 @@ class StrapService {
 
   async addStrap(strap, image, { _id: adminId }) {
     if (image) {
-      strap.image = await uploadSmallImage(image);
+      const uploadImage = await uploadService.uploadFile(image);
+      strap.images = uploadImage.fileNames;
     }
 
     if (strap.additionalPrice) {
