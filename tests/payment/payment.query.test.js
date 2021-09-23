@@ -1,16 +1,7 @@
-const { ObjectId } = require('mongoose').Types;
-const express = require('express');
-const OrderModel = require('../../modules/order/order.model');
-
 const { deleteOrder, createOrder } = require('../order/order.helpers');
-// const { getPaymentCheckout, checkPaymentStatus } = require('./payment.helper');
 const { getPaymentCheckout } = require('./payment.helper');
 const { checkPaymentStatus } = require('../../modules/payment/payment.service');
-const {
-  wrongId,
-  newOrderInputData,
-  getOrdersInput,
-} = require('../order/order.variables');
+const { wrongId, newOrderInputData } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
@@ -41,7 +32,6 @@ const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
-const paymentService = require('../../modules/payment/payment.service');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -52,6 +42,7 @@ let colorId;
 let sizeId;
 let productId;
 let orderId;
+let orderData;
 let modelId;
 let operations;
 let materialId;
@@ -59,16 +50,11 @@ let categoryId;
 let patternId;
 let constructorBasicId;
 let closureId;
-let mockServerPost;
-let mockRequest;
 let mockResponse;
 
 describe('Payment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    mockRequest = sessionData => ({
-      session: { data: sessionData },
-    });
 
     mockResponse = () => {
       const res = {};
@@ -120,15 +106,11 @@ describe('Payment queries', () => {
       operations
     );
     productId = productData._id;
-    const orderData = await createOrder(
+    orderData = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId),
       operations
     );
     orderId = orderData._id;
-
-    mockServerPost = jest
-      .spyOn(paymentService, 'checkPaymentStatus')
-      .mockImplementation(() => true);
   });
 
   it('should get Payment Checkout', async () => {
@@ -137,68 +119,18 @@ describe('Payment queries', () => {
       1,
       operations
     );
+    expect(res).toBeDefined();
     expect(res.data.getPaymentCheckout._id).toBe(orderId);
   });
 
-  it('should check Payment Status', async () => {
-    // const res = await checkPaymentStatus(orderId, operations);
-    // expect(res.data.checkPaymentStatus).toBe(null);
-    // expect(mockServerPost).toHaveBeenCalled();
-  });
-
-  test('should 400 if username is missing from body', async () => {
-    const req = mockRequest({ order_id: orderId });
-    const mockHandleSubmit = jest.fn();
-    // const req = mockRequest();
+  test('should obtain response from checkPaymentStatus', async () => {
+    const req = { body: { order_id: `${wrongId}` } };
     const res = mockResponse();
     await checkPaymentStatus(req, res);
-    expect(res.status).toEqual(mockHandleSubmit);
-    // expect(res.status).toHaveBeenCalledWith(400);
-    // expect(res.json).toHaveBeenCalledWith({
-    //   message: 'username and password are required',
-    // });
+
+    expect(res).toBeDefined();
+    expect(res).toBeInstanceOf(Object);
   });
-  // test('should 400 if password is missing from body', async () => {
-  //   const req = mockRequest({ order_id: orderId });
-  //   const res = mockResponse();
-  //   await checkPaymentStatus(req, res, operations);
-  //   expect(res.status).toHaveBeenCalledWith(400);
-  //   // expect(res.json).toHaveBeenCalledWith({
-  //   //   message: 'username and password are required',
-  //   // });
-  // });
-  // test('should 401 with message if user with passed username does not exist', async () => {
-  //   const req = mockRequest({
-  //     order_id: orderId,
-  //   });
-  //   const res = mockResponse();
-  //   await checkPaymentStatus(req, res, operations);
-  //   expect(res.status).toHaveBeenCalledWith(401);
-  //   // expect(res.json).toHaveBeenCalledWith({
-  //   //   message: 'No user with matching username',
-  //   // });
-  // });
-  // test('should 401 with message if passed password does not match stored password', async () => {
-  //   const req = mockRequest({ order_id: orderId });
-  //   const res = mockResponse();
-  //   await checkPaymentStatus(req, res, operations);
-  //   expect(res.status).toHaveBeenCalledWith(401);
-  //   // expect(res.json).toHaveBeenCalledWith({
-  //   //   message: 'Wrong password',
-  //   // });
-  // });
-  // test('should 201 and set session.data with username if user exists and right password provided', async () => {
-  //   const req = mockRequest({
-  //     order_id: orderId,
-  //   });
-  //   const res = mockResponse();
-  //   await checkPaymentStatus(req, res, operations);
-  //   expect(res.status).toHaveBeenCalledWith(201);
-  //   expect(res.json).toHaveBeenCalled();
-  //   // expect(req.session.data).toEqual({
-  //   //   username: 'guest',
-  //   // });
-  // });
 
   afterAll(async () => {
     await deleteOrder(orderId, operations);
