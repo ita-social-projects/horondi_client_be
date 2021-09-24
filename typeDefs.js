@@ -876,7 +876,6 @@ const typeDefs = gql`
     blockUser(userId: ID!): UserResult
     unlockUser(userId: ID!): UserResult
     updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
-    updateUserByToken(user: UserInput!): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean
