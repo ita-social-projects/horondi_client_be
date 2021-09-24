@@ -24,28 +24,6 @@ const getPaymentCheckout = async (data, language, operations) => {
   return res;
 };
 
-const checkPaymentStatus = async (orderId, operations) => {
-  const res = await operations.query({
-    query: gql`
-      query($orderId: String!) {
-        checkPaymentStatus(orderId: $orderId) {
-          orderId
-          orderStatus
-          orderTime
-          amount
-          currency
-        }
-      }
-    `,
-    variables: {
-      orderId,
-    },
-  });
-
-  return res;
-};
-
 module.exports = {
   getPaymentCheckout,
-  checkPaymentStatus,
 };

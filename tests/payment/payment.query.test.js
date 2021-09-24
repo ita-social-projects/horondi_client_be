@@ -123,7 +123,7 @@ describe('Payment queries', () => {
     expect(res.data.getPaymentCheckout._id).toBe(orderId);
   });
 
-  test('should obtain response from checkPaymentStatus', async () => {
+  it('should obtain response from checkPaymentStatus', async () => {
     const req = { body: { order_id: `${wrongId}` } };
     const res = mockResponse();
     await checkPaymentStatus(req, res);
