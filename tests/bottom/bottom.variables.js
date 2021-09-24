@@ -7,7 +7,7 @@ const newBottomInputData = (materialId, colorId) => ({
     material: materialId,
     color: colorId,
   },
-  additionalPrice: 2,
+  additionalPrice: { value: 5, type: 'ABSOLUTE_INDICATOR' },
   available: true,
   optionType: 'BOTTOM',
 });
@@ -22,7 +22,7 @@ const newBottomInputDataUpdate = (materialId, colorId) => ({
     color: colorId,
   },
   available: false,
-  additionalPrice: 3,
+  additionalPrice: { value: 5, type: 'ABSOLUTE_INDICATOR' },
   optionType: 'BOTTOM',
 });
 

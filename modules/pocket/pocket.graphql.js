@@ -4,7 +4,7 @@ const pocketType = `
     name: [Language]
     optionType: OptionTypeEnum
     images: ImageSet
-    additionalPrice: [CurrencySet]
+    additionalPrice: [AdditionalCurrencySet]
     restriction: Boolean
     positions: [Position]
   }
@@ -37,7 +37,7 @@ const pocketInputs = `
     optionType: String
     restriction: Boolean
     images: ImageSetInput
-    additionalPrice: Float
+    additionalPrice: additionalPriceInput!
     positions: [ID]
   }
 

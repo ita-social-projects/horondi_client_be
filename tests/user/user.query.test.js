@@ -339,7 +339,9 @@ describe('Filter users', () => {
   });
 
   test('should sort by email from a to z', async () => {
-    const compareResult = testUsersSet.map(user => user.email).sort();
+    const compareResult = testUsersSet
+      .map(user => user.email.toLowerCase())
+      .sort();
     let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
     users = chooseOnlyUsers(users);
 
@@ -349,7 +351,7 @@ describe('Filter users', () => {
 
   test('should sort by email from z to a', async () => {
     const compareResult = testUsersSet
-      .map(user => user.email)
+      .map(user => user.email.toLowerCase())
       .sort()
       .reverse();
     let users = await getAllUsersQuery(operations, SORT.byEmail.desc);

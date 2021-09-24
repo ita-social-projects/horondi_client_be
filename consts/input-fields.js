@@ -18,6 +18,7 @@ const INPUT_FIELDS = {
   CONSTRUCTOR_BASIC: 'constructorBasic',
   CONSTRUCTOR_BOTTOM: 'constructorBottom',
   CONSTRUCTOR_FRONT_POCKET: 'constructorFrontPocket',
+  CONSTRUCTOR: 'constructor',
   STRAP: 'strap',
   PATTERN: 'pattern',
   SIZE: 'size',

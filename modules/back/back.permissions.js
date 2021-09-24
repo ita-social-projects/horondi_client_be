@@ -13,7 +13,7 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  inputOptionValidator,
+  inputBackValidator,
 } = require('../../validators/constructor-items-inputs.validator');
 
 const backPermissionsQuery = {
@@ -24,12 +24,12 @@ const backPermissionsQuery = {
 
 const backPermissionsMutations = {
   addBack: and(
-    inputDataValidation(BACK, inputOptionValidator),
+    inputDataValidation(BACK, inputBackValidator),
     hasRoles([ADMIN, SUPERADMIN]),
     checkIfItemExists(BACK, BackModel)
   ),
   updateBack: and(
-    inputDataValidation(BACK, inputOptionValidator),
+    inputDataValidation(BACK, inputBackValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
   deleteBack: hasRoles([ADMIN, SUPERADMIN]),

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Language = require('../../models/Language').schema;
-const CurrencySet = require('../../models/CurrencySet').schema;
+const AdditionalCurrencySet = require('../../models/AdditionalCurrencySet')
+  .schema;
 const {
   DB_COLLECTIONS_NAMES: { MODEL, BACK, MATERIAL, COLOR },
 } = require('../../consts/db-collections-names');
@@ -24,7 +25,7 @@ const backSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  additionalPrice: [CurrencySet],
+  additionalPrice: [AdditionalCurrencySet],
   available: Boolean,
   customizable: Boolean,
 });

@@ -54,9 +54,7 @@ const inputPocketValidator = Joi.object({
   image: Joi.string()
     .trim()
     .optional(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   restriction: Joi.boolean(),
   positions: Joi.array(),
 });
@@ -84,7 +82,7 @@ const inputClosureValidator = Joi.object({
   customizable: Joi.boolean(),
 });
 
-const inputOptionValidator = Joi.object({
+const inputBackValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string()
     .trim()
@@ -99,11 +97,7 @@ const inputOptionValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: Joi.when(optionType, {
-    is: BACK_OPTION,
-    then: Joi.number(),
-    otherwise: additionalPriceInputValidator,
-  }),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
@@ -122,9 +116,7 @@ const inputBottomValidator = Joi.object({
       .required(),
   }),
   image: Joi.string(),
-  additionalPrice: Joi.number()
-    .optional()
-    .default(0),
+  additionalPrice: additionalPriceInputValidator,
   available: Joi.boolean().required(),
 });
 
@@ -240,9 +232,26 @@ const restrictionValidator = Joi.object({
   ),
 });
 
+const inputConstructorValidator = Joi.object({
+  name: Joi.array().has(nestedNameValidator),
+  model: Joi.string()
+    .trim()
+    .required(),
+  basics: Joi.array().required(),
+  bottoms: Joi.array().required(),
+  patterns: Joi.array().required(),
+  backs: Joi.array().required(),
+  straps: Joi.array().required(),
+  closures: Joi.array().required(),
+  pocketsWithRestrictions: Joi.array().required(),
+  image: Joi.string()
+    .trim()
+    .optional(),
+});
+
 module.exports = {
   inputPocketValidator,
-  inputOptionValidator,
+  inputBackValidator,
   inputBottomValidator,
   inputStrapValidator,
   inputPatternValidator,
@@ -251,4 +260,5 @@ module.exports = {
   restrictionValidator,
   inputClosureValidator,
   inputBasicsValidator,
+  inputConstructorValidator,
 };
