@@ -17,6 +17,7 @@ const DB_COLLECTIONS_NAMES = {
   CONSTRUCTOR_FRONT_POCKET: 'ConstructorFrontPocket',
   CONSTRUCTOR_BOTTOM: 'ConstructorBottom',
   CONSTRUCTOR_BASICS: 'ConstructorBasic',
+  CONSTRUCTOR: 'Constructor',
   CONTACT: 'Contact',
   CURRENCY: 'Currency',
   PRODUCT: 'Product',

@@ -150,6 +150,10 @@ const {
   basicsPermissionsQuery,
   basicsPermissionsMutations,
 } = require('./modules/basics/basics.permissions');
+const {
+  constructorPermissionsQuery,
+  constructorPermissionsMutations,
+} = require('./modules/constructor_new/constructor.permissions');
 
 const permissions = shield(
   {
@@ -181,6 +185,7 @@ const permissions = shield(
       ...emailChatQuestionQuery,
       ...positionPermissionsQuery,
       ...basicsPermissionsQuery,
+      ...constructorPermissionsQuery,
     },
     Mutation: {
       ...productPermissionsMutation,
@@ -214,6 +219,7 @@ const permissions = shield(
       ...uploadMutation,
       ...positionPermissionsMutations,
       ...basicsPermissionsMutations,
+      ...constructorPermissionsMutations,
     },
   },
   {
