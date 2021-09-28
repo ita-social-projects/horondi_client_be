@@ -5,7 +5,6 @@ const id = '5fb422d8663cf10bec2faa1a';
 const filter = {
   name: '',
 };
-
 const newConstructorInputData = () => ({
   name: [
     { lang: 'ua', value: 'some constructor' },

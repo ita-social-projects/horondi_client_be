@@ -41,10 +41,6 @@ const userPermissionsMutation = {
     inputDataValidation(USER, updateUserValidator),
     or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
   ),
-  updateUserByToken: and(
-    inputDataValidation(USER, updateUserValidator),
-    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
-  ),
   regenerateAccessToken: allow,
   confirmUser: allow,
   confirmUserEmail: allow,

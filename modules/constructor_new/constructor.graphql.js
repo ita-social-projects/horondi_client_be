@@ -4,14 +4,14 @@ const constructorType = `
     position: Position
   }
   
-  type otherPocketsWithAvailablePositions {
+  type otherPocketWithAvailablePositions {
     pocket: Pocket
     position: [Position]
   }
   
   type PocketsWithRestrictions {
     currentPocketWithPosition: CurrentPocketWithPosition
-    otherPocketsWithAvailablePositions: [otherPocketsWithAvailablePositions]
+    otherPocketsWithAvailablePositions: [otherPocketWithAvailablePositions]
   }
 
   type Constructor {
@@ -46,7 +46,7 @@ const constructorInputs = `
   }
   
   input ConstructorInput {
-    name: [LanguageInput!]
+    name: [LanguageInput!]!
     model: ID!
     image: Upload
     basics: [ID!]

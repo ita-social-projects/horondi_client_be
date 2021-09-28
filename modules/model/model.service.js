@@ -6,6 +6,9 @@ const {
   MODEL_NOT_FOUND,
   MODEL_NOT_VALID,
 } = require('../../error-messages/model.messages');
+const {
+  LOCALES: { UK },
+} = require('../../consts/locations');
 const uploadService = require('../upload/upload.service');
 const {
   HISTORY_ACTIONS: { ADD_MODEL, EDIT_MODEL, DELETE_MODEL },
@@ -64,7 +67,13 @@ class ModelsService {
       filterOptions.category = { $in: filter.category };
     }
 
+    if (sort.name && sort.name > 0) {
+      sort['name.value'] = sort.name;
+      delete sort.name;
+    }
+
     const items = await Model.find(filterOptions)
+      .collation({ locale: UK })
       .sort(sort)
       .skip(skip || 0)
       .limit(limit || 0)

@@ -403,17 +403,6 @@ class UserService extends FilterHelper {
     return User.findByIdAndUpdate(user._id, updatedUser, { new: true });
   }
 
-  async updateUserByToken(updatedUser, user) {
-    return User.findByIdAndUpdate(
-      user._id,
-      {
-        ...user._doc,
-        ...updatedUser,
-      },
-      { new: true }
-    );
-  }
-
   async loginAdmin({ email, password }) {
     const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
 
