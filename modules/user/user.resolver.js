@@ -71,7 +71,7 @@ const userMutation = {
     }
   },
   updateUserById: (parent, args, context) =>
-    userService.updateUserById(args.user, context.user, args.upload),
+    userService.updateUserById(args.user, context.user, args.image, args.id),
   regenerateAccessToken: async (parent, args) => {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
