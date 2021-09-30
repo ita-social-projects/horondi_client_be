@@ -54,7 +54,7 @@ input UserInput {
     email: String
     phoneNumber: String
     address: AddressInput
-    images: ImageSetInput
+    image: Upload
     wishlist: [ID]
     orders:[ID]
     comments: [ID]

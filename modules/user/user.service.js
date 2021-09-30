@@ -2,6 +2,7 @@ const { UserInputError } = require('apollo-server');
 const { OAuth2Client } = require('google-auth-library');
 const { jwtClient } = require('../../client/jwt-client');
 const { bcryptClient } = require('../../client/bcrypt-client');
+const uploadService = require('../upload/upload.service');
 
 const User = require('./user.model');
 
@@ -386,21 +387,28 @@ class UserService extends FilterHelper {
     return this.getUserByFieldOrThrow(USER_ID, id);
   }
 
-  async updateUserById(updatedUser, user, upload) {
-    if (!user.images) user.images = [];
-    if (upload) {
-      if (user.images.length) {
+  async updateUserById(updatedUser, user, image, id) {
+    let userToUpdate = {};
+    if (id) {
+      userToUpdate = await User.findById(id).exec();
+    } else {
+      userToUpdate = user;
+    }
+    if (!userToUpdate.images) userToUpdate.images = [];
+    if (image) {
+      if (userToUpdate.images?.length) {
         await deleteFiles(
-          Object.values(user.images).filter(
+          Object.values(userToUpdate.images).filter(
             item => typeof item === 'string' && item
           )
         );
       }
-      const uploadResult = await uploadFiles([upload]);
+
+      const uploadResult = await uploadService.uploadFiles([image]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-    return User.findByIdAndUpdate(user._id, updatedUser, { new: true });
+    return User.findByIdAndUpdate(userToUpdate._id, updatedUser, { new: true });
   }
 
   async loginAdmin({ email, password }) {
