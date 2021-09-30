@@ -285,7 +285,7 @@ if issue is in work it should be placed in proper column on dashboard according 
 [![@olga-gchak](https://avatars.githubusercontent.com/u/67831961?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/olga-gchak)
 [![@AnastasiaKhukhra](https://avatars.githubusercontent.com/u/62055382?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/AnastasiaKhukhra)
 [![@ElitKondor](https://avatars.githubusercontent.com/u/44610067?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/ElitKondor)
-[![@Skrekliam](https://avatars.githubusercontent.com/u/36624127?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Skrekliam)
+[![@Skrekliam](https://avatars.githubusercontent.com/u/36624127?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Skrekliam) 
 
 ### Quality control team
 [![@HrytsykOlya](https://avatars1.githubusercontent.com/u/65678737?s=200&u=181e62bf4f25b07122f06ce677e73ddd34021391&v=4)](https://github.com/HrytsykOlya)
