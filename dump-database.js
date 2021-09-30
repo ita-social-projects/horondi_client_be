@@ -60,10 +60,10 @@ rl.on('close', () => {
 function runCommand(command, callback) {
   exec(command, (error, _, stderr) => {
     if (error) {
-      console.log(`error: ${error.message}`);
+      console.error(`error: ${error.message}`);
     }
     if (stderr) {
-      console.log(`stderr: ${stderr}`);
+      console.error(`stderr: ${stderr}`);
     }
     callback && callback();
   });
