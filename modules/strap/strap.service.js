@@ -146,8 +146,6 @@ class StrapService {
       );
     }
 
-    console.log(adminId);
-
     const newStrap = await new Strap(strap).save();
 
     const historyRecord = generateHistoryObject(
