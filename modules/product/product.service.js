@@ -369,15 +369,21 @@ class ProductsService {
     const product = await Product.findById(id)
       .lean()
       .exec();
+
     if (!product) {
       throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
     }
+
     const { images } = product;
     const { primary, additional } = images;
-    const additionalImagesToDelete = Object.assign(...additional);
+    const additionalImagesToDelete =
+      typeof additional[0] === 'object'
+        ? additional.map(img => [...Object.values(img)]).flat()
+        : [];
+
     const deletedImages = await uploadService.deleteFiles([
       ...Object.values(primary),
-      ...Object.values(additionalImagesToDelete),
+      ...additionalImagesToDelete,
     ]);
 
     if (await Promise.allSettled(deletedImages)) {
