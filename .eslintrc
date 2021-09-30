@@ -60,7 +60,7 @@
     ],
     "no-unused-expressions": 0,
     "no-console": [
-      1,
+      "error",
       {
         "allow": [
           "warn",
