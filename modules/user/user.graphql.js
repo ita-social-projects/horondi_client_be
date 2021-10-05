@@ -69,12 +69,19 @@ const cartType = `
     rememberMailCount: Int
   }
 
+  type AllSizesType {
+     size: Size
+     price: [CurrencySet]
+  }
+
   type CartItem {
+    _id: ID
     product: Product
     productFromConstructor: ProductFromConstructor
     quantity: Int
     price: [CurrencySet]
     options: Options
+    allSizes: [AllSizesType]
   }
   
    type Options {
@@ -103,6 +110,7 @@ const cartInput = `
     quantity: Int!
     price: [CurrencySetInput]
     options: OptionsInput!
+    allSizes: [AllSizesInput!]!
   }
   input RemoveItemsFromCartInput {
     product: ID
@@ -113,6 +121,11 @@ const cartInput = `
    input OptionsInput {
     size: ID!
   } 
+  
+   input AllSizesInput {
+     size: ID!
+     price: [CurrencySetInput!]!
+  }
   
     input ProductFromConstructorInput {
       product: ID

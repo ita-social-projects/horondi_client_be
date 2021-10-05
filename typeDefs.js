@@ -857,9 +857,10 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    addProductToCart(productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
+    addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
     cleanCart(id: ID!): UserResult
     updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
+    changeCartItemSize(id:ID!, itemId: ID!, price: [CurrencySetInput]!, size: ID!, quantity: Int!): UserResult
     addConstructorProductItemToCart(
     productId: ID!,
     sizeId:ID!,

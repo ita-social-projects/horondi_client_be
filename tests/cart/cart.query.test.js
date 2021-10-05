@@ -8,7 +8,7 @@ const {
   getCartByUserId,
   cleanCart,
 } = require('./cart.helper');
-const { userWrongId, sizeName, price } = require('./cart.variables');
+const { userWrongId, sizeName, price, allSizes } = require('./cart.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const { createColor, deleteColor } = require('../color/color.helper');
@@ -101,7 +101,14 @@ describe('Cart queries', () => {
     adminPassword = superAdminUser.password;
     const authRes = await loginAdmin(adminEmail, adminPassword, operations);
     adminId = authRes.data.loginAdmin._id;
-    await addProductToCart(productId, adminId, sizeId, price, operations);
+    await addProductToCart(
+      productId,
+      adminId,
+      sizeId,
+      price,
+      allSizes,
+      operations
+    );
   });
 
   it('should return cart by user id', async () => {
