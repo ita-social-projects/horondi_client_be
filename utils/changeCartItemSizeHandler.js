@@ -10,8 +10,8 @@ module.exports = function changeCartItemSizeHandler(
       el.options.size = size;
       el.price = price;
 
-      el.price.forEach(price => {
-        price.value *= quantity;
+      el.price.forEach(priceEl => {
+        priceEl.value *= quantity;
       });
     }
     return el;
