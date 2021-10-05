@@ -375,12 +375,17 @@ const resolvers = {
       parent.items.map(item => {
         if (item.product) {
           return {
+            _id: item._id,
             product: productsService.getProductById(item.product),
             price: item.price,
             quantity: item.quantity,
             options: {
               size: sizeService.getSizeById(item.options.size),
             },
+            allSizes: item.allSizes.map(({ size, price }) => ({
+              size: sizeService.getSizeById(size),
+              price,
+            })),
           };
         }
         return {
