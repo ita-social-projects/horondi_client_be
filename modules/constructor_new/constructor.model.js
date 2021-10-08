@@ -78,12 +78,10 @@ const constructorSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: POCKET,
           },
-          position: [
-            {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: POSITION,
-            },
-          ],
+          position: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: POSITION,
+          },
         },
       ],
     },
