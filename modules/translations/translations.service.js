@@ -9,7 +9,7 @@ const {
 
 class TranslationsService {
   async addTranslations(translation) {
-    return await new Translations(translation).save();
+    return new Translations(translation).save();
   }
 
   async updateTranslations(id, translations) {
