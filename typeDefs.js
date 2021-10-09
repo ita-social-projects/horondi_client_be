@@ -158,9 +158,6 @@ const {
   constructorType,
   constructorInputs,
 } = require('./modules/constructor_new/constructor.graphql');
-const {
-  translationsType,
-} = require('./modules/translations/translations.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -217,7 +214,6 @@ const typeDefs = gql`
   ${basicsFeatureSet}
   ${historyFilterInput}
   ${constructorType}
-  ${translationsType}
   scalar Upload
   scalar JSONObject
   scalar Date

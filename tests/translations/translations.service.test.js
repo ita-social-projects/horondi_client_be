@@ -1,12 +1,17 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const translationsService = require('../../modules/translations/translations.service');
 const { translations, newTranslations } = require('./translations.variables');
 
 let translationsId;
+let response;
 
 describe('translations service test', () => {
   beforeAll(async () => {
     await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should create new translations', async () => {
@@ -31,12 +36,17 @@ describe('translations service test', () => {
     );
   });
 
-  it('should get translations by id', async () => {
-    const foundTranslations = await translationsService.getTranslationsById(
-      translationsId
+  it('should get all translations', async () => {
+    await translationsService.getAllTranslations(
+      {},
+      {
+        json: data => {
+          response = data;
+        },
+      }
     );
 
-    expect(foundTranslations._id).toEqual(translationsId);
+    expect(response).toBeInstanceOf(Array);
   });
 
   it('should delete translations', async () => {

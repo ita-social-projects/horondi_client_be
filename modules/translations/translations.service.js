@@ -8,6 +8,12 @@ const {
 } = require('../../consts/status-codes');
 
 class TranslationsService {
+  async getAllTranslations(req, res) {
+    const translations = await Translations.find().exec();
+
+    res.json(translations);
+  }
+
   async addTranslations(translation) {
     return new Translations(translation).save();
   }
@@ -22,16 +28,6 @@ class TranslationsService {
     return Translations.findByIdAndUpdate(id, translations, {
       new: true,
     }).exec();
-  }
-
-  async getTranslationsById(id) {
-    const translations = await Translations.findById(id).exec();
-
-    if (!translations) {
-      throw new RuleError(TRANSLATIONS_NOT_FOUND, NOT_FOUND);
-    }
-
-    return translations;
   }
 
   async deleteTranslations(id) {

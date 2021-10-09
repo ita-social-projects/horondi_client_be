@@ -5,16 +5,8 @@ const {
 } = require('../../consts/db-collections-names');
 
 const translationsSchema = new mongoose.Schema({
-  ua: {
-    name: String,
-    title: String,
-    description: String,
-  },
-  en: {
-    name: String,
-    title: String,
-    description: String,
-  },
+  ua: {},
+  en: {},
 });
 
 module.exports = mongoose.model(TRANSLATIONS, translationsSchema);
