@@ -285,7 +285,14 @@ if issue is in work it should be placed in proper column on dashboard according 
 [![@olga-gchak](https://avatars.githubusercontent.com/u/67831961?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/olga-gchak)
 [![@AnastasiaKhukhra](https://avatars.githubusercontent.com/u/62055382?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/AnastasiaKhukhra)
 [![@ElitKondor](https://avatars.githubusercontent.com/u/44610067?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/ElitKondor)
-[![@Skrekliam](https://avatars.githubusercontent.com/u/36624127?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Skrekliam) 
+[![@Skrekliam](https://avatars.githubusercontent.com/u/36624127?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Skrekliam)
+[![@domnelkin](https://avatars.githubusercontent.com/u/78971099?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/domnelkin)
+[![@bohdanst1914](https://avatars.githubusercontent.com/u/27858056?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/bohdanst1914)
+[![@filiczini](https://avatars.githubusercontent.com/u/51033321?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/Filiczini)
+[![@AlexanderBil](https://avatars.githubusercontent.com/u/63557206?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/AlexanderBil)
+[![@ZaitsevaEvelina](https://avatars.githubusercontent.com/u/87185753?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/ZaitsevaEvelina)
+[![@mrjnmzk](https://avatars.githubusercontent.com/u/64384450?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/mrjnmzk)
+[![@boris-giga](https://avatars.githubusercontent.com/u/61072426?s=200&u=4540d5aba6e388992ca06b9224ed0e0a35f94b1c&v=4)](https://github.com/boris-giga) 
 
 ### Quality control team
 [![@HrytsykOlya](https://avatars1.githubusercontent.com/u/65678737?s=200&u=181e62bf4f25b07122f06ce677e73ddd34021391&v=4)](https://github.com/HrytsykOlya)
