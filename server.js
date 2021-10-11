@@ -14,7 +14,7 @@ const { currencyWorker } = require('./currency.worker');
 const { checkPaymentStatus } = require('./modules/payment/payment.service');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { cronJob } = require('./helpers/cron-job');
-
+const translationsService = require('./modules/translations/translations.service');
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
@@ -103,6 +103,7 @@ app.use(express.json());
 app.disable('x-powered-by');
 currencyWorker();
 app.post('/fondy/callback', checkPaymentStatus);
+app.get('/translations', translationsService.getAllTranslations);
 
 server.applyMiddleware({
   app,

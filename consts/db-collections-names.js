@@ -40,6 +40,7 @@ const DB_COLLECTIONS_NAMES = {
   HISTORY: 'History',
   POSITION: 'Position',
   BASICS: 'Basics',
+  TRANSLATIONS: 'Translations',
 };
 
 module.exports = {
