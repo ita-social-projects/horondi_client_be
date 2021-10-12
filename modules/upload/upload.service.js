@@ -57,11 +57,11 @@ class UploadService {
   }
 
   async uploadFiles(files) {
-    return files.map(async file => this.uploadFile(file));
+    return Promise.all(files.map(async file => await this.uploadFile(file)));
   }
 
   async uploadFile(file, sizes) {
-    const { createReadStream, filename } = await file.file;
+    const { createReadStream, filename } = await file.promise;
     const inputStream = createReadStream();
     let fileBuffer;
     const id = uniqid();
