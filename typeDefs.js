@@ -941,12 +941,11 @@ const typeDefs = gql`
     updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult
     deleteModel(id: ID!): ModelResult
     "Contacts Mutation"
-    addContact(contact: contactInput!, mapImages: [MapImage]!): ContactResult
+    addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(
       id: ID!
       contact: contactInput!
-      mapImages: [MapImage]
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult

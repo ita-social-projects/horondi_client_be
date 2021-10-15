@@ -4,7 +4,7 @@ const addContact = async (contact, operations) => {
   const res = await operations.mutate({
     mutation: gql`
       mutation($contact: contactInput!) {
-        addContact(contact: $contact, mapImages: []) {
+        addContact(contact: $contact) {
           ... on Contact {
             _id
             phoneNumber
@@ -17,7 +17,10 @@ const addContact = async (contact, operations) => {
               value
             }
             email
-            link
+            link {
+              lat
+              lon
+            }
           }
           ... on Error {
             message
@@ -65,7 +68,10 @@ const getContacts = async operations => {
               value
             }
             email
-            link
+            link {
+              lat
+              lon
+            }
           }
           count
         }
@@ -95,7 +101,10 @@ const getContactById = async (id, operations) => {
               value
             }
             email
-            link
+            link {
+              lat
+              lon
+            }
           }
           ... on Error {
             statusCode
@@ -109,11 +118,11 @@ const getContactById = async (id, operations) => {
 
   return res.data.getContactById;
 };
-const updateContact = async (id, contact, mapImages, operations) => {
+const updateContact = async (id, contact, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $contact: contactInput!, $mapImages: [MapImage]) {
-        updateContact(id: $id, contact: $contact, mapImages: $mapImages) {
+      mutation($id: ID!, $contact: contactInput!) {
+        updateContact(id: $id, contact: $contact) {
           ... on Contact {
             _id
             phoneNumber
@@ -126,7 +135,10 @@ const updateContact = async (id, contact, mapImages, operations) => {
               value
             }
             email
-            link
+            link {
+              lat
+              lon
+            }
           }
           ... on Error {
             message
@@ -135,9 +147,9 @@ const updateContact = async (id, contact, mapImages, operations) => {
         }
       }
     `,
-    variables: { id, contact, mapImages },
+    variables: { id, contact },
   });
-  
+
   return res.data.updateContact;
 };
 

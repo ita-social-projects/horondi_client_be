@@ -5,8 +5,11 @@ const contactType = `
     openHours: [Language]!
     address: [Language]!
     email: String!
-    images: [LanguageImageSet]
-    link: String!
+    link: Coords!
+  }
+  type Coords {
+    lat: String!
+    lon: String!
   }
 `;
 
@@ -16,8 +19,11 @@ input contactInput {
   openHours: [LanguageInput]!
   address: [LanguageInput]!
   email: String!
-  images: [LanguageImageSetInput]
-  link: String!
+  link: CoordsInput!
+}
+input CoordsInput {
+  lat: String!
+  lon: String!
 }`;
 
 module.exports = { contactType, contactInput };
