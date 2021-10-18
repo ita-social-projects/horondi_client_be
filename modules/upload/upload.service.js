@@ -57,7 +57,7 @@ class UploadService {
   }
 
   async uploadFiles(files) {
-    return Promise.all(files.map(async file => await this.uploadFile(file)));
+    return Promise.all(files.map(async file => this.uploadFile(file)));
   }
 
   async uploadFile(file, sizes) {
