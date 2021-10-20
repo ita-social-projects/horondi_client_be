@@ -16,10 +16,10 @@ class TranslationsService {
       const { _id: id, ...translations } = translationsData;
 
       Object.keys(translations).forEach(key => {
-        if (!items[key]) items[key] = { [id.toString()]: item[key] };
+        if (!items[key]) items[key] = { [id]: item[key] };
         else
           items[key] = Object.assign(items[key], {
-            [id.toString()]: item[key],
+            [id]: item[key],
           });
       });
 
