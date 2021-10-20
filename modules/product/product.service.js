@@ -295,20 +295,19 @@ class ProductsService {
     const { basePrice } = productData;
     productData.basePrice = await calculateBasePrice(basePrice);
     productData.sizes = await finalPriceCalculation(productData);
-    if (productData) {
-      const { beforeChanges, afterChanges } = getChanges(product, productData);
 
-      const historyRecord = generateHistoryObject(
-        EDIT_PRODUCT,
-        product.model,
-        product.name[UA].value,
-        product._id,
-        beforeChanges,
-        afterChanges,
-        adminId
-      );
-      await addHistoryRecord(historyRecord);
-    }
+    const { beforeChanges, afterChanges } = getChanges(product, productData);
+
+    const historyRecord = generateHistoryObject(
+      EDIT_PRODUCT,
+      product.model,
+      product.name[UA].value,
+      product._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
 
     return Product.findByIdAndUpdate(id, productData, {
       new: true,
