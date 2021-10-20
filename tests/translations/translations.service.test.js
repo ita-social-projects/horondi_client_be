@@ -46,7 +46,7 @@ describe('translations service test', () => {
       }
     );
 
-    expect(response).toBeInstanceOf(Array);
+    expect(response).toHaveProperty('ua');
   });
 
   it('should delete translations', async () => {

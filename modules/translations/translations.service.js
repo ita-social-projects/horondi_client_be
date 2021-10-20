@@ -9,9 +9,24 @@ const {
 
 class TranslationsService {
   async getAllTranslations(req, res) {
-    const translations = await Translations.find().exec();
+    const allTranslations = await Translations.find().exec();
 
-    res.json(translations);
+    const resultData = allTranslations.reduce((items, item) => {
+      const { _doc: translationsData } = item;
+      const { _id: id, ...translations } = translationsData;
+
+      Object.keys(translations).forEach(key => {
+        if (!items[key]) items[key] = { [id.toString()]: item[key] };
+        else
+          items[key] = Object.assign(items[key], {
+            [id.toString()]: item[key],
+          });
+      });
+
+      return items;
+    }, {});
+
+    res.json(resultData);
   }
 
   async addTranslations(translation) {

@@ -1,6 +1,8 @@
 const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
 const { applyMiddleware } = require('graphql-middleware');
 const express = require('express');
+const cors = require('cors');
+
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
@@ -100,8 +102,11 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 app.disable('x-powered-by');
+
 currencyWorker();
+
 app.post('/fondy/callback', checkPaymentStatus);
 app.get('/translations', translationsService.getAllTranslations);
 
