@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const {
+  DB_COLLECTIONS_NAMES: { TRANSLATIONS },
+} = require('../../consts/db-collections-names');
 
 const Language = require('../../models/Language').schema;
 const Coordinats = require('../../models/Coordinats').schema;
@@ -16,6 +19,10 @@ const ContactSchema = new mongoose.Schema({
     type: String,
   },
   link: Coordinats,
+  translations_key: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
+  },
 });
 
 module.exports = mongoose.model(CONTACT, ContactSchema);

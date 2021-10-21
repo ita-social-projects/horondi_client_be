@@ -102,7 +102,15 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://horondi-admin-staging.azurewebsites.net',
+      'https://horondi-front-staging.azurewebsites.net',
+    ],
+  })
+);
 app.disable('x-powered-by');
 
 currencyWorker();
