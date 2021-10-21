@@ -1,4 +1,10 @@
 const Contact = require('./contact.model');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 
 class ContactService {
   async getContacts({ skip, limit }) {
@@ -23,6 +29,10 @@ class ContactService {
   }
 
   async addContact(data) {
+    data.contact.translations_key = await addTranslations(
+      createTranslations(data.contact)
+    );
+
     return new Contact({
       ...data.contact,
     }).save();
@@ -34,6 +44,11 @@ class ContactService {
       .exec();
 
     if (!contact) return null;
+
+    await updateTranslations(
+      contact.translations_key,
+      createTranslations(data.contact)
+    );
 
     return Contact.findByIdAndUpdate(data.id, data.contact, {
       new: true,
@@ -47,19 +62,9 @@ class ContactService {
 
     if (!contact) return null;
 
-    return Contact.findByIdAndDelete(id).exec();
-  }
+    await deleteTranslations(contact.translations_key);
 
-  async saveUpdatedContact(data) {
-    return Contact.findByIdAndUpdate(
-      data.id,
-      {
-        ...data.contact,
-      },
-      {
-        new: true,
-      }
-    ).exec();
+    return Contact.findByIdAndDelete(id).exec();
   }
 }
 
