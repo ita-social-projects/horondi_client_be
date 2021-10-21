@@ -3,7 +3,8 @@ const { setupApp } = require('../helper-functions');
 const translationsService = require('../../modules/translations/translations.service');
 const { translations, newTranslations } = require('./translations.variables');
 
-let translationsId;
+let firstTranslationsId;
+let secondTranslationsId;
 let response;
 
 describe('translations service test', () => {
@@ -15,18 +16,25 @@ describe('translations service test', () => {
   });
 
   it('should create new translations', async () => {
-    const createdTranslations = await translationsService.addTranslations(
+    const firstCreatedTranslations = await translationsService.addTranslations(
+      translations
+    );
+    const secondCreatedTranslations = await translationsService.addTranslations(
       translations
     );
 
-    translationsId = createdTranslations._id;
+    firstTranslationsId = firstCreatedTranslations._id;
+    secondTranslationsId = secondCreatedTranslations._id;
 
-    expect(createdTranslations).toHaveProperty('ua.name', translations.ua.name);
+    expect(firstCreatedTranslations).toHaveProperty(
+      'ua.name',
+      translations.ua.name
+    );
   });
 
   it('should update translations', async () => {
     const updatedTranslations = await translationsService.updateTranslations(
-      translationsId,
+      firstTranslationsId,
       newTranslations
     );
 
@@ -46,14 +54,15 @@ describe('translations service test', () => {
       }
     );
 
-    expect(response).toBeInstanceOf(Array);
+    expect(response).toHaveProperty('ua');
   });
 
   it('should delete translations', async () => {
     const deletedTranslations = await translationsService.deleteTranslations(
-      translationsId
+      firstTranslationsId
     );
+    await translationsService.deleteTranslations(secondTranslationsId);
 
-    expect(deletedTranslations._id).toEqual(translationsId);
+    expect(deletedTranslations._id).toEqual(firstTranslationsId);
   });
 });
