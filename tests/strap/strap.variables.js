@@ -11,6 +11,12 @@ const filter = {
 };
 const imgString = 'small_id73jyckmc4ycke_основа-жовта.png';
 const newImgString = 'small_test-file';
+const newImgObj = {
+  small: 'small_test-file',
+  large: 'large_test-file',
+  medium: 'medium_test-file',
+  thumbnail: 'thumbnail_test-file',
+};
 
 const newStrap = colorId => ({
   name: [
@@ -38,7 +44,7 @@ const strapWithConvertedPrice = (colorId, imageStr) => ({
   features: {
     color: { _id: colorId },
   },
-  image: imageStr,
+  images: imageStr,
   available: true,
   additionalPrice: [
     {
@@ -78,7 +84,7 @@ const newStrapUpdated = (colorId, modelId) => ({
   features: {
     color: { _id: colorId },
   },
-  image: imgString,
+  images: newImgObj,
   available: true,
   additionalPrice: [
     {
@@ -101,7 +107,7 @@ const newStrapUpdatedWithImage = (colorId, modelId, imageStr) => ({
   features: {
     color: { _id: colorId },
   },
-  image: imageStr,
+  images: newImgObj,
   available: true,
   additionalPrice: [
     {
@@ -129,5 +135,6 @@ module.exports = {
   skip,
   filter,
   imgString,
+  newImgObj,
   newImgString,
 };

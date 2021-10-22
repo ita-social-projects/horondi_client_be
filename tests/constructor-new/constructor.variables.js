@@ -26,7 +26,7 @@ const newConstructorInputData = () => ({
       otherPocketsWithAvailablePositions: [
         {
           pocket: '60e5aa55190df500240e1656',
-          positions: ['60fff9f63affc3410c21ab54'],
+          position: '60fff9f63affc3410c21ab54',
         },
       ],
     },
@@ -53,7 +53,7 @@ const newConstructorInputDataUpdate = () => ({
       otherPocketsWithAvailablePositions: [
         {
           pocket: '5fb712d8663cf10bec9faa1a',
-          positions: ['5fb412d8663cf12bec9faa1a'],
+          position: '5fb412d8663cf12bec9faa1a',
         },
       ],
     },

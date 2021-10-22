@@ -6,7 +6,7 @@ const constructorType = `
   
   type otherPocketWithAvailablePositions {
     pocket: Pocket
-    positions: [Position]
+    position: Position
   }
   
   type PocketsWithRestrictions {
@@ -37,7 +37,7 @@ const constructorInputs = `
   
   input otherPocketsWithAvailablePositionsInput{
     pocket: ID!
-    positions: [ID!]
+    position: ID!
   }
   
   input PocketsWithRestrictionsInput {

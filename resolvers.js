@@ -651,9 +651,7 @@ const resolvers = {
         otherPocketsWithAvailablePositions: item.otherPocketsWithAvailablePositions.map(
           el => ({
             pocket: pocketService.getPocketById(el.pocket),
-            positions: el.positions.map(position =>
-              positionService.getPositionById(position)
-            ),
+            position: positionService.getPositionById(el.position),
           })
         ),
       })),

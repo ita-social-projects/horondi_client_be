@@ -7,6 +7,7 @@ const {
   wrongId,
   newImgString,
   imgString,
+  newImgObj,
   wrongIdForError,
   wrongModelIdForError,
   newStrap,
@@ -40,7 +41,7 @@ describe('Strap mutations', () => {
   });
 
   test('#1. should create strap', async () => {
-    const convertedObj = await strapWithConvertedPrice(colorId, newImgString);
+    const convertedObj = await strapWithConvertedPrice(colorId, newImgObj);
 
     expect(strapData).toBeDefined();
     expect(strapData).toEqual({
@@ -100,7 +101,7 @@ describe('Strap mutations', () => {
       operations
     );
 
-    const finalStrap = newStrapUpdatedWithImage(colorId, modelId, newImgString);
+    const finalStrap = newStrapUpdatedWithImage(colorId, modelId, newImgObj);
 
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({
