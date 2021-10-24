@@ -99,7 +99,6 @@ const testUser = {
     street: 'Shevchenka',
     buildingNumber: '23',
   },
-  wishlist: [],
   orders: [],
   comments: [],
 };

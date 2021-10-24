@@ -100,6 +100,11 @@ const {
   pocketQuery,
 } = require('./modules/pocket/pocket.resolver');
 
+const {
+  wishlistMutation,
+  wishlistQuery,
+} = require('./modules/wishlist/wishlist.resolver');
+
 const { strapMutation, strapQuery } = require('./modules/strap/strap.resolver');
 
 const { backQuery, backMutation } = require('./modules/back/back.resolver');
@@ -199,6 +204,7 @@ const SCHEMA_NAMES = {
   paginatedBasics: 'PaginatedBasics',
   constructor: 'Constructor',
   paginatedConstructors: 'PaginatedConstructors',
+  wishlist: 'Wishlist',
 };
 
 const {
@@ -276,6 +282,8 @@ const resolvers = {
     ...basicsQuery,
 
     ...constructorQuery,
+
+    ...wishlistQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -306,9 +314,6 @@ const resolvers = {
       ),
     bottomMaterialColor: parent =>
       parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
-  },
-  User: {
-    wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
 
   Size: {
@@ -416,6 +421,10 @@ const resolvers = {
           },
         };
       }),
+  },
+  Wishlist: {
+    products: parent =>
+      parent.products.map(id => productsService.getProductById(id)),
   },
   Order: {
     items: parent =>
@@ -723,6 +732,8 @@ const resolvers = {
     ...basicsMutations,
 
     ...constructorMutation,
+
+    ...wishlistMutation,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -1093,6 +1104,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructor;
+      }
+      return 'Error';
+    },
+  },
+
+  WishlistResult: {
+    __resolveType: obj => {
+      if (obj._id) {
+        return SCHEMA_NAMES.wishlist;
       }
       return 'Error';
     },

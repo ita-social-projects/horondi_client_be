@@ -42,6 +42,7 @@ const DB_COLLECTIONS_NAMES = {
   BASICS: 'Basics',
   TRANSLATIONS: 'Translations',
   COORDINATS: 'Coordinats',
+  WISHLIST: 'Wishlist',
 };
 
 module.exports = {
