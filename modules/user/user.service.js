@@ -92,7 +92,6 @@ const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
 const { generateOtpCode } = require('../../utils/user');
-const Order = require('../order/order.model');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -907,13 +906,6 @@ class UserService extends FilterHelper {
   removeProductFromWishlist(productId, key, user) {
     const newList = user.wishlist.filter(id => String(id) !== productId);
     return this.updateCartOrWishlist(user._id, key, newList, productId);
-  }
-
-  async getCountUserOrders(_id) {
-    await this.getUserByFieldOrThrow(USER_ID, _id);
-    const orders = await Order.find({ user_id: _id }).exec();
-
-    return { countOrder: orders.length };
   }
 }
 

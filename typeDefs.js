@@ -460,9 +460,6 @@ const typeDefs = gql`
       size: Size
       price: [CurrencySet]
   }
-  type countOrderResult {
-    countOrder: Int
-  }
   type PaginatedPositions {
     items: [Position]
     count: Int
@@ -540,7 +537,6 @@ const typeDefs = gql`
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): OrdersWithCounter
-    getCountUserOrders(id: ID): countOrderResult
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!

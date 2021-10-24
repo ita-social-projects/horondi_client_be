@@ -5,8 +5,6 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
-  getCountUserOrders: async (_, args, { user }) =>
-    userService.getCountUserOrders(user),
   getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUsersForStatistic: (parent, args, context) =>
     userService.getUsersForStatistic(args),

@@ -249,21 +249,6 @@ const getAllUsers = async operations => {
 
   return allUsers;
 };
-const getCountUserOrders = async (userId, operations) => {
-  const count = await operations.query({
-    query: gql`
-      query($userId: ID!) {
-        getCountUserOrders(id: $userId) {
-          countOrder
-        }
-      }
-    `,
-    variables: {
-      userId,
-    },
-  });
-  return count.data.getCountUserOrders;
-};
 const getUserByToken = async operations => {
   const user = await operations.query({
     query: gql`
@@ -643,7 +628,6 @@ module.exports = {
   loginUser,
   getAllUsers,
   getUserByToken,
-  getCountUserOrders,
   getUserById,
   deleteUser,
   loginAdmin,
