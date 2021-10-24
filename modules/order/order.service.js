@@ -234,8 +234,9 @@ class OrdersService {
       .skip(skip)
       .exec();
     if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    const ordersCount = await Order.find({ user_id: id }).countDocuments();
 
-    return userOrders;
+    return { userOrders, ordersCount };
   }
 
   filterOrders({ days, isPaid }) {

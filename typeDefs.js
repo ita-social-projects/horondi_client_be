@@ -471,6 +471,10 @@ const typeDefs = gql`
     items: [Basics]
     count: Int
   }
+  type OrdersWithCounter {
+    userOrders: [Order]
+    ordersCount: Int
+  }
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
@@ -535,7 +539,7 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
-    getUserOrders(pagination: Pagination): [Order!]
+    getUserOrders(pagination: Pagination): OrdersWithCounter
     getCountUserOrders(id: ID): countOrderResult
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
