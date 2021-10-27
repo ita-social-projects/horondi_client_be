@@ -81,7 +81,6 @@ describe('queries', () => {
         buildingNumber: '23',
       },
       role: 'user',
-      wishlist: [],
       orders: [],
       comments: [],
       token,

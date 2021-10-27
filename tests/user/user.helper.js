@@ -59,7 +59,6 @@ const updateUserById = async (
   city,
   street,
   buildingNumber,
-  wishlist,
   orders,
   comments,
   token,
@@ -75,7 +74,6 @@ const updateUserById = async (
         $city: String!
         $street: String!
         $buildingNumber: String!
-        $wishlist: [ID!]!
         $orders: [ID!]!
         $comments: [ID!]!
       ) {
@@ -91,7 +89,6 @@ const updateUserById = async (
               street: $street
               buildingNumber: $buildingNumber
             }
-            wishlist: $wishlist
             orders: $orders
             comments: $comments
           }
@@ -127,7 +124,6 @@ const updateUserById = async (
       city,
       street,
       buildingNumber,
-      wishlist,
       orders,
       comments,
     },
@@ -167,9 +163,6 @@ const loginUser = async (email, pass, rememberMe, operations) => {
             country
           }
           registrationDate
-          wishlist {
-            _id
-          }
           credentials {
             source
             tokenPass
