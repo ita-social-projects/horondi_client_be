@@ -158,6 +158,7 @@ const {
   constructorType,
   constructorInputs,
 } = require('./modules/constructor_new/constructor.graphql');
+const { wishlistType } = require('./modules/wishlist/wishlist.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
@@ -214,6 +215,7 @@ const typeDefs = gql`
   ${basicsFeatureSet}
   ${historyFilterInput}
   ${constructorType}
+  ${wishlistType}
   scalar Upload
   scalar JSONObject
   scalar Date
@@ -504,6 +506,7 @@ const typeDefs = gql`
   union BottomResult = Bottom | Error
   union StrapResult = Strap | Error
   union ConstructorResult = Constructor | Error
+  union WishlistResult = Wishlist | Error
   
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
@@ -656,6 +659,7 @@ const typeDefs = gql`
     getPositionById(id: ID): PositionResult
     getAllBasics(limit: Int!, skip: Int!, filter: BasicsFilterInput): PaginatedBasics!
     getBasicById(id: ID): BasicsResult
+    getWishlistByUserId: WishlistResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -902,8 +906,6 @@ const typeDefs = gql`
       user: AdminConfirmInput!
       token: String!
     ): LogicalResult!
-      addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
-      removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
        googleUser(idToken: String!, rememberMe: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
@@ -1042,6 +1044,9 @@ const typeDefs = gql`
     addBasic(basic: BasicsInput!, image: Upload): BasicsResult
     updateBasic(id: ID!, basic: BasicsInput!, image: Upload): BasicsResult
     deleteBasic(id: ID!): BasicsResult
+    "Wishlist Mutations"
+    addProductToWishlist(productId: ID!): WishlistResult
+    deleteProductFromWishlist(productId: ID!): WishlistResult
   }
 `;
 

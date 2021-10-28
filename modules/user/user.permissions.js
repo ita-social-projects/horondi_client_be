@@ -59,8 +59,6 @@ const userPermissionsMutation = {
     USER,
     completeAdminRegisterValidator
   ),
-  addProductToWishlist: isTheSameUser,
-  removeProductFromWishlist: isTheSameUser,
 };
 
 module.exports = { userPermissionsMutation, userPermissionsQuery };

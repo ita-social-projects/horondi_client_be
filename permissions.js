@@ -154,6 +154,10 @@ const {
   constructorPermissionsQuery,
   constructorPermissionsMutations,
 } = require('./modules/constructor_new/constructor.permissions');
+const {
+  wishlistPermissionsQuery,
+  wishlistPermissionsMutations,
+} = require('./modules/wishlist/wishlist.permissions');
 
 const permissions = shield(
   {
@@ -186,6 +190,7 @@ const permissions = shield(
       ...positionPermissionsQuery,
       ...basicsPermissionsQuery,
       ...constructorPermissionsQuery,
+      ...wishlistPermissionsQuery,
     },
     Mutation: {
       ...productPermissionsMutation,
@@ -220,6 +225,7 @@ const permissions = shield(
       ...positionPermissionsMutations,
       ...basicsPermissionsMutations,
       ...constructorPermissionsMutations,
+      ...wishlistPermissionsMutations,
     },
   },
   {

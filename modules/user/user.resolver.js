@@ -138,14 +138,6 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  addProductToWishlist: (parent, args, context) =>
-    userService.addProductToWishlist(args.productId, args.key, context.user),
-  removeProductFromWishlist: (parent, args, context) =>
-    userService.removeProductFromWishlist(
-      args.productId,
-      args.key,
-      context.user
-    ),
 };
 
 module.exports = {

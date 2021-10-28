@@ -231,6 +231,9 @@ class ProductsService {
     primary,
     { _id: adminId }
   ) {
+    const matchPrimaryInUpload = filesToUpload.filter(
+      item => item.large === productData.images[0].primary.large
+    );
     productData.images = {
       primary: {
         large: LARGE_SAD_BACKPACK,
@@ -239,18 +242,7 @@ class ProductsService {
         thumbnail: THUMBNAIL_SAD_BACKPACK,
       },
     };
-    if (filesToUpload.length) {
-      productData.images.additional = [];
-    } else {
-      productData.images.additional = [
-        {
-          large: LARGE_SAD_BACKPACK,
-          medium: MEDIUM_SAD_BACKPACK,
-          small: SMALL_SAD_BACKPACK,
-          thumbnail: THUMBNAIL_SAD_BACKPACK,
-        },
-      ];
-    }
+
     const product = await Product.findById(id)
       .lean()
       .exec();
@@ -264,17 +256,19 @@ class ProductsService {
       if (primary?.large) {
         productData.images.primary = primary;
       } else {
-        await uploadService.deleteFiles(
-          Object.values(product.images.primary).filter(
-            item => typeof item === 'string'
-          )
-        );
-        const uploadResult = await uploadService.uploadFiles(primary);
+        if (!matchPrimaryInUpload.length)
+          await uploadService.deleteFiles(
+            Object.values(product.images.primary).filter(
+              item => typeof item === 'string'
+            )
+          );
+        const uploadResult = await uploadService.uploadFiles([primary]);
         const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
       }
     }
     if (filesToUpload.length) {
+      productData.images.additional = [];
       const previousImagesLinks = [];
       const newFiles = [];
       filesToUpload.forEach(e => {
@@ -288,24 +282,32 @@ class ProductsService {
       const imagesResults = await Promise.allSettled(newUploadResult);
       const additional = imagesResults.map(res => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
+    } else {
+      productData.images.additional = [
+        {
+          large: LARGE_SAD_BACKPACK,
+          medium: MEDIUM_SAD_BACKPACK,
+          small: SMALL_SAD_BACKPACK,
+          thumbnail: THUMBNAIL_SAD_BACKPACK,
+        },
+      ];
     }
     const { basePrice } = productData;
     productData.basePrice = await calculateBasePrice(basePrice);
     productData.sizes = await finalPriceCalculation(productData);
-    if (productData) {
-      const { beforeChanges, afterChanges } = getChanges(product, productData);
 
-      const historyRecord = generateHistoryObject(
-        EDIT_PRODUCT,
-        product.model,
-        product.name[UA].value,
-        product._id,
-        beforeChanges,
-        afterChanges,
-        adminId
-      );
-      await addHistoryRecord(historyRecord);
-    }
+    const { beforeChanges, afterChanges } = getChanges(product, productData);
+
+    const historyRecord = generateHistoryObject(
+      EDIT_PRODUCT,
+      product.model,
+      product.name[UA].value,
+      product._id,
+      beforeChanges,
+      afterChanges,
+      adminId
+    );
+    await addHistoryRecord(historyRecord);
 
     return Product.findByIdAndUpdate(id, productData, {
       new: true,

@@ -16,7 +16,6 @@ type User{
     confirmationToken: String
     credentials: [Credential]
     registrationDate: String
-    wishlist: [Product]
     cart: Cart
     orders:[ID]
     comments: [ID]
@@ -55,7 +54,6 @@ input UserInput {
     phoneNumber: String
     address: AddressInput
     image: Upload
-    wishlist: [ID]
     orders:[ID]
     comments: [ID]
     cart: CartInput
@@ -146,7 +144,6 @@ input UserUpdateInput {
     phoneNumber: String
     address: AddressInput
     images: ImageSetInput
-    wishlist: [ID]
     orders:[ID]
     comments: [ID]
     confirmed: Boolean

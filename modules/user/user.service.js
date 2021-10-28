@@ -17,7 +17,7 @@ const {
   },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
-const { uploadFiles, deleteFiles } = require('../upload/upload.service');
+const { deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
   RECOVERY_EXPIRE,
@@ -30,7 +30,6 @@ const {
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
-const productService = require('../product/product.service');
 const {
   USER_ALREADY_EXIST,
   USER_NOT_FOUND,
