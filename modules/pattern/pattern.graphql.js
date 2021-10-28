@@ -11,7 +11,7 @@ const patternType = `
       additionalPrice: [AdditionalCurrencySet]
       available: Boolean
       customizable: Boolean
-      translations_key: ID!
+      translations_key: ID
     }
 `;
 

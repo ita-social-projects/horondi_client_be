@@ -109,7 +109,7 @@ class PatternsService {
     }
 
     await updateTranslations(
-      pattern.translations_key,
+      patternToUpdate.translations_key,
       createTranslations(pattern)
     );
 
@@ -210,10 +210,10 @@ class PatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(id)
       .lean()
       .exec();
-
     if (!foundPattern) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
+
     await deleteTranslations(foundPattern.translations_key);
 
     const deletedImages = await uploadService.deleteFiles(
