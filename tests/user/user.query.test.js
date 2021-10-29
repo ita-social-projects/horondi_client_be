@@ -26,7 +26,6 @@ const {
   validateConfirmationToken,
   getPurchasedProducts,
   getUsersForStatistic,
-  getCountUserOrders,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -122,20 +121,6 @@ describe('queries', () => {
     const res = await getUserById(wrongId, operations);
 
     expect(res.data.getUserById.message).toBe('USER_NOT_FOUND');
-  });
-
-  test('should get count user orders by id', async () => {
-    const result = await getCountUserOrders(userId, operations);
-
-    expect(result.countOrder).toBeDefined();
-    expect(result.countOrder).toEqual(0);
-  });
-
-  test('get count orders should return 0 when user with provided id not found', async () => {
-    const result = await getCountUserOrders(wrongId, operations);
-
-    expect(result.countOrder).toBeDefined();
-    expect(result.countOrder).toBe(0);
   });
 
   test('should get user for statistic', async () => {

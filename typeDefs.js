@@ -462,9 +462,6 @@ const typeDefs = gql`
       size: Size
       price: [CurrencySet]
   }
-  type countOrderResult {
-    countOrder: Int
-  }
   type PaginatedPositions {
     items: [Position]
     count: Int
@@ -472,6 +469,10 @@ const typeDefs = gql`
   type PaginatedBasics {
     items: [Basics]
     count: Int
+  }
+  type OrdersWithCounter {
+    userOrders: [Order]
+    ordersCount: Int
   }
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
@@ -538,8 +539,7 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
-    getUserOrders(pagination: Pagination): [Order!]
-    getCountUserOrders(id: ID): countOrderResult
+    getUserOrders(pagination: Pagination): OrdersWithCounter
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
