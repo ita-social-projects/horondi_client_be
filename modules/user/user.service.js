@@ -891,21 +891,6 @@ class UserService extends FilterHelper {
     }
     return { isSuccess: true };
   }
-
-  async updateCartOrWishlist(userId, key, list, productId) {
-    await User.findByIdAndUpdate(userId, { [key]: list }).exec();
-    return productService.getProductById(productId);
-  }
-
-  addProductToWishlist(productId, key, user) {
-    const newList = [...user.wishlist, productId];
-    return this.updateCartOrWishlist(user._id, key, newList, productId);
-  }
-
-  removeProductFromWishlist(productId, key, user) {
-    const newList = user.wishlist.filter(id => String(id) !== productId);
-    return this.updateCartOrWishlist(user._id, key, newList, productId);
-  }
 }
 
 module.exports = new UserService();
