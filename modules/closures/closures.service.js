@@ -1,4 +1,10 @@
 const Closure = require('./closures.model');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const RuleError = require('../../errors/rule.error');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
@@ -74,6 +80,9 @@ class ClosureService {
         closure.additionalPrice
       );
     }
+    closure.translations_key = await addTranslations(
+      createTranslations(closure)
+    );
     const newClosure = await new Closure(closure).save();
 
     const historyRecord = generateHistoryObject(
@@ -110,6 +119,11 @@ class ClosureService {
         closure.additionalPrice
       );
     }
+
+    await updateTranslations(
+      closureToUpdate.translations_key,
+      createTranslations(closure)
+    );
 
     if (image) {
       if (closureToUpdate.images) {
@@ -172,7 +186,7 @@ class ClosureService {
       [],
       adminId
     );
-
+    await deleteTranslations(closure.translations_key);
     await addHistoryRecord(historyRecord);
 
     return closure;
