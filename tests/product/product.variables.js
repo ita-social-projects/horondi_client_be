@@ -193,17 +193,10 @@ const correctFilter = {
   category: { $in: '6009dcd5f9855555907ebf5e' },
   colors: { $in: 'red' },
   pattern: { $in: '6009dcd5f9855555907ebf5e' },
-  sizes: {
+  basePrice: {
     $elemMatch: {
-      price: {
-        $elemMatch: {
-          currency: '',
-          value: {
-            $gte: '2',
-            $lte: '0',
-          },
-        },
-      },
+      currency: '',
+      value: { $gte: '2', $lte: '0' },
     },
   },
 };
