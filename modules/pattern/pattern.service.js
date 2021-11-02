@@ -1,6 +1,13 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
+
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
@@ -101,6 +108,11 @@ class PatternsService {
       );
     }
 
+    await updateTranslations(
+      patternToUpdate.translations_key,
+      createTranslations(pattern)
+    );
+
     await updatePrices(patternToUpdate, pattern, PATTERN, id);
 
     const { beforeChanges, afterChanges } = getChanges(
@@ -166,6 +178,9 @@ class PatternsService {
         pattern.additionalPrice
       );
     }
+    pattern.translations_key = await addTranslations(
+      createTranslations(pattern)
+    );
 
     const newPattern = await new Pattern({ ...pattern, images }).save();
     const historyRecord = generateHistoryObject(
@@ -195,10 +210,11 @@ class PatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(id)
       .lean()
       .exec();
-
     if (!foundPattern) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
+
+    await deleteTranslations(foundPattern.translations_key);
 
     const deletedImages = await uploadService.deleteFiles(
       Object.values(foundPattern.images)
@@ -228,6 +244,7 @@ class PatternsService {
 
       return foundPattern;
     }
+    return Pattern.findByIdAndDelete(id).exec();
   }
 }
 
