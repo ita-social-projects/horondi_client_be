@@ -120,9 +120,10 @@ class ClosureService {
       );
     }
 
-    if (closure.translations_key) {
-      await updateTranslations(closureToUpdate.translations_key);
-    }
+    await updateTranslations(
+      closureToUpdate.translations_key,
+      createTranslations(closure)
+    );
 
     if (image) {
       if (closureToUpdate.images) {
