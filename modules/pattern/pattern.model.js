@@ -4,7 +4,7 @@ const ImageSet = require('../common/ImageSet').schema;
 const AdditionalCurrencySet = require('../../models/AdditionalCurrencySet')
   .schema;
 const {
-  DB_COLLECTIONS_NAMES: { PATTERN, MATERIAL, MODEL },
+  DB_COLLECTIONS_NAMES: { PATTERN, MATERIAL, MODEL, TRANSLATIONS },
 } = require('../../consts/db-collections-names');
 
 const patternSchema = new mongoose.Schema({
@@ -27,6 +27,10 @@ const patternSchema = new mongoose.Schema({
   additionalPrice: [AdditionalCurrencySet],
   available: Boolean,
   customizable: Boolean,
+  translations_key: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
+  },
 });
 
 module.exports = mongoose.model(PATTERN, patternSchema);
