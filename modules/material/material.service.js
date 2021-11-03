@@ -10,6 +10,12 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_MATERIAL, DELETE_MATERIAL, EDIT_MATERIAL },
 } = require('../../consts/history-actions');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   generateHistoryObject,
   getChanges,
@@ -114,6 +120,10 @@ class MaterialsService {
         material.additionalPrice
       );
     }
+    await updateTranslations(
+      materialToUpdate.translations_key,
+      createTranslations(material)
+    );
 
     const updatedMaterial = await Material.findByIdAndUpdate(id, material, {
       new: true,
@@ -150,6 +160,9 @@ class MaterialsService {
       material.additionalPrice
     );
 
+    material.translations_key = await addTranslations(
+      createTranslations(material)
+    );
     const newMaterial = await new Material(material).save();
 
     const historyRecord = generateHistoryObject(
@@ -176,6 +189,7 @@ class MaterialsService {
 
   async deleteMaterial(id, { _id: adminId }) {
     const foundMaterial = await Material.findByIdAndDelete(id).exec();
+    await deleteTranslations(foundMaterial.translations_key);
 
     if (foundMaterial) {
       const historyRecord = generateHistoryObject(
