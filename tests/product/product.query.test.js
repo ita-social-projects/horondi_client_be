@@ -140,7 +140,7 @@ describe('Product queries', () => {
     const products = await getAllProductsWithSkipAndLimit(0, 0, operations);
     const res = products.data.getProducts;
 
-    expect(res.items).toHaveLength(17);
+    expect(res.items).toHaveLength(1);
     expect(res.items).not.toBeNull();
   });
   test('#3 Should return Error PRODUCT_NOT_FOUND', async () => {
