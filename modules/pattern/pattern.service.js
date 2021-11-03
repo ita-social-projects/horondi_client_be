@@ -137,14 +137,15 @@ class PatternsService {
       }).exec();
     }
 
-    const uploadResult = await uploadService.uploadFile(image[0]);
-    const images = uploadResult.fileNames;
-    const constructorImg = await uploadSmallImage(image[1]);
-    pattern.constructorImg = constructorImg;
-
-    if (!images && constructorImg) {
-      return Pattern.findByIdAndUpdate(id, pattern).exec();
+    if (image[0].file) {
+      const uploadResult = await uploadService.uploadFile(image[0]);
+      pattern.images = uploadResult.fileNames;
     }
+    if (image[1]) {
+      const constructorImg = await uploadSmallImage(image[1]);
+      pattern.constructorImg = constructorImg;
+    }
+
     const foundPattern = await Pattern.findById(id)
       .lean()
       .exec();
@@ -156,7 +157,6 @@ class PatternsService {
       id,
       {
         ...pattern,
-        images,
       },
       {
         new: true,
