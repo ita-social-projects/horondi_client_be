@@ -40,6 +40,12 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 
 class ModelsService {
   async getAllModels(filter = {}, pagination = {}, sort = {}) {
@@ -114,6 +120,10 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
+    data.model.translations_key = await addTranslations(
+      createTranslations(data.model)
+    );
+
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -179,6 +189,11 @@ class ModelsService {
     );
     await addHistoryRecord(historyRecord);
 
+    await updateTranslations(
+      modelToUpdate.translations_key,
+      createTranslations(id.modelToUpdate)
+    );
+
     return Model.findByIdAndUpdate(id, newModel, { new: true });
   }
 
@@ -187,6 +202,7 @@ class ModelsService {
     if (!modelToDelete) {
       throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
+    await deleteTranslations(modelToDelete.translations_key);
 
     if (modelToDelete.images) {
       await uploadService.deleteFiles(

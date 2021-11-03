@@ -16,6 +16,7 @@ const {
     CLOSURE,
     STRAP,
     RESTRICTION,
+    TRANSLATIONS,
   },
 } = require('../../consts/db-collections-names');
 
@@ -78,6 +79,11 @@ const modelSchema = new mongoose.Schema({
     constructorStrap: { type: mongoose.Schema.Types.ObjectId, ref: STRAP },
   },
   restrictions: [{ type: mongoose.Schema.Types.ObjectId, ref: RESTRICTION }],
+
+  translations_key: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
+  },
 });
 
 module.exports = mongoose.model(MODEL, modelSchema);
