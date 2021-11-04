@@ -189,7 +189,6 @@ class MaterialsService {
 
   async deleteMaterial(id, { _id: adminId }) {
     const foundMaterial = await Material.findByIdAndDelete(id).exec();
-    await deleteTranslations(foundMaterial.translations_key);
 
     if (foundMaterial) {
       const historyRecord = generateHistoryObject(
@@ -208,6 +207,7 @@ class MaterialsService {
         [],
         adminId
       );
+      await deleteTranslations(foundMaterial.translations_key);
 
       await addHistoryRecord(historyRecord);
 
