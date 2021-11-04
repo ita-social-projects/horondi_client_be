@@ -1,7 +1,7 @@
 const config = {
   mongodb: {
-    url: 'YOUR_DATABASE_URL',
-    databaseName: 'horondi',
+    url: 'mongodb://localhost:27017/hotondi1?authSource=adminL',
+    databaseName: 'hotondi1',
 
     options: {
       useNewUrlParser: true,
