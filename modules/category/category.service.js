@@ -141,7 +141,6 @@ class CategoryService extends FilterHelper {
       pagination: {},
       sort: {},
     });
-
     return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => ({
@@ -152,6 +151,7 @@ class CategoryService extends FilterHelper {
         category: {
           name: [...category.name],
           _id: category._id,
+          translationsKey: category.translations_key,
         },
         models: modelsFields,
       };
