@@ -43,10 +43,6 @@ class BusinessTextService {
   async updateBusinessText(id, businessText, files) {
     const foundBusinessText = await BusinessText.findById(id).exec();
 
-    await updateTranslations(
-      foundBusinessText.translations_key,
-      createTranslations(businessText)
-    );
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
     const existingPage = pages.find(el => el._id.toString() !== id);
@@ -61,7 +57,10 @@ class BusinessTextService {
         BAD_REQUEST
       );
     }
-
+    await updateTranslations(
+      foundBusinessText.translations_key,
+      createTranslations(businessText)
+    );
     const newPage = files.length
       ? await this.replaceImageSourceToLink(businessText, files)
       : businessText;
