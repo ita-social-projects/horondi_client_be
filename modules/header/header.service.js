@@ -22,6 +22,12 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 
 class HeadersService {
   async getAllHeaders() {
@@ -44,6 +50,11 @@ class HeadersService {
     if (!headerToUpdate) {
       throw new RuleError(HEADER_NOT_FOUND, NOT_FOUND);
     }
+
+    await updateTranslations(
+      headerToUpdate.translations_key,
+      createTranslations(header)
+    );
 
     if (await this.checkHeaderExist(header, id)) {
       throw new RuleError(HEADER_ALREADY_EXIST, BAD_REQUEST);
@@ -70,6 +81,8 @@ class HeadersService {
   }
 
   async addHeader({ header }, { _id: adminId }) {
+    header.translations_key = await addTranslations(createTranslations(header));
+
     if (await this.checkHeaderExist(header)) {
       throw new RuleError(HEADER_ALREADY_EXIST, BAD_REQUEST);
     }
@@ -110,6 +123,8 @@ class HeadersService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await deleteTranslations(foundHeader.translations_key);
 
     return foundHeader;
   }

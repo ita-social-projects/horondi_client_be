@@ -7,6 +7,7 @@ type HomePageSlide {
     images: ImageSet,
     order: Int,
     show: Boolean,
+    translations_key: ID
   }
 `;
 
@@ -18,6 +19,7 @@ input HomePageSlideInput {
     images:ImageSetInput
     order: Int,
     show: Boolean,
+    translations_key: ID
   }
 `;
 

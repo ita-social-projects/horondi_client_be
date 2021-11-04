@@ -4,6 +4,7 @@ const headerType = `
         title: [Language],
         link: String,
         priority: Int,
+        translations_key: ID
     }
 `;
 
@@ -12,6 +13,7 @@ const headerInput = `
         title: [LanguageInput],
         link: String,
         priority: Int,
+        translations_key: ID
     }
 `;
 
