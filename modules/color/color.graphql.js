@@ -13,7 +13,6 @@ const colorInput = `
     name: [LanguageInput!]
     colorHex: String!
     simpleName: [LanguageInput!]
-    translations_key: ID
   }
 `;
 
