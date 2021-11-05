@@ -285,7 +285,7 @@ const typeDefs = gql`
   }
   type ModelsMenu {
     model: [Menu!]
-    translations_key: ID
+    
   }
   type Menu {
     _id: ID!
