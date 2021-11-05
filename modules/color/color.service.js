@@ -22,6 +22,11 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 
 class ColorService {
   async getAllColors() {
@@ -37,6 +42,10 @@ class ColorService {
   }
 
   async addColor(colorData, { _id: adminId }) {
+    colorData.translations_key = await addTranslations(
+      createTranslations(colorData)
+    );
+
     const hex = await Color.find({ colorHex: colorData.colorHex }).exec();
     if (hex.length) {
       throw new RuleError(COLOR_ALREADY_EXIST, BAD_REQUEST);
@@ -85,6 +94,8 @@ class ColorService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await deleteTranslations(color.translations_key);
 
     return deletedColor;
   }
