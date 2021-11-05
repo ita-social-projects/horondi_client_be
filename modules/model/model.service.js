@@ -1,6 +1,12 @@
 const { ObjectId } = require('mongoose').Types;
 
 const Model = require('./model.model');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   CATEGORY_NOT_VALID,
   MODEL_NOT_FOUND,
@@ -40,12 +46,6 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 
 class ModelsService {
   async getAllModels(filter = {}, pagination = {}, sort = {}) {
@@ -120,10 +120,7 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
-    data.model.translations_key = await addTranslations(
-      createTranslations(data.model)
-    );
-
+    data.translations_key = await addTranslations(createTranslations(data));
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -160,6 +157,7 @@ class ModelsService {
 
   async updateModel(id, newModel, upload, { _id: adminId }) {
     const modelToUpdate = await Model.findById(id).exec();
+
     if (!modelToUpdate) {
       throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
@@ -178,6 +176,11 @@ class ModelsService {
 
     const { beforeChanges, afterChanges } = getChanges(modelToUpdate, newModel);
 
+    await updateTranslations(
+      modelToUpdate.translations_key,
+      createTranslations(newModel)
+    );
+
     const historyRecord = generateHistoryObject(
       EDIT_MODEL,
       modelToUpdate.model?._id,
@@ -187,12 +190,8 @@ class ModelsService {
       afterChanges,
       adminId
     );
-    await addHistoryRecord(historyRecord);
 
-    await updateTranslations(
-      modelToUpdate.translations_key,
-      createTranslations(id.modelToUpdate)
-    );
+    await addHistoryRecord(historyRecord);
 
     return Model.findByIdAndUpdate(id, newModel, { new: true });
   }
@@ -202,7 +201,6 @@ class ModelsService {
     if (!modelToDelete) {
       throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
-    await deleteTranslations(modelToDelete.translations_key);
 
     if (modelToDelete.images) {
       await uploadService.deleteFiles(
@@ -211,6 +209,8 @@ class ModelsService {
         )
       );
     }
+
+    await deleteTranslations(modelToDelete.translations_key);
 
     const historyRecord = generateHistoryObject(
       DELETE_MODEL,
