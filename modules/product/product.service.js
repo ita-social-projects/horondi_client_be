@@ -179,12 +179,16 @@ class ProductsService {
       filter.pattern = { $in: pattern };
     }
     if (price && price.length) {
-      filter.basePrice = {
+      filter.sizes = {
         $elemMatch: {
-          currency: getCurrencySign(currency, UAH, USD),
-          value: {
-            $gte: price[0],
-            $lte: price[1],
+          price: {
+            $elemMatch: {
+              currency: getCurrencySign(currency, UAH, USD),
+              value: {
+                $gte: price[0],
+                $lte: price[1],
+              },
+            },
           },
         },
       };
