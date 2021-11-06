@@ -26,6 +26,12 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 
 class NewsService {
   async getAllNews({ skip, limit, filter }) {
@@ -78,6 +84,10 @@ class NewsService {
         news.image = await uploadLargeImage(upload[1]);
       }
     }
+    const translations = createTranslations(news);
+    translations.ua.name = news.author.name[0].value;
+    translations.en.name = news.author.name[1].value;
+    await updateTranslations(foundNews.translationsKey, translations);
 
     if (await this.checkNewsExist(news, id)) {
       throw new RuleError(NEWS_ALREADY_EXIST, BAD_REQUEST);
@@ -111,7 +121,10 @@ class NewsService {
         throw new RuleError(PHOTO_NOT_FOUND, NOT_FOUND);
       }
     }
-
+    const translations = createTranslations(data);
+    translations.ua.name = data.author.name[0].value;
+    translations.en.name = data.author.name[1].value;
+    data.translationsKey = await addTranslations(translations);
     data.author.image = await uploadLargeImage(upload[0]);
     data.image = await uploadLargeImage(upload[1]);
 
@@ -149,7 +162,7 @@ class NewsService {
         [],
         adminId
       );
-
+      await deleteTranslations(foundNews.translationsKey);
       await addHistoryRecord(historyRecord);
 
       return foundNews;
