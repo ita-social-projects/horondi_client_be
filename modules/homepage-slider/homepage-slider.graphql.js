@@ -19,7 +19,6 @@ input HomePageSlideInput {
     images:ImageSetInput
     order: Int,
     show: Boolean,
-    translations_key: ID
   }
 `;
 
