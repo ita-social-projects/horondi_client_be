@@ -84,21 +84,39 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  region: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
+  region: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
   regionId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
     otherwise: Joi.string().only(''),
   }),
-  district: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
+  district: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
   districtId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
