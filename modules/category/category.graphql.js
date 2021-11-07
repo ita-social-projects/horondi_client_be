@@ -4,7 +4,7 @@ const sharedFields = `
   name: [Language]
   images: ImageSet
   available: Boolean
-  translations_key: ID
+  translationsKey: ID
 `;
 
 const categoryType = `

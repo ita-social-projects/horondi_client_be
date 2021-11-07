@@ -13,7 +13,7 @@ const CategorySchema = new mongoose.Schema({
   name: [Language],
   images: ImageSet,
   available: Boolean,
-  translations_key: {
+  translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },

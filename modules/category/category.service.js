@@ -85,7 +85,7 @@ class CategoryService extends FilterHelper {
     }
 
     await updateTranslations(
-      categoryToUpdate.translations_key,
+      categoryToUpdate.translationsKey,
       createTranslations(category)
     );
 
@@ -151,7 +151,7 @@ class CategoryService extends FilterHelper {
         category: {
           name: [...category.name],
           _id: category._id,
-          translationsKey: category.translations_key,
+          translationsKey: category.translationsKey,
         },
         models: modelsFields,
       };
@@ -167,7 +167,7 @@ class CategoryService extends FilterHelper {
       throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    data.translations_key = await addTranslations(createTranslations(data));
+    data.translationsKey = await addTranslations(createTranslations(data));
 
     const savedCategory = await new Category(data).save();
 
@@ -203,7 +203,7 @@ class CategoryService extends FilterHelper {
 
     if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
 
-    await deleteTranslations(category.translations_key);
+    await deleteTranslations(category.translationsKey);
 
     const switchCategory = await Category.findById(switchId).exec();
 
