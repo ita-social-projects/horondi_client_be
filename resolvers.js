@@ -63,11 +63,6 @@ const {
   homePageImagesQuery,
 } = require('./modules/homepage-images/home-page-images.resolver');
 
-const {
-  headerQuery,
-  headerMutation,
-} = require('./modules/header/header.resolver');
-
 const { colorQuery, colorMutation } = require('./modules/color/color.resolver');
 
 const {
@@ -180,7 +175,6 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
-  header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
   token: 'Token',
@@ -252,8 +246,6 @@ const resolvers = {
     ...emailChatQuestionQuery,
 
     ...homePageImagesQuery,
-
-    ...headerQuery,
 
     ...sizeQuery,
 
@@ -701,8 +693,6 @@ const resolvers = {
 
     ...homePageImagesMutation,
 
-    ...headerMutation,
-
     ...sizeMutation,
 
     ...homePageSlideMutation,
@@ -908,14 +898,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
-      }
-      return 'Error';
-    },
-  },
-  HeaderResult: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.header;
       }
       return 'Error';
     },

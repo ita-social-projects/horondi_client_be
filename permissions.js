@@ -59,11 +59,6 @@ const {
 } = require('./modules/model/model.permission');
 
 const {
-  headerPermissionsMutations,
-  headerPermissionsQuery,
-} = require('./modules/header/header.permisions');
-
-const {
   restrictionPermissionsMutations,
   restrictionPermissionsQuery,
 } = require('./modules/restriction/restriction.permissions');
@@ -172,7 +167,6 @@ const permissions = shield(
       ...categoryPermissionsQuery,
       ...modelPermissionsQuery,
       ...restrictionPermissionsQuery,
-      ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
       ...closurePermissionsQuery,
       ...sizePermissionsQuery,
@@ -203,7 +197,6 @@ const permissions = shield(
       ...categoryPermissionsMutations,
       ...modelPermissionsMutations,
       ...restrictionPermissionsMutations,
-      ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
       ...closurePermissionsMutations,
       ...sizePermissionsMutations,
