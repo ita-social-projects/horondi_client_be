@@ -80,7 +80,7 @@ const modelSchema = new mongoose.Schema({
   },
   restrictions: [{ type: mongoose.Schema.Types.ObjectId, ref: RESTRICTION }],
 
-  translations_key: {
+  translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },

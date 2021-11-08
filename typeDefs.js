@@ -285,7 +285,6 @@ const typeDefs = gql`
   }
   type ModelsMenu {
     model: [Menu!]
-    
   }
   type Menu {
     _id: ID!
@@ -300,7 +299,6 @@ const typeDefs = gql`
   type BurgerMenu {
     category: MenuCategory!
     models: [Menu!]
-    
   }
   type Subcategory {
     _id: ID!

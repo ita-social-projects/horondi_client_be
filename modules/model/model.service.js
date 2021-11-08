@@ -120,7 +120,7 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
-    data.translations_key = await addTranslations(createTranslations(data));
+    data.translationsKey = await addTranslations(createTranslations(data));
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -177,7 +177,7 @@ class ModelsService {
     const { beforeChanges, afterChanges } = getChanges(modelToUpdate, newModel);
 
     await updateTranslations(
-      modelToUpdate.translations_key,
+      modelToUpdate.translationsKey,
       createTranslations(newModel)
     );
 
@@ -210,7 +210,7 @@ class ModelsService {
       );
     }
 
-    await deleteTranslations(modelToDelete.translations_key);
+    await deleteTranslations(modelToDelete.translationsKey);
 
     const historyRecord = generateHistoryObject(
       DELETE_MODEL,
