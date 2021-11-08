@@ -58,7 +58,7 @@ class BusinessTextService {
       );
     }
     await updateTranslations(
-      foundBusinessText.translations_key,
+      foundBusinessText.translationsKey,
       createTranslations(businessText)
     );
     const newPage = files.length
@@ -84,7 +84,7 @@ class BusinessTextService {
   }
 
   async addBusinessText(businessText, files) {
-    businessText.translations_key = await addTranslations(
+    businessText.translationsKey = await addTranslations(
       createTranslations(businessText)
     );
 
@@ -118,7 +118,7 @@ class BusinessTextService {
     const businessText = await BusinessText.findByIdAndDelete(id).exec();
 
     if (businessText) {
-      await deleteTranslations(businessText.translations_key);
+      await deleteTranslations(businessText.translationsKey);
 
       return businessText;
     }

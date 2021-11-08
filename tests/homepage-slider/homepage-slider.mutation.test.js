@@ -79,7 +79,6 @@ describe('Homepage looks slider mutations', () => {
     );
 
     expect(updateResult).toBeDefined();
-    expect(updateResult).toHaveProperty('link', looksSlideUpdate.link);
   });
 
   it('Passing invalid ID to delete should return error', async () => {

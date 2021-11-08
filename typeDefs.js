@@ -100,7 +100,6 @@ const {
   constructorBottomType,
   constructorBottomFeatureSet,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
-const { headerType, headerInput } = require('./modules/header/header.graphql');
 const {
   closureType,
   closureInputs,
@@ -187,7 +186,6 @@ const typeDefs = gql`
   ${paymentType}
   ${paymentStatus}
   ${homePageImagesType}
-  ${headerType}
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
@@ -496,7 +494,6 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
-  union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
@@ -629,8 +626,6 @@ const typeDefs = gql`
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]
     getPendingEmailQuestionsCount: Int
-    getAllHeaders: [Header!]!
-    getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
@@ -737,7 +732,6 @@ const typeDefs = gql`
   ${UserForStatisticsInput}
   ${novaPoshtaInput}
   ${paymentInput}
-  ${headerInput}
   ${sizeInput}
   ${homePageSlideInput}
   ${closureInputs}
@@ -977,10 +971,6 @@ const typeDefs = gql`
     updateHomePageLooksImage(id: ID!, images: Upload): HomepageImagesResult
     addHomePageLooksImage(images: Upload): HomepageImagesResult
     deleteHomePageLooksImage(id: ID!): HomepageImagesResult
-    "Header Mutation"
-    addHeader(header: HeaderInput!): HeaderResult
-    deleteHeader(id: ID!): HeaderResult
-    updateHeader(id: ID!, header: HeaderInput!): HeaderResult
     "HomePageSlide Mutation"
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
