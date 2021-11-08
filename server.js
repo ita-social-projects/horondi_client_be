@@ -110,6 +110,7 @@ app.use(
       'https://horondi-admin-staging.azurewebsites.net',
       'https://horondi-front-staging.azurewebsites.net',
       'https://horondi-front.azurewebsites.net',
+      'https://horondi-back-staging.azurewebsites.net',
     ],
   })
 );
