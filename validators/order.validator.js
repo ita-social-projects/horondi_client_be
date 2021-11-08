@@ -147,7 +147,15 @@ const nestedDeliveryValidator = Joi.object({
   }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
-  flat: deliveryCheckerValidator,
+  flat: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().allow(null, ''),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().allow(null, ''),
+    }),
   byCourier: Joi.boolean().required(),
   cost: Joi.array().has({
     currency: Joi.string()
