@@ -7,6 +7,7 @@ const bottomType = `
     images: ImageSet
     additionalPrice: [AdditionalCurrencySet]
     available: Boolean
+    translationsKey: ID
   }
 `;
 

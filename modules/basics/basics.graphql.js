@@ -6,6 +6,7 @@ const basicsType = `
         available: Boolean
         features: basicsFeatureSet
         additionalPrice: [AdditionalCurrencySet]
+        translationsKey: ID
     }
 `;
 
