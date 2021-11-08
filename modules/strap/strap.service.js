@@ -1,5 +1,11 @@
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const uploadService = require('../upload/upload.service');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const { uploadSmallImage } = require('../upload/upload.utils');
@@ -96,6 +102,8 @@ class StrapService {
 
     await addHistoryRecord(historyRecord);
 
+    await deleteTranslations(foundStrap.translationsKey);
+
     return foundStrap;
   }
 
@@ -132,6 +140,11 @@ class StrapService {
 
     await addHistoryRecord(historyRecord);
 
+    await updateTranslations(
+      strapToUpdate.translationsKey,
+      createTranslations(strap)
+    );
+
     return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
   }
 
@@ -167,6 +180,8 @@ class StrapService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    strap.translationsKey = await addTranslations(createTranslations(strap));
 
     return newStrap;
   }

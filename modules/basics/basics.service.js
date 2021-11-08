@@ -5,6 +5,12 @@ const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const { BASICS_NOT_FOUND } = require('../../consts/basics-messages');
 const {
   STATUS_CODES: { NOT_FOUND },
@@ -100,6 +106,11 @@ class BasicsService {
 
     await addHistoryRecord(historyRecord);
 
+    await updateTranslations(
+      basicToUpdate.translationsKey,
+      createTranslations(basic)
+    );
+
     return updatedBasic;
   }
 
@@ -131,6 +142,8 @@ class BasicsService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    basic.translationsKey = await addTranslations(createTranslations(basic));
 
     return newBasic;
   }
@@ -164,6 +177,8 @@ class BasicsService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await deleteTranslations(foundBasic.translationsKey);
 
     return Basics.findByIdAndDelete(id);
   }

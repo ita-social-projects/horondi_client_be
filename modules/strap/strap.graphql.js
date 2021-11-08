@@ -9,6 +9,7 @@ const strapType = `
     additionalPrice: [AdditionalCurrencySet]!
     available: Boolean
     customizable: Boolean
+    translationsKey: ID
   }
 `;
 
