@@ -289,6 +289,7 @@ const typeDefs = gql`
   type Menu {
     _id: ID!
     name: [Language!]
+    translationsKey: ID
   }
   type MenuCategory {
     _id: ID!

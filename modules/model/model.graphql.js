@@ -12,6 +12,7 @@ type Model {
     appliedOptions: AppliedOption
     restrictions: [Restriction]
     sizes: [Size]
+    translationsKey: ID
   }
 `;
 

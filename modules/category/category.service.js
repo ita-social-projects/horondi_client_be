@@ -146,6 +146,7 @@ class CategoryService extends FilterHelper {
       const modelsFields = models.map(async model => ({
         name: model.name,
         _id: model._id,
+        translationsKey: model.translationsKey,
       }));
       return {
         category: {

@@ -1,6 +1,12 @@
 const { ObjectId } = require('mongoose').Types;
 
 const Model = require('./model.model');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   CATEGORY_NOT_VALID,
   MODEL_NOT_FOUND,
@@ -114,6 +120,7 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
+    data.translationsKey = await addTranslations(createTranslations(data));
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -167,7 +174,10 @@ class ModelsService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(modelToUpdate, newModel);
-
+    await updateTranslations(
+      modelToUpdate.translationsKey,
+      createTranslations(newModel)
+    );
     const historyRecord = generateHistoryObject(
       EDIT_MODEL,
       modelToUpdate.model?._id,
@@ -195,6 +205,7 @@ class ModelsService {
         )
       );
     }
+    await deleteTranslations(modelToDelete.translationsKey);
 
     const historyRecord = generateHistoryObject(
       DELETE_MODEL,
