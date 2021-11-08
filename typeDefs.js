@@ -290,8 +290,13 @@ const typeDefs = gql`
     _id: ID!
     name: [Language!]
   }
+  type MenuCategory {
+    _id: ID!
+    name: [Language!]
+    translationsKey: ID!
+  }
   type BurgerMenu {
-    category: Menu!
+    category: MenuCategory!
     models: [Menu!]
   }
   type Subcategory {
