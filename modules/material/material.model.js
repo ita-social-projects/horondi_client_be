@@ -25,7 +25,7 @@ const materialSchema = new mongoose.Schema({
   ],
   available: Boolean,
   additionalPrice: [AdditionalCurrencySet],
-  translations_key: {
+  translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },

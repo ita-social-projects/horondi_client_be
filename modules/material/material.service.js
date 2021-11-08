@@ -121,7 +121,7 @@ class MaterialsService {
       );
     }
     await updateTranslations(
-      materialToUpdate.translations_key,
+      materialToUpdate.translationsKey,
       createTranslations(material)
     );
 
@@ -160,7 +160,7 @@ class MaterialsService {
       material.additionalPrice
     );
 
-    material.translations_key = await addTranslations(
+    material.translationsKey = await addTranslations(
       createTranslations(material)
     );
     const newMaterial = await new Material(material).save();
@@ -207,7 +207,7 @@ class MaterialsService {
         [],
         adminId
       );
-      await deleteTranslations(foundMaterial.translations_key);
+      await deleteTranslations(foundMaterial.translationsKey);
 
       await addHistoryRecord(historyRecord);
 
