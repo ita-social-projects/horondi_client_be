@@ -230,7 +230,7 @@ const updatePattern = async (id, pattern, image, operations) => {
         }
       }
     `,
-    variables: { id, pattern },
+    variables: { id, pattern, image },
   });
 
   return res.data.updatePattern;
