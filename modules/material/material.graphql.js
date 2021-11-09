@@ -7,6 +7,7 @@ const materialType = `
       colors: [Color]
       available: Boolean
       additionalPrice: [AdditionalCurrencySet]
+      translationsKey: ID!
     }
     type MaterialByPurpose {
       main: [Material]
