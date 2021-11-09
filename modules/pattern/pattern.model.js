@@ -27,7 +27,7 @@ const patternSchema = new mongoose.Schema({
   additionalPrice: [AdditionalCurrencySet],
   available: Boolean,
   customizable: Boolean,
-  translations_key: {
+  translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },
