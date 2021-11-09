@@ -6,7 +6,7 @@ const contactType = `
     address: [Language]!
     email: String!
     link: Coords!
-    translations_key: ID!
+    translationsKey: ID!
   }
   type Coords {
     lat: String!
