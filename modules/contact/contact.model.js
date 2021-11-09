@@ -19,7 +19,7 @@ const ContactSchema = new mongoose.Schema({
     type: String,
   },
   link: Coordinats,
-  translations_key: {
+  translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },
