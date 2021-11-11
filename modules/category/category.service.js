@@ -1,6 +1,12 @@
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
@@ -78,6 +84,11 @@ class CategoryService extends FilterHelper {
       throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
+    await updateTranslations(
+      categoryToUpdate.translationsKey,
+      createTranslations(category)
+    );
+
     if (category) {
       const { beforeChanges, afterChanges } = getChanges(
         categoryToUpdate,
@@ -130,17 +141,18 @@ class CategoryService extends FilterHelper {
       pagination: {},
       sort: {},
     });
-
     return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => ({
         name: model.name,
         _id: model._id,
+        translationsKey: model.translationsKey,
       }));
       return {
         category: {
           name: [...category.name],
           _id: category._id,
+          translationsKey: category.translationsKey,
         },
         models: modelsFields,
       };
@@ -155,6 +167,8 @@ class CategoryService extends FilterHelper {
     if (await this.checkCategoryExist(data)) {
       throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
+
+    data.translationsKey = await addTranslations(createTranslations(data));
 
     const savedCategory = await new Category(data).save();
 
@@ -189,6 +203,8 @@ class CategoryService extends FilterHelper {
       .exec();
 
     if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+
+    await deleteTranslations(category.translationsKey);
 
     const switchCategory = await Category.findById(switchId).exec();
 

@@ -1,28 +1,29 @@
 const newsType = `
-type News {
-_id: ID!
-title: [Language]
-slug: String
-text: [Language]
-image: String
-author: Author
-date: String
-show: Boolean
-languages: [String]
+  type News {
+    _id: ID!
+    title: [Language]
+    slug: String
+    text: [Language]
+    image: String
+    author: Author
+    date: String
+    show: Boolean
+    languages: [String]
+    translationsKey: ID
 }`;
 
 const newsInput = `
-input NewsInput {
-title: [LanguageInput]
-text: [LanguageInput]
-image: Upload
-author: AuthorInput
-date: String
-show: Boolean
-languages: [String]
-}
+  input NewsInput {
+    title: [LanguageInput]
+    text: [LanguageInput]
+    image: Upload
+    author: AuthorInput
+    date: String
+    show: Boolean
+    languages: [String]
+  }
 
-input NewsFilterInput{
+  input NewsFilterInput{
     search:String
   }
 `;

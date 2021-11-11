@@ -84,21 +84,39 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  region: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
+  region: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
   regionId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
     otherwise: Joi.string().only(''),
   }),
-  district: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
+  district: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
   districtId: Joi.string().when(SENT_BY, {
     is: UKRPOST,
     then: Joi.string().required(),
@@ -129,7 +147,20 @@ const nestedDeliveryValidator = Joi.object({
   }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
-  flat: deliveryCheckerValidator,
+  flat: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string()
+        .allow(null, '')
+        .optional(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string()
+        .allow(null, '')
+        .optional(),
+      otherwise: Joi.string().only(''),
+    }),
   byCourier: Joi.boolean().required(),
   cost: Joi.array().has({
     currency: Joi.string()

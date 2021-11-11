@@ -29,7 +29,7 @@ class ContactService {
   }
 
   async addContact(data) {
-    data.contact.translations_key = await addTranslations(
+    data.contact.translationsKey = await addTranslations(
       createTranslations(data.contact)
     );
 
@@ -46,7 +46,7 @@ class ContactService {
     if (!contact) return null;
 
     await updateTranslations(
-      contact.translations_key,
+      contact.translationsKey,
       createTranslations(data.contact)
     );
 
@@ -62,7 +62,7 @@ class ContactService {
 
     if (!contact) return null;
 
-    await deleteTranslations(contact.translations_key);
+    await deleteTranslations(contact.translationsKey);
 
     return Contact.findByIdAndDelete(id).exec();
   }

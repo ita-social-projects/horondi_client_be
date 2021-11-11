@@ -26,7 +26,7 @@ const businessTextSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  translations_key: {
+  translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },
