@@ -176,6 +176,8 @@ class BackService {
 
     back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
 
+    back.translationsKey = await addTranslations(createTranslations(back));
+
     const newBack = await new Back(back).save();
 
     const historyRecord = generateHistoryObject(
@@ -196,8 +198,6 @@ class BackService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    back.translationsKey = await addTranslations(createTranslations(back));
 
     return newBack;
   }

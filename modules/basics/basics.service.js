@@ -124,6 +124,8 @@ class BasicsService {
       basic.additionalPrice
     );
 
+    basic.translationsKey = await addTranslations(createTranslations(basic));
+
     const newBasic = await new Basics(basic).save();
 
     const historyRecord = generateHistoryObject(
@@ -142,8 +144,6 @@ class BasicsService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    basic.translationsKey = await addTranslations(createTranslations(basic));
 
     return newBasic;
   }

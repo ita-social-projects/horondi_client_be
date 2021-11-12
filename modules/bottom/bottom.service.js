@@ -156,6 +156,8 @@ class BottomService {
       bottom.additionalPrice
     );
 
+    bottom.translationsKey = await addTranslations(createTranslations(bottom));
+
     const newBottom = await new Bottom(bottom).save();
 
     const historyRecord = generateHistoryObject(
@@ -175,8 +177,6 @@ class BottomService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    bottom.translationsKey = await addTranslations(createTranslations(bottom));
 
     return newBottom;
   }
