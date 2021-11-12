@@ -75,6 +75,10 @@ class PositionService {
       throw new RuleError(POSITION_ALREADY_EXIST);
     }
 
+    positionData.translationsKey = await addTranslations(
+      createTranslations(positionData)
+    );
+
     const newPosition = await new Position(positionData).save();
 
     const historyRecord = generateHistoryObject(
@@ -88,10 +92,6 @@ class PositionService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    positionData.translationsKey = await addTranslations(
-      createTranslations(positionData)
-    );
 
     return newPosition;
   }

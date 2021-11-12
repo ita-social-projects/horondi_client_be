@@ -157,6 +157,8 @@ class PocketService {
       pocket.additionalPrice
     );
 
+    pocket.translationsKey = await addTranslations(createTranslations(pocket));
+
     const newPocket = await new Pocket(pocket).save();
 
     const historyRecord = generateHistoryObject(
@@ -177,8 +179,6 @@ class PocketService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    pocket.translationsKey = await addTranslations(createTranslations(pocket));
 
     return newPocket;
   }

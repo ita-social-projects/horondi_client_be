@@ -160,6 +160,8 @@ class StrapService {
       );
     }
 
+    strap.translationsKey = await addTranslations(createTranslations(strap));
+
     const newStrap = await new Strap(strap).save();
 
     const historyRecord = generateHistoryObject(
@@ -180,8 +182,6 @@ class StrapService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    strap.translationsKey = await addTranslations(createTranslations(strap));
 
     return newStrap;
   }
