@@ -35,7 +35,7 @@ const newStrap = colorId => ({
   },
 });
 
-const strapWithConvertedPrice = (colorId, imageStr) => ({
+const strapWithConvertedPrice = (colorId, imageStr, translationsKeyId) => ({
   name: [
     { lang: 'uk', value: 'тест' },
     { lang: 'en', value: 'test' },
@@ -56,6 +56,7 @@ const strapWithConvertedPrice = (colorId, imageStr) => ({
       value: 10,
     },
   ],
+  translationsKey: translationsKeyId,
 });
 
 const strapToUpdate = (colorId, modelId) => ({
