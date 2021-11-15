@@ -41,7 +41,11 @@ describe('Strap mutations', () => {
   });
 
   test('#1. should create strap', async () => {
-    const convertedObj = await strapWithConvertedPrice(colorId, newImgObj);
+    const convertedObj = await strapWithConvertedPrice(
+      colorId,
+      newImgObj,
+      strapData.translationsKey
+    );
 
     expect(strapData).toBeDefined();
     expect(strapData).toEqual({

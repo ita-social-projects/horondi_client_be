@@ -2,6 +2,12 @@ const Pocket = require('./pocket.model');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const uploadService = require('../upload/upload.service');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const { POCKET_NOT_FOUND } = require('../../error-messages/pocket.messages');
 const {
   STATUS_CODES: { NOT_FOUND },
@@ -89,6 +95,8 @@ class PocketService {
 
     await addHistoryRecord(historyRecord);
 
+    await deleteTranslations(foundPocket.translationsKey);
+
     return foundPocket;
   }
 
@@ -129,6 +137,11 @@ class PocketService {
 
     await addHistoryRecord(historyRecord);
 
+    await updateTranslations(
+      pocketToUpdate.translationsKey,
+      createTranslations(pocket)
+    );
+
     return Pocket.findByIdAndUpdate(id, pocket, {
       new: true,
     }).exec();
@@ -143,6 +156,8 @@ class PocketService {
     pocket.additionalPrice = await calculateAdditionalPrice(
       pocket.additionalPrice
     );
+
+    pocket.translationsKey = await addTranslations(createTranslations(pocket));
 
     const newPocket = await new Pocket(pocket).save();
 
