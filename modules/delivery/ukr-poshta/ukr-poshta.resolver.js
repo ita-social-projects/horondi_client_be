@@ -26,6 +26,14 @@ const ukrPoshtaQuery = {
     }
   },
 
+  getUkrPoshtaStreetsByCityId: async (parent, args) => {
+    try {
+      return await deliveryService.getUkrPoshtaStreetsByCityId(args.id);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
   getUkrPoshtaPostofficesCityId: async (parent, args) => {
     try {
       return await deliveryService.getUkrPoshtaPostofficesCityId(args.id);

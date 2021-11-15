@@ -614,6 +614,7 @@ const typeDefs = gql`
     getNovaPoshtaPrices(data: NovaPoshtaPriceInput): [NovaPoshtaPrice]
     getUkrPoshtaRegions: [UkrPoshtaRegion]
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
+    getUkrPoshtaStreetsByCityId(id: ID!): [UkrPoshtaStreets]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput!, language: Int!): OrderResult

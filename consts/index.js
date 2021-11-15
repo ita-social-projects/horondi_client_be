@@ -53,6 +53,7 @@ const getUkrPoshtaRegionsUrl = 'get_regions_by_region_ua';
 const getUkrPoshtaDistrictsByRegionIdUrl = `get_districts_by_region_id_and_district_ua?region_id=`;
 const getUkrPoshtaCitiesByDistrictIdUrl = `get_city_by_region_id_and_district_id_and_city_ua?district_id=`;
 const getUkrPoshtaPostofficesCityIdUrl = `get_postoffices_by_postcode_cityid_cityvpzid?city_id=`;
+const getUkrPoshtaStreetsByCityIdUrl = `get_street_by_region_id_and_district_id_and_city_id_and_street_ua?city_id=`;
 
 const objectType = 'object';
 
@@ -63,6 +64,7 @@ module.exports = {
   getUkrPoshtaDistrictsByRegionIdUrl,
   getUkrPoshtaCitiesByDistrictIdUrl,
   getUkrPoshtaPostofficesCityIdUrl,
+  getUkrPoshtaStreetsByCityIdUrl,
   roles,
   availableForRegistrationRoles,
   horondiAddress,
