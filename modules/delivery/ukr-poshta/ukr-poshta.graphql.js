@@ -72,7 +72,6 @@ const ukrPostaType = `
     CITY_ID: String,
     DISTRICT_UA: String,
     STREET_RU: String,
-    String: String,
     DISTRICT_RU: String
   }
   type UkrPoshtaPostoffices {
