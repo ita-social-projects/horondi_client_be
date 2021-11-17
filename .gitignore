@@ -19,6 +19,7 @@ test-combined.log
 
 # misc
 /.vs
+/.vscode
 .idea
 .DS_Store
 .env
