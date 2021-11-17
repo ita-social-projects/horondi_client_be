@@ -1,5 +1,5 @@
 const emailRegExp = new RegExp(
-  /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/
+  /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$/
 );
 const numberRegExp = new RegExp(/^\+?3?8?(0\d{9})$/);
 const uaLanguageRegExp = new RegExp(/^[а-яїієґ0-9\s]+$/i);
