@@ -22,7 +22,7 @@ const userWrongId = '60d593c866a99333c0343a5b';
 const productWrongId = '60d593c866a9fh7tjb343a5b';
 const sizeWrongId = '60d593c866a99333c0343a5b';
 const newSizeId = '615c0ac410a58e1a144cca41';
-const expectedPrice = 25385;
+const expectedPrice = 25310;
 const newProductInputData2 = (
   categoryId,
   modelId,
