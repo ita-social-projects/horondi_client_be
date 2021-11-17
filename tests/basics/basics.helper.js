@@ -30,6 +30,7 @@ const createBasics = async (basic, image, operations) => {
               type
               value
             }
+            translationsKey
           }
           ... on Error {
             message

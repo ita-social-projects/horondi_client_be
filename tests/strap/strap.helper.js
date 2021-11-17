@@ -28,6 +28,7 @@ const createStrap = async (strap, image, operations) => {
               currency
               value
             }
+            translationsKey
           }
           ... on Error {
             message

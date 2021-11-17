@@ -1,5 +1,11 @@
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
@@ -117,6 +123,11 @@ class BackService {
 
     await addHistoryRecord(historyRecord);
 
+    await updateTranslations(
+      backToUpdate.translationsKey,
+      createTranslations(back)
+    );
+
     return updatedBack;
   }
 
@@ -152,6 +163,8 @@ class BackService {
 
     await addHistoryRecord(historyRecord);
 
+    await deleteTranslations(foundBack.translationsKey);
+
     return Back.findByIdAndDelete(id);
   }
 
@@ -162,6 +175,8 @@ class BackService {
     }
 
     back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
+
+    back.translationsKey = await addTranslations(createTranslations(back));
 
     const newBack = await new Back(back).save();
 

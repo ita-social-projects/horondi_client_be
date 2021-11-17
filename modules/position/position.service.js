@@ -1,6 +1,12 @@
 const Position = require('./position.model');
 
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   POSITION_NOT_FOUND,
   POSITION_ALREADY_EXIST,
@@ -69,6 +75,10 @@ class PositionService {
       throw new RuleError(POSITION_ALREADY_EXIST);
     }
 
+    positionData.translationsKey = await addTranslations(
+      createTranslations(positionData)
+    );
+
     const newPosition = await new Position(positionData).save();
 
     const historyRecord = generateHistoryObject(
@@ -105,6 +115,8 @@ class PositionService {
 
     await addHistoryRecord(historyRecord);
 
+    await deleteTranslations(position.translationsKey);
+
     return deletedPosition;
   }
 
@@ -131,6 +143,11 @@ class PositionService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await updateTranslations(
+      positionToUpdate.translationsKey,
+      createTranslations(position)
+    );
 
     return Position.findByIdAndUpdate(id, position, {
       new: true,

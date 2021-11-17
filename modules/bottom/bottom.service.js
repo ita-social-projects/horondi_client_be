@@ -5,6 +5,12 @@ const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const { BOTTOM_NOT_FOUND } = require('../../error-messages/bottom-messages');
 const {
   STATUS_CODES: { NOT_FOUND },
@@ -100,6 +106,11 @@ class BottomService {
 
     await addHistoryRecord(historyRecord);
 
+    await updateTranslations(
+      bottomToUpdate.translationsKey,
+      createTranslations(bottom)
+    );
+
     return updatedBottom;
   }
 
@@ -130,6 +141,8 @@ class BottomService {
 
     await addHistoryRecord(historyRecord);
 
+    await deleteTranslations(foundBottom.translationsKey);
+
     return Bottom.findByIdAndDelete(id);
   }
 
@@ -142,6 +155,8 @@ class BottomService {
     bottom.additionalPrice = await calculateAdditionalPrice(
       bottom.additionalPrice
     );
+
+    bottom.translationsKey = await addTranslations(createTranslations(bottom));
 
     const newBottom = await new Bottom(bottom).save();
 
