@@ -346,23 +346,15 @@ class CartService {
       throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
     }
 
-    const newPriceForProduct = itemFromCart.cart.items[0].price.map(
-      ({ value, currency }) => ({
-        value: (value / itemFromCart.cart.items[0].quantity) * quantity,
-        currency,
-      })
-    );
+    const priceForProduct = itemFromCart.cart.items[0].price;
+
     if (cart.items?.length > 1) {
       const oldTotalSum = totalCartSum(
         REMOVE_ITEM,
         itemFromCart.cart.items[0].price,
         cart.totalPrice
       );
-      const newTotalSum = totalCartSum(
-        ADD_ITEM,
-        newPriceForProduct,
-        oldTotalSum
-      );
+      const newTotalSum = totalCartSum(ADD_ITEM, priceForProduct, oldTotalSum);
 
       return UserModel.findOneAndUpdate(
         {
@@ -372,7 +364,7 @@ class CartService {
         {
           $set: {
             'cart.totalPrice': newTotalSum,
-            'cart.items.$.price': newPriceForProduct,
+            'cart.items.$.price': priceForProduct,
             'cart.items.$.quantity': quantity,
           },
         },
@@ -386,8 +378,8 @@ class CartService {
       },
       {
         $set: {
-          'cart.totalPrice': newPriceForProduct,
-          'cart.items.$.price': newPriceForProduct,
+          'cart.totalPrice': priceForProduct,
+          'cart.items.$.price': priceForProduct,
           'cart.items.$.quantity': quantity,
         },
       },
