@@ -1,6 +1,4 @@
-const emailRegExp = new RegExp(
-  /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$/
-);
+const emailRegExp = new RegExp(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/i);
 const numberRegExp = new RegExp(/^\+?3?8?(0\d{9})$/);
 const uaLanguageRegExp = new RegExp(/^[а-яїієґ0-9\s]+$/i);
 const enLanguageRegExp = new RegExp(/^[a-z0-9\s]+$/i);
