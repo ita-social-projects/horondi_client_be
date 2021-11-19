@@ -319,8 +319,8 @@ class ProductsService {
     );
     await addHistoryRecord(historyRecord);
     await updateTranslations(
-      productData.translationsKey,
-      createTranslations(product)
+      product.translationsKey,
+      createTranslations(productData)
     );
 
     return Product.findByIdAndUpdate(id, productData, {
