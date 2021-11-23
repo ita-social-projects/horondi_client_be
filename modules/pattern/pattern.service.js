@@ -96,6 +96,7 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }, { _id: adminId }) {
+    const [imagePattern, imageConstructor] = image;
     const patternToUpdate = await Pattern.findById(id).exec();
 
     if (!patternToUpdate) {
@@ -137,13 +138,13 @@ class PatternsService {
       }).exec();
     }
 
-    const uploadResult = await uploadService.uploadFile(image[0]);
-    const images = uploadResult.fileNames;
-    const constructorImg = await uploadSmallImage(image[1]);
-    pattern.constructorImg = constructorImg;
-
-    if (!images && constructorImg) {
-      return Pattern.findByIdAndUpdate(id, pattern).exec();
+    if (imagePattern.file) {
+      const uploadResult = await uploadService.uploadFile(imagePattern);
+      pattern.images = uploadResult.fileNames;
+    }
+    if (imageConstructor) {
+      const constructorImg = await uploadSmallImage(imageConstructor);
+      pattern.constructorImg = constructorImg;
     }
     const foundPattern = await Pattern.findById(id)
       .lean()
@@ -156,7 +157,6 @@ class PatternsService {
       id,
       {
         ...pattern,
-        images,
       },
       {
         new: true,
