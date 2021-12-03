@@ -8,7 +8,8 @@ const {
   descript_title_text_LANG_MIN_CHARS,
   descript_title_text_LANG_MAX_CHARS,
   descript_title_text_VALUE_MIN_CHARS,
-  descript_title_text_VALUE_MAX_CHARS,
+  descript_title_VALUE_MAX_CHARS,
+  text_VALUE_MAX_CHARS,
   languageValidator,
 } = require('./language.validator');
 
@@ -18,7 +19,7 @@ const newsInputValidator = Joi.object({
       descript_title_text_LANG_MIN_CHARS,
       descript_title_text_LANG_MAX_CHARS,
       descript_title_text_VALUE_MIN_CHARS,
-      descript_title_text_VALUE_MAX_CHARS
+      descript_title_VALUE_MAX_CHARS
     )
   ),
   text: Joi.array().items(
@@ -26,7 +27,7 @@ const newsInputValidator = Joi.object({
       descript_title_text_LANG_MIN_CHARS,
       descript_title_text_LANG_MAX_CHARS,
       descript_title_text_VALUE_MIN_CHARS,
-      descript_title_text_VALUE_MAX_CHARS
+      text_VALUE_MAX_CHARS
     )
   ),
   author: Joi.object({

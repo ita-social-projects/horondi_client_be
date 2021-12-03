@@ -7,7 +7,8 @@ const name_VALUE_MAX_CHARS = 30;
 const descript_title_text_LANG_MIN_CHARS = 2;
 const descript_title_text_LANG_MAX_CHARS = 2;
 const descript_title_text_VALUE_MIN_CHARS = 2;
-const descript_title_text_VALUE_MAX_CHARS = 1000;
+const descript_title_VALUE_MAX_CHARS = 1000;
+const text_VALUE_MAX_CHARS = 5000;
 
 const languageValidator = function langValidator(
   langMin,
@@ -35,6 +36,7 @@ module.exports = {
   descript_title_text_LANG_MIN_CHARS,
   descript_title_text_LANG_MAX_CHARS,
   descript_title_text_VALUE_MIN_CHARS,
-  descript_title_text_VALUE_MAX_CHARS,
+  descript_title_VALUE_MAX_CHARS,
+  text_VALUE_MAX_CHARS,
   languageValidator,
 };
