@@ -4,6 +4,10 @@ const {
   emailChatQuestionQuery,
 } = require('./modules/email-chat/email-chat.permission');
 
+const {
+  questionsAnswersMutation,
+} = require('./modules/questions-answers/questions-answers.permissions');
+
 const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
@@ -187,6 +191,7 @@ const permissions = shield(
       ...wishlistPermissionsQuery,
     },
     Mutation: {
+      ...questionsAnswersMutation,
       ...productPermissionsMutation,
       ...cartPermissionsMutations,
       ...userPermissionsMutation,

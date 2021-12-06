@@ -1,4 +1,5 @@
 const DB_COLLECTIONS_NAMES = {
+  QNA: 'QuestionsAnswers',
   BACKGROUND: 'Background',
   BUSINESS_TEXT: 'BusinessText',
   CLOSURE: 'Closure',

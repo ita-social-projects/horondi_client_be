@@ -7,6 +7,11 @@ const {
 } = require('./modules/product/product.resolver');
 
 const {
+  questionsAnswersQuery,
+  questionsAnswersMutation,
+} = require('./modules/questions-answers/questions-answers.resolver');
+
+const {
   ordersQuery,
   ordersMutation,
 } = require('./modules/order/order.resolver');
@@ -207,6 +212,8 @@ const {
 
 const resolvers = {
   Query: {
+    ...questionsAnswersQuery,
+
     ...historyQuery,
 
     ...cartQuery,
@@ -659,6 +666,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...questionsAnswersMutation,
+
     ...cartMutation,
 
     ...uploadMutation,
