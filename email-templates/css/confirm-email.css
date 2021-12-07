@@ -9,14 +9,7 @@ p.registrationText {
     letter-spacing: -0.005em;
     justify-content: center;
 }
-footer p {
-    height: 22px;
-    margin: 0;
-    padding-left: 62px;
-    padding-top: 75px;
-    font-size: 16px;
-    color: #000000;
-}
+
 footer h2 {
     margin: 0;
     padding-left: 61px;
