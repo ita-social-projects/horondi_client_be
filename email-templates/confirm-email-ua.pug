@@ -1,9 +1,11 @@
 extends template-ua
+block styles 
+    link(rel="stylesheet", href="css/confirm-email.css")
 block subheaderText
-    p.registrationText Ви успішно зареєструвались
+        p.registrationText Ви успішно зареєструвались
 block content
     div.contentRegistrationText
-        p.congrats Вітаємо! #[br] Ви успішно зареєструвались в нашому магазині, залишилося тільки #[br] підтвердити вашу електронну адресу:
+        p.congrats Вітаємо! #[br] Ви успішно зареєструвались в нашому магазині, залишилося лише підтвердити вашу електронну адресу:
         button.confirm
             a(href=frontendUrl + `/confirmation/` + token) Підтвердити e-mail
         p.link або перейдіть за посиланням нижче:
