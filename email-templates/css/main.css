@@ -6,7 +6,7 @@ body {
 }
 
 header {
-  background-image: url('https://horondi.blob.core.windows.net/horondi/images/background-email-image.png');
+  background-image: url('./img/emailTemplates.png');
   background-size: cover;
   height: 290px;
   text-align: center;
@@ -44,6 +44,14 @@ footer h2 {
   color: #000000;
 }
 
+footer.border {
+  border-top: 1.5px solid #e0e0e0c4;
+}
+
+p.margin {
+  margin-top: 20px;
+}
+
 p.registrationText,
 p.paymentText,
 p.unfinishedCartOperations,
@@ -69,7 +77,7 @@ div.answerDiv {
   font-size: 18px;
 }
 
-p.condition { 
+p.condition {
   font-size: 14px;
 }
 
@@ -102,6 +110,7 @@ p.code {
   margin-left: 213px;
   background: #000000;
   text-align: center;
+  border-radius: 4px;
 }
 
 .confirm a {

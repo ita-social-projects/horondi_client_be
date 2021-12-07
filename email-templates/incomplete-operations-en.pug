@@ -1,10 +1,11 @@
 extends template-en
+block styles 
+    link(rel="stylesheet", href="css/confirm-email.css")
 block subheaderText
-    p.unfinishedCartOperations Uncompleted purchases
+    p.registrationText You have uncompleted purchases
 block content
-    div.contentUnfinishedCartOperations
+    div.contentRegistrationText
         div.productTableContent
-            p.congrats You have some products left in your cart: #[br]
             table.productTable
                 caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
                 tr.tableHead
@@ -32,8 +33,8 @@ block content
                             td= val.quantity
                             td= `${val.price[0].value} ${val.price[0].currency}`
             
-            p.completeOperationsText Please, complete your purchases
+            p.congrats Please, complete your purchases
             button.confirm
-                a(href=`${frontendUrl}/cart`) Complete purchases
+                a(href=`${frontendUrl}/cart`) COMPLETE PURCHASES
             p.operationsLink or follow the link below:
             a.aoperationsLink(href= `${frontendUrl}/cart`) #{`${frontendUrl}/cart`}
