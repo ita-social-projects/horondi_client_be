@@ -1,10 +1,9 @@
 extends template-ua
 block subheaderText
-    p.unfinishedCartOperations Незавершені покупки
+    p.unfinishedCartOperations У Вас є незавершені покупки
 block content
     div.contentUnfinishedCartOperations
         div.productTableContent
-            p.congrats У Вас залишились товари в корзині: #[br]
             table.productTable
                 caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
                 tr.tableHead
@@ -34,6 +33,6 @@ block content
             
             p.completeOperationsText Завершіть будь ласка свої покупки
             button.confirm
-                a(href=`${frontendUrl}/cart`) Завершити покупки
+                a(href=`${frontendUrl}/cart`) ЗАВЕРШИТИ ПОКУПКИ
             p.operationsLink або перейдіть за посиланням нижче:
             a.aoperationsLink(href= `${frontendUrl}/cart`) #{`${frontendUrl}/cart`}
