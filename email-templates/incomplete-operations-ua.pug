@@ -7,13 +7,13 @@ block content
     div.contentRegistrationText
         div.productTableContent
             table.productTable
-                //- caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
+                caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
                 tr.tableHead
                     th Фото
                     th Назва
                     th Кількість
                     th Ціна
-                //- each val in items
+                each val in items
                     if val.product
                         tr.tableBody
                             td
