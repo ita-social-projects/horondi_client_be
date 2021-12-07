@@ -9,6 +9,12 @@ const {
   PRODUCT_NOT_FOUND,
   PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
@@ -312,6 +318,10 @@ class ProductsService {
       adminId
     );
     await addHistoryRecord(historyRecord);
+    await updateTranslations(
+      product.translationsKey,
+      createTranslations(productData)
+    );
 
     return Product.findByIdAndUpdate(id, productData, {
       new: true,
@@ -335,6 +345,9 @@ class ProductsService {
     };
 
     productData.sizes = await finalPriceCalculation(productData);
+    productData.translationsKey = await addTranslations(
+      createTranslations(productData)
+    );
 
     const newProduct = await new Product(productData).save();
 
@@ -418,6 +431,8 @@ class ProductsService {
         [],
         adminId
       );
+
+      await deleteTranslations(product.translationsKey);
 
       await addHistoryRecord(historyRecord);
 
