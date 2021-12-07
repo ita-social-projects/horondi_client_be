@@ -146,7 +146,6 @@ input OrderItemInput {
   options: ItemOptionsInput
   fixedPrice: [CurrencyInputSet]
   price: [CurrencyInputSet]
-  translationsKey: ID!
 }
 input ItemOptionsInput{
   size: ID!
