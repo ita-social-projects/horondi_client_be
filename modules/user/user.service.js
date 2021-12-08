@@ -1,5 +1,6 @@
 const { UserInputError } = require('apollo-server');
 const { OAuth2Client } = require('google-auth-library');
+const fetch = require('node-fetch');
 const { jwtClient } = require('../../client/jwt-client');
 const { bcryptClient } = require('../../client/bcrypt-client');
 const uploadService = require('../upload/upload.service');
@@ -23,6 +24,7 @@ const {
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
   REACT_APP_GOOGLE_CLIENT_ID,
+  REACT_APP_FACEBOOK_CLIENT_ID,
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
@@ -64,7 +66,7 @@ const {
   LOCALES: { UK },
 } = require('../../consts/locations');
 const {
-  SOURCES: { HORONDI, GOOGLE },
+  SOURCES: { HORONDI, GOOGLE, FACEBOOK },
   USER_FIELDS: { USER_EMAIL, USER_ID },
   userDateFormat,
   roles: { USER },
@@ -495,6 +497,7 @@ class UserService extends FilterHelper {
   }
 
   async googleUser(idToken, rememberMe) {
+    const source = GOOGLE;
     const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
@@ -503,25 +506,51 @@ class UserService extends FilterHelper {
     const dataUser = ticket.getPayload();
     const userid = dataUser.sub;
     if (!(await User.findOne({ email: dataUser.email }).exec())) {
-      await this.registerGoogleUser({
+      await this.registerSocialUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
         email: dataUser.email,
         credentials: [
           {
-            source: GOOGLE,
+            source,
             tokenPass: userid,
           },
         ],
       });
     }
-    return this.loginGoogleUser({
+    return this.loginSocialUser({
       email: dataUser.email,
       rememberMe,
     });
   }
 
-  async loginGoogleUser({ email, rememberMe }) {
+  async facebookUser(idToken, rememberMe) {
+    const source = FACEBOOK;
+    const graphFacebookUrl = `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${idToken}`;
+    const res = await fetch(graphFacebookUrl, {
+      method: 'GET',
+    });
+    const data = await res.json();
+    if (!(await User.findOne({ email: data.email }).exec())) {
+      await this.registerSocialUser({
+        firstName: data.name.split(' ')[0],
+        lastName: data.name.split(' ')[1],
+        email: data.email,
+        credentials: [
+          {
+            source,
+            tokenPass: data.id,
+          },
+        ],
+      });
+    }
+    return this.loginSocialUser({
+      email: data.email,
+      rememberMe,
+    });
+  }
+
+  async loginSocialUser({ email, rememberMe }) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
@@ -541,7 +570,7 @@ class UserService extends FilterHelper {
     };
   }
 
-  async registerGoogleUser({ firstName, lastName, email, credentials }) {
+  async registerSocialUser({ firstName, lastName, email, credentials }) {
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }

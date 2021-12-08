@@ -195,6 +195,23 @@ const googleUser = async (idToken, rememberMe, operations) => {
   });
   return googleUser.data.googleUser;
 };
+const facebookUser = async (idToken, rememberMe, operations) => {
+  const facebookUser = await operations.mutate({
+    mutation: gql`
+      mutation($idToken: String!, $rememberMe: Boolean) {
+        facebookUser(idToken: $idToken, rememberMe: $rememberMe) {
+          token
+          _id
+        }
+      }
+    `,
+    variables: {
+      idToken,
+      rememberMe,
+    },
+  });
+  return facebookUser.data.facebookUser;
+};
 const regenerateAccessToken = async (refreshToken, operations) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -625,6 +642,7 @@ module.exports = {
   deleteUser,
   loginAdmin,
   googleUser,
+  facebookUser,
   blockUser,
   unlockUser,
   confirmUserEmail,
