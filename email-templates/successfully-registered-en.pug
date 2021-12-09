@@ -1,10 +1,11 @@
 extends template-en
 block subheaderText
-    p.registrationText Administrator Registration
+    p.registrationText You were successfully registered
 block content
     div.contentRegistrationText
-        p.congrats Greetings! #[br] To register as an administrator, confirm you email:
+        p.congrats Congratulations! #[br] You have successfully registered in our store, all you have to do is to confirm your email address:
         button.confirm
             a(href=adminUrl + `/confirmation/` + token) CONFIRM E-MAIL
         p.link or follow the link:
         a.alink(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}
+        p.ignore  If you did not register - ignore this message.
