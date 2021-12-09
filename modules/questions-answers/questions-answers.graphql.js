@@ -1,16 +1,16 @@
 const questionsAnswersType = `
     type QuestionsAnswers {
-    id: ID
-    question: String
-    answer: String
+    _id: ID
+    question: [Language]
+    answer: [Language]
     translationsKey: ID
 }
 `;
 
 const questionsAnswersInput = `
     input QuestionsAnswersInput {
-    question: String
-    answer: String
+    question: [LanguageInput]
+    answer: [LanguageInput]
     }`;
 
 module.exports = { questionsAnswersType, questionsAnswersInput };

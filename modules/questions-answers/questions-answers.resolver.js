@@ -3,6 +3,9 @@ const questionsAnswersService = require('./questions-answers.service');
 const questionsAnswersQuery = {
   getAllQuestionsAnswers: () =>
     questionsAnswersService.getAllQuestionsAnswers(),
+
+  getQuestionsAnswersById: async (_, { id }) =>
+    await questionsAnswersService.getQuestionsAnswersById(id),
 };
 
 const questionsAnswersMutation = {

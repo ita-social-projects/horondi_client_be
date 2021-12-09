@@ -529,6 +529,7 @@ const typeDefs = gql`
   union BasicsResult = Basics | Error
   type Query {
     getAllQuestionsAnswers: PaginatedQNAs
+    getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
     getAllCurrencies: [Currency!]!
