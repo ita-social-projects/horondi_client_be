@@ -1,4 +1,4 @@
-body {
+<!DOCTYPE html><html><head><style>body {
   width: 1440px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 300;
@@ -65,6 +65,8 @@ p.blockUserText {
 
 div.contentRegistrationText {
   height: 320px;
+  display: flex;
+  flex-direction: column;
   margin-bottom: 20px;
 }
 
@@ -129,7 +131,8 @@ button.confirm {
   border-radius: 4px;
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: 582px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .confirm a {
@@ -165,8 +168,6 @@ a.alink {
   color: #000000;
   margin-left: 165px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: absolute;
-  margin-top: 30px;
 }
 
 p.successfulRegistrationText {
@@ -247,3 +248,60 @@ caption {
 .aoperationsLink {
   font-size: 17px;
 }
+@media screen and (max-width: 818px) {
+  body {
+    width: 818px;
+  }
+
+  .subheader {
+    position: relative;
+    bottom: 110px;
+  }
+
+  p.registrationText,
+  p.blockUserText,
+  p.successfulRegistrationText {
+    color: aliceblue;
+    font-size: 34px;
+    font-weight: 400;
+  }
+
+  p.congrats {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  div.contentRegistrationText {
+    width: 705px;
+  }
+
+  p.congrats,
+  p.link,
+  a.alink,
+  p.ignore,
+  button.confirm,
+  footer.top,
+  div.unlockUserContent,
+  div.blockUserContent {
+    margin-left: 40px;
+    padding-left: 0;
+  }
+
+  footer.top {
+    border-top: 0px;
+  }
+
+  footer p {
+    padding-top: -40px;
+  }
+
+  div.unlockUserContent,
+  div.blockUserContent {
+    padding-top: 0;
+  }
+
+  footer {
+    width: 705px;
+  }
+}
+</style></head><body><header> </header><main><div class="subheader"><p class="answerReceivedText">Вам надано відповідь на Ваше запитання</p></div><div class="answerDiv"><p>Вітаємо, ! Ви залишили питання на HORONDI.</p><p>Зміст питання: <strong></strong></p><p>Відповідь: <strong></strong></p><p class="condition">Якщо ви не залишали цього запитання - проігноруйте цей лист.</p></div></main><footer class="top"><p>З найкращими побажаннями,</p><h2>HORONDI</h2></footer></body></html>
