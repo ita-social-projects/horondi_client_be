@@ -24,7 +24,6 @@ class QuestionsAnswersService {
 
   async updateQuestionsAnswers(id, questionsAnswers) {
     const foundQuestionsAnswers = await QuestionsAnswers.findById(id).exec();
-
     await updateTranslations(
       foundQuestionsAnswers.translationsKey,
       createTranslations(questionsAnswers)
