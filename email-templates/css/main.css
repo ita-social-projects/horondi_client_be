@@ -65,8 +65,6 @@ p.blockUserText {
 
 div.contentRegistrationText {
   height: 320px;
-  display: flex;
-  flex-direction: column;
   margin-bottom: 20px;
 }
 
@@ -131,8 +129,7 @@ button.confirm {
   border-radius: 4px;
   margin-top: 20px;
   margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 582px;
 }
 
 .confirm a {
@@ -168,6 +165,8 @@ a.alink {
   color: #000000;
   margin-left: 165px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: absolute;
+  margin-top: 30px;
 }
 
 p.successfulRegistrationText {
