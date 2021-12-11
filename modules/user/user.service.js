@@ -24,7 +24,6 @@ const {
   RECOVERY_EXPIRE,
   CONFIRMATION_SECRET,
   REACT_APP_GOOGLE_CLIENT_ID,
-  REACT_APP_FACEBOOK_CLIENT_ID,
   TOKEN_EXPIRES_IN,
 } = require('../../dotenvValidator');
 const {
@@ -526,7 +525,7 @@ class UserService extends FilterHelper {
 
   async facebookUser(idToken, rememberMe) {
     const source = FACEBOOK;
-    const graphFacebookUrl = `https://graph.facebook.com/me?fields=id,name,email,picture&access_token=${idToken}`;
+    const graphFacebookUrl = `${process.env.GRAPH_FACEBOOK_URL}${idToken}`;
     const res = await fetch(graphFacebookUrl, {
       method: 'GET',
     });
