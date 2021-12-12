@@ -5,18 +5,18 @@ const questionsAnswersQuery = {
     questionsAnswersService.getAllQuestionsAnswers(),
 
   getQuestionsAnswersById: async (_, { id }) =>
-    await questionsAnswersService.getQuestionsAnswersById(id),
+    questionsAnswersService.getQuestionsAnswersById(id),
 };
 
 const questionsAnswersMutation = {
   addQuestionsAnswers: async (_, { questionsAnswers }) =>
-    await questionsAnswersService.addQuestionsAnswers(questionsAnswers),
+    questionsAnswersService.addQuestionsAnswers(questionsAnswers),
 
   deleteQuestionsAnswers: async (_, args) =>
-    await questionsAnswersService.deleteQuestionsAnswers(args.id),
+    questionsAnswersService.deleteQuestionsAnswers(args.id),
 
   updateQuestionsAnswers: async (_, args) =>
-    await questionsAnswersService.updateQuestionsAnswers(
+    questionsAnswersService.updateQuestionsAnswers(
       args.id,
       args.questionsAnswers
     ),
