@@ -23,7 +23,7 @@ describe('Questions and answers queries', () => {
     const answers = await getAllQuestionsAnswers(operations);
 
     expect(answers).toBeDefined();
-    expect(answers.items.length).toBe(2);
+    expect(answers.items.length).toBe(1);
   });
 
   it('Should get selected questions and answers', async () => {
