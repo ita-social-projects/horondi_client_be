@@ -4,6 +4,12 @@ const {
   historyType,
   historyFilterInput,
 } = require('./modules/history/history.graphql');
+
+const {
+  questionsAnswersType,
+  questionsAnswersInput,
+} = require('./modules/questions-answers/questions-answers.graphql');
+
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -162,6 +168,8 @@ const { wishlistType } = require('./modules/wishlist/wishlist.graphql');
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${questionsAnswersType}
+  ${questionsAnswersInput}
   ${historyType}
 	${categoryType}
 	${paginatedCategory}
@@ -241,6 +249,9 @@ const typeDefs = gql`
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
+  type PaginatedQNAs {
+    items: [QuestionsAnswers!]!
+  }
   type Language {
     lang: String!
     value: String
@@ -517,6 +528,8 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
+    getAllQuestionsAnswers: PaginatedQNAs
+    getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
     getAllCurrencies: [Currency!]!
@@ -821,6 +834,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
+    deleteQuestionsAnswers(id: ID!): QuestionsAnswers
+    updateQuestionsAnswers(id: ID!
+      questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
