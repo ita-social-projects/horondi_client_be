@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const { schedule } = require('node-cron');
+const { EVERY_NIGHT } = require('../../consts/cron-period');
 
 const clearLogs = () =>
-  schedule('0 4 * * *', () => {
+  schedule(EVERY_NIGHT, () => {
     mongoose.connection.db.dropCollection('logs', (err, results) => results);
   });
 
