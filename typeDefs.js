@@ -924,7 +924,8 @@ const typeDefs = gql`
       user: AdminConfirmInput!
       token: String!
     ): LogicalResult!
-       googleUser(idToken: String!, rememberMe: Boolean): User
+    googleUser(idToken: String!, rememberMe: Boolean): User
+    facebookUser(idToken: String!, rememberMe: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
