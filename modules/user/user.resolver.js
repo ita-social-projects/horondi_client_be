@@ -47,6 +47,8 @@ const userMutation = {
   },
   googleUser: (_, args) =>
     userService.googleUser(args.idToken, args.rememberMe),
+  facebookUser: (_, args) =>
+    userService.facebookUser(args.idToken, args.rememberMe),
   loginUser: async (_, { loginInput }) => {
     try {
       return await userService.loginUser(loginInput);

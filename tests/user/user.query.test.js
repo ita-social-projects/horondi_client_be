@@ -11,7 +11,7 @@ const {
   testUsersSet,
   wrongId,
   filter,
-  googleToken,
+  socialToken,
 } = require('./user.variables');
 const {
   registerUser,
@@ -21,6 +21,7 @@ const {
   getUserById,
   deleteUser,
   googleUser,
+  facebookUser,
   loginAdmin,
   getAllUsersWithToken,
   validateConfirmationToken,
@@ -200,8 +201,11 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Google user must login', async () => {
-    const result = await googleUser(googleToken, true, operations);
-
+    const result = await googleUser(socialToken, true, operations);
+    expect(result).toBeDefined();
+  });
+  test('Facebook user must login', async () => {
+    const result = await facebookUser(socialToken, true, operations);
     expect(result).toBeDefined();
   });
   test('Any user doesn`t allowed to obtain information about all users', async () => {

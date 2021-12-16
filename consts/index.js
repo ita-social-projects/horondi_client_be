@@ -43,6 +43,7 @@ const IMAGES_CONTAINER = 'images';
 const SOURCES = {
   HORONDI: 'horondi',
   GOOGLE: 'google',
+  FACEBOOK: 'facebook',
 };
 const USER_FIELDS = {
   USER_EMAIL: 'email',

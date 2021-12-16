@@ -122,7 +122,7 @@ const filter = {
   days: 1,
 };
 
-const googleToken = 'asd.dsa.cds';
+const socialToken = 'asd.dsa.cds';
 
 const INVALID_FIRST_NAME =
   '"firstName" with value "H" fails to match the required pattern: ';
@@ -137,7 +137,7 @@ module.exports = {
   superAdminUser,
   testUser,
   testUsersSet,
-  googleToken,
+  socialToken,
   user,
   newUser,
   wrongId,
