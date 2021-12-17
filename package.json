@@ -83,7 +83,6 @@
     "passport-google-token": "^0.1.2",
     "path": "^0.12.7",
     "pug": "^3.0.2",
-    "react": "^16.13.1",
     "rotating-file-stream": "^2.0.2",
     "short-unique-id": "^3.2.3",
     "simplesmtp": "^0.3.35",
