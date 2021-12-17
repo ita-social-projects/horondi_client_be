@@ -29,9 +29,8 @@ const createProduct = async (product, operations) => {
 
   return createdProduct.data.addProduct;
 };
-const updateProduct = async (id, product, primary, upload, operations) =>
-  await operations.mutate({
-    mutation: gql`
+const updateProduct = async (id, product, primary, upload, operations) => await operations.mutate({
+  mutation: gql`
       mutation(
         $id: ID!
         $product: ProductInput!
@@ -105,16 +104,15 @@ const updateProduct = async (id, product, primary, upload, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-      product,
-      upload,
-      primary,
-    },
-  });
-const getProductById = async (id, operations) =>
-  await operations.query({
-    query: gql`
+  variables: {
+    id,
+    product,
+    upload,
+    primary,
+  },
+});
+const getProductById = async (id, operations) => await operations.query({
+  query: gql`
       query($id: ID!) {
         getProductById(id: $id) {
           ... on Product {
@@ -190,13 +188,12 @@ const getProductById = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-    },
-  });
-const deleteProduct = async (id, operations) =>
-  await operations.mutate({
-    mutation: gql`
+  variables: {
+    id,
+  },
+});
+const deleteProduct = async (id, operations) => await operations.mutate({
+  mutation: gql`
       mutation($id: ID!) {
         deleteProduct(id: $id) {
           ... on Product {
@@ -208,14 +205,13 @@ const deleteProduct = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-    },
-  });
-const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
-  await operations.query({
-    variables: { skip, limit },
-    query: gql`
+  variables: {
+    id,
+  },
+});
+const getAllProductsWithSkipAndLimit = async (skip, limit, operations) => await operations.query({
+  variables: { skip, limit },
+  query: gql`
       query($skip: Int, $limit: Int) {
         getProducts(skip: $skip, limit: $limit, filter: { colors: [] }) {
           ... on PaginatedProducts {
@@ -229,11 +225,10 @@ const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
         }
       }
     `,
-  });
+});
 
-const getAllProductCategoriesForFilter = async operations =>
-  await operations.query({
-    query: gql`
+const getAllProductCategoriesForFilter = async (operations) => await operations.query({
+  query: gql`
       query {
         getProductsFilters {
           categories {
@@ -242,12 +237,11 @@ const getAllProductCategoriesForFilter = async operations =>
         }
       }
     `,
-  });
+});
 
-const getModelsByCategory = async (id, operations) =>
-  await operations.query({
-    variables: { id },
-    query: gql`
+const getModelsByCategory = async (id, operations) => await operations.query({
+  variables: { id },
+  query: gql`
       query($id: ID!) {
         getModelsByCategory(id: $id) {
           ... on Model {
@@ -264,28 +258,24 @@ const getModelsByCategory = async (id, operations) =>
         }
       }
     `,
-  });
+});
 
-const getPopularProducts = async operations =>
-  await operations.query({
-    query: gql`
+const getPopularProducts = async (operations) => await operations.query({
+  query: gql`
       query {
         getPopularProducts {
           labels
         }
       }
     `,
-  });
+});
 
-const getProductsForWishlist = async userId =>
-  await productService.getProductsForWishlist(userId);
+const getProductsForWishlist = async (userId) => await productService.getProductsForWishlist(userId);
 
-const getProductsForCart = async userId =>
-  await productService.getProductsForCart(userId);
+const getProductsForCart = async (userId) => await productService.getProductsForCart(userId);
 
-const deleteProductImages = async (id, operations) =>
-  await operations.mutate({
-    mutation: gql`
+const deleteProductImages = async (id, operations) => await operations.mutate({
+  mutation: gql`
       mutation($id: ID!, $images: [String!]!) {
         deleteImages(id: $id, images: $images) {
           ... on PrimaryImage {
@@ -299,16 +289,15 @@ const deleteProductImages = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-      images: ['__tests__/homepage-images/img.png'],
-    },
-  });
+  variables: {
+    id,
+    images: ['__tests__/homepage-images/img.png'],
+  },
+});
 
-const uploadProductImages = async () =>
-  await uploadImages(['__tests__/homepage-images/img.png']);
+const uploadProductImages = async () => await uploadImages(['__tests__/homepage-images/img.png']);
 
-const getFilter = async filterOpts => productService.filterItems(filterOpts);
+const getFilter = async (filterOpts) => productService.filterItems(filterOpts);
 
 const getCurrency = (currency, UAH, USD) => getCurrencySign(currency, UAH, USD);
 

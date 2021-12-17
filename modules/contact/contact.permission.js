@@ -18,12 +18,12 @@ const contactPermissionsQuery = {
 const contactPermissionsMutations = {
   addContact: and(
     inputDataValidation(CONTACT, contactInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteContact: hasRoles([ADMIN, SUPERADMIN]),
   updateContact: and(
     inputDataValidation(CONTACT, contactInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
 };
 

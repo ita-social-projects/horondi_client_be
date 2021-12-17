@@ -40,7 +40,7 @@ describe('Homepage looks slider mutations', () => {
     const errorLooksSlide = await addHomePageSlide(
       looksSlide,
       false,
-      operations
+      operations,
     );
 
     expect(errorLooksSlide).toHaveProperty('message', IMAGE_NOT_PROVIDED);
@@ -52,7 +52,7 @@ describe('Homepage looks slider mutations', () => {
       wrongId,
       looksSlide,
       true,
-      operations
+      operations,
     );
 
     expect(updateResult).toHaveProperty('message', SLIDE_NOT_FOUND);
@@ -64,7 +64,7 @@ describe('Homepage looks slider mutations', () => {
       looksSlideId,
       looksSlide,
       false,
-      operations
+      operations,
     );
 
     expect(updateResult).toBeDefined();
@@ -75,7 +75,7 @@ describe('Homepage looks slider mutations', () => {
       looksSlideId,
       looksSlideUpdate,
       true,
-      operations
+      operations,
     );
 
     expect(updateResult).toBeDefined();

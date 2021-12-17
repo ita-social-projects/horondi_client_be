@@ -6,7 +6,7 @@ const {
   ADDITIONAL_PRICE_TYPES: { ABSOLUTE_INDICATOR, RELATIVE_INDICATOR },
 } = require('../../consts/additional-price-types');
 
-const calculateBasePrice = async price => {
+const calculateBasePrice = async (price) => {
   const { convertOptions } = await Currency.findOne().exec();
   return [
     {
@@ -20,7 +20,7 @@ const calculateBasePrice = async price => {
   ];
 };
 
-const calculateAdditionalPrice = async price => {
+const calculateAdditionalPrice = async (price) => {
   const { value, type } = price;
   const { convertOptions } = await Currency.findOne().exec();
   switch (type) {
@@ -50,7 +50,7 @@ const calculateAdditionalPrice = async price => {
   }
 };
 
-const calculateFinalPrice = async price => {
+const calculateFinalPrice = async (price) => {
   const { convertOptions } = await Currency.findOne().exec();
   return [
     {

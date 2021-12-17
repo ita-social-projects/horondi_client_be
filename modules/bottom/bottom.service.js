@@ -74,7 +74,7 @@ class BottomService {
     if (image) {
       if (bottomToUpdate.images) {
         const images = Object.values(bottomToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -85,7 +85,7 @@ class BottomService {
     }
 
     bottom.additionalPrice = await calculateAdditionalPrice(
-      bottom.additionalPrice
+      bottom.additionalPrice,
     );
 
     const updatedBottom = await Bottom.findByIdAndUpdate(id, bottom, {
@@ -101,14 +101,14 @@ class BottomService {
       bottomToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
 
     await updateTranslations(
       bottomToUpdate.translationsKey,
-      createTranslations(bottom)
+      createTranslations(bottom),
     );
 
     return updatedBottom;
@@ -136,7 +136,7 @@ class BottomService {
         ADDITIONAL_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -153,7 +153,7 @@ class BottomService {
     }
 
     bottom.additionalPrice = await calculateAdditionalPrice(
-      bottom.additionalPrice
+      bottom.additionalPrice,
     );
 
     bottom.translationsKey = await addTranslations(createTranslations(bottom));
@@ -173,7 +173,7 @@ class BottomService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

@@ -29,7 +29,7 @@ describe('Closure queries', () => {
     expect(result[0]).toHaveProperty('code', newCategoryInputData.code);
     expect(result[0]).toHaveProperty(
       'available',
-      newCategoryInputData.available
+      newCategoryInputData.available,
     );
     expect(result[0]).toHaveProperty('name', newCategoryInputData.name);
   });

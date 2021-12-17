@@ -73,22 +73,22 @@ describe('Payment queries', () => {
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = constructorBasicData._id;
 
@@ -101,14 +101,14 @@ describe('Payment queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
     orderData = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId),
-      operations
+      operations,
     );
     orderId = orderData._id;
   });
@@ -117,7 +117,7 @@ describe('Payment queries', () => {
     const res = await getPaymentCheckout(
       { orderId, currency: 'UAH', amount: '2' },
       1,
-      operations
+      operations,
     );
     expect(res).toBeDefined();
     expect(res.data.getPaymentCheckout._id).toBe(orderId);

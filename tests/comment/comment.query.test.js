@@ -101,27 +101,27 @@ describe('Comment queries', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = constructorBasicData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const productData = await createProduct(
@@ -133,21 +133,21 @@ describe('Comment queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
     const authRes = await loginAdmin(
       superAdminUser.email,
       superAdminUser.password,
-      operations
+      operations,
     );
     adminId = authRes.data.loginAdmin._id;
     const commentData = await addComment(
       productId,
       newComment(adminId),
-      operations
+      operations,
     );
     commentId = commentData._id;
   });
@@ -156,15 +156,15 @@ describe('Comment queries', () => {
       filterComment,
       paginationComment,
       sortComment,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', countComments);
       expect(receivedComments.items[0]).toHaveProperty('_id', commentId);
       expect(receivedComments.items[0]).toHaveProperty(
         'text',
-        newComment(adminId).text
+        newComment(adminId).text,
       );
       done();
     });
@@ -176,15 +176,15 @@ describe('Comment queries', () => {
       pagination,
       sort,
       adminId,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', countComments);
       expect(receivedComments.items[0]).toHaveProperty('_id', commentId);
       expect(receivedComments.items[0]).toHaveProperty(
         'text',
-        newComment(adminId).text
+        newComment(adminId).text,
       );
       done();
     });
@@ -196,7 +196,7 @@ describe('Comment queries', () => {
       productId,
       newReplyComment(adminId, commentId),
       operations,
-      commentId
+      commentId,
     );
     replyId = createdReply.replyComments[0]._id;
 
@@ -205,39 +205,39 @@ describe('Comment queries', () => {
       pagination,
       sort,
       adminId,
-      operations
+      operations,
     );
 
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedReplies).toBeDefined();
       expect(receivedReplies).toHaveProperty('count', 1);
       expect(receivedReplies.items[0]).toHaveProperty('_id', replyId);
       expect(receivedReplies.items[0]).toHaveProperty(
         'refToReplyComment',
-        commentId
+        commentId,
       );
       expect(receivedReplies.items[0]).toHaveProperty(
         'replyText',
-        newReplyComment(adminId, commentId).replyText
+        newReplyComment(adminId, commentId).replyText,
       );
       done();
     });
   });
   it('Should receive recent comments', async () => {
     const receivedComments = await getRecentComments(limitCount, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments[0]).toHaveProperty('_id', commentId);
       expect(receivedComments[0]).toHaveProperty(
         'text',
-        newComment(adminId).text
+        newComment(adminId).text,
       );
       done();
     });
   });
   it('Should receive all comments written by selected user', async () => {
     const res = await getAllCommentsByUser(adminId, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(res).toBeDefined();
       expect(res[0]).toHaveProperty('product', { _id: productId });
       expect(res[0]).toHaveProperty('text', newComment(adminId).text);
@@ -248,7 +248,7 @@ describe('Comment queries', () => {
   });
   it('should return empty array of comments for unexciting id', async () => {
     const res = await getAllCommentsByUser(userWrongId, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(res[0]).toBeDefined();
       expect(res[0].statusCode).toBe(404);
       expect(res[0].message).toBe(COMMENT_FOR_NOT_EXISTING_USER);
@@ -259,21 +259,21 @@ describe('Comment queries', () => {
     const receivedComments = await getCommentsByProduct(
       { productId, filters: true, ...filterComment },
       paginationComment,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', 1);
       expect(receivedComments.items[0]).toHaveProperty(
         'text',
-        newComment(adminId).text
+        newComment(adminId).text,
       );
       expect(receivedComments.items[0]).toHaveProperty('user', {
         _id: adminId,
       });
       expect(receivedComments.items[0]).toHaveProperty(
         'show',
-        newComment(adminId).show
+        newComment(adminId).show,
       );
       done();
     });
@@ -283,9 +283,9 @@ describe('Comment queries', () => {
     const receivedComments = await getCommentsByProduct(
       { productId: productWrongId, filters: true },
       paginationComment,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(COMMENTS_NOT_FOUND);
@@ -295,7 +295,7 @@ describe('Comment queries', () => {
 
   it('should return one comment', async () => {
     const receivedComment = await getCommentById(commentId, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComment).toBeDefined();
       expect(receivedComment).toEqual({
         product: { _id: productId },
@@ -312,21 +312,21 @@ describe('Comment queries', () => {
     const receivedComments = await getCommentsByProduct(
       { productId, filters: false },
       paginationComment,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', 1);
       expect(receivedComments.items[0]).toHaveProperty(
         'text',
-        updatedComment.text
+        updatedComment.text,
       );
       expect(receivedComments.items[0]).toHaveProperty('user', {
         _id: adminId,
       });
       expect(receivedComments.items[0]).toHaveProperty(
         'show',
-        updatedComment.show
+        updatedComment.show,
       );
       done();
     });
@@ -336,34 +336,36 @@ describe('Comment queries', () => {
       productId,
       newReplyComment(adminId, commentId),
       operations,
-      commentId
+      commentId,
     );
     replyId = receivedReplyComments.replyComments[0]._id;
     const receivedComments = await getReplyCommentsByProduct(
-      { commentId, filters: true, search: '', createdAt: {} },
+      {
+        commentId, filters: true, search: '', createdAt: {},
+      },
       paginationComment,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', 2);
       expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
         '_id',
-        replyId
+        replyId,
       );
       expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
         'replyText',
-        newReplyComment(adminId, commentId).replyText
+        newReplyComment(adminId, commentId).replyText,
       );
       expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
         'answerer',
         {
           _id: adminId,
-        }
+        },
       );
       expect(receivedComments.items[0]).toHaveProperty(
         'showReplyComment',
-        newReplyComment(adminId, commentId).showReplyComment
+        newReplyComment(adminId, commentId).showReplyComment,
       );
       done();
     });
@@ -372,9 +374,9 @@ describe('Comment queries', () => {
     const receivedComments = await getReplyCommentsByProduct(
       { commentId: commentWrongId, filters: true },
       paginationComment,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(REPLY_COMMENTS_NOT_FOUND);
@@ -383,19 +385,19 @@ describe('Comment queries', () => {
   });
   it('Should receive reply comment by id', async () => {
     const receivedComments = await getReplyCommentById(replyId, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.replyComments[0]).toHaveProperty('_id', replyId);
       expect(receivedComments.replyComments[0]).toHaveProperty(
         'replyText',
-        newReplyComment(adminId, commentId).replyText
+        newReplyComment(adminId, commentId).replyText,
       );
       expect(receivedComments.replyComments[0]).toHaveProperty('answerer', {
         _id: adminId,
       });
       expect(receivedComments).toHaveProperty(
         'showReplyComment',
-        newReplyComment(adminId, commentId).showReplyComment
+        newReplyComment(adminId, commentId).showReplyComment,
       );
       done();
     });
@@ -403,22 +405,22 @@ describe('Comment queries', () => {
   it('Should receive reply comment with error', async () => {
     const receivedComments = await getReplyCommentById(
       commentWrongId,
-      operations
+      operations,
     );
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('statusCode', 404);
       expect(receivedComments).toHaveProperty(
         'message',
-        REPLY_COMMENT_NOT_FOUND
+        REPLY_COMMENT_NOT_FOUND,
       );
       done();
     });
   });
   it('should return error when find comment by wrong id', async () => {
     const receivedComment = await getCommentById(commentWrongId, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComment).toBeDefined();
       expect(receivedComment).toHaveProperty('statusCode', 404);
       expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
@@ -428,7 +430,7 @@ describe('Comment queries', () => {
   it('Should receive recent comments with error', async () => {
     await deleteComment(adminId, commentId, operations);
     const receivedComments = await getRecentComments(limitCount, operations);
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(COMMENT_NOT_FOUND);

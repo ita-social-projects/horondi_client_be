@@ -239,7 +239,7 @@ const orderValidator = Joi.object({
       REFUNDED,
       SENT,
       DELIVERED,
-      null
+      null,
     ),
   recipient: nestedUserValidator,
   delivery: nestedDeliveryValidator,
@@ -261,7 +261,7 @@ const orderValidator = Joi.object({
     PAYMENT_DECLINED,
     PAYMENT_REVERSED,
     PAYMENT_PROCESSING,
-    PAYMENT_PAID
+    PAYMENT_PAID,
   ),
 });
 

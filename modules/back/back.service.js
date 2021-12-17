@@ -93,7 +93,7 @@ class BackService {
     if (image) {
       if (backToUpdate.images) {
         const images = Object.values(backToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -118,14 +118,14 @@ class BackService {
       backToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
 
     await updateTranslations(
       backToUpdate.translationsKey,
-      createTranslations(back)
+      createTranslations(back),
     );
 
     return updatedBack;
@@ -158,7 +158,7 @@ class BackService {
         ADDITIONAL_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -194,7 +194,7 @@ class BackService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

@@ -22,12 +22,12 @@ const materialPermissionsQuery = {
 const materialPermissionsMutations = {
   addMaterial: and(
     inputDataValidation(MATERIAL, materialInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteMaterial: hasRoles([ADMIN, SUPERADMIN]),
   updateMaterial: and(
     inputDataValidation(MATERIAL, materialInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
 };
 

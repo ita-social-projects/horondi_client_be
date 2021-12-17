@@ -147,7 +147,7 @@ class ModelsService {
         RESTRICTIONS,
         AVAILABLE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -164,7 +164,7 @@ class ModelsService {
     if (upload) {
       if (modelToUpdate.images) {
         const images = Object.values(modelToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -176,7 +176,7 @@ class ModelsService {
     const { beforeChanges, afterChanges } = getChanges(modelToUpdate, newModel);
     await updateTranslations(
       modelToUpdate.translationsKey,
-      createTranslations(newModel)
+      createTranslations(newModel),
     );
     const historyRecord = generateHistoryObject(
       EDIT_MODEL,
@@ -185,7 +185,7 @@ class ModelsService {
       modelToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -201,8 +201,8 @@ class ModelsService {
     if (modelToDelete.images) {
       await uploadService.deleteFiles(
         Object.values(modelToDelete.images).filter(
-          item => typeof item === 'string' && item
-        )
+          (item) => typeof item === 'string' && item,
+        ),
       );
     }
     await deleteTranslations(modelToDelete.translationsKey);
@@ -225,7 +225,7 @@ class ModelsService {
         AVAILABLE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -239,7 +239,7 @@ class ModelsService {
     }
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorBasic: [constructorElementID] } }
+      { $addToSet: { constructorBasic: [constructorElementID] } },
     );
   }
 
@@ -250,7 +250,7 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBasic: constructorElementID } },
-      { safe: true, upsert: true }
+      { safe: true, upsert: true },
     );
   }
 
@@ -260,7 +260,7 @@ class ModelsService {
     }
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorPattern: [constructorElementID] } }
+      { $addToSet: { constructorPattern: [constructorElementID] } },
     );
   }
 
@@ -271,7 +271,7 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorPattern: constructorElementID } },
-      { safe: true, upsert: true }
+      { safe: true, upsert: true },
     );
   }
 
@@ -281,7 +281,7 @@ class ModelsService {
     }
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorFrontPocket: [constructorElementID] } }
+      { $addToSet: { constructorFrontPocket: [constructorElementID] } },
     );
   }
 
@@ -292,7 +292,7 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorFrontPocket: constructorElementID } },
-      { safe: true, upsert: true }
+      { safe: true, upsert: true },
     );
   }
 
@@ -302,7 +302,7 @@ class ModelsService {
     }
     return Model.findByIdAndUpdate(
       { _id: id },
-      { $addToSet: { constructorBottom: [constructorElementID] } }
+      { $addToSet: { constructorBottom: [constructorElementID] } },
     );
   }
 
@@ -313,7 +313,7 @@ class ModelsService {
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBottom: constructorElementID } },
-      { safe: true, upsert: true }
+      { safe: true, upsert: true },
     );
   }
 }

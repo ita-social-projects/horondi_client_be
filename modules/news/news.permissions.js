@@ -20,12 +20,12 @@ const newsPermissionsQuery = {
 const newsPermissionsMutations = {
   addNews: and(
     inputDataValidation(NEWS, newsInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteNews: hasRoles([ADMIN, SUPERADMIN]),
   updateNews: and(
     inputDataValidation(NEWS, newsInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
 };
 

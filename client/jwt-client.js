@@ -18,7 +18,7 @@ class JWTClient {
     return this.createToken(
       { userId: this.userId },
       secret || SECRET,
-      expiresIn || TOKEN_EXPIRES_IN
+      expiresIn || TOKEN_EXPIRES_IN,
     );
   }
 
@@ -26,7 +26,7 @@ class JWTClient {
     return this.createToken(
       { userId: this.userId },
       secret || SECRET,
-      expiresIn || REFRESH_TOKEN_EXPIRES_IN
+      expiresIn || REFRESH_TOKEN_EXPIRES_IN,
     );
   }
 

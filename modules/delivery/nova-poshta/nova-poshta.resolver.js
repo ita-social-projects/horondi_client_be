@@ -14,7 +14,7 @@ const novaPoshtaQuery = {
     try {
       return await deliveryService.getNovaPoshtaStreets(
         args.cityRef,
-        args.street
+        args.street,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

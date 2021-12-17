@@ -73,7 +73,7 @@ const newConstructorFrontUpdateInp = (materialId, colorId, modelId) => ({
 
 const getConstructorData = (
   construrtorFront,
-  { materialId, colorId, modelId }
+  { materialId, colorId, modelId },
 ) => ({
   name: [
     {

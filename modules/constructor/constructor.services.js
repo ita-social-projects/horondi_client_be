@@ -83,14 +83,14 @@ class ConstructorService {
   async addConstructorElement(
     { constructorElement, upload },
     Model,
-    { _id: adminId }
+    { _id: adminId },
   ) {
     if (upload) {
       constructorElement.image = await uploadSmallImage(upload);
     }
 
     constructorElement.basePrice = await calculateBasePrice(
-      constructorElement.basePrice
+      constructorElement.basePrice,
     );
 
     const basic = await new Model(constructorElement).save();
@@ -109,7 +109,7 @@ class ConstructorService {
         AVAILABLE,
         BASE_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -120,7 +120,7 @@ class ConstructorService {
   async updateConstructorElement(
     { id, constructorElement, upload },
     model,
-    { _id: adminId }
+    { _id: adminId },
   ) {
     const constructorFountElement = await model.findById(id);
 
@@ -134,7 +134,7 @@ class ConstructorService {
     }
 
     constructorElement.basePrice = await calculateBasePrice(
-      constructorElement.basePrice
+      constructorElement.basePrice,
     );
 
     const updatedBasic = await model.findByIdAndUpdate(id, constructorElement, {
@@ -143,7 +143,7 @@ class ConstructorService {
 
     const { beforeChanges, afterChanges } = getChanges(
       constructorFountElement,
-      constructorElement
+      constructorElement,
     );
 
     const historyRecord = generateHistoryObject(
@@ -153,7 +153,7 @@ class ConstructorService {
       updatedBasic._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -186,7 +186,7 @@ class ConstructorService {
         BASE_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

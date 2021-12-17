@@ -4,7 +4,9 @@ const Language = require('../../models/Language').schema;
 const AdditionalCurrencySet = require('../../models/AdditionalCurrencySet')
   .schema;
 const {
-  DB_COLLECTIONS_NAMES: { CLOSURE, MATERIAL, COLOR, MODEL, TRANSLATIONS },
+  DB_COLLECTIONS_NAMES: {
+    CLOSURE, MATERIAL, COLOR, MODEL, TRANSLATIONS,
+  },
 } = require('../../consts/db-collections-names');
 
 const closureSchema = new mongoose.Schema({

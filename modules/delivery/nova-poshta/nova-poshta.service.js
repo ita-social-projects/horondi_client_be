@@ -49,10 +49,10 @@ class NovaPoshtaService {
         FindByString: cityName,
       },
       ADDRESS,
-      GET_CITIES
+      GET_CITIES,
     );
 
-    return res.data.data.slice(0, 10).map(city => ({
+    return res.data.data.slice(0, 10).map((city) => ({
       description: city.Description,
       ref: city.Ref,
       cityID: city.CityID,
@@ -66,10 +66,10 @@ class NovaPoshtaService {
         FindByString: streetName,
       },
       ADDRESS,
-      GET_STREET
+      GET_STREET,
     );
 
-    return res.data.data.slice(0, 10).map(street => ({
+    return res.data.data.slice(0, 10).map((street) => ({
       description: street.Description,
       ref: street.Ref,
       streetsTypeRef: street.StreetsTypeRef,
@@ -83,10 +83,10 @@ class NovaPoshtaService {
         CityName: city,
       },
       ADDRESS_GENERAL,
-      GET_WAREHOUSES
+      GET_WAREHOUSES,
     );
 
-    return res.data.data.map(warehouse => ({
+    return res.data.data.map((warehouse) => ({
       description: warehouse.Description,
       shortAddress: warehouse.ShortAddress,
       number: warehouse.Number,
@@ -128,10 +128,10 @@ class NovaPoshtaService {
         SeatsAmount: seatsAmount,
       },
       INTERNET_DOCUMENT,
-      GET_DOCUMENT_PRICE
+      GET_DOCUMENT_PRICE,
     );
 
-    return res.data.data.map(price => ({
+    return res.data.data.map((price) => ({
       assessedCost: price.AssessedCost,
       cost: price.Cost,
       costRedelivery: price.CostRedelivery,
@@ -194,7 +194,7 @@ class NovaPoshtaService {
         SendersPhone: contactSender.Phones,
       },
       INTERNET_DOCUMENT,
-      SAVE
+      SAVE,
     );
 
     const document = res.data.data[0];
@@ -218,7 +218,7 @@ class NovaPoshtaService {
         Page: INITIAL_PAGES,
       },
       COUNTER_PARTY,
-      GET_COUNTER_PARTIES
+      GET_COUNTER_PARTIES,
     );
 
     return res.data.data[0];
@@ -229,7 +229,7 @@ class NovaPoshtaService {
 
     const street = await this.getNovaPoshtaStreets(
       cityRef,
-      horondiAddress.street
+      horondiAddress.street,
     );
 
     const res = await this.getNovaPoshtaRequest(
@@ -240,7 +240,7 @@ class NovaPoshtaService {
         Flat: horondiAddress.flat,
       },
       ADDRESS,
-      SAVE
+      SAVE,
     );
 
     return res.data.data[0];
@@ -253,7 +253,7 @@ class NovaPoshtaService {
         Page: INITIAL_PAGES,
       },
       COUNTER_PARTY,
-      GET_COUNTER_PARTY_CONTACT_PERSONS
+      GET_COUNTER_PARTY_CONTACT_PERSONS,
     );
 
     return res.data.data[0];

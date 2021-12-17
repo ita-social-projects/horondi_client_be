@@ -18,7 +18,7 @@ const newImgObj = {
   thumbnail: 'thumbnail_test-file',
 };
 
-const newStrap = colorId => ({
+const newStrap = (colorId) => ({
   name: [
     { lang: 'uk', value: 'тест' },
     { lang: 'en', value: 'test' },

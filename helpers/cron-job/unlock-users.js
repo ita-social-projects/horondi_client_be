@@ -18,55 +18,54 @@ const {
 } = require('../../consts/history-actions');
 const { getChanges, generateHistoryObject } = require('../../utils/history');
 
-const unlockUsers = () =>
-  schedule(EVERY_TWELVE_HOURS, async () => {
-    const currentDate = new Date().getTime();
+const unlockUsers = () => schedule(EVERY_TWELVE_HOURS, async () => {
+  const currentDate = new Date().getTime();
 
-    const blockedUsers = await UserModel.find({
-      $and: [
-        { 'banned.blockPeriod': { $ne: UNLOCKED } },
-        { 'banned.blockPeriod': { $ne: INFINITE } },
-      ],
-    }).exec();
+  const blockedUsers = await UserModel.find({
+    $and: [
+      { 'banned.blockPeriod': { $ne: UNLOCKED } },
+      { 'banned.blockPeriod': { $ne: INFINITE } },
+    ],
+  }).exec();
 
-    if (blockedUsers.length) {
-      for (const userData of blockedUsers) {
-        const blockDate = new Date(userData.banned.updatedAt).getTime();
-        const dateDifference = currentDate - blockDate;
-        const blockPeriod = getDaysInMilliseconds(
-          Number(userData.banned.blockPeriod)
-        );
+  if (blockedUsers.length) {
+    for (const userData of blockedUsers) {
+      const blockDate = new Date(userData.banned.updatedAt).getTime();
+      const dateDifference = currentDate - blockDate;
+      const blockPeriod = getDaysInMilliseconds(
+        Number(userData.banned.blockPeriod),
+      );
 
-        if (dateDifference >= blockPeriod) {
-          const unlockedUser = await UserModel.findOneAndUpdate(
-            { _id: userData._id },
-            {
-              $set: {
-                banned: {
-                  blockPeriod: UNLOCKED,
-                  blockCount: userData.banned.blockCount,
-                },
+      if (dateDifference >= blockPeriod) {
+        const unlockedUser = await UserModel.findOneAndUpdate(
+          { _id: userData._id },
+          {
+            $set: {
+              banned: {
+                blockPeriod: UNLOCKED,
+                blockCount: userData.banned.blockCount,
               },
-            }
-          ).exec();
-          const { beforeChanges, afterChanges } = getChanges(
-            userData,
-            unlockedUser
-          );
-          const historyRecord = generateHistoryObject(
-            UNLOCK_ACTION,
-            '',
-            `${userData.firstName} ${userData.lastName}`,
-            userData._id,
-            beforeChanges,
-            afterChanges
-          );
-          await addHistoryRecord(historyRecord);
-          return sendEmail(userData.email, UNLOCK_USER);
-        }
+            },
+          },
+        ).exec();
+        const { beforeChanges, afterChanges } = getChanges(
+          userData,
+          unlockedUser,
+        );
+        const historyRecord = generateHistoryObject(
+          UNLOCK_ACTION,
+          '',
+          `${userData.firstName} ${userData.lastName}`,
+          userData._id,
+          beforeChanges,
+          afterChanges,
+        );
+        await addHistoryRecord(historyRecord);
+        return sendEmail(userData.email, UNLOCK_USER);
       }
     }
-  });
+  }
+});
 
 module.exports = {
   unlockUsers,

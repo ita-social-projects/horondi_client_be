@@ -90,7 +90,7 @@ class PocketService {
         ADDITIONAL_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -108,13 +108,13 @@ class PocketService {
     }
 
     pocket.additionalPrice = await calculateAdditionalPrice(
-      pocket.additionalPrice
+      pocket.additionalPrice,
     );
 
     if (image) {
       if (pocketToUpdate.images) {
         const images = Object.values(pocketToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -132,14 +132,14 @@ class PocketService {
       pocketToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
 
     await updateTranslations(
       pocketToUpdate.translationsKey,
-      createTranslations(pocket)
+      createTranslations(pocket),
     );
 
     return Pocket.findByIdAndUpdate(id, pocket, {
@@ -154,7 +154,7 @@ class PocketService {
     }
 
     pocket.additionalPrice = await calculateAdditionalPrice(
-      pocket.additionalPrice
+      pocket.additionalPrice,
     );
 
     pocket.translationsKey = await addTranslations(createTranslations(pocket));
@@ -175,7 +175,7 @@ class PocketService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

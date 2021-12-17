@@ -16,11 +16,11 @@ const positionPermissionsQuery = {
 const positionPermissionsMutations = {
   addPosition: and(
     inputDataValidation(POSITION, positionInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   updatePosition: and(
     inputDataValidation(POSITION, positionInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deletePosition: hasRoles([ADMIN, SUPERADMIN]),
 };

@@ -19,7 +19,9 @@ const {
   updateUserValidator,
 } = require('../../validators/user.validator');
 const {
-  INPUT_FIELDS: { USER, LOGIN_INPUT, EMAIL, PASSWORD },
+  INPUT_FIELDS: {
+    USER, LOGIN_INPUT, EMAIL, PASSWORD,
+  },
 } = require('../../consts/input-fields');
 
 const userPermissionsQuery = {
@@ -38,7 +40,7 @@ const userPermissionsMutation = {
   deleteUser: hasRoles([SUPERADMIN]),
   updateUserById: and(
     inputDataValidation(USER, updateUserValidator),
-    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN]))
+    or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   ),
   regenerateAccessToken: allow,
   confirmUser: allow,
@@ -49,15 +51,15 @@ const userPermissionsMutation = {
   checkIfTokenIsValid: allow,
   sendEmailConfirmation: and(
     inputDataValidation(EMAIL, emailUserValidator),
-    isAuthorized
+    isAuthorized,
   ),
   registerAdmin: and(
     inputDataValidation(USER, registerAdminValidator),
-    hasRoles([SUPERADMIN])
+    hasRoles([SUPERADMIN]),
   ),
   completeAdminRegister: inputDataValidation(
     USER,
-    completeAdminRegisterValidator
+    completeAdminRegisterValidator,
   ),
 };
 

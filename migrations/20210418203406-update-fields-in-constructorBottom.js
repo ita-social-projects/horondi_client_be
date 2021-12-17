@@ -13,21 +13,21 @@ module.exports = {
       {
         $set: constructorBottomOneExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
     await db.collection('constructorbottoms').updateOne(
       { _id: ObjectId('604e33a0b17ecf65048afd72') },
       {
         $set: constructorBottomTwoExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
     await db.collection('constructorbottoms').updateOne(
       { _id: ObjectId('604e33bcb17ecf65048afd73') },
       {
         $set: constructorBottomThreeExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
   },
 
@@ -39,7 +39,7 @@ module.exports = {
         $unset: { constructorBottomOneExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
     await db.collection('constructorbottoms').updateOne(
       { _id: ObjectId('604e33a0b17ecf65048afd72') },
@@ -48,7 +48,7 @@ module.exports = {
         $unset: { constructorBottomTwoExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
     await db.collection('constructorbottoms').updateOne(
       { _id: ObjectId('604e33bcb17ecf65048afd73') },
@@ -57,7 +57,7 @@ module.exports = {
         $unset: { constructorBottomThreeExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

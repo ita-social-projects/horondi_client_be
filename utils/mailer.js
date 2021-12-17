@@ -16,7 +16,7 @@ class Mailer {
       throw new Error('Mailer parameters required');
     }
 
-    Object.keys(opts).forEach(key => {
+    Object.keys(opts).forEach((key) => {
       if (!necesarryMailCredentials.includes(key)) {
         throw new Error(`Please add '${key}' property to mailer options!`);
       }
@@ -31,7 +31,7 @@ class Mailer {
     const oAuth2Client = new google.auth.OAuth2(
       this.opts.clientId,
       this.opts.clientSecret,
-      this.opts.redirectUri
+      this.opts.redirectUri,
     );
     oAuth2Client.setCredentials({ refresh_token: this.opts.refreshToken });
 

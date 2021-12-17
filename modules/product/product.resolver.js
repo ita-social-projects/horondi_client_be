@@ -16,8 +16,7 @@ const productsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getModelsByCategory: (parent, args) =>
-    productsService.getModelsByCategory(args.id),
+  getModelsByCategory: (parent, args) => productsService.getModelsByCategory(args.id),
   getPopularProducts: () => productsService.getPopularProducts(),
   getProductsFilters: () => productsService.getProductsFilters(),
 };
@@ -44,7 +43,7 @@ const productsMutation = {
         args.product,
         args.upload,
         args.primary,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

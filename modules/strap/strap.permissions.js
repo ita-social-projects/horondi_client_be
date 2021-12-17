@@ -26,11 +26,11 @@ const strapPermissionsMutations = {
   addStrap: and(
     inputDataValidation(STRAP, inputStrapValidator),
     checkIfItemExists(STRAP, StrapModel),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   updateStrap: and(
     inputDataValidation(STRAP, inputStrapValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteStrap: and(hasRoles([ADMIN, SUPERADMIN])),
 };

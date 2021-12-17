@@ -31,7 +31,7 @@ const contextExtension = {
   adminUrl: ADMIN_BASE_URI,
 };
 
-const onSendMailError = err => {
+const onSendMailError = (err) => {
   getLoggerHttp().error(JSON.stringify({ key: err.code, value: err.message }));
 };
 
@@ -44,7 +44,7 @@ const mailer = new Mailer(
     redirectUri: GMAIL_API_REDIRECT_URI,
     refreshToken: GMAIL_API_REFRESH_TOKEN,
   },
-  onSendMailError
+  onSendMailError,
 );
 
 (async () => {
@@ -54,13 +54,13 @@ const mailer = new Mailer(
       logger.notice('MAILER CONNECTION CORRECT.');
     } else {
       getLoggerHttp().error(
-        JSON.stringify({ key: UNAUTHORIZED, value: INVALID_AUTH })
+        JSON.stringify({ key: UNAUTHORIZED, value: INVALID_AUTH }),
       );
       await mailer.reconnect();
     }
   } catch (err) {
     getLoggerHttp().error(
-      JSON.stringify({ key: NOT_FOUND, value: INVALID_CONNECTION })
+      JSON.stringify({ key: NOT_FOUND, value: INVALID_CONNECTION }),
     );
   }
 })();

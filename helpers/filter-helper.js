@@ -2,13 +2,17 @@ const mongoose = require('mongoose');
 
 const { removeDaysFromData } = require('../modules/helper-functions');
 const {
-  USER_BLOCK_PERIOD: { UNLOCKED, INFINITE, TWO_MONTH, ONE_MONTH },
+  USER_BLOCK_PERIOD: {
+    UNLOCKED, INFINITE, TWO_MONTH, ONE_MONTH,
+  },
 } = require('../consts/user-block-period');
 
 class FilterHelper {
   filterItems(args = {}) {
     const filter = {};
-    const { roles, days, banned, _id, search } = args;
+    const {
+      roles, days, banned, _id, search,
+    } = args;
 
     if (roles?.length) {
       filter.role = { $in: roles };
@@ -18,10 +22,9 @@ class FilterHelper {
       const [isBanned, all] = banned;
 
       if (!all) {
-        filter['banned.blockPeriod'] =
-          isBanned === 'false'
-            ? { $in: [UNLOCKED] }
-            : { $in: [INFINITE, TWO_MONTH, ONE_MONTH] };
+        filter['banned.blockPeriod'] = isBanned === 'false'
+          ? { $in: [UNLOCKED] }
+          : { $in: [INFINITE, TWO_MONTH, ONE_MONTH] };
       }
     }
 
@@ -33,7 +36,7 @@ class FilterHelper {
     }
 
     if (_id?.length) {
-      filter._id = { $in: _id.map(id => mongoose.Types.ObjectId(id)) };
+      filter._id = { $in: _id.map((id) => mongoose.Types.ObjectId(id)) };
     }
 
     if (search && search.trim()) {

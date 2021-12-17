@@ -30,7 +30,7 @@ const getCommentsRepliesByUserInput = {
   pagination: paginationComment,
   sort: sortComment,
 };
-const newComment = userId => ({
+const newComment = (userId) => ({
   text: 'Test text',
   user: userId,
   show: false,

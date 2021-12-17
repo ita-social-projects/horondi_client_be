@@ -18,12 +18,12 @@ const sizePermissionsQuery = {
 const sizePermissionsMutations = {
   addSize: and(
     inputDataValidation(SIZE, sizeInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteSize: hasRoles([ADMIN, SUPERADMIN]),
   updateSize: and(
     inputDataValidation(SIZE, sizeInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
 };
 

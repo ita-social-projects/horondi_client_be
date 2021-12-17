@@ -105,20 +105,20 @@ class PatternsService {
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
+        pattern.additionalPrice,
       );
     }
 
     await updateTranslations(
       patternToUpdate.translationsKey,
-      createTranslations(pattern)
+      createTranslations(pattern),
     );
 
     await updatePrices(patternToUpdate, pattern, PATTERN, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
-      pattern
+      pattern,
     );
 
     const historyRecord = generateHistoryObject(
@@ -128,7 +128,7 @@ class PatternsService {
       patternToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -160,7 +160,7 @@ class PatternsService {
       },
       {
         new: true,
-      }
+      },
     ).exec();
   }
 
@@ -175,11 +175,11 @@ class PatternsService {
 
     if (pattern.additionalPrice) {
       pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
+        pattern.additionalPrice,
       );
     }
     pattern.translationsKey = await addTranslations(
-      createTranslations(pattern)
+      createTranslations(pattern),
     );
 
     const newPattern = await new Pattern({ ...pattern, images }).save();
@@ -198,7 +198,7 @@ class PatternsService {
         ADDITIONAL_PRICE,
         AVAILABLE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -217,7 +217,7 @@ class PatternsService {
     await deleteTranslations(foundPattern.translationsKey);
 
     const deletedImages = await uploadService.deleteFiles(
-      Object.values(foundPattern.images)
+      Object.values(foundPattern.images),
     );
 
     await uploadService.deleteFiles([foundPattern.constructorImg]);
@@ -237,7 +237,7 @@ class PatternsService {
           AVAILABLE,
         ]),
         [],
-        adminId
+        adminId,
       );
 
       await addHistoryRecord(historyRecord);

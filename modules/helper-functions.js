@@ -15,17 +15,14 @@ const {
 } = require('../consts');
 const { minDefaultDate } = require('../consts/date-range');
 
-const removeDaysFromData = (days, currentDate) =>
-  currentDate - days * dayInMilliseconds;
+const removeDaysFromData = (days, currentDate) => currentDate - days * dayInMilliseconds;
 
-const changeDataFormat = (data, options) =>
-  new Date(data).toLocaleString('en-US', options);
+const changeDataFormat = (data, options) => new Date(data).toLocaleString('en-US', options);
 
-const countItemsOccurrence = items =>
-  items.reduce((acc, el) => {
-    acc[el] = (acc[el] || 0) + 1;
-    return acc;
-  }, {});
+const countItemsOccurrence = (items) => items.reduce((acc, el) => {
+  acc[el] = (acc[el] || 0) + 1;
+  return acc;
+}, {});
 
 const setCalendar = (names, counts, days) => {
   const calendar = [];
@@ -34,9 +31,9 @@ const setCalendar = (names, counts, days) => {
   for (let i = days - 1; i >= 0; i--) {
     const chartDate = changeDataFormat(
       removeDaysFromData(i, today),
-      userDateFormat
+      userDateFormat,
     );
-    const countIndex = names.findIndex(day => day === chartDate);
+    const countIndex = names.findIndex((day) => day === chartDate);
 
     calendar.push({
       range: chartDate,
@@ -65,8 +62,8 @@ const reduceByYear = (days, calendar) => {
 
   while (calendar.length) {
     if (
-      calendar[1] &&
-      calendar[0].range.slice(0, 3) === calendar[1].range.slice(0, 3)
+      calendar[1]
+      && calendar[0].range.slice(0, 3) === calendar[1].range.slice(0, 3)
     ) {
       month.push(calendar.shift());
     } else {
@@ -76,7 +73,7 @@ const reduceByYear = (days, calendar) => {
     }
   }
 
-  return year.map(item => reduceDatesObjectArr(days, item));
+  return year.map((item) => reduceDatesObjectArr(days, item));
 };
 
 const reduceByMonths = (days, calendar, range) => {
@@ -87,17 +84,16 @@ const reduceByMonths = (days, calendar, range) => {
   return months;
 };
 
-const reduceDatesObjectArr = (days, item) =>
-  item.reduce(
-    (acc, curr) => ({
-      range: acc.range,
-      counts: acc.counts + curr.counts,
-    }),
-    {
-      range: transformLabel(days, item),
-      counts: 0,
-    }
-  );
+const reduceDatesObjectArr = (days, item) => item.reduce(
+  (acc, curr) => ({
+    range: acc.range,
+    counts: acc.counts + curr.counts,
+  }),
+  {
+    range: transformLabel(days, item),
+    counts: 0,
+  },
+);
 
 const reduceByDaysCount = (names, counts, days) => {
   if (names.length && counts.length) {
@@ -128,29 +124,28 @@ const reduceByDaysCount = (names, counts, days) => {
     }
 
     return {
-      labels: result.map(el => el.range),
-      count: result.map(el => el.counts),
+      labels: result.map((el) => el.range),
+      count: result.map((el) => el.counts),
     };
   }
   return { labels: [], count: [] };
 };
 
-const transliterate = words => {
+const transliterate = (words) => {
   const transliterated_words = words
     .split('')
-    .map(char => (char === exception ? '' : dictionary[char] || char))
+    .map((char) => (char === exception ? '' : dictionary[char] || char))
     .join('');
 
   return _.words(transliterated_words).join(hyphen);
 };
 
-const isUserBoughtProduct = (productId, userId) =>
-  Order.find({
-    'items.product': productId,
-    'user.id': userId,
-  }).exec();
+const isUserBoughtProduct = (productId, userId) => Order.find({
+  'items.product': productId,
+  'user.id': userId,
+}).exec();
 
-const filterOptionComments = filter => {
+const filterOptionComments = (filter) => {
   const filterOptions = {};
   let maxDate = new Date();
   let minDate = minDefaultDate;
@@ -184,26 +179,22 @@ const filterOptionComments = filter => {
 const filteredReplyComments = (filter, arr) => {
   let reply = arr;
   if (filter?.showReplyComment?.length) {
-    reply = reply.filter(item =>
-      filter.showReplyComment.includes(item.showReplyComment.toString())
-    );
+    reply = reply.filter((item) => filter.showReplyComment.includes(item.showReplyComment.toString()));
   }
   if (filter?.search && filter?.search !== '') {
     reply = reply.filter(
-      item =>
-        item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) > -1
+      (item) => item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) > -1,
     );
   }
   if (
-    filter?.createdAt &&
-    Object.keys(filter?.createdAt).length > 0 &&
-    filter?.createdAt?.dateFrom !== '' &&
-    filter?.createdAt?.dateTo !== ''
+    filter?.createdAt
+    && Object.keys(filter?.createdAt).length > 0
+    && filter?.createdAt?.dateFrom !== ''
+    && filter?.createdAt?.dateTo !== ''
   ) {
     reply = reply.filter(
-      item =>
-        new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
-        new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
+      (item) => new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom)
+        && new Date(item.createdAt) <= new Date(filter.createdAt.dateTo),
     );
   }
   return reply;

@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
 
-const getUkrPoshtaRegions = async operations => {
+const getUkrPoshtaRegions = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {

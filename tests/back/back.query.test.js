@@ -60,7 +60,7 @@ describe('Back query test', () => {
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
 

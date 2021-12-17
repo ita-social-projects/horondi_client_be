@@ -52,17 +52,17 @@ describe('Pattern queries', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     res = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = res._id;
   });
@@ -72,7 +72,7 @@ describe('Pattern queries', () => {
       pagination.limit,
       pagination.skip,
       filter,
-      operations
+      operations,
     );
     expect(allPatterns.items).toEqual([
       {
@@ -100,7 +100,7 @@ describe('Pattern queries', () => {
       pagination.limit,
       pagination.skip,
       filter,
-      operations
+      operations,
     );
 
     expect(paginatedPatterns.items).toHaveLength(1);

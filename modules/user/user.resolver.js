@@ -6,8 +6,7 @@ const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(args),
-  getUsersForStatistic: (parent, args, context) =>
-    userService.getUsersForStatistic(args),
+  getUsersForStatistic: (parent, args, context) => userService.getUsersForStatistic(args),
   getUserByToken: (parent, args, context) => context.user,
   getUserById: (parent, args) => userService.getUser(args.id),
   validateConfirmationToken: (parent, args) => {
@@ -20,8 +19,7 @@ const userQuery = {
       };
     }
   },
-  getPurchasedProducts: (parent, { id }) =>
-    userService.getPurchasedProducts(id),
+  getPurchasedProducts: (parent, { id }) => userService.getPurchasedProducts(id),
 };
 const userMutation = {
   blockUser: async (_, { userId }, { user }) => {
@@ -45,10 +43,8 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  googleUser: (_, args) =>
-    userService.googleUser(args.idToken, args.rememberMe),
-  facebookUser: (_, args) =>
-    userService.facebookUser(args.idToken, args.rememberMe),
+  googleUser: (_, args) => userService.googleUser(args.idToken, args.rememberMe),
+  facebookUser: (_, args) => userService.facebookUser(args.idToken, args.rememberMe),
   loginUser: async (_, { loginInput }) => {
     try {
       return await userService.loginUser(loginInput);
@@ -70,8 +66,7 @@ const userMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateUserById: (parent, args, context) =>
-    userService.updateUserById(args.user, context.user, args.image, args.id),
+  updateUserById: (parent, args, context) => userService.updateUserById(args.user, context.user, args.image, args.id),
   regenerateAccessToken: async (parent, args) => {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
@@ -86,8 +81,7 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  recoverUser: (parent, args) =>
-    userService.recoverUser(args.email, args.language),
+  recoverUser: (parent, args) => userService.recoverUser(args.email, args.language),
   switchUserStatus: async (parent, args) => {
     try {
       return await userService.switchUserStatus(args.id);
@@ -98,15 +92,13 @@ const userMutation = {
       };
     }
   },
-  resetPassword: (parent, args) =>
-    userService.resetPassword(args.password, args.token),
-  checkIfTokenIsValid: (parent, args) =>
-    userService.checkIfTokenIsValid(args.token),
+  resetPassword: (parent, args) => userService.resetPassword(args.password, args.token),
+  checkIfTokenIsValid: (parent, args) => userService.checkIfTokenIsValid(args.token),
   sendEmailConfirmation: async (parent, args) => {
     try {
       return await userService.sendConfirmationLetter(
         args.email,
-        args.language
+        args.language,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

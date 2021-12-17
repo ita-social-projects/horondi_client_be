@@ -42,7 +42,7 @@ describe('Basics Mutation tests', () => {
     const createBasicsTest = await createBasics(
       basicsInput,
       'image.jpg',
-      operations
+      operations,
     );
     basicsId = createBasicsTest._id;
 
@@ -56,7 +56,7 @@ describe('Basics Mutation tests', () => {
       basicsId,
       basicsUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(updateBasicTest).toBeDefined();
@@ -67,7 +67,7 @@ describe('Basics Mutation tests', () => {
       basicsId,
       basicsUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(updateBasicTest).toBeDefined();
@@ -88,7 +88,7 @@ describe('Basics Mutation tests', () => {
       wrongId,
       basicsUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();

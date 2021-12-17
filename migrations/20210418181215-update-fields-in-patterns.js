@@ -7,7 +7,7 @@ module.exports = {
       {
         $set: patternExtraFields,
         $unset: { material: '', handmade: '', default: '' },
-      }
+      },
     );
   },
 
@@ -19,7 +19,7 @@ module.exports = {
         $unset: { patternExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

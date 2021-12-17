@@ -39,7 +39,7 @@ describe('Business page queries', () => {
   test('Should receive selected business text', async () => {
     const receivedBusinessText = await getBusinessTextById(
       businessText._id,
-      operations
+      operations,
     );
 
     expect(receivedBusinessText).toMatchSnapshot();
@@ -53,14 +53,14 @@ describe('Business page queries', () => {
   test('Returning not existing business text should return error message', async () => {
     const notExistingBusinessText = await getBusinessTextById(
       notExistBusinessTextId,
-      operations
+      operations,
     );
 
     expect(notExistingBusinessText).toBeDefined();
     expect(notExistingBusinessText).toHaveProperty('statusCode', 404);
     expect(notExistingBusinessText).toHaveProperty(
       'message',
-      BUSINESS_TEXT_NOT_FOUND
+      BUSINESS_TEXT_NOT_FOUND,
     );
   });
   test('Should receive selected business text by code', async () => {
@@ -76,14 +76,14 @@ describe('Business page queries', () => {
   test('Should return error if page by code not found', async () => {
     const notExistsBusinessText = await getBusinessTextByCode(
       wrongCode,
-      operations
+      operations,
     );
 
     expect(notExistsBusinessText).toBeDefined();
     expect(notExistsBusinessText).toHaveProperty('statusCode', 404);
     expect(notExistsBusinessText).toHaveProperty(
       'message',
-      BUSINESS_TEXT_NOT_FOUND
+      BUSINESS_TEXT_NOT_FOUND,
     );
   });
 

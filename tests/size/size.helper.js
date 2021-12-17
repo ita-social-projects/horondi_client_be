@@ -71,7 +71,7 @@ const deleteSize = async (id, operations) => {
   });
   return result.data.deleteSize;
 };
-const getAllSizes = async operations => {
+const getAllSizes = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {

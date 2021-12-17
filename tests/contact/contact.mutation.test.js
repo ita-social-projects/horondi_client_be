@@ -29,13 +29,13 @@ describe('Contacts mutations test', () => {
     expect(addedContact).toHaveProperty(
       'openHours',
       { lang: contact.openHours[0].lang, value: contact.openHours[0].value },
-      { lang: contact.openHours[1].lang, value: contact.openHours[1].value }
+      { lang: contact.openHours[1].lang, value: contact.openHours[1].value },
     );
     expect(addedContact.openHours).toBeInstanceOf(Array);
     expect(addedContact).toHaveProperty(
       'address',
       { lang: contact.address[0].lang, value: contact.address[0].value },
-      { lang: contact.address[1].lang, value: contact.address[1].value }
+      { lang: contact.address[1].lang, value: contact.address[1].value },
     );
     expect(addedContact.address).toBeInstanceOf(Array);
     expect(addedContact).toHaveProperty('email', contact.email);
@@ -45,7 +45,7 @@ describe('Contacts mutations test', () => {
     const res = await updateContact(
       notExistContactId,
       updatedContact,
-      operations
+      operations,
     );
 
     expect(res).toHaveProperty('message', CONTACT_NOT_FOUND);

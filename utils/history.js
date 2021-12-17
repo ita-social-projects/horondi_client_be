@@ -7,7 +7,7 @@ const generateHistoryObject = (
   subjectId,
   valueBeforeChange,
   valueAfterChange,
-  userId = ''
+  userId = '',
 ) => ({
   action,
   subject: {
@@ -39,7 +39,7 @@ const getChanges = (objBefore, objWithChanges) => {
 const generateHistoryChangesData = (obj, keys = []) => {
   const changes = [];
 
-  keys.forEach(key => {
+  keys.forEach((key) => {
     changes.push({ [key]: obj[key] });
   });
 

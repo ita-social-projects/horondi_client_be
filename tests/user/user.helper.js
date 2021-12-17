@@ -6,7 +6,7 @@ const registerUser = async (
   email,
   pass,
   language,
-  operations
+  operations,
 ) => {
   const registeredUser = await operations.mutate({
     mutation: gql`
@@ -62,7 +62,7 @@ const updateUserById = async (
   orders,
   comments,
   token,
-  operations
+  operations,
 ) => {
   const updatedUser = await operations.mutate({
     mutation: gql`
@@ -231,7 +231,7 @@ const regenerateAccessToken = async (refreshToken, operations) => {
   });
   return res.data.regenerateAccessToken;
 };
-const getAllUsers = async operations => {
+const getAllUsers = async (operations) => {
   const allUsers = await operations.query({
     query: gql`
       query {
@@ -259,7 +259,7 @@ const getAllUsers = async operations => {
 
   return allUsers;
 };
-const getUserByToken = async operations => {
+const getUserByToken = async (operations) => {
   const user = await operations.query({
     query: gql`
       query {
@@ -309,9 +309,8 @@ const getUsersForStatistic = async (filter, operations) => {
 
   return res.data;
 };
-const getUserById = async (userId, operations) =>
-  await operations.query({
-    query: gql`
+const getUserById = async (userId, operations) => await operations.query({
+  query: gql`
       query($userId: ID!) {
         getUserById(id: $userId) {
           _id
@@ -331,10 +330,10 @@ const getUserById = async (userId, operations) =>
         }
       }
     `,
-    variables: {
-      userId,
-    },
-  });
+  variables: {
+    userId,
+  },
+});
 const getPurchasedProducts = async (userId, operations) => {
   const res = await operations.query({
     query: gql`
@@ -531,7 +530,7 @@ const completeAdminRegister = async (
   firstName,
   lastName,
   password,
-  operations
+  operations,
 ) => {
   const result = await operations.mutate({
     mutation: gql`
@@ -558,9 +557,8 @@ const completeAdminRegister = async (
   });
   return result;
 };
-const switchUserStatus = async (userId, operations) =>
-  await operations.mutate({
-    mutation: gql`
+const switchUserStatus = async (userId, operations) => await operations.mutate({
+  mutation: gql`
       mutation($id: ID!) {
         switchUserStatus(id: $id) {
           ... on SuccessfulResponse {
@@ -573,13 +571,12 @@ const switchUserStatus = async (userId, operations) =>
         }
       }
     `,
-    variables: {
-      id: userId,
-    },
-  });
-const loginAdmin = async (email, password, operations) =>
-  await operations.mutate({
-    mutation: gql`
+  variables: {
+    id: userId,
+  },
+});
+const loginAdmin = async (email, password, operations) => await operations.mutate({
+  mutation: gql`
       mutation($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
           token
@@ -587,16 +584,15 @@ const loginAdmin = async (email, password, operations) =>
         }
       }
     `,
-    variables: {
-      user: {
-        email,
-        password,
-      },
+  variables: {
+    user: {
+      email,
+      password,
     },
-  });
-const getAllUsersWithToken = async (token, operations) =>
-  await operations.query({
-    query: gql`
+  },
+});
+const getAllUsersWithToken = async (token, operations) => await operations.query({
+  query: gql`
       {
         getAllUsers {
           items {
@@ -608,15 +604,14 @@ const getAllUsersWithToken = async (token, operations) =>
         }
       }
     `,
-    context: {
-      headers: {
-        token,
-      },
+  context: {
+    headers: {
+      token,
     },
-  });
-const validateConfirmationToken = async (token, operations) =>
-  await operations.query({
-    query: gql`
+  },
+});
+const validateConfirmationToken = async (token, operations) => await operations.query({
+  query: gql`
       query($token: String!) {
         validateConfirmationToken(token: $token) {
           ... on SuccessfulResponse {
@@ -628,10 +623,10 @@ const validateConfirmationToken = async (token, operations) =>
         }
       }
     `,
-    variables: {
-      token,
-    },
-  });
+  variables: {
+    token,
+  },
+});
 
 module.exports = {
   registerUser,

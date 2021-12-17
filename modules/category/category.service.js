@@ -86,13 +86,13 @@ class CategoryService extends FilterHelper {
 
     await updateTranslations(
       categoryToUpdate.translationsKey,
-      createTranslations(category)
+      createTranslations(category),
     );
 
     if (category) {
       const { beforeChanges, afterChanges } = getChanges(
         categoryToUpdate,
-        category
+        category,
       );
 
       const historyRecord = generateHistoryObject(
@@ -102,7 +102,7 @@ class CategoryService extends FilterHelper {
         categoryToUpdate._id,
         beforeChanges,
         afterChanges,
-        adminId
+        adminId,
       );
       await addHistoryRecord(historyRecord);
     }
@@ -131,7 +131,7 @@ class CategoryService extends FilterHelper {
       },
       {
         new: true,
-      }
+      },
     ).exec();
   }
 
@@ -141,9 +141,9 @@ class CategoryService extends FilterHelper {
       pagination: {},
       sort: {},
     });
-    return categories.items.map(async category => {
+    return categories.items.map(async (category) => {
       const models = await Model.find({ category: category._id }).exec();
-      const modelsFields = models.map(async model => ({
+      const modelsFields = models.map(async (model) => ({
         name: model.name,
         _id: model._id,
         translationsKey: model.translationsKey,
@@ -185,7 +185,7 @@ class CategoryService extends FilterHelper {
       newCategory._id,
       [],
       generateHistoryChangesData(newCategory, [NAME, CODE]),
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -219,7 +219,7 @@ class CategoryService extends FilterHelper {
     await this.cascadeUpdateRelatives(filter, updateSettings);
 
     const images = Object.values(category.images).filter(
-      item => typeof item === 'string' && item
+      (item) => typeof item === 'string' && item,
     );
 
     if (images.length) {
@@ -234,7 +234,7 @@ class CategoryService extends FilterHelper {
         category._id,
         generateHistoryChangesData(category, [NAME, CODE]),
         [],
-        adminId
+        adminId,
       );
       await addHistoryRecord(historyRecord);
 
@@ -244,7 +244,7 @@ class CategoryService extends FilterHelper {
 
   async getCategoriesWithModels() {
     const { items } = await this.getAllCategories({});
-    return items.map(category => {
+    return items.map((category) => {
       category.models = modelService.getModelsByCategory(category._id);
       return category;
     });

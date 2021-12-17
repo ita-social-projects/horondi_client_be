@@ -3,14 +3,14 @@ module.exports = function changeCartItemSizeHandler(
   size,
   price,
   quantity,
-  cart
+  cart,
 ) {
-  const changedItems = cart.map(el => {
+  const changedItems = cart.map((el) => {
     if (el._id.toString() === itemId.toString()) {
       el.options.size = size;
       el.price = price;
 
-      el.price.forEach(priceEl => {
+      el.price.forEach((priceEl) => {
         priceEl.value *= quantity;
       });
     }
@@ -20,11 +20,11 @@ module.exports = function changeCartItemSizeHandler(
   for (let i = 0; i < changedItems.length; i++) {
     for (let j = 0; j < changedItems.length; j++) {
       if (
-        changedItems[i].product._id.toString() ===
-          changedItems[j].product._id.toString() &&
-        changedItems[i].options.size._id.toString() ===
-          changedItems[j].options.size._id.toString() &&
-        i !== j
+        changedItems[i].product._id.toString()
+          === changedItems[j].product._id.toString()
+        && changedItems[i].options.size._id.toString()
+          === changedItems[j].options.size._id.toString()
+        && i !== j
       ) {
         changedItems[i].quantity += changedItems[j].quantity;
 

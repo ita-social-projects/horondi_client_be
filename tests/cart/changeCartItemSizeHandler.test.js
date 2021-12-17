@@ -10,7 +10,7 @@ describe('changeCartItemSizeHandler test', () => {
       cart[0].options.size,
       cart[0].price,
       7,
-      cart
+      cart,
     );
 
     expect(result.length).toBe(1);

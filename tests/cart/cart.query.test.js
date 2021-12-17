@@ -8,7 +8,9 @@ const {
   getCartByUserId,
   cleanCart,
 } = require('./cart.helper');
-const { userWrongId, sizeName, price, allSizes } = require('./cart.variables');
+const {
+  userWrongId, sizeName, price, allSizes,
+} = require('./cart.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const { createColor, deleteColor } = require('../color/color.helper');
@@ -65,22 +67,22 @@ describe('Cart queries', () => {
     materialId = materialData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const productData = await createProduct(
@@ -92,9 +94,9 @@ describe('Cart queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
     adminEmail = superAdminUser.email;
@@ -107,7 +109,7 @@ describe('Cart queries', () => {
       sizeId,
       price,
       allSizes,
-      operations
+      operations,
     );
   });
 

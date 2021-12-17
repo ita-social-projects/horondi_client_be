@@ -61,7 +61,7 @@ class RestrictionService {
         COMPARE_BY_EXPRESSION,
         OPTIONS,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -80,7 +80,7 @@ class RestrictionService {
 
     const { beforeChanges, afterChanges } = getChanges(
       restrictionItem,
-      restriction
+      restriction,
     );
 
     const historyRecord = generateHistoryObject(
@@ -90,7 +90,7 @@ class RestrictionService {
       restrictionItem._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -119,7 +119,7 @@ class RestrictionService {
         OPTIONS,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

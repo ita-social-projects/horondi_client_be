@@ -26,7 +26,7 @@ const newOrderInputData = (
   modelId,
   sizeId,
   constructorId,
-  userId
+  userId,
 ) => ({
   status: orderStatus,
   recipient: {

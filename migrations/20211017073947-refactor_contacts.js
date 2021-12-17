@@ -6,13 +6,13 @@ module.exports = {
       {},
       {
         $set: link,
-      }
+      },
     );
     await db.collection('contacts').updateMany(
       {},
       {
         $unset: { images: null },
-      }
+      },
     );
   },
 };

@@ -25,11 +25,11 @@ const bottomPermissionsMutations = {
   addBottom: and(
     inputDataValidation(BOTTOM, inputBottomValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(BOTTOM, BottomModel)
+    checkIfItemExists(BOTTOM, BottomModel),
   ),
   updateBottom: and(
     inputDataValidation(BOTTOM, inputBottomValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteBottom: hasRoles([ADMIN, SUPERADMIN]),
 };

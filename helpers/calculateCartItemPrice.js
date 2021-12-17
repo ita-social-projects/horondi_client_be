@@ -18,25 +18,25 @@ const calculateConstructorCartItemPriceWithSize = (
   constructorBasicsPrice,
   constructorBottomPrice,
   constructorFrontPocketPrice,
-  quantity = 1
+  quantity = 1,
 ) => [
   {
     currency: UAH,
     value:
-      (sizePrice[UAH_VALUE].value +
-        constructorBasicsPrice[UAH_VALUE].value +
-        constructorBottomPrice[UAH_VALUE].value +
-        constructorFrontPocketPrice[UAH_VALUE].value) *
-      quantity,
+      (sizePrice[UAH_VALUE].value
+        + constructorBasicsPrice[UAH_VALUE].value
+        + constructorBottomPrice[UAH_VALUE].value
+        + constructorFrontPocketPrice[UAH_VALUE].value)
+      * quantity,
   },
   {
     currency: USD,
     value:
-      (sizePrice[USD_VALUE].value +
-        constructorBasicsPrice[USD_VALUE].value +
-        constructorBottomPrice[USD_VALUE].value +
-        constructorFrontPocketPrice[USD_VALUE].value) *
-      quantity,
+      (sizePrice[USD_VALUE].value
+        + constructorBasicsPrice[USD_VALUE].value
+        + constructorBottomPrice[USD_VALUE].value
+        + constructorFrontPocketPrice[USD_VALUE].value)
+      * quantity,
   },
 ];
 

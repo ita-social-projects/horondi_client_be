@@ -10,14 +10,16 @@ const ordersQuery = {
     }
   },
   getAllOrders: async (_, args) => ordersService.getAllOrders(args),
-  getOrdersByUser: async (_, { filter, skip, limit, sort, userId }) => {
+  getOrdersByUser: async (_, {
+    filter, skip, limit, sort, userId,
+  }) => {
     try {
       return await ordersService.getOrdersByUser(
         filter,
         skip,
         limit,
         sort,
-        userId
+        userId,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -31,8 +33,7 @@ const ordersQuery = {
     }
   },
   getOrdersStatistic: (_, { date }) => ordersService.getOrdersStatistic(date),
-  getPaidOrdersStatistic: (_, { date }) =>
-    ordersService.getPaidOrdersStatistic(date),
+  getPaidOrdersStatistic: (_, { date }) => ordersService.getPaidOrdersStatistic(date),
   getOrderByPaidOrderNumber: async (_, { paidOrderNumber }) => {
     try {
       return await ordersService.getOrderByPaidOrderNumber(paidOrderNumber);

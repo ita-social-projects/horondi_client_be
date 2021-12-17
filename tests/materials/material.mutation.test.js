@@ -65,7 +65,7 @@ describe('material mutations tests', () => {
     const updatedMaterial = await updateMaterial(
       materialId,
       materialToUpdate,
-      operations
+      operations,
     );
 
     expect(updatedMaterial).toBeDefined();
@@ -73,13 +73,13 @@ describe('material mutations tests', () => {
     expect(updatedMaterial.name).toBeInstanceOf(Array);
     expect(updatedMaterial).toHaveProperty(
       'description',
-      materialToUpdate.description
+      materialToUpdate.description,
     );
     expect(updatedMaterial.name).toBeInstanceOf(Array);
     expect(updatedMaterial).toHaveProperty('purpose', materialToUpdate.purpose);
     expect(updatedMaterial).toHaveProperty(
       'available',
-      materialToUpdate.available
+      materialToUpdate.available,
     );
     expect(updatedMaterial.name).toBeInstanceOf(Array);
     expect(updatedMaterial).toHaveProperty('colors', [
@@ -94,7 +94,7 @@ describe('material mutations tests', () => {
     const updatedMaterial = await updateMaterial(
       materialDoesNotExistId,
       materialToUpdate,
-      operations
+      operations,
     );
 
     expect(updatedMaterial).toHaveProperty('statusCode', 404);
@@ -106,7 +106,7 @@ describe('material mutations tests', () => {
     const secondRes = await updateMaterial(
       testMaterialId,
       materialToUpdate,
-      operations
+      operations,
     );
 
     expect(secondRes).toHaveProperty('statusCode', 400);
@@ -125,7 +125,7 @@ describe('material mutations tests', () => {
   it('should return error when delete not existing material', async () => {
     const deletedMaterial = await deleteMaterial(
       materialDoesNotExistId,
-      operations
+      operations,
     );
     const res = deletedMaterial.data.deleteMaterial;
 

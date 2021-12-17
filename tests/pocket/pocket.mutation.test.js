@@ -30,14 +30,14 @@ describe('pocket mutation tests', () => {
     const createPocketTest = await createPocket(
       pocketInput,
       'image.jpg',
-      operations
+      operations,
     );
     pocketId = createPocketTest._id;
 
     expect(createPocketTest).toBeDefined();
     expect(createPocketTest).toHaveProperty(
       'restriction',
-      pocketInput.restriction
+      pocketInput.restriction,
     );
     expect(createPocketTest).toHaveProperty('name', pocketInput.name);
   });
@@ -54,7 +54,7 @@ describe('pocket mutation tests', () => {
       pocketId,
       pocketUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
     expect(updatePocketTest).toBeDefined();
     expect(updatePocketTest).toHaveProperty('name', pocketUpdateInput.name);
@@ -65,7 +65,7 @@ describe('pocket mutation tests', () => {
       pocketId,
       pocketUpdateInput,
       '',
-      operations
+      operations,
     );
     expect(updatePocketTest).toBeDefined();
     expect(updatePocketTest).toHaveProperty('name', pocketUpdateInput.name);
@@ -84,7 +84,7 @@ describe('pocket mutation tests', () => {
       wrongId,
       pocketUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -113,7 +113,7 @@ describe('pocket mutation tests', () => {
       pocketId,
       pocketUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(updatePocketTest).toBeDefined();

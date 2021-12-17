@@ -41,5 +41,5 @@ const constructorFrontPocketSchema = new mongoose.Schema({
 
 module.exports = mongoose.model(
   CONSTRUCTOR_FRONT_POCKET,
-  constructorFrontPocketSchema
+  constructorFrontPocketSchema,
 );

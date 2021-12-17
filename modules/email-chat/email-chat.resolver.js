@@ -2,10 +2,8 @@ const emailChatService = require('./email-chat.service');
 const RuleError = require('../../errors/rule.error');
 
 const emailChatQuestionQuery = {
-  getAllEmailQuestions: (parent, args) =>
-    emailChatService.getAllEmailQuestions(args),
-  getPendingEmailQuestionsCount: (parent, args) =>
-    emailChatService.getPendingEmailQuestionsCount(),
+  getAllEmailQuestions: (parent, args) => emailChatService.getAllEmailQuestions(args),
+  getPendingEmailQuestionsCount: (parent, args) => emailChatService.getPendingEmailQuestionsCount(),
   getEmailQuestionById: async (parent, args) => {
     try {
       return await emailChatService.getEmailQuestionById(args.id);
@@ -16,8 +14,7 @@ const emailChatQuestionQuery = {
 };
 
 const emailChatQuestionMutation = {
-  addEmailQuestion: async (parent, args) =>
-    emailChatService.addEmailQuestion(args.question),
+  addEmailQuestion: async (parent, args) => emailChatService.addEmailQuestion(args.question),
 
   makeEmailQuestionsSpam: async (parent, args) => {
     try {
@@ -37,7 +34,7 @@ const emailChatQuestionMutation = {
   deleteEmailQuestions: async (parent, args) => {
     try {
       return await emailChatService.deleteEmailQuestions(
-        args.questionsToDelete
+        args.questionsToDelete,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

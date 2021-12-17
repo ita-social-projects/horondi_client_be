@@ -6,7 +6,9 @@ const {
 
 const createUser = async (
   operations,
-  { firstName, lastName, email, pass, language }
+  {
+    firstName, lastName, email, pass, language,
+  },
 ) => {
   const register = await operations.mutate({
     mutation: gql`
@@ -75,7 +77,7 @@ const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
   return result.data.getAllUsers.items;
 };
 
-const chooseOnlyUsers = arr => arr.filter(user => user.role === USER);
+const chooseOnlyUsers = (arr) => arr.filter((user) => user.role === USER);
 
 module.exports = {
   createUser,

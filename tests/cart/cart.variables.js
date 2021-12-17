@@ -31,7 +31,7 @@ const newProductInputData2 = (
   colorId,
   patternId,
   closureId,
-  sizeId
+  sizeId,
 ) => ({
   category: categoryId,
   model: modelId,
@@ -86,7 +86,7 @@ const productForChangeSizeHandler = {
   product: { _id: '60588c204b419a0ec128e4bc' },
 };
 const allSizes = productForChangeSizeHandler.allSizes.map(
-  ({ size, price }) => ({ size: size._id, price })
+  ({ size, price }) => ({ size: size._id, price }),
 );
 
 module.exports = {

@@ -59,12 +59,12 @@ describe('constructor mutations', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     constructorInput = newConstructorBasic(materialId, colorId, modelId);
@@ -72,7 +72,7 @@ describe('constructor mutations', () => {
     constructorUpdateInput = getConstructorDataForUpt(
       materialId,
       colorId,
-      modelId
+      modelId,
     );
     currentconstructorUpdate = getConstructorData(constructorUpdateInput, {
       materialId,
@@ -89,7 +89,7 @@ describe('constructor mutations', () => {
   test('#1 Should add Constructor Basic', async () => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
-      operations
+      operations,
     );
 
     constructorBasicId = createConstructor._id;
@@ -103,7 +103,7 @@ describe('constructor mutations', () => {
   test('#3 ConstructorBasic should return Error item already exists', async () => {
     const createConstructor = await createConstructorBasic(
       constructorInput,
-      operations
+      operations,
     );
 
     expect(createConstructor).toBeDefined();
@@ -114,7 +114,7 @@ describe('constructor mutations', () => {
     const updateConstructor = await updateConstructorBasic(
       constructorUpdateInput,
       constructorBasicId,
-      operations
+      operations,
     );
 
     expect(updateConstructor).toBeDefined();
@@ -127,7 +127,7 @@ describe('constructor mutations', () => {
     const updateConstructor = await updateConstructorBasic(
       constructorInput,
       wrongId,
-      operations
+      operations,
     );
     const result = updateConstructor.message;
 
@@ -136,7 +136,7 @@ describe('constructor mutations', () => {
   test('#5 deleteConstructorBasic should return error CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const deletedConstructor = await deleteConstructorBasic(
       wrongId,
-      operations
+      operations,
     );
 
     expect(deletedConstructor.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
@@ -144,7 +144,7 @@ describe('constructor mutations', () => {
   test('#6 Should delete constructor basic and return id', async () => {
     const deletedConstructor = await deleteConstructorBasic(
       constructorBasicId,
-      operations
+      operations,
     );
 
     expect(deletedConstructor._id).toBe(constructorBasicId);

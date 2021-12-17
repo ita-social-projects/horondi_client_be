@@ -25,11 +25,11 @@ const closurePermissionsMutations = {
   addClosure: and(
     inputDataValidation(CLOSURE, inputClosureValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(CLOSURE, ClosureModel)
+    checkIfItemExists(CLOSURE, ClosureModel),
   ),
   updateClosure: and(
     inputDataValidation(CLOSURE, inputClosureValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteClosure: hasRoles([ADMIN, SUPERADMIN]),
 };

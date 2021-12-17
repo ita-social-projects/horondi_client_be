@@ -39,7 +39,7 @@ describe('Strap queries', () => {
     strapData = await createStrap(
       newStrap(colorId, modelId),
       imgString,
-      operations
+      operations,
     );
 
     strapId = strapData._id;

@@ -36,7 +36,7 @@ describe('Logger looks query', () => {
   });
 
   it('Should log call several times', () => {
-    logLevels.forEach(level => logger.log({ level, message: logMockFn() }));
+    logLevels.forEach((level) => logger.log({ level, message: logMockFn() }));
 
     expect(logMockFn).toHaveBeenCalled();
     expect(logMockFn.mock.calls.length).toBe(totalLevelsCount);
@@ -47,7 +47,7 @@ describe('Logger looks query', () => {
 
     expect(log).not.toBeUndefined();
     expect(mockStdoutWrite).toHaveBeenCalledWith(
-      expect.stringMatching(matchLogString)
+      expect.stringMatching(matchLogString),
     );
     expect(mockStdoutWrite).toHaveBeenCalledTimes(1);
   });
@@ -59,7 +59,7 @@ describe('Logger looks query', () => {
     expect(log).not.toBeUndefined();
     expect(log2).not.toBeUndefined();
     expect(mockStdoutWrite).toHaveBeenCalledWith(
-      expect.stringMatching(regularLogMessage)
+      expect.stringMatching(regularLogMessage),
     );
     expect(mockStdoutWrite).toHaveBeenCalledTimes(2);
   });

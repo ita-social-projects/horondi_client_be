@@ -67,7 +67,7 @@ class HomePageSliderService {
 
     await updateTranslations(
       slideToUpdate.translations_key,
-      createTranslations(slide)
+      createTranslations(slide),
     );
 
     if (!upload) {
@@ -97,7 +97,7 @@ class HomePageSliderService {
       },
       {
         new: true,
-      }
+      },
     ).exec();
   }
 
@@ -110,7 +110,7 @@ class HomePageSliderService {
     }
 
     const deletedImages = await uploadService.deleteFiles(
-      Object.values(foundSlide.images)
+      Object.values(foundSlide.images),
     );
 
     await deleteTranslations(foundSlide.translations_key);

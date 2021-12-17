@@ -26,11 +26,11 @@ const constructorPermissionsMutations = {
   addConstructor: and(
     inputDataValidation(CONSTRUCTOR, inputConstructorValidator),
     checkIfItemExists(CONSTRUCTOR, ConstructorModel),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   updateConstructor: and(
     inputDataValidation(CONSTRUCTOR, inputConstructorValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteConstructor: and(hasRoles([ADMIN, SUPERADMIN])),
 };

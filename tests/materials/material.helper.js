@@ -51,7 +51,7 @@ const createMaterial = async (material, operations) => {
   });
   return testCreatedMaterial.data.addMaterial;
 };
-const getAllMaterials = async operations => {
+const getAllMaterials = async (operations) => {
   const allMaterials = await operations.query({
     query: gql`
       query {
@@ -87,10 +87,9 @@ const getAllMaterials = async operations => {
 
   return allMaterials.data.getAllMaterials;
 };
-const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
-  await operations.query({
-    variables: { skip, limit },
-    query: gql`
+const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) => await operations.query({
+  variables: { skip, limit },
+  query: gql`
       query($skip: Int, $limit: Int) {
         getAllMaterials(skip: $skip, limit: $limit, filter: { colors: [] }) {
           items {
@@ -121,10 +120,9 @@ const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
         }
       }
     `,
-  });
-const getMaterialById = async (id, operations) =>
-  await operations.query({
-    query: gql`
+});
+const getMaterialById = async (id, operations) => await operations.query({
+  query: gql`
       query($id: ID!) {
         getMaterialById(id: $id) {
           ... on Material {
@@ -158,8 +156,8 @@ const getMaterialById = async (id, operations) =>
         }
       }
     `,
-    variables: { id },
-  });
+  variables: { id },
+});
 const updateMaterial = async (id, material, operations) => {
   const updatedMaterial = await operations.mutate({
     mutation: gql`
@@ -216,9 +214,8 @@ const updateMaterial = async (id, material, operations) => {
 
   return updatedMaterial.data.updateMaterial;
 };
-const deleteMaterial = async (id, operations) =>
-  await operations.mutate({
-    mutation: gql`
+const deleteMaterial = async (id, operations) => await operations.mutate({
+  mutation: gql`
       mutation($id: ID!) {
         deleteMaterial(id: $id) {
           ... on Material {
@@ -231,10 +228,10 @@ const deleteMaterial = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-    },
-  });
+  variables: {
+    id,
+  },
+});
 
 module.exports = {
   deleteMaterial,

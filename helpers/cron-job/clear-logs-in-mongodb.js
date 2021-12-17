@@ -4,10 +4,9 @@ const {
   CRON_PERIOD: { EVERY_NIGHT },
 } = require('../../consts/cron-period');
 
-const clearLogs = () =>
-  schedule(EVERY_NIGHT, () => {
-    mongoose.connection.db.dropCollection('logs', (err, results) => results);
-  });
+const clearLogs = () => schedule(EVERY_NIGHT, () => {
+  mongoose.connection.db.dropCollection('logs', (err, results) => results);
+});
 
 module.exports = {
   clearLogs,

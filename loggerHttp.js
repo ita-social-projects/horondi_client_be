@@ -21,7 +21,7 @@ function initLogger(mongo) {
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.json(),
-      winston.format.metadata()
+      winston.format.metadata(),
     ),
 
     defaultMeta: { service: 'user-service' },

@@ -8,7 +8,7 @@ const newProductInputData = (
   colorId,
   patternId,
   closureId,
-  sizeId
+  sizeId,
 ) => ({
   category: categoryId,
   model: modelId,
@@ -48,7 +48,7 @@ const newProductInputDataForUpdate = (
   colorId,
   patternId,
   closureId,
-  sizeId
+  sizeId,
 ) => ({
   category: categoryId,
   model: modelId,
@@ -95,7 +95,7 @@ const newProductInputDataForUpdate = (
     ],
   },
 });
-const newProductInputDataForCompare = product => ({
+const newProductInputDataForCompare = (product) => ({
   category: { _id: product.category },
   closure: { _id: product.closure },
   model: { _id: product.model },

@@ -60,21 +60,21 @@ describe('constructor mutations', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
 
     modelId = modelData._id;
 
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     constructorInput = newConstructorBasic(materialId, colorId, modelId);
 
     constructorBasic = await createConstructorBasic(
       constructorInput,
-      operations
+      operations,
     );
     constructorBasicId = constructorBasic._id;
 
@@ -88,7 +88,7 @@ describe('constructor mutations', () => {
   test('#1 Should return all ConstructorBasics', async () => {
     const receivedAllConstructorBasics = await getAllConstructorBasics(
       { limit, skip, filter },
-      operations
+      operations,
     );
     expect(receivedAllConstructorBasics.items).toBeDefined();
     expect(receivedAllConstructorBasics.items.length).toBeGreaterThan(0);
@@ -96,7 +96,7 @@ describe('constructor mutations', () => {
   test('#2 Should return  ConstructorBasics by Id', async () => {
     const receivedById = await getConstructorBasicById(
       constructorBasicId,
-      operations
+      operations,
     );
     expect(receivedById).toBeDefined();
     expect(receivedById).toEqual({

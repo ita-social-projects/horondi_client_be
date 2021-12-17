@@ -4,7 +4,7 @@ module.exports = {
       {},
       {
         $rename: { user: 'recipient' },
-      }
+      },
     );
   },
 

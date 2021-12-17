@@ -65,7 +65,7 @@ describe('Homepage looks slider queries', () => {
     const homePageSlides = await getAllHomePageSlides(
       maxCountOfAddingItems + 1,
       100,
-      operations
+      operations,
     );
 
     expect(homePageSlides).toBeDefined();

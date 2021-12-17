@@ -50,17 +50,17 @@ describe('Closure mutations', () => {
     categoryId = categoryData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
   });
@@ -69,7 +69,7 @@ describe('Closure mutations', () => {
     const convertedObj = await closureWithConvertedPrice(
       materialId,
       colorId,
-      modelId
+      modelId,
     );
 
     expect(closureData).toBeDefined();
@@ -81,7 +81,7 @@ describe('Closure mutations', () => {
   test('should receive error CLOSURE_ALREADY_EXISTS when create closure', async () => {
     closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     expect(closureData).toBeDefined();
     expect(closureData).toHaveProperty('message', ITEM_ALREADY_EXISTS);
@@ -91,7 +91,7 @@ describe('Closure mutations', () => {
     closureData = await updateClosure(
       wrongId,
       closureToUpdate(materialId, colorId, modelId),
-      operations
+      operations,
     );
 
     expect(closureData).toBeDefined();
@@ -102,7 +102,7 @@ describe('Closure mutations', () => {
     const updatedClosure = await updateClosure(
       closureId,
       closureToUpdate(materialId, colorId, modelId),
-      operations
+      operations,
     );
 
     const finalClosure = newClosureUpdated(materialId, colorId, modelId);

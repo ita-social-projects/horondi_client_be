@@ -52,7 +52,7 @@ describe('Pattern Mutation Tests', () => {
     modelId = modelData._id;
     patternData = await createPattern(
       mutationPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
   });
@@ -70,7 +70,7 @@ describe('Pattern Mutation Tests', () => {
   test('#2 Should Return Error If We Try To Create Pattern With Name That Already Exists', async () => {
     const res = await createPattern(
       mutationPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
 
     expect(res).toHaveProperty('message', ITEM_ALREADY_EXISTS);
@@ -82,7 +82,7 @@ describe('Pattern Mutation Tests', () => {
       patternId,
       patternToUpdate(materialId, modelId),
       [{ file: 1 }, {}],
-      operations
+      operations,
     );
 
     const updatedMockedItem = patternAfterUpdate(materialId, modelId);
@@ -99,7 +99,7 @@ describe('Pattern Mutation Tests', () => {
       wrongId,
       patternToUpdate(materialId, modelId),
       [{ file: 1 }, {}],
-      operations
+      operations,
     );
 
     expect(res.statusCode).toBe(NOT_FOUND);

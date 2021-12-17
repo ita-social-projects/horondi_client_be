@@ -1,4 +1,4 @@
-const commonFiltersHandler = filter => {
+const commonFiltersHandler = (filter) => {
   const filterOptions = {};
 
   if (filter?.name) {

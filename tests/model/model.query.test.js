@@ -41,7 +41,7 @@ describe('Model queries', () => {
 
     const createdCategory = await createCategory(
       newCategoryInputData,
-      operations
+      operations,
     );
 
     categoryId = createdCategory._id;

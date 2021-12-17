@@ -228,7 +228,7 @@ const permissions = shield(
   },
   {
     allowExternalErrors: true,
-  }
+  },
 );
 
 module.exports = permissions;

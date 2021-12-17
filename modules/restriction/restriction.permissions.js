@@ -14,11 +14,11 @@ const {
 const restrictionPermissionsMutations = {
   addRestriction: and(
     inputDataValidation(RESTRICTION, restrictionValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   updateRestriction: and(
     inputDataValidation(RESTRICTION, restrictionValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteRestriction: hasRoles([ADMIN, SUPERADMIN]),
 };

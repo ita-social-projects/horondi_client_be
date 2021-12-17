@@ -28,7 +28,7 @@ const newConstructorBasic = (materialId, colorId, modelId) => ({
 
 const getConstructorData = (
   construrtorBasic,
-  { materialId, colorId, modelId }
+  { materialId, colorId, modelId },
 ) => ({
   name: [
     {

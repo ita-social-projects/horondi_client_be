@@ -75,7 +75,7 @@ const deleteConstructorBasic = async (id, operations) => {
 const updateConstructorBasic = async (
   constructorInput,
   constructorId,
-  operations
+  operations,
 ) => {
   const constructorBasic = await operations.mutate({
     mutation: gql`

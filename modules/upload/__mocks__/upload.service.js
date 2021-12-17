@@ -1,8 +1,8 @@
 class UploadService {
-  uploadFiles = async files => files.map(async file => this.uploadFile(file));
+  uploadFiles = async (files) => files.map(async (file) => this.uploadFile(file));
 
-  uploadFile = async file => {
-    const createName = sizeName => `${sizeName}_test-file`;
+  uploadFile = async (file) => {
+    const createName = (sizeName) => `${sizeName}_test-file`;
     return {
       prefixUrl: 'some prefix',
       fileNames: {

@@ -76,7 +76,7 @@ describe('Order queries', () => {
     } = await loginAdmin(
       superAdminUser.email,
       superAdminUser.password,
-      operations
+      operations,
     );
     userId = _id;
 
@@ -90,22 +90,22 @@ describe('Order queries', () => {
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = constructorBasicData._id;
 
@@ -118,15 +118,15 @@ describe('Order queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
     date.dateFrom = new Date();
     const orderData = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId),
-      operations
+      operations,
     );
     date.dateTo = new Date();
     orderId = orderData._id;
@@ -157,7 +157,7 @@ describe('Order queries', () => {
 
     const orderByOrderNumber = await getOrderByPaidOrderNumber(
       orders[0].orderNumber,
-      operations
+      operations,
     );
 
     expect(orderByOrderNumber).toBeDefined();
@@ -216,7 +216,7 @@ describe('Order queries', () => {
     const orders = await getAllOrders(
       { ...filter, paymentStatus },
       sort,
-      operations
+      operations,
     );
 
     expect(orders).toBeDefined();
@@ -261,7 +261,7 @@ describe('Order queries', () => {
       { ...filter, status: [status] },
       sort,
       userId,
-      operations
+      operations,
     );
 
     expect(orders).toBeDefined();
@@ -276,7 +276,7 @@ describe('Order queries', () => {
       { ...filter, paymentStatus: [paymentStatus] },
       sort,
       userId,
-      operations
+      operations,
     );
 
     expect(orders).toBeDefined();
@@ -291,7 +291,7 @@ describe('Order queries', () => {
       { ...filter, date },
       sort,
       userId,
-      operations
+      operations,
     );
 
     expect(orders).toBeDefined();

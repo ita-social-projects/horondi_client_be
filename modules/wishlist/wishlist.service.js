@@ -21,18 +21,17 @@ class WishlistService {
   async addProductToWishlist(productId, { _id }) {
     const [wishlist] = await Wishlist.find({ user_id: _id }).exec();
 
-    if (!wishlist)
-      return new Wishlist({ user_id: _id, products: [productId] }).save();
+    if (!wishlist) { return new Wishlist({ user_id: _id, products: [productId] }).save(); }
 
     if (
       wishlist.products.find(
-        product => JSON.stringify(product) === JSON.stringify(productId)
+        (product) => JSON.stringify(product) === JSON.stringify(productId),
       )
-    )
+    ) {
       wishlist.products = wishlist.products.filter(
-        el => JSON.stringify(el._id) !== JSON.stringify(productId)
+        (el) => JSON.stringify(el._id) !== JSON.stringify(productId),
       );
-    else wishlist.products.push(productId);
+    } else wishlist.products.push(productId);
 
     return Wishlist.findByIdAndUpdate(wishlist._id, wishlist, {
       new: true,
@@ -47,7 +46,7 @@ class WishlistService {
     }
 
     wishlist.products = wishlist.products.filter(
-      product => JSON.stringify(product) !== JSON.stringify(productId)
+      (product) => JSON.stringify(product) !== JSON.stringify(productId),
     );
 
     return Wishlist.findByIdAndUpdate(wishlist._id, wishlist, {

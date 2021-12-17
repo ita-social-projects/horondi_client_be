@@ -44,7 +44,7 @@ describe('history query tests', () => {
     categoryId = categoryData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const size = await createSize(createPlainSize(modelId).size1, operations);
@@ -61,7 +61,7 @@ describe('history query tests', () => {
   it('Should get all history records', async () => {
     const allRecords = await getAllHistoryRecords(
       GET_ALL_RECORDS_PARAMS,
-      operations
+      operations,
     );
     recordId = allRecords.items[0]._id;
     const { items, count } = allRecords;

@@ -72,7 +72,7 @@ const updateModel = async (id, model, operations) => {
 const addModelConstructorBasic = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -107,7 +107,7 @@ const addModelConstructorBasic = async (
 const deleteModelConstructorBasic = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -142,7 +142,7 @@ const deleteModelConstructorBasic = async (
 const addModelConstructorPattern = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -177,7 +177,7 @@ const addModelConstructorPattern = async (
 const deleteModelConstructorPattern = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -212,7 +212,7 @@ const deleteModelConstructorPattern = async (
 const addModelConstructorFrontPocket = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -247,7 +247,7 @@ const addModelConstructorFrontPocket = async (
 const deleteModelConstructorFrontPocket = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -282,7 +282,7 @@ const deleteModelConstructorFrontPocket = async (
 const addModelConstructorBottom = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -317,7 +317,7 @@ const addModelConstructorBottom = async (
 const deleteModelConstructorBottom = async (
   id,
   constructorElementID,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`

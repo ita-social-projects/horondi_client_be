@@ -17,10 +17,10 @@ describe('translations service test', () => {
 
   it('should create new translations', async () => {
     const firstCreatedTranslations = await translationsService.addTranslations(
-      translations
+      translations,
     );
     const secondCreatedTranslations = await translationsService.addTranslations(
-      translations
+      translations,
     );
 
     firstTranslationsId = firstCreatedTranslations._id;
@@ -28,19 +28,19 @@ describe('translations service test', () => {
 
     expect(firstCreatedTranslations).toHaveProperty(
       'ua.name',
-      translations.ua.name
+      translations.ua.name,
     );
   });
 
   it('should update translations', async () => {
     const updatedTranslations = await translationsService.updateTranslations(
       firstTranslationsId,
-      newTranslations
+      newTranslations,
     );
 
     expect(updatedTranslations).toHaveProperty(
       'ua.name',
-      newTranslations.ua.name
+      newTranslations.ua.name,
     );
   });
 
@@ -48,10 +48,10 @@ describe('translations service test', () => {
     await translationsService.getAllTranslations(
       {},
       {
-        json: data => {
+        json: (data) => {
           response = data;
         },
-      }
+      },
     );
 
     expect(response).toHaveProperty('ua');
@@ -59,7 +59,7 @@ describe('translations service test', () => {
 
   it('should delete translations', async () => {
     const deletedTranslations = await translationsService.deleteTranslations(
-      firstTranslationsId
+      firstTranslationsId,
     );
     await translationsService.deleteTranslations(secondTranslationsId);
 

@@ -55,25 +55,25 @@ describe('Constructor query', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     addConstructor = newConstructorBottom(colorId, materialId, modelId);
     newConstructorForQuery = await createConstructorBottom(
       addConstructor,
-      operations
+      operations,
     );
   });
 
   test('should return all ConstructorBasics', async () => {
     const allConstructorBottom = await getAllConstructorBottom(
       { limit, skip, filter },
-      operations
+      operations,
     );
     expect(allConstructorBottom).toBeDefined();
     expect(allConstructorBottom.length).toBeGreaterThan(0);
@@ -81,7 +81,7 @@ describe('Constructor query', () => {
   test('should return constructor-bottom by Id', async () => {
     const constructorBottomById = await getConstructorBottomById(
       newConstructorForQuery._id,
-      operations
+      operations,
     );
 
     expect(constructorBottomById).toBeDefined();
@@ -89,7 +89,7 @@ describe('Constructor query', () => {
   test('should return error when try to get constructor-bottom by wrong ID', async () => {
     const constructorBottomById = await getConstructorBottomById(
       wrongId,
-      operations
+      operations,
     );
 
     expect(constructorBottomById.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);

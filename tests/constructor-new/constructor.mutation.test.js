@@ -35,7 +35,7 @@ describe('constructor mutation tests', () => {
     const result = await createConstructor(
       constructorInput,
       'image.jpg',
-      operations
+      operations,
     );
 
     constructorId = result._id;
@@ -47,7 +47,7 @@ describe('constructor mutation tests', () => {
     const result = await createConstructor(
       constructorInput,
       'image.jpg',
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -59,7 +59,7 @@ describe('constructor mutation tests', () => {
       constructorId,
       constructorUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('name', constructorUpdateInput.name);
@@ -70,7 +70,7 @@ describe('constructor mutation tests', () => {
       constructorId,
       constructorUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('name', constructorUpdateInput.name);
@@ -88,7 +88,7 @@ describe('constructor mutation tests', () => {
       wrongId,
       constructorUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('message', CONSTRUCTOR_NOT_FOUND);

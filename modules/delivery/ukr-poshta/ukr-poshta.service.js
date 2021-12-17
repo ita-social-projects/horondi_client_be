@@ -55,7 +55,7 @@ class UkrPoshtaService {
     const createdAddress = await this.getUkrPoshtaRequest(
       ADDRESSES,
       'post',
-      address
+      address,
     );
     return createdAddress.data;
   }
@@ -66,7 +66,9 @@ class UkrPoshtaService {
   }
 
   async createUkrPoshtaClient(client) {
-    const { address, firstName, lastName, phoneNumber, type } = client;
+    const {
+      address, firstName, lastName, phoneNumber, type,
+    } = client;
     const createdAddress = await this.createUkrPoshtaAddress(address);
     const createdClient = await this.getUkrPoshtaRequest(
       `${CREATE_UKR_POSHTA_USER_PARAMS}${UKR_POSHTA_COUNTERPARTY_TOKEN}`,
@@ -77,7 +79,7 @@ class UkrPoshtaService {
         phoneNumber,
         type,
         addressId: createdAddress.id,
-      }
+      },
     );
     return createdClient.data;
   }
@@ -95,7 +97,7 @@ class UkrPoshtaService {
         recipient: {
           uuid: createdClient.uuid,
         },
-      }
+      },
     );
     if (!createdOrder) {
       throw Error(ORDER_CREATION_FAILED);
@@ -110,28 +112,28 @@ class UkrPoshtaService {
 
   async getUkrPoshtaDistrictsByRegionId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
-      `${getUkrPoshtaDistrictsByRegionIdUrl + id}`
+      `${getUkrPoshtaDistrictsByRegionIdUrl + id}`,
     );
     return res.data.Entries.Entry;
   }
 
   async getUkrPoshtaCitiesByDistrictId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
-      `${getUkrPoshtaCitiesByDistrictIdUrl + id}`
+      `${getUkrPoshtaCitiesByDistrictIdUrl + id}`,
     );
     return res.data.Entries.Entry;
   }
 
   async getUkrPoshtaStreetsByCityId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
-      `${getUkrPoshtaStreetsByCityIdUrl + id}`
+      `${getUkrPoshtaStreetsByCityIdUrl + id}`,
     );
     return res.data.Entries.Entry;
   }
 
   async getUkrPoshtaPostofficesCityId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
-      `${getUkrPoshtaPostofficesCityIdUrl + id}`
+      `${getUkrPoshtaPostofficesCityIdUrl + id}`,
     );
     return res.data.Entries.Entry;
   }

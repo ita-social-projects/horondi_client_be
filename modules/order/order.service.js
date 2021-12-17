@@ -36,14 +36,18 @@ class OrdersService {
     return order;
   }
 
-  async getAllOrders({ skip, limit, filter = {}, sort }) {
+  async getAllOrders({
+    skip, limit, filter = {}, sort,
+  }) {
     let maxDate = new Date();
     let minDate = minDefaultDate;
 
     if (!Object.keys(sort).length) {
       sort.dateOfCreation = -1;
     }
-    const { status, paymentStatus, date, search } = filter;
+    const {
+      status, paymentStatus, date, search,
+    } = filter;
     const filterObject = {};
 
     if (status?.length) {
@@ -160,8 +164,7 @@ class OrdersService {
   }
 
   async updateOrder(order, id) {
-    if (!ObjectId.isValid(id))
-      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    if (!ObjectId.isValid(id)) { throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST); }
 
     const orderToUpdate = await Order.findById(id).exec();
 
@@ -178,7 +181,7 @@ class OrdersService {
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const totalPriceToPay = await calculateTotalPriceToPay(
       order,
-      totalItemsPrice
+      totalItemsPrice,
     );
 
     const orderUpdate = {
@@ -190,7 +193,7 @@ class OrdersService {
     return Order.findByIdAndUpdate(
       id,
       { ...orderUpdate, lastUpdatedDate: Date.now() },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
@@ -205,7 +208,7 @@ class OrdersService {
 
     const totalPriceToPay = await calculateTotalPriceToPay(
       data,
-      totalItemsPrice
+      totalItemsPrice,
     );
 
     const newOrder = {
@@ -219,8 +222,7 @@ class OrdersService {
   }
 
   async deleteOrder(id) {
-    if (!ObjectId.isValid(id))
-      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    if (!ObjectId.isValid(id)) { throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST); }
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
@@ -273,13 +275,11 @@ class OrdersService {
       .sort({ dateOfCreation: 1 })
       .lean()
       .exec();
-    const formattedDate = orders.map(({ dateOfCreation }) =>
-      changeDataFormat(dateOfCreation, userDateFormat)
-    );
+    const formattedDate = orders.map(({ dateOfCreation }) => changeDataFormat(dateOfCreation, userDateFormat));
     const { names, counts } = this.getOrdersStats(formattedDate);
     const total = counts.reduce(
       (orderTotal, orderCount) => orderTotal + orderCount,
-      0
+      0,
     );
     const { labels, count } = reduceByDaysCount(names, counts, days);
 
@@ -293,9 +293,7 @@ class OrdersService {
       .exec();
     const statuses = orders.map(({ status }) => status);
     const { names, counts } = this.getOrdersStats(statuses);
-    const relations = counts.map(count =>
-      Math.round((count * 100) / orders.length)
-    );
+    const relations = counts.map((count) => Math.round((count * 100) / orders.length));
 
     return { names, counts, relations };
   }

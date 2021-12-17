@@ -25,7 +25,7 @@ let loggerHttp;
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
-  permissions
+  permissions,
 );
 
 const config = {
@@ -47,7 +47,7 @@ const config = {
     }
   },
   plugins: [errorOutputPlugin],
-  formatError: formatError(err => {
+  formatError: formatError((err) => {
     loggerHttp.error(
       JSON.stringify({
         key: err.extensions.code,
@@ -57,7 +57,7 @@ const config = {
         metadata: err.extensions.exception
           ? err.extensions.exception.stacktrace
           : [],
-      }
+      },
     );
   }),
   introspection: true,

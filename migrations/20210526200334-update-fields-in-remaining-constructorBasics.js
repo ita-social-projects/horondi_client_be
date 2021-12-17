@@ -12,7 +12,7 @@ module.exports = {
       {
         $set: constructorBasicTwoExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
 
     await db.collection('constructorbasics').updateOne(
@@ -20,7 +20,7 @@ module.exports = {
       {
         $set: constructorBasicThreeExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
   },
 
@@ -32,7 +32,7 @@ module.exports = {
         $unset: { constructorBasicTwoExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
     await db.collection('constructorbasics').updateOne(
       { _id: ObjectId('604e3319b17ecf65048afd6e') },
@@ -41,7 +41,7 @@ module.exports = {
         $unset: { constructorBasicThreeExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

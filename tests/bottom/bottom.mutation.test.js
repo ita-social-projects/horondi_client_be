@@ -42,7 +42,7 @@ describe('Bottom mutation tests', () => {
     const createBottomTest = await createBottom(
       bottomInput,
       'image.jpg',
-      operations
+      operations,
     );
     bottomId = createBottomTest._id;
 
@@ -60,7 +60,7 @@ describe('Bottom mutation tests', () => {
       bottomId,
       bottomUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(updateBottomTest).toBeDefined();
@@ -71,7 +71,7 @@ describe('Bottom mutation tests', () => {
       bottomId,
       bottomUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(updateBottomTest).toBeDefined();
@@ -89,7 +89,7 @@ describe('Bottom mutation tests', () => {
       wrongId,
       bottomUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -115,7 +115,7 @@ describe('Bottom mutation tests', () => {
       bottomId,
       bottomUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(updateBottomTest).toBeDefined();

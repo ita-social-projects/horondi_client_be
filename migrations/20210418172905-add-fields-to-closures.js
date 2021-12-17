@@ -7,7 +7,7 @@ module.exports = {
       {
         $set: closureExtraFields,
         $unset: { material: '', default: '' },
-      }
+      },
     );
   },
 
@@ -19,7 +19,7 @@ module.exports = {
         $unset: { closureExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

@@ -27,7 +27,7 @@ const SIZES_TO_CREATE = {
   },
 };
 
-const createPlainSize = modelId => ({
+const createPlainSize = (modelId) => ({
   size1: {
     name: 'S',
     modelId,
@@ -100,7 +100,7 @@ const SIZES_TO_TEST = {
   },
 };
 
-const createTestSize = modelId => ({
+const createTestSize = (modelId) => ({
   size1: {
     name: 'S',
     modelId: {

@@ -53,7 +53,9 @@ class MaterialsService {
   }
 
   async getAllMaterials({
-    filter: { purpose, colors, available, name },
+    filter: {
+      purpose, colors, available, name,
+    },
     skip,
     limit,
   }) {
@@ -117,12 +119,12 @@ class MaterialsService {
 
     if (material.additionalPrice) {
       material.additionalPrice = await calculateAdditionalPrice(
-        material.additionalPrice
+        material.additionalPrice,
       );
     }
     await updateTranslations(
       materialToUpdate.translationsKey,
-      createTranslations(material)
+      createTranslations(material),
     );
 
     const updatedMaterial = await Material.findByIdAndUpdate(id, material, {
@@ -135,7 +137,7 @@ class MaterialsService {
 
     const { beforeChanges, afterChanges } = getChanges(
       materialToUpdate,
-      material
+      material,
     );
 
     const historyRecord = generateHistoryObject(
@@ -145,7 +147,7 @@ class MaterialsService {
       materialToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -157,11 +159,11 @@ class MaterialsService {
       throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
     material.additionalPrice = await calculateAdditionalPrice(
-      material.additionalPrice
+      material.additionalPrice,
     );
 
     material.translationsKey = await addTranslations(
-      createTranslations(material)
+      createTranslations(material),
     );
     const newMaterial = await new Material(material).save();
 
@@ -179,7 +181,7 @@ class MaterialsService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -205,7 +207,7 @@ class MaterialsService {
           ADDITIONAL_PRICE,
         ]),
         [],
-        adminId
+        adminId,
       );
       await deleteTranslations(foundMaterial.translationsKey);
 

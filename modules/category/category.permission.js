@@ -18,11 +18,11 @@ const categoryPermissionsQuery = {
 const categoryPermissionsMutations = {
   addCategory: and(
     inputDataValidation(CATEGORY, categoryValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   updateCategory: and(
     inputDataValidation(CATEGORY, categoryValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteCategory: hasRoles([ADMIN, SUPERADMIN]),
 };

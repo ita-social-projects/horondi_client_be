@@ -73,7 +73,7 @@ class ConstructorService {
     if (image) {
       if (constructorToUpdate.images) {
         const images = Object.values(constructorToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -89,12 +89,12 @@ class ConstructorService {
       constructor,
       {
         new: true,
-      }
+      },
     ).exec();
 
     const { beforeChanges, afterChanges } = getChanges(
       constructorToUpdate,
-      constructor
+      constructor,
     );
 
     const historyRecord = generateHistoryObject(
@@ -104,7 +104,7 @@ class ConstructorService {
       constructorToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -128,7 +128,7 @@ class ConstructorService {
       newConstructor._id,
       [],
       generateHistoryChangesData(newConstructor, [NAME, MODEL]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -156,7 +156,7 @@ class ConstructorService {
       foundConstructor._id,
       generateHistoryChangesData(foundConstructor, [NAME, MODEL]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

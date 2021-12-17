@@ -81,9 +81,8 @@ const createOrder = async (order, operations) => {
   return createdOrder.data.addOrder;
 };
 
-const deleteOrder = async (id, operations) =>
-  operations.mutate({
-    mutation: gql`
+const deleteOrder = async (id, operations) => operations.mutate({
+  mutation: gql`
       mutation($id: ID!) {
         deleteOrder(id: $id) {
           ... on Order {
@@ -95,12 +94,12 @@ const deleteOrder = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-    },
-  });
+  variables: {
+    id,
+  },
+});
 
-const getPaidOrdersStatistic = async operations => {
+const getPaidOrdersStatistic = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query($date: Int!) {
@@ -118,7 +117,7 @@ const getPaidOrdersStatistic = async operations => {
   return res.data.getPaidOrdersStatistic;
 };
 
-const getUserOrders = async operations => {
+const getUserOrders = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query($pagination: Pagination) {
@@ -177,7 +176,7 @@ const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
   return res.data.getOrderByPaidOrderNumber;
 };
 
-const getOrdersStatistic = async operations => {
+const getOrdersStatistic = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query($date: Int!) {
@@ -291,9 +290,8 @@ const getOrdersByUser = async (filter, sort, userId, operations) => {
   return res.data.getOrdersByUser.items;
 };
 
-const getOrderById = async (id, operations) =>
-  operations.query({
-    query: gql`
+const getOrderById = async (id, operations) => operations.query({
+  query: gql`
       query($id: ID!) {
         getOrderById(id: $id) {
           ... on Order {
@@ -349,10 +347,10 @@ const getOrderById = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-    },
-  });
+  variables: {
+    id,
+  },
+});
 const updateOrderById = async (order, id, operations) => {
   const updatedData = await operations.mutate({
     mutation: gql`

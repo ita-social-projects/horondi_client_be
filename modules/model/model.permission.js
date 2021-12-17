@@ -21,11 +21,11 @@ const modelPermissionsMutations = {
   addModel: and(
     inputDataValidation(MODEL, modelValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(MODEL, Model)
+    checkIfItemExists(MODEL, Model),
   ),
   updateModel: and(
     inputDataValidation(MODEL, modelValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteModel: hasRoles([ADMIN, SUPERADMIN]),
 };

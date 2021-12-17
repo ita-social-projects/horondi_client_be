@@ -62,7 +62,7 @@ describe('Sizes mutations', () => {
     const result = await updateSize(
       WRONG_ID,
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
 
     expect(result).toEqual({

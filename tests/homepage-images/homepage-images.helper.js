@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
 
-const addHomePageLooksImage = async operations => {
+const addHomePageLooksImage = async (operations) => {
   const res = await operations.mutate({
     mutation: gql`
       mutation($images: Upload) {
@@ -53,9 +53,8 @@ const updateHomePageLooksImage = async (id, operations) => {
   });
   return res.data.updateHomePageLooksImage;
 };
-const deleteHomePageLooksImage = async (id, operations) =>
-  await operations.mutate({
-    mutation: gql`
+const deleteHomePageLooksImage = async (id, operations) => await operations.mutate({
+  mutation: gql`
       mutation($id: ID!) {
         deleteHomePageLooksImage(id: $id) {
           ... on HomePageImages {
@@ -74,9 +73,9 @@ const deleteHomePageLooksImage = async (id, operations) =>
         }
       }
     `,
-    variables: { id },
-  });
-const getHomePageImages = async operations => {
+  variables: { id },
+});
+const getHomePageImages = async (operations) => {
   const res = await operations.query({
     query: gql`
       query {

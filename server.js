@@ -44,7 +44,7 @@ if (NODE_ENV === 'test') {
 
 const schema = applyMiddleware(
   makeExecutableSchema({ typeDefs, resolvers }),
-  permissions
+  permissions,
 );
 
 const server = new ApolloServer({
@@ -80,7 +80,7 @@ const server = new ApolloServer({
   },
 
   plugins: [errorOutputPlugin],
-  formatError: formatError(err => {
+  formatError: formatError((err) => {
     loggerHttp.error(
       JSON.stringify({
         key: err.extensions.code,
@@ -90,7 +90,7 @@ const server = new ApolloServer({
         metadata: err.extensions.exception
           ? err.extensions.exception.stacktrace
           : [],
-      }
+      },
     );
   }),
   introspection: true,
@@ -111,7 +111,7 @@ app.use(
       'https://horondi-front-staging.azurewebsites.net',
       'https://horondi-front.azurewebsites.net',
     ],
-  })
+  }),
 );
 app.disable('x-powered-by');
 

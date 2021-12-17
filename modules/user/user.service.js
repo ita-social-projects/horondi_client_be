@@ -55,11 +55,17 @@ const {
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED },
+  STATUS_CODES: {
+    NOT_FOUND, BAD_REQUEST, FORBIDDEN, UNAUTHORIZED,
+  },
 } = require('../../consts/status-codes');
 const {
-  USER_BLOCK_PERIOD: { UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE },
-  USER_BLOCK_COUNT: { NO_ONE_TIME, ONE_TIME, TWO_TIMES, THREE_TIMES },
+  USER_BLOCK_PERIOD: {
+    UNLOCKED, ONE_MONTH, TWO_MONTH, INFINITE,
+  },
+  USER_BLOCK_COUNT: {
+    NO_ONE_TIME, ONE_TIME, TWO_TIMES, THREE_TIMES,
+  },
 } = require('../../consts/user-block-period');
 const {
   LOCALES: { UK },
@@ -89,7 +95,9 @@ const {
 const { addHistoryRecord } = require('../history/history.service');
 
 const {
-  HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
+  HISTORY_OBJ_KEYS: {
+    ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL,
+  },
 } = require('../../consts/history-obj-keys');
 const { generateOtpCode } = require('../../utils/user');
 
@@ -111,8 +119,8 @@ class UserService extends FilterHelper {
     }
 
     if (
-      (userToBlock.role === ADMIN || userToBlock.role === SUPERADMIN) &&
-      role !== SUPERADMIN
+      (userToBlock.role === ADMIN || userToBlock.role === SUPERADMIN)
+      && role !== SUPERADMIN
     ) {
       throw new RuleError(ONLY_SUPER_ADMIN_CAN_BLOCK_ADMIN, FORBIDDEN);
     }
@@ -130,7 +138,7 @@ class UserService extends FilterHelper {
               },
             },
           },
-          { new: true }
+          { new: true },
         ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
@@ -152,7 +160,7 @@ class UserService extends FilterHelper {
               },
             },
           },
-          { new: true }
+          { new: true },
         ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
@@ -173,7 +181,7 @@ class UserService extends FilterHelper {
               },
             },
           },
-          { new: true }
+          { new: true },
         ).exec();
 
         await emailService.sendEmail(userToBlock.email, BLOCK_USER, {
@@ -189,7 +197,7 @@ class UserService extends FilterHelper {
 
     const { beforeChanges, afterChanges } = getChanges(
       userToBlock,
-      blockedUser
+      blockedUser,
     );
 
     const historyRecord = generateHistoryObject(
@@ -199,7 +207,7 @@ class UserService extends FilterHelper {
       userToBlock._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -224,8 +232,8 @@ class UserService extends FilterHelper {
     }
 
     if (
-      (userToUnlock.role === ADMIN || userToUnlock.role === SUPERADMIN) &&
-      role !== SUPERADMIN
+      (userToUnlock.role === ADMIN || userToUnlock.role === SUPERADMIN)
+      && role !== SUPERADMIN
     ) {
       throw new RuleError(ONLY_SUPER_ADMIN_CAN_UNLOCK_ADMIN, FORBIDDEN);
     }
@@ -242,7 +250,7 @@ class UserService extends FilterHelper {
             },
           },
         },
-        { new: true }
+        { new: true },
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
@@ -258,14 +266,14 @@ class UserService extends FilterHelper {
             },
           },
         },
-        { new: true }
+        { new: true },
       ).exec();
 
       await emailService.sendEmail(userToUnlock.email, UNLOCK_USER);
     }
     const { beforeChanges, afterChanges } = getChanges(
       userToUnlock,
-      unlockedUser
+      unlockedUser,
     );
 
     const historyRecord = generateHistoryObject(
@@ -275,7 +283,7 @@ class UserService extends FilterHelper {
       userToUnlock._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -312,13 +320,13 @@ class UserService extends FilterHelper {
     })
       .populate('orders')
       .exec();
-    const paidOrders = user.orders.filter(order => order.isPaid);
+    const paidOrders = user.orders.filter((order) => order.isPaid);
     return paidOrders.reduce(
       (acc, order) => [
         ...acc,
-        ...order.items.map(item => ({ _id: item.productId })),
+        ...order.items.map((item) => ({ _id: item.productId })),
       ],
-      []
+      [],
     );
   }
 
@@ -327,7 +335,7 @@ class UserService extends FilterHelper {
     const aggregatedItems = this.aggregateItems(
       filteredItems,
       pagination,
-      sort
+      sort,
     );
 
     const [users] = await User.aggregate([
@@ -366,15 +374,13 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formattedData = users.map(el =>
-      changeDataFormat(el.registrationDate, userDateFormat)
-    );
+    const formattedData = users.map((el) => changeDataFormat(el.registrationDate, userDateFormat));
     const userOccurrence = countItemsOccurrence(formattedData);
     const counts = Object.values(userOccurrence);
     const names = Object.keys(userOccurrence);
     const total = counts.reduce(
       (userTotal, userCount) => userTotal + userCount,
-      0
+      0,
     );
 
     const { labels, count } = reduceByDaysCount(names, counts, filter.days);
@@ -398,8 +404,8 @@ class UserService extends FilterHelper {
       if (userToUpdate.images?.length) {
         await deleteFiles(
           Object.values(userToUpdate.images).filter(
-            item => typeof item === 'string' && item
-          )
+            (item) => typeof item === 'string' && item,
+          ),
         );
       }
 
@@ -419,7 +425,7 @@ class UserService extends FilterHelper {
 
     const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
+      user.credentials.find((cred) => cred.source === HORONDI).tokenPass,
     );
 
     if (user.role === USER) {
@@ -433,7 +439,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: user._id });
     const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     return {
@@ -457,7 +463,7 @@ class UserService extends FilterHelper {
 
     const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
+      user.credentials.find((cred) => cred.source === HORONDI).tokenPass,
     );
 
     if (!match) {
@@ -467,7 +473,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: user._id });
     const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     return {
@@ -489,7 +495,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId });
     const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     return { refreshToken, token: accessToken };
@@ -558,7 +564,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: user._id });
     const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     return {
@@ -569,7 +575,9 @@ class UserService extends FilterHelper {
     };
   }
 
-  async registerSocialUser({ firstName, lastName, email, credentials }) {
+  async registerSocialUser({
+    firstName, lastName, email, credentials,
+  }) {
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
@@ -583,7 +591,9 @@ class UserService extends FilterHelper {
     return user.save();
   }
 
-  async registerUser({ firstName, lastName, email, password }, language) {
+  async registerUser({
+    firstName, lastName, email, password,
+  }, language) {
     const candidate = await User.findOne({ email }).exec();
 
     if (candidate) {
@@ -608,7 +618,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: savedUser._id });
     const accessToken = jwtClient.generateAccessToken(
       CONFIRMATION_SECRET,
-      RECOVERY_EXPIRE
+      RECOVERY_EXPIRE,
     );
 
     savedUser.confirmationToken = accessToken;
@@ -631,7 +641,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: user._id });
     const accessToken = jwtClient.generateAccessToken(
       CONFIRMATION_SECRET,
-      RECOVERY_EXPIRE
+      RECOVERY_EXPIRE,
     );
 
     user.confirmationToken = accessToken;
@@ -679,7 +689,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId });
     const { accessToken, refreshToken } = jwtClient.generateTokens(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     await User.findByIdAndUpdate(userId, {
@@ -705,7 +715,7 @@ class UserService extends FilterHelper {
       jwtClient.setData({ userId: user._id });
       const accessToken = jwtClient.generateAccessToken(
         SECRET,
-        RECOVERY_EXPIRE
+        RECOVERY_EXPIRE,
       );
 
       user.recoveryToken = accessToken;
@@ -739,8 +749,7 @@ class UserService extends FilterHelper {
       });
     }
 
-    const dayHasPassed =
-      Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
+    const dayHasPassed = Math.floor((Date.now() - user.lastRecoveryDate) / 3600000) >= 24;
     if (dayHasPassed) {
       await User.findByIdAndUpdate(user._id, {
         recoveryAttempts: 0,
@@ -793,7 +802,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: savedUser._id });
     const invitationalToken = jwtClient.generateAccessToken(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
@@ -807,7 +816,7 @@ class UserService extends FilterHelper {
           otp_code: null,
         },
       },
-      { new: true }
+      { new: true },
     ).exec();
 
     return { isSuccess: true };
@@ -829,13 +838,13 @@ class UserService extends FilterHelper {
           otp_code,
         },
       },
-      { new: true }
+      { new: true },
     ).exec();
 
     await emailService.sendEmail(
       user.email,
       CONFIRM_CREATION_SUPERADMIN_EMAIL,
-      { otp_code }
+      { otp_code },
     );
 
     return { isSuccess: true };
@@ -851,7 +860,7 @@ class UserService extends FilterHelper {
     jwtClient.setData({ userId: isAdminExists._id });
     const invitationalToken = jwtClient.generateAccessToken(
       SECRET,
-      TOKEN_EXPIRES_IN
+      TOKEN_EXPIRES_IN,
     );
 
     await emailService.sendEmail(email, CONFIRM_ADMIN_EMAIL, {
@@ -903,7 +912,7 @@ class UserService extends FilterHelper {
         LAST_NAME,
         EMAIL,
       ]),
-      user._id
+      user._id,
     );
 
     await addHistoryRecord(historyRecord);

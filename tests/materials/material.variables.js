@@ -4,7 +4,7 @@ const wrongSkip = -5;
 const wrongLimit = -3;
 const limit = 2;
 const limitZero = 0;
-const getMaterial = colorId => ({
+const getMaterial = (colorId) => ({
   name: [
     { lang: 'uk', value: 'Матеріал test' },
     { lang: 'en', value: 'Material test' },
@@ -12,7 +12,7 @@ const getMaterial = colorId => ({
   ...materialOptions,
   colors: [colorId],
 });
-const getMaterialToUpdate = colorId => ({
+const getMaterialToUpdate = (colorId) => ({
   name: [
     { lang: 'uk', value: 'Матеріал update' },
     { lang: 'en', value: 'Material update' },

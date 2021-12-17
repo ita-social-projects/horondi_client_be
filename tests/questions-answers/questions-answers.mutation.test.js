@@ -21,18 +21,18 @@ describe('Questionsa and answers queries', () => {
   it('should add questions and answers to database', async () => {
     questionsAnswers = await addQuestionsAnswers(
       newQuestionsAnswers,
-      operations
+      operations,
     );
     questionsAnswersId = questionsAnswers._id;
 
     expect(questionsAnswers).toHaveProperty(
       'question',
-      newQuestionsAnswers.question
+      newQuestionsAnswers.question,
     );
     expect(questionsAnswers.question).toBeInstanceOf(Array);
     expect(questionsAnswers).toHaveProperty(
       'answer',
-      newQuestionsAnswers.answer
+      newQuestionsAnswers.answer,
     );
     expect(questionsAnswers.answer).toBeInstanceOf(Array);
   });
@@ -41,16 +41,16 @@ describe('Questionsa and answers queries', () => {
     const receivedQuestionsAnswers = await updateQuestionsAnswers(
       questionsAnswersId,
       updateQuestionsAnswersInput,
-      operations
+      operations,
     );
 
     expect(receivedQuestionsAnswers).toHaveProperty(
       'question',
-      updateQuestionsAnswersInput.question
+      updateQuestionsAnswersInput.question,
     );
     expect(receivedQuestionsAnswers).toHaveProperty(
       'answer',
-      updateQuestionsAnswersInput.answer
+      updateQuestionsAnswersInput.answer,
     );
   });
 
@@ -61,11 +61,11 @@ describe('Questionsa and answers queries', () => {
     expect(questionsAnswers.question).toBeInstanceOf(Array);
     expect(questionsAnswers).toHaveProperty(
       'question',
-      updateQuestionsAnswersInput.question
+      updateQuestionsAnswersInput.question,
     );
     expect(questionsAnswers).toHaveProperty(
       'answer',
-      updateQuestionsAnswersInput.answer
+      updateQuestionsAnswersInput.answer,
     );
   });
 });

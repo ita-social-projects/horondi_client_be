@@ -35,12 +35,12 @@ describe('Business page queries', () => {
   test('adding a new page with existing code should return error', async () => {
     const alreadyExistsException = await addBusinessText(
       newBusinessText,
-      operations
+      operations,
     );
 
     expect(alreadyExistsException).toHaveProperty(
       'message',
-      BUSINESS_TEXT_ALREADY_EXIST
+      BUSINESS_TEXT_ALREADY_EXIST,
     );
     expect(alreadyExistsException).toHaveProperty('statusCode', 400);
   });
@@ -48,33 +48,33 @@ describe('Business page queries', () => {
     const receivedBusinessText = await updateBusinessText(
       businessTextId,
       updatedBusinessText,
-      operations
+      operations,
     );
 
     expect(receivedBusinessText).toHaveProperty(
       'code',
-      updatedBusinessText.code
+      updatedBusinessText.code,
     );
     expect(receivedBusinessText.title).toBeInstanceOf(Array);
     expect(receivedBusinessText).toHaveProperty(
       'title',
-      updatedBusinessText.title
+      updatedBusinessText.title,
     );
     expect(receivedBusinessText).toHaveProperty(
       'text',
-      updatedBusinessText.text
+      updatedBusinessText.text,
     );
   });
   test('update not existing businessText should return error', async () => {
     const notExistBusinessText = await updateBusinessText(
       notExistBusinessTextId,
       updatedBusinessText,
-      operations
+      operations,
     );
 
     expect(notExistBusinessText).toHaveProperty(
       'message',
-      BUSINESS_TEXT_NOT_FOUND
+      BUSINESS_TEXT_NOT_FOUND,
     );
     expect(notExistBusinessText).toHaveProperty('statusCode', 404);
   });
@@ -86,7 +86,7 @@ describe('Business page queries', () => {
     expect(res.data.deleteBusinessText).toHaveProperty('statusCode', 404);
     expect(res.data.deleteBusinessText).toHaveProperty(
       'message',
-      BUSINESS_TEXT_NOT_FOUND
+      BUSINESS_TEXT_NOT_FOUND,
     );
   });
 

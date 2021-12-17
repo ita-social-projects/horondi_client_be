@@ -40,7 +40,7 @@ const constructorMutation = {
         id,
         constructor,
         image,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

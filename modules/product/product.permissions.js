@@ -15,15 +15,15 @@ const {
 const productPermissionsMutation = {
   addProduct: and(
     inputDataValidation(PRODUCT, productInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   updateProduct: and(
     inputDataValidation(PRODUCT, productInputValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteProduct: and(
     inputDataValidation(ID, deleteProductValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
 };
 

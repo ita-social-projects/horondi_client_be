@@ -48,13 +48,13 @@ describe('Back mutation tests', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
 
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
 
@@ -81,7 +81,7 @@ describe('Back mutation tests', () => {
       backId,
       backUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(updateBackTest).toBeDefined();
@@ -92,7 +92,7 @@ describe('Back mutation tests', () => {
       backId,
       backUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(updateBackTest).toBeDefined();
@@ -110,7 +110,7 @@ describe('Back mutation tests', () => {
       wrongId,
       backUpdateInput,
       'img-new.jpg',
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -136,7 +136,7 @@ describe('Back mutation tests', () => {
       backId,
       backUpdateInput,
       '',
-      operations
+      operations,
     );
 
     expect(updateBackTest).toBeDefined();

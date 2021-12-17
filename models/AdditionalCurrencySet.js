@@ -24,5 +24,5 @@ const additionalCurrencySetSchema = new mongoose.Schema({
 
 module.exports = mongoose.model(
   ADDITIONAL_CURRENCY_SET,
-  additionalCurrencySetSchema
+  additionalCurrencySetSchema,
 );

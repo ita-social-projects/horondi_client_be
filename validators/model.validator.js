@@ -8,7 +8,7 @@ const modelValidator = Joi.object({
         .trim()
         .required(),
       value: Joi.string().trim(),
-    })
+    }),
   ),
   description: Joi.array().items(
     Joi.object({
@@ -16,7 +16,7 @@ const modelValidator = Joi.object({
         .trim()
         .required(),
       value: Joi.string().trim(),
-    })
+    }),
   ),
   images: Joi.object({
     large: Joi.string().trim(),

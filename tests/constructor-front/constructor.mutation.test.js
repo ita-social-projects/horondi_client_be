@@ -58,12 +58,12 @@ describe('constructor mutations', () => {
     categoryId = categoryData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
 
@@ -72,7 +72,7 @@ describe('constructor mutations', () => {
     constructorUpdateInput = getConstructorDataForUpt(
       materialId,
       colorId,
-      modelId
+      modelId,
     );
     currentconstructorUpdate = getConstructorData(constructorUpdateInput, {
       materialId,
@@ -89,7 +89,7 @@ describe('constructor mutations', () => {
   test('#1 Should add Constructor Front Pocket', async () => {
     const createConstructor = await createConstructorFrontPocket(
       constructorInput,
-      operations
+      operations,
     );
     constructorFrontId = createConstructor._id;
 
@@ -102,7 +102,7 @@ describe('constructor mutations', () => {
   test('#2 Constructor Front Pocket should return Error Constructor Front Pocket already exist', async () => {
     const error = await createConstructorFrontPocket(
       constructorInput,
-      operations
+      operations,
     );
 
     expect(error).toBeDefined();
@@ -113,7 +113,7 @@ describe('constructor mutations', () => {
     const updateConstructor = await updateConstructorFrontPocket(
       constructorUpdateInput,
       constructorFrontId,
-      operations
+      operations,
     );
 
     expect(updateConstructor).toBeDefined();
@@ -126,7 +126,7 @@ describe('constructor mutations', () => {
     const result = await updateConstructorFrontPocket(
       constructorInput,
       wrongId,
-      operations
+      operations,
     );
 
     expect(result.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
@@ -134,7 +134,7 @@ describe('constructor mutations', () => {
   test('#5 delete Constructor Front Pocket should return error CONSTRUCTOR_ELEMENT_NOT_FOUND', async () => {
     const deletedConstructor = await deleteConstructorFrontPocket(
       wrongId,
-      operations
+      operations,
     );
     const result = deletedConstructor.message;
     expect(result).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
@@ -142,7 +142,7 @@ describe('constructor mutations', () => {
   test('#6 Should delete Constructor Front Pocket and return id', async () => {
     const deletedConstructor = await deleteConstructorFrontPocket(
       constructorFrontId,
-      operations
+      operations,
     );
     const result = deletedConstructor._id;
 

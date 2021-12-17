@@ -69,7 +69,7 @@ describe('Model mutations', () => {
     operations = await setupApp();
     const createdCategory = await createCategory(
       newCategoryInputData,
-      operations
+      operations,
     );
 
     categoryId = createdCategory._id;
@@ -90,15 +90,15 @@ describe('Model mutations', () => {
 
     expect(model).toHaveProperty(
       'name',
-      newModel(categoryId).name.map(item => ({
+      newModel(categoryId).name.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(model).toHaveProperty(
       'description',
-      newModel(categoryId).description.map(item => ({
+      newModel(categoryId).description.map((item) => ({
         ...item,
-      }))
+      })),
     );
   });
   test('Should throw error ITEM_ALREADY_EXISTS', async () => {
@@ -116,26 +116,26 @@ describe('Model mutations', () => {
     const modelUpdate = await updateModel(
       modelId,
       newModelUpdated(categoryId),
-      operations
+      operations,
     );
     expect(modelUpdate).toHaveProperty(
       'name',
-      newModelUpdated(categoryId).name.map(item => ({
+      newModelUpdated(categoryId).name.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(modelUpdate).toHaveProperty(
       'description',
-      newModelUpdated(categoryId).description.map(item => ({
+      newModelUpdated(categoryId).description.map((item) => ({
         ...item,
-      }))
+      })),
     );
   });
   test('Should throw error MODEL_NOT_FOUND while updating', async () => {
     const error = await updateModel(
       wrongId,
       newModelUpdated(categoryId),
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_FOUND);
@@ -144,7 +144,7 @@ describe('Model mutations', () => {
   test('Should add ModelConstructorBasic', async () => {
     const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
 
     constructorElementID = constructorBasicData._id;
@@ -152,7 +152,7 @@ describe('Model mutations', () => {
     const result = await addModelConstructorBasic(
       modelId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -162,7 +162,7 @@ describe('Model mutations', () => {
     const result = await deleteModelConstructorBasic(
       modelId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -172,7 +172,7 @@ describe('Model mutations', () => {
     const error = await addModelConstructorBasic(
       notValidId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);
@@ -182,7 +182,7 @@ describe('Model mutations', () => {
     const error = await deleteModelConstructorBasic(
       notValidId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);
@@ -192,7 +192,7 @@ describe('Model mutations', () => {
     const result = await addModelConstructorPattern(
       modelId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('_id', modelId);
@@ -201,7 +201,7 @@ describe('Model mutations', () => {
     const result = await deleteModelConstructorPattern(
       modelId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('_id', modelId);
@@ -210,7 +210,7 @@ describe('Model mutations', () => {
     const error = await addModelConstructorPattern(
       notValidId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);
@@ -220,7 +220,7 @@ describe('Model mutations', () => {
     const error = await deleteModelConstructorPattern(
       notValidId,
       constructorElementID,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);
@@ -229,7 +229,7 @@ describe('Model mutations', () => {
   test('Should add ModelConstructorFrontPocket', async () => {
     const constructorFrontPocketData = await createConstructorFrontPocket(
       newConstructorFront(materialId, colorId, modelId),
-      operations
+      operations,
     );
 
     constructorElementIDFrontPocket = constructorFrontPocketData._id;
@@ -237,7 +237,7 @@ describe('Model mutations', () => {
     const result = await addModelConstructorFrontPocket(
       modelId,
       constructorElementIDFrontPocket,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('_id', modelId);
@@ -246,7 +246,7 @@ describe('Model mutations', () => {
     const result = await deleteModelConstructorFrontPocket(
       modelId,
       constructorElementIDFrontPocket,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('_id', modelId);
@@ -255,7 +255,7 @@ describe('Model mutations', () => {
     const error = await addModelConstructorFrontPocket(
       notValidId,
       constructorElementIDFrontPocket,
-      operations
+      operations,
     );
     expect(error.message).toBe(MODEL_NOT_VALID);
     expect(error.statusCode).toBe(BAD_REQUEST);
@@ -264,7 +264,7 @@ describe('Model mutations', () => {
     const error = await deleteModelConstructorFrontPocket(
       notValidId,
       constructorElementIDFrontPocket,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);
@@ -273,7 +273,7 @@ describe('Model mutations', () => {
   test('Should add ModelConstructorBottom', async () => {
     const constructorBottomData = await createConstructorBottom(
       newConstructorBottom(materialId, colorId, modelId),
-      operations
+      operations,
     );
 
     constructorElementIDBottom = constructorBottomData._id;
@@ -281,7 +281,7 @@ describe('Model mutations', () => {
     const result = await addModelConstructorBottom(
       modelId,
       constructorElementIDBottom,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('_id', modelId);
@@ -290,7 +290,7 @@ describe('Model mutations', () => {
     const result = await deleteModelConstructorBottom(
       modelId,
       constructorElementIDBottom,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('_id', modelId);
@@ -299,7 +299,7 @@ describe('Model mutations', () => {
     const error = await addModelConstructorBottom(
       notValidId,
       constructorElementIDBottom,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);
@@ -309,7 +309,7 @@ describe('Model mutations', () => {
     const error = await deleteModelConstructorBottom(
       notValidId,
       constructorElementIDBottom,
-      operations
+      operations,
     );
 
     expect(error.message).toBe(MODEL_NOT_VALID);

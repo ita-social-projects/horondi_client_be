@@ -23,7 +23,9 @@ const cartQuery = {
 };
 
 const cartMutation = {
-  addProductToCart: async (_, { allSizes, sizeId, id, product, price }) => {
+  addProductToCart: async (_, {
+    allSizes, sizeId, id, product, price,
+  }) => {
     try {
       return await addProductToCart(allSizes, sizeId, id, product, price);
     } catch (e) {
@@ -37,7 +39,9 @@ const cartMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateCartItemQuantity: async (_, { quantity, sizeId, id, product }) => {
+  updateCartItemQuantity: async (_, {
+    quantity, sizeId, id, product,
+  }) => {
     try {
       return await updateCartItemQuantity(quantity, sizeId, id, product);
     } catch (e) {
@@ -46,14 +50,16 @@ const cartMutation = {
   },
   addConstructorProductItemToCart: async (
     _,
-    { constructorData, sizeId, id, product }
+    {
+      constructorData, sizeId, id, product,
+    },
   ) => {
     try {
       return await addConstructorProductItemToCart(
         constructorData,
         sizeId,
         id,
-        product
+        product,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -62,13 +68,13 @@ const cartMutation = {
 
   updateCartConstructorProductItemQuantity: async (
     _,
-    { quantity, constructorData, id }
+    { quantity, constructorData, id },
   ) => {
     try {
       return await updateCartConstructorProductItemQuantity(
         quantity,
         constructorData,
-        id
+        id,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -90,7 +96,9 @@ const cartMutation = {
     }
   },
 
-  changeCartItemSize: async (_, { id, itemId, size, price, quantity }) => {
+  changeCartItemSize: async (_, {
+    id, itemId, size, price, quantity,
+  }) => {
     try {
       return await changeCartItemSize(id, itemId, size, price, quantity);
     } catch (e) {

@@ -49,7 +49,7 @@ class CartService {
 
     return UserModel.findOneAndUpdate(
       { _id: id },
-      { $unset: { cart: 1 } }
+      { $unset: { cart: 1 } },
     ).exec();
   }
 
@@ -65,7 +65,7 @@ class CartService {
     return UserModel.findByIdAndUpdate(
       id,
       { $set: { 'cart.totalPrice': cartSum } },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
@@ -83,7 +83,7 @@ class CartService {
       size,
       price,
       quantity,
-      cart.items
+      cart.items,
     );
 
     const cartSum = await getTotalCartSum(newCart, id);
@@ -91,7 +91,7 @@ class CartService {
     return UserModel.findByIdAndUpdate(
       id,
       { $set: { 'cart.items': newCart, 'cart.totalPrice': cartSum } },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
@@ -101,7 +101,7 @@ class CartService {
         _id: id,
         'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
       },
-      'cart.items.$'
+      'cart.items.$',
     ).exec();
 
     const productPriceWithSize = calculateCartItemPriceWithSize(price);
@@ -112,14 +112,14 @@ class CartService {
       const totalPrice = totalCartSum(
         ADD_ITEM,
         productPriceWithSize,
-        cart.totalPrice
+        cart.totalPrice,
       );
 
       if (isProductAlreadyExistsInCart) {
         const incrementProductPrice = totalCartSum(
           ADD_ITEM,
           productPriceWithSize,
-          isProductAlreadyExistsInCart.cart.items[0].price
+          isProductAlreadyExistsInCart.cart.items[0].price,
         );
         return UserModel.findOneAndUpdate(
           {
@@ -139,7 +139,7 @@ class CartService {
             new: true,
             safe: true,
             upsert: true,
-          }
+          },
         ).exec();
       }
       return UserModel.findOneAndUpdate(
@@ -159,7 +159,7 @@ class CartService {
           new: true,
           safe: true,
           upsert: true,
-        }
+        },
       ).exec();
     }
     return UserModel.findOneAndUpdate(
@@ -179,7 +179,7 @@ class CartService {
         new: true,
         safe: true,
         upsert: true,
-      }
+      },
     ).exec();
   }
 
@@ -192,7 +192,7 @@ class CartService {
     },
     sizeId,
     id,
-    { _id }
+    { _id },
   ) {
     const isItemAlreadyExists = await UserModel.findOne(
       {
@@ -208,7 +208,7 @@ class CartService {
           },
         },
       },
-      'cart.items.$'
+      'cart.items.$',
     ).exec();
 
     const { additionalPrice: sizePrice } = await getSizeById(sizeId);
@@ -234,7 +234,7 @@ class CartService {
     const {
       basePrice: constructorFrontPocketPrice,
     } = await ConstructorFrontPocketModel.findById(
-      constructorFrontPocket
+      constructorFrontPocket,
     ).exec();
 
     if (!constructorFrontPocketPrice) {
@@ -242,7 +242,7 @@ class CartService {
     }
 
     const isPatternPresent = await PatternModel.findById(
-      constructorPattern
+      constructorPattern,
     ).exec();
 
     if (!isPatternPresent) throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
@@ -253,20 +253,20 @@ class CartService {
       sizePrice,
       constructorBasicsPrice,
       constructorBottomPrice,
-      constructorFrontPocketPrice
+      constructorFrontPocketPrice,
     );
 
     if (cart?.items?.length) {
       const totalPrice = totalCartSum(
         ADD_ITEM,
         productPriceWithSize,
-        cart.totalPrice
+        cart.totalPrice,
       );
       if (isItemAlreadyExists) {
         const incrementProductPrice = totalCartSum(
           ADD_ITEM,
           productPriceWithSize,
-          isItemAlreadyExists.cart.items[0].price
+          isItemAlreadyExists.cart.items[0].price,
         );
         return UserModel.findOneAndUpdate(
           {
@@ -283,7 +283,7 @@ class CartService {
           },
           {
             new: true,
-          }
+          },
         ).exec();
       }
       return UserModel.findOneAndUpdate(
@@ -304,7 +304,7 @@ class CartService {
         },
         {
           new: true,
-        }
+        },
       ).exec();
     }
     return UserModel.findOneAndUpdate(
@@ -325,7 +325,7 @@ class CartService {
       },
       {
         new: true,
-      }
+      },
     ).exec();
   }
 
@@ -339,7 +339,7 @@ class CartService {
         _id: id,
         'cart.items': { $elemMatch: { product: _id, 'options.size': sizeId } },
       },
-      'cart.items.$'
+      'cart.items.$',
     ).exec();
 
     if (!itemFromCart) {
@@ -352,7 +352,7 @@ class CartService {
       const oldTotalSum = totalCartSum(
         REMOVE_ITEM,
         itemFromCart.cart.items[0].price,
-        cart.totalPrice
+        cart.totalPrice,
       );
       const newTotalSum = totalCartSum(ADD_ITEM, priceForProduct, oldTotalSum);
 
@@ -368,7 +368,7 @@ class CartService {
             'cart.items.$.quantity': quantity,
           },
         },
-        { new: true }
+        { new: true },
       ).exec();
     }
     return UserModel.findOneAndUpdate(
@@ -383,14 +383,14 @@ class CartService {
           'cart.items.$.quantity': quantity,
         },
       },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
   async updateCartConstructorProductItemQuantity(
     quantity,
     constructorData,
-    id
+    id,
   ) {
     if (!constructorData) {
       throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
@@ -402,19 +402,19 @@ class CartService {
       ({ value, currency }) => ({
         value: (value / constructorData.cart.items[0].quantity) * quantity,
         currency,
-      })
+      }),
     );
 
     if (cart.items?.length > 1) {
       const oldTotalSum = totalCartSum(
         REMOVE_ITEM,
         constructorData.cart.items[0].price,
-        cart.totalPrice
+        cart.totalPrice,
       );
       const newTotalSum = totalCartSum(
         ADD_ITEM,
         newPriceForConstructorProduct,
-        oldTotalSum
+        oldTotalSum,
       );
 
       return UserModel.findOneAndUpdate(
@@ -429,7 +429,7 @@ class CartService {
             'cart.items.$.quantity': quantity,
           },
         },
-        { new: true }
+        { new: true },
       ).exec();
     }
     return UserModel.findOneAndUpdate(
@@ -444,16 +444,16 @@ class CartService {
           'cart.items.$.quantity': quantity,
         },
       },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
   async mergeCartFromLS(cartFromLS, id) {
     await Promise.all(
-      cartFromLS.map(async item => {
+      cartFromLS.map(async (item) => {
         if (item.product) {
           const isProductPresent = await ProductModel.findById(
-            item.product
+            item.product,
           ).exec();
           const isProductAlreadyInCart = await UserModel.findOne(
             {
@@ -465,7 +465,7 @@ class CartService {
                 },
               },
             },
-            'cart.items.$'
+            'cart.items.$',
           ).exec();
           if (item.price && !isProductAlreadyInCart && isProductPresent) {
             await UserModel.findOneAndUpdate(
@@ -480,13 +480,13 @@ class CartService {
                     price: item.price,
                   },
                 },
-              }
+              },
             ).exec();
           }
         }
         if (item.productFromConstructor) {
           const isProductPresent = await ProductModel.findById(
-            item.productFromConstructor.product
+            item.productFromConstructor.product,
           ).exec();
 
           const isConstructorAlreadyInCart = await UserModel.findOne(
@@ -508,45 +508,45 @@ class CartService {
                 },
               },
             },
-            'cart.items.$'
+            'cart.items.$',
           ).exec();
 
           const {
             basePrice: constructorBasicsPrice,
           } = await ConstructorBasicModel.findById(
-            item.productFromConstructor.constructorBasics
+            item.productFromConstructor.constructorBasics,
           ).exec();
 
           const {
             basePrice: constructorBottomPrice,
           } = await ConstructorBottomModel.findById(
-            item.productFromConstructor.constructorBottom
+            item.productFromConstructor.constructorBottom,
           ).exec();
 
           const {
             basePrice: constructorFrontPocketPrice,
           } = await ConstructorFrontPocketModel.findById(
-            item.productFromConstructor.constructorFrontPocket
+            item.productFromConstructor.constructorFrontPocket,
           ).exec();
 
           const isPatternPresent = await PatternModel.findById(
-            item.productFromConstructor.constructorPattern
+            item.productFromConstructor.constructorPattern,
           ).exec();
 
           if (
-            isProductPresent &&
-            !isConstructorAlreadyInCart &&
-            constructorBasicsPrice &&
-            constructorBottomPrice &&
-            constructorFrontPocketPrice &&
-            isPatternPresent
+            isProductPresent
+            && !isConstructorAlreadyInCart
+            && constructorBasicsPrice
+            && constructorBottomPrice
+            && constructorFrontPocketPrice
+            && isPatternPresent
           ) {
             const itemPrice = calculateConstructorCartItemPriceWithSize(
               item.price,
               constructorBasicsPrice,
               constructorBottomPrice,
               constructorFrontPocketPrice,
-              item.quantity
+              item.quantity,
             );
 
             await UserModel.findOneAndUpdate(
@@ -569,11 +569,11 @@ class CartService {
                     price: itemPrice,
                   },
                 },
-              }
+              },
             ).exec();
           }
         }
-      })
+      }),
     );
 
     const { cart } = await UserModel.findById(id, 'cart ').exec();
@@ -583,7 +583,7 @@ class CartService {
     return UserModel.findByIdAndUpdate(
       id,
       { $set: { 'cart.totalPrice': totalPrice } },
-      { new: true }
+      { new: true },
     ).exec();
   }
 
@@ -599,7 +599,7 @@ class CartService {
             },
           },
         },
-        'cart.items.$'
+        'cart.items.$',
       ).exec();
 
       if (isProductExistsInCart) {
@@ -614,7 +614,7 @@ class CartService {
                 _id: isProductExistsInCart.cart.items[0]._id,
               },
             },
-          }
+          },
         ).exec();
       }
     }
@@ -637,7 +637,7 @@ class CartService {
             },
           },
         },
-        'cart.items.$'
+        'cart.items.$',
       ).exec();
 
       if (isConstructorExistsInCart) {
@@ -652,7 +652,7 @@ class CartService {
                 _id: isConstructorExistsInCart.cart.items[0]._id,
               },
             },
-          }
+          },
         ).exec();
       }
     }
@@ -664,7 +664,7 @@ class CartService {
     return UserModel.findByIdAndUpdate(
       id,
       { $set: { 'cart.totalPrice': totalPrice } },
-      { new: true }
+      { new: true },
     ).exec();
   }
 }

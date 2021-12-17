@@ -32,8 +32,8 @@ const paymentController = async (action, data) => {
   if (action === CHECK_PAYMENT_STATUS) {
     return fondy
       .Status(data)
-      .then(res => res)
-      .catch(error => error);
+      .then((res) => res)
+      .catch((error) => error);
   }
 };
 

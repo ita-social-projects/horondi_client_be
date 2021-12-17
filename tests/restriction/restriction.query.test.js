@@ -26,7 +26,7 @@ describe('Restriction queries', () => {
 
     for (let i = 0; i < 2; i++) {
       restrictionIds.push(
-        (await addRestriction(restrictionParameters, operations))._id
+        (await addRestriction(restrictionParameters, operations))._id,
       );
     }
   });
@@ -36,9 +36,9 @@ describe('Restriction queries', () => {
       10,
       0,
       restrictionFilter,
-      operations
+      operations,
     );
-    const res = restrictions.items.map(el => el._id);
+    const res = restrictions.items.map((el) => el._id);
     expect(res).toEqual(restrictionIds);
   });
 

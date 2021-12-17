@@ -12,7 +12,7 @@ module.exports = {
           constructorFrontPocket: '',
           constructorBottom: '',
         },
-      }
+      },
     );
   },
 
@@ -29,7 +29,7 @@ module.exports = {
         $unset: { modelRefactoredFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

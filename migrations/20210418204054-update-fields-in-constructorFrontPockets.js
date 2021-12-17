@@ -9,7 +9,7 @@ module.exports = {
       {
         $set: constructorFrontPocketExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
   },
 
@@ -21,7 +21,7 @@ module.exports = {
         $unset: { constructorFrontPocketExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

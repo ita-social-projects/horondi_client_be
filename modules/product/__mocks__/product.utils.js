@@ -1,5 +1,5 @@
 const uploadProductImages = () => {
-  const createName = sizeName => `${sizeName}_${'1'}_test-file`;
+  const createName = (sizeName) => `${sizeName}_${'1'}_test-file`;
   const primary = {
     large: createName('large'),
     medium: createName('medium'),

@@ -84,33 +84,33 @@ describe('Product queries', () => {
     categoryId = categoryData._id;
     const receivedMaterial = await createMaterial(
       getMaterial(colorId),
-      operations
+      operations,
     );
     materialId = receivedMaterial._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     userId = await createUser(operations, testUsersSet[0]);
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const receivedConstructorBasic = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = receivedConstructorBasic._id;
     productInput = newProductInputData(
@@ -121,7 +121,7 @@ describe('Product queries', () => {
       colorId,
       patternId,
       closureId,
-      sizeId
+      sizeId,
     );
     const productData = await createProduct(productInput, operations);
     productId = productData._id;
@@ -160,7 +160,7 @@ describe('Product queries', () => {
   test('#5 Should return models', async () => {
     const models = await getModelsByCategory(categoryId, operations);
     const res = models.data.getModelsByCategory;
-    expect(res.some(model => model._id === modelId)).toBeTruthy();
+    expect(res.some((model) => model._id === modelId)).toBeTruthy();
   });
 
   test('#6 Should return popular products', async () => {

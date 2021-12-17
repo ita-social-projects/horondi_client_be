@@ -227,7 +227,7 @@ const restrictionValidator = Joi.object({
       feature: Joi.string()
         .trim()
         .required(),
-    })
+    }),
   ),
 });
 

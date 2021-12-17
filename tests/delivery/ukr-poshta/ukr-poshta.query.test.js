@@ -83,7 +83,7 @@ describe('ukr-poshta queries tests', () => {
     const [result] = await getUkrPoshtaPostofficesCityId(id, operations);
 
     expect(result.POSTOFFICE_ID).toBe(
-      getUkrPoshtaPostofficesResult.POSTOFFICE_ID
+      getUkrPoshtaPostofficesResult.POSTOFFICE_ID,
     );
   });
 

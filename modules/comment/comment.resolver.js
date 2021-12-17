@@ -28,7 +28,7 @@ const commentsQuery = {
   getReplyCommentsByComment: async (
     parent,
     { filter, pagination: { skip, limit }, sort },
-    { user }
+    { user },
   ) => {
     try {
       return await commentsService.getReplyCommentsByComment(
@@ -36,7 +36,7 @@ const commentsQuery = {
         skip,
         limit,
         user,
-        sort
+        sort,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -46,7 +46,7 @@ const commentsQuery = {
   getCommentsByProduct: async (
     parent,
     { filter, pagination: { skip, limit }, sort },
-    { user }
+    { user },
   ) => {
     try {
       return await commentsService.getCommentsByProduct(
@@ -54,7 +54,7 @@ const commentsQuery = {
         skip,
         limit,
         user,
-        sort
+        sort,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -62,7 +62,9 @@ const commentsQuery = {
   },
   getCommentsByUser: async (
     parent,
-    { filter, pagination: { skip, limit }, sort, userId }
+    {
+      filter, pagination: { skip, limit }, sort, userId,
+    },
   ) => {
     try {
       return await commentsService.getCommentsByUser(
@@ -70,7 +72,7 @@ const commentsQuery = {
         skip,
         limit,
         userId,
-        sort
+        sort,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -78,7 +80,9 @@ const commentsQuery = {
   },
   getCommentsRepliesByUser: async (
     parent,
-    { filter, pagination: { skip, limit }, sort, userId }
+    {
+      filter, pagination: { skip, limit }, sort, userId,
+    },
   ) => {
     try {
       return await commentsService.getCommentsRepliesByUser(
@@ -86,7 +90,7 @@ const commentsQuery = {
         skip,
         limit,
         userId,
-        sort
+        sort,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -119,7 +123,7 @@ const commentsMutation = {
       return await commentsService.replyForComment(
         commentId,
         replyCommentData,
-        user
+        user,
       );
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
@@ -129,7 +133,7 @@ const commentsMutation = {
     try {
       return await commentsService.updateReplyComment(
         replyCommentId,
-        replyCommentData
+        replyCommentData,
       );
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
@@ -164,7 +168,7 @@ const commentsMutation = {
       return await commentsService.addRate(
         args.product,
         args.userRate,
-        context.user
+        context.user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

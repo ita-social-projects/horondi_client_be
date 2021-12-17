@@ -53,13 +53,13 @@ class HistoryService {
 
     const items = _.take(
       _.drop(
-        _.filter(historyRecords, record => record.userId),
-        skip
+        _.filter(historyRecords, (record) => record.userId),
+        skip,
       ),
-      limit
+      limit,
     );
 
-    const count = _.filter(historyRecords, record => record.userId).length;
+    const count = _.filter(historyRecords, (record) => record.userId).length;
 
     return {
       items,

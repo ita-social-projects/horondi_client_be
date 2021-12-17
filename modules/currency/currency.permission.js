@@ -14,12 +14,12 @@ const {
 const currencyMutation = {
   addCurrency: and(
     inputDataValidation(CURRENCY, currencyInputValidator),
-    hasRoles([SUPERADMIN, ADMIN])
+    hasRoles([SUPERADMIN, ADMIN]),
   ),
   deleteCurrency: hasRoles([SUPERADMIN, ADMIN]),
   updateCurrency: and(
     inputDataValidation(CURRENCY, currencyInputValidator),
-    hasRoles([SUPERADMIN, ADMIN])
+    hasRoles([SUPERADMIN, ADMIN]),
   ),
 };
 

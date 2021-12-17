@@ -74,7 +74,7 @@ const deleteConstructorFrontPocket = async (id, operations) => {
 const updateConstructorFrontPocket = async (
   constructorInput,
   constructorId,
-  operations
+  operations,
 ) => {
   const constructorFrontPocket = await operations.mutate({
     mutation: gql`
@@ -130,7 +130,7 @@ const updateConstructorFrontPocket = async (
 
 const getAllConstructorFrontPocket = async (
   { limit, skip, filter },
-  operations
+  operations,
 ) => {
   const res = await operations.query({
     query: gql`

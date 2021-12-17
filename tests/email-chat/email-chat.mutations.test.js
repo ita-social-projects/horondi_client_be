@@ -40,7 +40,7 @@ describe('Chat email mutations', () => {
     } = await loginAdmin(
       superAdminUser.email,
       superAdminUser.password,
-      operations
+      operations,
     );
     adminId = _id;
     const {
@@ -68,7 +68,7 @@ describe('Chat email mutations', () => {
     const result = await makeEmailQuestionsSpam(
       [question._id],
       adminId,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -82,7 +82,7 @@ describe('Chat email mutations', () => {
       question._id,
       adminId,
       fakeAnswer,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -93,7 +93,7 @@ describe('Chat email mutations', () => {
       fakeQuestionId,
       adminId,
       fakeAnswer,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();

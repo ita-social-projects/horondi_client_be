@@ -69,27 +69,27 @@ describe('Order queries', () => {
     materialId = materialData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = constructorBasicData._id;
     const productData = await createProduct(
@@ -101,9 +101,9 @@ describe('Order queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
   });
@@ -119,7 +119,7 @@ describe('Order queries', () => {
   test('Should create order', async () => {
     const order = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId),
-      operations
+      operations,
     );
     orderId = order._id;
 
@@ -145,7 +145,7 @@ describe('Order queries', () => {
     const updatedOrder = await updateOrderById(
       newOrderUpdated(productId, modelId, sizeId),
       orderId,
-      operations
+      operations,
     );
 
     expect(updatedOrder).toBeTruthy();
@@ -162,7 +162,7 @@ describe('Order queries', () => {
     const { message } = await updateOrderById(
       newOrderUpdated(productId, modelId, sizeId),
       wrongId,
-      operations
+      operations,
     );
 
     expect(message).toBe(ORDER_NOT_FOUND);
@@ -172,7 +172,7 @@ describe('Order queries', () => {
 
     expect(deletedUnexistingOrder.data.deleteOrder).toHaveProperty(
       'message',
-      ORDER_NOT_FOUND
+      ORDER_NOT_FOUND,
     );
   });
   test('Should delete order', async () => {

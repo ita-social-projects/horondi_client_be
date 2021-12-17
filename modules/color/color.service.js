@@ -43,7 +43,7 @@ class ColorService {
 
   async addColor(colorData, { _id: adminId }) {
     colorData.translations_key = await addTranslations(
-      createTranslations(colorData)
+      createTranslations(colorData),
     );
 
     const hex = await Color.find({ colorHex: colorData.colorHex }).exec();
@@ -59,7 +59,7 @@ class ColorService {
       newColor._id,
       [],
       generateHistoryChangesData(newColor, [NAME, SIMPLE_NAME, COLOR_HEX]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -90,7 +90,7 @@ class ColorService {
       deletedColor._id,
       generateHistoryChangesData(deletedColor, [NAME, SIMPLE_NAME, COLOR_HEX]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

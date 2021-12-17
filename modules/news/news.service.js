@@ -19,7 +19,9 @@ const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { AUTHOR, LANGUAGES, TITLE, TEXT },
+  HISTORY_OBJ_KEYS: {
+    AUTHOR, LANGUAGES, TITLE, TEXT,
+  },
 } = require('../../consts/history-obj-keys');
 const { transliterate } = require('../helper-functions');
 const {
@@ -102,7 +104,7 @@ class NewsService {
         foundNews._id,
         beforeChanges,
         afterChanges,
-        adminId
+        adminId,
       );
       await addHistoryRecord(historyRecord);
     }
@@ -139,7 +141,7 @@ class NewsService {
       newNews._id,
       [],
       generateHistoryChangesData(newNews, [AUTHOR, LANGUAGES, TITLE, TEXT]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -160,7 +162,7 @@ class NewsService {
         foundNews._id,
         generateHistoryChangesData(foundNews, [AUTHOR, LANGUAGES, TITLE, TEXT]),
         [],
-        adminId
+        adminId,
       );
       await deleteTranslations(foundNews.translationsKey);
       await addHistoryRecord(historyRecord);

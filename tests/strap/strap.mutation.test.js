@@ -44,7 +44,7 @@ describe('Strap mutations', () => {
     const convertedObj = await strapWithConvertedPrice(
       colorId,
       newImgObj,
-      strapData.translationsKey
+      strapData.translationsKey,
     );
 
     expect(strapData).toBeDefined();
@@ -58,7 +58,7 @@ describe('Strap mutations', () => {
     strapData = await createStrap(
       newStrap(colorId, modelId),
       newImgString,
-      operations
+      operations,
     );
 
     expect(strapData).toBeDefined();
@@ -71,7 +71,7 @@ describe('Strap mutations', () => {
       wrongId,
       strapToUpdate(colorId, modelId),
       null,
-      operations
+      operations,
     );
 
     expect(strapData).toBeDefined();
@@ -84,7 +84,7 @@ describe('Strap mutations', () => {
       strapId,
       strapToUpdate(colorId, modelId),
       null,
-      operations
+      operations,
     );
 
     const finalStrap = newStrapUpdated(colorId, modelId);
@@ -102,7 +102,7 @@ describe('Strap mutations', () => {
       strapId,
       strapToUpdate(colorId, modelId),
       newImgString,
-      operations
+      operations,
     );
 
     const finalStrap = newStrapUpdatedWithImage(colorId, modelId, newImgObj);
@@ -135,7 +135,7 @@ describe('Strap mutations', () => {
       strapId,
       strapToUpdate(colorId, wrongModelIdForError),
       newImgString,
-      operations
+      operations,
     );
 
     expect(updatedStrap).toBeDefined();

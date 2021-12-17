@@ -25,11 +25,11 @@ const patternPermissionsMutations = {
   addPattern: and(
     inputDataValidation(PATTERN, inputPatternValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(PATTERN, PatternModel)
+    checkIfItemExists(PATTERN, PatternModel),
   ),
   updatePattern: and(
     inputDataValidation(PATTERN, inputPatternValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deletePattern: hasRoles([ADMIN, SUPERADMIN]),
 };

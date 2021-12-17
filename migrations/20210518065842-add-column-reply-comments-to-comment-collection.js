@@ -4,7 +4,7 @@ module.exports = {
       {},
       {
         $set: { replyComments: [] },
-      }
+      },
     );
   },
 

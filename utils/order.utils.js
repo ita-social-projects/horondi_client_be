@@ -25,14 +25,14 @@ async function calculateTotalItemsPrice(items) {
         {
           currency: CURRENCY.UAH,
           value:
-            price[CURRENCY_VALUE.UAH_VALUE].value +
-            sum[CURRENCY_VALUE.UAH_VALUE].value,
+            price[CURRENCY_VALUE.UAH_VALUE].value
+            + sum[CURRENCY_VALUE.UAH_VALUE].value,
         },
         {
           currency: CURRENCY.USD,
           value:
-            price[CURRENCY_VALUE.USD_VALUE].value +
-            sum[CURRENCY_VALUE.USD_VALUE].value,
+            price[CURRENCY_VALUE.USD_VALUE].value
+            + sum[CURRENCY_VALUE.USD_VALUE].value,
         },
       ];
     },
@@ -45,7 +45,7 @@ async function calculateTotalItemsPrice(items) {
         currency: CURRENCY.USD,
         value: 0,
       },
-    ]
+    ],
   );
 }
 
@@ -59,7 +59,7 @@ function generateOrderNumber() {
 }
 
 async function addProductsToStatistic(items) {
-  items.forEach(async item => {
+  items.forEach(async (item) => {
     if (item.quantity !== 0) {
       const product = await productModel.findById(item.product).exec();
       product.purchasedCount += item.quantity;
@@ -70,12 +70,12 @@ async function addProductsToStatistic(items) {
 
 async function updateProductStatistic(orderToUpdate, newOrder) {
   if (
-    (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
-    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+    (newOrder.status === CANCELLED || newOrder.status === REFUNDED)
+    && (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
   ) {
     return;
   }
-  const oldItems = orderToUpdate.items.map(item => ({
+  const oldItems = orderToUpdate.items.map((item) => ({
     product: item.product.toString(),
     quantity: -item.quantity,
   }));
@@ -83,18 +83,18 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
   if (newOrder.status === CANCELLED || newOrder.status === REFUNDED) {
     await addProductsToStatistic(oldItems);
   } else if (
-    newOrder.status !== CANCELLED &&
-    newOrder.status !== REFUNDED &&
-    (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
+    newOrder.status !== CANCELLED
+    && newOrder.status !== REFUNDED
+    && (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
   ) {
     await addProductsToStatistic(newOrder.items);
   } else {
-    const newItems = newOrder.items.map(item => ({
+    const newItems = newOrder.items.map((item) => ({
       product: item.product,
       quantity: item.quantity,
     }));
-    const items = newItems.map(newItem => {
-      const index = oldItems.findIndex(el => el.product === newItem.product);
+    const items = newItems.map((newItem) => {
+      const index = oldItems.findIndex((el) => el.product === newItem.product);
       let quantity;
       if (index !== -1) {
         quantity = newItem.quantity + oldItems[index].quantity;

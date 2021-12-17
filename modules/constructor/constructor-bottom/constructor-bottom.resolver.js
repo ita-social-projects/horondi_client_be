@@ -7,7 +7,7 @@ const constructorBottomQuery = {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
-        ConstructorBottom
+        ConstructorBottom,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -18,7 +18,7 @@ const constructorBottomQuery = {
     try {
       return await constructorService.getAllConstructorElements(
         args,
-        ConstructorBottom
+        ConstructorBottom,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -32,7 +32,7 @@ const constructorBottomMutation = {
       return await constructorService.addConstructorElement(
         args,
         ConstructorBottom,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -44,7 +44,7 @@ const constructorBottomMutation = {
       return await constructorService.updateConstructorElement(
         args,
         ConstructorBottom,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -56,7 +56,7 @@ const constructorBottomMutation = {
       return await constructorService.deleteConstructorElement(
         args.id,
         ConstructorBottom,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

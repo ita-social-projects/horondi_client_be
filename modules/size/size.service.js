@@ -65,19 +65,15 @@ class SizeService {
         items.push(
           ..._.take(
             _.drop(
-              _.filter(records, record =>
-                regExCondition.test(record.modelId.name[0].value)
-              ),
-              skip
+              _.filter(records, (record) => regExCondition.test(record.modelId.name[0].value)),
+              skip,
             ),
-            limit
-          )
+            limit,
+          ),
         );
       } else {
         items.push(
-          _.filter(records, record =>
-            regExCondition.test(record.modelId.name[0].value)
-          )
+          _.filter(records, (record) => regExCondition.test(record.modelId.name[0].value)),
         );
       }
     } else {
@@ -107,7 +103,7 @@ class SizeService {
 
   async addSize(sizeData, { _id: adminId }) {
     sizeData.additionalPrice = await calculateAdditionalPrice(
-      sizeData.additionalPrice
+      sizeData.additionalPrice,
     );
     const newSize = await new Size(sizeData).save();
     const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
@@ -131,7 +127,7 @@ class SizeService {
         DEPTH_IN_CM,
         VOLUME_IN_LITERS,
       ]),
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -166,7 +162,7 @@ class SizeService {
         VOLUME_IN_LITERS,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -191,7 +187,7 @@ class SizeService {
     }
 
     input.additionalPrice = await calculateAdditionalPrice(
-      input.additionalPrice
+      input.additionalPrice,
     );
     if (
       JSON.stringify(sizeToUpdate.modelId) !== JSON.stringify(input.modelId)
@@ -233,7 +229,7 @@ class SizeService {
       sizeToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

@@ -9,7 +9,7 @@ module.exports = {
       {
         $set: constructorBasicOneExtraFields,
         $unset: { material: '', color: '', default: '' },
-      }
+      },
     );
   },
 
@@ -21,7 +21,7 @@ module.exports = {
         $unset: { constructorBasicOneExtraFields: 1 },
       },
       false,
-      true
+      true,
     );
   },
 };

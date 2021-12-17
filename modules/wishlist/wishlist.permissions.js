@@ -12,7 +12,7 @@ const wishlistPermissionsQuery = {
 
 const wishlistPermissionsMutations = {
   addProductToWishlist: and(
-    inputDataValidation(WISHLIST, wishlistInputValidator)
+    inputDataValidation(WISHLIST, wishlistInputValidator),
   ),
   deleteProductFromWishlist: allow,
 };

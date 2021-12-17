@@ -91,27 +91,27 @@ describe('Comment queries', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const constructorBasicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = constructorBasicData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const productData = await createProduct(
@@ -123,9 +123,9 @@ describe('Comment queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
   });
@@ -134,13 +134,13 @@ describe('Comment queries', () => {
     const authRes = await loginAdmin(
       superAdminUser.email,
       superAdminUser.password,
-      operations
+      operations,
     );
     adminId = authRes.data.loginAdmin._id;
     const receivedComment = await addComment(
       productId,
       newComment(adminId),
-      operations
+      operations,
     );
     commentId = receivedComment._id;
 
@@ -156,14 +156,14 @@ describe('Comment queries', () => {
     const receivedComment = await addComment(
       productWrongId,
       newComment(adminId),
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty(
       'message',
-      COMMENT_FOR_NOT_EXISTING_PRODUCT
+      COMMENT_FOR_NOT_EXISTING_PRODUCT,
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
@@ -171,7 +171,7 @@ describe('Comment queries', () => {
     const receivedComment = await updateComment(
       commentId,
       updatedComment,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
@@ -193,7 +193,7 @@ describe('Comment queries', () => {
     const receivedComment = await updateComment(
       commentWrongId,
       updatedComment,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
@@ -205,13 +205,13 @@ describe('Comment queries', () => {
   it('should add comment with bought order icon', async () => {
     const order = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId),
-      operations
+      operations,
     );
     orderId = order._id;
     const receivedComment = await addComment(
       productId,
       newComment(adminId),
-      operations
+      operations,
     );
     commentId = receivedComment._id;
     expect(receivedComment).not.toBeNull();
@@ -228,7 +228,7 @@ describe('Comment queries', () => {
       productId,
       newReplyComment(adminId, commentId),
       operations,
-      commentId
+      commentId,
     );
     replyId = receivedComment.replyComments[0]._id;
 
@@ -236,15 +236,15 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment.replyComments[0]).toHaveProperty(
       'replyText',
-      newReplyComment(adminId, commentId).replyText
+      newReplyComment(adminId, commentId).replyText,
     );
     expect(receivedComment.replyComments[0]).toHaveProperty(
       'refToReplyComment',
-      newReplyComment(adminId, commentId).refToReplyComment
+      newReplyComment(adminId, commentId).refToReplyComment,
     );
     expect(receivedComment.replyComments[0]).toHaveProperty(
       'verifiedPurchase',
-      false
+      false,
     );
   });
   it('should return error if id of comment to add reply is not correct', async () => {
@@ -252,7 +252,7 @@ describe('Comment queries', () => {
       productId,
       newReplyComment(adminId, commentWrongId),
       operations,
-      commentWrongId
+      commentWrongId,
     );
 
     expect(receivedComment).not.toBeNull();
@@ -264,32 +264,32 @@ describe('Comment queries', () => {
     const receivedComment = await updateReplyComment(
       replyId,
       updatedReplyComment,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment.replyComments[0].replyText).toHaveProperty(
       'replyText',
-      updatedReplyComment.text
+      updatedReplyComment.text,
     );
     expect(receivedComment.replyComments[0].showReplyComment).toHaveProperty(
       'showReplyComment',
-      updatedReplyComment.show
+      updatedReplyComment.show,
     );
   });
   it('should return error if id of reply comment to update is not correct', async () => {
     const receivedComment = await updateReplyComment(
       commentWrongId,
       updatedReplyComment,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty(
       'message',
-      REPLY_COMMENT_IS_NOT_PRESENT
+      REPLY_COMMENT_IS_NOT_PRESENT,
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
@@ -297,7 +297,7 @@ describe('Comment queries', () => {
     const receivedComment = await deleteReplyComment(
       adminId,
       replyId,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
@@ -308,14 +308,14 @@ describe('Comment queries', () => {
     const receivedComment = await deleteReplyComment(
       adminId,
       commentWrongId,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty(
       'message',
-      REPLY_COMMENT_IS_NOT_PRESENT
+      REPLY_COMMENT_IS_NOT_PRESENT,
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
@@ -323,7 +323,7 @@ describe('Comment queries', () => {
     const receivedComment = await deleteComment(
       adminId,
       commentWrongId,
-      operations
+      operations,
     );
 
     expect(receivedComment).not.toBeNull();
@@ -361,7 +361,7 @@ describe('Comment queries', () => {
     expect(receivedComment).toBeDefined();
     expect(receivedComment).toHaveProperty(
       'message',
-      RATE_FOR_NOT_EXISTING_PRODUCT
+      RATE_FOR_NOT_EXISTING_PRODUCT,
     );
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });

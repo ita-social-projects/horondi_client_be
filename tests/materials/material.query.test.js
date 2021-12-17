@@ -79,7 +79,7 @@ describe('material quarries test', () => {
     expect(receivedMaterial.name).toBeInstanceOf(Array);
     expect(receivedMaterial).toHaveProperty(
       'description',
-      material.description
+      material.description,
     );
     expect(receivedMaterial.description).toBeInstanceOf(Array);
     expect(receivedMaterial).toHaveProperty('purpose', material.purpose);

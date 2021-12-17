@@ -62,14 +62,14 @@ describe('Constructor mutations', () => {
     newDataConstructorBottom = getConstructorDataForUpt(
       materialId,
       colorId,
-      modelId
+      modelId,
     );
   });
 
   test('should create constructor-bottom', async () => {
     const createConstructorBottomData = await createConstructorBottom(
       addConstructor,
-      operations
+      operations,
     );
     constructorId = createConstructorBottomData._id;
 
@@ -84,7 +84,7 @@ describe('Constructor mutations', () => {
     const updatedData = await updateConstructorBottom(
       constructorId,
       newDataConstructorBottom,
-      operations
+      operations,
     );
 
     expect(updatedData).toBeDefined();
@@ -93,7 +93,7 @@ describe('Constructor mutations', () => {
   test('should return Error (already exist) when creating same constructor-bottom again', async () => {
     const createConstructorAgain = await createConstructorBottom(
       newDataConstructorBottom,
-      operations
+      operations,
     );
 
     expect(createConstructorAgain.message).toBeDefined();
@@ -103,7 +103,7 @@ describe('Constructor mutations', () => {
     const updateConstructor = await updateConstructorBottom(
       wrongId,
       addConstructor,
-      operations
+      operations,
     );
 
     expect(updateConstructor.message).toBe(CONSTRUCTOR_ELEMENT_NOT_FOUND);
@@ -112,7 +112,7 @@ describe('Constructor mutations', () => {
   test('should delete constructor-bottom and return id', async () => {
     const deletedConstructor = await deleteConstructorBottom(
       constructorId,
-      operations
+      operations,
     );
     expect(deletedConstructor._id).toBe(constructorId);
   });

@@ -29,9 +29,8 @@ const createColor = async (color, operations) => {
 
   return createdColor.data.addColor;
 };
-const deleteColor = async (id, operations) =>
-  await operations.mutate({
-    mutation: gql`
+const deleteColor = async (id, operations) => await operations.mutate({
+  mutation: gql`
       mutation($id: ID!) {
         deleteColor(id: $id) {
           ... on Color {
@@ -53,11 +52,11 @@ const deleteColor = async (id, operations) =>
         }
       }
     `,
-    variables: {
-      id,
-    },
-  });
-const getAllColors = async operations => {
+  variables: {
+    id,
+  },
+});
+const getAllColors = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {

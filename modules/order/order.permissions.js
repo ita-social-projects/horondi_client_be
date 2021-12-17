@@ -7,7 +7,9 @@ const {
   isAuthorized,
 } = require('../../utils/rules');
 const {
-  INPUT_FIELDS: { ORDER, LIMIT, SKIP, DATE },
+  INPUT_FIELDS: {
+    ORDER, LIMIT, SKIP, DATE,
+  },
 } = require('../../consts/input-fields');
 
 const { ADMIN, SUPERADMIN, USER } = roles;
@@ -22,7 +24,7 @@ const orderPermissionsMutation = {
   addOrder: inputDataValidation(ORDER, orderValidator),
   updateOrder: and(
     inputDataValidation(ORDER, orderValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteOrder: hasRoles([ADMIN, SUPERADMIN]),
 };
@@ -31,20 +33,20 @@ const orderPermissionsQuery = {
   getAllOrders: and(
     inputDataValidation(LIMIT, getAllOrdersValidator.limitValidator),
     inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   getOrdersByUser: and(
     inputDataValidation(LIMIT, getAllOrdersValidator.limitValidator),
     inputDataValidation(SKIP, getAllOrdersValidator.skipValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   getPaidOrdersStatistic: and(
     inputDataValidation(DATE, getOrdersStatisticValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   getOrdersStatistic: and(
     inputDataValidation(DATE, getOrdersStatisticValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   getOrderById: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };

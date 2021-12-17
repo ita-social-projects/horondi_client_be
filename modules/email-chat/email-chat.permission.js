@@ -23,7 +23,7 @@ const emailChatQuestionMutation = {
   makeEmailQuestionsSpam: hasRoles([SUPERADMIN, ADMIN]),
   answerEmailQuestion: and(
     inputDataValidation(TEXT, answerInputValidator),
-    hasRoles([SUPERADMIN, ADMIN])
+    hasRoles([SUPERADMIN, ADMIN]),
   ),
   deleteEmailQuestions: hasRoles([SUPERADMIN, ADMIN]),
 };

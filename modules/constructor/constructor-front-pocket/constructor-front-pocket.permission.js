@@ -25,17 +25,17 @@ const constructorFrontPocketPermissionsMutations = {
   addConstructorFrontPocket: and(
     inputDataValidation(
       CONSTRUCTOR_FRONT_POCKET,
-      inputConstrFrontPocketValidator
+      inputConstrFrontPocketValidator,
     ),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorFrontPocketModel)
+    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorFrontPocketModel),
   ),
   updateConstructorFrontPocket: and(
     inputDataValidation(
       CONSTRUCTOR_FRONT_POCKET,
-      inputConstrFrontPocketValidator
+      inputConstrFrontPocketValidator,
     ),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteConstructorFrontPocket: hasRoles([ADMIN, SUPERADMIN]),
 };

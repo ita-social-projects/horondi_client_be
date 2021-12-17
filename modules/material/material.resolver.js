@@ -2,8 +2,7 @@ const materialService = require('./material.service');
 const RuleError = require('../../errors/rule.error');
 
 const materialQuery = {
-  getAllMaterials: async (parent, args) =>
-    materialService.getAllMaterials(args),
+  getAllMaterials: async (parent, args) => materialService.getAllMaterials(args),
   getMaterialById: async (parent, args) => {
     try {
       return await materialService.getMaterialById(args.id);
@@ -11,8 +10,7 @@ const materialQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getMaterialsByPurpose: (parent, args) =>
-    materialService.getMaterialsByPurposes(args.purposes),
+  getMaterialsByPurpose: (parent, args) => materialService.getMaterialsByPurposes(args.purposes),
 };
 
 const materialMutation = {

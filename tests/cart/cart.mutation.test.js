@@ -119,22 +119,22 @@ describe('Cart queries', () => {
     materialId = materialData._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const productData = await createProduct(
@@ -146,9 +146,9 @@ describe('Cart queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId = productData._id;
     cartItems = newProductInCart(productId, sizeId);
@@ -162,9 +162,9 @@ describe('Cart queries', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
     productId2 = productData2._id;
     cartItems2 = newProductInCart(productId2, sizeId);
@@ -176,12 +176,12 @@ describe('Cart queries', () => {
     value = testQuantity;
     const basicData = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     basicId = basicData._id;
     const bottomData = await createConstructorBottom(
       newConstructorBottom(materialId, colorId, modelId),
-      operations
+      operations,
     );
     bottomId = bottomData._id;
     const productSentToCart = await addProductToCart(
@@ -190,12 +190,12 @@ describe('Cart queries', () => {
       sizeId,
       price,
       allSizes,
-      operations
+      operations,
     );
     itemId = productSentToCart.cart.items[0]._id;
     const frontPocketData = await createConstructorFrontPocket(
       newConstructorFront(materialId, colorId, modelId),
-      operations
+      operations,
     );
     frontPocketId = frontPocketData._id;
     constructorWrongData = {
@@ -239,7 +239,7 @@ describe('Cart queries', () => {
       sizeId,
       price,
       allSizes,
-      operations
+      operations,
     );
 
     expect(productSentToCart2.cart.items).toHaveLength(2);
@@ -252,7 +252,7 @@ describe('Cart queries', () => {
       price,
       newSize,
       2,
-      operations
+      operations,
     );
 
     expect(res.cart.items[0].options.size._id).toBe(newSize);
@@ -264,7 +264,7 @@ describe('Cart queries', () => {
       price,
       sizeId,
       2,
-      operations
+      operations,
     );
 
     expect(res).toHaveProperty('statusCode', 404);
@@ -276,7 +276,7 @@ describe('Cart queries', () => {
       sizeId,
       price,
       allSizes,
-      operations
+      operations,
     );
     cart = productSentToCart.cart.items[zeroIndex];
 
@@ -288,7 +288,7 @@ describe('Cart queries', () => {
       sizeId,
       constructorWrongData,
       adminId,
-      operations
+      operations,
     );
 
     expect(res).toHaveProperty('message', PATTERN_NOT_FOUND);
@@ -299,7 +299,7 @@ describe('Cart queries', () => {
       sizeWrongId,
       constructorData,
       adminId,
-      operations
+      operations,
     );
 
     expect(res).toHaveProperty('message', SIZES_NOT_FOUND);
@@ -310,7 +310,7 @@ describe('Cart queries', () => {
       sizeId,
       constructorData,
       adminId,
-      operations
+      operations,
     );
 
     expect(res.cart.items).toHaveLength(3);
@@ -325,7 +325,7 @@ describe('Cart queries', () => {
       items,
       value,
       adminId,
-      operations
+      operations,
     );
     cart = cartQuantityUpdated.cart.items[zeroIndex];
 
@@ -338,7 +338,7 @@ describe('Cart queries', () => {
       sizeId,
       constructorData,
       adminId,
-      operations
+      operations,
     );
 
     expect(res.cart.totalPrice[zeroIndex].value).toBe(expectedPrice);
@@ -347,7 +347,7 @@ describe('Cart queries', () => {
     const res = await removeProductItemsFromCart(
       newProductInCart(productWrongId, sizeWrongId).items,
       adminId,
-      operations
+      operations,
     );
 
     expect(res).toBeDefined();
@@ -356,7 +356,7 @@ describe('Cart queries', () => {
     const productRemovedfromCart = await removeProductItemsFromCart(
       items,
       adminId,
-      operations
+      operations,
     );
 
     expect(productRemovedfromCart.cart.items).toHaveLength(2);
@@ -366,7 +366,7 @@ describe('Cart queries', () => {
       items2,
       value,
       adminId,
-      operations
+      operations,
     );
     cart = cartQuantityUpdated.cart.items[zeroIndex];
 
@@ -386,7 +386,7 @@ describe('Cart queries', () => {
       sizeId,
       constructorWrongData,
       adminId,
-      operations
+      operations,
     );
 
     expect(res).toHaveProperty('message', PRODUCT_IS_NOT_EXIST_IN_CART);

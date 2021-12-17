@@ -26,7 +26,7 @@ class QuestionsAnswersService {
     const foundQuestionsAnswers = await QuestionsAnswers.findById(id).exec();
     await updateTranslations(
       foundQuestionsAnswers.translationsKey,
-      createTranslations(questionsAnswers)
+      createTranslations(questionsAnswers),
     );
     const newPage = questionsAnswers;
 
@@ -39,7 +39,7 @@ class QuestionsAnswersService {
 
   async addQuestionsAnswers(questionsAnswers) {
     questionsAnswers.translationsKey = await addTranslations(
-      createTranslations(questionsAnswers)
+      createTranslations(questionsAnswers),
     );
 
     return new QuestionsAnswers(questionsAnswers).save();
@@ -47,7 +47,7 @@ class QuestionsAnswersService {
 
   async deleteQuestionsAnswers(id) {
     const questionsAnswers = await QuestionsAnswers.findByIdAndDelete(
-      id
+      id,
     ).exec();
 
     if (questionsAnswers) {

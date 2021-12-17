@@ -19,16 +19,16 @@ const newsInputValidator = Joi.object({
       descript_title_text_LANG_MIN_CHARS,
       descript_title_text_LANG_MAX_CHARS,
       descript_title_text_VALUE_MIN_CHARS,
-      descript_title_VALUE_MAX_CHARS
-    )
+      descript_title_VALUE_MAX_CHARS,
+    ),
   ),
   text: Joi.array().items(
     languageValidator(
       descript_title_text_LANG_MIN_CHARS,
       descript_title_text_LANG_MAX_CHARS,
       descript_title_text_VALUE_MIN_CHARS,
-      text_VALUE_MAX_CHARS
-    )
+      text_VALUE_MAX_CHARS,
+    ),
   ),
   author: Joi.object({
     name: Joi.array().items(
@@ -36,8 +36,8 @@ const newsInputValidator = Joi.object({
         name_LANG_MIN_CHARS,
         name_LANG_MAX_CHARS,
         name_VALUE_MIN_CHARS,
-        name_VALUE_MAX_CHARS
-      )
+        name_VALUE_MAX_CHARS,
+      ),
     ),
     image: Joi.any(),
   }),

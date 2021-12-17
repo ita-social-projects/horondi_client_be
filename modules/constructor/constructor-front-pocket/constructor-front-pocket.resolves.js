@@ -7,7 +7,7 @@ const constructorFrontPocketQuery = {
     try {
       return await constructorService.getAllConstructorElements(
         args,
-        ConstructorFrontPocket
+        ConstructorFrontPocket,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -17,7 +17,7 @@ const constructorFrontPocketQuery = {
     try {
       return await constructorService.getConstructorElementById(
         args.id,
-        ConstructorFrontPocket
+        ConstructorFrontPocket,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -31,7 +31,7 @@ const constructorFrontPocketMutation = {
       return await constructorService.addConstructorElement(
         args,
         ConstructorFrontPocket,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -43,7 +43,7 @@ const constructorFrontPocketMutation = {
       return await constructorService.updateConstructorElement(
         args,
         ConstructorFrontPocket,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -54,7 +54,7 @@ const constructorFrontPocketMutation = {
       return await constructorService.deleteConstructorElement(
         args.id,
         ConstructorFrontPocket,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

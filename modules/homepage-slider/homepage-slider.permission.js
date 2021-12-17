@@ -13,11 +13,11 @@ const {
 const homePageSlideMutation = {
   addSlide: and(
     inputDataValidation(HOME_PAGE_SLIDE, homepageSliderValidator),
-    hasRoles([SUPERADMIN, ADMIN])
+    hasRoles([SUPERADMIN, ADMIN]),
   ),
   updateSlide: and(
     inputDataValidation(HOME_PAGE_SLIDE, homepageSliderValidator),
-    hasRoles([SUPERADMIN, ADMIN])
+    hasRoles([SUPERADMIN, ADMIN]),
   ),
   deleteSlide: hasRoles([SUPERADMIN, ADMIN]),
 };

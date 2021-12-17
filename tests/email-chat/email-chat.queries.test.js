@@ -74,7 +74,7 @@ describe('Chat email queries', () => {
     const result = await getAllEmailQuestions(
       { search, date },
       pagination,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -87,7 +87,7 @@ describe('Chat email queries', () => {
     const result = await getAllEmailQuestions(
       { date, emailQuestionStatus },
       pagination,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -100,7 +100,7 @@ describe('Chat email queries', () => {
     const result = await getAllEmailQuestions(
       { search, emailQuestionStatus },
       pagination,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -117,7 +117,7 @@ describe('Chat email queries', () => {
     const result = await getAllEmailQuestions(
       { date: { dateTo }, search, emailQuestionStatus },
       pagination,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
@@ -134,7 +134,7 @@ describe('Chat email queries', () => {
     const result = await getAllEmailQuestions(
       { date: { dateFrom }, search, emailQuestionStatus },
       pagination,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();

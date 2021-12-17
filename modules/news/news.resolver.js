@@ -33,7 +33,7 @@ const newsMutation = {
         args.id,
         args.news,
         args.upload,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

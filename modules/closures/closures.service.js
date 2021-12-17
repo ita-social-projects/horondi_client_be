@@ -73,11 +73,11 @@ class ClosureService {
     }
     if (closure.additionalPrice) {
       closure.additionalPrice = await calculateAdditionalPrice(
-        closure.additionalPrice
+        closure.additionalPrice,
       );
     }
     closure.translations_key = await addTranslations(
-      createTranslations(closure)
+      createTranslations(closure),
     );
     const newClosure = await new Closure(closure).save();
 
@@ -95,7 +95,7 @@ class ClosureService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -112,19 +112,19 @@ class ClosureService {
 
     if (closure.additionalPrice) {
       closure.additionalPrice = await calculateAdditionalPrice(
-        closure.additionalPrice
+        closure.additionalPrice,
       );
     }
 
     await updateTranslations(
       closureToUpdate.translations_key,
-      createTranslations(closure)
+      createTranslations(closure),
     );
 
     if (image) {
       if (closureToUpdate.images) {
         const images = Object.values(closureToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -136,7 +136,7 @@ class ClosureService {
 
     const { beforeChanges, afterChanges } = getChanges(
       closureToUpdate,
-      closure
+      closure,
     );
 
     const historyRecord = generateHistoryObject(
@@ -146,7 +146,7 @@ class ClosureService {
       closureToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
 
@@ -180,7 +180,7 @@ class ClosureService {
         ADDITIONAL_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
     await deleteTranslations(closure.translations_key);
     await addHistoryRecord(historyRecord);

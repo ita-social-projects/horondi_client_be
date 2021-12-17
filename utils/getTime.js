@@ -4,7 +4,7 @@ const {
   format,
 } = require('date-fns');
 
-const getTime = time => {
+const getTime = (time) => {
   const now = new Date();
   const hoursFromNow = differenceInHours(now, +time);
   const daysFromNow = differenceInCalendarDays(now, +time);

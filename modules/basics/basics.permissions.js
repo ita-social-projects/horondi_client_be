@@ -25,11 +25,11 @@ const basicsPermissionsMutations = {
   addBasic: and(
     inputDataValidation(BASIC, inputBasicsValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(BASIC, BasicsModel)
+    checkIfItemExists(BASIC, BasicsModel),
   ),
   updateBasic: and(
     inputDataValidation(BASIC, inputBasicsValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteBasic: hasRoles([ADMIN, SUPERADMIN]),
 };

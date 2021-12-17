@@ -14,7 +14,7 @@ const languageValidator = function langValidator(
   langMin,
   langMax,
   valueMin,
-  valueMax
+  valueMax,
 ) {
   return {
     lang: Joi.string()

@@ -97,7 +97,7 @@ class StrapService {
         ADDITIONAL_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -116,7 +116,7 @@ class StrapService {
 
     if (strap.additionalPrice) {
       strap.additionalPrice = await calculateAdditionalPrice(
-        strap.additionalPrice
+        strap.additionalPrice,
       );
     }
 
@@ -135,14 +135,14 @@ class StrapService {
       strapToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
 
     await updateTranslations(
       strapToUpdate.translationsKey,
-      createTranslations(strap)
+      createTranslations(strap),
     );
 
     return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
@@ -156,7 +156,7 @@ class StrapService {
 
     if (strap.additionalPrice) {
       strap.additionalPrice = await calculateAdditionalPrice(
-        strap.additionalPrice
+        strap.additionalPrice,
       );
     }
 
@@ -178,7 +178,7 @@ class StrapService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

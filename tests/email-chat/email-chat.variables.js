@@ -6,7 +6,7 @@ const fakeSenderName = 'Oliver';
 const fakeQuestionId = '5fb412d8663cf10bec9faa1a';
 const fakeAnswer = `New fake admin answer to ${fakeSenderName}`;
 
-const getFilterPaginationInputData = dateFrom => ({
+const getFilterPaginationInputData = (dateFrom) => ({
   filter: {
     search: fakeSenderName,
     emailQuestionStatus: [SPAM, ANSWERED, PENDING],

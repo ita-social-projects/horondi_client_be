@@ -52,7 +52,7 @@ const deleteContact = async (id, operations) => {
   });
   return res.data.deleteContact;
 };
-const getContacts = async operations => {
+const getContacts = async (operations) => {
   const res = await operations.query({
     query: gql`
       query($skip: Int, $limit: Int) {

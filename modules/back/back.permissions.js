@@ -26,11 +26,11 @@ const backPermissionsMutations = {
   addBack: and(
     inputDataValidation(BACK, inputBackValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(BACK, BackModel)
+    checkIfItemExists(BACK, BackModel),
   ),
   updateBack: and(
     inputDataValidation(BACK, inputBackValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteBack: hasRoles([ADMIN, SUPERADMIN]),
 };

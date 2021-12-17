@@ -42,7 +42,9 @@ let userId;
 let operations;
 let loginedUser;
 
-const { firstName, lastName, email, pass, language } = testUser;
+const {
+  firstName, lastName, email, pass, language,
+} = testUser;
 
 describe('queries', () => {
   beforeAll(async () => {
@@ -53,7 +55,7 @@ describe('queries', () => {
       email,
       pass,
       language,
-      operations
+      operations,
     );
     userId = register.data.registerUser._id;
 
@@ -92,7 +94,7 @@ describe('queries', () => {
     expect(res.data.getUserByToken).toHaveProperty('email', email);
     expect(res.data.getUserByToken).toHaveProperty(
       'phoneNumber',
-      '380666666666'
+      '380666666666',
     );
     expect(res.data.getUserByToken).toHaveProperty('role', 'user');
     expect(res.data.getUserByToken).toHaveProperty('address', {
@@ -169,7 +171,7 @@ describe('Testing obtaining information restrictions', () => {
       userLogin,
       userPassword,
       language,
-      operations
+      operations,
     );
     userId = register.data.registerUser._id;
   });
@@ -227,11 +229,11 @@ describe('Testing obtaining information restrictions', () => {
       userLogin,
       userPassword,
       true,
-      operations
+      operations,
     );
     const result = await getUserById(
       userLoginInfo.data.loginUser._id,
-      operations
+      operations,
     );
     const userInfo = result.data.getUserById;
 
@@ -242,7 +244,7 @@ describe('Testing obtaining information restrictions', () => {
     const invalidAdminToken = `y${adminToken.slice(1)}`;
     const result = await validateConfirmationToken(
       invalidAdminToken,
-      operations
+      operations,
     );
     const data = result.data.validateConfirmationToken;
 
@@ -277,8 +279,7 @@ describe('Filter users', () => {
     for (const user of users) {
       if (
         testUsersSet.some(
-          el =>
-            el.firstName === user.firstName && el.banned.blockPeriod === '30'
+          (el) => el.firstName === user.firstName && el.banned.blockPeriod === '30',
         )
       ) {
         await operations.mutate({
@@ -303,19 +304,19 @@ describe('Filter users', () => {
   });
 
   test('should sort by name from a to z', async () => {
-    const compareResult = testUsersSet.map(user => user.firstName).sort();
+    const compareResult = testUsersSet.map((user) => user.firstName).sort();
 
     let users = await getAllUsersQuery(operations, SORT.byName.asc);
 
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
-    expect(users.map(user => user.firstName)).toEqual(compareResult);
+    expect(users.map((user) => user.firstName)).toEqual(compareResult);
   });
 
   test('should sort by name from z to a', async () => {
     const compareResult = testUsersSet
-      .map(user => user.firstName)
+      .map((user) => user.firstName)
       .sort()
       .reverse();
 
@@ -323,30 +324,30 @@ describe('Filter users', () => {
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
-    expect(users.map(user => user.firstName)).toEqual(compareResult);
+    expect(users.map((user) => user.firstName)).toEqual(compareResult);
   });
 
   test('should sort by email from a to z', async () => {
     const compareResult = testUsersSet
-      .map(user => user.email.toLowerCase())
+      .map((user) => user.email.toLowerCase())
       .sort();
     let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
-    expect(users.map(user => user.email)).toEqual(compareResult);
+    expect(users.map((user) => user.email)).toEqual(compareResult);
   });
 
   test('should sort by email from z to a', async () => {
     const compareResult = testUsersSet
-      .map(user => user.email.toLowerCase())
+      .map((user) => user.email.toLowerCase())
       .sort()
       .reverse();
     let users = await getAllUsersQuery(operations, SORT.byEmail.desc);
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
-    expect(users.map(user => user.email)).toEqual(compareResult);
+    expect(users.map((user) => user.email)).toEqual(compareResult);
   });
 
   afterAll(async () => {

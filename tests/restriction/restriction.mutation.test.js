@@ -36,7 +36,7 @@ describe('Restriction queries', () => {
     const res = await updateRestriction(
       restrictionId,
       updateRestrictionParameters,
-      operations
+      operations,
     );
     delete res._id;
 
@@ -53,7 +53,7 @@ describe('Restriction queries', () => {
     const res = await updateRestriction(
       wrongRestrictionId,
       updateRestrictionParameters,
-      operations
+      operations,
     );
     expect(res.message).toBe(RESTRICTION_NOT_FOUND);
   });

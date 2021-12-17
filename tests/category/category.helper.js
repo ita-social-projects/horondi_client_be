@@ -59,7 +59,7 @@ const updateCategory = async (id, category, operations) => {
 
   return updatedCategory.data.updateCategory;
 };
-const getAllCategories = async operations => {
+const getAllCategories = async (operations) => {
   const allCategories = await operations.query({
     query: gql`
       query {

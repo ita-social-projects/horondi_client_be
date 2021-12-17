@@ -34,21 +34,20 @@ const modelsWithAdditionalPrice = [
 ];
 const modelsPocketAndBack = [PocketModel, BackModel];
 
-const currencyRecalculation = () =>
-  schedule(EVERY_NIGHT, async () => {
-    for (const model of modelsWithBasePrice) {
-      await cronRecalculateBasePrice(model);
-    }
+const currencyRecalculation = () => schedule(EVERY_NIGHT, async () => {
+  for (const model of modelsWithBasePrice) {
+    await cronRecalculateBasePrice(model);
+  }
 
-    for (const model of modelsPocketAndBack) {
-      await cronRecalculatePocketBack(model);
-    }
+  for (const model of modelsPocketAndBack) {
+    await cronRecalculatePocketBack(model);
+  }
 
-    for (const model of modelsWithAdditionalPrice) {
-      await cronRecalculateAdditionalPrice(model);
-    }
+  for (const model of modelsWithAdditionalPrice) {
+    await cronRecalculateAdditionalPrice(model);
+  }
 
-    await cronRecalculateProductSizePrices(ProductModel);
-  });
+  await cronRecalculateProductSizePrices(ProductModel);
+});
 
 module.exports = { currencyRecalculation };

@@ -51,7 +51,7 @@ const deleteProductFromWishlist = async (productId, operations) => {
   return wishlist.data.deleteProductFromWishlist;
 };
 
-const getWishlistByUserId = async operations => {
+const getWishlistByUserId = async (operations) => {
   const wishlist = await operations.query({
     query: gql`
       query {

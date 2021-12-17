@@ -24,7 +24,7 @@ class EmailService {
       language
         ? templateInfo.templateFileName[0]
         : templateInfo.templateFileName[1],
-      context
+      context,
     );
 
     await transporter.sendMail({

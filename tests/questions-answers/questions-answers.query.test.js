@@ -15,7 +15,7 @@ describe('Questions and answers queries', () => {
     operations = await setupApp();
     questionsAnswers = await addQuestionsAnswers(
       newQuestionsAnswers,
-      operations
+      operations,
     );
   });
 
@@ -29,19 +29,19 @@ describe('Questions and answers queries', () => {
   it('Should get selected questions and answers', async () => {
     const receivedQuestionsAnswers = await getQuestionsAnswersById(
       questionsAnswers._id,
-      operations
+      operations,
     );
 
     expect(receivedQuestionsAnswers).toBeDefined();
     expect(receivedQuestionsAnswers.question).toBeInstanceOf(Array);
     expect(receivedQuestionsAnswers).toHaveProperty(
       'question',
-      newQuestionsAnswers.question
+      newQuestionsAnswers.question,
     );
     expect(receivedQuestionsAnswers.answer).toBeInstanceOf(Array);
     expect(receivedQuestionsAnswers).toHaveProperty(
       'answer',
-      newQuestionsAnswers.answer
+      newQuestionsAnswers.answer,
     );
   });
 

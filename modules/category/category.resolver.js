@@ -9,8 +9,7 @@ const categoryQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getCategoriesForBurgerMenu: (parent, args) =>
-    categoryService.getCategoriesForBurgerMenu(),
+  getCategoriesForBurgerMenu: (parent, args) => categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),
   getCategoryById: async (parent, args) => {
     try {
@@ -28,7 +27,7 @@ const categoryMutation = {
       return await categoryService.addCategory(
         args.category,
         args.upload,
-        user
+        user,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

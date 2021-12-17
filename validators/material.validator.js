@@ -1,7 +1,9 @@
 const Joi = require('joi');
 
 const {
-  materialPurposes: { MAIN, INNER, BOTTOM, PATTERN, CLOSURE },
+  materialPurposes: {
+    MAIN, INNER, BOTTOM, PATTERN, CLOSURE,
+  },
 } = require('../consts/material-purposes');
 
 const {
@@ -26,16 +28,16 @@ const materialInputValidator = Joi.object({
       name_LANG_MIN_CHARS,
       name_LANG_MAX_CHARS,
       name_VALUE_MIN_CHARS,
-      name_VALUE_MAX_CHARS
-    )
+      name_VALUE_MAX_CHARS,
+    ),
   ),
   description: Joi.array().items(
     languageValidator(
       descript_title_text_LANG_MIN_CHARS,
       descript_title_text_LANG_MAX_CHARS,
       descript_title_text_VALUE_MIN_CHARS,
-      descript_title_VALUE_MAX_CHARS
-    )
+      descript_title_VALUE_MAX_CHARS,
+    ),
   ),
   purpose: Joi.string()
     .trim()

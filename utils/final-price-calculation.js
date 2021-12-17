@@ -21,10 +21,10 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
       }
       return sumRelativePrice;
     },
-    basePrice
+    basePrice,
   );
 
-  const pricesForSizes = _.map(sizePrices, sizeAdditionalPrice => {
+  const pricesForSizes = _.map(sizePrices, (sizeAdditionalPrice) => {
     let tempPrice = relativePrices;
     if (sizeAdditionalPrice.additionalPrice[0]?.type === RELATIVE_INDICATOR) {
       tempPrice *= sizeAdditionalPrice.additionalPrice[0].value;
@@ -38,7 +38,7 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
   });
 
   return Promise.all(
-    _.map(pricesForSizes, async priceForSize => {
+    _.map(pricesForSizes, async (priceForSize) => {
       let price = _.reduce(
         additionalPrices,
         (sum, additionalPriceSet) => {
@@ -48,27 +48,27 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
           }
           return sumAbsolutePrice;
         },
-        priceForSize.price
+        priceForSize.price,
       );
 
       price = await calculateFinalPrice(price);
 
       return { size: priceForSize._id, price };
-    })
-  ).then(result => result);
+    }),
+  ).then((result) => result);
 };
 
-const finalPriceCalculation = async product => {
+const finalPriceCalculation = async (product) => {
   const pattern = await Pattern.findById(product.pattern).exec();
   const closure = await Closures.findById(product.closure).exec();
   const mainMaterial = await Material.findById(
-    product.mainMaterial.material
+    product.mainMaterial.material,
   ).exec();
   const innerMaterial = await Material.findById(
-    product.innerMaterial.material
+    product.innerMaterial.material,
   ).exec();
   const bottomMaterial = await Material.findById(
-    product.bottomMaterial.material
+    product.bottomMaterial.material,
   ).exec();
 
   const prices = [
@@ -88,7 +88,7 @@ const finalPriceCalculation = async product => {
   return calculateHelper(prices, sizesPrice, product.basePrice[1].value);
 };
 
-const finalPriceRecalculation = async productId => {
+const finalPriceRecalculation = async (productId) => {
   let {
     pattern,
     closure,
@@ -115,7 +115,7 @@ const finalPriceRecalculation = async productId => {
 
   const { basePrice } = await Product.findById(productId).exec();
 
-  sizes = sizes.map(size => size.size);
+  sizes = sizes.map((size) => size.size);
 
   return calculateHelper(prices, sizes, basePrice[1].value);
 };

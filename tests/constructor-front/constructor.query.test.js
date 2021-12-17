@@ -57,7 +57,7 @@ describe('constructor mutations', () => {
     constructorInput = newConstructorFront(materialId, colorId, modelId);
     constructorFrontPocket = await createConstructorFrontPocket(
       constructorInput,
-      operations
+      operations,
     );
     constructorFrontId = constructorFrontPocket._id;
 
@@ -71,7 +71,7 @@ describe('constructor mutations', () => {
   test('#1 Should return all Constructor Front Pocket', async () => {
     const receivedAllConstructorFrontPocket = await getAllConstructorFrontPocket(
       { limit, skip, filter },
-      operations
+      operations,
     );
     expect(receivedAllConstructorFrontPocket.items).toBeDefined();
     expect(receivedAllConstructorFrontPocket.items.length).toBeGreaterThan(0);
@@ -79,7 +79,7 @@ describe('constructor mutations', () => {
   test('#2 Should return  Constructor Front Pocket by Id', async () => {
     const receivedById = await getConstructorFrontPocketById(
       constructorFrontId,
-      operations
+      operations,
     );
 
     expect(receivedById).toBeDefined();
@@ -91,7 +91,7 @@ describe('constructor mutations', () => {
   test('#3 Should return  Error', async () => {
     const receivedError = await getConstructorFrontPocketById(
       wrongId,
-      operations
+      operations,
     );
 
     expect(receivedError.statusCode).toBe(NOT_FOUND);

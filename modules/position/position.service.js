@@ -76,7 +76,7 @@ class PositionService {
     }
 
     positionData.translationsKey = await addTranslations(
-      createTranslations(positionData)
+      createTranslations(positionData),
     );
 
     const newPosition = await new Position(positionData).save();
@@ -88,7 +88,7 @@ class PositionService {
       newPosition._id,
       [],
       generateHistoryChangesData(newPosition, [NAME, POSITIONS]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -110,7 +110,7 @@ class PositionService {
       deletedPosition._id,
       generateHistoryChangesData(deletedPosition, [NAME, POSITIONS]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -129,7 +129,7 @@ class PositionService {
 
     const { beforeChanges, afterChanges } = getChanges(
       positionToUpdate,
-      position
+      position,
     );
 
     const historyRecord = generateHistoryObject(
@@ -139,14 +139,14 @@ class PositionService {
       positionToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
 
     await updateTranslations(
       positionToUpdate.translationsKey,
-      createTranslations(position)
+      createTranslations(position),
     );
 
     return Position.findByIdAndUpdate(id, position, {

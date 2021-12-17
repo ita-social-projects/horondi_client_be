@@ -92,7 +92,7 @@ class EmailChatService {
   async makeEmailQuestionsSpam({ questionsToSpam, adminId }) {
     const admin = await userService.getUserByFieldOrThrow(ID, adminId);
 
-    const result = questionsToSpam.map(async id => {
+    const result = questionsToSpam.map(async (id) => {
       const question = await EmailChat.findById(id).exec();
 
       question.status = SPAM;
@@ -106,7 +106,7 @@ class EmailChatService {
     });
 
     const updatedQuestions = await Promise.allSettled(result);
-    return updatedQuestions.map(item => ({
+    return updatedQuestions.map((item) => ({
       ...item.value._doc,
     }));
   }
@@ -117,7 +117,9 @@ class EmailChatService {
       throw new RuleError(QUESTION_NOT_FOUND, BAD_REQUEST);
     }
     const admin = await userService.getUserByFieldOrThrow(ID, adminId);
-    const { language, email, senderName, text: emailContent } = question;
+    const {
+      language, email, senderName, text: emailContent,
+    } = question;
 
     question.status = ANSWERED;
     question.answer.admin = admin;
@@ -128,7 +130,7 @@ class EmailChatService {
       question,
       {
         new: true,
-      }
+      },
     ).exec();
 
     await emailService.sendEmail(email, SEND_EMAIL_ANSWER, {
@@ -144,12 +146,10 @@ class EmailChatService {
 
   async deleteEmailQuestions(questionsToDelete) {
     try {
-      const result = questionsToDelete.map(async id =>
-        EmailChat.findByIdAndDelete(id).exec()
-      );
+      const result = questionsToDelete.map(async (id) => EmailChat.findByIdAndDelete(id).exec());
 
       const deletedQuestions = await Promise.allSettled(result);
-      return deletedQuestions.map(item => ({
+      return deletedQuestions.map((item) => ({
         ...item.value._doc,
       }));
     } catch (e) {

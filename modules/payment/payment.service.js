@@ -30,8 +30,7 @@ const {
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }, { language }) {
-    if (!ObjectId.isValid(orderId))
-      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    if (!ObjectId.isValid(orderId)) { throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST); }
 
     const isOrderPresent = await OrderModel.findById(orderId).exec();
 
@@ -53,7 +52,7 @@ class PaymentService {
             paymentStatus: PAYMENT_PROCESSING,
           },
         },
-        { new: true }
+        { new: true },
       )
         .populate({
           path: 'items.product',
@@ -104,8 +103,8 @@ class PaymentService {
       if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
       if (
-        order_status !== APPROVED.toLowerCase() ||
-        signature !== signSignatureToCheck
+        order_status !== APPROVED.toLowerCase()
+        || signature !== signSignatureToCheck
       ) {
         throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
       }

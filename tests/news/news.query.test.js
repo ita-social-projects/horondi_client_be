@@ -6,7 +6,9 @@ const {
   getById,
   deleteNews,
 } = require('./news.helper');
-const { news, limit, skip, wrongId } = require('./news.variables');
+const {
+  news, limit, skip, wrongId,
+} = require('./news.variables');
 
 let newsId;
 let operations;
@@ -28,16 +30,16 @@ describe('News queries tests', () => {
     expect(allNews.items[0].title).toBeInstanceOf(Array);
     expect(allNews.items[0]).toHaveProperty(
       'text',
-      news.text.map(item => ({
+      news.text.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(allNews.items[0].author).toBeDefined();
     expect(allNews.items[0].author).toHaveProperty(
       'name',
-      news.author.name.map(item => ({
+      news.author.name.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(allNews.items[0].text).toBeInstanceOf(Array);
     expect(allNews.items[0]).toHaveProperty('date', '1111118820047');
@@ -49,23 +51,23 @@ describe('News queries tests', () => {
     expect(newsById).toBeDefined();
     expect(newsById).toHaveProperty(
       'title',
-      news.title.map(item => ({
+      news.title.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(newsById.title).toBeInstanceOf(Array);
     expect(newsById).toHaveProperty(
       'text',
-      news.text.map(item => ({
+      news.text.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(newsById.author).toBeDefined();
     expect(newsById.author).toHaveProperty(
       'name',
-      news.author.name.map(item => ({
+      news.author.name.map((item) => ({
         ...item,
-      }))
+      })),
     );
     expect(newsById.text).toBeInstanceOf(Array);
     expect(newsById).toHaveProperty('date', '1111118820047');

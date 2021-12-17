@@ -37,7 +37,7 @@ const historySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model(HISTORY, historySchema);

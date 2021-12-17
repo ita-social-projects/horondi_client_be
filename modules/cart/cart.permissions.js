@@ -22,14 +22,14 @@ const cartPermissionsMutations = {
   updateCartItemQuantity: and(
     inputDataValidation(QUANTITY, updateCartQuantityValidator),
     isTheSameUser,
-    isProductToCartCorrect
+    isProductToCartCorrect,
   ),
   cleanCart: isTheSameUser,
   addConstructorProductItemToCart: and(isTheSameUser, isProductToCartCorrect),
   updateCartConstructorProductItemQuantity: and(
     inputDataValidation(QUANTITY, updateCartQuantityValidator),
     isTheSameUser,
-    getConstructorProductItemPresentInCart
+    getConstructorProductItemPresentInCart,
   ),
   mergeCartFromLS: isTheSameUser,
   removeProductItemsFromCart: isTheSameUser,

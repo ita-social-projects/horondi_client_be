@@ -36,7 +36,7 @@ describe('Back mutation tests', () => {
     expect(createPositionTest).toBeDefined();
     expect(createPositionTest).toHaveProperty(
       'available',
-      positionInput.available
+      positionInput.available,
     );
     expect(createPositionTest).toHaveProperty('name', positionInput.name);
   });
@@ -52,7 +52,7 @@ describe('Back mutation tests', () => {
     const updatePositionTest = await updatePosition(
       positionId,
       positionUpdateInput,
-      operations
+      operations,
     );
 
     expect(updatePositionTest).toBeDefined();
@@ -70,7 +70,7 @@ describe('Back mutation tests', () => {
     const result = await updatePosition(
       wrongId,
       positionUpdateInput,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();

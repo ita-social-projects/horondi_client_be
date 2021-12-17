@@ -90,7 +90,7 @@ const addProductToCart = async (
   sizeId,
   price,
   allSizes,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -132,7 +132,7 @@ const changeCartItemSize = async (
   price,
   size,
   quantity,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -252,7 +252,7 @@ const addConstructorProductItemToCart = async (
   sizeId,
   constructorData,
   adminId,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`
@@ -289,7 +289,7 @@ const updateCartConstructorProductItemQuantity = async (
   sizeId,
   constructorData,
   adminId,
-  operations
+  operations,
 ) => {
   const res = await operations.mutate({
     mutation: gql`

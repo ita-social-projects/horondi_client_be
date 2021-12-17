@@ -37,7 +37,7 @@ describe('Closure queries', () => {
     colorId = colorData._id;
     const materialData = await createMaterial(
       getMaterialToUpdate(colorId),
-      operations
+      operations,
     );
     materialId = materialData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
@@ -45,17 +45,17 @@ describe('Closure queries', () => {
 
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
   });
@@ -65,7 +65,7 @@ describe('Closure queries', () => {
     const convertedObj = await closureWithConvertedPrice(
       materialId,
       colorId,
-      modelId
+      modelId,
     );
     expect(result).toBeDefined();
     expect(result).toEqual({

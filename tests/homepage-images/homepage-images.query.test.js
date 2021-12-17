@@ -24,7 +24,7 @@ describe('Homepage looks images queries', () => {
     expect(getHomePageLooksImages).toBeDefined();
     expect(getHomePageLooksImages[0]).toHaveProperty(
       'images',
-      looksImage.images
+      looksImage.images,
     );
   });
 

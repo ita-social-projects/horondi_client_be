@@ -28,7 +28,9 @@ const {
   LANGUAGE_INDEX: { UA },
 } = require('../../consts/languages');
 const {
-  HISTORY_OBJ_KEYS: { NAME, ADDITIONAL_PRICE, AVAILABLE, FEATURES },
+  HISTORY_OBJ_KEYS: {
+    NAME, ADDITIONAL_PRICE, AVAILABLE, FEATURES,
+  },
 } = require('../../consts/history-obj-keys');
 
 class BasicsService {
@@ -74,7 +76,7 @@ class BasicsService {
     if (image) {
       if (basicToUpdate.images) {
         const images = Object.values(basicToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item,
         );
         await uploadService.deleteFiles(images);
       }
@@ -85,7 +87,7 @@ class BasicsService {
     }
 
     basic.additionalPrice = await calculateAdditionalPrice(
-      basic.additionalPrice
+      basic.additionalPrice,
     );
 
     const updatedBasic = await Basics.findByIdAndUpdate(id, basic, {
@@ -101,14 +103,14 @@ class BasicsService {
       basicToUpdate._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
 
     await updateTranslations(
       basicToUpdate.translationsKey,
-      createTranslations(basic)
+      createTranslations(basic),
     );
 
     return updatedBasic;
@@ -121,7 +123,7 @@ class BasicsService {
     }
 
     basic.additionalPrice = await calculateAdditionalPrice(
-      basic.additionalPrice
+      basic.additionalPrice,
     );
 
     basic.translationsKey = await addTranslations(createTranslations(basic));
@@ -140,7 +142,7 @@ class BasicsService {
         AVAILABLE,
         ADDITIONAL_PRICE,
       ]),
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);
@@ -173,7 +175,7 @@ class BasicsService {
         ADDITIONAL_PRICE,
       ]),
       [],
-      adminId
+      adminId,
     );
 
     await addHistoryRecord(historyRecord);

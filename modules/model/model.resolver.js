@@ -64,7 +64,7 @@ const modelsMutation = {
     try {
       return await modelsService.addModelConstructorBasic(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -74,7 +74,7 @@ const modelsMutation = {
     try {
       return await modelsService.deleteModelConstructorBasic(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -84,7 +84,7 @@ const modelsMutation = {
     try {
       return await modelsService.addModelConstructorPattern(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -94,7 +94,7 @@ const modelsMutation = {
     try {
       return await modelsService.deleteModelConstructorPattern(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -104,7 +104,7 @@ const modelsMutation = {
     try {
       return await modelsService.addModelConstructorFrontPocket(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -112,12 +112,12 @@ const modelsMutation = {
   },
   deleteModelConstructorFrontPocket: async (
     _,
-    { id, constructorElementID }
+    { id, constructorElementID },
   ) => {
     try {
       return await modelsService.deleteModelConstructorFrontPocket(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -127,7 +127,7 @@ const modelsMutation = {
     try {
       return await modelsService.addModelConstructorBottom(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
@@ -137,7 +137,7 @@ const modelsMutation = {
     try {
       return await modelsService.deleteModelConstructorBottom(
         id,
-        constructorElementID
+        constructorElementID,
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

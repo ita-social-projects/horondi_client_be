@@ -1,4 +1,4 @@
-const formatError = logFunction => err => {
+const formatError = (logFunction) => (err) => {
   const { originalError } = err;
 
   if (originalError && originalError.name === 'RuleError') {

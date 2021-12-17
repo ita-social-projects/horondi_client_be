@@ -25,11 +25,11 @@ const pocketPermissionsMutations = {
   addPocket: and(
     inputDataValidation(POCKET, inputPocketValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(POCKET, PocketModel)
+    checkIfItemExists(POCKET, PocketModel),
   ),
   updatePocket: and(
     inputDataValidation(POCKET, inputPocketValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deletePocket: hasRoles([ADMIN, SUPERADMIN]),
 };

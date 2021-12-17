@@ -96,7 +96,7 @@ describe('mutations', () => {
       email,
       pass,
       language,
-      operations
+      operations,
     );
     userId = res.data.registerUser._id;
     expect(typeof res.data.registerUser._id).toBe('string');
@@ -119,7 +119,7 @@ describe('mutations', () => {
       email,
       pass,
       language,
-      operations
+      operations,
     );
 
     expect(res.data.registerUser.message).toBe(USER_ALREADY_EXIST);
@@ -262,7 +262,7 @@ describe('mutations', () => {
     const res = await sendEmailConfirmation(email, 0, operations);
 
     expect(res.data.sendEmailConfirmation.message).toBe(
-      USER_EMAIL_ALREADY_CONFIRMED
+      USER_EMAIL_ALREADY_CONFIRMED,
     );
   });
   test('should throw error USER_EMAIL_ALREADY_CONFIRMED on confirm', async () => {
@@ -278,7 +278,7 @@ describe('mutations', () => {
   test('should throw USER_NOT_FOUND error', async () => {
     const result = await resendEmailToConfirmAdmin(
       { email: wrongEmail },
-      operations
+      operations,
     );
 
     expect(result.data.resendEmailToConfirmAdmin.message).toBe(USER_NOT_FOUND);
@@ -291,7 +291,7 @@ describe('mutations', () => {
   test('should throw USER_NOT_FOUND error on superadmin', async () => {
     const result = await confirmSuperadminCreation(
       { _id: wrongId },
-      operations
+      operations,
     );
 
     expect(result.data.confirmSuperadminCreation.message).toBe(USER_NOT_FOUND);
@@ -307,7 +307,9 @@ describe('mutations', () => {
   test('should get wrong credentials when try to update user', async () => {
     operations = await setupApp(loginedUser);
 
-    const { country, city, street, buildingNumber } = address;
+    const {
+      country, city, street, buildingNumber,
+    } = address;
 
     const res = await updateUserById(
       wrongId,
@@ -321,12 +323,12 @@ describe('mutations', () => {
       orders,
       comments,
       token,
-      operations
+      operations,
     );
 
     expect(res.data.updateUserById).toHaveProperty(
       'message',
-      WRONG_CREDENTIALS
+      WRONG_CREDENTIALS,
     );
     expect(res.data.updateUserById).toHaveProperty('statusCode', 401);
   });
@@ -338,7 +340,9 @@ describe('mutations', () => {
 
     operations = await setupApp();
 
-    const { country, city, street, buildingNumber } = address;
+    const {
+      country, city, street, buildingNumber,
+    } = address;
 
     const res = await updateUserById(
       userId,
@@ -352,7 +356,7 @@ describe('mutations', () => {
       orders,
       comments,
       token,
-      operations
+      operations,
     );
 
     expect(res.data.updateUserById).toHaveProperty('firstName', 'Updated');
@@ -396,7 +400,7 @@ describe('User`s mutation restictions tests', () => {
       user.email,
       user.pass,
       user.language,
-      operations
+      operations,
     );
     userId = res.data.registerUser._id;
   });
@@ -408,7 +412,7 @@ describe('User`s mutation restictions tests', () => {
       newUser.email,
       newUser.password,
       1,
-      operations
+      operations,
     );
 
     operations = await setupApp({ ...res.data.registerUser });
@@ -490,7 +494,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
 
     const data = result.data.registerAdmin;
     expect(data.message).toEqual(USER_ALREADY_EXIST);
@@ -520,7 +524,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.registerAdmin;
     expect(data.message).toEqual(INVALID_ROLE);
     expect(data.statusCode).toEqual(FORBIDDEN);
@@ -549,7 +553,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
 
     const data = result.data.registerAdmin;
 
@@ -580,7 +584,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.registerAdmin;
     const admin = await User.findOne({ email: newAdminEmail }).exec();
     userId = admin._id;
@@ -610,7 +614,7 @@ describe('Admin confirmation', () => {
       newAdminFirstName,
       invalidLastName,
       newAdminPassword,
-      operations
+      operations,
     );
     const data = result.data.completeAdminRegister;
 
@@ -624,7 +628,7 @@ describe('Admin confirmation', () => {
       invalidFirstName,
       newAdminLastName,
       newAdminPassword,
-      operations
+      operations,
     );
     const data = result.data.completeAdminRegister;
 
@@ -638,7 +642,7 @@ describe('Admin confirmation', () => {
       newAdminFirstName,
       newAdminLastName,
       invalidPassword,
-      operations
+      operations,
     );
     const data = result.data.completeAdminRegister;
 
@@ -652,7 +656,7 @@ describe('Admin confirmation', () => {
       newAdminFirstName,
       newAdminLastName,
       newAdminPassword,
-      operations
+      operations,
     );
     const data = result.data.completeAdminRegister;
 
@@ -665,7 +669,7 @@ describe('Admin confirmation', () => {
       newAdminFirstName,
       newAdminLastName,
       newAdminPassword,
-      operations
+      operations,
     );
 
     expect(result).toBeTruthy();
@@ -693,10 +697,10 @@ describe('User filtering', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.getAllUsers.items;
 
-    expect(data.every(item => item.role === userRole)).toEqual(true);
+    expect(data.every((item) => item.role === userRole)).toEqual(true);
   });
 
   test('Should receive admins and superadmins via using filters for roles', async () => {
@@ -719,10 +723,10 @@ describe('User filtering', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.getAllUsers.items;
 
-    expect(data.every(item => roles.includes(item.role))).toEqual(true);
+    expect(data.every((item) => roles.includes(item.role))).toEqual(true);
   });
 
   afterAll(async () => {

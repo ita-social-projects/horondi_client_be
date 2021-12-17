@@ -30,7 +30,7 @@ const getAllEmailQuestions = async (filter, pagination, operations) => {
   return res.data.getAllEmailQuestions;
 };
 
-const getPendingEmailQuestionsCount = async operations => {
+const getPendingEmailQuestionsCount = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query {

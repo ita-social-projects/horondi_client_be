@@ -128,7 +128,7 @@ class ProductsService {
       .exec();
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
-      (a, b) => a.basePrice[1].value - b.basePrice[1].value
+      (a, b) => a.basePrice[1].value - b.basePrice[1].value,
     );
     const minPrice = sortedByPrices[0].basePrice;
     const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
@@ -202,7 +202,9 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({ filter, skip, limit, sort, search }) {
+  async getProducts({
+    filter, skip, limit, sort, search,
+  }) {
     const filters = this.filterItems(filter);
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
@@ -239,10 +241,10 @@ class ProductsService {
     productData,
     filesToUpload,
     primary,
-    { _id: adminId }
+    { _id: adminId },
   ) {
     const matchPrimaryInUpload = filesToUpload.filter(
-      item => item.large === productData.images[0].primary.large
+      (item) => item.large === productData.images[0].primary.large,
     );
     productData.images = {
       primary: {
@@ -266,12 +268,13 @@ class ProductsService {
       if (primary?.large) {
         productData.images.primary = primary;
       } else {
-        if (!matchPrimaryInUpload.length)
+        if (!matchPrimaryInUpload.length) {
           await uploadService.deleteFiles(
             Object.values(product.images.primary).filter(
-              item => typeof item === 'string'
-            )
+              (item) => typeof item === 'string',
+            ),
           );
+        }
         const uploadResult = await uploadService.uploadFiles([primary]);
         const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
@@ -281,7 +284,7 @@ class ProductsService {
       productData.images.additional = [];
       const previousImagesLinks = [];
       const newFiles = [];
-      filesToUpload.forEach(e => {
+      filesToUpload.forEach((e) => {
         if (e?.large) {
           previousImagesLinks.push(e);
         } else {
@@ -290,7 +293,7 @@ class ProductsService {
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
-      const additional = imagesResults.map(res => res?.value?.fileNames);
+      const additional = imagesResults.map((res) => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
       productData.images.additional = [
@@ -315,12 +318,12 @@ class ProductsService {
       product._id,
       beforeChanges,
       afterChanges,
-      adminId
+      adminId,
     );
     await addHistoryRecord(historyRecord);
     await updateTranslations(
       product.translationsKey,
-      createTranslations(productData)
+      createTranslations(productData),
     );
 
     return Product.findByIdAndUpdate(id, productData, {
@@ -346,7 +349,7 @@ class ProductsService {
 
     productData.sizes = await finalPriceCalculation(productData);
     productData.translationsKey = await addTranslations(
-      createTranslations(productData)
+      createTranslations(productData),
     );
 
     const newProduct = await new Product(productData).save();
@@ -375,7 +378,7 @@ class ProductsService {
           AVAILABLE,
           IS_HOT_ITEM,
         ]),
-        adminId
+        adminId,
       );
 
       await addHistoryRecord(historyRecord);
@@ -395,10 +398,9 @@ class ProductsService {
 
     const { images } = product;
     const { primary, additional } = images;
-    const additionalImagesToDelete =
-      typeof additional[0] === 'object'
-        ? additional.map(img => [...Object.values(img)]).flat()
-        : [];
+    const additionalImagesToDelete = typeof additional[0] === 'object'
+      ? additional.map((img) => [...Object.values(img)]).flat()
+      : [];
 
     const deletedImages = await uploadService.deleteFiles([
       ...Object.values(primary),
@@ -429,7 +431,7 @@ class ProductsService {
           IS_HOT_ITEM,
         ]),
         [],
-        adminId
+        adminId,
       );
 
       await deleteTranslations(product.translationsKey);
@@ -458,9 +460,8 @@ class ProductsService {
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
-        item =>
-          !Object.values(item).filter(image => imagesToDelete.includes(image))
-            .length
+        (item) => !Object.values(item).filter((image) => imagesToDelete.includes(image))
+          .length,
       );
       const updatedProduct = await Product.findByIdAndUpdate(
         id,
@@ -470,7 +471,7 @@ class ProductsService {
             additional: newImages,
           },
         },
-        { new: true }
+        { new: true },
       ).exec();
       return updatedProduct.images;
     }
@@ -489,7 +490,7 @@ class ProductsService {
         counts: [...prev.counts, curr.purchasedCount],
         total: prev.total + curr.purchasedCount,
       }),
-      { labels: [], counts: [], total: 0 }
+      { labels: [], counts: [], total: 0 },
     );
   }
 
@@ -505,10 +506,10 @@ class ProductsService {
 
   async updatePrices(previousPriceValue, nextPriceValue, path, id) {
     if (
-      previousPriceValue.additionalPrice[1]?.value !==
-        nextPriceValue.additionalPrice[1]?.value ||
-      previousPriceValue.additionalPrice[0].value !==
-        nextPriceValue.additionalPrice.value
+      previousPriceValue.additionalPrice[1]?.value
+        !== nextPriceValue.additionalPrice[1]?.value
+      || previousPriceValue.additionalPrice[0].value
+        !== nextPriceValue.additionalPrice.value
     ) {
       const products = await Product.find({
         [`${path}`]: {

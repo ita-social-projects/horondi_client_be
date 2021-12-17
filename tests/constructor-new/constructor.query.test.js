@@ -32,14 +32,14 @@ describe('Constructor query test', () => {
     constructorDataForQuery = await createConstructor(
       constructorInput,
       'img.jpg',
-      operations
+      operations,
     );
   });
 
   it('should get all constructors', async () => {
     const [result] = await getAllConstructors(
       { limit, skip, filter },
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('name', constructorInput.name);
@@ -50,7 +50,7 @@ describe('Constructor query test', () => {
 
     const result = await getAllConstructors(
       { limit, skip, filter },
-      operations
+      operations,
     );
 
     expect(result.length).toBe(1);
@@ -59,7 +59,7 @@ describe('Constructor query test', () => {
   it('should get constructor by id', async () => {
     const result = await getConstructorById(
       constructorDataForQuery._id,
-      operations
+      operations,
     );
 
     expect(result).toHaveProperty('name', constructorInput.name);

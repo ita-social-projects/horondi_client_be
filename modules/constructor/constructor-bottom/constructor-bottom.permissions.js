@@ -25,11 +25,11 @@ const сonstructorBottomPermissionsMutations = {
   addConstructorBottom: and(
     inputDataValidation(CONSTRUCTOR_BOTTOM, inputConstructorElementValidator),
     hasRoles([ADMIN, SUPERADMIN]),
-    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorBottomModel)
+    checkIfItemExists(CONSTRUCTOR_ELEMENT, ConstructorBottomModel),
   ),
   updateConstructorBottom: and(
     inputDataValidation(CONSTRUCTOR_BOTTOM, inputConstructorElementValidator),
-    hasRoles([ADMIN, SUPERADMIN])
+    hasRoles([ADMIN, SUPERADMIN]),
   ),
   deleteConstructorBottom: hasRoles([ADMIN, SUPERADMIN]),
 };

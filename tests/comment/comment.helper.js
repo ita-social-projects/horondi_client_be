@@ -355,7 +355,7 @@ const getCommentsByUser = async (
   pagination,
   sort,
   userId,
-  operations
+  operations,
 ) => {
   const res = await operations.query({
     query: gql`
@@ -402,7 +402,7 @@ const getCommentsRepliesByUser = async (
   pagination,
   sort,
   userId,
-  operations
+  operations,
 ) => {
   const res = await operations.query({
     query: gql`

@@ -6,7 +6,7 @@ module.exports = {
       {},
       {
         $set: user_id,
-      }
+      },
     );
   },
 

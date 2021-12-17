@@ -44,14 +44,14 @@ describe('Closure queries', () => {
     const result = await updateCategory(
       categoryId,
       newCategoryInputDataUpdate,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();
     expect(result).toHaveProperty('code', newCategoryInputDataUpdate.code);
     expect(result).toHaveProperty(
       'available',
-      newCategoryInputDataUpdate.available
+      newCategoryInputDataUpdate.available,
     );
     expect(result).toHaveProperty('name', newCategoryInputDataUpdate.name);
   });
@@ -59,7 +59,7 @@ describe('Closure queries', () => {
     const result = await updateCategory(
       wrongId,
       newCategoryInputDataUpdate,
-      operations
+      operations,
     );
 
     expect(result).toBeDefined();

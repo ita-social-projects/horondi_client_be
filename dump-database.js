@@ -23,19 +23,19 @@ let remoteDatabaseUrl = null;
 let localDatabaseName = null;
 let localDatabaseUrl = null;
 
-rl.question('Enter remote database name\n', nameRemote => {
+rl.question('Enter remote database name\n', (nameRemote) => {
   remoteDatabaseName = nameRemote;
-  rl.question('Enter remote database url\n', url => {
+  rl.question('Enter remote database url\n', (url) => {
     remoteDatabaseUrl = url;
-    rl.question("Enter how's your new database will called\n", localName => {
+    rl.question("Enter how's your new database will called\n", (localName) => {
       localDatabaseName = localName;
       if (os.type() === 'Darwin') {
         rl.question(
           'Enter your local Database Url from Compass\n',
-          localUrl => {
+          (localUrl) => {
             localDatabaseUrl = localUrl;
             rl.close();
-          }
+          },
         );
       } else {
         rl.close();
@@ -51,9 +51,9 @@ rl.on('close', () => {
       runCommand(
         localDatabaseUrl
           ? `mongorestore --nsFrom "${remoteDatabaseName}.*" --nsTo "${localDatabaseName}.*" --uri="${localDatabaseUrl}" ./dump/${remoteDatabaseName}`
-          : `mongorestore -d ${localDatabaseName} --host="${HOSTNAME}:${HOSTPORT}"  ./dump/${remoteDatabaseName}`
+          : `mongorestore -d ${localDatabaseName} --host="${HOSTNAME}:${HOSTPORT}"  ./dump/${remoteDatabaseName}`,
       );
-    }
+    },
   );
 });
 

@@ -30,7 +30,7 @@ class ContactService {
 
   async addContact(data) {
     data.contact.translationsKey = await addTranslations(
-      createTranslations(data.contact)
+      createTranslations(data.contact),
     );
 
     return new Contact({
@@ -47,7 +47,7 @@ class ContactService {
 
     await updateTranslations(
       contact.translationsKey,
-      createTranslations(data.contact)
+      createTranslations(data.contact),
     );
 
     return Contact.findByIdAndUpdate(data.id, data.contact, {

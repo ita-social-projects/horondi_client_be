@@ -21,7 +21,7 @@ describe('Wishlist mutations tests', () => {
     await addProductToWishlist(productId, operations);
     const wishlist = await addProductToWishlist(
       '5123a57789fef228620bceba',
-      operations
+      operations,
     );
 
     expect(wishlist).toHaveProperty('user_id');

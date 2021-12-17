@@ -71,32 +71,32 @@ describe('Product mutations', () => {
     categoryId = categoryData._id;
     const receivedMaterial = await createMaterial(
       getMaterial(colorId),
-      operations
+      operations,
     );
     materialId = receivedMaterial._id;
     const modelData = await createModel(
       newModel(categoryId, sizeId),
-      operations
+      operations,
     );
     modelId = modelData._id;
     const sizeData = await createSize(
       createPlainSize(modelId).size1,
-      operations
+      operations,
     );
     sizeId = sizeData._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
-      operations
+      operations,
     );
     patternId = patternData._id;
     const closureData = await createClosure(
       newClosure(materialId, colorId, modelId),
-      operations
+      operations,
     );
     closureId = closureData._id;
     const receivedConstructorBasic = await createConstructorBasic(
       newConstructorBasic(materialId, colorId, modelId),
-      operations
+      operations,
     );
     constructorBasicId = receivedConstructorBasic._id;
   });
@@ -109,7 +109,7 @@ describe('Product mutations', () => {
       colorId,
       patternId,
       closureId,
-      sizeId
+      sizeId,
     );
     const productData = await createProduct(productInput, operations);
     productId = productData._id;
@@ -128,7 +128,7 @@ describe('Product mutations', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
       {},
       [
@@ -139,7 +139,7 @@ describe('Product mutations', () => {
           thumbnail: 'thumbnailXL_0_test-file',
         },
       ],
-      operations
+      operations,
     );
     const res = receivedUpdatedProduct.data.updateProduct;
 
@@ -161,11 +161,11 @@ describe('Product mutations', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
       productUploadedImages.primary,
       [],
-      operations
+      operations,
     );
     const res = receivedUpdatedProduct.data.updateProduct;
 
@@ -187,7 +187,7 @@ describe('Product mutations', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
       productUploadedImages.primary,
       [
@@ -198,7 +198,7 @@ describe('Product mutations', () => {
           thumbnail: 'thumbnailXL_0_test-file',
         },
       ],
-      operations
+      operations,
     );
     const res = receivedUpdatedProduct.data.updateProduct;
 
@@ -217,9 +217,9 @@ describe('Product mutations', () => {
         colorId,
         patternId,
         closureId,
-        sizeId
+        sizeId,
       ),
-      operations
+      operations,
     );
 
     expect(products).toBeDefined();
@@ -231,7 +231,7 @@ describe('Product mutations', () => {
 
     expect(receivedData.data.deleteProduct).toHaveProperty(
       'message',
-      PRODUCT_NOT_FOUND
+      PRODUCT_NOT_FOUND,
     );
   });
 

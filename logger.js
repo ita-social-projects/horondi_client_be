@@ -14,7 +14,7 @@ const logger = winston.createLogger({
       } catch (err) {
         return message;
       }
-    })
+    }),
   ),
 
   transports: [new winston.transports.Console()],

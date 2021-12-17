@@ -2,8 +2,7 @@ const basicsService = require('./basics.service');
 const RuleError = require('../../errors/rule.error');
 
 const basicsQuery = {
-  getAllBasics: async (_, { limit, skip, filter }) =>
-    basicsService.getAllBasics(limit, skip, filter),
+  getAllBasics: async (_, { limit, skip, filter }) => basicsService.getAllBasics(limit, skip, filter),
   getBasicById: async (_, { id }) => {
     try {
       return await basicsService.getBasicById(id);
