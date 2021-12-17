@@ -128,10 +128,14 @@ class ProductsService {
       .exec();
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
-      (a, b) => a.basePrice[1].value - b.basePrice[1].value
+      // sorts by lowest size price in UAH
+      (a, b) =>
+        a.sizes[a.sizes.length - 1].price[0].value -
+        b.sizes[b.sizes.length - 1].price[0].value
     );
-    const minPrice = sortedByPrices[0].basePrice;
-    const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
+
+    const minPrice = sortedByPrices[0].sizes[0].price;
+    const maxPrice = sortedByPrices[sortedByPrices.length - 1].sizes[0].price;
 
     return {
       minPrice,
