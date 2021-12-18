@@ -1,5 +1,6 @@
 body {
-  width: 1440px;
+  width: 100%;
+  max-width: 1440px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 300;
 }
@@ -32,7 +33,7 @@ footer {
 
 footer.top {
   border-top: 1px solid #bdbdbd;
-  margin-left: 165px;
+  margin: 0 auto;
 }
 
 footer p {
@@ -59,6 +60,16 @@ p.blockUserText {
   padding-top: 40px;
   font-size: 59px;
   line-height: 44px;
+  text-align: center;
+  color: #242424;
+}
+
+h1.successfulOrder {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 59px;
+  font-weight: 300;
+  line-height: 80px;
+  letter-spacing: -0.005em;
   text-align: center;
   color: #242424;
 }
@@ -121,7 +132,7 @@ p.code {
   color: #000000;
 }
 
-button.confirm {
+button.confirm, .continue {
   width: 213px;
   height: 52px;
   background: #000000;
@@ -132,11 +143,19 @@ button.confirm {
   margin-left: 582px;
 }
 
-.confirm a {
+.continue {
+  margin-left: 0;
+}
+
+.confirm a, .continue a {
   font-style: normal;
   font-size: 14px;
   color: #ffffff;
   text-decoration: none;
+}
+
+.continue a {
+  text-transform: uppercase;
 }
 
 p.link {
@@ -201,38 +220,101 @@ p.successfulRegistrationText {
 }
 
 .productTable {
-  min-width: 100%;
-  min-height: auto;
+  table-layout: fixed;
+  width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
 }
 
-.tableHead th,
-.tableBody td {
-  text-align: center;
-  vertical-align: middle;
-  border-bottom: 1.5px solid #e0e0e0c4;
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
+.tableHead {
+  border-top: 1px solid #dedede;
 }
 
 .tableHead th {
-  border-top: 1.5px solid #e0e0e0c4;
-  font-size: 1.3rem;
-  font-weight: 100;
+  padding: 10px 0;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;letter-spacing: 0.001em;
+  color: #242424;
 }
 
-.tableImg {
-  display: block;
-  width: 130px;
-  overflow: hidden;
-  margin: 0 auto;
+.tableHead th:first-child {
+  padding-left: 8px;
+}
+
+.tableBody {
+  border-top: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
+}
+
+.product {
+  width: 50%;
 }
 
 .tableBody td {
-  padding: 15px;
-  font-size: 1rem;
-  height: 140px;
+  padding: 32px 0;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.0015em;
+  text-transform: capitalize;
+  color: #242424;
+}
+
+.productWrapper {
+  display: flex;
+}
+
+.productImg {
+  margin-right: 32px;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+
+.productTitle {
+  margin: 0;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.productMaterial, .productSizeResponsive {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.0025em;
+}
+
+.productMaterial {
+  margin-top: 5px;
+}
+.productSizeResponsive {
+  margin-top: 10px;
+}
+.productSize, .productQuantity {
+  display: inline;
+  padding: 6px 25px;
+  border: 1px solid rgba(91, 91, 91, 0.2);
+  border-radius: 4px;
+}
+
+.thanksText {
+  display: inline-block;
+  width: 100%;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
 }
 
 caption {
@@ -246,4 +328,19 @@ caption {
 .operationsLink,
 .aoperationsLink {
   font-size: 17px;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1110px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1164px) {
+  h1.successfulOrder {
+    font-size: 40px;
+  }
 }

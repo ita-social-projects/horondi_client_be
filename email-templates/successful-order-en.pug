@@ -1,10 +1,37 @@
 extends template-en
 block subheaderText
-    p.unfinishedCartOperations Your order has been successfully processed
-
+    h1.successfulOrder Your order has been successfully processed
 block content
-    div.contentUnfinishedCartOperations
-        p.thankYouText Thank you for always being with us!
-        button.confirm
-            a(href) continue shopping
+    div.contentWrapper
+        table.productTable
+            tr.tableHead
+                th.product Product
+                th.size Size
+                th.price Price
+                th.quantity Quantity
+                th.total Total
+            tr.tableBody
+                td.product
+                    div.productWrapper
+                        img.productImg(src=`img/back.png` alt='img')
+                        div.productInfo
+                            p.productTitle Rolltop black
+                            p.productMaterial Bottom material: Corduraypa
+                            p.productSizeResponsive Size: M
+                td.size
+                    p.productSize M
+                td.price
+                    p.productPrice $50
+                td.quantity
+                    p.productQuantity 1
+                td.total
+                    p.productTotal $50
+        p.productTotal Total:
+            span $50
+        p.thanksText Thank you for always being with us!
+        button.continue
+            a(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping
+
+
+
 
