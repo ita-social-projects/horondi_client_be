@@ -18,5 +18,39 @@
         "react"
     ],
     "rules": {
+        "prefer-const": [
+            "error",
+            {
+                "destructuring": "all"
+            }
+        ],
+        "no-unused-vars": [
+            2,
+            {
+                "vars": "all",
+                "args": "none",
+                "ignoreRestSiblings": true,
+                "argsIgnorePattern": "res|next|^err"
+            }
+        ],
+        "no-underscore-dangle": 0,
+        "max-len": [
+            2,
+            {
+                "code": 200,
+                "ignoreComments": true,
+                "ignoreTrailingComments": true,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true,
+                "ignoreRegExpLiterals": true
+            }
+        ],
+        "no-param-reassign": [
+            2,
+            {
+                "props": false
+            }
+        ]
     }
 }
