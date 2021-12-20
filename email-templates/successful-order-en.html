@@ -1,4 +1,4 @@
-body {
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body {
   box-sizing: border-box;
   margin: 0;
   width: 100%;
@@ -380,3 +380,89 @@ caption {
   }
 }
 
+@media screen and (max-width: 818px) {
+  body {
+    width: 818px;
+  }
+
+  header {
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: flex-end;*/
+    /*margin-bottom: 60px;*/
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  /*.upperTitle {*/
+  /*  display: block;*/
+  /*  width: 100%;*/
+  /*  padding-bottom: 40px;*/
+  /*  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 3.35%, #000000 149.48%);*/
+  /*  font-family: 'Open Sans', sans-serif;*/
+  /*  font-size: 34px;*/
+  /*  font-weight: 300;*/
+  /*  line-height: 46px;*/
+  /*  letter-spacing: 0.0025em;*/
+  /*}*/
+
+  .subheader {
+    /*display: none;*/
+    position: relative;
+    bottom: 110px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 3.35%, #000000 149.48%);
+  }
+
+
+
+  p.registrationText,
+  p.blockUserText,
+  p.successfulRegistrationText,
+  .title{
+    color: aliceblue;
+    font-size: 34px;
+    font-weight: 400;
+  }
+
+  .title {
+    margin: 0;
+  }
+
+  p.congrats {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  div.contentRegistrationText {
+    width: 705px;
+  }
+
+  p.congrats,
+  p.link,
+  a.alink,
+  p.ignore,
+  button.confirm,
+  footer.top,
+  div.unlockUserContent,
+  div.blockUserContent {
+    margin-left: 40px;
+    padding-left: 0;
+  }
+
+  footer.top {
+    border-top: 0px;
+  }
+
+  footer p {
+    padding-top: -40px;
+  }
+
+  div.unlockUserContent,
+  div.blockUserContent {
+    padding-top: 0;
+  }
+
+  footer {
+    width: 705px;
+  }
+}
+</style></head><body><header><h1 class="upperTitle">Your order has been successfully processed</h1></header><main><div class="subheader"><h1 class="title">Your order has been successfully processed</h1></div><div class="contentWrapper"><table class="productTable"><tr class="tableHead"><th class="product">Product</th><th class="size">Size</th><th class="price">Price</th><th class="quantity">Quantity</th><th class="total">Total</th></tr><tr class="tableBody"><td class="product"><div class="productWrapper"><img class="productImg" src="img/backpack.png" alt="img"><div class="productInfo"><p class="productTitle">Rolltop black</p><p class="productMaterial">Bottom material: Corduraypa</p><p class="productSizeResponsive">Size: M</p></div></div></td><td class="size"><p class="productSize">M</p></td><td class="price"><p class="productPrice">$50</p></td><td class="quantity"><p class="productQuantity">1</p></td><td class="total"><p class="productTotal">$50</p></td></tr></table><div class="payment"><span class="paymentText">Total</span><span class="paymentPrice">$50</span></div><p class="thanksText">Thank you for always being with us!</p><button class="continue"><a href="undefined/catalog/products?sort=popularity">continue shopping</a></button></div></main><footer class="top"><p>Best wishes,</p><h2>HORONDI</h2></footer></body></html>

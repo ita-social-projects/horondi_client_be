@@ -1,6 +1,8 @@
 extends template-en
+block headerText
+    h1.upperTitle Your order has been successfully processed
 block subheaderText
-    h1.successfulOrder Your order has been successfully processed
+    h1.title Your order has been successfully processed
 block content
     div.contentWrapper
         table.productTable
@@ -13,7 +15,7 @@ block content
             tr.tableBody
                 td.product
                     div.productWrapper
-                        img.productImg(src=`img/back.png` alt='img')
+                        img.productImg(src=`img/backpack.png` alt='img')
                         div.productInfo
                             p.productTitle Rolltop black
                             p.productMaterial Bottom material: Corduraypa
@@ -26,8 +28,9 @@ block content
                     p.productQuantity 1
                 td.total
                     p.productTotal $50
-        p.productTotal Total:
-            span $50
+        div.payment
+            span.paymentText Total
+            span.paymentPrice $50
         p.thanksText Thank you for always being with us!
         button.continue
             a(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping
