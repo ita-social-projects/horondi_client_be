@@ -51,7 +51,8 @@ const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { PRODUCT_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -316,7 +317,8 @@ class ProductsService {
     const { beforeChanges, afterChanges } = getChanges(product, productData);
 
     const historyRecord = generateHistoryObject(
-      EDIT_PRODUCT,
+      EDIT_EVENT,
+      PRODUCT_EVENT,
       product.model,
       product.name[UA].value,
       product._id,
@@ -360,7 +362,8 @@ class ProductsService {
 
     if (productData) {
       const historyRecord = generateHistoryObject(
-        ADD_PRODUCT,
+        ADD_EVENT,
+        PRODUCT_EVENT,
         newProduct.model?._id,
         newProduct.name[UA].value,
         newProduct._id,
@@ -414,7 +417,8 @@ class ProductsService {
 
     if (await Promise.allSettled(deletedImages)) {
       const historyRecord = generateHistoryObject(
-        DELETE_PRODUCT,
+        DELETE_EVENT,
+        PRODUCT_EVENT,
         product.model,
         product.name[UA].value,
         product._id,

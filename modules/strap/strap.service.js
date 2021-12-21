@@ -17,7 +17,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_STRAP, EDIT_STRAP, DELETE_STRAP },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { STRAP_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -84,7 +85,8 @@ class StrapService {
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_STRAP,
+      DELETE_EVENT,
+      STRAP_EVENT,
       foundStrap.model,
       foundStrap.name[UA].value,
       foundStrap._id,
@@ -129,7 +131,8 @@ class StrapService {
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
 
     const historyRecord = generateHistoryObject(
-      EDIT_STRAP,
+      EDIT_EVENT,
+      STRAP_EVENT,
       strapToUpdate.model?._id,
       strapToUpdate.name[UA].value,
       strapToUpdate._id,
@@ -165,7 +168,8 @@ class StrapService {
     const newStrap = await new Strap(strap).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_STRAP,
+      ADD_EVENT,
+      STRAP_EVENT,
       newStrap.model?._id,
       newStrap.name[UA].value,
       newStrap._id,

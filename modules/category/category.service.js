@@ -24,7 +24,8 @@ const {
   PURCHASED_COUNT,
 } = require('../../consts/category-fields');
 const {
-  HISTORY_ACTIONS: { ADD_CATEGORY, DELETE_CATEGORY, EDIT_CATEGORY },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { CATEGORY_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -96,7 +97,8 @@ class CategoryService extends FilterHelper {
       );
 
       const historyRecord = generateHistoryObject(
-        EDIT_CATEGORY,
+        EDIT_EVENT,
+        CATEGORY_EVENT,
         '',
         categoryToUpdate.name[UA].value,
         categoryToUpdate._id,
@@ -179,7 +181,8 @@ class CategoryService extends FilterHelper {
     const newCategory = await savedCategory.save();
 
     const historyRecord = generateHistoryObject(
-      ADD_CATEGORY,
+      ADD_EVENT,
+      CATEGORY_EVENT,
       '',
       newCategory.name[UA].value,
       newCategory._id,
@@ -228,7 +231,8 @@ class CategoryService extends FilterHelper {
 
     if (category) {
       const historyRecord = generateHistoryObject(
-        DELETE_CATEGORY,
+        DELETE_EVENT,
+        CATEGORY_EVENT,
         '',
         category.name[UA].value,
         category._id,

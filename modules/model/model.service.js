@@ -17,7 +17,8 @@ const {
 } = require('../../consts/locations');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_MODEL, EDIT_MODEL, DELETE_MODEL },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { MODEL_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -130,7 +131,8 @@ class ModelsService {
     const newModel = await new Model(data).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_MODEL,
+      ADD_EVENT,
+      MODEL_EVENT,
       '',
       newModel.name[UA].value,
       newModel._id,
@@ -179,7 +181,8 @@ class ModelsService {
       createTranslations(newModel)
     );
     const historyRecord = generateHistoryObject(
-      EDIT_MODEL,
+      EDIT_EVENT,
+      MODEL_EVENT,
       modelToUpdate.model?._id,
       modelToUpdate.name[UA].value,
       modelToUpdate._id,
@@ -208,7 +211,8 @@ class ModelsService {
     await deleteTranslations(modelToDelete.translationsKey);
 
     const historyRecord = generateHistoryObject(
-      DELETE_MODEL,
+      DELETE_EVENT,
+      MODEL_EVENT,
       modelToDelete.model?._id,
       modelToDelete.name[UA].value,
       modelToDelete._id,

@@ -16,7 +16,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_BASIC, EDIT_BASIC, DELETE_BASIC },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { BASIC_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -95,7 +96,8 @@ class BasicsService {
     const { beforeChanges, afterChanges } = getChanges(basicToUpdate, basic);
 
     const historyRecord = generateHistoryObject(
-      EDIT_BASIC,
+      EDIT_EVENT,
+      BASIC_EVENT,
       basicToUpdate.model?._id,
       basicToUpdate.name[UA].value,
       basicToUpdate._id,
@@ -129,7 +131,8 @@ class BasicsService {
     const newBasic = await new Basics(basic).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_BASIC,
+      ADD_EVENT,
+      BASIC_EVENT,
       newBasic.model?._id,
       newBasic.name[UA].value,
       newBasic._id,
@@ -162,7 +165,8 @@ class BasicsService {
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_BASIC,
+      DELETE_EVENT,
+      BASIC_EVENT,
       foundBasic.model,
       foundBasic.name[UA].value,
       foundBasic._id,

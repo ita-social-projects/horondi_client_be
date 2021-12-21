@@ -8,7 +8,8 @@ const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
 const {
-  HISTORY_ACTIONS: { ADD_MATERIAL, DELETE_MATERIAL, EDIT_MATERIAL },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { MATERIAL_EVENT },
 } = require('../../consts/history-actions');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -139,7 +140,8 @@ class MaterialsService {
     );
 
     const historyRecord = generateHistoryObject(
-      EDIT_MATERIAL,
+      EDIT_EVENT,
+      MATERIAL_EVENT,
       materialToUpdate.purpose,
       materialToUpdate.name[UA].value,
       materialToUpdate._id,
@@ -166,7 +168,8 @@ class MaterialsService {
     const newMaterial = await new Material(material).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_MATERIAL,
+      ADD_EVENT,
+      MATERIAL_EVENT,
       newMaterial.purpose,
       newMaterial.name[UA].value,
       newMaterial._id,
@@ -192,7 +195,8 @@ class MaterialsService {
 
     if (foundMaterial) {
       const historyRecord = generateHistoryObject(
-        DELETE_MATERIAL,
+        DELETE_EVENT,
+        MATERIAL_EVENT,
         foundMaterial.purpose,
         foundMaterial.name[UA].value,
         foundMaterial._id,

@@ -15,7 +15,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_POSITION, DELETE_POSITION, EDIT_POSITION },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { POSITION_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -82,7 +83,8 @@ class PositionService {
     const newPosition = await new Position(positionData).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_POSITION,
+      ADD_EVENT,
+      POSITION_EVENT,
       null,
       newPosition.name[UA].value,
       newPosition._id,
@@ -104,7 +106,8 @@ class PositionService {
     const deletedPosition = await Position.findByIdAndDelete(id).exec();
 
     const historyRecord = generateHistoryObject(
-      DELETE_POSITION,
+      DELETE_EVENT,
+      POSITION_EVENT,
       null,
       deletedPosition.name[UA].value,
       deletedPosition._id,
@@ -133,7 +136,8 @@ class PositionService {
     );
 
     const historyRecord = generateHistoryObject(
-      EDIT_POSITION,
+      EDIT_EVENT,
+      POSITION_EVENT,
       null,
       positionToUpdate.name[UA].value,
       positionToUpdate._id,

@@ -75,11 +75,8 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  HISTORY_ACTIONS: {
-    BLOCK_USER: BLOCK_USER_ACTION,
-    UNLOCK_USER: UNLOCK_USER_ACTION,
-    REGISTER_ADMIN,
-  },
+  HISTORY_ACTIONS: { BLOCK_EVENT, UNLOCK_EVENT, REGISTER_EVENT },
+  HISTORY_NAMES: { USER_EVENT, ADMIN_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -193,7 +190,8 @@ class UserService extends FilterHelper {
     );
 
     const historyRecord = generateHistoryObject(
-      BLOCK_USER_ACTION,
+      BLOCK_EVENT,
+      USER_EVENT,
       '',
       `${userToBlock.firstName} ${userToBlock.lastName}`,
       userToBlock._id,
@@ -269,7 +267,8 @@ class UserService extends FilterHelper {
     );
 
     const historyRecord = generateHistoryObject(
-      UNLOCK_USER_ACTION,
+      UNLOCK_EVENT,
+      USER_EVENT,
       '',
       `${userToUnlock.firstName} ${userToUnlock.lastName}`,
       userToUnlock._id,
@@ -891,7 +890,8 @@ class UserService extends FilterHelper {
     }).exec();
 
     const historyRecord = generateHistoryObject(
-      REGISTER_ADMIN,
+      REGISTER_EVENT,
+      ADMIN_EVENT,
       '',
       `${user.firstName} ${user.lastName}`,
       user._id,

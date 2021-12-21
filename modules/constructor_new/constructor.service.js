@@ -11,7 +11,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_CONSTRUCTOR, EDIT_CONSTRUCTOR, DELETE_CONSTRUCTOR },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { CONSTRUCTOR_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -98,7 +99,8 @@ class ConstructorService {
     );
 
     const historyRecord = generateHistoryObject(
-      EDIT_CONSTRUCTOR,
+      EDIT_EVENT,
+      CONSTRUCTOR_EVENT,
       constructorToUpdate.model?._id,
       constructorToUpdate.name[UA].value,
       constructorToUpdate._id,
@@ -122,7 +124,8 @@ class ConstructorService {
     const newConstructor = await new Constructor(constructor).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_CONSTRUCTOR,
+      ADD_EVENT,
+      CONSTRUCTOR_EVENT,
       newConstructor.model?._id,
       newConstructor.name[UA].value,
       newConstructor._id,
@@ -150,7 +153,8 @@ class ConstructorService {
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_CONSTRUCTOR,
+      DELETE_EVENT,
+      CONSTRUCTOR_EVENT,
       foundConstructor.model,
       foundConstructor.name[UA].value,
       foundConstructor._id,

@@ -13,7 +13,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_POCKET, EDIT_POCKET, DELETE_POCKET },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { POCKET_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -77,7 +78,8 @@ class PocketService {
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_POCKET,
+      DELETE_EVENT,
+      POCKET_EVENT,
       foundPocket.model,
       foundPocket.name[UA].value,
       foundPocket._id,
@@ -126,7 +128,8 @@ class PocketService {
     const { beforeChanges, afterChanges } = getChanges(pocketToUpdate, pocket);
 
     const historyRecord = generateHistoryObject(
-      EDIT_POCKET,
+      EDIT_EVENT,
+      POCKET_EVENT,
       pocketToUpdate.model?._id,
       pocketToUpdate.name[UA].value,
       pocketToUpdate._id,
@@ -162,7 +165,8 @@ class PocketService {
     const newPocket = await new Pocket(pocket).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_POCKET,
+      ADD_EVENT,
+      POCKET_EVENT,
       newPocket.model?._id,
       newPocket.name[UA].value,
       newPocket._id,

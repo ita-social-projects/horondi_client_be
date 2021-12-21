@@ -7,7 +7,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_RESTRICTION, EDIT_RESTRICTION, DELETE_RESTRICTION },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { RESTRICTION_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -52,7 +53,8 @@ class RestrictionService {
     const newRestriction = await new Restriction(restriction).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_RESTRICTION,
+      ADD_EVENT,
+      RESTRICTION_EVENT,
       '',
       '',
       newRestriction._id,
@@ -84,7 +86,8 @@ class RestrictionService {
     );
 
     const historyRecord = generateHistoryObject(
-      EDIT_RESTRICTION,
+      EDIT_EVENT,
+      RESTRICTION_EVENT,
       '',
       '',
       restrictionItem._id,
@@ -110,7 +113,8 @@ class RestrictionService {
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_RESTRICTION,
+      DELETE_EVENT,
+      RESTRICTION_EVENT,
       '',
       '',
       foundRestriction._id,
