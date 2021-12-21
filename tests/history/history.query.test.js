@@ -25,7 +25,7 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_EVENT },
   HISTORY_NAMES: { SIZE_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const {
   HISTORY_RECORD_IS_NOT_PRESENT,
 } = require('../../error-messages/history');

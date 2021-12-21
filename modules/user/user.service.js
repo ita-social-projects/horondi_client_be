@@ -77,7 +77,7 @@ const {
 const {
   HISTORY_ACTIONS: { BLOCK_EVENT, UNLOCK_EVENT, REGISTER_EVENT },
   HISTORY_NAMES: { USER_EVENT, ADMIN_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,

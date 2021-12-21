@@ -6,7 +6,7 @@ const {
 const {
   HISTORY_ACTIONS,
   HISTORY_NAMES,
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 
 const historySchema = new mongoose.Schema(
   {

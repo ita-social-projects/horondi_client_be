@@ -4,7 +4,7 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_EVENT },
   HISTORY_NAMES: { SIZE_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const { FIRST_NAME } = require('../../consts/test-admin');
 
 const GET_ALL_RECORDS_PARAMS = {

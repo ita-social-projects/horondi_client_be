@@ -18,7 +18,7 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
   HISTORY_NAMES: { BACK_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
