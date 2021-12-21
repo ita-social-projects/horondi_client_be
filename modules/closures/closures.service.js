@@ -13,7 +13,8 @@ const {
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { CLOSURE_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -86,7 +87,8 @@ class ClosureService {
     const newClosure = await new Closure(closure).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_CLOSURE,
+      ADD_EVENT,
+      CLOSURE_EVENT,
       newClosure.model?._id,
       newClosure.name[UA].value,
       newClosure._id,
@@ -144,7 +146,8 @@ class ClosureService {
     );
 
     const historyRecord = generateHistoryObject(
-      EDIT_CLOSURE,
+      EDIT_EVENT,
+      CLOSURE_EVENT,
       closureToUpdate.model?._id,
       closureToUpdate.name[UA].value,
       closureToUpdate._id,
@@ -171,7 +174,8 @@ class ClosureService {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
     const historyRecord = generateHistoryObject(
-      DELETE_CLOSURE,
+      DELETE_EVENT,
+      CLOSURE_EVENT,
       closure.model?._id,
       closure.name[UA].value,
       closure._id,

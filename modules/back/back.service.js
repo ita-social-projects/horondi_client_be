@@ -16,7 +16,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_BACK, EDIT_BACK, DELETE_BACK },
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { BACK_EVENT },
 } = require('../../consts/history-actions');
 const {
   generateHistoryObject,
@@ -112,7 +113,8 @@ class BackService {
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
 
     const historyRecord = generateHistoryObject(
-      EDIT_BACK,
+      EDIT_EVENT,
+      BACK_EVENT,
       backToUpdate.model?._id,
       backToUpdate.name[UA].value,
       backToUpdate._id,
@@ -145,7 +147,8 @@ class BackService {
     }
 
     const historyRecord = generateHistoryObject(
-      DELETE_BACK,
+      DELETE_EVENT,
+      BACK_EVENT,
       foundBack.model,
       foundBack.name[UA].value,
       foundBack._id,
@@ -181,7 +184,8 @@ class BackService {
     const newBack = await new Back(back).save();
 
     const historyRecord = generateHistoryObject(
-      ADD_BACK,
+      ADD_EVENT,
+      BACK_EVENT,
       newBack.model?._id,
       newBack.name[UA].value,
       newBack._id,
