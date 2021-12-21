@@ -31,14 +31,12 @@ const { newProductInputData } = require('../product/product.variables');
 const {
   newProductInCart,
   testQuantity,
-  sizeName,
   productWrongId,
   sizeWrongId,
   newProductInputData2,
   price,
   expectedPrice,
   allSizes,
-  newSizeId,
   userWrongId,
 } = require('./cart.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');

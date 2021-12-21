@@ -35,10 +35,6 @@ const {
     MODEL,
   },
 } = require('../../consts/history-obj-keys');
-const { updatePrices } = require('../product/product.service');
-const {
-  INPUT_FIELDS: { CLOSURE },
-} = require('../../consts/input-fields');
 
 class ClosureService {
   async getAllClosure(limit, skip, filter) {
