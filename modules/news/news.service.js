@@ -9,7 +9,7 @@ const uploadService = require('../upload/upload.service');
 const {
   HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
   HISTORY_NAMES: { NEWS_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,

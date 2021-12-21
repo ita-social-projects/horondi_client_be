@@ -7,7 +7,7 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT },
   HISTORY_NAMES: { COLOR_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   generateHistoryChangesData,

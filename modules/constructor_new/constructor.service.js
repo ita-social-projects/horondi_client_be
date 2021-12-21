@@ -13,7 +13,7 @@ const {
 const {
   HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
   HISTORY_NAMES: { CONSTRUCTOR_EVENT },
-} = require('../../consts/history-actions');
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
