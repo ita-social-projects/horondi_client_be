@@ -1,9 +1,40 @@
 extends template-ua
+block headerText
+    h1.upperTitle Ваше замовлення успішно оформленe
 block subheaderText
-    p.unfinishedCartOperations Ваше замовлення успішно оформленe
-
+    h1.title Ваше замовлення успішно оформленe
 block content
-    div.contentUnfinishedCartOperations
-        p.thankYouText Дякую що Ви завжди з нами!
-        button.confirm
-            a(href) Продовжити покупки
+    div.contentWrapper
+        table.productTable
+            tr.tableHead
+                th.product Продукт
+                th.size Розмір
+                th.price Ціна
+                th.quantity Кількість
+                th.total До оплати
+            tr.tableBody
+                td.product
+                    div.productWrapper
+                        img.productImg(src=`img/backpack.png` alt='img')
+                        div.productInfo
+                            p.productTitle Роллтоп чорний
+                            p.productMaterial Матеріал внизу: Кордура
+                            p.productSizeResponsive Розмір: M
+                td.size
+                    p.productSize M
+                td.price
+                    p.productPrice $50
+                td.quantity
+                    p.productQuantity 1
+                td.total
+                    p.productTotal $50
+        div.payment
+            span.paymentText До оплати
+            span.paymentPrice $50
+        p.thanksText Дякую що Ви завжди з нами!
+        button.continue
+            a(href=`${frontendUrl}/catalog/products?sort=popularity`) продовжити покупки
+
+
+
+

@@ -1,8 +1,8 @@
 extends template-en
 block headerText
-    h1.upperTitle Your order has been successfully processed
+    h1.responseTitle Your order has been successfully processed
 block subheaderText
-    h1.title Your order has been successfully processed
+    h1.desktopTitle Your order has been successfully processed
 block content
     div.contentWrapper
         table.productTable
@@ -31,7 +31,7 @@ block content
         div.payment
             span.paymentText Total
             span.paymentPrice $50
-        p.thanksText Thank you for always being with us!
+        p.text Thank you for always being with us!
         button.continue
             a(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping
 
