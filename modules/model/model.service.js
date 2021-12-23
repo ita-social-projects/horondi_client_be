@@ -129,10 +129,12 @@ class ModelsService {
     }
 
     const newModel = await new Model(data).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: MODEL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      MODEL_EVENT,
+      historyEvent,
       '',
       newModel.name[UA].value,
       newModel._id,
@@ -180,9 +182,12 @@ class ModelsService {
       modelToUpdate.translationsKey,
       createTranslations(newModel)
     );
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: MODEL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      MODEL_EVENT,
+      historyEvent,
       modelToUpdate.model?._id,
       modelToUpdate.name[UA].value,
       modelToUpdate._id,
@@ -209,10 +214,12 @@ class ModelsService {
       );
     }
     await deleteTranslations(modelToDelete.translationsKey);
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: MODEL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      MODEL_EVENT,
+      historyEvent,
       modelToDelete.model?._id,
       modelToDelete.name[UA].value,
       modelToDelete._id,

@@ -1,8 +1,7 @@
 const _ = require('lodash');
 
 const generateHistoryObject = (
-  action,
-  historyName,
+  historyEvent,
   subjectModel,
   subjectName,
   subjectId,
@@ -10,8 +9,8 @@ const generateHistoryObject = (
   valueAfterChange,
   userId = ''
 ) => ({
-  action,
-  historyName,
+  action: historyEvent.action,
+  historyName: historyEvent.historyName,
   subject: {
     model: subjectModel,
     name: subjectName,

@@ -95,9 +95,12 @@ class BottomService {
 
     const { beforeChanges, afterChanges } = getChanges(bottomToUpdate, bottom);
 
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: BOTTOM_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      BOTTOM_EVENT,
+      historyEvent,
       bottomToUpdate.model?._id,
       bottomToUpdate.name[UA].value,
       bottomToUpdate._id,
@@ -124,10 +127,12 @@ class BottomService {
     if (!foundBottom) {
       throw new RuleError(BOTTOM_NOT_FOUND, NOT_FOUND);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: BOTTOM_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      BOTTOM_EVENT,
+      historyEvent,
       foundBottom.model?._id,
       foundBottom.name[UA].value,
       foundBottom._id,
@@ -162,10 +167,12 @@ class BottomService {
     bottom.translationsKey = await addTranslations(createTranslations(bottom));
 
     const newBottom = await new Bottom(bottom).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: BOTTOM_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      BOTTOM_EVENT,
+      historyEvent,
       newBottom.model?._id,
       newBottom.name[UA].value,
       newBottom._id,

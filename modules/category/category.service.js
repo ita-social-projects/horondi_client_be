@@ -95,10 +95,12 @@ class CategoryService extends FilterHelper {
         categoryToUpdate,
         category
       );
-
+      const historyEvent = {
+        action: EDIT_EVENT,
+        historyName: CATEGORY_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        EDIT_EVENT,
-        CATEGORY_EVENT,
+        historyEvent,
         '',
         categoryToUpdate.name[UA].value,
         categoryToUpdate._id,
@@ -179,10 +181,12 @@ class CategoryService extends FilterHelper {
     savedCategory.images = uploadResult.fileNames;
 
     const newCategory = await savedCategory.save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: CATEGORY_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      CATEGORY_EVENT,
+      historyEvent,
       '',
       newCategory.name[UA].value,
       newCategory._id,
@@ -230,9 +234,12 @@ class CategoryService extends FilterHelper {
     }
 
     if (category) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: CATEGORY_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_EVENT,
-        CATEGORY_EVENT,
+        historyEvent,
         '',
         category.name[UA].value,
         category._id,

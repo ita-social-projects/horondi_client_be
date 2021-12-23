@@ -51,10 +51,12 @@ class RestrictionService {
 
   async addRestriction(restriction, { _id: adminId }) {
     const newRestriction = await new Restriction(restriction).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: RESTRICTION_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      RESTRICTION_EVENT,
+      historyEvent,
       '',
       '',
       newRestriction._id,
@@ -84,10 +86,12 @@ class RestrictionService {
       restrictionItem,
       restriction
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: RESTRICTION_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      RESTRICTION_EVENT,
+      historyEvent,
       '',
       '',
       restrictionItem._id,
@@ -111,10 +115,12 @@ class RestrictionService {
     if (!foundRestriction) {
       throw new RuleError(RESTRICTION_NOT_FOUND, NOT_FOUND);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: RESTRICTION_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      RESTRICTION_EVENT,
+      historyEvent,
       '',
       '',
       foundRestriction._id,

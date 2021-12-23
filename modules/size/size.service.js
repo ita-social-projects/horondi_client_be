@@ -114,10 +114,12 @@ class SizeService {
     const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
       $push: { sizes: newSize._id },
     }).exec();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: SIZE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      SIZE_EVENT,
+      historyEvent,
       newSize.name,
       foundModel.name[0].value,
       newSize._id,
@@ -151,9 +153,12 @@ class SizeService {
     const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
       $pull: { sizes: id },
     }).exec();
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: SIZE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      SIZE_EVENT,
+      historyEvent,
       foundSize.name,
       foundModel.name[0].value,
       foundSize._id,
@@ -228,10 +233,12 @@ class SizeService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(sizeToUpdate, input);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: SIZE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      SIZE_EVENT,
+      historyEvent,
       sizeToUpdate.name,
       modelToUpdate.name[0].value,
       sizeToUpdate._id,
