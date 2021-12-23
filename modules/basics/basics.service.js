@@ -95,9 +95,12 @@ class BasicsService {
 
     const { beforeChanges, afterChanges } = getChanges(basicToUpdate, basic);
 
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: BASIC_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      BASIC_EVENT,
+      historyEvent,
       basicToUpdate.model?._id,
       basicToUpdate.name[UA].value,
       basicToUpdate._id,
@@ -130,9 +133,12 @@ class BasicsService {
 
     const newBasic = await new Basics(basic).save();
 
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: BASIC_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      BASIC_EVENT,
+      historyEvent,
       newBasic.model?._id,
       newBasic.name[UA].value,
       newBasic._id,
@@ -164,9 +170,12 @@ class BasicsService {
       uploadService.deleteFiles(Object.values(foundBasic.images));
     }
 
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: BASIC_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      BASIC_EVENT,
+      historyEvent,
       foundBasic.model,
       foundBasic.name[UA].value,
       foundBasic._id,

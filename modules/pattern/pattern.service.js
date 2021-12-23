@@ -121,10 +121,12 @@ class PatternsService {
       patternToUpdate,
       pattern
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: PATTERN_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      PATTERN_EVENT,
+      historyEvent,
       patternToUpdate.model?._id,
       patternToUpdate.name[UA].value,
       patternToUpdate._id,
@@ -185,9 +187,12 @@ class PatternsService {
     );
 
     const newPattern = await new Pattern({ ...pattern, images }).save();
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: PATTERN_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      PATTERN_EVENT,
+      historyEvent,
       newPattern.model?._id,
       newPattern.name[UA].value,
       newPattern._id,
@@ -225,9 +230,12 @@ class PatternsService {
 
     await uploadService.deleteFiles([foundPattern.constructorImg]);
     if (await Promise.allSettled(deletedImages)) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: PATTERN_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_EVENT,
-        PATTERN_EVENT,
+        historyEvent,
         foundPattern.model,
         foundPattern.name[UA].value,
         foundPattern._id,

@@ -52,10 +52,12 @@ class ColorService {
       throw new RuleError(COLOR_ALREADY_EXIST, BAD_REQUEST);
     }
     const newColor = await new Color(colorData).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: COLOR_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      COLOR_EVENT,
+      historyEvent,
       newColor.name[UA].value,
       newColor.simpleName[UA].value,
       newColor._id,
@@ -84,10 +86,12 @@ class ColorService {
     }
 
     const deletedColor = await Color.findByIdAndDelete(id).exec();
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: COLOR_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      COLOR_EVENT,
+      historyEvent,
       deletedColor.name[UA].value,
       deletedColor.simpleName[UA].value,
       deletedColor._id,

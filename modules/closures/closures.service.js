@@ -81,10 +81,12 @@ class ClosureService {
       createTranslations(closure)
     );
     const newClosure = await new Closure(closure).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: CLOSURE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      CLOSURE_EVENT,
+      historyEvent,
       newClosure.model?._id,
       newClosure.name[UA].value,
       newClosure._id,
@@ -140,10 +142,12 @@ class ClosureService {
       closureToUpdate,
       closure
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: CLOSURE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      CLOSURE_EVENT,
+      historyEvent,
       closureToUpdate.model?._id,
       closureToUpdate.name[UA].value,
       closureToUpdate._id,
@@ -169,9 +173,12 @@ class ClosureService {
     if (!closure) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: CLOSURE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      CLOSURE_EVENT,
+      historyEvent,
       closure.model?._id,
       closure.name[UA].value,
       closure._id,

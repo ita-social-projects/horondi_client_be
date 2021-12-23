@@ -91,10 +91,12 @@ class ConstructorService {
     );
 
     const basic = await new Model(constructorElement).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: CONSTRUCTOR_ELEMENT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      CONSTRUCTOR_ELEMENT_EVENT,
+      historyEvent,
       basic.model,
       basic.name[UA].value,
       basic._id,
@@ -143,10 +145,12 @@ class ConstructorService {
       constructorFountElement,
       constructorElement
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: CONSTRUCTOR_ELEMENT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      CONSTRUCTOR_ELEMENT_EVENT,
+      historyEvent,
       updatedBasic.model,
       updatedBasic.name[UA].value,
       updatedBasic._id,
@@ -170,10 +174,12 @@ class ConstructorService {
     if (constructorElement.image) {
       await uploadService.deleteFile(constructorElement.image);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: CONSTRUCTOR_ELEMENT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      CONSTRUCTOR_ELEMENT_EVENT,
+      historyEvent,
       constructorElement.model,
       constructorElement.name[UA].value,
       constructorElement._id,

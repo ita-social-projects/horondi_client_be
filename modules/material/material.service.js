@@ -138,10 +138,12 @@ class MaterialsService {
       materialToUpdate,
       material
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: MATERIAL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      MATERIAL_EVENT,
+      historyEvent,
       materialToUpdate.purpose,
       materialToUpdate.name[UA].value,
       materialToUpdate._id,
@@ -166,10 +168,12 @@ class MaterialsService {
       createTranslations(material)
     );
     const newMaterial = await new Material(material).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: MATERIAL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      MATERIAL_EVENT,
+      historyEvent,
       newMaterial.purpose,
       newMaterial.name[UA].value,
       newMaterial._id,
@@ -194,9 +198,12 @@ class MaterialsService {
     const foundMaterial = await Material.findByIdAndDelete(id).exec();
 
     if (foundMaterial) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: MATERIAL_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_EVENT,
-        MATERIAL_EVENT,
+        historyEvent,
         foundMaterial.purpose,
         foundMaterial.name[UA].value,
         foundMaterial._id,

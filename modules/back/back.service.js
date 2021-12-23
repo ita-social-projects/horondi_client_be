@@ -111,10 +111,12 @@ class BackService {
     }).exec();
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: BACK_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      BACK_EVENT,
+      historyEvent,
       backToUpdate.model?._id,
       backToUpdate.name[UA].value,
       backToUpdate._id,
@@ -145,10 +147,12 @@ class BackService {
     if (foundBack.image) {
       return uploadService.deleteFiles(Object.values(foundBack.image));
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: BACK_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      BACK_EVENT,
+      historyEvent,
       foundBack.model,
       foundBack.name[UA].value,
       foundBack._id,
@@ -182,10 +186,12 @@ class BackService {
     back.translationsKey = await addTranslations(createTranslations(back));
 
     const newBack = await new Back(back).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: BACK_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      BACK_EVENT,
+      historyEvent,
       newBack.model?._id,
       newBack.name[UA].value,
       newBack._id,

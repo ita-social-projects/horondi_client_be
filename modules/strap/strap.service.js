@@ -83,10 +83,12 @@ class StrapService {
     if (foundStrap.image) {
       await uploadService.deleteFiles([foundStrap.image]);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: STRAP_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_EVENT,
-      STRAP_EVENT,
+      historyEvent,
       foundStrap.model,
       foundStrap.name[UA].value,
       foundStrap._id,
@@ -129,10 +131,12 @@ class StrapService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: STRAP_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      STRAP_EVENT,
+      historyEvent,
       strapToUpdate.model?._id,
       strapToUpdate.name[UA].value,
       strapToUpdate._id,
@@ -166,10 +170,12 @@ class StrapService {
     strap.translationsKey = await addTranslations(createTranslations(strap));
 
     const newStrap = await new Strap(strap).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: STRAP_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_EVENT,
-      STRAP_EVENT,
+      historyEvent,
       newStrap.model?._id,
       newStrap.name[UA].value,
       newStrap._id,

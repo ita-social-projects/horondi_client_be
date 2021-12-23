@@ -54,9 +54,12 @@ const unlockUsers = () =>
             userData,
             unlockedUser
           );
+          const historyEvent = {
+            action: UNLOCK_EVENT,
+            historyName: USER_EVENT,
+          };
           const historyRecord = generateHistoryObject(
-            UNLOCK_EVENT,
-            USER_EVENT,
+            historyEvent,
             '',
             `${userData.firstName} ${userData.lastName}`,
             userData._id,

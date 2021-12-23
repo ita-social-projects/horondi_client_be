@@ -315,10 +315,12 @@ class ProductsService {
     productData.sizes = await finalPriceCalculation(productData);
 
     const { beforeChanges, afterChanges } = getChanges(product, productData);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: PRODUCT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_EVENT,
-      PRODUCT_EVENT,
+      historyEvent,
       product.model,
       product.name[UA].value,
       product._id,
@@ -361,9 +363,12 @@ class ProductsService {
     const newProduct = await new Product(productData).save();
 
     if (productData) {
+      const historyEvent = {
+        action: ADD_EVENT,
+        historyName: PRODUCT_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        ADD_EVENT,
-        PRODUCT_EVENT,
+        historyEvent,
         newProduct.model?._id,
         newProduct.name[UA].value,
         newProduct._id,
@@ -416,9 +421,12 @@ class ProductsService {
     ]);
 
     if (await Promise.allSettled(deletedImages)) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: PRODUCT_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_EVENT,
-        PRODUCT_EVENT,
+        historyEvent,
         product.model,
         product.name[UA].value,
         product._id,
