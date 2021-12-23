@@ -1,8 +1,8 @@
 extends template-ua
 block headerText
-    h1.upperTitle Ваше замовлення успішно оформленe
+    h1.responseTitle Ваше замовлення успішно оформленe
 block subheaderText
-    h1.title Ваше замовлення успішно оформленe
+    h1.desktopTitle Ваше замовлення успішно оформленe
 block content
     div.contentWrapper
         table.productTable
@@ -31,7 +31,7 @@ block content
         div.payment
             span.paymentText До оплати
             span.paymentPrice $50
-        p.thanksText Дякую що Ви завжди з нами!
+        p.text Дякую що Ви завжди з нами!
         button.continue
             a(href=`${frontendUrl}/catalog/products?sort=popularity`) продовжити покупки
 

@@ -1,7 +1,9 @@
 extends template-ua
+block headerText
+    h1.responseTitle Пароль для підтвердження
 block subheaderText
-    p.registrationText Пароль для підтвердження
+    h1.desktopTitle Пароль для підтвердження
 block content
-    div.contentRegistrationText
-        p.congrats Вітаємо! #[br] Щоб підтвердити створення адміністратора введіть код:
+    div.contentWrapper
+        p.text Вітаємо! #[br] Щоб підтвердити створення адміністратора введіть код:
         p.code #{otp_code}

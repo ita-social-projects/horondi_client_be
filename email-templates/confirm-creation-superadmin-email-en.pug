@@ -1,7 +1,9 @@
 extends template-en
+block headerText
+    h1.responseTitle Confirmation password
 block subheaderText
-    p.registrationText Confirmation password
+    h1.desktopTitle Confirmation password
 block content
-    div.contentRegistrationText
-        p.congrats Greetings! #[br] To confirm the Administrator account, enter the code: 
+    div.contentWrapper
+        p.text Greetings! #[br] To confirm the Administrator account, enter the code:
         p.code #{otp_code}

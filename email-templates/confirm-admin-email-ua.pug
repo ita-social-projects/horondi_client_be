@@ -1,10 +1,12 @@
 extends template-ua
+block headerText
+    h1.responseTitle Реєстрація Адміністратора
 block subheaderText
-    p.registrationText Реєстрація Адміністратора
+    h1.desktopTitle Реєстрація Адміністратора
 block content
-    div.contentRegistrationText
-        p.congrats Вітаємо! #[br] Щоб зареєструватись як адміністратор, підтвердіть пошту:
-        button.confirm
-            a(href=adminUrl + `/confirmation/` + token) ПІДТВЕРДИТИ ПОШТУ
-        p.link або перейдіть за посиланням нижче:
-        a.alink(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}
+    div.contentWrapper
+        p.text Вітаємо! #[br] Щоб зареєструватись як адміністратор, підтвердіть пошту:
+        button.continue
+            a(href=adminUrl + `/confirmation/` + token) підтвердити пошту
+        p.text або перейдіть за посиланням нижче: #[br]
+            a.link(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}

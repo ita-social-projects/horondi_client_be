@@ -1,10 +1,12 @@
 extends template-en
+block headerText
+    h1.responseTitle Administrator Registration
 block subheaderText
-    p.registrationText Administrator Registration
+    h1.desktopTitle Administrator Registration
 block content
-    div.contentRegistrationText
-        p.congrats Greetings! #[br] To register as an administrator, confirm you email:
-        button.confirm
-            a(href=adminUrl + `/confirmation/` + token) CONFIRM E-MAIL
-        p.link or follow the link:
-        a.alink(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}
+    div.contentWrapper
+        p.text Congratulations! #[br] To register as an administrator, confirm you email:
+        button.continue
+            a(href=adminUrl + `/confirmation/` + token) confirm e-mail
+        p.text or follow the link: #[br]
+            a.link(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}

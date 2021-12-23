@@ -1,12 +1,12 @@
 extends template-ua
-block styles 
-    link(rel="stylesheet", href="css/confirm-email-and-recover-password.css")
+block headerText
+    h1.responseTitle Ви успішно зареєструвались
 block subheaderText
-        p.registrationText Ви успішно зареєструвались
+    h1.desktopTitle Ви успішно зареєструвались
 block content
-    div.contentRegistrationText
-        p.congrats Вітаємо! #[br] Ви успішно зареєструвались в нашому магазині, залишилося лише підтвердити вашу електронну адресу:
-        button.confirm
-            a(href=frontendUrl + `/confirmation/` + token) Підтвердити e-mail
-        p.link або перейдіть за посиланням нижче:
-        a.alink(href=frontendUrl + `/confirmation/` + token) #{frontendUrl + `/confirmation/` + token}
+    div.contentWrapper
+        p.text Вітаємо! #[br] Ви успішно зареєструвались в нашому магазині, залишилося лише підтвердити вашу електронну адресу:
+        button.continue
+            a(href=frontendUrl + `/confirmation/` + token) confirm e-mail
+        p.text або перейдіть за посиланням нижче: #[br]
+            a.link(href=frontendUrl + `/confirmation/` + token) #{frontendUrl + `/confirmation/` + token}
