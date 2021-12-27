@@ -128,10 +128,13 @@ class ProductsService {
       .exec();
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
-      (a, b) => a.basePrice[1].value - b.basePrice[1].value
+      (a, b) =>
+        a.sizes[a.sizes.length - 1].price[0].value -
+        b.sizes[b.sizes.length - 1].price[0].value
     );
-    const minPrice = sortedByPrices[0].basePrice;
-    const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
+
+    const minPrice = sortedByPrices[0].sizes[0].price;
+    const maxPrice = sortedByPrices[sortedByPrices.length - 1].sizes[0].price;
 
     return {
       minPrice,
@@ -202,8 +205,11 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({ filter, skip, limit, sort, search }) {
+  async getProducts({ filter, skip, limit, sort={rate: -1}, search }) {
     const filters = this.filterItems(filter);
+    const sortValue = (Object.keys(sort)).includes('basePrice') ? {
+      'sizes.price.value': sort.basePrice
+    } : sort;
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
@@ -218,10 +224,11 @@ class ProductsService {
         },
       ];
     }
+
     const items = await Product.find(filters)
+      .sort(sortValue)
       .skip(skip)
       .limit(limit)
-      .sort(sort)
       .exec();
 
     const count = await Product.find(filters)
