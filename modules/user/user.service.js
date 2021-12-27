@@ -6,6 +6,7 @@ const { bcryptClient } = require('../../client/bcrypt-client');
 const uploadService = require('../upload/upload.service');
 
 const User = require('./user.model');
+const Wishlist = require('../wishlist/wishlist.model');
 
 const {
   EmailActions: {
@@ -503,19 +504,21 @@ class UserService extends FilterHelper {
       expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
-    const userid = dataUser.sub;
+    const userId = dataUser.sub;
     if (!(await User.findOne({ email: dataUser.email }).exec())) {
-      await this.registerSocialUser({
+      const user = await this.registerSocialUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
         email: dataUser.email,
         credentials: [
           {
             source,
-            tokenPass: userid,
+            tokenPass: userId,
           },
         ],
       });
+
+      new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: dataUser.email,
@@ -531,7 +534,7 @@ class UserService extends FilterHelper {
     });
     const data = await res.json();
     if (!(await User.findOne({ email: data.email }).exec())) {
-      await this.registerSocialUser({
+      const user = await this.registerSocialUser({
         firstName: data.name.split(' ')[0],
         lastName: data.name.split(' ')[1],
         email: data.email,
@@ -542,6 +545,8 @@ class UserService extends FilterHelper {
           },
         ],
       });
+
+      new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: data.email,
@@ -604,6 +609,8 @@ class UserService extends FilterHelper {
       ],
     });
     const savedUser = await user.save();
+
+    new Wishlist({ user_id: user._id, products: [] }).save();
 
     jwtClient.setData({ userId: savedUser._id });
     const accessToken = jwtClient.generateAccessToken(
