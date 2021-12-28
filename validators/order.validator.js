@@ -197,37 +197,6 @@ const nestedDeliveryValidator = Joi.object({
   }),
 });
 
-const nestedCostValidator = Joi.object({
-  currency: Joi.string()
-    .trim()
-    .required(),
-  value: Joi.number().required(),
-});
-
-const nestedItemValidator = Joi.object({
-  product: Joi.string().required(),
-  model: Joi.string().optional(),
-  constructorBasics: Joi.string().optional(),
-  constructorBottom: Joi.string().optional(),
-  constructorFrontPocket: Joi.string().optional(),
-  constructorPattern: Joi.string().optional(),
-  actualPrice: Joi.array()
-    .has(nestedCostValidator)
-    .optional(),
-  quantity: Joi.number().required(),
-  isFromConstructor: Joi.boolean().required(),
-  options: Joi.object({
-    size: Joi.string().required(),
-    sidePocket: Joi.boolean(),
-  }),
-  fixedPrice: Joi.array()
-    .has(nestedCostValidator)
-    .optional(),
-  price: Joi.array()
-    .has(nestedCostValidator)
-    .required(),
-});
-
 const orderValidator = Joi.object({
   status: Joi.string()
     .trim()
@@ -243,7 +212,7 @@ const orderValidator = Joi.object({
     ),
   recipient: nestedUserValidator,
   delivery: nestedDeliveryValidator,
-  items: Joi.array().has(nestedItemValidator),
+  items: Joi.array(),
   user_id: Joi.string().empty(null),
   paymentMethod: Joi.string()
     .trim()
