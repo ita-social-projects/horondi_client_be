@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;800&display=swap');
 
 * {
   box-sizing: border-box;
@@ -196,6 +196,13 @@ footer {
   margin: 0 auto;
   padding-top: 40px;
   border-top: 1px solid #bdbdbd;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 22px;
+  text-transform: uppercase;
 }
 
 @media (max-width: 1255px) {
