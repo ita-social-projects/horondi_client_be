@@ -47,8 +47,8 @@ const commentPermissionsMutations = {
     inputDataValidation(REPLY_COMMENT_DATA, replyCommentUpdateValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
-  deleteReplyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
+  deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
+  deleteReplyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN, USER])),
   addRate: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };
 
