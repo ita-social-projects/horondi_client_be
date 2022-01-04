@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const {
   COUNTRY_LENGTH_TOO_LONG,
   REGION_LENGTH_TOO_LONG,
+  DISTRICT_LENGTH_TOO_LONG,
   CITY_LENGTH_TOO_LONG,
   ZIPCODE_LENGTH_TOO_LONG,
   STREET_LENGTH_TOO_LONG,
@@ -24,6 +25,10 @@ const addressSchema = new mongoose.Schema({
   region: {
     type: String,
     maxlength: [MAX, REGION_LENGTH_TOO_LONG],
+  },
+  district: {
+    type: String,
+    maxlength: [MAX, DISTRICT_LENGTH_TOO_LONG],
   },
   city: {
     type: String,
