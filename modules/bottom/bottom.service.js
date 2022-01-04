@@ -16,8 +16,9 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_BOTTOM, EDIT_BOTTOM, DELETE_BOTTOM },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { BOTTOM_EVENT },
+} = require('../../consts/history-events');
 const {
   getChanges,
   generateHistoryChangesData,
@@ -94,8 +95,12 @@ class BottomService {
 
     const { beforeChanges, afterChanges } = getChanges(bottomToUpdate, bottom);
 
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: BOTTOM_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_BOTTOM,
+      historyEvent,
       bottomToUpdate.model?._id,
       bottomToUpdate.name[UA].value,
       bottomToUpdate._id,
@@ -122,9 +127,12 @@ class BottomService {
     if (!foundBottom) {
       throw new RuleError(BOTTOM_NOT_FOUND, NOT_FOUND);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: BOTTOM_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_BOTTOM,
+      historyEvent,
       foundBottom.model?._id,
       foundBottom.name[UA].value,
       foundBottom._id,
@@ -159,9 +167,12 @@ class BottomService {
     bottom.translationsKey = await addTranslations(createTranslations(bottom));
 
     const newBottom = await new Bottom(bottom).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: BOTTOM_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_BOTTOM,
+      historyEvent,
       newBottom.model?._id,
       newBottom.name[UA].value,
       newBottom._id,

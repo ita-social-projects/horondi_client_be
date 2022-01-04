@@ -18,8 +18,9 @@ const {
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_PATTERN, DELETE_PATTERN, EDIT_PATTERN },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { PATTERN_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -120,9 +121,12 @@ class PatternsService {
       patternToUpdate,
       pattern
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: PATTERN_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_PATTERN,
+      historyEvent,
       patternToUpdate.model?._id,
       patternToUpdate.name[UA].value,
       patternToUpdate._id,
@@ -183,8 +187,12 @@ class PatternsService {
     );
 
     const newPattern = await new Pattern({ ...pattern, images }).save();
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: PATTERN_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_PATTERN,
+      historyEvent,
       newPattern.model?._id,
       newPattern.name[UA].value,
       newPattern._id,
@@ -222,8 +230,12 @@ class PatternsService {
 
     await uploadService.deleteFiles([foundPattern.constructorImg]);
     if (await Promise.allSettled(deletedImages)) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: PATTERN_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_PATTERN,
+        historyEvent,
         foundPattern.model,
         foundPattern.name[UA].value,
         foundPattern._id,

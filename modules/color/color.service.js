@@ -5,8 +5,9 @@ const {
   COLOR_NOT_FOUND,
 } = require('../../error-messages/color.massage');
 const {
-  HISTORY_ACTIONS: { ADD_COLOR, DELETE_COLOR },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT },
+  HISTORY_NAMES: { COLOR_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   generateHistoryChangesData,
@@ -51,9 +52,12 @@ class ColorService {
       throw new RuleError(COLOR_ALREADY_EXIST, BAD_REQUEST);
     }
     const newColor = await new Color(colorData).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: COLOR_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_COLOR,
+      historyEvent,
       newColor.name[UA].value,
       newColor.simpleName[UA].value,
       newColor._id,
@@ -82,9 +86,12 @@ class ColorService {
     }
 
     const deletedColor = await Color.findByIdAndDelete(id).exec();
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: COLOR_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_COLOR,
+      historyEvent,
       deletedColor.name[UA].value,
       deletedColor.simpleName[UA].value,
       deletedColor._id,

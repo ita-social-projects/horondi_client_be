@@ -7,8 +7,9 @@ const {
 const { uploadLargeImage } = require('../upload/upload.utils');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_NEWS, EDIT_NEWS, DELETE_NEWS },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { NEWS_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -94,9 +95,12 @@ class NewsService {
     }
     if (news) {
       const { beforeChanges, afterChanges } = getChanges(foundNews, news);
-
+      const historyEvent = {
+        action: EDIT_EVENT,
+        historyName: NEWS_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        EDIT_NEWS,
+        historyEvent,
         '',
         foundNews.author.name[UA].value,
         foundNews._id,
@@ -131,9 +135,12 @@ class NewsService {
     const slug = transliterate(data.title[0].value);
 
     const newNews = await new News({ ...data, slug }).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: NEWS_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_NEWS,
+      historyEvent,
       '',
       newNews.author.name[UA].value,
       newNews._id,
@@ -153,8 +160,12 @@ class NewsService {
     await uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
 
     if (foundNews) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: NEWS_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_NEWS,
+        historyEvent,
         '',
         foundNews.author.name[UA].value,
         foundNews._id,

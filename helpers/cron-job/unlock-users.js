@@ -14,8 +14,9 @@ const {
   CRON_PERIOD: { EVERY_TWELVE_HOURS },
 } = require('../../consts/cron-period');
 const {
-  HISTORY_ACTIONS: { UNLOCK_USER: UNLOCK_ACTION },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { UNLOCK_EVENT },
+  HISTORY_NAMES: { USER_EVENT },
+} = require('../../consts/history-events');
 const { getChanges, generateHistoryObject } = require('../../utils/history');
 
 const unlockUsers = () =>
@@ -53,8 +54,12 @@ const unlockUsers = () =>
             userData,
             unlockedUser
           );
+          const historyEvent = {
+            action: UNLOCK_EVENT,
+            historyName: USER_EVENT,
+          };
           const historyRecord = generateHistoryObject(
-            UNLOCK_ACTION,
+            historyEvent,
             '',
             `${userData.firstName} ${userData.lastName}`,
             userData._id,

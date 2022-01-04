@@ -13,8 +13,9 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_POCKET, EDIT_POCKET, DELETE_POCKET },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { POCKET_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -75,9 +76,12 @@ class PocketService {
     if (!foundPocket) {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: POCKET_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_POCKET,
+      historyEvent,
       foundPocket.model,
       foundPocket.name[UA].value,
       foundPocket._id,
@@ -124,9 +128,12 @@ class PocketService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(pocketToUpdate, pocket);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: POCKET_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_POCKET,
+      historyEvent,
       pocketToUpdate.model?._id,
       pocketToUpdate.name[UA].value,
       pocketToUpdate._id,
@@ -160,9 +167,12 @@ class PocketService {
     pocket.translationsKey = await addTranslations(createTranslations(pocket));
 
     const newPocket = await new Pocket(pocket).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: POCKET_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_POCKET,
+      historyEvent,
       newPocket.model?._id,
       newPocket.name[UA].value,
       newPocket._id,

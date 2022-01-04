@@ -13,12 +13,9 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: {
-    ADD_CONSTRUCTOR_ELEMENT,
-    EDIT_CONSTRUCTOR_ELEMENT,
-    DELETE_CONSTRUCTOR_ELEMENT,
-  },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { CONSTRUCTOR_ELEMENT_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -94,9 +91,12 @@ class ConstructorService {
     );
 
     const basic = await new Model(constructorElement).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: CONSTRUCTOR_ELEMENT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_CONSTRUCTOR_ELEMENT,
+      historyEvent,
       basic.model,
       basic.name[UA].value,
       basic._id,
@@ -145,9 +145,12 @@ class ConstructorService {
       constructorFountElement,
       constructorElement
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: CONSTRUCTOR_ELEMENT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_CONSTRUCTOR_ELEMENT,
+      historyEvent,
       updatedBasic.model,
       updatedBasic.name[UA].value,
       updatedBasic._id,
@@ -171,9 +174,12 @@ class ConstructorService {
     if (constructorElement.image) {
       await uploadService.deleteFile(constructorElement.image);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: CONSTRUCTOR_ELEMENT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_CONSTRUCTOR_ELEMENT,
+      historyEvent,
       constructorElement.model,
       constructorElement.name[UA].value,
       constructorElement._id,

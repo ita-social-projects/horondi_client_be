@@ -51,8 +51,9 @@ const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { PRODUCT_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -314,9 +315,12 @@ class ProductsService {
     productData.sizes = await finalPriceCalculation(productData);
 
     const { beforeChanges, afterChanges } = getChanges(product, productData);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: PRODUCT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_PRODUCT,
+      historyEvent,
       product.model,
       product.name[UA].value,
       product._id,
@@ -359,8 +363,12 @@ class ProductsService {
     const newProduct = await new Product(productData).save();
 
     if (productData) {
+      const historyEvent = {
+        action: ADD_EVENT,
+        historyName: PRODUCT_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        ADD_PRODUCT,
+        historyEvent,
         newProduct.model?._id,
         newProduct.name[UA].value,
         newProduct._id,
@@ -413,8 +421,12 @@ class ProductsService {
     ]);
 
     if (await Promise.allSettled(deletedImages)) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: PRODUCT_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_PRODUCT,
+        historyEvent,
         product.model,
         product.name[UA].value,
         product._id,
