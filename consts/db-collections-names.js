@@ -29,6 +29,7 @@ const DB_COLLECTIONS_NAMES = {
   MATERIAL: 'Material',
   POCKET: 'Pocket',
   BACK: 'Back',
+  PROMO: 'PromoCode',
   BOTTOM: 'Bottom',
   STRAP: 'Strap',
   RESTRICTION: 'Restriction',

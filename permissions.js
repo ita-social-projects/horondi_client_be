@@ -11,6 +11,10 @@ const {
 const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
+  promoCodeMutation,
+} = require('./modules/promo-code/promo-code.permissions');
+
+const {
   homePageSlideMutation,
 } = require('./modules/homepage-slider/homepage-slider.permission');
 
@@ -193,6 +197,7 @@ const permissions = shield(
     Mutation: {
       ...questionsAnswersMutation,
       ...productPermissionsMutation,
+      ...promoCodeMutation,
       ...cartPermissionsMutations,
       ...userPermissionsMutation,
       ...patternPermissionsMutations,
