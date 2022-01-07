@@ -41,12 +41,16 @@ const getAllPromoCodes = async operations => {
   return res.data.getAllPromoCodes;
 };
 const deletePromoCode = async (id, operations) =>
-  operations.mutate({
+  await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deletePromoCode(id: $id) {
           ... on PromoCode {
             _id
+            dateFrom
+            dateTo
+            discount
+            code
           }
         }
       }

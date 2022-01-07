@@ -1,9 +1,10 @@
 const { newPromoCode } = require('./promo-code.variables');
 const { setupApp } = require('../helper-functions');
 
-const { addPromoCode } = require('./promo-code.helper');
+const { addPromoCode, deletePromoCode } = require('./promo-code.helper');
 
 let promoCodes;
+let promoCodeId;
 let operations;
 
 describe('PromoCodes queries', () => {
@@ -18,5 +19,14 @@ describe('PromoCodes queries', () => {
     expect(promoCodes.dateFrom).toEqual('2021-12-26');
     expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
     expect(promoCodes.discount).toEqual(12);
+  });
+
+  it('delete promo-code', async () => {
+    promoCodeId = promoCodes._id;
+    const res = await deletePromoCode(promoCodeId, operations);
+    promoCodes = res.data.deletePromoCode;
+    expect(promoCodes).toHaveProperty('code', newPromoCode.code);
+    expect(promoCodes.dateFrom).toEqual('2021-12-26');
+    expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
   });
 });
