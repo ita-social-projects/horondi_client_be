@@ -2,6 +2,7 @@ const DB_COLLECTIONS_NAMES = {
   QNA: 'QuestionsAnswers',
   BACKGROUND: 'Background',
   BUSINESS_TEXT: 'BusinessText',
+  CERTIFICATE: 'Certificate',
   CLOSURE: 'Closure',
   CURRENCY_SET: 'CurrencySet',
   ADDITIONAL_CURRENCY_SET: 'AdditionalCurrencySet',
