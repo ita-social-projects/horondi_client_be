@@ -25,6 +25,18 @@
           }
         ]
       },
+       {
+        "kind": "UNION",
+        "name": "CertificateResult",
+        "possibleTypes": [
+          {
+            "name": "Certificate"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
       {
         "kind": "UNION",
         "name": "MaterialResult",

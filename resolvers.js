@@ -22,6 +22,11 @@ const {
 } = require('./modules/comment/comment.resolver');
 
 const {
+  certificatesQuery,
+  certificatesMutation,
+} = require('./modules/certificate/certificate.resolver');
+
+const {
   contactQuery,
   contactMutation,
 } = require('./modules/contact/contact.resolver');
@@ -159,33 +164,34 @@ const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
-  history: 'History',
-  historyRecord: 'HistoryRecord',
-  paginatedProducts: 'PaginatedProducts',
-  paginatedComments: 'PaginatedComments',
-  category: 'Category',
-  news: 'News',
-  pattern: 'Pattern',
-  paginatedPatterns: 'PaginatedPatterns',
-  material: 'Material',
-  materials: 'Materials',
-  currency: 'Currency',
-  product: 'Product',
-  comment: 'Comment',
   businessText: 'BusinessText',
-  successfulResponse: 'SuccessfulResponse',
-  model: 'Model',
-  restriction: 'Restriction',
-  contact: 'Contact',
-  order: 'Order',
-  user: 'User',
-  emailQuestion: 'EmailQuestion',
-  homePageImages: 'HomePageImages',
-  homePageSlide: 'HomePageSlide',
-  token: 'Token',
-  size: 'Size',
+  category: 'Category',
+  certificate: 'Certificate',
   closure: 'Closure',
   color: 'Color',
+  comment: 'Comment',
+  contact: 'Contact',
+  currency: 'Currency',
+  emailQuestion: 'EmailQuestion',
+  history: 'History',
+  historyRecord: 'HistoryRecord',
+  homePageImages: 'HomePageImages',
+  homePageSlide: 'HomePageSlide',
+  material: 'Material',
+  materials: 'Materials',
+  model: 'Model',
+  news: 'News',
+  order: 'Order',
+  paginatedComments: 'PaginatedComments',
+  paginatedPatterns: 'PaginatedPatterns',
+  paginatedProducts: 'PaginatedProducts',
+  pattern: 'Pattern',
+  product: 'Product',
+  restriction: 'Restriction',
+  size: 'Size',
+  successfulResponse: 'SuccessfulResponse',
+  token: 'Token',
+  user: 'User',
   constructorBottom: 'ConstructorBottom',
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
@@ -212,76 +218,42 @@ const {
 
 const resolvers = {
   Query: {
-    ...questionsAnswersQuery,
-
-    ...historyQuery,
-
-    ...cartQuery,
-
-    ...currencyQuery,
-
-    ...materialQuery,
-
-    ...patternQuery,
-
-    ...categoryQuery,
-
-    ...newsQuery,
-
-    ...userQuery,
-
-    ...productsQuery,
-
-    ...commentsQuery,
-
-    ...businessTextQuery,
-
-    ...modelsQuery,
-
-    ...restrictionQuery,
-
-    ...contactQuery,
-
-    ...novaPoshtaQuery,
-
-    ...ukrPoshtaQuery,
-
-    ...paymentQuery,
-
-    ...ordersQuery,
-
-    ...emailChatQuestionQuery,
-
-    ...homePageImagesQuery,
-
-    ...sizeQuery,
-
-    ...homePageSlideQuery,
-
-    ...closureQuery,
-
-    ...constructorBottomQuery,
-
-    ...constructorBasicQuery,
-
-    ...constructorFrontPocketQuery,
-
-    ...colorQuery,
-
-    ...pocketQuery,
-
     ...backQuery,
-
-    ...bottomQuery,
-
-    ...strapQuery,
-
-    ...positionQuery,
-
     ...basicsQuery,
-
+    ...bottomQuery,
+    ...businessTextQuery,
+    ...cartQuery,
+    ...categoryQuery,
+    ...certificatesQuery,
+    ...closureQuery,
+    ...colorQuery,
+    ...commentsQuery,
+    ...constructorBasicQuery,
+    ...constructorBottomQuery,
+    ...constructorFrontPocketQuery,
     ...constructorQuery,
-
+    ...contactQuery,
+    ...currencyQuery,
+    ...emailChatQuestionQuery,
+    ...historyQuery,
+    ...homePageImagesQuery,
+    ...homePageSlideQuery,
+    ...materialQuery,
+    ...modelsQuery,
+    ...newsQuery,
+    ...novaPoshtaQuery,
+    ...ordersQuery,
+    ...patternQuery,
+    ...paymentQuery,
+    ...pocketQuery,
+    ...positionQuery,
+    ...productsQuery,
+    ...questionsAnswersQuery,
+    ...restrictionQuery,
+    ...sizeQuery,
+    ...strapQuery,
+    ...ukrPoshtaQuery,
+    ...userQuery,
     ...wishlistQuery,
   },
   ProductsFilter: {
@@ -666,70 +638,39 @@ const resolvers = {
   },
 
   Mutation: {
-    ...questionsAnswersMutation,
-
-    ...cartMutation,
-
-    ...uploadMutation,
-
-    ...patternMutation,
-
-    ...materialMutation,
-
-    ...categoryMutation,
-
-    ...currencyMutation,
-
-    ...newsMutation,
-
-    ...userMutation,
-
-    ...productsMutation,
-
-    ...commentsMutation,
-
-    ...businessTextMutation,
-
-    ...modelsMutation,
-
-    ...restrictionMutation,
-
-    ...contactMutation,
-
-    ...ordersMutation,
-
-    ...emailChatQuestionMutation,
-
-    ...homePageImagesMutation,
-
-    ...sizeMutation,
-
-    ...homePageSlideMutation,
-
-    ...closureMutation,
-
-    ...colorMutation,
-
-    ...constructorBasicMutation,
-
-    ...constructorFrontPocketMutation,
-
-    ...constructorBottomMutation,
-
-    ...pocketMutation,
-
     ...backMutation,
-
-    ...bottomMutation,
-
-    ...strapMutation,
-
-    ...positionMutation,
-
     ...basicsMutations,
-
+    ...bottomMutation,
+    ...businessTextMutation,
+    ...cartMutation,
+    ...categoryMutation,
+    ...certificatesMutation,
+    ...closureMutation,
+    ...colorMutation,
+    ...commentsMutation,
+    ...constructorBasicMutation,
+    ...constructorBottomMutation,
+    ...constructorFrontPocketMutation,
     ...constructorMutation,
-
+    ...contactMutation,
+    ...currencyMutation,
+    ...emailChatQuestionMutation,
+    ...homePageImagesMutation,
+    ...homePageSlideMutation,
+    ...materialMutation,
+    ...modelsMutation,
+    ...newsMutation,
+    ...ordersMutation,
+    ...patternMutation,
+    ...pocketMutation,
+    ...positionMutation,
+    ...productsMutation,
+    ...questionsAnswersMutation,
+    ...restrictionMutation,
+    ...sizeMutation,
+    ...strapMutation,
+    ...uploadMutation,
+    ...userMutation,
     ...wishlistMutation,
   },
   HistoryResult: {
@@ -776,6 +717,14 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedComments;
+      }
+      return 'Error';
+    },
+  },
+  CertificateResult: {
+    __resolveType: obj => {
+      if (obj.name) {
+        return SCHEMA_NAMES.certificate;
       }
       return 'Error';
     },

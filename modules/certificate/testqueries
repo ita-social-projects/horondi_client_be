@@ -1,0 +1,72 @@
+query{
+  getAllCertificates(skip:0,limit:0){
+    items{
+      _id
+      value
+      status
+      name
+    }
+  }
+  getCertificateById(id:"61d5b67694dd0eff8fbc467b") 
+  {
+     __typename
+   ...on Certificate{
+   value
+   status
+    
+  }
+  ... on Error{
+    message
+    statusCode
+    }
+  }
+}
+
+mutation($certificate:CertificateInput!) {
+        addCertificate( certificate: $certificate){
+    __typename
+    ... on Certificate {
+            _id
+      			value
+      			status
+      			name
+          }
+    ... on Error {
+      message
+    }
+  }
+} 
+variables {"certificate":{
+  "name":"newCerett",
+  "value": 1000
+}}
+
+mutation{
+        deleteCertificate( id: "61d9e00259825439381fae1c"){
+    __typename
+    ... on Certificate {
+            _id
+      			value
+      			status
+      			name
+          }
+    ... on Error {
+      message
+    }
+  }
+}     
+
+mutation($id:ID!) {
+        updateCertificate( id: $id){
+    __typename
+    ... on Certificate {
+            _id
+      			value
+      			status
+      			name
+          }
+    ... on Error {
+      message
+    }
+  }
+} 
