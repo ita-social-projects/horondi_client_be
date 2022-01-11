@@ -35,6 +35,7 @@ const createBack = async (back, image, operations) => {
               value
               type
             }
+            translationsKey
           }
           ... on Error {
             message

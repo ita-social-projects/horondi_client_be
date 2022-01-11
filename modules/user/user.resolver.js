@@ -5,8 +5,6 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
-  getCountUserOrders: async (_, args, { user }) =>
-    userService.getCountUserOrders(user),
   getAllUsers: (parent, args) => userService.getAllUsers(args),
   getUsersForStatistic: (parent, args, context) =>
     userService.getUsersForStatistic(args),
@@ -49,6 +47,8 @@ const userMutation = {
   },
   googleUser: (_, args) =>
     userService.googleUser(args.idToken, args.rememberMe),
+  facebookUser: (_, args) =>
+    userService.facebookUser(args.idToken, args.rememberMe),
   loginUser: async (_, { loginInput }) => {
     try {
       return await userService.loginUser(loginInput);
@@ -71,7 +71,7 @@ const userMutation = {
     }
   },
   updateUserById: (parent, args, context) =>
-    userService.updateUserById(args.user, context.user, args.upload),
+    userService.updateUserById(args.user, context.user, args.image, args.id),
   regenerateAccessToken: async (parent, args) => {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
@@ -140,14 +140,6 @@ const userMutation = {
       return new RuleError(err.message, err.statusCode);
     }
   },
-  addProductToWishlist: (parent, args, context) =>
-    userService.addProductToWishlist(args.productId, args.key, context.user),
-  removeProductFromWishlist: (parent, args, context) =>
-    userService.removeProductFromWishlist(
-      args.productId,
-      args.key,
-      context.user
-    ),
 };
 
 module.exports = {

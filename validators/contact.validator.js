@@ -29,12 +29,14 @@ const contactInputValidator = Joi.object({
     .trim()
     .email()
     .required(),
-  images: Joi.array(),
-  link: Joi.string()
-    .trim()
-    .min(10)
-    .max(1000)
-    .required(),
+  link: Joi.object({
+    lat: Joi.string()
+      .trim()
+      .required(),
+    lon: Joi.string()
+      .trim()
+      .required(),
+  }),
 });
 
 module.exports = {

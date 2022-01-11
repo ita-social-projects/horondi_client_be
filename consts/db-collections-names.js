@@ -1,4 +1,5 @@
 const DB_COLLECTIONS_NAMES = {
+  QNA: 'QuestionsAnswers',
   BACKGROUND: 'Background',
   BUSINESS_TEXT: 'BusinessText',
   CLOSURE: 'Closure',
@@ -40,6 +41,9 @@ const DB_COLLECTIONS_NAMES = {
   HISTORY: 'History',
   POSITION: 'Position',
   BASICS: 'Basics',
+  TRANSLATIONS: 'Translations',
+  COORDINATS: 'Coordinats',
+  WISHLIST: 'Wishlist',
 };
 
 module.exports = {

@@ -84,26 +84,62 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  region: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
-  regionId: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
-  district: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
-  districtId: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
+  region: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
+  regionId: Joi.string()
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
+  district: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
+  districtId: Joi.string()
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
   city: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
@@ -122,14 +158,36 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  cityId: Joi.string().when(SENT_BY, {
-    is: UKRPOST,
-    then: Joi.string().required(),
-    otherwise: Joi.string().only(''),
-  }),
+  cityId: Joi.string()
+    .when(SENT_BY, {
+      is: UKRPOST,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string().required(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string().required(),
+      otherwise: Joi.string().only(''),
+    }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
-  flat: deliveryCheckerValidator,
+  flat: Joi.string()
+    .when(SENT_BY, {
+      is: NOVAPOSTCOURIER,
+      then: Joi.string()
+        .allow(null, '')
+        .optional(),
+    })
+    .when(SENT_BY, {
+      is: UKRPOSTCOURIER,
+      then: Joi.string()
+        .allow(null, '')
+        .optional(),
+      otherwise: Joi.string().only(''),
+    }),
   byCourier: Joi.boolean().required(),
   cost: Joi.array().has({
     currency: Joi.string()
@@ -137,37 +195,6 @@ const nestedDeliveryValidator = Joi.object({
       .required(),
     value: Joi.number().required(),
   }),
-});
-
-const nestedCostValidator = Joi.object({
-  currency: Joi.string()
-    .trim()
-    .required(),
-  value: Joi.number().required(),
-});
-
-const nestedItemValidator = Joi.object({
-  product: Joi.string().required(),
-  model: Joi.string().optional(),
-  constructorBasics: Joi.string().optional(),
-  constructorBottom: Joi.string().optional(),
-  constructorFrontPocket: Joi.string().optional(),
-  constructorPattern: Joi.string().optional(),
-  actualPrice: Joi.array()
-    .has(nestedCostValidator)
-    .optional(),
-  quantity: Joi.number().required(),
-  isFromConstructor: Joi.boolean().required(),
-  options: Joi.object({
-    size: Joi.string().required(),
-    sidePocket: Joi.boolean(),
-  }),
-  fixedPrice: Joi.array()
-    .has(nestedCostValidator)
-    .optional(),
-  price: Joi.array()
-    .has(nestedCostValidator)
-    .required(),
 });
 
 const orderValidator = Joi.object({
@@ -185,7 +212,7 @@ const orderValidator = Joi.object({
     ),
   recipient: nestedUserValidator,
   delivery: nestedDeliveryValidator,
-  items: Joi.array().has(nestedItemValidator),
+  items: Joi.array(),
   user_id: Joi.string().empty(null),
   paymentMethod: Joi.string()
     .trim()

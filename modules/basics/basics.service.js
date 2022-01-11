@@ -5,13 +5,20 @@ const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const { BASICS_NOT_FOUND } = require('../../consts/basics-messages');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_BASIC, EDIT_BASIC, DELETE_BASIC },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { BASIC_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -88,8 +95,12 @@ class BasicsService {
 
     const { beforeChanges, afterChanges } = getChanges(basicToUpdate, basic);
 
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: BASIC_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_BASIC,
+      historyEvent,
       basicToUpdate.model?._id,
       basicToUpdate.name[UA].value,
       basicToUpdate._id,
@@ -99,6 +110,11 @@ class BasicsService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await updateTranslations(
+      basicToUpdate.translationsKey,
+      createTranslations(basic)
+    );
 
     return updatedBasic;
   }
@@ -113,10 +129,16 @@ class BasicsService {
       basic.additionalPrice
     );
 
+    basic.translationsKey = await addTranslations(createTranslations(basic));
+
     const newBasic = await new Basics(basic).save();
 
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: BASIC_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_BASIC,
+      historyEvent,
       newBasic.model?._id,
       newBasic.name[UA].value,
       newBasic._id,
@@ -148,8 +170,12 @@ class BasicsService {
       uploadService.deleteFiles(Object.values(foundBasic.images));
     }
 
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: BASIC_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_BASIC,
+      historyEvent,
       foundBasic.model,
       foundBasic.name[UA].value,
       foundBasic._id,
@@ -164,6 +190,8 @@ class BasicsService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await deleteTranslations(foundBasic.translationsKey);
 
     return Basics.findByIdAndDelete(id);
   }

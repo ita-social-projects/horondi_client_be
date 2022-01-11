@@ -14,6 +14,7 @@ const {
     USER,
     COMMENT,
     PRODUCT,
+    TRANSLATIONS,
   },
 } = require('../../consts/db-collections-names');
 
@@ -124,6 +125,10 @@ const productSchema = new mongoose.Schema({
       },
     ],
     default: [],
+  },
+  translationsKey: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
   },
 });
 

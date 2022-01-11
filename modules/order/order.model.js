@@ -9,7 +9,7 @@ const {
   ORDER_STATUSES: { CREATED },
 } = require('../../consts/order-statuses');
 const {
-  DB_COLLECTIONS_NAMES: { ORDER, USER },
+  DB_COLLECTIONS_NAMES: { ORDER, USER, TRANSLATIONS },
 } = require('../../consts/db-collections-names');
 
 const orderSchema = new mongoose.Schema({
@@ -71,6 +71,10 @@ const orderSchema = new mongoose.Schema({
   paymentStatus: {
     type: String,
     default: CREATED,
+  },
+  translationsKey: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
   },
 });
 

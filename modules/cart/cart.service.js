@@ -1,3 +1,4 @@
+const changeCartItemSizeHandler = require('../../utils/changeCartItemSizeHandler');
 const UserModel = require('../user/user.model');
 const ProductModel = require('../product/product.model');
 const ConstructorBasicModel = require('../constructor/constructor-basic/constructor-basic.model');
@@ -68,7 +69,33 @@ class CartService {
     ).exec();
   }
 
-  async addProductToCart(sizeId, id, { _id }, price) {
+  async changeCartItemSize(id, itemId, size, price, quantity) {
+    const userWithCart = await UserModel.findOne({ _id: id }, 'cart ').exec();
+
+    const cart = userWithCart?.cart;
+
+    if (!cart) {
+      throw new RuleError(CART_IS_NOT_FOUND, NOT_FOUND);
+    }
+
+    const newCart = changeCartItemSizeHandler(
+      itemId,
+      size,
+      price,
+      quantity,
+      cart.items
+    );
+
+    const cartSum = await getTotalCartSum(newCart, id);
+
+    return UserModel.findByIdAndUpdate(
+      id,
+      { $set: { 'cart.items': newCart, 'cart.totalPrice': cartSum } },
+      { new: true }
+    ).exec();
+  }
+
+  async addProductToCart(allSizes, sizeId, id, { _id }, price) {
     const isProductAlreadyExistsInCart = await UserModel.findOne(
       {
         _id: id,
@@ -106,6 +133,7 @@ class CartService {
               'cart.items.$.quantity':
                 isProductAlreadyExistsInCart.cart.items[0].quantity + 1,
             },
+            'cart.items.$.allSizes': allSizes,
           },
           {
             new: true,
@@ -122,6 +150,7 @@ class CartService {
             'cart.items': {
               product: _id,
               'options.size': sizeId,
+              allSizes,
               price: productPriceWithSize,
             },
           },
@@ -141,6 +170,7 @@ class CartService {
           'cart.items': {
             product: _id,
             'options.size': sizeId,
+            allSizes,
             price: productPriceWithSize,
           },
         },
@@ -316,23 +346,15 @@ class CartService {
       throw new RuleError(PRODUCT_IS_NOT_EXIST_IN_CART, BAD_REQUEST);
     }
 
-    const newPriceForProduct = itemFromCart.cart.items[0].price.map(
-      ({ value, currency }) => ({
-        value: (value / itemFromCart.cart.items[0].quantity) * quantity,
-        currency,
-      })
-    );
+    const priceForProduct = itemFromCart.cart.items[0].price;
+
     if (cart.items?.length > 1) {
       const oldTotalSum = totalCartSum(
         REMOVE_ITEM,
         itemFromCart.cart.items[0].price,
         cart.totalPrice
       );
-      const newTotalSum = totalCartSum(
-        ADD_ITEM,
-        newPriceForProduct,
-        oldTotalSum
-      );
+      const newTotalSum = totalCartSum(ADD_ITEM, priceForProduct, oldTotalSum);
 
       return UserModel.findOneAndUpdate(
         {
@@ -342,7 +364,7 @@ class CartService {
         {
           $set: {
             'cart.totalPrice': newTotalSum,
-            'cart.items.$.price': newPriceForProduct,
+            'cart.items.$.price': priceForProduct,
             'cart.items.$.quantity': quantity,
           },
         },
@@ -356,8 +378,8 @@ class CartService {
       },
       {
         $set: {
-          'cart.totalPrice': newPriceForProduct,
-          'cart.items.$.price': newPriceForProduct,
+          'cart.totalPrice': priceForProduct,
+          'cart.items.$.price': priceForProduct,
           'cart.items.$.quantity': quantity,
         },
       },
@@ -429,8 +451,6 @@ class CartService {
   async mergeCartFromLS(cartFromLS, id) {
     await Promise.all(
       cartFromLS.map(async item => {
-        const { price: cartPrice } = item.price;
-
         if (item.product) {
           const isProductPresent = await ProductModel.findById(
             item.product
@@ -447,8 +467,7 @@ class CartService {
             },
             'cart.items.$'
           ).exec();
-
-          if (cartPrice && !isProductAlreadyInCart && isProductPresent) {
+          if (item.price && !isProductAlreadyInCart && isProductPresent) {
             await UserModel.findOneAndUpdate(
               { _id: id },
               {
@@ -457,7 +476,8 @@ class CartService {
                     product: item.product,
                     quantity: item.quantity,
                     'options.size': item.options.size,
-                    price: cartPrice,
+                    allSizes: item.allSizes,
+                    price: item.price,
                   },
                 },
               }
@@ -522,7 +542,7 @@ class CartService {
             isPatternPresent
           ) {
             const itemPrice = calculateConstructorCartItemPriceWithSize(
-              cartPrice,
+              item.price,
               constructorBasicsPrice,
               constructorBottomPrice,
               constructorFrontPocketPrice,

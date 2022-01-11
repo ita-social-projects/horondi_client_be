@@ -7,8 +7,9 @@ const {
 const { uploadLargeImage } = require('../upload/upload.utils');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_NEWS, EDIT_NEWS, DELETE_NEWS },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { NEWS_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -26,6 +27,12 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 
 class NewsService {
   async getAllNews({ skip, limit, filter }) {
@@ -78,15 +85,22 @@ class NewsService {
         news.image = await uploadLargeImage(upload[1]);
       }
     }
+    const translations = createTranslations(news);
+    translations.ua.name = news.author.name[0].value;
+    translations.en.name = news.author.name[1].value;
+    await updateTranslations(foundNews.translationsKey, translations);
 
     if (await this.checkNewsExist(news, id)) {
       throw new RuleError(NEWS_ALREADY_EXIST, BAD_REQUEST);
     }
     if (news) {
       const { beforeChanges, afterChanges } = getChanges(foundNews, news);
-
+      const historyEvent = {
+        action: EDIT_EVENT,
+        historyName: NEWS_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        EDIT_NEWS,
+        historyEvent,
         '',
         foundNews.author.name[UA].value,
         foundNews._id,
@@ -111,16 +125,22 @@ class NewsService {
         throw new RuleError(PHOTO_NOT_FOUND, NOT_FOUND);
       }
     }
-
+    const translations = createTranslations(data);
+    translations.ua.name = data.author.name[0].value;
+    translations.en.name = data.author.name[1].value;
+    data.translationsKey = await addTranslations(translations);
     data.author.image = await uploadLargeImage(upload[0]);
     data.image = await uploadLargeImage(upload[1]);
 
     const slug = transliterate(data.title[0].value);
 
     const newNews = await new News({ ...data, slug }).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: NEWS_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_NEWS,
+      historyEvent,
       '',
       newNews.author.name[UA].value,
       newNews._id,
@@ -140,8 +160,12 @@ class NewsService {
     await uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
 
     if (foundNews) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: NEWS_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_NEWS,
+        historyEvent,
         '',
         foundNews.author.name[UA].value,
         foundNews._id,
@@ -149,7 +173,7 @@ class NewsService {
         [],
         adminId
       );
-
+      await deleteTranslations(foundNews.translationsKey);
       await addHistoryRecord(historyRecord);
 
       return foundNews;

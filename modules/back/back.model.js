@@ -4,7 +4,7 @@ const Language = require('../../models/Language').schema;
 const AdditionalCurrencySet = require('../../models/AdditionalCurrencySet')
   .schema;
 const {
-  DB_COLLECTIONS_NAMES: { MODEL, BACK, MATERIAL, COLOR },
+  DB_COLLECTIONS_NAMES: { MODEL, BACK, MATERIAL, COLOR, TRANSLATIONS },
 } = require('../../consts/db-collections-names');
 
 const backSchema = new mongoose.Schema({
@@ -28,6 +28,10 @@ const backSchema = new mongoose.Schema({
   additionalPrice: [AdditionalCurrencySet],
   available: Boolean,
   customizable: Boolean,
+  translationsKey: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
+  },
 });
 
 module.exports = mongoose.model(BACK, backSchema);

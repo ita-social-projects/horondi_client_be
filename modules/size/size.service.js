@@ -9,8 +9,9 @@ const {
   SIZE_NOT_FOUND,
 } = require('../../error-messages/size.messages');
 const {
-  HISTORY_ACTIONS: { ADD_SIZE, DELETE_SIZE, EDIT_SIZE },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { SIZE_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -113,9 +114,12 @@ class SizeService {
     const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
       $push: { sizes: newSize._id },
     }).exec();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: SIZE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_SIZE,
+      historyEvent,
       newSize.name,
       foundModel.name[0].value,
       newSize._id,
@@ -149,8 +153,12 @@ class SizeService {
     const foundModel = await Model.findByIdAndUpdate(foundSize.modelId, {
       $pull: { sizes: id },
     }).exec();
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: SIZE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_SIZE,
+      historyEvent,
       foundSize.name,
       foundModel.name[0].value,
       foundSize._id,
@@ -225,9 +233,12 @@ class SizeService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(sizeToUpdate, input);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: SIZE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_SIZE,
+      historyEvent,
       sizeToUpdate.name,
       modelToUpdate.name[0].value,
       sizeToUpdate._id,

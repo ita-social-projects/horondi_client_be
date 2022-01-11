@@ -65,10 +65,28 @@ const getUkrPoshtaPostofficesCityId = async (id, operations) => {
   });
   return result.data.getUkrPoshtaPostofficesCityId;
 };
+const getUkrPoshtaStreetsByCityId = async (id, operations) => {
+  const result = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getUkrPoshtaStreetsByCityId(id: $id) {
+          ... on UkrPoshtaStreets {
+            STREET_ID
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+  return result.data.getUkrPoshtaStreetsByCityId;
+};
 
 module.exports = {
   getUkrPoshtaCitiesByDistrictId,
   getUkrPoshtaDistrictsByRegionId,
   getUkrPoshtaPostofficesCityId,
   getUkrPoshtaRegions,
+  getUkrPoshtaStreetsByCityId,
 };

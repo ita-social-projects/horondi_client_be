@@ -1,0 +1,56 @@
+@media screen and (max-width: 818px) {
+  body {
+    width: 818px;
+  }
+
+  .subheader {
+    position: relative;
+    bottom: 110px;
+  }
+
+  p.registrationText,
+  p.blockUserText,
+  p.successfulRegistrationText {
+    color: aliceblue;
+    font-size: 34px;
+    font-weight: 400;
+  }
+
+  p.congrats {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  div.contentRegistrationText {
+    width: 705px;
+  }
+
+  p.congrats,
+  p.link,
+  a.alink,
+  p.ignore,
+  button.confirm,
+  footer.top,
+  div.unlockUserContent,
+  div.blockUserContent {
+    margin-left: 40px;
+    padding-left: 0;
+  }
+
+  footer.top {
+    border-top: 0px;
+  }
+
+  footer p {
+    padding-top: -40px;
+  }
+
+  div.unlockUserContent,
+  div.blockUserContent {
+    padding-top: 0;
+  }
+
+  footer {
+    width: 705px;
+  }
+}

@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+const {
+  DB_COLLECTIONS_NAMES: { TRANSLATIONS },
+} = require('../../consts/db-collections-names');
 
 const Language = require('../../models/Language').schema;
-const ImageSet = require('../common/ImageSet').schema;
+const Coordinats = require('../../models/Coordinats').schema;
 const {
   DB_COLLECTIONS_NAMES: { CONTACT },
 } = require('../../consts/db-collections-names');
@@ -15,14 +18,10 @@ const ContactSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  images: [
-    {
-      lang: String,
-      value: ImageSet,
-    },
-  ],
-  link: {
-    type: String,
+  link: Coordinats,
+  translationsKey: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: TRANSLATIONS,
   },
 });
 

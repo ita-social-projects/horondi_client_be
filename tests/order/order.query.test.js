@@ -166,7 +166,8 @@ describe('Order queries', () => {
   });
 
   test('Should receive user orders', async () => {
-    const orders = await getUserOrders(operations);
+    const response = await getUserOrders(operations);
+    const orders = response.userOrders;
 
     expect(orders).toBeDefined();
     expect(orders[0]).toHaveProperty('recipient', recipient);

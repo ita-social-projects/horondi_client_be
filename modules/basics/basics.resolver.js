@@ -1,5 +1,4 @@
 const basicsService = require('./basics.service');
-
 const RuleError = require('../../errors/rule.error');
 
 const basicsQuery = {

@@ -4,6 +4,12 @@ const {
   historyType,
   historyFilterInput,
 } = require('./modules/history/history.graphql');
+
+const {
+  questionsAnswersType,
+  questionsAnswersInput,
+} = require('./modules/questions-answers/questions-answers.graphql');
+
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -60,7 +66,7 @@ const {
 const {
   currencyType,
   currencyInput,
-} = require('./modules/currency/currency.graphql.js');
+} = require('./modules/currency/currency.graphql');
 const {
   commentType,
   commentInput,
@@ -100,7 +106,6 @@ const {
   constructorBottomType,
   constructorBottomFeatureSet,
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.graphql');
-const { headerType, headerInput } = require('./modules/header/header.graphql');
 const {
   closureType,
   closureInputs,
@@ -158,10 +163,13 @@ const {
   constructorType,
   constructorInputs,
 } = require('./modules/constructor_new/constructor.graphql');
+const { wishlistType } = require('./modules/wishlist/wishlist.graphql');
 
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${questionsAnswersType}
+  ${questionsAnswersInput}
   ${historyType}
 	${categoryType}
 	${paginatedCategory}
@@ -186,7 +194,6 @@ const typeDefs = gql`
   ${paymentType}
   ${paymentStatus}
   ${homePageImagesType}
-  ${headerType}
   ${homePageSlideType}
   ${tokenType}
   ${sizeType}
@@ -214,6 +221,7 @@ const typeDefs = gql`
   ${basicsFeatureSet}
   ${historyFilterInput}
   ${constructorType}
+  ${wishlistType}
   scalar Upload
   scalar JSONObject
   scalar Date
@@ -241,6 +249,9 @@ const typeDefs = gql`
   ${sideEnum}
   ${expressionEnum}
   ${ukrPoshtaEnum}
+  type PaginatedQNAs {
+    items: [QuestionsAnswers!]!
+  }
   type Language {
     lang: String!
     value: String
@@ -267,6 +278,7 @@ const typeDefs = gql`
   type Address {
     country: String
     region: String
+    district: String
     city: String
     zipcode: String
     street: String
@@ -287,9 +299,15 @@ const typeDefs = gql`
   type Menu {
     _id: ID!
     name: [Language!]
+    translationsKey: ID
+  }
+  type MenuCategory {
+    _id: ID!
+    name: [Language!]
+    translationsKey: ID!
   }
   type BurgerMenu {
-    category: Menu!
+    category: MenuCategory!
     models: [Menu!]
   }
   type Subcategory {
@@ -460,9 +478,6 @@ const typeDefs = gql`
       size: Size
       price: [CurrencySet]
   }
-  type countOrderResult {
-    countOrder: Int
-  }
   type PaginatedPositions {
     items: [Position]
     count: Int
@@ -470,6 +485,10 @@ const typeDefs = gql`
   type PaginatedBasics {
     items: [Basics]
     count: Int
+  }
+  type OrdersWithCounter {
+    userOrders: [Order]
+    ordersCount: Int
   }
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
@@ -488,7 +507,6 @@ const typeDefs = gql`
   union OrderResult = Order | Error
   union UserResult = User | Error
   union EmailQuestionResult = EmailQuestion | Error
-  union HeaderResult = Header | Error
   union HomepageImagesResult = HomePageImages | Error
   union HomePageSlideResult = HomePageSlide | Error
   union TokenResult = Token | Error
@@ -503,6 +521,7 @@ const typeDefs = gql`
   union BottomResult = Bottom | Error
   union StrapResult = Strap | Error
   union ConstructorResult = Constructor | Error
+  union WishlistResult = Wishlist | Error
   
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
@@ -510,6 +529,8 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
+    getAllQuestionsAnswers: PaginatedQNAs
+    getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
     getHistoryRecordById(id:ID!):HistoryRecordResult
     getAllCurrencies: [Currency!]!
@@ -535,8 +556,7 @@ const typeDefs = gql`
     getAllOrders(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject): PaginatedOrders!
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
-    getUserOrders(pagination: Pagination): [Order!]
-    getCountUserOrders(id: ID): countOrderResult
+    getUserOrders(pagination: Pagination): OrdersWithCounter
     getCartByUserId(id: ID!): UserResult
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
@@ -609,6 +629,7 @@ const typeDefs = gql`
     getUkrPoshtaRegions: [UkrPoshtaRegion]
     getUkrPoshtaDistrictsByRegionId(id: ID!): [UkrPoshtaDistricts]
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
+    getUkrPoshtaStreetsByCityId(id: ID!): [UkrPoshtaStreets]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput!, language: Int!): OrderResult
     getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
@@ -621,8 +642,6 @@ const typeDefs = gql`
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]
     getPendingEmailQuestionsCount: Int
-    getAllHeaders: [Header!]!
-    getHeaderById(id: ID!): HeaderResult
     getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
@@ -656,6 +675,7 @@ const typeDefs = gql`
     getPositionById(id: ID): PositionResult
     getAllBasics(limit: Int!, skip: Int!, filter: BasicsFilterInput): PaginatedBasics!
     getBasicById(id: ID): BasicsResult
+    getWishlistByUserId: WishlistResult
   }
   input Pagination {
       skip: Int = ${skip}
@@ -728,7 +748,6 @@ const typeDefs = gql`
   ${UserForStatisticsInput}
   ${novaPoshtaInput}
   ${paymentInput}
-  ${headerInput}
   ${sizeInput}
   ${homePageSlideInput}
   ${closureInputs}
@@ -759,6 +778,7 @@ const typeDefs = gql`
   }
   input AddressInput {
     country: String
+    district: String
     region: String
     city: String
     zipcode: String
@@ -816,6 +836,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
+    deleteQuestionsAnswers(id: ID!): QuestionsAnswers
+    updateQuestionsAnswers(id: ID!
+      questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     uploadFiles(files: [Upload]!): [File]!
     deleteFiles(fileNames: [String]): [String]
     "Pattern Mutations"
@@ -857,9 +881,10 @@ const typeDefs = gql`
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    addProductToCart(productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
+    addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
     cleanCart(id: ID!): UserResult
     updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
+    changeCartItemSize(id:ID!, itemId: ID!, price: [CurrencySetInput]!, size: ID!, quantity: Int!): UserResult
     addConstructorProductItemToCart(
     productId: ID!,
     sizeId:ID!,
@@ -889,7 +914,7 @@ const typeDefs = gql`
     deleteUser(id: ID!): UserResult
     blockUser(userId: ID!): UserResult
     unlockUser(userId: ID!): UserResult
-    updateUserById(user: UserUpdateInput!, id: ID!, upload: Upload): User
+    updateUserById(user: UserUpdateInput!, id: ID!, image: Upload): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean
@@ -901,9 +926,8 @@ const typeDefs = gql`
       user: AdminConfirmInput!
       token: String!
     ): LogicalResult!
-      addProductToWishlist(id: ID!, key: String!, productId: ID!): Product!
-      removeProductFromWishlist(id: ID!, key: String!, productId: ID!): Product!
-       googleUser(idToken: String!, rememberMe: Boolean): User
+    googleUser(idToken: String!, rememberMe: Boolean): User
+    facebookUser(idToken: String!, rememberMe: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
@@ -940,12 +964,11 @@ const typeDefs = gql`
     updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult
     deleteModel(id: ID!): ModelResult
     "Contacts Mutation"
-    addContact(contact: contactInput!, mapImages: [MapImage]!): ContactResult
+    addContact(contact: contactInput!): ContactResult
     deleteContact(id: ID!): ContactResult
     updateContact(
       id: ID!
       contact: contactInput!
-      mapImages: [MapImage]
     ): ContactResult
     "Order Mutation"
     addOrder(order: OrderInput!): OrderResult
@@ -970,10 +993,6 @@ const typeDefs = gql`
     updateHomePageLooksImage(id: ID!, images: Upload): HomepageImagesResult
     addHomePageLooksImage(images: Upload): HomepageImagesResult
     deleteHomePageLooksImage(id: ID!): HomepageImagesResult
-    "Header Mutation"
-    addHeader(header: HeaderInput!): HeaderResult
-    deleteHeader(id: ID!): HeaderResult
-    updateHeader(id: ID!, header: HeaderInput!): HeaderResult
     "HomePageSlide Mutation"
     addSlide(slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult
     updateSlide(id: ID!, slide: HomePageSlideInput!, upload: Upload): HomePageSlideResult  
@@ -1042,6 +1061,9 @@ const typeDefs = gql`
     addBasic(basic: BasicsInput!, image: Upload): BasicsResult
     updateBasic(id: ID!, basic: BasicsInput!, image: Upload): BasicsResult
     deleteBasic(id: ID!): BasicsResult
+    "Wishlist Mutations"
+    addProductToWishlist(productId: ID!): WishlistResult
+    deleteProductFromWishlist(productId: ID!): WishlistResult
   }
 `;
 

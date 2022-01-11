@@ -99,7 +99,6 @@ const testUser = {
     street: 'Shevchenka',
     buildingNumber: '23',
   },
-  wishlist: [],
   orders: [],
   comments: [],
 };
@@ -123,14 +122,14 @@ const filter = {
   days: 1,
 };
 
-const googleToken = 'asd.dsa.cds';
+const socialToken = 'asd.dsa.cds';
 
 const INVALID_FIRST_NAME =
   '"firstName" with value "H" fails to match the required pattern: ';
 const INVALID_LAST_NAME =
   '"lastName" with value "O" fails to match the required pattern: ';
 const INVALID_PASSWORD =
-  '"password" with value "You" fails to match the required pattern: /^(?=.*[a-zA-Zа-яА-Яіїє])^(?=.*[A-ZА-ЯІЇЄ])(?=.*\\d)[a-zA-Zа-яА-ЯіїєІЇЄ\\d]{6,30}$/';
+  '"password" with value "You" fails to match the required pattern: /^(?=.*[A-ZА-ЯІЇЄ])(?=.*\\d)[a-zA-Zа-яА-ЯіїєІЇЄ\\d!@#$%^&*()~¥=_+}{":;\'?/>.<,\\\\`|[\\]-]{6,30}$/';
 const INVALID_ROLE = '"role" must be one of [admin, superadmin]';
 
 module.exports = {
@@ -138,7 +137,7 @@ module.exports = {
   superAdminUser,
   testUser,
   testUsersSet,
-  googleToken,
+  socialToken,
   user,
   newUser,
   wrongId,
