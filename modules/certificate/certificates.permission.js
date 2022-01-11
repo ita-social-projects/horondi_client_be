@@ -1,4 +1,4 @@
-const { allow } = require('graphql-shield');
+/* const { allow } = require('graphql-shield'); */
 
 const { hasRoles, isTheSameUser } = require('../../utils/rules');
 const {
@@ -6,19 +6,16 @@ const {
 } = require('../../consts');
 
 const certificatePermissionsQuery = {
-  getCertificateById: allow,
-  getAllCertificates: allow,
+  getCertificateById: hasRoles([isTheSameUser, ADMIN, SUPERADMIN]),
+  getAllCertificates: hasRoles([isTheSameUser, ADMIN, SUPERADMIN]),
 };
 
 /* hasRoles([ADMIN, SUPERADMIN]) */
 const certificatePermissionsMutations = {
-  updateCertificate: allow,
-  addCertificate: allow,
-  deleteCertificate: hasRoles([isTheSameUser, ADMIN, SUPERADMIN]),
-
-  /* hasRoles([isTheSameUser,ADMIN, SUPERADMIN]) */
+  updateCertificate: hasRoles([ADMIN, SUPERADMIN]),
+  addCertificate: hasRoles([ADMIN, SUPERADMIN]),
+  deleteCertificate: hasRoles([ADMIN, SUPERADMIN]),
 };
-
 module.exports = {
   certificatePermissionsMutations,
   certificatePermissionsQuery,

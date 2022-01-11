@@ -12,22 +12,25 @@ const certificateSchema = new mongoose.Schema({
     type: Number,
     min: 0,
   },
-  status: {
-    type: String,
-    default: 'Active',
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: USER,
   },
-
-  /* dateStart: {
+  isUsed: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  dateStart: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
   dateEnd: {
     type: Date,
-    default: Date.now + 366 * 24 * 60 * 60 * 1000,
-  }, */
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: USER,
+    default: Date.now() + 366 * 24 * 60 * 60 * 1000,
   },
 });
 

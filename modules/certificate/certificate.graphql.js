@@ -1,20 +1,21 @@
 const certificateType = `
 type Certificate {
-_id: ID
-name: String
-value: Int
-status: String
+_id: ID!
+createdBy: User
+name: String!
+value: Int!
+isUsed: Boolean!
+isActive: Boolean!
+dateStart: Date
+dateEnd: Date
 }
 `;
 
-/* startDate: Date
-endDate: Date
-user: User */
 const certificateInput = `
   input CertificateInput {
     name: String
     value: Int
-    status: String
+    isUsed: Boolean
   }
 `;
 

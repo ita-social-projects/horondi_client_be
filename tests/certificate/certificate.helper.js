@@ -1,47 +1,34 @@
 const { gql } = require('@apollo/client');
 
-const createCertificate = async (certificate, operations) => {
-  const createdCertificate = await operations.mutate({
-    mutation: gql`
-      mutation($certificate: CertificateInput!, $upload: Upload) {
-        addCertificate(certificate: $certificate, upload: $upload) {
-          ... on Certificate {
+const getAllCertificates = async operations => {
+  const allCertificates = await operations.query({
+    query: gql`
+      query {
+        getAllCertificates(skip: 0, limit: 3) {
+          items {
             _id
-            name {
-              lang
-              value
-            }
-            available
-            code
+            name
+            value
+            isUsed
           }
-          ... on Error {
-            message
-            statusCode
-          }
+          count
         }
       }
     `,
-    variables: {
-      certificate,
-      upload: '../___test__/model/dog.img',
-    },
   });
 
-  return createdCertificate.data.addCertificate;
+  return allCertificates.data.getAllCertificates;
 };
-const updateCertificate = async (id, certificate, operations) => {
-  const updatedCertificate = await operations.mutate({
-    mutation: gql`
-      mutation($id: ID!, $certificate: CertificateInput!, $upload: Upload) {
-        updateCertificate(id: $id, certificate: $certificate, upload: $upload) {
+const getCertificateById = async (id, operations) => {
+  const certificateById = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getCertificateById(id: $id) {
           ... on Certificate {
             _id
-            name {
-              lang
-              value
-            }
-            available
-            code
+            name
+            isActive
+            value
           }
           ... on Error {
             message
@@ -52,51 +39,22 @@ const updateCertificate = async (id, certificate, operations) => {
     `,
     variables: {
       id,
-      certificate,
-      upload: '../___test__/model/dog.img',
     },
   });
 
-  return updatedCertificate.data.updateCertificate;
+  return certificateById.data.getCertificateById;
 };
-const getAllCategories = async operations => {
-  const allCategories = await operations.query({
-    query: gql`
-      query {
-        getAllCategories {
-          items {
-            _id
-            code
-            name {
-              lang
-              value
-            }
-            images {
-              large
-            }
-            available
-          }
-          count
-        }
-      }
-    `,
-  });
 
-  return allCategories.data.getAllCategories.items;
-};
-const getCertificateById = async (id, operations) => {
-  const certificateById = await operations.query({
-    query: gql`
-      query($id: ID!) {
-        getCertificateById(id: $id) {
+const addCertificate = async (certificate, operations) => {
+  const result = await operations.mutate({
+    mutation: gql`
+      mutation($certificate: CertificateInput!) {
+        addCertificate(certificate: $certificate) {
           ... on Certificate {
             _id
-            name {
-              lang
-              value
-            }
-            code
-            available
+            name
+            isActive
+            isUsed
           }
           ... on Error {
             message
@@ -105,16 +63,44 @@ const getCertificateById = async (id, operations) => {
         }
       }
     `,
-    variables: { id },
+    variables: {
+      certificate,
+    },
   });
 
-  return certificateById.data.getCertificateById;
+  return result.data.addCertificate;
 };
+
+const updateCertificate = async (id, operations) => {
+  const result = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!) {
+        updateCertificate(id: $id) {
+          ... on Certificate {
+            _id
+            isUsed
+            isActive
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+    },
+  });
+
+  return result.data.updateCertificate;
+};
+
 const deleteCertificate = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
-        deleteCertificate(deleteId: $id, switchId: $id) {
+        deleteCertificate(id: $id) {
           ... on Certificate {
             _id
           }
@@ -134,8 +120,8 @@ const deleteCertificate = async (id, operations) => {
 
 module.exports = {
   deleteCertificate,
-  createCertificate,
-  getAllCategories,
+  addCertificate,
+  getAllCertificates,
   getCertificateById,
   updateCertificate,
 };

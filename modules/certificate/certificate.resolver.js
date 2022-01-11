@@ -2,8 +2,8 @@ const certificatesService = require('./certificate.service');
 const RuleError = require('../../errors/rule.error');
 
 const certificatesQuery = {
-  getAllCertificates: (parent, { skip, limit }) =>
-    certificatesService.getAllCertificates(skip, limit),
+  getAllCertificates: (parent, { skip, limit }, { user }) =>
+    certificatesService.getAllCertificates(skip, limit, user),
 
   getCertificateById: async (parent, { id }) => {
     try {
@@ -15,15 +15,13 @@ const certificatesQuery = {
 };
 
 const certificatesMutation = {
-  addCertificate: async (parent, { certificate: { name, value } }) => {
+  addCertificate: async (
+    parent,
+    { certificate: { name, value } },
+    { user }
+  ) => {
     try {
-      return await certificatesService.addCertificate(
-        name,
-        value
-
-        /* dateStart,
-        dateEnd */
-      );
+      return await certificatesService.addCertificate(name, value, user.id);
     } catch (error) {
       return new RuleError(error.message, error.statusCode);
     }
