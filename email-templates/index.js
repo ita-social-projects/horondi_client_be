@@ -19,7 +19,7 @@ const htmlTemplates = {
   },
   [EmailActions.UNLOCK_USER]: {
     subject: '[HORONDI] Unlocked user',
-    templateFileName: ['unlock-user-en', 'unlock-user-ua'],
+    templateFileName: ['unlock-user-en', 'block-user-ua'],
   },
   [EmailActions.INCOMPLETE_OPERATIONS_CART]: {
     subject: '[HORONDI] Incomplete operations in cart',

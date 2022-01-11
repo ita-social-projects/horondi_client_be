@@ -56,15 +56,6 @@ const CartSchema = new Schema({
           required: true,
         },
       },
-      allSizes: [
-        {
-          size: {
-            type: Schema.Types.ObjectId,
-            ref: SIZE,
-          },
-          price: [CurrencySet],
-        },
-      ],
     },
   ],
   totalPrice: [CurrencySet],

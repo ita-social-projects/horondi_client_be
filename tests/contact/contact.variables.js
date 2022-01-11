@@ -10,7 +10,11 @@ const contact = {
     { lang: 'en', value: 'Street 3........' },
   ],
   email: 'test@test.com',
-  link: { lat: '49.8546374', lon: '24.0322823' },
+  images: [
+    { lang: 'uk', value: { medium: 'medium.jpg' } },
+    { lang: 'en', value: { medium: 'medium.jpg' } },
+  ],
+  link: 'https://testURL.com',
 };
 
 const updatedContact = {
@@ -24,8 +28,22 @@ const updatedContact = {
     { lang: 'en', value: 'updatedStreet' },
   ],
   email: 'updatedtest@updatedtest.com',
-  link: { lat: '49.8546374', lon: '24.0322823' },
+  images: [
+    { lang: 'uk', value: { medium: 'update1.jpg' } },
+    { lang: 'en', value: { medium: 'update2.jpg' } },
+    { lang: 'en', value: { medium: 'medium.jpg' } },
+  ],
+  link: 'https://testURL.com',
 };
+ 
+const mapImages = [
+  {
+    lang: 'uk', image: 'update1.jpg'
+  },
+  {
+    lang: 'en', image: 'update4.jpg'
+  }
+]
 
 const newContact = {
   phoneNumber: '380964422333',
@@ -38,12 +56,20 @@ const newContact = {
     { lang: 'en', value: 'Street 4 New Street' },
   ],
   email: 'test@test.com',
-  link: { lat: '49.8546374', lon: '24.0322823' },
+  images: [
+    { lang: 'uk', value: { medium: 'medium.jpg' } },
+    { lang: 'en', value: { medium: 'medium.jpg' } },
+  ],
+  link: 'https://testURL.com',
 };
+
+const mapImagesNew = [];
 
 module.exports = {
   contact,
   updatedContact,
   notExistContactId,
   newContact,
+  mapImages,
+  mapImagesNew
 };

@@ -7,7 +7,7 @@ const {
   BRAND_NAMES: { UK_NAME, EN_NAME },
 } = require('../../consts/brand-names');
 const {
-  DB_COLLECTIONS_NAMES: { NEWS, TRANSLATIONS },
+  DB_COLLECTIONS_NAMES: { NEWS },
 } = require('../../consts/db-collections-names');
 
 const NewsSchema = new mongoose.Schema({
@@ -37,10 +37,6 @@ const NewsSchema = new mongoose.Schema({
   },
   show: Boolean,
   languages: [String],
-  translationsKey: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: TRANSLATIONS,
-  },
 });
 
 module.exports = mongoose.model(NEWS, NewsSchema);

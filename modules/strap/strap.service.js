@@ -1,11 +1,5 @@
 const Strap = require('./strap.model');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 const uploadService = require('../upload/upload.service');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const { uploadSmallImage } = require('../upload/upload.utils');
@@ -17,9 +11,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { STRAP_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_STRAP, EDIT_STRAP, DELETE_STRAP },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -83,12 +76,9 @@ class StrapService {
     if (foundStrap.image) {
       await uploadService.deleteFiles([foundStrap.image]);
     }
-    const historyEvent = {
-      action: DELETE_EVENT,
-      historyName: STRAP_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      DELETE_STRAP,
       foundStrap.model,
       foundStrap.name[UA].value,
       foundStrap._id,
@@ -105,8 +95,6 @@ class StrapService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    await deleteTranslations(foundStrap.translationsKey);
 
     return foundStrap;
   }
@@ -131,12 +119,9 @@ class StrapService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: STRAP_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_STRAP,
       strapToUpdate.model?._id,
       strapToUpdate.name[UA].value,
       strapToUpdate._id,
@@ -147,18 +132,12 @@ class StrapService {
 
     await addHistoryRecord(historyRecord);
 
-    await updateTranslations(
-      strapToUpdate.translationsKey,
-      createTranslations(strap)
-    );
-
     return Strap.findByIdAndUpdate(id, strap, { new: true }).exec();
   }
 
   async addStrap(strap, image, { _id: adminId }) {
     if (image) {
-      const uploadImage = await uploadService.uploadFile(image);
-      strap.images = uploadImage.fileNames;
+      strap.image = await uploadSmallImage(image);
     }
 
     if (strap.additionalPrice) {
@@ -167,15 +146,10 @@ class StrapService {
       );
     }
 
-    strap.translationsKey = await addTranslations(createTranslations(strap));
-
     const newStrap = await new Strap(strap).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: STRAP_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_STRAP,
       newStrap.model?._id,
       newStrap.name[UA].value,
       newStrap._id,

@@ -5,8 +5,7 @@ const businessTextType = `
     title: [Language]
     text: [Language]
     languages: [String]
-    date: String,
-    translationsKey: ID
+    date: String
 }
 `;
 

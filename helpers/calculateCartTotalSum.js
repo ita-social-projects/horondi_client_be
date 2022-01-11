@@ -8,6 +8,7 @@ const {
 const ConstructorBasicModel = require('../modules/constructor/constructor-basic/constructor-basic.model');
 const ConstructorBottomModel = require('../modules/constructor/constructor-bottom/constructor-bottom.model');
 const ConstructorFrontPocketModel = require('../modules/constructor/constructor-front-pocket/constructor-front-pocket.model');
+const { getSizeById } = require('../modules/size/size.service');
 const UserModel = require('../modules/user/user.model');
 
 const totalCartSum = (calculateMethod, newItemSum, cartSum) =>

@@ -13,6 +13,8 @@ const {
   getModelById,
   getAllModels,
 } = require('./model.helper');
+const { createSize, deleteSize } = require('../size/size.helper');
+const { createPlainSize } = require('../size/size.variables');
 const { setupApp } = require('../helper-functions');
 const {
   deleteCategory,
@@ -30,6 +32,7 @@ jest.mock('../../modules/currency/currency.utils.js');
 let modelId;
 let categoryId;
 let operations;
+let sizeId;
 let createdModel;
 const CATEGORY_NOT_VALID = 'CATEGORY_NOT_VALID';
 const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
@@ -43,12 +46,14 @@ describe('Model queries', () => {
       newCategoryInputData,
       operations
     );
-
     categoryId = createdCategory._id;
-
-    createdModel = await createModel(newModel(categoryId), operations);
-
+    createdModel = await createModel(newModel(categoryId, sizeId), operations);
     modelId = createdModel._id;
+    const createdSize = await createSize(
+      createPlainSize(modelId).size1,
+      operations
+    );
+    sizeId = createdSize._id;
   });
 
   test('Should receive all models', async () => {
@@ -62,9 +67,9 @@ describe('Model queries', () => {
   });
   test('Should receive all models by category id', async () => {
     const res = await getModelsByCategory(categoryId, operations);
-
     const models = res;
 
+    expect(models).toBeDefined();
     expect(models.length).toBeGreaterThan(0);
     expect(models[0].name).toBeInstanceOf(Array);
     expect(models[0]).toHaveProperty('name', [
@@ -91,6 +96,7 @@ describe('Model queries', () => {
   test('Should return model by id', async () => {
     const res = await getModelById(modelId, operations);
 
+    expect(res).toBeDefined();
     expect(res).toHaveProperty('name', [
       { value: 'Тест', lang: 'uk' },
       { value: 'Test', lang: 'en' },
@@ -117,5 +123,6 @@ describe('Model queries', () => {
   afterAll(async () => {
     await deleteModel(modelId, operations);
     await deleteCategory(categoryId, operations);
+    await deleteSize(sizeId, operations);
   });
 });

@@ -12,13 +12,6 @@ const {
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
 
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
-
 class BusinessTextService {
   async getAllBusinessTexts() {
     return BusinessText.find().exec();
@@ -41,8 +34,6 @@ class BusinessTextService {
   }
 
   async updateBusinessText(id, businessText, files) {
-    const foundBusinessText = await BusinessText.findById(id).exec();
-
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
     const existingPage = pages.find(el => el._id.toString() !== id);
@@ -57,10 +48,7 @@ class BusinessTextService {
         BAD_REQUEST
       );
     }
-    await updateTranslations(
-      foundBusinessText.translationsKey,
-      createTranslations(businessText)
-    );
+
     const newPage = files.length
       ? await this.replaceImageSourceToLink(businessText, files)
       : businessText;
@@ -84,10 +72,6 @@ class BusinessTextService {
   }
 
   async addBusinessText(businessText, files) {
-    businessText.translationsKey = await addTranslations(
-      createTranslations(businessText)
-    );
-
     const existingPages = await this.checkBusinessTextExistByCode(businessText);
 
     if (existingPages.length) {
@@ -116,10 +100,7 @@ class BusinessTextService {
     }
 
     const businessText = await BusinessText.findByIdAndDelete(id).exec();
-
     if (businessText) {
-      await deleteTranslations(businessText.translationsKey);
-
       return businessText;
     }
   }

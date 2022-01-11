@@ -7,7 +7,6 @@ const {
   updateCartConstructorProductItemQuantity,
   mergeCartFromLS,
   removeProductItemsFromCart,
-  changeCartItemSize,
 } = require('./cart.service');
 
 const RuleError = require('../../errors/rule.error');
@@ -23,9 +22,9 @@ const cartQuery = {
 };
 
 const cartMutation = {
-  addProductToCart: async (_, { allSizes, sizeId, id, product, price }) => {
+  addProductToCart: async (_, { sizeId, id, product, price }) => {
     try {
-      return await addProductToCart(allSizes, sizeId, id, product, price);
+      return await addProductToCart(sizeId, id, product, price);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -85,14 +84,6 @@ const cartMutation = {
   removeProductItemsFromCart: async (_, { items, id }) => {
     try {
       return await removeProductItemsFromCart(items, id);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
-
-  changeCartItemSize: async (_, { id, itemId, size, price, quantity }) => {
-    try {
-      return await changeCartItemSize(id, itemId, size, price, quantity);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

@@ -29,7 +29,7 @@ const createProduct = async (product, operations) => {
 
   return createdProduct.data.addProduct;
 };
-const updateProduct = async (id, product, primary, upload, operations) =>
+const updateProduct = async (id, product, primary, operations) =>
   await operations.mutate({
     mutation: gql`
       mutation(
@@ -108,7 +108,7 @@ const updateProduct = async (id, product, primary, upload, operations) =>
     variables: {
       id,
       product,
-      upload,
+      upload: ['__tests__/homepage-images/img.png'],
       primary,
     },
   });

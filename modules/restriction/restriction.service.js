@@ -7,9 +7,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { RESTRICTION_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_RESTRICTION, EDIT_RESTRICTION, DELETE_RESTRICTION },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -51,12 +50,9 @@ class RestrictionService {
 
   async addRestriction(restriction, { _id: adminId }) {
     const newRestriction = await new Restriction(restriction).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: RESTRICTION_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_RESTRICTION,
       '',
       '',
       newRestriction._id,
@@ -86,12 +82,9 @@ class RestrictionService {
       restrictionItem,
       restriction
     );
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: RESTRICTION_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_RESTRICTION,
       '',
       '',
       restrictionItem._id,
@@ -115,12 +108,9 @@ class RestrictionService {
     if (!foundRestriction) {
       throw new RuleError(RESTRICTION_NOT_FOUND, NOT_FOUND);
     }
-    const historyEvent = {
-      action: DELETE_EVENT,
-      historyName: RESTRICTION_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      DELETE_RESTRICTION,
       '',
       '',
       foundRestriction._id,

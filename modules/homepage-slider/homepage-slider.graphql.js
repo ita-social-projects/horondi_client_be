@@ -7,7 +7,6 @@ type HomePageSlide {
     images: ImageSet,
     order: Int,
     show: Boolean,
-    translations_key: ID
   }
 `;
 

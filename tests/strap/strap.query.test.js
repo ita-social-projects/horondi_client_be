@@ -6,7 +6,7 @@ const { createStrap, getStrapById, getAllStraps } = require('./strap.helper');
 const {
   wrongId,
   imgString,
-  newImgObj,
+  newImgString,
   skip,
   filter,
   limit,
@@ -47,7 +47,7 @@ describe('Strap queries', () => {
 
   test('#1. should receive strap by ID', async () => {
     const result = await getStrapById(strapId, operations);
-    const convertedObj = await strapWithConvertedPrice(colorId, newImgObj);
+    const convertedObj = await strapWithConvertedPrice(colorId, newImgString);
 
     expect(result).toBeDefined();
     expect(result).toEqual({

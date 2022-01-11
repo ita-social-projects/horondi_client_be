@@ -5,7 +5,6 @@ const {
   getUkrPoshtaDistrictsByRegionIdUrl,
   getUkrPoshtaCitiesByDistrictIdUrl,
   getUkrPoshtaPostofficesCityIdUrl,
-  getUkrPoshtaStreetsByCityIdUrl,
 } = require('../../../consts');
 const {
   UKR_POSHTA_API_LINK,
@@ -118,13 +117,6 @@ class UkrPoshtaService {
   async getUkrPoshtaCitiesByDistrictId(id) {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaCitiesByDistrictIdUrl + id}`
-    );
-    return res.data.Entries.Entry;
-  }
-
-  async getUkrPoshtaStreetsByCityId(id) {
-    const res = await this.getUkrPoshtaAddressRequest(
-      `${getUkrPoshtaStreetsByCityIdUrl + id}`
     );
     return res.data.Entries.Entry;
   }

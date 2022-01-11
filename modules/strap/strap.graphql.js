@@ -5,11 +5,10 @@ const strapType = `
     optionType: OptionTypeEnum
     model: Model
     features: StrapFeature
-    images: ImageSet
+    image: String
     additionalPrice: [AdditionalCurrencySet]!
     available: Boolean
     customizable: Boolean
-    translationsKey: ID
   }
 `;
 

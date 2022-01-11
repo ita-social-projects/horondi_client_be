@@ -21,11 +21,9 @@ const {
   invalidToken,
   wrongPassword,
   wrongEmail,
-  socialToken,
 } = require('./user.variables');
 const {
   registerUser,
-  facebookUser,
   loginUser,
   blockUser,
   unlockUser,
@@ -79,6 +77,7 @@ const {
   role,
   phoneNumber,
   address,
+  wishlist,
   orders,
   comments,
   pass,
@@ -105,11 +104,6 @@ describe('mutations', () => {
     expect(res.data.registerUser).toHaveProperty('email', email);
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
-  });
-
-  test('should authenticate facebook user', async () => {
-    const res = await facebookUser(socialToken, true, operations);
-    expect(res).toBeDefined();
   });
 
   test('should throw error User with provided email already exist', async () => {
@@ -318,6 +312,7 @@ describe('mutations', () => {
       city,
       street,
       buildingNumber,
+      wishlist,
       orders,
       comments,
       token,
@@ -349,6 +344,7 @@ describe('mutations', () => {
       city,
       street,
       buildingNumber,
+      wishlist,
       orders,
       comments,
       token,

@@ -5,7 +5,6 @@ const {
   getUkrPoshtaPostofficesCityId,
   getUkrPoshtaDistrictsByRegionId,
   getUkrPoshtaCitiesByDistrictId,
-  getUkrPoshtaStreetsByCityId,
 } = require('./ukr-poshta.helper');
 const {
   id,
@@ -13,7 +12,6 @@ const {
   getUkrPoshtaRegionsResult,
   getUkrPoshtaDistrictsResult,
   getUkrPoshtaCitiesResult,
-  getUkrPoshtaStreetsResult,
   error,
 } = require('./ukr-poshta.variables');
 
@@ -43,7 +41,6 @@ describe('ukr-poshta queries tests', () => {
                 ...getUkrPoshtaCitiesResult,
                 ...getUkrPoshtaPostofficesResult,
                 ...getUkrPoshtaDistrictsResult,
-                ...getUkrPoshtaStreetsResult,
               },
             ],
           },
@@ -105,20 +102,6 @@ describe('ukr-poshta queries tests', () => {
     mockError();
 
     const result = await getUkrPoshtaDistrictsByRegionId(id, operations);
-
-    expect(result.message).toBe(error);
-  });
-
-  it('should return expected getUkrPoshtaStreetsByCityId result', async () => {
-    const [result] = await getUkrPoshtaStreetsByCityId(id, operations);
-
-    expect(result.STREET_ID).toBe(getUkrPoshtaStreetsResult.STREET_ID);
-  });
-
-  it('should throw expected getUkrPoshtaStreetsByCityId error', async () => {
-    mockError();
-
-    const result = await getUkrPoshtaStreetsByCityId(id, operations);
 
     expect(result.message).toBe(error);
   });

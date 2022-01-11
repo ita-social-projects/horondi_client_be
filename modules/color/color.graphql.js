@@ -4,7 +4,6 @@ const colorType = `
     name: [Language]
     colorHex: String
     simpleName: [Language]
-    translations_key: ID
   }
 `;
 

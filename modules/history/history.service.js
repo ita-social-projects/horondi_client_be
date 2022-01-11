@@ -21,9 +21,6 @@ class HistoryService {
     if (filter.action?.length) {
       filterOptions.action = { $in: filter.action };
     }
-    if (filter.historyName?.length) {
-      filterOptions.historyName = { $in: filter.historyName };
-    }
     if (filter.role?.length) {
       filterUserOptions.role = { $in: filter.role };
     }

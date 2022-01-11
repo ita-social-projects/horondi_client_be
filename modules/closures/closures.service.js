@@ -1,10 +1,4 @@
 const Closure = require('./closures.model');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 const RuleError = require('../../errors/rule.error');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
@@ -13,9 +7,8 @@ const {
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { CLOSURE_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -35,6 +28,10 @@ const {
     MODEL,
   },
 } = require('../../consts/history-obj-keys');
+const { updatePrices } = require('../product/product.service');
+const {
+  INPUT_FIELDS: { CLOSURE },
+} = require('../../consts/input-fields');
 
 class ClosureService {
   async getAllClosure(limit, skip, filter) {
@@ -77,16 +74,10 @@ class ClosureService {
         closure.additionalPrice
       );
     }
-    closure.translations_key = await addTranslations(
-      createTranslations(closure)
-    );
     const newClosure = await new Closure(closure).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: CLOSURE_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_CLOSURE,
       newClosure.model?._id,
       newClosure.name[UA].value,
       newClosure._id,
@@ -120,11 +111,6 @@ class ClosureService {
       );
     }
 
-    await updateTranslations(
-      closureToUpdate.translations_key,
-      createTranslations(closure)
-    );
-
     if (image) {
       if (closureToUpdate.images) {
         const images = Object.values(closureToUpdate.images).filter(
@@ -142,12 +128,9 @@ class ClosureService {
       closureToUpdate,
       closure
     );
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: CLOSURE_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_CLOSURE,
       closureToUpdate.model?._id,
       closureToUpdate.name[UA].value,
       closureToUpdate._id,
@@ -173,12 +156,8 @@ class ClosureService {
     if (!closure) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
-    const historyEvent = {
-      action: DELETE_EVENT,
-      historyName: CLOSURE_EVENT,
-    };
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      DELETE_CLOSURE,
       closure.model?._id,
       closure.name[UA].value,
       closure._id,
@@ -193,7 +172,7 @@ class ClosureService {
       [],
       adminId
     );
-    await deleteTranslations(closure.translations_key);
+
     await addHistoryRecord(historyRecord);
 
     return closure;

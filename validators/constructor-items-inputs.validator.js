@@ -5,6 +5,7 @@ const {
 const {
   additionalPriceInputValidator,
 } = require('./additional-price-input.validators');
+const { optionType } = require('../consts');
 
 const {
   CONSTRUCTOR_OPTION_TYPES: {

@@ -1,8 +1,6 @@
 const { ApolloServer, makeExecutableSchema } = require('apollo-server-express');
 const { applyMiddleware } = require('graphql-middleware');
 const express = require('express');
-const cors = require('cors');
-
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const connectDB = require('./config/db');
@@ -16,7 +14,7 @@ const { currencyWorker } = require('./currency.worker');
 const { checkPaymentStatus } = require('./modules/payment/payment.service');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { cronJob } = require('./helpers/cron-job');
-const translationsService = require('./modules/translations/translations.service');
+
 const {
   SUPER_ADMIN_EMAIL,
   SUPER_ADMIN_PASSWORD,
@@ -102,23 +100,9 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3001',
-      'http://localhost:3000',
-      'https://horondi-admin-staging.azurewebsites.net',
-      'https://horondi-front-staging.azurewebsites.net',
-      'https://horondi-front.azurewebsites.net',
-    ],
-  })
-);
 app.disable('x-powered-by');
-
 currencyWorker();
-
 app.post('/fondy/callback', checkPaymentStatus);
-app.get('/translations', translationsService.getAllTranslations);
 
 server.applyMiddleware({
   app,

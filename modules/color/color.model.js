@@ -7,7 +7,7 @@ const {
   COLOR_HEX_NOT_FOUND,
 } = require('../../error-messages/color.massage');
 const {
-  DB_COLLECTIONS_NAMES: { COLOR, TRANSLATIONS },
+  DB_COLLECTIONS_NAMES: { COLOR },
 } = require('../../consts/db-collections-names');
 
 const ColorSchema = new mongoose.Schema({
@@ -19,10 +19,6 @@ const ColorSchema = new mongoose.Schema({
     required: [true, COLOR_HEX_NOT_FOUND],
   },
   simpleName: [Language],
-  translations_key: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: TRANSLATIONS,
-  },
 });
 
 module.exports = mongoose.model(COLOR, ColorSchema);

@@ -108,11 +108,6 @@ const updateUserValidator = Joi.object({
       .min(2)
       .max(40)
       .allow(''),
-    district: Joi.string()
-      .trim()
-      .min(2)
-      .max(40)
-      .allow(''),
     city: Joi.string()
       .trim()
       .min(2)

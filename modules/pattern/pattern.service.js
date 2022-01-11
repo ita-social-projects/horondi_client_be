@@ -1,13 +1,6 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
-
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
@@ -18,9 +11,8 @@ const {
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { PATTERN_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_PATTERN, DELETE_PATTERN, EDIT_PATTERN },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -97,7 +89,6 @@ class PatternsService {
   }
 
   async updatePattern({ id, pattern, image }, { _id: adminId }) {
-    const [imagePattern, imageConstructor] = image;
     const patternToUpdate = await Pattern.findById(id).exec();
 
     if (!patternToUpdate) {
@@ -110,23 +101,15 @@ class PatternsService {
       );
     }
 
-    await updateTranslations(
-      patternToUpdate.translationsKey,
-      createTranslations(pattern)
-    );
-
     await updatePrices(patternToUpdate, pattern, PATTERN, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
       pattern
     );
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: PATTERN_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_PATTERN,
       patternToUpdate.model?._id,
       patternToUpdate.name[UA].value,
       patternToUpdate._id,
@@ -142,13 +125,13 @@ class PatternsService {
       }).exec();
     }
 
-    if (imagePattern.file) {
-      const uploadResult = await uploadService.uploadFile(imagePattern);
-      pattern.images = uploadResult.fileNames;
-    }
-    if (imageConstructor) {
-      const constructorImg = await uploadSmallImage(imageConstructor);
-      pattern.constructorImg = constructorImg;
+    const uploadResult = await uploadService.uploadFile(image[0]);
+    const images = uploadResult.fileNames;
+    const constructorImg = await uploadSmallImage(image[1]);
+    pattern.constructorImg = constructorImg;
+
+    if (!images && constructorImg) {
+      return Pattern.findByIdAndUpdate(id, pattern).exec();
     }
     const foundPattern = await Pattern.findById(id)
       .lean()
@@ -161,6 +144,7 @@ class PatternsService {
       id,
       {
         ...pattern,
+        images,
       },
       {
         new: true,
@@ -182,17 +166,10 @@ class PatternsService {
         pattern.additionalPrice
       );
     }
-    pattern.translationsKey = await addTranslations(
-      createTranslations(pattern)
-    );
 
     const newPattern = await new Pattern({ ...pattern, images }).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: PATTERN_EVENT,
-    };
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_PATTERN,
       newPattern.model?._id,
       newPattern.name[UA].value,
       newPattern._id,
@@ -218,11 +195,10 @@ class PatternsService {
     const foundPattern = await Pattern.findByIdAndDelete(id)
       .lean()
       .exec();
+
     if (!foundPattern) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
-
-    await deleteTranslations(foundPattern.translationsKey);
 
     const deletedImages = await uploadService.deleteFiles(
       Object.values(foundPattern.images)
@@ -230,12 +206,8 @@ class PatternsService {
 
     await uploadService.deleteFiles([foundPattern.constructorImg]);
     if (await Promise.allSettled(deletedImages)) {
-      const historyEvent = {
-        action: DELETE_EVENT,
-        historyName: PATTERN_EVENT,
-      };
       const historyRecord = generateHistoryObject(
-        historyEvent,
+        DELETE_PATTERN,
         foundPattern.model,
         foundPattern.name[UA].value,
         foundPattern._id,
@@ -256,7 +228,6 @@ class PatternsService {
 
       return foundPattern;
     }
-    return Pattern.findByIdAndDelete(id).exec();
   }
 }
 

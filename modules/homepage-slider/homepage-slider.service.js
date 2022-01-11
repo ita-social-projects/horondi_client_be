@@ -10,12 +10,6 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 
 class HomePageSliderService {
   async getAllSlides({ skip, limit }) {
@@ -46,8 +40,6 @@ class HomePageSliderService {
   }
 
   async addSlide(data, upload) {
-    data.translations_key = await addTranslations(createTranslations(data));
-
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -64,11 +56,6 @@ class HomePageSliderService {
     if (!slideToUpdate) {
       throw new RuleError(SLIDE_NOT_FOUND, NOT_FOUND);
     }
-
-    await updateTranslations(
-      slideToUpdate.translations_key,
-      createTranslations(slide)
-    );
 
     if (!upload) {
       return HomePageSlider.findByIdAndUpdate(id, slide, {
@@ -112,9 +99,6 @@ class HomePageSliderService {
     const deletedImages = await uploadService.deleteFiles(
       Object.values(foundSlide.images)
     );
-
-    await deleteTranslations(foundSlide.translations_key);
-
     if (await Promise.allSettled(deletedImages)) {
       return foundSlide;
     }

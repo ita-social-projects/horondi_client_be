@@ -38,7 +38,6 @@ const INPUT_FIELDS = {
   INNER_MATERIAL: 'innerMaterial.material',
   BOTTOM_MATERIAL: 'bottomMaterial.material',
   BASIC: 'basic',
-  WISHLIST: 'wishlist',
 };
 
 module.exports = {

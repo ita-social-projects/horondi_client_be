@@ -117,40 +117,7 @@ describe('Product mutations', () => {
     expect(productData).toBeDefined();
     expect(productData).toHaveProperty('_id', productId);
   });
-  test('#2.1 Should Update Product With File', async () => {
-    const receivedUpdatedProduct = await updateProduct(
-      productId,
-      newProductInputDataForUpdate(
-        categoryId,
-        modelId,
-        materialId,
-        materialId,
-        colorId,
-        patternId,
-        closureId,
-        sizeId
-      ),
-      {},
-      [
-        {
-          large: 'largeXL_0_test-file',
-          medium: 'mediumXL_0_test-file',
-          small: 'smallXL_0_test-file',
-          thumbnail: 'thumbnailXL_0_test-file',
-        },
-      ],
-      operations
-    );
-    const res = receivedUpdatedProduct.data.updateProduct;
-
-    expect(res).toBeDefined();
-    expect(res).toHaveProperty('name');
-    expect(res).toHaveProperty('description');
-    expect(res).toHaveProperty('model');
-    expect(res).toHaveProperty('category');
-  });
-
-  test('#2.2 Should Update Product Without File', async () => {
+  test('#2 Should Update Product', async () => {
     const receivedUpdatedProduct = await updateProduct(
       productId,
       newProductInputDataForUpdate(
@@ -164,7 +131,6 @@ describe('Product mutations', () => {
         sizeId
       ),
       productUploadedImages.primary,
-      [],
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -175,7 +141,6 @@ describe('Product mutations', () => {
     expect(res).toHaveProperty('model');
     expect(res).toHaveProperty('category');
   });
-
   test('#3 Should return Error PRODUCT_NOT_FOUND on updateProduct', async () => {
     const receivedUpdatedProduct = await updateProduct(
       badProductId,
@@ -190,14 +155,6 @@ describe('Product mutations', () => {
         sizeId
       ),
       productUploadedImages.primary,
-      [
-        {
-          large: 'largeXL_0_test-file',
-          medium: 'mediumXL_0_test-file',
-          small: 'smallXL_0_test-file',
-          thumbnail: 'thumbnailXL_0_test-file',
-        },
-      ],
       operations
     );
     const res = receivedUpdatedProduct.data.updateProduct;
@@ -206,7 +163,6 @@ describe('Product mutations', () => {
     expect(res.message).toBe(PRODUCT_NOT_FOUND);
     expect(res.statusCode).toBe(403);
   });
-
   test('#4 Should return Error PRODUCT_ALREADY_EXIST', async () => {
     const products = await createProduct(
       newProductInputDataForUpdate(

@@ -16,6 +16,7 @@ type User{
     confirmationToken: String
     credentials: [Credential]
     registrationDate: String
+    wishlist: [Product]
     cart: Cart
     orders:[ID]
     comments: [ID]
@@ -53,7 +54,8 @@ input UserInput {
     email: String
     phoneNumber: String
     address: AddressInput
-    image: Upload
+    images: ImageSetInput
+    wishlist: [ID]
     orders:[ID]
     comments: [ID]
     cart: CartInput
@@ -67,19 +69,12 @@ const cartType = `
     rememberMailCount: Int
   }
 
-  type AllSizesType {
-     size: Size
-     price: [CurrencySet]
-  }
-
   type CartItem {
-    _id: ID
     product: Product
     productFromConstructor: ProductFromConstructor
     quantity: Int
     price: [CurrencySet]
     options: Options
-    allSizes: [AllSizesType]
   }
   
    type Options {
@@ -108,7 +103,6 @@ const cartInput = `
     quantity: Int!
     price: [CurrencySetInput]
     options: OptionsInput!
-    allSizes: [AllSizesInput!]!
   }
   input RemoveItemsFromCartInput {
     product: ID
@@ -119,11 +113,6 @@ const cartInput = `
    input OptionsInput {
     size: ID!
   } 
-  
-   input AllSizesInput {
-     size: ID!
-     price: [CurrencySetInput!]!
-  }
   
     input ProductFromConstructorInput {
       product: ID
@@ -144,6 +133,7 @@ input UserUpdateInput {
     phoneNumber: String
     address: AddressInput
     images: ImageSetInput
+    wishlist: [ID]
     orders:[ID]
     comments: [ID]
     confirmed: Boolean

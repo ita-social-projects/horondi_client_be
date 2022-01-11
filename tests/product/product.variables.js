@@ -78,22 +78,6 @@ const newProductInputDataForUpdate = (
   basePrice: 50,
   sizes: [sizeId],
   availableCount: 15,
-  images: {
-    primary: {
-      large: 'largeXL_0_test-file',
-      medium: 'mediumXL_0_test-file',
-      small: 'smallXL_0_test-file',
-      thumbnail: 'thumbnailXL_0_test-file',
-    },
-    additional: [
-      {
-        large: 'largeXL_0_test-file',
-        medium: 'mediumXL_0_test-file',
-        small: 'smallXL_0_test-file',
-        thumbnail: 'thumbnailXL_0_test-file',
-      },
-    ],
-  },
 });
 const newProductInputDataForCompare = product => ({
   category: { _id: product.category },
@@ -193,17 +177,10 @@ const correctFilter = {
   category: { $in: '6009dcd5f9855555907ebf5e' },
   colors: { $in: 'red' },
   pattern: { $in: '6009dcd5f9855555907ebf5e' },
-  sizes: {
+  basePrice: {
     $elemMatch: {
-      price: {
-        $elemMatch: {
-          currency: '',
-          value: {
-            $gte: '2',
-            $lte: '0',
-          },
-        },
-      },
+      currency: '',
+      value: { $gte: '2', $lte: '0' },
     },
   },
 };

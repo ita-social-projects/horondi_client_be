@@ -123,21 +123,18 @@ const getUserOrders = async operations => {
     query: gql`
       query($pagination: Pagination) {
         getUserOrders(pagination: $pagination) {
-          userOrders {
-            _id
-            recipient {
-              firstName
-              lastName
-              email
-              phoneNumber
-            }
-            status
-            user_id
-            paymentStatus
-            orderNumber
-            dateOfCreation
+          _id
+          recipient {
+            firstName
+            lastName
+            email
+            phoneNumber
           }
-          ordersCount
+          status
+          user_id
+          paymentStatus
+          orderNumber
+          dateOfCreation
         }
       }
     `,

@@ -5,20 +5,13 @@ const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 const { BOTTOM_NOT_FOUND } = require('../../error-messages/bottom-messages');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { BOTTOM_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_BOTTOM, EDIT_BOTTOM, DELETE_BOTTOM },
+} = require('../../consts/history-actions');
 const {
   getChanges,
   generateHistoryChangesData,
@@ -95,12 +88,8 @@ class BottomService {
 
     const { beforeChanges, afterChanges } = getChanges(bottomToUpdate, bottom);
 
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: BOTTOM_EVENT,
-    };
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_BOTTOM,
       bottomToUpdate.model?._id,
       bottomToUpdate.name[UA].value,
       bottomToUpdate._id,
@@ -110,11 +99,6 @@ class BottomService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    await updateTranslations(
-      bottomToUpdate.translationsKey,
-      createTranslations(bottom)
-    );
 
     return updatedBottom;
   }
@@ -127,12 +111,9 @@ class BottomService {
     if (!foundBottom) {
       throw new RuleError(BOTTOM_NOT_FOUND, NOT_FOUND);
     }
-    const historyEvent = {
-      action: DELETE_EVENT,
-      historyName: BOTTOM_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      DELETE_BOTTOM,
       foundBottom.model?._id,
       foundBottom.name[UA].value,
       foundBottom._id,
@@ -149,8 +130,6 @@ class BottomService {
 
     await addHistoryRecord(historyRecord);
 
-    await deleteTranslations(foundBottom.translationsKey);
-
     return Bottom.findByIdAndDelete(id);
   }
 
@@ -164,15 +143,10 @@ class BottomService {
       bottom.additionalPrice
     );
 
-    bottom.translationsKey = await addTranslations(createTranslations(bottom));
-
     const newBottom = await new Bottom(bottom).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: BOTTOM_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_BOTTOM,
       newBottom.model?._id,
       newBottom.name[UA].value,
       newBottom._id,
