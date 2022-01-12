@@ -31,7 +31,6 @@ describe('Test mutation methods', () => {
     expect(isUsed).toBeFalsy();
     const result = await updateCertificate(certificateId, operations);
     expect(result.isUsed).toBeTruthy();
-    expect(result.isActive).toBeFalsy();
   });
 
   it('#3. Succesfuly delete certificate', async () => {

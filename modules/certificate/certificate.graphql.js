@@ -1,7 +1,7 @@
 const certificateType = `
 type Certificate {
 _id: ID!
-createdBy: User
+createdBy: ID!
 name: String!
 value: Int!
 isUsed: Boolean!

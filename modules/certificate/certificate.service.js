@@ -17,7 +17,7 @@ class CertificatesService {
       filter = { createdBy: user.id };
     }
     const items = await Certificate.find(filter)
-      .sort({ status: 'asc' })
+      .sort({ startDate: 1 })
       .limit(limit)
       .skip(skip)
       .exec();
@@ -45,7 +45,7 @@ class CertificatesService {
   async updateCertificate(id) {
     const updatedCertificate = await Certificate.findByIdAndUpdate(
       id,
-      { isUsed: true, isActive: false },
+      { isUsed: true },
       { new: true }
     ).exec();
 
@@ -54,14 +54,6 @@ class CertificatesService {
     }
     return updatedCertificate;
   }
-
-  /* async expireCertificate(id) {
-    await Certificate.findByIdAndUpdate(
-      id,
-      { expired: true , isActive: false },
-      { new: true }
-    ).save().catch(err => err);
-  } */
 
   async deleteCertificate(id) {
     const deletedCertificate = await Certificate.findById(id).exec();

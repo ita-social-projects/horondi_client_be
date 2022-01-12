@@ -4,6 +4,11 @@ const {
   DB_COLLECTIONS_NAMES: { CERTIFICATE, USER },
 } = require('../../consts/db-collections-names');
 
+const dateStart = new Date();
+const dateEnd = new Date();
+dateEnd.setDate(dateEnd.getDate() + 1);
+dateEnd.setDate(dateEnd.getFullYear() + 1);
+
 const certificateSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -26,11 +31,11 @@ const certificateSchema = new mongoose.Schema({
   },
   dateStart: {
     type: Date,
-    default: Date.now(),
+    default: dateStart,
   },
   dateEnd: {
     type: Date,
-    default: Date.now() + 366 * 24 * 60 * 60 * 1000,
+    default: dateEnd,
   },
 });
 
