@@ -1,13 +1,14 @@
 const wrongId = '600987de4cf8d95fa80ddf9b';
+
 const color = {
   name: [
-    { value: '222ddd', lang: 'UA' },
-    { value: '222ddd', lang: 'EN' },
+    { value: '222ddd', lang: 'ua' },
+    { value: '222ddd', lang: 'en' },
   ],
   colorHex: '#3r56tg',
   simpleName: [
-    { value: '222ddd', lang: 'UA' },
-    { value: '222ddd', lang: 'EN' },
+    { value: '222ddd', lang: 'ua' },
+    { value: '222ddd', lang: 'en' },
   ],
 };
 const ERROR_NOT_FOUND = { message: 'COLOR_NOT_FOUND', statusCode: 404 };

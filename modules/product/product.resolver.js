@@ -30,9 +30,9 @@ const productsMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteProduct: async (parent, args, { user }) => {
+  deleteManyProducts: async (parent, args, { user }) => {
     try {
-      return await productsService.deleteProduct(args.id, user);
+      return await productsService.deleteManyProducts(args, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

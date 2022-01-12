@@ -11,4 +11,18 @@ const uploadProductImages = async filesToUpload => {
   };
 };
 
-module.exports = { uploadProductImages };
+const findAndDeleteImages = async product => {
+  const { images } = product;
+  const { primary, additional } = images;
+  const additionalImagesToDelete =
+    typeof additional[0] === 'object'
+      ? additional.map(img => [...Object.values(img)]).flat()
+      : [];
+
+  return uploadService.deleteFiles([
+    ...Object.values(primary),
+    ...additionalImagesToDelete,
+  ]);
+};
+
+module.exports = { uploadProductImages, findAndDeleteImages };

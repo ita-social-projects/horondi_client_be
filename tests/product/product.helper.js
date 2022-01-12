@@ -194,11 +194,12 @@ const getProductById = async (id, operations) =>
       id,
     },
   });
-const deleteProduct = async (id, operations) =>
+
+const deleteManyProducts = async (ids, operations) =>
   await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
-        deleteProduct(id: $id) {
+      mutation(ids: ID!) {
+        deleteManyProducts(ids: $ids) {
           ... on Product {
             _id
           }
@@ -209,7 +210,7 @@ const deleteProduct = async (id, operations) =>
       }
     `,
     variables: {
-      id,
+      ids,
     },
   });
 const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
@@ -313,7 +314,7 @@ const getFilter = async filterOpts => productService.filterItems(filterOpts);
 const getCurrency = (currency, UAH, USD) => getCurrencySign(currency, UAH, USD);
 
 module.exports = {
-  deleteProduct,
+  deleteManyProducts,
   createProduct,
   getProductById,
   getAllProductsWithSkipAndLimit,

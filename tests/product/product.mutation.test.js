@@ -14,6 +14,7 @@ const {
   updateProduct,
   deleteProductImages,
   uploadProductImages,
+  deleteManyProducts,
 } = require('./product.helper');
 const {
   deleteConstructorBasic,
@@ -227,9 +228,12 @@ describe('Product mutations', () => {
     expect(products.statusCode).toBe(400);
   });
   test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
-    const receivedData = await deleteProduct(badProductId, operations);
+    const receivedData = await deleteManyProducts(
+      [{ _id: badProductId }],
+      operations
+    );
 
-    expect(receivedData.data.deleteProduct).toHaveProperty(
+    expect(receivedData.data.deleteManyProducts).toHaveProperty(
       'message',
       PRODUCT_NOT_FOUND
     );

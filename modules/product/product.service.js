@@ -18,7 +18,7 @@ const {
 const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
-const { uploadProductImages } = require('./product.utils');
+const { uploadProductImages, findAndDeleteImages } = require('./product.utils');
 const { calculateBasePrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
@@ -86,6 +86,8 @@ const {
   finalPriceCalculation,
   finalPriceRecalculation,
 } = require('../../utils/final-price-calculation');
+
+const { NODE_ENV } = require('../../dotenvValidator');
 
 class ProductsService {
   async getProductById(id) {
@@ -206,11 +208,13 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({ filter, skip, limit, sort={rate: -1}, search }) {
+  async getProducts({ filter, skip, limit, sort = { rate: -1 }, search }) {
     const filters = this.filterItems(filter);
-    const sortValue = (Object.keys(sort)).includes('basePrice') ? {
-      'sizes.price.value': sort.basePrice
-    } : sort;
+    const sortValue = Object.keys(sort).includes('basePrice')
+      ? {
+          'sizes.price.value': sort.basePrice,
+        }
+      : sort;
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
@@ -399,63 +403,58 @@ class ProductsService {
     }
   }
 
-  async deleteProduct(id, { _id: adminId }) {
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
+  async deleteManyProducts(ids, { _id: adminId }) {
+    for (const itemId of ids.ids) {
+      const product = await Product.findById(itemId)
+        .lean()
+        .exec();
 
-    if (!product) {
-      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
-    }
+      if (!product) {
+        throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+      }
+      const isDevelopment = NODE_ENV === 'development';
 
-    const { images } = product;
-    const { primary, additional } = images;
-    const additionalImagesToDelete =
-      typeof additional[0] === 'object'
-        ? additional.map(img => [...Object.values(img)]).flat()
-        : [];
+      const deletedImages = isDevelopment
+        ? [Promise.resolve(true)]
+        : await findAndDeleteImages(product);
 
-    const deletedImages = await uploadService.deleteFiles([
-      ...Object.values(primary),
-      ...additionalImagesToDelete,
-    ]);
+      if (await Promise.allSettled(deletedImages)) {
+        const historyEvent = {
+          action: DELETE_EVENT,
+          historyName: PRODUCT_EVENT,
+        };
+        const historyRecord = generateHistoryObject(
+          historyEvent,
+          product.model,
+          product.name[UA].value,
+          product._id,
+          generateHistoryChangesData(product, [
+            SIZES,
+            PURCHASED_COUNT,
+            AVAILABLE_COUNT,
+            CATEGORY,
+            MODEL,
+            NAME,
+            DESCRIPTION,
+            MAIN_MATERIAL,
+            INNER_MATERIAL,
+            BOTTOM_MATERIAL,
+            STRAP_LENGTH_IN_CM,
+            PATTERN,
+            CLOSURE,
+            AVAILABLE,
+            IS_HOT_ITEM,
+          ]),
+          [],
+          adminId
+        );
 
-    if (await Promise.allSettled(deletedImages)) {
-      const historyEvent = {
-        action: DELETE_EVENT,
-        historyName: PRODUCT_EVENT,
-      };
-      const historyRecord = generateHistoryObject(
-        historyEvent,
-        product.model,
-        product.name[UA].value,
-        product._id,
-        generateHistoryChangesData(product, [
-          SIZES,
-          PURCHASED_COUNT,
-          AVAILABLE_COUNT,
-          CATEGORY,
-          MODEL,
-          NAME,
-          DESCRIPTION,
-          MAIN_MATERIAL,
-          INNER_MATERIAL,
-          BOTTOM_MATERIAL,
-          STRAP_LENGTH_IN_CM,
-          PATTERN,
-          CLOSURE,
-          AVAILABLE,
-          IS_HOT_ITEM,
-        ]),
-        [],
-        adminId
-      );
+        await deleteTranslations(product.translationsKey);
 
-      await deleteTranslations(product.translationsKey);
+        await addHistoryRecord(historyRecord);
 
-      await addHistoryRecord(historyRecord);
-
-      return Product.findByIdAndDelete(id);
+        return Product.findByIdAndDelete(itemId);
+      }
     }
   }
 
