@@ -17,8 +17,9 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_STRAP, EDIT_STRAP, DELETE_STRAP },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { STRAP_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -82,9 +83,12 @@ class StrapService {
     if (foundStrap.image) {
       await uploadService.deleteFiles([foundStrap.image]);
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: STRAP_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_STRAP,
+      historyEvent,
       foundStrap.model,
       foundStrap.name[UA].value,
       foundStrap._id,
@@ -127,9 +131,12 @@ class StrapService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: STRAP_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_STRAP,
+      historyEvent,
       strapToUpdate.model?._id,
       strapToUpdate.name[UA].value,
       strapToUpdate._id,
@@ -163,9 +170,12 @@ class StrapService {
     strap.translationsKey = await addTranslations(createTranslations(strap));
 
     const newStrap = await new Strap(strap).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: STRAP_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_STRAP,
+      historyEvent,
       newStrap.model?._id,
       newStrap.name[UA].value,
       newStrap._id,

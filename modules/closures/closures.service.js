@@ -13,8 +13,9 @@ const {
 } = require('../../consts/status-codes');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_CLOSURE, DELETE_CLOSURE, EDIT_CLOSURE },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { CLOSURE_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -34,10 +35,6 @@ const {
     MODEL,
   },
 } = require('../../consts/history-obj-keys');
-const { updatePrices } = require('../product/product.service');
-const {
-  INPUT_FIELDS: { CLOSURE },
-} = require('../../consts/input-fields');
 
 class ClosureService {
   async getAllClosure(limit, skip, filter) {
@@ -84,9 +81,12 @@ class ClosureService {
       createTranslations(closure)
     );
     const newClosure = await new Closure(closure).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: CLOSURE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_CLOSURE,
+      historyEvent,
       newClosure.model?._id,
       newClosure.name[UA].value,
       newClosure._id,
@@ -142,9 +142,12 @@ class ClosureService {
       closureToUpdate,
       closure
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: CLOSURE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_CLOSURE,
+      historyEvent,
       closureToUpdate.model?._id,
       closureToUpdate.name[UA].value,
       closureToUpdate._id,
@@ -170,8 +173,12 @@ class ClosureService {
     if (!closure) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
     }
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: CLOSURE_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_CLOSURE,
+      historyEvent,
       closure.model?._id,
       closure.name[UA].value,
       closure._id,

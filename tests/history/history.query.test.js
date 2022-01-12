@@ -17,13 +17,15 @@ const {
 } = require('./history.helper');
 const {
   ACTION,
+  HISTORY_NAME,
   VALUE_BEFORE_CHANGE,
   GET_ALL_RECORDS_PARAMS,
   WRONG_ID,
 } = require('./history.variables');
 const {
-  HISTORY_ACTIONS: { ADD_SIZE },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT },
+  HISTORY_NAMES: { SIZE_EVENT },
+} = require('../../consts/history-events');
 const {
   HISTORY_RECORD_IS_NOT_PRESENT,
 } = require('../../error-messages/history');
@@ -69,14 +71,15 @@ describe('history query tests', () => {
     expect(allRecords).toBeDefined();
     expect(count).toBe(1);
     expect(items).toBeInstanceOf(Array);
-    expect(item).toHaveProperty(ACTION, ADD_SIZE);
+    expect(item).toHaveProperty(ACTION, ADD_EVENT);
+    expect(item).toHaveProperty(HISTORY_NAME, SIZE_EVENT);
     expect(item).toHaveProperty(VALUE_BEFORE_CHANGE, []);
   });
 
   it('Should get history record by id', async () => {
     const record = await getHistoryRecordById(recordId, operations);
     expect(record).toBeDefined();
-    expect(record).toHaveProperty(ACTION, ADD_SIZE);
+    expect(record).toHaveProperty(ACTION, ADD_EVENT);
     expect(record).toHaveProperty(VALUE_BEFORE_CHANGE, []);
   });
 

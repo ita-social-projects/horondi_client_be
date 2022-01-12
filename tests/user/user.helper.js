@@ -157,6 +157,7 @@ const loginUser = async (email, pass, rememberMe, operations) => {
             zipcode
             buildingNumber
             region
+            district
             street
             city
             appartment

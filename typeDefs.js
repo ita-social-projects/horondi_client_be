@@ -66,7 +66,7 @@ const {
 const {
   currencyType,
   currencyInput,
-} = require('./modules/currency/currency.graphql.js');
+} = require('./modules/currency/currency.graphql');
 const {
   commentType,
   commentInput,
@@ -278,6 +278,7 @@ const typeDefs = gql`
   type Address {
     country: String
     region: String
+    district: String
     city: String
     zipcode: String
     street: String
@@ -777,6 +778,7 @@ const typeDefs = gql`
   }
   input AddressInput {
     country: String
+    district: String
     region: String
     city: String
     zipcode: String

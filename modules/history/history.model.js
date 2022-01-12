@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const {
   DB_COLLECTIONS_NAMES: { HISTORY, USER },
 } = require('../../consts/db-collections-names');
-const { HISTORY_ACTIONS } = require('../../consts/history-actions');
+const {
+  HISTORY_ACTIONS,
+  HISTORY_NAMES,
+} = require('../../consts/history-events');
 
 const historySchema = new mongoose.Schema(
   {
@@ -11,6 +14,11 @@ const historySchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: Object.values(HISTORY_ACTIONS),
+    },
+    historyName: {
+      type: String,
+      required: true,
+      enum: Object.values(HISTORY_NAMES),
     },
     subject: {
       model: {

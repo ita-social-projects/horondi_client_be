@@ -16,8 +16,9 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_BACK, EDIT_BACK, DELETE_BACK },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { BACK_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -110,9 +111,12 @@ class BackService {
     }).exec();
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: BACK_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_BACK,
+      historyEvent,
       backToUpdate.model?._id,
       backToUpdate.name[UA].value,
       backToUpdate._id,
@@ -143,9 +147,12 @@ class BackService {
     if (foundBack.image) {
       return uploadService.deleteFiles(Object.values(foundBack.image));
     }
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: BACK_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_BACK,
+      historyEvent,
       foundBack.model,
       foundBack.name[UA].value,
       foundBack._id,
@@ -179,9 +186,12 @@ class BackService {
     back.translationsKey = await addTranslations(createTranslations(back));
 
     const newBack = await new Back(back).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: BACK_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_BACK,
+      historyEvent,
       newBack.model?._id,
       newBack.name[UA].value,
       newBack._id,

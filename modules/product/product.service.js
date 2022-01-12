@@ -51,8 +51,9 @@ const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_PRODUCT, DELETE_PRODUCT, EDIT_PRODUCT },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { PRODUCT_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -128,10 +129,13 @@ class ProductsService {
       .exec();
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
-      (a, b) => a.basePrice[1].value - b.basePrice[1].value
+      (a, b) =>
+        a.sizes[a.sizes.length - 1].price[0].value -
+        b.sizes[b.sizes.length - 1].price[0].value
     );
-    const minPrice = sortedByPrices[0].basePrice;
-    const maxPrice = sortedByPrices[sortedByPrices.length - 1].basePrice;
+
+    const minPrice = sortedByPrices[0].sizes[0].price;
+    const maxPrice = sortedByPrices[sortedByPrices.length - 1].sizes[0].price;
 
     return {
       minPrice,
@@ -202,8 +206,11 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({ filter, skip, limit, sort, search }) {
+  async getProducts({ filter, skip, limit, sort={rate: -1}, search }) {
     const filters = this.filterItems(filter);
+    const sortValue = (Object.keys(sort)).includes('basePrice') ? {
+      'sizes.price.value': sort.basePrice
+    } : sort;
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
@@ -218,10 +225,11 @@ class ProductsService {
         },
       ];
     }
+
     const items = await Product.find(filters)
+      .sort(sortValue)
       .skip(skip)
       .limit(limit)
-      .sort(sort)
       .exec();
 
     const count = await Product.find(filters)
@@ -307,9 +315,12 @@ class ProductsService {
     productData.sizes = await finalPriceCalculation(productData);
 
     const { beforeChanges, afterChanges } = getChanges(product, productData);
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: PRODUCT_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_PRODUCT,
+      historyEvent,
       product.model,
       product.name[UA].value,
       product._id,
@@ -352,8 +363,12 @@ class ProductsService {
     const newProduct = await new Product(productData).save();
 
     if (productData) {
+      const historyEvent = {
+        action: ADD_EVENT,
+        historyName: PRODUCT_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        ADD_PRODUCT,
+        historyEvent,
         newProduct.model?._id,
         newProduct.name[UA].value,
         newProduct._id,
@@ -406,8 +421,12 @@ class ProductsService {
     ]);
 
     if (await Promise.allSettled(deletedImages)) {
+      const historyEvent = {
+        action: DELETE_EVENT,
+        historyName: PRODUCT_EVENT,
+      };
       const historyRecord = generateHistoryObject(
-        DELETE_PRODUCT,
+        historyEvent,
         product.model,
         product.name[UA].value,
         product._id,

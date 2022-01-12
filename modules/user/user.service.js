@@ -6,6 +6,7 @@ const { bcryptClient } = require('../../client/bcrypt-client');
 const uploadService = require('../upload/upload.service');
 
 const User = require('./user.model');
+const Wishlist = require('../wishlist/wishlist.model');
 
 const {
   EmailActions: {
@@ -75,12 +76,9 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  HISTORY_ACTIONS: {
-    BLOCK_USER: BLOCK_USER_ACTION,
-    UNLOCK_USER: UNLOCK_USER_ACTION,
-    REGISTER_ADMIN,
-  },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { BLOCK_EVENT, UNLOCK_EVENT, REGISTER_EVENT },
+  HISTORY_NAMES: { USER_EVENT, ADMIN_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -191,9 +189,12 @@ class UserService extends FilterHelper {
       userToBlock,
       blockedUser
     );
-
+    const historyEvent = {
+      action: BLOCK_EVENT,
+      historyName: USER_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      BLOCK_USER_ACTION,
+      historyEvent,
       '',
       `${userToBlock.firstName} ${userToBlock.lastName}`,
       userToBlock._id,
@@ -267,9 +268,12 @@ class UserService extends FilterHelper {
       userToUnlock,
       unlockedUser
     );
-
+    const historyEvent = {
+      action: UNLOCK_EVENT,
+      historyName: USER_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      UNLOCK_USER_ACTION,
+      historyEvent,
       '',
       `${userToUnlock.firstName} ${userToUnlock.lastName}`,
       userToUnlock._id,
@@ -503,19 +507,21 @@ class UserService extends FilterHelper {
       expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
-    const userid = dataUser.sub;
+    const userId = dataUser.sub;
     if (!(await User.findOne({ email: dataUser.email }).exec())) {
-      await this.registerSocialUser({
+      const user = await this.registerSocialUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
         email: dataUser.email,
         credentials: [
           {
             source,
-            tokenPass: userid,
+            tokenPass: userId,
           },
         ],
       });
+
+      new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: dataUser.email,
@@ -531,7 +537,7 @@ class UserService extends FilterHelper {
     });
     const data = await res.json();
     if (!(await User.findOne({ email: data.email }).exec())) {
-      await this.registerSocialUser({
+      const user = await this.registerSocialUser({
         firstName: data.name.split(' ')[0],
         lastName: data.name.split(' ')[1],
         email: data.email,
@@ -542,6 +548,8 @@ class UserService extends FilterHelper {
           },
         ],
       });
+
+      new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: data.email,
@@ -604,6 +612,8 @@ class UserService extends FilterHelper {
       ],
     });
     const savedUser = await user.save();
+
+    new Wishlist({ user_id: user._id, products: [] }).save();
 
     jwtClient.setData({ userId: savedUser._id });
     const accessToken = jwtClient.generateAccessToken(
@@ -889,9 +899,12 @@ class UserService extends FilterHelper {
         confirmed: true,
       },
     }).exec();
-
+    const historyEvent = {
+      action: REGISTER_EVENT,
+      historyName: ADMIN_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      REGISTER_ADMIN,
+      historyEvent,
       '',
       `${user.firstName} ${user.lastName}`,
       user._id,

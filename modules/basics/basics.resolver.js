@@ -1,11 +1,5 @@
 const basicsService = require('./basics.service');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 
 const basicsQuery = {
   getAllBasics: async (_, { limit, skip, filter }) =>
