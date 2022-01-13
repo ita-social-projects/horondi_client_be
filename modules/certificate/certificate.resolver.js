@@ -1,46 +1,31 @@
 const certificatesService = require('./certificate.service');
 const RuleError = require('../../errors/rule.error');
 
-const certificatesQuery = {
-  getAllCertificates: (parent, { skip, limit }, { user }) =>
-    certificatesService.getAllCertificates(skip, limit, user),
+const tryCatchWrapper = async func => {
+  try {
+    return func;
+  } catch (e) {
+    return new RuleError(e.message, e.statusCode);
+  }
+};
 
-  getCertificateById: async (parent, { id }) => {
-    try {
-      return await certificatesService.getCertificateById(id);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
+const certificatesQuery = {
+  getAllCertificates: async (_, { skip, limit }, { user }) =>
+    tryCatchWrapper(certificatesService.getAllCertificates(skip, limit, user)),
+
+  getCertificateById: async (_, { id }) =>
+    tryCatchWrapper(certificatesService.getCertificateById(id)),
 };
 
 const certificatesMutation = {
-  addCertificate: async (
-    parent,
-    { certificate: { name, value } },
-    { user }
-  ) => {
-    try {
-      return await certificatesService.addCertificate(name, value, user.id);
-    } catch (error) {
-      return new RuleError(error.message, error.statusCode);
-    }
-  },
-  deleteCertificate: async (parent, { id }) => {
-    try {
-      return await certificatesService.deleteCertificate(id);
-    } catch (error) {
-      return new RuleError(error.message, error.statusCode);
-    }
-  },
+  addCertificate: async (_, { certificate: { name, value } }, { user }) =>
+    tryCatchWrapper(certificatesService.addCertificate(name, value, user.id)),
 
-  updateCertificate: async (parent, { id }) => {
-    try {
-      return await certificatesService.updateCertificate(id);
-    } catch (error) {
-      return new RuleError(error.message, error.statusCode);
-    }
-  },
+  deleteCertificate: async (_, { id }) =>
+    tryCatchWrapper(certificatesService.deleteCertificate(id)),
+
+  updateCertificate: async (_, { id, name }) =>
+    tryCatchWrapper(certificatesService.updateCertificate(id || name)),
 };
 
 module.exports = { certificatesQuery, certificatesMutation };

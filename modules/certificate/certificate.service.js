@@ -30,8 +30,8 @@ class CertificatesService {
     };
   }
 
-  async getCertificateById(id) {
-    const certificate = await Certificate.findById(id).exec();
+  async getCertificateById(definedArg) {
+    const certificate = await Certificate.findById(definedArg).exec();
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
