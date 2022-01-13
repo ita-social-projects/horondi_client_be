@@ -1,13 +1,6 @@
 const certificatesService = require('./certificate.service');
-const RuleError = require('../../errors/rule.error');
 
-const tryCatchWrapper = async func => {
-  try {
-    return func;
-  } catch (e) {
-    return new RuleError(e.message, e.statusCode);
-  }
-};
+const { tryCatchWrapper } = require('../helper-functions');
 
 const certificatesQuery = {
   getAllCertificates: async (_, { skip, limit }, { user }) =>
@@ -24,8 +17,8 @@ const certificatesMutation = {
   deleteCertificate: async (_, { id }) =>
     tryCatchWrapper(certificatesService.deleteCertificate(id)),
 
-  updateCertificate: async (_, { id, name }) =>
-    tryCatchWrapper(certificatesService.updateCertificate(id || name)),
+  updateCertificate: async (_, { name }) =>
+    tryCatchWrapper(certificatesService.updateCertificate(name)),
 };
 
 module.exports = { certificatesQuery, certificatesMutation };

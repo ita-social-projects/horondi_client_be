@@ -7,7 +7,7 @@ const {
 const dateStart = new Date();
 const dateEnd = new Date();
 dateEnd.setDate(dateEnd.getDate() + 1);
-dateEnd.setDate(dateEnd.getFullYear() + 1);
+dateEnd.setFullYear(dateEnd.getFullYear() + 1);
 
 const certificateSchema = new mongoose.Schema({
   name: {
@@ -15,7 +15,6 @@ const certificateSchema = new mongoose.Schema({
   },
   value: {
     type: Number,
-    min: 0,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

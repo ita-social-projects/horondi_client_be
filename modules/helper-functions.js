@@ -1,5 +1,6 @@
 const { _ } = require('lodash');
 const Order = require('./order/order.model');
+const RuleError = require('../errors/rule.error');
 
 const { hyphen, exception, dictionary } = require('../consts/transliteration');
 
@@ -209,6 +210,14 @@ const filteredReplyComments = (filter, arr) => {
   return reply;
 };
 
+const tryCatchWrapper = async handler => {
+  try {
+    return handler;
+  } catch (e) {
+    return new RuleError(e.message, e.statusCode);
+  }
+};
+
 module.exports = {
   reduceByDaysCount,
   removeDaysFromData,
@@ -218,4 +227,5 @@ module.exports = {
   isUserBoughtProduct,
   filterOptionComments,
   filteredReplyComments,
+  tryCatchWrapper,
 };

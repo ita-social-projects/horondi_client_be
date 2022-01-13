@@ -2,16 +2,18 @@ const Certificate = require('./certificate.model');
 const RuleError = require('../../errors/rule.error');
 
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_ALREADY_EXISTS,
 } = require('../../error-messages/certificate.messages');
 
 class CertificatesService {
   async getAllCertificates(skip, limit, user) {
     let filter;
-    if (user?.role === 'admin' || user?.role === 'superadmin') {
+
+    if (user.role === 'admin' || user.role === 'superadmin') {
       filter = {};
     } else {
       filter = { createdBy: user.id };
@@ -32,19 +34,27 @@ class CertificatesService {
 
   async getCertificateById(definedArg) {
     const certificate = await Certificate.findById(definedArg).exec();
+
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
+
     return certificate;
   }
 
   async addCertificate(name, value, id) {
+    const certificateExists = await Certificate.findOne({ name });
+
+    if (certificateExists) {
+      throw new RuleError(CERTIFICATE_ALREADY_EXISTS, BAD_REQUEST);
+    }
+
     return new Certificate({ name, value, createdBy: id }).save();
   }
 
-  async updateCertificate(id) {
-    const updatedCertificate = await Certificate.findByIdAndUpdate(
-      id,
+  async updateCertificate(name) {
+    const updatedCertificate = await Certificate.findOneAndUpdate(
+      { name },
       { isUsed: true },
       { new: true }
     ).exec();
@@ -52,14 +62,17 @@ class CertificatesService {
     if (!updatedCertificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
+
     return updatedCertificate;
   }
 
   async deleteCertificate(id) {
     const deletedCertificate = await Certificate.findById(id).exec();
+
     if (deletedCertificate) {
       return Certificate.findByIdAndDelete(id).exec();
     }
+
     throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
   }
 }

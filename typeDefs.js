@@ -439,10 +439,12 @@ const typeDefs = gql`
       items: [Closure]
       count: Int
   }
+
   type PaginatedCertificate {
       items: [Certificate]
       count: Int
   }
+  
   type PaginatedPockets {
     items: [Pocket]
     count: Int
@@ -896,7 +898,7 @@ const typeDefs = gql`
     "Certificate Mutation"
     addCertificate(certificate: CertificateInput!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
-    updateCertificate(id: ID!): CertificateResult
+    updateCertificate(name: String!): CertificateResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
     addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult

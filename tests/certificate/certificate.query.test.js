@@ -23,21 +23,19 @@ describe('Test certificate Queries', () => {
     certificateId = certificateData._id;
   });
 
-  it('#1. settuped to 3 pagination limit returns 3', async () => {
-    const result = await getAllCertificates(operations);
-    expect(result.items.length).toBe(3);
-  });
-
   it('#2. check unique field in one of certificates in list', async () => {
     const result = await getAllCertificates(operations);
+
     expect(result.items[0]).toHaveProperty('isUsed');
   });
 
   it('#3. get fresh-generated certificate', async () => {
     const result = await getCertificateById(certificateId, operations);
+
     expect(result).toHaveProperty('name', newCertificateInputData.name);
   });
-  test('#4.get CERTIFICATE_NOT_FOUND for unexist certificate', async () => {
+
+  it('#4.get CERTIFICATE_NOT_FOUND for unexist certificate', async () => {
     const result = await getCertificateById(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);

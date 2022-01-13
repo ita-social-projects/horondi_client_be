@@ -748,6 +748,7 @@ const resolvers = {
       if (obj.name || obj.isUsed) {
         return SCHEMA_NAMES.certificate;
       }
+
       return 'Error';
     },
   },

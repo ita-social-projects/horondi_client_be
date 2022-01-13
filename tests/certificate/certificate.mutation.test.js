@@ -8,7 +8,11 @@ const {
   updateCertificate,
   getCertificateById,
 } = require('./certificate.helper');
-const { wrongId, newCertificateInputData } = require('./certificate.variables');
+const {
+  wrongId,
+  wrongName,
+  newCertificateInputData,
+} = require('./certificate.variables');
 
 let operations;
 let certificateId;
@@ -29,13 +33,19 @@ describe('Test mutation methods', () => {
 
   it('#2. update certificate change isUsed field to true', async () => {
     expect(isUsed).toBeFalsy();
-    const result = await updateCertificate(certificateId, operations);
+
+    const result = await updateCertificate(
+      newCertificateInputData.name,
+      operations
+    );
+
     expect(result.isUsed).toBeTruthy();
   });
 
   it('#3. Succesfuly delete certificate', async () => {
     await deleteCertificate(certificateId, operations);
     const result = await getCertificateById(certificateId, operations);
+
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
 });
@@ -44,13 +54,16 @@ describe('Test response for unexist ID', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
-  it('#1. 404 status for update wrong id', async () => {
-    const result = await updateCertificate(wrongId, operations);
+
+  it('#1. 404 status for update wrong Name', async () => {
+    const result = await updateCertificate(wrongName, operations);
+
     expect(result).toHaveProperty('statusCode', 404);
   });
 
   it('#2. CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
     const result = await deleteCertificate(wrongId, operations);
+
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
 });

@@ -72,11 +72,11 @@ const addCertificate = async (certificate, operations) => {
   return result.data.addCertificate;
 };
 
-const updateCertificate = async (id, operations) => {
+const updateCertificate = async (name, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
-        updateCertificate(id: $id) {
+      mutation($name: String!) {
+        updateCertificate(name: $name) {
           ... on Certificate {
             _id
             isUsed
@@ -90,7 +90,7 @@ const updateCertificate = async (id, operations) => {
       }
     `,
     variables: {
-      id,
+      name,
     },
   });
 
@@ -116,6 +116,7 @@ const deleteCertificate = async (id, operations) => {
       id,
     },
   });
+
   return res.data.deleteCertificate;
 };
 
