@@ -164,34 +164,34 @@ const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
-  businessText: 'BusinessText',
-  category: 'Category',
   certificate: 'Certificate',
-  closure: 'Closure',
-  color: 'Color',
-  comment: 'Comment',
-  contact: 'Contact',
-  currency: 'Currency',
-  emailQuestion: 'EmailQuestion',
   history: 'History',
   historyRecord: 'HistoryRecord',
-  homePageImages: 'HomePageImages',
-  homePageSlide: 'HomePageSlide',
+  paginatedProducts: 'PaginatedProducts',
+  paginatedComments: 'PaginatedComments',
+  category: 'Category',
+  news: 'News',
+  pattern: 'Pattern',
+  paginatedPatterns: 'PaginatedPatterns',
   material: 'Material',
   materials: 'Materials',
-  model: 'Model',
-  news: 'News',
-  order: 'Order',
-  paginatedComments: 'PaginatedComments',
-  paginatedPatterns: 'PaginatedPatterns',
-  paginatedProducts: 'PaginatedProducts',
-  pattern: 'Pattern',
+  currency: 'Currency',
   product: 'Product',
-  restriction: 'Restriction',
-  size: 'Size',
+  comment: 'Comment',
+  businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
-  token: 'Token',
+  model: 'Model',
+  restriction: 'Restriction',
+  contact: 'Contact',
+  order: 'Order',
   user: 'User',
+  emailQuestion: 'EmailQuestion',
+  homePageImages: 'HomePageImages',
+  homePageSlide: 'HomePageSlide',
+  token: 'Token',
+  size: 'Size',
+  closure: 'Closure',
+  color: 'Color',
   constructorBottom: 'ConstructorBottom',
   constructorBasic: 'ConstructorBasic',
   constructorFrontPocket: 'ConstructorFrontPocket',
@@ -218,42 +218,78 @@ const {
 
 const resolvers = {
   Query: {
-    ...backQuery,
-    ...basicsQuery,
-    ...bottomQuery,
-    ...businessTextQuery,
-    ...cartQuery,
-    ...categoryQuery,
     ...certificatesQuery,
-    ...closureQuery,
-    ...colorQuery,
-    ...commentsQuery,
-    ...constructorBasicQuery,
-    ...constructorBottomQuery,
-    ...constructorFrontPocketQuery,
-    ...constructorQuery,
-    ...contactQuery,
-    ...currencyQuery,
-    ...emailChatQuestionQuery,
-    ...historyQuery,
-    ...homePageImagesQuery,
-    ...homePageSlideQuery,
-    ...materialQuery,
-    ...modelsQuery,
-    ...newsQuery,
-    ...novaPoshtaQuery,
-    ...ordersQuery,
-    ...patternQuery,
-    ...paymentQuery,
-    ...pocketQuery,
-    ...positionQuery,
-    ...productsQuery,
+
     ...questionsAnswersQuery,
-    ...restrictionQuery,
-    ...sizeQuery,
-    ...strapQuery,
-    ...ukrPoshtaQuery,
+
+    ...historyQuery,
+
+    ...cartQuery,
+
+    ...currencyQuery,
+
+    ...materialQuery,
+
+    ...patternQuery,
+
+    ...categoryQuery,
+
+    ...newsQuery,
+
     ...userQuery,
+
+    ...productsQuery,
+
+    ...commentsQuery,
+
+    ...businessTextQuery,
+
+    ...modelsQuery,
+
+    ...restrictionQuery,
+
+    ...contactQuery,
+
+    ...novaPoshtaQuery,
+
+    ...ukrPoshtaQuery,
+
+    ...paymentQuery,
+
+    ...ordersQuery,
+
+    ...emailChatQuestionQuery,
+
+    ...homePageImagesQuery,
+
+    ...sizeQuery,
+
+    ...homePageSlideQuery,
+
+    ...closureQuery,
+
+    ...constructorBottomQuery,
+
+    ...constructorBasicQuery,
+
+    ...constructorFrontPocketQuery,
+
+    ...colorQuery,
+
+    ...pocketQuery,
+
+    ...backQuery,
+
+    ...bottomQuery,
+
+    ...strapQuery,
+
+    ...positionQuery,
+
+    ...basicsQuery,
+
+    ...constructorQuery,
+
     ...wishlistQuery,
   },
   ProductsFilter: {
@@ -638,41 +674,84 @@ const resolvers = {
   },
 
   Mutation: {
-    ...backMutation,
-    ...basicsMutations,
-    ...bottomMutation,
-    ...businessTextMutation,
-    ...cartMutation,
-    ...categoryMutation,
     ...certificatesMutation,
-    ...closureMutation,
-    ...colorMutation,
-    ...commentsMutation,
-    ...constructorBasicMutation,
-    ...constructorBottomMutation,
-    ...constructorFrontPocketMutation,
-    ...constructorMutation,
-    ...contactMutation,
-    ...currencyMutation,
-    ...emailChatQuestionMutation,
-    ...homePageImagesMutation,
-    ...homePageSlideMutation,
-    ...materialMutation,
-    ...modelsMutation,
-    ...newsMutation,
-    ...ordersMutation,
-    ...patternMutation,
-    ...pocketMutation,
-    ...positionMutation,
-    ...productsMutation,
+
     ...questionsAnswersMutation,
-    ...restrictionMutation,
-    ...sizeMutation,
-    ...strapMutation,
+
+    ...cartMutation,
+
     ...uploadMutation,
+
+    ...patternMutation,
+
+    ...materialMutation,
+
+    ...categoryMutation,
+
+    ...currencyMutation,
+
+    ...newsMutation,
+
     ...userMutation,
+
+    ...productsMutation,
+
+    ...commentsMutation,
+
+    ...businessTextMutation,
+
+    ...modelsMutation,
+
+    ...restrictionMutation,
+
+    ...contactMutation,
+
+    ...ordersMutation,
+
+    ...emailChatQuestionMutation,
+
+    ...homePageImagesMutation,
+
+    ...sizeMutation,
+
+    ...homePageSlideMutation,
+
+    ...closureMutation,
+
+    ...colorMutation,
+
+    ...constructorBasicMutation,
+
+    ...constructorFrontPocketMutation,
+
+    ...constructorBottomMutation,
+
+    ...pocketMutation,
+
+    ...backMutation,
+
+    ...bottomMutation,
+
+    ...strapMutation,
+
+    ...positionMutation,
+
+    ...basicsMutations,
+
+    ...constructorMutation,
+
     ...wishlistMutation,
   },
+
+  CertificateResult: {
+    __resolveType: obj => {
+      if (obj.name || obj.isUsed) {
+        return SCHEMA_NAMES.certificate;
+      }
+      return 'Error';
+    },
+  },
+
   HistoryResult: {
     __resolveType: obj => {
       if (obj.items) {
@@ -717,14 +796,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedComments;
-      }
-      return 'Error';
-    },
-  },
-  CertificateResult: {
-    __resolveType: obj => {
-      if (obj.name) {
-        return SCHEMA_NAMES.certificate;
       }
       return 'Error';
     },
