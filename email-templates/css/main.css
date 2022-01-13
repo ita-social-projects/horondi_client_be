@@ -1,7 +1,6 @@
 body {
-  width: 818px;
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
+  width: 1440px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 300;
 }
 
@@ -27,19 +26,26 @@ header .subheader {
   background: rgba(0, 0, 0, 0.5);
 }
 
+footer {
+  width: 1110px;
+}
+
+footer.top {
+  border-top: 1px solid #bdbdbd;
+  margin-left: 165px;
+}
+
 footer p {
   height: 22px;
   margin: 0;
-  padding-left: 62px;
-  padding-top: 75px;
+  padding-top: 24px;
   font-size: 18px;
   color: #000000;
 }
 
 footer h2 {
   margin: 0;
-  padding-left: 61px;
-  font-weight: 900;
+  font-weight: 800;
   font-size: 36px;
   color: #000000;
 }
@@ -47,30 +53,48 @@ footer h2 {
 p.registrationText,
 p.paymentText,
 p.unfinishedCartOperations,
-p.answerReceivedText {
+p.answerReceivedText,
+p.blockUserText {
   margin: 0;
-  padding-top: 35px;
-  font-size: 36px;
+  padding-top: 40px;
+  font-size: 59px;
   line-height: 44px;
+  text-align: center;
+  color: #242424;
 }
 
 div.contentRegistrationText {
   height: 320px;
-  padding-left: 62px;
+  margin-bottom: 20px;
+}
+
+div > button {
+  justify-content: center;
 }
 
 div.answerDiv {
-  width: 718px;
+  width: 1110px;
   height: 154px;
-  padding-top: 50px;
-  padding-left: 62px;
+  padding-top: 30px;
+  padding-left: 165px;
+  margin-bottom: 30px;
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
+  font-size: 16px;
 }
 
-p.condition { 
-  font-size: 14px;
+div.blockUserContent {
+  width: 1110px;
+  height: 154px;
+  padding-top: 30px;
+  padding-left: 165px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+}
+
+p.condition {
+  font-size: 16px;
 }
 
 div.answerDiv > p {
@@ -86,8 +110,9 @@ p.congrats {
   padding-top: 30px;
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
+  font-size: 16px;
   color: #000000;
+  margin-left: 165px;
 }
 
 p.code {
@@ -96,76 +121,79 @@ p.code {
   color: #000000;
 }
 
-.confirm {
-  width: 315px;
-  height: 76px;
-  margin-left: 213px;
+button.confirm {
+  width: 213px;
+  height: 52px;
   background: #000000;
   text-align: center;
+  border-radius: 4px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 582px;
 }
 
 .confirm a {
   font-style: normal;
-  font-weight: bold;
-  font-size: 24px;
+  font-size: 14px;
   color: #ffffff;
   text-decoration: none;
 }
 
 p.link {
   width: 357px;
-  padding-left: 230px;
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
+  font-size: 16px;
+  margin-left: 165px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p.ignore {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  color: #000000;
+  margin-left: 165px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 a.alink {
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
+  font-size: 16px;
   text-decoration-line: underline;
   color: #000000;
+  margin-left: 165px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: block;
+  margin-top: 30px;
 }
 
 p.successfulRegistrationText {
-  margin: 0;
-  width: 552px;
-  padding-top: 15px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  padding-top: 20px;
   font-style: normal;
-  font-weight: 500;
-  font-size: 36px;
+  font-weight: 300;
+  font-size: 59px;
   text-align: center;
-}
-
-.blockUserText {
-  margin: 0;
-  padding-top: 37px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 36px;
-  text-align: center;
-}
-
-.blockUserContent {
-  width: 718px;
-  height: 154px;
-  padding-top: 50px;
-  padding-left: 62px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
 }
 
 .unlockUserContent {
   width: 718px;
-  height: 130px;
-  padding-top: 50px;
-  padding-left: 62px;
+  height: 120px;
+  padding-top: 26px;
+  margin-bottom: 30px;
+  margin-left: 165px;
   font-style: normal;
   font-weight: normal;
-  font-size: 18px;
-  color: #000000;
+  font-size: 16px;
+  text-align: justify;
+}
+
+.unlockUserContent > p {
+  margin-bottom: 34px;
+  margin-top: 0px;
 }
 
 .termslink {

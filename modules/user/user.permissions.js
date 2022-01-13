@@ -24,7 +24,6 @@ const {
 
 const userPermissionsQuery = {
   getAllUsers: hasRoles([ADMIN, SUPERADMIN]),
-  getCountUserOrders: hasRoles([ADMIN, SUPERADMIN, USER]),
   getUsersForStatistic: hasRoles([ADMIN, SUPERADMIN]),
   getUserByToken: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN])),
   getUserById: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
@@ -60,8 +59,6 @@ const userPermissionsMutation = {
     USER,
     completeAdminRegisterValidator
   ),
-  addProductToWishlist: isTheSameUser,
-  removeProductFromWishlist: isTheSameUser,
 };
 
 module.exports = { userPermissionsMutation, userPermissionsQuery };

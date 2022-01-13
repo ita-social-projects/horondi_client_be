@@ -23,6 +23,7 @@ const productType = `
     rateCount: Int
     userRates: [UserRate]
     comments: PaginatedComments!
+    translationsKey: ID!
   }
   type ProductMaterialType{
     material: Material
@@ -43,6 +44,7 @@ const productType = `
     backMaterialColor: [Color]
     maxPrice: [CurrencySet]
     minPrice: [CurrencySet]
+    translationsKey: ID!
    }
   type ProductImages { 
     primary: ImageSet
@@ -69,6 +71,7 @@ const productInput = `
     basePrice: Float!
     available: Boolean
     isHotItem: Boolean
+    translationsKey: ID
   }
   input ProductMaterialsInput{
     material: ID

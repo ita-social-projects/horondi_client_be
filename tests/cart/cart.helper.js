@@ -2,6 +2,7 @@ const { gql } = require('@apollo/client');
 
 const cartReqBody = `
 items {
+    _id
     product {
         _id
         name {
@@ -45,6 +46,16 @@ items {
         name
     }
     }
+    allSizes {
+    size {
+        _id
+        name
+    }
+    price {
+      currency
+      value
+    }
+    }
     price {
       currency
       value
@@ -78,12 +89,13 @@ const addProductToCart = async (
   adminId,
   sizeId,
   price,
+  allSizes,
   operations
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-        mutation($productId: ID!, $sizeId: ID!, $id:ID!, $price: [CurrencySetInput]!) {
-            addProductToCart(productId: $productId, sizeId: $sizeId, id:$id, price: $price) {
+        mutation($productId: ID!, $sizeId: ID!, $id:ID!, $price: [CurrencySetInput]!, $allSizes: [AllSizesInput!]) {
+            addProductToCart(productId: $productId, sizeId: $sizeId, id:$id, price: $price, allSizes: $allSizes) {
                 ... on User {
                     _id
                     firstName,
@@ -108,9 +120,51 @@ const addProductToCart = async (
       sizeId,
       id: adminId,
       price,
+      allSizes,
     },
   });
+
   return res.data.addProductToCart;
+};
+const changeCartItemSize = async (
+  itemId,
+  id,
+  price,
+  size,
+  quantity,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id:ID!, $itemId: ID!, $price: [CurrencySetInput]!, $size: ID!, $quantity: Int!) {
+       changeCartItemSize(itemId: $itemId, size: $size, id:$id, price: $price, quantity: $quantity) {
+        ... on User {
+          _id
+          firstName
+          cart {
+            ${cartReqBody}
+            totalPrice{
+              currency
+              value
+            }
+          }
+        }
+        ... on Error {
+          message
+          statusCode
+        }
+      }
+    }`,
+    variables: {
+      id,
+      itemId,
+      price,
+      size,
+      quantity,
+    },
+  });
+
+  return res.data.changeCartItemSize;
 };
 const removeProductItemsFromCart = async (items, adminId, operations) => {
   const res = await operations.mutate({
@@ -309,4 +363,5 @@ module.exports = {
   addConstructorProductItemToCart,
   updateCartConstructorProductItemQuantity,
   mergeCartFromLS,
+  changeCartItemSize,
 };

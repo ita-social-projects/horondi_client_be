@@ -9,7 +9,6 @@ const {
 } = require('./contact.helper');
 
 jest.mock('../../modules/upload/upload.service');
-jest.mock('../../modules/contact/contact.utils.js');
 
 let contactsId = '';
 let operations;
@@ -48,18 +47,14 @@ describe('Contacts queries', () => {
         },
       ],
       email: 'test@test.com',
-      link: contact.link,
+      link: { lat: '49.8546374', lon: '24.0322823' },
     });
   });
   test('should receive selected contact', async () => {
     const receivedContact = await getContactById(contactsId, operations);
 
-    //expect(receivedContact).toMatchSnapshot();
     expect(receivedContact).toBeDefined();
-    expect(receivedContact).toHaveProperty(
-      'phoneNumber',
-      contact.phoneNumber
-    );
+    expect(receivedContact).toHaveProperty('phoneNumber', contact.phoneNumber);
     expect(receivedContact).toHaveProperty('openHours', [
       {
         lang: contact.openHours[0].lang,

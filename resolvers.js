@@ -7,6 +7,11 @@ const {
 } = require('./modules/product/product.resolver');
 
 const {
+  questionsAnswersQuery,
+  questionsAnswersMutation,
+} = require('./modules/questions-answers/questions-answers.resolver');
+
+const {
   ordersQuery,
   ordersMutation,
 } = require('./modules/order/order.resolver');
@@ -63,11 +68,6 @@ const {
   homePageImagesQuery,
 } = require('./modules/homepage-images/home-page-images.resolver');
 
-const {
-  headerQuery,
-  headerMutation,
-} = require('./modules/header/header.resolver');
-
 const { colorQuery, colorMutation } = require('./modules/color/color.resolver');
 
 const {
@@ -99,6 +99,11 @@ const {
   pocketMutation,
   pocketQuery,
 } = require('./modules/pocket/pocket.resolver');
+
+const {
+  wishlistMutation,
+  wishlistQuery,
+} = require('./modules/wishlist/wishlist.resolver');
 
 const { strapMutation, strapQuery } = require('./modules/strap/strap.resolver');
 
@@ -175,7 +180,6 @@ const SCHEMA_NAMES = {
   order: 'Order',
   user: 'User',
   emailQuestion: 'EmailQuestion',
-  header: 'Header',
   homePageImages: 'HomePageImages',
   homePageSlide: 'HomePageSlide',
   token: 'Token',
@@ -199,6 +203,7 @@ const SCHEMA_NAMES = {
   paginatedBasics: 'PaginatedBasics',
   constructor: 'Constructor',
   paginatedConstructors: 'PaginatedConstructors',
+  wishlist: 'Wishlist',
 };
 
 const {
@@ -207,6 +212,8 @@ const {
 
 const resolvers = {
   Query: {
+    ...questionsAnswersQuery,
+
     ...historyQuery,
 
     ...cartQuery,
@@ -247,8 +254,6 @@ const resolvers = {
 
     ...homePageImagesQuery,
 
-    ...headerQuery,
-
     ...sizeQuery,
 
     ...homePageSlideQuery,
@@ -276,6 +281,8 @@ const resolvers = {
     ...basicsQuery,
 
     ...constructorQuery,
+
+    ...wishlistQuery,
   },
   ProductsFilter: {
     categories: parent =>
@@ -306,9 +313,6 @@ const resolvers = {
       ),
     bottomMaterialColor: parent =>
       parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
-  },
-  User: {
-    wishlist: parent => productsService.getProductsForWishlist(parent._id),
   },
 
   Size: {
@@ -375,12 +379,17 @@ const resolvers = {
       parent.items.map(item => {
         if (item.product) {
           return {
+            _id: item._id,
             product: productsService.getProductById(item.product),
             price: item.price,
             quantity: item.quantity,
             options: {
               size: sizeService.getSizeById(item.options.size),
             },
+            allSizes: item.allSizes.map(({ size, price }) => ({
+              size: sizeService.getSizeById(size),
+              price,
+            })),
           };
         }
         return {
@@ -411,6 +420,10 @@ const resolvers = {
           },
         };
       }),
+  },
+  Wishlist: {
+    products: parent =>
+      parent.products.map(id => productsService.getProductById(id)),
   },
   Order: {
     items: parent =>
@@ -646,15 +659,15 @@ const resolvers = {
         otherPocketsWithAvailablePositions: item.otherPocketsWithAvailablePositions.map(
           el => ({
             pocket: pocketService.getPocketById(el.pocket),
-            positions: el.positions.map(position =>
-              positionService.getPositionById(position)
-            ),
+            position: positionService.getPositionById(el.position),
           })
         ),
       })),
   },
 
   Mutation: {
+    ...questionsAnswersMutation,
+
     ...cartMutation,
 
     ...uploadMutation,
@@ -689,8 +702,6 @@ const resolvers = {
 
     ...homePageImagesMutation,
 
-    ...headerMutation,
-
     ...sizeMutation,
 
     ...homePageSlideMutation,
@@ -718,6 +729,8 @@ const resolvers = {
     ...basicsMutations,
 
     ...constructorMutation,
+
+    ...wishlistMutation,
   },
   HistoryResult: {
     __resolveType: obj => {
@@ -894,14 +907,6 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
-      }
-      return 'Error';
-    },
-  },
-  HeaderResult: {
-    __resolveType: obj => {
-      if (obj.title) {
-        return SCHEMA_NAMES.header;
       }
       return 'Error';
     },
@@ -1088,6 +1093,15 @@ const resolvers = {
     __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructor;
+      }
+      return 'Error';
+    },
+  },
+
+  WishlistResult: {
+    __resolveType: obj => {
+      if (obj._id) {
+        return SCHEMA_NAMES.wishlist;
       }
       return 'Error';
     },

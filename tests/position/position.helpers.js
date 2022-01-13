@@ -12,6 +12,7 @@ const createPosition = async (position, operations) => {
             }
             available
             _id
+            translationsKey
           }
           ... on Error {
             message

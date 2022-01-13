@@ -1,6 +1,12 @@
 const Position = require('./position.model');
 
 const RuleError = require('../../errors/rule.error');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   POSITION_NOT_FOUND,
   POSITION_ALREADY_EXIST,
@@ -9,8 +15,9 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_POSITION, DELETE_POSITION, EDIT_POSITION },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { POSITION_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   generateHistoryChangesData,
@@ -69,10 +76,17 @@ class PositionService {
       throw new RuleError(POSITION_ALREADY_EXIST);
     }
 
-    const newPosition = await new Position(positionData).save();
+    positionData.translationsKey = await addTranslations(
+      createTranslations(positionData)
+    );
 
+    const newPosition = await new Position(positionData).save();
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: POSITION_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_POSITION,
+      historyEvent,
       null,
       newPosition.name[UA].value,
       newPosition._id,
@@ -92,9 +106,12 @@ class PositionService {
       throw new RuleError(POSITION_NOT_FOUND, NOT_FOUND);
     }
     const deletedPosition = await Position.findByIdAndDelete(id).exec();
-
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: POSITION_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_POSITION,
+      historyEvent,
       null,
       deletedPosition.name[UA].value,
       deletedPosition._id,
@@ -104,6 +121,8 @@ class PositionService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await deleteTranslations(position.translationsKey);
 
     return deletedPosition;
   }
@@ -119,9 +138,12 @@ class PositionService {
       positionToUpdate,
       position
     );
-
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: POSITION_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_POSITION,
+      historyEvent,
       null,
       positionToUpdate.name[UA].value,
       positionToUpdate._id,
@@ -131,6 +153,11 @@ class PositionService {
     );
 
     await addHistoryRecord(historyRecord);
+
+    await updateTranslations(
+      positionToUpdate.translationsKey,
+      createTranslations(position)
+    );
 
     return Position.findByIdAndUpdate(id, position, {
       new: true,

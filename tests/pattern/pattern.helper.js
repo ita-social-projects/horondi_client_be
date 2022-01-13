@@ -191,11 +191,11 @@ const getAllPatternsPaginated = async (limit, skip, filter, operations) => {
   return res.data.getAllPatterns;
 };
 
-const updatePattern = async (id, pattern, operations) => {
+const updatePattern = async (id, pattern, image, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $pattern: PatternInput!) {
-        updatePattern(id: $id, pattern: $pattern, image: []) {
+      mutation($id: ID!, $pattern: PatternInput!, $image: Upload) {
+        updatePattern(id: $id, pattern: $pattern, image: $image) {
           ... on Pattern {
             _id
             name {
@@ -230,7 +230,7 @@ const updatePattern = async (id, pattern, operations) => {
         }
       }
     `,
-    variables: { id, pattern },
+    variables: { id, pattern, image },
   });
 
   return res.data.updatePattern;

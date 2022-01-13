@@ -20,6 +20,7 @@ const createPocket = async (pocket, images, operations) => {
 
             restriction
             optionType
+            translationsKey
           }
           ... on Error {
             message

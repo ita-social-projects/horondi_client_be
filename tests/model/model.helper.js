@@ -69,6 +69,286 @@ const updateModel = async (id, model, operations) => {
   });
   return updatedModel.data.updateModel;
 };
+const addModelConstructorBasic = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        addModelConstructorBasic(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.addModelConstructorBasic;
+};
+const deleteModelConstructorBasic = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        deleteModelConstructorBasic(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.deleteModelConstructorBasic;
+};
+const addModelConstructorPattern = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        addModelConstructorPattern(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.addModelConstructorPattern;
+};
+const deleteModelConstructorPattern = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        deleteModelConstructorPattern(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.deleteModelConstructorPattern;
+};
+const addModelConstructorFrontPocket = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        addModelConstructorFrontPocket(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.addModelConstructorFrontPocket;
+};
+const deleteModelConstructorFrontPocket = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        deleteModelConstructorFrontPocket(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.deleteModelConstructorFrontPocket;
+};
+const addModelConstructorBottom = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        addModelConstructorBottom(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.addModelConstructorBottom;
+};
+const deleteModelConstructorBottom = async (
+  id,
+  constructorElementID,
+  operations
+) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $constructorElementID: ID!) {
+        deleteModelConstructorBottom(
+          id: $id
+          constructorElementID: $constructorElementID
+        ) {
+          ... on Model {
+            _id
+            name {
+              value
+              lang
+            }
+            description {
+              value
+              lang
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: { id, constructorElementID },
+  });
+
+  return res.data.deleteModelConstructorBottom;
+};
 const deleteModel = async (id, operations) => {
   const deletedModel = await operations.mutate({
     mutation: gql`
@@ -227,4 +507,12 @@ module.exports = {
   getModelsByCategory,
   getModelById,
   updateModel,
+  addModelConstructorBasic,
+  deleteModelConstructorBasic,
+  addModelConstructorPattern,
+  deleteModelConstructorPattern,
+  addModelConstructorFrontPocket,
+  deleteModelConstructorFrontPocket,
+  addModelConstructorBottom,
+  deleteModelConstructorBottom,
 };

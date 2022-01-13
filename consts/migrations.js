@@ -190,6 +190,13 @@ const sizes = {
   ],
 };
 const user_id = { user_id: null };
+const link = {
+  link: {
+    _id: ObjectId('616b25d6c89d78404c04d86d'),
+    lat: '49.8546374',
+    lon: '24.0322823',
+  },
+};
 
 module.exports = {
   sizeName,
@@ -208,4 +215,5 @@ module.exports = {
   additionalPrice,
   sizes,
   user_id,
+  link,
 };

@@ -1,6 +1,12 @@
 const { ObjectId } = require('mongoose').Types;
 
 const Model = require('./model.model');
+const createTranslations = require('../../utils/createTranslations');
+const {
+  addTranslations,
+  updateTranslations,
+  deleteTranslations,
+} = require('../translations/translations.service');
 const {
   CATEGORY_NOT_VALID,
   MODEL_NOT_FOUND,
@@ -11,8 +17,9 @@ const {
 } = require('../../consts/locations');
 const uploadService = require('../upload/upload.service');
 const {
-  HISTORY_ACTIONS: { ADD_MODEL, EDIT_MODEL, DELETE_MODEL },
-} = require('../../consts/history-actions');
+  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
+  HISTORY_NAMES: { MODEL_EVENT },
+} = require('../../consts/history-events');
 const {
   generateHistoryObject,
   getChanges,
@@ -114,6 +121,7 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
+    data.translationsKey = await addTranslations(createTranslations(data));
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
       const imageResults = await uploadResult[0];
@@ -121,9 +129,12 @@ class ModelsService {
     }
 
     const newModel = await new Model(data).save();
-
+    const historyEvent = {
+      action: ADD_EVENT,
+      historyName: MODEL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      ADD_MODEL,
+      historyEvent,
       '',
       newModel.name[UA].value,
       newModel._id,
@@ -167,9 +178,16 @@ class ModelsService {
     }
 
     const { beforeChanges, afterChanges } = getChanges(modelToUpdate, newModel);
-
+    await updateTranslations(
+      modelToUpdate.translationsKey,
+      createTranslations(newModel)
+    );
+    const historyEvent = {
+      action: EDIT_EVENT,
+      historyName: MODEL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      EDIT_MODEL,
+      historyEvent,
       modelToUpdate.model?._id,
       modelToUpdate.name[UA].value,
       modelToUpdate._id,
@@ -195,9 +213,13 @@ class ModelsService {
         )
       );
     }
-
+    await deleteTranslations(modelToDelete.translationsKey);
+    const historyEvent = {
+      action: DELETE_EVENT,
+      historyName: MODEL_EVENT,
+    };
     const historyRecord = generateHistoryObject(
-      DELETE_MODEL,
+      historyEvent,
       modelToDelete.model?._id,
       modelToDelete.name[UA].value,
       modelToDelete._id,
@@ -223,6 +245,9 @@ class ModelsService {
   }
 
   async addModelConstructorBasic(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorBasic: [constructorElementID] } }
@@ -230,6 +255,9 @@ class ModelsService {
   }
 
   async deleteModelConstructorBasic(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBasic: constructorElementID } },
@@ -238,6 +266,9 @@ class ModelsService {
   }
 
   async addModelConstructorPattern(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorPattern: [constructorElementID] } }
@@ -245,6 +276,9 @@ class ModelsService {
   }
 
   async deleteModelConstructorPattern(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorPattern: constructorElementID } },
@@ -253,6 +287,9 @@ class ModelsService {
   }
 
   async addModelConstructorFrontPocket(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorFrontPocket: [constructorElementID] } }
@@ -260,6 +297,9 @@ class ModelsService {
   }
 
   async deleteModelConstructorFrontPocket(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorFrontPocket: constructorElementID } },
@@ -268,6 +308,9 @@ class ModelsService {
   }
 
   async addModelConstructorBottom(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorBottom: [constructorElementID] } }
@@ -275,6 +318,9 @@ class ModelsService {
   }
 
   async deleteModelConstructorBottom(id, constructorElementID) {
+    if (!ObjectId.isValid(id)) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBottom: constructorElementID } },

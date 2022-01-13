@@ -1,8 +1,5 @@
 const {
   Mailer,
-  createTransport,
-  reconnect,
-  verifyConnection,
   sendMessage,
   createMailer,
   closeConnection,
@@ -61,31 +58,8 @@ describe('Email API queries', () => {
       expect(mailer.getAccessToken).toBeDefined();
     });
 
-    test.skip('Should return access token', async () => {
-      const accessToken = (await mailer.getAccessToken()).token;
-
-      expect(accessToken).toBeDefined();
-      expect(typeof accessToken).toBe('string');
-      expect(accessToken.length).toBeGreaterThan(25);
-    });
-
-    test.skip('Should create transport', async () => {
-      expect(typeof (await createTransport(mailer))).toBe('object');
-    });
-
-    test.skip('Should verify connection', async () => {
-      await createTransport(mailer);
-      expect(await verifyConnection(mailer)).toBeTruthy();
-    });
-
     test('Should close connections to be defined', () => {
       expect(mailer.closeConnection).toBeDefined();
-    });
-
-    test.skip('Should reconnect', async () => {
-      const oldTransport = { ...mailer.transporter };
-      const newTransport = await reconnect(mailer);
-      expect(oldTransport).not.toEqual(newTransport);
     });
 
     afterEach(() => {

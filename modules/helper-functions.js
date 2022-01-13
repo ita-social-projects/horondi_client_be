@@ -147,7 +147,7 @@ const transliterate = words => {
 const isUserBoughtProduct = (productId, userId) =>
   Order.find({
     'items.product': productId,
-    'user.id': userId,
+    user_id: userId,
   }).exec();
 
 const filterOptionComments = filter => {

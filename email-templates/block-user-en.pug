@@ -3,7 +3,10 @@ block subheaderText
     p.blockUserText Your account has been blocked
 block content
     div.blockUserContent
+        p We are sorry,
         if period!=='infinite'
-            p We regret to inform you, #[br]#[br] Your account has violated our terms and was blocked for #{period} days. #[br]#[br] We hope that you will recheck our terms of use and won't get into such situation once again.
+            p Your account has violated the rules for using our site and has been blocked for #{period} days.
         else
-            p We regret to inform you, #[br]#[br] Your account has violated out terms three times and has been blocked forever.
+            p Your account has violated the rules for using our site and has been blocked forever.
+        p We hope you will find time to get acquainted with the rules in more detail, 
+        p and will not get into such regrettable situations in the future.

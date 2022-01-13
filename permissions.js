@@ -4,6 +4,10 @@ const {
   emailChatQuestionQuery,
 } = require('./modules/email-chat/email-chat.permission');
 
+const {
+  questionsAnswersMutation,
+} = require('./modules/questions-answers/questions-answers.permissions');
+
 const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
@@ -57,11 +61,6 @@ const {
   modelPermissionsMutations,
   modelPermissionsQuery,
 } = require('./modules/model/model.permission');
-
-const {
-  headerPermissionsMutations,
-  headerPermissionsQuery,
-} = require('./modules/header/header.permisions');
 
 const {
   restrictionPermissionsMutations,
@@ -154,6 +153,10 @@ const {
   constructorPermissionsQuery,
   constructorPermissionsMutations,
 } = require('./modules/constructor_new/constructor.permissions');
+const {
+  wishlistPermissionsQuery,
+  wishlistPermissionsMutations,
+} = require('./modules/wishlist/wishlist.permissions');
 
 const permissions = shield(
   {
@@ -168,7 +171,6 @@ const permissions = shield(
       ...categoryPermissionsQuery,
       ...modelPermissionsQuery,
       ...restrictionPermissionsQuery,
-      ...headerPermissionsQuery,
       ...homePageImagesPermissionsQuery,
       ...closurePermissionsQuery,
       ...sizePermissionsQuery,
@@ -186,8 +188,10 @@ const permissions = shield(
       ...positionPermissionsQuery,
       ...basicsPermissionsQuery,
       ...constructorPermissionsQuery,
+      ...wishlistPermissionsQuery,
     },
     Mutation: {
+      ...questionsAnswersMutation,
       ...productPermissionsMutation,
       ...cartPermissionsMutations,
       ...userPermissionsMutation,
@@ -198,7 +202,6 @@ const permissions = shield(
       ...categoryPermissionsMutations,
       ...modelPermissionsMutations,
       ...restrictionPermissionsMutations,
-      ...headerPermissionsMutations,
       ...homePageImagesPermissionsMutations,
       ...closurePermissionsMutations,
       ...sizePermissionsMutations,
@@ -220,6 +223,7 @@ const permissions = shield(
       ...positionPermissionsMutations,
       ...basicsPermissionsMutations,
       ...constructorPermissionsMutations,
+      ...wishlistPermissionsMutations,
     },
   },
   {

@@ -17,12 +17,18 @@ const createStrap = async (strap, image, operations) => {
                 _id
               }
             }
-            image
+            images {
+              large
+              small
+              medium
+              thumbnail
+            }
             available
             additionalPrice {
               currency
               value
             }
+            translationsKey
           }
           ... on Error {
             message
@@ -57,7 +63,12 @@ const updateStrap = async (id, strap, image, operations) => {
                 _id
               }
             }
-            image
+            images {
+              large
+              small
+              medium
+              thumbnail
+            }
             available
             additionalPrice {
               currency
@@ -121,7 +132,12 @@ const getStrapById = async (id, operations) => {
                 _id
               }
             }
-            image
+            images {
+              large
+              small
+              medium
+              thumbnail
+            }
             available
             additionalPrice {
               currency
@@ -159,7 +175,12 @@ const getAllStraps = async (limit, skip, filter, operations) => {
                 _id
               }
             }
-            image
+            images {
+              large
+              small
+              medium
+              thumbnail
+            }
             available
             additionalPrice {
               currency

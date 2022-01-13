@@ -48,6 +48,32 @@ const ukrPostaType = `
     OWNOF: String
     DISTRICT_RU: String
   }
+  type UkrPoshtaStreets {
+    REGION_ID: String,
+    OLDSTREET_EN: String,
+    DISTRICT_ID: String,
+    CITY_RU: String,
+    STREET_UA: String,
+    SHORTSTREETTYPE_UA: String,
+    DISTRICT_EN: String,
+    REGION_EN: String,
+    STREET_ID: String,
+    STREETTYPE_UA: String,
+    SHORTSTREETTYPE_RU: String,
+    STREETTYPE_RU: String,
+    OLDSTREET_UA: String,
+    CITY_EN: String,
+    STREET_EN: String,
+    OLDSTREET_RU: String,
+    REGION_RU: String,
+    REGION_UA: String,
+    SHORTSTREETTYPE_EN: String,
+    STREETTYPE_EN: String,
+    CITY_ID: String,
+    DISTRICT_UA: String,
+    STREET_RU: String,
+    DISTRICT_RU: String
+  }
   type UkrPoshtaPostoffices {
     LOCK_EN: String
     CITY_UA_VPZ: String

@@ -16,11 +16,10 @@ const pagination = {
   limit: 5,
 };
 
-const newModel = (categoryId, sizeId) => ({
+const newModel = categoryId => ({
   category: categoryId,
   priority: 2,
   show: true,
-  sizes: [],
   name: [
     { value: 'Тест', lang: 'uk' },
     { value: 'Test', lang: 'en' },
@@ -36,11 +35,10 @@ const newModel = (categoryId, sizeId) => ({
     medium: 'medium_new',
   },
 });
-const newModelUpdated = (categoryId, sizeId) => ({
+const newModelUpdated = categoryId => ({
   category: categoryId,
   priority: 3,
   show: true,
-  sizes: [],
   name: [
     { value: 'Обновлено', lang: 'uk' },
     { value: 'Updated', lang: 'en' },
