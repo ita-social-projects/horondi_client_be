@@ -1,12 +1,9 @@
 const { UserInputError } = require('apollo-server');
 const { OAuth2Client } = require('google-auth-library');
-const fetch = require('node-fetch');
 const { jwtClient } = require('../../client/jwt-client');
 const { bcryptClient } = require('../../client/bcrypt-client');
-const uploadService = require('../upload/upload.service');
 
 const User = require('./user.model');
-const Wishlist = require('../wishlist/wishlist.model');
 
 const {
   EmailActions: {
@@ -19,7 +16,7 @@ const {
   },
 } = require('../../consts/email-actions');
 const emailService = require('../email/email.service');
-const { deleteFiles } = require('../upload/upload.service');
+const { uploadFiles, deleteFiles } = require('../upload/upload.service');
 const {
   SECRET,
   RECOVERY_EXPIRE,
@@ -32,6 +29,7 @@ const {
   changeDataFormat,
   reduceByDaysCount,
 } = require('../helper-functions');
+const productService = require('../product/product.service');
 const {
   USER_ALREADY_EXIST,
   USER_NOT_FOUND,
@@ -66,7 +64,7 @@ const {
   LOCALES: { UK },
 } = require('../../consts/locations');
 const {
-  SOURCES: { HORONDI, GOOGLE, FACEBOOK },
+  SOURCES: { HORONDI, GOOGLE },
   USER_FIELDS: { USER_EMAIL, USER_ID },
   userDateFormat,
   roles: { USER },
@@ -76,9 +74,12 @@ const {
   roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
-  HISTORY_ACTIONS: { BLOCK_EVENT, UNLOCK_EVENT, REGISTER_EVENT },
-  HISTORY_NAMES: { USER_EVENT, ADMIN_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: {
+    BLOCK_USER: BLOCK_USER_ACTION,
+    UNLOCK_USER: UNLOCK_USER_ACTION,
+    REGISTER_ADMIN,
+  },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -90,6 +91,7 @@ const {
   HISTORY_OBJ_KEYS: { ROLE, BANNED, FIRST_NAME, LAST_NAME, EMAIL },
 } = require('../../consts/history-obj-keys');
 const { generateOtpCode } = require('../../utils/user');
+const Order = require('../order/order.model');
 
 class UserService extends FilterHelper {
   async blockUser(userId, { _id: adminId, role }) {
@@ -189,12 +191,9 @@ class UserService extends FilterHelper {
       userToBlock,
       blockedUser
     );
-    const historyEvent = {
-      action: BLOCK_EVENT,
-      historyName: USER_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      BLOCK_USER_ACTION,
       '',
       `${userToBlock.firstName} ${userToBlock.lastName}`,
       userToBlock._id,
@@ -268,12 +267,9 @@ class UserService extends FilterHelper {
       userToUnlock,
       unlockedUser
     );
-    const historyEvent = {
-      action: UNLOCK_EVENT,
-      historyName: USER_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      UNLOCK_USER_ACTION,
       '',
       `${userToUnlock.firstName} ${userToUnlock.lastName}`,
       userToUnlock._id,
@@ -390,28 +386,21 @@ class UserService extends FilterHelper {
     return this.getUserByFieldOrThrow(USER_ID, id);
   }
 
-  async updateUserById(updatedUser, user, image, id) {
-    let userToUpdate = {};
-    if (id) {
-      userToUpdate = await User.findById(id).exec();
-    } else {
-      userToUpdate = user;
-    }
-    if (!userToUpdate.images) userToUpdate.images = [];
-    if (image) {
-      if (userToUpdate.images?.length) {
+  async updateUserById(updatedUser, user, upload) {
+    if (!user.images) user.images = [];
+    if (upload) {
+      if (user.images.length) {
         await deleteFiles(
-          Object.values(userToUpdate.images).filter(
+          Object.values(user.images).filter(
             item => typeof item === 'string' && item
           )
         );
       }
-
-      const uploadResult = await uploadService.uploadFiles([image]);
+      const uploadResult = await uploadFiles([upload]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
-    return User.findByIdAndUpdate(userToUpdate._id, updatedUser, { new: true });
+    return User.findByIdAndUpdate(user._id, updatedUser, { new: true });
   }
 
   async loginAdmin({ email, password }) {
@@ -500,64 +489,33 @@ class UserService extends FilterHelper {
   }
 
   async googleUser(idToken, rememberMe) {
-    const source = GOOGLE;
     const client = new OAuth2Client(REACT_APP_GOOGLE_CLIENT_ID);
     const ticket = await client.verifyIdToken({
       idToken,
       expectedAudience: REACT_APP_GOOGLE_CLIENT_ID,
     });
     const dataUser = ticket.getPayload();
-    const userId = dataUser.sub;
+    const userid = dataUser.sub;
     if (!(await User.findOne({ email: dataUser.email }).exec())) {
-      const user = await this.registerSocialUser({
+      await this.registerGoogleUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
         email: dataUser.email,
         credentials: [
           {
-            source,
-            tokenPass: userId,
+            source: GOOGLE,
+            tokenPass: userid,
           },
         ],
       });
-
-      new Wishlist({ user_id: user._id, products: [] }).save();
     }
-    return this.loginSocialUser({
+    return this.loginGoogleUser({
       email: dataUser.email,
       rememberMe,
     });
   }
 
-  async facebookUser(idToken, rememberMe) {
-    const source = FACEBOOK;
-    const graphFacebookUrl = `${process.env.GRAPH_FACEBOOK_URL}${idToken}`;
-    const res = await fetch(graphFacebookUrl, {
-      method: 'GET',
-    });
-    const data = await res.json();
-    if (!(await User.findOne({ email: data.email }).exec())) {
-      const user = await this.registerSocialUser({
-        firstName: data.name.split(' ')[0],
-        lastName: data.name.split(' ')[1],
-        email: data.email,
-        credentials: [
-          {
-            source,
-            tokenPass: data.id,
-          },
-        ],
-      });
-
-      new Wishlist({ user_id: user._id, products: [] }).save();
-    }
-    return this.loginSocialUser({
-      email: data.email,
-      rememberMe,
-    });
-  }
-
-  async loginSocialUser({ email, rememberMe }) {
+  async loginGoogleUser({ email, rememberMe }) {
     const user = await User.findOne({ email }).exec();
     if (!user) {
       throw new UserInputError(WRONG_CREDENTIALS, { statusCode: BAD_REQUEST });
@@ -577,7 +535,7 @@ class UserService extends FilterHelper {
     };
   }
 
-  async registerSocialUser({ firstName, lastName, email, credentials }) {
+  async registerGoogleUser({ firstName, lastName, email, credentials }) {
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
@@ -612,8 +570,6 @@ class UserService extends FilterHelper {
       ],
     });
     const savedUser = await user.save();
-
-    new Wishlist({ user_id: user._id, products: [] }).save();
 
     jwtClient.setData({ userId: savedUser._id });
     const accessToken = jwtClient.generateAccessToken(
@@ -899,12 +855,9 @@ class UserService extends FilterHelper {
         confirmed: true,
       },
     }).exec();
-    const historyEvent = {
-      action: REGISTER_EVENT,
-      historyName: ADMIN_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      REGISTER_ADMIN,
       '',
       `${user.firstName} ${user.lastName}`,
       user._id,
@@ -931,6 +884,28 @@ class UserService extends FilterHelper {
       });
     }
     return { isSuccess: true };
+  }
+
+  async updateCartOrWishlist(userId, key, list, productId) {
+    await User.findByIdAndUpdate(userId, { [key]: list }).exec();
+    return productService.getProductById(productId);
+  }
+
+  addProductToWishlist(productId, key, user) {
+    const newList = [...user.wishlist, productId];
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  removeProductFromWishlist(productId, key, user) {
+    const newList = user.wishlist.filter(id => String(id) !== productId);
+    return this.updateCartOrWishlist(user._id, key, newList, productId);
+  }
+
+  async getCountUserOrders(_id) {
+    await this.getUserByFieldOrThrow(USER_ID, _id);
+    const orders = await Order.find({ user_id: _id }).exec();
+
+    return { countOrder: orders.length };
   }
 }
 

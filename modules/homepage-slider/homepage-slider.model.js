@@ -3,7 +3,7 @@ const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
 
 const {
-  DB_COLLECTIONS_NAMES: { HOME_PAGE_SLIDE, TRANSLATIONS },
+  DB_COLLECTIONS_NAMES: { HOME_PAGE_SLIDE },
 } = require('../../consts/db-collections-names');
 
 const HomePageSlideSchema = new mongoose.Schema({
@@ -15,10 +15,6 @@ const HomePageSlideSchema = new mongoose.Schema({
   images: ImageSet,
   order: Number,
   show: Boolean,
-  translations_key: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: TRANSLATIONS,
-  },
 });
 
 module.exports = mongoose.model(HOME_PAGE_SLIDE, HomePageSlideSchema);

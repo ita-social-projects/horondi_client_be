@@ -1,10 +1,9 @@
 const Contact = require('./contact.model');
-const createTranslations = require('../../utils/createTranslations');
+const uploadService = require('../upload/upload.service');
+const { uploadContactImages } = require('./contact.utils');
 const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
+  MAP_IMAGES_INDECIES: { ZERO_INDEX, FIRST_INDEX },
+} = require('../../consts/map-images-indecies');
 
 class ContactService {
   async getContacts({ skip, limit }) {
@@ -29,12 +28,11 @@ class ContactService {
   }
 
   async addContact(data) {
-    data.contact.translationsKey = await addTranslations(
-      createTranslations(data.contact)
-    );
+    const images = await uploadContactImages(data);
 
     return new Contact({
       ...data.contact,
+      images,
     }).save();
   }
 
@@ -45,11 +43,13 @@ class ContactService {
 
     if (!contact) return null;
 
-    await updateTranslations(
-      contact.translationsKey,
-      createTranslations(data.contact)
-    );
-
+    if (
+      contact.images.length === 2 &&
+      data.mapImages.length === 2 &&
+      this.deleteMapImages(contact)
+    ) {
+      return this.saveUpdatedContact(data);
+    }
     return Contact.findByIdAndUpdate(data.id, data.contact, {
       new: true,
     }).exec();
@@ -62,9 +62,50 @@ class ContactService {
 
     if (!contact) return null;
 
-    await deleteTranslations(contact.translationsKey);
+    if (contact && contact.images && contact.images.length === 2) {
+      this.deleteMapImages(contact);
+    }
 
     return Contact.findByIdAndDelete(id).exec();
+  }
+
+  async uploadMapImages(data) {
+    const uploadResult = await uploadService.uploadFiles([
+      data.mapImages[ZERO_INDEX].image,
+      data.mapImages[FIRST_INDEX].image,
+    ]);
+    const imagesResult = await Promise.allSettled(uploadResult);
+    return imagesResult.map(item => item.value.fileNames);
+  }
+
+  async saveUpdatedContact(data) {
+    const images = await this.uploadMapImages(data);
+
+    return Contact.findByIdAndUpdate(
+      data.id,
+      {
+        ...data.contact,
+        images: [
+          { lang: data.mapImages[ZERO_INDEX].lang, value: images[ZERO_INDEX] },
+          {
+            lang: data.mapImages[FIRST_INDEX].lang,
+            value: images[FIRST_INDEX],
+          },
+        ],
+      },
+      {
+        new: true,
+      }
+    ).exec();
+  }
+
+  async deleteMapImages(contact) {
+    const deletedImages = await uploadService.deleteFiles([
+      ...Object.values(contact.images[ZERO_INDEX].value),
+      ...Object.values(contact.images[FIRST_INDEX].value),
+    ]);
+
+    return Promise.allSettled(deletedImages);
   }
 }
 

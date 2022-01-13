@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 
-const {
-  DB_COLLECTIONS_NAMES: { TRANSLATIONS },
-} = require('../../consts/db-collections-names');
-
 const Language = require('../../models/Language').schema;
 const {
   CODE_IS_TOO_SHORT,
@@ -25,10 +21,6 @@ const businessTextSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-  },
-  translationsKey: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: TRANSLATIONS,
   },
 });
 

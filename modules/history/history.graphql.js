@@ -6,7 +6,6 @@ const historyType = `
     type HistoryRecord{
         _id: ID!
         action: String,
-        historyName: String,
         subject: HistorySubject
         valueBeforeChange: [JSONObject],
         valueAfterChange: [JSONObject]
@@ -23,7 +22,6 @@ const historyFilterInput = `
   input HistoryFilterInput{
     date:DateRangeInput
     action:[String]
-    historyName:[String]
     fullName:String
     role:[String]
   }

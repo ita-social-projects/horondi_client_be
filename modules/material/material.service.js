@@ -8,15 +8,8 @@ const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { MATERIAL_EVENT },
-} = require('../../consts/history-events');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
+  HISTORY_ACTIONS: { ADD_MATERIAL, DELETE_MATERIAL, EDIT_MATERIAL },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -121,10 +114,6 @@ class MaterialsService {
         material.additionalPrice
       );
     }
-    await updateTranslations(
-      materialToUpdate.translationsKey,
-      createTranslations(material)
-    );
 
     const updatedMaterial = await Material.findByIdAndUpdate(id, material, {
       new: true,
@@ -138,12 +127,9 @@ class MaterialsService {
       materialToUpdate,
       material
     );
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: MATERIAL_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_MATERIAL,
       materialToUpdate.purpose,
       materialToUpdate.name[UA].value,
       materialToUpdate._id,
@@ -164,16 +150,10 @@ class MaterialsService {
       material.additionalPrice
     );
 
-    material.translationsKey = await addTranslations(
-      createTranslations(material)
-    );
     const newMaterial = await new Material(material).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: MATERIAL_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_MATERIAL,
       newMaterial.purpose,
       newMaterial.name[UA].value,
       newMaterial._id,
@@ -198,12 +178,8 @@ class MaterialsService {
     const foundMaterial = await Material.findByIdAndDelete(id).exec();
 
     if (foundMaterial) {
-      const historyEvent = {
-        action: DELETE_EVENT,
-        historyName: MATERIAL_EVENT,
-      };
       const historyRecord = generateHistoryObject(
-        historyEvent,
+        DELETE_MATERIAL,
         foundMaterial.purpose,
         foundMaterial.name[UA].value,
         foundMaterial._id,
@@ -218,7 +194,6 @@ class MaterialsService {
         [],
         adminId
       );
-      await deleteTranslations(foundMaterial.translationsKey);
 
       await addHistoryRecord(historyRecord);
 

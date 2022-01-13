@@ -59,6 +59,7 @@ const updateUserById = async (
   city,
   street,
   buildingNumber,
+  wishlist,
   orders,
   comments,
   token,
@@ -74,6 +75,7 @@ const updateUserById = async (
         $city: String!
         $street: String!
         $buildingNumber: String!
+        $wishlist: [ID!]!
         $orders: [ID!]!
         $comments: [ID!]!
       ) {
@@ -89,6 +91,7 @@ const updateUserById = async (
               street: $street
               buildingNumber: $buildingNumber
             }
+            wishlist: $wishlist
             orders: $orders
             comments: $comments
           }
@@ -124,6 +127,7 @@ const updateUserById = async (
       city,
       street,
       buildingNumber,
+      wishlist,
       orders,
       comments,
     },
@@ -157,13 +161,15 @@ const loginUser = async (email, pass, rememberMe, operations) => {
             zipcode
             buildingNumber
             region
-            district
             street
             city
             appartment
             country
           }
           registrationDate
+          wishlist {
+            _id
+          }
           credentials {
             source
             tokenPass
@@ -195,23 +201,6 @@ const googleUser = async (idToken, rememberMe, operations) => {
     },
   });
   return googleUser.data.googleUser;
-};
-const facebookUser = async (idToken, rememberMe, operations) => {
-  const facebookUser = await operations.mutate({
-    mutation: gql`
-      mutation($idToken: String!, $rememberMe: Boolean) {
-        facebookUser(idToken: $idToken, rememberMe: $rememberMe) {
-          token
-          _id
-        }
-      }
-    `,
-    variables: {
-      idToken,
-      rememberMe,
-    },
-  });
-  return facebookUser.data.facebookUser;
 };
 const regenerateAccessToken = async (refreshToken, operations) => {
   const res = await operations.mutate({
@@ -259,6 +248,21 @@ const getAllUsers = async operations => {
   });
 
   return allUsers;
+};
+const getCountUserOrders = async (userId, operations) => {
+  const count = await operations.query({
+    query: gql`
+      query($userId: ID!) {
+        getCountUserOrders(id: $userId) {
+          countOrder
+        }
+      }
+    `,
+    variables: {
+      userId,
+    },
+  });
+  return count.data.getCountUserOrders;
 };
 const getUserByToken = async operations => {
   const user = await operations.query({
@@ -639,11 +643,11 @@ module.exports = {
   loginUser,
   getAllUsers,
   getUserByToken,
+  getCountUserOrders,
   getUserById,
   deleteUser,
   loginAdmin,
   googleUser,
-  facebookUser,
   blockUser,
   unlockUser,
   confirmUserEmail,

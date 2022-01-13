@@ -16,7 +16,7 @@ const {
   descript_title_text_LANG_MIN_CHARS,
   descript_title_text_LANG_MAX_CHARS,
   descript_title_text_VALUE_MIN_CHARS,
-  descript_title_VALUE_MAX_CHARS,
+  descript_title_text_VALUE_MAX_CHARS,
   languageValidator,
 } = require('./language.validator');
 
@@ -34,7 +34,7 @@ const materialInputValidator = Joi.object({
       descript_title_text_LANG_MIN_CHARS,
       descript_title_text_LANG_MAX_CHARS,
       descript_title_text_VALUE_MIN_CHARS,
-      descript_title_VALUE_MAX_CHARS
+      descript_title_text_VALUE_MAX_CHARS
     )
   ),
   purpose: Joi.string()

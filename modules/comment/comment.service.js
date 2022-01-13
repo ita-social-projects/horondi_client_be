@@ -315,27 +315,10 @@ class CommentsService {
   async deleteComment(id) {
     const deletedComment = await Comment.findById(id).exec();
 
-    if (deletedComment) {
-      return Comment.findByIdAndDelete(id).exec();
+    if (!deletedComment) {
+      throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
-
-    const isReplyCommentPresent = await Comment.findOne({
-      'replyComments._id': id,
-    }).exec();
-
-    if (isReplyCommentPresent) {
-      return Comment.findOneAndUpdate(
-        { 'replyComments._id': id },
-        {
-          $pull: {
-            replyComments: { _id: id },
-          },
-        },
-        { new: true }
-      ).exec();
-    }
-
-    throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
+    return Comment.findByIdAndDelete(id).exec();
   }
 
   async addRate(id, data, user) {

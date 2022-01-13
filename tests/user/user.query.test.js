@@ -11,7 +11,7 @@ const {
   testUsersSet,
   wrongId,
   filter,
-  socialToken,
+  googleToken,
 } = require('./user.variables');
 const {
   registerUser,
@@ -21,12 +21,12 @@ const {
   getUserById,
   deleteUser,
   googleUser,
-  facebookUser,
   loginAdmin,
   getAllUsersWithToken,
   validateConfirmationToken,
   getPurchasedProducts,
   getUsersForStatistic,
+  getCountUserOrders,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -81,6 +81,7 @@ describe('queries', () => {
         buildingNumber: '23',
       },
       role: 'user',
+      wishlist: [],
       orders: [],
       comments: [],
       token,
@@ -122,6 +123,20 @@ describe('queries', () => {
     const res = await getUserById(wrongId, operations);
 
     expect(res.data.getUserById.message).toBe('USER_NOT_FOUND');
+  });
+
+  test('should get count user orders by id', async () => {
+    const result = await getCountUserOrders(userId, operations);
+
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toEqual(0);
+  });
+
+  test('get count orders should return 0 when user with provided id not found', async () => {
+    const result = await getCountUserOrders(wrongId, operations);
+
+    expect(result.countOrder).toBeDefined();
+    expect(result.countOrder).toBe(0);
   });
 
   test('should get user for statistic', async () => {
@@ -201,11 +216,8 @@ describe('Testing obtaining information restrictions', () => {
   });
 
   test('Google user must login', async () => {
-    const result = await googleUser(socialToken, true, operations);
-    expect(result).toBeDefined();
-  });
-  test('Facebook user must login', async () => {
-    const result = await facebookUser(socialToken, true, operations);
+    const result = await googleUser(googleToken, true, operations);
+
     expect(result).toBeDefined();
   });
   test('Any user doesn`t allowed to obtain information about all users', async () => {

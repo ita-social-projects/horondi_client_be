@@ -9,7 +9,6 @@ const getAllHistoryRecords = async (params, operations) => {
             items {
               _id
               action
-              historyName
               subject {
                 model
                 name
@@ -41,7 +40,6 @@ const getHistoryRecordById = async (id, operations) => {
           ... on HistoryRecord {
             _id
             action
-            historyName
             subject {
               model
               name

@@ -81,7 +81,6 @@ describe('Pattern Mutation Tests', () => {
     const updatedPattern = await updatePattern(
       patternId,
       patternToUpdate(materialId, modelId),
-      [{ file: 1 }, {}],
       operations
     );
 
@@ -98,7 +97,6 @@ describe('Pattern Mutation Tests', () => {
     const res = await updatePattern(
       wrongId,
       patternToUpdate(materialId, modelId),
-      [{ file: 1 }, {}],
       operations
     );
 

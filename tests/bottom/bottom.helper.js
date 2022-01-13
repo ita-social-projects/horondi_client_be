@@ -31,7 +31,6 @@ const createBottom = async (bottom, image, operations) => {
               value
               currency
             }
-            translationsKey
           }
           ... on Error {
             message

@@ -5,9 +5,8 @@ const {
   COLOR_NOT_FOUND,
 } = require('../../error-messages/color.massage');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT },
-  HISTORY_NAMES: { COLOR_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_COLOR, DELETE_COLOR },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   generateHistoryChangesData,
@@ -23,11 +22,6 @@ const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 
 class ColorService {
   async getAllColors() {
@@ -43,21 +37,14 @@ class ColorService {
   }
 
   async addColor(colorData, { _id: adminId }) {
-    colorData.translations_key = await addTranslations(
-      createTranslations(colorData)
-    );
-
     const hex = await Color.find({ colorHex: colorData.colorHex }).exec();
     if (hex.length) {
       throw new RuleError(COLOR_ALREADY_EXIST, BAD_REQUEST);
     }
     const newColor = await new Color(colorData).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: COLOR_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_COLOR,
       newColor.name[UA].value,
       newColor.simpleName[UA].value,
       newColor._id,
@@ -86,12 +73,9 @@ class ColorService {
     }
 
     const deletedColor = await Color.findByIdAndDelete(id).exec();
-    const historyEvent = {
-      action: DELETE_EVENT,
-      historyName: COLOR_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      DELETE_COLOR,
       deletedColor.name[UA].value,
       deletedColor.simpleName[UA].value,
       deletedColor._id,
@@ -101,8 +85,6 @@ class ColorService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    await deleteTranslations(color.translations_key);
 
     return deletedColor;
   }

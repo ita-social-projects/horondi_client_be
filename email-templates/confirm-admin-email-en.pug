@@ -3,8 +3,8 @@ block subheaderText
     p.registrationText Administrator Registration
 block content
     div.contentRegistrationText
-        p.congrats Greetings! #[br] To register as an administrator, confirm you email:
+        p.congrats Greetings! #[br] To sign up as administrator, confirm an email:
         button.confirm
-            a(href=adminUrl + `/confirmation/` + token) CONFIRM E-MAIL
-        p.link or follow the link:
+            a(href=adminUrl + `/confirmation/` + token) Confirm e-mail
+        p.link or follow the link below:
         a.alink(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}

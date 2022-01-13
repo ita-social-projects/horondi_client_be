@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
 const {
-  DB_COLLECTIONS_NAMES: { CATEGORY, TRANSLATIONS },
+  DB_COLLECTIONS_NAMES: { CATEGORY },
 } = require('../../consts/db-collections-names');
 
 const CategorySchema = new mongoose.Schema({
@@ -13,10 +13,6 @@ const CategorySchema = new mongoose.Schema({
   name: [Language],
   images: ImageSet,
   available: Boolean,
-  translationsKey: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: TRANSLATIONS,
-  },
 });
 
 module.exports = mongoose.model(CATEGORY, CategorySchema);

@@ -1,12 +1,6 @@
 const Category = require('./category.model');
 const Product = require('../product/product.model');
 const Model = require('../model/model.model');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 const {
   CATEGORY_ALREADY_EXIST,
   CATEGORY_NOT_FOUND,
@@ -24,9 +18,8 @@ const {
   PURCHASED_COUNT,
 } = require('../../consts/category-fields');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { CATEGORY_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_CATEGORY, DELETE_CATEGORY, EDIT_CATEGORY },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -85,22 +78,14 @@ class CategoryService extends FilterHelper {
       throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    await updateTranslations(
-      categoryToUpdate.translationsKey,
-      createTranslations(category)
-    );
-
     if (category) {
       const { beforeChanges, afterChanges } = getChanges(
         categoryToUpdate,
         category
       );
-      const historyEvent = {
-        action: EDIT_EVENT,
-        historyName: CATEGORY_EVENT,
-      };
+
       const historyRecord = generateHistoryObject(
-        historyEvent,
+        EDIT_CATEGORY,
         '',
         categoryToUpdate.name[UA].value,
         categoryToUpdate._id,
@@ -145,18 +130,17 @@ class CategoryService extends FilterHelper {
       pagination: {},
       sort: {},
     });
+
     return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => ({
         name: model.name,
         _id: model._id,
-        translationsKey: model.translationsKey,
       }));
       return {
         category: {
           name: [...category.name],
           _id: category._id,
-          translationsKey: category.translationsKey,
         },
         models: modelsFields,
       };
@@ -172,8 +156,6 @@ class CategoryService extends FilterHelper {
       throw new RuleError(CATEGORY_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    data.translationsKey = await addTranslations(createTranslations(data));
-
     const savedCategory = await new Category(data).save();
 
     const uploadResult = await uploadService.uploadFile(upload);
@@ -181,12 +163,9 @@ class CategoryService extends FilterHelper {
     savedCategory.images = uploadResult.fileNames;
 
     const newCategory = await savedCategory.save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: CATEGORY_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_CATEGORY,
       '',
       newCategory.name[UA].value,
       newCategory._id,
@@ -211,8 +190,6 @@ class CategoryService extends FilterHelper {
 
     if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
 
-    await deleteTranslations(category.translationsKey);
-
     const switchCategory = await Category.findById(switchId).exec();
 
     const filter = {
@@ -234,12 +211,8 @@ class CategoryService extends FilterHelper {
     }
 
     if (category) {
-      const historyEvent = {
-        action: DELETE_EVENT,
-        historyName: CATEGORY_EVENT,
-      };
       const historyRecord = generateHistoryObject(
-        historyEvent,
+        DELETE_CATEGORY,
         '',
         category.name[UA].value,
         category._id,

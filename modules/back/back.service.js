@@ -1,11 +1,5 @@
 const Back = require('./back.model');
 const uploadService = require('../upload/upload.service');
-const createTranslations = require('../../utils/createTranslations');
-const {
-  addTranslations,
-  updateTranslations,
-  deleteTranslations,
-} = require('../translations/translations.service');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
@@ -16,9 +10,8 @@ const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
-  HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
-  HISTORY_NAMES: { BACK_EVENT },
-} = require('../../consts/history-events');
+  HISTORY_ACTIONS: { ADD_BACK, EDIT_BACK, DELETE_BACK },
+} = require('../../consts/history-actions');
 const {
   generateHistoryObject,
   getChanges,
@@ -111,12 +104,9 @@ class BackService {
     }).exec();
 
     const { beforeChanges, afterChanges } = getChanges(backToUpdate, back);
-    const historyEvent = {
-      action: EDIT_EVENT,
-      historyName: BACK_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      EDIT_BACK,
       backToUpdate.model?._id,
       backToUpdate.name[UA].value,
       backToUpdate._id,
@@ -126,11 +116,6 @@ class BackService {
     );
 
     await addHistoryRecord(historyRecord);
-
-    await updateTranslations(
-      backToUpdate.translationsKey,
-      createTranslations(back)
-    );
 
     return updatedBack;
   }
@@ -147,12 +132,9 @@ class BackService {
     if (foundBack.image) {
       return uploadService.deleteFiles(Object.values(foundBack.image));
     }
-    const historyEvent = {
-      action: DELETE_EVENT,
-      historyName: BACK_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      DELETE_BACK,
       foundBack.model,
       foundBack.name[UA].value,
       foundBack._id,
@@ -170,8 +152,6 @@ class BackService {
 
     await addHistoryRecord(historyRecord);
 
-    await deleteTranslations(foundBack.translationsKey);
-
     return Back.findByIdAndDelete(id);
   }
 
@@ -183,15 +163,10 @@ class BackService {
 
     back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
 
-    back.translationsKey = await addTranslations(createTranslations(back));
-
     const newBack = await new Back(back).save();
-    const historyEvent = {
-      action: ADD_EVENT,
-      historyName: BACK_EVENT,
-    };
+
     const historyRecord = generateHistoryObject(
-      historyEvent,
+      ADD_BACK,
       newBack.model?._id,
       newBack.name[UA].value,
       newBack._id,

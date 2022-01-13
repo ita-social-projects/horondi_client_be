@@ -7,7 +7,6 @@ const pocketType = `
     additionalPrice: [AdditionalCurrencySet]
     restriction: Boolean
     positions: [Position]
-    translationsKey: ID
   }
 `;
 

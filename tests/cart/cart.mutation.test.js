@@ -16,7 +16,6 @@ const {
   addConstructorProductItemToCart,
   updateCartConstructorProductItemQuantity,
   mergeCartFromLS,
-  changeCartItemSize,
 } = require('./cart.helper');
 const {
   newConstructorBasic,
@@ -31,13 +30,12 @@ const { newProductInputData } = require('../product/product.variables');
 const {
   newProductInCart,
   testQuantity,
+  sizeName,
   productWrongId,
   sizeWrongId,
   newProductInputData2,
   price,
   expectedPrice,
-  allSizes,
-  userWrongId,
 } = require('./cart.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
@@ -101,7 +99,6 @@ let frontPocketId;
 let constructorData;
 let constructorWrongData;
 let cartFromLS;
-let itemId;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -184,15 +181,6 @@ describe('Cart queries', () => {
       operations
     );
     bottomId = bottomData._id;
-    const productSentToCart = await addProductToCart(
-      productId,
-      adminId,
-      sizeId,
-      price,
-      allSizes,
-      operations
-    );
-    itemId = productSentToCart.cart.items[0]._id;
     const frontPocketData = await createConstructorFrontPocket(
       newConstructorFront(materialId, colorId, modelId),
       operations
@@ -218,7 +206,6 @@ describe('Cart queries', () => {
         options: {
           size: sizeId,
         },
-        allSizes,
         price: [
           {
             currency: 'UAH',
@@ -233,41 +220,28 @@ describe('Cart queries', () => {
     ];
   });
   it('Should add 2 Products to cart', async () => {
+    const productSentToCart = await addProductToCart(
+      productId,
+      adminId,
+      sizeId,
+      price,
+      operations
+    );
+    cart = productSentToCart.cart.items[zeroIndex];
     const productSentToCart2 = await addProductToCart(
       productId2,
       adminId,
       sizeId,
       price,
-      allSizes,
       operations
     );
 
+    expect(cart.product._id).toBe(productId);
+    expect(cart.options).toHaveProperty('size', {
+      _id: sizeId,
+      name: sizeName,
+    });
     expect(productSentToCart2.cart.items).toHaveLength(2);
-  });
-  it('Should change cart item size', async () => {
-    const newSize = sizeId;
-    const res = await changeCartItemSize(
-      itemId,
-      adminId,
-      price,
-      newSize,
-      2,
-      operations
-    );
-
-    expect(res.cart.items[0].options.size._id).toBe(newSize);
-  });
-  it('Should throw error while changing cart item size', async () => {
-    const res = await changeCartItemSize(
-      itemId,
-      userWrongId,
-      price,
-      sizeId,
-      2,
-      operations
-    );
-
-    expect(res).toHaveProperty('statusCode', 404);
   });
   it('Should increase product quantity after adding the same Product to cart', async () => {
     const productSentToCart = await addProductToCart(
@@ -275,7 +249,6 @@ describe('Cart queries', () => {
       adminId,
       sizeId,
       price,
-      allSizes,
       operations
     );
     cart = productSentToCart.cart.items[zeroIndex];

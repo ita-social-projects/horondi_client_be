@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const AdditionalCurrencySet = require('../../models/AdditionalCurrencySet')
   .schema;
+const Language = require('../../models/Language').schema;
 const {
   DB_COLLECTIONS_NAMES: { SIZE, MODEL },
 } = require('../../consts/db-collections-names');

@@ -9,7 +9,6 @@ const closureType = `
     additionalPrice: [AdditionalCurrencySet]
     available: Boolean
     customizable: Boolean
-    translations_key: ID!
   }
 `;
 

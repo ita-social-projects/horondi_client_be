@@ -3,7 +3,6 @@ const positionType = `
     _id: ID!
     name: [Language]
     available: Boolean
-    translationsKey: ID
   }
 `;
 

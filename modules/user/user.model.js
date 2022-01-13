@@ -7,7 +7,7 @@ const {
 } = require('../../error-messages/common.messages');
 
 const {
-  DB_COLLECTIONS_NAMES: { USER: USER_DB, COMMENT, ORDER },
+  DB_COLLECTIONS_NAMES: { USER: USER_DB, PRODUCT, COMMENT, ORDER },
 } = require('../../consts/db-collections-names');
 const {
   roles: { USER, ADMIN, SUPERADMIN },
@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
-        return /^[+]*[(]?\d{1,4}[)]?[-\s/0-9]{9}$/.test(v);
+        return /^\+?3?8?(0\d{9})$/.test(v);
       },
       message: PHONE_NUMBER_NOT_VALID,
     },
@@ -54,6 +54,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  wishlist: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: PRODUCT,
+    },
+  ],
   cart: Cart,
   orders: [
     {

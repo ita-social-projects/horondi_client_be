@@ -9,7 +9,6 @@ const backType = `
     additionalPrice: [AdditionalCurrencySet]
     available: Boolean
     customizable: Boolean
-    translationsKey: ID
   }
 `;
 
