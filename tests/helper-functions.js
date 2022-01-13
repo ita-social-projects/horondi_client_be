@@ -13,13 +13,13 @@ const {
 } = require('../consts');
 const { FIRST_NAME, LAST_NAME } = require('../consts/test-admin');
 
-const registerAdmin = async (email, password, role = SUPERADMIN) => {
+const registerAdmin = async (email, password) => {
   await User.deleteOne({ email });
   const admin = new User();
   admin.firstName = FIRST_NAME;
   admin.lastName = LAST_NAME;
   admin.email = email;
-  admin.role = role;
+  admin.role = SUPERADMIN;
   admin.credentials = [
     {
       source: HORONDI,
@@ -29,16 +29,12 @@ const registerAdmin = async (email, password, role = SUPERADMIN) => {
   await admin.save();
   return admin;
 };
-const setupApp = async (role = SUPERADMIN) => {
-  const userWithRole = await registerAdmin(
-    SUPER_ADMIN_EMAIL,
-    SUPER_ADMIN_PASSWORD,
-    role
-  );
+const setupApp = async user => {
+  const admin = await registerAdmin(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
 
   const server = new ApolloServer({
     ...config,
-    context: { user: userWithRole },
+    context: { user: user || admin },
   });
   return createTestClient(server);
 };

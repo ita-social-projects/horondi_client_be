@@ -25,7 +25,7 @@ describe('Test certificate Queries', () => {
 
   it('#1. settuped to 3 pagination limit returns 3', async () => {
     const result = await getAllCertificates(operations);
-    expect(result.items.length === 3).toBeTruthy();
+    expect(result.items.length).toBe(3);
   });
 
   it('#2. check unique field in one of certificates in list', async () => {
