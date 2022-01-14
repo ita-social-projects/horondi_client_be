@@ -72,6 +72,10 @@ const {
   currencyInput,
 } = require('./modules/currency/currency.graphql');
 const {
+  certificateType,
+  certificateInput,
+} = require('./modules/certificate/certificate.graphql.js');
+const {
   commentType,
   commentInput,
   commentsSortInput,
@@ -180,6 +184,7 @@ const typeDefs = gql`
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
+  ${certificateType}
   ${materialType}
   ${newsType}
   ${patternType}
@@ -441,6 +446,12 @@ const typeDefs = gql`
       items: [Closure]
       count: Int
   }
+
+  type PaginatedCertificate {
+      items: [Certificate]
+      count: Int
+  }
+  
   type PaginatedPockets {
     items: [Pocket]
     count: Int
@@ -496,9 +507,11 @@ const typeDefs = gql`
     userOrders: [Order]
     ordersCount: Int
   }
+  
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
+  union CertificateResult = Certificate | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
@@ -590,6 +603,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
+      
     getAllComments(
       filter: CommentFilterInput,
       pagination: Pagination,
@@ -621,6 +635,8 @@ const typeDefs = gql`
     ): PaginatedReplies!
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
+    getAllCertificates(limit:Int, skip:Int): PaginatedCertificate!
+    getCertificateById(id: ID!): CertificateResult
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
@@ -725,6 +741,7 @@ const typeDefs = gql`
     image: Upload
   }
   ${categoryInput}
+  ${certificateInput}
   ${currencyInput}
   ${materialInput}
   ${newsInput}
@@ -883,6 +900,7 @@ const typeDefs = gql`
       category: CategoryInput!
       upload: Upload
     ): CategoryResult
+    
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
@@ -891,6 +909,10 @@ const typeDefs = gql`
     addNews(news: NewsInput!, upload: Upload): NewsResult
     deleteNews(id: ID!): NewsResult
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
+    "Certificate Mutation"
+    addCertificate(certificate: CertificateInput!): CertificateResult
+    deleteCertificate(id: ID!): CertificateResult
+    updateCertificate(name: String!): CertificateResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
     addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult

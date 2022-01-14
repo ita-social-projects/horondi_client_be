@@ -27,6 +27,11 @@ const {
 } = require('./modules/comment/comment.resolver');
 
 const {
+  certificatesQuery,
+  certificatesMutation,
+} = require('./modules/certificate/certificate.resolver');
+
+const {
   contactQuery,
   contactMutation,
 } = require('./modules/contact/contact.resolver');
@@ -164,6 +169,7 @@ const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
+  certificate: 'Certificate',
   history: 'History',
   historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
@@ -218,6 +224,8 @@ const {
 
 const resolvers = {
   Query: {
+    ...certificatesQuery,
+
     ...questionsAnswersQuery,
 
     ...promoCodeQuery,
@@ -674,6 +682,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...certificatesMutation,
+
     ...questionsAnswersMutation,
 
     ...promoCodeMutation,
@@ -742,6 +752,17 @@ const resolvers = {
 
     ...wishlistMutation,
   },
+
+  CertificateResult: {
+    __resolveType: obj => {
+      if (obj.name || obj.isUsed) {
+        return SCHEMA_NAMES.certificate;
+      }
+
+      return 'Error';
+    },
+  },
+
   HistoryResult: {
     __resolveType: obj => {
       if (obj.items) {

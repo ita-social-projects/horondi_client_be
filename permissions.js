@@ -21,6 +21,11 @@ const {
 const { currencyMutation } = require('./modules/currency/currency.permission');
 
 const {
+  certificatePermissionsMutations,
+  certificatePermissionsQuery,
+} = require('./modules/certificate/certificates.permission');
+
+const {
   emailChatQuestionMutation,
 } = require('./modules/email-chat/email-chat.permission');
 
@@ -167,6 +172,7 @@ const permissions = shield(
     Query: {
       ...historyPermissionsQuery,
       ...cartPermissionsQuery,
+      ...certificatePermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
@@ -223,6 +229,7 @@ const permissions = shield(
       ...businessTextMutation,
       ...emailChatQuestionMutation,
       ...currencyMutation,
+      ...certificatePermissionsMutations,
       ...homePageSlideMutation,
       ...uploadMutation,
       ...positionPermissionsMutations,
