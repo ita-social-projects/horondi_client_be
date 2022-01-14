@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: '14.15.4' 
-      - run: npm install
+      - run: npm install -g increase-memory-limit
       - run: npm run test
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
@@ -57,6 +57,7 @@ jobs:
           NOVA_POSHTA_API_KEY: ${{secrets.NOVA_POSHTA_API_KEY}}
           PAYMENT_API_LINK: ${{secrets.PAYMENT_API_LINK}}
           REACT_APP_GOOGLE_CLIENT_ID: ${{secrets.REACT_APP_GOOGLE_CLIENT_ID}}
+          
  
       - name: The eslint checking
         run: npm run lint:fix
