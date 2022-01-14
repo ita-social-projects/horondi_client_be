@@ -18,6 +18,7 @@ class CertificatesService {
     } else {
       filter = { createdBy: user.id };
     }
+
     const items = await Certificate.find(filter)
       .sort({ startDate: 1 })
       .limit(limit)
@@ -42,14 +43,14 @@ class CertificatesService {
     return certificate;
   }
 
-  async addCertificate(name, value, id) {
+  async addCertificate(name, value, creatorId) {
     const certificateExists = await Certificate.findOne({ name });
 
     if (certificateExists) {
       throw new RuleError(CERTIFICATE_ALREADY_EXISTS, BAD_REQUEST);
     }
 
-    return new Certificate({ name, value, createdBy: id }).save();
+    return new Certificate({ name, value, createdBy: creatorId }).save();
   }
 
   async updateCertificate(name) {
