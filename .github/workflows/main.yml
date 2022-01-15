@@ -19,9 +19,10 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: '14.15.4' 
-      - run: npm install -g increase-memory-limit
+      - run: npm install
       - run: npm run test
         env:
+          NODE_OPTIONS: --max_old_space_size=1536
           MONGO_URL: ${{secrets.MONGO_URL}}
           MAIL_USER: ${{secrets.MAIL_USER}}
           MAIL_PASS: ${{secrets.MAIL_PASS}}
