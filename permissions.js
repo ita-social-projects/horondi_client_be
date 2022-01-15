@@ -3,7 +3,10 @@ const { shield } = require('graphql-shield');
 const {
   emailChatQuestionQuery,
 } = require('./modules/email-chat/email-chat.permission');
-
+const {
+  aboutUsPermissionsQuery,
+  aboutUsPermissionsMutation,
+} = require('./modules/about-us/about-us.permissions');
 const {
   questionsAnswersMutation,
 } = require('./modules/questions-answers/questions-answers.permissions');
@@ -161,6 +164,7 @@ const {
 const permissions = shield(
   {
     Query: {
+      ...aboutUsPermissionsQuery,
       ...historyPermissionsQuery,
       ...cartPermissionsQuery,
       ...userPermissionsQuery,
@@ -191,6 +195,7 @@ const permissions = shield(
       ...wishlistPermissionsQuery,
     },
     Mutation: {
+      ...aboutUsPermissionsMutation,
       ...questionsAnswersMutation,
       ...productPermissionsMutation,
       ...cartPermissionsMutations,

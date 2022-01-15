@@ -9,7 +9,10 @@ const {
   questionsAnswersType,
   questionsAnswersInput,
 } = require('./modules/questions-answers/questions-answers.graphql');
-
+const {
+  AboutUsBlock,
+  AboutUsBlockInput,
+} = require('./modules/about-us/about-us.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -168,6 +171,8 @@ const { wishlistType } = require('./modules/wishlist/wishlist.graphql');
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${AboutUsBlockInput}
+  ${AboutUsBlock}
   ${questionsAnswersType}
   ${questionsAnswersInput}
   ${historyType}
@@ -529,6 +534,7 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
+    getAllBlocks: [AboutUsBlock]
     getAllQuestionsAnswers: PaginatedQNAs
     getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
@@ -836,6 +842,7 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addAboutUsBlock(aboutUsBlock: AboutUsBlockInput): AboutUsBlock
     addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     deleteQuestionsAnswers(id: ID!): QuestionsAnswers
     updateQuestionsAnswers(id: ID!

@@ -5,7 +5,10 @@ const {
   productsQuery,
   productsMutation,
 } = require('./modules/product/product.resolver');
-
+const {
+  aboutUsQuery,
+  aboutUsMutation,
+} = require('./modules/about-us/about-us.resolvers');
 const {
   questionsAnswersQuery,
   questionsAnswersMutation,
@@ -212,6 +215,7 @@ const {
 
 const resolvers = {
   Query: {
+    ...aboutUsQuery,
     ...questionsAnswersQuery,
 
     ...historyQuery,
@@ -666,6 +670,7 @@ const resolvers = {
   },
 
   Mutation: {
+    ...aboutUsMutation,
     ...questionsAnswersMutation,
 
     ...cartMutation,
