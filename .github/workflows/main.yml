@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '14.15.4' 
       - run: npm install
-      - run: npm run test --max-old-space-size=1536
+      - run: npm run test --max-old-space-size=8192
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
           MAIL_USER: ${{secrets.MAIL_USER}}
