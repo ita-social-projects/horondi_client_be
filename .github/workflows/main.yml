@@ -19,8 +19,8 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: '14.15.4' 
-      - run: npm install
-      - run: npm run test
+      - run: npm install 
+      - run: npm run test --max-old-space-size=4096
         env:
           MONGO_URL: ${{secrets.MONGO_URL}}
           MAIL_USER: ${{secrets.MAIL_USER}}
