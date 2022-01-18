@@ -10,6 +10,10 @@ const {
   questionsAnswersInput,
 } = require('./modules/questions-answers/questions-answers.graphql');
 
+const {
+  promoCodeType,
+  promoCodeInput,
+} = require('./modules/promo-code/promo-code.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -67,6 +71,10 @@ const {
   currencyType,
   currencyInput,
 } = require('./modules/currency/currency.graphql');
+const {
+  certificateType,
+  certificateInput,
+} = require('./modules/certificate/certificate.graphql.js');
 const {
   commentType,
   commentInput,
@@ -170,10 +178,13 @@ const { skip, limit } = defaultPaginationParams;
 const typeDefs = gql`
   ${questionsAnswersType}
   ${questionsAnswersInput}
+  ${promoCodeType}
+  ${promoCodeInput}
   ${historyType}
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
+  ${certificateType}
   ${materialType}
   ${newsType}
   ${patternType}
@@ -435,6 +446,12 @@ const typeDefs = gql`
       items: [Closure]
       count: Int
   }
+
+  type PaginatedCertificate {
+      items: [Certificate]
+      count: Int
+  }
+  
   type PaginatedPockets {
     items: [Pocket]
     count: Int
@@ -490,9 +507,11 @@ const typeDefs = gql`
     userOrders: [Order]
     ordersCount: Int
   }
+  
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
+  union CertificateResult = Certificate | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
@@ -549,6 +568,8 @@ const typeDefs = gql`
       skip: Int
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
+    getPromoCodeById(id: ID): PromoCode
+    getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
@@ -582,6 +603,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
+      
     getAllComments(
       filter: CommentFilterInput,
       pagination: Pagination,
@@ -613,6 +635,8 @@ const typeDefs = gql`
     ): PaginatedReplies!
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
+    getAllCertificates(limit:Int, skip:Int): PaginatedCertificate!
+    getCertificateById(id: ID!): CertificateResult
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
@@ -717,6 +741,7 @@ const typeDefs = gql`
     image: Upload
   }
   ${categoryInput}
+  ${certificateInput}
   ${currencyInput}
   ${materialInput}
   ${newsInput}
@@ -836,6 +861,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addPromoCode(promoCode: PromoCodeInput!): PromoCode
+    deletePromoCode(id: ID!): PromoCode
+    updatePromoCode(id: ID!
+      promoCode: PromoCodeInput!): PromoCode
     addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     deleteQuestionsAnswers(id: ID!): QuestionsAnswers
     updateQuestionsAnswers(id: ID!
@@ -871,6 +900,7 @@ const typeDefs = gql`
       category: CategoryInput!
       upload: Upload
     ): CategoryResult
+    
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
@@ -879,6 +909,10 @@ const typeDefs = gql`
     addNews(news: NewsInput!, upload: Upload): NewsResult
     deleteNews(id: ID!): NewsResult
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
+    "Certificate Mutation"
+    addCertificate(certificate: CertificateInput!): CertificateResult
+    deleteCertificate(id: ID!): CertificateResult
+    updateCertificate(name: String!): CertificateResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
     addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
