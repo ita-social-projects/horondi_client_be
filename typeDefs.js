@@ -10,6 +10,10 @@ const {
   questionsAnswersInput,
 } = require('./modules/questions-answers/questions-answers.graphql');
 
+const {
+  promoCodeType,
+  promoCodeInput,
+} = require('./modules/promo-code/promo-code.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -174,6 +178,8 @@ const { skip, limit } = defaultPaginationParams;
 const typeDefs = gql`
   ${questionsAnswersType}
   ${questionsAnswersInput}
+  ${promoCodeType}
+  ${promoCodeInput}
   ${historyType}
 	${categoryType}
 	${paginatedCategory}
@@ -562,6 +568,8 @@ const typeDefs = gql`
       skip: Int
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
+    getPromoCodeById(id: ID): PromoCode
+    getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
@@ -853,6 +861,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addPromoCode(promoCode: PromoCodeInput!): PromoCode
+    deletePromoCode(id: ID!): PromoCode
+    updatePromoCode(id: ID!
+      promoCode: PromoCodeInput!): PromoCode
     addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     deleteQuestionsAnswers(id: ID!): QuestionsAnswers
     updateQuestionsAnswers(id: ID!

@@ -12,6 +12,11 @@ const {
 } = require('./modules/questions-answers/questions-answers.resolver');
 
 const {
+  promoCodeQuery,
+  promoCodeMutation,
+} = require('./modules/promo-code/promo-code.resolver');
+
+const {
   ordersQuery,
   ordersMutation,
 } = require('./modules/order/order.resolver');
@@ -178,6 +183,7 @@ const SCHEMA_NAMES = {
   currency: 'Currency',
   product: 'Product',
   comment: 'Comment',
+  promoCode: 'PromoCode',
   businessText: 'BusinessText',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
@@ -221,6 +227,8 @@ const resolvers = {
     ...certificatesQuery,
 
     ...questionsAnswersQuery,
+
+    ...promoCodeQuery,
 
     ...historyQuery,
 
@@ -677,6 +685,8 @@ const resolvers = {
     ...certificatesMutation,
 
     ...questionsAnswersMutation,
+
+    ...promoCodeMutation,
 
     ...cartMutation,
 
