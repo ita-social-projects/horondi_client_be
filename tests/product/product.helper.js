@@ -198,13 +198,10 @@ const getProductById = async (id, operations) =>
 const deleteManyProducts = async (ids, operations) =>
   await operations.mutate({
     mutation: gql`
-      mutation(ids: ID!) {
+      mutation($ids: [ID!]) {
         deleteManyProducts(ids: $ids) {
           ... on Product {
             _id
-          }
-          ... on Error {
-            message
           }
         }
       }

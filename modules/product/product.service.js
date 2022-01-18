@@ -87,8 +87,6 @@ const {
   finalPriceRecalculation,
 } = require('../../utils/final-price-calculation');
 
-const { NODE_ENV } = require('../../dotenvValidator');
-
 class ProductsService {
   async getProductById(id) {
     const product = await Product.findById(id).exec();
@@ -412,11 +410,8 @@ class ProductsService {
       if (!product) {
         throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
       }
-      const isDevelopment = NODE_ENV === 'development';
 
-      const deletedImages = isDevelopment
-        ? [Promise.resolve(true)]
-        : await findAndDeleteImages(product);
+      const deletedImages = await findAndDeleteImages(product);
 
       if (await Promise.allSettled(deletedImages)) {
         const historyEvent = {
