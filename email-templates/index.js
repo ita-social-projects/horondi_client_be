@@ -21,10 +21,6 @@ const htmlTemplates = {
     subject: '[HORONDI] Unlocked user',
     templateFileName: ['unlock-user-en', 'unlock-user-ua'],
   },
-  [EmailActions.INCOMPLETE_OPERATIONS_CART]: {
-    subject: '[HORONDI] Incomplete operations in cart',
-    templateFileName: ['incomplete-operations-en', 'incomplete-operations-ua'],
-  },
   [EmailActions.SUCCESSFUL_ORDER]: {
     subject: '[HORONDI] Successful made order',
     templateFileName: ['successful-order-en', 'successful-order-ua'],

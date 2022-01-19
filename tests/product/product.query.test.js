@@ -16,7 +16,7 @@ const {
   getModelsByCategory,
   getPopularProducts,
   getProductsForWishlist,
-  getProductsForCart,
+
   getFilter,
   getCurrency,
 } = require('./product.helper');
@@ -172,11 +172,6 @@ describe('Product queries', () => {
   test('#7 Should return products from user wishlist', async () => {
     const productsFromWishlist = await getProductsForWishlist(userId);
     expect(Array.isArray(productsFromWishlist)).toBeTruthy();
-  });
-
-  test('#8 Should return products from user cart', async () => {
-    const productsFromCart = await getProductsForCart(userId);
-    expect(Array.isArray(productsFromCart)).toBeTruthy();
   });
 
   test('#9 Should throw error when category id wrong', async () => {
