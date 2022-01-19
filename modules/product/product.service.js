@@ -206,11 +206,13 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({ filter, skip, limit, sort={rate: -1}, search }) {
+  async getProducts({ filter, skip, limit, sort = { rate: -1 }, search }) {
     const filters = this.filterItems(filter);
-    const sortValue = (Object.keys(sort)).includes('basePrice') ? {
-      'sizes.price.value': sort.basePrice
-    } : sort;
+    const sortValue = Object.keys(sort).includes('basePrice')
+      ? {
+          'sizes.price.value': sort.basePrice,
+        }
+      : sort;
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
