@@ -14,14 +14,6 @@
     ],
     "rules": {
         "prettier/prettier": 1,
-        "no-unused-vars": [
-            2,
-            {
-                "vars": "all",
-                "args": "none",
-                "ignoreRestSiblings": true
-            }
-        ],
         "no-self-compare": 2,
         "array-callback-return": 2,
         "no-use-before-define": 2,
@@ -47,6 +39,7 @@
                 "allow": ["warn", "error"]
             }
         ],
+        "newline-before-return": 2,
         "no-unneeded-ternary": 2,
         "prefer-arrow-callback": 1,
         "prefer-template": 2,
