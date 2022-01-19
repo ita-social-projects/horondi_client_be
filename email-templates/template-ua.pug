@@ -1,16 +1,18 @@
 doctype html
 html
     head
+        meta(charset='UTF-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1')
         style
             include css/main.css
             include css/adaptive.css
         block styles
     body
-        header 
+        header
+            block headerText
         main
-            div.subheader
-                block subheaderText
+            block subheaderText
             block content
-        footer.top
-            p З найкращими побажаннями,
-            h2 HORONDI
+        footer
+            p.text.bestWishes З найкращими побажаннями,
+            h2.logo horondi
