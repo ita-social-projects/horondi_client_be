@@ -10,7 +10,9 @@ const getAllCertificates = async operations => {
             name
             value
             isUsed
-            createdBy
+            createdBy {
+              _id
+            }
           }
           count
         }

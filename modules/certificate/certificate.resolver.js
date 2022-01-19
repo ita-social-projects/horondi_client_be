@@ -1,5 +1,7 @@
 const certificatesService = require('./certificate.service');
 
+const Certificate = require('./certificate.model');
+
 const { tryCatchWrapper } = require('../helper-functions');
 
 const certificatesQuery = {
@@ -19,6 +21,21 @@ const certificatesMutation = {
 
   updateCertificate: async (_, { name }) =>
     tryCatchWrapper(certificatesService.updateCertificate(name)),
+
+  testDirect: async (_, { name }) =>
+    tryCatchWrapper(async () => {
+      const updatedCertificate = await Certificate.findOneAndUpdate(
+        { name },
+        { isUsed: true },
+        { new: true }
+      ).exec();
+
+      if (!updatedCertificate) {
+        throw new Error('CERTIFICATE_NOT_FOUND', '404');
+      }
+
+      return updatedCertificate;
+    }),
 };
 
 module.exports = { certificatesQuery, certificatesMutation };
