@@ -1,9 +1,11 @@
 extends template-ua
+block headerText
+    h1.responseTitle Вам надано відповідь на Ваше запитання
 block subheaderText
-    p.answerReceivedText Вам надано відповідь на Ваше запитання
+    h1.desktopTitle Вам надано відповідь на Ваше запитання
 block content
-    div.answerDiv
-        p Вітаємо, #{senderName}! Ви залишили питання на HORONDI.
-        p Зміст питання: #[strong #{question}]
-        p Відповідь: #[strong #{answer}]
-        p.condition Якщо ви не залишали цього запитання - проігноруйте цей лист.
+    div.contentWrapper
+        p.text Вітаємо, #{senderName}! Ви залишили питання на HORONDI.
+        p.text Зміст питання: #[strong #{question}]
+        p.text Відповідь: #[strong #{answer}]
+        p.text Якщо ви не залишали цього запитання - проігноруйте цей лист.

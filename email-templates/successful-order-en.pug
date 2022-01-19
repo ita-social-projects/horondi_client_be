@@ -1,8 +1,8 @@
 extends template-en
 block headerText
-    h1.responseTitle Uncompleted purchases
+    h1.responseTitle Your order has been successfully processed
 block subheaderText
-    h1.desktopTitle Uncompleted purchases
+    h1.desktopTitle Your order has been successfully processed
 block content
     div.contentWrapper
         table.productTable
@@ -20,12 +20,12 @@ block content
                                 img.productImg(src= `${imagesUrl}/${val.product.images.primary.medium}` alt='img')
                                 div.productInfo
                                     p.productTitle= val.product.name[1].value
-                                    p.productMaterial= `Bottom material: ${val.product.bottomMaterial.material.name[1].value}`
+                                    p.productMaterial= val.product.bottomMaterial.material.name[1].value
                                     p.productSizeResponsive= `Size - ${val.options.size.name}`
                         td.size
                             p.productSize= `${val.options.size.name}`
                         td.price
-                            p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}`
+                            p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
                         td.quantity
                             p.productQuantity= val.quantity
                         td.total
@@ -37,12 +37,12 @@ block content
                                 img.productImg(src= `${imagesUrl}/${val.fromConstructor.product.images.primary.medium}` alt='img')
                                 div.productInfo
                                     p.productTitle= val.fromConstructor.product.name[1].value
-                                    p.productMaterial= `Bottom material: ${val.fromConstructor.product.bottomMaterial.material.name[1].value}`
+                                    p.productMaterial= val.fromConstructor.product.bottomMaterial.material.name[1].value
                                     p.productSizeResponsive= `Size - ${val.options.size.name}`
                         td.size
                             p.productSize= `${val.options.size.name}`
                         td.price
-                            p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}`
+                            p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
                         td.quantity
                             p.productQuantity= val.quantity
                         td.total
@@ -50,12 +50,9 @@ block content
         div.payment
             span.paymentText Total
             span.paymentPrice= `${totalPriceToPay[1].currency}${totalPriceToPay[1].value}`
-        p.text Please, complete your purchases
+        p.text Thank you for always being with us!
         button.continue
-            a(href=`${frontendUrl}/cart`) complete purchases
-        p.text or follow the link: #[br]
-            a.link(href= `${frontendUrl}/cart`) #{`${frontendUrl}/cart`}
-
+            a(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping
 
 
 

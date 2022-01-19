@@ -1,7 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;800&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 body {
-  width: 1440px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 300;
+  width: 100%;
+  max-width: 1440px;
+  font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 header {
@@ -12,238 +19,212 @@ header {
   color: #ffffff;
 }
 
-header h1 {
-  margin: 0;
-  padding-top: 25px;
-  font-size: 96px;
-  line-height: 117px;
+.responseTitle {
+  display: none;
 }
 
-header .subheader {
-  margin: 0 auto;
-  height: 118px;
-  width: 602px;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-footer {
-  width: 1110px;
-}
-
-footer.top {
-  border-top: 1px solid #bdbdbd;
-  margin-left: 165px;
-}
-
-footer p {
-  height: 22px;
-  margin: 0;
-  padding-top: 24px;
-  font-size: 18px;
-  color: #000000;
-}
-
-footer h2 {
-  margin: 0;
-  font-weight: 800;
-  font-size: 36px;
-  color: #000000;
-}
-
-p.registrationText,
-p.paymentText,
-p.unfinishedCartOperations,
-p.answerReceivedText,
-p.blockUserText {
-  margin: 0;
-  padding-top: 40px;
+.desktopTitle {
+  margin-top: 40px;
+  margin-bottom: 26px;
   font-size: 59px;
-  line-height: 44px;
+  font-weight: 300;
+  line-height: 80px;
+  letter-spacing: -0.005em;
   text-align: center;
-  color: #242424;
 }
 
-div.contentRegistrationText {
-  height: 320px;
-  margin-bottom: 20px;
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 95%;
+  max-width: 1110px;
+  margin: 0 auto;
 }
 
-div > button {
-  justify-content: center;
-}
-
-div.answerDiv {
-  width: 1110px;
-  height: 154px;
-  padding-top: 30px;
-  padding-left: 165px;
-  margin-bottom: 30px;
-  font-style: normal;
-  font-weight: normal;
+.text, .link {
+  width: 100%;
+  margin: 0;
+  margin-bottom: 35px;
   font-size: 16px;
-}
-
-div.blockUserContent {
-  width: 1110px;
-  height: 154px;
-  padding-top: 30px;
-  padding-left: 165px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-}
-
-p.condition {
-  font-size: 16px;
-}
-
-div.answerDiv > p {
-  color: #000 !important;
-}
-
-div.contentPaymentText,
-div.contentUnfinishedCartOperations {
-  padding-left: 62px;
-}
-
-p.congrats {
-  padding-top: 30px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.005em;
   color: #000000;
-  margin-left: 165px;
 }
 
-p.code {
+.link {
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.code {
   font-weight: 700;
   font-size: 24px;
   color: #000000;
 }
 
-button.confirm {
+.continue {
   width: 213px;
   height: 52px;
   background: #000000;
   text-align: center;
   border-radius: 4px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 582px;
+  margin-bottom: 40px;
 }
 
-.confirm a {
+.continue a {
   font-style: normal;
   font-size: 14px;
   color: #ffffff;
   text-decoration: none;
-}
-
-p.link {
-  width: 357px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  margin-left: 165px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-p.ignore {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  color: #000000;
-  margin-left: 165px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-a.alink {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  text-decoration-line: underline;
-  color: #000000;
-  margin-left: 165px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  display: block;
-  margin-top: 30px;
-}
-
-p.successfulRegistrationText {
-  margin: 0 auto;
-  margin-bottom: 30px;
-  padding-top: 20px;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 59px;
-  text-align: center;
-}
-
-.unlockUserContent {
-  width: 718px;
-  height: 120px;
-  padding-top: 26px;
-  margin-bottom: 30px;
-  margin-left: 165px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  text-align: justify;
-}
-
-.unlockUserContent > p {
-  margin-bottom: 34px;
-  margin-top: 0px;
-}
-
-.termslink {
-  color: #000000;
+  text-transform: uppercase;
 }
 
 .productTable {
-  min-width: 100%;
-  min-height: auto;
+  table-layout: fixed;
+  width: 100%;
   border-collapse: collapse;
-  margin: 2rem 0;
+  margin-bottom: 31px;
 }
 
-.tableHead th,
-.tableBody td {
-  text-align: center;
-  vertical-align: middle;
-  border-bottom: 1.5px solid #e0e0e0c4;
-  font-family: 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue',
-    Helvetica, Arial, 'Lucida Grande', sans-serif;
+.tableHead {
+  border-top: 1px solid #dedede;
 }
 
-.tableHead th {
-  border-top: 1.5px solid #e0e0e0c4;
-  font-size: 1.3rem;
-  font-weight: 100;
+.tableHead th, .paymentText {
+  padding: 10px 0;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;letter-spacing: 0.001em;
+  color: #242424;
 }
 
-.tableImg {
-  display: block;
-  width: 130px;
-  overflow: hidden;
+.tableHead th:first-child {
+  padding-left: 8px;
+}
+
+.tableBody {
+  border-top: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
+}
+
+.product {
+  width: 50%;
+}
+
+.tableBody td, .paymentPrice {
+  padding: 32px 0;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.0015em;
+  text-transform: capitalize;
+  color: #242424;
+}
+
+.productWrapper {
+  display: flex;
+}
+
+.productImg {
+  margin-right: 32px;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+
+.productTitle {
+  margin: 0;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.productMaterial, .productSizeResponsive {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.0025em;
+}
+
+.productMaterial {
+  margin-top: 5px;
+}
+.productSizeResponsive {
+  display: none;
+  margin-top: 10px;
+}
+
+.productSize, .productQuantity {
+  display: inline;
+  padding: 6px 12px;
+  border: 1px solid rgba(91, 91, 91, 0.2);
+  border-radius: 4px;
+}
+
+.payment {
+  margin-right: 5px;
+  margin-left: auto;
+  margin-bottom: 41px;
+  text-align: end;
+}
+
+.paymentText {
+  margin-right: 14px;
+}
+
+.bestWishes {
+  margin-bottom: 25px;
+}
+
+footer {
+  width: 95%;
+  max-width: 1110px;
   margin: 0 auto;
+  padding-top: 40px;
+  border-top: 1px solid #bdbdbd;
 }
 
-.tableBody td {
-  padding: 15px;
-  font-size: 1rem;
-  height: 140px;
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 22px;
+  text-transform: uppercase;
 }
 
-caption {
-  caption-side: bottom;
-  text-align: right;
-  font-size: 17px;
-  margin: 23px;
+@media (max-width: 1255px) {
+  .desktopTitle {
+    font-size: 50px;
+  }
 }
 
-.completeOperationsText,
-.operationsLink,
-.aoperationsLink {
-  font-size: 17px;
+@media (max-width: 1050px) {
+  .desktopTitle {
+    font-size: 45px;
+  }
 }
+
+@media (max-width: 935px) {
+  .desktopTitle {
+    margin-top: 30px;
+    font-size: 40px;
+  }
+}
+
+
+
+
+
