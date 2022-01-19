@@ -1,0 +1,103 @@
+{
+    "env": {
+        "commonjs": true,
+        "es2021": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "plugins": [
+        "prettier"
+    ],
+    "rules": {
+        "prettier/prettier": 1,
+        "no-self-compare": 2,
+        "array-callback-return": 2,
+        "no-use-before-define": 2,
+        "no-duplicate-imports": 2,
+        "no-template-curly-in-string": 2,
+        "no-return-assign": 2,
+        "no-restricted-syntax": [
+            2,
+            "ForInStatement",
+            "LabeledStatement",
+            "WithStatement"
+        ],
+        "prefer-const": [
+            2,
+            {
+                "destructuring": "all"
+            }
+        ],
+        "arrow-body-style": [2, "as-needed"],
+        "no-console": [
+            2,
+            {
+                "allow": ["warn", "error"]
+            }
+        ],
+        "newline-before-return": 2,
+        "no-unneeded-ternary": 2,
+        "prefer-arrow-callback": 1,
+        "prefer-template": 2,
+        "no-underscore-dangle": [
+            2,
+            {
+                "allow": ["_id", "_ID", "_doc"]
+            }
+        ],
+        "no-return-await": 1,
+        "no-useless-return": 2,
+        "no-eval": 2,
+        "no-negated-condition": 1,
+        "no-var": 2,
+        "operator-assignment": [1, "always"],
+        "yoda": 2,
+        "max-depth": [
+            1,
+            {
+                "max": 4
+            }
+        ],
+        "no-else-return": [2, { "allowElseIf": true }],
+        "no-param-reassign": [
+            2,
+            {
+                "props": true
+            }
+        ],
+        "no-shadow": 2,
+        "eqeqeq": [2, "always"],
+        "curly": 2,
+        "prefer-destructuring": [
+            1,
+            {
+                "array": false,
+                "object": true
+            }
+        ],
+        "no-extend-native": 2,
+        "linebreak-style": [1, "windows"],
+        "arrow-parens": [1, "always"],
+        "lines-between-class-members": [1, "always"],
+        "max-len": [
+            2,
+            {
+                "code": 140,
+                "ignoreComments": true,
+                "ignoreUrls": true
+            }
+        ],
+        "no-extra-parens": [1, "all"],
+        "quotes": [
+            2,
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ]
+    }
+}
