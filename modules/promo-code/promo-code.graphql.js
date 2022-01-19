@@ -5,6 +5,7 @@ const promoCodeType = `
     dateTo: String
     code: String
     discount: Int
+    categories: [String]
   }
   type PaginatedPromoCode{
     items: [PromoCode]
@@ -18,6 +19,7 @@ const promoCodeInput = `
     dateTo: String
     code: String
     discount: Int
+    categories: [String]
   }
 `;
 
