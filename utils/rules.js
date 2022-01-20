@@ -2,8 +2,6 @@ const Joi = require('joi');
 const { rule, and } = require('graphql-shield');
 
 const RuleError = require('../errors/rule.error');
-const ProductModel = require('../modules/product/product.model');
-const UserModel = require('../modules/user/user.model');
 const {
   USER_BLOCK_PERIOD: { UNLOCKED },
 } = require('../consts/user-block-period');
@@ -14,9 +12,8 @@ const {
   WRONG_CREDENTIALS,
   USER_IS_BLOCKED,
 } = require('../error-messages/user.messages');
-const { PRODUCT_NOT_FOUND } = require('../error-messages/products.messages');
 const {
-  STATUS_CODES: { FORBIDDEN, UNAUTHORIZED, NOT_FOUND, BAD_REQUEST },
+  STATUS_CODES: { FORBIDDEN, UNAUTHORIZED, BAD_REQUEST },
 } = require('../consts/status-codes');
 
 const isAuthorized = rule()((parent, args, context, info) =>
@@ -62,16 +59,6 @@ const inputDataValidation = (data, validationSchema) =>
     return result;
   });
 
-const isProductToCartCorrect = rule()(async (_, args) => {
-  const isProductExists = await ProductModel.findById(args.productId).exec();
-
-  if (isProductExists && isProductExists.available) {
-    args.product = isProductExists;
-    return true;
-  }
-  return new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
-});
-
 const checkIfItemExists = (data, currentModel) =>
   rule()(async (_, args) => {
     const foundItem = await currentModel
@@ -90,37 +77,10 @@ const checkIfItemExists = (data, currentModel) =>
     return true;
   });
 
-const getConstructorProductItemPresentInCart = rule()(async (_, args) => {
-  args.constructorData = await UserModel.findOne(
-    {
-      _id: args.id,
-      'cart.items': {
-        $elemMatch: {
-          'fromConstructor.product': args.productId,
-          'fromConstructor.constructorBasics':
-            args.constructorData.constructorBasics,
-          'fromConstructor.constructorBottom':
-            args.constructorData.constructorBottom,
-          'fromConstructor.constructorPattern':
-            args.constructorData.constructorPattern,
-          'fromConstructor.constructorFrontPocket':
-            args.constructorData.constructorFrontPocket,
-          'options.size': args.sizeId,
-        },
-      },
-    },
-    'cart.items.$ '
-  ).exec();
-
-  return true;
-});
-
 module.exports = {
   hasRoles,
   isAuthorized,
   isTheSameUser,
   inputDataValidation,
-  isProductToCartCorrect,
   checkIfItemExists,
-  getConstructorProductItemPresentInCart,
 };

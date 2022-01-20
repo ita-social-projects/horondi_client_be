@@ -1,0 +1,59 @@
+extends template-ua
+block headerText
+    h1.responseTitle Ваше замовлення успішно оформленe
+block subheaderText
+    h1.desktopTitle Ваше замовлення успішно оформленe
+block content
+    div.contentWrapper
+        table.productTable
+            tr.tableHead
+                th.product Продукт
+                th.size Розмір
+                th.price Ціна
+                th.quantity Кількість
+                th.total До оплати
+        each val in items
+            if val.product
+                tr.tableBody
+                    td.product
+                        div.productWrapper
+                            img.productImg(src= `${imagesUrl}/${val.product.images.primary.medium}` alt='img')
+                            div.productInfo
+                                p.productTitle= val.product.name[1].value
+                                p.productMaterial= `Матеріал внизу: ${val.product.bottomMaterial.material.name[1].value}`
+                                p.productSizeResponsive= `Розмір - ${val.options.size.name}`
+                    td.size
+                        p.productSize= `${val.options.size.name}`
+                    td.price
+                        p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
+                    td.quantity
+                        p.productQuantity= val.quantity
+                    td.total
+                        p.productTotal= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value * val.quantity}`
+            else if val.fromConstructor
+                tr.tableBody
+                    td.product
+                        div.productWrapper
+                            img.productImg(src= `${imagesUrl}/${val.fromConstructor.product.images.primary.medium}` alt='img')
+                            div.productInfo
+                                p.productTitle= val.fromConstructor.product.name[1].value
+                                p.productMaterial= `Матеріал внизу: ${val.fromConstructor.product.bottomMaterial.material.name[1].value}`
+                                p.productSizeResponsive= `Розмір - ${val.options.size.name}`
+                    td.size
+                        p.productSize= `${val.options.size.name}`
+                    td.price
+                        p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
+                    td.quantity
+                        p.productQuantity= val.quantity
+                    td.total
+                        p.productTotal= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value * val.quantity}`
+        div.payment
+            span.paymentText До оплати
+            span.paymentPrice= `${totalPriceToPay[1].currency}${totalPriceToPay[1].value}`
+        p.text Дякую що Ви завжди з нами!
+        button.continue
+            a(href=`${frontendUrl}/catalog/products?sort=popularity`) продовжити покупки
+
+
+
+

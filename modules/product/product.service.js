@@ -206,11 +206,13 @@ class ProductsService {
     return filter;
   }
 
-  async getProducts({ filter, skip, limit, sort={rate: -1}, search }) {
+  async getProducts({ filter, skip, limit, sort = { rate: -1 }, search }) {
     const filters = this.filterItems(filter);
-    const sortValue = (Object.keys(sort)).includes('basePrice') ? {
-      'sizes.price.value': sort.basePrice
-    } : sort;
+    const sortValue = Object.keys(sort).includes('basePrice')
+      ? {
+          'sizes.price.value': sort.basePrice,
+        }
+      : sort;
     if (!(!search || search.trim().length === 0)) {
       filters.$or = [
         {
@@ -515,11 +517,6 @@ class ProductsService {
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId).exec();
     return Product.find({ _id: { $in: wishlist } }).exec();
-  }
-
-  async getProductsForCart(userId) {
-    const { cart } = await User.findById(userId).exec();
-    return Product.find({ _id: { $in: cart } }).exec();
   }
 
   async updatePrices(previousPriceValue, nextPriceValue, path, id) {

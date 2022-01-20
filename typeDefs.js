@@ -10,6 +10,10 @@ const {
   questionsAnswersInput,
 } = require('./modules/questions-answers/questions-answers.graphql');
 
+const {
+  promoCodeType,
+  promoCodeInput,
+} = require('./modules/promo-code/promo-code.graphql');
 const { newsType, newsInput } = require('./modules/news/news.graphql');
 const {
   userType,
@@ -27,8 +31,6 @@ const {
   paginatedUsersType,
   tokenType,
   purchasedProductsType,
-  cartType,
-  cartInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -67,6 +69,10 @@ const {
   currencyType,
   currencyInput,
 } = require('./modules/currency/currency.graphql');
+const {
+  certificateType,
+  certificateInput,
+} = require('./modules/certificate/certificate.graphql.js');
 const {
   commentType,
   commentInput,
@@ -170,10 +176,13 @@ const { skip, limit } = defaultPaginationParams;
 const typeDefs = gql`
   ${questionsAnswersType}
   ${questionsAnswersInput}
+  ${promoCodeType}
+  ${promoCodeInput}
   ${historyType}
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
+  ${certificateType}
   ${materialType}
   ${newsType}
   ${patternType}
@@ -200,7 +209,7 @@ const typeDefs = gql`
   ${closureType}
   ${closureFeatureSet}
   ${purchasedProductsType}
-  ${cartType}
+
   ${colorType}
   ${constructorBasicType}
   ${constructorBasicFeatureSet}
@@ -335,14 +344,7 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySet]
   }
-  type CartProductBagBottom {
-      name: [Language]
-      value: String
-  }
-  type CartProductDimensions {
-      volumeInLiters: Int
-      weightInKg: Float
-  }
+
   type UserForComment {
     email: String!
     name: String
@@ -435,6 +437,12 @@ const typeDefs = gql`
       items: [Closure]
       count: Int
   }
+
+  type PaginatedCertificate {
+      items: [Certificate]
+      count: Int
+  }
+  
   type PaginatedPockets {
     items: [Pocket]
     count: Int
@@ -490,9 +498,11 @@ const typeDefs = gql`
     userOrders: [Order]
     ordersCount: Int
   }
+  
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
+  union CertificateResult = Certificate | Error
   union CurrencyResult = Currency | Error
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
@@ -549,6 +559,8 @@ const typeDefs = gql`
       skip: Int
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
+    getPromoCodeById(id: ID): PromoCode
+    getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
@@ -557,7 +569,7 @@ const typeDefs = gql`
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): OrdersWithCounter
-    getCartByUserId(id: ID!): UserResult
+ 
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
     getAllNews(limit: Int, skip: Int, filter:NewsFilterInput): PaginatedNews!
@@ -582,6 +594,7 @@ const typeDefs = gql`
       sort: SortInput
     ): PaginatedProductsResult!
     getPopularProducts: StatisticBar!
+      
     getAllComments(
       filter: CommentFilterInput,
       pagination: Pagination,
@@ -613,6 +626,8 @@ const typeDefs = gql`
     ): PaginatedReplies!
     getRecentComments(limit: Int!): [CommentResult]
     getAllCommentsByUser(userId: ID!): [CommentResult]
+    getAllCertificates(limit:Int, skip:Int): PaginatedCertificate!
+    getCertificateById(id: ID!): CertificateResult
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
@@ -717,6 +732,7 @@ const typeDefs = gql`
     image: Upload
   }
   ${categoryInput}
+  ${certificateInput}
   ${currencyInput}
   ${materialInput}
   ${newsInput}
@@ -724,7 +740,7 @@ const typeDefs = gql`
   ${userInput}
   ${userUpdateInput}
   ${productInput}
-  ${cartInput}
+
   ${commentInput}
   ${commentsSortInput}
   ${replyCommentsSortInput}
@@ -816,14 +832,7 @@ const typeDefs = gql`
     fileNames: ImageSet!
     prefixUrl: String!
   }
-  input CartProductDimensionsInput {
-      volumeInLiters: Int
-      weightInKg: Float
-  }
-  input CartProductBagBottomInput {
-      name: [LanguageInput]
-      value: String
-  }
+
   input LanguageImageSetInput {
     lang: String!
     value: ImageSetInput
@@ -836,6 +845,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addPromoCode(promoCode: PromoCodeInput!): PromoCode
+    deletePromoCode(id: ID!): PromoCode
+    updatePromoCode(id: ID!
+      promoCode: PromoCodeInput!): PromoCode
     addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     deleteQuestionsAnswers(id: ID!): QuestionsAnswers
     updateQuestionsAnswers(id: ID!
@@ -871,6 +884,7 @@ const typeDefs = gql`
       category: CategoryInput!
       upload: Upload
     ): CategoryResult
+    
     "Currency Mutation"
     addCurrency(currency: CurrencyInput!): CurrencyResult
     deleteCurrency(id: ID!): CurrencyResult
@@ -879,33 +893,13 @@ const typeDefs = gql`
     addNews(news: NewsInput!, upload: Upload): NewsResult
     deleteNews(id: ID!): NewsResult
     updateNews(id: ID!, news: NewsInput!, upload: Upload): NewsResult
+    "Certificate Mutation"
+    addCertificate(certificate: CertificateInput!): CertificateResult
+    deleteCertificate(id: ID!): CertificateResult
+    updateCertificate(name: String!): CertificateResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
-    cleanCart(id: ID!): UserResult
-    updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
-    changeCartItemSize(id:ID!, itemId: ID!, price: [CurrencySetInput]!, size: ID!, quantity: Int!): UserResult
-    addConstructorProductItemToCart(
-    productId: ID!,
-    sizeId:ID!,
-     constructorData: CartInput!, 
-     id: ID!
-     ): UserResult
-    updateCartConstructorProductItemQuantity(
-      quantity: ID!,
-      productId: ID!,
-      sizeId: ID!,
-      constructorData: CartInput!,
-      id: ID!
-      ): UserResult 
-    removeProductItemsFromCart(
-      items: RemoveItemsFromCartInput!,
-      id: ID!
-      ): UserResult
-    mergeCartFromLS(
-      items:[ CartFromLSInput!],
-      id: ID!
-      ): UserResult
+
     registerAdmin(user: AdminRegisterInput!): LogicalResult!
     resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): LogicalResult!
     confirmSuperadminCreation(user: confirmSuperadminCreationInput!): LogicalResult!

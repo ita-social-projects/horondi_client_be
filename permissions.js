@@ -11,10 +11,19 @@ const {
 const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
+  promoCodeMutation,
+} = require('./modules/promo-code/promo-code.permissions');
+
+const {
   homePageSlideMutation,
 } = require('./modules/homepage-slider/homepage-slider.permission');
 
 const { currencyMutation } = require('./modules/currency/currency.permission');
+
+const {
+  certificatePermissionsMutations,
+  certificatePermissionsQuery,
+} = require('./modules/certificate/certificates.permission');
 
 const {
   emailChatQuestionMutation,
@@ -103,11 +112,6 @@ const {
 } = require('./modules/constructor/constructor-bottom/constructor-bottom.permissions');
 
 const {
-  cartPermissionsMutations,
-  cartPermissionsQuery,
-} = require('./modules/cart/cart.permissions');
-
-const {
   commentPermissionsMutations,
   commentPermissionsQuery,
 } = require('./modules/comment/comment.permissions');
@@ -162,7 +166,7 @@ const permissions = shield(
   {
     Query: {
       ...historyPermissionsQuery,
-      ...cartPermissionsQuery,
+      ...certificatePermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
@@ -193,7 +197,7 @@ const permissions = shield(
     Mutation: {
       ...questionsAnswersMutation,
       ...productPermissionsMutation,
-      ...cartPermissionsMutations,
+      ...promoCodeMutation,
       ...userPermissionsMutation,
       ...patternPermissionsMutations,
       ...materialPermissionsMutations,
@@ -218,6 +222,7 @@ const permissions = shield(
       ...businessTextMutation,
       ...emailChatQuestionMutation,
       ...currencyMutation,
+      ...certificatePermissionsMutations,
       ...homePageSlideMutation,
       ...uploadMutation,
       ...positionPermissionsMutations,

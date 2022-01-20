@@ -1,56 +1,184 @@
 @media screen and (max-width: 818px) {
-  body {
-    width: 818px;
+  header {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 
-  .subheader {
-    position: relative;
-    bottom: 110px;
-  }
-
-  p.registrationText,
-  p.blockUserText,
-  p.successfulRegistrationText {
-    color: aliceblue;
+  .responseTitle {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 75%;
+    padding: 30px 15px;
+    font-family: 'Open Sans', sans-serif;
     font-size: 34px;
-    font-weight: 400;
+    font-weight: 300;
+    line-height: 46px;
+    letter-spacing: 0.0025em;
+    color: #fff;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 3.35%, #000000 149.48%);
   }
 
-  p.congrats {
-    margin-top: 0;
-    padding-top: 0;
+  .desktopTitle {
+    display: none;
   }
 
-  div.contentRegistrationText {
-    width: 705px;
+  .text {
+    margin-bottom: 16px;
   }
 
-  p.congrats,
-  p.link,
-  a.alink,
-  p.ignore,
-  button.confirm,
-  footer.top,
-  div.unlockUserContent,
-  div.blockUserContent {
-    margin-left: 40px;
-    padding-left: 0;
+  .continue {
+    margin-left: 0;
+    margin-right: auto;
+    margin-bottom: 30px;
   }
 
-  footer.top {
-    border-top: 0px;
+  .productTable {
+    margin-bottom: 20px;
   }
 
-  footer p {
-    padding-top: -40px;
+  .product {
+    width: 65%;
   }
 
-  div.unlockUserContent,
-  div.blockUserContent {
-    padding-top: 0;
+  .size, .price {
+    display: none;
+  }
+
+  .productSizeResponsive {
+    display: flex;
   }
 
   footer {
-    width: 705px;
+    padding-top: 20px;
   }
 }
+
+@media (max-width: 720px) {
+  header {
+    margin-bottom: 40px;
+  }
+
+  .responseTitle {
+    font-size: 32px;
+    line-height: 38px;
+  }
+}
+
+@media (max-width: 685px) {
+  .responseTitle {
+    padding-bottom: 20px;
+  }
+}
+
+@media (max-width: 620px){
+  .tableHead th, .tableBody td {
+    text-align: center;
+  }
+
+  .tableBody td {
+    padding: 10px 0;
+  }
+
+  .productTable {
+    margin-bottom: 15px;
+  }
+
+  .product {
+    width: 55%;
+  }
+
+  .productWrapper {
+    flex-direction: column;
+  }
+
+  .productImg {
+    margin: 0 auto;
+    margin-bottom: 10px;
+  }
+
+  .productInfo {
+    align-items: center;
+  }
+
+  .productTitle {
+    font-size: 20px;
+  }
+
+  .productMaterial, .productSizeResponsive {
+    font-size: 12px;
+  }
+
+  .paymentPrice, .productTotal, .productQuantity {
+    font-size: 18px;
+  }
+
+  .payment {
+    margin-bottom: 15px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+
+  .continue a {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 450px){
+  .responseTitle {
+    font-size: 28px;
+  }
+
+  .paymentPrice, .productTotal, .productQuantity {
+    font-size: 16px;
+  }
+
+  .payment {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 375px){
+  header {
+    height: 200px;
+  }
+
+  .responseTitle {
+    font-size: 26px;
+  }
+
+  .tableHead th{
+    font-size: 11px;
+  }
+
+  .product {
+    width: 50%;
+  }
+
+  .productTitle {
+    font-size: 16px;
+    line-height: 18px;
+  }
+
+  .productMaterial {
+    line-height: 14px;
+  }
+
+  .productSizeResponsive {
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 320px){
+  .responseTitle {
+    font-size: 22px;
+  }
+}
+
+
