@@ -410,7 +410,6 @@ class ProductsService {
       if (!product) {
         throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
       }
-
       const deletedImages = await findAndDeleteImages(product);
 
       if (await Promise.allSettled(deletedImages)) {
