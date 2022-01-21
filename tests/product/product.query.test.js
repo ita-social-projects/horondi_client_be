@@ -196,7 +196,7 @@ describe('Product queries', () => {
   });
 
   afterAll(async () => {
-    await deleteProduct(productId, operations);
+    await deleteProduct([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);

@@ -401,63 +401,65 @@ class ProductsService {
     }
   }
 
-  async deleteProduct(id, { _id: adminId }) {
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
+  async deleteProduct(ids, { _id: adminId }) {
+    for (const itemId of ids.ids) {
+      const product = await Product.findById(itemId)
+        .lean()
+        .exec();
 
-    if (!product) {
-      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
-    }
+      if (!product) {
+        throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+      }
 
-    const { images } = product;
-    const { primary, additional } = images;
-    const additionalImagesToDelete =
-      typeof additional[0] === 'object'
-        ? additional.map(img => [...Object.values(img)]).flat()
-        : [];
+      const { images } = product;
+      const { primary, additional } = images;
+      const additionalImagesToDelete =
+        typeof additional[0] === 'object'
+          ? additional.map(img => [...Object.values(img)]).flat()
+          : [];
 
-    const deletedImages = await uploadService.deleteFiles([
-      ...Object.values(primary),
-      ...additionalImagesToDelete,
-    ]);
+      const deletedImages = await uploadService.deleteFiles([
+        ...Object.values(primary),
+        ...additionalImagesToDelete,
+      ]);
 
-    if (await Promise.allSettled(deletedImages)) {
-      const historyEvent = {
-        action: DELETE_EVENT,
-        historyName: PRODUCT_EVENT,
-      };
-      const historyRecord = generateHistoryObject(
-        historyEvent,
-        product.model,
-        product.name[UA].value,
-        product._id,
-        generateHistoryChangesData(product, [
-          SIZES,
-          PURCHASED_COUNT,
-          AVAILABLE_COUNT,
-          CATEGORY,
-          MODEL,
-          NAME,
-          DESCRIPTION,
-          MAIN_MATERIAL,
-          INNER_MATERIAL,
-          BOTTOM_MATERIAL,
-          STRAP_LENGTH_IN_CM,
-          PATTERN,
-          CLOSURE,
-          AVAILABLE,
-          IS_HOT_ITEM,
-        ]),
-        [],
-        adminId
-      );
+      if (await Promise.allSettled(deletedImages)) {
+        const historyEvent = {
+          action: DELETE_EVENT,
+          historyName: PRODUCT_EVENT,
+        };
+        const historyRecord = generateHistoryObject(
+          historyEvent,
+          product.model,
+          product.name[UA].value,
+          product._id,
+          generateHistoryChangesData(product, [
+            SIZES,
+            PURCHASED_COUNT,
+            AVAILABLE_COUNT,
+            CATEGORY,
+            MODEL,
+            NAME,
+            DESCRIPTION,
+            MAIN_MATERIAL,
+            INNER_MATERIAL,
+            BOTTOM_MATERIAL,
+            STRAP_LENGTH_IN_CM,
+            PATTERN,
+            CLOSURE,
+            AVAILABLE,
+            IS_HOT_ITEM,
+          ]),
+          [],
+          adminId
+        );
 
-      await deleteTranslations(product.translationsKey);
+        await deleteTranslations(product.translationsKey);
 
-      await addHistoryRecord(historyRecord);
+        await addHistoryRecord(historyRecord);
 
-      return Product.findByIdAndDelete(id);
+        return Product.findByIdAndDelete(itemId);
+      }
     }
   }
 
