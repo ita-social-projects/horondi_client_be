@@ -1,5 +1,14 @@
-const { and } = require('graphql-shield');
-const { hasRoles, isAuthorized, isUnlocked } = require('../../utils/rules');
+const { and, allow } = require('graphql-shield');
+const {
+  hasRoles,
+  isAuthorized,
+  isUnlocked,
+  inputDataValidation,
+} = require('../../utils/rules');
+const {
+  certificateNameValidator,
+} = require('../../validators/certificate.validator');
+
 const {
   roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts');
@@ -10,8 +19,14 @@ const certificatePermissionsQuery = {
 };
 
 const certificatePermissionsMutations = {
-  updateCertificate: hasRoles([USER, ADMIN, SUPERADMIN]),
-  addCertificate: hasRoles([USER, ADMIN, SUPERADMIN]), // пермішен тільки в незаблокованого юзера!
+  updateCertificate: and(
+    inputDataValidation('name', certificateNameValidator),
+    allow
+  ),
+  addCertificate: and(
+    hasRoles([USER]),
+    inputDataValidation('name', certificateNameValidator)
+  ),
   deleteCertificate: hasRoles([ADMIN, SUPERADMIN]),
 };
 

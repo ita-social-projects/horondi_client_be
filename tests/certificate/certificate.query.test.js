@@ -13,7 +13,7 @@ const { wrongId, newCertificateInputData } = require('./certificate.variables');
 let operations;
 let certificateId;
 
-describe('Test certificate Queries', () => {
+describe.skip('Test certificate Queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
     const certificateData = await addCertificate(

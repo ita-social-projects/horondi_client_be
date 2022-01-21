@@ -12,6 +12,7 @@ dateEnd.setFullYear(dateEnd.getFullYear() + 1);
 const certificateSchema = new mongoose.Schema({
   name: {
     type: String,
+    unique: true,
   },
   value: {
     type: Number,
@@ -24,7 +25,11 @@ const certificateSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  isActive: {
+  isExpired: {
+    type: Boolean,
+    default: false,
+  },
+  isActivated: {
     type: Boolean,
     default: true,
   },
@@ -35,6 +40,10 @@ const certificateSchema = new mongoose.Schema({
   dateEnd: {
     type: Date,
     default: dateEnd,
+  },
+  email: {
+    type: String,
+    default: null,
   },
 });
 

@@ -30,7 +30,7 @@ const getCertificateById = async (id, operations) => {
           ... on Certificate {
             _id
             name
-            isActive
+            isExpired
             value
           }
           ... on Error {
@@ -56,7 +56,7 @@ const addCertificate = async (certificate, operations) => {
           ... on Certificate {
             _id
             name
-            isActive
+            isExpired
             isUsed
           }
           ... on Error {
@@ -82,7 +82,7 @@ const updateCertificate = async (name, operations) => {
           ... on Certificate {
             _id
             isUsed
-            isActive
+            isExpired
           }
           ... on Error {
             message

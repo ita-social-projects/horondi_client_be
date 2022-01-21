@@ -4,8 +4,10 @@ const certificateTypes = `
     createdBy: User
     name: String!
     value: Int!
+    email: String
     isUsed: Boolean!
-    isActive: Boolean!
+    isActivated: Boolean!
+    isExpired: Boolean!
     dateStart: Date
     dateEnd: Date
   }
@@ -20,7 +22,7 @@ const certificateTypes = `
     value: Int
     isUsed: Boolean
   }
-  
+
   union CertificateResult = Certificate | Error
 
   extend type Query {
@@ -29,7 +31,7 @@ const certificateTypes = `
   }
 
   extend type Mutation {
-    addCertificate(certificate: CertificateInput!): CertificateResult
+    addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
     updateCertificate(name: String!): CertificateResult
   }

@@ -18,7 +18,7 @@ let operations;
 let certificateId;
 let isUsed;
 
-describe('Test mutation methods', () => {
+describe.skip('Test mutation methods', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
@@ -50,7 +50,7 @@ describe('Test mutation methods', () => {
   });
 });
 
-describe('Test response for unexist ID', () => {
+describe.skip('Test response for unexist ID', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
