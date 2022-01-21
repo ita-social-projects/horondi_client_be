@@ -31,8 +31,6 @@ const {
   paginatedUsersType,
   tokenType,
   purchasedProductsType,
-  cartType,
-  cartInput,
 } = require('./modules/user/user.graphql');
 const {
   productType,
@@ -211,7 +209,7 @@ const typeDefs = gql`
   ${closureType}
   ${closureFeatureSet}
   ${purchasedProductsType}
-  ${cartType}
+
   ${colorType}
   ${constructorBasicType}
   ${constructorBasicFeatureSet}
@@ -346,14 +344,7 @@ const typeDefs = gql`
     available: Boolean
     additionalPrice: [CurrencySet]
   }
-  type CartProductBagBottom {
-      name: [Language]
-      value: String
-  }
-  type CartProductDimensions {
-      volumeInLiters: Int
-      weightInKg: Float
-  }
+
   type UserForComment {
     email: String!
     name: String
@@ -578,7 +569,7 @@ const typeDefs = gql`
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): OrdersWithCounter
-    getCartByUserId(id: ID!): UserResult
+ 
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
     getAllNews(limit: Int, skip: Int, filter:NewsFilterInput): PaginatedNews!
@@ -749,7 +740,7 @@ const typeDefs = gql`
   ${userInput}
   ${userUpdateInput}
   ${productInput}
-  ${cartInput}
+
   ${commentInput}
   ${commentsSortInput}
   ${replyCommentsSortInput}
@@ -841,14 +832,7 @@ const typeDefs = gql`
     fileNames: ImageSet!
     prefixUrl: String!
   }
-  input CartProductDimensionsInput {
-      volumeInLiters: Int
-      weightInKg: Float
-  }
-  input CartProductBagBottomInput {
-      name: [LanguageInput]
-      value: String
-  }
+
   input LanguageImageSetInput {
     lang: String!
     value: ImageSetInput
@@ -915,31 +899,7 @@ const typeDefs = gql`
     updateCertificate(name: String!): CertificateResult
     "User Mutation"
     registerUser(user: userRegisterInput!, language: Int!): User
-    addProductToCart(allSizes: [AllSizesInput!], productId: ID!, sizeId: ID!, id: ID!, price:[CurrencySetInput]!): UserResult
-    cleanCart(id: ID!): UserResult
-    updateCartItemQuantity(productId:ID!, quantity:Int!, sizeId:ID!, id: ID!): UserResult
-    changeCartItemSize(id:ID!, itemId: ID!, price: [CurrencySetInput]!, size: ID!, quantity: Int!): UserResult
-    addConstructorProductItemToCart(
-    productId: ID!,
-    sizeId:ID!,
-     constructorData: CartInput!, 
-     id: ID!
-     ): UserResult
-    updateCartConstructorProductItemQuantity(
-      quantity: ID!,
-      productId: ID!,
-      sizeId: ID!,
-      constructorData: CartInput!,
-      id: ID!
-      ): UserResult 
-    removeProductItemsFromCart(
-      items: RemoveItemsFromCartInput!,
-      id: ID!
-      ): UserResult
-    mergeCartFromLS(
-      items:[ CartFromLSInput!],
-      id: ID!
-      ): UserResult
+
     registerAdmin(user: AdminRegisterInput!): LogicalResult!
     resendEmailToConfirmAdmin(user: resendEmailToConfirmAdminInput!): LogicalResult!
     confirmSuperadminCreation(user: confirmSuperadminCreationInput!): LogicalResult!

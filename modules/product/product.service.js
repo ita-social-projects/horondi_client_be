@@ -511,11 +511,6 @@ class ProductsService {
     return Product.find({ _id: { $in: wishlist } }).exec();
   }
 
-  async getProductsForCart(userId) {
-    const { cart } = await User.findById(userId).exec();
-    return Product.find({ _id: { $in: cart } }).exec();
-  }
-
   async updatePrices(previousPriceValue, nextPriceValue, path, id) {
     if (
       previousPriceValue.additionalPrice[1]?.value !==

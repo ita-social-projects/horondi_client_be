@@ -22,6 +22,7 @@ jobs:
       - run: npm install
       - run: npm run test
         env:
+          NODE_OPTIONS: --max_old_space_size=4096
           MONGO_URL: ${{secrets.MONGO_URL}}
           MAIL_USER: ${{secrets.MAIL_USER}}
           MAIL_PASS: ${{secrets.MAIL_PASS}}

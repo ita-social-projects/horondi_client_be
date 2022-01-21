@@ -278,9 +278,6 @@ const getPopularProducts = async operations =>
 const getProductsForWishlist = async userId =>
   await productService.getProductsForWishlist(userId);
 
-const getProductsForCart = async userId =>
-  await productService.getProductsForCart(userId);
-
 const deleteProductImages = async (id, operations) =>
   await operations.mutate({
     mutation: gql`
@@ -320,7 +317,6 @@ module.exports = {
   getModelsByCategory,
   getPopularProducts,
   getProductsForWishlist,
-  getProductsForCart,
   deleteProductImages,
   uploadProductImages,
   getFilter,

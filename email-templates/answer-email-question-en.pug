@@ -1,9 +1,11 @@
 extends template-en
+block headerText
+    h1.responseTitle Your question has been answered
 block subheaderText
-    p.answerReceivedText Your question has been answered
+    h1.desktopTitle Your question has been answered
 block content
-    div.answerDiv
-        p Greetings, #{senderName}! You left your question on HORONDI.
-        p Your question: #[strong #{question}]
-        p Answer: #[strong #{answer}]
-        p.condition If, by chance, you haven't left this question, please disregard this letter and accept our gratitude.
+    div.contentWrapper
+        p.text Greetings, #{senderName}! You left your question on HORONDI.
+        p.text Your question: #[strong #{question}]
+        p.text Answer: #[strong #{answer}]
+        p.text If, by chance, you haven't left this question, please disregard this letter and accept our gratitude.

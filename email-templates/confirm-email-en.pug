@@ -1,12 +1,12 @@
 extends template-en
-block styles 
-    link(rel="stylesheet", href="css/confirm-email-and-recover-password.css")
+block headerText
+    h1.responseTitle You were successfully signed up
 block subheaderText
-    p.registrationText You were successfully signed up
+    h1.desktopTitle You were successfully signed up
 block content
-    div.contentRegistrationText
-        p.congrats Congratulations! #[br] You were successfully signed up on HORONDI, the only thing left is to confirm your e-mail:
-        button.confirm
-            a(href=frontendUrl + `/confirmation/` + token) Confirm e-mail
-        p.link or follow the link:
-        a.alink(href=frontendUrl + `/confirmation/` + token) #{frontendUrl + `/confirmation/` + token}
+    div.contentWrapper
+        p.text Congratulations! #[br] You were successfully signed up on HORONDI, the only thing left is to confirm your e-mail:
+        button.continue
+            a(href=frontendUrl + `/confirmation/` + token) confirm e-mail
+        p.text or follow the link: #[br]
+            a.link(href=frontendUrl + `/confirmation/` + token) #{frontendUrl + `/confirmation/` + token}

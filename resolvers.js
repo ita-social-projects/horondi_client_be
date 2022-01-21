@@ -124,8 +124,6 @@ const {
   bottomMutation,
 } = require('./modules/bottom/bottom.resolver');
 
-const { cartMutation, cartQuery } = require('./modules/cart/cart.resolver');
-
 const {
   positionMutation,
   positionQuery,
@@ -231,8 +229,6 @@ const resolvers = {
     ...promoCodeQuery,
 
     ...historyQuery,
-
-    ...cartQuery,
 
     ...currencyQuery,
 
@@ -389,53 +385,6 @@ const resolvers = {
         size: sizeService.getSizeById(size.size),
         price: size.price,
       })),
-  },
-  Cart: {
-    items: parent =>
-      parent.items.map(item => {
-        if (item.product) {
-          return {
-            _id: item._id,
-            product: productsService.getProductById(item.product),
-            price: item.price,
-            quantity: item.quantity,
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-            },
-            allSizes: item.allSizes.map(({ size, price }) => ({
-              size: sizeService.getSizeById(size),
-              price,
-            })),
-          };
-        }
-        return {
-          productFromConstructor: {
-            product: productsService.getProductById(
-              item.fromConstructor.product
-            ),
-            constructorBasics: constructorServices.getConstructorElementById(
-              item.fromConstructor.constructorBasics,
-              constructorBasicModel
-            ),
-            constructorBottom: constructorServices.getConstructorElementById(
-              item.fromConstructor.constructorBottom,
-              constructorBottomModel
-            ),
-            constructorFrontPocket: constructorServices.getConstructorElementById(
-              item.fromConstructor.constructorFrontPocket,
-              constructorFrontPocketModel
-            ),
-            constructorPattern: patternService.getPatternById(
-              item.fromConstructor.constructorPattern
-            ),
-          },
-          price: item.price,
-          quantity: item.quantity,
-          options: {
-            size: sizeService.getSizeById(item.options.size),
-          },
-        };
-      }),
   },
   Wishlist: {
     products: parent =>
@@ -687,8 +636,6 @@ const resolvers = {
     ...questionsAnswersMutation,
 
     ...promoCodeMutation,
-
-    ...cartMutation,
 
     ...uploadMutation,
 

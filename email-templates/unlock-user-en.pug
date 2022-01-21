@@ -1,6 +1,10 @@
 extends template-en
+block headerText
+    h1.responseTitle Your account has been unblocked
 block subheaderText
-    p.blockUserText Your account has been unblocked
+    h1.desktopTitle Your account has been unblocked
 block content
-    div.unlockUserContent
-        p Congratulations! #[br]#[br] Your account has been unblocked and now you are able to use it. #[br]#[br] We remind you about our #[a.termslink(href=frontendUrl + `/terms`) terms of use] of our site.
+    div.contentWrapper
+        p.text Congratulations!
+        p.text The review period is over, your account is active again.
+        p.text We remind you of the #[a(href=frontendUrl + `/terms`) rules of use] of our site.
