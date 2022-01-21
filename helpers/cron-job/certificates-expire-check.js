@@ -1,7 +1,7 @@
 const { schedule } = require('node-cron');
 
 const CertificateModel = require('../../modules/certificate/certificate.model');
-const { modifyNowDate, _ } = require('../../utils/modify-date');
+const { modifyNowDate } = require('../../utils/modify-date');
 const { sendEmail } = require('../../modules/email/email.service');
 const {
   EmailActions: { CERTIFICATE_REMINDER },
@@ -13,33 +13,37 @@ const {
 const currentDate = new Date();
 const nowPlus30 = modifyNowDate(30);
 const nowPlus31 = modifyNowDate(31);
-const datePastYears = modifyNowDate(_, _, -2);
+const tomorrow = modifyNowDate(1);
 
 const certificatesExpireCheck = () =>
   schedule(EVERY_MORNING, async () => {
-    const deleteFilter = {
-      dateEnd: {
-        $lte: datePastYears,
+    const activateFilter = {
+      isActivated: false,
+      dateStart: {
+        $gte: currentDate,
+        $lte: tomorrow,
       },
     };
 
-    await CertificateModel.deleteMany(deleteFilter).exec();
+    await CertificateModel.updateMany(activateFilter, {
+      isActivated: true,
+    }).exec();
 
     const expiredFilter = {
       isUsed: false,
-      isActive: true,
+      isExpired: false,
       dateEnd: {
         $lte: currentDate,
       },
     };
 
     await CertificateModel.updateMany(expiredFilter, {
-      isActive: false,
+      isExpired: true,
     }).exec();
 
     const reminderFilter = {
       isUsed: false,
-      isActive: true,
+      isExpired: false,
       email: { $ne: null },
       dateEnd: {
         $gte: nowPlus30,
