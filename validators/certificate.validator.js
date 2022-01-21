@@ -12,9 +12,13 @@ const certificateNameValidator = Joi.object({
 const certificateDateValidator = Joi.object({
   startDate: Joi.date()
     .greater('now')
-    .message("Date can't be less then now")
+    .error(() => ({
+      message: "Date can't be less then now.",
+    }))
     .less(new Date() + getDaysInMilliseconds(30))
-    .message("Date can't be greater then 30 days"),
+    .error(() => ({
+      message: "Date can't be greater then 30 days.",
+    })),
 });
 
 module.exports = {
