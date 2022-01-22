@@ -1,4 +1,12 @@
+const RuleError = require('../../errors/rule.error');
 const PromoCode = require('./promo-code.model');
+
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const {
+  PROMOCODE_NOT_FOUND,
+} = require('../../error-messages/promocode.messages');
 
 class PromoCodeService {
   async getAllPromoCodes() {
@@ -13,6 +21,16 @@ class PromoCodeService {
     if (promoCode) {
       return promoCode;
     }
+  }
+
+  async getPromoCodeByCode(code) {
+    const promoCode = await PromoCode.findOne({ code }).exec();
+
+    if (!promoCode) {
+      throw new RuleError(PROMOCODE_NOT_FOUND, NOT_FOUND);
+    }
+
+    return promoCode;
   }
 
   async addPromoCode(promoCode) {

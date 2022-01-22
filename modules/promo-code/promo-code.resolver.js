@@ -4,6 +4,9 @@ const promoCodeQuery = {
   getAllPromoCodes: () => PromoCodeService.getAllPromoCodes(),
 
   getPromoCodeById: async ({ id }) => PromoCodeService.getPromoCodeById(id),
+
+  getPromoCodeByCode: async (_, { code }) =>
+    PromoCodeService.getPromoCodeByCode(code),
 };
 
 const promoCodeMutation = {

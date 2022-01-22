@@ -560,6 +560,7 @@ const typeDefs = gql`
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
     getPromoCodeById(id: ID): PromoCode
+    getPromoCodeByCode(code: String!): PromoCode
     getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
