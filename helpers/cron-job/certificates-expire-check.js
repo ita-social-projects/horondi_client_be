@@ -10,10 +10,10 @@ const {
   CRON_PERIOD: { EVERY_MORNING },
 } = require('../../consts/cron-period');
 
-const currentDate = new Date();
+const currentDate = modifyNowDate();
+const tomorrow = modifyNowDate(1);
 const nowPlus30 = modifyNowDate(30);
 const nowPlus31 = modifyNowDate(31);
-const tomorrow = modifyNowDate(1);
 
 const certificatesExpireCheck = () =>
   schedule(EVERY_MORNING, async () => {
@@ -21,7 +21,7 @@ const certificatesExpireCheck = () =>
       isActivated: false,
       dateStart: {
         $gte: currentDate,
-        $lte: tomorrow,
+        $lt: tomorrow,
       },
     };
 
@@ -47,7 +47,7 @@ const certificatesExpireCheck = () =>
       email: { $ne: null },
       dateEnd: {
         $gte: nowPlus30,
-        $lte: nowPlus31,
+        $lt: nowPlus31,
       },
     };
 
