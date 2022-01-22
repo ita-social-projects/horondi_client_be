@@ -40,6 +40,27 @@ const getAllPromoCodes = async operations => {
 
   return res.data.getAllPromoCodes;
 };
+
+const getPromoCodeByCode = async (code, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($code: String!) {
+        getPromoCodeByCode(code: $code) {
+          ... on PromoCode {
+            _id
+            code
+          }
+        }
+      }
+    `,
+    variables: {
+      code,
+    },
+  });
+
+  return res.data.getPromoCodeByCode;
+};
+
 const deletePromoCode = async (id, operations) =>
   await operations.mutate({
     mutation: gql`
@@ -62,4 +83,5 @@ module.exports = {
   addPromoCode,
   getAllPromoCodes,
   deletePromoCode,
+  getPromoCodeByCode,
 };
