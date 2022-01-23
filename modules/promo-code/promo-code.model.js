@@ -9,6 +9,7 @@ const promoCodeSchema = new mongoose.Schema({
   dateTo: String,
   code: String,
   discount: Number,
+  categories: [String],
 });
 
 module.exports = mongoose.model(PROMO, promoCodeSchema);

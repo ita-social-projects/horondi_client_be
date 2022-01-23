@@ -3,6 +3,7 @@ const PromoCode = require('./promo-code.model');
 class PromoCodeService {
   async getAllPromoCodes() {
     const items = await PromoCode.find().exec();
+
     return {
       items,
     };
@@ -10,6 +11,7 @@ class PromoCodeService {
 
   async getPromoCodeById(id) {
     const promoCode = await PromoCode.findById(id).exec();
+
     if (promoCode) {
       return promoCode;
     }
