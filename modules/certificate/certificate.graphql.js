@@ -1,15 +1,17 @@
 const certificateTypes = `
   type Certificate {
     _id: ID!
-    createdBy: User
     name: String!
     value: Int!
+    createdBy: User
+    ownedBy: User
     email: String
     isUsed: Boolean!
     isActivated: Boolean!
     isExpired: Boolean!
     dateStart: Date
     dateEnd: Date
+    isActive: Boolean @deprecated(reason: "use isActivated and isExpired fields.")
   }
   
   type PaginatedCertificate {

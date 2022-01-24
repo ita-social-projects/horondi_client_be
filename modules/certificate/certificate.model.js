@@ -20,6 +20,16 @@ const certificateSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: USER,
+    default: null,
+  },
+  ownedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: USER,
+    default: null,
+  },
+  email: {
+    type: String,
+    default: null,
   },
   isUsed: {
     type: Boolean,
@@ -40,10 +50,6 @@ const certificateSchema = new mongoose.Schema({
   dateEnd: {
     type: Date,
     default: dateEnd,
-  },
-  email: {
-    type: String,
-    default: null,
   },
 });
 

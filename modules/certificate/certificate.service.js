@@ -20,7 +20,7 @@ class CertificatesService {
     if (user.role === 'admin' || user.role === 'superadmin') {
       filter = {};
     } else if (user.role === 'user') {
-      filter = { createdBy: user.id };
+      filter = { ownedBy: user.id };
     } else {
       throw new RuleError(USER_NOT_AUTHORIZED, UNAUTHORIZED);
     }
@@ -60,13 +60,13 @@ class CertificatesService {
       throw new RuleError(CERTIFICATE_NOT_VALID, BAD_REQUEST);
     }
 
-    if (certificateExists.email) {
+    if (certificateExists.ownedBy) {
       throw new RuleError(CERTIFICATE_HAVE_OWNER, BAD_REQUEST);
     }
 
     const certificateAssigned = await Certificate.findByIdAndUpdate(
       certificateExists._id,
-      { email: userEmail, createdBy: userId }
+      { email: userEmail, ownedBy: userId }
     ).exec();
 
     return certificateAssigned;
