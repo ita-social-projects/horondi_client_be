@@ -147,6 +147,7 @@ const deleteConstructor = async (id, operations) => {
       id,
     },
   });
+
   return result.data.deleteConstructor;
 };
 

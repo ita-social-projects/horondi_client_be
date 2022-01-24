@@ -69,9 +69,10 @@ const deleteSize = async (id, operations) => {
       id,
     },
   });
+
   return result.data.deleteSize;
 };
-const getAllSizes = async operations => {
+const getAllSizes = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {
@@ -96,6 +97,7 @@ const getAllSizes = async operations => {
       }
     `,
   });
+
   return result.data.getAllSizes?.items;
 };
 const getSizeById = async (id, operations) => {
@@ -162,6 +164,7 @@ const updateSize = async (id, size, operations) => {
       size,
     },
   });
+
   return result.data.updateSize;
 };
 

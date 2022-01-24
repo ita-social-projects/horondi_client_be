@@ -90,13 +90,13 @@ describe('Model mutations', () => {
 
     expect(model).toHaveProperty(
       'name',
-      newModel(categoryId).name.map(item => ({
+      newModel(categoryId).name.map((item) => ({
         ...item,
       }))
     );
     expect(model).toHaveProperty(
       'description',
-      newModel(categoryId).description.map(item => ({
+      newModel(categoryId).description.map((item) => ({
         ...item,
       }))
     );
@@ -120,13 +120,13 @@ describe('Model mutations', () => {
     );
     expect(modelUpdate).toHaveProperty(
       'name',
-      newModelUpdated(categoryId).name.map(item => ({
+      newModelUpdated(categoryId).name.map((item) => ({
         ...item,
       }))
     );
     expect(modelUpdate).toHaveProperty(
       'description',
-      newModelUpdated(categoryId).description.map(item => ({
+      newModelUpdated(categoryId).description.map((item) => ({
         ...item,
       }))
     );

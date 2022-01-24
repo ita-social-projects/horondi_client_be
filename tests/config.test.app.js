@@ -16,7 +16,9 @@ const { NODE_ENV, SECRET } = require('../dotenvValidator');
 let loggerHttp;
 
 (async () => {
-  if (NODE_ENV !== 'test') return;
+  if (NODE_ENV !== 'test') {
+    return;
+  }
 
   const dbConnection = await connectDB();
   currencyWorker(dbConnection.db);
@@ -47,7 +49,7 @@ const config = {
     }
   },
   plugins: [errorOutputPlugin],
-  formatError: formatError(err => {
+  formatError: formatError((err) => {
     loggerHttp.error(
       JSON.stringify({
         key: err.extensions.code,

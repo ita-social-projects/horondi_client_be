@@ -31,7 +31,9 @@ class OrdersService {
   async getOrderByPaidOrderNumber(orderNumber) {
     const order = await Order.findOne({ orderNumber }).exec();
 
-    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!order) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
 
     return order;
   }
@@ -98,6 +100,7 @@ class OrdersService {
       .exec();
 
     const count = Order.find(filterObject).countDocuments();
+
     return {
       items,
       count,
@@ -145,6 +148,7 @@ class OrdersService {
       .exec();
 
     const count = Order.find(filterObject).countDocuments();
+
     return {
       items,
       count,
@@ -154,18 +158,23 @@ class OrdersService {
   async getOrderById(id) {
     const foundOrder = await Order.findById(id).exec();
 
-    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!foundOrder) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
 
     return foundOrder;
   }
 
   async updateOrder(order, id) {
-    if (!ObjectId.isValid(id))
+    if (!ObjectId.isValid(id)) {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    }
 
     const orderToUpdate = await Order.findById(id).exec();
 
-    if (!orderToUpdate) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!orderToUpdate) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
 
     const { items } = order;
 
@@ -219,12 +228,16 @@ class OrdersService {
   }
 
   async deleteOrder(id) {
-    if (!ObjectId.isValid(id))
+    if (!ObjectId.isValid(id)) {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    }
 
     const foundOrder = await Order.findByIdAndDelete(id).exec();
 
-    if (!foundOrder) throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
+    if (!foundOrder) {
+      throw new RuleError(ORDER_NOT_FOUND, NOT_FOUND);
+    }
+
     return foundOrder;
   }
 
@@ -233,7 +246,9 @@ class OrdersService {
       .limit(limit)
       .skip(skip)
       .exec();
-    if (!userOrders) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!userOrders) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
     const ordersCount = await Order.find({ user_id: id })
       .countDocuments()
       .exec();
@@ -293,7 +308,7 @@ class OrdersService {
       .exec();
     const statuses = orders.map(({ status }) => status);
     const { names, counts } = this.getOrdersStats(statuses);
-    const relations = counts.map(count =>
+    const relations = counts.map((count) =>
       Math.round((count * 100) / orders.length)
     );
 

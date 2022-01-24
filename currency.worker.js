@@ -3,9 +3,9 @@ const Agenda = require('agenda');
 const currencyService = require('./modules/currency/currency.service');
 const { CURRENCY_API_URL } = require('./dotenvValidator');
 
-const currencyWorker = async mongo => {
+const currencyWorker = async (mongo) => {
   const agenda = new Agenda({ mongo });
-  agenda.define('set currency to database', async job => {
+  agenda.define('set currency to database', async () => {
     try {
       const currency = await axios.get(CURRENCY_API_URL);
 

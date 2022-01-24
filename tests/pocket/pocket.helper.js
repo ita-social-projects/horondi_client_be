@@ -31,6 +31,7 @@ const createPocket = async (pocket, images, operations) => {
     `,
     variables: { pocket, images },
   });
+
   return pocketInfo.data.addPocket;
 };
 
@@ -99,6 +100,7 @@ const getAllPockets = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return pocketInfo.data.getAllPockets.items;
 };
 
@@ -135,6 +137,7 @@ const getPocketById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return pocketInfo.data.getPocketById;
 };
 
@@ -157,6 +160,7 @@ const deletePocket = async (id, operations) => {
       id,
     },
   });
+
   return pocketInfo.data.deletePocket;
 };
 

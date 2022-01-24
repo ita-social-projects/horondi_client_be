@@ -28,10 +28,11 @@ const addBusinessText = async (businessText, operations) => {
       businessText,
     },
   });
+
   return res.data.addBusinessText;
 };
 const deleteBusinessText = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteBusinessText(id: $id) {
@@ -56,7 +57,7 @@ const deleteBusinessText = async (id, operations) =>
     `,
     variables: { id },
   });
-const getAllBusinessTexts = async operations => {
+const getAllBusinessTexts = async (operations) => {
   const res = await operations.query({
     query: gql`
       query {
@@ -102,6 +103,7 @@ const getBusinessTextById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.getBusinessTextById;
 };
 const getBusinessTextByCode = async (code, operations) => {

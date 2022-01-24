@@ -43,7 +43,9 @@ class ContactService {
       .lean()
       .exec();
 
-    if (!contact) return null;
+    if (!contact) {
+      return null;
+    }
 
     await updateTranslations(
       contact.translationsKey,
@@ -60,7 +62,9 @@ class ContactService {
       .lean()
       .exec();
 
-    if (!contact) return null;
+    if (!contact) {
+      return null;
+    }
 
     await deleteTranslations(contact.translationsKey);
 

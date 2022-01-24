@@ -28,6 +28,7 @@ class HomePageSliderService {
     const count = await HomePageSlider.find()
       .countDocuments()
       .exec();
+
     return {
       items,
       count,
@@ -56,6 +57,7 @@ class HomePageSliderService {
     if (!upload) {
       throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
     }
+
     return new HomePageSlider(data).save();
   }
 

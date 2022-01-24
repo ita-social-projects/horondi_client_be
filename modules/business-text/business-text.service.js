@@ -45,7 +45,7 @@ class BusinessTextService {
 
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
-    const existingPage = pages.find(el => el._id.toString() !== id);
+    const existingPage = pages.find((el) => el._id.toString() !== id);
 
     if (!oldPage) {
       throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
@@ -69,7 +69,7 @@ class BusinessTextService {
     const oldImages = this.findImagesInText(oldPage);
 
     const imagesToDelete = oldImages.filter(
-      img => !newImages.find(newImg => newImg === img)
+      (img) => !newImages.find((newImg) => newImg === img)
     );
 
     if (imagesToDelete.length) {
@@ -160,9 +160,9 @@ class BusinessTextService {
   async deleteNoNeededImages(images) {
     const regExp = new RegExp(`(?<=src="${IMAGE_LINK}[a-z]+_).*?(?=")`);
 
-    const uniqueIds = images.map(img => img.match(regExp));
+    const uniqueIds = images.map((img) => img.match(regExp));
     const valuesToDelete = uniqueIds
-      .map(id => [
+      .map((id) => [
         `large_${id}`,
         `medium_${id}`,
         `small_${id}`,
@@ -174,7 +174,7 @@ class BusinessTextService {
       await uploadService.deleteFiles(valuesToDelete)
     );
     const isAllImagesDeleted = deleteResult.every(
-      res => res.status === 'fulfilled'
+      (res) => res.status === 'fulfilled'
     );
 
     if (!isAllImagesDeleted) {
@@ -186,8 +186,9 @@ class BusinessTextService {
     const images = page.text
       .map(({ value }) => value.match(/<img([\w\W]+?)>/g))
       .flat()
-      .filter(val => val);
+      .filter((val) => val);
     const uniqueImages = new Set([...images]);
+
     return [...uniqueImages];
   }
 }

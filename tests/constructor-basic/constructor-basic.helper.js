@@ -125,6 +125,7 @@ const updateConstructorBasic = async (
     `,
     variables: { constructorElement: constructorInput, id: constructorId },
   });
+
   return constructorBasic.data.updateConstructorBasic;
 };
 const getAllConstructorBasics = async ({ limit, skip, filter }, operations) => {
@@ -220,6 +221,7 @@ const getConstructorBasicById = async (id, operations) => {
       id,
     },
   });
+
   return constructorBasicById.data.getConstructorBasicById;
 };
 

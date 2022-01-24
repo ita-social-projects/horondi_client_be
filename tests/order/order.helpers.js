@@ -100,7 +100,7 @@ const deleteOrder = async (id, operations) =>
     },
   });
 
-const getPaidOrdersStatistic = async operations => {
+const getPaidOrdersStatistic = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query($date: Int!) {
@@ -115,10 +115,11 @@ const getPaidOrdersStatistic = async operations => {
       date: 0,
     },
   });
+
   return res.data.getPaidOrdersStatistic;
 };
 
-const getUserOrders = async operations => {
+const getUserOrders = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query($pagination: Pagination) {
@@ -148,6 +149,7 @@ const getUserOrders = async operations => {
       },
     },
   });
+
   return res.data.getUserOrders;
 };
 
@@ -174,10 +176,11 @@ const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
       paidOrderNumber,
     },
   });
+
   return res.data.getOrderByPaidOrderNumber;
 };
 
-const getOrdersStatistic = async operations => {
+const getOrdersStatistic = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query($date: Int!) {
@@ -192,6 +195,7 @@ const getOrdersStatistic = async operations => {
       date: 0,
     },
   });
+
   return res.data.getOrdersStatistic;
 };
 
@@ -238,6 +242,7 @@ const getAllOrders = async (filter, sort, operations) => {
       sort,
     },
   });
+
   return res.data.getAllOrders.items;
 };
 
@@ -288,6 +293,7 @@ const getOrdersByUser = async (filter, sort, userId, operations) => {
       userId,
     },
   });
+
   return res.data.getOrdersByUser.items;
 };
 
@@ -428,6 +434,7 @@ const updateOrderById = async (order, id, operations) => {
     `,
     variables: { order, id },
   });
+
   return updatedData.data.updateOrder;
 };
 

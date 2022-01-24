@@ -60,6 +60,7 @@ class CategoryService extends FilterHelper {
       .exec();
 
     const count = Category.find(filterOptions).countDocuments();
+
     return {
       items,
       count,
@@ -145,13 +146,15 @@ class CategoryService extends FilterHelper {
       pagination: {},
       sort: {},
     });
-    return categories.items.map(async category => {
+
+    return categories.items.map(async (category) => {
       const models = await Model.find({ category: category._id }).exec();
-      const modelsFields = models.map(async model => ({
+      const modelsFields = models.map(async (model) => ({
         name: model.name,
         _id: model._id,
         translationsKey: model.translationsKey,
       }));
+
       return {
         category: {
           name: [...category.name],
@@ -209,7 +212,9 @@ class CategoryService extends FilterHelper {
       .lean()
       .exec();
 
-    if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+    if (!category) {
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+    }
 
     await deleteTranslations(category.translationsKey);
 
@@ -226,7 +231,7 @@ class CategoryService extends FilterHelper {
     await this.cascadeUpdateRelatives(filter, updateSettings);
 
     const images = Object.values(category.images).filter(
-      item => typeof item === 'string' && item
+      (item) => typeof item === 'string' && item
     );
 
     if (images.length) {
@@ -255,8 +260,10 @@ class CategoryService extends FilterHelper {
 
   async getCategoriesWithModels() {
     const { items } = await this.getAllCategories({});
-    return items.map(category => {
+
+    return items.map((category) => {
       category.models = modelService.getModelsByCategory(category._id);
+
       return category;
     });
   }
@@ -273,6 +280,7 @@ class CategoryService extends FilterHelper {
         },
       },
     }).exec();
+
     return categoriesCount > 0;
   }
 
@@ -293,6 +301,7 @@ class CategoryService extends FilterHelper {
 
     const otherRelation = 100 - popularSum;
     const otherCount = Math.round((otherRelation * total) / 100);
+
     return {
       names: [...res.names, OTHERS],
       counts: [...res.counts, otherCount || 0],

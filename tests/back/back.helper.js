@@ -46,6 +46,7 @@ const createBack = async (back, image, operations) => {
     `,
     variables: { back, image },
   });
+
   return backInfo.data.addBack;
 };
 const updateBack = async (id, back, image, operations) => {
@@ -135,6 +136,7 @@ const getAllBacks = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return backInfo.data.getAllBacks.items;
 };
 const getBackById = async (id, operations) => {
@@ -182,6 +184,7 @@ const getBackById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return backInfo.data.getBackById;
 };
 const getBacksByModel = async (id, operations) => {
@@ -219,6 +222,7 @@ const getBacksByModel = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return backInfo.data.getBacksByModel;
 };
 const deleteBack = async (id, operations) => {
@@ -240,6 +244,7 @@ const deleteBack = async (id, operations) => {
       id,
     },
   });
+
   return backInfo.data.deleteBack;
 };
 

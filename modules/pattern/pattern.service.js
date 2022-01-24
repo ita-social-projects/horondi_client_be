@@ -256,6 +256,7 @@ class PatternsService {
 
       return foundPattern;
     }
+
     return Pattern.findByIdAndDelete(id).exec();
   }
 }

@@ -110,6 +110,7 @@ class NewsService {
       );
       await addHistoryRecord(historyRecord);
     }
+
     return News.findByIdAndUpdate(id, news, {
       new: true,
     }).exec();
@@ -156,7 +157,9 @@ class NewsService {
 
   async deleteNews(id, { _id: adminId }) {
     const foundNews = await News.findByIdAndDelete(id).exec();
-    if (!foundNews) throw new RuleError(NEWS_NOT_FOUND, NOT_FOUND);
+    if (!foundNews) {
+      throw new RuleError(NEWS_NOT_FOUND, NOT_FOUND);
+    }
     await uploadService.deleteFiles([foundNews.author.image, foundNews.image]);
 
     if (foundNews) {
@@ -191,6 +194,7 @@ class NewsService {
         },
       },
     }).exec();
+
     return newsCount > 0;
   }
 }

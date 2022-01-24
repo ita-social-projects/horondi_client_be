@@ -30,6 +30,7 @@ const addComment = async (productId, comment, operations) => {
       id: comment.user,
     },
   });
+
   return res.data.addComment;
 };
 const addRate = async (productId, rate, operations) => {
@@ -54,6 +55,7 @@ const addRate = async (productId, rate, operations) => {
     `,
     variables: { product: productId, userRate: { rate } },
   });
+
   return res.data.addRate;
 };
 const updateComment = async (id, updatedComment, operations) => {
@@ -84,6 +86,7 @@ const updateComment = async (id, updatedComment, operations) => {
       comment: { ...updatedComment },
     },
   });
+
   return res.data.updateComment;
 };
 const deleteComment = async (id, commentID, operations) => {
@@ -104,6 +107,7 @@ const deleteComment = async (id, commentID, operations) => {
     `,
     variables: { id, commentID },
   });
+
   return res.data.deleteComment;
 };
 const getAllCommentsByUser = async (userId, operations) => {
@@ -133,6 +137,7 @@ const getAllCommentsByUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.getAllCommentsByUser;
 };
 const getCommentsByProduct = async (filter, pagination, operations) => {
@@ -266,6 +271,7 @@ const addReplyComment = async (productId, comment, operations, commentId) => {
       commentId,
     },
   });
+
   return res.data.replyForComment;
 };
 const deleteReplyComment = async (id, replyCommentId, operations) => {
@@ -288,6 +294,7 @@ const deleteReplyComment = async (id, replyCommentId, operations) => {
     `,
     variables: { id, replyCommentId },
   });
+
   return res.data.deleteReplyForComment;
 };
 const updateReplyComment = async (id, updatedReplyComment, operations) => {
@@ -321,6 +328,7 @@ const updateReplyComment = async (id, updatedReplyComment, operations) => {
       replyCommentData: { ...updatedReplyComment },
     },
   });
+
   return res.data.updateReplyForComment;
 };
 const getAllComments = async (filter, pagination, sort, operations) => {
@@ -348,6 +356,7 @@ const getAllComments = async (filter, pagination, sort, operations) => {
       sort,
     },
   });
+
   return res.data.getAllComments;
 };
 const getCommentsByUser = async (
@@ -395,6 +404,7 @@ const getCommentsByUser = async (
       userId,
     },
   });
+
   return res.data.getCommentsByUser;
 };
 const getCommentsRepliesByUser = async (
@@ -437,6 +447,7 @@ const getCommentsRepliesByUser = async (
       userId,
     },
   });
+
   return res.data.getCommentsRepliesByUser;
 };
 const getRecentComments = async (limit, operations) => {
@@ -459,6 +470,7 @@ const getRecentComments = async (limit, operations) => {
       limit,
     },
   });
+
   return res.data.getRecentComments;
 };
 const getReplyCommentById = async (id, operations) => {
@@ -491,6 +503,7 @@ const getReplyCommentById = async (id, operations) => {
       id,
     },
   });
+
   return res.data.getReplyCommentById;
 };
 module.exports = {

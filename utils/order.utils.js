@@ -21,6 +21,7 @@ async function calculateTotalItemsPrice(items) {
           value: price[CURRENCY_VALUE.USD_VALUE].value / quantity,
         },
       ];
+
       return [
         {
           currency: CURRENCY.UAH,
@@ -55,11 +56,12 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
 
 function generateOrderNumber() {
   const uid = new Date().getTime();
+
   return uid.toString();
 }
 
 async function addProductsToStatistic(items) {
-  items.forEach(async item => {
+  items.forEach(async (item) => {
     if (item.quantity !== 0) {
       const product = await productModel.findById(item.product).exec();
       product.purchasedCount += item.quantity;
@@ -75,7 +77,7 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
   ) {
     return;
   }
-  const oldItems = orderToUpdate.items.map(item => ({
+  const oldItems = orderToUpdate.items.map((item) => ({
     product: item.product.toString(),
     quantity: -item.quantity,
   }));
@@ -89,19 +91,18 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
   ) {
     await addProductsToStatistic(newOrder.items);
   } else {
-    const newItems = newOrder.items.map(item => ({
+    const newItems = newOrder.items.map((item) => ({
       product: item.product,
       quantity: item.quantity,
     }));
-    const items = newItems.map(newItem => {
-      const index = oldItems.findIndex(el => el.product === newItem.product);
-      let quantity;
+    const items = newItems.map((newItem) => {
+      const index = oldItems.findIndex((el) => el.product === newItem.product);
+      let { quantity } = newItem;
       if (index !== -1) {
-        quantity = newItem.quantity + oldItems[index].quantity;
+        quantity += oldItems[index].quantity;
         oldItems.splice(index, 1);
-      } else {
-        quantity = newItem.quantity;
       }
+
       return { product: newItem.product, quantity };
     });
 

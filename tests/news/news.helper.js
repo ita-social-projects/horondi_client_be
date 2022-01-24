@@ -33,7 +33,8 @@ const createNews = async (news, operations) => {
         news,
       },
     })
-    .catch(e => e);
+    .catch((e) => e);
+
   return res.data.addNews;
 };
 const updateNews = async (id, news, operations) => {
@@ -73,7 +74,8 @@ const updateNews = async (id, news, operations) => {
         news,
       },
     })
-    .catch(e => e);
+    .catch((e) => e);
+
   return res.data.updateNews;
 };
 const deleteNews = async (id, operations) => {
@@ -103,7 +105,8 @@ const deleteNews = async (id, operations) => {
       `,
       variables: { id },
     })
-    .catch(e => e);
+    .catch((e) => e);
+
   return res.data.deleteNews;
 };
 const getAllNews = async (skip, limit, filter, operations) => {
@@ -136,7 +139,8 @@ const getAllNews = async (skip, limit, filter, operations) => {
       `,
       variables: { skip, limit, filter },
     })
-    .catch(e => e);
+    .catch((e) => e);
+
   return res.data.getAllNews;
 };
 const getById = async (id, operations) => {
@@ -171,7 +175,8 @@ const getById = async (id, operations) => {
       `,
       variables: { id },
     })
-    .catch(e => e);
+    .catch((e) => e);
+
   return res.data.getNewsById;
 };
 

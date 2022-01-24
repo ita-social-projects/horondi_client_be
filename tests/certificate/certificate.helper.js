@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
 
-const getAllCertificates = async operations => {
+const getAllCertificates = async (operations) => {
   const allCertificates = await operations.query({
     query: gql`
       query {

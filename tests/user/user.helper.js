@@ -48,6 +48,7 @@ const registerUser = async (
       language,
     },
   });
+
   return registeredUser;
 };
 const updateUserById = async (
@@ -177,10 +178,11 @@ const loginUser = async (email, pass, rememberMe, operations) => {
       rememberMe,
     },
   });
+
   return loginedUser;
 };
 const googleUser = async (idToken, rememberMe, operations) => {
-  const googleUser = await operations.mutate({
+  const res = await operations.mutate({
     mutation: gql`
       mutation($idToken: String!, $rememberMe: Boolean) {
         googleUser(idToken: $idToken, rememberMe: $rememberMe) {
@@ -194,10 +196,11 @@ const googleUser = async (idToken, rememberMe, operations) => {
       rememberMe,
     },
   });
-  return googleUser.data.googleUser;
+
+  return res.data.googleUser;
 };
 const facebookUser = async (idToken, rememberMe, operations) => {
-  const facebookUser = await operations.mutate({
+  const res = await operations.mutate({
     mutation: gql`
       mutation($idToken: String!, $rememberMe: Boolean) {
         facebookUser(idToken: $idToken, rememberMe: $rememberMe) {
@@ -211,7 +214,8 @@ const facebookUser = async (idToken, rememberMe, operations) => {
       rememberMe,
     },
   });
-  return facebookUser.data.facebookUser;
+
+  return res.data.facebookUser;
 };
 const regenerateAccessToken = async (refreshToken, operations) => {
   const res = await operations.mutate({
@@ -230,9 +234,10 @@ const regenerateAccessToken = async (refreshToken, operations) => {
       refreshToken,
     },
   });
+
   return res.data.regenerateAccessToken;
 };
-const getAllUsers = async operations => {
+const getAllUsers = async (operations) => {
   const allUsers = await operations.query({
     query: gql`
       query {
@@ -260,7 +265,7 @@ const getAllUsers = async operations => {
 
   return allUsers;
 };
-const getUserByToken = async operations => {
+const getUserByToken = async (operations) => {
   const user = await operations.query({
     query: gql`
       query {
@@ -311,7 +316,7 @@ const getUsersForStatistic = async (filter, operations) => {
   return res.data;
 };
 const getUserById = async (userId, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
       query($userId: ID!) {
         getUserById(id: $userId) {
@@ -349,6 +354,7 @@ const getPurchasedProducts = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.getPurchasedProducts;
 };
 const deleteUser = async (userId, operations) => {
@@ -366,6 +372,7 @@ const deleteUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res;
 };
 const blockUser = async (userId, operations) => {
@@ -387,6 +394,7 @@ const blockUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.blockUser;
 };
 const unlockUser = async (userId, operations) => {
@@ -408,6 +416,7 @@ const unlockUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.unlockUser;
 };
 const confirmUserEmail = async (token, operations) => {
@@ -425,6 +434,7 @@ const confirmUserEmail = async (token, operations) => {
       token,
     },
   });
+
   return res.data.confirmUserEmail;
 };
 const recoverUser = async (email, language, operations) => {
@@ -439,6 +449,7 @@ const recoverUser = async (email, language, operations) => {
       language,
     },
   });
+
   return res.data.recoverUser;
 };
 
@@ -454,6 +465,7 @@ const resetPassword = async (password, token, operations) => {
       token,
     },
   });
+
   return res;
 };
 
@@ -468,6 +480,7 @@ const checkIfTokenIsValid = async (token, operations) => {
       token,
     },
   });
+
   return res;
 };
 const sendEmailConfirmation = async (email, language, operations) => {
@@ -482,6 +495,7 @@ const sendEmailConfirmation = async (email, language, operations) => {
       language,
     },
   });
+
   return res;
 };
 const resendEmailToConfirmAdmin = async (user, operations) => {
@@ -503,6 +517,7 @@ const resendEmailToConfirmAdmin = async (user, operations) => {
       user,
     },
   });
+
   return res;
 };
 const confirmSuperadminCreation = async (user, operations) => {
@@ -524,6 +539,7 @@ const confirmSuperadminCreation = async (user, operations) => {
       user,
     },
   });
+
   return res;
 };
 
@@ -557,10 +573,11 @@ const completeAdminRegister = async (
       },
     },
   });
+
   return result;
 };
 const switchUserStatus = async (userId, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         switchUserStatus(id: $id) {
@@ -579,7 +596,7 @@ const switchUserStatus = async (userId, operations) =>
     },
   });
 const loginAdmin = async (email, password, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
       mutation($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
@@ -596,7 +613,7 @@ const loginAdmin = async (email, password, operations) =>
     },
   });
 const getAllUsersWithToken = async (token, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
       {
         getAllUsers {
@@ -616,7 +633,7 @@ const getAllUsersWithToken = async (token, operations) =>
     },
   });
 const validateConfirmationToken = async (token, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
       query($token: String!) {
         validateConfirmationToken(token: $token) {

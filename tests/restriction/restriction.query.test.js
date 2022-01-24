@@ -38,7 +38,7 @@ describe('Restriction queries', () => {
       restrictionFilter,
       operations
     );
-    const res = restrictions.items.map(el => el._id);
+    const res = restrictions.items.map((el) => el._id);
     expect(res).toEqual(restrictionIds);
   });
 

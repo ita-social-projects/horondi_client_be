@@ -31,13 +31,13 @@ describe('News mutations tests', () => {
     expect(addResponse.author.name).toBeInstanceOf(Array);
     expect(addResponse).toHaveProperty(
       'title',
-      news.title.map(item => ({
+      news.title.map((item) => ({
         ...item,
       }))
     );
     expect(addResponse).toHaveProperty(
       'text',
-      news.text.map(item => ({
+      news.text.map((item) => ({
         ...item,
       }))
     );
@@ -57,7 +57,7 @@ describe('News mutations tests', () => {
     expect(updateResponse.text).toBeInstanceOf(Array);
     expect(updateResponse).toHaveProperty(
       'text',
-      newsUpdateData.text.map(item => ({
+      newsUpdateData.text.map((item) => ({
         ...item,
       }))
     );
@@ -89,13 +89,13 @@ describe('News mutations tests', () => {
     expect(deleteResponse.text).toBeInstanceOf(Array);
     expect(deleteResponse).toHaveProperty(
       'text',
-      newsUpdateData.text.map(item => ({
+      newsUpdateData.text.map((item) => ({
         ...item,
       }))
     );
     expect(deleteResponse.author).toHaveProperty(
       'name',
-      newsUpdateData.author.name.map(item => ({
+      newsUpdateData.author.name.map((item) => ({
         ...item,
       }))
     );

@@ -155,6 +155,7 @@ const getStrapById = async (id, operations) => {
       id,
     },
   });
+
   return result.data.getStrapById;
 };
 

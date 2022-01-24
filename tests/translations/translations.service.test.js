@@ -48,7 +48,7 @@ describe('translations service test', () => {
     await translationsService.getAllTranslations(
       {},
       {
-        json: data => {
+        json: (data) => {
           response = data;
         },
       }

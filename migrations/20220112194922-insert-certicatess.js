@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongoose').Types;
 
 module.exports = {
-  async up(db, _) {
+  async up(db) {
     await db.createCollection('certificates');
     await db.collection('certificates').insertMany([
       {
@@ -51,7 +51,7 @@ module.exports = {
     ]);
   },
 
-  async down(db, _) {
+  async down(db) {
     await db.collection('certificates').drop();
   },
 };

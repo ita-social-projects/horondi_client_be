@@ -66,7 +66,7 @@ class SizeService {
         items.push(
           ..._.take(
             _.drop(
-              _.filter(records, record =>
+              _.filter(records, (record) =>
                 regExCondition.test(record.modelId.name[0].value)
               ),
               skip
@@ -76,7 +76,7 @@ class SizeService {
         );
       } else {
         items.push(
-          _.filter(records, record =>
+          _.filter(records, (record) =>
             regExCondition.test(record.modelId.name[0].value)
           )
         );
@@ -178,6 +178,7 @@ class SizeService {
     );
 
     await addHistoryRecord(historyRecord);
+
     return foundSize;
   }
 

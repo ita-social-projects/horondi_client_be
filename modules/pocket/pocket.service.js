@@ -118,7 +118,7 @@ class PocketService {
     if (image) {
       if (pocketToUpdate.images) {
         const images = Object.values(pocketToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }

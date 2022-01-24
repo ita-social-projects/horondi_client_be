@@ -52,7 +52,7 @@ class NovaPoshtaService {
       GET_CITIES
     );
 
-    return res.data.data.slice(0, 10).map(city => ({
+    return res.data.data.slice(0, 10).map((city) => ({
       description: city.Description,
       ref: city.Ref,
       cityID: city.CityID,
@@ -69,7 +69,7 @@ class NovaPoshtaService {
       GET_STREET
     );
 
-    return res.data.data.slice(0, 10).map(street => ({
+    return res.data.data.slice(0, 10).map((street) => ({
       description: street.Description,
       ref: street.Ref,
       streetsTypeRef: street.StreetsTypeRef,
@@ -86,7 +86,7 @@ class NovaPoshtaService {
       GET_WAREHOUSES
     );
 
-    return res.data.data.map(warehouse => ({
+    return res.data.data.map((warehouse) => ({
       description: warehouse.Description,
       shortAddress: warehouse.ShortAddress,
       number: warehouse.Number,
@@ -131,7 +131,7 @@ class NovaPoshtaService {
       GET_DOCUMENT_PRICE
     );
 
-    return res.data.data.map(price => ({
+    return res.data.data.map((price) => ({
       assessedCost: price.AssessedCost,
       cost: price.Cost,
       costRedelivery: price.CostRedelivery,

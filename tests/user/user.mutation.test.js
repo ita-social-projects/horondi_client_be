@@ -490,7 +490,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
 
     const data = result.data.registerAdmin;
     expect(data.message).toEqual(USER_ALREADY_EXIST);
@@ -520,7 +520,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.registerAdmin;
     expect(data.message).toEqual(INVALID_ROLE);
     expect(data.statusCode).toEqual(FORBIDDEN);
@@ -549,7 +549,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
 
     const data = result.data.registerAdmin;
 
@@ -580,7 +580,7 @@ describe('Register admin', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.registerAdmin;
     const admin = await User.findOne({ email: newAdminEmail }).exec();
     userId = admin._id;
@@ -693,10 +693,10 @@ describe('User filtering', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.getAllUsers.items;
 
-    expect(data.every(item => item.role === userRole)).toEqual(true);
+    expect(data.every((item) => item.role === userRole)).toEqual(true);
   });
 
   test('Should receive admins and superadmins via using filters for roles', async () => {
@@ -719,10 +719,10 @@ describe('User filtering', () => {
           },
         },
       })
-      .catch(err => err);
+      .catch((err) => err);
     const data = result.data.getAllUsers.items;
 
-    expect(data.every(item => roles.includes(item.role))).toEqual(true);
+    expect(data.every((item) => roles.includes(item.role))).toEqual(true);
   });
 
   afterAll(async () => {

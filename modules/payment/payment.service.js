@@ -30,12 +30,15 @@ const {
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }, { language }) {
-    if (!ObjectId.isValid(orderId))
+    if (!ObjectId.isValid(orderId)) {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    }
 
     const isOrderPresent = await OrderModel.findById(orderId).exec();
 
-    if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!isOrderPresent) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       order_id: isOrderPresent.orderNumber,
@@ -71,6 +74,7 @@ class PaymentService {
         paymentUrl: order.paymentUrl,
         imagesUrl: IMAGE_LINK,
       });
+
       return order;
     }
   }
@@ -101,7 +105,9 @@ class PaymentService {
         orderNumber: order_id.toString(),
       }).exec();
 
-      if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+      if (!order) {
+        throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+      }
 
       if (
         order_status !== APPROVED.toLowerCase() ||

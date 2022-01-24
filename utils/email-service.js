@@ -31,7 +31,7 @@ const contextExtension = {
   adminUrl: ADMIN_BASE_URI,
 };
 
-const onSendMailError = err => {
+const onSendMailError = (err) => {
   getLoggerHttp().error(JSON.stringify({ key: err.code, value: err.message }));
 };
 

@@ -46,6 +46,7 @@ const createUser = async (
       language,
     },
   });
+
   return register.data.registerUser._id;
 };
 
@@ -72,10 +73,11 @@ const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
       filter,
     },
   });
+
   return result.data.getAllUsers.items;
 };
 
-const chooseOnlyUsers = arr => arr.filter(user => user.role === USER);
+const chooseOnlyUsers = (arr) => arr.filter((user) => user.role === USER);
 
 module.exports = {
   createUser,

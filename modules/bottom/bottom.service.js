@@ -75,7 +75,7 @@ class BottomService {
     if (image) {
       if (bottomToUpdate.images) {
         const images = Object.values(bottomToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }

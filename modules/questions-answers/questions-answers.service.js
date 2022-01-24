@@ -10,6 +10,7 @@ const {
 class QuestionsAnswersService {
   async getAllQuestionsAnswers() {
     const items = await QuestionsAnswers.find().exec();
+
     return {
       items,
     };

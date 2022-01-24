@@ -158,7 +158,8 @@ describe('Comment queries', () => {
       sortComment,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', countComments);
       expect(receivedComments.items[0]).toHaveProperty('_id', commentId);
@@ -178,7 +179,8 @@ describe('Comment queries', () => {
       adminId,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', countComments);
       expect(receivedComments.items[0]).toHaveProperty('_id', commentId);
@@ -208,7 +210,7 @@ describe('Comment queries', () => {
       operations
     );
 
-    return new Promise(done => {
+    return new Promise((done) => {
       expect(receivedReplies).toBeDefined();
       expect(receivedReplies).toHaveProperty('count', 1);
       expect(receivedReplies.items[0]).toHaveProperty('_id', replyId);
@@ -225,7 +227,8 @@ describe('Comment queries', () => {
   });
   it('Should receive recent comments', async () => {
     const receivedComments = await getRecentComments(limitCount, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments[0]).toHaveProperty('_id', commentId);
       expect(receivedComments[0]).toHaveProperty(
@@ -237,7 +240,8 @@ describe('Comment queries', () => {
   });
   it('Should receive all comments written by selected user', async () => {
     const res = await getAllCommentsByUser(adminId, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(res).toBeDefined();
       expect(res[0]).toHaveProperty('product', { _id: productId });
       expect(res[0]).toHaveProperty('text', newComment(adminId).text);
@@ -248,7 +252,8 @@ describe('Comment queries', () => {
   });
   it('should return empty array of comments for unexciting id', async () => {
     const res = await getAllCommentsByUser(userWrongId, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(res[0]).toBeDefined();
       expect(res[0].statusCode).toBe(404);
       expect(res[0].message).toBe(COMMENT_FOR_NOT_EXISTING_USER);
@@ -261,7 +266,8 @@ describe('Comment queries', () => {
       paginationComment,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', 1);
       expect(receivedComments.items[0]).toHaveProperty(
@@ -285,7 +291,8 @@ describe('Comment queries', () => {
       paginationComment,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(COMMENTS_NOT_FOUND);
@@ -295,7 +302,8 @@ describe('Comment queries', () => {
 
   it('should return one comment', async () => {
     const receivedComment = await getCommentById(commentId, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComment).toBeDefined();
       expect(receivedComment).toEqual({
         product: { _id: productId },
@@ -314,7 +322,8 @@ describe('Comment queries', () => {
       paginationComment,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', 1);
       expect(receivedComments.items[0]).toHaveProperty(
@@ -344,7 +353,8 @@ describe('Comment queries', () => {
       paginationComment,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('count', 2);
       expect(receivedComments.items[0].replyComments[0]).toHaveProperty(
@@ -374,7 +384,8 @@ describe('Comment queries', () => {
       paginationComment,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(REPLY_COMMENTS_NOT_FOUND);
@@ -383,7 +394,8 @@ describe('Comment queries', () => {
   });
   it('Should receive reply comment by id', async () => {
     const receivedComments = await getReplyCommentById(replyId, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.replyComments[0]).toHaveProperty('_id', replyId);
       expect(receivedComments.replyComments[0]).toHaveProperty(
@@ -405,7 +417,8 @@ describe('Comment queries', () => {
       commentWrongId,
       operations
     );
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toBeDefined();
       expect(receivedComments).toHaveProperty('statusCode', 404);
@@ -418,7 +431,8 @@ describe('Comment queries', () => {
   });
   it('should return error when find comment by wrong id', async () => {
     const receivedComment = await getCommentById(commentWrongId, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComment).toBeDefined();
       expect(receivedComment).toHaveProperty('statusCode', 404);
       expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
@@ -428,7 +442,8 @@ describe('Comment queries', () => {
   it('Should receive recent comments with error', async () => {
     await deleteComment(adminId, commentId, operations);
     const receivedComments = await getRecentComments(limitCount, operations);
-    return new Promise(done => {
+
+    return new Promise((done) => {
       expect(receivedComments).toBeDefined();
       expect(receivedComments.statusCode).toBe(404);
       expect(receivedComments.message).toBe(COMMENT_NOT_FOUND);

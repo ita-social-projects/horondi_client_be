@@ -7,7 +7,7 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2020
     },
     "plugins": [
         "prettier"
@@ -39,6 +39,7 @@
                 "allow": ["warn", "error"]
             }
         ],
+        "no-unused-vars": [2, { "argsIgnorePattern": "_" }],
         "newline-before-return": 2,
         "no-unneeded-ternary": 2,
         "prefer-arrow-callback": 1,
@@ -75,8 +76,14 @@
         "prefer-destructuring": [
             1,
             {
-                "array": false,
-                "object": true
+                "VariableDeclarator": {
+                    "array": false,
+                    "object": true
+                },
+                "AssignmentExpression": {
+                    "array": true,
+                    "object": false
+                }
             }
         ],
         "no-extend-native": 2,
@@ -86,12 +93,11 @@
         "max-len": [
             2,
             {
-                "code": 140,
+                "code": 150,
                 "ignoreComments": true,
                 "ignoreUrls": true
             }
         ],
-        "no-extra-parens": [1, "all"],
         "quotes": [
             2,
             "single",

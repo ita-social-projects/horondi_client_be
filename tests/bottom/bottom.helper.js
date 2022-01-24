@@ -42,6 +42,7 @@ const createBottom = async (bottom, image, operations) => {
     `,
     variables: { bottom, image },
   });
+
   return bottomInfo.data.addBottom;
 };
 const updateBottom = async (id, bottom, image, operations) => {
@@ -115,6 +116,7 @@ const getAllBottoms = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return bottomInfo.data.getAllBottoms.items;
 };
 const getBottomById = async (id, operations) => {
@@ -154,6 +156,7 @@ const getBottomById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return bottomInfo.data.getBottomById;
 };
 const deleteBottom = async (id, operations) => {
@@ -175,6 +178,7 @@ const deleteBottom = async (id, operations) => {
       id,
     },
   });
+
   return bottomInfo.data.deleteBottom;
 };
 

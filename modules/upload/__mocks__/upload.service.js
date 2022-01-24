@@ -1,7 +1,7 @@
 class UploadService {
   uploadFiles = async files => files.map(async file => this.uploadFile(file));
 
-  uploadFile = async file => {
+  uploadFile = async () => {
     const createName = sizeName => `${sizeName}_test-file`;
     return {
       prefixUrl: 'some prefix',
@@ -14,11 +14,11 @@ class UploadService {
     };
   };
 
-  async deleteFiles(files) {
+  async deleteFiles() {
     return [true, true];
   }
 
-  async deleteFile(file) {
+  async deleteFile() {
     return true;
   }
 }

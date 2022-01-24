@@ -160,7 +160,7 @@ describe('Product queries', () => {
   test('#5 Should return models', async () => {
     const models = await getModelsByCategory(categoryId, operations);
     const res = models.data.getModelsByCategory;
-    expect(res.some(model => model._id === modelId)).toBeTruthy();
+    expect(res.some((model) => model._id === modelId)).toBeTruthy();
   });
 
   test('#6 Should return popular products', async () => {

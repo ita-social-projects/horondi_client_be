@@ -49,9 +49,10 @@ const createMaterial = async (material, operations) => {
     `,
     variables: { ...material },
   });
+
   return testCreatedMaterial.data.addMaterial;
 };
-const getAllMaterials = async operations => {
+const getAllMaterials = async (operations) => {
   const allMaterials = await operations.query({
     query: gql`
       query {
@@ -88,7 +89,7 @@ const getAllMaterials = async operations => {
   return allMaterials.data.getAllMaterials;
 };
 const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
-  await operations.query({
+  operations.query({
     variables: { skip, limit },
     query: gql`
       query($skip: Int, $limit: Int) {
@@ -123,7 +124,7 @@ const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
     `,
   });
 const getMaterialById = async (id, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
       query($id: ID!) {
         getMaterialById(id: $id) {
@@ -217,7 +218,7 @@ const updateMaterial = async (id, material, operations) => {
   return updatedMaterial.data.updateMaterial;
 };
 const deleteMaterial = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deleteMaterial(id: $id) {

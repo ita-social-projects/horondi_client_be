@@ -28,14 +28,14 @@ describe('News queries tests', () => {
     expect(allNews.items[0].title).toBeInstanceOf(Array);
     expect(allNews.items[0]).toHaveProperty(
       'text',
-      news.text.map(item => ({
+      news.text.map((item) => ({
         ...item,
       }))
     );
     expect(allNews.items[0].author).toBeDefined();
     expect(allNews.items[0].author).toHaveProperty(
       'name',
-      news.author.name.map(item => ({
+      news.author.name.map((item) => ({
         ...item,
       }))
     );
@@ -49,21 +49,21 @@ describe('News queries tests', () => {
     expect(newsById).toBeDefined();
     expect(newsById).toHaveProperty(
       'title',
-      news.title.map(item => ({
+      news.title.map((item) => ({
         ...item,
       }))
     );
     expect(newsById.title).toBeInstanceOf(Array);
     expect(newsById).toHaveProperty(
       'text',
-      news.text.map(item => ({
+      news.text.map((item) => ({
         ...item,
       }))
     );
     expect(newsById.author).toBeDefined();
     expect(newsById.author).toHaveProperty(
       'name',
-      news.author.name.map(item => ({
+      news.author.name.map((item) => ({
         ...item,
       }))
     );

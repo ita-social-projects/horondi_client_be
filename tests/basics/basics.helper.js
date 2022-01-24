@@ -41,6 +41,7 @@ const createBasics = async (basic, image, operations) => {
     `,
     variables: { basic, image },
   });
+
   return basicsInfo.data.addBasic;
 };
 
@@ -88,6 +89,7 @@ const updateBasic = async (id, basic, images, operations) => {
       images,
     },
   });
+
   return basicsInfo.data.updateBasic;
 };
 
@@ -110,6 +112,7 @@ const deleteBasic = async (id, operations) => {
       id,
     },
   });
+
   return basicsInfo.data.deleteBasic;
 };
 
@@ -139,6 +142,7 @@ const getAllBasics = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return basicsInfo.data.getAllBasics.items;
 };
 
@@ -178,6 +182,7 @@ const getBasicById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return basicsInfo.data.getBasicById;
 };
 

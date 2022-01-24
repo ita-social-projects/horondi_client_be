@@ -31,6 +31,7 @@ const addContact = async (contact, operations) => {
     `,
     variables: { contact },
   });
+
   return res.data.addContact;
 };
 const deleteContact = async (id, operations) => {
@@ -50,9 +51,10 @@ const deleteContact = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.deleteContact;
 };
-const getContacts = async operations => {
+const getContacts = async (operations) => {
   const res = await operations.query({
     query: gql`
       query($skip: Int, $limit: Int) {

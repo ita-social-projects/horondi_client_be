@@ -1,5 +1,5 @@
 module.exports = {
-  async up(db, _) {
+  async up(db) {
     await db.collection('orders').updateMany(
       {},
       {
@@ -8,7 +8,7 @@ module.exports = {
     );
   },
 
-  async down(db, _) {
+  async down(db) {
     await db
       .collection('orders')
       .updateMany({}, { $rename: { user: 'recipient' } }, false, true);

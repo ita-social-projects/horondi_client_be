@@ -23,6 +23,7 @@ const createPosition = async (position, operations) => {
     `,
     variables: { position },
   });
+
   return positionInfo.data.addPosition;
 };
 
@@ -46,6 +47,7 @@ const updatePosition = async (id, position, operations) => {
       position,
     },
   });
+
   return positionInfo.data.updatePosition;
 };
 
@@ -68,6 +70,7 @@ const deletePosition = async (id, operations) => {
       id,
     },
   });
+
   return positionInfo.data.deletePosition;
 };
 
@@ -92,6 +95,7 @@ const getAllPositions = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return positionInfo.data.getAllPositions.items;
 };
 
@@ -117,6 +121,7 @@ const getPositionById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return positionInfo.data.getPositionById;
 };
 

@@ -57,11 +57,13 @@ class UkrPoshtaService {
       'post',
       address
     );
+
     return createdAddress.data;
   }
 
   async getUkrPoshtaAddressById(id) {
     const address = await this.getUkrPoshtaRequest(`${ADDRESSES}/${id}`);
+
     return address.data;
   }
 
@@ -79,6 +81,7 @@ class UkrPoshtaService {
         addressId: createdAddress.id,
       }
     );
+
     return createdClient.data;
   }
 
@@ -100,11 +103,13 @@ class UkrPoshtaService {
     if (!createdOrder) {
       throw Error(ORDER_CREATION_FAILED);
     }
+
     return createdOrder.data;
   }
 
   async getUkrPoshtaRegions() {
     const res = await this.getUkrPoshtaAddressRequest(getUkrPoshtaRegionsUrl);
+
     return res.data.Entries.Entry;
   }
 
@@ -112,6 +117,7 @@ class UkrPoshtaService {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaDistrictsByRegionIdUrl + id}`
     );
+
     return res.data.Entries.Entry;
   }
 
@@ -119,6 +125,7 @@ class UkrPoshtaService {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaCitiesByDistrictIdUrl + id}`
     );
+
     return res.data.Entries.Entry;
   }
 
@@ -126,6 +133,7 @@ class UkrPoshtaService {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaStreetsByCityIdUrl + id}`
     );
+
     return res.data.Entries.Entry;
   }
 
@@ -133,6 +141,7 @@ class UkrPoshtaService {
     const res = await this.getUkrPoshtaAddressRequest(
       `${getUkrPoshtaPostofficesCityIdUrl + id}`
     );
+
     return res.data.Entries.Entry;
   }
 }

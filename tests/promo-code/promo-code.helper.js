@@ -19,9 +19,10 @@ const addPromoCode = async (promoCode, operations) => {
       promoCode,
     },
   });
+
   return res.data.addPromoCode;
 };
-const getAllPromoCodes = async operations => {
+const getAllPromoCodes = async (operations) => {
   const res = await operations.query({
     query: gql`
       query {
@@ -41,7 +42,7 @@ const getAllPromoCodes = async operations => {
   return res.data.getAllPromoCodes;
 };
 const deletePromoCode = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
       mutation($id: ID!) {
         deletePromoCode(id: $id) {

@@ -1,7 +1,7 @@
 const { patternExtraFields } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, client) {
+  async up(db) {
     await db.collection('patterns').updateMany(
       {},
       {
@@ -11,7 +11,7 @@ module.exports = {
     );
   },
 
-  async down(db, client) {
+  async down(db) {
     await db.collection('patterns').updateMany(
       {},
       {

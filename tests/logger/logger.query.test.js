@@ -36,7 +36,7 @@ describe('Logger looks query', () => {
   });
 
   it('Should log call several times', () => {
-    logLevels.forEach(level => logger.log({ level, message: logMockFn() }));
+    logLevels.forEach((level) => logger.log({ level, message: logMockFn() }));
 
     expect(logMockFn).toHaveBeenCalled();
     expect(logMockFn.mock.calls.length).toBe(totalLevelsCount);

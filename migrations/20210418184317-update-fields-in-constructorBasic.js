@@ -3,7 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const { constructorBasicOneExtraFields } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, client) {
+  async up(db) {
     await db.collection('constructorbasics').updateOne(
       { _id: ObjectId('604e329bb17ecf65048afd6c') },
       {
@@ -13,7 +13,7 @@ module.exports = {
     );
   },
 
-  async down(db, client) {
+  async down(db) {
     await db.collection('constructorbasics').updateOne(
       { _id: ObjectId('604e329bb17ecf65048afd6c') },
       {

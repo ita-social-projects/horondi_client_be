@@ -128,7 +128,7 @@ class ClosureService {
     if (image) {
       if (closureToUpdate.images) {
         const images = Object.values(closureToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }

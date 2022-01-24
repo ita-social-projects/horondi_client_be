@@ -30,6 +30,7 @@ const getAllHistoryRecords = async (params, operations) => {
     `,
     variables: params,
   });
+
   return allRecords.data.getAllHistoryRecords;
 };
 
@@ -60,6 +61,7 @@ const getHistoryRecordById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return record.data.getHistoryRecordById;
 };
 

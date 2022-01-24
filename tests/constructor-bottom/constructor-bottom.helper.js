@@ -47,6 +47,7 @@ const createConstructorBottom = async (constructorElement, operations) => {
     `,
     variables: { constructorElement },
   });
+
   return constructorBottom.data.addConstructorBottom;
 };
 const updateConstructorBottom = async (id, constructorElement, operations) => {
@@ -102,6 +103,7 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
       constructorElement,
     },
   });
+
   return updateConstructor.data.updateConstructorBottom;
 };
 const deleteConstructorBottom = async (constructorId, operations) => {
@@ -117,6 +119,7 @@ const deleteConstructorBottom = async (constructorId, operations) => {
     `,
     variables: { id: constructorId },
   });
+
   return deletedConstructor.data.deleteConstructorBottom;
 };
 const getConstructorBottomById = async (id, operations) => {
@@ -166,6 +169,7 @@ const getConstructorBottomById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return constructorBottomById.data.getConstructorBottomById;
 };
 const getAllConstructorBottom = async ({ limit, skip, filter }, operations) => {
@@ -211,6 +215,7 @@ const getAllConstructorBottom = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return allConstructorBottom.data.getAllConstructorBottom.items;
 };
 

@@ -9,22 +9,22 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const contactQuery = {
-  getContacts: (parent, args) => contactService.getContacts(args),
-  getContactById: async (parent, args) =>
+  getContacts: (_, args) => contactService.getContacts(args),
+  getContactById: async (_, args) =>
     (await contactService.getContactById(args.id)) ||
     new RuleError(CONTACT_NOT_FOUND, NOT_FOUND),
 };
 
 const contactMutation = {
-  addContact: async (parent, args) =>
+  addContact: async (_, args) =>
     (await contactService.addContact(args)) ||
     new RuleError(CONTACT_ALREADY_EXIST, BAD_REQUEST),
 
-  deleteContact: async (parent, args) =>
+  deleteContact: async (_, args) =>
     (await contactService.deleteContact(args.id)) ||
     new RuleError(CONTACT_NOT_FOUND, NOT_FOUND),
 
-  updateContact: async (parent, args) =>
+  updateContact: async (_, args) =>
     (await contactService.updateContact(args)) ||
     new RuleError(CONTACT_NOT_FOUND, NOT_FOUND),
 };

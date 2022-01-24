@@ -49,6 +49,7 @@ class CommentsService {
     if (!comment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
+
     return comment;
   }
 
@@ -61,8 +62,9 @@ class CommentsService {
       throw new RuleError(REPLY_COMMENT_NOT_FOUND, NOT_FOUND);
     }
     replyComment.replyComments = replyComment.replyComments.filter(
-      el => el._id.toString() === id
+      (el) => el._id.toString() === id
     );
+
     return replyComment;
   }
 
@@ -74,6 +76,7 @@ class CommentsService {
     if (!comments?.length) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
+
     return comments;
   }
 
@@ -128,13 +131,13 @@ class CommentsService {
       );
     } else if (user) {
       comment.replyComments = comment.replyComments.filter(
-        item =>
+        (item) =>
           item.showReplyComment === true ||
           item.answerer.toString() === user._id.toString()
       );
     } else {
       comment.replyComments = comment.replyComments.filter(
-        item => item.showReplyComment === true
+        (item) => item.showReplyComment === true
       );
     }
     if (parseInt(sort?.date) === 1) {
@@ -148,6 +151,7 @@ class CommentsService {
     }
     const countAll = comment.replyComments.length;
     comment.replyComments = comment.replyComments.slice(skip, skip + limit);
+
     return {
       items: [comment],
       count: comment.replyComments.length,
@@ -160,6 +164,7 @@ class CommentsService {
     if (!comments.length) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_USER, NOT_FOUND);
     }
+
     return comments;
   }
 
@@ -191,7 +196,7 @@ class CommentsService {
     }).exec();
     let replies = comments.reduce((acumulator, doc) => {
       const replyComments = doc.replyComments.filter(
-        item => item.answerer !== userId
+        (item) => item.answerer !== userId
       );
 
       return [...acumulator, ...replyComments];
@@ -208,6 +213,7 @@ class CommentsService {
     }
     const count = replies.length;
     replies = replies.slice(skip, skip + limit);
+
     return {
       items: replies,
       count,
@@ -226,6 +232,7 @@ class CommentsService {
     if (!updatedComment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
+
     return updatedComment;
   }
 
@@ -237,9 +244,10 @@ class CommentsService {
     }
     const order = await isUserBoughtProduct(data.product, userId);
 
-    if (order.some(item => item.status === DELIVERED)) {
+    if (order.some((item) => item.status === DELIVERED)) {
       data.verifiedPurchase = true;
     }
+
     return new Comment(data).save();
   }
 
@@ -252,7 +260,7 @@ class CommentsService {
 
     const order = await isUserBoughtProduct(replyComment.productId, userId);
 
-    if (order.some(item => item.status === DELIVERED)) {
+    if (order.some((item) => item.status === DELIVERED)) {
       replyComment.verifiedPurchase = true;
     }
 
@@ -348,7 +356,8 @@ class CommentsService {
     let { rateCount } = product;
 
     const { rate } =
-      userRates.find(rating => String(rating.user) === String(user._id)) || {};
+      userRates.find((rating) => String(rating.user) === String(user._id)) ||
+      {};
 
     const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
     if (!rate) {
@@ -357,7 +366,7 @@ class CommentsService {
     const newRate = rateSum / rateCount;
 
     const newUserRates = rate
-      ? userRates.map(item =>
+      ? userRates.map((item) =>
           String(item.user) === String(user._id)
             ? { user: item.user, rate: data.rate }
             : item

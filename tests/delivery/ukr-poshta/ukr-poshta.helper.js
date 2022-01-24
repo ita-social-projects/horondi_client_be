@@ -1,6 +1,6 @@
 const { gql } = require('@apollo/client');
 
-const getUkrPoshtaRegions = async operations => {
+const getUkrPoshtaRegions = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {
@@ -12,6 +12,7 @@ const getUkrPoshtaRegions = async operations => {
       }
     `,
   });
+
   return result.data.getUkrPoshtaRegions;
 };
 const getUkrPoshtaDistrictsByRegionId = async (id, operations) => {
@@ -29,6 +30,7 @@ const getUkrPoshtaDistrictsByRegionId = async (id, operations) => {
       id,
     },
   });
+
   return result.data.getUkrPoshtaDistrictsByRegionId;
 };
 const getUkrPoshtaCitiesByDistrictId = async (id, operations) => {
@@ -46,6 +48,7 @@ const getUkrPoshtaCitiesByDistrictId = async (id, operations) => {
       id,
     },
   });
+
   return result.data.getUkrPoshtaCitiesByDistrictId;
 };
 const getUkrPoshtaPostofficesCityId = async (id, operations) => {
@@ -63,6 +66,7 @@ const getUkrPoshtaPostofficesCityId = async (id, operations) => {
       id,
     },
   });
+
   return result.data.getUkrPoshtaPostofficesCityId;
 };
 const getUkrPoshtaStreetsByCityId = async (id, operations) => {
@@ -80,6 +84,7 @@ const getUkrPoshtaStreetsByCityId = async (id, operations) => {
       id,
     },
   });
+
   return result.data.getUkrPoshtaStreetsByCityId;
 };
 

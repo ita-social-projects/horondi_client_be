@@ -42,9 +42,8 @@ let userId;
 let operations;
 let loginedUser;
 
-const { firstName, lastName, email, pass, language } = testUser;
-
 describe('queries', () => {
+  const { firstName, lastName, email, pass, language } = testUser;
   beforeAll(async () => {
     operations = await setupApp();
     const register = await registerUser(
@@ -277,7 +276,7 @@ describe('Filter users', () => {
     for (const user of users) {
       if (
         testUsersSet.some(
-          el =>
+          (el) =>
             el.firstName === user.firstName && el.banned.blockPeriod === '30'
         )
       ) {
@@ -303,19 +302,19 @@ describe('Filter users', () => {
   });
 
   test('should sort by name from a to z', async () => {
-    const compareResult = testUsersSet.map(user => user.firstName).sort();
+    const compareResult = testUsersSet.map((user) => user.firstName).sort();
 
     let users = await getAllUsersQuery(operations, SORT.byName.asc);
 
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
-    expect(users.map(user => user.firstName)).toEqual(compareResult);
+    expect(users.map((user) => user.firstName)).toEqual(compareResult);
   });
 
   test('should sort by name from z to a', async () => {
     const compareResult = testUsersSet
-      .map(user => user.firstName)
+      .map((user) => user.firstName)
       .sort()
       .reverse();
 
@@ -323,30 +322,30 @@ describe('Filter users', () => {
 
     users = chooseOnlyUsers(users);
     expect(users).toBeDefined();
-    expect(users.map(user => user.firstName)).toEqual(compareResult);
+    expect(users.map((user) => user.firstName)).toEqual(compareResult);
   });
 
   test('should sort by email from a to z', async () => {
     const compareResult = testUsersSet
-      .map(user => user.email.toLowerCase())
+      .map((user) => user.email.toLowerCase())
       .sort();
     let users = await getAllUsersQuery(operations, SORT.byEmail.asc);
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
-    expect(users.map(user => user.email)).toEqual(compareResult);
+    expect(users.map((user) => user.email)).toEqual(compareResult);
   });
 
   test('should sort by email from z to a', async () => {
     const compareResult = testUsersSet
-      .map(user => user.email.toLowerCase())
+      .map((user) => user.email.toLowerCase())
       .sort()
       .reverse();
     let users = await getAllUsersQuery(operations, SORT.byEmail.desc);
     users = chooseOnlyUsers(users);
 
     expect(users).toBeDefined();
-    expect(users.map(user => user.email)).toEqual(compareResult);
+    expect(users.map((user) => user.email)).toEqual(compareResult);
   });
 
   afterAll(async () => {

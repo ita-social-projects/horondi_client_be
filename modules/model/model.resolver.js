@@ -26,7 +26,7 @@ const modelsQuery = {
     }
   },
 
-  getModelsForConstructor: async (_, args) => {
+  getModelsForConstructor: async () => {
     try {
       return await modelService.getModelsForConstructor();
     } catch (e) {

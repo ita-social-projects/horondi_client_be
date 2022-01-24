@@ -22,9 +22,10 @@ const removeDaysFromData = (days, currentDate) =>
 const changeDataFormat = (data, options) =>
   new Date(data).toLocaleString('en-US', options);
 
-const countItemsOccurrence = items =>
+const countItemsOccurrence = (items) =>
   items.reduce((acc, el) => {
     acc[el] = (acc[el] || 0) + 1;
+
     return acc;
   }, {});
 
@@ -37,13 +38,14 @@ const setCalendar = (names, counts, days) => {
       removeDaysFromData(i, today),
       userDateFormat
     );
-    const countIndex = names.findIndex(day => day === chartDate);
+    const countIndex = names.findIndex((day) => day === chartDate);
 
     calendar.push({
       range: chartDate,
       counts: countIndex === -1 ? 0 : counts[countIndex],
     });
   }
+
   return calendar;
 };
 
@@ -57,8 +59,21 @@ const transformLabel = (days, dateSet) => {
   if (startMonth.slice(0, 3) === endMonth.slice(0, 3)) {
     return `${startMonth}-${endMonth.slice(4)}`;
   }
+
   return `${startMonth}-${endMonth}`;
 };
+
+const reduceDatesObjectArr = (days, item) =>
+  item.reduce(
+    (acc, curr) => ({
+      range: acc.range,
+      counts: acc.counts + curr.counts,
+    }),
+    {
+      range: transformLabel(days, item),
+      counts: 0,
+    }
+  );
 
 const reduceByYear = (days, calendar) => {
   const year = [];
@@ -77,7 +92,7 @@ const reduceByYear = (days, calendar) => {
     }
   }
 
-  return year.map(item => reduceDatesObjectArr(days, item));
+  return year.map((item) => reduceDatesObjectArr(days, item));
 };
 
 const reduceByMonths = (days, calendar, range) => {
@@ -85,20 +100,9 @@ const reduceByMonths = (days, calendar, range) => {
   for (let i = 0; i < days / range; i++) {
     months.push(reduceDatesObjectArr(days, calendar.splice(0, range)));
   }
+
   return months;
 };
-
-const reduceDatesObjectArr = (days, item) =>
-  item.reduce(
-    (acc, curr) => ({
-      range: acc.range,
-      counts: acc.counts + curr.counts,
-    }),
-    {
-      range: transformLabel(days, item),
-      counts: 0,
-    }
-  );
 
 const reduceByDaysCount = (names, counts, days) => {
   if (names.length && counts.length) {
@@ -129,17 +133,18 @@ const reduceByDaysCount = (names, counts, days) => {
     }
 
     return {
-      labels: result.map(el => el.range),
-      count: result.map(el => el.counts),
+      labels: result.map((el) => el.range),
+      count: result.map((el) => el.counts),
     };
   }
+
   return { labels: [], count: [] };
 };
 
-const transliterate = words => {
+const transliterate = (words) => {
   const transliterated_words = words
     .split('')
-    .map(char => (char === exception ? '' : dictionary[char] || char))
+    .map((char) => (char === exception ? '' : dictionary[char] || char))
     .join('');
 
   return _.words(transliterated_words).join(hyphen);
@@ -151,7 +156,7 @@ const isUserBoughtProduct = (productId, userId) =>
     user_id: userId,
   }).exec();
 
-const filterOptionComments = filter => {
+const filterOptionComments = (filter) => {
   const filterOptions = {};
   let maxDate = new Date();
   let minDate = minDefaultDate;
@@ -180,18 +185,19 @@ const filterOptionComments = filter => {
   if (filter?.productId) {
     filterOptions.product = filter.productId;
   }
+
   return filterOptions;
 };
 const filteredReplyComments = (filter, arr) => {
   let reply = arr;
   if (filter?.showReplyComment?.length) {
-    reply = reply.filter(item =>
+    reply = reply.filter((item) =>
       filter.showReplyComment.includes(item.showReplyComment.toString())
     );
   }
   if (filter?.search && filter?.search !== '') {
     reply = reply.filter(
-      item =>
+      (item) =>
         item.replyText.toLowerCase().indexOf(filter.search.toLowerCase()) > -1
     );
   }
@@ -202,15 +208,16 @@ const filteredReplyComments = (filter, arr) => {
     filter?.createdAt?.dateTo !== ''
   ) {
     reply = reply.filter(
-      item =>
+      (item) =>
         new Date(item.createdAt) >= new Date(filter.createdAt.dateFrom) &&
         new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
     );
   }
+
   return reply;
 };
 
-const tryCatchWrapper = async handler => {
+const tryCatchWrapper = async (handler) => {
   try {
     return handler;
   } catch (e) {

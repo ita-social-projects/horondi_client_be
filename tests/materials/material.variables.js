@@ -4,22 +4,6 @@ const wrongSkip = -5;
 const wrongLimit = -3;
 const limit = 2;
 const limitZero = 0;
-const getMaterial = colorId => ({
-  name: [
-    { lang: 'uk', value: 'Матеріал test' },
-    { lang: 'en', value: 'Material test' },
-  ],
-  ...materialOptions,
-  colors: [colorId],
-});
-const getMaterialToUpdate = colorId => ({
-  name: [
-    { lang: 'uk', value: 'Матеріал update' },
-    { lang: 'en', value: 'Material update' },
-  ],
-  ...materialOptions,
-  colors: [colorId],
-});
 const materialOptions = {
   description: [
     { lang: 'uk', value: 'Опис test' },
@@ -32,6 +16,24 @@ const materialOptions = {
     value: 0,
   },
 };
+
+const getMaterial = (colorId) => ({
+  name: [
+    { lang: 'uk', value: 'Матеріал test' },
+    { lang: 'en', value: 'Material test' },
+  ],
+  ...materialOptions,
+  colors: [colorId],
+});
+
+const getMaterialToUpdate = (colorId) => ({
+  name: [
+    { lang: 'uk', value: 'Матеріал update' },
+    { lang: 'en', value: 'Material update' },
+  ],
+  ...materialOptions,
+  colors: [colorId],
+});
 
 module.exports = {
   materialDoesNotExistId,

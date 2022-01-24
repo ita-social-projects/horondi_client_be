@@ -68,8 +68,10 @@ const server = new ApolloServer({
 
         if (!userId) {
           loggerHttp.error(formatErrorForLogger(INVALID_PERMISSIONS));
+
           return null;
         }
+
         return {
           user: await userService.getUserByFieldOrThrow('_id', userId),
         };
@@ -80,7 +82,7 @@ const server = new ApolloServer({
   },
 
   plugins: [errorOutputPlugin],
-  formatError: formatError(err => {
+  formatError: formatError((err) => {
     loggerHttp.error(
       JSON.stringify({
         key: err.extensions.code,

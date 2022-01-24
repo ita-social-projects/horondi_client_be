@@ -21,6 +21,7 @@ const getPaymentCheckout = async (data, language, operations) => {
       language,
     },
   });
+
   return res;
 };
 

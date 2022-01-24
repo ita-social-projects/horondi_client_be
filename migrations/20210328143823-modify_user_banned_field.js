@@ -1,7 +1,7 @@
 const { banned } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, _) {
+  async up(db) {
     await db.collection('users').updateMany(
       {},
       {
@@ -10,7 +10,7 @@ module.exports = {
     );
   },
 
-  async down(db, _) {
+  async down(db) {
     await db
       .collection('users')
       .updateMany({}, { $unset: { banned: 1 } }, false, true);

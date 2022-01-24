@@ -83,6 +83,7 @@ class MaterialsService {
     const count = await Material.find()
       .countDocuments()
       .exec();
+
     return {
       items,
       count,
@@ -91,19 +92,24 @@ class MaterialsService {
 
   async getMaterialsByPurposes(purposes) {
     const materials = await this.getAllMaterials({ filter: {} });
+
     return materials.items.reduce((acc, material) => {
       if (purposes.includes(material.purpose)) {
         const purpose = material.purpose.toLowerCase();
         acc[purpose] = acc[purpose] || [];
         acc[purpose].push(material);
       }
+
       return acc;
     }, {});
   }
 
   async getMaterialById(id) {
     const material = await Promise.resolve(Material.findById(id));
-    if (!material) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    if (!material) {
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    }
+
     return material;
   }
 
@@ -238,6 +244,7 @@ class MaterialsService {
           },
         },
       }).exec();
+
       return materialsCount > 0;
     }
     materialsCount = await Material.countDocuments({
@@ -248,6 +255,7 @@ class MaterialsService {
         },
       },
     }).exec();
+
     return materialsCount > 0;
   }
 }

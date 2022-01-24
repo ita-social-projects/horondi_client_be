@@ -15,12 +15,14 @@ class TranslationsService {
       const { _doc: translationsData } = item;
       const { _id: id, ...translations } = translationsData;
 
-      Object.keys(translations).forEach(key => {
-        if (!items[key]) items[key] = { [id]: item[key] };
-        else
+      Object.keys(translations).forEach((key) => {
+        if (items[key]) {
           items[key] = Object.assign(items[key], {
             [id]: item[key],
           });
+        } else {
+          items[key] = { [id]: item[key] };
+        }
       });
 
       return items;

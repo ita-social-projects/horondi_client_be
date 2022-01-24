@@ -75,7 +75,7 @@ class BasicsService {
     if (image) {
       if (basicToUpdate.images) {
         const images = Object.values(basicToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }

@@ -123,7 +123,9 @@ function dotenvValidator(processEnv) {
 
   const environment = envSchema.validate(processEnv, { allowUnknown: true });
 
-  if (environment.error) throw environment.error;
+  if (environment.error) {
+    throw environment.error;
+  }
 
   return { ...environment.value };
 }

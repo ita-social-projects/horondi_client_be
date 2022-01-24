@@ -67,6 +67,7 @@ const updateModel = async (id, model, operations) => {
       id,
     },
   });
+
   return updatedModel.data.updateModel;
 };
 const addModelConstructorBasic = async (

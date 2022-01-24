@@ -41,6 +41,7 @@ const createPattern = async (pattern, operations) => {
     `,
     variables: { pattern },
   });
+
   return res.data.addPattern;
 };
 const deletePattern = async (id, operations) => {
@@ -105,6 +106,7 @@ const getAllPatterns = async (limit, skip, filter, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return res.data.getAllPatterns;
 };
 const getPatternById = async (id, operations) => {
@@ -148,6 +150,7 @@ const getPatternById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.getPatternById;
 };
 const getAllPatternsPaginated = async (limit, skip, filter, operations) => {

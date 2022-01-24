@@ -127,12 +127,12 @@ describe('Chat email queries', () => {
 
   test('should get email questions (without filter.date.dateTo arg)', async () => {
     const {
-      date: { dateFrom },
+      date: { dateFrom: date },
       search,
       emailQuestionStatus,
     } = filter;
     const result = await getAllEmailQuestions(
-      { date: { dateFrom }, search, emailQuestionStatus },
+      { date: { dateFrom: date }, search, emailQuestionStatus },
       pagination,
       operations
     );

@@ -47,6 +47,7 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
     `,
     variables: { constructorElement },
   });
+
   return constructorFrontPocket.data.addConstructorFrontPocket;
 };
 const deleteConstructorFrontPocket = async (id, operations) => {
@@ -125,6 +126,7 @@ const updateConstructorFrontPocket = async (
     `,
     variables: { constructorElement: constructorInput, id: constructorId },
   });
+
   return constructorFrontPocket.data.updateConstructorFrontPocket;
 };
 
@@ -174,6 +176,7 @@ const getAllConstructorFrontPocket = async (
     `,
     variables: { limit, skip, filter },
   });
+
   return res.data.getAllConstructorFrontPocket;
 };
 const getConstructorFrontPocketById = async (id, operations) => {
@@ -225,6 +228,7 @@ const getConstructorFrontPocketById = async (id, operations) => {
       id,
     },
   });
+
   return res.data.getConstructorFrontPocketById;
 };
 

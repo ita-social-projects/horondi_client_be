@@ -31,6 +31,7 @@ const getChanges = (objBefore, objWithChanges) => {
       afterChanges.push({ [key]: newValue });
     }
   });
+
   return {
     beforeChanges,
     afterChanges,
@@ -40,7 +41,7 @@ const getChanges = (objBefore, objWithChanges) => {
 const generateHistoryChangesData = (obj, keys = []) => {
   const changes = [];
 
-  keys.forEach(key => {
+  keys.forEach((key) => {
     changes.push({ [key]: obj[key] });
   });
 

@@ -295,6 +295,7 @@ class UserService extends FilterHelper {
         statusCode: BAD_REQUEST,
       });
     }
+
     return true;
   }
 
@@ -316,11 +317,12 @@ class UserService extends FilterHelper {
     })
       .populate('orders')
       .exec();
-    const paidOrders = user.orders.filter(order => order.isPaid);
+    const paidOrders = user.orders.filter((order) => order.isPaid);
+
     return paidOrders.reduce(
       (acc, order) => [
         ...acc,
-        ...order.items.map(item => ({ _id: item.productId })),
+        ...order.items.map((item) => ({ _id: item.productId })),
       ],
       []
     );
@@ -370,7 +372,7 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formattedData = users.map(el =>
+    const formattedData = users.map((el) =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurrence = countItemsOccurrence(formattedData);
@@ -397,12 +399,14 @@ class UserService extends FilterHelper {
     } else {
       userToUpdate = user;
     }
-    if (!userToUpdate.images) userToUpdate.images = [];
+    if (!userToUpdate.images) {
+      userToUpdate.images = [];
+    }
     if (image) {
       if (userToUpdate.images?.length) {
         await deleteFiles(
           Object.values(userToUpdate.images).filter(
-            item => typeof item === 'string' && item
+            (item) => typeof item === 'string' && item
           )
         );
       }
@@ -411,6 +415,7 @@ class UserService extends FilterHelper {
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
+
     return User.findByIdAndUpdate(userToUpdate._id, updatedUser, { new: true });
   }
 
@@ -423,7 +428,7 @@ class UserService extends FilterHelper {
 
     const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
+      user.credentials.find((cred) => cred.source === HORONDI).tokenPass
     );
 
     if (user.role === USER) {
@@ -461,7 +466,7 @@ class UserService extends FilterHelper {
 
     const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
+      user.credentials.find((cred) => cred.source === HORONDI).tokenPass
     );
 
     if (!match) {
@@ -508,7 +513,10 @@ class UserService extends FilterHelper {
     });
     const dataUser = ticket.getPayload();
     const userId = dataUser.sub;
-    if (!(await User.findOne({ email: dataUser.email }).exec())) {
+
+    const existingUser = await User.findOne({ email: dataUser.email }).exec();
+
+    if (!existingUser) {
       const user = await this.registerSocialUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
@@ -523,6 +531,7 @@ class UserService extends FilterHelper {
 
       new Wishlist({ user_id: user._id, products: [] }).save();
     }
+
     return this.loginSocialUser({
       email: dataUser.email,
       rememberMe,
@@ -536,7 +545,10 @@ class UserService extends FilterHelper {
       method: 'GET',
     });
     const data = await res.json();
-    if (!(await User.findOne({ email: data.email }).exec())) {
+
+    const existingUser = await User.findOne({ email: data.email }).exec();
+
+    if (!existingUser) {
       const user = await this.registerSocialUser({
         firstName: data.name.split(' ')[0],
         lastName: data.name.split(' ')[1],
@@ -551,6 +563,7 @@ class UserService extends FilterHelper {
 
       new Wishlist({ user_id: user._id, products: [] }).save();
     }
+
     return this.loginSocialUser({
       email: data.email,
       rememberMe,
@@ -588,6 +601,7 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
+
     return user.save();
   }
 
@@ -650,6 +664,7 @@ class UserService extends FilterHelper {
       language,
       token: accessToken,
     });
+
     return true;
   }
 
@@ -663,6 +678,7 @@ class UserService extends FilterHelper {
     if (user.role === SUPERADMIN) {
       throw new RuleError(SUPER_ADMIN_IS_IMMUTABLE, FORBIDDEN);
     }
+
     return User.findByIdAndDelete(id).exec();
   }
 
@@ -766,7 +782,7 @@ class UserService extends FilterHelper {
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
-        recoveryAttempts: !user.recoveryAttempts ? 1 : ++user.recoveryAttempts,
+        recoveryAttempts: user.recoveryAttempts ? ++user.recoveryAttempts : 1,
         credentials: [
           {
             source: HORONDI,
@@ -779,6 +795,7 @@ class UserService extends FilterHelper {
       },
     };
     await User.findByIdAndUpdate(user._id, updates).exec();
+
     return true;
   }
 
@@ -930,6 +947,7 @@ class UserService extends FilterHelper {
         statusCode: BAD_REQUEST,
       });
     }
+
     return { isSuccess: true };
   }
 }

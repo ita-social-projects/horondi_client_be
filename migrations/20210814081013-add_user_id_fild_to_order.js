@@ -1,7 +1,7 @@
 const { user_id } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, _) {
+  async up(db) {
     await db.collection('orders').updateMany(
       {},
       {
@@ -10,7 +10,7 @@ module.exports = {
     );
   },
 
-  async down(db, _) {
+  async down(db) {
     await db
       .collection('orders')
       .updateMany({}, { $unset: { user_id: null } }, false, true);

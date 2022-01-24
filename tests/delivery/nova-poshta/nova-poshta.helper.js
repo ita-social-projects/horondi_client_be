@@ -15,6 +15,7 @@ const getNovaPoshtaCities = async (city, operations) => {
       city,
     },
   });
+
   return result.data.getNovaPoshtaCities;
 };
 const getNovaPoshtaStreets = async (cityRef, street, operations) => {
@@ -33,6 +34,7 @@ const getNovaPoshtaStreets = async (cityRef, street, operations) => {
       street,
     },
   });
+
   return result.data.getNovaPoshtaStreets;
 };
 const getNovaPoshtaWarehouses = async (city, operations) => {
@@ -50,6 +52,7 @@ const getNovaPoshtaWarehouses = async (city, operations) => {
       city,
     },
   });
+
   return result.data.getNovaPoshtaWarehouses;
 };
 const getNovaPoshtaPrices = async (NovaPoshtaPrice, operations) => {
@@ -67,6 +70,7 @@ const getNovaPoshtaPrices = async (NovaPoshtaPrice, operations) => {
       data: NovaPoshtaPrice,
     },
   });
+
   return result.data.getNovaPoshtaPrices;
 };
 

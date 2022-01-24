@@ -136,6 +136,7 @@ describe('material mutations tests', () => {
   afterAll(async () => {
     await deleteColor(colorId, operations);
     await deleteMaterial(materialId, operations);
+
     return { deleteColor };
   });
 });

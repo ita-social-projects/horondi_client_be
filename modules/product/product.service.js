@@ -93,6 +93,7 @@ class ProductsService {
     if (!product) {
       throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
     }
+
     return product;
   }
 
@@ -158,6 +159,7 @@ class ProductsService {
     if (product.length === 0) {
       throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
+
     return product;
   }
 
@@ -203,6 +205,7 @@ class ProductsService {
         },
       };
     }
+
     return filter;
   }
 
@@ -252,7 +255,7 @@ class ProductsService {
     { _id: adminId }
   ) {
     const matchPrimaryInUpload = filesToUpload.filter(
-      item => item.large === productData.images[0].primary.large
+      (item) => item.large === productData.images[0].primary.large
     );
     productData.images = {
       primary: {
@@ -276,12 +279,13 @@ class ProductsService {
       if (primary?.large) {
         productData.images.primary = primary;
       } else {
-        if (!matchPrimaryInUpload.length)
+        if (!matchPrimaryInUpload.length) {
           await uploadService.deleteFiles(
             Object.values(product.images.primary).filter(
-              item => typeof item === 'string'
+              (item) => typeof item === 'string'
             )
           );
+        }
         const uploadResult = await uploadService.uploadFiles([primary]);
         const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
@@ -291,7 +295,7 @@ class ProductsService {
       productData.images.additional = [];
       const previousImagesLinks = [];
       const newFiles = [];
-      filesToUpload.forEach(e => {
+      filesToUpload.forEach((e) => {
         if (e?.large) {
           previousImagesLinks.push(e);
         } else {
@@ -300,7 +304,7 @@ class ProductsService {
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
-      const additional = imagesResults.map(res => res?.value?.fileNames);
+      const additional = imagesResults.map((res) => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
       productData.images.additional = [
@@ -471,6 +475,7 @@ class ProductsService {
         },
       },
     }).exec();
+
     return productCount > 0;
   }
 
@@ -481,8 +486,8 @@ class ProductsService {
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
-        item =>
-          !Object.values(item).filter(image => imagesToDelete.includes(image))
+        (item) =>
+          !Object.values(item).filter((image) => imagesToDelete.includes(image))
             .length
       );
       const updatedProduct = await Product.findByIdAndUpdate(
@@ -495,6 +500,7 @@ class ProductsService {
         },
         { new: true }
       ).exec();
+
       return updatedProduct.images;
     }
   }
@@ -518,6 +524,7 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId).exec();
+
     return Product.find({ _id: { $in: wishlist } }).exec();
   }
 

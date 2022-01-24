@@ -27,10 +27,11 @@ const getAllEmailQuestions = async (filter, pagination, operations) => {
       pagination,
     },
   });
+
   return res.data.getAllEmailQuestions;
 };
 
-const getPendingEmailQuestionsCount = async operations => {
+const getPendingEmailQuestionsCount = async (operations) => {
   const res = await operations.mutate({
     query: gql`
       query {
@@ -38,6 +39,7 @@ const getPendingEmailQuestionsCount = async operations => {
       }
     `,
   });
+
   return res.data.getPendingEmailQuestionsCount;
 };
 
@@ -70,6 +72,7 @@ const getEmailQuestionById = async (id, operations) => {
       id,
     },
   });
+
   return res.data.getEmailQuestionById;
 };
 
@@ -92,6 +95,7 @@ const addEmailQuestion = async (question, operations) => {
       question,
     },
   });
+
   return res.data.addEmailQuestion;
 };
 
@@ -122,6 +126,7 @@ const makeEmailQuestionsSpam = async (questionsToSpam, adminId, operations) => {
       adminId,
     },
   });
+
   return res.data.makeEmailQuestionsSpam;
 };
 
@@ -160,6 +165,7 @@ const answerEmailQuestion = async (questionId, adminId, text, operations) => {
       text,
     },
   });
+
   return res.data.answerEmailQuestion;
 };
 
@@ -186,6 +192,7 @@ const deleteEmailQuestions = async (questionsToDelete, operations) => {
       questionsToDelete,
     },
   });
+
   return res.data.deleteEmailQuestions;
 };
 

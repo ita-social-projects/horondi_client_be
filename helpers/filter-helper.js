@@ -33,12 +33,13 @@ class FilterHelper {
     }
 
     if (_id?.length) {
-      filter._id = { $in: _id.map(id => mongoose.Types.ObjectId(id)) };
+      filter._id = { $in: _id.map((id) => mongoose.Types.ObjectId(id)) };
     }
 
     if (search && search.trim()) {
       filter.$or = this.searchItems(search.trim());
     }
+
     return filter;
   }
 

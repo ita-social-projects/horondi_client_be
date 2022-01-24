@@ -94,7 +94,7 @@ class BackService {
     if (image) {
       if (backToUpdate.images) {
         const images = Object.values(backToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }

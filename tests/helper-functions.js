@@ -27,15 +27,17 @@ const registerAdmin = async (email, password) => {
     },
   ];
   await admin.save();
+
   return admin;
 };
-const setupApp = async user => {
+const setupApp = async (user) => {
   const admin = await registerAdmin(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
 
   const server = new ApolloServer({
     ...config,
     context: { user: user || admin },
   });
+
   return createTestClient(server);
 };
 

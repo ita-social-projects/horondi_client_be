@@ -46,7 +46,7 @@ class UploadService {
         imageName,
         stream,
         streamLength,
-        err => {
+        (err) => {
           if (err) {
             reject(err);
           }
@@ -57,7 +57,7 @@ class UploadService {
   }
 
   async uploadFiles(files) {
-    return Promise.all(files.map(async file => this.uploadFile(file)));
+    return Promise.all(files.map(async (file) => this.uploadFile(file)));
   }
 
   async uploadFile(file, sizes) {
@@ -67,29 +67,32 @@ class UploadService {
     const id = uniqid();
     const inputBuffer = await new Promise((resolve, reject) => {
       const chunks = [];
-      inputStream.once('error', err => reject(err));
+      inputStream.once('error', (err) => reject(err));
 
       inputStream.once('end', () => {
         fileBuffer = Buffer.concat(chunks);
+
         return resolve(fileBuffer);
       });
 
-      inputStream.on('data', chunk => {
+      inputStream.on('data', (chunk) => {
         chunks.push(chunk);
       });
     });
 
     const image = await Jimp.read(inputBuffer);
 
-    const createName = sizeName => `${sizeName}_${id}_${filename}`;
+    const createName = (sizeName) => `${sizeName}_${id}_${filename}`;
     if (Array.isArray(sizes)) {
-      sizes.forEach(size => {
+      sizes.forEach((size) => {
         this.uploadResizedImage(imageQualities[size], createName(size), image);
       });
       const fileNames = sizes.reduce((acc, size) => {
         acc[size] = createName(size);
+
         return acc;
       }, {});
+
       return {
         prefixUrl: IMAGE_LINK,
         fileNames,
@@ -115,7 +118,7 @@ class UploadService {
   }
 
   async deleteFiles(files) {
-    return files.map(async fileName => this.deleteFile(fileName));
+    return files.map(async (fileName) => this.deleteFile(fileName));
   }
 
   async deleteFile(fileName) {
