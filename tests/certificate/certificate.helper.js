@@ -120,10 +120,40 @@ const deleteCertificate = async (id, operations) => {
   return res.data.deleteCertificate;
 };
 
+const generateCertificate = value => value;
+
+const registerUser = async (user, operations) => {
+  const registeredUser = await operations.mutate({
+    mutation: gql`
+      mutation($user: userRegisterInput!) {
+        registerUser(user: $user, language: 1) {
+          _id
+          firstName
+          lastName
+          invitationalToken
+          refreshToken
+          email
+          role
+          registrationDate
+          credentials {
+            tokenPass
+          }
+        }
+      }
+    `,
+    variables: {
+      user,
+    },
+  });
+  return registeredUser;
+};
+
 module.exports = {
   deleteCertificate,
   addCertificate,
   getAllCertificates,
   getCertificateById,
   updateCertificate,
+  registerUser,
+  generateCertificate,
 };
