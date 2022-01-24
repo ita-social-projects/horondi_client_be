@@ -1,6 +1,12 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const { historyQuery } = require('./modules/history/history.resolvers');
+
+const {
+  materialsQuery,
+  materialsMutation,
+} = require('./modules/materials-page/materials-page.resolver');
+
 const {
   productsQuery,
   productsMutation,
@@ -224,6 +230,8 @@ const {
 
 const resolvers = {
   Query: {
+    ...materialsQuery,
+
     ...certificatesQuery,
 
     ...questionsAnswersQuery,
@@ -682,6 +690,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...materialsMutation,
+
     ...certificatesMutation,
 
     ...questionsAnswersMutation,

@@ -1,4 +1,5 @@
 const DB_COLLECTIONS_NAMES = {
+  MATERIALS: 'MaterialsPage',
   QNA: 'QuestionsAnswers',
   BACKGROUND: 'Background',
   BUSINESS_TEXT: 'BusinessText',
