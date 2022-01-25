@@ -12,6 +12,7 @@ const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
   promoCodeMutation,
+  promoCodeQuery,
 } = require('./modules/promo-code/promo-code.permissions');
 
 const {
@@ -170,6 +171,7 @@ const permissions = shield(
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
+      ...promoCodeQuery,
       ...contactPermissionsQuery,
       ...newsPermissionsQuery,
       ...categoryPermissionsQuery,

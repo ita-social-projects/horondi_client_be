@@ -50,6 +50,10 @@ const getPromoCodeByCode = async (code, operations) => {
             _id
             code
           }
+          ... on Error {
+            statusCode
+            message
+          }
         }
       }
     `,
