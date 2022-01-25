@@ -1,5 +1,13 @@
+const _ = require('lodash');
 const RuleError = require('../../errors/rule.error');
 const PromoCode = require('./promo-code.model');
+const {
+  STATUS_CODES: { NOT_FOUND, FORBIDDEN },
+} = require('../../consts/status-codes');
+const {
+  PROMOCODE_NOT_FOUND,
+  PROMOCODE_HAS_NOT_CHANGED,
+} = require('../../error-messages/promocode-messages');
 
 const {
   STATUS_CODES: { NOT_FOUND },
@@ -45,6 +53,24 @@ class PromoCodeService {
     if (promoCode) {
       return promoCode;
     }
+  }
+
+  async updatePromoCode(id, promoCodeData) {
+    const promoCode = await PromoCode.findById(id)
+      .lean()
+      .exec();
+
+    if (!promoCode) {
+      throw new RuleError(PROMOCODE_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (_.isMatch(promoCodeData, promoCode)) {
+      throw new RuleError(PROMOCODE_HAS_NOT_CHANGED, FORBIDDEN);
+    }
+
+    return PromoCode.findByIdAndUpdate(id, promoCodeData, {
+      new: true,
+    }).exec();
   }
 }
 
