@@ -1,6 +1,11 @@
 const { gql } = require('apollo-server-express');
 
 const {
+  MaterialsBlock,
+  MaterialsBlockInput,
+} = require('./modules/materials-page/materials-page.graphql');
+
+const {
   historyType,
   historyFilterInput,
 } = require('./modules/history/history.graphql');
@@ -174,6 +179,8 @@ const { wishlistType } = require('./modules/wishlist/wishlist.graphql');
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${MaterialsBlock}
+  ${MaterialsBlockInput}
   ${questionsAnswersType}
   ${questionsAnswersInput}
   ${promoCodeType}
@@ -539,6 +546,7 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
+    getAllMaterialsBlocks: [MaterialsBlock]
     getAllQuestionsAnswers: PaginatedQNAs
     getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
@@ -846,6 +854,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addMaterialsBlock(materialsBlock: MaterialsBlockInput!): MaterialsBlock
+    deleteMaterialsBlock(id: ID!): MaterialsBlock
+    updateMaterialsBlock(id: ID!
+    materialsBlock: MaterialsBlockInput!): MaterialsBlock
     addPromoCode(promoCode: PromoCodeInput!): PromoCode
     deletePromoCode(id: ID!): PromoCode
     updatePromoCode(id: ID!
