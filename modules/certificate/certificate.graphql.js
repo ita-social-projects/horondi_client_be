@@ -6,9 +6,9 @@ const certificateTypes = `
     createdBy: User
     ownedBy: User
     email: String
-    isUsed: Boolean!
+    isUsed: Boolean
     isActivated: Boolean!
-    isExpired: Boolean!
+    isExpired: Boolean
     dateStart: Date
     dateEnd: Date
     isActive: Boolean @deprecated(reason: "use isActivated and isExpired fields.")

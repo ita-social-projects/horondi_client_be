@@ -2,7 +2,7 @@ const Certificate = require('./certificate.model');
 const RuleError = require('../../errors/rule.error');
 
 const {
-  STATUS_CODES: { NOT_FOUND, BAD_REQUEST, UNAUTHORIZED },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   CERTIFICATE_NOT_FOUND,
@@ -11,18 +11,13 @@ const {
   CERTIFICATE_IS_ACTIVE,
   CERTIFICATE_IS_USED,
 } = require('../../error-messages/certificate.messages');
-const { USER_NOT_AUTHORIZED } = require('../../error-messages/user.messages');
 
 class CertificatesService {
   async getAllCertificates(skip, limit, user) {
-    let filter;
+    let filter = {};
 
-    if (user.role === 'admin' || user.role === 'superadmin') {
-      filter = {};
-    } else if (user.role === 'user') {
+    if (user.role === 'user') {
       filter = { ownedBy: user.id };
-    } else {
-      throw new RuleError(USER_NOT_AUTHORIZED, UNAUTHORIZED);
     }
 
     const items = await Certificate.find(filter)
