@@ -68,7 +68,7 @@ const unlockUsers = () =>
               afterChanges
             );
             await addHistoryRecord(historyRecord);
-            await sendEmail(userData.email, UNLOCK_USER);
+            return sendEmail(userData.email, UNLOCK_USER);
           }
         })
       );
