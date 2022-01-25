@@ -5,6 +5,12 @@ const newPromoCode = {
   discount: 12,
 };
 
+const newPromoCodeForUpdate = {
+  dateTo: '2022-02-05',
+  code: 'updated',
+};
+
 module.exports = {
   newPromoCode,
+  newPromoCodeForUpdate,
 };
