@@ -710,6 +710,16 @@ const resolvers = {
     },
   },
 
+  PromoCodeResult: {
+    __resolveType: obj => {
+      if (obj.code) {
+        return SCHEMA_NAMES.promoCode;
+      }
+
+      return 'Error';
+    },
+  },
+
   HistoryResult: {
     __resolveType: obj => {
       if (obj.items) {

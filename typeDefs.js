@@ -532,7 +532,7 @@ const typeDefs = gql`
   union StrapResult = Strap | Error
   union ConstructorResult = Constructor | Error
   union WishlistResult = Wishlist | Error
-  
+  union PromoCodeResult = PromoCode | Error
   union HistoryResult = History | Error
   union HistoryRecordResult = HistoryRecord | Error
   union ConstructorBottomResult = ConstructorBottom | Error
@@ -560,6 +560,7 @@ const typeDefs = gql`
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
     getPromoCodeById(id: ID): PromoCode
+    getPromoCodeByCode(code: String!): PromoCodeResult
     getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult

@@ -1,9 +1,18 @@
 const { allow } = require('graphql-shield');
+const { hasRoles } = require('../../utils/rules');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
 
-const promoCodeMutation = {
-  addPromoCode: allow,
-  deletePromoCode: allow,
-  updatePromoCode: allow,
+const promoCodeQuery = {
+  getAllPromoCodes: hasRoles([ADMIN, SUPERADMIN]),
+  getPromoCodeByCode: allow,
 };
 
-module.exports = { promoCodeMutation };
+const promoCodeMutation = {
+  addPromoCode: hasRoles([ADMIN, SUPERADMIN]),
+  deletePromoCode: hasRoles([ADMIN, SUPERADMIN]),
+  updatePromoCode: hasRoles([ADMIN, SUPERADMIN]),
+};
+
+module.exports = { promoCodeMutation, promoCodeQuery };

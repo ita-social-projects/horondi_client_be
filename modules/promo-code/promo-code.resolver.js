@@ -1,19 +1,22 @@
-const PromoCodeService = require('./promo-code.service');
+const promoCodeService = require('./promo-code.service');
 
 const promoCodeQuery = {
-  getAllPromoCodes: () => PromoCodeService.getAllPromoCodes(),
+  getAllPromoCodes: () => promoCodeService.getAllPromoCodes(),
 
-  getPromoCodeById: async ({ id }) => PromoCodeService.getPromoCodeById(id),
+  getPromoCodeById: async ({ id }) => promoCodeService.getPromoCodeById(id),
+
+  getPromoCodeByCode: async (_, { code }) =>
+    promoCodeService.getPromoCodeByCode(code),
 };
 
 const promoCodeMutation = {
   addPromoCode: async (_, { promoCode }) =>
-    PromoCodeService.addPromoCode(promoCode),
+    promoCodeService.addPromoCode(promoCode),
 
-  deletePromoCode: async (_, args) => PromoCodeService.deletePromoCode(args.id),
+  deletePromoCode: async (_, args) => promoCodeService.deletePromoCode(args.id),
 
   updatePromoCode: async (_, args) =>
-    PromoCodeService.updatePromoCode(args.id, args.promoCode),
+    promoCodeService.updatePromoCode(args.id, args.promoCode),
 };
 
 module.exports = { promoCodeQuery, promoCodeMutation };
