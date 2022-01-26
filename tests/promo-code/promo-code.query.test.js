@@ -33,7 +33,9 @@ describe('Promo-codes queries', () => {
     const operations = await setupApp();
     const promoCode = await getPromoCodeByCode('error', operations);
 
-    expect(promoCode).toHaveProperty('message', PROMOCODE_NOT_FOUND);
-    expect(promoCode).toHaveProperty('statusCode', NOT_FOUND);
+    expect(promoCode).toEqual({
+      message: PROMOCODE_NOT_FOUND,
+      statusCode: NOT_FOUND,
+    });
   });
 });
