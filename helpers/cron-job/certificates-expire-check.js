@@ -1,8 +1,12 @@
 const { schedule } = require('node-cron');
 
-const CertificateModel = require('../../modules/certificate/certificate.model');
+const {
+  CertificateModel,
+} = require('../../modules/certificate/certificate.model');
+
 const { modifyNowDate } = require('../../utils/modify-date');
 const { sendEmail } = require('../../modules/email/email.service');
+
 const {
   EmailActions: { CERTIFICATE_REMINDER },
 } = require('../../consts/email-actions');
