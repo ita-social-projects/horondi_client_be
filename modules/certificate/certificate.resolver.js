@@ -11,6 +11,13 @@ const certificatesQuery = {
 };
 
 const certificatesMutation = {
+  generateCertificate: async (_, { newCertificate }, { user }) =>
+    certificatesService.generateCertificate(
+      newCertificate,
+      user?.id,
+      user?.role
+    ),
+
   addCertificate: async (_, { name }, { user }) =>
     tryCatchWrapper(
       certificatesService.addCertificate(name, user.id, user.email)

@@ -44,6 +44,23 @@ class CertificatesService {
     return certificate;
   }
 
+  async generateCertificate(certificateData, userId, userRole) {
+    const firstNamePart = Math.floor(100 + Math.random() * 900);
+    const secondNamePart = Math.floor(100 + Math.random() * 900);
+
+    const name = `hor${firstNamePart}${secondNamePart}`;
+
+    certificateData.name = name;
+
+    if (userRole === 'user') {
+      certificateData.ownedBy = userId;
+    } else if (userRole === 'admin' || userRole === 'superadmin') {
+      certificateData.createdBy = userId;
+    }
+
+    return new Certificate(certificateData).save();
+  }
+
   async addCertificate(name, userId, userEmail) {
     const certificateExists = await Certificate.findOne({ name });
 

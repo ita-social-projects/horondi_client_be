@@ -19,6 +19,8 @@ const certificatePermissionsQuery = {
 };
 
 const certificatePermissionsMutations = {
+  generateCertificate: allow,
+
   updateCertificate: and(
     inputDataValidation('name', certificateNameValidator),
     allow

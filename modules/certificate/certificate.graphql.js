@@ -25,7 +25,15 @@ const certificateTypes = `
     isUsed: Boolean
   }
 
-  union CertificateResult = Certificate | Error
+  input GenerateCertificateInput {
+    value: Int!
+    email: String
+    isActivated: Boolean
+    dateStart: Date
+    dateEnd: Date
+  }
+
+  union CertificateResult = Certificate | Error 
 
   extend type Query {
     getAllCertificates(limit:Int, skip:Int): PaginatedCertificate!
@@ -33,6 +41,7 @@ const certificateTypes = `
   }
 
   extend type Mutation {
+    generateCertificate (newCertificate: GenerateCertificateInput!): CertificateResult
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
     updateCertificate(name: String!): CertificateResult
