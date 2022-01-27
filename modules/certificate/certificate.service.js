@@ -79,13 +79,11 @@ class CertificatesService {
       throw new RuleError(CERTIFICATE_HAVE_OWNER, BAD_REQUEST);
     }
 
-    const certificateAssigned = await Certificate.findOneAndUpdate(
+    return Certificate.findOneAndUpdate(
       { name },
       { email: userEmail, ownedBy: userId },
       { new: true }
     ).exec();
-
-    return certificateAssigned;
   }
 
   async updateCertificate(name) {
@@ -99,13 +97,11 @@ class CertificatesService {
       throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
     }
 
-    const updatedCertificate = await Certificate.findOneAndUpdate(
+    return Certificate.findOneAndUpdate(
       { name },
       { isUsed: true },
       { new: true }
     ).exec();
-
-    return updatedCertificate;
   }
 
   async deleteCertificate(id) {
