@@ -15,21 +15,24 @@ const {
 
 const certificatePermissionsQuery = {
   getCertificateById: hasRoles([ADMIN, SUPERADMIN]),
+
   getAllCertificates: and(isAuthorized, isUnlocked),
 };
 
 const certificatePermissionsMutations = {
-  generateCertificate: allow,
-
   updateCertificate: and(
-    inputDataValidation('name', certificateNameValidator),
-    allow
+    allow,
+    inputDataValidation('name', certificateNameValidator)
   ),
+
   addCertificate: and(
     hasRoles([USER]),
     inputDataValidation('name', certificateNameValidator)
   ),
+
   deleteCertificate: hasRoles([ADMIN, SUPERADMIN]),
+
+  generateCertificate: allow,
 };
 
 module.exports = {

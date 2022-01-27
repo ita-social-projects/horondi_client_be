@@ -41,9 +41,9 @@ const certificateTypes = `
   }
 
   extend type Mutation {
-    generateCertificate (newCertificate: GenerateCertificateInput!): CertificateResult
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
+    generateCertificate (newCertificate: GenerateCertificateInput!): CertificateResult
     updateCertificate(name: String!): CertificateResult
   }
 `;

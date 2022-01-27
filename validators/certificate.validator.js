@@ -1,13 +1,19 @@
 const Joi = require('joi');
-const { certificateRegExp } = require('../consts/regexp');
+
 const { getDaysInMilliseconds } = require('../utils/getDaysInMilliseconds');
 
-const certificateNameValidator = Joi.object({
-  name: Joi.string()
-    .trim()
-    .regex(certificateRegExp)
-    .required(),
-});
+const { certificateRegExp } = require('../consts/regexp');
+const {
+  CERTIFICATE_NOT_VALID,
+} = require('../error-messages/certificate.messages');
+
+const certificateNameValidator = Joi.string()
+  .trim()
+  .regex(certificateRegExp)
+  .error(() => ({
+    message: CERTIFICATE_NOT_VALID,
+  }))
+  .required();
 
 const certificateDateValidator = Joi.object({
   startDate: Joi.date()

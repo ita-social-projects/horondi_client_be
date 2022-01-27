@@ -1,5 +1,8 @@
-const Certificate = require('./certificate.model');
 const RuleError = require('../../errors/rule.error');
+const Certificate = require('./certificate.model');
+const {
+  roles: { USER, ADMIN, SUPERADMIN },
+} = require('../../consts');
 
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
@@ -16,8 +19,8 @@ class CertificatesService {
   async getAllCertificates(skip, limit, user) {
     let filter = {};
 
-    if (user.role === 'user') {
-      filter = { ownedBy: user.id };
+    if (user.role === USER) {
+      filter = { ownedBy: user._id };
     }
 
     const items = await Certificate.find(filter)
@@ -34,8 +37,8 @@ class CertificatesService {
     };
   }
 
-  async getCertificateById(definedArg) {
-    const certificate = await Certificate.findById(definedArg).exec();
+  async getCertificateById(id) {
+    const certificate = await Certificate.findById(id).exec();
 
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
@@ -52,9 +55,9 @@ class CertificatesService {
 
     certificateData.name = name;
 
-    if (userRole === 'user') {
+    if (userRole === USER) {
       certificateData.ownedBy = userId;
-    } else if (userRole === 'admin' || userRole === 'superadmin') {
+    } else if (userRole === ADMIN || userRole === SUPERADMIN) {
       certificateData.createdBy = userId;
     }
 
@@ -76,40 +79,43 @@ class CertificatesService {
       throw new RuleError(CERTIFICATE_HAVE_OWNER, BAD_REQUEST);
     }
 
-    const certificateAssigned = await Certificate.findByIdAndUpdate(
-      certificateExists._id,
-      { email: userEmail, ownedBy: userId }
+    const certificateAssigned = await Certificate.findOneAndUpdate(
+      { name },
+      { email: userEmail, ownedBy: userId },
+      { new: true }
     ).exec();
 
     return certificateAssigned;
   }
 
   async updateCertificate(name) {
+    const certificateExists = await Certificate.findOne({ name }).exec();
+
+    if (!certificateExists) {
+      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (certificateExists.isUsed) {
+      throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
+    }
+
     const updatedCertificate = await Certificate.findOneAndUpdate(
       { name },
       { isUsed: true },
       { new: true }
     ).exec();
 
-    if (!updatedCertificate) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
-    }
-
-    if (updatedCertificate.isUsed) {
-      throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
-    }
-
     return updatedCertificate;
   }
 
   async deleteCertificate(id) {
-    const deletedCertificate = await Certificate.findById(id).exec();
+    const certificateExists = await Certificate.findById(id).exec();
 
-    if (!deletedCertificate) {
+    if (!certificateExists) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
 
-    if (!deletedCertificate.isUsed || !deletedCertificate.isExpired) {
+    if (!certificateExists.isUsed && !certificateExists.isExpired) {
       throw new RuleError(CERTIFICATE_IS_ACTIVE, BAD_REQUEST);
     }
 
