@@ -559,7 +559,7 @@ const typeDefs = gql`
       skip: Int
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
-    getPromoCodeById(id: ID): PromoCode
+    getPromoCodeById(id: ID): PromoCodeResult
     getPromoCodeByCode(code: String!): PromoCodeResult
     getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
@@ -849,7 +849,7 @@ const typeDefs = gql`
     addPromoCode(promoCode: PromoCodeInput!): PromoCode
     deletePromoCode(id: ID!): PromoCode
     updatePromoCode(id: ID!
-      promoCode: PromoCodeInput!): PromoCode
+      promoCode: PromoCodeInput!): PromoCodeResult
     addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     deleteQuestionsAnswers(id: ID!): QuestionsAnswers
     updateQuestionsAnswers(id: ID!

@@ -1,13 +1,17 @@
 const newPromoCode = {
-  dateFrom: '2021-12-26',
-  dateTo: '2021-12-29',
+  dateFrom: new Date('2021-12-26T00:00:00.000Z'),
+  dateTo: new Date('2021-12-30T00:00:00.000Z'),
   code: 'test',
-  discount: 12,
+  discount: 20,
+  categories: ['Bag'],
 };
 
 const newPromoCodeForUpdate = {
-  dateTo: '2022-02-05',
+  dateFrom: new Date('2021-12-26T00:00:00.000Z'),
+  dateTo: new Date('2022-12-30T00:00:00.000Z'),
   code: 'updated',
+  discount: 15,
+  categories: ['Bag'],
 };
 
 module.exports = {

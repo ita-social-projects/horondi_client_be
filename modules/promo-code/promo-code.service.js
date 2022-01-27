@@ -7,28 +7,25 @@ const {
   PROMOCODE_NOT_FOUND,
 } = require('../../error-messages/promocode-messages');
 
-const {
-  STATUS_CODES: { NOT_FOUND },
-} = require('../../consts/status-codes');
-const {
-  PROMOCODE_NOT_FOUND,
-} = require('../../error-messages/promocode.messages');
-
 class PromoCodeService {
   async getAllPromoCodes() {
     const items = await PromoCode.find().exec();
+    const count = PromoCode.find().countDocuments();
 
     return {
       items,
+      count,
     };
   }
 
   async getPromoCodeById(id) {
     const promoCode = await PromoCode.findById(id).exec();
 
-    if (promoCode) {
-      return promoCode;
+    if (!promoCode) {
+      throw new RuleError(PROMOCODE_NOT_FOUND, NOT_FOUND);
     }
+
+    return promoCode;
   }
 
   async getPromoCodeByCode(code) {
@@ -54,13 +51,7 @@ class PromoCodeService {
   }
 
   async updatePromoCode(id, promoCodeData) {
-    const promoCode = await PromoCode.findById(id)
-      .lean()
-      .exec();
-
-    if (!promoCode) {
-      throw new RuleError(PROMOCODE_NOT_FOUND, NOT_FOUND);
-    }
+    await this.getPromoCodeById(id);
 
     return PromoCode.findByIdAndUpdate(id, promoCodeData, {
       new: true,

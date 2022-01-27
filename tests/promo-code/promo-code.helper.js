@@ -21,6 +21,7 @@ const addPromoCode = async (promoCode, operations) => {
   });
   return res.data.addPromoCode;
 };
+
 const getAllPromoCodes = async operations => {
   const res = await operations.query({
     query: gql`

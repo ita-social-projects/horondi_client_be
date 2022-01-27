@@ -5,8 +5,8 @@ const {
 } = require('../../consts/db-collections-names');
 
 const promoCodeSchema = new mongoose.Schema({
-  dateFrom: String,
-  dateTo: String,
+  dateFrom: Date,
+  dateTo: Date,
   code: String,
   discount: Number,
   categories: [String],
