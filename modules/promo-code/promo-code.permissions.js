@@ -12,7 +12,7 @@ const {
 } = require('../../consts/promocode-fields');
 
 const promoCodeQuery = {
-  getPromoCodeById: allow,
+  getPromoCodeById: hasRoles([ADMIN, SUPERADMIN]),
   getAllPromoCodes: hasRoles([ADMIN, SUPERADMIN]),
   getPromoCodeByCode: allow,
 };

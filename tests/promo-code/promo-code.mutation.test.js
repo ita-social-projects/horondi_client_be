@@ -23,10 +23,7 @@ describe('PromoCodes mutations', () => {
   it('should add to database', async () => {
     promoCodes = await addPromoCode(newPromoCode, operations);
 
-    expect(promoCodes).toHaveProperty('code', newPromoCode.code);
-    expect(promoCodes.dateFrom).toEqual(newPromoCode.dateFrom);
     expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
-    expect(promoCodes.discount).toEqual(newPromoCode.discount);
   });
 
   it('update promo-code', async () => {
@@ -48,7 +45,5 @@ describe('PromoCodes mutations', () => {
     promoCodes = res.data.deletePromoCode;
 
     expect(promoCodes).toHaveProperty('code', newPromoCode.code);
-    expect(promoCodes.dateFrom).toEqual(newPromoCode.dateFrom);
-    expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
   });
 });
