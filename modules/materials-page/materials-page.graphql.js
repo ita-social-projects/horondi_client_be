@@ -1,17 +1,16 @@
 const MaterialsBlock = `
 type MaterialsBlock {
-    _id: ID
-    heading: String
-    text: String
+    _id: ID!
     image: String
+    text: [Language]!
+    translationsKey: ID!
   }
 `;
 
 const MaterialsBlockInput = `
 input MaterialsBlockInput {
-    heading: String
-    text: String
     image: String
+    text: [LanguageInput]
   }
 `;
 
