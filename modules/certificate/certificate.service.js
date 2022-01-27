@@ -1,3 +1,5 @@
+const { randomInt } = require('crypto');
+
 const RuleError = require('../../errors/rule.error');
 const Certificate = require('./certificate.model');
 const {
@@ -29,7 +31,7 @@ class CertificatesService {
       .skip(skip)
       .exec();
 
-    const count = Certificate.find(filter).countDocuments();
+    const count = items ? items.length : null;
 
     return {
       items,
@@ -48,10 +50,8 @@ class CertificatesService {
   }
 
   async generateCertificate(certificateData, userId, userRole) {
-    const firstNamePart = Math.floor(100 + Math.random() * 900);
-    const secondNamePart = Math.floor(100 + Math.random() * 900);
-
-    const name = `hor${firstNamePart}${secondNamePart}`;
+    const randomNum = randomInt(100000, 999999);
+    const name = `hor${randomNum}`;
 
     certificateData.name = name;
 
@@ -109,11 +109,7 @@ class CertificatesService {
   }
 
   async deleteCertificate(id) {
-    const certificateExists = await Certificate.findById(id).exec();
-
-    if (!certificateExists) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
-    }
+    const certificateExists = await this.getCertificateById(id);
 
     if (!certificateExists.isUsed && !certificateExists.isExpired) {
       throw new RuleError(CERTIFICATE_IS_ACTIVE, BAD_REQUEST);

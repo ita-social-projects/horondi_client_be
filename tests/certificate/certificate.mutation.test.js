@@ -41,7 +41,6 @@ describe('Test mutation methods Admin', () => {
     expect(isUsed).toBeFalsy();
 
     const result = await updateCertificate(certificateName, operations);
-    certificateId = result._id;
 
     expect(result.isUsed).toBeTruthy();
   });
