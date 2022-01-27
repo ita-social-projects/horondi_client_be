@@ -8,8 +8,12 @@ const {
 } = require('../../error-messages/promocode-messages');
 
 class PromoCodeService {
-  async getAllPromoCodes() {
-    const items = await PromoCode.find().exec();
+  async getAllPromoCodes({ skip, limit }) {
+    const items = await PromoCode.find()
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
     const count = items.length;
 
     return {

@@ -1,7 +1,7 @@
 const promoCodeService = require('./promo-code.service');
 
 const promoCodeQuery = {
-  getAllPromoCodes: async () => promoCodeService.getAllPromoCodes(),
+  getAllPromoCodes: async (_, args) => promoCodeService.getAllPromoCodes(args),
 
   getPromoCodeById: async (_, { id }) => promoCodeService.getPromoCodeById(id),
 

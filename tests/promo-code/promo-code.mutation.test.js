@@ -14,14 +14,13 @@ let promoCodeId;
 let operations;
 
 describe('PromoCodes mutations', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     operations = await setupApp();
-    promoCodes = await addPromoCode(newPromoCode, operations);
-    promoCodeId = promoCodes._id;
   });
 
   it('should add to database', async () => {
     promoCodes = await addPromoCode(newPromoCode, operations);
+    promoCodeId = promoCodes._id;
 
     expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
   });
@@ -44,6 +43,6 @@ describe('PromoCodes mutations', () => {
     const res = await deletePromoCode(promoCodeId, operations);
     promoCodes = res.data.deletePromoCode;
 
-    expect(promoCodes).toHaveProperty('code', newPromoCode.code);
+    expect(promoCodes._id).toEqual(promoCodeId);
   });
 });
