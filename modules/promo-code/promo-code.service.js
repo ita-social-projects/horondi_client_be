@@ -10,7 +10,7 @@ const {
 class PromoCodeService {
   async getAllPromoCodes() {
     const items = await PromoCode.find().exec();
-    const count = PromoCode.find().countDocuments();
+    const count = items.length;
 
     return {
       items,
