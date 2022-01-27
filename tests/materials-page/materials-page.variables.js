@@ -1,6 +1,8 @@
 const newMaterialsBlock = {
-  heading: 'New Material',
-  text: 'New Text',
+  text: [
+    { lang: 'en', value: 'English' },
+    { lang: 'ua', value: 'Українська' },
+  ],
   image: 'url',
 };
 

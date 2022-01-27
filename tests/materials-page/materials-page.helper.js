@@ -7,8 +7,10 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
         addMaterialsBlock(materialsBlock: $materialsBlock) {
           ... on MaterialsBlock {
             _id
-            heading
-            text
+            text {
+              lang
+              value
+            }
             image
           }
         }
@@ -27,9 +29,11 @@ const getAllMaterialsBlocks = async operations => {
         getAllMaterialsBlocks {
           items {
             _id
-            heading
-            text
             image
+            text {
+              lang
+              value
+            }
           }
         }
       }
@@ -45,8 +49,10 @@ const deleteMaterialsBlock = async (id, operations) =>
         deleteMaterialsBlock(id: $id) {
           ... on MaterialsBlock {
             _id
-            heading
-            text
+            text {
+              lang
+              value
+            }
             image
           }
         }
