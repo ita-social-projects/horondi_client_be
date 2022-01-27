@@ -31,7 +31,7 @@ const unlockUsers = () =>
     }).exec();
 
     if (blockedUsers.length) {
-      Promise.all(
+      await Promise.all(
         blockedUsers.map(async userData => {
           const blockDate = new Date(userData.banned.updatedAt).getTime();
           const dateDifference = currentDate - blockDate;
@@ -51,10 +51,12 @@ const unlockUsers = () =>
                 },
               }
             ).exec();
+
             const { beforeChanges, afterChanges } = getChanges(
               userData,
               unlockedUser
             );
+
             const historyEvent = {
               action: UNLOCK_EVENT,
               historyName: USER_EVENT,
@@ -67,7 +69,9 @@ const unlockUsers = () =>
               beforeChanges,
               afterChanges
             );
+
             await addHistoryRecord(historyRecord);
+
             return sendEmail(userData.email, UNLOCK_USER);
           }
         })
