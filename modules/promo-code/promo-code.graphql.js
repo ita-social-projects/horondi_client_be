@@ -1,8 +1,8 @@
 const promoCodeType = `
     type PromoCode {
     _id: ID
-    dateFrom: String
-    dateTo: String
+    dateFrom: Date
+    dateTo: Date
     code: String
     discount: Int
     categories: [String]
@@ -15,11 +15,11 @@ const promoCodeType = `
 
 const promoCodeInput = `
     input PromoCodeInput {
-    dateFrom: String
-    dateTo: String
-    code: String
-    discount: Int
-    categories: [String]
+    dateFrom: Date!
+    dateTo: Date!
+    code: String!
+    discount: Int!
+    categories: [String!]!
   }
 `;
 
