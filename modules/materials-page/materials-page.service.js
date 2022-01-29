@@ -42,7 +42,7 @@ class MaterialsService {
   }
 
   async deleteMaterialsBlock(id) {
-    const materialsBlock = Materials.findByIdAndDelete(id);
+    const materialsBlock = Materials.findByIdAndDelete(id).exec();
 
     if (materialsBlock) {
       await deleteTranslations(materialsBlock.translationsKey);

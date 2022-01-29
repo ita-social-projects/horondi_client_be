@@ -25,6 +25,9 @@ describe('MaterialsBlocks queries', () => {
 
     materialsBlocks = res.data.deleteMaterialsBlock;
 
-    expect(materialsBlocks).toHaveProperty('image', newMaterialsBlock.image);
+    expect(materialsBlocks).toEqual({
+      message: 'TRANSLATIONS_NOT_FOUND',
+      statusCode: 404,
+    });
   });
 });
