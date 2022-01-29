@@ -26,19 +26,19 @@ describe('Test certificate Queries', () => {
     certificateName = certificateData.name;
   });
 
-  it('#1. check unique field in one of certificates in list', async () => {
+  it('#1. should check unique field in one of certificates in list', async () => {
     const result = await getAllCertificates(operations);
 
     expect(result.items[0]).toHaveProperty('isUsed');
   });
 
-  it('#2. get fresh-generated certificate', async () => {
+  it('#2. should get fresh-generated certificate', async () => {
     const result = await getCertificateById(certificateId, operations);
 
     expect(result).toHaveProperty('name', certificateName);
   });
 
-  it('#3.get CERTIFICATE_NOT_FOUND for unexist certificate', async () => {
+  it('#3. should get CERTIFICATE_NOT_FOUND for unexist certificate', async () => {
     const result = await getCertificateById(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);

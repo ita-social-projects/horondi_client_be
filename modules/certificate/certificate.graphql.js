@@ -11,7 +11,6 @@ const certificateTypes = `
     isExpired: Boolean
     dateStart: Date
     dateEnd: Date
-    isActive: Boolean @deprecated(reason: "use isActivated and isExpired fields.")
   }
   
   type PaginatedCertificate {
@@ -34,9 +33,10 @@ const certificateTypes = `
   }
 
   union CertificateResult = Certificate | Error 
+  union CertificatePaginatedResult = PaginatedCertificate | Error
 
   extend type Query {
-    getAllCertificates(limit:Int, skip:Int): PaginatedCertificate!
+    getAllCertificates(limit:Int, skip:Int): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
   }
 

@@ -58,19 +58,19 @@ describe('Test response for unexist and wrong Code', () => {
     operations = await setupApp();
   });
 
-  it('#1. 403 status for unapprotiate Name', async () => {
+  it('#1. should responde with 403 status for unapprotiate Name', async () => {
     const result = await updateCertificate('regexpfailure', operations);
 
     expect(result).toHaveProperty('statusCode', 403);
   });
 
-  it('#2. 404 status for update wrong Name', async () => {
+  it('#2. should responde with 404 status for update wrong Name', async () => {
     const result = await updateCertificate(wrongName, operations);
 
     expect(result).toHaveProperty('statusCode', 404);
   });
 
-  it('#3. CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
+  it('#3. should responde with CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
     const result = await deleteCertificate(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);

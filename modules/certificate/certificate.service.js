@@ -3,18 +3,18 @@ const { randomInt } = require('crypto');
 const RuleError = require('../../errors/rule.error');
 const Certificate = require('./certificate.model');
 const {
-  roles: { USER, ADMIN, SUPERADMIN },
+  roles: { USER },
 } = require('../../consts');
 
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
-  CERTIFICATE_NOT_FOUND,
-  CERTIFICATE_NOT_VALID,
   CERTIFICATE_HAVE_OWNER,
   CERTIFICATE_IS_ACTIVE,
+  CERTIFICATE_IS_EXPIRED,
   CERTIFICATE_IS_USED,
+  CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
 
 class CertificatesService {
@@ -31,7 +31,7 @@ class CertificatesService {
       .skip(skip)
       .exec();
 
-    const count = items ? items.length : null;
+    const count = items.length;
 
     return {
       items,
@@ -49,15 +49,32 @@ class CertificatesService {
     return certificate;
   }
 
+  async getCertificateByParams(params) {
+    const certificate = await Certificate.findOne(params).exec();
+
+    if (!certificate) {
+      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
+    }
+
+    if (certificate.isUsed) {
+      throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
+    }
+
+    if (certificate.isExpired) {
+      throw new RuleError(CERTIFICATE_IS_EXPIRED, BAD_REQUEST);
+    }
+
+    return certificate;
+  }
+
   async generateCertificate(certificateData, userId, userRole) {
     const randomNum = randomInt(100000, 999999);
-    const name = `hor${randomNum}`;
 
-    certificateData.name = name;
+    certificateData.name = `hor${randomNum}`;
 
     if (userRole === USER) {
       certificateData.ownedBy = userId;
-    } else if (userRole === ADMIN || userRole === SUPERADMIN) {
+    } else {
       certificateData.createdBy = userId;
     }
 
@@ -65,17 +82,9 @@ class CertificatesService {
   }
 
   async addCertificate(name, userId, userEmail) {
-    const certificateExists = await Certificate.findOne({ name });
+    const certificate = await this.getCertificateByParams({ name });
 
-    if (
-      !certificateExists ||
-      certificateExists.isUsed ||
-      certificateExists.isExpired
-    ) {
-      throw new RuleError(CERTIFICATE_NOT_VALID, BAD_REQUEST);
-    }
-
-    if (certificateExists.ownedBy) {
+    if (certificate.ownedBy) {
       throw new RuleError(CERTIFICATE_HAVE_OWNER, BAD_REQUEST);
     }
 
@@ -87,15 +96,7 @@ class CertificatesService {
   }
 
   async updateCertificate(name) {
-    const certificateExists = await Certificate.findOne({ name }).exec();
-
-    if (!certificateExists) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
-    }
-
-    if (certificateExists.isUsed) {
-      throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
-    }
+    await this.getCertificateByParams({ name });
 
     return Certificate.findOneAndUpdate(
       { name },

@@ -36,16 +36,18 @@ const getAllCertificates = async operations => {
     query: gql`
       query {
         getAllCertificates(skip: 0, limit: 3) {
-          items {
-            _id
-            name
-            value
-            isUsed
-            createdBy {
+          ... on PaginatedCertificate {
+            items {
               _id
+              name
+              value
+              isUsed
+              createdBy {
+                _id
+              }
             }
+            count
           }
-          count
         }
       }
     `,

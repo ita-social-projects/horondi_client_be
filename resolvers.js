@@ -168,6 +168,7 @@ const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
   certificate: 'Certificate',
+  paginatedCertificate: 'PaginatedCertificate',
   history: 'History',
   historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
@@ -701,13 +702,12 @@ const resolvers = {
   },
 
   CertificateResult: {
-    __resolveType: obj => {
-      if (obj.name || obj.isUsed) {
-        return SCHEMA_NAMES.certificate;
-      }
+    __resolveType: obj => (obj.name ? SCHEMA_NAMES.certificate : 'Error'),
+  },
 
-      return 'Error';
-    },
+  CertificatePaginatedResult: {
+    __resolveType: obj =>
+      obj.count ? SCHEMA_NAMES.paginatedCertificate : 'Error',
   },
 
   PromoCodeResult: {

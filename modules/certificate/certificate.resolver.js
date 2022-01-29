@@ -9,15 +9,15 @@ const certificatesQuery = {
 };
 
 const certificatesMutation = {
-  generateCertificate: async (_, { newCertificate }, { user }) =>
+  generateCertificate: async (_, { newCertificate }, { user = {} }) =>
     certificatesService.generateCertificate(
       newCertificate,
-      user?._id,
-      user?.role
+      user._id,
+      user.role
     ),
 
-  addCertificate: async (_, { name }, { user }) =>
-    certificatesService.addCertificate(name, user?._id, user?.email),
+  addCertificate: async (_, { name }, { user = {} }) =>
+    certificatesService.addCertificate(name, user._id, user.email),
 
   deleteCertificate: async (_, { id }) =>
     certificatesService.deleteCertificate(id),

@@ -1,4 +1,4 @@
-const { and, allow } = require('graphql-shield');
+const { and } = require('graphql-shield');
 const {
   hasRoles,
   isAuthorized,
@@ -20,10 +20,7 @@ const certificatePermissionsQuery = {
 };
 
 const certificatePermissionsMutations = {
-  updateCertificate: and(
-    allow,
-    inputDataValidation('name', certificateNameValidator)
-  ),
+  updateCertificate: inputDataValidation('name', certificateNameValidator),
 
   addCertificate: and(
     hasRoles([USER]),
@@ -31,8 +28,6 @@ const certificatePermissionsMutations = {
   ),
 
   deleteCertificate: hasRoles([ADMIN, SUPERADMIN]),
-
-  generateCertificate: allow,
 };
 
 module.exports = {
