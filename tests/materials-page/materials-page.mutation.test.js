@@ -7,7 +7,6 @@ const {
 } = require('./materials-page.helper');
 
 let materialsBlocks;
-let materialsBlockId;
 let operations;
 
 describe('MaterialsBlocks queries', () => {
@@ -15,17 +14,17 @@ describe('MaterialsBlocks queries', () => {
     operations = await setupApp();
   });
 
-  it('should add add to database', async () => {
+  it('should add material-about to database', async () => {
     materialsBlocks = await addMaterialsBlock(newMaterialsBlock, operations);
 
-    expect(materialsBlocks).toHaveProperty('image', newMaterialsBlock.image);
     expect(materialsBlocks.image).toEqual('url');
   });
 
   it('delete material-about', async () => {
-    materialsBlockId = materialsBlocks._id;
-    const res = await deleteMaterialsBlock(materialsBlockId, operations);
+    const res = await deleteMaterialsBlock(materialsBlocks._id, operations);
+
     materialsBlocks = res.data.deleteMaterialsBlock;
+
     expect(materialsBlocks).toHaveProperty('image', newMaterialsBlock.image);
   });
 });

@@ -506,6 +506,7 @@ const typeDefs = gql`
     ordersCount: Int
   }
   
+  union MaterialsBlockResult = MaterialsBlock | Error
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
@@ -546,7 +547,8 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
-    getAllMaterialsBlocks: [MaterialsBlock]
+    getMaterialsBlockById(id: ID): MaterialsBlockResult
+    getAllMaterialsBlocks(limit: Int, skip: Int): PaginatedMaterialsBlock
     getAllQuestionsAnswers: PaginatedQNAs
     getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
@@ -854,10 +856,10 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
-    addMaterialsBlock(materialsBlock: MaterialsBlockInput!): MaterialsBlock
-    deleteMaterialsBlock(id: ID!): MaterialsBlock
+    addMaterialsBlock(materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
+    deleteMaterialsBlock(id: ID!): MaterialsBlockResult
     updateMaterialsBlock(id: ID!
-    materialsBlock: MaterialsBlockInput!): MaterialsBlock
+    materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
     addPromoCode(promoCode: PromoCodeInput!): PromoCode
     deletePromoCode(id: ID!): PromoCode
     updatePromoCode(id: ID!

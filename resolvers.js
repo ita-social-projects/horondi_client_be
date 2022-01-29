@@ -173,6 +173,7 @@ const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
+  materialsBlock: 'MaterialsBlock',
   certificate: 'Certificate',
   history: 'History',
   historyRecord: 'HistoryRecord',
@@ -708,6 +709,16 @@ const resolvers = {
     ...constructorMutation,
 
     ...wishlistMutation,
+  },
+
+  MaterialsBlockResult: {
+    __resolveType: obj => {
+      if (obj.image || obj.text) {
+        return SCHEMA_NAMES.materialsBlock;
+      }
+
+      return 'Error';
+    },
   },
 
   CertificateResult: {

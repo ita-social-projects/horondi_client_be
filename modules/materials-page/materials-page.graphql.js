@@ -5,6 +5,11 @@ type MaterialsBlock {
     text: [Language]!
     translationsKey: ID!
   }
+
+  type PaginatedMaterialsBlock {
+    items: [MaterialsBlock]
+    count: Int
+  }
 `;
 
 const MaterialsBlockInput = `

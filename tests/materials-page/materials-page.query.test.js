@@ -1,11 +1,40 @@
 const { setupApp } = require('../helper-functions');
-const { getAllMaterialsBlocks } = require('./materials-page.helper');
+const {
+  getAllMaterialsBlocks,
+  addMaterialsBlock,
+  deleteMaterialsBlock,
+  getMaterialsBlockById,
+} = require('./materials-page.helper');
+const { newMaterialsBlock } = require('./materials-page.variables');
 
-describe('Materials-about queries', () => {
-  it('Should get all materials-blocks', async () => {
-    const operations = await setupApp();
+let materialsBlock;
+let operations;
+
+describe('Materials-about block queries', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+    materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
+  });
+
+  it('Should get all materials-about blocks', async () => {
     const blocks = await getAllMaterialsBlocks(operations);
-    expect(blocks).toBeDefined();
-    expect(blocks.items).toBeInstanceOf(Array);
+
+    expect(blocks.items.length).toBe(1);
+  });
+
+  it('Should get selected materials-about block', async () => {
+    const selectedMaterialsBlock = await getMaterialsBlockById(
+      materialsBlock._id,
+      operations
+    );
+
+    expect(selectedMaterialsBlock).toHaveProperty(
+      'text',
+      newMaterialsBlock.text
+    );
+  });
+
+  afterAll(async () => {
+    await deleteMaterialsBlock(materialsBlock._id, operations);
   });
 });

@@ -1,4 +1,12 @@
 const Materials = require('./materials-page.model');
+const {
+  MATERIAL_NOT_FOUND,
+} = require('../../error-messages/material.messages');
+const {
+  STATUS_CODES: { NOT_FOUND },
+} = require('../../consts/status-codes');
+const RuleError = require('../../errors/rule.error');
+
 const createTranslations = require('../../utils/createTranslations');
 const {
   addTranslations,
@@ -8,7 +16,21 @@ const {
 
 class MaterialsService {
   async getAllMaterialsBlocks() {
-    return Materials.find({}).exec();
+    const items = await Materials.find({}).exec();
+    const count = items.length;
+
+    return {
+      items,
+      count,
+    };
+  }
+
+  async getMaterialsBlockById(id) {
+    const materialsBlock = await Materials.findById(id).exec();
+
+    if (!materialsBlock) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+
+    return materialsBlock;
   }
 
   async addMaterialsBlock(materialsBlock) {
@@ -27,15 +49,20 @@ class MaterialsService {
 
       return materialsBlock;
     }
+    return false;
   }
 
   async updateMaterialsBlock(id, materialsBlock) {
     const foundMaterialsBlock = await Materials.findById(id).exec();
 
-    await updateTranslations(
-      foundMaterialsBlock.translationsKey,
-      createTranslations(materialsBlock)
-    );
+    if (foundMaterialsBlock) {
+      await updateTranslations(
+        foundMaterialsBlock.translationsKey,
+        createTranslations(materialsBlock)
+      );
+    } else {
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    }
 
     const updatedMaterialsBlock = await Materials.findByIdAndUpdate(
       id,
@@ -43,7 +70,10 @@ class MaterialsService {
       { new: true }
     ).exec();
 
-    return updatedMaterialsBlock || null;
+    if (updatedMaterialsBlock) {
+      return updatedMaterialsBlock;
+    }
+    return false;
   }
 }
 

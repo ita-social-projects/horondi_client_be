@@ -22,6 +22,7 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
   });
   return res.data.addMaterialsBlock;
 };
+
 const getAllMaterialsBlocks = async operations => {
   const res = await operations.query({
     query: gql`
@@ -34,6 +35,7 @@ const getAllMaterialsBlocks = async operations => {
               lang
               value
             }
+            translationsKey
           }
         }
       }
@@ -42,6 +44,27 @@ const getAllMaterialsBlocks = async operations => {
 
   return res.data.getAllMaterialsBlocks;
 };
+
+const getMaterialsBlockById = async (id, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query($id: ID!) {
+        getMaterialsBlockById(id: $id) {
+          ... on MaterialsBlock {
+            image
+            text {
+              lang
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: { id },
+  });
+  return res.data.getMaterialsBlockById;
+};
+
 const deleteMaterialsBlock = async (id, operations) =>
   operations.mutate({
     mutation: gql`
@@ -65,4 +88,5 @@ module.exports = {
   addMaterialsBlock,
   getAllMaterialsBlocks,
   deleteMaterialsBlock,
+  getMaterialsBlockById,
 };
