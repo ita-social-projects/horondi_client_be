@@ -49,6 +49,7 @@ class MaterialsService {
 
       return materialsBlock;
     }
+    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
   }
 
   async updateMaterialsBlock(id, materialsBlock) {
