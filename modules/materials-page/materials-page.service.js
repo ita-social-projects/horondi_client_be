@@ -42,14 +42,13 @@ class MaterialsService {
   }
 
   async deleteMaterialsBlock(id) {
-    const materialsBlock = Materials.findByIdAndDelete(id).exec();
+    const materialsBlock = await Materials.findByIdAndDelete(id).exec();
 
     if (materialsBlock) {
       await deleteTranslations(materialsBlock.translationsKey);
 
       return materialsBlock;
     }
-    return false;
   }
 
   async updateMaterialsBlock(id, materialsBlock) {

@@ -6,7 +6,7 @@ const {
   deleteMaterialsBlock,
 } = require('./materials-page.helper');
 
-let materialsBlocks;
+let materialsBlock;
 let operations;
 
 describe('MaterialsBlocks queries', () => {
@@ -15,19 +15,16 @@ describe('MaterialsBlocks queries', () => {
   });
 
   it('should add material-about to database', async () => {
-    materialsBlocks = await addMaterialsBlock(newMaterialsBlock, operations);
+    materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
 
-    expect(materialsBlocks.image).toEqual('url');
+    expect(materialsBlock.image).toEqual('url');
   });
 
   it('delete material-about', async () => {
-    const res = await deleteMaterialsBlock(materialsBlocks._id, operations);
+    const res = await deleteMaterialsBlock(materialsBlock._id, operations);
 
-    materialsBlocks = res.data.deleteMaterialsBlock;
+    materialsBlock = res.data.deleteMaterialsBlock;
 
-    expect(materialsBlocks).toEqual({
-      message: 'TRANSLATIONS_NOT_FOUND',
-      statusCode: 404,
-    });
+    expect(materialsBlock).toHaveProperty('image', newMaterialsBlock.image);
   });
 });
