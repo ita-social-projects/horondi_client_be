@@ -63,7 +63,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       userContextServer = await setupApp(userObject);
     });
 
-    it('#1. User with role=user should generate certificate', async () => {
+    it('#1. should generate certificate', async () => {
       const result = await generateCertificate(
         newCertificateInputData,
         userContextServer
@@ -74,7 +74,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       expect(result).toHaveProperty('name');
     });
 
-    it('#2. User can add certificate that was bought offilne', async () => {
+    it('#2. should add certificate that was bought offilne', async () => {
       expect(certificateNullOwnerEmail).toBe(null);
 
       const result = await addCertificate(
@@ -85,13 +85,13 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       expect(result.email).toBe(newUser.email);
     });
 
-    it("#3. User shouldn't remove his certificate", async () => {
+    it("#3. shouldn't remove his certificate", async () => {
       const result = await deleteCertificate(certificateId, userContextServer);
 
       expect(result).toHaveProperty('message', INVALID_PERMISSIONS);
     });
 
-    it('#4. User should see only certificates owned by him', async () => {
+    it('#4. should see only certificates owned by him', async () => {
       const result = await getAllCertificates(userContextServer);
 
       expect(result.count).toBe(2);
@@ -103,13 +103,13 @@ describe('Run ApolloClientServer with role=admin in context', () => {
   });
 
   describe('Admin restrictions and cleaning DB', () => {
-    it('#1. Admin shouldn`t delete unused certificate', async () => {
+    it('#1. shouldn`t delete unused certificate', async () => {
       const result = await deleteCertificate(certificateId, adminContextServer);
 
       expect(result).toHaveProperty('message', CERTIFICATE_IS_ACTIVE);
     });
 
-    it('#2. admin shouldn`t use addCertificate method', async () => {
+    it('#2. shouldn`t use addCertificate method', async () => {
       const result = await addCertificate(
         certificateNullOwnerName,
         adminContextServer

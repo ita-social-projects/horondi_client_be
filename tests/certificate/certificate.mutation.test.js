@@ -24,7 +24,7 @@ describe('Test mutation methods Admin', () => {
     operations = await setupApp();
   });
 
-  it('#1. Certificate was successfully Generated', async () => {
+  it('#1. Should generate certificate', async () => {
     const result = await generateCertificate(
       newCertificateInputData,
       operations
@@ -37,7 +37,7 @@ describe('Test mutation methods Admin', () => {
     expect(result).toHaveProperty('name');
   });
 
-  it('#2. change `isUsed` field to true with updateCertificate', async () => {
+  it('#2. should change `isUsed` field to true with updateCertificate', async () => {
     expect(isUsed).toBeFalsy();
 
     const result = await updateCertificate(certificateName, operations);
@@ -45,7 +45,7 @@ describe('Test mutation methods Admin', () => {
     expect(result.isUsed).toBeTruthy();
   });
 
-  it('#3. Succesfuly delete certificate', async () => {
+  it('#3. should delete certificate', async () => {
     await deleteCertificate(certificateId, operations);
     const result = await getCertificateById(certificateId, operations);
 
