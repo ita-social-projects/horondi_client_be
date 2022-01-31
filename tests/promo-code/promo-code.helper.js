@@ -63,7 +63,7 @@ const getPromoCodeByCode = async (code, operations) => {
     },
   });
 
-  return res.data.getPromoCodeByCode;
+  return res;
 };
 
 const deletePromoCode = async (id, operations) =>

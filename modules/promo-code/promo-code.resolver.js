@@ -1,3 +1,4 @@
+const { ApolloError } = require('apollo-server');
 const promoCodeService = require('./promo-code.service');
 
 const promoCodeQuery = {
@@ -5,8 +6,13 @@ const promoCodeQuery = {
 
   getPromoCodeById: async (_, { id }) => promoCodeService.getPromoCodeById(id),
 
-  getPromoCodeByCode: async (_, { code }) =>
-    promoCodeService.getPromoCodeByCode(code),
+  getPromoCodeByCode: async (_, { code }) => {
+    try {
+      return await promoCodeService.getPromoCodeByCode(code);
+    } catch (e) {
+      return new ApolloError(e.message, e.statusCode);
+    }
+  },
 };
 
 const promoCodeMutation = {
