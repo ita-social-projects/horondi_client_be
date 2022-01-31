@@ -24,7 +24,7 @@ describe('Test mutation methods Admin', () => {
     operations = await setupApp();
   });
 
-  it('#1. Should generate certificate', async () => {
+  it('should generate certificate', async () => {
     const result = await generateCertificate(
       newCertificateInputData,
       operations
@@ -37,7 +37,7 @@ describe('Test mutation methods Admin', () => {
     expect(result).toHaveProperty('name');
   });
 
-  it('#2. should change `isUsed` field to true with updateCertificate', async () => {
+  it('should change `isUsed` field to true with updateCertificate', async () => {
     expect(isUsed).toBeFalsy();
 
     const result = await updateCertificate(certificateName, operations);
@@ -45,7 +45,7 @@ describe('Test mutation methods Admin', () => {
     expect(result.isUsed).toBeTruthy();
   });
 
-  it('#3. should delete certificate', async () => {
+  it('should delete certificate', async () => {
     await deleteCertificate(certificateId, operations);
     const result = await getCertificateById(certificateId, operations);
 
@@ -58,19 +58,19 @@ describe('Test response for unexist and wrong Code', () => {
     operations = await setupApp();
   });
 
-  it('#1. should responde with 403 status for unapprotiate Name', async () => {
+  it('should responde with 403 status for unapprotiate Name', async () => {
     const result = await updateCertificate('regexpfailure', operations);
 
     expect(result).toHaveProperty('statusCode', 403);
   });
 
-  it('#2. should responde with 404 status for update wrong Name', async () => {
+  it('should responde with 404 status for update wrong Name', async () => {
     const result = await updateCertificate(wrongName, operations);
 
     expect(result).toHaveProperty('statusCode', 404);
   });
 
-  it('#3. should responde with CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
+  it('should responde with CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
     const result = await deleteCertificate(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
