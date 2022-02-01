@@ -28,7 +28,9 @@ class MaterialsService {
   async getMaterialsBlockById(id) {
     const materialsBlock = await Materials.findById(id).exec();
 
-    if (!materialsBlock) throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    if (!materialsBlock) {
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    }
 
     return materialsBlock;
   }
@@ -44,24 +46,25 @@ class MaterialsService {
   async deleteMaterialsBlock(id) {
     const materialsBlock = await Materials.findByIdAndDelete(id).exec();
 
-    if (materialsBlock) {
-      await deleteTranslations(materialsBlock.translationsKey);
-
-      return materialsBlock;
+    if (!materialsBlock) {
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
-    throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+
+    await deleteTranslations(materialsBlock.translationsKey);
+
+    return materialsBlock;
   }
 
   async updateMaterialsBlock(id, materialsBlock) {
-    const foundMaterialsBlock = await Materials.findById(id).exec();
+    const foundMaterialsBlock = await this.getMaterialsBlockById(id);
 
-    if (foundMaterialsBlock) {
+    if (!foundMaterialsBlock) {
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
+    } else {
       await updateTranslations(
         foundMaterialsBlock.translationsKey,
         createTranslations(materialsBlock)
       );
-    } else {
-      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
 
     const updatedMaterialsBlock = await Materials.findByIdAndUpdate(
@@ -70,10 +73,11 @@ class MaterialsService {
       { new: true }
     ).exec();
 
-    if (updatedMaterialsBlock) {
-      return updatedMaterialsBlock;
+    if (!updatedMaterialsBlock) {
+      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
-    return false;
+
+    return updatedMaterialsBlock;
   }
 }
 
