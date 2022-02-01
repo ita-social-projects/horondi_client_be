@@ -23,11 +23,11 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
   return res.data.addMaterialsBlock;
 };
 
-const getAllMaterialsBlocks = async operations => {
+const getAllMaterialsBlocks = async ({ skip, limit }, operations) => {
   const res = await operations.query({
     query: gql`
-      query {
-        getAllMaterialsBlocks {
+      query($skip: Int!, $limit: Int!) {
+        getAllMaterialsBlocks(skip: $skip, limit: $limit) {
           items {
             _id
             image
@@ -40,6 +40,10 @@ const getAllMaterialsBlocks = async operations => {
         }
       }
     `,
+    variables: {
+      skip,
+      limit,
+    },
   });
 
   return res.data.getAllMaterialsBlocks;

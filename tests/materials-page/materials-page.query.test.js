@@ -17,7 +17,10 @@ describe('Materials-about block queries', () => {
   });
 
   it('Should get all materials-about blocks', async () => {
-    const blocks = await getAllMaterialsBlocks(operations);
+    const blocks = await getAllMaterialsBlocks(
+      { skip: 0, limit: 0 },
+      operations
+    );
 
     expect(blocks.items.length).toBe(1);
   });
