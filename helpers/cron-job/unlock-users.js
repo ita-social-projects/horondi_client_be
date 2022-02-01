@@ -31,45 +31,51 @@ const unlockUsers = () =>
     }).exec();
 
     if (blockedUsers.length) {
-      for (const userData of blockedUsers) {
-        const blockDate = new Date(userData.banned.updatedAt).getTime();
-        const dateDifference = currentDate - blockDate;
-        const blockPeriod = getDaysInMilliseconds(
-          Number(userData.banned.blockPeriod)
-        );
+      await Promise.all(
+        blockedUsers.map(async userData => {
+          const blockDate = new Date(userData.banned.updatedAt).getTime();
+          const dateDifference = currentDate - blockDate;
+          const blockPeriod = getDaysInMilliseconds(
+            Number(userData.banned.blockPeriod)
+          );
 
-        if (dateDifference >= blockPeriod) {
-          const unlockedUser = await UserModel.findOneAndUpdate(
-            { _id: userData._id },
-            {
-              $set: {
-                banned: {
-                  blockPeriod: UNLOCKED,
-                  blockCount: userData.banned.blockCount,
+          if (dateDifference >= blockPeriod) {
+            const unlockedUser = await UserModel.findOneAndUpdate(
+              { _id: userData._id },
+              {
+                $set: {
+                  banned: {
+                    blockPeriod: UNLOCKED,
+                    blockCount: userData.banned.blockCount,
+                  },
                 },
-              },
-            }
-          ).exec();
-          const { beforeChanges, afterChanges } = getChanges(
-            userData,
-            unlockedUser
-          );
-          const historyEvent = {
-            action: UNLOCK_EVENT,
-            historyName: USER_EVENT,
-          };
-          const historyRecord = generateHistoryObject(
-            historyEvent,
-            '',
-            `${userData.firstName} ${userData.lastName}`,
-            userData._id,
-            beforeChanges,
-            afterChanges
-          );
-          await addHistoryRecord(historyRecord);
-          return sendEmail(userData.email, UNLOCK_USER);
-        }
-      }
+              }
+            ).exec();
+
+            const { beforeChanges, afterChanges } = getChanges(
+              userData,
+              unlockedUser
+            );
+
+            const historyEvent = {
+              action: UNLOCK_EVENT,
+              historyName: USER_EVENT,
+            };
+            const historyRecord = generateHistoryObject(
+              historyEvent,
+              '',
+              `${userData.firstName} ${userData.lastName}`,
+              userData._id,
+              beforeChanges,
+              afterChanges
+            );
+
+            await addHistoryRecord(historyRecord);
+
+            return sendEmail(userData.email, UNLOCK_USER);
+          }
+        })
+      );
     }
   });
 

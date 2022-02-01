@@ -1,4 +1,4 @@
-const Certificate = require('./certificate.model');
+const { CertificateModel } = require('./certificate.model');
 const RuleError = require('../../errors/rule.error');
 
 const {
@@ -18,13 +18,13 @@ class CertificatesService {
     } else {
       filter = { createdBy: user.id };
     }
-    const items = await Certificate.find(filter)
+    const items = await CertificateModel.find(filter)
       .sort({ startDate: 1 })
       .limit(limit)
       .skip(skip)
       .exec();
 
-    const count = Certificate.find(filter).countDocuments();
+    const count = CertificateModel.find(filter).countDocuments();
 
     return {
       items,
@@ -33,7 +33,7 @@ class CertificatesService {
   }
 
   async getCertificateById(definedArg) {
-    const certificate = await Certificate.findById(definedArg).exec();
+    const certificate = await CertificateModel.findById(definedArg).exec();
 
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
@@ -43,17 +43,17 @@ class CertificatesService {
   }
 
   async addCertificate(name, value, id) {
-    const certificateExists = await Certificate.findOne({ name });
+    const certificateExists = await CertificateModel.findOne({ name });
 
     if (certificateExists) {
       throw new RuleError(CERTIFICATE_ALREADY_EXISTS, BAD_REQUEST);
     }
 
-    return new Certificate({ name, value, createdBy: id }).save();
+    return new CertificateModel({ name, value, createdBy: id }).save();
   }
 
   async updateCertificate(name) {
-    const updatedCertificate = await Certificate.findOneAndUpdate(
+    const updatedCertificate = await CertificateModel.findOneAndUpdate(
       { name },
       { isUsed: true },
       { new: true }
@@ -67,10 +67,10 @@ class CertificatesService {
   }
 
   async deleteCertificate(id) {
-    const deletedCertificate = await Certificate.findById(id).exec();
+    const deletedCertificate = await CertificateModel.findById(id).exec();
 
     if (deletedCertificate) {
-      return Certificate.findByIdAndDelete(id).exec();
+      return CertificateModel.findByIdAndDelete(id).exec();
     }
 
     throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
