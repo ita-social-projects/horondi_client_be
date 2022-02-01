@@ -62,10 +62,6 @@ class MaterialsService {
   async updateMaterialsBlock(id, materialsBlock) {
     const foundMaterialsBlock = await this.getMaterialsBlockById(id);
 
-    if (!foundMaterialsBlock) {
-      throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
-    }
-
     await updateTranslations(
       foundMaterialsBlock.translationsKey,
       createTranslations(materialsBlock)

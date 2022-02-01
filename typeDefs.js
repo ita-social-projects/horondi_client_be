@@ -547,8 +547,8 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
-    getMaterialsBlockById(id: ID): MaterialsBlockResult
-    getAllMaterialsBlocks(limit: Int, skip: Int): PaginatedMaterialsBlock
+    getMaterialsBlockById(id: ID!): MaterialsBlockResult
+    getAllMaterialsBlocks(limit: Int!, skip: Int!): PaginatedMaterialsBlock
     getAllQuestionsAnswers: PaginatedQNAs
     getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
