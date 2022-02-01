@@ -91,12 +91,6 @@
             }
         ],
         "no-else-return": [2, { "allowElseIf": true }],
-        "no-param-reassign": [
-            2,
-            {
-                "props": true
-            }
-        ],
         "no-shadow": 2,
         "eqeqeq": [2, "always"],
         "curly": 2,
