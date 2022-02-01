@@ -1,7 +1,8 @@
 const materialsService = require('./materials-page.service');
 
 const materialsQuery = {
-  getAllMaterialsBlocks: async () => materialsService.getAllMaterialsBlocks(),
+  getAllMaterialsBlocks: async (_, { skip, limit }) =>
+    materialsService.getAllMaterialsBlocks(skip, limit),
 
   getMaterialsBlockById: async (_, { id }) =>
     materialsService.getMaterialsBlockById(id),

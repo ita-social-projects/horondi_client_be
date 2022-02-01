@@ -15,9 +15,13 @@ const {
 } = require('../translations/translations.service');
 
 class MaterialsService {
-  async getAllMaterialsBlocks() {
-    const items = await Materials.find({}).exec();
-    const count = items.length;
+  async getAllMaterialsBlocks(skip, limit) {
+    const items = await Materials.find({})
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = items?.length || 0;
 
     return {
       items,
@@ -60,12 +64,12 @@ class MaterialsService {
 
     if (!foundMaterialsBlock) {
       throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
-    } else {
-      await updateTranslations(
-        foundMaterialsBlock.translationsKey,
-        createTranslations(materialsBlock)
-      );
     }
+
+    await updateTranslations(
+      foundMaterialsBlock.translationsKey,
+      createTranslations(materialsBlock)
+    );
 
     const updatedMaterialsBlock = await Materials.findByIdAndUpdate(
       id,
