@@ -1,6 +1,11 @@
 const { gql } = require('apollo-server-express');
 
 const {
+  MaterialsBlock,
+  MaterialsBlockInput,
+} = require('./modules/materials-page/materials-page.graphql');
+
+const {
   historyType,
   historyFilterInput,
 } = require('./modules/history/history.graphql');
@@ -173,6 +178,8 @@ const { wishlistType } = require('./modules/wishlist/wishlist.graphql');
 const { skip, limit } = defaultPaginationParams;
 
 const typeDefs = gql`
+  ${MaterialsBlock}
+  ${MaterialsBlockInput}
   ${questionsAnswersType}
   ${questionsAnswersInput}
   ${promoCodeType}
@@ -493,6 +500,7 @@ const typeDefs = gql`
     ordersCount: Int
   }
   
+  union MaterialsBlockResult = MaterialsBlock | Error
   union PaginatedProductsResult = PaginatedProducts | Error
   union PaginatedCommentsResult = PaginatedComments | Error
   union CategoryResult = Category | Error
@@ -533,6 +541,8 @@ const typeDefs = gql`
   union PositionResult = Position | Error
   union BasicsResult = Basics | Error
   type Query {
+    getMaterialsBlockById(id: ID!): MaterialsBlockResult
+    getAllMaterialsBlocks(limit: Int!, skip: Int!): PaginatedMaterialsBlock
     getAllQuestionsAnswers: PaginatedQNAs
     getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult
@@ -553,7 +563,7 @@ const typeDefs = gql`
       skip: Int
       filter: MaterialFilterInput,
     ): PaginatedMaterials!
-    getPromoCodeById(id: ID): PromoCode
+    getPromoCodeById(id: ID): PromoCodeResult
     getPromoCodeByCode(code: String!): PromoCodeResult
     getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
@@ -839,10 +849,14 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
+    addMaterialsBlock(materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
+    deleteMaterialsBlock(id: ID!): MaterialsBlockResult
+    updateMaterialsBlock(id: ID!
+    materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
     addPromoCode(promoCode: PromoCodeInput!): PromoCode
     deletePromoCode(id: ID!): PromoCode
     updatePromoCode(id: ID!
-      promoCode: PromoCodeInput!): PromoCode
+      promoCode: PromoCodeInput!): PromoCodeResult
     addQuestionsAnswers(questionsAnswers: QuestionsAnswersInput!): QuestionsAnswers
     deleteQuestionsAnswers(id: ID!): QuestionsAnswers
     updateQuestionsAnswers(id: ID!

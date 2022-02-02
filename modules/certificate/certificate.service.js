@@ -1,7 +1,7 @@
 const { randomInt } = require('crypto');
 
 const RuleError = require('../../errors/rule.error');
-const Certificate = require('./certificate.model');
+const { CertificateModel } = require('./certificate.model');
 const {
   roles: { USER },
 } = require('../../consts');
@@ -24,8 +24,7 @@ class CertificatesService {
     if (user.role === USER) {
       filter = { ownedBy: user._id };
     }
-
-    const items = await Certificate.find(filter)
+    const items = await CertificateModel.find(filter)
       .sort({ startDate: 1 })
       .limit(limit)
       .skip(skip)
@@ -40,7 +39,7 @@ class CertificatesService {
   }
 
   async getCertificateById(id) {
-    const certificate = await Certificate.findById(id).exec();
+    const certificate = await CertificateModel.findById(id).exec();
 
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
@@ -50,7 +49,7 @@ class CertificatesService {
   }
 
   async getCertificateByParams(params) {
-    const certificate = await Certificate.findOne(params).exec();
+    const certificate = await CertificateModel.findOne(params).exec();
 
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
@@ -78,7 +77,7 @@ class CertificatesService {
       certificateData.createdBy = userId;
     }
 
-    return new Certificate(certificateData).save();
+    return new CertificateModel(certificateData).save();
   }
 
   async addCertificate(name, userId, userEmail) {
@@ -88,7 +87,7 @@ class CertificatesService {
       throw new RuleError(CERTIFICATE_HAVE_OWNER, BAD_REQUEST);
     }
 
-    return Certificate.findOneAndUpdate(
+    return CertificateModel.findOneAndUpdate(
       { name },
       { email: userEmail, ownedBy: userId },
       { new: true }
@@ -98,7 +97,7 @@ class CertificatesService {
   async updateCertificate(name) {
     await this.getCertificateByParams({ name });
 
-    return Certificate.findOneAndUpdate(
+    return CertificateModel.findOneAndUpdate(
       { name },
       { isUsed: true },
       { new: true }
@@ -112,7 +111,7 @@ class CertificatesService {
       throw new RuleError(CERTIFICATE_IS_ACTIVE, BAD_REQUEST);
     }
 
-    return Certificate.findByIdAndDelete(id).exec();
+    return CertificateModel.findByIdAndDelete(id).exec();
   }
 }
 
