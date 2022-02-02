@@ -4,7 +4,7 @@ const {
 } = require('../../error-messages/certificate.messages');
 const {
   deleteCertificate,
-  addCertificate,
+  generateCertificate,
   updateCertificate,
   getCertificateById,
 } = require('./certificate.helper');
@@ -16,33 +16,36 @@ const {
 
 let operations;
 let certificateId;
+let certificateName;
 let isUsed;
 
-describe('Test mutation methods', () => {
+describe('Test mutation methods Admin', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
 
-  it('#1. create certificate', async () => {
-    const result = await addCertificate(newCertificateInputData, operations);
-    certificateId = result._id;
-    isUsed = result.isUsed;
-
-    expect(result).toHaveProperty('name', newCertificateInputData.name);
-  });
-
-  it('#2. update certificate change isUsed field to true', async () => {
-    expect(isUsed).toBeFalsy();
-
-    const result = await updateCertificate(
-      newCertificateInputData.name,
+  it('should generate certificate', async () => {
+    const result = await generateCertificate(
+      newCertificateInputData,
       operations
     );
+
+    certificateId = result._id;
+    certificateName = result.name;
+    isUsed = result.isUsed;
+
+    expect(result).toHaveProperty('name');
+  });
+
+  it('should change `isUsed` field to true with updateCertificate', async () => {
+    expect(isUsed).toBeFalsy();
+
+    const result = await updateCertificate(certificateName, operations);
 
     expect(result.isUsed).toBeTruthy();
   });
 
-  it('#3. Succesfuly delete certificate', async () => {
+  it('should delete certificate', async () => {
     await deleteCertificate(certificateId, operations);
     const result = await getCertificateById(certificateId, operations);
 
@@ -50,18 +53,24 @@ describe('Test mutation methods', () => {
   });
 });
 
-describe('Test response for unexist ID', () => {
+describe('Test response for unexist and wrong Code', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
 
-  it('#1. 404 status for update wrong Name', async () => {
+  it('should responde with 403 status for unapprotiate Name', async () => {
+    const result = await updateCertificate('regexpfailure', operations);
+
+    expect(result).toHaveProperty('statusCode', 403);
+  });
+
+  it('should responde with 404 status for update wrong Name', async () => {
     const result = await updateCertificate(wrongName, operations);
 
     expect(result).toHaveProperty('statusCode', 404);
   });
 
-  it('#2. CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
+  it('should responde with CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
     const result = await deleteCertificate(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);

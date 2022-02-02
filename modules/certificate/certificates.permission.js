@@ -1,18 +1,35 @@
-const { hasRoles } = require('../../utils/rules');
+const { and } = require('graphql-shield');
+const {
+  hasRoles,
+  isAuthorized,
+  isUnlocked,
+  inputDataValidation,
+} = require('../../utils/rules');
+const {
+  certificateNameValidator,
+} = require('../../validators/certificate.validator');
+
 const {
   roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts');
 
 const certificatePermissionsQuery = {
-  getCertificateById: hasRoles([USER, ADMIN, SUPERADMIN]),
-  getAllCertificates: hasRoles([USER, ADMIN, SUPERADMIN]),
+  getCertificateById: hasRoles([ADMIN, SUPERADMIN]),
+
+  getAllCertificates: and(isAuthorized, isUnlocked),
 };
 
 const certificatePermissionsMutations = {
-  updateCertificate: hasRoles([USER, ADMIN, SUPERADMIN]),
-  addCertificate: hasRoles([USER, ADMIN, SUPERADMIN]),
+  updateCertificate: inputDataValidation('name', certificateNameValidator),
+
+  addCertificate: and(
+    hasRoles([USER]),
+    inputDataValidation('name', certificateNameValidator)
+  ),
+
   deleteCertificate: hasRoles([ADMIN, SUPERADMIN]),
 };
+
 module.exports = {
   certificatePermissionsMutations,
   certificatePermissionsQuery,

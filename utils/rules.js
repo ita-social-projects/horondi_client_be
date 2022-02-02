@@ -80,6 +80,7 @@ const checkIfItemExists = (data, currentModel) =>
 module.exports = {
   hasRoles,
   isAuthorized,
+  isUnlocked,
   isTheSameUser,
   inputDataValidation,
   checkIfItemExists,

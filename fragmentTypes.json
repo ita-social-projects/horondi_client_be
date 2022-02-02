@@ -37,6 +37,18 @@
           }
         ]
       },
+         {
+        "kind": "UNION",
+        "name": "CertificatePaginatedResult",
+        "possibleTypes": [
+          {
+            "name": "PaginatedCertificate"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
       {
         "kind": "UNION",
         "name": "MaterialResult",
