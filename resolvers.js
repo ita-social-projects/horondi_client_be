@@ -1,6 +1,12 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const { historyQuery } = require('./modules/history/history.resolvers');
+
+const {
+  materialsQuery,
+  materialsMutation,
+} = require('./modules/materials-page/materials-page.resolver');
+
 const {
   productsQuery,
   productsMutation,
@@ -167,6 +173,7 @@ const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
+  materialsBlock: 'MaterialsBlock',
   certificate: 'Certificate',
   history: 'History',
   historyRecord: 'HistoryRecord',
@@ -222,6 +229,8 @@ const {
 
 const resolvers = {
   Query: {
+    ...materialsQuery,
+
     ...certificatesQuery,
 
     ...questionsAnswersQuery,
@@ -631,6 +640,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...materialsMutation,
+
     ...certificatesMutation,
 
     ...questionsAnswersMutation,
@@ -698,6 +709,16 @@ const resolvers = {
     ...constructorMutation,
 
     ...wishlistMutation,
+  },
+
+  MaterialsBlockResult: {
+    __resolveType: obj => {
+      if (obj.image || obj.text) {
+        return SCHEMA_NAMES.materialsBlock;
+      }
+
+      return 'Error';
+    },
   },
 
   CertificateResult: {

@@ -1,6 +1,11 @@
 const { shield } = require('graphql-shield');
 
 const {
+  materialsPermissionsQuery,
+  materialsPermissionsMutation,
+} = require('./modules/materials-page/materials-page.permissions');
+
+const {
   emailChatQuestionQuery,
 } = require('./modules/email-chat/email-chat.permission');
 
@@ -166,6 +171,7 @@ const {
 const permissions = shield(
   {
     Query: {
+      ...materialsPermissionsQuery,
       ...historyPermissionsQuery,
       ...certificatePermissionsQuery,
       ...userPermissionsQuery,
@@ -197,6 +203,7 @@ const permissions = shield(
       ...wishlistPermissionsQuery,
     },
     Mutation: {
+      ...materialsPermissionsMutation,
       ...questionsAnswersMutation,
       ...productPermissionsMutation,
       ...promoCodeMutation,
