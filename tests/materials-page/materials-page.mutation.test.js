@@ -14,6 +14,8 @@ describe('MaterialsBlocks queries', () => {
     operations = await setupApp();
   });
 
+  afterAll(async () => deleteMaterialsBlock(materialsBlock._id, operations));
+
   it('should add material-about to database', async () => {
     materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
 

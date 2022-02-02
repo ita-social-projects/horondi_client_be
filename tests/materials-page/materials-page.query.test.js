@@ -16,6 +16,10 @@ describe('Materials-about block queries', () => {
     materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
   });
 
+  afterAll(async () => {
+    await deleteMaterialsBlock(materialsBlock._id, operations);
+  });
+
   it('Should get all materials-about blocks', async () => {
     const blocks = await getAllMaterialsBlocks(
       { skip: 0, limit: 0 },
@@ -35,9 +39,5 @@ describe('Materials-about block queries', () => {
       'text',
       newMaterialsBlock.text
     );
-  });
-
-  afterAll(async () => {
-    await deleteMaterialsBlock(materialsBlock._id, operations);
   });
 });
