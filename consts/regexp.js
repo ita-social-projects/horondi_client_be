@@ -5,7 +5,7 @@ const enLanguageRegExp = new RegExp(/^[a-z0-9\s]+$/i);
 const userNameRegExp = /^(?=.{2,30}$)[a-zA-Zа-яА-ЯІЄЇіїє]+(([',. -][a-zA-Zа-яА-ЯІЄЇіїє])?[a-zA-Zа-яА-ЯІЄЇіїє])*$/u;
 const passwordRegExp = /^(?=.*[A-ZА-ЯІЇЄ])(?=.*\d)[a-zA-Zа-яА-ЯіїєІЇЄ\d!@#$%^&*()~¥=_+}{":;'?/>.<,\\`|[\]-]{6,30}$/;
 const zipcodeRegExp = /^\d{5}(?:[-\s]\d{4})?$/;
-const certificateRegExp = /^HOR\d{6}$/i;
+const certificateRegExp = /^HOR\d{8}$/i;
 
 module.exports = {
   emailRegExp,

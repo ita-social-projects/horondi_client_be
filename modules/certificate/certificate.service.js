@@ -1,5 +1,3 @@
-const { randomInt } = require('crypto');
-
 const RuleError = require('../../errors/rule.error');
 const { CertificateModel } = require('./certificate.model');
 const {
@@ -16,6 +14,17 @@ const {
   CERTIFICATE_IS_USED,
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
+
+const generateName = async () => {
+  const firstNamePart = Math.floor(1000 + Math.random() * 9000);
+  const secondNamePart = Math.floor(1000 + Math.random() * 9000);
+  const name = `HOR${firstNamePart}${secondNamePart}`;
+  const candidate = await CertificateModel.findOne({ name });
+  if (candidate) {
+    return generateName();
+  }
+  return name;
+};
 
 class CertificatesService {
   async getAllCertificates(skip, limit, user) {
@@ -67,9 +76,7 @@ class CertificatesService {
   }
 
   async generateCertificate(certificateData, userId, userRole) {
-    const randomNum = randomInt(100000, 999999);
-
-    certificateData.name = `hor${randomNum}`;
+    certificateData.name = await generateName();
 
     if (userRole === USER) {
       certificateData.ownedBy = userId;

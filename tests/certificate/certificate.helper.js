@@ -1,10 +1,10 @@
 const { gql } = require('@apollo/client');
 
-const generateCertificate = async (certificateDada, operations) => {
+const generateCertificate = async (certificateData, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($certificateDada: GenerateCertificateInput!) {
-        generateCertificate(newCertificate: $certificateDada) {
+      mutation($certificateData: GenerateCertificateInput!) {
+        generateCertificate(newCertificate: $certificateData) {
           ... on Certificate {
             _id
             name
@@ -24,14 +24,14 @@ const generateCertificate = async (certificateDada, operations) => {
       }
     `,
     variables: {
-      certificateDada,
+      certificateData,
     },
   });
 
   return result.data.generateCertificate;
 };
 
-const getAllCertificates = async operations => {
+const getAllCertificates = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {

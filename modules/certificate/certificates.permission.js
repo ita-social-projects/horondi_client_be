@@ -6,12 +6,17 @@ const {
   inputDataValidation,
 } = require('../../utils/rules');
 const {
+  certificateInputValidator,
   certificateNameValidator,
 } = require('../../validators/certificate.validator');
 
 const {
   roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts');
+
+const {
+  INPUT_FIELDS: { CERTIFICATE },
+} = require('../../consts/input-fields');
 
 const certificatePermissionsQuery = {
   getCertificateById: hasRoles([ADMIN, SUPERADMIN]),
@@ -20,6 +25,11 @@ const certificatePermissionsQuery = {
 };
 
 const certificatePermissionsMutations = {
+  generateCertificate: inputDataValidation(
+    CERTIFICATE,
+    certificateInputValidator
+  ),
+
   updateCertificate: inputDataValidation('name', certificateNameValidator),
 
   addCertificate: and(

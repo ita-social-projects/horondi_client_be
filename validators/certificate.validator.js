@@ -7,6 +7,21 @@ const {
   CERTIFICATE_NOT_VALID,
 } = require('../error-messages/certificate.messages');
 
+const certificateInputValidator = Joi.object({
+  value: Joi.number()
+    .integer()
+    .min(500)
+    .error(() => ({
+      message: "Certificate value can't be less than 500",
+    }))
+    .required(),
+  email: Joi.string()
+    .email()
+    .error(() => ({
+      message: 'The entered email should match email pattern',
+    })),
+});
+
 const certificateNameValidator = Joi.string()
   .trim()
   .regex(certificateRegExp)
@@ -30,4 +45,5 @@ const certificateDateValidator = Joi.object({
 module.exports = {
   certificateNameValidator,
   certificateDateValidator,
+  certificateInputValidator,
 };

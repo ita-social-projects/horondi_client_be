@@ -76,7 +76,7 @@ const {
 } = require('./modules/currency/currency.graphql');
 const {
   certificateTypes,
-} = require('./modules/certificate/certificate.graphql.js');
+} = require('./modules/certificate/certificate.graphql');
 const {
   commentType,
   commentInput,

@@ -18,12 +18,6 @@ const certificateTypes = `
       count: Int
   }
 
-  input CertificateInput {
-    name: String
-    value: Int
-    isUsed: Boolean
-  }
-
   input GenerateCertificateInput {
     value: Int!
     email: String

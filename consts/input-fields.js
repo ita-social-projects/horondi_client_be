@@ -1,5 +1,6 @@
 const INPUT_FIELDS = {
   USER: 'user',
+  CERTIFICATE: 'newCertificate',
   LOGIN_INPUT: 'loginInput',
   EMAIL: 'email',
   PASSWORD: 'password',

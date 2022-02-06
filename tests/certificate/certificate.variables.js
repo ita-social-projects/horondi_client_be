@@ -11,7 +11,7 @@ const newUser = {
 };
 
 const wrongId = '5fb412d8663cf10bec9faa1a';
-const wrongName = 'Hor646465';
+const wrongName = 'HOR64646556';
 
 module.exports = {
   newCertificateInputData,
