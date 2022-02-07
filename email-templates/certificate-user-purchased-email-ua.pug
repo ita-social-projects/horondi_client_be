@@ -1,0 +1,20 @@
+extends template-en
+block headerText
+    h1.responseTitle Ваш HORONDI Сертифікат
+block subheaderText
+    h1.desktopTitle Ваш HORONDI Сертифікат
+block content
+    div.contentWrapper
+        each item in items
+            p.text Вітаємо! #[br] Ви успішно придбали подарунковий сертифікат №p=`${item.code}` HORONDI на p= `${item.value}` грн.
+                div.continerImg
+                    div.shadow
+                        include ./img/certificate-500-front.svg  
+                    div.shadow
+                        include ./img/certificate-back.svg 
+            p.listHeader #[strong Зверніть увагу!]
+            ol 
+                li Подарунковий сертифікат надає #[strong знижку на будь-яку продукцію Horondi.]
+                li Якщо вартість покупки перевищує доступний баланс подарункового сертифікату, #[strong різницю можна доплатити зручним способом.]
+                li Подарунковий сертифікат #[strong не підлягає поверненню або обміну] на відповідний грошовий еквівалент.
+                li Сертифікат дійсний протягом 365 днів з моменту його купівлі - #[strong p= `${item.dateStart}`] (дата купівлі вашого сертифікату). 
