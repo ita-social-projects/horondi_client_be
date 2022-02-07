@@ -744,7 +744,6 @@ const typeDefs = gql`
   ${userInput}
   ${userUpdateInput}
   ${productInput}
-
   ${commentInput}
   ${commentsSortInput}
   ${replyCommentsSortInput}
@@ -930,6 +929,7 @@ const typeDefs = gql`
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
+    addProductFromConstructor(product: ProductInput!, upload: Upload!): ProductResult
     deleteProduct(ids: [ID!]): ProductResult
     updateProduct(
       id: ID!

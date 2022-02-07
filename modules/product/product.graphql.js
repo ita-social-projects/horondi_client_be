@@ -1,15 +1,15 @@
 const productType = `
   type Product {
     _id: ID!
-    category: Category!
+    category: Category
     model: Model!
     name: [Language]!
-    description: [Language]!
+    description: [Language]
     mainMaterial: ProductMaterialType!
-    innerMaterial: ProductMaterialType!
+    innerMaterial: ProductMaterialType
     bottomMaterial: ProductMaterialType
     backMaterial: ProductMaterialType
-    strapLengthInCm: Int!
+    strapLengthInCm: Int
     images: ProductImages
     closure: Closure
     pattern: Pattern
@@ -54,17 +54,17 @@ const productType = `
 
 const productInput = `
   input ProductInput {
-    category: ID!
+    category: ID
     model: ID!
     name: [LanguageInput]!
-    description: [LanguageInput]!
+    description: [LanguageInput]
     mainMaterial: ProductMaterialsInput!
-    innerMaterial: ProductMaterialsInput!
+    innerMaterial: ProductMaterialsInput
     bottomMaterial: ProductMaterialsInput
     backMaterial: ProductMaterialsInput
-    strapLengthInCm: Int!
+    strapLengthInCm: Int
     pattern: ID!
-    closure: ID!
+    closure: ID
     sizes:[ID]!
     images: [Upload]
     availableCount: Int
