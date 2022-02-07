@@ -84,6 +84,7 @@ const {
 } = require('../../consts/history-obj-keys');
 const {
   finalPriceCalculation,
+  finalPriceCalculationForConstructor,
   finalPriceRecalculation,
 } = require('../../utils/final-price-calculation');
 
@@ -252,7 +253,7 @@ class ProductsService {
     { _id: adminId }
   ) {
     const matchPrimaryInUpload = filesToUpload.filter(
-      item => item.large === productData.images[0].primary.large
+      (item) => item.large === productData.images[0].primary.large
     );
     productData.images = {
       primary: {
@@ -279,7 +280,7 @@ class ProductsService {
         if (!matchPrimaryInUpload.length)
           await uploadService.deleteFiles(
             Object.values(product.images.primary).filter(
-              item => typeof item === 'string'
+              (item) => typeof item === 'string'
             )
           );
         const uploadResult = await uploadService.uploadFiles([primary]);
@@ -291,7 +292,7 @@ class ProductsService {
       productData.images.additional = [];
       const previousImagesLinks = [];
       const newFiles = [];
-      filesToUpload.forEach(e => {
+      filesToUpload.forEach((e) => {
         if (e?.large) {
           previousImagesLinks.push(e);
         } else {
@@ -300,7 +301,7 @@ class ProductsService {
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
-      const additional = imagesResults.map(res => res?.value?.fileNames);
+      const additional = imagesResults.map((res) => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
       productData.images.additional = [
@@ -401,6 +402,28 @@ class ProductsService {
     }
   }
 
+  async addProductFromConstructor(productData, filesToUpload) {
+    if (await this.checkProductExist(productData)) {
+      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
+    }
+
+    const { primary } = await uploadProductImages(filesToUpload);
+    productData.images = { primary };
+
+    productData.basePrice = await calculateBasePrice(productData.basePrice);
+
+    productData.model = await modelService.getModelById(productData.model);
+
+    productData.sizes = await finalPriceCalculationForConstructor(productData);
+
+    const translations = await addTranslations(createTranslations(productData));
+    productData.translationsKey = translations._id;
+
+    const newProduct = await new Product(productData).save();
+
+    return newProduct;
+  }
+
   async deleteProduct(ids, { _id: adminId }) {
     for (const itemId of ids.ids) {
       const product = await Product.findById(itemId)
@@ -415,7 +438,7 @@ class ProductsService {
       const { primary, additional } = images;
       const additionalImagesToDelete =
         typeof additional[0] === 'object'
-          ? additional.map(img => [...Object.values(img)]).flat()
+          ? additional.map((img) => [...Object.values(img)]).flat()
           : [];
 
       const deletedImages = await uploadService.deleteFiles([
@@ -481,8 +504,8 @@ class ProductsService {
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
-        item =>
-          !Object.values(item).filter(image => imagesToDelete.includes(image))
+        (item) =>
+          !Object.values(item).filter((image) => imagesToDelete.includes(image))
             .length
       );
       const updatedProduct = await Product.findByIdAndUpdate(

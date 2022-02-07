@@ -30,6 +30,16 @@ const productsMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
+  addProductFromConstructor: async (_, args) => {
+    try {
+      return await productsService.addProductFromConstructor(
+        args.product,
+        args.upload
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   deleteProduct: async (parent, args, { user }) => {
     try {
       return await productsService.deleteProduct(args, user);
