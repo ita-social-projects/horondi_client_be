@@ -1,4 +1,6 @@
 const newMaterialsBlock = {
+  title: 'Title',
+  type: 'Bottom',
   text: [
     { lang: 'en', value: 'English' },
     { lang: 'ua', value: 'Українська' },

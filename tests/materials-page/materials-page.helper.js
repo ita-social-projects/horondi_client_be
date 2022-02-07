@@ -12,6 +12,8 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
               value
             }
             image
+            title
+            type
           }
         }
       }
@@ -31,6 +33,8 @@ const getAllMaterialsBlocks = async ({ skip, limit }, operations) => {
           items {
             _id
             image
+            title
+            type
             text {
               lang
               value
@@ -56,6 +60,8 @@ const getMaterialsBlockById = async (id, operations) => {
         getMaterialsBlockById(id: $id) {
           ... on MaterialsBlock {
             image
+            title
+            type
             text {
               lang
               value
@@ -81,6 +87,8 @@ const deleteMaterialsBlock = async (id, operations) =>
               value
             }
             image
+            title
+            type
           }
         }
       }
