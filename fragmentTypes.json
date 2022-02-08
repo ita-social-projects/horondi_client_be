@@ -3,6 +3,18 @@
     "types": [
       {
         "kind": "UNION",
+        "name": "MaterialsBlockResult",
+        "possibleTypes": [
+          {
+            "name": "MaterialsBlock"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
         "name": "CategoryResult",
         "possibleTypes": [
           {
@@ -25,7 +37,7 @@
           }
         ]
       },
-       {
+      {
         "kind": "UNION",
         "name": "CertificateResult",
         "possibleTypes": [
@@ -37,7 +49,7 @@
           }
         ]
       },
-         {
+      {
         "kind": "UNION",
         "name": "CertificatePaginatedResult",
         "possibleTypes": [

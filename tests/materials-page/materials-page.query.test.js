@@ -4,6 +4,7 @@ const {
   addMaterialsBlock,
   deleteMaterialsBlock,
   getMaterialsBlockById,
+  getMaterialsBlocksByType,
 } = require('./materials-page.helper');
 const { newMaterialsBlock } = require('./materials-page.variables');
 
@@ -27,6 +28,33 @@ describe('Materials-about block queries', () => {
     );
 
     expect(blocks.items.length).toBe(1);
+  });
+
+  it('Should get materials-about blocks by type', async () => {
+    const blocks = await getMaterialsBlocksByType(
+      { type: 'bottom', limit: 0, skip: 0 },
+      operations
+    );
+
+    expect(blocks.items.length).toBe(1);
+  });
+
+  it('Should do not get materials-about blocks filtering by type', async () => {
+    const blocks = await getMaterialsBlocksByType(
+      { type: 'main', limit: 0, skip: 0 },
+      operations
+    );
+
+    expect(blocks.items.length).toBe(0);
+  });
+
+  it('Should do not get materials-about blocks by search text', async () => {
+    const blocks = await getMaterialsBlocksByType(
+      { type: 'bottom', limit: 0, skip: 0, filter: { search: 'heading' } },
+      operations
+    );
+
+    expect(blocks.items.length).toBe(0);
   });
 
   it('Should get selected materials-about block', async () => {

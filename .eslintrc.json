@@ -59,14 +59,25 @@
                 "destructuring": "all"
             }
         ],
-        "arrow-body-style": [2, "as-needed"],
+        "arrow-body-style": [
+            2,
+            "as-needed"
+        ],
         "no-console": [
             2,
             {
-                "allow": ["warn", "error"]
+                "allow": [
+                    "warn",
+                    "error"
+                ]
             }
         ],
-        "no-unused-vars": [2, { "argsIgnorePattern": "_" }],
+        "no-unused-vars": [
+            2,
+            {
+                "argsIgnorePattern": "_"
+            }
+        ],
         "newline-before-return": 2,
         "no-unneeded-ternary": 2,
         "prefer-arrow-callback": 1,
@@ -74,7 +85,11 @@
         "no-underscore-dangle": [
             2,
             {
-                "allow": ["_id", "_ID", "_doc"]
+                "allow": [
+                    "_id",
+                    "_ID",
+                    "_doc"
+                ]
             }
         ],
         "no-return-await": 1,
@@ -82,7 +97,10 @@
         "no-eval": 2,
         "no-negated-condition": 1,
         "no-var": 2,
-        "operator-assignment": [1, "always"],
+        "operator-assignment": [
+            1,
+            "always"
+        ],
         "yoda": 2,
         "max-depth": [
             1,
@@ -90,9 +108,17 @@
                 "max": 4
             }
         ],
-        "no-else-return": [2, { "allowElseIf": true }],
+        "no-else-return": [
+            2,
+            {
+                "allowElseIf": true
+            }
+        ],
         "no-shadow": 2,
-        "eqeqeq": [2, "always"],
+        "eqeqeq": [
+            2,
+            "always"
+        ],
         "curly": 2,
         "prefer-destructuring": [
             1,
@@ -108,9 +134,14 @@
             }
         ],
         "no-extend-native": 2,
-        "linebreak-style": [1, "windows"],
-        "arrow-parens": [1, "always"],
-        "lines-between-class-members": [1, "always"],
+        "linebreak-style": [
+            1,
+            "windows"
+        ],
+        "lines-between-class-members": [
+            1,
+            "always"
+        ],
         "max-len": [
             2,
             {

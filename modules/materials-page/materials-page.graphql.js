@@ -21,6 +21,10 @@ input MaterialsBlockInput {
     type: String
     text: [LanguageInput]
   }
+
+    input MaterialsFilterInput{
+    search:String
+  }
 `;
 
 module.exports = { MaterialsBlock, MaterialsBlockInput };

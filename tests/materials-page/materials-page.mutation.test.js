@@ -1,9 +1,13 @@
-const { newMaterialsBlock } = require('./materials-page.variables');
+const {
+  newMaterialsBlock,
+  updatedMaterialsBlock,
+} = require('./materials-page.variables');
 const { setupApp } = require('../helper-functions');
 
 const {
   addMaterialsBlock,
   deleteMaterialsBlock,
+  updateMaterialsBlock,
 } = require('./materials-page.helper');
 
 let materialsBlock;
@@ -20,6 +24,16 @@ describe('MaterialsBlocks queries', () => {
     materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
 
     expect(materialsBlock.image).toEqual('url');
+  });
+
+  it('Should update material-about block', async () => {
+    materialsBlock = await updateMaterialsBlock(
+      materialsBlock._id,
+      updatedMaterialsBlock,
+      operations
+    );
+
+    expect(materialsBlock.type).toEqual('main');
   });
 
   it('delete material-about', async () => {
