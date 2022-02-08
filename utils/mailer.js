@@ -34,7 +34,7 @@ class Mailer {
       this.opts.redirectUri
     );
     oAuth2Client.setCredentials({ refresh_token: this.opts.refreshToken });
-    console.o;
+
     return oAuth2Client.getAccessToken().catch((error) => {
       console.error('oAuth2Client:', error);
     });
