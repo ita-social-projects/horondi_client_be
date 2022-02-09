@@ -77,7 +77,8 @@ class CertificatesService {
   }
 
   async generateCertificate(certificateData, userId, userRole) {
-    certificateData.name = await generateName();
+    const certificatesArr = [];
+    const { count } = certificateData;
 
     if (userRole === USER) {
       certificateData.ownedBy = userId;
@@ -85,7 +86,14 @@ class CertificatesService {
       certificateData.createdBy = userId;
     }
 
-    return CertificateModel(certificateData).save();
+    for (let i = 0; i < count; i++) {
+      certificateData.name = await generateName();
+      certificatesArr.push({ ...certificateData });
+    }
+
+    const certificates = await CertificateModel.insertMany(certificatesArr);
+
+    return { certificates };
   }
 
   async addCertificate(name, userId, userEmail) {

@@ -18,15 +18,26 @@ const certificateTypes = `
       count: Int
   }
 
+  type Certificates {
+    certificates: [Certificate]
+    count: Int
+    paymentUrl: String,
+    paymentToken: String
+    paymentStatus: String
+    certificatesOrderId: String
+  }
+
   input GenerateCertificateInput {
     value: Int!
     email: String
+    count: Int!
     isActivated: Boolean
     dateStart: Date
     dateEnd: Date
   }
 
   union CertificateResult = Certificate | Error 
+  union CertificatesResult = Certificates | Error
   union CertificatePaginatedResult = PaginatedCertificate | Error
 
   extend type Query {
@@ -37,7 +48,7 @@ const certificateTypes = `
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
-    generateCertificate (newCertificate: GenerateCertificateInput!): CertificateResult
+    generateCertificate (newCertificate: GenerateCertificateInput!): CertificatesResult
     updateCertificate(name: String!): CertificateResult
   }
 `;

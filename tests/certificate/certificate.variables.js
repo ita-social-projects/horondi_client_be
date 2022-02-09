@@ -1,6 +1,7 @@
 const newCertificateInputData = {
   value: 1000,
   email: 'test@test.com',
+  count: 1,
 };
 
 const newUser = {

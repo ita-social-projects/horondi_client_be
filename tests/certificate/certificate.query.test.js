@@ -22,8 +22,8 @@ describe('Test certificate Queries', () => {
       newCertificateInputData,
       operations
     );
-    certificateId = certificateData._id;
-    certificateName = certificateData.name;
+    certificateId = certificateData.certificates[0]._id;
+    certificateName = certificateData.certificates[0].name;
   });
 
   it('should check unique field in one of certificates in list', async () => {

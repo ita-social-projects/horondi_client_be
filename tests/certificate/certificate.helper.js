@@ -5,15 +5,17 @@ const generateCertificate = async (certificateData, operations) => {
     mutation: gql`
       mutation($certificateData: GenerateCertificateInput!) {
         generateCertificate(newCertificate: $certificateData) {
-          ... on Certificate {
-            _id
-            name
-            isExpired
-            dateStart
-            email
-            isUsed
-            ownedBy {
+          ... on Certificates {
+            certificates {
               _id
+              name
+              isExpired
+              dateStart
+              email
+              isUsed
+              ownedBy {
+                _id
+              }
             }
           }
           ... on Error {

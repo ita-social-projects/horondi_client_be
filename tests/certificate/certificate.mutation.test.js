@@ -30,11 +30,11 @@ describe('Test mutation methods Admin', () => {
       operations
     );
 
-    certificateId = result._id;
-    certificateName = result.name;
-    isUsed = result.isUsed;
+    certificateId = result.certificates[0]._id;
+    certificateName = result.certificates[0].name;
+    isUsed = result.certificates[0].isUsed;
 
-    expect(result).toHaveProperty('name');
+    expect(result.certificates[0]).toHaveProperty('name');
   });
 
   it('should change `isUsed` field to true with updateCertificate', async () => {

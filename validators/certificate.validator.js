@@ -11,8 +11,9 @@ const certificateInputValidator = Joi.object({
   value: Joi.number()
     .integer()
     .min(500)
+    .valid(500, 1000, 1500)
     .error(() => ({
-      message: "Certificate value can't be less than 500",
+      message: 'Certificate value should be 500, 1000 or 1500',
     }))
     .required(),
   email: Joi.string()
@@ -20,6 +21,15 @@ const certificateInputValidator = Joi.object({
     .error(() => ({
       message: 'The entered email should match email pattern',
     })),
+  count: Joi.number()
+    .error(() => ({
+      message: 'Count must be a number',
+    }))
+    .min(1)
+    .error(() => ({
+      message: 'Count should be greater than 0',
+    }))
+    .required(),
 });
 
 const certificateNameValidator = Joi.string()
