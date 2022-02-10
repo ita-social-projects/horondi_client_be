@@ -40,7 +40,9 @@ class CertificatesService {
       .skip(skip)
       .exec();
 
-    const count = items.length;
+    const count = await CertificateModel.find()
+      .countDocuments()
+      .exec();
 
     return {
       items,
