@@ -308,51 +308,47 @@ const resolvers = {
     ...wishlistQuery,
   },
   ProductsFilter: {
-    categories: (parent) =>
-      parent.categories.map((category) =>
+    categories: parent =>
+      parent.categories.map(category =>
         categoryService.getCategoryById(category)
       ),
-    models: (parent) =>
-      parent.models.map((model) => modelService.getModelById(model)),
-    patterns: (parent) =>
-      parent.patterns.map((pattern) => patternService.getPatternById(pattern)),
-    closures: (parent) =>
-      parent.closures.map((closure) => closuresService.getClosureById(closure)),
-    mainMaterial: (parent) =>
-      parent.mainMaterial.map((material) =>
+    models: parent =>
+      parent.models.map(model => modelService.getModelById(model)),
+    patterns: parent =>
+      parent.patterns.map(pattern => patternService.getPatternById(pattern)),
+    closures: parent =>
+      parent.closures.map(closure => closuresService.getClosureById(closure)),
+    mainMaterial: parent =>
+      parent.mainMaterial.map(material =>
         materialService.getMaterialById(material)
       ),
-    mainMaterialColor: (parent) =>
-      parent.mainMaterialColor.map((color) => colorService.getColorById(color)),
-    innerMaterial: (parent) =>
-      parent.innerMaterial.map((material) =>
+    mainMaterialColor: parent =>
+      parent.mainMaterialColor.map(color => colorService.getColorById(color)),
+    innerMaterial: parent =>
+      parent.innerMaterial.map(material =>
         materialService.getMaterialById(material)
       ),
-    innerMaterialColor: (parent) =>
-      parent.innerMaterialColor.map((color) =>
-        colorService.getColorById(color)
-      ),
-    bottomMaterial: (parent) =>
-      parent.bottomMaterial.map((material) =>
+    innerMaterialColor: parent =>
+      parent.innerMaterialColor.map(color => colorService.getColorById(color)),
+    bottomMaterial: parent =>
+      parent.bottomMaterial.map(material =>
         materialService.getMaterialById(material)
       ),
-    bottomMaterialColor: (parent) =>
-      parent.bottomMaterialColor.map((color) =>
-        colorService.getColorById(color)
-      ),
+    bottomMaterialColor: parent =>
+      parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
   },
 
   Size: {
-    model: (parent) => modelService.getModelById(parent.modelId),
+    model: parent => modelService.getModelById(parent.modelId),
   },
 
   Comment: {
-    product: (parent) => productsService.getProductById(parent.product),
-    user: (parent) => userService.getUser(parent.user),
+    product: parent => productsService.getProductById(parent.product),
+    user: parent => userService.getUser(parent.user),
     replyCommentsCount: (parent, _, { user }) => {
       if (user?.role === 'user') {
         return parent.replyComments.filter(
-          (item) =>
+          item =>
             item.answerer.toString() === user._id.toString() ||
             item.showReplyComment === true
         ).length;
@@ -360,12 +356,11 @@ const resolvers = {
       if (user?.role === 'admin' || user?.role === 'superadmin') {
         return parent.replyComments.length;
       }
-      return parent.replyComments.filter(
-        (item) => item.showReplyComment === true
-      ).length;
+      return parent.replyComments.filter(item => item.showReplyComment === true)
+        .length;
     },
-    replyComments: (parent) =>
-      parent.replyComments.map((item) => ({
+    replyComments: parent =>
+      parent.replyComments.map(item => ({
         _id: item._id,
         replyText: item.replyText,
         answerer: userService.getUser(item.answerer),
@@ -377,38 +372,38 @@ const resolvers = {
       })),
   },
   Product: {
-    category: (parent) => categoryService.getCategoryById(parent.category),
-    model: (parent) => modelService.getModelById(parent.model),
-    mainMaterial: (parent) => ({
+    category: parent => categoryService.getCategoryById(parent.category),
+    model: parent => modelService.getModelById(parent.model),
+    mainMaterial: parent => ({
       material: () =>
         materialService.getMaterialById(parent.mainMaterial.material),
       color: () => colorService.getColorById(parent.mainMaterial.color),
     }),
-    innerMaterial: (parent) => ({
+    innerMaterial: parent => ({
       material: () =>
         materialService.getMaterialById(parent.innerMaterial.material),
       color: () => colorService.getColorById(parent.innerMaterial.color),
     }),
-    bottomMaterial: (parent) => ({
+    bottomMaterial: parent => ({
       material: () =>
         materialService.getMaterialById(parent.bottomMaterial.material),
       color: () => colorService.getColorById(parent.bottomMaterial.color),
     }),
-    pattern: (parent) => patternService.getPatternById(parent.pattern),
-    closure: (parent) => closuresService.getClosureById(parent.closure),
-    sizes: (parent) =>
-      parent.sizes.map((size) => ({
+    pattern: parent => patternService.getPatternById(parent.pattern),
+    closure: parent => closuresService.getClosureById(parent.closure),
+    sizes: parent =>
+      parent.sizes.map(size => ({
         size: sizeService.getSizeById(size.size),
         price: size.price,
       })),
   },
   Wishlist: {
-    products: (parent) =>
-      parent.products.map((id) => productsService.getProductById(id)),
+    products: parent =>
+      parent.products.map(id => productsService.getProductById(id)),
   },
   Order: {
-    items: (parent) =>
-      parent.items.map((item) => {
+    items: parent =>
+      parent.items.map(item => {
         if (item.isFromConstructor) {
           return {
             constructorBottom: constructorServices.getConstructorElementById(
@@ -449,62 +444,61 @@ const resolvers = {
       }),
   },
   Pattern: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       handmade: parent.features.handmade,
     }),
   },
   Model: {
-    category: (parent) => categoryService.getCategoryById(parent.category),
-    sizes: (parent) =>
-      parent.sizes.map((size) => sizeService.getSizeById(size)),
-    eligibleOptions: (parent) => ({
+    category: parent => categoryService.getCategoryById(parent.category),
+    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+    eligibleOptions: parent => ({
       constructorBottom: () =>
-        parent.eligibleOptions.constructorBottom.map((el) =>
+        parent.eligibleOptions.constructorBottom.map(el =>
           constructorServices.getConstructorElementById(
             el,
             constructorBottomModel
           )
         ),
       constructorBasic: () =>
-        parent.eligibleOptions.constructorBasic.map((el) =>
+        parent.eligibleOptions.constructorBasic.map(el =>
           constructorServices.getConstructorElementById(
             el,
             constructorBasicModel
           )
         ),
       constructorFrontPocket: () =>
-        parent.eligibleOptions.constructorFrontPocket.map((el) =>
+        parent.eligibleOptions.constructorFrontPocket.map(el =>
           constructorServices.getConstructorElementById(
             el,
             constructorFrontPocketModel
           )
         ),
       constructorPattern: () =>
-        parent.eligibleOptions.constructorPattern.map((el) =>
+        parent.eligibleOptions.constructorPattern.map(el =>
           patternService.getPatternById(el)
         ),
       constructorPocket: () =>
         constructorPocketHelper(parent.eligibleOptions.constructorPocket),
       constructorBack: () =>
-        parent.eligibleOptions.constructorBack.map((el) =>
+        parent.eligibleOptions.constructorBack.map(el =>
           backService.getBackById(el)
         ),
       constrBottom: () =>
-        parent.eligibleOptions.constrBottom.map((el) =>
+        parent.eligibleOptions.constrBottom.map(el =>
           bottomService.getBottomById(el)
         ),
       constructorClosure: () =>
-        parent.eligibleOptions.constructorClosure.map((el) =>
+        parent.eligibleOptions.constructorClosure.map(el =>
           closuresService.getClosureById(el)
         ),
       constructorStrap: () =>
-        parent.eligibleOptions.constructorStrap.map((el) =>
+        parent.eligibleOptions.constructorStrap.map(el =>
           strapService.getStrapById(el)
         ),
     }),
-    appliedOptions: (parent) => ({
+    appliedOptions: parent => ({
       constructorBottom: constructorServices.getConstructorElementById(
         parent.appliedOptions.constructorBottom,
         constructorBottomModel
@@ -534,33 +528,33 @@ const resolvers = {
       constructorStrap: () =>
         strapService.getStrapById(parent.appliedOptions.constructorStrap),
     }),
-    restrictions: (parent) =>
+    restrictions: parent =>
       restrictionService.getRestrictionById(parent.restriction),
   },
   Closure: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
   ConstructorBottom: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
   ConstructorBasic: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
   ConstructorFrontPocket: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
       pattern: () => patternService.getPatternById(parent.features.pattern),
@@ -568,14 +562,14 @@ const resolvers = {
   },
 
   UserRate: {
-    user: (parent) => userService.getUserByFieldOrThrow('_id', parent.user),
+    user: parent => userService.getUserByFieldOrThrow('_id', parent.user),
   },
   Material: {
-    colors: (parent) =>
-      parent.colors.map((color) => colorService.getColorById(color)),
+    colors: parent =>
+      parent.colors.map(color => colorService.getColorById(color)),
   },
   EmailQuestion: {
-    answer: (parent) => {
+    answer: parent => {
       if (parent.answer.date) {
         return parent.answer;
       }
@@ -583,55 +577,53 @@ const resolvers = {
     },
   },
   EmailAnswer: {
-    admin: (parent) => userService.getUserByFieldOrThrow('_id', parent.admin),
+    admin: parent => userService.getUserByFieldOrThrow('_id', parent.admin),
   },
   Pocket: {
-    positions: (parent) =>
-      parent.positions.map((position) =>
+    positions: parent =>
+      parent.positions.map(position =>
         positionService.getPositionById(position)
       ),
   },
   Back: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
   Bottom: {
-    features: (parent) => ({
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
   Strap: {
-    model: (parent) => modelService.getModelById(parent.model),
-    features: (parent) => ({
+    model: parent => modelService.getModelById(parent.model),
+    features: parent => ({
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
   Basics: {
-    features: (parent) => ({
+    features: parent => ({
       material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
 
   Constructor: {
-    model: (parent) => modelService.getModelById(parent.model),
-    basics: (parent) =>
-      parent.basics.map((id) => basicsService.getBasicById(id)),
-    bottoms: (parent) =>
-      parent.bottoms.map((id) => bottomService.getBottomById(id)),
-    patterns: (parent) =>
-      parent.patterns.map((id) => patternService.getPatternById(id)),
-    backs: (parent) => parent.backs.map((id) => backService.getBackById(id)),
-    straps: (parent) =>
-      parent.straps.map((id) => strapService.getStrapById(id)),
-    closures: (parent) =>
-      parent.closures.map((id) => closuresService.getClosureById(id)),
-    pocketsWithRestrictions: (parent) =>
-      parent.pocketsWithRestrictions.map((item) => ({
+    model: parent => modelService.getModelById(parent.model),
+    basics: parent => parent.basics.map(id => basicsService.getBasicById(id)),
+    bottoms: parent =>
+      parent.bottoms.map(id => bottomService.getBottomById(id)),
+    patterns: parent =>
+      parent.patterns.map(id => patternService.getPatternById(id)),
+    backs: parent => parent.backs.map(id => backService.getBackById(id)),
+    straps: parent => parent.straps.map(id => strapService.getStrapById(id)),
+    closures: parent =>
+      parent.closures.map(id => closuresService.getClosureById(id)),
+    pocketsWithRestrictions: parent =>
+      parent.pocketsWithRestrictions.map(item => ({
         currentPocketWithPosition: {
           pocket: pocketService.getPocketById(
             item.currentPocketWithPosition.pocket
@@ -641,7 +633,7 @@ const resolvers = {
           ),
         },
         otherPocketsWithAvailablePositions: item.otherPocketsWithAvailablePositions.map(
-          (el) => ({
+          el => ({
             pocket: pocketService.getPocketById(el.pocket),
             position: positionService.getPositionById(el.position),
           })
@@ -732,23 +724,23 @@ const resolvers = {
   },
 
   CertificateResult: {
-    __resolveType: (obj) => (obj.name ? SCHEMA_NAMES.certificate : 'Error'),
+    __resolveType: obj => (obj.name ? SCHEMA_NAMES.certificate : 'Error'),
   },
 
   CertificatesResult: {
-    __resolveType: (obj) =>
+    __resolveType: obj =>
       obj.certificates || obj.paymentToken
         ? SCHEMA_NAMES.certificates
         : 'Error',
   },
 
   CertificatePaginatedResult: {
-    __resolveType: (obj) =>
+    __resolveType: obj =>
       obj.count ? SCHEMA_NAMES.paginatedCertificate : 'Error',
   },
 
   PromoCodeResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.code) {
         return SCHEMA_NAMES.promoCode;
       }
@@ -758,7 +750,7 @@ const resolvers = {
   },
 
   HistoryResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.history;
       }
@@ -766,7 +758,7 @@ const resolvers = {
     },
   },
   HistoryRecordResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.action) {
         return SCHEMA_NAMES.historyRecord;
       }
@@ -774,7 +766,7 @@ const resolvers = {
     },
   },
   TokenResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.token || obj.accessToken || obj.refreshToken) {
         return SCHEMA_NAMES.token;
       }
@@ -782,7 +774,7 @@ const resolvers = {
     },
   },
   CategoryResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.category;
       }
@@ -790,7 +782,7 @@ const resolvers = {
     },
   },
   PaginatedProductsResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedProducts;
       }
@@ -798,7 +790,7 @@ const resolvers = {
     },
   },
   PaginatedCommentsResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedComments;
       }
@@ -806,7 +798,7 @@ const resolvers = {
     },
   },
   CurrencyResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.lastUpdatedDate) {
         return SCHEMA_NAMES.currency;
       }
@@ -814,7 +806,7 @@ const resolvers = {
     },
   },
   NewsResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.news;
       }
@@ -822,7 +814,7 @@ const resolvers = {
     },
   },
   MaterialResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.material;
       }
@@ -831,7 +823,7 @@ const resolvers = {
   },
 
   PatternResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.pattern;
       }
@@ -840,7 +832,7 @@ const resolvers = {
   },
 
   PaginatedPatterns: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPatterns;
       }
@@ -849,7 +841,7 @@ const resolvers = {
   },
 
   ProductResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.product;
       }
@@ -857,7 +849,7 @@ const resolvers = {
     },
   },
   ConstructorBottomResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructorBottom;
       }
@@ -865,7 +857,7 @@ const resolvers = {
     },
   },
   CommentResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.product) {
         return SCHEMA_NAMES.comment;
       }
@@ -873,7 +865,7 @@ const resolvers = {
     },
   },
   BusinessTextResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.businessText;
       }
@@ -881,7 +873,7 @@ const resolvers = {
     },
   },
   LogicalResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.isSuccess) {
         return SCHEMA_NAMES.successfulResponse;
       }
@@ -889,7 +881,7 @@ const resolvers = {
     },
   },
   ModelResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.model;
       }
@@ -897,7 +889,7 @@ const resolvers = {
     },
   },
   RestrictionResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.compareByExpression) {
         return SCHEMA_NAMES.restriction;
       }
@@ -905,7 +897,7 @@ const resolvers = {
     },
   },
   ContactResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
       }
@@ -913,7 +905,7 @@ const resolvers = {
     },
   },
   OrderResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.status) {
         return SCHEMA_NAMES.order;
       }
@@ -921,7 +913,7 @@ const resolvers = {
     },
   },
   UserResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.email) {
         return SCHEMA_NAMES.user;
       }
@@ -929,7 +921,7 @@ const resolvers = {
     },
   },
   EmailQuestionResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
       }
@@ -937,7 +929,7 @@ const resolvers = {
     },
   },
   HomepageImagesResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.images) {
         return SCHEMA_NAMES.homePageImages;
       }
@@ -945,7 +937,7 @@ const resolvers = {
     },
   },
   HomePageSlideResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.title) {
         return SCHEMA_NAMES.homePageSlide;
       }
@@ -953,7 +945,7 @@ const resolvers = {
     },
   },
   ClosureResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.closure;
       }
@@ -961,7 +953,7 @@ const resolvers = {
     },
   },
   SizeResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.size;
       }
@@ -969,7 +961,7 @@ const resolvers = {
     },
   },
   ColorResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.colorHex) {
         return SCHEMA_NAMES.color;
       }
@@ -977,7 +969,7 @@ const resolvers = {
     },
   },
   ColorDeletingResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.colorHex) {
         return SCHEMA_NAMES.color;
       }
@@ -989,7 +981,7 @@ const resolvers = {
   },
 
   ConstructorBasicResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructorBasic;
       }
@@ -998,7 +990,7 @@ const resolvers = {
   },
 
   ConstructorFrontPocketResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructorFrontPocket;
       }
@@ -1007,7 +999,7 @@ const resolvers = {
   },
 
   PocketResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.pocket;
       }
@@ -1016,7 +1008,7 @@ const resolvers = {
   },
 
   PaginatedPockets: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPockets;
       }
@@ -1025,7 +1017,7 @@ const resolvers = {
   },
 
   BackResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.back;
       }
@@ -1034,7 +1026,7 @@ const resolvers = {
   },
 
   PaginatedBacks: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBacks;
       }
@@ -1043,7 +1035,7 @@ const resolvers = {
   },
 
   BottomResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.bottom;
       }
@@ -1052,7 +1044,7 @@ const resolvers = {
   },
 
   PaginatedBottoms: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBottoms;
       }
@@ -1061,7 +1053,7 @@ const resolvers = {
   },
 
   StrapResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.strap;
       }
@@ -1070,7 +1062,7 @@ const resolvers = {
   },
 
   PaginatedStraps: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedStraps;
       }
@@ -1079,7 +1071,7 @@ const resolvers = {
   },
 
   PositionResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.position;
       }
@@ -1088,7 +1080,7 @@ const resolvers = {
   },
 
   PaginatedPositions: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPositions;
       }
@@ -1097,7 +1089,7 @@ const resolvers = {
   },
 
   BasicsResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.basics;
       }
@@ -1106,7 +1098,7 @@ const resolvers = {
   },
 
   PaginatedBasics: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBasics;
       }
@@ -1115,7 +1107,7 @@ const resolvers = {
   },
 
   ConstructorResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.name) {
         return SCHEMA_NAMES.constructor;
       }
@@ -1124,7 +1116,7 @@ const resolvers = {
   },
 
   WishlistResult: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj._id) {
         return SCHEMA_NAMES.wishlist;
       }
@@ -1133,7 +1125,7 @@ const resolvers = {
   },
 
   PaginatedConstructors: {
-    __resolveType: (obj) => {
+    __resolveType: obj => {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedConstructors;
       }
