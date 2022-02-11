@@ -521,7 +521,7 @@ class UserService extends FilterHelper {
         ],
       });
 
-      new Wishlist({ user_id: user._id, products: [] }).save();
+      await new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: dataUser.email,
@@ -549,7 +549,7 @@ class UserService extends FilterHelper {
         ],
       });
 
-      new Wishlist({ user_id: user._id, products: [] }).save();
+      await new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: data.email,
@@ -613,7 +613,7 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    new Wishlist({ user_id: user._id, products: [] }).save();
+    await new Wishlist({ user_id: user._id, products: [] }).save();
 
     jwtClient.setData({ userId: savedUser._id });
     const accessToken = jwtClient.generateAccessToken(
