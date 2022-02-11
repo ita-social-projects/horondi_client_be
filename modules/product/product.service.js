@@ -84,6 +84,7 @@ const {
 } = require('../../consts/history-obj-keys');
 const {
   finalPriceCalculation,
+  finalPriceCalculationForConstructor,
   finalPriceRecalculation,
 } = require('../../utils/final-price-calculation');
 
@@ -252,7 +253,7 @@ class ProductsService {
     { _id: adminId }
   ) {
     const matchPrimaryInUpload = filesToUpload.filter(
-      item => item.large === productData.images[0].primary.large
+      (item) => item.large === productData.images[0].primary.large
     );
     productData.images = {
       primary: {
@@ -279,7 +280,7 @@ class ProductsService {
         if (!matchPrimaryInUpload.length)
           await uploadService.deleteFiles(
             Object.values(product.images.primary).filter(
-              item => typeof item === 'string'
+              (item) => typeof item === 'string'
             )
           );
         const uploadResult = await uploadService.uploadFiles([primary]);
@@ -291,7 +292,7 @@ class ProductsService {
       productData.images.additional = [];
       const previousImagesLinks = [];
       const newFiles = [];
-      filesToUpload.forEach(e => {
+      filesToUpload.forEach((e) => {
         if (e?.large) {
           previousImagesLinks.push(e);
         } else {
@@ -300,7 +301,7 @@ class ProductsService {
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
-      const additional = imagesResults.map(res => res?.value?.fileNames);
+      const additional = imagesResults.map((res) => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
       productData.images.additional = [
@@ -401,63 +402,87 @@ class ProductsService {
     }
   }
 
-  async deleteProduct(id, { _id: adminId }) {
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
-
-    if (!product) {
-      throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+  async addProductFromConstructor(productData, filesToUpload) {
+    if (await this.checkProductExist(productData)) {
+      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    const { images } = product;
-    const { primary, additional } = images;
-    const additionalImagesToDelete =
-      typeof additional[0] === 'object'
-        ? additional.map(img => [...Object.values(img)]).flat()
-        : [];
+    const { primary } = await uploadProductImages(filesToUpload);
+    productData.images = { primary };
 
-    const deletedImages = await uploadService.deleteFiles([
-      ...Object.values(primary),
-      ...additionalImagesToDelete,
-    ]);
+    productData.basePrice = await calculateBasePrice(productData.basePrice);
 
-    if (await Promise.allSettled(deletedImages)) {
-      const historyEvent = {
-        action: DELETE_EVENT,
-        historyName: PRODUCT_EVENT,
-      };
-      const historyRecord = generateHistoryObject(
-        historyEvent,
-        product.model,
-        product.name[UA].value,
-        product._id,
-        generateHistoryChangesData(product, [
-          SIZES,
-          PURCHASED_COUNT,
-          AVAILABLE_COUNT,
-          CATEGORY,
-          MODEL,
-          NAME,
-          DESCRIPTION,
-          MAIN_MATERIAL,
-          INNER_MATERIAL,
-          BOTTOM_MATERIAL,
-          STRAP_LENGTH_IN_CM,
-          PATTERN,
-          CLOSURE,
-          AVAILABLE,
-          IS_HOT_ITEM,
-        ]),
-        [],
-        adminId
-      );
+    productData.model = await modelService.getModelById(productData.model);
 
-      await deleteTranslations(product.translationsKey);
+    productData.sizes = await finalPriceCalculationForConstructor(productData);
 
-      await addHistoryRecord(historyRecord);
+    const translations = await addTranslations(createTranslations(productData));
+    productData.translationsKey = translations._id;
 
-      return Product.findByIdAndDelete(id);
+    const newProduct = await new Product(productData).save();
+
+    return newProduct;
+  }
+
+  async deleteProduct(ids, { _id: adminId }) {
+    for (const itemId of ids.ids) {
+      const product = await Product.findById(itemId)
+        .lean()
+        .exec();
+
+      if (!product) {
+        throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
+      }
+
+      const { images } = product;
+      const { primary, additional } = images;
+      const additionalImagesToDelete =
+        typeof additional[0] === 'object'
+          ? additional.map((img) => [...Object.values(img)]).flat()
+          : [];
+
+      const deletedImages = await uploadService.deleteFiles([
+        ...Object.values(primary),
+        ...additionalImagesToDelete,
+      ]);
+
+      if (await Promise.allSettled(deletedImages)) {
+        const historyEvent = {
+          action: DELETE_EVENT,
+          historyName: PRODUCT_EVENT,
+        };
+        const historyRecord = generateHistoryObject(
+          historyEvent,
+          product.model,
+          product.name[UA].value,
+          product._id,
+          generateHistoryChangesData(product, [
+            SIZES,
+            PURCHASED_COUNT,
+            AVAILABLE_COUNT,
+            CATEGORY,
+            MODEL,
+            NAME,
+            DESCRIPTION,
+            MAIN_MATERIAL,
+            INNER_MATERIAL,
+            BOTTOM_MATERIAL,
+            STRAP_LENGTH_IN_CM,
+            PATTERN,
+            CLOSURE,
+            AVAILABLE,
+            IS_HOT_ITEM,
+          ]),
+          [],
+          adminId
+        );
+
+        await deleteTranslations(product.translationsKey);
+
+        await addHistoryRecord(historyRecord);
+
+        return Product.findByIdAndDelete(itemId);
+      }
     }
   }
 
@@ -479,8 +504,8 @@ class ProductsService {
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
-        item =>
-          !Object.values(item).filter(image => imagesToDelete.includes(image))
+        (item) =>
+          !Object.values(item).filter((image) => imagesToDelete.includes(image))
             .length
       );
       const updatedProduct = await Product.findByIdAndUpdate(

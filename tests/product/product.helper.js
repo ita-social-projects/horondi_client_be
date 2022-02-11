@@ -194,11 +194,11 @@ const getProductById = async (id, operations) =>
       id,
     },
   });
-const deleteProduct = async (id, operations) =>
+const deleteProduct = async (ids, operations) =>
   await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
-        deleteProduct(id: $id) {
+      mutation($ids: [ID!]) {
+        deleteProduct(ids: $ids) {
           ... on Product {
             _id
           }
@@ -209,7 +209,7 @@ const deleteProduct = async (id, operations) =>
       }
     `,
     variables: {
-      id,
+      ids,
     },
   });
 const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>

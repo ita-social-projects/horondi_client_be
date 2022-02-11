@@ -1,15 +1,15 @@
 const { and } = require('graphql-shield');
 const {
   productInputValidator,
-  deleteProductValidator,
+  productFromConstructorInputValidator,
 } = require('../../validators/product.validator');
 const { inputDataValidation } = require('../../utils/rules');
 const { hasRoles } = require('../../utils/rules');
 const {
-  PRODUCT_FEATURES: { PRODUCT, ID },
+  PRODUCT_FEATURES: { PRODUCT },
 } = require('../../consts/product-features');
 const {
-  roles: { ADMIN, SUPERADMIN },
+  roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts');
 
 const productPermissionsMutation = {
@@ -17,14 +17,15 @@ const productPermissionsMutation = {
     inputDataValidation(PRODUCT, productInputValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
+  addProductFromConstructor: and(
+    hasRoles([USER]),
+    inputDataValidation(PRODUCT, productFromConstructorInputValidator)
+  ),
   updateProduct: and(
     inputDataValidation(PRODUCT, productInputValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteProduct: and(
-    inputDataValidation(ID, deleteProductValidator),
-    hasRoles([ADMIN, SUPERADMIN])
-  ),
+  deleteProduct: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = { productPermissionsMutation };

@@ -46,9 +46,27 @@ const productInputValidator = Joi.object({
   isHotItem: Joi.bool(),
 });
 
+const productFromConstructorInputValidator = Joi.object({
+  model: Joi.string().required(),
+  name: Joi.array()
+    .items(languageSchemaValidator)
+    .required(),
+  mainMaterial: constructorMaterialsValidator,
+  bottomMaterial: constructorMaterialsValidator,
+  pattern: Joi.string().required(),
+  sizes: Joi.array()
+    .items(Joi.string().required())
+    .required(),
+  images: Joi.array(),
+  basePrice: Joi.number()
+    .min(0)
+    .required(),
+});
+
 const deleteProductValidator = Joi.string().required();
 
 module.exports = {
   productInputValidator,
+  productFromConstructorInputValidator,
   deleteProductValidator,
 };

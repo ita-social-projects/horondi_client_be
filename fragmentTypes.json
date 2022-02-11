@@ -3,6 +3,18 @@
     "types": [
       {
         "kind": "UNION",
+        "name": "MaterialsBlockResult",
+        "possibleTypes": [
+          {
+            "name": "MaterialsBlock"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
         "name": "CategoryResult",
         "possibleTypes": [
           {
@@ -25,12 +37,24 @@
           }
         ]
       },
-       {
+      {
         "kind": "UNION",
         "name": "CertificateResult",
         "possibleTypes": [
           {
             "name": "Certificate"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "CertificatePaginatedResult",
+        "possibleTypes": [
+          {
+            "name": "PaginatedCertificate"
           },
           {
             "name": "Error"

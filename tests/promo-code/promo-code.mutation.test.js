@@ -1,32 +1,48 @@
-const { newPromoCode } = require('./promo-code.variables');
+const {
+  newPromoCode,
+  newPromoCodeForUpdate,
+} = require('./promo-code.variables');
 const { setupApp } = require('../helper-functions');
-
-const { addPromoCode, deletePromoCode } = require('./promo-code.helper');
+const {
+  addPromoCode,
+  deletePromoCode,
+  updatePromoCode,
+} = require('./promo-code.helper');
 
 let promoCodes;
 let promoCodeId;
 let operations;
 
-describe('PromoCodes queries', () => {
+describe('PromoCodes mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
 
-  it('should add add to database', async () => {
+  it('should add to database', async () => {
     promoCodes = await addPromoCode(newPromoCode, operations);
+    promoCodeId = promoCodes._id;
 
-    expect(promoCodes).toHaveProperty('code', newPromoCode.code);
-    expect(promoCodes.dateFrom).toEqual('2021-12-26');
     expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
-    expect(promoCodes.discount).toEqual(12);
+  });
+
+  it('update promo-code', async () => {
+    const receivedUpdatedPromoCode = await updatePromoCode(
+      promoCodeId,
+      newPromoCodeForUpdate,
+      operations
+    );
+    const updatedPromoCode = receivedUpdatedPromoCode.data.updatePromoCode;
+
+    expect(updatedPromoCode).toHaveProperty(
+      'dateTo',
+      newPromoCodeForUpdate.dateTo
+    );
   });
 
   it('delete promo-code', async () => {
-    promoCodeId = promoCodes._id;
     const res = await deletePromoCode(promoCodeId, operations);
     promoCodes = res.data.deletePromoCode;
-    expect(promoCodes).toHaveProperty('code', newPromoCode.code);
-    expect(promoCodes.dateFrom).toEqual('2021-12-26');
-    expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
+
+    expect(promoCodes._id).toEqual(promoCodeId);
   });
 });

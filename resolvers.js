@@ -1,6 +1,12 @@
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const { historyQuery } = require('./modules/history/history.resolvers');
+
+const {
+  materialsQuery,
+  materialsMutation,
+} = require('./modules/materials-page/materials-page.resolver');
+
 const {
   productsQuery,
   productsMutation,
@@ -167,7 +173,9 @@ const bottomService = require('./modules/bottom/bottom.service');
 const restrictionService = require('./modules/restriction/restriction.service');
 
 const SCHEMA_NAMES = {
+  materialsBlock: 'MaterialsBlock',
   certificate: 'Certificate',
+  paginatedCertificate: 'PaginatedCertificate',
   history: 'History',
   historyRecord: 'HistoryRecord',
   paginatedProducts: 'PaginatedProducts',
@@ -222,6 +230,8 @@ const {
 
 const resolvers = {
   Query: {
+    ...materialsQuery,
+
     ...certificatesQuery,
 
     ...questionsAnswersQuery,
@@ -631,6 +641,8 @@ const resolvers = {
   },
 
   Mutation: {
+    ...materialsMutation,
+
     ...certificatesMutation,
 
     ...questionsAnswersMutation,
@@ -700,10 +712,29 @@ const resolvers = {
     ...wishlistMutation,
   },
 
-  CertificateResult: {
+  MaterialsBlockResult: {
     __resolveType: obj => {
-      if (obj.name || obj.isUsed) {
-        return SCHEMA_NAMES.certificate;
+      if (obj.image || obj.text || obj.type) {
+        return SCHEMA_NAMES.materialsBlock;
+      }
+
+      return 'Error';
+    },
+  },
+
+  CertificateResult: {
+    __resolveType: obj => (obj.name ? SCHEMA_NAMES.certificate : 'Error'),
+  },
+
+  CertificatePaginatedResult: {
+    __resolveType: obj =>
+      obj.count ? SCHEMA_NAMES.paginatedCertificate : 'Error',
+  },
+
+  PromoCodeResult: {
+    __resolveType: obj => {
+      if (obj.code) {
+        return SCHEMA_NAMES.promoCode;
       }
 
       return 'Error';

@@ -437,7 +437,7 @@ describe('Comment queries', () => {
   });
   afterAll(async () => {
     await deleteComment(adminId, commentId, operations);
-    await deleteProduct(productId, operations);
+    await deleteProduct([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);

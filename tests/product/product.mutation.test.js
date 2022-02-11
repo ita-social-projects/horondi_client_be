@@ -227,7 +227,7 @@ describe('Product mutations', () => {
     expect(products.statusCode).toBe(400);
   });
   test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
-    const receivedData = await deleteProduct(badProductId, operations);
+    const receivedData = await deleteProduct([badProductId], operations);
 
     expect(receivedData.data.deleteProduct).toHaveProperty(
       'message',
@@ -252,7 +252,7 @@ describe('Product mutations', () => {
   });
 
   test('#8 Should delete Product and return it`s id', async () => {
-    const receivedData = await deleteProduct(productId, operations);
+    const receivedData = await deleteProduct([productId], operations);
     const res = receivedData.data.deleteProduct._id;
 
     expect(res).toBe(productId);

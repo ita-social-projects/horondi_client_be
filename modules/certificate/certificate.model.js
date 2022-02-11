@@ -12,6 +12,7 @@ dateEnd.setFullYear(dateEnd.getFullYear() + 1);
 const certificateSchema = new mongoose.Schema({
   name: {
     type: String,
+    unique: true,
   },
   value: {
     type: Number,
@@ -19,12 +20,26 @@ const certificateSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: USER,
+    default: null,
+  },
+  ownedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: USER,
+    default: null,
+  },
+  email: {
+    type: String,
+    default: null,
   },
   isUsed: {
     type: Boolean,
     default: false,
   },
-  isActive: {
+  isExpired: {
+    type: Boolean,
+    default: false,
+  },
+  isActivated: {
     type: Boolean,
     default: true,
   },
@@ -38,4 +53,7 @@ const certificateSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model(CERTIFICATE, certificateSchema);
+module.exports.CertificateModel = mongoose.model(
+  CERTIFICATE,
+  certificateSchema
+);

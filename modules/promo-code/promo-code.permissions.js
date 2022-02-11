@@ -1,9 +1,32 @@
-const { allow } = require('graphql-shield');
+const { allow, and } = require('graphql-shield');
 
-const promoCodeMutation = {
-  addPromoCode: allow,
-  deletePromoCode: allow,
-  updatePromoCode: allow,
+const {
+  promoCodeInputValidator,
+} = require('../../validators/promocode-validator');
+const { hasRoles, inputDataValidation } = require('../../utils/rules');
+const {
+  roles: { ADMIN, SUPERADMIN },
+} = require('../../consts');
+const {
+  PROMOCODE_FIELDS: { PROMOCODE },
+} = require('../../consts/promocode-fields');
+
+const promoCodeQuery = {
+  getPromoCodeById: hasRoles([ADMIN, SUPERADMIN]),
+  getAllPromoCodes: hasRoles([ADMIN, SUPERADMIN]),
+  getPromoCodeByCode: allow,
 };
 
-module.exports = { promoCodeMutation };
+const promoCodeMutation = {
+  addPromoCode: and(
+    hasRoles([ADMIN, SUPERADMIN]),
+    inputDataValidation(PROMOCODE, promoCodeInputValidator)
+  ),
+  updatePromoCode: and(
+    hasRoles([ADMIN, SUPERADMIN]),
+    inputDataValidation(PROMOCODE, promoCodeInputValidator)
+  ),
+  deletePromoCode: hasRoles([ADMIN, SUPERADMIN]),
+};
+
+module.exports = { promoCodeMutation, promoCodeQuery };

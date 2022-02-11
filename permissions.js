@@ -1,6 +1,11 @@
 const { shield } = require('graphql-shield');
 
 const {
+  materialsPermissionsQuery,
+  materialsPermissionsMutation,
+} = require('./modules/materials-page/materials-page.permissions');
+
+const {
   emailChatQuestionQuery,
 } = require('./modules/email-chat/email-chat.permission');
 
@@ -12,6 +17,7 @@ const { uploadMutation } = require('./modules/upload/upload.permission');
 
 const {
   promoCodeMutation,
+  promoCodeQuery,
 } = require('./modules/promo-code/promo-code.permissions');
 
 const {
@@ -165,11 +171,13 @@ const {
 const permissions = shield(
   {
     Query: {
+      ...materialsPermissionsQuery,
       ...historyPermissionsQuery,
       ...certificatePermissionsQuery,
       ...userPermissionsQuery,
       ...patternPermissionsQuery,
       ...materialPermissionsQuery,
+      ...promoCodeQuery,
       ...contactPermissionsQuery,
       ...newsPermissionsQuery,
       ...categoryPermissionsQuery,
@@ -195,6 +203,7 @@ const permissions = shield(
       ...wishlistPermissionsQuery,
     },
     Mutation: {
+      ...materialsPermissionsMutation,
       ...questionsAnswersMutation,
       ...productPermissionsMutation,
       ...promoCodeMutation,

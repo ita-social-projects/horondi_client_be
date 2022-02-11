@@ -322,7 +322,7 @@ describe('Order queries', () => {
 
   afterAll(async () => {
     await deleteOrder(orderId, operations);
-    await deleteProduct(productId, operations);
+    await deleteProduct([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);

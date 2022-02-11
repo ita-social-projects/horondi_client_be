@@ -44,6 +44,17 @@ const htmlTemplates = {
     subject: '[HORONDI] Your question has been answered',
     templateFileName: ['answer-email-question-en', 'answer-email-question-ua'],
   },
+  [EmailActions.CERTIFICATE_REMINDER]: {
+    subject: '[HORONDI] Certificate reminder',
+    templateFileName: ['certificate-reminder-en', 'certificate-reminder-ua'],
+  },
+  [EmailActions.CERTIFICATE_EMAIL]: {
+    subject: '[HORONDI] Your certificate',
+    templateFileName: [
+      'certificate-user-purchased-email-en',
+      'certificate-user-purchased-email-ua',
+    ],
+  },
 };
 
 module.exports = { htmlTemplates };
