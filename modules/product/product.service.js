@@ -502,7 +502,7 @@ class ProductsService {
   }
 
   async findProductFromConstructor(data) {
-    const product = await Product.findOne({
+    return Product.findOne({
       model: {
         $eq: data.model,
       },
@@ -522,8 +522,6 @@ class ProductsService {
         $eq: data.pattern,
       },
     }).exec();
-
-    return product;
   }
 
   async deleteImages(id, imagesToDelete) {
