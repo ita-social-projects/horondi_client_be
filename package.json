@@ -74,7 +74,7 @@
     "mongoose-middleware": "^2.0.1",
     "morgan": "^1.9.1",
     "node-cron": "^3.0.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "nodemailer": "^6.4.10",
     "nodemailer-smtp-transport": "^2.7.4",
     "npm-force-resolutions": "0.0.3",
