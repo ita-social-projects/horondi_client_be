@@ -316,11 +316,11 @@ class UserService extends FilterHelper {
     })
       .populate('orders')
       .exec();
-    const paidOrders = user.orders.filter(order => order.isPaid);
+    const paidOrders = user.orders.filter((order) => order.isPaid);
     return paidOrders.reduce(
       (acc, order) => [
         ...acc,
-        ...order.items.map(item => ({ _id: item.productId })),
+        ...order.items.map((item) => ({ _id: item.productId })),
       ],
       []
     );
@@ -370,7 +370,7 @@ class UserService extends FilterHelper {
       .sort({ registrationDate: 1 })
       .lean()
       .exec();
-    const formattedData = users.map(el =>
+    const formattedData = users.map((el) =>
       changeDataFormat(el.registrationDate, userDateFormat)
     );
     const userOccurrence = countItemsOccurrence(formattedData);
@@ -402,7 +402,7 @@ class UserService extends FilterHelper {
       if (userToUpdate.images?.length) {
         await deleteFiles(
           Object.values(userToUpdate.images).filter(
-            item => typeof item === 'string' && item
+            (item) => typeof item === 'string' && item
           )
         );
       }
@@ -423,7 +423,7 @@ class UserService extends FilterHelper {
 
     const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
+      user.credentials.find((cred) => cred.source === HORONDI).tokenPass
     );
 
     if (user.role === USER) {
@@ -461,7 +461,7 @@ class UserService extends FilterHelper {
 
     const match = await bcryptClient.comparePassword(
       password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
+      user.credentials.find((cred) => cred.source === HORONDI).tokenPass
     );
 
     if (!match) {
@@ -521,7 +521,7 @@ class UserService extends FilterHelper {
         ],
       });
 
-      new Wishlist({ user_id: user._id, products: [] }).save();
+      await new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: dataUser.email,
@@ -549,7 +549,7 @@ class UserService extends FilterHelper {
         ],
       });
 
-      new Wishlist({ user_id: user._id, products: [] }).save();
+      await new Wishlist({ user_id: user._id, products: [] }).save();
     }
     return this.loginSocialUser({
       email: data.email,
@@ -613,7 +613,7 @@ class UserService extends FilterHelper {
     });
     const savedUser = await user.save();
 
-    new Wishlist({ user_id: user._id, products: [] }).save();
+    await new Wishlist({ user_id: user._id, products: [] }).save();
 
     jwtClient.setData({ userId: savedUser._id });
     const accessToken = jwtClient.generateAccessToken(
