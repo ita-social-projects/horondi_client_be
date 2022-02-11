@@ -12,6 +12,8 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
               value
             }
             image
+            title
+            type
           }
         }
       }
@@ -31,6 +33,8 @@ const getAllMaterialsBlocks = async ({ skip, limit }, operations) => {
           items {
             _id
             image
+            title
+            type
             text {
               lang
               value
@@ -49,6 +53,74 @@ const getAllMaterialsBlocks = async ({ skip, limit }, operations) => {
   return res.data.getAllMaterialsBlocks;
 };
 
+const getMaterialsBlocksByType = async (
+  { type, skip, limit, filter },
+  operations
+) => {
+  const res = await operations.query({
+    query: gql`
+      query(
+        $type: String!
+        $skip: Int!
+        $limit: Int!
+        $filter: MaterialsFilterInput
+      ) {
+        getMaterialsBlocksByType(
+          type: $type
+          skip: $skip
+          limit: $limit
+          filter: $filter
+        ) {
+          items {
+            _id
+            image
+            title
+            type
+            text {
+              lang
+              value
+            }
+            translationsKey
+          }
+        }
+      }
+    `,
+    variables: {
+      skip,
+      limit,
+      type,
+      filter,
+    },
+  });
+  return res.data.getMaterialsBlocksByType;
+};
+
+const updateMaterialsBlock = async (id, materialsBlock, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation($id: ID!, $materialsBlock: MaterialsBlockInput!) {
+        updateMaterialsBlock(id: $id, materialsBlock: $materialsBlock) {
+          ... on MaterialsBlock {
+            _id
+            image
+            title
+            type
+            text {
+              lang
+              value
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      id,
+      materialsBlock,
+    },
+  });
+  return res.data.updateMaterialsBlock;
+};
+
 const getMaterialsBlockById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
@@ -56,6 +128,8 @@ const getMaterialsBlockById = async (id, operations) => {
         getMaterialsBlockById(id: $id) {
           ... on MaterialsBlock {
             image
+            title
+            type
             text {
               lang
               value
@@ -81,6 +155,8 @@ const deleteMaterialsBlock = async (id, operations) =>
               value
             }
             image
+            title
+            type
           }
         }
       }
@@ -93,4 +169,6 @@ module.exports = {
   getAllMaterialsBlocks,
   deleteMaterialsBlock,
   getMaterialsBlockById,
+  getMaterialsBlocksByType,
+  updateMaterialsBlock,
 };

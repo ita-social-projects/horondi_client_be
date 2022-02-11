@@ -714,7 +714,7 @@ const resolvers = {
 
   MaterialsBlockResult: {
     __resolveType: obj => {
-      if (obj.image || obj.text) {
+      if (obj.image || obj.text || obj.type) {
         return SCHEMA_NAMES.materialsBlock;
       }
 

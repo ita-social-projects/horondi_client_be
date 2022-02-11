@@ -39,6 +39,30 @@ class MaterialsService {
     return materialsBlock;
   }
 
+  async getMaterialsBlocksByType(type, skip, limit, filter) {
+    const filterOptions = {};
+
+    if (filter?.search) {
+      const searchString = filter.search.trim();
+
+      filterOptions.$or = [
+        { title: { $regex: `${searchString}`, $options: 'i' } },
+      ];
+    }
+
+    const items = await Materials.find({ type, ...filterOptions })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = items?.length || 0;
+
+    return {
+      items,
+      count,
+    };
+  }
+
   async addMaterialsBlock(materialsBlock) {
     materialsBlock.translationsKey = await addTranslations(
       createTranslations(materialsBlock)

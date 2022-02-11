@@ -543,6 +543,7 @@ const typeDefs = gql`
   type Query {
     getMaterialsBlockById(id: ID!): MaterialsBlockResult
     getAllMaterialsBlocks(limit: Int!, skip: Int!): PaginatedMaterialsBlock
+    getMaterialsBlocksByType(type: String!, limit: Int!, skip: Int!, filter: MaterialsFilterInput): PaginatedMaterialsBlock
     getAllQuestionsAnswers: PaginatedQNAs
     getQuestionsAnswersById(id: ID!): QuestionsAnswers
     getAllHistoryRecords(limit:Int!, skip:Int!, filter:HistoryFilterInput):HistoryResult

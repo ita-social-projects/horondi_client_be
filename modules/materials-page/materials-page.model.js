@@ -10,6 +10,8 @@ const {
 } = require('../../consts/db-collections-names');
 
 const MaterialsSchema = new mongoose.Schema({
+  title: String,
+  type: String,
   image: String,
   text: [Language],
   translationsKey: {

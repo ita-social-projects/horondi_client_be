@@ -6,6 +6,9 @@ const materialsQuery = {
 
   getMaterialsBlockById: async (_, { id }) =>
     materialsService.getMaterialsBlockById(id),
+
+  getMaterialsBlocksByType: async (_, { type, skip, limit, filter }) =>
+    materialsService.getMaterialsBlocksByType(type, skip, limit, filter),
 };
 
 const materialsMutation = {
