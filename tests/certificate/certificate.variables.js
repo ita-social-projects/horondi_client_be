@@ -1,8 +1,15 @@
-const newCertificateInputData = {
-  value: 1000,
-  email: 'test@test.com',
-  count: 1,
-};
+const newCertificateInputData = [
+  {
+    value: 1000,
+    count: 1,
+  },
+  {
+    value: 1500,
+    count: 1,
+  },
+];
+
+const email = 'test@test.com';
 
 const newUser = {
   firstName: 'Some',
@@ -16,6 +23,7 @@ const wrongName = 'HOR64646556';
 
 module.exports = {
   newCertificateInputData,
+  email,
   newUser,
   wrongId,
   wrongName,

@@ -1,16 +1,19 @@
 const certificateTypes = `
   type Certificate {
     _id: ID!
-    name: String!
+    name: String
     value: Int!
     createdBy: User
     ownedBy: User
     email: String
     isUsed: Boolean
-    isActivated: Boolean!
+    isActivated: Boolean
     isExpired: Boolean
     dateStart: Date
     dateEnd: Date
+    paymentStatus: String,
+    paymentUrl: String
+    paymentToken: String
   }
   
   type PaginatedCertificate {
@@ -25,15 +28,22 @@ const certificateTypes = `
     paymentToken: String
     paymentStatus: String
     certificatesOrderId: String
+    certificatesPrice: Int
+  }
+
+  input CertificateInput {
+    _id: ID
+    name: String!
+    dateEnd: String
+    dateStart: String
+    email: String
+    paymentStatus: String
+    value: Int
   }
 
   input GenerateCertificateInput {
     value: Int!
-    email: String
     count: Int!
-    isActivated: Boolean
-    dateStart: Date
-    dateEnd: Date
   }
 
   union CertificateResult = Certificate | Error 
@@ -48,7 +58,7 @@ const certificateTypes = `
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
-    generateCertificate (newCertificate: GenerateCertificateInput!): CertificatesResult
+    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String!): CertificatesResult
     updateCertificate(name: String!): CertificateResult
   }
 `;

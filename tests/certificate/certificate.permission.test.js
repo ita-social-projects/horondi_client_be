@@ -17,7 +17,11 @@ const {
   registerUser,
   updateCertificate,
 } = require('./certificate.helper');
-const { newCertificateInputData, newUser } = require('./certificate.variables');
+const {
+  newCertificateInputData,
+  newUser,
+  email,
+} = require('./certificate.variables');
 
 describe('Run ApolloClientServer with role=admin in context', () => {
   let adminContextServer;
@@ -33,12 +37,13 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     adminContextServer = await setupApp();
 
     const certificateNullOwner = await generateCertificate(
-      { value: 1000, count: 1 },
+      [{ value: 1000, count: 1 }],
+      email,
       adminContextServer
     );
 
     certificateNullOwnerId = certificateNullOwner.certificates[0]._id;
-    certificateNullOwnerEmail = certificateNullOwner.certificates[0].email;
+    certificateNullOwnerEmail = null;
     certificateNullOwnerName = certificateNullOwner.certificates[0].name;
   });
 
@@ -66,6 +71,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     it('should generate certificate', async () => {
       const result = await generateCertificate(
         newCertificateInputData,
+        email,
         userContextServer
       );
       certificateId = result.certificates[0]._id;

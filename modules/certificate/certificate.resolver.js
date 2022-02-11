@@ -9,9 +9,10 @@ const certificatesQuery = {
 };
 
 const certificatesMutation = {
-  generateCertificate: async (_, { newCertificate }, { user = {} }) =>
+  generateCertificate: async (_, { newCertificates, email }, { user = {} }) =>
     certificatesService.generateCertificate(
-      newCertificate,
+      newCertificates,
+      email,
       user._id,
       user.role
     ),

@@ -78,24 +78,37 @@ class CertificatesService {
     return certificate;
   }
 
-  async generateCertificate(certificateData, userId, userRole) {
+  async generateCertificate(newCertificates, email, userId, userRole) {
     const certificatesArr = [];
-    const { count } = certificateData;
+    let certificatesPrice = 0;
+
+    const certificate = {
+      email,
+    };
 
     if (userRole === USER) {
-      certificateData.ownedBy = userId;
+      certificate.ownedBy = userId;
     } else {
-      certificateData.createdBy = userId;
+      certificate.createdBy = userId;
     }
 
-    for (let i = 0; i < count; i++) {
-      certificateData.name = await generateName();
-      certificatesArr.push({ ...certificateData });
+    for (const certificateData of newCertificates) {
+      const { value, count } = certificateData;
+      console.log(value, count);
+      certificatesPrice += value * count;
+      for (let i = 0; i < count; i++) {
+        certificate.name = await generateName();
+        certificate.value = value;
+        certificatesArr.push({ ...certificate });
+      }
     }
+
+    certificatesPrice *= 100;
 
     const certificates = await CertificateModel.insertMany(certificatesArr);
+    console.log(certificates, certificatesPrice);
 
-    return { certificates };
+    return { certificates, certificatesPrice };
   }
 
   async addCertificate(name, userId, userEmail) {

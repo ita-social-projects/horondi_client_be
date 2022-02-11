@@ -9,7 +9,11 @@ const {
   getCertificateById,
   updateCertificate,
 } = require('./certificate.helper');
-const { wrongId, newCertificateInputData } = require('./certificate.variables');
+const {
+  wrongId,
+  newCertificateInputData,
+  email,
+} = require('./certificate.variables');
 
 let operations;
 let certificateId;
@@ -20,6 +24,7 @@ describe('Test certificate Queries', () => {
     operations = await setupApp();
     const certificateData = await generateCertificate(
       newCertificateInputData,
+      email,
       operations
     );
     certificateId = certificateData.certificates[0]._id;

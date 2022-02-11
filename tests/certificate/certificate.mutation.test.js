@@ -11,6 +11,7 @@ const {
 const {
   wrongId,
   wrongName,
+  email,
   newCertificateInputData,
 } = require('./certificate.variables');
 
@@ -27,6 +28,7 @@ describe('Test mutation methods Admin', () => {
   it('should generate certificate', async () => {
     const result = await generateCertificate(
       newCertificateInputData,
+      email,
       operations
     );
 
