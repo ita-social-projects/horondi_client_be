@@ -1,6 +1,7 @@
 const productType = `
   type Product {
     _id: ID!
+    isFromConstructor: Boolean
     category: Category
     model: Model!
     name: [Language]!
@@ -63,7 +64,7 @@ const productInput = `
     bottomMaterial: ProductMaterialsInput
     backMaterial: ProductMaterialsInput
     strapLengthInCm: Int
-    pattern: ID!
+    pattern: ID
     closure: ID
     sizes:[ID]!
     images: [Upload]
