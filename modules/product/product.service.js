@@ -403,9 +403,13 @@ class ProductsService {
   }
 
   async addProductFromConstructor(productData, filesToUpload) {
-    if (await this.checkProductExist(productData)) {
-      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
+    const existingProduct = await this.findProductFromConstructor(productData);
+
+    if (existingProduct) {
+      return existingProduct;
     }
+
+    productData.isFromConstructor = true;
 
     const { primary } = await uploadProductImages(filesToUpload);
     productData.images = { primary };
@@ -495,6 +499,31 @@ class ProductsService {
       },
     }).exec();
     return productCount > 0;
+  }
+
+  async findProductFromConstructor(data) {
+    const product = await Product.findOne({
+      model: {
+        $eq: data.model,
+      },
+      'mainMaterial.material': {
+        $eq: data.mainMaterial.material,
+      },
+      'mainMaterial.color': {
+        $eq: data.mainMaterial.color,
+      },
+      'bottomMaterial.material': {
+        $eq: data.bottomMaterial.material,
+      },
+      'bottomMaterial.color': {
+        $eq: data.bottomMaterial.color,
+      },
+      pattern: {
+        $eq: data.pattern,
+      },
+    }).exec();
+
+    return product;
   }
 
   async deleteImages(id, imagesToDelete) {
