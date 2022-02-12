@@ -5,7 +5,7 @@ const languageSchemaValidator = {
     .max(2)
     .required(),
   value: Joi.string()
-    .min(6)
+    .min(3)
     .max(1000)
     .required(),
 };

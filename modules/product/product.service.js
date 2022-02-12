@@ -402,7 +402,7 @@ class ProductsService {
     }
   }
 
-  async addProductFromConstructor(productData, filesToUpload) {
+  async addProductFromConstructor(productData) {
     const existingProduct = await this.findProductFromConstructor(productData);
 
     if (existingProduct) {
@@ -410,9 +410,6 @@ class ProductsService {
     }
 
     productData.isFromConstructor = true;
-
-    const { primary } = await uploadProductImages(filesToUpload);
-    productData.images = { primary };
 
     productData.basePrice = await calculateBasePrice(productData.basePrice);
 
