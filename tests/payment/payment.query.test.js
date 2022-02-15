@@ -116,7 +116,6 @@ describe('Payment queries', () => {
   it('should get Payment Checkout', async () => {
     const res = await getPaymentCheckout(
       { orderId, currency: 'UAH', amount: '2' },
-      1,
       operations
     );
     expect(res).toBeDefined();

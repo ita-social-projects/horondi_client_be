@@ -6,6 +6,9 @@ const certificatesQuery = {
 
   getCertificateById: async (_, { id }) =>
     certificatesService.getCertificateById(id),
+
+  getCertificatesByPaymentToken: async (_, { paymentToken }) =>
+    certificatesService.getCertificatesByPaymentToken(paymentToken),
 };
 
 const certificatesMutation = {

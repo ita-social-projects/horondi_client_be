@@ -53,6 +53,7 @@ const certificateTypes = `
   extend type Query {
     getAllCertificates(limit:Int, skip:Int): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
+    getCertificatesByPaymentToken(paymentToken: String!): CertificatesResult
   }
 
   extend type Mutation {
