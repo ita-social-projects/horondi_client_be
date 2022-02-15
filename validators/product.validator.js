@@ -5,7 +5,7 @@ const languageSchemaValidator = {
     .max(2)
     .required(),
   value: Joi.string()
-    .min(6)
+    .min(3)
     .max(1000)
     .required(),
 };
@@ -53,7 +53,7 @@ const productFromConstructorInputValidator = Joi.object({
     .required(),
   mainMaterial: constructorMaterialsValidator,
   bottomMaterial: constructorMaterialsValidator,
-  pattern: Joi.string().required(),
+  pattern: Joi.string(),
   sizes: Joi.array()
     .items(Joi.string().required())
     .required(),

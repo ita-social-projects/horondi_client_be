@@ -402,13 +402,14 @@ class ProductsService {
     }
   }
 
-  async addProductFromConstructor(productData, filesToUpload) {
-    if (await this.checkProductExist(productData)) {
-      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
+  async addProductFromConstructor(productData) {
+    const existingProduct = await this.findProductFromConstructor(productData);
+
+    if (existingProduct) {
+      return existingProduct;
     }
 
-    const { primary } = await uploadProductImages(filesToUpload);
-    productData.images = { primary };
+    productData.isFromConstructor = true;
 
     productData.basePrice = await calculateBasePrice(productData.basePrice);
 
@@ -495,6 +496,29 @@ class ProductsService {
       },
     }).exec();
     return productCount > 0;
+  }
+
+  async findProductFromConstructor(data) {
+    return Product.findOne({
+      model: {
+        $eq: data.model,
+      },
+      'mainMaterial.material': {
+        $eq: data.mainMaterial.material,
+      },
+      'mainMaterial.color': {
+        $eq: data.mainMaterial.color,
+      },
+      'bottomMaterial.material': {
+        $eq: data.bottomMaterial.material,
+      },
+      'bottomMaterial.color': {
+        $eq: data.bottomMaterial.color,
+      },
+      pattern: {
+        $eq: data.pattern,
+      },
+    }).exec();
   }
 
   async deleteImages(id, imagesToDelete) {

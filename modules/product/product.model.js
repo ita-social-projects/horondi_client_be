@@ -19,6 +19,7 @@ const {
 } = require('../../consts/db-collections-names');
 
 const productSchema = new mongoose.Schema({
+  isFromConstructor: Boolean,
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: CATEGORY,
