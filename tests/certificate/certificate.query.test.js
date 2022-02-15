@@ -9,7 +9,11 @@ const {
   getCertificateById,
   updateCertificate,
 } = require('./certificate.helper');
-const { wrongId, newCertificateInputData } = require('./certificate.variables');
+const {
+  wrongId,
+  newCertificateInputData,
+  email,
+} = require('./certificate.variables');
 
 let operations;
 let certificateId;
@@ -20,10 +24,11 @@ describe('Test certificate Queries', () => {
     operations = await setupApp();
     const certificateData = await generateCertificate(
       newCertificateInputData,
+      email,
       operations
     );
-    certificateId = certificateData._id;
-    certificateName = certificateData.name;
+    certificateId = certificateData.certificates[0]._id;
+    certificateName = certificateData.certificates[0].name;
   });
 
   it('should check unique field in one of certificates in list', async () => {

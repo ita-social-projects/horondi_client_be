@@ -11,6 +11,7 @@ const {
 const {
   wrongId,
   wrongName,
+  email,
   newCertificateInputData,
 } = require('./certificate.variables');
 
@@ -27,14 +28,15 @@ describe('Test mutation methods Admin', () => {
   it('should generate certificate', async () => {
     const result = await generateCertificate(
       newCertificateInputData,
+      email,
       operations
     );
 
-    certificateId = result._id;
-    certificateName = result.name;
-    isUsed = result.isUsed;
+    certificateId = result.certificates[0]._id;
+    certificateName = result.certificates[0].name;
+    isUsed = result.certificates[0].isUsed;
 
-    expect(result).toHaveProperty('name');
+    expect(result.certificates[0]).toHaveProperty('name');
   });
 
   it('should change `isUsed` field to true with updateCertificate', async () => {

@@ -17,7 +17,11 @@ const {
   registerUser,
   updateCertificate,
 } = require('./certificate.helper');
-const { newCertificateInputData, newUser } = require('./certificate.variables');
+const {
+  newCertificateInputData,
+  newUser,
+  email,
+} = require('./certificate.variables');
 
 describe('Run ApolloClientServer with role=admin in context', () => {
   let adminContextServer;
@@ -33,13 +37,14 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     adminContextServer = await setupApp();
 
     const certificateNullOwner = await generateCertificate(
-      { value: 1000 },
+      [{ value: 1000, count: 1 }],
+      email,
       adminContextServer
     );
 
-    certificateNullOwnerId = certificateNullOwner._id;
-    certificateNullOwnerEmail = certificateNullOwner.email;
-    certificateNullOwnerName = certificateNullOwner.name;
+    certificateNullOwnerId = certificateNullOwner.certificates[0]._id;
+    certificateNullOwnerEmail = null;
+    certificateNullOwnerName = certificateNullOwner.certificates[0].name;
   });
 
   describe('Test behaviour of USER with role=user', () => {
@@ -66,12 +71,13 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     it('should generate certificate', async () => {
       const result = await generateCertificate(
         newCertificateInputData,
+        email,
         userContextServer
       );
-      certificateId = result._id;
-      certificateName = result.name;
+      certificateId = result.certificates[0]._id;
+      certificateName = result.certificates[0].name;
 
-      expect(result).toHaveProperty('name');
+      expect(result.certificates[0]).toHaveProperty('name');
     });
 
     it('should add certificate that was bought offilne', async () => {
@@ -94,7 +100,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     it('should see only certificates owned by him', async () => {
       const result = await getAllCertificates(userContextServer);
 
-      expect(result.count).toBe(2);
+      expect(result.count).toBe(3);
     });
 
     afterAll(async () => {

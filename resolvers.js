@@ -175,6 +175,7 @@ const restrictionService = require('./modules/restriction/restriction.service');
 const SCHEMA_NAMES = {
   materialsBlock: 'MaterialsBlock',
   certificate: 'Certificate',
+  certificates: 'Certificates',
   paginatedCertificate: 'PaginatedCertificate',
   history: 'History',
   historyRecord: 'HistoryRecord',
@@ -724,6 +725,13 @@ const resolvers = {
 
   CertificateResult: {
     __resolveType: obj => (obj.name ? SCHEMA_NAMES.certificate : 'Error'),
+  },
+
+  CertificatesResult: {
+    __resolveType: obj =>
+      obj.certificates || obj.paymentToken
+        ? SCHEMA_NAMES.certificates
+        : 'Error',
   },
 
   CertificatePaginatedResult: {

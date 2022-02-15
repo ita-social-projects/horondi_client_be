@@ -7,6 +7,28 @@ const {
   CERTIFICATE_NOT_VALID,
 } = require('../error-messages/certificate.messages');
 
+const certificateData = Joi.object().keys({
+  count: Joi.number()
+    .error(() => ({
+      message: 'Count must be a number',
+    }))
+    .min(1)
+    .error(() => ({
+      message: 'Count should be greater than 0',
+    }))
+    .required(),
+  value: Joi.number()
+    .integer()
+    .min(500)
+    .valid(500, 1000, 1500)
+    .error(() => ({
+      message: 'Certificate value should be 500, 1000 or 1500',
+    }))
+    .required(),
+});
+
+const certificateInputValidator = Joi.array().items(certificateData);
+
 const certificateNameValidator = Joi.string()
   .trim()
   .regex(certificateRegExp)
@@ -30,4 +52,5 @@ const certificateDateValidator = Joi.object({
 module.exports = {
   certificateNameValidator,
   certificateDateValidator,
+  certificateInputValidator,
 };

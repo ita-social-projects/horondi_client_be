@@ -51,6 +51,15 @@ const certificateSchema = new mongoose.Schema({
     type: Date,
     default: dateEnd,
   },
+  paymentUrl: {
+    type: String,
+  },
+  paymentStatus: {
+    type: String,
+  },
+  paymentToken: {
+    type: String,
+  },
 });
 
 module.exports.CertificateModel = mongoose.model(
