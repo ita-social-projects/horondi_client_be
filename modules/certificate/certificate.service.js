@@ -21,7 +21,7 @@ const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
   const secondNamePart = Math.floor(randomInt(1000, 9999));
   const name = `HOR${firstNamePart}${secondNamePart}`;
-  const candidate = await CertificateModel.findOne({ name });
+  const candidate = await CertificateModel.findOne({ name }).exec();
   if (candidate) {
     return generateName();
   }
