@@ -9,13 +9,6 @@ const generateCertificate = async (certificateData, email, operations) => {
             certificates {
               _id
               name
-              isExpired
-              dateStart
-              email
-              isUsed
-              ownedBy {
-                _id
-              }
             }
             certificatesPrice
           }

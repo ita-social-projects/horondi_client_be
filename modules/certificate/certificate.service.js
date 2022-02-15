@@ -15,6 +15,7 @@ const {
   CERTIFICATE_IS_USED,
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
+const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
@@ -78,35 +79,33 @@ class CertificatesService {
     return certificate;
   }
 
-  async generateCertificate(newCertificates, email, userId, userRole) {
+  async generateCertificate(certificatesData, email, userId, userRole) {
     const certificatesArr = [];
     let certificatesPrice = 0;
 
-    const certificate = {
+    const newCertificate = {
       email,
     };
 
     if (userRole === USER) {
-      certificate.ownedBy = userId;
+      newCertificate.ownedBy = userId;
     } else {
-      certificate.createdBy = userId;
+      newCertificate.createdBy = userId;
     }
 
-    for (const certificateData of newCertificates) {
+    for (const certificateData of certificatesData) {
       const { value, count } = certificateData;
-      console.log(value, count);
       certificatesPrice += value * count;
       for (let i = 0; i < count; i++) {
-        certificate.name = await generateName();
-        certificate.value = value;
-        certificatesArr.push({ ...certificate });
+        newCertificate.name = await generateName();
+        newCertificate.value = value;
+        certificatesArr.push({ ...newCertificate });
       }
     }
 
-    certificatesPrice *= 100;
+    certificatesPrice *= FONDY_PAYMENT_MULTIPLIER;
 
     const certificates = await CertificateModel.insertMany(certificatesArr);
-    console.log(certificates, certificatesPrice);
 
     return { certificates, certificatesPrice };
   }
