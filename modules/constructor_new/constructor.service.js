@@ -74,7 +74,7 @@ class ConstructorService {
     if (image) {
       if (constructorToUpdate.images) {
         const images = Object.values(constructorToUpdate.images).filter(
-          item => typeof item === 'string' && item
+          (item) => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }
@@ -144,9 +144,7 @@ class ConstructorService {
   }
 
   async deleteConstructor(id, { _id: adminId }) {
-    const foundConstructor = await Constructor.findById(id)
-      .lean()
-      .exec();
+    const foundConstructor = await Constructor.findById(id).lean().exec();
 
     if (!foundConstructor) {
       throw new RuleError(CONSTRUCTOR_NOT_FOUND, NOT_FOUND);
