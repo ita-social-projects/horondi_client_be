@@ -1,51 +1,23 @@
 const paymentService = require('./payment.service');
-const RuleError = require('../../errors/rule.error');
 
 const paymentQuery = {
-  getPaymentCheckout: async (_, { data }) => {
-    try {
-      return await paymentService.getPaymentCheckout(data);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
-  getPaymentCheckoutForCertificates: async (_, { data }) => {
-    try {
-      return await paymentService.getPaymentCheckoutForCertificates(data);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
+  getPaymentCheckout: async (_, { data }) =>
+    paymentService.getPaymentCheckout(data),
+  getPaymentCheckoutForCertificates: async (_, { data }) =>
+    paymentService.getPaymentCheckoutForCertificates(data),
   checkOrderPaymentStatus: async (_, { orderId, language }) => {
-    try {
-      return await paymentService.checkOrderPaymentStatus(orderId, language);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
+    paymentService.checkOrderPaymentStatus(orderId, language);
   },
   checkCertificatesPaymentStatus: async (
     _,
     { certificateName, paymentToken }
-  ) => {
-    try {
-      return await paymentService.checkCertificatesPaymentStatus(
-        certificateName,
-        paymentToken
-      );
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
-  sendCertificatesCodesToEmail: async (_, { language, certificates }) => {
-    try {
-      return await paymentService.sendCertificatesCodesToEmail(
-        language,
-        certificates
-      );
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
-  },
+  ) =>
+    paymentService.checkCertificatesPaymentStatus(
+      certificateName,
+      paymentToken
+    ),
+  sendCertificatesCodesToEmail: async (_, { language, certificates }) =>
+    paymentService.sendCertificatesCodesToEmail(language, certificates),
 };
 
 module.exports = { paymentQuery };
