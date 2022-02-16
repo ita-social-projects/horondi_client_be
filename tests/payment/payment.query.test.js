@@ -1,7 +1,5 @@
 const { deleteOrder, createOrder } = require('../order/order.helpers');
-const { getPaymentCheckout } = require('./payment.helper');
-const { checkPaymentStatus } = require('../../modules/payment/payment.service');
-const { wrongId, newOrderInputData } = require('../order/order.variables');
+const { newOrderInputData } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
@@ -33,6 +31,24 @@ const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 
+const {
+  generateCertificate,
+  getCertificatesByPaymentToken,
+  deleteCertificate,
+} = require('../certificate/certificate.helper');
+
+const {
+  checkCertificatesPaymentStatus,
+  getPaymentCheckoutForCertificates,
+  checkOrderPaymentStatus,
+  getPaymentCheckout,
+} = require('./payment.helper');
+
+const {
+  newCertificateInputData,
+  email,
+} = require('../certificate/certificate.variables');
+
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -50,7 +66,55 @@ let categoryId;
 let patternId;
 let constructorBasicId;
 let closureId;
+let orderNumber;
 let mockResponse;
+let certificates;
+let paymentToken;
+
+describe('Certificate payment queries', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificates = certificateData.certificates;
+  });
+
+  it('should get Certificate Payment Checkout', async () => {
+    const result = await getPaymentCheckoutForCertificates(
+      { certificates, currency: 'UAH', amount: '100000' },
+      operations
+    );
+    paymentToken = result.paymentToken;
+
+    expect(result).toHaveProperty('paymentToken');
+  });
+
+  it('should get Certificates by payment token', async () => {
+    const result = await getCertificatesByPaymentToken(
+      paymentToken,
+      operations
+    );
+
+    expect(result.paymentStatus).toBe('PROCESSING');
+  });
+
+  it('should check Certificates payment status', async () => {
+    const result = await checkCertificatesPaymentStatus(
+      certificates[0].name,
+      paymentToken,
+      operations
+    );
+
+    expect(result).toBeDefined();
+  });
+
+  afterAll(async () => {
+    await deleteCertificate(certificates[0]._id, operations);
+  });
+});
 
 describe('Payment queries', () => {
   beforeAll(async () => {
@@ -111,6 +175,7 @@ describe('Payment queries', () => {
       operations
     );
     orderId = orderData._id;
+    orderNumber = orderData.orderNumber;
   });
 
   it('should get Payment Checkout', async () => {
@@ -119,16 +184,13 @@ describe('Payment queries', () => {
       operations
     );
     expect(res).toBeDefined();
-    expect(res.data.getPaymentCheckout._id).toBe(orderId);
+    expect(res._id).toBe(orderId);
   });
 
-  it('should obtain response from checkPaymentStatus', async () => {
-    const req = { body: { order_id: `${wrongId}` } };
-    const res = mockResponse();
-    await checkPaymentStatus(req, res);
+  it('should check Order payment status', async () => {
+    const res = await checkOrderPaymentStatus(orderNumber, 1, operations);
 
     expect(res).toBeDefined();
-    expect(res).toBeInstanceOf(Object);
   });
 
   afterAll(async () => {

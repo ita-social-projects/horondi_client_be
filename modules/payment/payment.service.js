@@ -51,7 +51,7 @@ class PaymentService {
     });
 
     if (paymentUrl) {
-      const order = await OrderModel.findByIdAndUpdate(
+      return OrderModel.findByIdAndUpdate(
         orderId,
         {
           $set: {
@@ -61,8 +61,6 @@ class PaymentService {
         },
         { new: true }
       ).exec();
-
-      return order;
     }
   }
 
@@ -231,53 +229,6 @@ class PaymentService {
     return {
       certificates,
     };
-  }
-
-  async checkPaymentStatus(req, res) {
-    try {
-      const { order_id } = req.body;
-
-      const {
-        order_status,
-        response_signature_string,
-        signature,
-      } = await paymentController(CHECK_PAYMENT_STATUS, {
-        order_id,
-      });
-
-      const signatureWithoutFirstParam = response_signature_string
-        .split('|')
-        .slice(1);
-
-      const signatureToCheck = PAYMENT_SECRET.split(' ')
-        .concat(signatureWithoutFirstParam)
-        .join('|');
-
-      const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
-
-      const order = await OrderModel.findOne({
-        orderNumber: order_id.toString(),
-      }).exec();
-
-      if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-
-      if (
-        order_status !== APPROVED.toLowerCase() ||
-        signature !== signSignatureToCheck
-      ) {
-        throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
-      }
-
-      await OrderModel.findByIdAndUpdate(order._id, {
-        $set: {
-          paymentStatus: PAID,
-        },
-      }).exec();
-
-      res.end();
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
   }
 }
 

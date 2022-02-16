@@ -3,10 +3,6 @@ const newCertificateInputData = [
     value: 1000,
     count: 1,
   },
-  {
-    value: 1500,
-    count: 1,
-  },
 ];
 
 const email = 'test@test.com';

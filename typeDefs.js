@@ -658,7 +658,6 @@ const typeDefs = gql`
     sendCertificatesCodesToEmail(language: Int!, certificates: [CertificateInput]!): CertificatesResult
     checkOrderPaymentStatus(orderId: String!, language: Int!): OrderResult
     getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
-    checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: QuestionsFilterInput

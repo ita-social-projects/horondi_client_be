@@ -13,7 +13,6 @@ const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
-const { checkPaymentStatus } = require('./modules/payment/payment.service');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { cronJob } = require('./helpers/cron-job');
 const translationsService = require('./modules/translations/translations.service');
@@ -117,7 +116,6 @@ app.disable('x-powered-by');
 
 currencyWorker();
 
-app.post('/fondy/callback', checkPaymentStatus);
 app.get('/translations', translationsService.getAllTranslations);
 
 server.applyMiddleware({

@@ -7,6 +7,7 @@ const createOrder = async (order, operations) => {
         addOrder(order: $order) {
           ... on Order {
             _id
+            orderNumber
             totalItemsPrice {
               currency
               value
