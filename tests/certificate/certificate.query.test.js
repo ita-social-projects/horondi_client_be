@@ -8,7 +8,11 @@ const {
   getAllCertificates,
   getCertificateById,
   updateCertificate,
+  getCertificatesByPaymentToken,
 } = require('./certificate.helper');
+const {
+  getPaymentCheckoutForCertificates,
+} = require('../payment/payment.helper');
 const {
   wrongId,
   newCertificateInputData,
@@ -18,6 +22,13 @@ const {
 let operations;
 let certificateId;
 let certificateName;
+let paymentToken;
+let certificates;
+
+afterAll(async () => {
+  await updateCertificate(certificateName, operations);
+  await deleteCertificate(certificateId, operations);
+});
 
 describe('Test certificate Queries', () => {
   beforeAll(async () => {
@@ -48,9 +59,32 @@ describe('Test certificate Queries', () => {
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
+});
 
-  afterAll(async () => {
-    await updateCertificate(certificateName, operations);
-    await deleteCertificate(certificateId, operations);
+describe('Test getCertificatesByToken flow', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificates = certificateData.certificates;
+    certificateId = certificateData.certificates[0]._id;
+
+    const result = await getPaymentCheckoutForCertificates(
+      { certificates, currency: 'UAH', amount: '100000' },
+      operations
+    );
+    paymentToken = result.paymentToken;
+  });
+
+  it('should get certificates by payment token', async () => {
+    const result = await getCertificatesByPaymentToken(
+      paymentToken,
+      operations
+    );
+
+    expect(result).toHaveProperty('paymentStatus', 'PROCESSING');
   });
 });

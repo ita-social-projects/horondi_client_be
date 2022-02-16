@@ -83,6 +83,37 @@ const getCertificateById = async (id, operations) => {
   return result.data.getCertificateById;
 };
 
+const getCertificatesByPaymentToken = async (paymentToken, operations) => {
+  const result = await operations.query({
+    query: gql`
+      query($paymentToken: String!) {
+        getCertificatesByPaymentToken(paymentToken: $paymentToken) {
+          ... on Certificates {
+            certificates {
+              name
+              email
+              value
+              dateStart
+              dateEnd
+              paymentStatus
+            }
+            paymentStatus
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      paymentToken,
+    },
+  });
+
+  return result.data.getCertificatesByPaymentToken;
+};
+
 const addCertificate = async (certificateName, operations) => {
   const result = await operations.mutate({
     mutation: gql`
@@ -193,4 +224,5 @@ module.exports = {
   getCertificateById,
   registerUser,
   updateCertificate,
+  getCertificatesByPaymentToken,
 };
