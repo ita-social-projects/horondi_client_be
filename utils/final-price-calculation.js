@@ -68,7 +68,7 @@ const finalPriceCalculationForConstructor = async (product) => {
   ).exec();
 
   const prices = [
-    pattern.additionalPrice,
+    pattern?.additionalPrice || 0,
     mainMaterial.additionalPrice,
     bottomMaterial.additionalPrice,
   ];
