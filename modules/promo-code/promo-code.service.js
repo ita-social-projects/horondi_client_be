@@ -33,7 +33,12 @@ class PromoCodeService {
   }
 
   async getPromoCodeByCode(code) {
-    const promoCode = await PromoCode.findOne({ code }).exec();
+    const currentDate = new Date();
+    const promoCode = await PromoCode.findOne({
+      code,
+      dateFrom: { $lte: currentDate },
+      dateTo: { $gt: currentDate },
+    }).exec();
 
     if (!promoCode) {
       throw new RuleError(PROMOCODE_NOT_FOUND, NOT_FOUND);
