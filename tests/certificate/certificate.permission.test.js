@@ -100,7 +100,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     it('should see only certificates owned by him', async () => {
       const result = await getAllCertificates(userContextServer);
 
-      expect(result.count).toBe(3);
+      expect(result.count).toBe(2);
     });
 
     afterAll(async () => {
