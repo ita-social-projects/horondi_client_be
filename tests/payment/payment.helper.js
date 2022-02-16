@@ -108,8 +108,43 @@ const checkOrderPaymentStatus = async (orderId, language, operations) => {
   return res;
 };
 
+const sendCertificatesCodesToEmail = async (
+  language,
+  certificates,
+  operations
+) => {
+  const res = await operations.query({
+    query: gql`
+      query($language: Int!, $certificates: [CertificateInput]!) {
+        sendCertificatesCodesToEmail(
+          language: $language
+          certificates: $certificates
+        ) {
+          ... on Certificates {
+            __typename
+            certificates {
+              name
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      certificates,
+      language,
+    },
+  });
+
+  return res.data.sendCertificatesCodesToEmail;
+};
+
 module.exports = {
   getPaymentCheckout,
+  sendCertificatesCodesToEmail,
   getPaymentCheckoutForCertificates,
   checkCertificatesPaymentStatus,
   checkOrderPaymentStatus,

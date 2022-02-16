@@ -6,6 +6,7 @@ const {
   deleteConstructorBasic,
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
+const { ORDER_NOT_VALID } = require('../../error-messages/orders.messages');
 const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
@@ -42,6 +43,7 @@ const {
   getPaymentCheckoutForCertificates,
   checkOrderPaymentStatus,
   getPaymentCheckout,
+  sendCertificatesCodesToEmail,
 } = require('./payment.helper');
 
 const {
@@ -70,6 +72,8 @@ let orderNumber;
 let mockResponse;
 let certificates;
 let paymentToken;
+
+const wrongId = 'ddfdf34';
 
 describe('Certificate payment queries', () => {
   beforeAll(async () => {
@@ -105,6 +109,16 @@ describe('Certificate payment queries', () => {
     const result = await checkCertificatesPaymentStatus(
       certificates[0].name,
       paymentToken,
+      operations
+    );
+
+    expect(result).toBeDefined();
+  });
+
+  it('should send email with certificates', async () => {
+    const result = await sendCertificatesCodesToEmail(
+      1,
+      certificates,
       operations
     );
 
@@ -187,10 +201,25 @@ describe('Payment queries', () => {
     expect(res._id).toBe(orderId);
   });
 
+  it('should get error message ORDER_NOT_VALID when passed wrong orderId', async () => {
+    const res = await getPaymentCheckout(
+      { orderId: wrongId, currency: 'UAH', amount: '2' },
+      operations
+    );
+
+    expect(res).toHaveProperty('message', ORDER_NOT_VALID);
+  });
+
   it('should check Order payment status', async () => {
     const res = await checkOrderPaymentStatus(orderNumber, 1, operations);
 
     expect(res).toBeDefined();
+  });
+
+  it('should get null after checking order payment status with wrong id', async () => {
+    const res = await checkOrderPaymentStatus(wrongId, 1, operations);
+
+    expect(res.data.checkOrderPaymentStatus).toBe(null);
   });
 
   afterAll(async () => {
@@ -204,5 +233,30 @@ describe('Payment queries', () => {
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+  });
+});
+
+describe('Get payment checkout for certificates test', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificates = certificateData.certificates;
+  });
+
+  it('should get payment token', async () => {
+    const result = await getPaymentCheckoutForCertificates(
+      { certificates, currency: 'USD', amount: '250000' },
+      operations
+    );
+
+    expect(result).toHaveProperty('paymentToken');
+  });
+
+  afterAll(async () => {
+    await deleteCertificate(certificates[0]._id, operations);
   });
 });
