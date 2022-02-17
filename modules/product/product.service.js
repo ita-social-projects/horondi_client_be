@@ -98,18 +98,10 @@ class ProductsService {
   }
 
   async getProductsFilters() {
-    const categories = await Product.distinct(PRODUCT_CATEGORY)
-      .lean()
-      .exec();
-    const models = await Product.distinct(PRODUCT_MODEL)
-      .lean()
-      .exec();
-    const patterns = await Product.distinct(PRODUCT_PATTERN)
-      .lean()
-      .exec();
-    const closures = await Product.distinct(PRODUCT_CLOSURE)
-      .lean()
-      .exec();
+    const categories = await Product.distinct(PRODUCT_CATEGORY).lean().exec();
+    const models = await Product.distinct(PRODUCT_MODEL).lean().exec();
+    const patterns = await Product.distinct(PRODUCT_PATTERN).lean().exec();
+    const closures = await Product.distinct(PRODUCT_CLOSURE).lean().exec();
     const mainMaterial = await Product.distinct(PRODUCT_MAIN_MATERIAL)
       .lean()
       .exec();
@@ -172,7 +164,10 @@ class ProductsService {
       isHotItem,
       models,
       currency,
+      isFromConstructor,
     } = args;
+
+    filter.isFromConstructor = isFromConstructor;
 
     if (isHotItem) {
       filter.isHotItem = isHotItem;
@@ -208,7 +203,12 @@ class ProductsService {
   }
 
   async getProducts({ filter, skip, limit, sort = { rate: -1 }, search }) {
-    const filters = this.filterItems(filter);
+    const filters = this.filterItems({
+      filter,
+      isFromConstructor: {
+        $ne: true,
+      },
+    });
     const sortValue = Object.keys(sort).includes('basePrice')
       ? {
           'sizes.price.value': sort.basePrice,
@@ -235,9 +235,7 @@ class ProductsService {
       .limit(limit)
       .exec();
 
-    const count = await Product.find(filters)
-      .countDocuments()
-      .exec();
+    const count = await Product.find(filters).countDocuments().exec();
 
     return {
       items,
@@ -264,9 +262,7 @@ class ProductsService {
       },
     };
 
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
+    const product = await Product.findById(id).lean().exec();
     if (!product) {
       throw new RuleError(PRODUCT_NOT_FOUND, FORBIDDEN);
     }
@@ -427,9 +423,7 @@ class ProductsService {
 
   async deleteProduct(ids, { _id: adminId }) {
     for (const itemId of ids.ids) {
-      const product = await Product.findById(itemId)
-        .lean()
-        .exec();
+      const product = await Product.findById(itemId).lean().exec();
 
       if (!product) {
         throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
@@ -522,9 +516,7 @@ class ProductsService {
   }
 
   async deleteImages(id, imagesToDelete) {
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
+    const product = await Product.findById(id).lean().exec();
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
