@@ -390,7 +390,7 @@ class UserService extends FilterHelper {
     return this.getUserByFieldOrThrow(USER_ID, id);
   }
 
-  async updateUserById(updatedUser, user, image, id) {
+  async updateUserById(updatedUser, user, image, id, deleteAvatar) {
     let userToUpdate = {};
     if (id) {
       userToUpdate = await User.findById(id).exec();
@@ -398,7 +398,8 @@ class UserService extends FilterHelper {
       userToUpdate = user;
     }
     if (!userToUpdate.images) userToUpdate.images = [];
-    if (image) {
+
+    const deleteImages = async () => {
       if (userToUpdate.images?.length) {
         await deleteFiles(
           Object.values(userToUpdate.images).filter(
@@ -406,11 +407,23 @@ class UserService extends FilterHelper {
           )
         );
       }
+    };
 
+    if (deleteAvatar) {
+      await deleteImages();
+      updatedUser = {
+        ...updatedUser,
+        $unset: { images: '' },
+      };
+    }
+
+    if (image) {
+      await deleteImages();
       const uploadResult = await uploadService.uploadFiles([image]);
       const imageResults = await uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
+
     return User.findByIdAndUpdate(userToUpdate._id, updatedUser, { new: true });
   }
 

@@ -71,7 +71,13 @@ const userMutation = {
     }
   },
   updateUserById: (parent, args, context) =>
-    userService.updateUserById(args.user, context.user, args.image, args.id),
+    userService.updateUserById(
+      args.user,
+      context.user,
+      args.image,
+      args.id,
+      args.deleteAvatar
+    ),
   regenerateAccessToken: async (parent, args) => {
     try {
       return await userService.regenerateAccessToken(args.refreshToken);
