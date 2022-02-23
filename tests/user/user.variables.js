@@ -132,6 +132,15 @@ const INVALID_PASSWORD =
   '"password" with value "You" fails to match the required pattern: /^(?=.*[A-ZА-ЯІЇЄ])(?=.*\\d)[a-zA-Zа-яА-ЯіїєІЇЄ\\d!@#$%^&*()~¥=_+}{":;\'?/>.<,\\\\`|[\\]-]{6,30}$/';
 const INVALID_ROLE = '"role" must be one of [admin, superadmin]';
 
+const fileArray = [
+  {
+    fileNames: {
+      thumbnail: 'thumb_testfile.png',
+      large: 'large_testfile.png',
+    },
+  },
+];
+
 module.exports = {
   newAdmin,
   superAdminUser,
@@ -144,6 +153,7 @@ module.exports = {
   wrongPassword,
   wrongEmail,
   filter,
+  fileArray,
   invalidFirstName,
   invalidLastName,
   invalidPassword,

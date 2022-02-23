@@ -4,7 +4,6 @@ const fetch = require('node-fetch');
 const { jwtClient } = require('../../client/jwt-client');
 const { bcryptClient } = require('../../client/bcrypt-client');
 const uploadService = require('../upload/upload.service');
-
 const User = require('./user.model');
 const Wishlist = require('../wishlist/wishlist.model');
 
@@ -420,7 +419,7 @@ class UserService extends FilterHelper {
     if (image) {
       await deleteImages();
       const uploadResult = await uploadService.uploadFiles([image]);
-      const imageResults = await uploadResult[0];
+      const imageResults = uploadResult[0];
       updatedUser.images = imageResults.fileNames;
     }
 

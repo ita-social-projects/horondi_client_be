@@ -22,6 +22,7 @@ const {
   wrongPassword,
   wrongEmail,
   socialToken,
+  fileArray,
 } = require('./user.variables');
 const {
   registerUser,
@@ -41,6 +42,7 @@ const {
   updateUserById,
   completeAdminRegister,
   confirmSuperadminCreation,
+  setAvatar,
 } = require('./user.helper');
 const { setupApp } = require('../helper-functions');
 const {
@@ -62,6 +64,19 @@ const {
 } = require('../../consts/status-codes');
 
 jest.mock('../../modules/email/email.service');
+
+jest.mock('../../modules/upload/upload.service', () => ({
+  uploadFiles: jest.fn().mockImplementation(() =>
+    Promise.resolve([
+      {
+        fileNames: {
+          thumbnail: 'thumb_testfile.png',
+          large: 'large_testfile.png',
+        },
+      },
+    ])
+  ),
+}));
 
 let userId;
 let token;
@@ -386,6 +401,30 @@ describe('mutations', () => {
     operations = await setupApp();
     await deleteUser(userId, operations);
   });
+
+  describe('Test Avatar adding and deletion', () => {
+    afterAll(async () => {
+      await deleteUser(res.data.registerUser._id, operations);
+    });
+
+    test('User should add Avatar', async () => {
+      const result = await setAvatar(
+        userId,
+        email,
+        'testImage.png',
+        false,
+        operations
+      );
+
+      expect(result.images.thumbnail).toBeDefined();
+    });
+
+    test('User should Delete Avatar', async () => {
+      const result = await setAvatar(userId, email, null, true, operations);
+
+      expect(result.images).toBe(null);
+    });
+  });
 });
 
 describe('User`s mutation restictions tests', () => {
@@ -444,6 +483,7 @@ describe('User`s mutation restictions tests', () => {
     operations = await setupApp();
     await deleteUser(res.data.registerUser._id, operations);
   });
+
   test('Admin can delete user', async () => {
     operations = await setupApp();
     const res = await deleteUser(userId, operations);

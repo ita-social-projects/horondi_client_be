@@ -634,6 +634,39 @@ const validateConfirmationToken = async (token, operations) =>
     },
   });
 
+const setAvatar = async (userId, email, image, deleteAvatar, operations) => {
+  const result = await operations.mutate({
+    mutation: gql`
+      mutation(
+        $email: String!
+        $userId: ID!
+        $image: Upload
+        $deleteAvatar: Boolean
+      ) {
+        updateUserById(
+          user: { firstName: "Updated", lastName: "Updated", email: $email }
+          id: $userId
+          image: $image
+          deleteAvatar: $deleteAvatar
+        ) {
+          email
+          images {
+            thumbnail
+          }
+        }
+      }
+    `,
+    variables: {
+      email,
+      userId,
+      image,
+      deleteAvatar,
+    },
+  });
+
+  return result.data.updateUserById;
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -661,4 +694,5 @@ module.exports = {
   switchUserStatus,
   completeAdminRegister,
   confirmSuperadminCreation,
+  setAvatar,
 };
