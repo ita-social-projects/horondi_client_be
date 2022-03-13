@@ -61,7 +61,12 @@ const certificatesExpireCheck = () =>
 
     if (certificatesRemind.length) {
       for (const certificate of certificatesRemind) {
-        await sendEmail(certificate.email, CERTIFICATE_REMINDER);
+        const dateEnd = new Date(certificate.dateEnd).toLocaleDateString(
+          'uk-UA'
+        );
+        await sendEmail(certificate.email, CERTIFICATE_REMINDER, {
+          dateEnd: dateEnd,
+        });
       }
     }
   });

@@ -1,0 +1,9 @@
+extends template-en
+block headerText
+    h1.responseTitle Your HORONDI Certificate will be expired in a month
+block subheaderText
+    h1.desktopTitle Your HORONDI Certificate will be expired in a month
+block content
+    div.contentWrapper
+        p.text Greetings! #[br] We remind you that your gift certificate will expire #[strong #{dateEnd}].
+        p.text You can view your gift certificates #[a(href=frontendUrl + /my-certificates) in the personal account].
