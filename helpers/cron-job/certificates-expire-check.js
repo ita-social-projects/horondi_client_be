@@ -10,6 +10,7 @@ const { sendEmail } = require('../../modules/email/email.service');
 const {
   EmailActions: { CERTIFICATE_REMINDER },
 } = require('../../consts/email-actions');
+
 const {
   CRON_PERIOD: { EVERY_MORNING },
 } = require('../../consts/cron-period');
