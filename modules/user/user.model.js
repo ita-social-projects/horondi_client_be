@@ -49,8 +49,8 @@ const userSchema = new mongoose.Schema({
       default: 0,
     },
     language: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: 'ua',
     },
     theme: {
       type: String,

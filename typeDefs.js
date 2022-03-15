@@ -825,7 +825,7 @@ const typeDefs = gql`
   }
   input ConfigsUserInput {
     currency: Int
-    language: Int
+    language: String
     theme: String
   }
   input ConvertOptionInput {

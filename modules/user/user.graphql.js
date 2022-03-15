@@ -26,7 +26,7 @@ type User{
 
 type UserConfigs {
     currency: Int
-    language: Int
+    language: String
     theme: String
 }
 
