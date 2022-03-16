@@ -923,7 +923,7 @@ const typeDefs = gql`
     deleteUser(id: ID!): UserResult
     blockUser(userId: ID!): UserResult
     unlockUser(userId: ID!): UserResult
-    updateUserById(user: UserUpdateInput!, id: ID!, image: Upload): User
+    updateUserById(user: UserUpdateInput!, id: ID!, image: Upload, deleteAvatar: Boolean ): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean
