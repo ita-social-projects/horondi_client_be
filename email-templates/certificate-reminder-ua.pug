@@ -1,0 +1,9 @@
+extends template-ua
+block headerText
+    h1.responseTitle Ваш HORONDI Сертифікат буде протерміновано за місяць
+block subheaderText
+    h1.desktopTitle Ваш HORONDI Сертифікат буде протерміновано за місяць
+block content
+    div.contentWrapper
+        p.text Вітаємо! #[br] Нагадуємо, що дія вашого подарункового сертифікату завершиться #[strong #{dateEnd}].
+        p.text Ви можете переглянути ваші подарункові сертифікати #[a(href=frontendUrl + '/my-certificates') в особистому кабінеті].
