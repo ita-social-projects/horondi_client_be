@@ -823,6 +823,11 @@ const typeDefs = gql`
     small: String
     thumbnail: String
   }
+  input ConfigsUserInput {
+    currency: Int
+    language: String
+    theme: String
+  }
   input ConvertOptionInput {
     name: String!
     exchangeRate: Float!
