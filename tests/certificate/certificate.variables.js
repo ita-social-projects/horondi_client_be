@@ -1,6 +1,10 @@
 const newCertificateInputData = [
   {
     value: 1000,
+    count: 2,
+  },
+  {
+    value: 1500,
     count: 1,
   },
 ];

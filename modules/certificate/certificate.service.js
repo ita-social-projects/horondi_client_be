@@ -16,6 +16,7 @@ const {
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
+const { modifyNowDate } = require('../../utils/modify-date');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
@@ -30,19 +31,75 @@ const generateName = async () => {
 };
 
 class CertificatesService {
-  async getAllCertificates(skip, limit, user) {
+  dateOrName(search) {
     let filter = {};
+    const regDate = /^\d+[.]\d+[.]\d+$/;
+    search = search.trim();
+
+    if (!search) {
+      return filter;
+    }
+
+    if (regDate.test(search)) {
+      const date = new Date(search);
+      filter = {
+        dateStart: {
+          $gte: date,
+          $lt: date,
+        },
+      };
+    } else {
+      const searchPattern = {
+        $regex: search,
+        $options: 'gi',
+      };
+
+      filter = {
+        $or: [
+          {
+            'admin.firstName': searchPattern,
+          },
+          {
+            'admin.lastName': searchPattern,
+          },
+        ],
+      };
+    }
+
+    return filter;
+  }
+
+  async getAllCertificates(skip, limit, sort, search, user) {
+    let filter = this.dateOrName(search);
 
     if (user.role === USER) {
       filter = { ownedBy: user._id };
     }
-    const items = await CertificateModel.find(filter)
-      .sort({ startDate: 1 })
-      .limit(limit)
-      .skip(skip)
-      .exec();
 
-    const count = await CertificateModel.find(filter).countDocuments().exec();
+    const certificates = await CertificateModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      {
+        $match: filter,
+      },
+      {
+        $facet: {
+          count: [{ $count: 'count' }],
+          data: [{ $sort: sort }, { $skip: skip }, { $limit: limit }],
+        },
+      },
+    ]).exec();
+
+    const items = certificates[0].data;
+    const count = certificates[0].count.length
+      ? certificates[0].count[0].count
+      : 0;
 
     return {
       items,
@@ -78,7 +135,27 @@ class CertificatesService {
     return certificate;
   }
 
-  async generateCertificate(certificatesData, email, userId, userRole) {
+  async getCertificatesByPaymentToken(paymentToken) {
+    const certificates = await CertificateModel.find({
+      paymentToken,
+    }).exec();
+
+    const { paymentStatus } = certificates[0];
+
+    if (!certificates) {
+      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
+    }
+
+    return { certificates, paymentStatus };
+  }
+
+  async generateCertificate(
+    certificatesData,
+    email,
+    dateStart,
+    userId,
+    userRole
+  ) {
     const certificatesArr = [];
     let certificatesPrice = 0;
 
@@ -95,9 +172,22 @@ class CertificatesService {
     for (const certificateData of certificatesData) {
       const { value, count } = certificateData;
       certificatesPrice += value * count;
+
       for (let i = 0; i < count; i++) {
         newCertificate.name = await generateName();
         newCertificate.value = value;
+
+        if (dateStart) {
+          newCertificate.dateStart = dateStart;
+          newCertificate.dateEnd = modifyNowDate(
+            undefined,
+            undefined,
+            1,
+            dateStart
+          );
+          newCertificate.isActive = false;
+        }
+
         certificatesArr.push({ ...newCertificate });
       }
     }

@@ -763,7 +763,7 @@ const resolvers = {
 
   CertificatePaginatedResult: {
     __resolveType: obj =>
-      obj.count ? SCHEMA_NAMES.paginatedCertificate : 'Error',
+      obj.count >= 0 ? SCHEMA_NAMES.paginatedCertificate : 'Error',
   },
 
   PromoCodeResult: {

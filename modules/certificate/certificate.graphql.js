@@ -51,14 +51,14 @@ const certificateTypes = `
   union CertificatePaginatedResult = PaginatedCertificate | Error
 
   extend type Query {
-    getAllCertificates(limit:Int, skip:Int): CertificatePaginatedResult
+    getAllCertificates(limit: Int, skip: Int, sort: JSONObject, search: String): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
   }
 
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
-    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String!): CertificatesResult
+    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
     updateCertificate(name: String!): CertificateResult
   }
 `;
