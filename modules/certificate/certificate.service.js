@@ -1,5 +1,6 @@
 const { randomInt } = require('crypto');
 const RuleError = require('../../errors/rule.error');
+const mongoose = require('mongoose');
 const { CertificateModel } = require('./certificate.model');
 const {
   roles: { USER },
@@ -34,7 +35,7 @@ class CertificatesService {
   dateOrName(search) {
     let filter = {};
     const regDate = /^\d+[.]\d+[.]\d+$/;
-    search = search.trim();
+    search = (search ?? '').trim();
 
     if (!search) {
       return filter;
@@ -70,10 +71,13 @@ class CertificatesService {
   }
 
   async getAllCertificates(skip, limit, sort, search, user) {
-    let filter = this.dateOrName(search);
+    let filter;
 
     if (user.role === USER) {
-      filter = { ownedBy: user._id };
+      const userId = mongoose.Types.ObjectId(user._id);
+      filter = { ownedBy: userId };
+    } else {
+      filter = this.dateOrName(search);
     }
 
     const certificates = await CertificateModel.aggregate([
@@ -100,7 +104,7 @@ class CertificatesService {
     const count = certificates[0].count.length
       ? certificates[0].count[0].count
       : 0;
-
+    console.log(items);
     return {
       items,
       count,
