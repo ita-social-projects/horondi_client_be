@@ -44,7 +44,7 @@ describe('Test certificate Queries', () => {
 
   it("should filter certificates by search admin's name", async () => {
     const result = await getAllCertificates('admin', operations);
-    console.log(result);
+
     expect(result.items[0]).toHaveProperty('isUsed');
   });
 
@@ -64,38 +64,5 @@ describe('Test certificate Queries', () => {
     const result = await getCertificateById(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
-  });
-});
-
-describe('Test getCertificatesByToken flow', () => {
-  beforeAll(async () => {
-    operations = await setupApp();
-    const certificateData = await generateCertificate(
-      newCertificateInputData,
-      email,
-      operations
-    );
-    certificates = certificateData.certificates;
-    certificateId = certificateData.certificates[0]._id;
-
-    const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'UAH', amount: '100000' },
-      operations
-    );
-    paymentToken = result.paymentToken;
-  });
-
-  afterAll(async () => {
-    await updateCertificate(certificateName, operations);
-    await deleteCertificate(certificateId, operations);
-  });
-
-  it('should get certificates by payment token', async () => {
-    const result = await getCertificatesByPaymentToken(
-      paymentToken,
-      operations
-    );
-
-    expect(result).toHaveProperty('paymentStatus', 'PROCESSING');
   });
 });

@@ -55,14 +55,8 @@ const certificateTypes = `
     desc
   }
 
-  type sortObject {
-    value: Sort
-    isUsed: Sort
-    isExpired: Sort
-  }
- 
   extend type Query {
-    getAllCertificates(limit: Int, skip: Int, sort: sortObject, search: String): CertificatePaginatedResult
+    getAllCertificates(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
   }
 

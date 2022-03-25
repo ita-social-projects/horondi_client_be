@@ -17,7 +17,7 @@ const {
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
-const { modifyNowDate } = require('../../utils/modify-date');
+const { modifyDate } = require('../../utils/modify-date');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
@@ -71,7 +71,7 @@ class CertificatesService {
     return filter;
   }
 
-  async getAllCertificates(skip, limit, sort, search, user) {
+  async getAllCertificates(skip, limit, sortBy, sortOrder, search, user) {
     let filter;
 
     if (user.role === USER) {
@@ -80,6 +80,9 @@ class CertificatesService {
     } else {
       filter = this.dateOrName(search);
     }
+
+    sortOrder = sortOrder === 'desc' ? -1 : 1;
+    const sort = { [sortBy]: sortOrder };
 
     const certificates = await CertificateModel.aggregate([
       {
@@ -105,7 +108,7 @@ class CertificatesService {
     const count = certificates[0].count.length
       ? certificates[0].count[0].count
       : 0;
-    console.log(items);
+
     return {
       items,
       count,
@@ -184,8 +187,8 @@ class CertificatesService {
 
         if (dateStart) {
           const futureDate = {
-            datestart,
-            dateEnd: modifyNowDate(undefined, undefined, 1, dateStart),
+            dateStart,
+            dateEnd: modifyDate({ years: 1, date: dateStart }),
             isActive: false,
           };
           Object.assign(newCertificate, futureDate);
