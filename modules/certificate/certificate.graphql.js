@@ -55,7 +55,7 @@ const certificateTypes = `
     desc
   }
 
-  sortObject {
+  type sortObject {
     value: Sort
     isUsed: Sort
     isExpired: Sort
