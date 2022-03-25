@@ -10,6 +10,7 @@ const { sendEmail } = require('../../modules/email/email.service');
 const {
   EmailActions: { CERTIFICATE_REMINDER },
 } = require('../../consts/email-actions');
+
 const {
   CRON_PERIOD: { EVERY_MORNING },
 } = require('../../consts/cron-period');
@@ -61,7 +62,12 @@ const certificatesExpireCheck = () =>
 
     if (certificatesRemind.length) {
       for (const certificate of certificatesRemind) {
-        await sendEmail(certificate.email, CERTIFICATE_REMINDER);
+        const dateEnd = new Date(certificate.dateEnd).toLocaleDateString(
+          'uk-UA'
+        );
+        await sendEmail(certificate.email, CERTIFICATE_REMINDER, {
+          dateEnd: dateEnd,
+        });
       }
     }
   });

@@ -51,6 +51,18 @@
       },
       {
         "kind": "UNION",
+        "name": "CertificatesResult",
+        "possibleTypes": [
+          {
+            "name": "Certificates"
+          },
+          {
+            "name": "Error"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
         "name": "CertificatePaginatedResult",
         "possibleTypes": [
           {

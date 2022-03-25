@@ -1,20 +1,16 @@
 const { gql } = require('@apollo/client');
 
-const generateCertificate = async (certificateDada, operations) => {
+const generateCertificate = async (certificateData, email, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($certificateDada: GenerateCertificateInput!) {
-        generateCertificate(newCertificate: $certificateDada) {
-          ... on Certificate {
-            _id
-            name
-            isExpired
-            dateStart
-            email
-            isUsed
-            ownedBy {
+      mutation($certificateData: [GenerateCertificateInput]!, $email: String!) {
+        generateCertificate(newCertificates: $certificateData, email: $email) {
+          ... on Certificates {
+            certificates {
               _id
+              name
             }
+            certificatesPrice
           }
           ... on Error {
             message
@@ -24,7 +20,8 @@ const generateCertificate = async (certificateDada, operations) => {
       }
     `,
     variables: {
-      certificateDada,
+      certificateData,
+      email,
     },
   });
 
@@ -84,6 +81,37 @@ const getCertificateById = async (id, operations) => {
   });
 
   return result.data.getCertificateById;
+};
+
+const getCertificatesByPaymentToken = async (paymentToken, operations) => {
+  const result = await operations.query({
+    query: gql`
+      query($paymentToken: String!) {
+        getCertificatesByPaymentToken(paymentToken: $paymentToken) {
+          ... on Certificates {
+            certificates {
+              name
+              email
+              value
+              dateStart
+              dateEnd
+              paymentStatus
+            }
+            paymentStatus
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      paymentToken,
+    },
+  });
+
+  return result.data.getCertificatesByPaymentToken;
 };
 
 const addCertificate = async (certificateName, operations) => {
@@ -196,4 +224,5 @@ module.exports = {
   getCertificateById,
   registerUser,
   updateCertificate,
+  getCertificatesByPaymentToken,
 };

@@ -1,14 +1,23 @@
 const paymentService = require('./payment.service');
-const RuleError = require('../../errors/rule.error');
 
 const paymentQuery = {
-  getPaymentCheckout: async (_, { data, language }) => {
-    try {
-      return await paymentService.getPaymentCheckout(data, language);
-    } catch (e) {
-      return new RuleError(e.message, e.statusCode);
-    }
+  getPaymentCheckout: async (_, { data }) =>
+    paymentService.getPaymentCheckout(data),
+  getPaymentCheckoutForCertificates: async (_, { data }) =>
+    paymentService.getPaymentCheckoutForCertificates(data),
+  checkOrderPaymentStatus: async (_, { orderId, language }) => {
+    paymentService.checkOrderPaymentStatus(orderId, language);
   },
+  checkCertificatesPaymentStatus: async (
+    _,
+    { certificateName, paymentToken }
+  ) =>
+    paymentService.checkCertificatesPaymentStatus(
+      certificateName,
+      paymentToken
+    ),
+  sendCertificatesCodesToEmail: async (_, { language, certificates }) =>
+    paymentService.sendCertificatesCodesToEmail(language, certificates),
 };
 
 module.exports = { paymentQuery };

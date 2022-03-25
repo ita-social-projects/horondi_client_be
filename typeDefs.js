@@ -76,7 +76,7 @@ const {
 } = require('./modules/currency/currency.graphql');
 const {
   certificateTypes,
-} = require('./modules/certificate/certificate.graphql.js');
+} = require('./modules/certificate/certificate.graphql');
 const {
   commentType,
   commentInput,
@@ -102,6 +102,7 @@ const {
 const {
   paymentType,
   paymentStatus,
+  paymentInputForCertificate,
   paymentInput,
 } = require('./modules/payment/payment.graphql');
 const {
@@ -651,9 +652,12 @@ const typeDefs = gql`
     getUkrPoshtaCitiesByDistrictId(id:ID!): [UkrPoshtaCities]
     getUkrPoshtaStreetsByCityId(id: ID!): [UkrPoshtaStreets]
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
-    getPaymentCheckout(data: PaymentInput!, language: Int!): OrderResult
+    getPaymentCheckout(data: PaymentInput!): OrderResult
+    getPaymentCheckoutForCertificates(data: PaymentInputForCertificate!): CertificatesResult
+    checkCertificatesPaymentStatus(certificateName: String!, paymentToken: String!): CertificatesResult
+    sendCertificatesCodesToEmail(language: Int!, certificates: [CertificateInput]!): CertificatesResult
+    checkOrderPaymentStatus(orderId: String!, language: Int!): OrderResult
     getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
-    checkPaymentStatus(orderId: String!): PaymentStatus
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: QuestionsFilterInput
@@ -768,6 +772,7 @@ const typeDefs = gql`
   ${UserForStatisticsInput}
   ${novaPoshtaInput}
   ${paymentInput}
+  ${paymentInputForCertificate}
   ${sizeInput}
   ${homePageSlideInput}
   ${closureInputs}
@@ -817,6 +822,11 @@ const typeDefs = gql`
     medium: String
     small: String
     thumbnail: String
+  }
+  input ConfigsUserInput {
+    currency: Int
+    language: String
+    theme: String
   }
   input ConvertOptionInput {
     name: String!
@@ -913,7 +923,7 @@ const typeDefs = gql`
     deleteUser(id: ID!): UserResult
     blockUser(userId: ID!): UserResult
     unlockUser(userId: ID!): UserResult
-    updateUserById(user: UserUpdateInput!, id: ID!, image: Upload): User
+    updateUserById(user: UserUpdateInput!, id: ID!, image: Upload, deleteAvatar: Boolean ): User
     confirmUser(token: String!): Boolean
     confirmUserEmail(token: String!): UserConfirmed
     recoverUser(email: String!, language: Int!): Boolean

@@ -43,6 +43,20 @@ const userSchema = new mongoose.Schema({
   },
   address: Address,
   images: ImageSet,
+  configs: {
+    currency: {
+      type: Number,
+      default: 0,
+    },
+    language: {
+      type: String,
+      default: 'ua',
+    },
+    theme: {
+      type: String,
+      default: 'light',
+    },
+  },
   credentials: [
     {
       source: String, // local, google, facebook

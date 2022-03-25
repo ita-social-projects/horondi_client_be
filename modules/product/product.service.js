@@ -172,7 +172,10 @@ class ProductsService {
       isHotItem,
       models,
       currency,
+      isFromConstructor,
     } = args;
+
+    filter.isFromConstructor = isFromConstructor;
 
     if (isHotItem) {
       filter.isHotItem = isHotItem;
@@ -208,7 +211,13 @@ class ProductsService {
   }
 
   async getProducts({ filter, skip, limit, sort = { rate: -1 }, search }) {
-    const filters = this.filterItems(filter);
+    const filters = this.filterItems({
+      ...filter,
+      isFromConstructor: {
+        $ne: true,
+      },
+    });
+
     const sortValue = Object.keys(sort).includes('basePrice')
       ? {
           'sizes.price.value': sort.basePrice,
@@ -253,7 +262,7 @@ class ProductsService {
     { _id: adminId }
   ) {
     const matchPrimaryInUpload = filesToUpload.filter(
-      (item) => item.large === productData.images[0].primary.large
+      item => item.large === productData.images[0].primary.large
     );
     productData.images = {
       primary: {
@@ -280,7 +289,7 @@ class ProductsService {
         if (!matchPrimaryInUpload.length)
           await uploadService.deleteFiles(
             Object.values(product.images.primary).filter(
-              (item) => typeof item === 'string'
+              item => typeof item === 'string'
             )
           );
         const uploadResult = await uploadService.uploadFiles([primary]);
@@ -292,7 +301,7 @@ class ProductsService {
       productData.images.additional = [];
       const previousImagesLinks = [];
       const newFiles = [];
-      filesToUpload.forEach((e) => {
+      filesToUpload.forEach(e => {
         if (e?.large) {
           previousImagesLinks.push(e);
         } else {
@@ -301,7 +310,7 @@ class ProductsService {
       });
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
-      const additional = imagesResults.map((res) => res?.value?.fileNames);
+      const additional = imagesResults.map(res => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
       productData.images.additional = [
@@ -402,13 +411,14 @@ class ProductsService {
     }
   }
 
-  async addProductFromConstructor(productData, filesToUpload) {
-    if (await this.checkProductExist(productData)) {
-      throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
+  async addProductFromConstructor(productData) {
+    const existingProduct = await this.findProductFromConstructor(productData);
+
+    if (existingProduct) {
+      return existingProduct;
     }
 
-    const { primary } = await uploadProductImages(filesToUpload);
-    productData.images = { primary };
+    productData.isFromConstructor = true;
 
     productData.basePrice = await calculateBasePrice(productData.basePrice);
 
@@ -438,7 +448,7 @@ class ProductsService {
       const { primary, additional } = images;
       const additionalImagesToDelete =
         typeof additional[0] === 'object'
-          ? additional.map((img) => [...Object.values(img)]).flat()
+          ? additional.map(img => [...Object.values(img)]).flat()
           : [];
 
       const deletedImages = await uploadService.deleteFiles([
@@ -497,6 +507,29 @@ class ProductsService {
     return productCount > 0;
   }
 
+  async findProductFromConstructor(data) {
+    return Product.findOne({
+      model: {
+        $eq: data.model,
+      },
+      'mainMaterial.material': {
+        $eq: data.mainMaterial.material,
+      },
+      'mainMaterial.color': {
+        $eq: data.mainMaterial.color,
+      },
+      'bottomMaterial.material': {
+        $eq: data.bottomMaterial.material,
+      },
+      'bottomMaterial.color': {
+        $eq: data.bottomMaterial.color,
+      },
+      pattern: {
+        $eq: data.pattern,
+      },
+    }).exec();
+  }
+
   async deleteImages(id, imagesToDelete) {
     const product = await Product.findById(id)
       .lean()
@@ -504,8 +537,8 @@ class ProductsService {
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
-        (item) =>
-          !Object.values(item).filter((image) => imagesToDelete.includes(image))
+        item =>
+          !Object.values(item).filter(image => imagesToDelete.includes(image))
             .length
       );
       const updatedProduct = await Product.findByIdAndUpdate(

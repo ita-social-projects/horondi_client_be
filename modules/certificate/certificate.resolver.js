@@ -6,12 +6,16 @@ const certificatesQuery = {
 
   getCertificateById: async (_, { id }) =>
     certificatesService.getCertificateById(id),
+
+  getCertificatesByPaymentToken: async (_, { paymentToken }) =>
+    certificatesService.getCertificatesByPaymentToken(paymentToken),
 };
 
 const certificatesMutation = {
-  generateCertificate: async (_, { newCertificate }, { user = {} }) =>
+  generateCertificate: async (_, { newCertificates, email }, { user = {} }) =>
     certificatesService.generateCertificate(
-      newCertificate,
+      newCertificates,
+      email,
       user._id,
       user.role
     ),

@@ -9,7 +9,7 @@ const {
   PRODUCT_FEATURES: { PRODUCT },
 } = require('../../consts/product-features');
 const {
-  roles: { USER, ADMIN, SUPERADMIN },
+  roles: { ADMIN, SUPERADMIN },
 } = require('../../consts');
 
 const productPermissionsMutation = {
@@ -18,7 +18,6 @@ const productPermissionsMutation = {
     hasRoles([ADMIN, SUPERADMIN])
   ),
   addProductFromConstructor: and(
-    hasRoles([USER]),
     inputDataValidation(PRODUCT, productFromConstructorInputValidator)
   ),
   updateProduct: and(

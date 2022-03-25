@@ -1,13 +1,12 @@
 const { deleteOrder, createOrder } = require('../order/order.helpers');
-const { getPaymentCheckout } = require('./payment.helper');
-const { checkPaymentStatus } = require('../../modules/payment/payment.service');
-const { wrongId, newOrderInputData } = require('../order/order.variables');
+const { newOrderInputData } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProduct } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
+const { ORDER_NOT_VALID } = require('../../error-messages/orders.messages');
 const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
@@ -33,6 +32,25 @@ const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 
+const {
+  generateCertificate,
+  getCertificatesByPaymentToken,
+  deleteCertificate,
+} = require('../certificate/certificate.helper');
+
+const {
+  checkCertificatesPaymentStatus,
+  getPaymentCheckoutForCertificates,
+  checkOrderPaymentStatus,
+  getPaymentCheckout,
+  sendCertificatesCodesToEmail,
+} = require('./payment.helper');
+
+const {
+  newCertificateInputData,
+  email,
+} = require('../certificate/certificate.variables');
+
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -50,7 +68,67 @@ let categoryId;
 let patternId;
 let constructorBasicId;
 let closureId;
+let orderNumber;
 let mockResponse;
+let certificates;
+let paymentToken;
+
+const wrongId = 'ddfdf34';
+
+describe('Certificate payment queries', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificates = certificateData.certificates;
+  });
+
+  it('should get Certificate Payment Checkout', async () => {
+    const result = await getPaymentCheckoutForCertificates(
+      { certificates, currency: 'UAH', amount: '100000' },
+      operations
+    );
+    paymentToken = result.paymentToken;
+
+    expect(result).toHaveProperty('paymentToken');
+  });
+
+  it('should get Certificates by payment token', async () => {
+    const result = await getCertificatesByPaymentToken(
+      paymentToken,
+      operations
+    );
+
+    expect(result.paymentStatus).toBe('PROCESSING');
+  });
+
+  it('should check Certificates payment status', async () => {
+    const result = await checkCertificatesPaymentStatus(
+      certificates[0].name,
+      paymentToken,
+      operations
+    );
+
+    expect(result).toBeDefined();
+  });
+
+  it('should send email with certificates', async () => {
+    const result = await sendCertificatesCodesToEmail(
+      1,
+      certificates,
+      operations
+    );
+
+    expect(result).toBeDefined();
+  });
+
+  afterAll(async () => {
+    await deleteCertificate(certificates[0]._id, operations);
+  });
+});
 
 describe('Payment queries', () => {
   beforeAll(async () => {
@@ -111,25 +189,37 @@ describe('Payment queries', () => {
       operations
     );
     orderId = orderData._id;
+    orderNumber = orderData.orderNumber;
   });
 
   it('should get Payment Checkout', async () => {
     const res = await getPaymentCheckout(
       { orderId, currency: 'UAH', amount: '2' },
-      1,
       operations
     );
     expect(res).toBeDefined();
-    expect(res.data.getPaymentCheckout._id).toBe(orderId);
+    expect(res._id).toBe(orderId);
   });
 
-  it('should obtain response from checkPaymentStatus', async () => {
-    const req = { body: { order_id: `${wrongId}` } };
-    const res = mockResponse();
-    await checkPaymentStatus(req, res);
+  it('should get error message ORDER_NOT_VALID when passed wrong orderId', async () => {
+    const res = await getPaymentCheckout(
+      { orderId: wrongId, currency: 'UAH', amount: '2' },
+      operations
+    );
+
+    expect(res).toHaveProperty('message', ORDER_NOT_VALID);
+  });
+
+  it('should check Order payment status', async () => {
+    const res = await checkOrderPaymentStatus(orderNumber, 1, operations);
 
     expect(res).toBeDefined();
-    expect(res).toBeInstanceOf(Object);
+  });
+
+  it('should get null after checking order payment status with wrong id', async () => {
+    const res = await checkOrderPaymentStatus(wrongId, 1, operations);
+
+    expect(res.data.checkOrderPaymentStatus).toBe(null);
   });
 
   afterAll(async () => {
@@ -143,5 +233,30 @@ describe('Payment queries', () => {
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+  });
+});
+
+describe('Get payment checkout for certificates test', () => {
+  beforeAll(async () => {
+    operations = await setupApp();
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificates = certificateData.certificates;
+  });
+
+  it('should get payment token', async () => {
+    const result = await getPaymentCheckoutForCertificates(
+      { certificates, currency: 'USD', amount: '250000' },
+      operations
+    );
+
+    expect(result).toHaveProperty('paymentToken');
+  });
+
+  afterAll(async () => {
+    await deleteCertificate(certificates[0]._id, operations);
   });
 });

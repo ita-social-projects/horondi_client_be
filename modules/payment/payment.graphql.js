@@ -21,5 +21,17 @@ const paymentInput = `
       amount: String!
   }
 `;
+const paymentInputForCertificate = `
+  input PaymentInputForCertificate {
+    currency: String!
+    amount: String!
+    certificates: [CertificateInput]!
+  }
+`;
 
-module.exports = { paymentType, paymentInput, paymentStatus };
+module.exports = {
+  paymentType,
+  paymentInput,
+  paymentInputForCertificate,
+  paymentStatus,
+};

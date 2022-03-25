@@ -1,12 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;800&display=swap');
 
 * {
-  box-sizing: border-box;
   margin: 0;
 }
 
 body {
-  width: 100%;
   max-width: 1440px;
   font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -34,17 +32,10 @@ header {
 }
 
 .contentWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 95%;
-  max-width: 1110px;
-  margin: 0 auto;
+  margin-bottom: 20px;
 }
 
 .text, .link {
-  width: 100%;
-  margin: 0;
   margin-bottom: 35px;
   font-size: 16px;
   line-height: 24px;
@@ -67,11 +58,13 @@ header {
 }
 
 .continue {
+  display: block;
   width: 213px;
   height: 52px;
   background: #000000;
   text-align: center;
   border-radius: 4px;
+  margin: 0 auto;
   margin-bottom: 40px;
 }
 
@@ -191,10 +184,7 @@ header {
 }
 
 footer {
-  width: 95%;
-  max-width: 1110px;
-  margin: 0 auto;
-  padding-top: 40px;
+  padding-top: 20px;
   border-top: 1px solid #bdbdbd;
 }
 
@@ -205,24 +195,8 @@ footer {
   text-transform: uppercase;
 }
 
-@media (max-width: 1255px) {
-  .desktopTitle {
-    font-size: 50px;
-  }
-}
 
-@media (max-width: 1050px) {
-  .desktopTitle {
-    font-size: 45px;
-  }
-}
 
-@media (max-width: 935px) {
-  .desktopTitle {
-    margin-top: 30px;
-    font-size: 40px;
-  }
-}
 
 
 

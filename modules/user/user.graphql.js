@@ -9,6 +9,7 @@ type User{
     phoneNumber: String
     address: Address
     images: ImageSet
+    configs: UserConfigs
     token: String
     refreshToken: String
     invitationalToken: String
@@ -21,6 +22,12 @@ type User{
     banned: UserBlockPeriod
     confirmed: Boolean
     isSuccess: Boolean
+}
+
+type UserConfigs {
+    currency: Int
+    language: String
+    theme: String
 }
 
 type UserBlockPeriod {
@@ -72,6 +79,7 @@ input UserUpdateInput {
     orders:[ID]
     comments: [ID]
     confirmed: Boolean
+    configs: ConfigsUserInput
 }`;
 const LoginInput = `
 input LoginInput {
