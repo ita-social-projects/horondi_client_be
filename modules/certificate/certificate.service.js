@@ -24,6 +24,7 @@ const generateName = async () => {
   const secondNamePart = Math.floor(randomInt(1000, 9999));
   const name = `HOR${firstNamePart}${secondNamePart}`;
   const candidate = await CertificateModel.findOne({ name }).exec();
+
   if (candidate) {
     return generateName();
   }
@@ -182,14 +183,12 @@ class CertificatesService {
         newCertificate.value = value;
 
         if (dateStart) {
-          newCertificate.dateStart = dateStart;
-          newCertificate.dateEnd = modifyNowDate(
-            undefined,
-            undefined,
-            1,
-            dateStart
-          );
-          newCertificate.isActive = false;
+          const futureDate = {
+            datestart,
+            dateEnd: modifyNowDate(undefined, undefined, 1, dateStart),
+            isActive: false,
+          };
+          Object.assign(newCertificate, futureDate);
         }
 
         certificatesArr.push({ ...newCertificate });

@@ -50,8 +50,19 @@ const certificateTypes = `
   union CertificatesResult = Certificates | Error
   union CertificatePaginatedResult = PaginatedCertificate | Error
 
+  enum Sort {
+    asc
+    desc
+  }
+
+  sortObject {
+    value: Sort
+    isUsed: Sort
+    isExpired: Sort
+  }
+ 
   extend type Query {
-    getAllCertificates(limit: Int, skip: Int, sort: JSONObject, search: String): CertificatePaginatedResult
+    getAllCertificates(limit: Int, skip: Int, sort: sortObject, search: String): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
   }
 
