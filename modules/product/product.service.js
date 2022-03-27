@@ -427,6 +427,7 @@ class ProductsService {
   }
 
   async deleteProduct(ids, { _id: adminId }) {
+    const response = [];
     for (const itemId of ids.ids) {
       const product = await Product.findById(itemId).lean().exec();
 
@@ -481,9 +482,11 @@ class ProductsService {
 
         await addHistoryRecord(historyRecord);
 
-        return Product.findByIdAndDelete(itemId);
+        const productRes = await Product.findByIdAndDelete(itemId);
+        response.push(productRes);
       }
     }
+    return response;
   }
 
   async checkProductExist(data) {
