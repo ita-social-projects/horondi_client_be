@@ -15,7 +15,7 @@ const {
   getOrdersInput,
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
-const { createProduct, deleteProduct } = require('../product/product.helper');
+const { createProduct, deleteProducts } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -317,7 +317,7 @@ describe('Order queries', () => {
 
   afterAll(async () => {
     await deleteOrder(orderId, operations);
-    await deleteProduct([productId], operations);
+    await deleteProducts([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);

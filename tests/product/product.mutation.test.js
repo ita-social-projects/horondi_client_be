@@ -10,7 +10,7 @@ const {
 } = require('./product.variables');
 const {
   createProduct,
-  deleteProduct,
+  deleteProducts,
   updateProduct,
   deleteProductImages,
   uploadProductImages,
@@ -227,9 +227,9 @@ describe('Product mutations', () => {
     expect(products.statusCode).toBe(400);
   });
   test('#5 On delete Product with bad id should return error PRODUCT_NOT_FOUND', async () => {
-    const receivedData = await deleteProduct([badProductId], operations);
+    const receivedData = await deleteProducts([badProductId], operations);
 
-    expect(receivedData.data.deleteProduct).toHaveProperty(
+    expect(receivedData.data.deleteProducts).toHaveProperty(
       'message',
       PRODUCT_NOT_FOUND
     );
@@ -252,8 +252,8 @@ describe('Product mutations', () => {
   });
 
   test('#8 Should delete Product and return it`s id', async () => {
-    const receivedData = await deleteProduct([productId], operations);
-    const res = receivedData.data.deleteProduct._id;
+    const receivedData = await deleteProducts([productId], operations);
+    const res = receivedData.data.deleteProducts._id;
 
     expect(res).toBe(productId);
   });

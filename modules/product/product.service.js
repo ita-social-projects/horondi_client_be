@@ -426,7 +426,7 @@ class ProductsService {
     return newProduct;
   }
 
-  async deleteProduct(ids, { _id: adminId }) {
+  async deleteProducts(ids, { _id: adminId }) {
     const response = [];
     for (const itemId of ids.ids) {
       const product = await Product.findById(itemId).lean().exec();
@@ -486,6 +486,7 @@ class ProductsService {
         response.push(productRes);
       }
     }
+
     return response;
   }
 

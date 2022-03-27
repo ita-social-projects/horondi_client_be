@@ -941,7 +941,7 @@ const typeDefs = gql`
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
     addProductFromConstructor(product: ProductInput!, upload: Upload!): ProductResult
-    deleteProduct(ids: [ID!]): ProductResult
+    deleteProducts(ids: [ID!]): ProductResult
     updateProduct(
       id: ID!
       product: ProductInput!
