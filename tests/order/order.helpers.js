@@ -154,33 +154,6 @@ const getUserOrders = async operations => {
   return res.data.getUserOrders;
 };
 
-const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
-  const res = await operations.mutate({
-    query: gql`
-      query ($paidOrderNumber: String!) {
-        getOrderByPaidOrderNumber(paidOrderNumber: $paidOrderNumber) {
-          ... on Order {
-            _id
-            orderNumber
-            paymentUrl
-            dateOfCreation
-            isPaid
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      paidOrderNumber,
-    },
-  });
-
-  return res.data.getOrderByPaidOrderNumber;
-};
-
 const getOrdersStatistic = async operations => {
   const res = await operations.mutate({
     query: gql`
@@ -445,7 +418,6 @@ module.exports = {
   getAllOrders,
   getPaidOrdersStatistic,
   getOrdersStatistic,
-  getOrderByPaidOrderNumber,
   getOrdersByUser,
   getOrderById,
   updateOrderById,

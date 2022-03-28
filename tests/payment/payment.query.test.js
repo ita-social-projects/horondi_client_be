@@ -34,14 +34,11 @@ const { setupApp } = require('../helper-functions');
 
 const {
   generateCertificate,
-  getCertificatesByPaymentToken,
   deleteCertificate,
 } = require('../certificate/certificate.helper');
 
 const {
-  checkCertificatesPaymentStatus,
   getPaymentCheckoutForCertificates,
-  checkOrderPaymentStatus,
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
 } = require('./payment.helper');
@@ -93,25 +90,6 @@ describe('Certificate payment queries', () => {
     paymentToken = result.paymentToken;
 
     expect(result).toHaveProperty('paymentToken');
-  });
-
-  it('should get Certificates by payment token', async () => {
-    const result = await getCertificatesByPaymentToken(
-      paymentToken,
-      operations
-    );
-
-    expect(result.paymentStatus).toBe('PROCESSING');
-  });
-
-  it('should check Certificates payment status', async () => {
-    const result = await checkCertificatesPaymentStatus(
-      certificates[0].name,
-      paymentToken,
-      operations
-    );
-
-    expect(result).toBeDefined();
   });
 
   it('should send email with certificates', async () => {
@@ -200,18 +178,6 @@ describe('Payment queries', () => {
     );
 
     expect(res).toHaveProperty('message', ORDER_NOT_VALID);
-  });
-
-  it('should check Order payment status', async () => {
-    const res = await checkOrderPaymentStatus(orderNumber, 1, operations);
-
-    expect(res).toBeDefined();
-  });
-
-  it('should get null after checking order payment status with wrong id', async () => {
-    const res = await checkOrderPaymentStatus(wrongId, 1, operations);
-
-    expect(res.data.checkOrderPaymentStatus).toBe(null);
   });
 
   afterAll(async () => {

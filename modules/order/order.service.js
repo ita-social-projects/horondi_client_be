@@ -28,16 +28,6 @@ const {
 } = require('../../utils/order.utils');
 
 class OrdersService {
-  async getOrderByPaidOrderNumber(orderNumber) {
-    const order = await Order.findOne({ orderNumber }).exec();
-
-    if (!order) {
-      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-    }
-
-    return order;
-  }
-
   async getAllOrders({ skip, limit, filter = {}, sort }) {
     let maxDate = new Date();
     let minDate = minDefaultDate;

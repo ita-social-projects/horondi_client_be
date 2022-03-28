@@ -8,7 +8,6 @@ const {
   getAllCertificates,
   getCertificateById,
   updateCertificate,
-  getCertificatesByPaymentToken,
 } = require('./certificate.helper');
 const {
   getPaymentCheckoutForCertificates,
@@ -77,14 +76,5 @@ describe('Test getCertificatesByToken flow', () => {
       operations
     );
     paymentToken = result.paymentToken;
-  });
-
-  it('should get certificates by payment token', async () => {
-    const result = await getCertificatesByPaymentToken(
-      paymentToken,
-      operations
-    );
-
-    expect(result).toHaveProperty('paymentStatus', 'PROCESSING');
   });
 });

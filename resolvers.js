@@ -1,3 +1,9 @@
+const pubsub = require('./pubsub');
+const { withFilter } = require('graphql-subscriptions');
+const { ORDER_IS_PAID } = require('./error-messages/orders.messages');
+const {
+  CERTIFICATE_IS_PAID,
+} = require('./error-messages/certificate.messages');
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const { historyQuery } = require('./modules/history/history.resolvers');
@@ -231,6 +237,23 @@ const {
 } = require('./helpers/constructor-pocket-helper');
 
 const resolvers = {
+  Subscription: {
+    certificatesPaid: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([CERTIFICATE_IS_PAID]),
+        (payload, variables) =>
+          payload.certificatesPaid.certificates[0].name ===
+          variables.certificatesOrderId
+      ),
+    },
+    paidOrder: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([ORDER_IS_PAID]),
+        (payload, variables) =>
+          payload.paidOrder.orderNumber === variables.orderId
+      ),
+    },
+  },
   Query: {
     ...materialsQuery,
 
@@ -415,10 +438,11 @@ const resolvers = {
               item.constructorBasics,
               constructorBasicModel
             ),
-            constructorFrontPocket: constructorServices.getConstructorElementById(
-              item.constructorFrontPocket,
-              constructorFrontPocketModel
-            ),
+            constructorFrontPocket:
+              constructorServices.getConstructorElementById(
+                item.constructorFrontPocket,
+                constructorFrontPocketModel
+              ),
             constructorPattern: patternService.getPatternById(
               item.constructorPattern
             ),
@@ -633,12 +657,11 @@ const resolvers = {
             item.currentPocketWithPosition.position
           ),
         },
-        otherPocketsWithAvailablePositions: item.otherPocketsWithAvailablePositions.map(
-          el => ({
+        otherPocketsWithAvailablePositions:
+          item.otherPocketsWithAvailablePositions.map(el => ({
             pocket: pocketService.getPocketById(el.pocket),
             position: positionService.getPositionById(el.position),
-          })
-        ),
+          })),
       })),
   },
 
