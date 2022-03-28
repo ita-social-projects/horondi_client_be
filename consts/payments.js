@@ -11,10 +11,14 @@ const PAYMENT_DESCRIPTION = 'Оплата замовлення';
 const PAYMENT_TOKEN_LENGTH = 40;
 const FONDY_PAYMENT_MULTIPLIER = 100;
 
+const SERVER_CALLBACK_URL =
+  'https://horondi-back-staging.azurewebsites.net/fondy/';
+
 module.exports = {
   PAYMENT_METHOD,
   PAYMENT_DESCRIPTION,
   PAYMENT_ACTIONS,
   PAYMENT_TOKEN_LENGTH,
   FONDY_PAYMENT_MULTIPLIER,
+  SERVER_CALLBACK_URL,
 };

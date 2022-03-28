@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const getPaymentCheckout = async (data, operations) => {
   const res = await operations.query({
     query: gql`
-      query($data: PaymentInput!) {
+      query ($data: PaymentInput!) {
         getPaymentCheckout(data: $data) {
           ... on Order {
             _id
@@ -26,7 +26,7 @@ const getPaymentCheckout = async (data, operations) => {
 const getPaymentCheckoutForCertificates = async (data, operations) => {
   const res = await operations.query({
     query: gql`
-      query($data: PaymentInputForCertificate!) {
+      query ($data: PaymentInputForCertificate!) {
         getPaymentCheckoutForCertificates(data: $data) {
           ... on Certificates {
             __typename
@@ -48,66 +48,6 @@ const getPaymentCheckoutForCertificates = async (data, operations) => {
   return res.data.getPaymentCheckoutForCertificates;
 };
 
-const checkCertificatesPaymentStatus = async (
-  certificateName,
-  paymentToken,
-  operations
-) => {
-  const res = await operations.query({
-    query: gql`
-      query($certificateName: String!, $paymentToken: String!) {
-        checkCertificatesPaymentStatus(
-          certificateName: $certificateName
-          paymentToken: $paymentToken
-        ) {
-          ... on Certificates {
-            __typename
-            certificates {
-              _id
-              name
-            }
-            paymentStatus
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      certificateName,
-      paymentToken,
-    },
-  });
-  return res.data.checkCertificatesPaymentStatus;
-};
-
-const checkOrderPaymentStatus = async (orderId, language, operations) => {
-  const res = await operations.query({
-    query: gql`
-      query($orderId: String!, $language: Int!) {
-        checkOrderPaymentStatus(orderId: $orderId, language: $language) {
-          ... on Order {
-            _id
-            orderNumber
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      orderId,
-      language,
-    },
-  });
-
-  return res;
-};
-
 const sendCertificatesCodesToEmail = async (
   language,
   certificates,
@@ -115,7 +55,7 @@ const sendCertificatesCodesToEmail = async (
 ) => {
   const res = await operations.query({
     query: gql`
-      query($language: Int!, $certificates: [CertificateInput]!) {
+      query ($language: Int!, $certificates: [CertificateInput]!) {
         sendCertificatesCodesToEmail(
           language: $language
           certificates: $certificates
@@ -146,6 +86,4 @@ module.exports = {
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
   getPaymentCheckoutForCertificates,
-  checkCertificatesPaymentStatus,
-  checkOrderPaymentStatus,
 };

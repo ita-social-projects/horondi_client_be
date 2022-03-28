@@ -3,7 +3,10 @@ const { gql } = require('@apollo/client');
 const generateCertificate = async (certificateData, email, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($certificateData: [GenerateCertificateInput]!, $email: String!) {
+      mutation (
+        $certificateData: [GenerateCertificateInput]!
+        $email: String!
+      ) {
         generateCertificate(newCertificates: $certificateData, email: $email) {
           ... on Certificates {
             certificates {
@@ -28,7 +31,7 @@ const generateCertificate = async (certificateData, email, operations) => {
   return result.data.generateCertificate;
 };
 
-const getAllCertificates = async operations => {
+const getAllCertificates = async (operations) => {
   const result = await operations.query({
     query: gql`
       query {
@@ -55,7 +58,7 @@ const getAllCertificates = async operations => {
 const getCertificateById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getCertificateById(id: $id) {
           ... on Certificate {
             _id
@@ -83,41 +86,10 @@ const getCertificateById = async (id, operations) => {
   return result.data.getCertificateById;
 };
 
-const getCertificatesByPaymentToken = async (paymentToken, operations) => {
-  const result = await operations.query({
-    query: gql`
-      query($paymentToken: String!) {
-        getCertificatesByPaymentToken(paymentToken: $paymentToken) {
-          ... on Certificates {
-            certificates {
-              name
-              email
-              value
-              dateStart
-              dateEnd
-              paymentStatus
-            }
-            paymentStatus
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      paymentToken,
-    },
-  });
-
-  return result.data.getCertificatesByPaymentToken;
-};
-
 const addCertificate = async (certificateName, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($certificateName: String!) {
+      mutation ($certificateName: String!) {
         addCertificate(name: $certificateName) {
           ... on Certificate {
             _id
@@ -145,7 +117,7 @@ const addCertificate = async (certificateName, operations) => {
 const updateCertificate = async (name, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($name: String!) {
+      mutation ($name: String!) {
         updateCertificate(name: $name) {
           ... on Certificate {
             _id
@@ -170,7 +142,7 @@ const updateCertificate = async (name, operations) => {
 const deleteCertificate = async (id, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteCertificate(id: $id) {
           ... on Certificate {
             _id
@@ -193,7 +165,7 @@ const deleteCertificate = async (id, operations) => {
 const registerUser = async (user, operations) => {
   const registeredUser = await operations.mutate({
     mutation: gql`
-      mutation($user: userRegisterInput!) {
+      mutation ($user: userRegisterInput!) {
         registerUser(user: $user, language: 1) {
           _id
           firstName
@@ -224,5 +196,4 @@ module.exports = {
   getCertificateById,
   registerUser,
   updateCertificate,
-  getCertificatesByPaymentToken,
 };

@@ -2,11 +2,13 @@ const { ObjectId } = require('mongoose').Types;
 const { PAYMENT_SECRET } = require('../../dotenvValidator');
 const { generatePaymentSignature } = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
+const pubsub = require('../../pubsub');
 const { sendEmail } = require('../email/email.service');
 const {
   PAYMENT_DESCRIPTION,
   PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
   PAYMENT_TOKEN_LENGTH,
+  SERVER_CALLBACK_URL,
 } = require('../../consts/payments');
 const {
   PAYMENT_STATUSES: { PAYMENT_PROCESSING },
@@ -18,10 +20,13 @@ const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
   ORDER_IS_NOT_PAID,
+  ORDER_IS_PAID,
 } = require('../../error-messages/orders.messages');
 const {
   CERTIFICATE_NOT_VALID,
   CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_NOT_PAID,
+  CERTIFICATE_IS_PAID,
 } = require('../../error-messages/certificate.messages');
 const OrderModel = require('../order/order.model');
 const { CertificateModel } = require('../certificate/certificate.model');
@@ -44,6 +49,7 @@ class PaymentService {
     if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
+      server_callback_url: `${SERVER_CALLBACK_URL}order_callback/`,
       order_id: isOrderPresent.orderNumber,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
@@ -64,57 +70,63 @@ class PaymentService {
     }
   }
 
-  async checkCertificatesPaymentStatus(certificateName, paymentToken) {
-    const {
-      order_status,
-      response_signature_string,
-      signature,
-    } = await paymentController(CHECK_PAYMENT_STATUS, {
-      order_id: certificateName,
-    });
+  async checkCertificatesPaymentStatus(req, res) {
+    try {
+      const { order_id } = req.body;
+      const { order_status, response_signature_string, signature } =
+        await paymentController(CHECK_PAYMENT_STATUS, {
+          order_id,
+        });
 
-    const signatureWithoutFirstParam = response_signature_string
-      .split('|')
-      .slice(1);
+      const signatureWithoutFirstParam = response_signature_string
+        .split('|')
+        .slice(1);
 
-    const signatureToCheck = PAYMENT_SECRET.split(' ')
-      .concat(signatureWithoutFirstParam)
-      .join('|');
+      const signatureToCheck = PAYMENT_SECRET.split(' ')
+        .concat(signatureWithoutFirstParam)
+        .join('|');
 
-    const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
+      const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
 
-    const certificate = await CertificateModel.findOne({
-      name: certificateName.toString(),
-    }).exec();
+      const certificate = await CertificateModel.findOne({
+        name: order_id.toString(),
+      }).exec();
 
-    if (!certificate) throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
+      if (!certificate) throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
 
-    if (
-      order_status !== APPROVED.toLowerCase() ||
-      signature !== signSignatureToCheck
-    ) {
-      return;
-    }
-
-    await CertificateModel.updateMany(
-      { paymentToken },
-      {
-        $set: {
-          paymentStatus: PAID,
-        },
+      if (
+        order_status !== APPROVED.toLowerCase() ||
+        signature !== signSignatureToCheck
+      ) {
+        throw new RuleError(CERTIFICATE_NOT_PAID, FORBIDDEN);
       }
-    ).exec();
 
-    const updatedCertificates = await CertificateModel.find({
-      paymentToken,
-    }).exec();
+      await CertificateModel.updateMany(
+        { paymentToken: certificate.paymentToken },
+        {
+          $set: {
+            paymentStatus: PAID,
+          },
+        }
+      ).exec();
 
-    return { certificates: updatedCertificates };
+      const updatedCertificates = await CertificateModel.find({
+        paymentToken,
+      }).exec();
+
+      pubsub.publish(CERTIFICATE_IS_PAID, {
+        certificatesPaid: updatedCertificates,
+      });
+
+      res.status(200).end();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
   }
 
   async getPaymentCheckoutForCertificates({ certificates, currency, amount }) {
     let isCertificatePresent;
-    certificates.forEach(async certificate => {
+    certificates.forEach(async (certificate) => {
       if (!ObjectId.isValid(certificate._id))
         throw new RuleError(CERTIFICATE_NOT_VALID, BAD_REQUEST);
 
@@ -129,6 +141,7 @@ class PaymentService {
     const certificatesOrderId = certificates[0].name;
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
+      server_callback_url: `${SERVER_CALLBACK_URL}certificates_callback/`,
       order_id: certificatesOrderId,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
@@ -140,7 +153,7 @@ class PaymentService {
     );
 
     if (paymentUrl) {
-      certificates.forEach(async certificate => {
+      certificates.forEach(async (certificate) => {
         await CertificateModel.findByIdAndUpdate(
           certificate._id,
           {
@@ -162,14 +175,12 @@ class PaymentService {
     };
   }
 
-  async checkOrderPaymentStatus(order_id, language) {
-    const {
-      order_status,
-      response_signature_string,
-      signature,
-    } = await paymentController(CHECK_PAYMENT_STATUS, {
-      order_id,
-    });
+  async checkOrderPaymentStatus(req, res) {
+    const { order_id } = req.body;
+    const { order_status, response_signature_string, signature } =
+      await paymentController(CHECK_PAYMENT_STATUS, {
+        order_id,
+      });
 
     const signatureWithoutFirstParam = response_signature_string
       .split('|')
@@ -191,14 +202,24 @@ class PaymentService {
       order_status !== APPROVED.toLowerCase() ||
       signature !== signSignatureToCheck
     ) {
-      return;
+      throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
     }
 
     const paidOrder = await OrderModel.findByIdAndUpdate(order._id, {
       $set: {
         paymentStatus: PAID,
       },
-    })
+    }).exec();
+
+    pubsub.publish(ORDER_IS_PAID, {
+      paidOrder,
+    });
+
+    res.status(200).end();
+  }
+
+  async sendOrderToEmail(language, paidOrderNumber) {
+    const paidOrder = await OrderModel.findOne({ orderNumber: paidOrderNumber })
       .populate({
         path: 'items.product',
         select: 'name images ',

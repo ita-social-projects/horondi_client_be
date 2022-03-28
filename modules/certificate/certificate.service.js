@@ -41,9 +41,7 @@ class CertificatesService {
       .skip(skip)
       .exec();
 
-    const count = await CertificateModel.find(filter)
-      .countDocuments()
-      .exec();
+    const count = await CertificateModel.find(filter).countDocuments().exec();
 
     return {
       items,
@@ -77,20 +75,6 @@ class CertificatesService {
     }
 
     return certificate;
-  }
-
-  async getCertificatesByPaymentToken(paymentToken) {
-    const certificates = await CertificateModel.find({
-      paymentToken,
-    }).exec();
-
-    const { paymentStatus } = certificates[0];
-
-    if (!certificates) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
-    }
-
-    return { certificates, paymentStatus };
   }
 
   async generateCertificate(certificatesData, email, userId, userRole) {

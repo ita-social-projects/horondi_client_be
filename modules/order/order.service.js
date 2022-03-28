@@ -28,14 +28,6 @@ const {
 } = require('../../utils/order.utils');
 
 class OrdersService {
-  async getOrderByPaidOrderNumber(orderNumber) {
-    const order = await Order.findOne({ orderNumber }).exec();
-
-    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
-
-    return order;
-  }
-
   async getAllOrders({ skip, limit, filter = {}, sort }) {
     let maxDate = new Date();
     let minDate = minDefaultDate;
@@ -288,12 +280,10 @@ class OrdersService {
 
   async getOrdersStatistic(days) {
     const filter = this.filterOrders({ days });
-    const orders = await Order.find(filter)
-      .lean()
-      .exec();
+    const orders = await Order.find(filter).lean().exec();
     const statuses = orders.map(({ status }) => status);
     const { names, counts } = this.getOrdersStats(statuses);
-    const relations = counts.map(count =>
+    const relations = counts.map((count) =>
       Math.round((count * 100) / orders.length)
     );
 

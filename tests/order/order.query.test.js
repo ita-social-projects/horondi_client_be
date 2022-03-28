@@ -6,7 +6,6 @@ const {
   getAllOrders,
   getPaidOrdersStatistic,
   getOrdersStatistic,
-  getOrderByPaidOrderNumber,
   getUserOrders,
 } = require('./order.helpers');
 const {
@@ -133,13 +132,8 @@ describe('Order queries', () => {
     userId = orderData.user_id;
   });
 
-  const {
-    recipient,
-    userComment,
-    delivery,
-    paymentStatus,
-    status,
-  } = newOrderInputData(productId, modelId, sizeId, constructorBasicId);
+  const { recipient, userComment, delivery, paymentStatus, status } =
+    newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
   test('Should receive all orders', async () => {
     const { filter, sort } = getOrdersInput;
@@ -149,20 +143,6 @@ describe('Order queries', () => {
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
     expect(orders[0]).toHaveProperty('recipient', recipient);
-  });
-
-  test('Should receive order by orderNumber', async () => {
-    const { filter, sort } = getOrdersInput;
-    const orders = await getAllOrders(filter, sort, operations);
-
-    const orderByOrderNumber = await getOrderByPaidOrderNumber(
-      orders[0].orderNumber,
-      operations
-    );
-
-    expect(orderByOrderNumber).toBeDefined();
-    expect(orderByOrderNumber.orderNumber).toBe(orders[0].orderNumber);
-    expect(orderByOrderNumber.dateOfCreation).toBe(orders[0].dateOfCreation);
   });
 
   test('Should receive user orders', async () => {
