@@ -232,6 +232,7 @@ const orderValidator = Joi.object({
     PAYMENT_PROCESSING,
     PAYMENT_PAID
   ),
+  totalPriceToPay: Joi.array(),
 });
 
 const getAllOrdersValidator = {

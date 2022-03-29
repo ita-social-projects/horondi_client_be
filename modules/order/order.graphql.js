@@ -53,6 +53,8 @@ type OrderItem {
   constructorFrontPocket: ConstructorFrontPocket
   constructorBottom: ConstructorBottom
   fixedPrice: [CurrencySet]
+  discount: Int
+  priceWithDiscount: [CurrencySet]
 }
 type Delivery {
   sentOn: String
@@ -101,6 +103,7 @@ input OrderInput {
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
   user_id: ID
+  totalPriceToPay: [CurrencyInputSet]
 }
 
 input OrderUserInput {
@@ -146,6 +149,8 @@ input OrderItemInput {
   options: ItemOptionsInput
   fixedPrice: [CurrencyInputSet]
   price: [CurrencyInputSet]
+  discount: Int
+  priceWithDiscount: [CurrencyInputSet]
 }
 input ItemOptionsInput{
   size: ID!

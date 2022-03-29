@@ -203,15 +203,9 @@ class OrdersService {
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderNumber();
 
-    const totalPriceToPay = await calculateTotalPriceToPay(
-      data,
-      totalItemsPrice
-    );
-
     const newOrder = {
       ...data,
       totalItemsPrice,
-      totalPriceToPay,
       orderNumber,
     };
 

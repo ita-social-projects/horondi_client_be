@@ -429,6 +429,8 @@ const resolvers = {
             isFromConstructor: item.isFromConstructor,
             quantity: item.quantity,
             fixedPrice: item.fixedPrice,
+            discount: item.discount,
+            priceWithDiscount: item.priceWithDiscount,
           };
         }
         return {
@@ -440,6 +442,8 @@ const resolvers = {
             sidePocket: item.options.sidePocket,
           },
           product: productsService.getProductById(item.product),
+          discount: item.discount,
+          priceWithDiscount: item.priceWithDiscount,
         };
       }),
   },

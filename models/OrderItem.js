@@ -59,6 +59,11 @@ const orderItemSchema = new mongoose.Schema({
     ref: PATTERN,
   },
   fixedPrice: [CurrencySet],
+  discount: {
+    type: Number,
+    default: 0,
+  },
+  priceWithDiscount: [CurrencySet],
 });
 
 module.exports = mongoose.model(ORDER_ITEM, orderItemSchema);
