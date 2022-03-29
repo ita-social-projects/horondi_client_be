@@ -469,6 +469,9 @@ const typeDefs = gql`
     items: [Restriction]
     count: Int
   }
+  type Products {
+    items: [Product]
+  }
   type Materials {
     items: [Material]
   }
@@ -510,7 +513,7 @@ const typeDefs = gql`
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
-  union ProductResult = Product | Error
+  union ProductResult = Products | Product | Error
   union CommentResult = Comment | Error
   union BusinessTextResult = BusinessText | Error
   union LogicalResult = SuccessfulResponse | Error

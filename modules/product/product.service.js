@@ -487,7 +487,9 @@ class ProductsService {
       }
     }
 
-    return response;
+    return {
+      items: response,
+    };
   }
 
   async checkProductExist(data) {

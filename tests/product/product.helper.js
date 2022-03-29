@@ -199,6 +199,11 @@ const deleteProducts = async (ids, operations) =>
     mutation: gql`
       mutation ($ids: [ID!]) {
         deleteProducts(ids: $ids) {
+          ... on Products {
+            items {
+              _id
+            }
+          }
           ... on Product {
             _id
           }

@@ -189,6 +189,7 @@ const SCHEMA_NAMES = {
   materials: 'Materials',
   currency: 'Currency',
   product: 'Product',
+  products: 'Products',
   comment: 'Comment',
   promoCode: 'PromoCode',
   businessText: 'BusinessText',
@@ -842,6 +843,9 @@ const resolvers = {
 
   ProductResult: {
     __resolveType: obj => {
+      if (obj.items) {
+        return SCHEMA_NAMES.products;
+      }
       if (obj.name) {
         return SCHEMA_NAMES.product;
       }

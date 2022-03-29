@@ -253,7 +253,7 @@ describe('Product mutations', () => {
 
   test('#8 Should delete Product and return it`s id', async () => {
     const receivedData = await deleteProducts([productId], operations);
-    const res = receivedData.data.deleteProducts._id;
+    const res = receivedData.data.deleteProducts.items[0]._id;
 
     expect(res).toBe(productId);
   });
