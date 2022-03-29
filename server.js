@@ -56,33 +56,34 @@ const server = new ApolloServer({
   context: async ({ req, connection }) => {
     if (connection) {
       return connection.context;
-    } else {
-      const { token } = req.headers || '';
+    }
+    const { token } = req.headers || '';
 
-      loggerHttp.log({
-        level: 'info',
-        message: JSON.stringify({
-          method: req.method,
-          baseUrl: req.baseUrl,
-          date: req.fresh,
-          ip: req.connection.remoteAddress,
-        }),
-      });
+    loggerHttp.log({
+      level: 'info',
+      message: JSON.stringify({
+        method: req.method,
+        baseUrl: req.baseUrl,
+        date: req.fresh,
+        ip: req.connection.remoteAddress,
+      }),
+    });
 
-      if (token) {
-        try {
-          const { userId } = jwtClient.decodeToken(token, SECRET);
+    if (token) {
+      try {
+        const { userId } = jwtClient.decodeToken(token, SECRET);
 
-          if (!userId) {
-            loggerHttp.error(formatErrorForLogger(INVALID_PERMISSIONS));
-            return null;
-          }
-          return {
-            user: await userService.getUserByFieldOrThrow('_id', userId),
-          };
-        } catch (e) {
-          return new RuleError(e.message, e.statusCode);
+        if (!userId) {
+          loggerHttp.error(formatErrorForLogger(INVALID_PERMISSIONS));
+
+          return null;
         }
+
+        return {
+          user: await userService.getUserByFieldOrThrow('_id', userId),
+        };
+      } catch (e) {
+        return new RuleError(e.message, e.statusCode);
       }
     }
   },

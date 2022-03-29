@@ -41,6 +41,7 @@ const {
   getPaymentCheckoutForCertificates,
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
+  sendOrderToEmail,
 } = require('./payment.helper');
 
 const {
@@ -178,6 +179,12 @@ describe('Payment queries', () => {
     );
 
     expect(res).toHaveProperty('message', ORDER_NOT_VALID);
+  });
+
+  it('should send email with order data', async () => {
+    const res = await sendOrderToEmail(1, orderNumber, operations);
+
+    expect(res).toBeDefined();
   });
 
   afterAll(async () => {

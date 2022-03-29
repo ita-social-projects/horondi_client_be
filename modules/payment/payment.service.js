@@ -95,9 +95,9 @@ class PaymentService {
         name: order_id.toString(),
       }).exec();
 
-    if (!certificate) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
-    }
+      if (!certificate) {
+        throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
+      }
 
       if (
         order_status !== APPROVED.toLowerCase() ||
@@ -116,7 +116,7 @@ class PaymentService {
       ).exec();
 
       const updatedCertificates = await CertificateModel.find({
-        paymentToken,
+        paymentToken: certificate.paymentToken,
       }).exec();
 
       pubsub.publish(CERTIFICATE_IS_PAID, {
