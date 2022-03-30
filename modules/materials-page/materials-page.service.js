@@ -16,10 +16,7 @@ const {
 
 class MaterialsService {
   async getAllMaterialsBlocks(skip, limit) {
-    const items = await Materials.find({})
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    const items = await Materials.find({}).skip(skip).limit(limit).exec();
 
     const count = items?.length || 0;
 

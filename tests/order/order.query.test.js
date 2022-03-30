@@ -133,13 +133,8 @@ describe('Order queries', () => {
     userId = orderData.user_id;
   });
 
-  const {
-    recipient,
-    userComment,
-    delivery,
-    paymentStatus,
-    status,
-  } = newOrderInputData(productId, modelId, sizeId, constructorBasicId);
+  const { recipient, userComment, delivery, paymentStatus, status } =
+    newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
   test('Should receive all orders', async () => {
     const { filter, sort } = getOrdersInput;

@@ -107,14 +107,8 @@ describe('Order queries', () => {
     );
     productId = productData._id;
   });
-  const {
-    status,
-    delivery,
-    paymentStatus,
-    userComment,
-    items,
-    recipient,
-  } = newOrderInputData(productId, modelId, sizeId, constructorBasicId);
+  const { status, delivery, paymentStatus, userComment, items, recipient } =
+    newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
   test('Should create order', async () => {
     const order = await createOrder(
