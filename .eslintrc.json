@@ -100,7 +100,10 @@
     "logger.js",
     "loggerHttp.js",
     "migrate-mongo-config.js",
-    "permissions.js"
+    "permissions.js",
+    "typeDefs.js",
+    "resolvers.js",
+    "server.js"
   ],
   "extends": "eslint:recommended",
   "parserOptions": {
