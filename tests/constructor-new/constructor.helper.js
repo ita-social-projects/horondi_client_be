@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createConstructor = async (constructor, image, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($constructor: ConstructorInput!, $image: Upload) {
+      mutation ($constructor: ConstructorInput!, $image: Upload) {
         addConstructor(constructor: $constructor, image: $image) {
           ... on Constructor {
             _id
@@ -28,7 +28,7 @@ const createConstructor = async (constructor, image, operations) => {
 const updateConstructor = async (id, constructor, image, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructor: ConstructorInput!, $image: Upload) {
+      mutation ($id: ID!, $constructor: ConstructorInput!, $image: Upload) {
         updateConstructor(id: $id, constructor: $constructor, image: $image) {
           ... on Constructor {
             _id
@@ -57,7 +57,7 @@ const updateConstructor = async (id, constructor, image, operations) => {
 const getAllConstructors = async ({ limit, skip, filter }, operations) => {
   const result = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: ConstructorFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: ConstructorFilterInput) {
         getAllConstructors(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
@@ -78,7 +78,7 @@ const getAllConstructors = async ({ limit, skip, filter }, operations) => {
 const getConstructorById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getConstructorById(id: $id) {
           ... on Constructor {
             _id
@@ -103,7 +103,7 @@ const getConstructorById = async (id, operations) => {
 const getConstructorByModel = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getConstructorByModel(id: $id) {
           ... on Constructor {
             _id
@@ -131,7 +131,7 @@ const getConstructorByModel = async (id, operations) => {
 const deleteConstructor = async (id, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteConstructor(id: $id) {
           ... on Constructor {
             _id
@@ -147,6 +147,7 @@ const deleteConstructor = async (id, operations) => {
       id,
     },
   });
+
   return result.data.deleteConstructor;
 };
 

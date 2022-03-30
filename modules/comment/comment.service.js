@@ -49,6 +49,7 @@ class CommentsService {
     if (!comment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
+
     return comment;
   }
 
@@ -63,6 +64,7 @@ class CommentsService {
     replyComment.replyComments = replyComment.replyComments.filter(
       el => el._id.toString() === id
     );
+
     return replyComment;
   }
 
@@ -74,6 +76,7 @@ class CommentsService {
     if (!comments?.length) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
+
     return comments;
   }
 
@@ -148,6 +151,7 @@ class CommentsService {
     }
     const countAll = comment.replyComments.length;
     comment.replyComments = comment.replyComments.slice(skip, skip + limit);
+
     return {
       items: [comment],
       count: comment.replyComments.length,
@@ -160,6 +164,7 @@ class CommentsService {
     if (!comments.length) {
       throw new RuleError(COMMENT_FOR_NOT_EXISTING_USER, NOT_FOUND);
     }
+
     return comments;
   }
 
@@ -208,6 +213,7 @@ class CommentsService {
     }
     const count = replies.length;
     replies = replies.slice(skip, skip + limit);
+
     return {
       items: replies,
       count,
@@ -226,6 +232,7 @@ class CommentsService {
     if (!updatedComment) {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
+
     return updatedComment;
   }
 
@@ -240,6 +247,7 @@ class CommentsService {
     if (order.some(item => item.status === DELIVERED)) {
       data.verifiedPurchase = true;
     }
+
     return new Comment(data).save();
   }
 
