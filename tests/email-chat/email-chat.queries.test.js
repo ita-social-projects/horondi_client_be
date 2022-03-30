@@ -20,7 +20,7 @@ const {
 
 let operations;
 let question;
-let dateFrom;
+let dateSince;
 let senderName;
 let text;
 let email;
@@ -31,7 +31,7 @@ let pagination;
 describe('Chat email queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    dateFrom = new Date();
+    dateSince = new Date();
     const {
       senderName: _senderName,
       text: _text,
@@ -43,10 +43,8 @@ describe('Chat email queries', () => {
     email = _email;
     language = _language;
     question = await addEmailQuestion(emailQuestionInputData, operations);
-    const {
-      filter: _filter,
-      pagination: _pagination,
-    } = getFilterPaginationInputData(dateFrom);
+    const { filter: _filter, pagination: _pagination } =
+      getFilterPaginationInputData(dateSince);
     filter = _filter;
     pagination = _pagination;
   });

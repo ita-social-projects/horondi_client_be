@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const getNovaPoshtaCities = async (city, operations) => {
   const result = await operations.query({
     query: gql`
-      query($city: String) {
+      query ($city: String) {
         getNovaPoshtaCities(city: $city) {
           ... on NovaPoshtaCity {
             cityID
@@ -15,12 +15,13 @@ const getNovaPoshtaCities = async (city, operations) => {
       city,
     },
   });
+
   return result.data.getNovaPoshtaCities;
 };
 const getNovaPoshtaStreets = async (cityRef, street, operations) => {
   const result = await operations.query({
     query: gql`
-      query($cityRef: String, $street: String) {
+      query ($cityRef: String, $street: String) {
         getNovaPoshtaStreets(cityRef: $cityRef, street: $street) {
           ... on NovaPoshtaStreet {
             description
@@ -33,12 +34,13 @@ const getNovaPoshtaStreets = async (cityRef, street, operations) => {
       street,
     },
   });
+
   return result.data.getNovaPoshtaStreets;
 };
 const getNovaPoshtaWarehouses = async (city, operations) => {
   const result = await operations.query({
     query: gql`
-      query($city: String) {
+      query ($city: String) {
         getNovaPoshtaWarehouses(city: $city) {
           ... on NovaPoshtaWarehouse {
             number
@@ -50,12 +52,13 @@ const getNovaPoshtaWarehouses = async (city, operations) => {
       city,
     },
   });
+
   return result.data.getNovaPoshtaWarehouses;
 };
 const getNovaPoshtaPrices = async (NovaPoshtaPrice, operations) => {
   const result = await operations.query({
     query: gql`
-      query($data: NovaPoshtaPriceInput) {
+      query ($data: NovaPoshtaPriceInput) {
         getNovaPoshtaPrices(data: $data) {
           ... on NovaPoshtaPrice {
             cost
@@ -67,6 +70,7 @@ const getNovaPoshtaPrices = async (NovaPoshtaPrice, operations) => {
       data: NovaPoshtaPrice,
     },
   });
+
   return result.data.getNovaPoshtaPrices;
 };
 
