@@ -8,7 +8,6 @@ const {
   PAYMENT_DESCRIPTION,
   PAYMENT_ACTIONS: { CHECK_PAYMENT_STATUS, GO_TO_CHECKOUT },
   PAYMENT_TOKEN_LENGTH,
-  SERVER_CALLBACK_URL,
 } = require('../../consts/payments');
 const {
   PAYMENT_STATUSES: { PAYMENT_PROCESSING },
@@ -52,7 +51,7 @@ class PaymentService {
     }
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
-      server_callback_url: `${SERVER_CALLBACK_URL}order_callback/`,
+      server_callback_url: `${process.env.FONDY_CALLBACK_URL}order_callback/`,
       order_id: isOrderPresent.orderNumber,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
@@ -148,7 +147,7 @@ class PaymentService {
     const certificatesOrderId = certificates[0].name;
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
-      server_callback_url: `${SERVER_CALLBACK_URL}certificates_callback/`,
+      server_callback_url: `${process.env.FONDY_CALLBACK_URL}certificates_callback/`,
       order_id: certificatesOrderId,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
