@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createBack = async (back, image, operations) => {
   const backInfo = await operations.mutate({
     mutation: gql`
-      mutation($back: BackInput!, $image: Upload) {
+      mutation ($back: BackInput!, $image: Upload) {
         addBack(back: $back, image: $image) {
           ... on Back {
             _id
@@ -46,12 +46,13 @@ const createBack = async (back, image, operations) => {
     `,
     variables: { back, image },
   });
+
   return backInfo.data.addBack;
 };
 const updateBack = async (id, back, image, operations) => {
   const backInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $back: BackInput!, $image: Upload) {
+      mutation ($id: ID!, $back: BackInput!, $image: Upload) {
         updateBack(id: $id, back: $back, image: $image) {
           ... on Back {
             _id
@@ -103,7 +104,7 @@ const updateBack = async (id, back, image, operations) => {
 const getAllBacks = async ({ limit, skip, filter }, operations) => {
   const backInfo = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: BackFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: BackFilterInput) {
         getAllBacks(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
@@ -135,12 +136,13 @@ const getAllBacks = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return backInfo.data.getAllBacks.items;
 };
 const getBackById = async (id, operations) => {
   const backInfo = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getBackById(id: $id) {
           ... on Back {
             _id
@@ -182,12 +184,13 @@ const getBackById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return backInfo.data.getBackById;
 };
 const getBacksByModel = async (id, operations) => {
   const backInfo = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getBacksByModel(id: $id) {
           ... on Back {
             _id
@@ -219,12 +222,13 @@ const getBacksByModel = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return backInfo.data.getBacksByModel;
 };
 const deleteBack = async (id, operations) => {
   const backInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteBack(id: $id) {
           ... on Back {
             _id
@@ -240,6 +244,7 @@ const deleteBack = async (id, operations) => {
       id,
     },
   });
+
   return backInfo.data.deleteBack;
 };
 

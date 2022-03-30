@@ -64,7 +64,7 @@ describe('Business page queries', () => {
     );
   });
   test('Should receive selected business text by code', async () => {
-    const businessText = await getBusinessTextByCode(code, operations);
+    businessText = await getBusinessTextByCode(code, operations);
 
     expect(businessText).toBeDefined();
     expect(businessText).toHaveProperty('code', newBusinessText.code);

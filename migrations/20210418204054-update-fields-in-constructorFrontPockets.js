@@ -3,7 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const { constructorFrontPocketExtraFields } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _) {
     await db.collection('constructorfrontpockets').updateOne(
       { _id: ObjectId('604e3341b17ecf65048afd6f') },
       {
@@ -13,7 +13,7 @@ module.exports = {
     );
   },
 
-  async down(db, client) {
+  async down(db, _) {
     await db.collection('constructorfrontpockets').updateOne(
       { _id: ObjectId('604e3341b17ecf65048afd6f') },
       {

@@ -46,7 +46,6 @@ class JWTClient {
     if (!token) {
       return decoded;
     }
-
     try {
       decoded = jwt.verify(token, secret);
 

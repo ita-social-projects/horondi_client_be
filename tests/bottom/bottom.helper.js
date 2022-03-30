@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createBottom = async (bottom, image, operations) => {
   const bottomInfo = await operations.mutate({
     mutation: gql`
-      mutation($bottom: BottomInput!, $image: Upload) {
+      mutation ($bottom: BottomInput!, $image: Upload) {
         addBottom(bottom: $bottom, image: $image) {
           ... on Bottom {
             _id
@@ -42,12 +42,13 @@ const createBottom = async (bottom, image, operations) => {
     `,
     variables: { bottom, image },
   });
+
   return bottomInfo.data.addBottom;
 };
 const updateBottom = async (id, bottom, image, operations) => {
   const bottomInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $bottom: BottomInput!, $image: Upload) {
+      mutation ($id: ID!, $bottom: BottomInput!, $image: Upload) {
         updateBottom(id: $id, bottom: $bottom, image: $image) {
           ... on Bottom {
             _id
@@ -91,7 +92,7 @@ const updateBottom = async (id, bottom, image, operations) => {
 const getAllBottoms = async ({ limit, skip, filter }, operations) => {
   const bottomInfo = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: BottomFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: BottomFilterInput) {
         getAllBottoms(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
@@ -115,12 +116,13 @@ const getAllBottoms = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return bottomInfo.data.getAllBottoms.items;
 };
 const getBottomById = async (id, operations) => {
   const bottomInfo = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getBottomById(id: $id) {
           ... on Bottom {
             _id
@@ -154,12 +156,13 @@ const getBottomById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return bottomInfo.data.getBottomById;
 };
 const deleteBottom = async (id, operations) => {
   const bottomInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteBottom(id: $id) {
           ... on Bottom {
             _id
@@ -175,6 +178,7 @@ const deleteBottom = async (id, operations) => {
       id,
     },
   });
+
   return bottomInfo.data.deleteBottom;
 };
 
