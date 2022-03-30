@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createOrder = async (order, operations) => {
   const createdOrder = await operations.mutate({
     mutation: gql`
-      mutation($order: OrderInput!) {
+      mutation ($order: OrderInput!) {
         addOrder(order: $order) {
           ... on Order {
             _id
@@ -85,7 +85,7 @@ const createOrder = async (order, operations) => {
 const deleteOrder = async (id, operations) =>
   operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteOrder(id: $id) {
           ... on Order {
             _id
@@ -104,7 +104,7 @@ const deleteOrder = async (id, operations) =>
 const getPaidOrdersStatistic = async operations => {
   const res = await operations.mutate({
     query: gql`
-      query($date: Int!) {
+      query ($date: Int!) {
         getPaidOrdersStatistic(date: $date) {
           labels
           counts
@@ -116,13 +116,14 @@ const getPaidOrdersStatistic = async operations => {
       date: 0,
     },
   });
+
   return res.data.getPaidOrdersStatistic;
 };
 
 const getUserOrders = async operations => {
   const res = await operations.mutate({
     query: gql`
-      query($pagination: Pagination) {
+      query ($pagination: Pagination) {
         getUserOrders(pagination: $pagination) {
           userOrders {
             _id
@@ -149,13 +150,14 @@ const getUserOrders = async operations => {
       },
     },
   });
+
   return res.data.getUserOrders;
 };
 
 const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
   const res = await operations.mutate({
     query: gql`
-      query($paidOrderNumber: String!) {
+      query ($paidOrderNumber: String!) {
         getOrderByPaidOrderNumber(paidOrderNumber: $paidOrderNumber) {
           ... on Order {
             _id
@@ -175,13 +177,14 @@ const getOrderByPaidOrderNumber = async (paidOrderNumber, operations) => {
       paidOrderNumber,
     },
   });
+
   return res.data.getOrderByPaidOrderNumber;
 };
 
 const getOrdersStatistic = async operations => {
   const res = await operations.mutate({
     query: gql`
-      query($date: Int!) {
+      query ($date: Int!) {
         getOrdersStatistic(date: $date) {
           names
           counts
@@ -193,13 +196,14 @@ const getOrdersStatistic = async operations => {
       date: 0,
     },
   });
+
   return res.data.getOrdersStatistic;
 };
 
 const getAllOrders = async (filter, sort, operations) => {
   const res = await operations.mutate({
     query: gql`
-      query(
+      query (
         $limit: Int
         $skip: Int
         $filter: OrderFilterInput
@@ -239,13 +243,14 @@ const getAllOrders = async (filter, sort, operations) => {
       sort,
     },
   });
+
   return res.data.getAllOrders.items;
 };
 
 const getOrdersByUser = async (filter, sort, userId, operations) => {
   const res = await operations.mutate({
     query: gql`
-      query(
+      query (
         $limit: Int
         $skip: Int
         $filter: OrderFilterInput
@@ -289,13 +294,14 @@ const getOrdersByUser = async (filter, sort, userId, operations) => {
       userId,
     },
   });
+
   return res.data.getOrdersByUser.items;
 };
 
 const getOrderById = async (id, operations) =>
   operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getOrderById(id: $id) {
           ... on Order {
             status
@@ -357,7 +363,7 @@ const getOrderById = async (id, operations) =>
 const updateOrderById = async (order, id, operations) => {
   const updatedData = await operations.mutate({
     mutation: gql`
-      mutation($order: OrderInput!, $id: ID!) {
+      mutation ($order: OrderInput!, $id: ID!) {
         updateOrder(order: $order, id: $id) {
           ... on Order {
             _id
@@ -429,6 +435,7 @@ const updateOrderById = async (order, id, operations) => {
     `,
     variables: { order, id },
   });
+
   return updatedData.data.updateOrder;
 };
 

@@ -4,7 +4,7 @@ const createNews = async (news, operations) => {
   const res = await operations
     .mutate({
       mutation: gql`
-        mutation($news: NewsInput!) {
+        mutation ($news: NewsInput!) {
           addNews(news: $news, upload: []) {
             ... on News {
               _id
@@ -34,13 +34,14 @@ const createNews = async (news, operations) => {
       },
     })
     .catch(e => e);
+
   return res.data.addNews;
 };
 const updateNews = async (id, news, operations) => {
   const res = await operations
     .mutate({
       mutation: gql`
-        mutation($id: ID!, $news: NewsInput!) {
+        mutation ($id: ID!, $news: NewsInput!) {
           updateNews(id: $id, news: $news, upload: []) {
             ... on News {
               _id
@@ -74,13 +75,14 @@ const updateNews = async (id, news, operations) => {
       },
     })
     .catch(e => e);
+
   return res.data.updateNews;
 };
 const deleteNews = async (id, operations) => {
   const res = await operations
     .mutate({
       mutation: gql`
-        mutation($id: ID!) {
+        mutation ($id: ID!) {
           deleteNews(id: $id) {
             ... on News {
               text {
@@ -104,13 +106,14 @@ const deleteNews = async (id, operations) => {
       variables: { id },
     })
     .catch(e => e);
+
   return res.data.deleteNews;
 };
 const getAllNews = async (skip, limit, filter, operations) => {
   const res = await operations
     .query({
       query: gql`
-        query($skip: Int, $limit: Int, $filter: NewsFilterInput) {
+        query ($skip: Int, $limit: Int, $filter: NewsFilterInput) {
           getAllNews(skip: $skip, limit: $limit, filter: $filter) {
             items {
               _id
@@ -137,13 +140,14 @@ const getAllNews = async (skip, limit, filter, operations) => {
       variables: { skip, limit, filter },
     })
     .catch(e => e);
+
   return res.data.getAllNews;
 };
 const getById = async (id, operations) => {
   const res = await operations
     .query({
       query: gql`
-        query($id: ID!) {
+        query ($id: ID!) {
           getNewsById(id: $id) {
             ... on News {
               title {
@@ -172,6 +176,7 @@ const getById = async (id, operations) => {
       variables: { id },
     })
     .catch(e => e);
+
   return res.data.getNewsById;
 };
 

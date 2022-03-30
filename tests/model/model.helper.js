@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createModel = async (model, operations) => {
   const createdModel = await operations.mutate({
     mutation: gql`
-      mutation($model: ModelInput!) {
+      mutation ($model: ModelInput!) {
         addModel(model: $model) {
           ... on Model {
             _id
@@ -43,7 +43,7 @@ const createModel = async (model, operations) => {
 const updateModel = async (id, model, operations) => {
   const updatedModel = await operations.mutate({
     mutation: gql`
-      mutation($model: ModelInput!, $id: ID!) {
+      mutation ($model: ModelInput!, $id: ID!) {
         updateModel(id: $id, model: $model) {
           ... on Model {
             name {
@@ -67,6 +67,7 @@ const updateModel = async (id, model, operations) => {
       id,
     },
   });
+
   return updatedModel.data.updateModel;
 };
 const addModelConstructorBasic = async (
@@ -76,7 +77,7 @@ const addModelConstructorBasic = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         addModelConstructorBasic(
           id: $id
           constructorElementID: $constructorElementID
@@ -111,7 +112,7 @@ const deleteModelConstructorBasic = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         deleteModelConstructorBasic(
           id: $id
           constructorElementID: $constructorElementID
@@ -146,7 +147,7 @@ const addModelConstructorPattern = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         addModelConstructorPattern(
           id: $id
           constructorElementID: $constructorElementID
@@ -181,7 +182,7 @@ const deleteModelConstructorPattern = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         deleteModelConstructorPattern(
           id: $id
           constructorElementID: $constructorElementID
@@ -216,7 +217,7 @@ const addModelConstructorFrontPocket = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         addModelConstructorFrontPocket(
           id: $id
           constructorElementID: $constructorElementID
@@ -251,7 +252,7 @@ const deleteModelConstructorFrontPocket = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         deleteModelConstructorFrontPocket(
           id: $id
           constructorElementID: $constructorElementID
@@ -286,7 +287,7 @@ const addModelConstructorBottom = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         addModelConstructorBottom(
           id: $id
           constructorElementID: $constructorElementID
@@ -321,7 +322,7 @@ const deleteModelConstructorBottom = async (
 ) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElementID: ID!) {
+      mutation ($id: ID!, $constructorElementID: ID!) {
         deleteModelConstructorBottom(
           id: $id
           constructorElementID: $constructorElementID
@@ -352,7 +353,7 @@ const deleteModelConstructorBottom = async (
 const deleteModel = async (id, operations) => {
   const deletedModel = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteModel(id: $id) {
           ... on Model {
             _id
@@ -381,7 +382,7 @@ const deleteModel = async (id, operations) => {
 const getAllModels = async (filter, pagination, sort, operations) => {
   const res = await operations.query({
     query: gql`
-      query(
+      query (
         $filter: ModelFilterInput
         $pagination: Pagination
         $sort: ModelSortInput
@@ -422,7 +423,7 @@ const getAllModels = async (filter, pagination, sort, operations) => {
 const getModelsByCategory = async (category, operations) => {
   const result = await operations.query({
     query: gql`
-      query($category: ID!) {
+      query ($category: ID!) {
         getModelsByCategory(id: $category) {
           ... on Model {
             category {
@@ -464,7 +465,7 @@ const getModelsByCategory = async (category, operations) => {
 const getModelById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getModelById(id: $id) {
           ... on Model {
             category {

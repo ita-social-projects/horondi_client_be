@@ -25,9 +25,8 @@ class HomePageSliderService {
       .limit(limit)
       .exec();
 
-    const count = await HomePageSlider.find()
-      .countDocuments()
-      .exec();
+    const count = await HomePageSlider.find().countDocuments().exec();
+
     return {
       items,
       count,
@@ -56,6 +55,7 @@ class HomePageSliderService {
     if (!upload) {
       throw new RuleError(IMAGE_NOT_PROVIDED, BAD_REQUEST);
     }
+
     return new HomePageSlider(data).save();
   }
 
@@ -84,9 +84,7 @@ class HomePageSliderService {
     if (!images) {
       return HomePageSlider.findByIdAndUpdate(id, slide).exec();
     }
-    const foundSlide = await HomePageSlider.findById(id)
-      .lean()
-      .exec();
+    const foundSlide = await HomePageSlider.findById(id).lean().exec();
     uploadService.deleteFiles(Object.values(foundSlide.images));
 
     return HomePageSlider.findByIdAndUpdate(
@@ -102,9 +100,7 @@ class HomePageSliderService {
   }
 
   async deleteSlide(id) {
-    const foundSlide = await HomePageSlider.findByIdAndDelete(id)
-      .lean()
-      .exec();
+    const foundSlide = await HomePageSlider.findByIdAndDelete(id).lean().exec();
     if (!foundSlide) {
       throw new RuleError(SLIDE_NOT_FOUND, NOT_FOUND);
     }
