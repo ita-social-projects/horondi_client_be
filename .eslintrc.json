@@ -6,6 +6,7 @@
     "jest": true
   },
   "ignorePatterns": [
+    "modules/payment/*.js",
     "typeDefs.js",
     "resolvers.js",
     "server.js",
