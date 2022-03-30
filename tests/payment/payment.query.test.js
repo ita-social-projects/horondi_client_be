@@ -69,7 +69,6 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let orderNumber;
-let mockResponse;
 let certificates;
 let paymentToken;
 
@@ -133,13 +132,6 @@ describe('Certificate payment queries', () => {
 describe('Payment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-
-    mockResponse = () => {
-      const res = {};
-      res.status = jest.fn().mockReturnValue(res);
-      res.json = jest.fn().mockReturnValue(res);
-      return res;
-    };
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;

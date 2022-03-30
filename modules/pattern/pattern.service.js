@@ -150,9 +150,7 @@ class PatternsService {
       const constructorImg = await uploadSmallImage(imageConstructor);
       pattern.constructorImg = constructorImg;
     }
-    const foundPattern = await Pattern.findById(id)
-      .lean()
-      .exec();
+    const foundPattern = await Pattern.findById(id).lean().exec();
 
     await uploadService.deleteFiles(Object.values(foundPattern.images));
     await uploadService.deleteFiles([foundPattern.constructorImg]);
@@ -215,9 +213,7 @@ class PatternsService {
   }
 
   async deletePattern(id, { _id: adminId }) {
-    const foundPattern = await Pattern.findByIdAndDelete(id)
-      .lean()
-      .exec();
+    const foundPattern = await Pattern.findByIdAndDelete(id).lean().exec();
     if (!foundPattern) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
@@ -256,6 +252,7 @@ class PatternsService {
 
       return foundPattern;
     }
+
     return Pattern.findByIdAndDelete(id).exec();
   }
 }

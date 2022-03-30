@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createPocket = async (pocket, images, operations) => {
   const pocketInfo = await operations.mutate({
     mutation: gql`
-      mutation($pocket: PocketInput!, $images: Upload!) {
+      mutation ($pocket: PocketInput!, $images: Upload!) {
         addPocket(pocket: $pocket, images: $images) {
           ... on Pocket {
             _id
@@ -31,13 +31,14 @@ const createPocket = async (pocket, images, operations) => {
     `,
     variables: { pocket, images },
   });
+
   return pocketInfo.data.addPocket;
 };
 
 const updatePocket = async (id, pocket, image, operations) => {
   const pocketInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $pocket: PocketInput!, $image: Upload) {
+      mutation ($id: ID!, $pocket: PocketInput!, $image: Upload) {
         updatePocket(id: $id, pocket: $pocket, image: $image) {
           ... on Pocket {
             _id
@@ -75,7 +76,7 @@ const updatePocket = async (id, pocket, image, operations) => {
 const getAllPockets = async ({ limit, skip, filter }, operations) => {
   const pocketInfo = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: PocketFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: PocketFilterInput) {
         getAllPockets(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
@@ -99,13 +100,14 @@ const getAllPockets = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return pocketInfo.data.getAllPockets.items;
 };
 
 const getPocketById = async (id, operations) => {
   const pocketInfo = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getPocketById(id: $id) {
           ... on Pocket {
             _id
@@ -135,13 +137,14 @@ const getPocketById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return pocketInfo.data.getPocketById;
 };
 
 const deletePocket = async (id, operations) => {
   const pocketInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deletePocket(id: $id) {
           ... on Pocket {
             _id
@@ -157,6 +160,7 @@ const deletePocket = async (id, operations) => {
       id,
     },
   });
+
   return pocketInfo.data.deletePocket;
 };
 

@@ -9,7 +9,7 @@ const { getCurrencySign } = require('../../utils/product-service');
 const createProduct = async (product, operations) => {
   const createdProduct = await operations.mutate({
     mutation: gql`
-      mutation($product: ProductInput!, $upload: Upload!) {
+      mutation ($product: ProductInput!, $upload: Upload!) {
         addProduct(product: $product, upload: $upload) {
           ... on Product {
             _id
@@ -32,7 +32,7 @@ const createProduct = async (product, operations) => {
 const updateProduct = async (id, product, primary, upload, operations) =>
   await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $id: ID!
         $product: ProductInput!
         $upload: Upload
@@ -115,7 +115,7 @@ const updateProduct = async (id, product, primary, upload, operations) =>
 const getProductById = async (id, operations) =>
   await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getProductById(id: $id) {
           ... on Product {
             _id
@@ -197,7 +197,7 @@ const getProductById = async (id, operations) =>
 const deleteProduct = async (ids, operations) =>
   await operations.mutate({
     mutation: gql`
-      mutation($ids: [ID!]) {
+      mutation ($ids: [ID!]) {
         deleteProduct(ids: $ids) {
           ... on Product {
             _id
@@ -216,7 +216,7 @@ const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
   await operations.query({
     variables: { skip, limit },
     query: gql`
-      query($skip: Int, $limit: Int) {
+      query ($skip: Int, $limit: Int) {
         getProducts(skip: $skip, limit: $limit, filter: { colors: [] }) {
           ... on PaginatedProducts {
             items {
@@ -248,7 +248,7 @@ const getModelsByCategory = async (id, operations) =>
   await operations.query({
     variables: { id },
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getModelsByCategory(id: $id) {
           ... on Model {
             _id
@@ -283,7 +283,7 @@ const getProductsForWishlist = async userId =>
 const deleteProductImages = async (id, operations) =>
   await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $images: [String!]!) {
+      mutation ($id: ID!, $images: [String!]!) {
         deleteImages(id: $id, images: $images) {
           ... on PrimaryImage {
             primary {
