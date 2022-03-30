@@ -9,10 +9,7 @@ const {
 
 class PromoCodeService {
   async getAllPromoCodes({ skip, limit }) {
-    const items = await PromoCode.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    const items = await PromoCode.find().skip(skip).limit(limit).exec();
 
     const count = items.length;
 

@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createSize = async (size, operations) => {
   const createdSize = await operations.mutate({
     mutation: gql`
-      mutation($size: SizeInput!) {
+      mutation ($size: SizeInput!) {
         addSize(size: $size) {
           ... on Size {
             _id
@@ -39,7 +39,7 @@ const createSize = async (size, operations) => {
 const deleteSize = async (id, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteSize(id: $id) {
           ... on Size {
             _id
@@ -69,6 +69,7 @@ const deleteSize = async (id, operations) => {
       id,
     },
   });
+
   return result.data.deleteSize;
 };
 const getAllSizes = async operations => {
@@ -96,12 +97,13 @@ const getAllSizes = async operations => {
       }
     `,
   });
+
   return result.data.getAllSizes?.items;
 };
 const getSizeById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getSizeById(id: $id) {
           _id
           name
@@ -131,7 +133,7 @@ const getSizeById = async (id, operations) => {
 const updateSize = async (id, size, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $size: SizeInput!) {
+      mutation ($id: ID!, $size: SizeInput!) {
         updateSize(id: $id, size: $size) {
           ... on Size {
             _id
@@ -162,6 +164,7 @@ const updateSize = async (id, size, operations) => {
       size,
     },
   });
+
   return result.data.updateSize;
 };
 

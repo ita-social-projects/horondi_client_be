@@ -13,6 +13,7 @@ jest.mock('../../../modules/certificate/certificate.model', () => ({
     find: () => ({
       exec: () => {
         isCalledFind = true;
+
         return [{ email: 'test@test.com' }];
       },
     }),
@@ -22,6 +23,7 @@ jest.mock('../../../modules/certificate/certificate.model', () => ({
 jest.mock('../../../modules/email/email.service.js', () => ({
   sendEmail: () => {
     isCalledSender = true;
+
     return 'sended';
   },
 }));
