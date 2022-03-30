@@ -27,8 +27,8 @@ const addQuestionsAnswers = async (questionsAnswers, operations) => {
   return res.data.addQuestionsAnswers;
 };
 
-const deleteQuestionsAnswers = async (id, operations) => {
-  await operations.mutate({
+const deleteQuestionsAnswers = async (id, operations) =>
+  operations.mutate({
     mutation: gql`
       mutation ($id: ID!) {
         deleteQuestionsAnswers(id: $id) {
@@ -48,7 +48,6 @@ const deleteQuestionsAnswers = async (id, operations) => {
     `,
     variables: { id },
   });
-};
 
 const getAllQuestionsAnswers = async operations => {
   const res = await operations.query({

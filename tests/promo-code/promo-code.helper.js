@@ -67,8 +67,8 @@ const getPromoCodeByCode = async (code, operations) => {
   return res;
 };
 
-const deletePromoCode = async (id, operations) => {
-  await operations.mutate({
+const deletePromoCode = async (id, operations) =>
+  operations.mutate({
     mutation: gql`
       mutation ($id: ID!) {
         deletePromoCode(id: $id) {
@@ -84,10 +84,9 @@ const deletePromoCode = async (id, operations) => {
     `,
     variables: { id },
   });
-};
 
-const updatePromoCode = async (id, promoCode, operations) => {
-  await operations.mutate({
+const updatePromoCode = async (id, promoCode, operations) =>
+  operations.mutate({
     mutation: gql`
       mutation ($id: ID!, $promoCode: PromoCodeInput!) {
         updatePromoCode(id: $id, promoCode: $promoCode) {
@@ -103,7 +102,6 @@ const updatePromoCode = async (id, promoCode, operations) => {
     `,
     variables: { id, promoCode },
   });
-};
 
 module.exports = {
   addPromoCode,
