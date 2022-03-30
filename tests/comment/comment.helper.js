@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addComment = async (productId, comment, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID, $comment: CommentInput!) {
+      mutation ($id: ID, $comment: CommentInput!) {
         addComment(id: $id, comment: $comment) {
           ... on Comment {
             _id
@@ -30,12 +30,13 @@ const addComment = async (productId, comment, operations) => {
       id: comment.user,
     },
   });
+
   return res.data.addComment;
 };
 const addRate = async (productId, rate, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($product: ID!, $userRate: UserRateInput!) {
+      mutation ($product: ID!, $userRate: UserRateInput!) {
         addRate(product: $product, userRate: $userRate) {
           ... on Product {
             rate
@@ -54,12 +55,13 @@ const addRate = async (productId, rate, operations) => {
     `,
     variables: { product: productId, userRate: { rate } },
   });
+
   return res.data.addRate;
 };
 const updateComment = async (id, updatedComment, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $comment: CommentUpdateInput!) {
+      mutation ($id: ID!, $comment: CommentUpdateInput!) {
         updateComment(id: $id, comment: $comment) {
           ... on Comment {
             _id
@@ -84,12 +86,13 @@ const updateComment = async (id, updatedComment, operations) => {
       comment: { ...updatedComment },
     },
   });
+
   return res.data.updateComment;
 };
 const deleteComment = async (id, commentID, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID, $commentID: ID!) {
+      mutation ($id: ID, $commentID: ID!) {
         deleteComment(id: $id, commentID: $commentID) {
           ... on Comment {
             _id
@@ -104,12 +107,13 @@ const deleteComment = async (id, commentID, operations) => {
     `,
     variables: { id, commentID },
   });
+
   return res.data.deleteComment;
 };
 const getAllCommentsByUser = async (userId, operations) => {
   const res = await operations.query({
     query: gql`
-      query($userId: ID!) {
+      query ($userId: ID!) {
         getAllCommentsByUser(userId: $userId) {
           ... on Comment {
             text
@@ -133,12 +137,13 @@ const getAllCommentsByUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.getAllCommentsByUser;
 };
 const getCommentsByProduct = async (filter, pagination, operations) => {
   const res = await operations.query({
     query: gql`
-      query($filter: ProductCommentFilterInput, $pagination: Pagination) {
+      query ($filter: ProductCommentFilterInput, $pagination: Pagination) {
         getCommentsByProduct(filter: $filter, pagination: $pagination) {
           ... on PaginatedComments {
             items {
@@ -169,7 +174,7 @@ const getCommentsByProduct = async (filter, pagination, operations) => {
 const getReplyCommentsByProduct = async (filter, pagination, operations) => {
   const res = await operations.query({
     query: gql`
-      query($filter: ReplyCommentFilterInput, $pagination: Pagination) {
+      query ($filter: ReplyCommentFilterInput, $pagination: Pagination) {
         getReplyCommentsByComment(filter: $filter, pagination: $pagination) {
           ... on PaginatedComments {
             items {
@@ -203,7 +208,7 @@ const getReplyCommentsByProduct = async (filter, pagination, operations) => {
 const getCommentById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getCommentById(id: $id) {
           ... on Comment {
             text
@@ -232,7 +237,7 @@ const getCommentById = async (id, operations) => {
 const addReplyComment = async (productId, comment, operations, commentId) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $id: ID
         $commentId: ID!
         $replyCommentData: ReplyCommentInput!
@@ -266,12 +271,13 @@ const addReplyComment = async (productId, comment, operations, commentId) => {
       commentId,
     },
   });
+
   return res.data.replyForComment;
 };
 const deleteReplyComment = async (id, replyCommentId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID, $replyCommentId: ID!) {
+      mutation ($id: ID, $replyCommentId: ID!) {
         deleteReplyForComment(id: $id, replyCommentId: $replyCommentId) {
           ... on Comment {
             _id
@@ -288,12 +294,13 @@ const deleteReplyComment = async (id, replyCommentId, operations) => {
     `,
     variables: { id, replyCommentId },
   });
+
   return res.data.deleteReplyForComment;
 };
 const updateReplyComment = async (id, updatedReplyComment, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $replyCommentId: ID!
         $replyCommentData: ReplyCommentUpdateInput!
       ) {
@@ -321,12 +328,13 @@ const updateReplyComment = async (id, updatedReplyComment, operations) => {
       replyCommentData: { ...updatedReplyComment },
     },
   });
+
   return res.data.updateReplyForComment;
 };
 const getAllComments = async (filter, pagination, sort, operations) => {
   const res = await operations.query({
     query: gql`
-      query(
+      query (
         $filter: CommentFilterInput
         $pagination: Pagination
         $sort: CommentsSortInput
@@ -348,6 +356,7 @@ const getAllComments = async (filter, pagination, sort, operations) => {
       sort,
     },
   });
+
   return res.data.getAllComments;
 };
 const getCommentsByUser = async (
@@ -359,7 +368,7 @@ const getCommentsByUser = async (
 ) => {
   const res = await operations.query({
     query: gql`
-      query(
+      query (
         $filter: CommentFilterInput
         $pagination: Pagination
         $sort: CommentsSortInput
@@ -395,6 +404,7 @@ const getCommentsByUser = async (
       userId,
     },
   });
+
   return res.data.getCommentsByUser;
 };
 const getCommentsRepliesByUser = async (
@@ -406,7 +416,7 @@ const getCommentsRepliesByUser = async (
 ) => {
   const res = await operations.query({
     query: gql`
-      query(
+      query (
         $filter: ReplyCommentFilterInput
         $pagination: Pagination
         $sort: ReplyCommentsSortInput
@@ -437,12 +447,13 @@ const getCommentsRepliesByUser = async (
       userId,
     },
   });
+
   return res.data.getCommentsRepliesByUser;
 };
 const getRecentComments = async (limit, operations) => {
   const res = await operations.query({
     query: gql`
-      query($limit: Int!) {
+      query ($limit: Int!) {
         getRecentComments(limit: $limit) {
           ... on Comment {
             _id
@@ -459,12 +470,13 @@ const getRecentComments = async (limit, operations) => {
       limit,
     },
   });
+
   return res.data.getRecentComments;
 };
 const getReplyCommentById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getReplyCommentById(id: $id) {
           ... on Comment {
             _id
@@ -491,6 +503,7 @@ const getReplyCommentById = async (id, operations) => {
       id,
     },
   });
+
   return res.data.getReplyCommentById;
 };
 module.exports = {

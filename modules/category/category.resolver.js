@@ -9,7 +9,7 @@ const categoryQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getCategoriesForBurgerMenu: (parent, args) =>
+  getCategoriesForBurgerMenu: () =>
     categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),
   getCategoryById: async (parent, args) => {

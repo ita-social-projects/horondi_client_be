@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createMaterial = async (material, operations) => {
   const testCreatedMaterial = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $colors: [ID!]
         $available: Boolean
         $description: [LanguageInput]
@@ -49,6 +49,7 @@ const createMaterial = async (material, operations) => {
     `,
     variables: { ...material },
   });
+
   return testCreatedMaterial.data.addMaterial;
 };
 const getAllMaterials = async operations => {
@@ -88,10 +89,10 @@ const getAllMaterials = async operations => {
   return allMaterials.data.getAllMaterials;
 };
 const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
-  await operations.query({
+  operations.query({
     variables: { skip, limit },
     query: gql`
-      query($skip: Int, $limit: Int) {
+      query ($skip: Int, $limit: Int) {
         getAllMaterials(skip: $skip, limit: $limit, filter: { colors: [] }) {
           items {
             name {
@@ -123,9 +124,9 @@ const getAllMaterialsWithSkipAndLimit = async (skip, limit, operations) =>
     `,
   });
 const getMaterialById = async (id, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getMaterialById(id: $id) {
           ... on Material {
             name {
@@ -163,7 +164,7 @@ const getMaterialById = async (id, operations) =>
 const updateMaterial = async (id, material, operations) => {
   const updatedMaterial = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $id: ID!
         $colors: [ID!]
         $available: Boolean
@@ -217,9 +218,9 @@ const updateMaterial = async (id, material, operations) => {
   return updatedMaterial.data.updateMaterial;
 };
 const deleteMaterial = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteMaterial(id: $id) {
           ... on Material {
             _id

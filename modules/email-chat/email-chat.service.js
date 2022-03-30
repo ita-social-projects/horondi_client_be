@@ -60,9 +60,7 @@ class EmailChatService {
       .sort(DATE)
       .exec();
 
-    const count = await EmailChat.find(filterOptions)
-      .countDocuments()
-      .exec();
+    const count = await EmailChat.find(filterOptions).countDocuments().exec();
 
     return {
       questions,
@@ -75,17 +73,17 @@ class EmailChatService {
     if (!question) {
       throw new RuleError(QUESTION_NOT_FOUND, NOT_FOUND);
     }
+
     return question;
   }
 
   async getPendingEmailQuestionsCount() {
-    return EmailChat.find({ status: 'PENDING' })
-      .countDocuments()
-      .exec();
+    return EmailChat.find({ status: 'PENDING' }).countDocuments().exec();
   }
 
   addEmailQuestion(data) {
     const emailChat = new EmailChat(data);
+
     return emailChat.save();
   }
 
@@ -106,6 +104,7 @@ class EmailChatService {
     });
 
     const updatedQuestions = await Promise.allSettled(result);
+
     return updatedQuestions.map(item => ({
       ...item.value._doc,
     }));
@@ -149,6 +148,7 @@ class EmailChatService {
       );
 
       const deletedQuestions = await Promise.allSettled(result);
+
       return deletedQuestions.map(item => ({
         ...item.value._doc,
       }));

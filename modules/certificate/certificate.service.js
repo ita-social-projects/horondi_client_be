@@ -25,6 +25,7 @@ const generateName = async () => {
   if (candidate) {
     return generateName();
   }
+
   return name;
 };
 
@@ -41,9 +42,7 @@ class CertificatesService {
       .skip(skip)
       .exec();
 
-    const count = await CertificateModel.find(filter)
-      .countDocuments()
-      .exec();
+    const count = await CertificateModel.find(filter).countDocuments().exec();
 
     return {
       items,

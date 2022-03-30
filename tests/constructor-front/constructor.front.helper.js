@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createConstructorFrontPocket = async (constructorElement, operations) => {
   const constructorFrontPocket = await operations.mutate({
     mutation: gql`
-      mutation($constructorElement: ConstructorFrontPocketInput!) {
+      mutation ($constructorElement: ConstructorFrontPocketInput!) {
         addConstructorFrontPocket(constructorElement: $constructorElement) {
           ... on ConstructorFrontPocket {
             _id
@@ -47,12 +47,13 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
     `,
     variables: { constructorElement },
   });
+
   return constructorFrontPocket.data.addConstructorFrontPocket;
 };
 const deleteConstructorFrontPocket = async (id, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteConstructorFrontPocket(id: $id) {
           ... on ConstructorFrontPocket {
             _id
@@ -78,7 +79,7 @@ const updateConstructorFrontPocket = async (
 ) => {
   const constructorFrontPocket = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElement: ConstructorFrontPocketInput!) {
+      mutation ($id: ID!, $constructorElement: ConstructorFrontPocketInput!) {
         updateConstructorFrontPocket(
           id: $id
           constructorElement: $constructorElement
@@ -125,6 +126,7 @@ const updateConstructorFrontPocket = async (
     `,
     variables: { constructorElement: constructorInput, id: constructorId },
   });
+
   return constructorFrontPocket.data.updateConstructorFrontPocket;
 };
 
@@ -134,7 +136,7 @@ const getAllConstructorFrontPocket = async (
 ) => {
   const res = await operations.query({
     query: gql`
-      query($limit: Int, $skip: Int) {
+      query ($limit: Int, $skip: Int) {
         getAllConstructorFrontPocket(limit: $limit, skip: $skip) {
           items {
             _id
@@ -174,12 +176,13 @@ const getAllConstructorFrontPocket = async (
     `,
     variables: { limit, skip, filter },
   });
+
   return res.data.getAllConstructorFrontPocket;
 };
 const getConstructorFrontPocketById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getConstructorFrontPocketById(id: $id) {
           ... on ConstructorFrontPocket {
             _id
@@ -225,6 +228,7 @@ const getConstructorFrontPocketById = async (id, operations) => {
       id,
     },
   });
+
   return res.data.getConstructorFrontPocketById;
 };
 

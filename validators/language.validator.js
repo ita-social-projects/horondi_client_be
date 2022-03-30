@@ -17,14 +17,8 @@ const languageValidator = function langValidator(
   valueMax
 ) {
   return {
-    lang: Joi.string()
-      .min(langMin)
-      .max(langMax)
-      .required(),
-    value: Joi.string()
-      .min(valueMin)
-      .max(valueMax)
-      .required(),
+    lang: Joi.string().min(langMin).max(langMax).required(),
+    value: Joi.string().min(valueMin).max(valueMax).required(),
   };
 };
 

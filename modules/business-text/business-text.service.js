@@ -188,6 +188,7 @@ class BusinessTextService {
       .flat()
       .filter(val => val);
     const uniqueImages = new Set([...images]);
+
     return [...uniqueImages];
   }
 }

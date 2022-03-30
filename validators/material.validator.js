@@ -45,9 +45,7 @@ const materialInputValidator = Joi.object({
   available: Joi.boolean(),
   additionalPrice: Joi.object({
     value: Joi.number(),
-    type: Joi.string()
-      .trim()
-      .valid(RELATIVE_INDICATOR, ABSOLUTE_INDICATOR),
+    type: Joi.string().trim().valid(RELATIVE_INDICATOR, ABSOLUTE_INDICATOR),
   }).required(),
 });
 

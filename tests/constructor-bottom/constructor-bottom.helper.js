@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createConstructorBottom = async (constructorElement, operations) => {
   const constructorBottom = await operations.mutate({
     mutation: gql`
-      mutation($constructorElement: ConstructorBottomInput!) {
+      mutation ($constructorElement: ConstructorBottomInput!) {
         addConstructorBottom(constructorElement: $constructorElement) {
           ... on ConstructorBottom {
             _id
@@ -47,12 +47,13 @@ const createConstructorBottom = async (constructorElement, operations) => {
     `,
     variables: { constructorElement },
   });
+
   return constructorBottom.data.addConstructorBottom;
 };
 const updateConstructorBottom = async (id, constructorElement, operations) => {
   const updateConstructor = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElement: ConstructorBottomInput!) {
+      mutation ($id: ID!, $constructorElement: ConstructorBottomInput!) {
         updateConstructorBottom(
           id: $id
           constructorElement: $constructorElement
@@ -102,12 +103,13 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
       constructorElement,
     },
   });
+
   return updateConstructor.data.updateConstructorBottom;
 };
 const deleteConstructorBottom = async (constructorId, operations) => {
   const deletedConstructor = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteConstructorBottom(id: $id) {
           ... on ConstructorBottom {
             _id
@@ -117,12 +119,13 @@ const deleteConstructorBottom = async (constructorId, operations) => {
     `,
     variables: { id: constructorId },
   });
+
   return deletedConstructor.data.deleteConstructorBottom;
 };
 const getConstructorBottomById = async (id, operations) => {
   const constructorBottomById = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getConstructorBottomById(id: $id) {
           ... on ConstructorBottom {
             _id
@@ -166,12 +169,13 @@ const getConstructorBottomById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return constructorBottomById.data.getConstructorBottomById;
 };
 const getAllConstructorBottom = async ({ limit, skip, filter }, operations) => {
   const allConstructorBottom = await operations.query({
     query: gql`
-      query($limit: Int, $skip: Int) {
+      query ($limit: Int, $skip: Int) {
         getAllConstructorBottom(limit: $limit, skip: $skip) {
           items {
             _id
@@ -211,6 +215,7 @@ const getAllConstructorBottom = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return allConstructorBottom.data.getAllConstructorBottom.items;
 };
 
