@@ -4,7 +4,7 @@ const RuleError = require('../../errors/rule.error');
 const emailChatQuestionQuery = {
   getAllEmailQuestions: (parent, args) =>
     emailChatService.getAllEmailQuestions(args),
-  getPendingEmailQuestionsCount: (parent, args) =>
+  getPendingEmailQuestionsCount: () =>
     emailChatService.getPendingEmailQuestionsCount(),
   getEmailQuestionById: async (parent, args) => {
     try {

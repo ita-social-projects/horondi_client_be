@@ -4,17 +4,13 @@ const modelValidator = Joi.object({
   category: Joi.string().required(),
   name: Joi.array().items(
     Joi.object({
-      lang: Joi.string()
-        .trim()
-        .required(),
+      lang: Joi.string().trim().required(),
       value: Joi.string().trim(),
     })
   ),
   description: Joi.array().items(
     Joi.object({
-      lang: Joi.string()
-        .trim()
-        .required(),
+      lang: Joi.string().trim().required(),
       value: Joi.string().trim(),
     })
   ),

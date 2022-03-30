@@ -5,7 +5,7 @@ const {
   ADDITIONAL_PRICE_TYPES: { ABSOLUTE_INDICATOR },
 } = require('../../../consts/additional-price-types');
 
-const calculateBasePrice = async price => [
+const calculateBasePrice = async () => [
   {
     value: 2700,
     currency: UAH,
@@ -16,7 +16,7 @@ const calculateBasePrice = async price => [
   },
 ];
 
-const calculateAdditionalPrice = async price => [
+const calculateAdditionalPrice = async () => [
   {
     value: 270,
     type: ABSOLUTE_INDICATOR,
@@ -29,7 +29,7 @@ const calculateAdditionalPrice = async price => [
   },
 ];
 
-const calculateFinalPrice = async price => [
+const calculateFinalPrice = async () => [
   {
     value: 3700,
     currency: UAH,

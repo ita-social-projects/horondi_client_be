@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createConstructorBasic = async (constructorElement, operations) => {
   const constructorBasic = await operations.mutate({
     mutation: gql`
-      mutation($constructorElement: ConstructorBasicInput!) {
+      mutation ($constructorElement: ConstructorBasicInput!) {
         addConstructorBasic(constructorElement: $constructorElement) {
           ... on ConstructorBasic {
             _id
@@ -53,7 +53,7 @@ const createConstructorBasic = async (constructorElement, operations) => {
 const deleteConstructorBasic = async (id, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteConstructorBasic(id: $id) {
           ... on ConstructorBasic {
             _id
@@ -79,7 +79,7 @@ const updateConstructorBasic = async (
 ) => {
   const constructorBasic = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $constructorElement: ConstructorBasicInput!) {
+      mutation ($id: ID!, $constructorElement: ConstructorBasicInput!) {
         updateConstructorBasic(
           id: $id
           constructorElement: $constructorElement
@@ -125,12 +125,13 @@ const updateConstructorBasic = async (
     `,
     variables: { constructorElement: constructorInput, id: constructorId },
   });
+
   return constructorBasic.data.updateConstructorBasic;
 };
 const getAllConstructorBasics = async ({ limit, skip, filter }, operations) => {
   const res = await operations.query({
     query: gql`
-      query($limit: Int, $skip: Int, $filter: ConstructorBasicFilterInput) {
+      query ($limit: Int, $skip: Int, $filter: ConstructorBasicFilterInput) {
         getAllConstructorBasics(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
@@ -175,7 +176,7 @@ const getAllConstructorBasics = async ({ limit, skip, filter }, operations) => {
 const getConstructorBasicById = async (id, operations) => {
   const constructorBasicById = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getConstructorBasicById(id: $id) {
           ... on ConstructorBasic {
             _id
@@ -220,6 +221,7 @@ const getConstructorBasicById = async (id, operations) => {
       id,
     },
   });
+
   return constructorBasicById.data.getConstructorBasicById;
 };
 
