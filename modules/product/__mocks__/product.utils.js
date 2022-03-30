@@ -12,6 +12,7 @@ const uploadProductImages = () => {
     small: createName('smallXL'),
     thumbnail: createName('thumbnailXL'),
   };
+
   return {
     primary,
     additional,

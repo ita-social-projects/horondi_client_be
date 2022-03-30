@@ -43,9 +43,13 @@ class JWTClient {
 
   decodeToken(token, secret) {
     let decoded = '';
-    if (!token) return decoded;
+    if (!token) {
+      return decoded;
+    }
+
     try {
       decoded = jwt.verify(token, secret);
+
       return decoded;
     } catch (err) {
       return decoded;
