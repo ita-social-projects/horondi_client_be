@@ -17,6 +17,7 @@ const commonFiltersHandler = filter => {
   if (filter?.available?.length) {
     filterOptions.available = { $in: filter.available };
   }
+
   return filterOptions;
 };
 

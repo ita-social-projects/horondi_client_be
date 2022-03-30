@@ -31,6 +31,7 @@ const getChanges = (objBefore, objWithChanges) => {
       afterChanges.push({ [key]: newValue });
     }
   });
+
   return {
     beforeChanges,
     afterChanges,

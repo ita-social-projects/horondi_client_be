@@ -120,9 +120,7 @@ class BottomService {
   }
 
   async deleteBottom(id, { _id: adminId }) {
-    const foundBottom = await Bottom.findById(id)
-      .lean()
-      .exec();
+    const foundBottom = await Bottom.findById(id).lean().exec();
 
     if (!foundBottom) {
       throw new RuleError(BOTTOM_NOT_FOUND, NOT_FOUND);

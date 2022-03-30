@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createClosure = async (closure, operations) => {
   const createdClosure = await operations.mutate({
     mutation: gql`
-      mutation($closure: ClosureInput!) {
+      mutation ($closure: ClosureInput!) {
         addClosure(closure: $closure) {
           ... on Closure {
             _id
@@ -41,12 +41,13 @@ const createClosure = async (closure, operations) => {
       closure,
     },
   });
+
   return createdClosure.data.addClosure;
 };
 const updateClosure = async (id, closure, operations) => {
   const updatedClosure = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $closure: ClosureInput!) {
+      mutation ($id: ID!, $closure: ClosureInput!) {
         updateClosure(id: $id, closure: $closure) {
           ... on Closure {
             _id
@@ -85,13 +86,14 @@ const updateClosure = async (id, closure, operations) => {
       id,
     },
   });
+
   return updatedClosure.data.updateClosure;
 };
 
 const deleteClosure = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteClosure(id: $id) {
           ... on Closure {
             _id
@@ -107,12 +109,13 @@ const deleteClosure = async (id, operations) => {
       id,
     },
   });
+
   return res.data.deleteClosure;
 };
 const getClosureById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getClosureById(id: $id) {
           ... on Closure {
             _id

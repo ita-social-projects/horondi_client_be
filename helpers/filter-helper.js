@@ -39,6 +39,7 @@ class FilterHelper {
     if (search && search.trim()) {
       filter.$or = this.searchItems(search.trim());
     }
+
     return filter;
   }
 

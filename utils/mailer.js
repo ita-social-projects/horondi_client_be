@@ -16,7 +16,7 @@ class Mailer {
       throw new Error('Mailer parameters required');
     }
 
-    Object.keys(opts).forEach((key) => {
+    Object.keys(opts).forEach(key => {
       if (!necesarryMailCredentials.includes(key)) {
         throw new Error(`Please add '${key}' property to mailer options!`);
       }
@@ -35,7 +35,7 @@ class Mailer {
     );
     oAuth2Client.setCredentials({ refresh_token: this.opts.refreshToken });
 
-    return oAuth2Client.getAccessToken().catch((error) => {
+    return oAuth2Client.getAccessToken().catch(error => {
       console.error('oAuth2Client:', error);
     });
   }
@@ -64,6 +64,7 @@ class Mailer {
 
   async reconnect() {
     this.closeConnection();
+
     return this.createTransport();
   }
 
@@ -78,12 +79,14 @@ class Mailer {
     }
 
     this.closeConnection();
+
     return result;
   }
 
   closeConnection() {
     try {
       this.transporter.close();
+
       return true;
     } catch (err) {
       return false;

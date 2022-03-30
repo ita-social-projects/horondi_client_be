@@ -21,6 +21,7 @@ async function calculateTotalItemsPrice(items) {
           value: price[CURRENCY_VALUE.USD_VALUE].value / quantity,
         },
       ];
+
       return [
         {
           currency: CURRENCY.UAH,
@@ -55,6 +56,7 @@ function calculateTotalPriceToPay(data, totalItemsPrice) {
 
 function generateOrderNumber() {
   const uid = new Date().getTime();
+
   return uid.toString();
 }
 
@@ -102,6 +104,7 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
       } else {
         quantity = newItem.quantity;
       }
+
       return { product: newItem.product, quantity };
     });
 

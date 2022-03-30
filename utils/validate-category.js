@@ -4,9 +4,7 @@ const {
 } = require('../error-messages/category.messages');
 
 exports.validateCategoryInput = Joi.object({
-  name: Joi.array()
-    .min(2)
-    .required(),
+  name: Joi.array().min(2).required(),
   code: Joi.string(),
   images: Joi.object(),
   available: Joi.boolean(),
