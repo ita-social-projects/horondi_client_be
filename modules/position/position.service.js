@@ -40,6 +40,7 @@ class PositionService {
         },
       },
     }).exec();
+
     return positionCount > 0;
   }
 

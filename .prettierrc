@@ -4,4 +4,8 @@
   "singleQuote": true,
   "trailingComma": "es5",
   "arrowParens": "avoid"
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7dcc3f2b (fixed lint errors)

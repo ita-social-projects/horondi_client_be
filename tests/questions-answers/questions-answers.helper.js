@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addQuestionsAnswers = async (questionsAnswers, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($questionsAnswers: QuestionsAnswersInput!) {
+      mutation ($questionsAnswers: QuestionsAnswersInput!) {
         addQuestionsAnswers(questionsAnswers: $questionsAnswers) {
           ... on QuestionsAnswers {
             _id
@@ -23,12 +23,14 @@ const addQuestionsAnswers = async (questionsAnswers, operations) => {
       questionsAnswers,
     },
   });
+
   return res.data.addQuestionsAnswers;
 };
-const deleteQuestionsAnswers = async (id, operations) =>
+
+const deleteQuestionsAnswers = async (id, operations) => {
   await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteQuestionsAnswers(id: $id) {
           ... on QuestionsAnswers {
             _id
@@ -46,6 +48,8 @@ const deleteQuestionsAnswers = async (id, operations) =>
     `,
     variables: { id },
   });
+};
+
 const getAllQuestionsAnswers = async operations => {
   const res = await operations.query({
     query: gql`
@@ -73,7 +77,7 @@ const getAllQuestionsAnswers = async operations => {
 const getQuestionsAnswersById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getQuestionsAnswersById(id: $id) {
           ... on QuestionsAnswers {
             question {
@@ -90,13 +94,14 @@ const getQuestionsAnswersById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.getQuestionsAnswersById;
 };
 
 const updateQuestionsAnswers = async (id, questionsAnswers, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $questionsAnswers: QuestionsAnswersInput!) {
+      mutation ($id: ID!, $questionsAnswers: QuestionsAnswersInput!) {
         updateQuestionsAnswers(id: $id, questionsAnswers: $questionsAnswers) {
           ... on QuestionsAnswers {
             _id
