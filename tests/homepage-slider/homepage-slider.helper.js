@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addHomePageSlide = async (slide, upload, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($slide: HomePageSlideInput!, $upload: Upload) {
+      mutation ($slide: HomePageSlideInput!, $upload: Upload) {
         addSlide(slide: $slide, upload: $upload) {
           ... on HomePageSlide {
             _id
@@ -44,7 +44,7 @@ const addHomePageSlide = async (slide, upload, operations) => {
 const updateHomePageSlide = async (id, slide, upload, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $slide: HomePageSlideInput!, $upload: Upload) {
+      mutation ($id: ID!, $slide: HomePageSlideInput!, $upload: Upload) {
         updateSlide(id: $id, slide: $slide, upload: $upload) {
           ... on HomePageSlide {
             _id
@@ -86,7 +86,7 @@ const updateHomePageSlide = async (id, slide, upload, operations) => {
 const deleteHomePageSlide = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteSlide(id: $id) {
           ... on HomePageSlide {
             _id
@@ -126,7 +126,7 @@ const deleteHomePageSlide = async (id, operations) => {
 const getAllHomePageSlides = async (limit, skip, operations) => {
   const res = await operations.query({
     query: gql`
-      query($limit: Int, $skip: Int) {
+      query ($limit: Int, $skip: Int) {
         getAllSlides(limit: $limit, skip: $skip) {
           ... on PaginatedHomePageSlides {
             items {
@@ -166,7 +166,7 @@ const getAllHomePageSlides = async (limit, skip, operations) => {
 const getSlideById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getSlideById(id: $id) {
           ... on HomePageSlide {
             _id

@@ -40,6 +40,7 @@ class CurrencyService {
     if (await this.checkCurrencyExist(currency, id)) {
       throw new RuleError(CURRENCY_ALREADY_EXIST, BAD_REQUEST);
     }
+
     return Currency.findByIdAndUpdate(id, currency, {
       new: true,
     }).exec();
@@ -49,6 +50,7 @@ class CurrencyService {
     if (await this.checkCurrencyExist(data)) {
       throw new RuleError(CURRENCY_ALREADY_EXIST, BAD_REQUEST);
     }
+
     return new Currency(data).save();
   }
 
@@ -76,6 +78,7 @@ class CurrencyService {
         },
       },
     }).exec();
+
     return currenciesCount > 0;
   }
 }

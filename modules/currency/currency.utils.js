@@ -8,6 +8,7 @@ const {
 
 const calculateBasePrice = async price => {
   const { convertOptions } = await Currency.findOne().exec();
+
   return [
     {
       value: Math.round(price * convertOptions[0].exchangeRate * 100) / 100,
@@ -52,6 +53,7 @@ const calculateAdditionalPrice = async price => {
 
 const calculateFinalPrice = async price => {
   const { convertOptions } = await Currency.findOne().exec();
+
   return [
     {
       value: Math.round((price * convertOptions[0].exchangeRate) / 50) * 50,

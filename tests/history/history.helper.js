@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const getAllHistoryRecords = async (params, operations) => {
   const allRecords = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: HistoryFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: HistoryFilterInput) {
         getAllHistoryRecords(limit: $limit, skip: $skip, filter: $filter) {
           ... on History {
             items {
@@ -30,13 +30,14 @@ const getAllHistoryRecords = async (params, operations) => {
     `,
     variables: params,
   });
+
   return allRecords.data.getAllHistoryRecords;
 };
 
 const getHistoryRecordById = async (id, operations) => {
   const record = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getHistoryRecordById(id: $id) {
           ... on HistoryRecord {
             _id
@@ -60,6 +61,7 @@ const getHistoryRecordById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return record.data.getHistoryRecordById;
 };
 

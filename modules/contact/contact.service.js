@@ -8,13 +8,8 @@ const {
 
 class ContactService {
   async getContacts({ skip, limit }) {
-    const items = await Contact.find()
-      .skip(skip)
-      .limit(limit)
-      .exec();
-    const count = await Contact.find()
-      .countDocuments()
-      .exec();
+    const items = await Contact.find().skip(skip).limit(limit).exec();
+    const count = await Contact.find().countDocuments().exec();
 
     return {
       items,
@@ -39,11 +34,11 @@ class ContactService {
   }
 
   async updateContact(data) {
-    const contact = await Contact.findById(data.id)
-      .lean()
-      .exec();
+    const contact = await Contact.findById(data.id).lean().exec();
 
-    if (!contact) return null;
+    if (!contact) {
+      return null;
+    }
 
     await updateTranslations(
       contact.translationsKey,
@@ -56,11 +51,11 @@ class ContactService {
   }
 
   async deleteContact(id) {
-    const contact = await Contact.findById(id)
-      .lean()
-      .exec();
+    const contact = await Contact.findById(id).lean().exec();
 
-    if (!contact) return null;
+    if (!contact) {
+      return null;
+    }
 
     await deleteTranslations(contact.translationsKey);
 
