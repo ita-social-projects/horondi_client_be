@@ -36,12 +36,15 @@ const {
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }) {
-    if (!ObjectId.isValid(orderId))
+    if (!ObjectId.isValid(orderId)) {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
+    }
 
     const isOrderPresent = await OrderModel.findById(orderId).exec();
 
-    if (!isOrderPresent) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!isOrderPresent) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       order_id: isOrderPresent.orderNumber,
@@ -65,13 +68,10 @@ class PaymentService {
   }
 
   async checkCertificatesPaymentStatus(certificateName, paymentToken) {
-    const {
-      order_status,
-      response_signature_string,
-      signature,
-    } = await paymentController(CHECK_PAYMENT_STATUS, {
-      order_id: certificateName,
-    });
+    const { order_status, response_signature_string, signature } =
+      await paymentController(CHECK_PAYMENT_STATUS, {
+        order_id: certificateName,
+      });
 
     const signatureWithoutFirstParam = response_signature_string
       .split('|')
@@ -87,7 +87,9 @@ class PaymentService {
       name: certificateName.toString(),
     }).exec();
 
-    if (!certificate) throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
+    if (!certificate) {
+      throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
+    }
 
     if (
       order_status !== APPROVED.toLowerCase() ||
@@ -115,15 +117,17 @@ class PaymentService {
   async getPaymentCheckoutForCertificates({ certificates, currency, amount }) {
     let isCertificatePresent;
     certificates.forEach(async certificate => {
-      if (!ObjectId.isValid(certificate._id))
+      if (!ObjectId.isValid(certificate._id)) {
         throw new RuleError(CERTIFICATE_NOT_VALID, BAD_REQUEST);
+      }
 
       isCertificatePresent = await CertificateModel.findById(
         certificate._id
       ).exec();
 
-      if (!isCertificatePresent)
+      if (!isCertificatePresent) {
         throw new RuleError(CERTIFICATE_NOT_FOUND, BAD_REQUEST);
+      }
     });
 
     const certificatesOrderId = certificates[0].name;
@@ -163,13 +167,10 @@ class PaymentService {
   }
 
   async checkOrderPaymentStatus(order_id, language) {
-    const {
-      order_status,
-      response_signature_string,
-      signature,
-    } = await paymentController(CHECK_PAYMENT_STATUS, {
-      order_id,
-    });
+    const { order_status, response_signature_string, signature } =
+      await paymentController(CHECK_PAYMENT_STATUS, {
+        order_id,
+      });
 
     const signatureWithoutFirstParam = response_signature_string
       .split('|')
@@ -185,7 +186,9 @@ class PaymentService {
       orderNumber: order_id.toString(),
     }).exec();
 
-    if (!order) throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    if (!order) {
+      throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
+    }
 
     if (
       order_status !== APPROVED.toLowerCase() ||

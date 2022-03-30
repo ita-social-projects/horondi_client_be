@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createCategory = async (category, operations) => {
   const createdCategory = await operations.mutate({
     mutation: gql`
-      mutation($category: CategoryInput!, $upload: Upload) {
+      mutation ($category: CategoryInput!, $upload: Upload) {
         addCategory(category: $category, upload: $upload) {
           ... on Category {
             _id
@@ -32,7 +32,7 @@ const createCategory = async (category, operations) => {
 const updateCategory = async (id, category, operations) => {
   const updatedCategory = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $category: CategoryInput!, $upload: Upload) {
+      mutation ($id: ID!, $category: CategoryInput!, $upload: Upload) {
         updateCategory(id: $id, category: $category, upload: $upload) {
           ... on Category {
             _id
@@ -87,7 +87,7 @@ const getAllCategories = async operations => {
 const getCategoryById = async (id, operations) => {
   const categoryById = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getCategoryById(id: $id) {
           ... on Category {
             _id
@@ -113,7 +113,7 @@ const getCategoryById = async (id, operations) => {
 const deleteCategory = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteCategory(deleteId: $id, switchId: $id) {
           ... on Category {
             _id
@@ -129,6 +129,7 @@ const deleteCategory = async (id, operations) => {
       id,
     },
   });
+
   return res.data.deleteCategory;
 };
 

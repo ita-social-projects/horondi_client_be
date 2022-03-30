@@ -16,7 +16,7 @@ const {
   STATUS_CODES: { FORBIDDEN, UNAUTHORIZED, BAD_REQUEST },
 } = require('../consts/status-codes');
 
-const isAuthorized = rule()((parent, args, context, info) =>
+const isAuthorized = rule()((parent, args, context) =>
   context.user ? true : new RuleError(USER_NOT_AUTHORIZED, UNAUTHORIZED)
 );
 
@@ -30,7 +30,7 @@ const hasRoles = roles =>
   and(
     isAuthorized,
     isUnlocked,
-    rule()((parent, args, context, info) =>
+    rule()((parent, args, context) =>
       roles.includes(context.user.role)
         ? true
         : new RuleError(INVALID_PERMISSIONS, FORBIDDEN)
@@ -40,7 +40,7 @@ const hasRoles = roles =>
 const isTheSameUser = and(
   isAuthorized,
   isUnlocked,
-  rule()((parent, args, context, info) =>
+  rule()((parent, args, context) =>
     `${context.user._id}` === args.id
       ? true
       : new RuleError(WRONG_CREDENTIALS, UNAUTHORIZED)
@@ -74,6 +74,7 @@ const checkIfItemExists = (data, currentModel) =>
     if (foundItem) {
       return new RuleError(ITEM_ALREADY_EXISTS, BAD_REQUEST);
     }
+
     return true;
   });
 

@@ -158,9 +158,7 @@ class BasicsService {
   }
 
   async deleteBasic(id, { _id: adminId }) {
-    const foundBasic = await Basics.findById(id)
-      .lean()
-      .exec();
+    const foundBasic = await Basics.findById(id).lean().exec();
 
     if (!foundBasic) {
       throw new RuleError(BASICS_NOT_FOUND, NOT_FOUND);

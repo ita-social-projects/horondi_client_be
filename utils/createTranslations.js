@@ -12,6 +12,7 @@ function createTranslations(data) {
           [key]: data[key][1].value,
         });
       }
+
       return translations;
     },
     { ua: {}, en: {} }
