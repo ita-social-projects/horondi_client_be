@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createPosition = async (position, operations) => {
   const positionInfo = await operations.mutate({
     mutation: gql`
-      mutation($position: PositionInput!) {
+      mutation ($position: PositionInput!) {
         addPosition(position: $position) {
           ... on Position {
             name {
@@ -23,13 +23,14 @@ const createPosition = async (position, operations) => {
     `,
     variables: { position },
   });
+
   return positionInfo.data.addPosition;
 };
 
 const updatePosition = async (id, position, operations) => {
   const positionInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $position: PositionInput!) {
+      mutation ($id: ID!, $position: PositionInput!) {
         updatePosition(id: $id, position: $position) {
           ... on Position {
             _id
@@ -46,13 +47,14 @@ const updatePosition = async (id, position, operations) => {
       position,
     },
   });
+
   return positionInfo.data.updatePosition;
 };
 
 const deletePosition = async (id, operations) => {
   const positionInfo = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deletePosition(id: $id) {
           ... on Position {
             _id
@@ -68,13 +70,14 @@ const deletePosition = async (id, operations) => {
       id,
     },
   });
+
   return positionInfo.data.deletePosition;
 };
 
 const getAllPositions = async ({ limit, skip, filter }, operations) => {
   const positionInfo = await operations.query({
     query: gql`
-      query($limit: Int, $skip: Int, $filter: PositionsFilterInput) {
+      query ($limit: Int, $skip: Int, $filter: PositionsFilterInput) {
         getAllPositions(limit: $limit, skip: $skip, filter: $filter) {
           ... on PaginatedPositions {
             items {
@@ -92,13 +95,14 @@ const getAllPositions = async ({ limit, skip, filter }, operations) => {
     `,
     variables: { limit, skip, filter },
   });
+
   return positionInfo.data.getAllPositions.items;
 };
 
 const getPositionById = async (id, operations) => {
   const positionInfo = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getPositionById(id: $id) {
           ... on Position {
             _id
@@ -117,6 +121,7 @@ const getPositionById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return positionInfo.data.getPositionById;
 };
 

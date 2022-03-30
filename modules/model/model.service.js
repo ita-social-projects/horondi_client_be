@@ -86,9 +86,7 @@ class ModelsService {
       .limit(limit || 0)
       .exec();
 
-    const count = await Model.find()
-      .countDocuments(filterOptions)
-      .exec();
+    const count = await Model.find().countDocuments(filterOptions).exec();
 
     return {
       items,
@@ -117,6 +115,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(CATEGORY_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.find({ category: id });
   }
 
@@ -248,6 +247,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorBasic: [constructorElementID] } }
@@ -258,6 +258,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBasic: constructorElementID } },
@@ -269,6 +270,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorPattern: [constructorElementID] } }
@@ -279,6 +281,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorPattern: constructorElementID } },
@@ -290,6 +293,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorFrontPocket: [constructorElementID] } }
@@ -300,6 +304,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorFrontPocket: constructorElementID } },
@@ -311,6 +316,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $addToSet: { constructorBottom: [constructorElementID] } }
@@ -321,6 +327,7 @@ class ModelsService {
     if (!ObjectId.isValid(id)) {
       throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
     }
+
     return Model.findByIdAndUpdate(
       { _id: id },
       { $pull: { constructorBottom: constructorElementID } },
