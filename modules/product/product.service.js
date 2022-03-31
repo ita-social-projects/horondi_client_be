@@ -482,7 +482,7 @@ class ProductsService {
 
         await addHistoryRecord(historyRecord);
 
-        const productRes = await Product.findByIdAndDelete(itemId);
+        const productRes = await Product.findByIdAndDelete(itemId).exec();
         response.push(productRes);
       }
     }
