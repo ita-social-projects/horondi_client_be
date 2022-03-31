@@ -16,7 +16,9 @@ const { NODE_ENV, SECRET } = require('../dotenvValidator');
 let loggerHttp;
 
 (async () => {
-  if (NODE_ENV !== 'test') return;
+  if (NODE_ENV !== 'test') {
+    return;
+  }
 
   const dbConnection = await connectDB();
   currencyWorker(dbConnection.db);

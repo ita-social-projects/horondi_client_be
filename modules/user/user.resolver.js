@@ -6,7 +6,7 @@ const RuleError = require('../../errors/rule.error');
 
 const userQuery = {
   getAllUsers: (parent, args) => userService.getAllUsers(args),
-  getUsersForStatistic: (parent, args, context) =>
+  getUsersForStatistic: (parent, args) =>
     userService.getUsersForStatistic(args),
   getUserByToken: (parent, args, context) => context.user,
   getUserById: (parent, args) => userService.getUser(args.id),
