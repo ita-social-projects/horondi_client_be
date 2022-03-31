@@ -1,8 +1,11 @@
 class UploadService {
-  uploadFiles = async files => files.map(async file => this.uploadFile(file));
+  async uploadFiles(files) {
+    return Promise.all(files.map(async file => this.uploadFile(file)));
+  }
 
-  uploadFile = async file => {
+  async uploadFile() {
     const createName = sizeName => `${sizeName}_test-file`;
+
     return {
       prefixUrl: 'some prefix',
       fileNames: {
@@ -12,13 +15,13 @@ class UploadService {
         thumbnail: createName('thumbnail'),
       },
     };
-  };
+  }
 
-  async deleteFiles(files) {
+  async deleteFiles() {
     return [true, true];
   }
 
-  async deleteFile(file) {
+  async deleteFile() {
     return true;
   }
 }

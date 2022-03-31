@@ -27,6 +27,7 @@ const registerAdmin = async (email, password) => {
     },
   ];
   await admin.save();
+
   return admin;
 };
 const setupApp = async user => {
@@ -36,6 +37,7 @@ const setupApp = async user => {
     ...config,
     context: { user: user || admin },
   });
+
   return createTestClient(server);
 };
 

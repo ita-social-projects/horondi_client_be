@@ -71,6 +71,7 @@ class UploadService {
 
       inputStream.once('end', () => {
         fileBuffer = Buffer.concat(chunks);
+
         return resolve(fileBuffer);
       });
 
@@ -88,8 +89,10 @@ class UploadService {
       });
       const fileNames = sizes.reduce((acc, size) => {
         acc[size] = createName(size);
+
         return acc;
       }, {});
+
       return {
         prefixUrl: IMAGE_LINK,
         fileNames,

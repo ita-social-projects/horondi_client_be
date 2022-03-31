@@ -98,11 +98,11 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
     const items = newItems.map(newItem => {
       const index = oldItems.findIndex(el => el.product === newItem.product);
       let quantity;
-      if (index !== -1) {
+      if (index === -1) {
+        quantity = newItem.quantity;
+      } else {
         quantity = newItem.quantity + oldItems[index].quantity;
         oldItems.splice(index, 1);
-      } else {
-        quantity = newItem.quantity;
       }
 
       return { product: newItem.product, quantity };
