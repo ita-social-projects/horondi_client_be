@@ -44,6 +44,18 @@ rl.question('Enter remote database name\n', nameRemote => {
   });
 });
 
+function runCommand(command, callback) {
+  exec(command, (error, _, stderr) => {
+    if (error) {
+      console.error(`error: ${error.message}`);
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+    }
+    callback && callback();
+  });
+}
+
 rl.on('close', () => {
   runCommand(
     `mongodump -d=${remoteDatabaseName} --uri="${remoteDatabaseUrl}"`,
@@ -56,15 +68,3 @@ rl.on('close', () => {
     }
   );
 });
-
-function runCommand(command, callback) {
-  exec(command, (error, _, stderr) => {
-    if (error) {
-      console.error(`error: ${error.message}`);
-    }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-    }
-    callback && callback();
-  });
-}

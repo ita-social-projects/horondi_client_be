@@ -6,7 +6,7 @@ const {
 } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _) {
     await db.collection('constructorbasics').updateOne(
       { _id: ObjectId('604e32fdb17ecf65048afd6d') },
       {
@@ -24,7 +24,7 @@ module.exports = {
     );
   },
 
-  async down(db, client) {
+  async down(db, _) {
     await db.collection('constructorbasics').updateOne(
       { _id: ObjectId('604e32fdb17ecf65048afd6d') },
       {

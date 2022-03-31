@@ -40,8 +40,8 @@ const COUNTER_PARTY_PROPERTIES = {
 };
 
 const URL_PARAMS = {
-  CREATE_UKR_POSHTA_ORDER_PARAMS: `shipments?token=`,
-  CREATE_UKR_POSHTA_USER_PARAMS: `clients?token=`,
+  CREATE_UKR_POSHTA_ORDER_PARAMS: 'shipments?token=',
+  CREATE_UKR_POSHTA_USER_PARAMS: 'clients?token=',
   ADDRESSES: 'addresses',
 };
 

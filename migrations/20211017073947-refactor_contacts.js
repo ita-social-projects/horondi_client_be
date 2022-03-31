@@ -1,7 +1,7 @@
 const { link } = require('../consts/migrations');
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _) {
     await db.collection('contacts').updateMany(
       {},
       {

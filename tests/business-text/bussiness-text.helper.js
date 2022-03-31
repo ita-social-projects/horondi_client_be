@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addBusinessText = async (businessText, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($businessText: BusinessTextInput!) {
+      mutation ($businessText: BusinessTextInput!) {
         addBusinessText(businessText: $businessText, files: []) {
           ... on BusinessText {
             _id
@@ -28,12 +28,13 @@ const addBusinessText = async (businessText, operations) => {
       businessText,
     },
   });
+
   return res.data.addBusinessText;
 };
 const deleteBusinessText = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteBusinessText(id: $id) {
           ... on BusinessText {
             _id
@@ -56,6 +57,7 @@ const deleteBusinessText = async (id, operations) =>
     `,
     variables: { id },
   });
+
 const getAllBusinessTexts = async operations => {
   const res = await operations.query({
     query: gql`
@@ -80,7 +82,7 @@ const getAllBusinessTexts = async operations => {
 const getBusinessTextById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getBusinessTextById(id: $id) {
           ... on BusinessText {
             code
@@ -102,12 +104,13 @@ const getBusinessTextById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.getBusinessTextById;
 };
 const getBusinessTextByCode = async (code, operations) => {
   const res = await operations.query({
     query: gql`
-      query($code: String!) {
+      query ($code: String!) {
         getBusinessTextByCode(code: $code) {
           ... on BusinessText {
             code
@@ -135,7 +138,7 @@ const getBusinessTextByCode = async (code, operations) => {
 const updateBusinessText = async (id, businessText, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $businessText: BusinessTextInput!) {
+      mutation ($id: ID!, $businessText: BusinessTextInput!) {
         updateBusinessText(id: $id, businessText: $businessText, files: []) {
           ... on BusinessText {
             _id

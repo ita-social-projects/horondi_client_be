@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongoose').Types;
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _) {
     await db
       .collection('sizes')
       .updateMany({}, { $unset: { simpleName: 1 } }, false, true);
@@ -87,7 +87,7 @@ module.exports = {
     );
   },
 
-  async down(db, client) {
+  async down(db, _) {
     await db
       .collection('sizes')
       .updateMany({}, { $unset: { modelId: 1 } }, false, true);
