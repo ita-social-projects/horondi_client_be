@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const createStrap = async (strap, image, operations) => {
   const createdStrap = await operations.mutate({
     mutation: gql`
-      mutation($strap: StrapInput!, $image: Upload) {
+      mutation ($strap: StrapInput!, $image: Upload) {
         addStrap(strap: $strap, image: $image) {
           ... on Strap {
             _id
@@ -49,7 +49,7 @@ const createStrap = async (strap, image, operations) => {
 const updateStrap = async (id, strap, image, operations) => {
   const updatedStrap = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $strap: StrapInput!, $image: Upload) {
+      mutation ($id: ID!, $strap: StrapInput!, $image: Upload) {
         updateStrap(id: $id, strap: $strap, image: $image) {
           ... on Strap {
             _id
@@ -95,7 +95,7 @@ const updateStrap = async (id, strap, image, operations) => {
 const deleteStrap = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteStrap(id: $id) {
           ... on Strap {
             _id
@@ -118,7 +118,7 @@ const deleteStrap = async (id, operations) => {
 const getStrapById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getStrapById(id: $id) {
           ... on Strap {
             _id
@@ -155,13 +155,14 @@ const getStrapById = async (id, operations) => {
       id,
     },
   });
+
   return result.data.getStrapById;
 };
 
 const getAllStraps = async (limit, skip, filter, operations) => {
   const result = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: StrapFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: StrapFilterInput) {
         getAllStraps(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id

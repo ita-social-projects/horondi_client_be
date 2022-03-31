@@ -10,7 +10,7 @@ const registerUser = async (
 ) => {
   const registeredUser = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $firstName: String!
         $lastName: String!
         $email: String!
@@ -48,6 +48,7 @@ const registerUser = async (
       language,
     },
   });
+
   return registeredUser;
 };
 const updateUserById = async (
@@ -66,7 +67,7 @@ const updateUserById = async (
 ) => {
   const updatedUser = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $userId: ID!
         $email: String!
         $phoneNumber: String!
@@ -134,7 +135,7 @@ const updateUserById = async (
 const loginUser = async (email, pass, rememberMe, operations) => {
   const loginedUser = await operations.mutate({
     mutation: gql`
-      mutation($email: String!, $password: String!, $rememberMe: Boolean) {
+      mutation ($email: String!, $password: String!, $rememberMe: Boolean) {
         loginUser(
           loginInput: {
             email: $email
@@ -177,12 +178,13 @@ const loginUser = async (email, pass, rememberMe, operations) => {
       rememberMe,
     },
   });
+
   return loginedUser;
 };
 const googleUser = async (idToken, rememberMe, operations) => {
-  const googleUser = await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
-      mutation($idToken: String!, $rememberMe: Boolean) {
+      mutation ($idToken: String!, $rememberMe: Boolean) {
         googleUser(idToken: $idToken, rememberMe: $rememberMe) {
           token
           _id
@@ -194,12 +196,13 @@ const googleUser = async (idToken, rememberMe, operations) => {
       rememberMe,
     },
   });
-  return googleUser.data.googleUser;
+
+  return result.data.googleUser;
 };
 const facebookUser = async (idToken, rememberMe, operations) => {
-  const facebookUser = await operations.mutate({
+  const result = await operations.mutate({
     mutation: gql`
-      mutation($idToken: String!, $rememberMe: Boolean) {
+      mutation ($idToken: String!, $rememberMe: Boolean) {
         facebookUser(idToken: $idToken, rememberMe: $rememberMe) {
           token
           _id
@@ -211,12 +214,13 @@ const facebookUser = async (idToken, rememberMe, operations) => {
       rememberMe,
     },
   });
-  return facebookUser.data.facebookUser;
+
+  return result.data.facebookUser;
 };
 const regenerateAccessToken = async (refreshToken, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($refreshToken: String!) {
+      mutation ($refreshToken: String!) {
         regenerateAccessToken(refreshToken: $refreshToken) {
           ... on Token {
             token
@@ -230,6 +234,7 @@ const regenerateAccessToken = async (refreshToken, operations) => {
       refreshToken,
     },
   });
+
   return res.data.regenerateAccessToken;
 };
 const getAllUsers = async operations => {
@@ -293,7 +298,7 @@ const getUserByToken = async operations => {
 const getUsersForStatistic = async (filter, operations) => {
   const res = await operations.query({
     query: gql`
-      query($filter: UserForStatisticsInput) {
+      query ($filter: UserForStatisticsInput) {
         getUsersForStatistic(filter: $filter) {
           ... on StatisticBar {
             labels
@@ -311,9 +316,9 @@ const getUsersForStatistic = async (filter, operations) => {
   return res.data;
 };
 const getUserById = async (userId, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
-      query($userId: ID!) {
+      query ($userId: ID!) {
         getUserById(id: $userId) {
           _id
           firstName
@@ -339,7 +344,7 @@ const getUserById = async (userId, operations) =>
 const getPurchasedProducts = async (userId, operations) => {
   const res = await operations.query({
     query: gql`
-      query($userId: ID!) {
+      query ($userId: ID!) {
         getPurchasedProducts(id: $userId) {
           _id
         }
@@ -349,12 +354,13 @@ const getPurchasedProducts = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.getPurchasedProducts;
 };
 const deleteUser = async (userId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($userId: ID!) {
+      mutation ($userId: ID!) {
         deleteUser(id: $userId) {
           ... on User {
             _id
@@ -366,12 +372,13 @@ const deleteUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res;
 };
 const blockUser = async (userId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($userId: ID!) {
+      mutation ($userId: ID!) {
         blockUser(userId: $userId) {
           ... on User {
             _id
@@ -387,12 +394,13 @@ const blockUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.blockUser;
 };
 const unlockUser = async (userId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($userId: ID!) {
+      mutation ($userId: ID!) {
         unlockUser(userId: $userId) {
           ... on User {
             _id
@@ -408,12 +416,13 @@ const unlockUser = async (userId, operations) => {
       userId,
     },
   });
+
   return res.data.unlockUser;
 };
 const confirmUserEmail = async (token, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($token: String!) {
+      mutation ($token: String!) {
         confirmUserEmail(token: $token) {
           token
           refreshToken
@@ -425,12 +434,13 @@ const confirmUserEmail = async (token, operations) => {
       token,
     },
   });
+
   return res.data.confirmUserEmail;
 };
 const recoverUser = async (email, language, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($email: String!, $language: Int!) {
+      mutation ($email: String!, $language: Int!) {
         recoverUser(email: $email, language: $language)
       }
     `,
@@ -439,13 +449,14 @@ const recoverUser = async (email, language, operations) => {
       language,
     },
   });
+
   return res.data.recoverUser;
 };
 
 const resetPassword = async (password, token, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($password: String!, $token: String!) {
+      mutation ($password: String!, $token: String!) {
         resetPassword(password: $password, token: $token)
       }
     `,
@@ -454,13 +465,14 @@ const resetPassword = async (password, token, operations) => {
       token,
     },
   });
+
   return res;
 };
 
 const checkIfTokenIsValid = async (token, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($token: String!) {
+      mutation ($token: String!) {
         checkIfTokenIsValid(token: $token)
       }
     `,
@@ -468,12 +480,13 @@ const checkIfTokenIsValid = async (token, operations) => {
       token,
     },
   });
+
   return res;
 };
 const sendEmailConfirmation = async (email, language, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($email: String!, $language: Int!) {
+      mutation ($email: String!, $language: Int!) {
         sendEmailConfirmation(email: $email, language: $language)
       }
     `,
@@ -482,12 +495,13 @@ const sendEmailConfirmation = async (email, language, operations) => {
       language,
     },
   });
+
   return res;
 };
 const resendEmailToConfirmAdmin = async (user, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($user: resendEmailToConfirmAdminInput!) {
+      mutation ($user: resendEmailToConfirmAdminInput!) {
         resendEmailToConfirmAdmin(user: $user) {
           ... on SuccessfulResponse {
             isSuccess
@@ -503,12 +517,13 @@ const resendEmailToConfirmAdmin = async (user, operations) => {
       user,
     },
   });
+
   return res;
 };
 const confirmSuperadminCreation = async (user, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($user: confirmSuperadminCreationInput!) {
+      mutation ($user: confirmSuperadminCreationInput!) {
         confirmSuperadminCreation(user: $user) {
           ... on SuccessfulResponse {
             isSuccess
@@ -524,6 +539,7 @@ const confirmSuperadminCreation = async (user, operations) => {
       user,
     },
   });
+
   return res;
 };
 
@@ -536,7 +552,7 @@ const completeAdminRegister = async (
 ) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation($user: AdminConfirmInput!, $token: String!) {
+      mutation ($user: AdminConfirmInput!, $token: String!) {
         completeAdminRegister(user: $user, token: $token) {
           ... on SuccessfulResponse {
             isSuccess
@@ -557,12 +573,13 @@ const completeAdminRegister = async (
       },
     },
   });
+
   return result;
 };
 const switchUserStatus = async (userId, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         switchUserStatus(id: $id) {
           ... on SuccessfulResponse {
             isSuccess
@@ -579,9 +596,9 @@ const switchUserStatus = async (userId, operations) =>
     },
   });
 const loginAdmin = async (email, password, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($user: LoginInput!) {
+      mutation ($user: LoginInput!) {
         loginAdmin(loginInput: $user) {
           token
           _id
@@ -596,7 +613,7 @@ const loginAdmin = async (email, password, operations) =>
     },
   });
 const getAllUsersWithToken = async (token, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
       {
         getAllUsers {
@@ -616,9 +633,9 @@ const getAllUsersWithToken = async (token, operations) =>
     },
   });
 const validateConfirmationToken = async (token, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
-      query($token: String!) {
+      query ($token: String!) {
         validateConfirmationToken(token: $token) {
           ... on SuccessfulResponse {
             isSuccess
@@ -637,7 +654,7 @@ const validateConfirmationToken = async (token, operations) =>
 const setAvatar = async (userId, email, image, deleteAvatar, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $email: String!
         $userId: ID!
         $image: Upload

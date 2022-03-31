@@ -14,18 +14,10 @@
     "helpers/**/*.js",
     "migrations/*.js",
     "models/*.js",
-    "modules/questions-answers/*.js",
-    "modules/restriction/*.js",
-    "modules/size/*.js",
-    "modules/strap/*.js",
     "tests/back/*.js",
     "tests/basics/*.js",
     "tests/bottom/*.js",
     "tests/business-text/*.js",
-    "tests/strap/*.js",
-    "tests/translations/*.js",
-    "tests/upload/*.js",
-    "tests/user/*.js",
     "currency.worker.js",
     "dotenvValidator.js",
     "dump-database.js",
@@ -129,7 +121,7 @@
     "max-len": [
       2,
       {
-        "code": 150,
+        "code": 170,
         "ignoreComments": true,
         "ignoreUrls": true
       }

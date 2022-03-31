@@ -72,9 +72,7 @@ class StrapService {
   }
 
   async deleteStrap(id, { _id: adminId }) {
-    const foundStrap = await Strap.findByIdAndDelete(id)
-      .lean()
-      .exec();
+    const foundStrap = await Strap.findByIdAndDelete(id).lean().exec();
 
     if (!foundStrap) {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);

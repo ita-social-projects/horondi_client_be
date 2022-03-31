@@ -74,9 +74,7 @@ class RestrictionService {
   }
 
   async updateRestriction(id, restriction, { _id: adminId }) {
-    const restrictionItem = await Restriction.findById(id)
-      .lean()
-      .exec();
+    const restrictionItem = await Restriction.findById(id).lean().exec();
 
     if (!restrictionItem) {
       throw new RuleError(RESTRICTION_NOT_FOUND, NOT_FOUND);
