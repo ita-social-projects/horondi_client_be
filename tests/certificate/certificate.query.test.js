@@ -10,9 +10,6 @@ const {
   updateCertificate,
 } = require('./certificate.helper');
 const {
-  getPaymentCheckoutForCertificates,
-} = require('../payment/payment.helper');
-const {
   wrongId,
   newCertificateInputData,
   email,
@@ -21,8 +18,6 @@ const {
 let operations;
 let certificateId;
 let certificateName;
-let paymentToken;
-let certificates;
 
 afterAll(async () => {
   await updateCertificate(certificateName, operations);
@@ -57,24 +52,5 @@ describe('Test certificate Queries', () => {
     const result = await getCertificateById(wrongId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
-  });
-});
-
-describe('Test getCertificatesByToken flow', () => {
-  beforeAll(async () => {
-    operations = await setupApp();
-    const certificateData = await generateCertificate(
-      newCertificateInputData,
-      email,
-      operations
-    );
-    certificates = certificateData.certificates;
-    certificateId = certificateData.certificates[0]._id;
-
-    const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'UAH', amount: '100000' },
-      operations
-    );
-    paymentToken = result.paymentToken;
   });
 });

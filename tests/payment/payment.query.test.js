@@ -68,7 +68,6 @@ let constructorBasicId;
 let closureId;
 let orderNumber;
 let certificates;
-let paymentToken;
 
 const wrongId = 'ddfdf34';
 
@@ -88,7 +87,6 @@ describe('Certificate payment queries', () => {
       { certificates, currency: 'UAH', amount: '100000' },
       operations
     );
-    paymentToken = result.paymentToken;
 
     expect(result).toHaveProperty('paymentToken');
   });
