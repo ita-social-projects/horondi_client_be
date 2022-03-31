@@ -9,7 +9,6 @@ const restrictionTypes = `
     option: ID
     feature: String
   }
-
 `;
 
 const expressionEnum = `
@@ -33,7 +32,6 @@ const restrictionInputs = `
   input RestrictionFilterInput{
     compareByExpression: [String]
   }
-
 `;
 
 module.exports = {

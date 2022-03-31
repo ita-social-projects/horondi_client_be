@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+
 const Size = require('./size.model');
 const Product = require('../product/product.model');
 const { calculateAdditionalPrice } = require('../currency/currency.utils');
@@ -48,6 +49,7 @@ class SizeService {
     if (filter?.name?.length) {
       filterOptions.name = { $in: filter.name };
     }
+
     if (filter?.available?.length) {
       filterOptions.available = { $in: filter.available };
     }
@@ -85,9 +87,7 @@ class SizeService {
       items.push(...records);
     }
 
-    const count = await Size.find(filterOptions)
-      .countDocuments()
-      .exec();
+    const count = await Size.find(filterOptions).countDocuments().exec();
 
     return {
       items,
@@ -96,9 +96,7 @@ class SizeService {
   }
 
   async getSizeById(id) {
-    const size = await Size.findById(id)
-      .populate('modelId')
-      .exec();
+    const size = await Size.findById(id).populate('modelId').exec();
 
     if (size) {
       return size;
@@ -143,9 +141,7 @@ class SizeService {
   }
 
   async deleteSize(id, { _id: adminId }) {
-    const foundSize = await Size.findByIdAndDelete(id)
-      .lean()
-      .exec();
+    const foundSize = await Size.findByIdAndDelete(id).lean().exec();
 
     if (!foundSize) {
       throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
@@ -178,16 +174,13 @@ class SizeService {
     );
 
     await addHistoryRecord(historyRecord);
+
     return foundSize;
   }
 
   async updateSize(id, input, { _id: adminId }) {
-    const sizeToUpdate = await Size.findById(id)
-      .lean()
-      .exec();
-    const modelToUpdate = await Model.findById(input.modelId)
-      .lean()
-      .exec();
+    const sizeToUpdate = await Size.findById(id).lean().exec();
+    const modelToUpdate = await Model.findById(input.modelId).lean().exec();
 
     input.modelId = mongoose.Types.ObjectId(input.modelId);
 
@@ -201,6 +194,7 @@ class SizeService {
     input.additionalPrice = await calculateAdditionalPrice(
       input.additionalPrice
     );
+
     if (
       JSON.stringify(sizeToUpdate.modelId) !== JSON.stringify(input.modelId)
     ) {
@@ -214,6 +208,7 @@ class SizeService {
         },
       }).exec();
     }
+
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
 
     if (

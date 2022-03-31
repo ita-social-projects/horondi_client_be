@@ -22,7 +22,6 @@ const {
   wrongPassword,
   wrongEmail,
   socialToken,
-  fileArray,
 } = require('./user.variables');
 const {
   registerUser,
@@ -404,7 +403,7 @@ describe('mutations', () => {
 
   describe('Test Avatar adding and deletion', () => {
     afterAll(async () => {
-      await deleteUser(res.data.registerUser._id, operations);
+      await deleteUser(userId, operations);
     });
 
     test('User should add Avatar', async () => {
@@ -454,7 +453,7 @@ describe('User`s mutation restictions tests', () => {
 
     const result = await operations.mutate({
       mutation: gql`
-        mutation(
+        mutation (
           $firstName: String!
           $lastName: String!
           $email: String!
@@ -481,7 +480,7 @@ describe('User`s mutation restictions tests', () => {
     expect(result.data.updateUserById.message).toEqual(WRONG_CREDENTIALS);
 
     operations = await setupApp();
-    await deleteUser(res.data.registerUser._id, operations);
+    await deleteUser(userId, operations);
   });
 
   test('Admin can delete user', async () => {
@@ -511,7 +510,7 @@ describe('Register admin', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($user: AdminRegisterInput!) {
+          mutation ($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -541,7 +540,7 @@ describe('Register admin', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($user: AdminRegisterInput!) {
+          mutation ($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -570,7 +569,7 @@ describe('Register admin', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($user: AdminRegisterInput!) {
+          mutation ($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -601,7 +600,7 @@ describe('Register admin', () => {
     const result = await operations
       .mutate({
         mutation: gql`
-          mutation($user: AdminRegisterInput!) {
+          mutation ($user: AdminRegisterInput!) {
             registerAdmin(user: $user) {
               ... on SuccessfulResponse {
                 isSuccess
@@ -719,7 +718,7 @@ describe('User filtering', () => {
     const result = await operations
       .query({
         query: gql`
-          query($filter: UserFilterInput!) {
+          query ($filter: UserFilterInput!) {
             getAllUsers(filter: $filter) {
               items {
                 role
@@ -745,7 +744,7 @@ describe('User filtering', () => {
     const result = await operations
       .query({
         query: gql`
-          query($filter: UserFilterInput!) {
+          query ($filter: UserFilterInput!) {
             getAllUsers(filter: $filter) {
               items {
                 role

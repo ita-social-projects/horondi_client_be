@@ -12,6 +12,7 @@ const sizeType = `
     available: Boolean!
     additionalPrice: [AdditionalCurrencySet]!
   }
+
   type SizeItems {
     items:[Size]
     count:Int
@@ -31,6 +32,7 @@ const sizeInput = `
     available: Boolean!
     additionalPrice: additionalPriceInput!
   }
+  
   input SizeFilterInput{
     available:[String]
     searchBySimpleName:String

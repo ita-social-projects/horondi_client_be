@@ -129,6 +129,7 @@ const INVALID_FIRST_NAME =
 const INVALID_LAST_NAME =
   '"lastName" with value "O" fails to match the required pattern: ';
 const INVALID_PASSWORD =
+  // eslint-disable-next-line max-len
   '"password" with value "You" fails to match the required pattern: /^(?=.*[A-ZА-ЯІЇЄ])(?=.*\\d)[a-zA-Zа-яА-ЯіїєІЇЄ\\d!@#$%^&*()~¥=_+}{":;\'?/>.<,\\\\`|[\\]-]{6,30}$/';
 const INVALID_ROLE = '"role" must be one of [admin, superadmin]';
 

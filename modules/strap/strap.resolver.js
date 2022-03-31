@@ -10,6 +10,7 @@ const strapQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
+
   getStrapById: async (_, { id }) => {
     try {
       return await strapService.getStrapById(id);
@@ -27,6 +28,7 @@ const strapMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
+
   updateStrap: async (_, { id, strap, image }, { user }) => {
     try {
       return await strapService.updateStrap(id, strap, image, user);
@@ -34,6 +36,7 @@ const strapMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
+
   deleteStrap: async (_, { id }, { user }) => {
     try {
       return await strapService.deleteStrap(id, user);
