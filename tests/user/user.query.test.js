@@ -235,8 +235,8 @@ describe('Testing obtaining information restrictions', () => {
     );
     const userInfo = result.data.getUserById;
 
-    expect(userInfo.firstName).toEqual(firstName);
-    expect(userInfo.lastName).toEqual(lastName);
+    expect(userInfo.firstName).toEqual(newfirstName);
+    expect(userInfo.lastName).toEqual(newlastName);
   });
   test('Should throw an error when validate invalid token', async () => {
     const invalidAdminToken = `y${adminToken.slice(1)}`;

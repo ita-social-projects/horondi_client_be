@@ -439,6 +439,10 @@ describe('User`s mutation restictions tests', () => {
     userId = res.data.registerUser._id;
   });
 
+  afterAll(async () => {
+    await deleteUser(userId, operations);
+  });
+
   test('User doesn`t allowed to change another user`s data', async () => {
     const res = await registerUser(
       newUser.firstName,
@@ -478,9 +482,6 @@ describe('User`s mutation restictions tests', () => {
 
     expect(result.data.updateUserById.message).toBeDefined();
     expect(result.data.updateUserById.message).toEqual(WRONG_CREDENTIALS);
-
-    operations = await setupApp();
-    await deleteUser(userId, operations);
   });
 
   test('Admin can delete user', async () => {
