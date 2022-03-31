@@ -9,7 +9,7 @@ const {
 } = require('./product.variables');
 const {
   createProduct,
-  deleteProduct,
+  deleteProducts,
   getProductById,
   getAllProductsWithSkipAndLimit,
   getAllProductCategoriesForFilter,
@@ -196,7 +196,7 @@ describe('Product queries', () => {
   });
 
   afterAll(async () => {
-    await deleteProduct([productId], operations);
+    await deleteProducts([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);
