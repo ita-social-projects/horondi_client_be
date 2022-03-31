@@ -5,19 +5,10 @@ const paymentQuery = {
     paymentService.getPaymentCheckout(data),
   getPaymentCheckoutForCertificates: async (_, { data }) =>
     paymentService.getPaymentCheckoutForCertificates(data),
-  checkOrderPaymentStatus: async (_, { orderId, language }) => {
-    paymentService.checkOrderPaymentStatus(orderId, language);
-  },
-  checkCertificatesPaymentStatus: async (
-    _,
-    { certificateName, paymentToken }
-  ) =>
-    paymentService.checkCertificatesPaymentStatus(
-      certificateName,
-      paymentToken
-    ),
   sendCertificatesCodesToEmail: async (_, { language, certificates }) =>
     paymentService.sendCertificatesCodesToEmail(language, certificates),
+  sendOrderToEmail: async (_, { language, paidOrderNumber }) =>
+    paymentService.sendOrderToEmail(language, paidOrderNumber),
 };
 
 module.exports = { paymentQuery };

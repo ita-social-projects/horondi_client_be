@@ -1,3 +1,9 @@
+const pubsub = require('./pubsub');
+const { withFilter } = require('graphql-subscriptions');
+const { ORDER_IS_PAID } = require('./error-messages/orders.messages');
+const {
+  CERTIFICATE_IS_PAID,
+} = require('./error-messages/certificate.messages');
 const { newsQuery, newsMutation } = require('./modules/news/news.resolver');
 const { userQuery, userMutation } = require('./modules/user/user.resolver');
 const { historyQuery } = require('./modules/history/history.resolvers');
@@ -231,6 +237,23 @@ const {
 } = require('./helpers/constructor-pocket-helper');
 
 const resolvers = {
+  Subscription: {
+    certificatesPaid: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([CERTIFICATE_IS_PAID]),
+        (payload, variables) =>
+          payload.certificatesPaid.certificates[0].name ===
+          variables.certificatesOrderId
+      ),
+    },
+    paidOrder: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator([ORDER_IS_PAID]),
+        (payload, variables) =>
+          payload.paidOrder.orderNumber === variables.orderId
+      ),
+    },
+  },
   Query: {
     ...materialsQuery,
 
@@ -357,6 +380,7 @@ const resolvers = {
       if (user?.role === 'admin' || user?.role === 'superadmin') {
         return parent.replyComments.length;
       }
+
       return parent.replyComments.filter(item => item.showReplyComment === true)
         .length;
     },
@@ -415,10 +439,11 @@ const resolvers = {
               item.constructorBasics,
               constructorBasicModel
             ),
-            constructorFrontPocket: constructorServices.getConstructorElementById(
-              item.constructorFrontPocket,
-              constructorFrontPocketModel
-            ),
+            constructorFrontPocket:
+              constructorServices.getConstructorElementById(
+                item.constructorFrontPocket,
+                constructorFrontPocketModel
+              ),
             constructorPattern: patternService.getPatternById(
               item.constructorPattern
             ),
@@ -432,6 +457,7 @@ const resolvers = {
             fixedPrice: item.fixedPrice,
           };
         }
+
         return {
           fixedPrice: item.fixedPrice,
           isFromConstructor: item.isFromConstructor,
@@ -574,6 +600,7 @@ const resolvers = {
       if (parent.answer.date) {
         return parent.answer;
       }
+
       return null;
     },
   },
@@ -633,12 +660,11 @@ const resolvers = {
             item.currentPocketWithPosition.position
           ),
         },
-        otherPocketsWithAvailablePositions: item.otherPocketsWithAvailablePositions.map(
-          el => ({
+        otherPocketsWithAvailablePositions:
+          item.otherPocketsWithAvailablePositions.map(el => ({
             pocket: pocketService.getPocketById(el.pocket),
             position: positionService.getPositionById(el.position),
-          })
-        ),
+          })),
       })),
   },
 
@@ -755,6 +781,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.history;
       }
+
       return 'Error';
     },
   },
@@ -763,6 +790,7 @@ const resolvers = {
       if (obj.action) {
         return SCHEMA_NAMES.historyRecord;
       }
+
       return 'Error';
     },
   },
@@ -771,6 +799,7 @@ const resolvers = {
       if (obj.token || obj.accessToken || obj.refreshToken) {
         return SCHEMA_NAMES.token;
       }
+
       return 'Error';
     },
   },
@@ -779,6 +808,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.category;
       }
+
       return 'Error';
     },
   },
@@ -787,6 +817,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedProducts;
       }
+
       return 'Error';
     },
   },
@@ -795,6 +826,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedComments;
       }
+
       return 'Error';
     },
   },
@@ -803,6 +835,7 @@ const resolvers = {
       if (obj.lastUpdatedDate) {
         return SCHEMA_NAMES.currency;
       }
+
       return 'Error';
     },
   },
@@ -811,6 +844,7 @@ const resolvers = {
       if (obj.title) {
         return SCHEMA_NAMES.news;
       }
+
       return 'Error';
     },
   },
@@ -819,6 +853,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.material;
       }
+
       return 'Error';
     },
   },
@@ -828,6 +863,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.pattern;
       }
+
       return 'Error';
     },
   },
@@ -837,6 +873,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPatterns;
       }
+
       return 'Error';
     },
   },
@@ -849,6 +886,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.product;
       }
+
       return 'Error';
     },
   },
@@ -857,6 +895,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.constructorBottom;
       }
+
       return 'Error';
     },
   },
@@ -865,6 +904,7 @@ const resolvers = {
       if (obj.product) {
         return SCHEMA_NAMES.comment;
       }
+
       return 'Error';
     },
   },
@@ -873,6 +913,7 @@ const resolvers = {
       if (obj.title) {
         return SCHEMA_NAMES.businessText;
       }
+
       return 'Error';
     },
   },
@@ -881,6 +922,7 @@ const resolvers = {
       if (obj.isSuccess) {
         return SCHEMA_NAMES.successfulResponse;
       }
+
       return 'Error';
     },
   },
@@ -889,6 +931,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.model;
       }
+
       return 'Error';
     },
   },
@@ -897,6 +940,7 @@ const resolvers = {
       if (obj.compareByExpression) {
         return SCHEMA_NAMES.restriction;
       }
+
       return 'Error';
     },
   },
@@ -905,6 +949,7 @@ const resolvers = {
       if (obj.address) {
         return SCHEMA_NAMES.contact;
       }
+
       return 'Error';
     },
   },
@@ -913,6 +958,7 @@ const resolvers = {
       if (obj.status) {
         return SCHEMA_NAMES.order;
       }
+
       return 'Error';
     },
   },
@@ -921,6 +967,7 @@ const resolvers = {
       if (obj.email) {
         return SCHEMA_NAMES.user;
       }
+
       return 'Error';
     },
   },
@@ -929,6 +976,7 @@ const resolvers = {
       if (obj.text) {
         return SCHEMA_NAMES.emailQuestion;
       }
+
       return 'Error';
     },
   },
@@ -937,6 +985,7 @@ const resolvers = {
       if (obj.images) {
         return SCHEMA_NAMES.homePageImages;
       }
+
       return 'Error';
     },
   },
@@ -945,6 +994,7 @@ const resolvers = {
       if (obj.title) {
         return SCHEMA_NAMES.homePageSlide;
       }
+
       return 'Error';
     },
   },
@@ -953,6 +1003,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.closure;
       }
+
       return 'Error';
     },
   },
@@ -961,6 +1012,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.size;
       }
+
       return 'Error';
     },
   },
@@ -969,6 +1021,7 @@ const resolvers = {
       if (obj.colorHex) {
         return SCHEMA_NAMES.color;
       }
+
       return 'Error';
     },
   },
@@ -980,6 +1033,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.materials;
       }
+
       return 'Error';
     },
   },
@@ -989,6 +1043,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.constructorBasic;
       }
+
       return 'Error';
     },
   },
@@ -998,6 +1053,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.constructorFrontPocket;
       }
+
       return 'Error';
     },
   },
@@ -1007,6 +1063,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.pocket;
       }
+
       return 'Error';
     },
   },
@@ -1016,6 +1073,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPockets;
       }
+
       return 'Error';
     },
   },
@@ -1025,6 +1083,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.back;
       }
+
       return 'Error';
     },
   },
@@ -1034,6 +1093,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBacks;
       }
+
       return 'Error';
     },
   },
@@ -1043,6 +1103,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.bottom;
       }
+
       return 'Error';
     },
   },
@@ -1052,6 +1113,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBottoms;
       }
+
       return 'Error';
     },
   },
@@ -1061,6 +1123,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.strap;
       }
+
       return 'Error';
     },
   },
@@ -1070,6 +1133,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedStraps;
       }
+
       return 'Error';
     },
   },
@@ -1079,6 +1143,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.position;
       }
+
       return 'Error';
     },
   },
@@ -1088,6 +1153,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedPositions;
       }
+
       return 'Error';
     },
   },
@@ -1097,6 +1163,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.basics;
       }
+
       return 'Error';
     },
   },
@@ -1106,6 +1173,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedBasics;
       }
+
       return 'Error';
     },
   },
@@ -1115,6 +1183,7 @@ const resolvers = {
       if (obj.name) {
         return SCHEMA_NAMES.constructor;
       }
+
       return 'Error';
     },
   },
@@ -1124,6 +1193,7 @@ const resolvers = {
       if (obj._id) {
         return SCHEMA_NAMES.wishlist;
       }
+
       return 'Error';
     },
   },
@@ -1133,6 +1203,7 @@ const resolvers = {
       if (obj.items) {
         return SCHEMA_NAMES.paginatedConstructors;
       }
+
       return 'Error';
     },
   },

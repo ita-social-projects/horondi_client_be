@@ -657,10 +657,8 @@ const typeDefs = gql`
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput!): OrderResult
     getPaymentCheckoutForCertificates(data: PaymentInputForCertificate!): CertificatesResult
-    checkCertificatesPaymentStatus(certificateName: String!, paymentToken: String!): CertificatesResult
     sendCertificatesCodesToEmail(language: Int!, certificates: [CertificateInput]!): CertificatesResult
-    checkOrderPaymentStatus(orderId: String!, language: Int!): OrderResult
-    getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
+    sendOrderToEmail(language: Int!, paidOrderNumber: String!): OrderResult
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: QuestionsFilterInput
@@ -1077,6 +1075,10 @@ const typeDefs = gql`
     "Wishlist Mutations"
     addProductToWishlist(productId: ID!): WishlistResult
     deleteProductFromWishlist(productId: ID!): WishlistResult
+  }
+  type Subscription {
+    certificatesPaid(certificatesOrderId: String!): CertificatesResult
+    paidOrder(orderId: String!): OrderResult
   }
   ${certificateTypes}
 `;

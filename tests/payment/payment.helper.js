@@ -50,67 +50,6 @@ const getPaymentCheckoutForCertificates = async (data, operations) => {
   return res.data.getPaymentCheckoutForCertificates;
 };
 
-const checkCertificatesPaymentStatus = async (
-  certificateName,
-  paymentToken,
-  operations
-) => {
-  const res = await operations.query({
-    query: gql`
-      query ($certificateName: String!, $paymentToken: String!) {
-        checkCertificatesPaymentStatus(
-          certificateName: $certificateName
-          paymentToken: $paymentToken
-        ) {
-          ... on Certificates {
-            __typename
-            certificates {
-              _id
-              name
-            }
-            paymentStatus
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      certificateName,
-      paymentToken,
-    },
-  });
-
-  return res.data.checkCertificatesPaymentStatus;
-};
-
-const checkOrderPaymentStatus = async (orderId, language, operations) => {
-  const res = await operations.query({
-    query: gql`
-      query ($orderId: String!, $language: Int!) {
-        checkOrderPaymentStatus(orderId: $orderId, language: $language) {
-          ... on Order {
-            _id
-            orderNumber
-          }
-          ... on Error {
-            statusCode
-            message
-          }
-        }
-      }
-    `,
-    variables: {
-      orderId,
-      language,
-    },
-  });
-
-  return res;
-};
-
 const sendCertificatesCodesToEmail = async (
   language,
   certificates,
@@ -145,10 +84,75 @@ const sendCertificatesCodesToEmail = async (
   return res.data.sendCertificatesCodesToEmail;
 };
 
+const sendOrderToEmail = async (language, paidOrderNumber, operations) => {
+  const res = await operations.query({
+    query: gql`
+      query ($language: Int!, $paidOrderNumber: String!) {
+        sendOrderToEmail(
+          language: $language
+          paidOrderNumber: $paidOrderNumber
+        ) {
+          __typename
+          ... on Order {
+            _id
+            orderNumber
+            recipient {
+              firstName
+              lastName
+              email
+              phoneNumber
+            }
+            delivery {
+              sentBy
+            }
+            items {
+              product {
+                name {
+                  lang
+                  value
+                }
+                images {
+                  primary {
+                    thumbnail
+                  }
+                }
+              }
+              fixedPrice {
+                currency
+                value
+              }
+              quantity
+              options {
+                size {
+                  name
+                }
+              }
+            }
+            totalPriceToPay {
+              currency
+              value
+            }
+            paymentStatus
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      paidOrderNumber,
+      language,
+    },
+  });
+
+  return res.data.sendOrderToEmail;
+};
+
 module.exports = {
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
   getPaymentCheckoutForCertificates,
-  checkCertificatesPaymentStatus,
-  checkOrderPaymentStatus,
+  sendOrderToEmail,
 };

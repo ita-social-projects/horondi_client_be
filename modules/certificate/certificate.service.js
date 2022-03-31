@@ -78,20 +78,6 @@ class CertificatesService {
     return certificate;
   }
 
-  async getCertificatesByPaymentToken(paymentToken) {
-    const certificates = await CertificateModel.find({
-      paymentToken,
-    }).exec();
-
-    const { paymentStatus } = certificates[0];
-
-    if (!certificates) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
-    }
-
-    return { certificates, paymentStatus };
-  }
-
   async generateCertificate(certificatesData, email, userId, userRole) {
     const certificatesArr = [];
     let certificatesPrice = 0;
