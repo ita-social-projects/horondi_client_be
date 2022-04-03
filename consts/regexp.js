@@ -1,4 +1,6 @@
-const emailRegExp = new RegExp(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/i);
+const emailRegExp = new RegExp(
+  '^([\\w-]+(?:\\.[\\w-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,6}(?:\\.[a-z]{2})?)$'
+);
 const numberRegExp = new RegExp(/^\d{9}/);
 const uaLanguageRegExp = new RegExp(/^[а-яїієґ0-9\s]+$/i);
 const enLanguageRegExp = new RegExp(/^[a-z0-9\s]+$/i);
