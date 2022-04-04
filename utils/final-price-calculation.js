@@ -126,11 +126,11 @@ const finalPriceRecalculation = async productId => {
       .exec();
 
   const prices = [
-    pattern.additionalPrice,
-    closure.additionalPrice,
-    mainMaterial.material.additionalPrice,
-    innerMaterial.material.additionalPrice,
-    bottomMaterial.material.additionalPrice,
+    pattern?.additionalPrice || 0,
+    closure?.additionalPrice || 0,
+    mainMaterial?.material?.additionalPrice || 0,
+    innerMaterial?.material?.additionalPrice || 0,
+    bottomMaterial?.material?.additionalPrice || 0,
   ];
 
   const { basePrice } = await Product.findById(productId).exec();
