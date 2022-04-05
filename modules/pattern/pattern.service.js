@@ -8,7 +8,6 @@ const {
   deleteTranslations,
 } = require('../translations/translations.service');
 
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
@@ -103,12 +102,6 @@ class PatternsService {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
 
-    if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
-      );
-    }
-
     await updateTranslations(
       patternToUpdate.translationsKey,
       createTranslations(pattern)
@@ -175,11 +168,6 @@ class PatternsService {
     const images = uploadResult.fileNames;
     pattern.constructorImg = await uploadSmallImage(image[1]);
 
-    if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
-      );
-    }
     pattern.translationsKey = await addTranslations(
       createTranslations(pattern)
     );

@@ -1,6 +1,5 @@
 const Bottom = require('./bottom.model');
 const uploadService = require('../upload/upload.service');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -85,10 +84,6 @@ class BottomService {
       bottom.images = imageResults.fileNames;
     }
 
-    bottom.additionalPrice = await calculateAdditionalPrice(
-      bottom.additionalPrice
-    );
-
     const updatedBottom = await Bottom.findByIdAndUpdate(id, bottom, {
       new: true,
     }).exec();
@@ -157,10 +152,6 @@ class BottomService {
       const uploadImage = await uploadService.uploadFile(image);
       bottom.images = uploadImage.fileNames;
     }
-
-    bottom.additionalPrice = await calculateAdditionalPrice(
-      bottom.additionalPrice
-    );
 
     bottom.translationsKey = await addTranslations(createTranslations(bottom));
 
