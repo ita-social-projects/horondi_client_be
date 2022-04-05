@@ -8,7 +8,6 @@ const {
 } = require('../consts/additional-price-types');
 
 const additionalCurrencySetSchema = new mongoose.Schema({
-  currency: String,
   value: {
     type: Number,
     default: 0,

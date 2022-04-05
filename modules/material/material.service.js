@@ -3,7 +3,6 @@ const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   CURRENCY: { UAH, USD },
 } = require('../../consts/currency');
@@ -120,11 +119,6 @@ class MaterialsService {
       throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    if (material.additionalPrice) {
-      material.additionalPrice = await calculateAdditionalPrice(
-        material.additionalPrice
-      );
-    }
     await updateTranslations(
       materialToUpdate.translationsKey,
       createTranslations(material)
@@ -164,9 +158,6 @@ class MaterialsService {
     if (await this.checkMaterialExistOrDuplicated(material, null)) {
       throw new RuleError(MATERIAL_ALREADY_EXIST, BAD_REQUEST);
     }
-    material.additionalPrice = await calculateAdditionalPrice(
-      material.additionalPrice
-    );
 
     material.translationsKey = await addTranslations(
       createTranslations(material)

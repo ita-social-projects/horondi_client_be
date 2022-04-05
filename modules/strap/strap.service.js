@@ -7,7 +7,6 @@ const {
   deleteTranslations,
 } = require('../translations/translations.service');
 const uploadService = require('../upload/upload.service');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const { uploadSmallImage } = require('../upload/upload.utils');
 const {
   commonFiltersHandler,
@@ -116,12 +115,6 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    if (strap.additionalPrice) {
-      strap.additionalPrice = await calculateAdditionalPrice(
-        strap.additionalPrice
-      );
-    }
-
     await uploadService.deleteFiles([strap.image]);
 
     if (image) {
@@ -157,12 +150,6 @@ class StrapService {
     if (image) {
       const uploadImage = await uploadService.uploadFile(image);
       strap.images = uploadImage.fileNames;
-    }
-
-    if (strap.additionalPrice) {
-      strap.additionalPrice = await calculateAdditionalPrice(
-        strap.additionalPrice
-      );
     }
 
     strap.translationsKey = await addTranslations(createTranslations(strap));

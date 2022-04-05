@@ -277,7 +277,6 @@ const typeDefs = gql`
     value: Float!
   }
   type AdditionalCurrencySet {
-    currency: String
     type: additionalPriceType!
     value: Float!
   }
