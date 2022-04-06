@@ -11,7 +11,7 @@ const ImageSet = require('../common/ImageSet').schema;
 const pocketSchema = new mongoose.Schema({
   name: [Language],
   images: ImageSet,
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
   restriction: Boolean,
   positions: [
     {

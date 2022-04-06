@@ -5,7 +5,6 @@ const Pattern = require('../modules/pattern/pattern.model');
 const Closures = require('../modules/closures/closures.model');
 const Material = require('../modules/material/material.model');
 const Size = require('../modules/size/size.model');
-const { calculateFinalPrice } = require('../modules/currency/currency.utils');
 const {
   ADDITIONAL_PRICE_TYPES: { RELATIVE_INDICATOR, ABSOLUTE_INDICATOR },
 } = require('../consts/additional-price-types');
@@ -16,8 +15,8 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
     (sum, additionalPriceSet) => {
       let sumRelativePrice = sum;
 
-      if (additionalPriceSet[0]?.type === RELATIVE_INDICATOR) {
-        sumRelativePrice *= additionalPriceSet[0].value;
+      if (additionalPriceSet?.type === RELATIVE_INDICATOR) {
+        sumRelativePrice *= additionalPriceSet.value;
       }
 
       return sumRelativePrice;
@@ -27,12 +26,12 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
 
   const pricesForSizes = _.map(sizePrices, sizeAdditionalPrice => {
     let tempPrice = relativePrices;
-    if (sizeAdditionalPrice.additionalPrice[0]?.type === RELATIVE_INDICATOR) {
-      tempPrice *= sizeAdditionalPrice.additionalPrice[0].value;
+    if (sizeAdditionalPrice.additionalPrice?.type === RELATIVE_INDICATOR) {
+      tempPrice *= sizeAdditionalPrice.additionalPrice.value;
     }
 
-    if (sizeAdditionalPrice.additionalPrice[0]?.type === ABSOLUTE_INDICATOR) {
-      tempPrice += sizeAdditionalPrice.additionalPrice[1].value;
+    if (sizeAdditionalPrice.additionalPrice?.type === ABSOLUTE_INDICATOR) {
+      tempPrice += sizeAdditionalPrice.additionalPrice.value;
     }
 
     return { _id: sizeAdditionalPrice._id, price: tempPrice };
@@ -40,20 +39,18 @@ const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
 
   return Promise.all(
     _.map(pricesForSizes, async priceForSize => {
-      let price = _.reduce(
+      const price = _.reduce(
         additionalPrices,
         (sum, additionalPriceSet) => {
           let sumAbsolutePrice = sum;
-          if (additionalPriceSet[0]?.type === ABSOLUTE_INDICATOR) {
-            sumAbsolutePrice += additionalPriceSet[1].value;
+          if (additionalPriceSet?.type === ABSOLUTE_INDICATOR) {
+            sumAbsolutePrice += additionalPriceSet.value;
           }
 
           return sumAbsolutePrice;
         },
         priceForSize.price
       );
-
-      price = await calculateFinalPrice(price);
 
       return { size: priceForSize._id, price };
     })
@@ -81,7 +78,7 @@ const finalPriceCalculationForConstructor = async product => {
     },
   }).exec();
 
-  return calculateHelper(prices, sizesPrice, product.basePrice[1].value);
+  return calculateHelper(prices, sizesPrice, product.basePrice);
 };
 
 const finalPriceCalculation = async product => {
@@ -111,7 +108,7 @@ const finalPriceCalculation = async product => {
     },
   }).exec();
 
-  return calculateHelper(prices, sizesPrice, product.basePrice[1].value);
+  return calculateHelper(prices, sizesPrice, product.basePrice);
 };
 
 const finalPriceRecalculation = async productId => {
@@ -137,7 +134,7 @@ const finalPriceRecalculation = async productId => {
 
   sizes = sizes.map(size => size.size);
 
-  return calculateHelper(prices, sizes, basePrice[1].value);
+  return calculateHelper(prices, sizes, basePrice);
 };
 
 module.exports = {

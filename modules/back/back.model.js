@@ -25,7 +25,7 @@ const backSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
   available: Boolean,
   customizable: Boolean,
   translationsKey: {

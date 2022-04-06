@@ -6,7 +6,7 @@ const strapType = `
     model: Model
     features: StrapFeature
     images: ImageSet
-    additionalPrice: [AdditionalCurrencySet]!
+    additionalPrice: AdditionalCurrencySet!
     available: Boolean
     customizable: Boolean
     translationsKey: ID
