@@ -938,7 +938,7 @@ const typeDefs = gql`
     facebookUser(idToken: String!, rememberMe: Boolean): User
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
-    addProduct(product: ProductInput!, upload: Upload): ProductResult
+    addProduct(product: ProductInput!, upload: Upload!): ProductResult
     addProductFromConstructor(product: ProductInput!, upload: Upload!): ProductResult
     deleteProducts(ids: [ID!]): ProductResult
     updateProduct(
