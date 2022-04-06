@@ -40,6 +40,10 @@ class CertificatesService {
       .sort({ startDate: 1 })
       .limit(limit)
       .skip(skip)
+      .populate({
+        path: 'createdBy',
+        select: 'firstName lastName',
+      })
       .exec();
 
     const count = await CertificateModel.find(filter).countDocuments().exec();
