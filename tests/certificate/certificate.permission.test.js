@@ -68,6 +68,11 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       userContextServer = await setupApp(userObject);
     });
 
+    afterAll(async () => {
+      await deleteCertificate(certificateNullOwnerId, adminContextServer);
+      await deleteCertificate(certificateId, adminContextServer);
+    });
+
     it('should generate certificate', async () => {
       const result = await generateCertificate(
         newCertificateInputData,
@@ -98,7 +103,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should see only certificates owned by him', async () => {
-      const result = await getAllCertificates(userContextServer);
+      const result = await getAllCertificates(undefined, userContextServer);
 
       expect(result.count).toBe(2);
     });
@@ -147,10 +152,5 @@ describe('Run ApolloClientServer with role=admin in context', () => {
 
       expect(certificate).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
     });
-  });
-
-  afterAll(async () => {
-    await deleteCertificate(certificateNullOwnerId, adminContextServer);
-    await deleteCertificate(certificateId, adminContextServer);
   });
 });

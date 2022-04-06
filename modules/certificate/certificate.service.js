@@ -1,5 +1,6 @@
 const { randomInt } = require('crypto');
 const RuleError = require('../../errors/rule.error');
+const mongoose = require('mongoose');
 const { CertificateModel } = require('./certificate.model');
 const {
   roles: { USER },
@@ -16,12 +17,14 @@ const {
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
+const { modifyDate } = require('../../utils/modify-date');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
   const secondNamePart = Math.floor(randomInt(1000, 9999));
   const name = `HOR${firstNamePart}${secondNamePart}`;
   const candidate = await CertificateModel.findOne({ name }).exec();
+
   if (candidate) {
     return generateName();
   }
@@ -30,23 +33,82 @@ const generateName = async () => {
 };
 
 class CertificatesService {
-  async getAllCertificates(skip, limit, user) {
+  dateOrName(search) {
     let filter = {};
+    const regDate = /^\d+[.]\d+[.]\d+$/;
+    search = (search ?? '').trim();
+
+    if (!search) {
+      return filter;
+    }
+
+    if (regDate.test(search)) {
+      const date = new Date(search);
+      filter = {
+        dateStart: {
+          $gte: date,
+          $lt: date,
+        },
+      };
+    } else {
+      const searchPattern = {
+        $regex: search,
+        $options: 'gi',
+      };
+
+      filter = {
+        $or: [
+          {
+            'admin.firstName': searchPattern,
+          },
+          {
+            'admin.lastName': searchPattern,
+          },
+        ],
+      };
+    }
+
+    return filter;
+  }
+
+  async getAllCertificates(skip, limit, sortBy, sortOrder, search, user) {
+    let filter;
 
     if (user.role === USER) {
-      filter = { ownedBy: user._id };
+      const userId = mongoose.Types.ObjectId(user._id);
+      filter = { ownedBy: userId };
+    } else {
+      filter = this.dateOrName(search);
     }
-    const items = await CertificateModel.find(filter)
-      .sort({ startDate: 1 })
-      .limit(limit)
-      .skip(skip)
-      .populate({
-        path: 'createdBy',
-        select: 'firstName lastName',
-      })
-      .exec();
 
-    const count = await CertificateModel.find(filter).countDocuments().exec();
+
+    sortOrder = sortOrder === 'desc' ? -1 : 1;
+    const sort = { [sortBy]: sortOrder };
+
+    const certificates = await CertificateModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      {
+        $match: filter,
+      },
+      {
+        $facet: {
+          count: [{ $count: 'count' }],
+          data: [{ $sort: sort }, { $skip: skip }, { $limit: limit }],
+        },
+      },
+    ]).exec();
+
+    const items = certificates[0].data;
+    const count = certificates[0].count.length
+      ? certificates[0].count[0].count
+      : 0;
 
     return {
       items,
@@ -82,7 +144,13 @@ class CertificatesService {
     return certificate;
   }
 
-  async generateCertificate(certificatesData, email, userId, userRole) {
+  async generateCertificate(
+    certificatesData,
+    email,
+    dateStart,
+    userId,
+    userRole
+  ) {
     const certificatesArr = [];
     let certificatesPrice = 0;
 
@@ -99,9 +167,20 @@ class CertificatesService {
     for (const certificateData of certificatesData) {
       const { value, count } = certificateData;
       certificatesPrice += value * count;
+
       for (let i = 0; i < count; i++) {
         newCertificate.name = await generateName();
         newCertificate.value = value;
+
+        if (dateStart) {
+          const futureDate = {
+            dateStart,
+            dateEnd: modifyDate({ years: 1, date: dateStart }),
+            isActive: false,
+          };
+          Object.assign(newCertificate, futureDate);
+        }
+
         certificatesArr.push({ ...newCertificate });
       }
     }
