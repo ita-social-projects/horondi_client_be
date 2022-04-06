@@ -6,7 +6,7 @@ const backType = `
     model: Model
     features: BackFeatureSet
     images: ImageSet
-    additionalPrice: [AdditionalCurrencySet]
+    additionalPrice: AdditionalCurrencySet
     available: Boolean
     customizable: Boolean
     translationsKey: ID

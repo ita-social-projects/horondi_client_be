@@ -5,7 +5,7 @@ const basicsType = `
         images: ImageSet
         available: Boolean
         features: basicsFeatureSet
-        additionalPrice: [AdditionalCurrencySet]
+        additionalPrice: AdditionalCurrencySet
         translationsKey: ID
     }
 `;

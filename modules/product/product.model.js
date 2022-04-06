@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
-const CurrencySet = require('../../models/CurrencySet').schema;
 const PrimaryImage = require('../../models/PrimaryImage').schema;
 const {
   DB_COLLECTIONS_NAMES: {
@@ -80,14 +79,14 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: CLOSURE,
   },
-  basePrice: [CurrencySet],
+  basePrice: Number,
   sizes: [
     {
       size: {
         type: mongoose.Schema.Types.ObjectId,
         ref: SIZE,
       },
-      price: [CurrencySet],
+      price: Number,
       _id: false,
     },
   ],

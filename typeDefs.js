@@ -488,7 +488,7 @@ const typeDefs = gql`
   }
   type FinalPricesForSizes {
       size: Size
-      price: [CurrencySet]
+      price: Int
   }
   type PaginatedPositions {
     items: [Position]
