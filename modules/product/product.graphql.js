@@ -14,7 +14,7 @@ const productType = `
     images: ProductImages
     closure: Closure
     pattern: Pattern
-    basePrice: [CurrencySet]!
+    basePrice: Int!
     sizes: [FinalPricesForSizes]!
     available: Boolean!
     isHotItem: Boolean
@@ -43,8 +43,8 @@ const productType = `
     bottomMaterialColor: [Color]
     backMaterial: [Material]
     backMaterialColor: [Color]
-    maxPrice: [CurrencySet]
-    minPrice: [CurrencySet]
+    maxPrice: Int
+    minPrice: Int
     translationsKey: ID!
    }
   type ProductImages { 

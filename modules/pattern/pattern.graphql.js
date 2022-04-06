@@ -8,7 +8,7 @@ const patternType = `
       description: [Language]
       images: ImageSet
       constructorImg: String
-      additionalPrice: [AdditionalCurrencySet]
+      additionalPrice: AdditionalCurrencySet
       available: Boolean
       customizable: Boolean
       translationsKey: ID

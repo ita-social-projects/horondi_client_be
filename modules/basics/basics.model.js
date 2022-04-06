@@ -21,7 +21,7 @@ const basicsSchema = new mongoose.Schema({
       ref: COLOR,
     },
   },
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,

@@ -25,7 +25,7 @@ const closureSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
   translations_key: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,

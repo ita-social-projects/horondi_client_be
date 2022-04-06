@@ -18,7 +18,7 @@ const strapSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
   available: Boolean,
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,

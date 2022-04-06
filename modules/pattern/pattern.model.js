@@ -24,7 +24,7 @@ const patternSchema = new mongoose.Schema({
   },
   images: ImageSet,
   constructorImg: String,
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
   available: Boolean,
   customizable: Boolean,
   translationsKey: {

@@ -30,7 +30,7 @@ const sizeSchema = new mongoose.Schema({
     type: Number,
   },
   available: Boolean,
-  additionalPrice: [AdditionalCurrencySet],
+  additionalPrice: AdditionalCurrencySet,
 });
 
 module.exports = mongoose.model(SIZE, sizeSchema);
