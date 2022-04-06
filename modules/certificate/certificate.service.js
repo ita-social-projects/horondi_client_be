@@ -81,6 +81,7 @@ class CertificatesService {
       filter = this.dateOrName(search);
     }
 
+
     sortOrder = sortOrder === 'desc' ? -1 : 1;
     const sort = { [sortBy]: sortOrder };
 
