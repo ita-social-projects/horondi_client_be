@@ -6,7 +6,7 @@ type ConstructorBasic {
     model: Model
     features: ConstructorBasicFeatureSet
     image:String
-    basePrice: [CurrencySet]
+    basePrice: Int
     available: Boolean
     customizable: Boolean
   }

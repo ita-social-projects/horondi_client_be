@@ -185,10 +185,6 @@ const nestedDeliveryValidator = Joi.object({
       otherwise: Joi.string().only(''),
     }),
   byCourier: Joi.boolean().required(),
-  cost: Joi.array().has({
-    currency: Joi.string().trim().required(),
-    value: Joi.number().required(),
-  }),
   messenger: Joi.string().allow('').when(SENT_BY, {
     is: WORLDWIDE,
     then: Joi.string().required(),
@@ -218,6 +214,8 @@ const nestedDeliveryValidator = Joi.object({
       is: WORLDWIDE,
       then: Joi.string().required().regex(onlyNumbersRegExp),
     }),
+
+  cost: Joi.number(),
 });
 
 const orderValidator = Joi.object({

@@ -1,53 +1,18 @@
-const { CURRENCY, CURRENCY_VALUE } = require('../consts/currency');
 const productModel = require('../modules/product/product.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
 
 async function calculateTotalItemsPrice(items) {
-  return items.reduce(
-    async (prev, item) => {
-      const sum = await prev;
+  return items.reduce(async (prev, item) => {
+    const sum = await prev;
 
-      const { price, quantity } = item;
+    const { price, quantity } = item;
 
-      item.fixedPrice = [
-        {
-          currency: CURRENCY.UAH,
-          value: price[CURRENCY_VALUE.UAH_VALUE].value / quantity,
-        },
-        {
-          currency: CURRENCY.USD,
-          value: price[CURRENCY_VALUE.USD_VALUE].value / quantity,
-        },
-      ];
+    item.fixedPrice = price / quantity;
 
-      return [
-        {
-          currency: CURRENCY.UAH,
-          value:
-            price[CURRENCY_VALUE.UAH_VALUE].value +
-            sum[CURRENCY_VALUE.UAH_VALUE].value,
-        },
-        {
-          currency: CURRENCY.USD,
-          value:
-            price[CURRENCY_VALUE.USD_VALUE].value +
-            sum[CURRENCY_VALUE.USD_VALUE].value,
-        },
-      ];
-    },
-    [
-      {
-        currency: CURRENCY.UAH,
-        value: 0,
-      },
-      {
-        currency: CURRENCY.USD,
-        value: 0,
-      },
-    ]
-  );
+    return price + sum;
+  }, 0);
 }
 
 function calculateTotalPriceToPay(data, totalItemsPrice) {

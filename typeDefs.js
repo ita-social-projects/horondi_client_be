@@ -272,10 +272,6 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
-  type CurrencySet {
-    currency: String
-    value: Float!
-  }
   type AdditionalCurrencySet {
     type: additionalPriceType!
     value: Float!
@@ -348,7 +344,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: [CurrencySet]
+    additionalPrice: Int
   }
 
   type UserForComment {
@@ -369,7 +365,7 @@ const typeDefs = gql`
     name: [Language!]
     description: [Language!]
     available: Boolean
-    additionalPrice: [CurrencySet]
+    additionalPrice: Int
   }
   type PaginatedProducts {
     items: [Product]
@@ -791,10 +787,6 @@ const typeDefs = gql`
   input LanguageInput {
     lang: String!
     value: String
-  }
-  input CurrencySetInput {
-    currency: String!
-    value: Float!
   }
   input additionalPriceInput {
     value: Float!
