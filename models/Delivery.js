@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-const CurrencySet = require('./CurrencySet').schema;
 const {
   DELIVERY_TYPE: {
     NOVAPOST,
@@ -10,9 +9,6 @@ const {
     UKRPOSTCOURIER,
   },
 } = require('../consts/delivery-type');
-const {
-  CURRENCY: { UAH, USD },
-} = require('../consts/currency');
 
 const {
   DB_COLLECTIONS_NAMES: { DELIVERY },
@@ -38,14 +34,7 @@ const deliverySchema = new mongoose.Schema({
   street: String,
   house: String,
   flat: String,
-  cost: {
-    type: [CurrencySet],
-    required: true,
-    default: [
-      { currency: UAH, value: 60 },
-      { currency: USD, value: 2 },
-    ],
-  },
+  cost: Number,
 });
 
 module.exports = mongoose.model(DELIVERY, deliverySchema);

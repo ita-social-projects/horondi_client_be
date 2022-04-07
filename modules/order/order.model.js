@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const CurrencySet = require('../../models/CurrencySet').schema;
 const Delivery = require('../../models/Delivery').schema;
 const OrderItem = require('../../models/OrderItem').schema;
 const {
@@ -58,8 +57,8 @@ const orderSchema = new mongoose.Schema({
   },
   delivery: Delivery,
   items: [OrderItem],
-  totalItemsPrice: [CurrencySet],
-  totalPriceToPay: [CurrencySet],
+  totalItemsPrice: Number,
+  totalPriceToPay: Number,
   paymentMethod: {
     type: String,
     default: CASH,

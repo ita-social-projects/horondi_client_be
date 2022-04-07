@@ -173,10 +173,7 @@ const nestedDeliveryValidator = Joi.object({
       otherwise: Joi.string().only(''),
     }),
   byCourier: Joi.boolean().required(),
-  cost: Joi.array().has({
-    currency: Joi.string().trim().required(),
-    value: Joi.number().required(),
-  }),
+  cost: Joi.number(),
 });
 
 const orderValidator = Joi.object({
