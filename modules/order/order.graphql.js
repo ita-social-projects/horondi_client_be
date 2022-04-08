@@ -17,6 +17,7 @@ type Order {
   isPaid: Boolean
   paymentMethod: PaymentEnum
   paymentStatus: PaymentStatusEnum
+  fixedExchangeRate: Float
 }
 
 enum PaymentStatusEnum {
