@@ -211,7 +211,7 @@ class CertificatesService {
 
     return CertificateModel.findOneAndUpdate(
       { name },
-      { isUsed: true },
+      { isUsed: true, isActivated: false },
       { new: true }
     ).exec();
   }
