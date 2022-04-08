@@ -75,6 +75,7 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },
+  fixedExchangeRate: Number,
 });
 
 module.exports = mongoose.model(ORDER, orderSchema);
