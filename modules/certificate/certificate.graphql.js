@@ -11,9 +11,15 @@ const certificateTypes = `
     isExpired: Boolean
     dateStart: Date
     dateEnd: Date
-    paymentStatus: String,
+    paymentStatus: String
     paymentUrl: String
     paymentToken: String
+    admin: [Admin]
+  }
+  
+  type Admin{
+    firstName: String
+    lastName: String
   }
   
   type PaginatedCertificate {
