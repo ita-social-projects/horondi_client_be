@@ -7,11 +7,15 @@ async function calculateTotalItemsPrice(items) {
   return items.reduce(async (prev, item) => {
     const sum = await prev;
 
-    const { price, quantity } = item;
+    const product = await productModel.findById(item.product).exec();
 
-    item.fixedPrice = price / quantity;
+    const { price } = product.sizes.find(
+      sz => sz.size._id.toString() === item.options.size
+    );
 
-    return price + sum;
+    item.fixedPrice = price;
+
+    return price * item.quantity + sum;
   }, 0);
 }
 
