@@ -151,11 +151,9 @@ input OrderItemInput {
   constructorBottom: ID
   constructorFrontPocket: ID
   constructorPattern: ID
-  actualPrice: Int
   quantity: Int!
   isFromConstructor: Boolean
   options: ItemOptionsInput
-  fixedPrice: Int
   price: Int
 }
 input ItemOptionsInput{
