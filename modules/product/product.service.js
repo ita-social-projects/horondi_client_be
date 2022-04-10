@@ -203,7 +203,7 @@ class ProductsService {
 
     const sortValue = Object.keys(sort).includes('basePrice')
       ? {
-          'sizes.price.value': sort.basePrice,
+          'sizes.price': sort.basePrice,
         }
       : sort;
     if (!(!search || search.trim().length === 0)) {
