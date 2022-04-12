@@ -55,9 +55,9 @@ class ConstructorService {
   }
 
   async getConstructorByModel(id) {
-    const foundConstructor = await Constructor.find({ model: id }).exec();
+    const foundConstructor = await Constructor.findOne({ model: id }).exec();
 
-    if (!foundConstructor.length) {
+    if (!foundConstructor) {
       throw new RuleError(CONSTRUCTOR_NOT_FOUND, NOT_FOUND);
     }
 
