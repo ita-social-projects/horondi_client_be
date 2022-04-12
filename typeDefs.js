@@ -687,7 +687,7 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllConstructors(limit:Int!, skip:Int!, filter:ConstructorFilterInput): PaginatedConstructors!
     getConstructorById(id: ID): ConstructorResult
-    getConstructorByModel(id: ID): [ConstructorResult]
+    getConstructorByModel(id: ID): ConstructorResult
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
