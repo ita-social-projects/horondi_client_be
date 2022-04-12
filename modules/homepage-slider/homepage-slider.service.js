@@ -18,8 +18,10 @@ const {
 } = require('../translations/translations.service');
 
 class HomePageSliderService {
-  async getAllSlides({ skip, limit }) {
+  async getAllSlides({ skip, limit, show_statuses = [true, false] }) {
     const items = await HomePageSlider.find()
+      .where('show')
+      .in(show_statuses)
       .sort({ show: -1, order: 1 })
       .skip(skip)
       .limit(limit)

@@ -11,9 +11,15 @@ const certificateTypes = `
     isExpired: Boolean
     dateStart: Date
     dateEnd: Date
-    paymentStatus: String,
+    paymentStatus: String
     paymentUrl: String
     paymentToken: String
+    admin: [Admin]
+  }
+  
+  type Admin{
+    firstName: String
+    lastName: String
   }
   
   type PaginatedCertificate {
@@ -50,15 +56,20 @@ const certificateTypes = `
   union CertificatesResult = Certificates | Error
   union CertificatePaginatedResult = PaginatedCertificate | Error
 
+  enum Sort {
+    asc
+    desc
+  }
+
   extend type Query {
-    getAllCertificates(limit:Int, skip:Int): CertificatePaginatedResult
+    getAllCertificates(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
   }
 
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
-    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String!): CertificatesResult
+    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
     updateCertificate(name: String!): CertificateResult
   }
 `;

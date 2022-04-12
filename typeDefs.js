@@ -662,7 +662,7 @@ const typeDefs = gql`
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]
     getPendingEmailQuestionsCount: Int
-    getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
+    getAllSlides(limit: Int, skip: Int, show_statuses: Boolean): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size

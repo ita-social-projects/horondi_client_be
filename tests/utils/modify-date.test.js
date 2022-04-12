@@ -1,8 +1,8 @@
-const { modifyNowDate, _ } = require('../../utils/modify-date');
+const { modifyDate } = require('../../utils/modify-date');
 
 let date;
 describe('modify date', () => {
-  const weekBefore = new Date(modifyNowDate(-7));
+  const weekBefore = modifyDate({ days: -7 });
 
   beforeEach(async () => {
     date = new Date();
@@ -10,7 +10,7 @@ describe('modify date', () => {
   });
 
   it('should return now Date', async () => {
-    expect(modifyNowDate()).toEqual(date);
+    expect(modifyDate({})).toEqual(date);
   });
 
   it('should return date of week before', async () => {
@@ -22,12 +22,12 @@ describe('modify date', () => {
   it('should return date of month after', async () => {
     date.setMonth(date.getMonth() + 1);
 
-    expect(modifyNowDate(_, 1)).toEqual(date);
+    expect(modifyDate({ months: 1 })).toEqual(date);
   });
 
   it('should return date of 10 years after', async () => {
     date.setFullYear(date.getFullYear() + 10);
 
-    expect(modifyNowDate(_, _, 10)).toEqual(date);
+    expect(modifyDate({ years: 10 })).toEqual(date);
   });
 });
