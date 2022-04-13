@@ -117,6 +117,7 @@ app.use(
       'http://localhost:3001',
       'http://localhost:3000',
       'https://horondi-admin-staging.azurewebsites.net',
+      'https://horondi-admin.azurewebsites.net',
       'https://horondi-front-staging.azurewebsites.net',
       'https://horondi-front.azurewebsites.net',
       'https://54.76.178.89',
