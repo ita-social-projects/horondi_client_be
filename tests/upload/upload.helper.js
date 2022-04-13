@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const uploadFiles = async (file, operations) => {
   const uploadedFiles = await operations.mutate({
     mutation: gql`
-      mutation($files: [Upload]!) {
+      mutation ($files: [Upload]!) {
         uploadFiles(files: $files) {
           ... on File {
             prefixUrl
@@ -27,7 +27,7 @@ const uploadFiles = async (file, operations) => {
 const deleteFiles = async (fileNames, operations) => {
   const deletedFiles = await operations.mutate({
     mutation: gql`
-      mutation($fileNames: [String]) {
+      mutation ($fileNames: [String]) {
         deleteFiles(fileNames: $fileNames)
       }
     `,

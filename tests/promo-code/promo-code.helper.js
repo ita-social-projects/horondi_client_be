@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addPromoCode = async (promoCode, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($promoCode: PromoCodeInput!) {
+      mutation ($promoCode: PromoCodeInput!) {
         addPromoCode(promoCode: $promoCode) {
           ... on PromoCode {
             _id
@@ -19,6 +19,7 @@ const addPromoCode = async (promoCode, operations) => {
       promoCode,
     },
   });
+
   return res.data.addPromoCode;
 };
 
@@ -45,7 +46,7 @@ const getAllPromoCodes = async operations => {
 const getPromoCodeByCode = async (code, operations) => {
   const res = await operations.query({
     query: gql`
-      query($code: String!) {
+      query ($code: String!) {
         getPromoCodeByCode(code: $code) {
           ... on PromoCode {
             _id
@@ -67,9 +68,9 @@ const getPromoCodeByCode = async (code, operations) => {
 };
 
 const deletePromoCode = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deletePromoCode(id: $id) {
           ... on PromoCode {
             _id
@@ -85,9 +86,9 @@ const deletePromoCode = async (id, operations) =>
   });
 
 const updatePromoCode = async (id, promoCode, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $promoCode: PromoCodeInput!) {
+      mutation ($id: ID!, $promoCode: PromoCodeInput!) {
         updatePromoCode(id: $id, promoCode: $promoCode) {
           ... on PromoCode {
             _id

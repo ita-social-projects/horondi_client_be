@@ -1,7 +1,7 @@
 const { deleteOrder, createOrder } = require('../order/order.helpers');
 const { newOrderInputData } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
-const { createProduct, deleteProduct } = require('../product/product.helper');
+const { createProduct, deleteProducts } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -34,16 +34,14 @@ const { setupApp } = require('../helper-functions');
 
 const {
   generateCertificate,
-  getCertificatesByPaymentToken,
   deleteCertificate,
 } = require('../certificate/certificate.helper');
 
 const {
-  checkCertificatesPaymentStatus,
   getPaymentCheckoutForCertificates,
-  checkOrderPaymentStatus,
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
+  sendOrderToEmail,
 } = require('./payment.helper');
 
 const {
@@ -69,9 +67,7 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let orderNumber;
-let mockResponse;
 let certificates;
-let paymentToken;
 
 const wrongId = 'ddfdf34';
 
@@ -91,28 +87,8 @@ describe('Certificate payment queries', () => {
       { certificates, currency: 'UAH', amount: '100000' },
       operations
     );
-    paymentToken = result.paymentToken;
 
     expect(result).toHaveProperty('paymentToken');
-  });
-
-  it('should get Certificates by payment token', async () => {
-    const result = await getCertificatesByPaymentToken(
-      paymentToken,
-      operations
-    );
-
-    expect(result.paymentStatus).toBe('PROCESSING');
-  });
-
-  it('should check Certificates payment status', async () => {
-    const result = await checkCertificatesPaymentStatus(
-      certificates[0].name,
-      paymentToken,
-      operations
-    );
-
-    expect(result).toBeDefined();
   });
 
   it('should send email with certificates', async () => {
@@ -133,13 +109,6 @@ describe('Certificate payment queries', () => {
 describe('Payment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-
-    mockResponse = () => {
-      const res = {};
-      res.status = jest.fn().mockReturnValue(res);
-      res.json = jest.fn().mockReturnValue(res);
-      return res;
-    };
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -210,21 +179,15 @@ describe('Payment queries', () => {
     expect(res).toHaveProperty('message', ORDER_NOT_VALID);
   });
 
-  it('should check Order payment status', async () => {
-    const res = await checkOrderPaymentStatus(orderNumber, 1, operations);
+  it('should send email with order data', async () => {
+    const res = await sendOrderToEmail(1, orderNumber, operations);
 
     expect(res).toBeDefined();
   });
 
-  it('should get null after checking order payment status with wrong id', async () => {
-    const res = await checkOrderPaymentStatus(wrongId, 1, operations);
-
-    expect(res.data.checkOrderPaymentStatus).toBe(null);
-  });
-
   afterAll(async () => {
     await deleteOrder(orderId, operations);
-    await deleteProduct([productId], operations);
+    await deleteProducts([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);

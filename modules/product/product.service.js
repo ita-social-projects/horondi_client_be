@@ -94,22 +94,15 @@ class ProductsService {
     if (!product) {
       throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
     }
+
     return product;
   }
 
   async getProductsFilters() {
-    const categories = await Product.distinct(PRODUCT_CATEGORY)
-      .lean()
-      .exec();
-    const models = await Product.distinct(PRODUCT_MODEL)
-      .lean()
-      .exec();
-    const patterns = await Product.distinct(PRODUCT_PATTERN)
-      .lean()
-      .exec();
-    const closures = await Product.distinct(PRODUCT_CLOSURE)
-      .lean()
-      .exec();
+    const categories = await Product.distinct(PRODUCT_CATEGORY).lean().exec();
+    const models = await Product.distinct(PRODUCT_MODEL).lean().exec();
+    const patterns = await Product.distinct(PRODUCT_PATTERN).lean().exec();
+    const closures = await Product.distinct(PRODUCT_CLOSURE).lean().exec();
     const mainMaterial = await Product.distinct(PRODUCT_MAIN_MATERIAL)
       .lean()
       .exec();
@@ -159,6 +152,7 @@ class ProductsService {
     if (product.length === 0) {
       throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
     }
+
     return product;
   }
 
@@ -207,6 +201,7 @@ class ProductsService {
         },
       };
     }
+
     return filter;
   }
 
@@ -244,9 +239,7 @@ class ProductsService {
       .limit(limit)
       .exec();
 
-    const count = await Product.find(filters)
-      .countDocuments()
-      .exec();
+    const count = await Product.find(filters).countDocuments().exec();
 
     return {
       items,
@@ -273,9 +266,7 @@ class ProductsService {
       },
     };
 
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
+    const product = await Product.findById(id).lean().exec();
     if (!product) {
       throw new RuleError(PRODUCT_NOT_FOUND, FORBIDDEN);
     }
@@ -286,12 +277,13 @@ class ProductsService {
       if (primary?.large) {
         productData.images.primary = primary;
       } else {
-        if (!matchPrimaryInUpload.length)
+        if (!matchPrimaryInUpload.length) {
           await uploadService.deleteFiles(
             Object.values(product.images.primary).filter(
               item => typeof item === 'string'
             )
           );
+        }
         const uploadResult = await uploadService.uploadFiles([primary]);
         const imagesResults = await uploadResult[0];
         productData.images.primary = imagesResults?.fileNames;
@@ -434,11 +426,10 @@ class ProductsService {
     return newProduct;
   }
 
-  async deleteProduct(ids, { _id: adminId }) {
+  async deleteProducts(ids, { _id: adminId }) {
+    const response = [];
     for (const itemId of ids.ids) {
-      const product = await Product.findById(itemId)
-        .lean()
-        .exec();
+      const product = await Product.findById(itemId).lean().exec();
 
       if (!product) {
         throw new RuleError(PRODUCT_NOT_FOUND, NOT_FOUND);
@@ -491,9 +482,14 @@ class ProductsService {
 
         await addHistoryRecord(historyRecord);
 
-        return Product.findByIdAndDelete(itemId);
+        const productRes = await Product.findByIdAndDelete(itemId).exec();
+        response.push(productRes);
       }
     }
+
+    return {
+      items: response,
+    };
   }
 
   async checkProductExist(data) {
@@ -504,6 +500,7 @@ class ProductsService {
         },
       },
     }).exec();
+
     return productCount > 0;
   }
 
@@ -531,9 +528,7 @@ class ProductsService {
   }
 
   async deleteImages(id, imagesToDelete) {
-    const product = await Product.findById(id)
-      .lean()
-      .exec();
+    const product = await Product.findById(id).lean().exec();
     const deleteResults = await uploadService.deleteFiles(imagesToDelete);
     if (await Promise.allSettled(deleteResults)) {
       const newImages = product.images.additional.filter(
@@ -551,6 +546,7 @@ class ProductsService {
         },
         { new: true }
       ).exec();
+
       return updatedProduct.images;
     }
   }
@@ -574,6 +570,7 @@ class ProductsService {
 
   async getProductsForWishlist(userId) {
     const { wishlist } = await User.findById(userId).exec();
+
     return Product.find({ _id: { $in: wishlist } }).exec();
   }
 

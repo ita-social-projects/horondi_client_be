@@ -60,6 +60,7 @@ class CategoryService extends FilterHelper {
       .exec();
 
     const count = Category.find(filterOptions).countDocuments();
+
     return {
       items,
       count,
@@ -122,9 +123,7 @@ class CategoryService extends FilterHelper {
     if (!images) {
       return Category.findByIdAndUpdate(id, category).exec();
     }
-    const foundCategory = await Category.findById(id)
-      .lean()
-      .exec();
+    const foundCategory = await Category.findById(id).lean().exec();
     uploadService.deleteFiles(Object.values(foundCategory.images));
 
     return Category.findByIdAndUpdate(
@@ -145,6 +144,7 @@ class CategoryService extends FilterHelper {
       pagination: {},
       sort: {},
     });
+
     return categories.items.map(async category => {
       const models = await Model.find({ category: category._id }).exec();
       const modelsFields = models.map(async model => ({
@@ -152,6 +152,7 @@ class CategoryService extends FilterHelper {
         _id: model._id,
         translationsKey: model.translationsKey,
       }));
+
       return {
         category: {
           name: [...category.name],
@@ -205,11 +206,11 @@ class CategoryService extends FilterHelper {
   }
 
   async deleteCategory({ deleteId, switchId }, { _id: adminId }) {
-    const category = await Category.findByIdAndDelete(deleteId)
-      .lean()
-      .exec();
+    const category = await Category.findByIdAndDelete(deleteId).lean().exec();
 
-    if (!category) throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+    if (!category) {
+      throw new RuleError(CATEGORY_NOT_FOUND, NOT_FOUND);
+    }
 
     await deleteTranslations(category.translationsKey);
 
@@ -255,8 +256,10 @@ class CategoryService extends FilterHelper {
 
   async getCategoriesWithModels() {
     const { items } = await this.getAllCategories({});
+
     return items.map(category => {
       category.models = modelService.getModelsByCategory(category._id);
+
       return category;
     });
   }
@@ -273,6 +276,7 @@ class CategoryService extends FilterHelper {
         },
       },
     }).exec();
+
     return categoriesCount > 0;
   }
 
@@ -293,6 +297,7 @@ class CategoryService extends FilterHelper {
 
     const otherRelation = 100 - popularSum;
     const otherCount = Math.round((otherRelation * total) / 100);
+
     return {
       names: [...res.names, OTHERS],
       counts: [...res.counts, otherCount || 0],

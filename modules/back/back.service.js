@@ -51,10 +51,7 @@ class BackService {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
-    const items = await Back.find(filterOptions)
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    const items = await Back.find(filterOptions).skip(skip).limit(limit).exec();
 
     const count = await Back.countDocuments(filterOptions).exec();
 
@@ -136,9 +133,7 @@ class BackService {
   }
 
   async deleteBack(id, { _id: adminId }) {
-    const foundBack = await Back.findById(id)
-      .lean()
-      .exec();
+    const foundBack = await Back.findById(id).lean().exec();
 
     if (!foundBack) {
       throw new RuleError(BACK_NOT_FOUND, NOT_FOUND);

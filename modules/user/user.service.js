@@ -294,6 +294,7 @@ class UserService extends FilterHelper {
         statusCode: BAD_REQUEST,
       });
     }
+
     return true;
   }
 
@@ -316,6 +317,7 @@ class UserService extends FilterHelper {
       .populate('orders')
       .exec();
     const paidOrders = user.orders.filter(order => order.isPaid);
+
     return paidOrders.reduce(
       (acc, order) => [
         ...acc,
@@ -396,7 +398,9 @@ class UserService extends FilterHelper {
     } else {
       userToUpdate = user;
     }
-    if (!userToUpdate.images) userToUpdate.images = [];
+    if (!userToUpdate.images) {
+      userToUpdate.images = [];
+    }
 
     const deleteImages = async () => {
       if (userToUpdate.images?.length) {
@@ -535,6 +539,7 @@ class UserService extends FilterHelper {
 
       await new Wishlist({ user_id: user._id, products: [] }).save();
     }
+
     return this.loginSocialUser({
       email: dataUser.email,
       rememberMe,
@@ -563,6 +568,7 @@ class UserService extends FilterHelper {
 
       await new Wishlist({ user_id: user._id, products: [] }).save();
     }
+
     return this.loginSocialUser({
       email: data.email,
       rememberMe,
@@ -600,6 +606,7 @@ class UserService extends FilterHelper {
       email,
       credentials,
     });
+
     return user.save();
   }
 
@@ -662,6 +669,7 @@ class UserService extends FilterHelper {
       language,
       token: accessToken,
     });
+
     return true;
   }
 
@@ -675,6 +683,7 @@ class UserService extends FilterHelper {
     if (user.role === SUPERADMIN) {
       throw new RuleError(SUPER_ADMIN_IS_IMMUTABLE, FORBIDDEN);
     }
+
     return User.findByIdAndDelete(id).exec();
   }
 
@@ -778,7 +787,7 @@ class UserService extends FilterHelper {
     const updates = {
       $set: {
         lastRecoveryDate: Date.now(),
-        recoveryAttempts: !user.recoveryAttempts ? 1 : ++user.recoveryAttempts,
+        recoveryAttempts: user.recoveryAttempts ? ++user.recoveryAttempts : 1,
         credentials: [
           {
             source: HORONDI,
@@ -791,6 +800,7 @@ class UserService extends FilterHelper {
       },
     };
     await User.findByIdAndUpdate(user._id, updates).exec();
+
     return true;
   }
 
@@ -942,6 +952,7 @@ class UserService extends FilterHelper {
         statusCode: BAD_REQUEST,
       });
     }
+
     return { isSuccess: true };
   }
 }

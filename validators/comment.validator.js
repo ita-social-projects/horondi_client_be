@@ -1,10 +1,7 @@
 const Joi = require('joi');
 
 const commentValidator = Joi.object({
-  text: Joi.string()
-    .trim()
-    .min(2)
-    .required(),
+  text: Joi.string().trim().min(2).required(),
   user: Joi.string(),
   product: Joi.string().required(),
   show: Joi.boolean(),
@@ -12,17 +9,12 @@ const commentValidator = Joi.object({
 });
 
 const commentUpdateValidator = Joi.object({
-  text: Joi.string()
-    .trim()
-    .min(2),
+  text: Joi.string().trim().min(2),
   show: Joi.boolean(),
 });
 
 const replyCommentValidator = Joi.object({
-  replyText: Joi.string()
-    .trim()
-    .min(2)
-    .required(),
+  replyText: Joi.string().trim().min(2).required(),
   refToReplyComment: Joi.string(),
   answerer: Joi.string(),
   showReplyComment: Joi.boolean(),
@@ -30,9 +22,7 @@ const replyCommentValidator = Joi.object({
 });
 
 const replyCommentUpdateValidator = Joi.object({
-  replyText: Joi.string()
-    .trim()
-    .min(2),
+  replyText: Joi.string().trim().min(2),
   showReplyComment: Joi.boolean(),
 });
 

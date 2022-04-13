@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addProductToWishlist = async (productId, operations) => {
   const wishlist = await operations.mutate({
     mutation: gql`
-      mutation($productId: ID!) {
+      mutation ($productId: ID!) {
         addProductToWishlist(productId: $productId) {
           ... on Wishlist {
             _id
@@ -27,7 +27,7 @@ const addProductToWishlist = async (productId, operations) => {
 const deleteProductFromWishlist = async (productId, operations) => {
   const wishlist = await operations.mutate({
     mutation: gql`
-      mutation($productId: ID!) {
+      mutation ($productId: ID!) {
         deleteProductFromWishlist(productId: $productId) {
           ... on Wishlist {
             _id

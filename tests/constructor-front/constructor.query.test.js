@@ -69,10 +69,8 @@ describe('constructor mutations', () => {
   });
 
   test('#1 Should return all Constructor Front Pocket', async () => {
-    const receivedAllConstructorFrontPocket = await getAllConstructorFrontPocket(
-      { limit, skip, filter },
-      operations
-    );
+    const receivedAllConstructorFrontPocket =
+      await getAllConstructorFrontPocket({ limit, skip, filter }, operations);
     expect(receivedAllConstructorFrontPocket.items).toBeDefined();
     expect(receivedAllConstructorFrontPocket.items.length).toBeGreaterThan(0);
   });

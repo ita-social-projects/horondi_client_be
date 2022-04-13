@@ -469,6 +469,9 @@ const typeDefs = gql`
     items: [Restriction]
     count: Int
   }
+  type Products {
+    items: [Product]
+  }
   type Materials {
     items: [Material]
   }
@@ -510,7 +513,7 @@ const typeDefs = gql`
   union MaterialResult = Material | Error
   union PatternResult = Pattern | Error
   union NewsResult = News | Error
-  union ProductResult = Product | Error
+  union ProductResult = Products | Product | Error
   union CommentResult = Comment | Error
   union BusinessTextResult = BusinessText | Error
   union LogicalResult = SuccessfulResponse | Error
@@ -654,10 +657,8 @@ const typeDefs = gql`
     getUkrPoshtaPostofficesCityId(id:ID!): [UkrPoshtaPostoffices]
     getPaymentCheckout(data: PaymentInput!): OrderResult
     getPaymentCheckoutForCertificates(data: PaymentInputForCertificate!): CertificatesResult
-    checkCertificatesPaymentStatus(certificateName: String!, paymentToken: String!): CertificatesResult
     sendCertificatesCodesToEmail(language: Int!, certificates: [CertificateInput]!): CertificatesResult
-    checkOrderPaymentStatus(orderId: String!, language: Int!): OrderResult
-    getOrderByPaidOrderNumber(paidOrderNumber: String!): OrderResult
+    sendOrderToEmail(language: Int!, paidOrderNumber: String!): OrderResult
     getPaymentRefund(data: PaymentInput): Payment
     getAllEmailQuestions(
       filter: QuestionsFilterInput
@@ -666,7 +667,7 @@ const typeDefs = gql`
     getEmailQuestionById(id: ID!): EmailQuestionResult
     getHomePageLooksImages: [HomePageImages]
     getPendingEmailQuestionsCount: Int
-    getAllSlides(limit: Int, skip: Int): PaginatedHomePageSlides!
+    getAllSlides(limit: Int, skip: Int, show_statuses: Boolean): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
     getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
     getSizeById(id: ID!): Size
@@ -941,7 +942,7 @@ const typeDefs = gql`
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
     addProductFromConstructor(product: ProductInput!, upload: Upload!): ProductResult
-    deleteProduct(ids: [ID!]): ProductResult
+    deleteProducts(ids: [ID!]): ProductResult
     updateProduct(
       id: ID!
       product: ProductInput!
@@ -1074,6 +1075,10 @@ const typeDefs = gql`
     "Wishlist Mutations"
     addProductToWishlist(productId: ID!): WishlistResult
     deleteProductFromWishlist(productId: ID!): WishlistResult
+  }
+  type Subscription {
+    certificatesPaid(certificatesOrderId: String!): CertificatesResult
+    paidOrder(orderId: String!): OrderResult
   }
   ${certificateTypes}
 `;

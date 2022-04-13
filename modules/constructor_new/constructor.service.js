@@ -74,7 +74,7 @@ class ConstructorService {
     if (image) {
       if (constructorToUpdate.images) {
         const images = Object.values(constructorToUpdate.images).filter(
-          (item) => typeof item === 'string' && item
+          item => typeof item === 'string' && item
         );
         await uploadService.deleteFiles(images);
       }

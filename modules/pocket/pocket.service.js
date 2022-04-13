@@ -69,9 +69,7 @@ class PocketService {
   }
 
   async deletePocket(id, { _id: adminId }) {
-    const foundPocket = await Pocket.findByIdAndDelete(id)
-      .lean()
-      .exec();
+    const foundPocket = await Pocket.findByIdAndDelete(id).lean().exec();
 
     if (!foundPocket) {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);

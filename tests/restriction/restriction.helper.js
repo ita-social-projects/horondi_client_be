@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addRestriction = async (restrictionData, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($restriction: RestrictionInput!) {
+      mutation ($restriction: RestrictionInput!) {
         addRestriction(restriction: $restriction) {
           ... on Restriction {
             _id
@@ -26,7 +26,7 @@ const addRestriction = async (restrictionData, operations) => {
 const updateRestriction = async (id, updateData, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $restriction: RestrictionInput!) {
+      mutation ($id: ID!, $restriction: RestrictionInput!) {
         updateRestriction(id: $id, restriction: $restriction) {
           ... on Restriction {
             _id
@@ -55,7 +55,7 @@ const updateRestriction = async (id, updateData, operations) => {
 const deleteRestriction = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteRestriction(id: $id) {
           ... on Restriction {
             _id
@@ -78,7 +78,7 @@ const deleteRestriction = async (id, operations) => {
 const getAllRestrictions = async (limit, skip, filter, operations) => {
   const res = await operations.query({
     query: gql`
-      query($limit: Int!, $skip: Int!, $filter: RestrictionFilterInput) {
+      query ($limit: Int!, $skip: Int!, $filter: RestrictionFilterInput) {
         getAllRestrictions(limit: $limit, skip: $skip, filter: $filter) {
           items {
             _id
@@ -105,7 +105,7 @@ const getAllRestrictions = async (limit, skip, filter, operations) => {
 const getRestrictionById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getRestrictionById(id: $id) {
           ... on Restriction {
             _id

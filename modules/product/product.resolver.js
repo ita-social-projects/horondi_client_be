@@ -2,28 +2,28 @@ const productsService = require('./product.service');
 const RuleError = require('../../errors/rule.error');
 
 const productsQuery = {
-  getProductById: async (parent, args) => {
+  getProductById: async (_parent, args) => {
     try {
       return await productsService.getProductById(args.id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getProducts: async (parent, args) => {
+  getProducts: async (_parent, args) => {
     try {
       return await productsService.getProducts(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getModelsByCategory: (parent, args) =>
+  getModelsByCategory: (_parent, args) =>
     productsService.getModelsByCategory(args.id),
   getPopularProducts: () => productsService.getPopularProducts(),
   getProductsFilters: () => productsService.getProductsFilters(),
 };
 
 const productsMutation = {
-  addProduct: async (parent, args, { user }) => {
+  addProduct: async (_parent, args, { user }) => {
     try {
       return await productsService.addProduct(args.product, args.upload, user);
     } catch (e) {
@@ -40,14 +40,14 @@ const productsMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteProduct: async (parent, args, { user }) => {
+  deleteProducts: async (_parent, args, { user }) => {
     try {
-      return await productsService.deleteProduct(args, user);
+      return await productsService.deleteProducts(args, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateProduct: async (parent, args, { user }) => {
+  updateProduct: async (_parent, args, { user }) => {
     try {
       return await productsService.updateProduct(
         args.id,
@@ -60,7 +60,7 @@ const productsMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteImages: async (parent, args) => {
+  deleteImages: async (_parent, args) => {
     try {
       return await productsService.deleteImages(args.id, args.images);
     } catch (e) {

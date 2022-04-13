@@ -10,7 +10,7 @@ const {
   newOrderUpdated,
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
-const { createProduct, deleteProduct } = require('../product/product.helper');
+const { createProduct, deleteProducts } = require('../product/product.helper');
 const {
   deleteConstructorBasic,
   createConstructorBasic,
@@ -107,14 +107,8 @@ describe('Order queries', () => {
     );
     productId = productData._id;
   });
-  const {
-    status,
-    delivery,
-    paymentStatus,
-    userComment,
-    items,
-    recipient,
-  } = newOrderInputData(productId, modelId, sizeId, constructorBasicId);
+  const { status, delivery, paymentStatus, userComment, items, recipient } =
+    newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
   test('Should create order', async () => {
     const order = await createOrder(
@@ -182,7 +176,7 @@ describe('Order queries', () => {
   });
 
   afterAll(async () => {
-    await deleteProduct([productId], operations);
+    await deleteProducts([productId], operations);
     await deleteModel(modelId, operations);
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);

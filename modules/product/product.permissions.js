@@ -24,7 +24,7 @@ const productPermissionsMutation = {
     inputDataValidation(PRODUCT, productInputValidator),
     hasRoles([ADMIN, SUPERADMIN])
   ),
-  deleteProduct: hasRoles([ADMIN, SUPERADMIN]),
+  deleteProducts: hasRoles([ADMIN, SUPERADMIN]),
 };
 
 module.exports = { productPermissionsMutation };

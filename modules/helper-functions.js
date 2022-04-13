@@ -25,6 +25,7 @@ const changeDataFormat = (data, options) =>
 const countItemsOccurrence = items =>
   items.reduce((acc, el) => {
     acc[el] = (acc[el] || 0) + 1;
+
     return acc;
   }, {});
 
@@ -44,6 +45,7 @@ const setCalendar = (names, counts, days) => {
       counts: countIndex === -1 ? 0 : counts[countIndex],
     });
   }
+
   return calendar;
 };
 
@@ -57,8 +59,21 @@ const transformLabel = (days, dateSet) => {
   if (startMonth.slice(0, 3) === endMonth.slice(0, 3)) {
     return `${startMonth}-${endMonth.slice(4)}`;
   }
+
   return `${startMonth}-${endMonth}`;
 };
+
+const reduceDatesObjectArr = (days, item) =>
+  item.reduce(
+    (acc, curr) => ({
+      range: acc.range,
+      counts: acc.counts + curr.counts,
+    }),
+    {
+      range: transformLabel(days, item),
+      counts: 0,
+    }
+  );
 
 const reduceByYear = (days, calendar) => {
   const year = [];
@@ -85,20 +100,9 @@ const reduceByMonths = (days, calendar, range) => {
   for (let i = 0; i < days / range; i++) {
     months.push(reduceDatesObjectArr(days, calendar.splice(0, range)));
   }
+
   return months;
 };
-
-const reduceDatesObjectArr = (days, item) =>
-  item.reduce(
-    (acc, curr) => ({
-      range: acc.range,
-      counts: acc.counts + curr.counts,
-    }),
-    {
-      range: transformLabel(days, item),
-      counts: 0,
-    }
-  );
 
 const reduceByDaysCount = (names, counts, days) => {
   if (names.length && counts.length) {
@@ -133,6 +137,7 @@ const reduceByDaysCount = (names, counts, days) => {
       count: result.map(el => el.counts),
     };
   }
+
   return { labels: [], count: [] };
 };
 
@@ -180,6 +185,7 @@ const filterOptionComments = filter => {
   if (filter?.productId) {
     filterOptions.product = filter.productId;
   }
+
   return filterOptions;
 };
 const filteredReplyComments = (filter, arr) => {
@@ -207,6 +213,7 @@ const filteredReplyComments = (filter, arr) => {
         new Date(item.createdAt) <= new Date(filter.createdAt.dateTo)
     );
   }
+
   return reply;
 };
 

@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const getAllEmailQuestions = async (filter, pagination, operations) => {
   const res = await operations.mutate({
     query: gql`
-      query($filter: QuestionsFilterInput, $pagination: Pagination) {
+      query ($filter: QuestionsFilterInput, $pagination: Pagination) {
         getAllEmailQuestions(filter: $filter, pagination: $pagination) {
           questions {
             _id
@@ -27,6 +27,7 @@ const getAllEmailQuestions = async (filter, pagination, operations) => {
       pagination,
     },
   });
+
   return res.data.getAllEmailQuestions;
 };
 
@@ -38,13 +39,14 @@ const getPendingEmailQuestionsCount = async operations => {
       }
     `,
   });
+
   return res.data.getPendingEmailQuestionsCount;
 };
 
 const getEmailQuestionById = async (id, operations) => {
   const res = await operations.mutate({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getEmailQuestionById(id: $id) {
           ... on EmailQuestion {
             _id
@@ -70,13 +72,14 @@ const getEmailQuestionById = async (id, operations) => {
       id,
     },
   });
+
   return res.data.getEmailQuestionById;
 };
 
 const addEmailQuestion = async (question, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($question: EmailQuestionInput!) {
+      mutation ($question: EmailQuestionInput!) {
         addEmailQuestion(question: $question) {
           _id
           senderName
@@ -92,13 +95,14 @@ const addEmailQuestion = async (question, operations) => {
       question,
     },
   });
+
   return res.data.addEmailQuestion;
 };
 
 const makeEmailQuestionsSpam = async (questionsToSpam, adminId, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($questionsToSpam: [String], $adminId: ID!) {
+      mutation ($questionsToSpam: [String], $adminId: ID!) {
         makeEmailQuestionsSpam(
           questionsToSpam: $questionsToSpam
           adminId: $adminId
@@ -122,13 +126,14 @@ const makeEmailQuestionsSpam = async (questionsToSpam, adminId, operations) => {
       adminId,
     },
   });
+
   return res.data.makeEmailQuestionsSpam;
 };
 
 const answerEmailQuestion = async (questionId, adminId, text, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($questionId: ID!, $adminId: ID!, $text: String!) {
+      mutation ($questionId: ID!, $adminId: ID!, $text: String!) {
         answerEmailQuestion(
           questionId: $questionId
           adminId: $adminId
@@ -160,13 +165,14 @@ const answerEmailQuestion = async (questionId, adminId, text, operations) => {
       text,
     },
   });
+
   return res.data.answerEmailQuestion;
 };
 
 const deleteEmailQuestions = async (questionsToDelete, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($questionsToDelete: [String]) {
+      mutation ($questionsToDelete: [String]) {
         deleteEmailQuestions(questionsToDelete: $questionsToDelete) {
           _id
           senderName
@@ -186,6 +192,7 @@ const deleteEmailQuestions = async (questionsToDelete, operations) => {
       questionsToDelete,
     },
   });
+
   return res.data.deleteEmailQuestions;
 };
 

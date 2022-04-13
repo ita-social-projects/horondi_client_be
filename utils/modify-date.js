@@ -1,16 +1,16 @@
-const _ = undefined;
+const modifyDate = ({ days = 0, months = 0, years = 0, date = new Date() }) => {
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
 
-const modifyNowDate = (days = 0, months = 0, years = 0) => {
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
-  currentDate.setDate(currentDate.getDate() + days);
-  currentDate.setMonth(currentDate.getMonth() + months);
-  currentDate.setFullYear(currentDate.getFullYear() + years);
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + days);
+  date.setMonth(date.getMonth() + months);
+  date.setFullYear(date.getFullYear() + years);
 
-  return currentDate;
+  return date;
 };
 
 module.exports = {
-  modifyNowDate,
-  _,
+  modifyDate,
 };

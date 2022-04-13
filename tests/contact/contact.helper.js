@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addContact = async (contact, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($contact: contactInput!) {
+      mutation ($contact: contactInput!) {
         addContact(contact: $contact) {
           ... on Contact {
             _id
@@ -31,12 +31,13 @@ const addContact = async (contact, operations) => {
     `,
     variables: { contact },
   });
+
   return res.data.addContact;
 };
 const deleteContact = async (id, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteContact(id: $id) {
           ... on Contact {
             _id
@@ -50,12 +51,13 @@ const deleteContact = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.deleteContact;
 };
 const getContacts = async operations => {
   const res = await operations.query({
     query: gql`
-      query($skip: Int, $limit: Int) {
+      query ($skip: Int, $limit: Int) {
         getContacts(skip: $skip, limit: $limit) {
           items {
             phoneNumber
@@ -88,7 +90,7 @@ const getContacts = async operations => {
 const getContactById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getContactById(id: $id) {
           ... on Contact {
             phoneNumber
@@ -121,7 +123,7 @@ const getContactById = async (id, operations) => {
 const updateContact = async (id, contact, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $contact: contactInput!) {
+      mutation ($id: ID!, $contact: contactInput!) {
         updateContact(id: $id, contact: $contact) {
           ... on Contact {
             _id

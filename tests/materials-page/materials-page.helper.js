@@ -3,7 +3,7 @@ const { gql } = require('@apollo/client');
 const addMaterialsBlock = async (materialsBlock, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($materialsBlock: MaterialsBlockInput!) {
+      mutation ($materialsBlock: MaterialsBlockInput!) {
         addMaterialsBlock(materialsBlock: $materialsBlock) {
           ... on MaterialsBlock {
             _id
@@ -22,13 +22,14 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
       materialsBlock,
     },
   });
+
   return res.data.addMaterialsBlock;
 };
 
 const getAllMaterialsBlocks = async ({ skip, limit }, operations) => {
   const res = await operations.query({
     query: gql`
-      query($skip: Int!, $limit: Int!) {
+      query ($skip: Int!, $limit: Int!) {
         getAllMaterialsBlocks(skip: $skip, limit: $limit) {
           items {
             _id
@@ -59,7 +60,7 @@ const getMaterialsBlocksByType = async (
 ) => {
   const res = await operations.query({
     query: gql`
-      query(
+      query (
         $type: String!
         $skip: Int!
         $limit: Int!
@@ -92,13 +93,14 @@ const getMaterialsBlocksByType = async (
       filter,
     },
   });
+
   return res.data.getMaterialsBlocksByType;
 };
 
 const updateMaterialsBlock = async (id, materialsBlock, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $materialsBlock: MaterialsBlockInput!) {
+      mutation ($id: ID!, $materialsBlock: MaterialsBlockInput!) {
         updateMaterialsBlock(id: $id, materialsBlock: $materialsBlock) {
           ... on MaterialsBlock {
             _id
@@ -118,13 +120,14 @@ const updateMaterialsBlock = async (id, materialsBlock, operations) => {
       materialsBlock,
     },
   });
+
   return res.data.updateMaterialsBlock;
 };
 
 const getMaterialsBlockById = async (id, operations) => {
   const res = await operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getMaterialsBlockById(id: $id) {
           ... on MaterialsBlock {
             image
@@ -140,13 +143,14 @@ const getMaterialsBlockById = async (id, operations) => {
     `,
     variables: { id },
   });
+
   return res.data.getMaterialsBlockById;
 };
 
 const deleteMaterialsBlock = async (id, operations) =>
   operations.mutate({
     mutation: gql`
-      mutation($id: ID!) {
+      mutation ($id: ID!) {
         deleteMaterialsBlock(id: $id) {
           ... on MaterialsBlock {
             _id

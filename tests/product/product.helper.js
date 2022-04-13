@@ -9,7 +9,7 @@ const { getCurrencySign } = require('../../utils/product-service');
 const createProduct = async (product, operations) => {
   const createdProduct = await operations.mutate({
     mutation: gql`
-      mutation($product: ProductInput!, $upload: Upload!) {
+      mutation ($product: ProductInput!, $upload: Upload!) {
         addProduct(product: $product, upload: $upload) {
           ... on Product {
             _id
@@ -30,9 +30,9 @@ const createProduct = async (product, operations) => {
   return createdProduct.data.addProduct;
 };
 const updateProduct = async (id, product, primary, upload, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $id: ID!
         $product: ProductInput!
         $upload: Upload
@@ -113,9 +113,9 @@ const updateProduct = async (id, product, primary, upload, operations) =>
     },
   });
 const getProductById = async (id, operations) =>
-  await operations.query({
+  operations.query({
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getProductById(id: $id) {
           ... on Product {
             _id
@@ -194,11 +194,16 @@ const getProductById = async (id, operations) =>
       id,
     },
   });
-const deleteProduct = async (ids, operations) =>
-  await operations.mutate({
+const deleteProducts = async (ids, operations) =>
+  operations.mutate({
     mutation: gql`
-      mutation($ids: [ID!]) {
-        deleteProduct(ids: $ids) {
+      mutation ($ids: [ID!]) {
+        deleteProducts(ids: $ids) {
+          ... on Products {
+            items {
+              _id
+            }
+          }
           ... on Product {
             _id
           }
@@ -213,10 +218,10 @@ const deleteProduct = async (ids, operations) =>
     },
   });
 const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
-  await operations.query({
+  operations.query({
     variables: { skip, limit },
     query: gql`
-      query($skip: Int, $limit: Int) {
+      query ($skip: Int, $limit: Int) {
         getProducts(skip: $skip, limit: $limit, filter: { colors: [] }) {
           ... on PaginatedProducts {
             items {
@@ -232,7 +237,7 @@ const getAllProductsWithSkipAndLimit = async (skip, limit, operations) =>
   });
 
 const getAllProductCategoriesForFilter = async operations =>
-  await operations.query({
+  operations.query({
     query: gql`
       query {
         getProductsFilters {
@@ -245,10 +250,10 @@ const getAllProductCategoriesForFilter = async operations =>
   });
 
 const getModelsByCategory = async (id, operations) =>
-  await operations.query({
+  operations.query({
     variables: { id },
     query: gql`
-      query($id: ID!) {
+      query ($id: ID!) {
         getModelsByCategory(id: $id) {
           ... on Model {
             _id
@@ -267,7 +272,7 @@ const getModelsByCategory = async (id, operations) =>
   });
 
 const getPopularProducts = async operations =>
-  await operations.query({
+  operations.query({
     query: gql`
       query {
         getPopularProducts {
@@ -278,12 +283,12 @@ const getPopularProducts = async operations =>
   });
 
 const getProductsForWishlist = async userId =>
-  await productService.getProductsForWishlist(userId);
+  productService.getProductsForWishlist(userId);
 
 const deleteProductImages = async (id, operations) =>
-  await operations.mutate({
+  operations.mutate({
     mutation: gql`
-      mutation($id: ID!, $images: [String!]!) {
+      mutation ($id: ID!, $images: [String!]!) {
         deleteImages(id: $id, images: $images) {
           ... on PrimaryImage {
             primary {
@@ -303,14 +308,14 @@ const deleteProductImages = async (id, operations) =>
   });
 
 const uploadProductImages = async () =>
-  await uploadImages(['__tests__/homepage-images/img.png']);
+  uploadImages(['__tests__/homepage-images/img.png']);
 
 const getFilter = async filterOpts => productService.filterItems(filterOpts);
 
 const getCurrency = (currency, UAH, USD) => getCurrencySign(currency, UAH, USD);
 
 module.exports = {
-  deleteProduct,
+  deleteProducts,
   createProduct,
   getProductById,
   getAllProductsWithSkipAndLimit,

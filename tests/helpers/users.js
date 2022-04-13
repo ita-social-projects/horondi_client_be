@@ -10,7 +10,7 @@ const createUser = async (
 ) => {
   const register = await operations.mutate({
     mutation: gql`
-      mutation(
+      mutation (
         $firstName: String!
         $lastName: String!
         $email: String!
@@ -46,13 +46,14 @@ const createUser = async (
       language,
     },
   });
+
   return register.data.registerUser._id;
 };
 
 const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
   const result = await operations.query({
     query: gql`
-      query($sort: UserSortInput, $filter: UserFilterInput) {
+      query ($sort: UserSortInput, $filter: UserFilterInput) {
         getAllUsers(sort: $sort, filter: $filter) {
           items {
             _id
@@ -72,6 +73,7 @@ const getAllUsersQuery = async (operations, sort = {}, filter = {}) => {
       filter,
     },
   });
+
   return result.data.getAllUsers.items;
 };
 

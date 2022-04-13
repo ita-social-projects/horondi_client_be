@@ -4,6 +4,18 @@ const wrongSkip = -5;
 const wrongLimit = -3;
 const limit = 2;
 const limitZero = 0;
+const materialOptions = {
+  description: [
+    { lang: 'uk', value: 'Опис test' },
+    { lang: 'en', value: 'Description test' },
+  ],
+  purpose: 'INNER',
+  available: true,
+  additionalPrice: {
+    type: 'ABSOLUTE_INDICATOR',
+    value: 0,
+  },
+};
 const getMaterial = colorId => ({
   name: [
     { lang: 'uk', value: 'Матеріал test' },
@@ -20,18 +32,6 @@ const getMaterialToUpdate = colorId => ({
   ...materialOptions,
   colors: [colorId],
 });
-const materialOptions = {
-  description: [
-    { lang: 'uk', value: 'Опис test' },
-    { lang: 'en', value: 'Description test' },
-  ],
-  purpose: 'INNER',
-  available: true,
-  additionalPrice: {
-    type: 'ABSOLUTE_INDICATOR',
-    value: 0,
-  },
-};
 
 module.exports = {
   materialDoesNotExistId,

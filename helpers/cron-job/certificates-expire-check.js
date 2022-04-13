@@ -4,7 +4,7 @@ const {
   CertificateModel,
 } = require('../../modules/certificate/certificate.model');
 
-const { modifyNowDate } = require('../../utils/modify-date');
+const { modifyDate } = require('../../utils/modify-date');
 const { sendEmail } = require('../../modules/email/email.service');
 
 const {
@@ -15,10 +15,10 @@ const {
   CRON_PERIOD: { EVERY_MORNING },
 } = require('../../consts/cron-period');
 
-const currentDate = modifyNowDate();
-const tomorrow = modifyNowDate(1);
-const nowPlus30 = modifyNowDate(30);
-const nowPlus31 = modifyNowDate(31);
+const currentDate = modifyDate({});
+const tomorrow = modifyDate({ days: 1 });
+const nowPlus30 = modifyDate({ days: 30 });
+const nowPlus31 = modifyDate({ days: 31 });
 
 const certificatesExpireCheck = () =>
   schedule(EVERY_MORNING, async () => {

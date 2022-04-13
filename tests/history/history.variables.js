@@ -13,7 +13,7 @@ const GET_ALL_RECORDS_PARAMS = {
   filter: {
     date: {
       dateFrom: new Date(2021, 4, 1).getTime(),
-      dateTo: Date.now(),
+      dateTo: new Date(2023, 4, 1).getTime(),
     },
     action: [ADD_EVENT],
     historyName: [SIZE_EVENT],

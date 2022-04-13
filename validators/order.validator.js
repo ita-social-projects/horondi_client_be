@@ -49,22 +49,10 @@ const deliveryCheckerValidator = Joi.string()
   });
 
 const nestedUserValidator = Joi.object({
-  firstName: Joi.string()
-    .trim()
-    .required()
-    .regex(userNameRegExp),
-  lastName: Joi.string()
-    .trim()
-    .required()
-    .regex(userNameRegExp),
-  email: Joi.string()
-    .trim()
-    .required()
-    .email(),
-  phoneNumber: Joi.string()
-    .trim()
-    .required()
-    .regex(numberRegExp),
+  firstName: Joi.string().trim().required().regex(userNameRegExp),
+  lastName: Joi.string().trim().required().regex(userNameRegExp),
+  email: Joi.string().trim().required().email(),
+  phoneNumber: Joi.string().trim().required().regex(numberRegExp),
 });
 
 const nestedDeliveryValidator = Joi.object({
@@ -177,22 +165,16 @@ const nestedDeliveryValidator = Joi.object({
   flat: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
-      then: Joi.string()
-        .allow(null, '')
-        .optional(),
+      then: Joi.string().allow(null, '').optional(),
     })
     .when(SENT_BY, {
       is: UKRPOSTCOURIER,
-      then: Joi.string()
-        .allow(null, '')
-        .optional(),
+      then: Joi.string().allow(null, '').optional(),
       otherwise: Joi.string().only(''),
     }),
   byCourier: Joi.boolean().required(),
   cost: Joi.array().has({
-    currency: Joi.string()
-      .trim()
-      .required(),
+    currency: Joi.string().trim().required(),
     value: Joi.number().required(),
   }),
 });
@@ -214,14 +196,8 @@ const orderValidator = Joi.object({
   delivery: nestedDeliveryValidator,
   items: Joi.array(),
   user_id: Joi.string().empty(null),
-  paymentMethod: Joi.string()
-    .trim()
-    .valid(CARD, CASH)
-    .required(),
-  userComment: Joi.string()
-    .min(2)
-    .max(500)
-    .allow(''),
+  paymentMethod: Joi.string().trim().valid(CARD, CASH).required(),
+  userComment: Joi.string().min(2).max(500).allow(''),
   isPaid: Joi.boolean(),
   paymentStatus: Joi.string().valid(
     PAYMENT_CREATED,

@@ -146,12 +146,12 @@ describe('Testing obtaining information restrictions', () => {
   let userLogin;
   let userPassword;
   let adminPassword;
-  let firstName;
+  let newfirstName;
   let wrongPassword;
-  let lastName;
+  let newlastName;
   let adminToken;
   let adminEmail;
-  let language;
+  let newlanguage;
 
   beforeAll(async () => {
     operations = await setupApp();
@@ -160,15 +160,15 @@ describe('Testing obtaining information restrictions', () => {
     wrongPassword = 'qw23ertY123';
     adminEmail = superAdminUser.email;
     adminPassword = superAdminUser.password;
-    firstName = 'Pepo';
-    lastName = 'Markelo';
-    language = 1;
+    newfirstName = 'Pepo';
+    newlastName = 'Markelo';
+    newlanguage = 1;
     const register = await registerUser(
-      firstName,
-      lastName,
+      newfirstName,
+      newlastName,
       userLogin,
       userPassword,
-      language,
+      newlanguage,
       operations
     );
     userId = register.data.registerUser._id;
@@ -235,8 +235,8 @@ describe('Testing obtaining information restrictions', () => {
     );
     const userInfo = result.data.getUserById;
 
-    expect(userInfo.firstName).toEqual(firstName);
-    expect(userInfo.lastName).toEqual(lastName);
+    expect(userInfo.firstName).toEqual(newfirstName);
+    expect(userInfo.lastName).toEqual(newlastName);
   });
   test('Should throw an error when validate invalid token', async () => {
     const invalidAdminToken = `y${adminToken.slice(1)}`;
@@ -283,7 +283,7 @@ describe('Filter users', () => {
       ) {
         await operations.mutate({
           mutation: gql`
-            mutation($id: ID!) {
+            mutation ($id: ID!) {
               switchUserStatus(id: $id) {
                 ... on SuccessfulResponse {
                   isSuccess

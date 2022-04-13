@@ -16,11 +16,13 @@ class TranslationsService {
       const { _id: id, ...translations } = translationsData;
 
       Object.keys(translations).forEach(key => {
-        if (!items[key]) items[key] = { [id]: item[key] };
-        else
+        if (items[key]) {
           items[key] = Object.assign(items[key], {
             [id]: item[key],
           });
+        } else {
+          items[key] = { [id]: item[key] };
+        }
       });
 
       return items;
@@ -46,9 +48,7 @@ class TranslationsService {
   }
 
   async deleteTranslations(id) {
-    const translations = await Translations.findByIdAndDelete(id)
-      .lean()
-      .exec();
+    const translations = await Translations.findByIdAndDelete(id).lean().exec();
 
     if (!translations) {
       throw new RuleError(TRANSLATIONS_NOT_FOUND, NOT_FOUND);

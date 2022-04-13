@@ -67,6 +67,7 @@ class ColorService {
     );
 
     await addHistoryRecord(historyRecord);
+
     return newColor;
   }
 
