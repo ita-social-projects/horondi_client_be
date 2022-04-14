@@ -5,7 +5,7 @@ const bottomType = `
     optionType: OptionTypeEnum
     features: BottomFeatureSet
     images: ImageSet
-    additionalPrice: AdditionalCurrencySet
+    absolutePrice: Int
     available: Boolean
     translationsKey: ID
   }
@@ -24,7 +24,7 @@ const bottomInputs = `
     optionType: String
     features: BottomFeatureSetInput
     image: Upload
-    additionalPrice: additionalPriceInput!
+    absolutePrice: Int!
     available: Boolean
   }
 
