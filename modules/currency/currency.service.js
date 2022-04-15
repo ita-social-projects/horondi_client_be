@@ -70,11 +70,11 @@ class CurrencyService {
     const currenciesCount = await Currency.countDocuments({
       _id: { $ne: id },
       convertOptions: {
-        $elemMatch: {
-          $or: [
-            { name: data.convertOptions[0].name },
-            { name: data.convertOptions[1].name },
-          ],
+        UAH: {
+          name: { $eq: data.convertOptions.UAH.name },
+        },
+        USD: {
+          name: { $eq: data.convertOptions.UAH.name },
         },
       },
     }).exec();

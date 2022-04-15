@@ -73,6 +73,8 @@ const {
 const {
   currencyType,
   currencyInput,
+  convertOptionsTypes,
+  convertOptionsInputs,
 } = require('./modules/currency/currency.graphql');
 const {
   certificateTypes,
@@ -189,6 +191,8 @@ const typeDefs = gql`
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
+  ${convertOptionsTypes}
+  ${convertOptionsInputs}
   
   ${materialType}
   ${newsType}
@@ -299,10 +303,6 @@ const typeDefs = gql`
   type PrimaryImage {
     primary: ImageSet
     additional: [ImageSet]
-  }
-  type ConvertOption {
-    name: String
-    exchangeRate: Float
   }
   type ModelsMenu {
     model: [Menu!]
@@ -819,10 +819,6 @@ const typeDefs = gql`
     currency: Int
     language: String
     theme: String
-  }
-  input ConvertOptionInput {
-    name: String!
-    exchangeRate: Float!
   }
   input SubcategoryInput {
     categoryCode: String!
