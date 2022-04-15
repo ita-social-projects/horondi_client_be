@@ -6,12 +6,18 @@ const {
 
 const CurrencySchema = new mongoose.Schema({
   lastUpdatedDate: Date,
-  convertOptions: [
-    {
+  convertOptions: {
+    UAH: {
       name: String,
       exchangeRate: Number,
+      unicode: String,
     },
-  ],
+    USD: {
+      name: String,
+      exchangeRate: Number,
+      unicode: String,
+    },
+  },
 });
 
 module.exports = mongoose.model(CURRENCY, CurrencySchema);
