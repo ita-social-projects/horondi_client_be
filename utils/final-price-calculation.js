@@ -1,60 +1,32 @@
-const { _ } = require('lodash');
-
 const Product = require('../modules/product/product.model');
 const Pattern = require('../modules/pattern/pattern.model');
 const Closures = require('../modules/closures/closures.model');
 const Material = require('../modules/material/material.model');
 const Size = require('../modules/size/size.model');
-const {
-  ADDITIONAL_PRICE_TYPES: { RELATIVE_INDICATOR, ABSOLUTE_INDICATOR },
-} = require('../consts/additional-price-types');
 
-const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
-  const relativePrices = _.reduce(
-    additionalPrices,
-    (sum, additionalPriceSet) => {
-      let sumRelativePrice = sum;
+const checkPriceType = (price, item) => {
+  if (item.absolutePrice) {
+    price += item.absolutePrice;
+  }
 
-      if (additionalPriceSet?.type === RELATIVE_INDICATOR) {
-        sumRelativePrice *= additionalPriceSet.value;
-      }
+  if (item.relativePrice) {
+    price += price * (item.relativePrice / 100);
+  }
 
-      return sumRelativePrice;
-    },
+  return Math.round(price);
+};
+
+const calculateHelper = (entities, sizes, basePrice) => {
+  const additionalPrice = entities.reduce(
+    (sum, entity) => checkPriceType(sum, entity),
     basePrice
   );
 
-  const pricesForSizes = _.map(sizePrices, sizeAdditionalPrice => {
-    let tempPrice = relativePrices;
-    if (sizeAdditionalPrice.additionalPrice?.type === RELATIVE_INDICATOR) {
-      tempPrice *= sizeAdditionalPrice.additionalPrice.value;
-    }
+  return sizes.map(size => {
+    const price = additionalPrice;
 
-    if (sizeAdditionalPrice.additionalPrice?.type === ABSOLUTE_INDICATOR) {
-      tempPrice += sizeAdditionalPrice.additionalPrice.value;
-    }
-
-    return { _id: sizeAdditionalPrice._id, price: tempPrice };
+    return { size: size._id, price: checkPriceType(price, size) };
   });
-
-  return Promise.all(
-    _.map(pricesForSizes, async priceForSize => {
-      const price = _.reduce(
-        additionalPrices,
-        (sum, additionalPriceSet) => {
-          let sumAbsolutePrice = sum;
-          if (additionalPriceSet?.type === ABSOLUTE_INDICATOR) {
-            sumAbsolutePrice += additionalPriceSet.value;
-          }
-
-          return sumAbsolutePrice;
-        },
-        priceForSize.price
-      );
-
-      return { size: priceForSize._id, price };
-    })
-  ).then(result => result);
 };
 
 const finalPriceCalculationForConstructor = async product => {
@@ -65,18 +37,13 @@ const finalPriceCalculationForConstructor = async product => {
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
-
-  const prices = [
-    pattern?.additionalPrice || 0,
-    mainMaterial.additionalPrice,
-    bottomMaterial.additionalPrice,
-  ];
-
   const sizesPrice = await Size.find({
     _id: {
       $in: product.sizes,
     },
   }).exec();
+
+  const prices = [pattern, mainMaterial, bottomMaterial];
 
   return calculateHelper(prices, sizesPrice, product.basePrice);
 };
@@ -93,20 +60,19 @@ const finalPriceCalculation = async product => {
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
-
-  const prices = [
-    pattern.additionalPrice,
-    closure.additionalPrice,
-    mainMaterial.additionalPrice,
-    innerMaterial.additionalPrice,
-    bottomMaterial.additionalPrice,
-  ];
-
   const sizesPrice = await Size.find({
     _id: {
       $in: product.sizes,
     },
   }).exec();
+
+  const prices = [
+    pattern,
+    closure,
+    mainMaterial,
+    innerMaterial,
+    bottomMaterial,
+  ];
 
   return calculateHelper(prices, sizesPrice, product.basePrice);
 };
@@ -123,11 +89,11 @@ const finalPriceRecalculation = async productId => {
       .exec();
 
   const prices = [
-    pattern?.additionalPrice || 0,
-    closure?.additionalPrice || 0,
-    mainMaterial?.material?.additionalPrice || 0,
-    innerMaterial?.material?.additionalPrice || 0,
-    bottomMaterial?.material?.additionalPrice || 0,
+    pattern,
+    closure,
+    mainMaterial.material,
+    innerMaterial.material,
+    bottomMaterial.material,
   ];
 
   const { basePrice } = await Product.findById(productId).exec();

@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const AdditionalCurrencySet =
-  require('../../models/AdditionalCurrencySet').schema;
 const {
   DB_COLLECTIONS_NAMES: { SIZE, MODEL },
 } = require('../../consts/db-collections-names');
@@ -30,7 +28,8 @@ const sizeSchema = new mongoose.Schema({
     type: Number,
   },
   available: Boolean,
-  additionalPrice: AdditionalCurrencySet,
+  absolutePrice: { type: Number, default: null },
+  relativePrice: { type: Number, default: null },
 });
 
 module.exports = mongoose.model(SIZE, sizeSchema);

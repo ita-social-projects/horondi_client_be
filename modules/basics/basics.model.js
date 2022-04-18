@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Language = require('../../models/Language').schema;
-const AdditionalCurrencySet =
-  require('../../models/AdditionalCurrencySet').schema;
 const {
   DB_COLLECTIONS_NAMES: { BASICS, MATERIAL, COLOR, TRANSLATIONS },
 } = require('../../consts/db-collections-names');
@@ -21,7 +19,7 @@ const basicsSchema = new mongoose.Schema({
       ref: COLOR,
     },
   },
-  additionalPrice: AdditionalCurrencySet,
+  absolutePrice: Number,
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
