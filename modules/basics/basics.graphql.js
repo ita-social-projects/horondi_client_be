@@ -5,7 +5,7 @@ const basicsType = `
         images: ImageSet
         available: Boolean
         features: basicsFeatureSet
-        additionalPrice: AdditionalCurrencySet
+        absolutePrice: Int
         translationsKey: ID
     }
 `;
@@ -22,7 +22,7 @@ const basicsInputs = `
         name: [LanguageInput]
         features: BasicsFeatureSetInput
         image: Upload
-        additionalPrice: additionalPriceInput!
+        absolutePrice: Int!
         available: Boolean
     }
 

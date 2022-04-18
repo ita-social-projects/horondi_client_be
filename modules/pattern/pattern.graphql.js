@@ -8,7 +8,8 @@ const patternType = `
       description: [Language]
       images: ImageSet
       constructorImg: String
-      additionalPrice: AdditionalCurrencySet
+      absolutePrice: Int
+      relativePrice: Int
       available: Boolean
       customizable: Boolean
       translationsKey: ID
@@ -31,7 +32,8 @@ const patternInputs = `
       features: PatternFeatureSetInput
       images:ImageSetInput
       constructorImg: String
-      additionalPrice: additionalPriceInput!
+      absolutePrice: Int
+      relativePrice: Int
       available: Boolean
       customizable: Boolean
     }

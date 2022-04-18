@@ -557,8 +557,8 @@ class ProductsService {
 
   async updatePrices(previousPriceValue, nextPriceValue, path, id) {
     if (
-      previousPriceValue.additionalPrice.value !==
-      nextPriceValue.additionalPrice.value
+      previousPriceValue.absolutePrice !== nextPriceValue.absolutePrice ||
+      previousPriceValue.relativePrice !== nextPriceValue.relativePrice
     ) {
       const products = await Product.find({
         [`${path}`]: {

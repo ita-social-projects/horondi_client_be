@@ -272,10 +272,6 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
-  type AdditionalCurrencySet {
-    type: additionalPriceType!
-    value: Float!
-  }
   type ImageSet {
     large: String
     medium: String
@@ -787,10 +783,6 @@ const typeDefs = gql`
   input LanguageInput {
     lang: String!
     value: String
-  }
-  input additionalPriceInput {
-    value: Float!
-    type: additionalPriceType
   }
   input AddressInput {
     country: String
