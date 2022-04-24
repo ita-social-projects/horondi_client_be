@@ -556,23 +556,16 @@ class ProductsService {
   }
 
   async updatePrices(previousPriceValue, nextPriceValue, path, id) {
-    if (
-      previousPriceValue.absolutePrice !== nextPriceValue.absolutePrice ||
-      previousPriceValue.relativePrice !== nextPriceValue.relativePrice
-    ) {
-      const products = await Product.find({
-        [`${path}`]: {
-          $eq: id,
-        },
-      })
-        .distinct('_id')
-        .exec();
+    const products = await Product.find({
+      [path]: id,
+    })
+      .distinct('_id')
+      .exec();
 
-      for (const productId of products) {
-        await Product.findByIdAndUpdate(productId, {
-          sizes: await finalPriceRecalculation(productId),
-        }).exec();
-      }
+    for (const productId of products) {
+      await Product.findByIdAndUpdate(productId, {
+        sizes: await finalPriceRecalculation(productId),
+      }).exec();
     }
   }
 }

@@ -4,13 +4,13 @@ const Closures = require('../modules/closures/closures.model');
 const Material = require('../modules/material/material.model');
 const Size = require('../modules/size/size.model');
 
-const checkPriceType = (price, item) => {
+const checkPriceType = (price, item, basePrice) => {
   if (item.absolutePrice) {
     price += item.absolutePrice;
   }
 
   if (item.relativePrice) {
-    price += price * (item.relativePrice / 100);
+    price += basePrice * (item.relativePrice / 100);
   }
 
   return Math.round(price);
@@ -18,14 +18,14 @@ const checkPriceType = (price, item) => {
 
 const calculateHelper = (entities, sizes, basePrice) => {
   const additionalPrice = entities.reduce(
-    (sum, entity) => checkPriceType(sum, entity),
+    (sum, entity) => checkPriceType(sum, entity, basePrice),
     basePrice
   );
 
   return sizes.map(size => {
     const price = additionalPrice;
 
-    return { size: size._id, price: checkPriceType(price, size) };
+    return { size: size._id, price: checkPriceType(price, size, basePrice) };
   });
 };
 
