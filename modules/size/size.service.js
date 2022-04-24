@@ -200,20 +200,16 @@ class SizeService {
     }
     const updatedSize = await Size.findByIdAndUpdate(id, input).exec();
 
-    if (
-      sizeToUpdate.additionalPrice[1].value !== input.additionalPrice[1].value
-    ) {
-      const products = await Product.find({
-        'sizes.size': id,
-      })
-        .distinct('_id')
-        .exec();
+    const products = await Product.find({
+      'sizes.size': id,
+    })
+      .distinct('_id')
+      .exec();
 
-      for (const productId of products) {
-        await Product.findByIdAndUpdate(productId, {
-          sizes: await finalPriceRecalculation(productId),
-        }).exec();
-      }
+    for (const productId of products) {
+      await Product.findByIdAndUpdate(productId, {
+        sizes: await finalPriceRecalculation(productId),
+      }).exec();
     }
 
     const { beforeChanges, afterChanges } = getChanges(sizeToUpdate, input);

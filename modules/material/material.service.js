@@ -128,9 +128,9 @@ class MaterialsService {
       new: true,
     }).exec();
 
-    await updatePrices(materialToUpdate, material, MAIN_MATERIAL, id);
-    await updatePrices(materialToUpdate, material, INNER_MATERIAL, id);
-    await updatePrices(materialToUpdate, material, BOTTOM_MATERIAL, id);
+    await updatePrices(MAIN_MATERIAL, id);
+    await updatePrices(INNER_MATERIAL, id);
+    await updatePrices(BOTTOM_MATERIAL, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       materialToUpdate,
