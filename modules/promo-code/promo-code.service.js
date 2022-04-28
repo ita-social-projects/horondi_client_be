@@ -1,16 +1,147 @@
 const RuleError = require('../../errors/rule.error');
-const PromoCode = require('./promo-code.model');
+const mongoose = require('mongoose');
+const {
+  roles: { USER },
+} = require('../../consts');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
   PROMOCODE_NOT_FOUND,
 } = require('../../error-messages/promocode-messages');
-
+const { PromocodeModel } = require('../../modules/promo-code/promo-code.model');
+const { format } = require('date-fns');
 class PromoCodeService {
-  async getAllPromoCodes({ skip, limit }) {
-    const items = await PromoCode.find().skip(skip).limit(limit).exec();
-    const count = await PromoCode.find().countDocuments().exec();
+  dateOrName(search) {
+    let filter = {};
+    const regDate = /^\d+[.]\d+[.]\d+$/;
+    search = (search ?? '').trim();
+
+    if (!search) {
+      return filter;
+    }
+
+    if (regDate.test(search)) {
+      const date = new Date(search);
+      filter = {
+        dateStart: {
+          $gte: date,
+          $lt: date,
+        },
+      };
+    } else {
+      const searchPattern = {
+        $regex: search,
+        $options: 'gi',
+      };
+
+      filter = {
+        $or: [
+          {
+            'admin.firstName': searchPattern,
+          },
+          {
+            'admin.lastName': searchPattern,
+          },
+          {
+            code: searchPattern,
+          },
+        ],
+      };
+    }
+
+    return filter;
+  }
+
+  async getAllPromoCodes(skip, limit, sortBy, sortOrder, search, user, status) {
+    let filter;
+
+    if (user.role === USER) {
+      const userId = mongoose.Types.ObjectId(user._id);
+      filter = { ownedBy: userId };
+    } else {
+      filter = this.dateOrName(search);
+    }
+    let sortStatus;
+    sortOrder = sortOrder === 'desc' ? -1 : 1;
+    const sort = { [sortBy]: sortOrder };
+    const myTime = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+    const startTime = format(
+      new Date(2016, 0, 1),
+      "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+    );
+    if (status === 'active') {
+      sortStatus = {
+        $match: {
+          $and: [
+            {
+              dateFrom: {
+                $lt: new Date(myTime),
+              },
+            },
+            {
+              dateTo: {
+                $gt: new Date(myTime),
+              },
+            },
+          ],
+        },
+      };
+    } else if (status === 'expired') {
+      sortStatus = {
+        $match: {
+          dateTo: {
+            $lt: new Date(myTime),
+          },
+        },
+      };
+    } else if (status === 'planned') {
+      sortStatus = {
+        $match: {
+          dateFrom: {
+            $gt: new Date(myTime),
+          },
+        },
+      };
+    } else {
+      sortStatus = {
+        $match: {
+          dateFrom: {
+            $gt: new Date(startTime),
+          },
+        },
+      };
+    }
+    const promocodes = await PromocodeModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      {
+        $match: filter,
+      },
+      {
+        $facet: {
+          count: [{ $count: 'count' }],
+          data: [
+            { $sort: sort },
+            { $skip: skip },
+            { $limit: limit },
+            sortStatus,
+          ],
+        },
+      },
+    ]).exec();
+
+    // const items = await PromoCode.find().skip(skip).limit(limit).exec();
+    // const count = await PromoCode.find().countDocuments().exec();
+
+    const items = promocodes[0].data;
+    const count = promocodes[0].count.length ? promocodes[0].count[0].count : 0;
 
     return {
       items,
@@ -19,7 +150,7 @@ class PromoCodeService {
   }
 
   async getPromoCodeById(id) {
-    const promoCode = await PromoCode.findById(id).exec();
+    const promoCode = await PromocodeModel.findById(id).exec();
 
     if (!promoCode) {
       throw new RuleError(PROMOCODE_NOT_FOUND, NOT_FOUND);
@@ -30,7 +161,7 @@ class PromoCodeService {
 
   async getPromoCodeByCode(code) {
     const currentDate = new Date();
-    const promoCode = await PromoCode.findOne({
+    const promoCode = await PromocodeModel.findOne({
       code,
       dateFrom: { $lte: currentDate },
       dateTo: { $gt: currentDate },
@@ -44,11 +175,11 @@ class PromoCodeService {
   }
 
   async addPromoCode(promoCode) {
-    return new PromoCode(promoCode).save();
+    return new PromocodeModel(promoCode).save();
   }
 
   async deletePromoCode(id) {
-    const promoCode = await PromoCode.findByIdAndDelete(id).exec();
+    const promoCode = await PromocodeModel.findByIdAndDelete(id).exec();
 
     if (promoCode) {
       return promoCode;
@@ -58,7 +189,7 @@ class PromoCodeService {
   async updatePromoCode(id, promoCodeData) {
     await this.getPromoCodeById(id);
 
-    return PromoCode.findByIdAndUpdate(id, promoCodeData, {
+    return PromocodeModel.findByIdAndUpdate(id, promoCodeData, {
       new: true,
     }).exec();
   }
