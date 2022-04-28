@@ -137,9 +137,6 @@ class PromoCodeService {
       },
     ]).exec();
 
-    // const items = await PromoCode.find().skip(skip).limit(limit).exec();
-    // const count = await PromoCode.find().countDocuments().exec();
-
     const items = promocodes[0].data;
     const count = promocodes[0].count.length ? promocodes[0].count[0].count : 0;
 
