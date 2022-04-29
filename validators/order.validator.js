@@ -34,6 +34,7 @@ const {
     SELFPICKUP,
     NOVAPOSTCOURIER,
     UKRPOSTCOURIER,
+    WORLDWIDE,
   },
 } = require('../consts/delivery-type');
 
@@ -59,7 +60,14 @@ const nestedDeliveryValidator = Joi.object({
   sentOn: Joi.string().allow(''),
   sentBy: Joi.string()
     .trim()
-    .valid(NOVAPOST, UKRPOST, SELFPICKUP, NOVAPOSTCOURIER, UKRPOSTCOURIER)
+    .valid(
+      NOVAPOST,
+      UKRPOST,
+      SELFPICKUP,
+      NOVAPOSTCOURIER,
+      UKRPOSTCOURIER,
+      WORLDWIDE
+    )
     .required(),
   invoiceNumber: Joi.string().allow(''),
   courierOffice: Joi.string()
@@ -177,6 +185,13 @@ const nestedDeliveryValidator = Joi.object({
     currency: Joi.string().trim().required(),
     value: Joi.number().required(),
   }),
+  messenger: Joi.string().allow(''),
+  messengerPhone: Joi.string().allow(''),
+  worldWideCountry: Joi.string().allow(''),
+  stateOrProvince: Joi.string().allow(''),
+  worldWideCity: Joi.string().allow(''),
+  worldWideStreet: Joi.string().allow(''),
+  cityCode: Joi.string().allow(''),
 });
 
 const orderValidator = Joi.object({
