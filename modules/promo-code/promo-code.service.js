@@ -62,7 +62,11 @@ class PromoCodeService {
     } else {
       filter = this.dateOrName(search);
     }
-    let sortStatus;
+    const sortStatus = {
+      $match: {
+        $or: [],
+      },
+    };
     sortOrder = sortOrder === 'desc' ? -1 : 1;
     const sort = { [sortBy]: sortOrder };
     const myTime = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
@@ -70,48 +74,56 @@ class PromoCodeService {
       new Date(2016, 0, 1),
       "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
     );
-    if (status === 'active') {
-      sortStatus = {
-        $match: {
-          $and: [
-            {
-              dateFrom: {
-                $lt: new Date(myTime),
-              },
+    if (status.includes('active')) {
+      sortStatus['$match']['$or'].push({
+        $and: [
+          {
+            dateFrom: {
+              $lt: new Date(myTime),
             },
-            {
-              dateTo: {
-                $gt: new Date(myTime),
-              },
+          },
+          {
+            dateTo: {
+              $gt: new Date(myTime),
             },
-          ],
-        },
-      };
-    } else if (status === 'expired') {
-      sortStatus = {
-        $match: {
-          dateTo: {
-            $lt: new Date(myTime),
           },
-        },
-      };
-    } else if (status === 'planned') {
-      sortStatus = {
-        $match: {
-          dateFrom: {
-            $gt: new Date(myTime),
-          },
-        },
-      };
-    } else {
-      sortStatus = {
-        $match: {
-          dateFrom: {
-            $gt: new Date(startTime),
-          },
-        },
-      };
+        ],
+      });
     }
+    if (status.includes('expired')) {
+      sortStatus['$match']['$or'].push({
+        $and: [
+          {
+            dateTo: {
+              $lt: new Date(myTime),
+            },
+          },
+        ],
+      });
+    }
+    if (status.includes('planned')) {
+      sortStatus['$match']['$or'].push({
+        $and: [
+          {
+            dateFrom: {
+              $gt: new Date(myTime),
+            },
+          },
+        ],
+      });
+    }
+    if (!status.length) {
+      sortStatus['$match']['$or'].push({
+        $and: [
+          {
+            dateFrom: {
+              $gt: new Date(startTime),
+            },
+          },
+        ],
+      });
+    }
+
     const promocodes = await PromocodeModel.aggregate([
       {
         $lookup: {

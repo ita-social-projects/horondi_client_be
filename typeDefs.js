@@ -570,7 +570,7 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getPromoCodeById(id: ID): PromoCodeResult
     getPromoCodeByCode(code: String!): PromoCodeResult
-    getAllPromoCodes(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: String):PaginatedPromoCode
+    getAllPromoCodes(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: [String]):PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!

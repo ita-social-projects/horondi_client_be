@@ -5,12 +5,12 @@ const promoCodeQuery = {
   getAllPromoCodes: async (
     _,
     {
-      skip,
-      limit,
+      skip = 0,
+      limit = 10,
       sortBy = 'discount',
       sortOrder = 'desc',
       search = '',
-      status = '',
+      status = [],
     },
     { user }
   ) =>
