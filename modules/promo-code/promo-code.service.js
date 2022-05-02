@@ -11,48 +11,8 @@ const {
 } = require('../../error-messages/promocode-messages');
 const { PromocodeModel } = require('../../modules/promo-code/promo-code.model');
 const { format } = require('date-fns');
-class PromoCodeService {
-  dateOrName(search) {
-    let filter = {};
-    const regDate = /^\d+[.]\d+[.]\d+$/;
-    search = (search ?? '').trim();
-
-    if (!search) {
-      return filter;
-    }
-
-    if (regDate.test(search)) {
-      const date = new Date(search);
-      filter = {
-        dateStart: {
-          $gte: date,
-          $lt: date,
-        },
-      };
-    } else {
-      const searchPattern = {
-        $regex: search,
-        $options: 'gi',
-      };
-
-      filter = {
-        $or: [
-          {
-            'admin.firstName': searchPattern,
-          },
-          {
-            'admin.lastName': searchPattern,
-          },
-          {
-            code: searchPattern,
-          },
-        ],
-      };
-    }
-
-    return filter;
-  }
-
+const FilterHelper = require('../../helpers/filter-helper');
+class PromoCodeService extends FilterHelper {
   async getAllPromoCodes(skip, limit, sortBy, sortOrder, search, user, status) {
     let filter;
 

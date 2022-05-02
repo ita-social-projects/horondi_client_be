@@ -6,6 +6,44 @@ const {
 } = require('../consts/user-block-period');
 
 class FilterHelper {
+  dateOrName(search) {
+    let filter = {};
+    const regDate = /^\d+[.]\d+[.]\d+$/;
+    search = (search ?? '').trim();
+
+    if (!search) {
+      return filter;
+    }
+
+    if (regDate.test(search)) {
+      const date = new Date(search);
+      filter = {
+        dateStart: {
+          $gte: date,
+          $lt: date,
+        },
+      };
+    } else {
+      const searchPattern = {
+        $regex: search,
+        $options: 'gi',
+      };
+
+      filter = {
+        $or: [
+          {
+            'admin.firstName': searchPattern,
+          },
+          {
+            'admin.lastName': searchPattern,
+          },
+        ],
+      };
+    }
+
+    return filter;
+  }
+
   filterItems(args = {}) {
     const filter = {};
     const { roles, days, banned, _id, search } = args;
