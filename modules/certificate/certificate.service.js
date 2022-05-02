@@ -71,7 +71,15 @@ class CertificatesService {
     return filter;
   }
 
-  async getAllCertificates(skip, limit, sortBy, sortOrder, search, user) {
+  async getAllCertificates(
+    skip,
+    limit,
+    sortBy,
+    sortOrder,
+    search,
+    status,
+    user
+  ) {
     let filter;
 
     if (user.role === USER) {
@@ -80,7 +88,20 @@ class CertificatesService {
     } else {
       filter = this.dateOrName(search);
     }
-
+    if (status.length) {
+      if (!Object.keys(filter).length) {
+        filter['$or'] = [];
+      }
+      if (status.includes('isUsed')) {
+        filter['$or'].push({ isUsed: true });
+      }
+      if (status.includes('isExpired')) {
+        filter['$or'].push({ isExpired: true });
+      }
+      if (status.includes('isActivated')) {
+        filter['$or'].push({ isActivated: true });
+      }
+    }
 
     sortOrder = sortOrder === 'desc' ? -1 : 1;
     const sort = { [sortBy]: sortOrder };
