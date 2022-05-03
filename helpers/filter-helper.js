@@ -6,18 +6,18 @@ const {
 } = require('../consts/user-block-period');
 
 class FilterHelper {
-  dateOrName(search) {
-    let filter = {};
+  filterByDateOrName(filter, search) {
     const regDate = /^\d+[.]\d+[.]\d+$/;
-    search = (search ?? '').trim();
+    const searchTrimmed = (search ?? '').trim();
 
-    if (!search) {
-      return filter;
+    if (!searchTrimmed) {
+      return;
     }
+    let searchFilter;
 
-    if (regDate.test(search)) {
-      const date = new Date(search);
-      filter = {
+    if (regDate.test(searchTrimmed)) {
+      const date = new Date(searchTrimmed);
+      searchFilter = {
         dateStart: {
           $gte: date,
           $lt: date,
@@ -25,11 +25,11 @@ class FilterHelper {
       };
     } else {
       const searchPattern = {
-        $regex: search,
+        $regex: searchTrimmed,
         $options: 'gi',
       };
 
-      filter = {
+      searchFilter = {
         $or: [
           {
             'admin.firstName': searchPattern,
@@ -37,11 +37,68 @@ class FilterHelper {
           {
             'admin.lastName': searchPattern,
           },
+          {
+            name: searchPattern,
+          },
+          {
+            code: searchPattern,
+          },
         ],
       };
     }
 
-    return filter;
+    if (Object.keys(searchFilter).length) {
+      if (!filter['$and']) {
+        filter['$and'] = [];
+      }
+
+      filter['$and'].push(searchFilter);
+    }
+  }
+
+  filterByStatus(status, myTime, filter) {
+    if (status.length) {
+      const statusFilter = [];
+
+      if (status.includes('active')) {
+        statusFilter.push({
+          $and: [
+            {
+              dateFrom: {
+                $lt: new Date(myTime),
+              },
+            },
+            {
+              dateTo: {
+                $gt: new Date(myTime),
+              },
+            },
+          ],
+        });
+      }
+      if (status.includes('expired')) {
+        statusFilter.push({
+          dateTo: {
+            $lt: new Date(myTime),
+          },
+        });
+      }
+      if (status.includes('planned')) {
+        statusFilter.push({
+          dateFrom: {
+            $gt: new Date(myTime),
+          },
+        });
+      }
+
+      if (statusFilter.length) {
+        if (!filter['$and']) {
+          filter['$and'] = [];
+        }
+
+        filter['$and'].push({ $or: statusFilter });
+      }
+    }
   }
 
   filterItems(args = {}) {

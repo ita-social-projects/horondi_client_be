@@ -14,75 +14,20 @@ const { format } = require('date-fns');
 const FilterHelper = require('../../helpers/filter-helper');
 class PromoCodeService extends FilterHelper {
   async getAllPromoCodes(skip, limit, sortBy, sortOrder, search, user, status) {
-    let filter;
+    let filter = {};
 
     if (user.role === USER) {
       const userId = mongoose.Types.ObjectId(user._id);
       filter = { ownedBy: userId };
     } else {
-      filter = this.dateOrName(search);
+      this.filterByDateOrName(filter, search);
     }
-    const sortStatus = {
-      $match: {
-        $or: [],
-      },
-    };
+
+    const myTime = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+    this.filterByStatus(status, myTime, filter);
+
     sortOrder = sortOrder === 'desc' ? -1 : 1;
     const sort = { [sortBy]: sortOrder };
-    const myTime = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-    const startTime = format(
-      new Date(2016, 0, 1),
-      "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-    );
-    if (status.includes('active')) {
-      sortStatus['$match']['$or'].push({
-        $and: [
-          {
-            dateFrom: {
-              $lt: new Date(myTime),
-            },
-          },
-          {
-            dateTo: {
-              $gt: new Date(myTime),
-            },
-          },
-        ],
-      });
-    }
-    if (status.includes('expired')) {
-      sortStatus['$match']['$or'].push({
-        $and: [
-          {
-            dateTo: {
-              $lt: new Date(myTime),
-            },
-          },
-        ],
-      });
-    }
-    if (status.includes('planned')) {
-      sortStatus['$match']['$or'].push({
-        $and: [
-          {
-            dateFrom: {
-              $gt: new Date(myTime),
-            },
-          },
-        ],
-      });
-    }
-    if (!status.length) {
-      sortStatus['$match']['$or'].push({
-        $and: [
-          {
-            dateFrom: {
-              $gt: new Date(startTime),
-            },
-          },
-        ],
-      });
-    }
 
     const promocodes = await PromocodeModel.aggregate([
       {
@@ -99,12 +44,7 @@ class PromoCodeService extends FilterHelper {
       {
         $facet: {
           count: [{ $count: 'count' }],
-          data: [
-            { $sort: sort },
-            { $skip: skip },
-            { $limit: limit },
-            sortStatus,
-          ],
+          data: [{ $sort: sort }, { $skip: skip }, { $limit: limit }],
         },
       },
     ]).exec();
