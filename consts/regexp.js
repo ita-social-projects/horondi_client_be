@@ -1,7 +1,8 @@
 const emailRegExp = new RegExp(
   '^([\\w-]+(?:\\.[\\w-]+)*)@((?:[\\w-]+\\.)*\\w[\\w-]{0,66})\\.([a-z]{2,6}(?:\\.[a-z]{2})?)$'
 );
-const numberRegExp = new RegExp(/^(\+380|0)\d{9}$/);
+const numberRegExp = new RegExp(/^\d{9}/);
+const numberContactsRegExp = new RegExp(/^(\+380|0)\d{9}$/);
 const uaLanguageRegExp = new RegExp(/^[а-яїієґ0-9\s]+$/i);
 const enLanguageRegExp = new RegExp(/^[a-z0-9\s]+$/i);
 const userNameRegExp =
@@ -14,6 +15,7 @@ const certificateRegExp = /^HOR\d{8}$/i;
 module.exports = {
   emailRegExp,
   numberRegExp,
+  numberContactsRegExp,
   uaLanguageRegExp,
   enLanguageRegExp,
   userNameRegExp,

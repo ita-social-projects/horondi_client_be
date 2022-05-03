@@ -1,6 +1,6 @@
 const notExistContactId = '5f311ec5f2983e390432a8c3';
 const contact = {
-  phoneNumber: '380960022333',
+  phoneNumber: '+380960022333',
   openHours: [
     { lang: 'uk', value: 'ПН ...........' },
     { lang: 'en', value: 'FR ...........' },
@@ -14,7 +14,7 @@ const contact = {
 };
 
 const updatedContact = {
-  phoneNumber: '380960022334',
+  phoneNumber: '+380960022334',
   openHours: [
     { lang: 'uk', value: 'ПН ....Update' },
     { lang: 'en', value: 'FR ...Update' },
@@ -28,7 +28,7 @@ const updatedContact = {
 };
 
 const newContact = {
-  phoneNumber: '380964422333',
+  phoneNumber: '+380964422333',
   openHours: [
     { lang: 'uk', value: 'ПН ...Новий контакт' },
     { lang: 'en', value: 'FR ...New contact' },
