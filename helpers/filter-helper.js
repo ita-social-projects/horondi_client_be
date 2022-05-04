@@ -8,6 +8,7 @@ const {
 class FilterHelper {
   filterByDateOrName(filter, search) {
     const regDate = /^\d+[.]\d+[.]\d+$/;
+
     const searchTrimmed = (search ?? '').trim();
 
     if (!searchTrimmed) {
