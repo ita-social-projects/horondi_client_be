@@ -26,7 +26,11 @@ const {
 const {
   PAYMENT_TYPES: { CARD, CASH },
 } = require('../consts/payment-types');
-const { userNameRegExp, numberRegExp } = require('../consts/regexp');
+const {
+  userNameRegExp,
+  numberRegExp,
+  onlyNumbersRegExp,
+} = require('../consts/regexp');
 const {
   DELIVERY_TYPE: {
     NOVAPOST,
@@ -191,7 +195,7 @@ const nestedDeliveryValidator = Joi.object({
   }),
   messengerPhone: Joi.string().when(SENT_BY, {
     is: WORLDWIDE,
-    then: Joi.string().required(),
+    then: Joi.string().trim().required().regex(numberRegExp),
   }),
   worldWideCountry: Joi.string().when(SENT_BY, {
     is: WORLDWIDE,
@@ -211,7 +215,7 @@ const nestedDeliveryValidator = Joi.object({
   }),
   cityCode: Joi.string().when(SENT_BY, {
     is: WORLDWIDE,
-    then: Joi.string().required(),
+    then: Joi.string().required().regex(onlyNumbersRegExp),
   }),
 });
 
