@@ -43,13 +43,13 @@ class CertificatesService extends FilterHelper {
     status,
     user
   ) {
-    let filter;
+    let filter = {};
 
     if (user.role === USER) {
       const userId = mongoose.Types.ObjectId(user._id);
       filter = { ownedBy: userId };
     } else {
-      filter = this.dateOrName(search);
+      this.filterByDateOrName(filter, search);
     }
     if (status.length) {
       if (!Object.keys(filter).length) {
