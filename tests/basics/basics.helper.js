@@ -26,10 +26,7 @@ const createBasics = async (basic, image, operations) => {
               thumbnail
             }
             available
-            additionalPrice {
-              type
-              value
-            }
+            absolutePrice
             translationsKey
           }
           ... on Error {
@@ -71,10 +68,7 @@ const updateBasic = async (id, basic, images, operations) => {
               thumbnail
             }
             available
-            additionalPrice {
-              type
-              value
-            }
+            absolutePrice
           }
           ... on Error {
             message

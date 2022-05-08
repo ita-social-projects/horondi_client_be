@@ -33,10 +33,7 @@ const createConstructorBottom = async (constructorElement, operations) => {
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -86,10 +83,7 @@ const updateConstructorBottom = async (id, constructorElement, operations) => {
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -155,10 +149,7 @@ const getConstructorBottomById = async (id, operations) => {
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -205,10 +196,7 @@ const getAllConstructorBottom = async ({ limit, skip, filter }, operations) => {
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
         }
       }

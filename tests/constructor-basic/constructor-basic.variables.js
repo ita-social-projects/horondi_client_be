@@ -65,16 +65,7 @@ const getConstructorData = (
   },
   available: construrtorBasic.available,
   customizable: construrtorBasic.customizable,
-  basePrice: [
-    {
-      currency: 'UAH',
-      value: 2700,
-    },
-    {
-      currency: 'USD',
-      value: 100,
-    },
-  ],
+  basePrice: 1,
 });
 
 const getConstructorDataForUpt = (materialId, colorId, modelId) => ({

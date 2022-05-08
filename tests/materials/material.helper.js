@@ -8,7 +8,8 @@ const createMaterial = async (material, operations) => {
         $available: Boolean
         $description: [LanguageInput]
         $name: [LanguageInput]
-        $additionalPrice: additionalPriceInput!
+        $absolutePrice: Int
+        $relativePrice: Int
       ) {
         addMaterial(
           material: {
@@ -17,7 +18,8 @@ const createMaterial = async (material, operations) => {
             available: $available
             description: $description
             name: $name
-            additionalPrice: $additionalPrice
+            absolutePrice: $absolutePrice
+            relativePrice: $relativePrice
           }
         ) {
           ... on Material {
@@ -34,10 +36,8 @@ const createMaterial = async (material, operations) => {
             colors {
               _id
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
           }
           ... on Error {
@@ -170,7 +170,8 @@ const updateMaterial = async (id, material, operations) => {
         $available: Boolean
         $description: [LanguageInput]
         $name: [LanguageInput]
-        $additionalPrice: additionalPriceInput!
+        $absolutePrice: Int
+        $relativePrice: Int
       ) {
         updateMaterial(
           id: $id
@@ -180,7 +181,8 @@ const updateMaterial = async (id, material, operations) => {
             available: $available
             description: $description
             name: $name
-            additionalPrice: $additionalPrice
+            absolutePrice: $absolutePrice
+            relativePrice: $relativePrice
           }
         ) {
           ... on Material {
@@ -196,10 +198,8 @@ const updateMaterial = async (id, material, operations) => {
             colors {
               _id
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
           }
           ... on Error {

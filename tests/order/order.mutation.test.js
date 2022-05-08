@@ -41,9 +41,15 @@ const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
-jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
+jest.mock('../../modules/currency/currency.model', () => ({
+  findOne: () => ({
+    exec: () => ({
+      convertOptions: [{ exchangeRate: 1, name: 'UAH' }],
+    }),
+  }),
+}));
 
 let colorId;
 let sizeId;
