@@ -555,7 +555,7 @@ class ProductsService {
     return Product.find({ _id: { $in: wishlist } }).exec();
   }
 
-  async updatePrices(previousPriceValue, nextPriceValue, path, id) {
+  async updatePrices(path, id) {
     const products = await Product.find({
       [path]: id,
     })
