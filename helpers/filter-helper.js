@@ -6,55 +6,40 @@ const {
 } = require('../consts/user-block-period');
 
 class FilterHelper {
-  filterByDateOrName(filter, search) {
-    const regDate = /^\d+[.]\d+[.]\d+$/;
-
+  filterByDateOrName(filter = {}, search = '') {
     const searchTrimmed = (search ?? '').trim();
 
     if (!searchTrimmed) {
       return;
     }
-    let searchFilter;
 
-    if (regDate.test(searchTrimmed)) {
-      const date = new Date(searchTrimmed);
-      searchFilter = {
-        dateStart: {
-          $gte: date,
-          $lt: date,
+    const searchPattern = {
+      $regex: searchTrimmed,
+      $options: 'gi',
+    };
+
+    const searchFilter = {
+      $or: [
+        {
+          'admin.firstName': searchPattern,
         },
-      };
-    } else {
-      const searchPattern = {
-        $regex: searchTrimmed,
-        $options: 'gi',
-      };
+        {
+          'admin.lastName': searchPattern,
+        },
+        {
+          name: searchPattern,
+        },
+        {
+          code: searchPattern,
+        },
+      ],
+    };
 
-      searchFilter = {
-        $or: [
-          {
-            'admin.firstName': searchPattern,
-          },
-          {
-            'admin.lastName': searchPattern,
-          },
-          {
-            name: searchPattern,
-          },
-          {
-            code: searchPattern,
-          },
-        ],
-      };
+    if (!filter['$and']) {
+      filter['$and'] = [];
     }
 
-    if (Object.keys(searchFilter).length) {
-      if (!filter['$and']) {
-        filter['$and'] = [];
-      }
-
-      filter['$and'].push(searchFilter);
-    }
+    filter['$and'].push(searchFilter);
   }
 
   filterByStatus(status, myTime, filter) {
@@ -92,13 +77,15 @@ class FilterHelper {
         });
       }
 
-      if (statusFilter.length) {
-        if (!filter['$and']) {
-          filter['$and'] = [];
-        }
-
-        filter['$and'].push({ $or: statusFilter });
+      if (!statusFilter.length) {
+        return;
       }
+
+      if (!filter['$and']) {
+        filter['$and'] = [];
+      }
+
+      filter['$and'].push({ $or: statusFilter });
     }
   }
 
