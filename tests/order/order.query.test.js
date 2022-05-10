@@ -52,7 +52,7 @@ jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.model', () => ({
   findOne: () => ({
     exec: () => ({
-      convertOptions: [{ exchangeRate: 1, name: 'UAH' }],
+      convertOptions: { UAH: { exchangeRate: 1, name: 'UAH' } },
     }),
   }),
 }));

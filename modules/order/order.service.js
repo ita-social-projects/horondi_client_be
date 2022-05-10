@@ -209,9 +209,8 @@ class OrdersService {
     );
 
     const { convertOptions } = await Currency.findOne().exec();
-    const { exchangeRate } = convertOptions.find(
-      currency => currency.name === 'UAH'
-    );
+
+    const { exchangeRate } = convertOptions.UAH;
 
     const newOrder = {
       ...data,
