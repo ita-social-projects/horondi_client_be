@@ -272,6 +272,10 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
+  type LanguageArr {
+    lang: String!
+    value: [BusinessTextSection]
+  }
   type CurrencySet {
     currency: String
     value: Float!
@@ -502,6 +506,16 @@ const typeDefs = gql`
   type OrdersWithCounter {
     userOrders: [Order]
     ordersCount: Int
+  }
+  type BusinessTextImg {
+    name: String,
+    src: String
+  }
+  type BusinessTextSection {
+    id: String,
+    title: String,
+    text: String,
+    img: BusinessTextImg
   }
   
   union MaterialsBlockResult = MaterialsBlock | Error
@@ -790,9 +804,23 @@ const typeDefs = gql`
   ${positionInputs}
   ${basicsInputs}
   ${constructorInputs}
+  input BusinessTextImgInput {
+    name: String,
+    src: String
+  }
+  input BusinessTextSectionInput {
+    id: String,
+    title: String,
+    text: String,
+    img: BusinessTextImgInput
+  }
   input LanguageInput {
     lang: String!
     value: String
+  }
+  input LanguageInputArr {
+    lang: String!
+    value: [BusinessTextSectionInput]
   }
   input CurrencySetInput {
     currency: String!

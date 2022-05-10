@@ -140,7 +140,8 @@ class BusinessTextService {
 
     fileNames.forEach((name, i) => {
       const regExp = new RegExp(`src=""(?=.*alt="${name}")`, 'g');
-      const replacer = `src="${imagesResults[i].value.prefixUrl}${imagesResults[i].value.fileNames.small}"`;
+      const imgSrc = `${imagesResults[i].value.prefixUrl}${imagesResults[i].value.fileNames.small}`;
+      const replacer = `src="${imgSrc}"`;
 
       newUkText = newUkText
         ? newUkText.replace(regExp, replacer)
@@ -149,6 +150,17 @@ class BusinessTextService {
       newEnText = newEnText
         ? newEnText.replace(regExp, replacer)
         : updatedPage.text[1].value.replace(regExp, replacer);
+
+      page.sections[0].value.forEach((section, idx) => {
+        if (section.img.name === name) {
+          updatedPage.sections[0].value[idx].img['src'] = imgSrc;
+          updatedPage.sections[1].value[idx].img['src'] = imgSrc;
+        }
+      });
+
+      if (page.footerImg.name === name) {
+        updatedPage.footerImg['src'] = imgSrc;
+      }
     });
 
     updatedPage.text[0].value = newUkText || page.text[0].value;

@@ -15,7 +15,7 @@ const languageSchema = new mongoose.Schema({
       message: INPUT_NOT_VALID,
     },
   },
-  value: String,
+  value: mongoose.Mixed,
   _id: false,
   id: false,
 });

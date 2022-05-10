@@ -13,6 +13,12 @@ const {
   DB_COLLECTIONS_NAMES: { BUSINESS_TEXT },
 } = require('../../consts/db-collections-names');
 
+const BusinessTextImg = new mongoose.Schema({
+  _id: false,
+  name: String,
+  src: String,
+});
+
 const businessTextSchema = new mongoose.Schema({
   code: {
     type: String,
@@ -21,6 +27,8 @@ const businessTextSchema = new mongoose.Schema({
   },
   title: [Language],
   text: [Language],
+  sections: [Language],
+  footerImg: BusinessTextImg,
   languages: [String],
   date: {
     type: Date,
