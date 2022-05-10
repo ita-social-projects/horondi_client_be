@@ -69,6 +69,13 @@ type Delivery {
   house: String,
   flat: String,
   byCourier: Boolean
+  messenger: String,
+  messengerPhone: String,
+  worldWideCountry: String,
+  stateOrProvince: String,
+  worldWideCity: String,
+  worldWideStreet: String,
+  cityCode: String
   cost: [CurrencySet]
 }
 enum SendByEnum{
@@ -77,6 +84,7 @@ enum SendByEnum{
   SELFPICKUP
   NOVAPOSTCOURIER
   UKRPOSTCOURIER
+  WORLDWIDE
 }
 type OrderUser {
   firstName: String
@@ -130,6 +138,13 @@ input DeliveryInput {
   house: String,
   flat: String,
   byCourier: Boolean
+  messenger: String,
+  messengerPhone: String,
+  worldWideCountry: String,
+  stateOrProvince: String,
+  worldWideCity: String,
+  worldWideStreet: String,
+  cityCode: String
   cost: [CurrencyInputSet]
 }
 

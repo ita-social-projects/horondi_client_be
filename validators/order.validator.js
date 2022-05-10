@@ -26,7 +26,11 @@ const {
 const {
   PAYMENT_TYPES: { CARD, CASH },
 } = require('../consts/payment-types');
-const { userNameRegExp, numberRegExp } = require('../consts/regexp');
+const {
+  userNameRegExp,
+  numberRegExp,
+  onlyNumbersRegExp,
+} = require('../consts/regexp');
 const {
   DELIVERY_TYPE: {
     NOVAPOST,
@@ -34,6 +38,7 @@ const {
     SELFPICKUP,
     NOVAPOSTCOURIER,
     UKRPOSTCOURIER,
+    WORLDWIDE,
   },
 } = require('../consts/delivery-type');
 
@@ -59,7 +64,14 @@ const nestedDeliveryValidator = Joi.object({
   sentOn: Joi.string().allow(''),
   sentBy: Joi.string()
     .trim()
-    .valid(NOVAPOST, UKRPOST, SELFPICKUP, NOVAPOSTCOURIER, UKRPOSTCOURIER)
+    .valid(
+      NOVAPOST,
+      UKRPOST,
+      SELFPICKUP,
+      NOVAPOSTCOURIER,
+      UKRPOSTCOURIER,
+      WORLDWIDE
+    )
     .required(),
   invoiceNumber: Joi.string().allow(''),
   courierOffice: Joi.string()
@@ -176,6 +188,34 @@ const nestedDeliveryValidator = Joi.object({
   cost: Joi.array().has({
     currency: Joi.string().trim().required(),
     value: Joi.number().required(),
+  }),
+  messenger: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  messengerPhone: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().trim().required().regex(numberRegExp),
+  }),
+  worldWideCountry: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  stateOrProvince: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().allow(null, '').optional(),
+  }),
+  worldWideCity: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  worldWideStreet: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  cityCode: Joi.string().when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required().regex(onlyNumbersRegExp),
   }),
 });
 
