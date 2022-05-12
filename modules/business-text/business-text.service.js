@@ -151,14 +151,14 @@ class BusinessTextService {
         ? newEnText.replace(regExp, replacer)
         : updatedPage.text[1].value.replace(regExp, replacer);
 
-      page.sections[0].value.forEach((section, idx) => {
+      page?.sections[0].value.forEach((section, idx) => {
         if (section.img.name === name) {
           updatedPage.sections[0].value[idx].img['src'] = imgSrc;
           updatedPage.sections[1].value[idx].img['src'] = imgSrc;
         }
       });
 
-      if (page.footerImg.name === name) {
+      if (page?.footerImg.name === name) {
         updatedPage.footerImg['src'] = imgSrc;
       }
     });
