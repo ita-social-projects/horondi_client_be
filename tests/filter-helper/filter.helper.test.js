@@ -12,9 +12,9 @@ describe('test filtration', () => {
     TestfilterHelper.filterByDateOrName(filter, 'test');
     expect(filter).toMatchObject(filtration);
   });
-  it('should show search filter for null', async () => {
+  it('should show search filter for empty row', async () => {
     const filter = {};
-    TestfilterHelper.filterByDateOrName(filter, null);
+    TestfilterHelper.filterByDateOrName(filter, '');
     expect(filter).toMatchObject({});
   });
 
