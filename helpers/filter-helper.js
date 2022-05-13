@@ -7,7 +7,7 @@ const {
 
 class FilterHelper {
   filterByDateOrName(filter = {}, search = '') {
-    const searchTrimmed = search?.trim();
+    const searchTrimmed = (search ?? '').trim();
 
     if (!searchTrimmed) {
       return;
