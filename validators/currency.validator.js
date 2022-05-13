@@ -6,12 +6,10 @@ const currencyInputValidator = Joi.object({
     UAH: {
       name: Joi.string().trim().required(),
       exchangeRate: Joi.number().required(),
-      unicode: Joi.string().required(),
     },
     USD: {
       name: Joi.string().trim().required(),
       exchangeRate: Joi.number().required(),
-      unicode: Joi.string().required(),
     },
   }),
 });

@@ -21,7 +21,6 @@ const convertOptionsTypes = `
     type ConvertOption {
         name: String
         exchangeRate: Float
-        unicode: String
     }
 `;
 
@@ -34,7 +33,6 @@ const convertOptionsInputs = `
     input ConvertOptionInput {
         name: String!
         exchangeRate: Float!
-        unicode: String!
     }
 `;
 

@@ -10,12 +10,10 @@ const CurrencySchema = new mongoose.Schema({
     UAH: {
       name: String,
       exchangeRate: Number,
-      unicode: String,
     },
     USD: {
       name: String,
       exchangeRate: Number,
-      unicode: String,
     },
   },
 });
