@@ -6,7 +6,7 @@ const {
 } = require('../consts/user-block-period');
 
 class FilterHelper {
-  filterByDateOrName(filter = {}, search = '') {
+  filterByName(filter = {}, search = '') {
     const searchTrimmed = search.trim();
 
     if (!searchTrimmed) {

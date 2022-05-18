@@ -49,7 +49,7 @@ class CertificatesService extends FilterHelper {
       const userId = mongoose.Types.ObjectId(user._id);
       filter = { ownedBy: userId };
     } else {
-      this.filterByDateOrName(filter, search);
+      this.filterByName(filter, search);
     }
     if (status.length) {
       if (!Object.keys(filter).length) {

@@ -20,7 +20,7 @@ class PromoCodeService extends FilterHelper {
       const userId = mongoose.Types.ObjectId(user._id);
       filter = { ownedBy: userId };
     } else {
-      this.filterByDateOrName(filter, search);
+      this.filterByName(filter, search);
     }
 
     const myTime = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
