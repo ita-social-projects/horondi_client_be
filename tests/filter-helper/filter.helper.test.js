@@ -1,5 +1,10 @@
 const FilterHelper = require('../../helpers/filter-helper');
-const { filtration } = require('./filter-helper.helper');
+const {
+  filtration,
+  filterWithActive,
+  filterWithExpired,
+  filterWithPlanned,
+} = require('./filter-helper.helper');
 
 describe('test filtration', () => {
   let TestfilterHelper;
@@ -25,65 +30,25 @@ describe('test status filtration', () => {
   beforeAll(async () => {
     TestfilterHelper = new FilterHelper();
   });
+  it('should search for wrong status', () => {
+    const filter = {};
+    TestfilterHelper.filterByStatus('blabla');
+    expect(filter).toMatchObject({});
+  });
 
   it('should search for status active', () => {
     const filter = {};
     TestfilterHelper.filterByStatus('active', new Date(2014, 1, 11), filter);
-    expect(filter).toMatchObject({
-      $and: [
-        {
-          $or: [
-            {
-              $and: [
-                {
-                  dateFrom: {
-                    $lt: new Date(2014, 1, 11),
-                  },
-                },
-                {
-                  dateTo: {
-                    $gt: new Date(2014, 1, 11),
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
+    expect(filter).toMatchObject(filterWithActive);
   });
   it('should search for status expired', () => {
     const filter = {};
     TestfilterHelper.filterByStatus('expired', new Date(2014, 1, 11), filter);
-    expect(filter).toMatchObject({
-      $and: [
-        {
-          $or: [
-            {
-              dateTo: {
-                $lt: new Date(2014, 1, 11),
-              },
-            },
-          ],
-        },
-      ],
-    });
+    expect(filter).toMatchObject(filterWithExpired);
   });
   it('should search for status planned', () => {
     const filter = {};
     TestfilterHelper.filterByStatus('planned', new Date(2014, 1, 11), filter);
-    expect(filter).toMatchObject({
-      $and: [
-        {
-          $or: [
-            {
-              dateFrom: {
-                $gt: new Date(2014, 1, 11),
-              },
-            },
-          ],
-        },
-      ],
-    });
+    expect(filter).toMatchObject(filterWithPlanned);
   });
 });

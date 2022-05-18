@@ -76,7 +76,6 @@ class FilterHelper {
           },
         });
       }
-
       if (!statusFilter.length) {
         return;
       }
