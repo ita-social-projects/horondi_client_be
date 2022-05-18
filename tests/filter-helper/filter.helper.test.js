@@ -22,6 +22,9 @@ describe('test filtration', () => {
     TestfilterHelper.filterByName(filter, '');
     expect(filter).toMatchObject({});
   });
+  it('should show search filter for empty data', async () => {
+    expect(TestfilterHelper.filterByName()).toBe(undefined);
+  });
 });
 
 describe('test status filtration', () => {
@@ -31,9 +34,7 @@ describe('test status filtration', () => {
     TestfilterHelper = new FilterHelper();
   });
   it('should search for wrong status', () => {
-    const filter = {};
-    TestfilterHelper.filterByStatus('blabla');
-    expect(filter).toMatchObject({});
+    expect(TestfilterHelper.filterByStatus('blabla')).toBe(undefined);
   });
 
   it('should search for status active', () => {
