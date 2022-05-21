@@ -85,6 +85,8 @@ const {
 } = require('./modules/comment/comment.graphql');
 const {
   businessTextType,
+  businessTextWithPopulatedTranslationsKeyType,
+  businessTextTranslationFieldsInput,
   businessTextInput,
 } = require('./modules/business-text/business-text.graphql');
 const {
@@ -199,6 +201,7 @@ const typeDefs = gql`
   ${productType}
   ${commentType}
   ${businessTextType}
+  ${businessTextWithPopulatedTranslationsKeyType}
   ${modelType}
   ${restrictionTypes}
   ${optionTypes}
@@ -268,13 +271,24 @@ const typeDefs = gql`
   type PaginatedQNAs {
     items: [QuestionsAnswers!]!
   }
+  type BusinessPageSection {
+    id: String
+    title: String
+    text: String
+  }
+  type BusinessPageTranslationsKeyLanguage {
+    title: String
+    text: String
+    sections: [BusinessPageSection]
+  }
+  type BusinessPageTranslationsKey {
+    _id: ID!
+    ua: BusinessPageTranslationsKeyLanguage
+    en: BusinessPageTranslationsKeyLanguage
+  }
   type Language {
     lang: String!
     value: String
-  }
-  type LanguageArr {
-    lang: String!
-    value: [BusinessTextSection]
   }
   type CurrencySet {
     currency: String
@@ -508,14 +522,14 @@ const typeDefs = gql`
     ordersCount: Int
   }
   type BusinessTextImg {
+    id: String,
     name: String,
     src: String
   }
   type BusinessTextSection {
     id: String,
     title: String,
-    text: String,
-    img: BusinessTextImg
+    text: String
   }
   
   union MaterialsBlockResult = MaterialsBlock | Error
@@ -529,7 +543,7 @@ const typeDefs = gql`
   union NewsResult = News | Error
   union ProductResult = Products | Product | Error
   union CommentResult = Comment | Error
-  union BusinessTextResult = BusinessText | Error
+  union BusinessTextResult = BusinessText | BusinessTextWithPopulatedTranslationsKey | Error
   union LogicalResult = SuccessfulResponse | Error
   union ModelResult = Model | Error
   union RestrictionResult = Restriction | Error
@@ -654,6 +668,7 @@ const typeDefs = gql`
     getAllBusinessTexts: [BusinessText]
     getBusinessTextById(id: ID!): BusinessTextResult
     getBusinessTextByCode(code: String!): BusinessTextResult
+    getBusinessTextByCodeWithPopulatedTranslationsKey(code: String!): BusinessTextResult
     getAllModels(filter: ModelFilterInput, pagination: Pagination, sort: ModelSortInput): PaginatedModels
     getModelsByCategory(id: ID!): [ModelResult]
     getModelsForConstructor: [Model]
@@ -770,6 +785,7 @@ const typeDefs = gql`
   ${LoginInput}
   ${userRegisterInput}
   ${businessTextInput}
+  ${businessTextTranslationFieldsInput}
 	${userFilterInput}
 	${userSortInput}
   ${modelSortInput}
@@ -804,15 +820,25 @@ const typeDefs = gql`
   ${positionInputs}
   ${basicsInputs}
   ${constructorInputs}
+  input BusinessPageSectionInput {
+    id: String
+    title: String
+    text: String
+  }
+  input BusinessPageTranslationsKeyLanguageInput {
+    title: String
+    text: String
+    sections: [BusinessPageSectionInput]
+  }
   input BusinessTextImgInput {
+    id: String,
     name: String,
     src: String
   }
   input BusinessTextSectionInput {
     id: String,
     title: String,
-    text: String,
-    img: BusinessTextImgInput
+    text: String
   }
   input LanguageInput {
     lang: String!
@@ -994,7 +1020,9 @@ const typeDefs = gql`
     updateBusinessText(
       id: ID!
       businessText: BusinessTextInput!
+      businessTextTranslationFields: BusinessTextTranslationFieldsInput!
       files: [Upload]!
+      populated: Boolean
     ): BusinessTextResult
     "Rate Mutation"
     addRate(product: ID!, userRate: UserRateInput!): ProductResult

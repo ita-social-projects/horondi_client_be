@@ -5,6 +5,9 @@ const {
   BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
   IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
+const {
+  TRANSLATIONS_NOT_FOUND,
+} = require('../../error-messages/translation.messages');
 const uploadService = require('../upload/upload.service');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
@@ -14,6 +17,7 @@ const RuleError = require('../../errors/rule.error');
 
 const createTranslations = require('../../utils/createTranslations');
 const {
+  getTranslations,
   addTranslations,
   updateTranslations,
   deleteTranslations,
@@ -40,11 +44,48 @@ class BusinessTextService {
     throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
   }
 
-  async updateBusinessText(id, businessText, files) {
+  async getBusinessTextByCodeWithPopulatedTranslationsKey(code) {
+    const response = await BusinessText.aggregate([
+      {
+        $match: { code: code },
+      },
+      {
+        $lookup: {
+          from: 'translations',
+          localField: 'translationsKey',
+          foreignField: '_id',
+          as: 'translations',
+        },
+      },
+    ]).exec();
+
+    if (!response.length) {
+      throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
+    }
+
+    const businessText = response[0];
+    if (!businessText.translations.length) {
+      throw new RuleError(TRANSLATIONS_NOT_FOUND, NOT_FOUND);
+    }
+    businessText.translations = businessText.translations[0];
+
+    return businessText;
+  }
+
+  async updateBusinessText(
+    id,
+    businessText,
+    businessTextTranslationFields,
+    files,
+    populated
+  ) {
     const foundBusinessText = await BusinessText.findById(id).exec();
 
     const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldPage = await this.getBusinessTextById(id);
+    const oldTranslations = await getTranslations(
+      foundBusinessText.translationsKey
+    );
     const existingPage = pages.find(el => el._id.toString() !== id);
 
     if (!oldPage) {
@@ -57,16 +98,31 @@ class BusinessTextService {
         BAD_REQUEST
       );
     }
+
+    const resultOfReplacedImgs = files.length
+      ? await this.replaceImageSourceToLink(
+          businessText,
+          businessTextTranslationFields,
+          files
+        )
+      : {};
+
+    const newPage = resultOfReplacedImgs?.updatedPage || businessText;
+    const newBusinessTextTranslationFields =
+      resultOfReplacedImgs?.updatedBusinessTextTranslationFields ||
+      businessTextTranslationFields;
+
     await updateTranslations(
       foundBusinessText.translationsKey,
-      createTranslations(businessText)
+      newBusinessTextTranslationFields
     );
-    const newPage = files.length
-      ? await this.replaceImageSourceToLink(businessText, files)
-      : businessText;
 
-    const newImages = this.findImagesInText(newPage);
-    const oldImages = this.findImagesInText(oldPage);
+    let newImages = [];
+    let oldImages = [];
+    if (businessTextTranslationFields?.text) {
+      newImages = this.findImagesInText(businessTextTranslationFields.text);
+      oldImages = this.findImagesInText(oldTranslations.text);
+    }
 
     const imagesToDelete = oldImages.filter(
       img => !newImages.find(newImg => newImg === img)
@@ -76,11 +132,24 @@ class BusinessTextService {
       await this.deleteNoNeededImages(imagesToDelete);
     }
 
-    const page = await BusinessText.findByIdAndUpdate(id, newPage, {
-      new: true,
-    }).exec();
+    let result;
+    if (populated) {
+      const populatedPage = await BusinessText.findByIdAndUpdate(id, newPage, {
+        new: true,
+      })
+        .lean()
+        .populate('translationsKey')
+        .exec();
 
-    return page || null;
+      populatedPage.translations = populatedPage.translationsKey;
+      result = populatedPage;
+    } else {
+      result = await BusinessText.findByIdAndUpdate(id, newPage, {
+        new: true,
+      }).exec();
+    }
+
+    return result;
   }
 
   async addBusinessText(businessText, files) {
@@ -128,45 +197,50 @@ class BusinessTextService {
     return BusinessText.find({ code: data.code }).exec();
   }
 
-  async replaceImageSourceToLink(page, files) {
+  async replaceImageSourceToLink(page, businessTextTranslationFields, files) {
     const fileNames = files.map(({ file }) => file.filename);
 
     const uploadResult = await uploadService.uploadFiles(files);
     const imagesResults = await Promise.allSettled(uploadResult);
 
     const updatedPage = { ...page };
-    let newUkText = '';
-    let newEnText = '';
+    const updatedBusinessTextTranslationFields = {
+      ...businessTextTranslationFields,
+    };
 
     fileNames.forEach((name, i) => {
       const regExp = new RegExp(`src=""(?=.*alt="${name}")`, 'g');
       const imgSrc = `${imagesResults[i].value.prefixUrl}${imagesResults[i].value.fileNames.small}`;
       const replacer = `src="${imgSrc}"`;
 
-      newUkText = newUkText
-        ? newUkText.replace(regExp, replacer)
-        : updatedPage.text[0].value.replace(regExp, replacer);
+      if (updatedBusinessTextTranslationFields.ua.text) {
+        updatedBusinessTextTranslationFields.ua.text =
+          updatedBusinessTextTranslationFields.ua.text.replace(
+            regExp,
+            replacer
+          );
+      }
 
-      newEnText = newEnText
-        ? newEnText.replace(regExp, replacer)
-        : updatedPage.text[1].value.replace(regExp, replacer);
+      if (updatedBusinessTextTranslationFields.en.text) {
+        updatedBusinessTextTranslationFields.en.text =
+          updatedBusinessTextTranslationFields.en.text.replace(
+            regExp,
+            replacer
+          );
+      }
 
-      page?.sections[0].value.forEach((section, idx) => {
-        if (section.img.name === name) {
-          updatedPage.sections[0].value[idx].img['src'] = imgSrc;
-          updatedPage.sections[1].value[idx].img['src'] = imgSrc;
+      page.sectionsImgs.forEach((section, idx) => {
+        if (section.name === name) {
+          updatedPage.sectionsImgs[idx].src = imgSrc;
         }
       });
 
-      if (page?.footerImg.name === name) {
-        updatedPage.footerImg['src'] = imgSrc;
+      if (page.footerImg.name === name) {
+        updatedPage.footerImg.src = imgSrc;
       }
     });
 
-    updatedPage.text[0].value = newUkText || page.text[0].value;
-    updatedPage.text[1].value = newEnText || page.text[1].value;
-
-    return updatedPage;
+    return { updatedPage, updatedBusinessTextTranslationFields };
   }
 
   async deleteNoNeededImages(images) {

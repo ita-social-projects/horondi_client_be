@@ -4,7 +4,6 @@ const {
   DB_COLLECTIONS_NAMES: { TRANSLATIONS },
 } = require('../../consts/db-collections-names');
 
-const Language = require('../../models/Language').schema;
 const {
   CODE_IS_TOO_SHORT,
   CODE_IS_TOO_LONG,
@@ -15,6 +14,7 @@ const {
 
 const BusinessTextImg = new mongoose.Schema({
   _id: false,
+  id: String,
   name: String,
   src: String,
 });
@@ -25,9 +25,7 @@ const businessTextSchema = new mongoose.Schema({
     minlength: [2, CODE_IS_TOO_SHORT],
     maxlength: [20, CODE_IS_TOO_LONG],
   },
-  title: [Language],
-  text: [Language],
-  sections: [Language],
+  sectionsImgs: [BusinessTextImg],
   footerImg: BusinessTextImg,
   languages: [String],
   date: {
