@@ -210,19 +210,19 @@ class BusinessTextService {
       const replacer = `src="${imgSrc}"`;
 
       if (updatedBusinessTextTranslationFields.ua.text) {
-        updatedBusinessTextTranslationFields.ua.text =
-          updatedBusinessTextTranslationFields.ua.text.replace(
-            regExp,
-            replacer
-          );
+        const newUaText = updatedBusinessTextTranslationFields.ua.text.replace(
+          regExp,
+          replacer
+        );
+        updatedBusinessTextTranslationFields.ua.text = newUaText;
       }
 
       if (updatedBusinessTextTranslationFields.en.text) {
-        updatedBusinessTextTranslationFields.en.text =
-          updatedBusinessTextTranslationFields.en.text.replace(
-            regExp,
-            replacer
-          );
+        const newEnText = updatedBusinessTextTranslationFields.en.text.replace(
+          regExp,
+          replacer
+        );
+        updatedBusinessTextTranslationFields.en.text = newEnText;
       }
 
       page.sectionsImgs.forEach((section, idx) => {
