@@ -110,10 +110,64 @@ const getBusinessTextByCode = async (code, operations) => {
 
   return res.data.getBusinessTextByCode;
 };
+const getBusinessTextByCodeWithPopulatedTranslationsKey = async (
+  code,
+  operations
+) => {
+  const res = await operations.query({
+    query: gql`
+      query ($code: String!) {
+        getBusinessTextByCodeWithPopulatedTranslationsKey(code: $code) {
+          __typename
+          ... on BusinessTextWithPopulatedTranslationsKey {
+            _id
+            code
+            languages
+            sectionsImgs {
+              id
+              name
+              src
+            }
+            footerImg {
+              name
+              src
+            }
+            translations {
+              ua {
+                title
+                sections {
+                  id
+                  title
+                  text
+                }
+              }
+              en {
+                title
+                sections {
+                  id
+                  title
+                  text
+                }
+              }
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { code },
+  });
+
+  return res.data.getBusinessTextByCodeWithPopulatedTranslationsKey;
+};
 const updateBusinessText = async (
   id,
   businessText,
   businessTextTranslationFields,
+  populated,
   operations
 ) => {
   const res = await operations.mutate({
@@ -132,6 +186,12 @@ const updateBusinessText = async (
           files: $files
           populated: $populated
         ) {
+          ... on BusinessText {
+            _id
+            code
+            languages
+            translationsKey
+          }
           ... on BusinessTextWithPopulatedTranslationsKey {
             _id
             code
@@ -160,7 +220,7 @@ const updateBusinessText = async (
       businessText,
       businessTextTranslationFields,
       files: [],
-      populated: true,
+      populated,
     },
   });
 
@@ -173,5 +233,6 @@ module.exports = {
   getAllBusinessTexts,
   getBusinessTextById,
   getBusinessTextByCode,
+  getBusinessTextByCodeWithPopulatedTranslationsKey,
   updateBusinessText,
 };

@@ -14,6 +14,7 @@ const {
   deleteBusinessText,
   getAllBusinessTexts,
   getBusinessTextById,
+  getBusinessTextByCodeWithPopulatedTranslationsKey,
   getBusinessTextByCode,
 } = require('./bussiness-text.helper');
 
@@ -38,13 +39,21 @@ describe('Business page queries', () => {
       code: newBusinessText.code,
     });
   });
-  test('Should receive selected business text', async () => {
+  test('Should receive selected business text(get by id)', async () => {
     const receivedBusinessText = await getBusinessTextById(
       businessText._id,
       operations
     );
 
-    expect(receivedBusinessText).toBeDefined();
+    expect(receivedBusinessText).toHaveProperty('code', newBusinessText.code);
+  });
+  test('Should receive selected populated business text', async () => {
+    const receivedBusinessText =
+      await getBusinessTextByCodeWithPopulatedTranslationsKey(
+        businessText.code,
+        operations
+      );
+
     expect(receivedBusinessText).toHaveProperty('code', newBusinessText.code);
   });
   test('Returning not existing business text should return error message', async () => {

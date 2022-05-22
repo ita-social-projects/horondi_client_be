@@ -52,6 +52,21 @@ describe('Business page queries', () => {
       businessTextId,
       updatedBusinessText,
       updatedBusinessTextTranslationFields,
+      false,
+      operations
+    );
+
+    expect(receivedBusinessText).toHaveProperty(
+      'code',
+      updatedBusinessText.code
+    );
+  });
+  test('update business text and get populated document', async () => {
+    const receivedBusinessText = await updateBusinessText(
+      businessTextId,
+      updatedBusinessText,
+      updatedBusinessTextTranslationFields,
+      true,
       operations
     );
 
@@ -81,6 +96,7 @@ describe('Business page queries', () => {
       notExistBusinessTextId,
       updatedBusinessText,
       updatedBusinessTextTranslationFields,
+      false,
       operations
     );
 
