@@ -3,53 +3,31 @@
 exports[`Business page queries Should receive all business texts 1`] = `
 Array [
   Object {
-    "code": "new-code",
-    "text": Array [
-      Object {
-        "lang": "uk",
-        "value": "Тут бізнес текст",
-      },
-      Object {
-        "lang": "en",
-        "value": "Business text here",
-      },
-    ],
-    "title": Array [
-      Object {
-        "lang": "uk",
-        "value": "НоваБТ",
-      },
-      Object {
-        "lang": "en",
-        "value": "NewBT",
-      },
-    ],
+    "code": "about-us",
+  },
+  Object {
+    "code": "privacy-policy",
+  },
+  Object {
+    "code": "materials",
+  },
+  Object {
+    "code": "terms",
+  },
+  Object {
+    "code": "user-agreement",
+  },
+  Object {
+    "code": "payment-and-shipping",
+  },
+  Object {
+    "code": "whatver",
   },
 ]
 `;
 
 exports[`Business page queries Should receive selected business text 1`] = `
 Object {
-  "code": "new-code",
-  "text": Array [
-    Object {
-      "lang": "uk",
-      "value": "Тут бізнес текст",
-    },
-    Object {
-      "lang": "en",
-      "value": "Business text here",
-    },
-  ],
-  "title": Array [
-    Object {
-      "lang": "uk",
-      "value": "НоваБТ",
-    },
-    Object {
-      "lang": "en",
-      "value": "NewBT",
-    },
-  ],
+  "code": "whatver",
 }
 `;

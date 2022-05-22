@@ -4,8 +4,10 @@ const {
 } = require('../../error-messages/business-text.messages');
 const {
   newBusinessText,
+  businessTextTranslationFields,
   updatedBusinessText,
   notExistBusinessTextId,
+  updatedBusinessTextTranslationFields,
 } = require('./business-text.variables');
 const { setupApp } = require('../helper-functions');
 const {
@@ -23,18 +25,19 @@ describe('Business page queries', () => {
     operations = await setupApp();
   });
   test('should add business text to database', async () => {
-    businessText = await addBusinessText(newBusinessText, operations);
+    businessText = await addBusinessText(
+      newBusinessText,
+      businessTextTranslationFields,
+      operations
+    );
     businessTextId = businessText._id;
 
     expect(businessText).toHaveProperty('code', newBusinessText.code);
-    expect(businessText).toHaveProperty('title', newBusinessText.title);
-    expect(businessText.title).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('text', newBusinessText.text);
-    expect(businessText.text).toBeInstanceOf(Array);
   });
   test('adding a new page with existing code should return error', async () => {
     const alreadyExistsException = await addBusinessText(
       newBusinessText,
+      businessTextTranslationFields,
       operations
     );
 
@@ -48,6 +51,7 @@ describe('Business page queries', () => {
     const receivedBusinessText = await updateBusinessText(
       businessTextId,
       updatedBusinessText,
+      updatedBusinessTextTranslationFields,
       operations
     );
 
@@ -55,20 +59,28 @@ describe('Business page queries', () => {
       'code',
       updatedBusinessText.code
     );
-    expect(receivedBusinessText.title).toBeInstanceOf(Array);
     expect(receivedBusinessText).toHaveProperty(
-      'title',
-      updatedBusinessText.title
+      'translations.ua.title',
+      updatedBusinessTextTranslationFields.ua.title
     );
     expect(receivedBusinessText).toHaveProperty(
-      'text',
-      updatedBusinessText.text
+      'translations.ua.text',
+      updatedBusinessTextTranslationFields.ua.text
+    );
+    expect(receivedBusinessText).toHaveProperty(
+      'translations.en.title',
+      updatedBusinessTextTranslationFields.en.title
+    );
+    expect(receivedBusinessText).toHaveProperty(
+      'translations.en.title',
+      updatedBusinessTextTranslationFields.en.title
     );
   });
   test('update not existing businessText should return error', async () => {
     const notExistBusinessText = await updateBusinessText(
       notExistBusinessTextId,
       updatedBusinessText,
+      updatedBusinessTextTranslationFields,
       operations
     );
 
@@ -81,8 +93,6 @@ describe('Business page queries', () => {
   test('delete not existing business text should return error', async () => {
     const res = await deleteBusinessText(notExistBusinessTextId, operations);
 
-    expect(res.data.deleteBusinessText).toBeDefined();
-    expect(res.data.deleteBusinessText).not.toBeNull();
     expect(res.data.deleteBusinessText).toHaveProperty('statusCode', 404);
     expect(res.data.deleteBusinessText).toHaveProperty(
       'message',
@@ -93,10 +103,6 @@ describe('Business page queries', () => {
   test('delete businessText', async () => {
     const res = await deleteBusinessText(businessTextId, operations);
 
-    businessText = res.data.deleteBusinessText;
-    expect(businessText).toHaveProperty('code', updatedBusinessText.code);
-    expect(businessText.title).toBeInstanceOf(Array);
-    expect(businessText).toHaveProperty('title', updatedBusinessText.title);
-    expect(businessText).toHaveProperty('text', updatedBusinessText.text);
+    expect(res.data.deleteBusinessText).toHaveProperty('code');
   });
 });

@@ -1014,6 +1014,7 @@ const typeDefs = gql`
     "BusinessText Mutation"
     addBusinessText(
       businessText: BusinessTextInput!
+      businessTextTranslationFields: BusinessTextTranslationFieldsInput!
       files: [Upload]!
     ): BusinessTextResult
     deleteBusinessText(id: ID!): BusinessTextResult

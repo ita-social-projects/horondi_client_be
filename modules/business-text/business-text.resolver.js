@@ -30,9 +30,16 @@ const businessTextQuery = {
 };
 
 const businessTextMutation = {
-  addBusinessText: async (parent, { businessText, files }) => {
+  addBusinessText: async (
+    parent,
+    { businessText, businessTextTranslationFields, files }
+  ) => {
     try {
-      return await businessTextService.addBusinessText(businessText, files);
+      return await businessTextService.addBusinessText(
+        businessText,
+        businessTextTranslationFields,
+        files
+      );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

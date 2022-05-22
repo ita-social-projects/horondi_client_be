@@ -15,7 +15,6 @@ const {
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
 
-const createTranslations = require('../../utils/createTranslations');
 const {
   getTranslations,
   addTranslations,
@@ -99,29 +98,28 @@ class BusinessTextService {
       );
     }
 
-    const resultOfReplacedImgs = files.length
-      ? await this.replaceImageSourceToLink(
-          businessText,
-          businessTextTranslationFields,
-          files
-        )
-      : {};
+    let resultOfReplacedImgs = {};
+    if (files.length) {
+      resultOfReplacedImgs = await this.replaceImageSourceToLink(
+        businessText,
+        businessTextTranslationFields,
+        files
+      );
+    }
 
     const newPage = resultOfReplacedImgs?.updatedPage || businessText;
-    const newBusinessTextTranslationFields =
-      resultOfReplacedImgs?.updatedBusinessTextTranslationFields ||
-      businessTextTranslationFields;
 
     await updateTranslations(
       foundBusinessText.translationsKey,
-      newBusinessTextTranslationFields
+      resultOfReplacedImgs?.updatedBusinessTextTranslationFields ||
+        businessTextTranslationFields
     );
 
     let newImages = [];
     let oldImages = [];
-    if (businessTextTranslationFields?.text) {
-      newImages = this.findImagesInText(businessTextTranslationFields.text);
-      oldImages = this.findImagesInText(oldTranslations.text);
+    if (businessTextTranslationFields?.ua?.text) {
+      newImages = this.findImagesInText(businessTextTranslationFields.ua);
+      oldImages = this.findImagesInText(oldTranslations.ua);
     }
 
     const imagesToDelete = oldImages.filter(
@@ -152,23 +150,30 @@ class BusinessTextService {
     return result;
   }
 
-  async addBusinessText(businessText, files) {
-    businessText.translationsKey = await addTranslations(
-      createTranslations(businessText)
-    );
-
+  async addBusinessText(businessText, businessTextTranslationFields, files) {
     const existingPages = await this.checkBusinessTextExistByCode(businessText);
 
     if (existingPages.length) {
       throw new RuleError(BUSINESS_TEXT_ALREADY_EXIST, BAD_REQUEST);
     }
 
-    let newPage = '';
+    let resultOfReplacedImgs = {};
     if (files.length) {
-      newPage = await this.replaceImageSourceToLink(businessText, files);
+      resultOfReplacedImgs = await this.replaceImageSourceToLink(
+        businessText,
+        businessTextTranslationFields,
+        files
+      );
     }
 
-    return new BusinessText(newPage || businessText).save();
+    businessText.translationsKey = await addTranslations(
+      resultOfReplacedImgs?.updatedBusinessTextTranslationFields ||
+        businessTextTranslationFields
+    );
+
+    return new BusinessText(
+      resultOfReplacedImgs?.updatedPage || businessText
+    ).save();
   }
 
   async deleteBusinessText(id) {
@@ -178,7 +183,9 @@ class BusinessTextService {
       throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
     }
 
-    const imagesToDelete = this.findImagesInText(oldPage);
+    const oldTranslations = await getTranslations(oldPage.translationsKey);
+
+    const imagesToDelete = this.findImagesInText(oldTranslations.ua);
 
     if (imagesToDelete.length) {
       await this.deleteNoNeededImages(imagesToDelete);
@@ -268,11 +275,14 @@ class BusinessTextService {
     }
   }
 
-  findImagesInText(page) {
-    const images = page.text
-      .map(({ value }) => value.match(/<img([\w\W]+?)>/g))
-      .flat()
-      .filter(val => val);
+  findImagesInText(uaTranslations) {
+    const images = uaTranslations.text.match(/<img([\w\W]+?)>/g);
+    if (!images) {
+      return [];
+    }
+
+    images.flat().filter(val => val);
+
     const uniqueImages = new Set([...images]);
 
     return [...uniqueImages];
