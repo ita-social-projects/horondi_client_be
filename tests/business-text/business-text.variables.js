@@ -1,3 +1,25 @@
+const fs = require('fs');
+
+class TestFile {
+  constructor() {
+    this.file = fs.createReadStream(`${__dirname}/Orange-Fruit-Pieces.jpg`);
+    this.testFile = {
+      promise: {
+        createReadStream: () => this.file,
+        stream: this.file,
+        filename: 'Orange-Fruit-Pieces.jpg',
+        mimetype: 'image/jpg',
+      },
+      file: {
+        createReadStream: () => this.file,
+        stream: this.file,
+        filename: 'Orange-Fruit-Pieces.jpg',
+        mimetype: 'image/jpg',
+      },
+    };
+  }
+}
+
 const newBusinessText = {
   code: 'whatver',
   languages: ['ua', 'en'],
@@ -38,4 +60,5 @@ module.exports = {
   updatedBusinessTextTranslationFields,
   code,
   wrongCode,
+  TestFile,
 };

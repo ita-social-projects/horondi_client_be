@@ -167,6 +167,7 @@ const updateBusinessText = async (
   id,
   businessText,
   businessTextTranslationFields,
+  files,
   populated,
   operations
 ) => {
@@ -219,7 +220,7 @@ const updateBusinessText = async (
       id,
       businessText,
       businessTextTranslationFields,
-      files: [],
+      files,
       populated,
     },
   });

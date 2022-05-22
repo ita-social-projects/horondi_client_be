@@ -8,6 +8,7 @@ const {
   updatedBusinessText,
   notExistBusinessTextId,
   updatedBusinessTextTranslationFields,
+  TestFile,
 } = require('./business-text.variables');
 const { setupApp } = require('../helper-functions');
 const {
@@ -19,6 +20,7 @@ const {
 let businessText;
 let businessTextId;
 let operations;
+const file = new TestFile().testFile;
 
 describe('Business page queries', () => {
   beforeAll(async () => {
@@ -52,6 +54,7 @@ describe('Business page queries', () => {
       businessTextId,
       updatedBusinessText,
       updatedBusinessTextTranslationFields,
+      [],
       false,
       operations
     );
@@ -66,6 +69,7 @@ describe('Business page queries', () => {
       businessTextId,
       updatedBusinessText,
       updatedBusinessTextTranslationFields,
+      [],
       true,
       operations
     );
@@ -91,11 +95,27 @@ describe('Business page queries', () => {
       updatedBusinessTextTranslationFields.en.title
     );
   });
+  test('update business text with image', async () => {
+    const receivedBusinessText = await updateBusinessText(
+      businessTextId,
+      updatedBusinessText,
+      updatedBusinessTextTranslationFields,
+      file,
+      false,
+      operations
+    );
+
+    expect(receivedBusinessText).toHaveProperty(
+      'code',
+      updatedBusinessText.code
+    );
+  });
   test('update not existing businessText should return error', async () => {
     const notExistBusinessText = await updateBusinessText(
       notExistBusinessTextId,
       updatedBusinessText,
       updatedBusinessTextTranslationFields,
+      [],
       false,
       operations
     );

@@ -225,13 +225,13 @@ class BusinessTextService {
         updatedBusinessTextTranslationFields.en.text = newEnText;
       }
 
-      page.sectionsImgs.forEach((section, idx) => {
+      page?.sectionsImgs?.forEach((section, idx) => {
         if (section.name === name) {
           updatedPage.sectionsImgs[idx].src = imgSrc;
         }
       });
 
-      if (page.footerImg.name === name) {
+      if (page?.footerImg?.name === name) {
         updatedPage.footerImg.src = imgSrc;
       }
     });
