@@ -33,7 +33,6 @@ describe('Business page queries', () => {
   test('Should receive all business texts', async () => {
     const allTexts = await getAllBusinessTexts(operations);
 
-    expect(allTexts).toMatchSnapshot();
     expect(allTexts).toBeDefined();
     expect(allTexts).toContainEqual({
       code: newBusinessText.code,
@@ -45,7 +44,6 @@ describe('Business page queries', () => {
       operations
     );
 
-    expect(receivedBusinessText).toMatchSnapshot();
     expect(receivedBusinessText).toBeDefined();
     expect(receivedBusinessText).toHaveProperty('code', newBusinessText.code);
   });
