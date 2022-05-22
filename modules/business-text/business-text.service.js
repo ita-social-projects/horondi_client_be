@@ -25,17 +25,21 @@ class BusinessTextService {
 
   async getBusinessTextById(id) {
     const businessText = await BusinessText.findById(id).exec();
+
     if (businessText) {
       return businessText;
     }
+
     throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
   }
 
   async getBusinessTextByCode(code) {
     const businessText = await BusinessText.findOne({ code }).exec();
+
     if (businessText) {
       return businessText;
     }
+
     throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
   }
 
@@ -59,7 +63,8 @@ class BusinessTextService {
     }
 
     const businessText = response[0];
-    businessText.translations = businessText.translations[0];
+    const translations = businessText.translations[0];
+    businessText.translations = translations;
 
     return businessText;
   }
@@ -81,13 +86,14 @@ class BusinessTextService {
       foundBusinessText.translationsKey
     );
 
-    const resultOfReplacedImgs = files.length
-      ? await this.replaceImageSourceToLink(
-          businessText,
-          businessTextTranslationFields,
-          files
-        )
-      : {};
+    let resultOfReplacedImgs = {};
+    if (files.length) {
+      resultOfReplacedImgs = await this.replaceImageSourceToLink(
+        businessText,
+        businessTextTranslationFields,
+        files
+      );
+    }
 
     const newPage = resultOfReplacedImgs?.updatedPage || businessText;
 
@@ -121,7 +127,8 @@ class BusinessTextService {
         .populate('translationsKey')
         .exec();
 
-      populatedPage.translations = populatedPage.translationsKey;
+      const { translationsKey } = populatedPage;
+      populatedPage.translations = translationsKey;
       result = populatedPage;
     } else {
       result = await BusinessText.findByIdAndUpdate(id, newPage, {
