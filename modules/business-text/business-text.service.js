@@ -2,12 +2,8 @@ const BusinessText = require('./business-text.model');
 const {
   BUSINESS_TEXT_NOT_FOUND,
   BUSINESS_TEXT_ALREADY_EXIST,
-  BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
   IMAGES_DELETING_FAILS,
 } = require('../../error-messages/business-text.messages');
-const {
-  TRANSLATIONS_NOT_FOUND,
-} = require('../../error-messages/translation.messages');
 const uploadService = require('../upload/upload.service');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
@@ -63,9 +59,6 @@ class BusinessTextService {
     }
 
     const businessText = response[0];
-    if (!businessText.translations.length) {
-      throw new RuleError(TRANSLATIONS_NOT_FOUND, NOT_FOUND);
-    }
     businessText.translations = businessText.translations[0];
 
     return businessText;
@@ -84,27 +77,17 @@ class BusinessTextService {
       throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
     }
 
-    const pages = await this.checkBusinessTextExistByCode(businessText);
     const oldTranslations = await getTranslations(
       foundBusinessText.translationsKey
     );
-    const existingPage = pages.find(el => el._id.toString() !== id);
 
-    if (existingPage) {
-      return new RuleError(
-        BUSINESS_TEXT_WITH_THIS_CODE_ALREADY_EXIST,
-        BAD_REQUEST
-      );
-    }
-
-    let resultOfReplacedImgs = {};
-    if (files.length) {
-      resultOfReplacedImgs = await this.replaceImageSourceToLink(
-        businessText,
-        businessTextTranslationFields,
-        files
-      );
-    }
+    const resultOfReplacedImgs = files.length
+      ? await this.replaceImageSourceToLink(
+          businessText,
+          businessTextTranslationFields,
+          files
+        )
+      : {};
 
     const newPage = resultOfReplacedImgs?.updatedPage || businessText;
 
