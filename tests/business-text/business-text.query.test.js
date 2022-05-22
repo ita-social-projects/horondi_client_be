@@ -69,6 +69,19 @@ describe('Business page queries', () => {
       BUSINESS_TEXT_NOT_FOUND
     );
   });
+  test('Returning not existing business text with populated method should return error message', async () => {
+    const notExistingBusinessText =
+      await getBusinessTextByCodeWithPopulatedTranslationsKey(
+        wrongCode,
+        operations
+      );
+
+    expect(notExistingBusinessText).toHaveProperty('statusCode', 404);
+    expect(notExistingBusinessText).toHaveProperty(
+      'message',
+      BUSINESS_TEXT_NOT_FOUND
+    );
+  });
   test('Should receive selected business text by code', async () => {
     businessText = await getBusinessTextByCode(code, operations);
 

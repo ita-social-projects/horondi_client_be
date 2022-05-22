@@ -80,16 +80,15 @@ class BusinessTextService {
   ) {
     const foundBusinessText = await BusinessText.findById(id).exec();
 
+    if (!foundBusinessText) {
+      throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
+    }
+
     const pages = await this.checkBusinessTextExistByCode(businessText);
-    const oldPage = await this.getBusinessTextById(id);
     const oldTranslations = await getTranslations(
       foundBusinessText.translationsKey
     );
     const existingPage = pages.find(el => el._id.toString() !== id);
-
-    if (!oldPage) {
-      throw new RuleError(BUSINESS_TEXT_NOT_FOUND, NOT_FOUND);
-    }
 
     if (existingPage) {
       return new RuleError(
