@@ -8,6 +8,7 @@ const {
     SELFPICKUP,
     UKRPOST,
     UKRPOSTCOURIER,
+    WORLDWIDE,
   },
 } = require('../consts/delivery-type');
 const {
@@ -23,7 +24,14 @@ const deliverySchema = new mongoose.Schema({
   sentOn: Date,
   sentBy: {
     type: String,
-    enum: [NOVAPOSTCOURIER, NOVAPOST, UKRPOST, UKRPOSTCOURIER, SELFPICKUP],
+    enum: [
+      NOVAPOSTCOURIER,
+      NOVAPOST,
+      UKRPOST,
+      UKRPOSTCOURIER,
+      SELFPICKUP,
+      WORLDWIDE,
+    ],
     default: SELFPICKUP,
   },
   byCourier: Boolean,
@@ -38,6 +46,13 @@ const deliverySchema = new mongoose.Schema({
   street: String,
   house: String,
   flat: String,
+  messenger: String,
+  messengerPhone: String,
+  worldWideCountry: String,
+  stateOrProvince: String,
+  worldWideCity: String,
+  worldWideStreet: String,
+  cityCode: String,
   cost: {
     type: [CurrencySet],
     required: true,
