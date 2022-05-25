@@ -3,7 +3,14 @@ const certificatesService = require('./certificate.service');
 const certificatesQuery = {
   getAllCertificates: async (
     _,
-    { skip, limit, sortBy = 'startDate', sortOrder = 'desc', search = '' },
+    {
+      skip,
+      limit,
+      sortBy = 'startDate',
+      sortOrder = 'desc',
+      search = '',
+      status = [],
+    },
     { user }
   ) =>
     certificatesService.getAllCertificates(
@@ -12,6 +19,7 @@ const certificatesQuery = {
       sortBy,
       sortOrder,
       search,
+      status,
       user
     ),
 

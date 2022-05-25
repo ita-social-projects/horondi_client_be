@@ -7,6 +7,7 @@ const {
   addPromoCode,
   deletePromoCode,
   updatePromoCode,
+  getPromoCodeByCode,
 } = require('./promo-code.helper');
 
 let promoCodes;
@@ -23,6 +24,22 @@ describe('PromoCodes mutations', () => {
     promoCodeId = promoCodes._id;
 
     expect(promoCodes).toHaveProperty('discount', newPromoCode.discount);
+  });
+  it('should get an error object', async () => {
+    promoCodes = await getPromoCodeByCode('', operations);
+    expect(promoCodes).toMatchObject({
+      data: { getPromoCodeByCode: null },
+      errors: [
+        {
+          extensions: { code: 404 },
+          locations: [{ column: 3, line: 2 }],
+          message: 'PROMOCODE_NOT_FOUND',
+          path: ['getPromoCodeByCode'],
+        },
+      ],
+      extensions: undefined,
+      http: { headers: {} },
+    });
   });
 
   it('update promo-code', async () => {

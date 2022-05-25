@@ -62,7 +62,7 @@ const certificateTypes = `
   }
 
   extend type Query {
-    getAllCertificates(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String): CertificatePaginatedResult
+    getAllCertificates(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: [String]): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
   }
 
