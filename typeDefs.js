@@ -570,7 +570,7 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getPromoCodeById(id: ID): PromoCodeResult
     getPromoCodeByCode(code: String!): PromoCodeResult
-    getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
+    getAllPromoCodes(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: [String]):PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
@@ -579,7 +579,6 @@ const typeDefs = gql`
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): OrdersWithCounter
- 
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
     getAllNews(limit: Int, skip: Int, filter:NewsFilterInput): PaginatedNews!

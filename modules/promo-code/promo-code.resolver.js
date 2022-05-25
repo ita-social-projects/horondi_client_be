@@ -2,7 +2,27 @@ const { ApolloError } = require('apollo-server');
 const promoCodeService = require('./promo-code.service');
 
 const promoCodeQuery = {
-  getAllPromoCodes: async (_, args) => promoCodeService.getAllPromoCodes(args),
+  getAllPromoCodes: async (
+    _,
+    {
+      skip = 0,
+      limit = 10,
+      sortBy = 'discount',
+      sortOrder = 'desc',
+      search = '',
+      status = [],
+    },
+    { user }
+  ) =>
+    promoCodeService.getAllPromoCodes(
+      skip,
+      limit,
+      sortBy,
+      sortOrder,
+      search,
+      user,
+      status
+    ),
 
   getPromoCodeById: async (_, { id }) => promoCodeService.getPromoCodeById(id),
 

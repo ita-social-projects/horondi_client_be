@@ -18,6 +18,7 @@ const {
 } = require('../../error-messages/certificate.messages');
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
 const { modifyDate } = require('../../utils/modify-date');
+const FilterHelper = require('../../helpers/filter-helper');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
@@ -32,55 +33,38 @@ const generateName = async () => {
   return name;
 };
 
-class CertificatesService {
-  dateOrName(search) {
+class CertificatesService extends FilterHelper {
+  async getAllCertificates(
+    skip,
+    limit,
+    sortBy,
+    sortOrder,
+    search,
+    status,
+    user
+  ) {
     let filter = {};
-    const regDate = /^\d+[.]\d+[.]\d+$/;
-    search = (search ?? '').trim();
-
-    if (!search) {
-      return filter;
-    }
-
-    if (regDate.test(search)) {
-      const date = new Date(search);
-      filter = {
-        dateStart: {
-          $gte: date,
-          $lt: date,
-        },
-      };
-    } else {
-      const searchPattern = {
-        $regex: search,
-        $options: 'gi',
-      };
-
-      filter = {
-        $or: [
-          {
-            'admin.firstName': searchPattern,
-          },
-          {
-            'admin.lastName': searchPattern,
-          },
-        ],
-      };
-    }
-
-    return filter;
-  }
-
-  async getAllCertificates(skip, limit, sortBy, sortOrder, search, user) {
-    let filter;
 
     if (user.role === USER) {
       const userId = mongoose.Types.ObjectId(user._id);
       filter = { ownedBy: userId };
     } else {
-      filter = this.dateOrName(search);
+      this.filterByName(filter, search);
     }
-
+    if (status.length) {
+      if (!Object.keys(filter).length) {
+        filter['$or'] = [];
+      }
+      if (status.includes('isUsed')) {
+        filter['$or'].push({ isUsed: true });
+      }
+      if (status.includes('isExpired')) {
+        filter['$or'].push({ isExpired: true });
+      }
+      if (status.includes('isActivated')) {
+        filter['$or'].push({ isActivated: true });
+      }
+    }
 
     sortOrder = sortOrder === 'desc' ? -1 : 1;
     const sort = { [sortBy]: sortOrder };

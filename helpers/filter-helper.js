@@ -6,6 +6,88 @@ const {
 } = require('../consts/user-block-period');
 
 class FilterHelper {
+  filterByName(filter = {}, search = '') {
+    const searchTrimmed = search.trim();
+
+    if (!searchTrimmed) {
+      return;
+    }
+
+    const searchPattern = {
+      $regex: searchTrimmed,
+      $options: 'gi',
+    };
+
+    const searchFilter = {
+      $or: [
+        {
+          'admin.firstName': searchPattern,
+        },
+        {
+          'admin.lastName': searchPattern,
+        },
+        {
+          name: searchPattern,
+        },
+        {
+          code: searchPattern,
+        },
+      ],
+    };
+
+    if (!filter['$and']) {
+      filter['$and'] = [];
+    }
+
+    filter['$and'].push(searchFilter);
+  }
+
+  filterByStatus(status, myTime, filter) {
+    if (status.length) {
+      const statusFilter = [];
+
+      if (status.includes('active')) {
+        statusFilter.push({
+          $and: [
+            {
+              dateFrom: {
+                $lt: new Date(myTime),
+              },
+            },
+            {
+              dateTo: {
+                $gt: new Date(myTime),
+              },
+            },
+          ],
+        });
+      }
+      if (status.includes('expired')) {
+        statusFilter.push({
+          dateTo: {
+            $lt: new Date(myTime),
+          },
+        });
+      }
+      if (status.includes('planned')) {
+        statusFilter.push({
+          dateFrom: {
+            $gt: new Date(myTime),
+          },
+        });
+      }
+      if (!statusFilter.length) {
+        return;
+      }
+
+      if (!filter['$and']) {
+        filter['$and'] = [];
+      }
+
+      filter['$and'].push({ $or: statusFilter });
+    }
+  }
+
   filterItems(args = {}) {
     const filter = {};
     const { roles, days, banned, _id, search } = args;

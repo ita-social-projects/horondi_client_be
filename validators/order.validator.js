@@ -189,34 +189,35 @@ const nestedDeliveryValidator = Joi.object({
     currency: Joi.string().trim().required(),
     value: Joi.number().required(),
   }),
-  messenger: Joi.string().when(SENT_BY, {
+  messenger: Joi.string().allow('').when(SENT_BY, {
     is: WORLDWIDE,
     then: Joi.string().required(),
   }),
-  messengerPhone: Joi.string().when(SENT_BY, {
-    is: WORLDWIDE,
-    then: Joi.string().trim().required().regex(numberRegExp),
-  }),
-  worldWideCountry: Joi.string().when(SENT_BY, {
-    is: WORLDWIDE,
-    then: Joi.string().required(),
-  }),
-  stateOrProvince: Joi.string().when(SENT_BY, {
-    is: WORLDWIDE,
-    then: Joi.string().allow(null, '').optional(),
-  }),
-  worldWideCity: Joi.string().when(SENT_BY, {
+  messengerPhone: Joi.string()
+    .allow('')
+    .when(SENT_BY, {
+      is: WORLDWIDE,
+      then: Joi.string().required().regex(numberRegExp),
+    }),
+  worldWideCountry: Joi.string().allow('').when(SENT_BY, {
     is: WORLDWIDE,
     then: Joi.string().required(),
   }),
-  worldWideStreet: Joi.string().when(SENT_BY, {
+  stateOrProvince: Joi.string().allow(null, '').optional(),
+  worldWideCity: Joi.string().allow('').when(SENT_BY, {
     is: WORLDWIDE,
     then: Joi.string().required(),
   }),
-  cityCode: Joi.string().when(SENT_BY, {
+  worldWideStreet: Joi.string().allow('').when(SENT_BY, {
     is: WORLDWIDE,
-    then: Joi.string().required().regex(onlyNumbersRegExp),
+    then: Joi.string().required(),
   }),
+  cityCode: Joi.string()
+    .allow('')
+    .when(SENT_BY, {
+      is: WORLDWIDE,
+      then: Joi.string().required().regex(onlyNumbersRegExp),
+    }),
 });
 
 const orderValidator = Joi.object({
