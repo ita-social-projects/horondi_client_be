@@ -25,10 +25,8 @@ const createPattern = async (pattern, operations) => {
               }
               handmade
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
             customizable
           }
@@ -94,10 +92,8 @@ const getAllPatterns = async (limit, skip, filter, operations) => {
               }
               handmade
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
             customizable
           }
@@ -134,10 +130,8 @@ const getPatternById = async (id, operations) => {
               }
               handmade
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
             customizable
           }
@@ -177,10 +171,8 @@ const getAllPatternsPaginated = async (limit, skip, filter, operations) => {
               }
               handmade
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
             customizable
           }
@@ -219,10 +211,8 @@ const updatePattern = async (id, pattern, image, operations) => {
               }
               handmade
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
             available
             customizable
           }

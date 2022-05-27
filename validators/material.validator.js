@@ -5,10 +5,6 @@ const {
 } = require('../consts/material-purposes');
 
 const {
-  ADDITIONAL_PRICE_TYPES: { RELATIVE_INDICATOR, ABSOLUTE_INDICATOR },
-} = require('../consts/additional-price-types');
-
-const {
   name_LANG_MIN_CHARS,
   name_LANG_MAX_CHARS,
   name_VALUE_MIN_CHARS,
@@ -43,10 +39,8 @@ const materialInputValidator = Joi.object({
     .required(),
   colors: Joi.array().items(Joi.string().required()),
   available: Joi.boolean(),
-  additionalPrice: Joi.object({
-    value: Joi.number(),
-    type: Joi.string().trim().valid(RELATIVE_INDICATOR, ABSOLUTE_INDICATOR),
-  }).required(),
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
 });
 
 module.exports = {

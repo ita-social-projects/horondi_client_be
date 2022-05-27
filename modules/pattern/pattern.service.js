@@ -8,7 +8,6 @@ const {
   deleteTranslations,
 } = require('../translations/translations.service');
 
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
@@ -103,18 +102,32 @@ class PatternsService {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
     }
 
-    if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
-      );
-    }
-
     await updateTranslations(
       patternToUpdate.translationsKey,
       createTranslations(pattern)
     );
 
-    await updatePrices(patternToUpdate, pattern, PATTERN, id);
+    if (image) {
+      const [imagePattern, imageConstructor] = image;
+      if (imagePattern.file) {
+        const uploadResult = await uploadService.uploadFile(imagePattern);
+        pattern.images = uploadResult.fileNames;
+      }
+      if (imageConstructor) {
+        const constructorImg = await uploadSmallImage(imageConstructor);
+        pattern.constructorImg = constructorImg;
+      }
+      const foundPattern = await Pattern.findById(id).lean().exec();
+
+      await uploadService.deleteFiles(Object.values(foundPattern.images));
+      await uploadService.deleteFiles([foundPattern.constructorImg]);
+    }
+
+    const updatedPattern = Pattern.findByIdAndUpdate(id, pattern, {
+      new: true,
+    }).exec();
+
+    await updatePrices(PATTERN, id);
 
     const { beforeChanges, afterChanges } = getChanges(
       patternToUpdate,
@@ -135,35 +148,7 @@ class PatternsService {
     );
     await addHistoryRecord(historyRecord);
 
-    if (!image) {
-      return Pattern.findByIdAndUpdate(id, pattern, {
-        new: true,
-      }).exec();
-    }
-
-    const [imagePattern, imageConstructor] = image;
-    if (imagePattern.file) {
-      const uploadResult = await uploadService.uploadFile(imagePattern);
-      pattern.images = uploadResult.fileNames;
-    }
-    if (imageConstructor) {
-      const constructorImg = await uploadSmallImage(imageConstructor);
-      pattern.constructorImg = constructorImg;
-    }
-    const foundPattern = await Pattern.findById(id).lean().exec();
-
-    await uploadService.deleteFiles(Object.values(foundPattern.images));
-    await uploadService.deleteFiles([foundPattern.constructorImg]);
-
-    return Pattern.findByIdAndUpdate(
-      id,
-      {
-        ...pattern,
-      },
-      {
-        new: true,
-      }
-    ).exec();
+    return updatedPattern;
   }
 
   async addPattern({ pattern, image }, { _id: adminId }) {
@@ -175,11 +160,6 @@ class PatternsService {
     const images = uploadResult.fileNames;
     pattern.constructorImg = await uploadSmallImage(image[1]);
 
-    if (pattern.additionalPrice) {
-      pattern.additionalPrice = await calculateAdditionalPrice(
-        pattern.additionalPrice
-      );
-    }
     pattern.translationsKey = await addTranslations(
       createTranslations(pattern)
     );

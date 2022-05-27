@@ -63,16 +63,7 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
     courierOffice: '',
     invoiceNumber: '6280260',
     sentBy: 'SELFPICKUP',
-    cost: [
-      {
-        currency: 'UAH',
-        value: 7000,
-      },
-      {
-        currency: 'USD',
-        value: 240,
-      },
-    ],
+    cost: 240,
   },
   items: [
     {
@@ -84,16 +75,7 @@ const newOrderInputData = (productId, modelId, sizeId, constructorId) => ({
       options: {
         size: sizeId,
       },
-      fixedPrice: [
-        {
-          currency: 'UAH',
-          value: 7000,
-        },
-        {
-          currency: 'USD',
-          value: 240,
-        },
-      ],
+      price: 240,
     },
   ],
   paymentMethod: 'CASH',

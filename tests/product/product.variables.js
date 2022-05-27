@@ -125,16 +125,7 @@ const newProductInputDataForCompare = product => ({
   sizes: [
     { size: { _id: product.sizes[0] } },
     {
-      price: [
-        {
-          currency: 'UAH',
-          value: 2700,
-        },
-        {
-          currency: 'USD',
-          value: 100,
-        },
-      ],
+      price: 100,
     },
   ],
   innerMaterial: {
@@ -185,7 +176,6 @@ const filterArgs = {
   category: '6009dcd5f9855555907ebf5e',
   isHotItem: true,
   models: [],
-  currency: 'ua',
 };
 
 const correctFilter = {
@@ -196,13 +186,8 @@ const correctFilter = {
   sizes: {
     $elemMatch: {
       price: {
-        $elemMatch: {
-          currency: '',
-          value: {
-            $gte: '2',
-            $lte: '0',
-          },
-        },
+        $gte: '2',
+        $lte: '0',
       },
     },
   },

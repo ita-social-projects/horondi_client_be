@@ -11,10 +11,7 @@ const newClosure = (materialId, colorId, modelId) => ({
   },
   available: true,
   customizable: true,
-  additionalPrice: {
-    value: 0,
-    type: 'ABSOLUTE_INDICATOR',
-  },
+  absolutePrice: 0,
 });
 
 const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
@@ -30,16 +27,7 @@ const closureWithConvertedPrice = (materialId, colorId, modelId) => ({
   },
   available: true,
   customizable: true,
-  additionalPrice: [
-    {
-      currency: 'UAH',
-      value: 270,
-    },
-    {
-      currency: 'USD',
-      value: 10,
-    },
-  ],
+  absolutePrice: 0,
 });
 
 const closureToUpdate = (materialId, colorId, modelId) => ({
@@ -55,10 +43,7 @@ const closureToUpdate = (materialId, colorId, modelId) => ({
   },
   available: true,
   customizable: true,
-  additionalPrice: {
-    value: 40,
-    type: 'ABSOLUTE_INDICATOR',
-  },
+  absolutePrice: 40,
 });
 
 const newClosureUpdated = (materialId, colorId, modelId) => ({
@@ -74,16 +59,7 @@ const newClosureUpdated = (materialId, colorId, modelId) => ({
   },
   available: true,
   customizable: true,
-  additionalPrice: [
-    {
-      currency: 'UAH',
-      value: 270,
-    },
-    {
-      currency: 'USD',
-      value: 10,
-    },
-  ],
+  absolutePrice: 40,
 });
 const wrongId = '5fb412d8663cf10bec9faa1a';
 
