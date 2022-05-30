@@ -51,16 +51,7 @@ const getConstructorData = (construrtor, { materialId, colorId, modelId }) => ({
   image: construrtor.image,
   available: construrtor.available,
   customizable: construrtor.customizable,
-  basePrice: [
-    {
-      currency: 'UAH',
-      value: 2700,
-    },
-    {
-      currency: 'USD',
-      value: 100,
-    },
-  ],
+  basePrice: 1,
 });
 
 const getConstructorDataForUpt = (materialId, colorId, modelId) => ({

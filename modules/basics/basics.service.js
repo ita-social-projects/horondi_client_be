@@ -1,6 +1,5 @@
 const Basics = require('./basics.model');
 const uploadService = require('../upload/upload.service');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -85,10 +84,6 @@ class BasicsService {
       basic.images = imageResults.fileNames;
     }
 
-    basic.additionalPrice = await calculateAdditionalPrice(
-      basic.additionalPrice
-    );
-
     const updatedBasic = await Basics.findByIdAndUpdate(id, basic, {
       new: true,
     }).exec();
@@ -124,10 +119,6 @@ class BasicsService {
       const uploadImage = await uploadService.uploadFile(image);
       basic.images = uploadImage.fileNames;
     }
-
-    basic.additionalPrice = await calculateAdditionalPrice(
-      basic.additionalPrice
-    );
 
     basic.translationsKey = await addTranslations(createTranslations(basic));
 

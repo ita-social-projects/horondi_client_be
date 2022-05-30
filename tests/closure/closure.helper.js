@@ -25,10 +25,7 @@ const createClosure = async (closure, operations) => {
             }
             available
             customizable
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
           }
           ... on Error {
             message
@@ -69,10 +66,7 @@ const updateClosure = async (id, closure, operations) => {
             }
             available
             customizable
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
           }
           ... on Error {
             message
@@ -137,10 +131,7 @@ const getClosureById = async (id, operations) => {
             }
             available
             customizable
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
           }
           ... on Error {
             statusCode

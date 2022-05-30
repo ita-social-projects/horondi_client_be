@@ -20,16 +20,7 @@ const wrongPagination = {
   limit: 5,
 };
 
-const finalPrice = [
-  {
-    currency: 'UAH',
-    value: 270,
-  },
-  {
-    currency: 'USD',
-    value: 10,
-  },
-];
+const finalPrice = 10;
 
 const mutationPatternToAdd = (materialId, modelId) => ({
   name: [
@@ -58,10 +49,8 @@ const mutationPatternToAdd = (materialId, modelId) => ({
     material: materialId,
     handmade: false,
   },
-  additionalPrice: {
-    value: 1,
-    type: 'ABSOLUTE_INDICATOR',
-  },
+  absolutePrice: 10,
+  relativePrice: null,
   available: true,
   customizable: true,
 });
@@ -93,10 +82,8 @@ const queryPatternToAdd = (materialId, modelId) => ({
     material: materialId,
     handmade: false,
   },
-  additionalPrice: {
-    value: 1,
-    type: 'ABSOLUTE_INDICATOR',
-  },
+  absolutePrice: 1,
+  relativePrice: null,
   available: true,
   customizable: false,
 });
@@ -128,7 +115,8 @@ const createdPattern = (materialId, modelId) => ({
     material: { _id: materialId },
     handmade: false,
   },
-  additionalPrice: finalPrice,
+  absolutePrice: finalPrice,
+  relativePrice: null,
   available: true,
   customizable: true,
 });
@@ -160,10 +148,8 @@ const patternToUpdate = (materialId, modelId) => ({
     material: materialId,
     handmade: false,
   },
-  additionalPrice: {
-    value: 1,
-    type: 'ABSOLUTE_INDICATOR',
-  },
+  absolutePrice: 10,
+  relativePrice: null,
   available: true,
   customizable: false,
 });
@@ -195,7 +181,8 @@ const patternAfterUpdate = (materialId, modelId) => ({
     material: { _id: materialId },
     handmade: false,
   },
-  additionalPrice: finalPrice,
+  absolutePrice: finalPrice,
+  relativePrice: null,
   available: true,
   customizable: false,
 });

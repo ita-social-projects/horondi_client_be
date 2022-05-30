@@ -32,10 +32,7 @@ const createConstructorBasic = async (constructorElement, operations) => {
             }
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -111,10 +108,7 @@ const updateConstructorBasic = async (
             }
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -160,10 +154,7 @@ const getAllConstructorBasics = async ({ limit, skip, filter }, operations) => {
             }
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
         }
       }
@@ -205,10 +196,7 @@ const getConstructorBasicById = async (id, operations) => {
             }
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode

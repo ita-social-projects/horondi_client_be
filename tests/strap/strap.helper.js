@@ -24,10 +24,7 @@ const createStrap = async (strap, image, operations) => {
               thumbnail
             }
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
             translationsKey
           }
           ... on Error {
@@ -70,10 +67,7 @@ const updateStrap = async (id, strap, image, operations) => {
               thumbnail
             }
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
           }
           ... on Error {
             message
@@ -139,10 +133,7 @@ const getStrapById = async (id, operations) => {
               thumbnail
             }
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
           }
           ... on Error {
             statusCode
@@ -183,10 +174,7 @@ const getAllStraps = async (limit, skip, filter, operations) => {
               thumbnail
             }
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
           }
           count
         }

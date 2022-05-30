@@ -73,6 +73,8 @@ const {
 const {
   currencyType,
   currencyInput,
+  convertOptionsTypes,
+  convertOptionsInputs,
 } = require('./modules/currency/currency.graphql');
 const {
   certificateTypes,
@@ -189,6 +191,8 @@ const typeDefs = gql`
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
+  ${convertOptionsTypes}
+  ${convertOptionsInputs}
   
   ${materialType}
   ${newsType}
@@ -272,15 +276,6 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
-  type CurrencySet {
-    currency: String
-    value: Float!
-  }
-  type AdditionalCurrencySet {
-    currency: String
-    type: additionalPriceType!
-    value: Float!
-  }
   type ImageSet {
     large: String
     medium: String
@@ -304,10 +299,6 @@ const typeDefs = gql`
   type PrimaryImage {
     primary: ImageSet
     additional: [ImageSet]
-  }
-  type ConvertOption {
-    name: String
-    exchangeRate: Float
   }
   type ModelsMenu {
     model: [Menu!]
@@ -349,7 +340,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: [CurrencySet]
+    additionalPrice: Int
   }
 
   type UserForComment {
@@ -370,7 +361,7 @@ const typeDefs = gql`
     name: [Language!]
     description: [Language!]
     available: Boolean
-    additionalPrice: [CurrencySet]
+    additionalPrice: Int
   }
   type PaginatedProducts {
     items: [Product]
@@ -489,7 +480,7 @@ const typeDefs = gql`
   }
   type FinalPricesForSizes {
       size: Size
-      price: [CurrencySet]
+      price: Int
   }
   type PaginatedPositions {
     items: [Position]
@@ -692,7 +683,7 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllConstructors(limit:Int!, skip:Int!, filter:ConstructorFilterInput): PaginatedConstructors!
     getConstructorById(id: ID): ConstructorResult
-    getConstructorByModel(id: ID): [ConstructorResult]
+    getConstructorByModel(id: ID): ConstructorResult
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
@@ -793,14 +784,6 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
-  input CurrencySetInput {
-    currency: String!
-    value: Float!
-  }
-  input additionalPriceInput {
-    value: Float!
-    type: additionalPriceType
-  }
   input AddressInput {
     country: String
     district: String
@@ -827,10 +810,6 @@ const typeDefs = gql`
     currency: Int
     language: String
     theme: String
-  }
-  input ConvertOptionInput {
-    name: String!
-    exchangeRate: Float!
   }
   input SubcategoryInput {
     categoryCode: String!
