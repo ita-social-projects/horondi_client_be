@@ -26,6 +26,7 @@ const constructorType = `
     straps: [Strap]
     closures: [Closure]
     pocketsWithRestrictions: [PocketsWithRestrictions]
+    basePrice: [CurrencySet]
   }
 `;
 
@@ -44,6 +45,11 @@ const constructorInputs = `
     currentPocketWithPosition: currentPocketWithPositionInput!
     otherPocketsWithAvailablePositions: [otherPocketsWithAvailablePositionsInput!]
   }
+
+  input BasePriceInput {
+    value: Float
+    currency: String
+  }
   
   input ConstructorInput {
     name: [LanguageInput!]!
@@ -56,6 +62,7 @@ const constructorInputs = `
     straps: [ID!]
     closures: [ID!]
     pocketsWithRestrictions: [PocketsWithRestrictionsInput!]
+    basePrice: [BasePriceInput]
   }
 
   input ConstructorFilterInput{

@@ -17,6 +17,8 @@ const {
   },
 } = require('../../consts/db-collections-names');
 
+const CurrencySet = require('../../models/CurrencySet').schema;
+
 const constructorSchema = new mongoose.Schema({
   name: [Language],
   model: {
@@ -86,6 +88,7 @@ const constructorSchema = new mongoose.Schema({
       ],
     },
   ],
+  basePrice: [CurrencySet],
 });
 
 module.exports = mongoose.model(CONSTRUCTOR, constructorSchema);
