@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-const CurrencySet = require('./CurrencySet').schema;
 const {
   DB_COLLECTIONS_NAMES: {
     ORDER_ITEM,
@@ -58,7 +57,7 @@ const orderItemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: PATTERN,
   },
-  fixedPrice: [CurrencySet],
+  fixedPrice: Number,
 });
 
 module.exports = mongoose.model(ORDER_ITEM, orderItemSchema);

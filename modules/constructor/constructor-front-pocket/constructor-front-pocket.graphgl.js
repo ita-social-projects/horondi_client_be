@@ -6,7 +6,7 @@ type ConstructorFrontPocket {
     model: Model
     features: ConstructorFrPocketFeatureSet
     image:String
-    basePrice: [CurrencySet]
+    basePrice: Int
     available: Boolean
     customizable: Boolean
   }

@@ -27,10 +27,7 @@ const createBottom = async (bottom, image, operations) => {
             }
             available
             optionType
-            additionalPrice {
-              value
-              currency
-            }
+            absolutePrice
             translationsKey
           }
           ... on Error {

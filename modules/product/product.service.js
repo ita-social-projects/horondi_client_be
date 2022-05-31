@@ -19,10 +19,6 @@ const {
   CATEGORY_NOT_FOUND,
 } = require('../../error-messages/category.messages');
 const { uploadProductImages } = require('./product.utils');
-const { calculateBasePrice } = require('../currency/currency.utils');
-const {
-  CURRENCY: { UAH, USD },
-} = require('../../consts/currency');
 const {
   PRODUCT_FEATURES: {
     PRODUCT_CATEGORY,
@@ -45,7 +41,6 @@ const {
     THUMBNAIL_SAD_BACKPACK,
   },
 } = require('../../consts/default-images');
-const { getCurrencySign } = require('../../utils/product-service');
 const RuleError = require('../../errors/rule.error');
 const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
@@ -124,8 +119,7 @@ class ProductsService {
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
       (a, b) =>
-        a.sizes[a.sizes.length - 1].price[0].value -
-        b.sizes[b.sizes.length - 1].price[0].value
+        a.sizes[a.sizes.length - 1].price - b.sizes[b.sizes.length - 1].price
     );
 
     const minPrice = sortedByPrices[0].sizes[0].price;
@@ -165,7 +159,6 @@ class ProductsService {
       category,
       isHotItem,
       models,
-      currency,
       isFromConstructor,
     } = args;
 
@@ -190,13 +183,8 @@ class ProductsService {
       filter.sizes = {
         $elemMatch: {
           price: {
-            $elemMatch: {
-              currency: getCurrencySign(currency, UAH, USD),
-              value: {
-                $gte: price[0],
-                $lte: price[1],
-              },
-            },
+            $gte: price[0],
+            $lte: price[1],
           },
         },
       };
@@ -215,7 +203,7 @@ class ProductsService {
 
     const sortValue = Object.keys(sort).includes('basePrice')
       ? {
-          'sizes.price.value': sort.basePrice,
+          'sizes.price': sort.basePrice,
         }
       : sort;
     if (!(!search || search.trim().length === 0)) {
@@ -314,8 +302,6 @@ class ProductsService {
         },
       ];
     }
-    const { basePrice } = productData;
-    productData.basePrice = await calculateBasePrice(basePrice);
     productData.sizes = await finalPriceCalculation(productData);
 
     const { beforeChanges, afterChanges } = getChanges(product, productData);
@@ -348,9 +334,6 @@ class ProductsService {
       throw new RuleError(PRODUCT_ALREADY_EXIST, BAD_REQUEST);
     }
     const { primary, additional } = await uploadProductImages(filesToUpload);
-
-    const { basePrice } = productData;
-    productData.basePrice = await calculateBasePrice(basePrice);
 
     productData.model = await modelService.getModelById(productData.model);
 
@@ -411,8 +394,6 @@ class ProductsService {
     }
 
     productData.isFromConstructor = true;
-
-    productData.basePrice = await calculateBasePrice(productData.basePrice);
 
     productData.model = await modelService.getModelById(productData.model);
 
@@ -574,26 +555,17 @@ class ProductsService {
     return Product.find({ _id: { $in: wishlist } }).exec();
   }
 
-  async updatePrices(previousPriceValue, nextPriceValue, path, id) {
-    if (
-      previousPriceValue.additionalPrice[1]?.value !==
-        nextPriceValue.additionalPrice[1]?.value ||
-      previousPriceValue.additionalPrice[0].value !==
-        nextPriceValue.additionalPrice.value
-    ) {
-      const products = await Product.find({
-        [`${path}`]: {
-          $eq: id,
-        },
-      })
-        .distinct('_id')
-        .exec();
+  async updatePrices(path, id) {
+    const products = await Product.find({
+      [path]: id,
+    })
+      .distinct('_id')
+      .exec();
 
-      for (const productId of products) {
-        await Product.findByIdAndUpdate(productId, {
-          sizes: await finalPriceRecalculation(productId),
-        }).exec();
-      }
+    for (const productId of products) {
+      await Product.findByIdAndUpdate(productId, {
+        sizes: await finalPriceRecalculation(productId),
+      }).exec();
     }
   }
 }

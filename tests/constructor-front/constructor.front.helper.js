@@ -33,10 +33,7 @@ const createConstructorFrontPocket = async (constructorElement, operations) => {
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -112,10 +109,7 @@ const updateConstructorFrontPocket = async (
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode
@@ -166,10 +160,7 @@ const getAllConstructorFrontPocket = async (
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
         }
       }
@@ -212,10 +203,7 @@ const getConstructorFrontPocketById = async (id, operations) => {
             image
             available
             customizable
-            basePrice {
-              currency
-              value
-            }
+            basePrice
           }
           ... on Error {
             statusCode

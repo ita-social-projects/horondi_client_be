@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-const CurrencySet = require('./CurrencySet').schema;
 const {
   DELIVERY_TYPE: {
     NOVAPOST,
@@ -8,11 +7,9 @@ const {
     SELFPICKUP,
     UKRPOST,
     UKRPOSTCOURIER,
+    WORLDWIDE,
   },
 } = require('../consts/delivery-type');
-const {
-  CURRENCY: { UAH, USD },
-} = require('../consts/currency');
 
 const {
   DB_COLLECTIONS_NAMES: { DELIVERY },
@@ -23,7 +20,14 @@ const deliverySchema = new mongoose.Schema({
   sentOn: Date,
   sentBy: {
     type: String,
-    enum: [NOVAPOSTCOURIER, NOVAPOST, UKRPOST, UKRPOSTCOURIER, SELFPICKUP],
+    enum: [
+      NOVAPOSTCOURIER,
+      NOVAPOST,
+      UKRPOST,
+      UKRPOSTCOURIER,
+      SELFPICKUP,
+      WORLDWIDE,
+    ],
     default: SELFPICKUP,
   },
   byCourier: Boolean,
@@ -38,14 +42,14 @@ const deliverySchema = new mongoose.Schema({
   street: String,
   house: String,
   flat: String,
-  cost: {
-    type: [CurrencySet],
-    required: true,
-    default: [
-      { currency: UAH, value: 60 },
-      { currency: USD, value: 2 },
-    ],
-  },
+  messenger: String,
+  messengerPhone: String,
+  worldWideCountry: String,
+  stateOrProvince: String,
+  worldWideCity: String,
+  worldWideStreet: String,
+  cityCode: String,
+  cost: Number,
 });
 
 module.exports = mongoose.model(DELIVERY, deliverySchema);

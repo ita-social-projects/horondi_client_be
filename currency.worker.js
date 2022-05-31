@@ -11,16 +11,16 @@ const currencyWorker = async mongo => {
 
       const currencyRate = {
         lastUpdatedDate: Date.now(),
-        convertOptions: [
-          {
+        convertOptions: {
+          UAH: {
             name: currencyService.currencyTypes.UAH,
             exchangeRate: currency.data.rates.UAH,
           },
-          {
+          USD: {
             name: currencyService.currencyTypes.USD,
             exchangeRate: 1,
           },
-        ],
+        },
       };
 
       await currencyService.deleteAllCurrencies();

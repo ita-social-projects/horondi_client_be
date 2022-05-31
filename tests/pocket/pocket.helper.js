@@ -122,10 +122,7 @@ const getPocketById = async (id, operations) => {
               small
               thumbnail
             }
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
             restriction
           }
           ... on Error {

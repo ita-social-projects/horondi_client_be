@@ -25,6 +25,13 @@ describe('Promo-codes queries', () => {
 
     expect(data.getPromoCodeByCode).toHaveProperty('code', newPromoCode.code);
   });
+  it('Should get promo-code by field code', async () => {
+    const operations = await setupApp();
+    await addPromoCode(newPromoCode, operations);
+    const { data } = await getPromoCodeByCode(newPromoCode.code, operations);
+
+    expect(data.getPromoCodeByCode).toHaveProperty('code', newPromoCode.code);
+  });
 
   it('Should receive Error', async () => {
     const operations = await setupApp();

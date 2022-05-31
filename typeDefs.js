@@ -73,6 +73,8 @@ const {
 const {
   currencyType,
   currencyInput,
+  convertOptionsTypes,
+  convertOptionsInputs,
 } = require('./modules/currency/currency.graphql');
 const {
   certificateTypes,
@@ -191,6 +193,8 @@ const typeDefs = gql`
 	${categoryType}
 	${paginatedCategory}
   ${currencyType}
+  ${convertOptionsTypes}
+  ${convertOptionsInputs}
   
   ${materialType}
   ${newsType}
@@ -290,15 +294,6 @@ const typeDefs = gql`
     lang: String!
     value: String
   }
-  type CurrencySet {
-    currency: String
-    value: Float!
-  }
-  type AdditionalCurrencySet {
-    currency: String
-    type: additionalPriceType!
-    value: Float!
-  }
   type ImageSet {
     large: String
     medium: String
@@ -322,10 +317,6 @@ const typeDefs = gql`
   type PrimaryImage {
     primary: ImageSet
     additional: [ImageSet]
-  }
-  type ConvertOption {
-    name: String
-    exchangeRate: Float
   }
   type ModelsMenu {
     model: [Menu!]
@@ -367,7 +358,7 @@ const typeDefs = gql`
     name: [Language]
     description: [Language]
     available: Boolean
-    additionalPrice: [CurrencySet]
+    additionalPrice: Int
   }
 
   type UserForComment {
@@ -388,7 +379,7 @@ const typeDefs = gql`
     name: [Language!]
     description: [Language!]
     available: Boolean
-    additionalPrice: [CurrencySet]
+    additionalPrice: Int
   }
   type PaginatedProducts {
     items: [Product]
@@ -507,7 +498,7 @@ const typeDefs = gql`
   }
   type FinalPricesForSizes {
       size: Size
-      price: [CurrencySet]
+      price: Int
   }
   type PaginatedPositions {
     items: [Position]
@@ -598,7 +589,7 @@ const typeDefs = gql`
     ): PaginatedMaterials!
     getPromoCodeById(id: ID): PromoCodeResult
     getPromoCodeByCode(code: String!): PromoCodeResult
-    getAllPromoCodes(limit:Int, skip:Int): PaginatedPromoCode
+    getAllPromoCodes(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: [String]):PaginatedPromoCode
     getMaterialsByPurpose(purposes: [PurposeEnum]): MaterialByPurpose
     getMaterialById(id: ID): MaterialResult
     getAllPatterns(limit:Int, skip:Int, filter:PatternFilterInput): PaginatedPatterns!
@@ -607,7 +598,6 @@ const typeDefs = gql`
     getOrdersByUser(limit: Int, skip: Int, filter: OrderFilterInput, sort:JSONObject, userId: ID!): PaginatedOrders!
     getOrderById(id: ID): OrderResult
     getUserOrders(pagination: Pagination): OrdersWithCounter
- 
     getOrdersStatistic(date: Int!): StatisticDoughnut!
     getPaidOrdersStatistic(date: Int!): StatisticBar!
     getAllNews(limit: Int, skip: Int, filter:NewsFilterInput): PaginatedNews!
@@ -722,7 +712,7 @@ const typeDefs = gql`
     getStrapsByModel(id: ID): [StrapResult]
     getAllConstructors(limit:Int!, skip:Int!, filter:ConstructorFilterInput): PaginatedConstructors!
     getConstructorById(id: ID): ConstructorResult
-    getConstructorByModel(id: ID): [ConstructorResult]
+    getConstructorByModel(id: ID): ConstructorResult
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
     getRestrictionById(id: ID): RestrictionResult
     getAllPositions(limit:Int, skip:Int, filter:PositionsFilterInput): PaginatedPositions!
@@ -882,10 +872,6 @@ const typeDefs = gql`
     currency: Int
     language: String
     theme: String
-  }
-  input ConvertOptionInput {
-    name: String!
-    exchangeRate: Float!
   }
   input SubcategoryInput {
     categoryCode: String!

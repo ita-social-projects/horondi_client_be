@@ -1,31 +1,32 @@
 const materialType = `
-    type Material {
-      _id: ID!
-      name: [Language]
-      description: [Language]
-      purpose: PurposeEnum
-      colors: [Color]
-      available: Boolean
-      additionalPrice: [AdditionalCurrencySet]
-      translationsKey: ID!
-    }
-    type MaterialByPurpose {
-      main: [Material]
-      inner: [Material]
-      bottom: [Material]
-      back: [Material]
-      pattern: [Material]
-      closure: [Material]
-    }
+  type Material {
+    _id: ID!
+    name: [Language]
+    description: [Language]
+    purpose: PurposeEnum
+    colors: [Color]
+    available: Boolean
+    absolutePrice: Int
+    relativePrice: Int
+    translationsKey: ID!
+  }
+  type MaterialByPurpose {
+    main: [Material]
+    inner: [Material]
+    bottom: [Material]
+    back: [Material]
+    pattern: [Material]
+    closure: [Material]
+  }
 
-    enum PurposeEnum{
-      MAIN
-      INNER
-      BOTTOM
-      PATTERN
-      CLOSURE
-      BACK
-    }
+  enum PurposeEnum{
+    MAIN
+    INNER
+    BOTTOM
+    PATTERN
+    CLOSURE
+    BACK
+  }
 `;
 
 const materialInput = `
@@ -35,7 +36,8 @@ const materialInput = `
       purpose: PurposeEnum!
       colors: [ID!]
       available: Boolean
-      additionalPrice: additionalPriceInput!
+      absolutePrice: Int
+      relativePrice: Int
     }
 `;
 

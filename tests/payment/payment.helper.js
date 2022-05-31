@@ -117,10 +117,7 @@ const sendOrderToEmail = async (language, paidOrderNumber, operations) => {
                   }
                 }
               }
-              fixedPrice {
-                currency
-                value
-              }
+              fixedPrice
               quantity
               options {
                 size {
@@ -128,10 +125,7 @@ const sendOrderToEmail = async (language, paidOrderNumber, operations) => {
                 }
               }
             }
-            totalPriceToPay {
-              currency
-              value
-            }
+            totalPriceToPay
             paymentStatus
           }
           ... on Error {

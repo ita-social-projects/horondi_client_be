@@ -7,7 +7,6 @@ const {
 } = require('../translations/translations.service');
 const RuleError = require('../../errors/rule.error');
 const { CLOSURE_NOT_FOUND } = require('../../error-messages/closures.messages');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -72,11 +71,7 @@ class ClosureService {
       const uploadImage = await uploadService.uploadFile(image);
       closure.images = uploadImage.fileNames;
     }
-    if (closure.additionalPrice) {
-      closure.additionalPrice = await calculateAdditionalPrice(
-        closure.additionalPrice
-      );
-    }
+
     closure.translations_key = await addTranslations(
       createTranslations(closure)
     );
@@ -112,12 +107,6 @@ class ClosureService {
 
     if (!closureToUpdate) {
       throw new RuleError(CLOSURE_NOT_FOUND, NOT_FOUND);
-    }
-
-    if (closure.additionalPrice) {
-      closure.additionalPrice = await calculateAdditionalPrice(
-        closure.additionalPrice
-      );
     }
 
     await updateTranslations(

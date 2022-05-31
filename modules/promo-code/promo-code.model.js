@@ -12,4 +12,4 @@ const promoCodeSchema = new mongoose.Schema({
   categories: [String],
 });
 
-module.exports = mongoose.model(PROMO, promoCodeSchema);
+module.exports.PromocodeModel = mongoose.model(PROMO, promoCodeSchema);

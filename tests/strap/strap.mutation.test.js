@@ -92,7 +92,7 @@ describe('Strap mutations', () => {
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({
       _id: strapId,
-      additionalPrice: finalStrap.additionalPrice,
+      absolutePrice: finalStrap.absolutePrice,
       ...finalStrap,
     });
   });
@@ -110,7 +110,7 @@ describe('Strap mutations', () => {
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({
       _id: strapId,
-      additionalPrice: finalStrap.additionalPrice,
+      absolutePrice: finalStrap.absolutePrice,
       ...finalStrap,
     });
   });

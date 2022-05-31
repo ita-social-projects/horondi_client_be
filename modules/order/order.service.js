@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
+const Currency = require('../currency/currency.model');
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
 const {
@@ -207,11 +208,16 @@ class OrdersService {
       totalItemsPrice
     );
 
+    const { convertOptions } = await Currency.findOne().exec();
+
+    const { exchangeRate } = convertOptions.UAH;
+
     const newOrder = {
       ...data,
       totalItemsPrice,
       totalPriceToPay,
       orderNumber,
+      fixedExchangeRate: exchangeRate,
     };
 
     return new Order(newOrder).save();
