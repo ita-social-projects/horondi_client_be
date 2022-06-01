@@ -39,9 +39,7 @@ const finalPriceCalculationForConstructor = async product => {
   ).exec();
 
   const sizesPrice = await Size.find({
-    _id: {
-      $in: product.sizes,
-    },
+    _id: { $in: product.sizes },
   }).exec();
 
   const prices = [mainMaterial, bottomMaterial];
