@@ -33,9 +33,11 @@ const finalPriceCalculationForConstructor = async product => {
   const mainMaterial = await Material.findById(
     product.mainMaterial.material
   ).exec();
+
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
+
   const sizesPrice = await Size.find({
     _id: {
       $in: product.sizes,
