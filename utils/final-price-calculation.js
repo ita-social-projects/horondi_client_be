@@ -30,20 +30,24 @@ const calculateHelper = (entities, sizes, basePrice) => {
 };
 
 const finalPriceCalculationForConstructor = async product => {
-  const pattern = await Pattern.findById(product.pattern).exec();
   const mainMaterial = await Material.findById(
     product.mainMaterial.material
   ).exec();
+
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
+
   const sizesPrice = await Size.find({
-    _id: {
-      $in: product.sizes,
-    },
+    _id: { $in: product.sizes },
   }).exec();
 
-  const prices = [pattern, mainMaterial, bottomMaterial];
+  const prices = [mainMaterial, bottomMaterial];
+
+  if (product.pattern) {
+    const pattern = await Pattern.findById(product.pattern).exec();
+    prices.push(pattern);
+  }
 
   return calculateHelper(prices, sizesPrice, product.basePrice);
 };
