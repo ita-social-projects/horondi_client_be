@@ -31,6 +31,10 @@ class TranslationsService {
     res.json(resultData);
   }
 
+  async getTranslations(id) {
+    return Translations.findById(id).exec();
+  }
+
   async addTranslations(translation) {
     return new Translations(translation).save();
   }

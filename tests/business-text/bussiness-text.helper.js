@@ -1,21 +1,25 @@
 const { gql } = require('@apollo/client');
 
-const addBusinessText = async (businessText, operations) => {
+const addBusinessText = async (
+  businessText,
+  businessTextTranslationFields,
+  operations
+) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation ($businessText: BusinessTextInput!) {
-        addBusinessText(businessText: $businessText, files: []) {
+      mutation (
+        $businessText: BusinessTextInput!
+        $businessTextTranslationFields: BusinessTextTranslationFieldsInput!
+        $files: [Upload]!
+      ) {
+        addBusinessText(
+          businessText: $businessText
+          businessTextTranslationFields: $businessTextTranslationFields
+          files: $files
+        ) {
           ... on BusinessText {
             _id
             code
-            title {
-              value
-              lang
-            }
-            text {
-              value
-              lang
-            }
           }
           ... on Error {
             message
@@ -26,6 +30,8 @@ const addBusinessText = async (businessText, operations) => {
     `,
     variables: {
       businessText,
+      businessTextTranslationFields,
+      files: [],
     },
   });
 
@@ -39,14 +45,6 @@ const deleteBusinessText = async (id, operations) =>
           ... on BusinessText {
             _id
             code
-            title {
-              value
-              lang
-            }
-            text {
-              value
-              lang
-            }
           }
           ... on Error {
             message
@@ -64,14 +62,6 @@ const getAllBusinessTexts = async operations => {
       query {
         getAllBusinessTexts {
           code
-          title {
-            value
-            lang
-          }
-          text {
-            lang
-            value
-          }
         }
       }
     `,
@@ -86,14 +76,6 @@ const getBusinessTextById = async (id, operations) => {
         getBusinessTextById(id: $id) {
           ... on BusinessText {
             code
-            title {
-              value
-              lang
-            }
-            text {
-              lang
-              value
-            }
           }
           ... on Error {
             statusCode
@@ -113,15 +95,8 @@ const getBusinessTextByCode = async (code, operations) => {
       query ($code: String!) {
         getBusinessTextByCode(code: $code) {
           ... on BusinessText {
+            _id
             code
-            title {
-              value
-              lang
-            }
-            text {
-              lang
-              value
-            }
           }
           ... on Error {
             statusCode
@@ -135,21 +110,103 @@ const getBusinessTextByCode = async (code, operations) => {
 
   return res.data.getBusinessTextByCode;
 };
-const updateBusinessText = async (id, businessText, operations) => {
+const getBusinessTextByCodeWithPopulatedTranslationsKey = async (
+  code,
+  operations
+) => {
+  const res = await operations.query({
+    query: gql`
+      query ($code: String!) {
+        getBusinessTextByCodeWithPopulatedTranslationsKey(code: $code) {
+          __typename
+          ... on BusinessTextWithPopulatedTranslationsKey {
+            _id
+            code
+            languages
+            sectionsImgs {
+              id
+              name
+              src
+            }
+            footerImg {
+              name
+              src
+            }
+            translations {
+              ua {
+                title
+                sections {
+                  id
+                  title
+                  text
+                }
+              }
+              en {
+                title
+                sections {
+                  id
+                  title
+                  text
+                }
+              }
+            }
+          }
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { code },
+  });
+
+  return res.data.getBusinessTextByCodeWithPopulatedTranslationsKey;
+};
+const updateBusinessText = async (
+  id,
+  businessText,
+  businessTextTranslationFields,
+  files,
+  populated,
+  operations
+) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation ($id: ID!, $businessText: BusinessTextInput!) {
-        updateBusinessText(id: $id, businessText: $businessText, files: []) {
+      mutation (
+        $id: ID!
+        $businessText: BusinessTextInput!
+        $businessTextTranslationFields: BusinessTextTranslationFieldsInput!
+        $files: [Upload]!
+        $populated: Boolean
+      ) {
+        updateBusinessText(
+          id: $id
+          businessText: $businessText
+          businessTextTranslationFields: $businessTextTranslationFields
+          files: $files
+          populated: $populated
+        ) {
           ... on BusinessText {
             _id
             code
-            title {
-              value
-              lang
-            }
-            text {
-              value
-              lang
+            languages
+            translationsKey
+          }
+          ... on BusinessTextWithPopulatedTranslationsKey {
+            _id
+            code
+            languages
+            translations {
+              _id
+              ua {
+                title
+                text
+              }
+              en {
+                title
+                text
+              }
             }
           }
           ... on Error {
@@ -162,6 +219,9 @@ const updateBusinessText = async (id, businessText, operations) => {
     variables: {
       id,
       businessText,
+      businessTextTranslationFields,
+      files,
+      populated,
     },
   });
 
@@ -174,5 +234,6 @@ module.exports = {
   getAllBusinessTexts,
   getBusinessTextById,
   getBusinessTextByCode,
+  getBusinessTextByCodeWithPopulatedTranslationsKey,
   updateBusinessText,
 };
