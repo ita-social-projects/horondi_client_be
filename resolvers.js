@@ -199,6 +199,8 @@ const SCHEMA_NAMES = {
   comment: 'Comment',
   promoCode: 'PromoCode',
   businessText: 'BusinessText',
+  businessTextWithPopulatedTranslationsKey:
+    'BusinessTextWithPopulatedTranslationsKey',
   successfulResponse: 'SuccessfulResponse',
   model: 'Model',
   restriction: 'Restriction',
@@ -910,7 +912,10 @@ const resolvers = {
   },
   BusinessTextResult: {
     __resolveType: obj => {
-      if (obj.title) {
+      if (obj.translations) {
+        return SCHEMA_NAMES.businessTextWithPopulatedTranslationsKey;
+      }
+      if (obj.code) {
         return SCHEMA_NAMES.businessText;
       }
 
