@@ -45,6 +45,7 @@ const DB_COLLECTIONS_NAMES = {
   TRANSLATIONS: 'Translations',
   COORDINATS: 'Coordinats',
   WISHLIST: 'Wishlist',
+  BASEPRICE: 'BasePrice',
 };
 
 module.exports = {

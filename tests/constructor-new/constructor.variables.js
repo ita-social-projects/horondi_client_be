@@ -31,6 +31,7 @@ const newConstructorInputData = () => ({
       ],
     },
   ],
+  basePrice: 50,
 });
 const newConstructorInputDataUpdate = () => ({
   name: [
@@ -58,6 +59,7 @@ const newConstructorInputDataUpdate = () => ({
       ],
     },
   ],
+  basePrice: 50,
 });
 
 module.exports = {
