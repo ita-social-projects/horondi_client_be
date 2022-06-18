@@ -81,6 +81,7 @@ const inputBottomValidator = Joi.object({
   }),
   image: Joi.string(),
   absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
 });
 
