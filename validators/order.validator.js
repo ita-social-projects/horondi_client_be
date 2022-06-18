@@ -98,20 +98,10 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  regionId: Joi.string()
-    .when(SENT_BY, {
-      is: UKRPOST,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: UKRPOSTCOURIER,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: NOVAPOSTCOURIER,
-      then: Joi.string().required(),
-      otherwise: Joi.string().only(''),
-    }),
+  regionId: Joi.string().allow('').when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   district: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
@@ -126,20 +116,10 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  districtId: Joi.string()
-    .when(SENT_BY, {
-      is: UKRPOST,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: NOVAPOSTCOURIER,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: UKRPOSTCOURIER,
-      then: Joi.string().required(),
-      otherwise: Joi.string().only(''),
-    }),
+  districtId: Joi.string().allow('').when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   city: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
@@ -158,20 +138,10 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  cityId: Joi.string()
-    .when(SENT_BY, {
-      is: UKRPOST,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: NOVAPOSTCOURIER,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: UKRPOSTCOURIER,
-      then: Joi.string().required(),
-      otherwise: Joi.string().only(''),
-    }),
+  cityId: Joi.string().allow('').when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
   flat: Joi.string()
