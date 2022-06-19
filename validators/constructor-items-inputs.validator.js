@@ -93,6 +93,7 @@ const inputStrapValidator = Joi.object({
   }),
   image: Joi.string().trim().optional(),
   absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
 });
 
