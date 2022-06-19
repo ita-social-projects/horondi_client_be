@@ -6,7 +6,8 @@ const strapType = `
     model: Model
     features: StrapFeature
     images: ImageSet
-    absolutePrice: Int!
+    absolutePrice: Int
+    relativePrice: Int
     available: Boolean
     customizable: Boolean
     translationsKey: ID
@@ -26,7 +27,8 @@ const strapInputs = `
     model: ID
     features: StrapFeatureInput
     image: Upload
-    absolutePrice: Int!
+    absolutePrice: Int
+    relativePrice: Int
     available: Boolean
     customizable: Boolean
   }
