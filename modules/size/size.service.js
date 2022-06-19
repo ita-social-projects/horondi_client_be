@@ -6,6 +6,7 @@ const Model = require('../model/model.model');
 const {
   SIZES_NOT_FOUND,
   SIZE_NOT_FOUND,
+  SIZE_ALREADY_EXIST,
 } = require('../../error-messages/size.messages');
 const {
   HISTORY_ACTIONS: { ADD_EVENT, DELETE_EVENT, EDIT_EVENT },
@@ -35,7 +36,7 @@ const {
 } = require('../../utils/final-price-calculation');
 
 const {
-  STATUS_CODES: { NOT_FOUND },
+  STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const RuleError = require('../../errors/rule.error');
 
@@ -102,6 +103,10 @@ class SizeService {
   }
 
   async addSize(sizeData, { _id: adminId }) {
+    if (await this.checkSizeExist(sizeData)) {
+      throw new RuleError(SIZE_ALREADY_EXIST, BAD_REQUEST);
+    }
+
     const newSize = await new Size(sizeData).save();
     const foundModel = await Model.findByIdAndUpdate(sizeData.modelId, {
       $push: { sizes: newSize._id },
@@ -173,6 +178,10 @@ class SizeService {
   }
 
   async updateSize(id, input, { _id: adminId }) {
+    if (await this.checkSizeExist(input, id)) {
+      throw new RuleError(SIZE_ALREADY_EXIST, BAD_REQUEST);
+    }
+
     const sizeToUpdate = await Size.findById(id).lean().exec();
     const modelToUpdate = await Model.findById(input.modelId).lean().exec();
 
@@ -230,6 +239,18 @@ class SizeService {
     await addHistoryRecord(historyRecord);
 
     return updatedSize;
+  }
+
+  async checkSizeExist(data, id) {
+    const count = await Size.find({
+      _id: { $ne: id },
+      name: data.name,
+      modelId: data.modelId,
+    })
+      .countDocuments()
+      .exec();
+
+    return count > 0;
   }
 }
 
