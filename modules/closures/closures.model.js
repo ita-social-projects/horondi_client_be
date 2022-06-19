@@ -23,7 +23,8 @@ const closureSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  absolutePrice: Number,
+  absolutePrice: { type: Number, default: null },
+  relativePrice: { type: Number, default: null },
   translations_key: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
