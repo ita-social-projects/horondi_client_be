@@ -24,14 +24,14 @@ const backSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  absolutePrice: { type: Number, default: null },
-  relativePrice: { type: Number, default: null },
   available: Boolean,
   customizable: Boolean,
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },
+  absolutePrice: { type: Number, default: null },
+  relativePrice: { type: Number, default: null },
 });
 
 module.exports = mongoose.model(BACK, backSchema);
