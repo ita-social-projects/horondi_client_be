@@ -16,6 +16,7 @@ const { createModel } = require('../model/model.helper');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
 const { newModel } = require('../model/model.variables');
+const { SIZE_ALREADY_EXIST } = require('../../error-messages/size.messages');
 
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -45,6 +46,13 @@ describe('Sizes mutations', () => {
       _id: sizeId,
       ...createTestSize(modelId).size1,
     });
+  });
+
+  test('should get SIZE_ALREADY_EXIST error message when create size', async () => {
+    const result = await createSize(createPlainSize(modelId).size1, operations);
+
+    expect(result).toHaveProperty('message', SIZE_ALREADY_EXIST);
+    expect(result).toHaveProperty('statusCode', 400);
   });
 
   test('should update size by ID and input', async () => {
