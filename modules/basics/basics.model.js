@@ -19,7 +19,8 @@ const basicsSchema = new mongoose.Schema({
       ref: COLOR,
     },
   },
-  absolutePrice: Number,
+  absolutePrice: { type: Number, default: null },
+  relativePrice: { type: Number, default: null },
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,

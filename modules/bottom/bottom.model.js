@@ -19,7 +19,8 @@ const bottomSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  absolutePrice: Number,
+  absolutePrice: { type: Number, default: null },
+  relativePrice: { type: Number, default: null },
   available: Boolean,
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
