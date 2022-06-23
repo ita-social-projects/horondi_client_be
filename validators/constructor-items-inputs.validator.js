@@ -2,9 +2,6 @@ const Joi = require('joi');
 const {
   RESTRICTION_EXPRESSION_NAMES: { IS_EQUAL, IS_NOT_EQUAL },
 } = require('../consts/restriction-expression-names');
-const {
-  additionalPriceInputValidator,
-} = require('./additional-price-input.validators');
 
 const {
   CONSTRUCTOR_OPTION_TYPES: {
@@ -27,7 +24,8 @@ const nestedNameValidator = Joi.object({
 const inputBasicsValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   image: Joi.string().trim().optional(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
   features: Joi.object({
     material: Joi.string().trim().required(),
@@ -38,7 +36,8 @@ const inputPocketValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string().trim().valid(POCKET).required(),
   image: Joi.string().trim().optional(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   restriction: Joi.boolean(),
   positions: Joi.array(),
 });
@@ -47,7 +46,8 @@ const inputClosureValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string().trim().valid(CLOSURE).required(),
   image: Joi.string().trim().optional(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
   model: Joi.string(),
   features: Joi.object({
@@ -66,7 +66,8 @@ const inputBackValidator = Joi.object({
     color: Joi.string().trim().required(),
   }),
   image: Joi.string(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
   customizable: Joi.boolean(),
 });
@@ -79,7 +80,8 @@ const inputBottomValidator = Joi.object({
     color: Joi.string().trim().required(),
   }),
   image: Joi.string(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
 });
 
@@ -90,7 +92,8 @@ const inputStrapValidator = Joi.object({
     color: Joi.string().trim().required(),
   }),
   image: Joi.string().trim().optional(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
 });
 
@@ -110,7 +113,8 @@ const inputPatternValidator = Joi.object({
     thumbnail: Joi.string(),
   }),
   constructorImg: Joi.string(),
-  additionalPrice: additionalPriceInputValidator,
+  absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean(),
   customizable: Joi.boolean(),
 });
@@ -169,6 +173,7 @@ const inputConstructorValidator = Joi.object({
   backs: Joi.array().required(),
   straps: Joi.array().required(),
   closures: Joi.array().required(),
+  basePrice: Joi.number().required(),
   pocketsWithRestrictions: Joi.array().required(),
   image: Joi.string().trim().optional(),
 });

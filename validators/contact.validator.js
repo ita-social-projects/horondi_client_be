@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const { numberRegExp } = require('../consts/regexp');
+const { numberContactsRegExp } = require('../consts/regexp');
 
 const languageSchemaValidator = {
   lang: Joi.string().trim().max(2).required(),
@@ -8,7 +8,7 @@ const languageSchemaValidator = {
 };
 
 const contactInputValidator = Joi.object({
-  phoneNumber: Joi.string().trim().regex(numberRegExp).required(),
+  phoneNumber: Joi.string().trim().regex(numberContactsRegExp).required(),
   openHours: Joi.array().items(languageSchemaValidator).required(),
   address: Joi.array().items(languageSchemaValidator).required(),
   email: Joi.string().trim().email().required(),

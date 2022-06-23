@@ -4,7 +4,6 @@ const DB_COLLECTIONS_NAMES = {
   BACKGROUND: 'Background',
   BUSINESS_TEXT: 'BusinessText',
   CLOSURE: 'Closure',
-  CURRENCY_SET: 'CurrencySet',
   ADDITIONAL_CURRENCY_SET: 'AdditionalCurrencySet',
   DELIVERY: 'Delivery',
   LANGUAGE: 'Language',
@@ -46,6 +45,7 @@ const DB_COLLECTIONS_NAMES = {
   TRANSLATIONS: 'Translations',
   COORDINATS: 'Coordinats',
   WISHLIST: 'Wishlist',
+  BASEPRICE: 'BasePrice',
 };
 
 module.exports = {

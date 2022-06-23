@@ -62,7 +62,7 @@ describe('Pattern Mutation Tests', () => {
 
     expect(patternData).toEqual({
       _id: patternId,
-      additionalPrice: finalPrice,
+      absolutePrice: finalPrice,
       ...newPattern,
     });
   });

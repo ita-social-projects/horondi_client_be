@@ -1,87 +1,55 @@
-const { _ } = require('lodash');
-
 const Product = require('../modules/product/product.model');
 const Pattern = require('../modules/pattern/pattern.model');
 const Closures = require('../modules/closures/closures.model');
 const Material = require('../modules/material/material.model');
 const Size = require('../modules/size/size.model');
-const { calculateFinalPrice } = require('../modules/currency/currency.utils');
-const {
-  ADDITIONAL_PRICE_TYPES: { RELATIVE_INDICATOR, ABSOLUTE_INDICATOR },
-} = require('../consts/additional-price-types');
 
-const calculateHelper = (additionalPrices, sizePrices, basePrice) => {
-  const relativePrices = _.reduce(
-    additionalPrices,
-    (sum, additionalPriceSet) => {
-      let sumRelativePrice = sum;
+const checkPriceType = (price, item, basePrice) => {
+  if (item.absolutePrice) {
+    price += item.absolutePrice;
+  }
 
-      if (additionalPriceSet[0]?.type === RELATIVE_INDICATOR) {
-        sumRelativePrice *= additionalPriceSet[0].value;
-      }
+  if (item.relativePrice) {
+    price += basePrice * (item.relativePrice / 100);
+  }
 
-      return sumRelativePrice;
-    },
+  return Math.round(price);
+};
+
+const calculateHelper = (entities, sizes, basePrice) => {
+  const additionalPrice = entities.reduce(
+    (sum, entity) => checkPriceType(sum, entity, basePrice),
     basePrice
   );
 
-  const pricesForSizes = _.map(sizePrices, sizeAdditionalPrice => {
-    let tempPrice = relativePrices;
-    if (sizeAdditionalPrice.additionalPrice[0]?.type === RELATIVE_INDICATOR) {
-      tempPrice *= sizeAdditionalPrice.additionalPrice[0].value;
-    }
+  return sizes.map(size => {
+    const price = additionalPrice;
 
-    if (sizeAdditionalPrice.additionalPrice[0]?.type === ABSOLUTE_INDICATOR) {
-      tempPrice += sizeAdditionalPrice.additionalPrice[1].value;
-    }
-
-    return { _id: sizeAdditionalPrice._id, price: tempPrice };
+    return { size: size._id, price: checkPriceType(price, size, basePrice) };
   });
-
-  return Promise.all(
-    _.map(pricesForSizes, async priceForSize => {
-      let price = _.reduce(
-        additionalPrices,
-        (sum, additionalPriceSet) => {
-          let sumAbsolutePrice = sum;
-          if (additionalPriceSet[0]?.type === ABSOLUTE_INDICATOR) {
-            sumAbsolutePrice += additionalPriceSet[1].value;
-          }
-
-          return sumAbsolutePrice;
-        },
-        priceForSize.price
-      );
-
-      price = await calculateFinalPrice(price);
-
-      return { size: priceForSize._id, price };
-    })
-  ).then(result => result);
 };
 
 const finalPriceCalculationForConstructor = async product => {
-  const pattern = await Pattern.findById(product.pattern).exec();
   const mainMaterial = await Material.findById(
     product.mainMaterial.material
   ).exec();
+
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
 
-  const prices = [
-    pattern?.additionalPrice || 0,
-    mainMaterial.additionalPrice,
-    bottomMaterial.additionalPrice,
-  ];
-
   const sizesPrice = await Size.find({
-    _id: {
-      $in: product.sizes,
-    },
+    _id: { $in: product.sizes },
   }).exec();
 
-  return calculateHelper(prices, sizesPrice, product.basePrice[1].value);
+  const prices = [mainMaterial, bottomMaterial];
+
+  if (product.pattern) {
+    const pattern = await Pattern.findById(product.pattern).exec();
+    prices.push(pattern);
+  }
+
+  return calculateHelper(prices, sizesPrice, product.basePrice);
 };
 
 const finalPriceCalculation = async product => {
@@ -96,22 +64,21 @@ const finalPriceCalculation = async product => {
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
-
-  const prices = [
-    pattern.additionalPrice,
-    closure.additionalPrice,
-    mainMaterial.additionalPrice,
-    innerMaterial.additionalPrice,
-    bottomMaterial.additionalPrice,
-  ];
-
   const sizesPrice = await Size.find({
     _id: {
       $in: product.sizes,
     },
   }).exec();
 
-  return calculateHelper(prices, sizesPrice, product.basePrice[1].value);
+  const prices = [
+    pattern,
+    closure,
+    mainMaterial,
+    innerMaterial,
+    bottomMaterial,
+  ];
+
+  return calculateHelper(prices, sizesPrice, product.basePrice);
 };
 
 const finalPriceRecalculation = async productId => {
@@ -126,18 +93,18 @@ const finalPriceRecalculation = async productId => {
       .exec();
 
   const prices = [
-    pattern?.additionalPrice || 0,
-    closure?.additionalPrice || 0,
-    mainMaterial?.material?.additionalPrice || 0,
-    innerMaterial?.material?.additionalPrice || 0,
-    bottomMaterial?.material?.additionalPrice || 0,
+    pattern,
+    closure,
+    mainMaterial.material,
+    innerMaterial.material,
+    bottomMaterial.material,
   ];
 
   const { basePrice } = await Product.findById(productId).exec();
 
   sizes = sizes.map(size => size.size);
 
-  return calculateHelper(prices, sizes, basePrice[1].value);
+  return calculateHelper(prices, sizes, basePrice);
 };
 
 module.exports = {

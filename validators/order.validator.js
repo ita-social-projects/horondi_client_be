@@ -26,7 +26,11 @@ const {
 const {
   PAYMENT_TYPES: { CARD, CASH },
 } = require('../consts/payment-types');
-const { userNameRegExp, numberRegExp } = require('../consts/regexp');
+const {
+  userNameRegExp,
+  numberRegExp,
+  onlyNumbersRegExp,
+} = require('../consts/regexp');
 const {
   DELIVERY_TYPE: {
     NOVAPOST,
@@ -34,6 +38,7 @@ const {
     SELFPICKUP,
     NOVAPOSTCOURIER,
     UKRPOSTCOURIER,
+    WORLDWIDE,
   },
 } = require('../consts/delivery-type');
 
@@ -59,7 +64,14 @@ const nestedDeliveryValidator = Joi.object({
   sentOn: Joi.string().allow(''),
   sentBy: Joi.string()
     .trim()
-    .valid(NOVAPOST, UKRPOST, SELFPICKUP, NOVAPOSTCOURIER, UKRPOSTCOURIER)
+    .valid(
+      NOVAPOST,
+      UKRPOST,
+      SELFPICKUP,
+      NOVAPOSTCOURIER,
+      UKRPOSTCOURIER,
+      WORLDWIDE
+    )
     .required(),
   invoiceNumber: Joi.string().allow(''),
   courierOffice: Joi.string()
@@ -86,20 +98,10 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  regionId: Joi.string()
-    .when(SENT_BY, {
-      is: UKRPOST,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: UKRPOSTCOURIER,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: NOVAPOSTCOURIER,
-      then: Joi.string().required(),
-      otherwise: Joi.string().only(''),
-    }),
+  regionId: Joi.string().allow('').when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   district: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
@@ -114,20 +116,10 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  districtId: Joi.string()
-    .when(SENT_BY, {
-      is: UKRPOST,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: NOVAPOSTCOURIER,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: UKRPOSTCOURIER,
-      then: Joi.string().required(),
-      otherwise: Joi.string().only(''),
-    }),
+  districtId: Joi.string().allow('').when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   city: Joi.string()
     .when(SENT_BY, {
       is: NOVAPOSTCOURIER,
@@ -146,20 +138,10 @@ const nestedDeliveryValidator = Joi.object({
       then: Joi.string().required(),
       otherwise: Joi.string().only(''),
     }),
-  cityId: Joi.string()
-    .when(SENT_BY, {
-      is: UKRPOST,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: NOVAPOSTCOURIER,
-      then: Joi.string().required(),
-    })
-    .when(SENT_BY, {
-      is: UKRPOSTCOURIER,
-      then: Joi.string().required(),
-      otherwise: Joi.string().only(''),
-    }),
+  cityId: Joi.string().allow('').when(SENT_BY, {
+    is: UKRPOST,
+    then: Joi.string().required(),
+  }),
   street: deliveryCheckerValidator,
   house: deliveryCheckerValidator,
   flat: Joi.string()
@@ -173,10 +155,37 @@ const nestedDeliveryValidator = Joi.object({
       otherwise: Joi.string().only(''),
     }),
   byCourier: Joi.boolean().required(),
-  cost: Joi.array().has({
-    currency: Joi.string().trim().required(),
-    value: Joi.number().required(),
+  messenger: Joi.string().allow('').when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
   }),
+  messengerPhone: Joi.string()
+    .allow('')
+    .when(SENT_BY, {
+      is: WORLDWIDE,
+      then: Joi.string().required().regex(numberRegExp),
+    }),
+  worldWideCountry: Joi.string().allow('').when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  stateOrProvince: Joi.string().allow(null, '').optional(),
+  worldWideCity: Joi.string().allow('').when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  worldWideStreet: Joi.string().allow('').when(SENT_BY, {
+    is: WORLDWIDE,
+    then: Joi.string().required(),
+  }),
+  cityCode: Joi.string()
+    .allow('')
+    .when(SENT_BY, {
+      is: WORLDWIDE,
+      then: Joi.string().required().regex(onlyNumbersRegExp),
+    }),
+
+  cost: Joi.number(),
 });
 
 const orderValidator = Joi.object({

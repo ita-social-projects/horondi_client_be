@@ -17,10 +17,8 @@ const createSize = async (size, operations) => {
             volumeInLiters
             weightInKg
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
           }
           ... on Error {
             statusCode
@@ -53,10 +51,8 @@ const deleteSize = async (id, operations) => {
             volumeInLiters
             weightInKg
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
           }
           ... on Error {
             message
@@ -88,10 +84,8 @@ const getAllSizes = async operations => {
             volumeInLiters
             weightInKg
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
           }
         }
       }
@@ -116,10 +110,8 @@ const getSizeById = async (id, operations) => {
           volumeInLiters
           weightInKg
           available
-          additionalPrice {
-            currency
-            value
-          }
+          absolutePrice
+          relativePrice
         }
       }
     `,
@@ -147,10 +139,8 @@ const updateSize = async (id, size, operations) => {
             volumeInLiters
             weightInKg
             available
-            additionalPrice {
-              currency
-              value
-            }
+            absolutePrice
+            relativePrice
           }
           ... on Error {
             statusCode

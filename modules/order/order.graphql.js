@@ -12,11 +12,12 @@ type Order {
   cancellationReason:  String
   delivery: Delivery
   items: [OrderItem]
-  totalItemsPrice: [CurrencySet]
-  totalPriceToPay: [CurrencySet]
+  totalItemsPrice: Int
+  totalPriceToPay: Int
   isPaid: Boolean
   paymentMethod: PaymentEnum
   paymentStatus: PaymentStatusEnum
+  fixedExchangeRate: Float
 }
 
 enum PaymentStatusEnum {
@@ -52,7 +53,7 @@ type OrderItem {
   constructorPattern: Pattern
   constructorFrontPocket: ConstructorFrontPocket
   constructorBottom: ConstructorBottom
-  fixedPrice: [CurrencySet]
+  fixedPrice: Int
 }
 type Delivery {
   sentOn: String
@@ -69,7 +70,14 @@ type Delivery {
   house: String,
   flat: String,
   byCourier: Boolean
-  cost: [CurrencySet]
+  messenger: String,
+  messengerPhone: String,
+  worldWideCountry: String,
+  stateOrProvince: String,
+  worldWideCity: String,
+  worldWideStreet: String,
+  cityCode: String
+  cost: Int
 }
 enum SendByEnum{
   NOVAPOST
@@ -77,6 +85,7 @@ enum SendByEnum{
   SELFPICKUP
   NOVAPOSTCOURIER
   UKRPOSTCOURIER
+  WORLDWIDE
 }
 type OrderUser {
   firstName: String
@@ -110,11 +119,6 @@ input OrderUserInput {
   phoneNumber: String
 }
 
-input CurrencyInputSet {
-  currency: String
-  value: Float
-}
-
 input DeliveryInput {
   sentOn: String
   sentBy: SendByEnum
@@ -130,7 +134,14 @@ input DeliveryInput {
   house: String,
   flat: String,
   byCourier: Boolean
-  cost: [CurrencyInputSet]
+  messenger: String,
+  messengerPhone: String,
+  worldWideCountry: String,
+  stateOrProvince: String,
+  worldWideCity: String,
+  worldWideStreet: String,
+  cityCode: String
+  cost: Int
 }
 
 input OrderItemInput {
@@ -140,12 +151,10 @@ input OrderItemInput {
   constructorBottom: ID
   constructorFrontPocket: ID
   constructorPattern: ID
-  actualPrice: [CurrencyInputSet]
   quantity: Int!
   isFromConstructor: Boolean
   options: ItemOptionsInput
-  fixedPrice: [CurrencyInputSet]
-  price: [CurrencyInputSet]
+  price: Int
 }
 input ItemOptionsInput{
   size: ID!

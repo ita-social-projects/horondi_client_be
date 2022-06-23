@@ -1,16 +1,7 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
 const orderStatus = 'CREATED';
 const paymentStatus = 'CREATED';
-const price = [
-  {
-    currency: 'UAH',
-    value: 50,
-  },
-  {
-    currency: 'USD',
-    value: 2,
-  },
-];
+const price = 2;
 const getOrdersInput = {
   filter: {
     date: { dateFrom: '', dateTo: '' },
@@ -53,7 +44,6 @@ const newOrderInputData = (
       options: {
         size: sizeId,
       },
-      fixedPrice: price,
       price,
     },
   ],
@@ -87,7 +77,6 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
       options: {
         size: sizeId,
       },
-      fixedPrice: price,
       price,
     },
   ],

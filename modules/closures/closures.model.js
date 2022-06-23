@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const ImageSet = require('../common/ImageSet').schema;
 const Language = require('../../models/Language').schema;
-const AdditionalCurrencySet =
-  require('../../models/AdditionalCurrencySet').schema;
+
 const {
   DB_COLLECTIONS_NAMES: { CLOSURE, MATERIAL, COLOR, MODEL, TRANSLATIONS },
 } = require('../../consts/db-collections-names');
@@ -14,6 +13,8 @@ const closureSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: MODEL,
   },
+  relativePrice: { type: Number, default: null },
+  absolutePrice: { type: Number, default: null },
   features: {
     material: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,7 +26,6 @@ const closureSchema = new mongoose.Schema({
     },
   },
   images: ImageSet,
-  additionalPrice: [AdditionalCurrencySet],
   translations_key: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,

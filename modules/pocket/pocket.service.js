@@ -1,5 +1,4 @@
 const Pocket = require('./pocket.model');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const uploadService = require('../upload/upload.service');
 const RuleError = require('../../errors/rule.error');
 const createTranslations = require('../../utils/createTranslations');
@@ -109,10 +108,6 @@ class PocketService {
       throw new RuleError(POCKET_NOT_FOUND, NOT_FOUND);
     }
 
-    pocket.additionalPrice = await calculateAdditionalPrice(
-      pocket.additionalPrice
-    );
-
     if (image) {
       if (pocketToUpdate.images) {
         const images = Object.values(pocketToUpdate.images).filter(
@@ -157,10 +152,6 @@ class PocketService {
       const uploadImage = await uploadService.uploadFile(image);
       pocket.images = uploadImage.fileNames;
     }
-
-    pocket.additionalPrice = await calculateAdditionalPrice(
-      pocket.additionalPrice
-    );
 
     pocket.translationsKey = await addTranslations(createTranslations(pocket));
 

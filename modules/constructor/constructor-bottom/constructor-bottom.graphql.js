@@ -6,7 +6,7 @@ const constructorBottomType = `
     model: Model
     features: ConstructorBottomFeatureSet
     image: String
-    basePrice: [CurrencySet]
+    basePrice: Int
     available: Boolean!
     customizable: Boolean
   }

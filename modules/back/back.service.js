@@ -6,7 +6,6 @@ const {
   updateTranslations,
   deleteTranslations,
 } = require('../translations/translations.service');
-const { calculateAdditionalPrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -101,8 +100,6 @@ class BackService {
       back.images = imageResults.fileNames;
     }
 
-    back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
-
     const updatedBack = await Back.findByIdAndUpdate(id, back, {
       new: true,
     }).exec();
@@ -175,8 +172,6 @@ class BackService {
       const uploadImage = await uploadService.uploadFile(image);
       back.images = uploadImage.fileNames;
     }
-
-    back.additionalPrice = await calculateAdditionalPrice(back.additionalPrice);
 
     back.translationsKey = await addTranslations(createTranslations(back));
 

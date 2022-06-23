@@ -8,13 +8,8 @@ const createOrder = async (order, operations) => {
           ... on Order {
             _id
             orderNumber
-            totalItemsPrice {
-              currency
-              value
-            }
-            totalPriceToPay {
-              currency
-            }
+            totalItemsPrice
+            totalPriceToPay
             status
             paymentStatus
             recipient {
@@ -30,11 +25,7 @@ const createOrder = async (order, operations) => {
               sentBy
               invoiceNumber
               courierOffice
-
-              cost {
-                currency
-                value
-              }
+              cost
             }
             items {
               product {
@@ -62,10 +53,7 @@ const createOrder = async (order, operations) => {
               }
 
               quantity
-              fixedPrice {
-                currency
-                value
-              }
+              fixedPrice
             }
           }
           ... on Error {
@@ -196,14 +184,8 @@ const getAllOrders = async (filter, sort, operations) => {
             paymentStatus
             orderNumber
             dateOfCreation
-            totalItemsPrice {
-              currency
-              value
-            }
-            totalPriceToPay {
-              currency
-              value
-            }
+            totalItemsPrice
+            totalPriceToPay
           }
           count
         }
@@ -250,10 +232,7 @@ const getOrdersByUser = async (filter, sort, userId, operations) => {
             paymentStatus
             orderNumber
             dateOfCreation
-            totalItemsPrice {
-              currency
-              value
-            }
+            totalItemsPrice
           }
           count
         }
@@ -286,10 +265,7 @@ const getOrderById = async (id, operations) =>
               sentBy
               invoiceNumber
               courierOffice
-              cost {
-                currency
-                value
-              }
+              cost
             }
             items {
               product {
@@ -317,10 +293,7 @@ const getOrderById = async (id, operations) =>
               }
 
               quantity
-              fixedPrice {
-                currency
-                value
-              }
+              fixedPrice
             }
           }
           ... on Error {
@@ -340,13 +313,8 @@ const updateOrderById = async (order, id, operations) => {
         updateOrder(order: $order, id: $id) {
           ... on Order {
             _id
-            totalItemsPrice {
-              currency
-              value
-            }
-            totalPriceToPay {
-              currency
-            }
+            totalItemsPrice
+            totalPriceToPay
             status
             user_id
             paymentStatus
@@ -362,10 +330,7 @@ const updateOrderById = async (order, id, operations) => {
               sentBy
               invoiceNumber
               courierOffice
-              cost {
-                currency
-                value
-              }
+              cost
             }
             items {
               product {
@@ -393,10 +358,7 @@ const updateOrderById = async (order, id, operations) => {
               }
 
               quantity
-              fixedPrice {
-                currency
-                value
-              }
+              fixedPrice
             }
           }
           ... on Error {

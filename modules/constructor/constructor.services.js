@@ -1,5 +1,4 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
-const { calculateBasePrice } = require('../currency/currency.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -86,10 +85,6 @@ class ConstructorService {
       constructorElement.image = await uploadSmallImage(upload);
     }
 
-    constructorElement.basePrice = await calculateBasePrice(
-      constructorElement.basePrice
-    );
-
     const basic = await new Model(constructorElement).save();
     const historyEvent = {
       action: ADD_EVENT,
@@ -132,10 +127,6 @@ class ConstructorService {
       await uploadService.deleteFile(constructorFountElement.image);
       constructorElement.image = await uploadSmallImage(upload);
     }
-
-    constructorElement.basePrice = await calculateBasePrice(
-      constructorElement.basePrice
-    );
 
     const updatedBasic = await model.findByIdAndUpdate(id, constructorElement, {
       new: true,

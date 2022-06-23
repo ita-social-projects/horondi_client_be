@@ -18,12 +18,28 @@ const businessTextQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
+  getBusinessTextByCodeWithPopulatedTranslationsKey: async (_, { code }) => {
+    try {
+      return await businessTextService.getBusinessTextByCodeWithPopulatedTranslationsKey(
+        code
+      );
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
 };
 
 const businessTextMutation = {
-  addBusinessText: async (parent, { businessText, files }) => {
+  addBusinessText: async (
+    parent,
+    { businessText, businessTextTranslationFields, files }
+  ) => {
     try {
-      return await businessTextService.addBusinessText(businessText, files);
+      return await businessTextService.addBusinessText(
+        businessText,
+        businessTextTranslationFields,
+        files
+      );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
@@ -41,7 +57,9 @@ const businessTextMutation = {
       return await businessTextService.updateBusinessText(
         args.id,
         args.businessText,
-        args.files
+        args.businessTextTranslationFields,
+        args.files,
+        args.populated || false
       );
     } catch (e) {
       return new RuleError(e.message, e.statusCode);

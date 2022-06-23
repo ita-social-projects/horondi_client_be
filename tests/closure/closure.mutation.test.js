@@ -110,7 +110,7 @@ describe('Closure mutations', () => {
     expect(updatedClosure).toBeDefined();
     expect(updatedClosure).toEqual({
       _id: closureId,
-      additionalPrice: finalClosure.additionalPrice,
+      absolutePrice: finalClosure.absolutePrice,
       ...finalClosure,
     });
   });
