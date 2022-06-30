@@ -26,6 +26,8 @@ const {
   generateOrderNumber,
   addProductsToStatistic,
   updateProductStatistic,
+  calculateItemsPriceWithDiscount,
+  includesDiscountedProduct,
 } = require('../../utils/order.utils');
 
 class OrdersService {
@@ -176,14 +178,24 @@ class OrdersService {
     await updateProductStatistic(orderToUpdate, data);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
-    const totalPriceToPay = await calculateTotalPriceToPay(
-      order,
-      totalItemsPrice
+    let totalPriceToPay = totalItemsPrice;
+    const itemsPriceWithDiscount = await calculateItemsPriceWithDiscount(
+      data.promoCodeId,
+      items
     );
+    const itemsDiscount = await includesDiscountedProduct(
+      data.promoCodeId,
+      items
+    );
+    if (data.promoCodeId) {
+      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
+    }
 
     const orderUpdate = {
       ...order,
       totalItemsPrice,
+      itemsPriceWithDiscount,
+      itemsDiscount,
       totalPriceToPay,
     };
 
@@ -202,11 +214,18 @@ class OrdersService {
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderNumber();
-
-    const totalPriceToPay = await calculateTotalPriceToPay(
-      data,
-      totalItemsPrice
+    let totalPriceToPay = totalItemsPrice;
+    const itemsDiscount = await includesDiscountedProduct(
+      data.promoCodeId,
+      items
     );
+    const itemsPriceWithDiscount = await calculateItemsPriceWithDiscount(
+      data.promoCodeId,
+      items
+    );
+    if (data.promoCodeId) {
+      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
+    }
 
     const { convertOptions } = await Currency.findOne().exec();
 
@@ -216,6 +235,8 @@ class OrdersService {
       ...data,
       totalItemsPrice,
       totalPriceToPay,
+      itemsPriceWithDiscount,
+      itemsDiscount,
       orderNumber,
       fixedExchangeRate: exchangeRate,
     };

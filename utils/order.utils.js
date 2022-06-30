@@ -1,4 +1,6 @@
 const productModel = require('../modules/product/product.model');
+const CategoryModel = require('../modules/category/category.model');
+const { PromocodeModel } = require('../modules/promo-code/promo-code.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
@@ -19,8 +21,59 @@ async function calculateTotalItemsPrice(items) {
   }, 0);
 }
 
-function calculateTotalPriceToPay(data, totalItemsPrice) {
-  return totalItemsPrice;
+async function includesDiscountedProduct(promoCodeId, items) {
+  if (promoCodeId) {
+    const promoCode = await PromocodeModel.findById(promoCodeId).exec();
+    const { discount, categories } = promoCode;
+
+    return Promise.all(
+      items.map(async item => {
+        const product = await productModel.findById(item.product).exec();
+        const category = await CategoryModel.findById(product.category).exec();
+        const isAllowCategory = categories.find(
+          name => name.toLowerCase() === category.code.toLowerCase()
+        );
+        if (isAllowCategory) {
+          return discount;
+        }
+
+        return 0;
+      })
+    );
+  }
+
+  return Promise.all(items.map(() => 0));
+}
+
+async function calculateItemsPriceWithDiscount(promoCodeId, items) {
+  if (promoCodeId) {
+    const promoCode = await PromocodeModel.findById(promoCodeId).exec();
+    const { discount, categories } = promoCode;
+
+    return Promise.all(
+      items.map(async item => {
+        const product = await productModel.findById(item.product).exec();
+        const category = await CategoryModel.findById(product.category).exec();
+        const isAllowCategory = categories.find(
+          name => name.toLowerCase() === category.code.toLowerCase()
+        );
+        if (isAllowCategory) {
+          return (
+            Math.round(item.fixedPrice - (item.fixedPrice / 100) * discount) *
+            item.quantity
+          );
+        }
+
+        return item.fixedPrice * item.quantity;
+      })
+    );
+  }
+
+  return items.map(item => item.fixedPrice * item.quantity);
+}
+
+async function calculateTotalPriceToPay(itemsPriceWithDiscount) {
+  return itemsPriceWithDiscount.reduce((prev, price) => prev + price, 0);
 }
 
 function generateOrderNumber() {
@@ -88,4 +141,6 @@ module.exports = {
   calculateTotalItemsPrice,
   addProductsToStatistic,
   updateProductStatistic,
+  calculateItemsPriceWithDiscount,
+  includesDiscountedProduct,
 };
