@@ -26,8 +26,7 @@ const {
   generateOrderNumber,
   addProductsToStatistic,
   updateProductStatistic,
-  calculateItemsPriceWithDiscount,
-  includesDiscountedProduct,
+  calculateProductsPriceWithDiscount,
 } = require('../../utils/order.utils');
 
 class OrdersService {
@@ -179,14 +178,12 @@ class OrdersService {
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     let totalPriceToPay = totalItemsPrice;
-    const itemsPriceWithDiscount = await calculateItemsPriceWithDiscount(
-      data.promoCodeId,
-      items
-    );
-    const itemsDiscount = await includesDiscountedProduct(
-      data.promoCodeId,
-      items
-    );
+
+    const {
+      discounts: itemsDiscount,
+      priceWithDiscount: itemsPriceWithDiscount,
+    } = await calculateProductsPriceWithDiscount(data.promoCodeId, items);
+
     if (data.promoCodeId) {
       totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
     }
@@ -215,14 +212,12 @@ class OrdersService {
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderNumber();
     let totalPriceToPay = totalItemsPrice;
-    const itemsDiscount = await includesDiscountedProduct(
-      data.promoCodeId,
-      items
-    );
-    const itemsPriceWithDiscount = await calculateItemsPriceWithDiscount(
-      data.promoCodeId,
-      items
-    );
+
+    const {
+      discounts: itemsDiscount,
+      priceWithDiscount: itemsPriceWithDiscount,
+    } = await calculateProductsPriceWithDiscount(data.promoCodeId, items);
+
     if (data.promoCodeId) {
       totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
     }

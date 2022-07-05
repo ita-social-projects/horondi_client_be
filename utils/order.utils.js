@@ -21,55 +21,38 @@ async function calculateTotalItemsPrice(items) {
   }, 0);
 }
 
-async function includesDiscountedProduct(promoCodeId, items) {
+async function calculateProductsPriceWithDiscount(promoCodeId, products) {
   if (promoCodeId) {
+    const discounts = [];
+    const priceWithDiscount = [];
     const promoCode = await PromocodeModel.findById(promoCodeId).exec();
     const { discount, categories } = promoCode;
 
-    return Promise.all(
-      items.map(async item => {
-        const product = await productModel.findById(item.product).exec();
-        const category = await CategoryModel.findById(product.category).exec();
-        const isAllowCategory = categories.find(
-          name => name.toLowerCase() === category.code.toLowerCase()
-        );
-        if (isAllowCategory) {
-          return discount;
-        }
-
-        return 0;
-      })
-    );
-  }
-
-  return Promise.all(items.map(() => 0));
-}
-
-async function calculateItemsPriceWithDiscount(promoCodeId, items) {
-  if (promoCodeId) {
-    const promoCode = await PromocodeModel.findById(promoCodeId).exec();
-    const { discount, categories } = promoCode;
-
-    return Promise.all(
-      items.map(async item => {
-        const product = await productModel.findById(item.product).exec();
-        const category = await CategoryModel.findById(product.category).exec();
-        const isAllowCategory = categories.find(
-          name => name.toLowerCase() === category.code.toLowerCase()
-        );
-        if (isAllowCategory) {
-          return (
-            Math.round(item.fixedPrice - (item.fixedPrice / 100) * discount) *
+    for (const item of products) {
+      const product = await productModel.findById(item.product).exec();
+      const category = await CategoryModel.findById(product.category).exec();
+      const isAllowCategory = categories.find(
+        name => name.toLowerCase() === category.code.toLowerCase()
+      );
+      if (isAllowCategory) {
+        discounts.push(discount);
+        priceWithDiscount.push(
+          Math.round(item.fixedPrice - (item.fixedPrice / 100) * discount) *
             item.quantity
-          );
-        }
+        );
+      } else {
+        discounts.push(0);
+        priceWithDiscount.push(item.fixedPrice * item.quantity);
+      }
+    }
 
-        return item.fixedPrice * item.quantity;
-      })
-    );
+    return { discounts, priceWithDiscount };
   }
 
-  return items.map(item => item.fixedPrice * item.quantity);
+  return {
+    discounts: products.map(() => 0),
+    priceWithDiscount: products.map(item => item.fixedPrice * item.quantity),
+  };
 }
 
 async function calculateTotalPriceToPay(itemsPriceWithDiscount) {
@@ -141,6 +124,5 @@ module.exports = {
   calculateTotalItemsPrice,
   addProductsToStatistic,
   updateProductStatistic,
-  calculateItemsPriceWithDiscount,
-  includesDiscountedProduct,
+  calculateProductsPriceWithDiscount,
 };
