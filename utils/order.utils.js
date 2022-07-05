@@ -55,7 +55,7 @@ async function calculateProductsPriceWithDiscount(promoCodeId, products) {
   };
 }
 
-async function calculateTotalPriceToPay(itemsPriceWithDiscount) {
+function calculateTotalPriceToPay(itemsPriceWithDiscount) {
   return itemsPriceWithDiscount.reduce((prev, price) => prev + price, 0);
 }
 

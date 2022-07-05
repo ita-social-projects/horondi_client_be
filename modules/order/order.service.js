@@ -219,7 +219,7 @@ class OrdersService {
     } = await calculateProductsPriceWithDiscount(data.promoCodeId, items);
 
     if (data.promoCodeId) {
-      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
+      totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount);
     }
 
     const { convertOptions } = await Currency.findOne().exec();
