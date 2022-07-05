@@ -26,6 +26,7 @@ const constructorType = `
     straps: [Strap]
     closures: [Closure]
     pocketsWithRestrictions: [PocketsWithRestrictions]
+    basePrice: Int
   }
 `;
 
@@ -56,6 +57,7 @@ const constructorInputs = `
     straps: [ID!]
     closures: [ID!]
     pocketsWithRestrictions: [PocketsWithRestrictionsInput!]
+    basePrice: Float
   }
 
   input ConstructorFilterInput{

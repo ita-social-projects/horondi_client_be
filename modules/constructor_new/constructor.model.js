@@ -86,6 +86,7 @@ const constructorSchema = new mongoose.Schema({
       ],
     },
   ],
+  basePrice: Number,
 });
 
 module.exports = mongoose.model(CONSTRUCTOR, constructorSchema);

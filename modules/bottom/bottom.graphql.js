@@ -6,6 +6,7 @@ const bottomType = `
     features: BottomFeatureSet
     images: ImageSet
     absolutePrice: Int
+    relativePrice: Int
     available: Boolean
     translationsKey: ID
   }
@@ -24,7 +25,8 @@ const bottomInputs = `
     optionType: String
     features: BottomFeatureSetInput
     image: Upload
-    absolutePrice: Int!
+    absolutePrice: Int
+    relativePrice: Int
     available: Boolean
   }
 

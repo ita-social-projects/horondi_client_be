@@ -81,6 +81,7 @@ const inputBottomValidator = Joi.object({
   }),
   image: Joi.string(),
   absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
 });
 
@@ -92,6 +93,7 @@ const inputStrapValidator = Joi.object({
   }),
   image: Joi.string().trim().optional(),
   absolutePrice: Joi.number().integer().allow(null),
+  relativePrice: Joi.number().integer().allow(null),
   available: Joi.boolean().required(),
 });
 
@@ -171,6 +173,7 @@ const inputConstructorValidator = Joi.object({
   backs: Joi.array().required(),
   straps: Joi.array().required(),
   closures: Joi.array().required(),
+  basePrice: Joi.number().required(),
   pocketsWithRestrictions: Joi.array().required(),
   image: Joi.string().trim().optional(),
 });

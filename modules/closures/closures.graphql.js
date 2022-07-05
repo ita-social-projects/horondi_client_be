@@ -7,6 +7,7 @@ const closureType = `
     features: ClosureFeatureSet
     images: ImageSet
     absolutePrice: Int
+    relativePrice: Int
     available: Boolean
     customizable: Boolean
     translations_key: ID!
@@ -27,7 +28,8 @@ const closureInputs = `
     model: ID
     features: ClosureFeatureSetInput
     images: ImageSetInput
-    absolutePrice: Int!
+    absolutePrice: Int
+    relativePrice: Int
     available: Boolean
     customizable: Boolean
   }
