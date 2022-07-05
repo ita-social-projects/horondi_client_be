@@ -900,7 +900,7 @@ const typeDefs = gql`
     rate: Int!
   }
   type Mutation {
-    addMaterialsBlock(materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
+    addMaterialsBlock(materialsBlock: MaterialsBlockInput!, image: Upload): MaterialsBlockResult
     deleteMaterialsBlock(id: ID!): MaterialsBlockResult
     updateMaterialsBlock(id: ID!
     materialsBlock: MaterialsBlockInput!): MaterialsBlockResult

@@ -3,7 +3,7 @@ type MaterialsBlock {
     _id: ID!
     title: String
     type: String!
-    image: String
+    image: ImageSet
     text: [Language]!
     translationsKey: ID!
   }
@@ -16,7 +16,7 @@ type MaterialsBlock {
 
 const MaterialsBlockInput = `
 input MaterialsBlockInput {
-    image: String
+    image: Upload
     title: String
     type: String
     text: [LanguageInput]

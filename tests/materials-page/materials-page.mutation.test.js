@@ -12,6 +12,9 @@ const {
 
 let materialsBlock;
 let operations;
+const image = 'img.jpg';
+
+jest.mock('../../modules/upload/upload.service');
 
 describe('MaterialsBlocks queries', () => {
   beforeAll(async () => {
@@ -21,9 +24,13 @@ describe('MaterialsBlocks queries', () => {
   afterAll(async () => deleteMaterialsBlock(materialsBlock._id, operations));
 
   it('should add material-about to database', async () => {
-    materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
+    materialsBlock = await addMaterialsBlock(
+      newMaterialsBlock,
+      image,
+      operations
+    );
 
-    expect(materialsBlock.image).toEqual('url');
+    expect(materialsBlock.title).toEqual('title');
   });
 
   it('Should update material-about block', async () => {
@@ -41,6 +48,6 @@ describe('MaterialsBlocks queries', () => {
 
     materialsBlock = res.data.deleteMaterialsBlock;
 
-    expect(materialsBlock).toHaveProperty('image', newMaterialsBlock.image);
+    expect(materialsBlock).toHaveProperty('title', updatedMaterialsBlock.title);
   });
 });
