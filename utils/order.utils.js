@@ -1,12 +1,11 @@
 const productModel = require('../modules/product/product.model');
-const CategoryModel = require('../modules/category/category.model');
 const { PromocodeModel } = require('../modules/promo-code/promo-code.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
 
-async function calculateTotalItemsPrice(items) {
-  return items.reduce(async (prev, item) => {
+const calculateTotalItemsPrice = async items =>
+  items.reduce(async (prev, item) => {
     const sum = await prev;
 
     const product = await productModel.findById(item.product).exec();
@@ -19,9 +18,8 @@ async function calculateTotalItemsPrice(items) {
 
     return price * item.quantity + sum;
   }, 0);
-}
 
-async function calculateProductsPriceWithDiscount(promoCodeId, products) {
+const calculateProductsPriceWithDiscount = async (promoCodeId, products) => {
   if (promoCodeId) {
     const discounts = [];
     const priceWithDiscount = [];
@@ -29,9 +27,12 @@ async function calculateProductsPriceWithDiscount(promoCodeId, products) {
     const { discount, categories } = promoCode;
 
     for (const item of products) {
-      const product = await productModel.findById(item.product).exec();
-      const category = await CategoryModel.findById(product.category).exec();
-      const isAllowCategory = categories.find(
+      const { category } = await productModel
+        .findById(item.product)
+        .populate({ path: 'category', select: 'code' })
+        .exec();
+
+      const isAllowCategory = categories.some(
         name => name.toLowerCase() === category.code.toLowerCase()
       );
       if (isAllowCategory) {
@@ -53,19 +54,18 @@ async function calculateProductsPriceWithDiscount(promoCodeId, products) {
     discounts: products.map(() => 0),
     priceWithDiscount: products.map(item => item.fixedPrice * item.quantity),
   };
-}
+};
 
-function calculateTotalPriceToPay(itemsPriceWithDiscount) {
-  return itemsPriceWithDiscount.reduce((prev, price) => prev + price, 0);
-}
+const calculateTotalPriceToPay = itemsPriceWithDiscount =>
+  itemsPriceWithDiscount.reduce((prev, price) => prev + price, 0);
 
-function generateOrderNumber() {
+const generateOrderNumber = () => {
   const uid = new Date().getTime();
 
   return uid.toString();
-}
+};
 
-async function addProductsToStatistic(items) {
+const addProductsToStatistic = async items => {
   items.forEach(async item => {
     if (item.quantity !== 0) {
       const product = await productModel.findById(item.product).exec();
@@ -73,9 +73,9 @@ async function addProductsToStatistic(items) {
       await product.save();
     }
   });
-}
+};
 
-async function updateProductStatistic(orderToUpdate, newOrder) {
+const updateProductStatistic = async (orderToUpdate, newOrder) => {
   if (
     (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
     (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
@@ -116,7 +116,7 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
     items.push(...oldItems);
     await addProductsToStatistic(items);
   }
-}
+};
 
 module.exports = {
   calculateTotalPriceToPay,

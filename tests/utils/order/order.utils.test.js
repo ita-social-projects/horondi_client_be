@@ -1,4 +1,3 @@
-const categoryModel = require('../../../modules/category/category.model');
 const productModel = require('../../../modules/product/product.model');
 const {
   PromocodeModel,
@@ -27,22 +26,10 @@ jest.spyOn(PromocodeModel, 'findById').mockImplementation(() => ({
 }));
 
 jest.spyOn(productModel, 'findById').mockImplementation(() => ({
-  exec: () => ({
-    category: '13214141414',
-    sizes: [
-      {
-        size: {
-          _id: '34141134141',
-        },
-        price: 171,
-      },
-    ],
-  }),
-}));
-
-jest.spyOn(categoryModel, 'findById').mockImplementation(() => ({
-  exec: () => ({
-    code: 'accessories',
+  populate: () => ({
+    exec: () => ({
+      category: { code: 'accessories' },
+    }),
   }),
 }));
 
@@ -50,12 +37,6 @@ const emptyPromoCode = '';
 let result;
 
 describe('order', () => {
-  it('calculateTotalItemsPrice function', async () => {
-    result = await calculateTotalItemsPrice(productItemMock);
-
-    expect(result).toBe(342);
-  });
-
   it('calculateTotalPriceToPay function', () => {
     result = calculateTotalPriceToPay(itemsPriceWithDiscount);
 
@@ -81,9 +62,11 @@ describe('order', () => {
   });
 
   it('calculateProductsPriceWithDiscount function with promoCode but without discount ', async () => {
-    jest.spyOn(categoryModel, 'findById').mockImplementation(() => ({
-      exec: () => ({
-        code: 'bugs',
+    jest.spyOn(productModel, 'findById').mockImplementation(() => ({
+      populate: () => ({
+        exec: () => ({
+          category: { code: 'bags' },
+        }),
       }),
     }));
 
@@ -93,5 +76,24 @@ describe('order', () => {
     );
 
     expect(result).toEqual(priceWithPromocodeWithoutDiscount);
+  });
+
+  it('calculateTotalItemsPrice function', async () => {
+    jest.spyOn(productModel, 'findById').mockImplementation(() => ({
+      exec: () => ({
+        sizes: [
+          {
+            size: {
+              _id: '34141134141',
+            },
+            price: 171,
+          },
+        ],
+      }),
+    }));
+
+    result = await calculateTotalItemsPrice(productItemMock);
+
+    expect(result).toBe(342);
   });
 });
