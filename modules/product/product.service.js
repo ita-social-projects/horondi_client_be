@@ -213,11 +213,6 @@ class ProductsService {
             $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
           },
         },
-        {
-          description: {
-            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
-          },
-        },
       ];
     }
 
