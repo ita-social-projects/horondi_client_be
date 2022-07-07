@@ -2,6 +2,7 @@ FROM node:14.15.3
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
+COPY . .
 ARG password
 RUN apt-get update \
     && apt-get install -y openssh-server \
