@@ -57,12 +57,13 @@ stages:
         name: stagingBuild
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
         inputs:
-         containerregistrytype: 'Azure Container Registry'
-         azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
-         azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
-         action: 'Build an image'
-         dockerFile: '**/Dockerfile'
-         imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+          containerregistrytype: 'Azure Container Registry'
+          azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+          azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
+          action: 'Build an image'
+          dockerFile: '**/Dockerfile'
+          buildArguments: 'password=$(pass)'
+          imageName: '$(Build.Repository.Name):$(Build.BuildId)'
       - task: Docker@0
         name: deployedStaging
         displayName: 'Push an image'
