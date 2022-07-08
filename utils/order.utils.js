@@ -1,10 +1,11 @@
 const productModel = require('../modules/product/product.model');
+const { PromocodeModel } = require('../modules/promo-code/promo-code.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
 
-async function calculateTotalItemsPrice(items) {
-  return items.reduce(async (prev, item) => {
+const calculateTotalItemsPrice = async items =>
+  items.reduce(async (prev, item) => {
     const sum = await prev;
 
     const product = await productModel.findById(item.product).exec();
@@ -17,19 +18,54 @@ async function calculateTotalItemsPrice(items) {
 
     return price * item.quantity + sum;
   }, 0);
-}
 
-function calculateTotalPriceToPay(data, totalItemsPrice) {
-  return totalItemsPrice;
-}
+const calculateProductsPriceWithDiscount = async (promoCodeId, products) => {
+  if (promoCodeId) {
+    const discounts = [];
+    const priceWithDiscount = [];
+    const promoCode = await PromocodeModel.findById(promoCodeId).exec();
+    const { discount, categories } = promoCode;
 
-function generateOrderNumber() {
+    for (const item of products) {
+      const { category } = await productModel
+        .findById(item.product)
+        .populate({ path: 'category', select: 'code' })
+        .exec();
+
+      const isAllowCategory = categories.some(
+        name => name.toLowerCase() === category.code.toLowerCase()
+      );
+      if (isAllowCategory) {
+        discounts.push(discount);
+        priceWithDiscount.push(
+          Math.round(item.fixedPrice - (item.fixedPrice / 100) * discount) *
+            item.quantity
+        );
+      } else {
+        discounts.push(0);
+        priceWithDiscount.push(item.fixedPrice * item.quantity);
+      }
+    }
+
+    return { discounts, priceWithDiscount };
+  }
+
+  return {
+    discounts: products.map(() => 0),
+    priceWithDiscount: products.map(item => item.fixedPrice * item.quantity),
+  };
+};
+
+const calculateTotalPriceToPay = itemsPriceWithDiscount =>
+  itemsPriceWithDiscount.reduce((prev, price) => prev + price, 0);
+
+const generateOrderNumber = () => {
   const uid = new Date().getTime();
 
   return uid.toString();
-}
+};
 
-async function addProductsToStatistic(items) {
+const addProductsToStatistic = async items => {
   items.forEach(async item => {
     if (item.quantity !== 0) {
       const product = await productModel.findById(item.product).exec();
@@ -37,9 +73,9 @@ async function addProductsToStatistic(items) {
       await product.save();
     }
   });
-}
+};
 
-async function updateProductStatistic(orderToUpdate, newOrder) {
+const updateProductStatistic = async (orderToUpdate, newOrder) => {
   if (
     (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
     (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
@@ -80,7 +116,7 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
     items.push(...oldItems);
     await addProductsToStatistic(items);
   }
-}
+};
 
 module.exports = {
   calculateTotalPriceToPay,
@@ -88,4 +124,5 @@ module.exports = {
   calculateTotalItemsPrice,
   addProductsToStatistic,
   updateProductStatistic,
+  calculateProductsPriceWithDiscount,
 };

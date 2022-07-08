@@ -18,6 +18,9 @@ type Order {
   paymentMethod: PaymentEnum
   paymentStatus: PaymentStatusEnum
   fixedExchangeRate: Float
+  promoCodeId: String
+  itemsPriceWithDiscount: [Int]
+  itemsDiscount: [Int]
 }
 
 enum PaymentStatusEnum {
@@ -110,6 +113,7 @@ input OrderInput {
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
   user_id: ID
+  promoCodeId: String
 }
 
 input OrderUserInput {
