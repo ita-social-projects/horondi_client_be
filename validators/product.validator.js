@@ -22,7 +22,7 @@ const productInputValidator = Joi.object({
   strapLengthInCm: Joi.number().integer().min(0).required(),
   pattern: Joi.string().required(),
   closure: Joi.string().required(),
-  sizes: Joi.array().items(Joi.string().required()).required(),
+  sizes: Joi.array().items(Joi.string().required()).required(), // marked
   images: Joi.array(),
   availableCount: Joi.number().integer(),
   basePrice: Joi.number().min(0).required(),
@@ -36,7 +36,7 @@ const productFromConstructorInputValidator = Joi.object({
   mainMaterial: constructorMaterialsValidator,
   bottomMaterial: constructorMaterialsValidator,
   pattern: Joi.string(),
-  sizes: Joi.array().items(Joi.string().required()).required(),
+  sizes: Joi.array().items(Joi.string().required()).required(), // marked
   images: Joi.array(),
   basePrice: Joi.number().min(0).required(),
 });

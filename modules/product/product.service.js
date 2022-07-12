@@ -9,6 +9,7 @@ const {
   PRODUCT_NOT_FOUND,
   PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
+const { SIZE_NOT_FOUND } = require('../../error-messages/size.messages');
 const createTranslations = require('../../utils/createTranslations');
 const {
   addTranslations,
@@ -237,9 +238,11 @@ class ProductsService {
     primary,
     { _id: adminId }
   ) {
-    const matchPrimaryInUpload = filesToUpload.filter(
-      item => item.large === productData.images[0].primary.large
-    );
+    const matchPrimaryInUpload =
+      filesToUpload &&
+      filesToUpload.filter(
+        item => item.large === productData.images[0].primary.large
+      );
     productData.images = {
       primary: {
         large: LARGE_SAD_BACKPACK,
@@ -297,6 +300,7 @@ class ProductsService {
         },
       ];
     }
+    productData.model = await modelService.getModelById(productData.model);
     productData.sizes = await finalPriceCalculation(productData);
 
     const { beforeChanges, afterChanges } = getChanges(product, productData);
@@ -392,7 +396,7 @@ class ProductsService {
 
     productData.model = await modelService.getModelById(productData.model);
 
-    productData.sizes = await finalPriceCalculationForConstructor(productData);
+    productData.sizes = await finalPriceCalculationForConstructor(productData); // marked
 
     const translations = await addTranslations(createTranslations(productData));
     productData.translationsKey = translations._id;
@@ -548,6 +552,20 @@ class ProductsService {
     const { wishlist } = await User.findById(userId).exec();
 
     return Product.find({ _id: { $in: wishlist } }).exec();
+  }
+
+  async getProductSizeById(productId, sizeId) {
+    const product = await this.getProductById(productId);
+    const model = await modelService.getModelById(product.model);
+    const productSizes = product.sizes.map(size => size.size.toString());
+    const sizesToSearchIn = modelService.getModelSizes(model, productSizes);
+
+    const foundSize = sizesToSearchIn.find(size => size._id.equals(sizeId));
+    if (!foundSize) {
+      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    }
+
+    return foundSize;
   }
 
   async updatePrices(path, id) {

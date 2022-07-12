@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { sizeInputValidator } = require('./size.validator');
 
 const modelValidator = Joi.object({
   category: Joi.string().required(),
@@ -22,7 +23,8 @@ const modelValidator = Joi.object({
   }),
   priority: Joi.number().integer(),
   show: Joi.boolean(),
-  sizes: Joi.array().items(Joi.string()),
+  // sizes: Joi.array().items(Joi.string()),
+  sizes: Joi.array().items(sizeInputValidator),
   availableForConstructor: Joi.boolean(),
   eligibleOptions: Joi.object({
     constructorBasic: Joi.array().items(Joi.string()),
