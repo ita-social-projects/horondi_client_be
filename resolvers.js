@@ -154,7 +154,6 @@ const {
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
 const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
 const constructorServices = require('./modules/constructor/constructor.services');
@@ -237,6 +236,7 @@ const SCHEMA_NAMES = {
 const {
   constructorPocketHelper,
 } = require('./helpers/constructor-pocket-helper');
+const productService = require('./modules/product/product.service');
 
 const resolvers = {
   Subscription: {
@@ -364,9 +364,9 @@ const resolvers = {
       parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
   },
 
-  Size: {
-    model: parent => modelService.getModelById(parent.modelId),
-  },
+  // Size: {
+  //   model: parent => modelService.getModelById(parent.modelId),
+  // },
 
   Comment: {
     product: parent => productsService.getProductById(parent.product),
@@ -420,7 +420,7 @@ const resolvers = {
     closure: parent => closuresService.getClosureById(parent.closure),
     sizes: parent =>
       parent.sizes.map(size => ({
-        size: sizeService.getSizeById(size.size),
+        size: modelService.getModelSizeById(parent.model, size.size),
         price: size.price,
       })),
   },
@@ -451,7 +451,10 @@ const resolvers = {
             ),
             model: modelService.getModelById(item.model),
             options: {
-              size: sizeService.getSizeById(item.options.size),
+              size: modelService.getModelSizeById(
+                item.model,
+                item.options.size
+              ),
               sidePocket: item.options.sidePocket,
             },
             isFromConstructor: item.isFromConstructor,
@@ -465,7 +468,10 @@ const resolvers = {
           isFromConstructor: item.isFromConstructor,
           quantity: item.quantity,
           options: {
-            size: sizeService.getSizeById(item.options.size),
+            size: productService.getProductSizeById(
+              item.product,
+              item.options.size
+            ),
             sidePocket: item.options.sidePocket,
           },
           product: productsService.getProductById(item.product),
@@ -481,7 +487,7 @@ const resolvers = {
   },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
-    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
+    // sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
     eligibleOptions: parent => ({
       constructorBottom: () =>
         parent.eligibleOptions.constructorBottom.map(el =>

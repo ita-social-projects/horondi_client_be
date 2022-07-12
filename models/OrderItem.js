@@ -5,7 +5,7 @@ const {
     ORDER_ITEM,
     PRODUCT,
     MODEL,
-    SIZE,
+    // SIZE,
     CONSTRUCTOR_BASICS,
     CONSTRUCTOR_BOTTOM,
     CONSTRUCTOR_FRONT_POCKET,
@@ -34,7 +34,7 @@ const orderItemSchema = new mongoose.Schema({
   options: {
     size: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: SIZE,
+      // ref: SIZE,
     },
     sidePocket: {
       type: Boolean,

@@ -120,6 +120,20 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
+    data.sizes = [
+      // testing size
+      {
+        name: 'XL',
+        heightInCm: 5,
+        widthInCm: 5,
+        depthInCm: 5,
+        volumeInLiters: 5,
+        weightInKg: 5,
+        available: false,
+        absolutePrice: 5,
+        relativePrice: null,
+      },
+    ];
     data.translationsKey = await addTranslations(createTranslations(data));
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
@@ -333,6 +347,22 @@ class ModelsService {
       { $pull: { constructorBottom: constructorElementID } },
       { safe: true, upsert: true }
     );
+  }
+
+  getModelSizes(model, sizeIDs) {
+    if (!model || !model.sizes || !model.sizes.length) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
+
+    return model.sizes.filter(size =>
+      sizeIDs.some(id => id === size._id.toString())
+    );
+  }
+
+  async getModelSizeById(modelId, sizeId) {
+    const model = await this.getModelById(modelId);
+
+    return model.sizes.find(size => size._id.equals(sizeId));
   }
 }
 
