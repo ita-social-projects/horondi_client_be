@@ -5,17 +5,15 @@ const newMaterialsBlock = {
     { lang: 'en', value: 'English' },
     { lang: 'ua', value: 'Українська' },
   ],
-  image: 'url',
 };
 
 const updatedMaterialsBlock = {
-  title: 'title',
+  title: 'newTitle',
   type: 'main',
   text: [
     { lang: 'en', value: 'English' },
     { lang: 'ua', value: 'Українська' },
   ],
-  image: 'url',
 };
 
 module.exports = {

@@ -12,8 +12,8 @@ const materialsQuery = {
 };
 
 const materialsMutation = {
-  addMaterialsBlock: async (_, { materialsBlock }) =>
-    materialsService.addMaterialsBlock(materialsBlock),
+  addMaterialsBlock: async (_, { materialsBlock, image }) =>
+    materialsService.addMaterialsBlock(materialsBlock, image),
 
   deleteMaterialsBlock: async (_, { id }) =>
     materialsService.deleteMaterialsBlock(id),

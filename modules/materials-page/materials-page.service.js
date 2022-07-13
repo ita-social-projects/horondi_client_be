@@ -13,6 +13,7 @@ const {
   updateTranslations,
   deleteTranslations,
 } = require('../translations/translations.service');
+const uploadService = require('../upload/upload.service');
 
 class MaterialsService {
   async getAllMaterialsBlocks(skip, limit) {
@@ -60,7 +61,12 @@ class MaterialsService {
     };
   }
 
-  async addMaterialsBlock(materialsBlock) {
+  async addMaterialsBlock(materialsBlock, image) {
+    if (image) {
+      const uploadImage = await uploadService.uploadFile(image);
+      materialsBlock.image = uploadImage.fileNames;
+    }
+
     materialsBlock.translationsKey = await addTranslations(
       createTranslations(materialsBlock)
     );
