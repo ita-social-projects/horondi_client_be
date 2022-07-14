@@ -50,6 +50,7 @@ stages:
           dockerRegistryConnection: 'Horondi-Staging-Registry'
           action: 'Build an image'
           dockerFile: '**/Dockerfile'
+          buildArguments: 'password=$(pass)'
           imageName: '$(Build.Repository.Name):$(Build.BuildId)'
       - task: Docker@0
         name: deployedStaging
