@@ -120,20 +120,6 @@ class ModelsService {
   }
 
   async addModel(data, upload, { _id: adminId }) {
-    data.sizes = [
-      // testing size
-      {
-        name: 'XL',
-        heightInCm: 5,
-        widthInCm: 5,
-        depthInCm: 5,
-        volumeInLiters: 5,
-        weightInKg: 5,
-        available: false,
-        absolutePrice: 5,
-        relativePrice: null,
-      },
-    ];
     data.translationsKey = await addTranslations(createTranslations(data));
     if (upload) {
       const uploadResult = await uploadService.uploadFiles([upload]);
