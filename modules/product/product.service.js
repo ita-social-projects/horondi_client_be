@@ -396,7 +396,7 @@ class ProductsService {
 
     productData.model = await modelService.getModelById(productData.model);
 
-    productData.sizes = await finalPriceCalculationForConstructor(productData); // marked
+    productData.sizes = await finalPriceCalculationForConstructor(productData);
 
     const translations = await addTranslations(createTranslations(productData));
     productData.translationsKey = translations._id;

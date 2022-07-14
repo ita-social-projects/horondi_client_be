@@ -8,10 +8,6 @@ const sizeSchema = new mongoose.Schema({
   name: {
     type: String,
   },
-  // modelId: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: MODEL,
-  // },
   heightInCm: {
     type: Number,
   },

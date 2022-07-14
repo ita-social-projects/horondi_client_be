@@ -364,10 +364,6 @@ const resolvers = {
       parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
   },
 
-  // Size: {
-  //   model: parent => modelService.getModelById(parent.modelId),
-  // },
-
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
@@ -487,7 +483,6 @@ const resolvers = {
   },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
-    // sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
     eligibleOptions: parent => ({
       constructorBottom: () =>
         parent.eligibleOptions.constructorBottom.map(el =>
