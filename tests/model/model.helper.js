@@ -407,6 +407,9 @@ const getAllModels = async (filter, pagination, sort, operations) => {
                 lang
               }
             }
+            sizes {
+              _id
+            }
             images {
               large
               medium

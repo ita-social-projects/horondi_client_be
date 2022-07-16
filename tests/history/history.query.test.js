@@ -22,7 +22,7 @@ const {
 } = require('./history.variables');
 const {
   HISTORY_ACTIONS: { ADD_EVENT },
-  HISTORY_NAMES: { SIZE_EVENT },
+  HISTORY_NAMES: { MODEL_EVENT },
 } = require('../../consts/history-events');
 const {
   HISTORY_RECORD_IS_NOT_PRESENT,
@@ -62,7 +62,7 @@ describe('history query tests', () => {
     expect(count).toBe(1);
     expect(items).toBeInstanceOf(Array);
     expect(item).toHaveProperty(ACTION, ADD_EVENT);
-    expect(item).toHaveProperty(HISTORY_NAME, SIZE_EVENT);
+    expect(item).toHaveProperty(HISTORY_NAME, MODEL_EVENT);
     expect(item).toHaveProperty(VALUE_BEFORE_CHANGE, []);
   });
 
