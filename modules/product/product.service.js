@@ -259,22 +259,12 @@ class ProductsService {
     if (_.isMatch(productData, product)) {
       throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
-    if (primary) {
-      if (primary?.large) {
-        productData.images.primary = primary;
-      } else {
-        if (!matchPrimaryInUpload.length) {
-          await uploadService.deleteFiles(
-            Object.values(product.images.primary).filter(
-              item => typeof item === 'string'
-            )
-          );
-        }
-        const uploadResult = await uploadService.uploadFiles([primary]);
-        const imagesResults = await uploadResult[0];
-        productData.images.primary = imagesResults?.fileNames;
-      }
-    }
+    productData.images.primary = await this.getPrimaryImages(
+      primary,
+      matchPrimaryInUpload,
+      product
+    );
+
     if (filesToUpload.length) {
       productData.images.additional = [];
       const previousImagesLinks = [];
@@ -326,6 +316,26 @@ class ProductsService {
     return Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
+  }
+
+  async getPrimaryImages(primary, matchPrimaryInUpload, product) {
+    if (!primary) {
+      return {};
+    }
+    if (primary.large) {
+      return primary;
+    }
+    if (!matchPrimaryInUpload.length) {
+      await uploadService.deleteFiles(
+        Object.values(product.images.primary).filter(
+          item => typeof item === 'string'
+        )
+      );
+    }
+    const uploadResult = await uploadService.uploadFiles([primary]);
+    const imagesResults = await uploadResult[0];
+
+    return imagesResults?.fileNames;
   }
 
   async addProduct(productData, filesToUpload, { _id: adminId }) {
