@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
-        return /^[+]*[(]?\d{1,4}[)]?[-\s/0-9]{9}$/.test(v);
+        return /^\+*\(?\d{1,4}\)?[-\s0-9]{9}$/.test(v);
       },
       message: PHONE_NUMBER_NOT_VALID,
     },

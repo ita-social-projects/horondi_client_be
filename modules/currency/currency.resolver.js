@@ -3,7 +3,7 @@ const RuleError = require('../../errors/rule.error');
 
 const currencyQuery = {
   getAllCurrencies: () => currencyService.getAllCurrencies(),
-  getCurrencyById: async (parent, args) => {
+  getCurrencyById: async (_parent, args) => {
     try {
       return await currencyService.getCurrencyById(args.id);
     } catch (e) {
@@ -13,7 +13,7 @@ const currencyQuery = {
 };
 
 const currencyMutation = {
-  addCurrency: async (parent, args) => {
+  addCurrency: async (_parent, args) => {
     try {
       return await currencyService.addCurrency(args.currency);
     } catch (e) {
@@ -21,7 +21,7 @@ const currencyMutation = {
     }
   },
 
-  deleteCurrency: async (parent, args) => {
+  deleteCurrency: async (_parent, args) => {
     try {
       return await currencyService.deleteCurrency(args.id);
     } catch (e) {
@@ -29,7 +29,7 @@ const currencyMutation = {
     }
   },
 
-  updateCurrency: async (parent, args) => {
+  updateCurrency: async (_parent, args) => {
     try {
       return await currencyService.updateCurrency(args.id, args.currency);
     } catch (e) {

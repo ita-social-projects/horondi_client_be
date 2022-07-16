@@ -2,7 +2,7 @@ const categoryService = require('./category.service');
 const RuleError = require('../../errors/rule.error');
 
 const categoryQuery = {
-  getAllCategories: async (parent, args) => {
+  getAllCategories: async (_parent, args) => {
     try {
       return await categoryService.getAllCategories(args);
     } catch (e) {
@@ -12,7 +12,7 @@ const categoryQuery = {
   getCategoriesForBurgerMenu: () =>
     categoryService.getCategoriesForBurgerMenu(),
   getPopularCategories: () => categoryService.getPopularCategories(),
-  getCategoryById: async (parent, args) => {
+  getCategoryById: async (_parent, args) => {
     try {
       return await categoryService.getCategoryById(args.id);
     } catch (e) {
@@ -23,7 +23,7 @@ const categoryQuery = {
 };
 
 const categoryMutation = {
-  addCategory: async (parent, args, { user }) => {
+  addCategory: async (_parent, args, { user }) => {
     try {
       return await categoryService.addCategory(
         args.category,
@@ -34,14 +34,14 @@ const categoryMutation = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteCategory: async (parent, args, { user }) => {
+  deleteCategory: async (_parent, args, { user }) => {
     try {
       return await categoryService.deleteCategory(args, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateCategory: async (parent, args, { user }) => {
+  updateCategory: async (_parent, args, { user }) => {
     try {
       return await categoryService.updateCategory(args, user);
     } catch (e) {

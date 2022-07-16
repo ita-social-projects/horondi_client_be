@@ -6,7 +6,7 @@ const {
 
 const clearLogs = () =>
   schedule(EVERY_NIGHT, () => {
-    mongoose.connection.db.dropCollection('logs', (err, results) => results);
+    mongoose.connection.db.dropCollection('logs', (_err, results) => results);
   });
 
 module.exports = {

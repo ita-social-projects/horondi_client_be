@@ -397,9 +397,7 @@ class ProductsService {
     const translations = await addTranslations(createTranslations(productData));
     productData.translationsKey = translations._id;
 
-    const newProduct = await new Product(productData).save();
-
-    return newProduct;
+    return new Product(productData).save();
   }
 
   async deleteProducts(ids, { _id: adminId }) {
