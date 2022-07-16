@@ -27,8 +27,6 @@ const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -45,7 +43,6 @@ let currentConstructorBasic;
 let colorId;
 let modelId;
 let categoryId;
-let sizeId;
 
 describe('constructor mutations', () => {
   beforeAll(async () => {
@@ -58,18 +55,9 @@ describe('constructor mutations', () => {
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
 
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
-      operations
-    );
+    const modelData = await createModel(newModel(categoryId), operations);
 
     modelId = modelData._id;
-
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
     constructorInput = newConstructorBasic(materialId, colorId, modelId);
 
     constructorBasic = await createConstructorBasic(

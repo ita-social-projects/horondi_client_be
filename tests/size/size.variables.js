@@ -23,10 +23,9 @@ const SIZES_TO_CREATE = {
   },
 };
 
-const createPlainSize = modelId => ({
-  size1: {
+const createPlainSize = () => [
+  {
     name: 'S',
-    modelId,
     heightInCm: 35,
     widthInCm: 26,
     depthInCm: 14,
@@ -36,9 +35,8 @@ const createPlainSize = modelId => ({
     absolutePrice: 10,
     relativePrice: null,
   },
-  size2: {
+  {
     name: 'M',
-    modelId,
     heightInCm: 25,
     widthInCm: 35,
     depthInCm: 12,
@@ -48,7 +46,7 @@ const createPlainSize = modelId => ({
     absolutePrice: 10,
     relativePrice: null,
   },
-});
+];
 
 const SIZES_TO_TEST = {
   size1: {
@@ -76,12 +74,9 @@ const SIZES_TO_TEST = {
   },
 };
 
-const createTestSize = modelId => ({
+const createTestSize = () => ({
   size1: {
     name: 'S',
-    modelId: {
-      _id: modelId,
-    },
     heightInCm: 35,
     widthInCm: 26,
     depthInCm: 14,
@@ -93,9 +88,6 @@ const createTestSize = modelId => ({
   },
   size2: {
     name: 'M',
-    modelId: {
-      _id: modelId,
-    },
     heightInCm: 25,
     widthInCm: 35,
     depthInCm: 12,

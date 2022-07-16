@@ -155,7 +155,7 @@ const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
+// const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
 const constructorServices = require('./modules/constructor/constructor.services');
 const constructorBottomModel = require('./modules/constructor/constructor-bottom/constructor-bottom.model');
 const constructorBasicModel = require('./modules/constructor/constructor-basic/constructor-basic.model');
@@ -303,7 +303,7 @@ const resolvers = {
 
     ...homePageImagesQuery,
 
-    ...sizeQuery,
+    // ...sizeQuery,
 
     ...homePageSlideQuery,
 
@@ -712,7 +712,7 @@ const resolvers = {
 
     ...homePageImagesMutation,
 
-    ...sizeMutation,
+    // ...sizeMutation,
 
     ...homePageSlideMutation,
 

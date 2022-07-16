@@ -27,6 +27,9 @@ const createModel = async (model, operations) => {
                 lang
               }
             }
+            sizes {
+              _id
+            }
           }
           ... on Error {
             message
