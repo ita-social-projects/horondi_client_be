@@ -688,8 +688,6 @@ const typeDefs = gql`
     getPendingEmailQuestionsCount: Int
     getAllSlides(limit: Int, skip: Int, show_statuses: Boolean): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
-    getSizeById(id: ID!): Size
     getAllClosure(limit:Int, skip:Int, filter:ClosureFilterInput): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
@@ -1054,11 +1052,7 @@ const typeDefs = gql`
     "Closure Mutation"
     addClosure(closure: ClosureInput!, images: Upload): ClosureResult
     updateClosure(id: ID!, closure: ClosureInput!, image: Upload): ClosureResult  
-    deleteClosure(id: ID!): ClosureResult  
-    "Sizes Mutation"
-    addSize(size: SizeInput!): SizeResult!
-    deleteSize(id: ID!): SizeResult!
-    updateSize(id: ID!, size: SizeInput!): SizeResult!
+    deleteClosure(id: ID!): ClosureResult
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
