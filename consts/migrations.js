@@ -172,6 +172,20 @@ const additionalPrice = {
   ],
 };
 
+const modelSize = {
+  _id: ObjectId(),
+  name: 'M',
+  heightInCm: 20,
+  widthInCm: 20,
+  depthInCm: 14,
+  volumeInLiters: 20,
+  weightInKg: 1,
+  available: true,
+  __v: 377,
+  absolutePrice: 20,
+  relativePrice: null,
+};
+
 const sizes = {
   sizes: [
     {
@@ -214,6 +228,7 @@ module.exports = {
   modelRefactoredFields,
   additionalPrice,
   sizes,
+  modelSize,
   user_id,
   link,
 };
