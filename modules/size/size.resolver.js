@@ -10,7 +10,7 @@ const sizeQuery = {
     }
   },
 
-  getSizeById: async (parent, { id }) => {
+  getSizeById: async (_parent, { id }) => {
     try {
       return await sizeService.getSizeById(id);
     } catch (e) {
@@ -20,7 +20,7 @@ const sizeQuery = {
 };
 
 const sizeMutation = {
-  addSize: async (parent, { size }, { user }) => {
+  addSize: async (_parent, { size }, { user }) => {
     try {
       return await sizeService.addSize(size, user);
     } catch (e) {
@@ -28,7 +28,7 @@ const sizeMutation = {
     }
   },
 
-  deleteSize: async (parent, { id }, { user }) => {
+  deleteSize: async (_parent, { id }, { user }) => {
     try {
       return await sizeService.deleteSize(id, user);
     } catch (e) {
@@ -36,7 +36,7 @@ const sizeMutation = {
     }
   },
 
-  updateSize: async (parent, { id, size }, { user }) => {
+  updateSize: async (_parent, { id, size }, { user }) => {
     try {
       return await sizeService.updateSize(id, size, user);
     } catch (e) {

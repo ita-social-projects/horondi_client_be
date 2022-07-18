@@ -2,8 +2,8 @@ const homePageSliderService = require('./homepage-slider.service');
 const RuleError = require('../../errors/rule.error');
 
 const homePageSlideQuery = {
-  getAllSlides: (parent, args) => homePageSliderService.getAllSlides(args),
-  getSlideById: async (parent, args) => {
+  getAllSlides: (_parent, args) => homePageSliderService.getAllSlides(args),
+  getSlideById: async (_parent, args) => {
     try {
       return await homePageSliderService.getSlideById(args.id);
     } catch (e) {
@@ -13,21 +13,21 @@ const homePageSlideQuery = {
 };
 
 const homePageSlideMutation = {
-  addSlide: async (parent, args) => {
+  addSlide: async (_parent, args) => {
     try {
       return await homePageSliderService.addSlide(args.slide, args.upload);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateSlide: async (parent, args) => {
+  updateSlide: async (_parent, args) => {
     try {
       return await homePageSliderService.updateSlide(args);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteSlide: async (parent, args) => {
+  deleteSlide: async (_parent, args) => {
     try {
       return await homePageSliderService.deleteSlide(args.id);
     } catch (e) {

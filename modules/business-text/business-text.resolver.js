@@ -31,7 +31,7 @@ const businessTextQuery = {
 
 const businessTextMutation = {
   addBusinessText: async (
-    parent,
+    _parent,
     { businessText, businessTextTranslationFields, files }
   ) => {
     try {
@@ -45,14 +45,14 @@ const businessTextMutation = {
     }
   },
 
-  deleteBusinessText: async (parent, args) => {
+  deleteBusinessText: async (_parent, args) => {
     try {
       return await businessTextService.deleteBusinessText(args.id);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateBusinessText: async (parent, args) => {
+  updateBusinessText: async (_parent, args) => {
     try {
       return await businessTextService.updateBusinessText(
         args.id,

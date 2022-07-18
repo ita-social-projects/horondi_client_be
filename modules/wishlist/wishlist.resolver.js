@@ -7,7 +7,7 @@ const {
 const RuleError = require('../../errors/rule.error');
 
 const wishlistQuery = {
-  getWishlistByUserId: async (_, params, { user }) => {
+  getWishlistByUserId: async (_, _params, { user }) => {
     try {
       return await getWishlistByUserId(user);
     } catch (e) {
