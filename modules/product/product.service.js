@@ -259,11 +259,14 @@ class ProductsService {
     if (_.isMatch(productData, product)) {
       throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
-    productData.images.primary = await this.getPrimaryImages(
-      primary,
-      matchPrimaryInUpload,
-      product
-    );
+
+    if (primary) {
+      productData.images.primary = await this.getPrimaryImages(
+        primary,
+        matchPrimaryInUpload,
+        product
+      );
+    }
 
     if (filesToUpload.length) {
       productData.images.additional = [];
@@ -319,9 +322,6 @@ class ProductsService {
   }
 
   async getPrimaryImages(primary, matchPrimaryInUpload, product) {
-    if (!primary) {
-      return {};
-    }
     if (primary.large) {
       return primary;
     }
