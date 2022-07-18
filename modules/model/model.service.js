@@ -348,7 +348,7 @@ class ModelsService {
   async getModelSizeById(modelId, sizeId) {
     const model = await this.getModelById(modelId);
 
-    return model.sizes.find(size => size._id.equals(sizeId));
+    return model.toObject().sizes.find(size => size._id.equals(sizeId));
   }
 }
 

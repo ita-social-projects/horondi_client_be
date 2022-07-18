@@ -233,7 +233,7 @@ class PaymentService {
         select: 'name images ',
       })
       .populate({
-        path: 'items.options.size ', // marked
+        path: 'items.options.size ',
         select: 'name',
       })
       .exec();

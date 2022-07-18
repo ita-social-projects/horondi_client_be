@@ -19,6 +19,7 @@ const sizeType = `
 
 const sizeInput = `
   input SizeInput {
+    _id: String
     name: String!
     heightInCm: Int!
     widthInCm: Int!

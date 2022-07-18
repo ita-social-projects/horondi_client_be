@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const sizeInputValidator = Joi.object({
+  _id: Joi.string(),
   name: Joi.string().min(1).max(3).required(),
   heightInCm: Joi.number().integer().min(1).max(35).required(),
   widthInCm: Joi.number().integer().min(1).max(35).required(),

@@ -48,6 +48,7 @@ const {
 const {
   newConstructorFront,
 } = require('../constructor-front/constructor.variables');
+const modelService = require('../../modules/model/model.service');
 
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
@@ -320,6 +321,31 @@ describe('Model mutations', () => {
 
     expect(modelDelete._id).toEqual(modelId);
   });
+
+  test('Should get a size from the model by its id', async () => {
+    const modelInstance = newModel(categoryId);
+    const model = await createModel(modelInstance, operations);
+
+    const sizeById = await modelService.getModelSizeById(
+      model._id,
+      model.sizes[0]._id
+    );
+    delete sizeById._id;
+
+    await deleteModel(model._id, operations);
+    expect(sizeById).toEqual(modelInstance.sizes[0]);
+  });
+
+  test('Should get model sizes filtered by given size IDs', async () => {
+    const model = await createModel(newModel(categoryId), operations);
+    const sizeIDs = [model.sizes[0]._id.toString()];
+
+    const sizes = modelService.getModelSizes(model, sizeIDs);
+
+    await deleteModel(model._id, operations);
+    expect(sizes[0]._id.toString()).toBe(sizeIDs[0]);
+  });
+
   afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
   });
