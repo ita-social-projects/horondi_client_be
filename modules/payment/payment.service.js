@@ -37,6 +37,7 @@ const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
   EmailActions: { PAYMENT_ORDER, CERTIFICATE_EMAIL },
 } = require('../../consts/email-actions');
+const productService = require('../product/product.service');
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }) {
@@ -232,15 +233,29 @@ class PaymentService {
         path: 'items.product',
         select: 'name images ',
       })
-      .populate({
-        path: 'items.options.size ',
-        select: 'name',
-      })
       .exec();
+
+    const items = await Promise.all(
+      paidOrder.items.map(async item => {
+        const size = await productService.getProductSizeById(
+          item.product,
+          item.options.size
+        );
+        item = item.toObject();
+
+        return {
+          ...item,
+          options: {
+            ...item.options,
+            size,
+          },
+        };
+      })
+    );
 
     await sendEmail(paidOrder.recipient.email, PAYMENT_ORDER, {
       language,
-      items: paidOrder.items,
+      items,
       totalPrice: paidOrder.totalItemsPrice,
       paymentUrl: paidOrder.paymentUrl,
       imagesUrl: IMAGE_LINK,

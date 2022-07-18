@@ -182,7 +182,7 @@ describe('Payment queries', () => {
   it('should send email with order data', async () => {
     const res = await sendOrderToEmail(1, orderNumber, operations);
 
-    expect(res).toBeDefined();
+    expect(res.orderNumber).toBe(orderNumber);
   });
 
   afterAll(async () => {
