@@ -49,7 +49,7 @@ const checkModelForSoftDeletion = async modelId => {
     },
   };
 
-  return await Model.findByIdAndUpdate(modelId, update, { new: true }).exec();
+  return Model.findByIdAndUpdate(modelId, update, { new: true }).exec();
 };
 
 module.exports = {
