@@ -74,6 +74,8 @@ class ModelsService {
       filterOptions.category = { $in: filter.category };
     }
 
+    filterOptions.isDeleted = false;
+
     if (sort.name && sort.name > 0) {
       sort['name.value'] = sort.name;
       delete sort.name;
@@ -108,7 +110,10 @@ class ModelsService {
   }
 
   async getModelsForConstructor() {
-    return Model.find({ availableForConstructor: true });
+    return Model.find({
+      availableForConstructor: true,
+      isDeleted: false,
+    });
   }
 
   async getModelsByCategory(id) {
@@ -116,7 +121,10 @@ class ModelsService {
       throw new RuleError(CATEGORY_NOT_VALID, BAD_REQUEST);
     }
 
-    return Model.find({ category: id });
+    return Model.find({
+      category: id,
+      isDeleted: false,
+    });
   }
 
   async addModel(data, upload, { _id: adminId }) {

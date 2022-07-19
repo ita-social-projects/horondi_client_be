@@ -19,6 +19,12 @@ const {
   addModelConstructorBottom,
   deleteModelConstructorBottom,
 } = require('./model.helper');
+const { createProduct } = require('../product/product.helper');
+const { newProductInputData } = require('../product/product.variables');
+const { createClosure } = require('../closure/closure.helper');
+const { createPattern } = require('../pattern/pattern.helper');
+const { queryPatternToAdd } = require('../pattern/pattern.variables');
+const { newClosure } = require('../closure/closure.variables');
 const { setupApp } = require('../helper-functions');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
@@ -49,6 +55,9 @@ const {
   newConstructorFront,
 } = require('../constructor-front/constructor.variables');
 const modelService = require('../../modules/model/model.service');
+const {
+  checkModelForSoftDeletion,
+} = require('../../modules/model/model.helper');
 
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
@@ -344,6 +353,32 @@ describe('Model mutations', () => {
 
     await deleteModel(model._id, operations);
     expect(sizes[0]._id.toString()).toBe(sizeIDs[0]);
+  });
+
+  test('Should perform soft deletion on the model', async () => {
+    const model = await createModel(newModel(categoryId), operations);
+    const { _id: patternId } = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
+    const { _id: closureId } = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
+    const productInput = newProductInputData(
+      categoryId,
+      model._id,
+      materialId,
+      materialId,
+      colorId,
+      patternId,
+      closureId,
+      model.sizes[0]._id
+    );
+    await createProduct(productInput, operations);
+
+    const modelUpdated = await checkModelForSoftDeletion(model._id);
+    expect(modelUpdated.isDeleted).toBe(true);
   });
 
   afterAll(async () => {

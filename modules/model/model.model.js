@@ -78,6 +78,15 @@ const modelSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
   },
+  isDeleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model(MODEL, modelSchema);
