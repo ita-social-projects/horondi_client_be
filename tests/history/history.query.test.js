@@ -1,5 +1,4 @@
 const { setupApp } = require('../helper-functions');
-const { createSize, updateSize, deleteSize } = require('../size/size.helper');
 const {
   createCategory,
   deleteCategory,
@@ -7,7 +6,6 @@ const {
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createPlainSize } = require('../size/size.variables');
 const {
   STATUS_CODES: { NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -24,7 +22,7 @@ const {
 } = require('./history.variables');
 const {
   HISTORY_ACTIONS: { ADD_EVENT },
-  HISTORY_NAMES: { SIZE_EVENT },
+  HISTORY_NAMES: { MODEL_EVENT },
 } = require('../../consts/history-events');
 const {
   HISTORY_RECORD_IS_NOT_PRESENT,
@@ -35,7 +33,6 @@ jest.mock('../../modules/currency/currency.utils.js');
 
 describe('history query tests', () => {
   let operations;
-  let sizeId;
   let recordId;
   let modelId;
   let categoryId;
@@ -44,20 +41,13 @@ describe('history query tests', () => {
     operations = await setupApp();
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
-      operations
-    );
+    const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
-    const size = await createSize(createPlainSize(modelId).size1, operations);
-    sizeId = size._id;
-    await updateSize(sizeId, createPlainSize(modelId).size2, operations);
   });
 
   afterAll(async () => {
     await deleteModel(modelId, operations);
     await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
   });
 
   it('Should get all history records', async () => {
@@ -72,7 +62,7 @@ describe('history query tests', () => {
     expect(count).toBe(1);
     expect(items).toBeInstanceOf(Array);
     expect(item).toHaveProperty(ACTION, ADD_EVENT);
-    expect(item).toHaveProperty(HISTORY_NAME, SIZE_EVENT);
+    expect(item).toHaveProperty(HISTORY_NAME, MODEL_EVENT);
     expect(item).toHaveProperty(VALUE_BEFORE_CHANGE, []);
   });
 

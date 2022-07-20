@@ -23,12 +23,9 @@ const { createModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
-const { createSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 
 let operations;
 let colorId;
-let sizeId;
 let modelId;
 let categoryId;
 let materialInput;
@@ -54,15 +51,10 @@ describe('Back query test', () => {
     const categoryData = await createCategory(newCategoryInputData, operations);
     categoryId = categoryData._id;
 
-    createdModel = newModel(categoryId, sizeId);
+    createdModel = newModel(categoryId);
 
     const modelData = await createModel(createdModel, operations);
     modelId = modelData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
 
     backInput = newBackInputData(materialId, colorId, modelId);
 

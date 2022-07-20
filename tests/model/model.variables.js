@@ -1,3 +1,5 @@
+const { createPlainSize } = require('../size/size.variables');
+
 const wrongId = '60102a6d0ed5be43dc9f7f1d';
 const notValidId = '60102a6d0ed5b3dc9f7f1d';
 const filter = {
@@ -6,6 +8,8 @@ const filter = {
   available: [],
   availableForConstructor: [],
 };
+
+const sizes = createPlainSize();
 
 const sort = {
   name: 1,
@@ -28,6 +32,7 @@ const newModel = categoryId => ({
     { value: 'Тест', lang: 'uk' },
     { value: 'Test', lang: 'en' },
   ],
+  sizes,
   images: {
     small: 'small_new',
     thumbnail: 'thumbnail_new',
@@ -47,6 +52,7 @@ const newModelUpdated = categoryId => ({
     { value: 'Обновлено', lang: 'uk' },
     { value: 'Updated', lang: 'en' },
   ],
+  sizes,
   images: {
     large: 'large_new',
     medium: 'medium_new',

@@ -74,6 +74,8 @@ class ModelsService {
       filterOptions.category = { $in: filter.category };
     }
 
+    filterOptions.isDeleted = false;
+
     if (sort.name && sort.name > 0) {
       sort['name.value'] = sort.name;
       delete sort.name;
@@ -108,7 +110,10 @@ class ModelsService {
   }
 
   async getModelsForConstructor() {
-    return Model.find({ availableForConstructor: true });
+    return Model.find({
+      availableForConstructor: true,
+      isDeleted: false,
+    });
   }
 
   async getModelsByCategory(id) {
@@ -116,7 +121,10 @@ class ModelsService {
       throw new RuleError(CATEGORY_NOT_VALID, BAD_REQUEST);
     }
 
-    return Model.find({ category: id });
+    return Model.find({
+      category: id,
+      isDeleted: false,
+    });
   }
 
   async addModel(data, upload, { _id: adminId }) {
@@ -333,6 +341,22 @@ class ModelsService {
       { $pull: { constructorBottom: constructorElementID } },
       { safe: true, upsert: true }
     );
+  }
+
+  getModelSizes(model, sizeIDs) {
+    if (!model || !model.sizes || !model.sizes.length) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
+
+    return model.sizes.filter(size =>
+      sizeIDs.some(id => id === size._id.toString())
+    );
+  }
+
+  async getModelSizeById(modelId, sizeId) {
+    const model = await this.getModelById(modelId);
+
+    return model.toObject().sizes.find(size => size._id.equals(sizeId));
   }
 }
 

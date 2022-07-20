@@ -9,7 +9,6 @@ const {
     COLOR,
     PATTERN,
     CLOSURE,
-    SIZE,
     USER,
     COMMENT,
     PRODUCT,
@@ -84,7 +83,6 @@ const productSchema = new mongoose.Schema({
     {
       size: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: SIZE,
       },
       price: Number,
       _id: false,

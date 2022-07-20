@@ -27,6 +27,9 @@ const createModel = async (model, operations) => {
                 lang
               }
             }
+            sizes {
+              _id
+            }
           }
           ... on Error {
             message
@@ -403,6 +406,9 @@ const getAllModels = async (filter, pagination, sort, operations) => {
                 value
                 lang
               }
+            }
+            sizes {
+              _id
             }
             images {
               large

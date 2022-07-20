@@ -50,7 +50,7 @@ input ModelInput {
     images: ImageSetInput
     priority: Int
     show: Boolean
-    sizes: [ID]
+    sizes: [SizeInput]
     availableForConstructor: Boolean
     eligibleOptions: OptionInput
     restrictions: [ID]
