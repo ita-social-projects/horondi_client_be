@@ -29,18 +29,29 @@ describe('MaterialsBlocks queries', () => {
       image,
       operations
     );
-
     expect(materialsBlock.title).toEqual('title');
+  });
+
+  it('Should update material-about block without image', async () => {
+    materialsBlock = await updateMaterialsBlock(
+      materialsBlock._id,
+      updatedMaterialsBlock,
+      undefined,
+      operations
+    );
+
+    expect(materialsBlock.title).toEqual('newTitle');
   });
 
   it('Should update material-about block', async () => {
     materialsBlock = await updateMaterialsBlock(
       materialsBlock._id,
-      updatedMaterialsBlock,
+      newMaterialsBlock,
+      image,
       operations
     );
 
-    expect(materialsBlock.type).toEqual('main');
+    expect(materialsBlock.title).toEqual('title');
   });
 
   it('delete material-about', async () => {
@@ -48,6 +59,6 @@ describe('MaterialsBlocks queries', () => {
 
     materialsBlock = res.data.deleteMaterialsBlock;
 
-    expect(materialsBlock).toHaveProperty('title', updatedMaterialsBlock.title);
+    expect(materialsBlock).toHaveProperty('title', newMaterialsBlock.title);
   });
 });
