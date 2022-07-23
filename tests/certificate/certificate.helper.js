@@ -89,6 +89,37 @@ const getCertificateById = async (id, operations) => {
   return result.data.getCertificateById;
 };
 
+const getCertificateByName = async (name, operations) => {
+  const result = await operations.query({
+    query: gql`
+      query ($name: String!) {
+        getCertificateByName(name: $name) {
+          ... on Certificate {
+            _id
+            name
+            isExpired
+            isUsed
+            value
+            email
+            ownedBy {
+              _id
+            }
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      name,
+    },
+  });
+
+  return result
+};
+
 const addCertificate = async (certificateName, operations) => {
   const result = await operations.mutate({
     mutation: gql`
@@ -198,6 +229,7 @@ module.exports = {
   generateCertificate,
   getAllCertificates,
   getCertificateById,
+  getCertificateByName,
   registerUser,
   updateCertificate,
 };

@@ -1,3 +1,4 @@
+const { ApolloError } = require('apollo-server');
 const certificatesService = require('./certificate.service');
 
 const certificatesQuery = {
@@ -25,6 +26,14 @@ const certificatesQuery = {
 
   getCertificateById: async (_, { id }) =>
     certificatesService.getCertificateById(id),
+
+  getCertificateByName: async (_, { name }) => {
+    try {
+      return await certificatesService.getCertificateByName(name);
+    } catch (e) {
+      return new ApolloError(e.message, e.statusCode);
+    }
+  },
 };
 
 const certificatesMutation = {
