@@ -6,6 +6,7 @@ const { loginUser, deleteUser } = require('../user/user.helper');
 const {
   CERTIFICATE_NOT_FOUND,
   CERTIFICATE_IS_ACTIVE,
+  CERTIFICATE_IS_USED,
 } = require('../../error-messages/certificate.messages');
 
 const {
@@ -14,6 +15,7 @@ const {
   generateCertificate,
   getAllCertificates,
   getCertificateById,
+  getCertificateByName,
   registerUser,
   updateCertificate,
 } = require('./certificate.helper');
@@ -111,6 +113,13 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     afterAll(async () => {
       await deleteUser(userId, adminContextServer);
     });
+
+    it('should get certificate by name', async () => {
+      const certificate = await getCertificateByName(certificateName, adminContextServer);
+
+      expect(certificate.data.getCertificateByName).toHaveProperty('name', certificateName);
+    });
+
   });
 
   describe('Admin restrictions and cleaning DB', () => {
@@ -118,6 +127,13 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       const result = await deleteCertificate(certificateId, adminContextServer);
 
       expect(result).toHaveProperty('message', CERTIFICATE_IS_ACTIVE);
+    });
+
+    it('should update certificate and throw CERTIFICATE_IS_USED', async () => {
+      await updateCertificate(certificateName, adminContextServer);
+      const certificate = await getCertificateByName(certificateName, adminContextServer);
+
+      expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
     });
 
     it('shouldn`t use addCertificate method', async () => {
@@ -152,5 +168,14 @@ describe('Run ApolloClientServer with role=admin in context', () => {
 
       expect(certificate).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
     });
+
+    it('should delete certificate and throw CERTIFICATE_NOT_FOUND', async () => {
+      await deleteCertificate(certificateNullOwnerId, adminContextServer);
+
+      const certificate = await getCertificateByName(certificateNullOwnerName, adminContextServer);
+
+      expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
+    });
+
   });
 });

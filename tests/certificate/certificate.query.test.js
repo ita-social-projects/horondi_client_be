@@ -7,10 +7,12 @@ const {
   generateCertificate,
   getAllCertificates,
   getCertificateById,
+  getCertificateByName,
   updateCertificate,
 } = require('./certificate.helper');
 const {
   wrongId,
+  wrongName,
   newCertificateInputData,
   email,
 } = require('./certificate.variables');
@@ -65,4 +67,17 @@ describe('Test certificate Queries', () => {
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
+
+  it('should get a fresh-generated certificate by name', async () => {
+    const result = await getCertificateByName(certificateName, operations);
+    expect(result.data.getCertificateByName).toHaveProperty('name', certificateName);
+  });
+
+  it('should throw error CERTIFICATE_NOT_FOUND for get certificate by name', async () => {
+    const result = await getCertificateByName(wrongName, operations);
+
+    expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
+    expect(result.data.getCertificateByName).toEqual(null);
+  });
+  
 });

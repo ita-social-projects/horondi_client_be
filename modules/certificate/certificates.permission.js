@@ -1,4 +1,4 @@
-const { and } = require('graphql-shield');
+const { and, allow } = require('graphql-shield');
 const {
   hasRoles,
   isAuthorized,
@@ -20,7 +20,7 @@ const {
 
 const certificatePermissionsQuery = {
   getCertificateById: hasRoles([ADMIN, SUPERADMIN]),
-
+  getCertificateByName: allow,
   getAllCertificates: and(isAuthorized, isUnlocked),
 };
 
