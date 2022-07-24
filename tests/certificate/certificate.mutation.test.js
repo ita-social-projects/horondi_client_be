@@ -1,12 +1,13 @@
 const { setupApp } = require('../helper-functions');
 const {
-  CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_NOT_FOUND, CERTIFICATE_IS_USED
 } = require('../../error-messages/certificate.messages');
 const {
   deleteCertificate,
   generateCertificate,
   updateCertificate,
   getCertificateById,
+  getCertificateByName
 } = require('./certificate.helper');
 const {
   wrongId,
@@ -42,9 +43,11 @@ describe('Test mutation methods Admin', () => {
   it('should change `isUsed` field to true with updateCertificate', async () => {
     expect(isUsed).toBeFalsy();
 
-    const result = await updateCertificate(certificateName, operations);
-
-    expect(result.isUsed).toBeTruthy();
+    const updateResult = await updateCertificate(certificateName, operations);
+    const getResult = await getCertificateByName(certificateName, operations);
+    
+    expect(updateResult.isUsed).toBeTruthy();
+    expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
   });
 
   it('should delete certificate', async () => {
@@ -53,6 +56,15 @@ describe('Test mutation methods Admin', () => {
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
+
+  it('should delete certificate and throw error CERTIFICATE_NOT_FOUND', async () => {
+    await deleteCertificate(certificateId, operations);
+    const result = await getCertificateByName(certificateName, operations);
+
+    expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
+  });
+
+
 });
 
 describe('Test response for unexist and wrong Code', () => {
