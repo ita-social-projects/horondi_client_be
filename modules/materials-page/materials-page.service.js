@@ -81,14 +81,33 @@ class MaterialsService {
       throw new RuleError(MATERIAL_NOT_FOUND, NOT_FOUND);
     }
 
+    if (materialsBlock.image) {
+      await uploadService.deleteFiles(
+        Object.values(materialsBlock.toObject().image).filter(
+          item => typeof item === 'string' && item
+        )
+      );
+    }
+
     await deleteTranslations(materialsBlock.translationsKey);
 
     return materialsBlock;
   }
 
-  async updateMaterialsBlock(id, materialsBlock) {
+  async updateMaterialsBlock(id, materialsBlock, image) {
     const foundMaterialsBlock = await this.getMaterialsBlockById(id);
 
+    if (image) {
+      if (foundMaterialsBlock.image) {
+        const currentImage = foundMaterialsBlock.toObject().image;
+        const currentImageList = Object.values(currentImage).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(currentImageList);
+      }
+      const uploadImage = await uploadService.uploadFile(image);
+      materialsBlock.image = uploadImage.fileNames;
+    }
     await updateTranslations(
       foundMaterialsBlock.translationsKey,
       createTranslations(materialsBlock)

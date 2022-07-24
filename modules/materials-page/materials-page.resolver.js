@@ -18,8 +18,8 @@ const materialsMutation = {
   deleteMaterialsBlock: async (_, { id }) =>
     materialsService.deleteMaterialsBlock(id),
 
-  updateMaterialsBlock: async (_, { id, materialsBlock }) =>
-    materialsService.updateMaterialsBlock(id, materialsBlock),
+  updateMaterialsBlock: async (_, { id, materialsBlock, image }) =>
+    materialsService.updateMaterialsBlock(id, materialsBlock, image),
 };
 
 module.exports = { materialsQuery, materialsMutation };

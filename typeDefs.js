@@ -901,7 +901,7 @@ const typeDefs = gql`
     addMaterialsBlock(materialsBlock: MaterialsBlockInput!, image: Upload): MaterialsBlockResult
     deleteMaterialsBlock(id: ID!): MaterialsBlockResult
     updateMaterialsBlock(id: ID!
-    materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
+    materialsBlock: MaterialsBlockInput!, image: Upload): MaterialsBlockResult
     addPromoCode(promoCode: PromoCodeInput!): PromoCode
     deletePromoCode(id: ID!): PromoCode
     updatePromoCode(id: ID!
