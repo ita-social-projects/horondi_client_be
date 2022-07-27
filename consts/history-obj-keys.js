@@ -22,6 +22,7 @@ const HISTORY_OBJ_KEYS = {
   AUTHOR: 'author',
   LANGUAGES: 'languages',
   TEXT: 'text',
+  TYPE: 'type',
   HANDMADE: 'handmade',
   HEIGHT_IN_CM: 'heightInCm',
   WIDTH_IN_CM: 'widthInCm',
