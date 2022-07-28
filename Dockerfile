@@ -1,4 +1,4 @@
-FROM node:14.15.3
+FROM node:14.15.4
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
