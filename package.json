@@ -10,7 +10,7 @@
   },
   "private": "true",
   "resolutions": {
-    "**/**/fs-capacitor": "^6.2.0",
+    "**/fs-capacitor": "^6.2.0",
     "**/graphql-upload": "^12.0.0"
   },
   "scripts": {
