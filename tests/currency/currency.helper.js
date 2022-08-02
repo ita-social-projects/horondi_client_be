@@ -5,8 +5,13 @@ const getAllCurrencies = async operations => {
     query: gql`
       query {
         getAllCurrencies {
+          _id
           convertOptions {
             UAH {
+              name
+              exchangeRate
+            }
+            USD {
               name
               exchangeRate
             }

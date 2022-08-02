@@ -27,6 +27,7 @@ describe('Currency queries', () => {
     const currencies = await getAllCurrencies(operations);
 
     expect(currencies.length).toBeGreaterThan(0);
+    expect(currencies).toContainEqual(currency);
   });
 
   it('should get a currency by id', async () => {

@@ -3,11 +3,11 @@ const newCurrency = {
   convertOptions: {
     UAH: {
       name: 'test',
-      exchangeRate: 2.5,
+      exchangeRate: 36,
     },
     USD: {
       name: 'test',
-      exchangeRate: 1.5,
+      exchangeRate: 1,
     },
   },
 };
@@ -17,11 +17,11 @@ const updatedCurrency = {
   convertOptions: {
     UAH: {
       name: 'updated_test',
-      exchangeRate: 3.5,
+      exchangeRate: 36,
     },
     USD: {
       name: 'updated_test',
-      exchangeRate: 2.5,
+      exchangeRate: 1,
     },
   },
 };
@@ -31,11 +31,11 @@ const savedCurrency = {
   convertOptions: {
     UAH: {
       name: 'saved_test',
-      exchangeRate: 3.5,
+      exchangeRate: 36,
     },
     USD: {
       name: 'saved_test',
-      exchangeRate: 2.5,
+      exchangeRate: 1,
     },
   },
 };
