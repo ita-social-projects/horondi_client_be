@@ -3,6 +3,7 @@ const { applyMiddleware } = require('graphql-middleware');
 const express = require('express');
 const cors = require('cors');
 const { createServer } = require('http');
+const { graphqlUploadExpress } = require('graphql-upload');
 
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
@@ -53,6 +54,7 @@ const schema = applyMiddleware(
 
 const server = new ApolloServer({
   schema,
+  uploads: false,
   context: async ({ req, connection }) => {
     if (connection) {
       return connection.context;
@@ -131,6 +133,7 @@ app.disable('x-powered-by');
 
 currencyWorker();
 
+app.use('/graphql', graphqlUploadExpress());
 app.post('/fondy/certificates_callback', checkCertificatesPaymentStatus);
 app.post('/fondy/order_callback', checkOrderPaymentStatus);
 app.get('/translations', translationsService.getAllTranslations);
