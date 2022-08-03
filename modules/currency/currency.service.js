@@ -69,14 +69,8 @@ class CurrencyService {
   async checkCurrencyExist(data, id) {
     const currenciesCount = await Currency.countDocuments({
       _id: { $ne: id },
-      convertOptions: {
-        UAH: {
-          name: { $eq: data.convertOptions.UAH.name },
-        },
-        USD: {
-          name: { $eq: data.convertOptions.UAH.name },
-        },
-      },
+      'convertOptions.UAH.name': data.convertOptions.UAH.name,
+      'convertOptions.USD.name': data.convertOptions.USD.name,
     }).exec();
 
     return currenciesCount > 0;
