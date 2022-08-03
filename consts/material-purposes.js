@@ -1,10 +1,10 @@
 const materialPurposes = {
-  MAIN: 'MAIN',
-  INNER: 'INNER',
-  BOTTOM: 'BOTTOM',
-  PATTERN: 'PATTERN',
-  CLOSURE: 'CLOSURE',
-  BACK: 'BACK',
+  basic: 'basic',
+  inner: 'inner',
+  bottom: 'bottom',
+  pattern: 'pattern',
+  strap: 'strap',
+  back: 'back',
 };
 
 module.exports = {

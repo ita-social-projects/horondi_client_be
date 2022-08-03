@@ -11,21 +11,21 @@ const materialType = `
     translationsKey: ID!
   }
   type MaterialByPurpose {
-    main: [Material]
+    basic: [Material]
     inner: [Material]
     bottom: [Material]
     back: [Material]
     pattern: [Material]
-    closure: [Material]
+    strap: [Material]
   }
 
   enum PurposeEnum{
-    MAIN
-    INNER
-    BOTTOM
-    PATTERN
-    CLOSURE
-    BACK
+    basic
+    inner
+    bottom
+    pattern
+    strap
+    back
   }
 `;
 

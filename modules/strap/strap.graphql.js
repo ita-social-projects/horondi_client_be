@@ -4,7 +4,7 @@ const strapType = `
     name: [Language]
     optionType: OptionTypeEnum
     model: Model
-    features: StrapFeature
+    features: StrapFeatureSet
     images: ImageSet
     absolutePrice: Int
     relativePrice: Int
@@ -14,8 +14,9 @@ const strapType = `
   }
 `;
 
-const strapFeatureType = `
-  type StrapFeature {
+const strapFeatureSet = `
+  type StrapFeatureSet {
+    material: Material
     color: Color
   }
 `;
@@ -25,7 +26,7 @@ const strapInputs = `
     name: [LanguageInput]
     optionType: String
     model: ID
-    features: StrapFeatureInput
+    features: StrapFeatureSetInput
     image: Upload
     absolutePrice: Int
     relativePrice: Int
@@ -33,19 +34,21 @@ const strapInputs = `
     customizable: Boolean
   }
 
-  input StrapFeatureInput {
+  input StrapFeatureSetInput {
+    material: ID
     color: ID
   }
 
   input StrapFilterInput{
     name:String
     available:[String]
+    material:[String]
     color:[String]
   }
 `;
 
 module.exports = {
   strapType,
-  strapFeatureType,
+  strapFeatureSet,
   strapInputs,
 };

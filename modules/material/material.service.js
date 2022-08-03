@@ -92,7 +92,7 @@ class MaterialsService {
 
     return materials.items.reduce((acc, material) => {
       if (purposes.includes(material.purpose)) {
-        const purpose = material.purpose.toLowerCase();
+        const { purpose } = material;
         acc[purpose] = acc[purpose] || [];
         acc[purpose].push(material);
       }

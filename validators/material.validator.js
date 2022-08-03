@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const {
-  materialPurposes: { MAIN, INNER, BOTTOM, PATTERN, CLOSURE },
+  materialPurposes: { basic, inner, bottom, pattern, strap, back },
 } = require('../consts/material-purposes');
 
 const {
@@ -35,7 +35,7 @@ const materialInputValidator = Joi.object({
   ),
   purpose: Joi.string()
     .trim()
-    .valid(MAIN, INNER, BOTTOM, PATTERN, CLOSURE)
+    .valid(basic, inner, bottom, pattern, strap, back)
     .required(),
   colors: Joi.array().items(Joi.string().required()),
   available: Joi.boolean(),

@@ -7,6 +7,7 @@ const {
 
 const basicsSchema = new mongoose.Schema({
   name: [Language],
+  optionType: String,
   images: ImageSet,
   available: Boolean,
   features: {
