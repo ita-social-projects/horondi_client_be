@@ -10,7 +10,13 @@ const {
   PAYMENT_TOKEN_LENGTH,
 } = require('../../consts/payments');
 const {
-  PAYMENT_STATUSES: { PAYMENT_PROCESSING },
+  PAYMENT_STATUSES: {
+    PAYMENT_PROCESSING,
+    PAYMENT_PAID,
+    PAYMENT_EXPIRED,
+    PAYMENT_DECLINED,
+    PAYMENT_REVERSED,
+  },
 } = require('../../consts/payment-statuses');
 const {
   STATUS_CODES: { BAD_REQUEST, FORBIDDEN },
@@ -18,7 +24,6 @@ const {
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
-  ORDER_IS_NOT_PAID,
   ORDER_IS_PAID,
 } = require('../../error-messages/orders.messages');
 const {
@@ -31,7 +36,7 @@ const OrderModel = require('../order/order.model');
 const { CertificateModel } = require('../certificate/certificate.model');
 const { paymentController } = require('../../helpers/payment-controller');
 const {
-  ORDER_PAYMENT_STATUS: { APPROVED, PAID },
+  ORDER_PAYMENT_STATUS: { APPROVED, EXPIRED, DECLINED, REVERSED, PAID },
 } = require('../../consts/order-payment-status');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
@@ -183,19 +188,22 @@ class PaymentService {
   }
 
   async checkOrderPaymentStatus(req, res) {
-    const { order_id } = req.body;
-    const { order_status, response_signature_string, signature } =
-      await paymentController(CHECK_PAYMENT_STATUS, {
-        order_id,
-      });
+    const orderState = req.body;
+    const { order_id, order_status, signature } = orderState;
 
-    const signatureWithoutFirstParam = response_signature_string
-      .split('|')
-      .slice(1);
+    const signatureKeys = Object.keys(orderState)
+      .filter(
+        key =>
+          orderState[key] !== '' &&
+          key !== 'signature' &&
+          key !== 'response_signature_string'
+      )
+      .sort();
 
-    const signatureToCheck = PAYMENT_SECRET.split(' ')
-      .concat(signatureWithoutFirstParam)
-      .join('|');
+    const signatureToCheck = signatureKeys.reduce(
+      (acc, key) => `${acc}|${orderState[key]}`,
+      PAYMENT_SECRET
+    );
 
     const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
 
@@ -207,22 +215,38 @@ class PaymentService {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
 
-    if (
-      order_status !== APPROVED.toLowerCase() ||
-      signature !== signSignatureToCheck
-    ) {
-      throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
+    if (signature !== signSignatureToCheck) {
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
 
-    const paidOrder = await OrderModel.findByIdAndUpdate(order._id, {
-      $set: {
-        paymentStatus: PAID,
-      },
-    }).exec();
+    const updatePaymentStatus = status =>
+      OrderModel.findByIdAndUpdate(order._id, {
+        $set: {
+          paymentStatus: status,
+        },
+      }).exec();
 
-    pubsub.publish(ORDER_IS_PAID, {
-      paidOrder,
-    });
+    switch (order_status.toUpperCase()) {
+      case APPROVED: {
+        const paidOrder = await updatePaymentStatus(PAYMENT_PAID);
+        pubsub.publish(ORDER_IS_PAID, {
+          paidOrder,
+        });
+        break;
+      }
+      case EXPIRED: {
+        updatePaymentStatus(PAYMENT_EXPIRED);
+        break;
+      }
+      case DECLINED: {
+        updatePaymentStatus(PAYMENT_DECLINED);
+        break;
+      }
+      case REVERSED: {
+        updatePaymentStatus(PAYMENT_REVERSED);
+        break;
+      }
+    }
 
     res.status(200).end();
   }
