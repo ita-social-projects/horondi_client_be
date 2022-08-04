@@ -43,11 +43,15 @@ class StrapService {
   async getAllStraps(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
 
+    if (filter?.material?.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
     if (filter?.color?.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
     const items = await Strap.find(filterOptions)
+      .populate('features.material')
       .populate('features.color')
       .skip(skip)
       .limit(limit)

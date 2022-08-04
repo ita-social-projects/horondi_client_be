@@ -8,6 +8,7 @@ const basicsType = `
         absolutePrice: Int
         relativePrice: Int
         translationsKey: ID
+        optionType: OptionTypeEnum
     }
 `;
 
@@ -26,6 +27,7 @@ const basicsInputs = `
         absolutePrice: Int
         relativePrice: Int
         available: Boolean
+        optionType: String
     }
 
     input BasicsFeatureSetInput {

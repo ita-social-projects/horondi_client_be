@@ -14,8 +14,6 @@ const {
   deleteModelConstructorBasic,
   addModelConstructorPattern,
   deleteModelConstructorPattern,
-  addModelConstructorFrontPocket,
-  deleteModelConstructorFrontPocket,
   addModelConstructorBottom,
   deleteModelConstructorBottom,
 } = require('./model.helper');
@@ -43,17 +41,11 @@ const {
   createConstructorBottom,
 } = require('../constructor-bottom/constructor-bottom.helper');
 const {
-  createConstructorFrontPocket,
-} = require('../constructor-front/constructor.front.helper');
-const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
 const {
   newConstructorBottom,
 } = require('../constructor-bottom/constructor-bottom.variables');
-const {
-  newConstructorFront,
-} = require('../constructor-front/constructor.variables');
 const modelService = require('../../modules/model/model.service');
 const {
   checkModelForSoftDeletion,
@@ -68,7 +60,6 @@ let colorId;
 let materialId;
 let constructorElementID;
 let constructorElementIDBottom;
-let constructorElementIDFrontPocket;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -230,50 +221,6 @@ describe('Model mutations', () => {
     const error = await deleteModelConstructorPattern(
       notValidId,
       constructorElementID,
-      operations
-    );
-
-    expect(error.message).toBe(MODEL_NOT_VALID);
-    expect(error.statusCode).toBe(BAD_REQUEST);
-  });
-  test('Should add ModelConstructorFrontPocket', async () => {
-    const constructorFrontPocketData = await createConstructorFrontPocket(
-      newConstructorFront(materialId, colorId, modelId),
-      operations
-    );
-
-    constructorElementIDFrontPocket = constructorFrontPocketData._id;
-
-    const result = await addModelConstructorFrontPocket(
-      modelId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-
-    expect(result).toHaveProperty('_id', modelId);
-  });
-  test('Should delete ModelConstructorFrontPocket', async () => {
-    const result = await deleteModelConstructorFrontPocket(
-      modelId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-
-    expect(result).toHaveProperty('_id', modelId);
-  });
-  test('Should throw error MODEL_NOT_VALID on addModelConstructorFrontPocket', async () => {
-    const error = await addModelConstructorFrontPocket(
-      notValidId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-    expect(error.message).toBe(MODEL_NOT_VALID);
-    expect(error.statusCode).toBe(BAD_REQUEST);
-  });
-  test('Should throw error MODEL_NOT_VALID on deleteModelConstructorFrontPocket', async () => {
-    const error = await deleteModelConstructorFrontPocket(
-      notValidId,
-      constructorElementIDFrontPocket,
       operations
     );
 

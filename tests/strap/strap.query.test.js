@@ -16,6 +16,8 @@ const {
 } = require('./strap.variables');
 const { createColor } = require('../color/color.helper');
 const { color } = require('../color/color.variables');
+const { createMaterial } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -24,7 +26,8 @@ jest.mock('../../modules/currency/currency.model.js');
 let operations;
 let strapId;
 let colorId;
-let modelId;
+let materialInput;
+let materialId;
 let strapData;
 
 describe('Strap queries', () => {
@@ -33,11 +36,14 @@ describe('Strap queries', () => {
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
+    materialInput = getMaterial(colorId);
+    const materialData = await createMaterial(materialInput, operations);
+    materialId = materialData._id;
 
     filter.color.push(colorId);
 
     strapData = await createStrap(
-      newStrap(colorId, modelId),
+      newStrap(colorId, materialId),
       imgString,
       operations
     );
@@ -47,7 +53,11 @@ describe('Strap queries', () => {
 
   test('#1. should receive strap by ID', async () => {
     const result = await getStrapById(strapId, operations);
-    const convertedObj = await strapWithConvertedPrice(colorId, newImgObj);
+    const convertedObj = await strapWithConvertedPrice(
+      colorId,
+      materialId,
+      newImgObj
+    );
 
     expect(result).toBeDefined();
     expect(result).toEqual({

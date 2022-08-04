@@ -3,7 +3,7 @@ const newConstructorBottom = (materialId, colorId, modelId) => ({
     { lang: 'ua', value: 'Деяке імя' },
     { lang: 'en', value: 'Some name' },
   ],
-  optionType: 'CONSTRUCTOR_BOTTOM',
+  optionType: 'BOTTOM',
   model: modelId,
   features: {
     material: materialId,
@@ -25,7 +25,7 @@ const getConstructorData = (construrtor, { materialId, colorId, modelId }) => ({
       value: construrtor.name[1].value,
     },
   ],
-  optionType: 'CONSTRUCTOR_BOTTOM',
+  optionType: 'BOTTOM',
   model: { _id: modelId },
   features: {
     material: {
@@ -59,7 +59,7 @@ const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
     { lang: 'ua', value: 'Деяке нове імя' },
     { lang: 'en', value: 'Some new name' },
   ],
-  optionType: 'CONSTRUCTOR_BOTTOM',
+  optionType: 'BOTTOM',
   model: modelId,
   features: {
     material: materialId,

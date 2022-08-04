@@ -13,6 +13,9 @@ const createStrap = async (strap, image, operations) => {
             }
             optionType
             features {
+              material {
+                _id
+              }
               color {
                 _id
               }
@@ -56,6 +59,9 @@ const updateStrap = async (id, strap, image, operations) => {
             }
             optionType
             features {
+              material {
+                _id
+              }
               color {
                 _id
               }
@@ -122,6 +128,9 @@ const getStrapById = async (id, operations) => {
             }
             optionType
             features {
+              material {
+                _id
+              }
               color {
                 _id
               }
@@ -163,6 +172,9 @@ const getAllStraps = async (limit, skip, filter, operations) => {
             }
             optionType
             features {
+              material {
+                _id
+              }
               color {
                 _id
               }
