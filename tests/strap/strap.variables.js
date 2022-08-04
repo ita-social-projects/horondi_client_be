@@ -8,6 +8,7 @@ const filter = {
   name: '',
   available: [],
   color: [],
+  material: [],
 };
 const imgString = 'small_id73jyckmc4ycke_основа-жовта.png';
 const newImgString = 'small_test-file';

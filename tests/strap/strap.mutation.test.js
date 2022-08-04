@@ -118,6 +118,7 @@ describe('Strap mutations', () => {
 
     const finalStrap = newStrapUpdatedWithImage(colorId, materialId, newImgObj);
 
+    // console.log(finalStrap);
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({
       _id: strapId,

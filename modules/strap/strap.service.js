@@ -81,8 +81,8 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    if (foundStrap.image) {
-      await uploadService.deleteFiles([foundStrap.image]);
+    if (foundStrap.images) {
+      await uploadService.deleteFiles([foundStrap.images]);
     }
     const historyEvent = {
       action: DELETE_EVENT,

@@ -41,6 +41,7 @@ describe('Strap queries', () => {
     materialId = materialData._id;
 
     filter.color.push(colorId);
+    filter.material.push(materialId);
 
     strapData = await createStrap(
       newStrap(colorId, materialId),
