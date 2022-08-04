@@ -460,6 +460,7 @@ const resolvers = {
           fixedPrice: item.fixedPrice,
           isFromConstructor: item.isFromConstructor,
           quantity: item.quantity,
+          model: productService.getProductModelById(item.product),
           options: {
             size: productService.getProductSizeById(
               item.product,
