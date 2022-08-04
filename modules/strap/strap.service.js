@@ -50,9 +50,14 @@ class StrapService {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
+    if (filter?.material?.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
+
     const items = await Strap.find(filterOptions)
       .populate('features.material')
       .populate('features.color')
+      .populate('features.material')
       .skip(skip)
       .limit(limit)
       .exec();
