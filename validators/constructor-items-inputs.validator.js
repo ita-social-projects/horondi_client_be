@@ -40,7 +40,7 @@ const inputPocketValidator = Joi.object({
   image: Joi.string().trim().optional(),
   absolutePrice: Joi.number().integer().allow(null),
   relativePrice: Joi.number().integer().allow(null),
-  restriction: Joi.boolean(),
+  available: Joi.boolean(),
   positions: Joi.array(),
 });
 
