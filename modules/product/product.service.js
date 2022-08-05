@@ -9,6 +9,7 @@ const {
   PRODUCT_NOT_FOUND,
   PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
+const { MODEL_NOT_FOUND } = require('../../error-messages/model.messages');
 const { SIZE_NOT_FOUND } = require('../../error-messages/size.messages');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -92,6 +93,16 @@ class ProductsService {
     }
 
     return product;
+  }
+
+  async getProductModelById(productId) {
+    const product = await this.getProductById(productId);
+    const model = await modelService.getModelById(product.model);
+    if (!model) {
+      throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
+    }
+
+    return model;
   }
 
   async getProductsFilters() {
