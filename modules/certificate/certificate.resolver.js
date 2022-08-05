@@ -27,9 +27,9 @@ const certificatesQuery = {
   getCertificateById: async (_, { id }) =>
     certificatesService.getCertificateById(id),
 
-  getCertificateByName: async (_, { name }) => {
+    getCertificateByParams: async (_, { params }) => {
     try {
-      return await certificatesService.getCertificateByName(name);
+      return await certificatesService.getCertificateByParams(params);
     } catch (e) {
       return new ApolloError(e.message, e.statusCode);
     }

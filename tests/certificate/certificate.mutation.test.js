@@ -7,7 +7,7 @@ const {
   generateCertificate,
   updateCertificate,
   getCertificateById,
-  getCertificateByName
+  getCertificateByParams
 } = require('./certificate.helper');
 const {
   wrongId,
@@ -19,6 +19,7 @@ const {
 let operations;
 let certificateId;
 let certificateName;
+let certificateParams;
 let isUsed;
 
 describe('Test mutation methods Admin', () => {
@@ -36,6 +37,7 @@ describe('Test mutation methods Admin', () => {
     certificateId = result.certificates[0]._id;
     certificateName = result.certificates[0].name;
     isUsed = result.certificates[0].isUsed;
+    certificateParams = { name: certificateName };
 
     expect(result.certificates[0]).toHaveProperty('name');
   });
@@ -44,7 +46,7 @@ describe('Test mutation methods Admin', () => {
     expect(isUsed).toBeFalsy();
 
     const updateResult = await updateCertificate(certificateName, operations);
-    const getResult = await getCertificateByName(certificateName, operations);
+    const getResult = await getCertificateByParams(certificateParams, operations);
     
     expect(updateResult.isUsed).toBeTruthy();
     expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
@@ -59,7 +61,7 @@ describe('Test mutation methods Admin', () => {
 
   it('should delete certificate and throw error CERTIFICATE_NOT_FOUND', async () => {
     await deleteCertificate(certificateId, operations);
-    const result = await getCertificateByName(certificateName, operations);
+    const result = await getCertificateByParams(certificateParams, operations);
 
     expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });

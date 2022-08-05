@@ -7,7 +7,7 @@ const {
   generateCertificate,
   getAllCertificates,
   getCertificateById,
-  getCertificateByName,
+  getCertificateByParams,
   updateCertificate,
 } = require('./certificate.helper');
 const {
@@ -20,6 +20,7 @@ const {
 let operations;
 let certificateId;
 let certificateName;
+let certificateParams;
 
 describe('Test certificate Queries', () => {
   beforeAll(async () => {
@@ -31,6 +32,7 @@ describe('Test certificate Queries', () => {
     );
     certificateId = certificateData.certificates[0]._id;
     certificateName = certificateData.certificates[0].name;
+    certificateParams = { name: certificateName };
   });
 
   afterAll(async () => {
@@ -69,15 +71,15 @@ describe('Test certificate Queries', () => {
   });
 
   it('should get a fresh-generated certificate by name', async () => {
-    const result = await getCertificateByName(certificateName, operations);
-    expect(result.data.getCertificateByName).toHaveProperty('name', certificateName);
+    const result = await getCertificateByParams(certificateParams, operations);
+    expect(result.data.getCertificateByParams).toHaveProperty('name', certificateName);
   });
 
   it('should throw error CERTIFICATE_NOT_FOUND for get certificate by name', async () => {
-    const result = await getCertificateByName(wrongName, operations);
+    const result = await getCertificateByParams({ name: wrongName }, operations);
 
     expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
-    expect(result.data.getCertificateByName).toEqual(null);
+    expect(result.data.getCertificateByParams).toEqual(null);
   });
   
 });

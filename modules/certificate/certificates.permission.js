@@ -20,7 +20,7 @@ const {
 
 const certificatePermissionsQuery = {
   getCertificateById: hasRoles([ADMIN, SUPERADMIN]),
-  getCertificateByName: allow,
+  getCertificateByParams: allow,
   getAllCertificates: and(isAuthorized, isUnlocked),
 };
 
