@@ -261,6 +261,7 @@ const typeDefs = gql`
     POCKET
     STRAP
     CLOSURE
+    POSITION
   }
   enum additionalPriceType {
     RELATIVE_INDICATOR

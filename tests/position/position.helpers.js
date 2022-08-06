@@ -11,6 +11,7 @@ const createPosition = async (position, operations) => {
               value
             }
             available
+            optionType
             _id
             translationsKey
           }
@@ -87,6 +88,7 @@ const getAllPositions = async ({ limit, skip, filter }, operations) => {
                 value
               }
               available
+              optionType
             }
             count
           }
@@ -111,6 +113,7 @@ const getPositionById = async (id, operations) => {
               value
             }
             available
+            optionType
           }
           ... on Error {
             statusCode
