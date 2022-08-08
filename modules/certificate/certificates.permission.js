@@ -1,4 +1,4 @@
-const { and, allow } = require('graphql-shield');
+const { and } = require('graphql-shield');
 const {
   hasRoles,
   isAuthorized,
