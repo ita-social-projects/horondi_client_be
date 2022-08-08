@@ -109,24 +109,7 @@ class CertificatesService extends FilterHelper {
 
     return certificate;
   }
-
-  async getCertificateByName(name) {
-    const certificate = await CertificateModel.findOne({ name }).exec();
-
-    if (!certificate) {
-      throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
-    }
-    if (certificate.isUsed) {
-      throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
-    }
-
-    if (certificate.isExpired) {
-      throw new RuleError(CERTIFICATE_IS_EXPIRED, BAD_REQUEST);
-    }
-
-    return certificate;
-  }
-
+  
   async getCertificateByParams(params) {
     const certificate = await CertificateModel.findOne(params).exec();
 

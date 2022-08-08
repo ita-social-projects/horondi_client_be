@@ -89,11 +89,11 @@ const getCertificateById = async (id, operations) => {
   return result.data.getCertificateById;
 };
 
-const getCertificateByName = async (name, operations) => {
+const getCertificateByParams = async (params, operations) => {
   const result = await operations.query({
     query: gql`
-      query ($name: String!) {
-        getCertificateByName(name: $name) {
+      query ($params: CertificateInput!) {
+        getCertificateByParams(params: $params) {
           ... on Certificate {
             _id
             name
@@ -113,7 +113,7 @@ const getCertificateByName = async (name, operations) => {
       }
     `,
     variables: {
-      name,
+      params,
     },
   });
 
@@ -229,7 +229,7 @@ module.exports = {
   generateCertificate,
   getAllCertificates,
   getCertificateById,
-  getCertificateByName,
+  getCertificateByParams,
   registerUser,
   updateCertificate,
 };

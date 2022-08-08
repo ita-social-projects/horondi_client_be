@@ -15,7 +15,7 @@ const {
   generateCertificate,
   getAllCertificates,
   getCertificateById,
-  getCertificateByName,
+  getCertificateByParams,
   registerUser,
   updateCertificate,
 } = require('./certificate.helper');
@@ -30,6 +30,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
 
   let certificateId;
   let certificateName;
+  let certificateParams;
 
   let certificateNullOwnerId;
   let certificateNullOwnerEmail;
@@ -83,6 +84,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       );
       certificateId = result.certificates[0]._id;
       certificateName = result.certificates[0].name;
+      certificateParams = { name: certificateName };
 
       expect(result.certificates[0]).toHaveProperty('name');
     });
@@ -115,9 +117,9 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should get certificate by name', async () => {
-      const certificate = await getCertificateByName(certificateName, adminContextServer);
+      const certificate = await getCertificateByParams(certificateParams, adminContextServer);
 
-      expect(certificate.data.getCertificateByName).toHaveProperty('name', certificateName);
+      expect(certificate.data.getCertificateByParams).toHaveProperty('name', certificateName);
     });
 
   });
@@ -131,7 +133,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
 
     it('should update certificate and throw CERTIFICATE_IS_USED', async () => {
       await updateCertificate(certificateName, adminContextServer);
-      const certificate = await getCertificateByName(certificateName, adminContextServer);
+      const certificate = await getCertificateByParams(certificateParams, adminContextServer);
 
       expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
     });
@@ -170,9 +172,9 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should delete certificate and throw CERTIFICATE_NOT_FOUND', async () => {
-      await deleteCertificate(certificateNullOwnerId, adminContextServer);
+      await deleteCertificate(certificateName, adminContextServer);
 
-      const certificate = await getCertificateByName(certificateNullOwnerName, adminContextServer);
+      const certificate = await getCertificateByParams(certificateParams, adminContextServer);
 
       expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
     });
