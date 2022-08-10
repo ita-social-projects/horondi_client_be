@@ -82,7 +82,7 @@ class StrapService {
     }
 
     if (foundStrap.images) {
-      await uploadService.deleteFiles([foundStrap.images]);
+      await uploadService.deleteFiles(Object.values(foundStrap.images));
     }
     const historyEvent = {
       action: DELETE_EVENT,
