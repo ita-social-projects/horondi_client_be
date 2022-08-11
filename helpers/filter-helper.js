@@ -35,10 +35,6 @@ class FilterHelper {
       ],
     };
 
-    if (!filter['$and']) {
-      filter['$and'] = [];
-    }
-
     filter['$and'].push(searchFilter);
   }
 

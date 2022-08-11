@@ -60,6 +60,10 @@ const certificateSchema = new mongoose.Schema({
   paymentToken: {
     type: String,
   },
+  createdByAdmin: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports.CertificateModel = mongoose.model(

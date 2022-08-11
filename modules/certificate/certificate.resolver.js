@@ -7,7 +7,7 @@ const certificatesQuery = {
     {
       skip,
       limit,
-      sortBy = 'startDate',
+      sortBy = 'dateStart',
       sortOrder = 'desc',
       search = '',
       status = [],
@@ -27,7 +27,7 @@ const certificatesQuery = {
   getCertificateById: async (_, { id }) =>
     certificatesService.getCertificateById(id),
 
-    getCertificateByParams: async (_, { params }) => {
+  getCertificateByParams: async (_, { params }) => {
     try {
       return await certificatesService.getCertificateByParams(params);
     } catch (e) {
@@ -39,13 +39,14 @@ const certificatesQuery = {
 const certificatesMutation = {
   generateCertificate: async (
     _,
-    { newCertificates, email, dateStart },
+    { newCertificates, email, dateStart, createdByAdmin },
     { user = {} }
   ) =>
     certificatesService.generateCertificate(
       newCertificates,
       email,
       dateStart,
+      createdByAdmin,
       user._id,
       user.role
     ),

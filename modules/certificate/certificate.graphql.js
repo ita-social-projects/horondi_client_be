@@ -14,6 +14,7 @@ const certificateTypes = `
     paymentStatus: String
     paymentUrl: String
     paymentToken: String
+    createdByAdmin: Boolean
     admin: [Admin]
   }
 
@@ -70,7 +71,7 @@ const certificateTypes = `
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
-    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
+    generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date, createdByAdmin: Boolean ): CertificatesResult
     updateCertificate(name: String!): CertificateResult
   }
 `;

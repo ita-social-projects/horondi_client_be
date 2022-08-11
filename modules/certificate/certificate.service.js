@@ -43,7 +43,9 @@ class CertificatesService extends FilterHelper {
     status,
     user
   ) {
-    let filter = {};
+    let filter = {
+      $and: [{ $or: [{ paymentStatus: 'PAID' }, { createdByAdmin: true }] }],
+    };
 
     if (user.role === USER) {
       const userId = mongoose.Types.ObjectId(user._id);
@@ -52,7 +54,7 @@ class CertificatesService extends FilterHelper {
       this.filterByName(filter, search);
     }
     if (status.length) {
-      if (!Object.keys(filter).length) {
+      if (!filter['$or']) {
         filter['$or'] = [];
       }
       if (status.includes('isUsed')) {
@@ -109,7 +111,7 @@ class CertificatesService extends FilterHelper {
 
     return certificate;
   }
-  
+
   async getCertificateByParams(params) {
     const certificate = await CertificateModel.findOne(params).exec();
 
@@ -132,6 +134,7 @@ class CertificatesService extends FilterHelper {
     certificatesData,
     email,
     dateStart,
+    createdByAdmin,
     userId,
     userRole
   ) {
@@ -155,6 +158,7 @@ class CertificatesService extends FilterHelper {
       for (let i = 0; i < count; i++) {
         newCertificate.name = await generateName();
         newCertificate.value = value;
+        newCertificate.createdByAdmin = createdByAdmin;
 
         if (dateStart) {
           const futureDate = {
