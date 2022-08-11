@@ -100,6 +100,41 @@ class CertificatesService extends FilterHelper {
     };
   }
 
+  async getAllUserCertificates(skip, limit, user) {
+    const userId = mongoose.Types.ObjectId(user._id);
+    const filter = { ownedBy: userId };
+
+    const certificates = await CertificateModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      {
+        $match: filter,
+      },
+      {
+        $facet: {
+          count: [{ $count: 'count' }],
+          data: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
+    ]).exec();
+
+    const items = certificates[0].data;
+    const count = certificates[0].count.length
+      ? certificates[0].count[0].count
+      : 0;
+
+    return {
+      items,
+      count,
+    };
+  }
+
   async getCertificateById(id) {
     const certificate = await CertificateModel.findById(id).exec();
 
@@ -109,7 +144,7 @@ class CertificatesService extends FilterHelper {
 
     return certificate;
   }
-  
+
   async getCertificateByParams(params) {
     const certificate = await CertificateModel.findOne(params).exec();
 

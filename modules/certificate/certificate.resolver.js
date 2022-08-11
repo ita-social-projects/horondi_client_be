@@ -24,10 +24,13 @@ const certificatesQuery = {
       user
     ),
 
+  getAllUserCertificates: async (_, { skip, limit }, { user }) =>
+    certificatesService.getAllUserCertificates(skip, limit, user),
+
   getCertificateById: async (_, { id }) =>
     certificatesService.getCertificateById(id),
 
-    getCertificateByParams: async (_, { params }) => {
+  getCertificateByParams: async (_, { params }) => {
     try {
       return await certificatesService.getCertificateByParams(params);
     } catch (e) {

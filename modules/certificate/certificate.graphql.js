@@ -64,7 +64,8 @@ const certificateTypes = `
   extend type Query {
     getAllCertificates(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: [String]): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
-    getCertificateByParams(params: CertificateInput!): CertificateResult
+    getCertificateByParams(params: CertificateInput!): CertificateResult,
+    getAllUserCertificates(limit: Int, skip: Int):CertificatePaginatedResult
   }
 
   extend type Mutation {

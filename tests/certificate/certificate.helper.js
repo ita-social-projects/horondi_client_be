@@ -34,7 +34,7 @@ const generateCertificate = async (certificateData, email, operations) => {
 const getAllCertificates = async (search, operations) => {
   const result = await operations.query({
     query: gql`
-      query($search: String) {
+      query ($search: String) {
         getAllCertificates(skip: 0, limit: 3, search: $search) {
           ... on PaginatedCertificate {
             items {
@@ -58,6 +58,32 @@ const getAllCertificates = async (search, operations) => {
 
   return result.data.getAllCertificates;
 };
+
+const getAllUserCertificates = async operations => {
+  const result = await operations.query({
+    query: gql`
+      query {
+        getAllUserCertificates(skip: 0, limit: 3) {
+          __typename
+          ... on PaginatedCertificate {
+            items {
+              _id
+              name
+              value
+              ownedBy {
+                _id
+              }
+            }
+            count
+          }
+        }
+      }
+    `,
+  });
+
+  return result.data.getAllUserCertificates;
+};
+
 const getCertificateById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
@@ -117,7 +143,7 @@ const getCertificateByParams = async (params, operations) => {
     },
   });
 
-  return result
+  return result;
 };
 
 const addCertificate = async (certificateName, operations) => {
@@ -228,6 +254,7 @@ module.exports = {
   deleteCertificate,
   generateCertificate,
   getAllCertificates,
+  getAllUserCertificates,
   getCertificateById,
   getCertificateByParams,
   registerUser,
