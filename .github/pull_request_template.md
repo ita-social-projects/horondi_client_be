@@ -13,6 +13,6 @@ Original             |  Updated
 
 ### Checklist
 - [ ] 🔽 My branch is up-to-date with "development" branch
-- [ ] ✅All tests passed locally
+- [ ] ✅All tests passed locally and linter ran successfully
 - [ ] ✨My changes working with up-to-date front-end and admin part locally, like charm
 - [ ] 🔗 Link pull request to issue
