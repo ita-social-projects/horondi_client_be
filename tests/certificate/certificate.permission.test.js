@@ -14,6 +14,7 @@ const {
   deleteCertificate,
   generateCertificate,
   getAllCertificates,
+  getAllUserCertificates,
   getCertificateById,
   getCertificateByParams,
   registerUser,
@@ -106,8 +107,15 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       expect(result).toHaveProperty('message', INVALID_PERMISSIONS);
     });
 
-    it('should see only certificates owned by him', async () => {
+    it('should not have access to all certificates', async () => {
       const result = await getAllCertificates(undefined, userContextServer);
+
+      expect(result).toHaveProperty('message', INVALID_PERMISSIONS);
+      expect(result).toHaveProperty('statusCode', 403);
+    });
+
+    it('should see only certificates owned by him', async () => {
+      const result = await getAllUserCertificates(userContextServer);
 
       expect(result.count).toBe(2);
     });
@@ -117,11 +125,16 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should get certificate by name', async () => {
-      const certificate = await getCertificateByParams(certificateParams, adminContextServer);
+      const certificate = await getCertificateByParams(
+        certificateParams,
+        adminContextServer
+      );
 
-      expect(certificate.data.getCertificateByParams).toHaveProperty('name', certificateName);
+      expect(certificate.data.getCertificateByParams).toHaveProperty(
+        'name',
+        certificateName
+      );
     });
-
   });
 
   describe('Admin restrictions and cleaning DB', () => {
@@ -133,9 +146,15 @@ describe('Run ApolloClientServer with role=admin in context', () => {
 
     it('should update certificate and throw CERTIFICATE_IS_USED', async () => {
       await updateCertificate(certificateName, adminContextServer);
-      const certificate = await getCertificateByParams(certificateParams, adminContextServer);
+      const certificate = await getCertificateByParams(
+        certificateParams,
+        adminContextServer
+      );
 
-      expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
+      expect(certificate.errors[0]).toHaveProperty(
+        'message',
+        CERTIFICATE_IS_USED
+      );
     });
 
     it('shouldn`t use addCertificate method', async () => {
@@ -174,10 +193,15 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     it('should delete certificate and throw CERTIFICATE_NOT_FOUND', async () => {
       await deleteCertificate(certificateName, adminContextServer);
 
-      const certificate = await getCertificateByParams(certificateParams, adminContextServer);
+      const certificate = await getCertificateByParams(
+        certificateParams,
+        adminContextServer
+      );
 
-      expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
+      expect(certificate.errors[0]).toHaveProperty(
+        'message',
+        CERTIFICATE_NOT_FOUND
+      );
     });
-
   });
 });
