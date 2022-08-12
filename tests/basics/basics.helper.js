@@ -28,6 +28,7 @@ const createBasics = async (basic, image, operations) => {
             available
             absolutePrice
             translationsKey
+            optionType
           }
           ... on Error {
             message
@@ -69,6 +70,7 @@ const updateBasic = async (id, basic, images, operations) => {
             }
             available
             absolutePrice
+            optionType
           }
           ... on Error {
             message
@@ -130,6 +132,7 @@ const getAllBasics = async ({ limit, skip, filter }, operations) => {
               }
             }
             available
+            optionType
           }
         }
       }
@@ -166,6 +169,7 @@ const getBasicById = async (id, operations) => {
               thumbnail
             }
             available
+            optionType
           }
           ... on Error {
             message

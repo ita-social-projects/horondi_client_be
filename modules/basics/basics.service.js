@@ -34,6 +34,7 @@ const {
 class BasicsService {
   async getAllBasics(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
+
     if (filter?.material.length) {
       filterOptions['features.material'] = { $in: filter.material };
     }

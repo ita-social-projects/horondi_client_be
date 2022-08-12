@@ -17,8 +17,6 @@ const createPocket = async (pocket, images, operations) => {
               large
               thumbnail
             }
-
-            restriction
             optionType
             translationsKey
           }
@@ -53,7 +51,6 @@ const updatePocket = async (id, pocket, image, operations) => {
               thumbnail
             }
 
-            restriction
             optionType
           }
           ... on Error {
@@ -90,9 +87,6 @@ const getAllPockets = async ({ limit, skip, filter }, operations) => {
               large
               thumbnail
             }
-
-            restriction
-            optionType
             optionType
           }
         }
@@ -123,7 +117,6 @@ const getPocketById = async (id, operations) => {
               thumbnail
             }
             absolutePrice
-            restriction
           }
           ... on Error {
             message

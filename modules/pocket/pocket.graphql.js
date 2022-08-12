@@ -5,8 +5,9 @@ const pocketType = `
     optionType: OptionTypeEnum
     images: ImageSet
     absolutePrice: Int
-    restriction: Boolean
+    relativePrice: Int
     positions: [Position]
+    available: Boolean
     translationsKey: ID
   }
 `;
@@ -37,8 +38,10 @@ const pocketInputs = `
     name: [LanguageInput]
     optionType: String
     restriction: Boolean
-    images: ImageSetInput
-    absolutePrice: Int!
+    image: Upload
+    absolutePrice: Int
+    relativePrice: Int
+    available: Boolean
     positions: [ID]
   }
 

@@ -7,6 +7,7 @@ const {
   CONSTRUCTOR_OPTION_TYPES: {
     BACK_OPTION,
     BOTTOM_OPTION,
+    BASIC_OPTION,
     CLOSURE,
     CONSTRUCTOR_BASIC,
     CONSTRUCTOR_BOTTOM,
@@ -23,6 +24,7 @@ const nestedNameValidator = Joi.object({
 });
 const inputBasicsValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
+  optionType: Joi.string().trim().valid(BASIC_OPTION).required(),
   image: Joi.string().trim().optional(),
   absolutePrice: Joi.number().integer().allow(null),
   relativePrice: Joi.number().integer().allow(null),
@@ -38,7 +40,7 @@ const inputPocketValidator = Joi.object({
   image: Joi.string().trim().optional(),
   absolutePrice: Joi.number().integer().allow(null),
   relativePrice: Joi.number().integer().allow(null),
-  restriction: Joi.boolean(),
+  available: Joi.boolean(),
   positions: Joi.array(),
 });
 
@@ -89,6 +91,7 @@ const inputStrapValidator = Joi.object({
   name: Joi.array().has(nestedNameValidator),
   optionType: Joi.string().trim().valid(STRAP).required(),
   features: Joi.object({
+    material: Joi.string().trim().required(),
     color: Joi.string().trim().required(),
   }),
   image: Joi.string().trim().optional(),

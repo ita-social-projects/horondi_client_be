@@ -43,12 +43,16 @@ class StrapService {
   async getAllStraps(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
 
+    if (filter?.material?.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
     if (filter?.color?.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
     const items = await Strap.find(filterOptions)
       .populate('features.color')
+      .populate('features.material')
       .skip(skip)
       .limit(limit)
       .exec();
@@ -77,8 +81,8 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    if (foundStrap.image) {
-      await uploadService.deleteFiles([foundStrap.image]);
+    if (foundStrap.images) {
+      await uploadService.deleteFiles(Object.values(foundStrap.images));
     }
     const historyEvent = {
       action: DELETE_EVENT,

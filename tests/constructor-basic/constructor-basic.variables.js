@@ -15,7 +15,7 @@ const newConstructorBasic = (materialId, colorId, modelId) => ({
     { lang: 'ua', value: 'варіант 1' },
     { lang: 'en', value: 'variant 1' },
   ],
-  optionType: 'CONSTRUCTOR_BASIC',
+  optionType: 'BASIC',
   model: modelId,
   features: {
     material: materialId,
@@ -40,7 +40,7 @@ const getConstructorData = (
       value: construrtorBasic.name[1].value,
     },
   ],
-  optionType: 'CONSTRUCTOR_BASIC',
+  optionType: 'BASIC',
   model: { _id: modelId },
   features: {
     material: {
@@ -79,7 +79,7 @@ const getConstructorDataForUpt = (materialId, colorId, modelId) => ({
       value: 'After',
     },
   ],
-  optionType: 'CONSTRUCTOR_BASIC',
+  optionType: 'BASIC',
   model: modelId,
   features: {
     material: materialId,

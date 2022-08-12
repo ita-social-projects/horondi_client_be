@@ -8,6 +8,7 @@ const filter = {
   name: '',
   available: [],
   color: [],
+  material: [],
 };
 const imgString = 'small_id73jyckmc4ycke_основа-жовта.png';
 const newImgString = 'small_test-file';
@@ -18,7 +19,7 @@ const newImgObj = {
   thumbnail: 'thumbnail_test-file',
 };
 
-const newStrap = colorId => ({
+const newStrap = (colorId, materialId) => ({
   name: [
     { lang: 'uk', value: 'тест' },
     { lang: 'en', value: 'test' },
@@ -26,19 +27,26 @@ const newStrap = colorId => ({
   optionType: 'STRAP',
   features: {
     color: colorId,
+    material: materialId,
   },
   image: 'empty',
   available: true,
   absolutePrice: 10,
 });
 
-const strapWithConvertedPrice = (colorId, imageStr, translationsKeyId) => ({
+const strapWithConvertedPrice = (
+  colorId,
+  materialId,
+  imageStr,
+  translationsKeyId
+) => ({
   name: [
     { lang: 'uk', value: 'тест' },
     { lang: 'en', value: 'test' },
   ],
   optionType: 'STRAP',
   features: {
+    material: { _id: materialId },
     color: { _id: colorId },
   },
   images: imageStr,
@@ -47,7 +55,7 @@ const strapWithConvertedPrice = (colorId, imageStr, translationsKeyId) => ({
   translationsKey: translationsKeyId,
 });
 
-const strapToUpdate = colorId => ({
+const strapToUpdate = (colorId, materialId) => ({
   name: [
     { lang: 'uk', value: 'змінено' },
     { lang: 'en', value: 'updated' },
@@ -55,13 +63,14 @@ const strapToUpdate = colorId => ({
   optionType: 'STRAP',
   features: {
     color: colorId,
+    material: materialId,
   },
   image: imgString,
   available: true,
   absolutePrice: 10,
 });
 
-const newStrapUpdated = colorId => ({
+const newStrapUpdated = (colorId, materialId) => ({
   name: [
     { lang: 'uk', value: 'змінено' },
     { lang: 'en', value: 'updated' },
@@ -69,13 +78,14 @@ const newStrapUpdated = colorId => ({
   optionType: 'STRAP',
   features: {
     color: { _id: colorId },
+    material: { _id: materialId },
   },
   images: newImgObj,
   available: true,
   absolutePrice: 10,
 });
 
-const newStrapUpdatedWithImage = colorId => ({
+const newStrapUpdatedWithImage = (colorId, materialId) => ({
   name: [
     { lang: 'uk', value: 'змінено' },
     { lang: 'en', value: 'updated' },
@@ -83,6 +93,7 @@ const newStrapUpdatedWithImage = colorId => ({
   optionType: 'STRAP',
   features: {
     color: { _id: colorId },
+    material: { _id: materialId },
   },
   images: newImgObj,
   available: true,

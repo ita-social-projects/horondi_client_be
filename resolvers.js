@@ -630,6 +630,7 @@ const resolvers = {
   Strap: {
     model: parent => modelService.getModelById(parent.model),
     features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },

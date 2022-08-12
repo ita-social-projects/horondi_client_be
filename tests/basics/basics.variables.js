@@ -9,6 +9,7 @@ const newBasicsInputData = (materialId, colorId) => ({
   },
   available: true,
   absolutePrice: 50,
+  optionType: 'BASIC',
 });
 
 const newBasicsInputDataUpdate = (materialId, colorId) => ({
@@ -22,6 +23,7 @@ const newBasicsInputDataUpdate = (materialId, colorId) => ({
   },
   available: false,
   absolutePrice: 50,
+  optionType: 'BASIC',
 });
 
 const wrongId = '611255923321a940581140c0';

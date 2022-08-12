@@ -157,7 +157,7 @@ const {
 } = require('./modules/back/back.graphql');
 const {
   strapType,
-  strapFeatureType,
+  strapFeatureSet,
   strapInputs,
 } = require('./modules/strap/strap.graphql');
 const {
@@ -238,7 +238,7 @@ const typeDefs = gql`
   ${bottomType}
   ${bottomFeatureSet}
   ${strapType}
-  ${strapFeatureType}
+  ${strapFeatureSet}
   ${positionType}
   ${basicsType}
   ${basicsFeatureSet}
@@ -254,16 +254,14 @@ const typeDefs = gql`
     user
   }
   enum OptionTypeEnum {
+    BASIC
     BACK
     BOTTOM
-    CLOSURE
-    CONSTRUCTOR_BASIC
-    CONSTRUCTOR_BOTTOM
-    CONSTRUCTOR_FRONT_POCKET
     PATTERN
     POCKET
     STRAP
-    SIDE
+    CLOSURE
+    POSITION
   }
   enum additionalPriceType {
     RELATIVE_INDICATOR
@@ -705,7 +703,7 @@ const typeDefs = gql`
     getBacksByModel(id: ID): [BackResult]
     getAllBottoms( limit:Int!, skip:Int!, filter:BottomFilterInput): PaginatedBottoms
     getBottomById(id: ID): BottomResult
-    getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
+    getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [StrapResult]
     getAllConstructors(limit:Int!, skip:Int!, filter:ConstructorFilterInput): PaginatedConstructors!

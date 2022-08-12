@@ -1,9 +1,9 @@
 const materialPurposes = {
-  MAIN: 'MAIN',
+  BASIC: 'BASIC',
   INNER: 'INNER',
   BOTTOM: 'BOTTOM',
   PATTERN: 'PATTERN',
-  CLOSURE: 'CLOSURE',
+  STRAP: 'STRAP',
   BACK: 'BACK',
 };
 

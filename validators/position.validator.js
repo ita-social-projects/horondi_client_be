@@ -8,6 +8,7 @@ const languageSchemaValidator = {
 const positionInputValidator = Joi.object({
   name: Joi.array().items(languageSchemaValidator).required(),
   available: Joi.bool().required(),
+  optionType: Joi.string().required(),
 });
 
 module.exports = {
