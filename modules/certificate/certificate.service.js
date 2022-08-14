@@ -34,25 +34,16 @@ const generateName = async () => {
 };
 
 class CertificatesService extends FilterHelper {
-  async getAllCertificates(
-    skip,
-    limit,
-    sortBy,
-    sortOrder,
-    search,
-    status,
-    user
-  ) {
-    let filter = {};
+  async getAllCertificates(skip, limit, sortBy, sortOrder, search, status) {
+    const filter = {
+      $and: [
+        { $or: [{ paymentStatus: 'PAID' }, { createdBy: { $ne: null } }] },
+      ],
+    };
 
-    if (user.role === USER) {
-      const userId = mongoose.Types.ObjectId(user._id);
-      filter = { ownedBy: userId };
-    } else {
-      this.filterByName(filter, search);
-    }
+    this.filterByName(filter, search);
     if (status.length) {
-      if (!Object.keys(filter).length) {
+      if (!filter['$or']) {
         filter['$or'] = [];
       }
       if (status.includes('isUsed')) {
@@ -102,7 +93,9 @@ class CertificatesService extends FilterHelper {
 
   async getAllUserCertificates(skip, limit, user) {
     const userId = mongoose.Types.ObjectId(user._id);
-    const filter = { ownedBy: userId };
+    const filter = {
+      $and: [{ ownedBy: userId }, { paymentStatus: 'PAID' }],
+    };
 
     const certificates = await CertificateModel.aggregate([
       {

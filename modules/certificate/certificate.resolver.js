@@ -11,8 +11,7 @@ const certificatesQuery = {
       sortOrder = 'desc',
       search = '',
       status = [],
-    },
-    { user }
+    }
   ) =>
     certificatesService.getAllCertificates(
       skip,
@@ -20,8 +19,7 @@ const certificatesQuery = {
       sortBy,
       sortOrder,
       search,
-      status,
-      user
+      status
     ),
 
   getAllUserCertificates: async (_, { skip, limit }, { user }) =>
