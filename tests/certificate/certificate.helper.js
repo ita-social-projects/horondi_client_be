@@ -31,11 +31,16 @@ const generateCertificate = async (certificateData, email, operations) => {
   return result.data.generateCertificate;
 };
 
-const getAllCertificates = async (search, operations) => {
+const getAllCertificates = async (search, status, operations) => {
   const result = await operations.query({
     query: gql`
-      query ($search: String) {
-        getAllCertificates(skip: 0, limit: 3, search: $search) {
+      query ($search: String, $status: [String]) {
+        getAllCertificates(
+          skip: 0
+          limit: 3
+          search: $search
+          status: $status
+        ) {
           ... on PaginatedCertificate {
             items {
               _id
@@ -53,6 +58,7 @@ const getAllCertificates = async (search, operations) => {
     `,
     variables: {
       search,
+      status,
     },
   });
 

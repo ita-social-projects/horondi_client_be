@@ -108,16 +108,16 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should not have access to all certificates', async () => {
-      const result = await getAllCertificates(undefined, userContextServer);
+      const result = await getAllCertificates(undefined, [], userContextServer);
 
       expect(result).toHaveProperty('message', INVALID_PERMISSIONS);
       expect(result).toHaveProperty('statusCode', 403);
     });
 
-    it('should see only certificates owned by him', async () => {
+    it("shouldn't find certificate", async () => {
       const result = await getAllUserCertificates(userContextServer);
 
-      expect(result.count).toBe(2);
+      expect(result.count).toBe(0);
     });
 
     afterAll(async () => {
