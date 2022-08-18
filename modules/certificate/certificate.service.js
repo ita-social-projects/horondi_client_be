@@ -184,19 +184,15 @@ class CertificatesService extends FilterHelper {
         newCertificate.name = await generateName();
         newCertificate.value = value;
 
-        if (dateStart) {
-          const futureDate = {
-            dateStart,
-            dateEnd: modifyDate({ years: 1, date: dateStart }),
-            isActive: false,
-          };
-          Object.assign(newCertificate, futureDate);
-        }
-
+        const futureDate = {
+          dateStart: modifyDate({ date: dateStart }),
+          dateEnd: modifyDate({ years: 1, date: dateStart }),
+          isActive: false,
+        };
+        Object.assign(newCertificate, futureDate);
         certificatesArr.push({ ...newCertificate });
       }
     }
-
     certificatesPrice *= FONDY_PAYMENT_MULTIPLIER;
 
     const certificates = await CertificateModel.insertMany(certificatesArr);

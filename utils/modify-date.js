@@ -1,14 +1,11 @@
 const modifyDate = ({ days = 0, months = 0, years = 0, date = new Date() }) => {
-  if (!(date instanceof Date)) {
-    date = new Date(date);
-  }
+  const modifyiedDate = new Date(date);
+  modifyiedDate.setUTCHours(0, 0, 0, 0);
+  modifyiedDate.setDate(modifyiedDate.getDate() + days);
+  modifyiedDate.setMonth(modifyiedDate.getMonth() + months);
+  modifyiedDate.setFullYear(modifyiedDate.getFullYear() + years);
 
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() + days);
-  date.setMonth(date.getMonth() + months);
-  date.setFullYear(date.getFullYear() + years);
-
-  return date;
+  return modifyiedDate;
 };
 
 module.exports = {
