@@ -112,7 +112,18 @@ class CertificatesService extends FilterHelper {
       {
         $facet: {
           count: [{ $count: 'count' }],
-          data: [{ $skip: skip }, { $limit: limit }],
+          data: [
+            {
+              $sort: {
+                isUsed: 1,
+                isExpired: 1,
+                dateStart: 1,
+                value: -1,
+              },
+            },
+            { $skip: skip },
+            { $limit: limit },
+          ],
         },
       },
     ]).exec();
