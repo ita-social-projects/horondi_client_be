@@ -4,25 +4,25 @@ const filtration = {
       $or: [
         {
           'admin.firstName': {
-            $options: 'gi',
+            $options: 'i',
             $regex: 'test',
           },
         },
         {
           'admin.lastName': {
-            $options: 'gi',
+            $options: 'i',
             $regex: 'test',
           },
         },
         {
           name: {
-            $options: 'gi',
+            $options: 'i',
             $regex: 'test',
           },
         },
         {
           code: {
-            $options: 'gi',
+            $options: 'i',
             $regex: 'test',
           },
         },
