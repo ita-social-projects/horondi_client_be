@@ -191,7 +191,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should delete certificate and throw CERTIFICATE_NOT_FOUND', async () => {
-      await deleteCertificate(certificateName, adminContextServer);
+      await deleteCertificate(certificateId, adminContextServer);
 
       const certificate = await getCertificateByParams(
         certificateParams,
