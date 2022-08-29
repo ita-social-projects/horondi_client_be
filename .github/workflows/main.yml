@@ -64,6 +64,7 @@ jobs:
 
       - name: fix code coverage paths
         run: | 
+          echo $MONGO_URL
           sed -i 's/\/home\/runner\/work\/horondi_client_be\/horondi_client_be\//\/github\/workspace\//g' test-report.xml
           sed -i 's/\/home\/runner\/work\/horondi_client_be\/horondi_client_be\//\/github\/workspace\//g' coverage/lcov.info
       
