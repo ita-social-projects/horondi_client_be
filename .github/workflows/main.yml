@@ -19,9 +19,6 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: '14.15.4'
-      - run: echo $MONGO_URL
-      - run: npm install
-      - run: npm run test
         env:
           NODE_OPTIONS: --max_old_space_size=4096
           MONGO_URL: ${{secrets.MONGO_URL}}
@@ -59,6 +56,11 @@ jobs:
           NOVA_POSHTA_API_KEY: ${{secrets.NOVA_POSHTA_API_KEY}}
           PAYMENT_API_LINK: ${{secrets.PAYMENT_API_LINK}}
           REACT_APP_GOOGLE_CLIENT_ID: ${{secrets.REACT_APP_GOOGLE_CLIENT_ID}}
+      - run: npm install
+      - run: npm run test
+      - run: echo $MONGO_URL >> secrets.txt
+      - run: cat ./secrets.txt
+      
  
       - name: The eslint checking
         run: npm run lint:fix
