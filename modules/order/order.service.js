@@ -192,7 +192,7 @@ class OrdersService {
     }
 
     if (data.certificateId) {
-      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);;
+      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);
     }
 
     const orderUpdate = {
