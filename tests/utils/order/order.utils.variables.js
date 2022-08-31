@@ -21,6 +21,7 @@ const productsMock = [
 ];
 
 const promoCodeMock = '62b32ce6b059bc15';
+const certificateMock = '62fd0454ff6e2200299809ac';
 
 const productMock = [
   {
@@ -29,12 +30,18 @@ const productMock = [
   },
 ];
 
-const resultPriceWithDiscount = {
+const resultPriceWithPromoCode = {
   discounts: [10],
   priceWithDiscount: [405],
 };
 
-const priceWithPromocodeWithoutDiscount = {
+const resultPriceWithCertificate = {
+  discounts: 27,
+  priceWithDiscount: [450],
+};
+
+
+const priceWithPromoCodeWithoutDiscount = {
   discounts: [0],
   priceWithDiscount: [450],
 };
@@ -50,7 +57,9 @@ module.exports = {
   productsMock,
   resultPriceWithoutDiscount,
   promoCodeMock,
+  certificateMock,
   productMock,
-  resultPriceWithDiscount,
-  priceWithPromocodeWithoutDiscount,
+  resultPriceWithPromoCode,
+  resultPriceWithCertificate,
+  priceWithPromoCodeWithoutDiscount,
 };

@@ -179,13 +179,20 @@ class OrdersService {
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     let totalPriceToPay = totalItemsPrice;
 
+    const { convertOptions } = await Currency.findOne().exec();
+    const { exchangeRate } = convertOptions.UAH;
+
     const {
       discounts: itemsDiscount,
       priceWithDiscount: itemsPriceWithDiscount,
-    } = await calculateProductsPriceWithDiscount(data.promoCodeId, items);
+    } = await calculateProductsPriceWithDiscount(data.promoCodeId, data.certificateId, items);
 
     if (data.promoCodeId) {
       totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
+    }
+
+    if (data.certificateId) {
+      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);;
     }
 
     const orderUpdate = {
@@ -213,18 +220,21 @@ class OrdersService {
     const orderNumber = generateOrderNumber();
     let totalPriceToPay = totalItemsPrice;
 
+    const { convertOptions } = await Currency.findOne().exec();
+    const { exchangeRate } = convertOptions.UAH;
+
     const {
       discounts: itemsDiscount,
       priceWithDiscount: itemsPriceWithDiscount,
-    } = await calculateProductsPriceWithDiscount(data.promoCodeId, items);
+    } = await calculateProductsPriceWithDiscount(data.promoCodeId, data.certificateId, items);
 
     if (data.promoCodeId) {
       totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount);
     }
 
-    const { convertOptions } = await Currency.findOne().exec();
-
-    const { exchangeRate } = convertOptions.UAH;
+    if (data.certificateId) {
+      totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);
+    }
 
     const newOrder = {
       ...data,
