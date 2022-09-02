@@ -1,7 +1,6 @@
 const productModel = require('../../../modules/product/product.model');
-const {
-  PromocodeModel,
-} = require('../../../modules/promo-code/promo-code.model');
+const { PromocodeModel } = require('../../../modules/promo-code/promo-code.model');
+const { CertificateModel } = require('../../../modules/certificate/certificate.model');
 const {
   calculateProductsPriceWithDiscount,
   calculateTotalPriceToPay,
@@ -13,15 +12,23 @@ const {
   productsMock,
   resultPriceWithoutDiscount,
   promoCodeMock,
+  certificateMock,
   productMock,
-  resultPriceWithDiscount,
-  priceWithPromocodeWithoutDiscount,
+  resultPriceWithPromoCode,
+  resultPriceWithCertificate,
+  priceWithPromoCodeWithoutDiscount,
 } = require('./order.utils.variables');
 
 jest.spyOn(PromocodeModel, 'findById').mockImplementation(() => ({
   exec: () => ({
     discount: 10,
     categories: ['accessories'],
+  }),
+}));
+
+jest.spyOn(CertificateModel, 'findById').mockImplementation(() => ({
+  exec: () => ({
+    value: 27
   }),
 }));
 
@@ -34,6 +41,7 @@ jest.spyOn(productModel, 'findById').mockImplementation(() => ({
 }));
 
 const emptyPromoCode = '';
+const emptyCertificate = '';
 let result;
 
 describe('order', () => {
@@ -46,19 +54,31 @@ describe('order', () => {
   it('calculateProductsPriceWithDiscount function without discount', async () => {
     result = await calculateProductsPriceWithDiscount(
       emptyPromoCode,
+      emptyCertificate,
       productsMock
     );
 
     expect(result).toEqual(resultPriceWithoutDiscount);
   });
 
-  it('calculateProductsPriceWithDiscount function with discount', async () => {
+  it('calculateProductsPriceWithDiscount function with promoCode discount', async () => {
     result = await calculateProductsPriceWithDiscount(
       promoCodeMock,
+      emptyCertificate,
       productMock
     );
 
-    expect(result).toEqual(resultPriceWithDiscount);
+    expect(result).toEqual(resultPriceWithPromoCode);
+  });
+
+  it('calculateProductsPriceWithDiscount function with certificate discount', async () => {
+    result = await calculateProductsPriceWithDiscount(
+      emptyPromoCode,
+      certificateMock,
+      productMock
+    );
+
+    expect(result).toEqual(resultPriceWithCertificate);
   });
 
   it('calculateProductsPriceWithDiscount function with promoCode but without discount ', async () => {
@@ -72,10 +92,11 @@ describe('order', () => {
 
     result = await calculateProductsPriceWithDiscount(
       promoCodeMock,
+      emptyCertificate,
       productMock
     );
 
-    expect(result).toEqual(priceWithPromocodeWithoutDiscount);
+    expect(result).toEqual(priceWithPromoCodeWithoutDiscount);
   });
 
   it('calculateTotalItemsPrice function', async () => {

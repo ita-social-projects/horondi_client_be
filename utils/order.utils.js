@@ -1,5 +1,6 @@
 const productModel = require('../modules/product/product.model');
 const { PromocodeModel } = require('../modules/promo-code/promo-code.model');
+const { CertificateModel } = require('../modules/certificate/certificate.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
@@ -19,7 +20,7 @@ const calculateTotalItemsPrice = async items =>
     return price * item.quantity + sum;
   }, 0);
 
-const calculateProductsPriceWithDiscount = async (promoCodeId, products) => {
+const calculateProductsPriceWithDiscount = async (promoCodeId, certificateId, products) => {
   if (promoCodeId) {
     const discounts = [];
     const priceWithDiscount = [];
@@ -48,6 +49,16 @@ const calculateProductsPriceWithDiscount = async (promoCodeId, products) => {
     }
 
     return { discounts, priceWithDiscount };
+  }
+
+  if(certificateId) {
+    const certificate = await CertificateModel.findById(certificateId).exec();
+    const { value } = certificate;
+
+    return {
+      discounts: value,
+      priceWithDiscount: products.map(item => item.fixedPrice * item.quantity),
+    };
   }
 
   return {

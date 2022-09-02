@@ -80,6 +80,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  certificateId: {
+    type: String,
+    default: ''
+  },
   itemsPriceWithDiscount: [Number],
   itemsDiscount: [Number],
 });
