@@ -24,7 +24,6 @@ const {
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
-  ORDER_IS_PAID,
 } = require('../../error-messages/orders.messages');
 const {
   CERTIFICATE_NOT_VALID,
@@ -58,6 +57,7 @@ class PaymentService {
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}order_callback/`,
+      response_url: `${process.env.FRONT_BASE_URI}/thanks/${isOrderPresent.orderNumber}`,
       order_id: isOrderPresent.orderNumber,
       order_desc: PAYMENT_DESCRIPTION,
       currency,
@@ -228,10 +228,7 @@ class PaymentService {
 
     switch (order_status.toUpperCase()) {
       case APPROVED: {
-        const paidOrder = await updatePaymentStatus(PAYMENT_PAID);
-        pubsub.publish(ORDER_IS_PAID, {
-          paidOrder,
-        });
+        updatePaymentStatus(PAYMENT_PAID);
         break;
       }
       case EXPIRED: {
