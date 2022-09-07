@@ -1113,7 +1113,6 @@ const typeDefs = gql`
   }
   type Subscription {
     certificatesPaid(certificatesOrderId: String!): CertificatesResult
-    paidOrder(orderId: String!): OrderResult
   }
   ${certificateTypes}
 `;

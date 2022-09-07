@@ -1,6 +1,5 @@
 const pubsub = require('./pubsub');
 const { withFilter } = require('graphql-subscriptions');
-const { ORDER_IS_PAID } = require('./error-messages/orders.messages');
 const {
   CERTIFICATE_IS_PAID,
 } = require('./error-messages/certificate.messages');
@@ -245,13 +244,6 @@ const resolvers = {
         (payload, variables) =>
           payload.certificatesPaid.certificates[0].name ===
           variables.certificatesOrderId
-      ),
-    },
-    paidOrder: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator([ORDER_IS_PAID]),
-        (payload, variables) =>
-          payload.paidOrder.orderNumber === variables.orderId
       ),
     },
   },
