@@ -19,6 +19,8 @@ const {
   getAllUsers,
   getUserByToken,
   getUserById,
+  sendEmailConfirmation,
+  confirmUserEmail,
   deleteUser,
   googleUser,
   facebookUser,
@@ -34,6 +36,12 @@ const {
   getAllUsersQuery,
   chooseOnlyUsers,
 } = require('../helpers/users');
+const {
+  RECOVERY_EXPIRE,
+  CONFIRMATION_SECRET,
+  SECRET,
+} = require('../../dotenvValidator');
+const { JWTClient, jwtClient } = require('../../client/jwt-client');
 
 jest.mock('../../modules/email/email.service');
 
@@ -43,6 +51,19 @@ let operations;
 let loginedUser;
 
 const { firstName, lastName, email, pass, language } = testUser;
+
+const generateAccessTokenMock = secret => {
+  const accessTokenMock = jwtClient.createToken(
+    { userId },
+    secret,
+    RECOVERY_EXPIRE
+  );
+  jest
+    .spyOn(JWTClient.prototype, 'generateAccessToken')
+    .mockImplementation(() => accessTokenMock);
+
+  return accessTokenMock;
+};
 
 describe('queries', () => {
   beforeAll(async () => {
@@ -56,7 +77,6 @@ describe('queries', () => {
       operations
     );
     userId = register.data.registerUser._id;
-
     const authRes = await loginUser(email, pass, true, operations);
     loginedUser = authRes.data.loginUser;
     token = loginedUser.token;
@@ -172,6 +192,9 @@ describe('Testing obtaining information restrictions', () => {
       operations
     );
     userId = register.data.registerUser._id;
+    const accessTokenMock = generateAccessTokenMock(CONFIRMATION_SECRET);
+    await sendEmailConfirmation(userLogin, language, operations);
+    await confirmUserEmail(accessTokenMock, operations);
   });
   test('User must login', async () => {
     const result = await loginUser(userLogin, userPassword, false, operations);
@@ -181,10 +204,10 @@ describe('Testing obtaining information restrictions', () => {
     expect(userInfo).not.toEqual(null);
   });
   test('Admin must login', async () => {
+    generateAccessTokenMock(SECRET);
     const result = await loginAdmin(adminEmail, adminPassword, operations);
     const adminInfo = result.data.loginAdmin;
     adminToken = adminInfo.token;
-
     expect(adminInfo.loginAdmin).not.toEqual(null);
   });
 
