@@ -1,7 +1,12 @@
 const { setupApp } = require('../helper-functions');
 const { INVALID_PERMISSIONS } = require('../../error-messages/user.messages');
 
-const { loginUser, deleteUser } = require('../user/user.helper');
+const {
+  loginUser,
+  deleteUser,
+  sendEmailConfirmation,
+  confirmUserEmail,
+} = require('../user/user.helper');
 
 const {
   CERTIFICATE_NOT_FOUND,
@@ -25,6 +30,12 @@ const {
   newUser,
   email,
 } = require('./certificate.variables');
+const {
+  RECOVERY_EXPIRE,
+  CONFIRMATION_SECRET,
+} = require('../../dotenvValidator');
+const { JWTClient, jwtClient } = require('../../client/jwt-client');
+jest.mock('../../modules/email/email.service');
 
 describe('Run ApolloClientServer with role=admin in context', () => {
   let adminContextServer;
@@ -56,8 +67,17 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     let userId;
 
     beforeAll(async () => {
-      await registerUser(newUser, adminContextServer);
-
+      const register = await registerUser(newUser, adminContextServer);
+      const accessTokenMock = jwtClient.createToken(
+        { userId: register.data.registerUser._id },
+        CONFIRMATION_SECRET,
+        RECOVERY_EXPIRE
+      );
+      jest
+        .spyOn(JWTClient.prototype, 'generateAccessToken')
+        .mockImplementation(() => accessTokenMock);
+      await sendEmailConfirmation(newUser.email, 1, adminContextServer);
+      await confirmUserEmail(accessTokenMock, adminContextServer);
       const {
         data: { loginUser: userObject },
       } = await loginUser(
@@ -73,6 +93,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     afterAll(async () => {
+      jest.clearAllMocks();
       await deleteCertificate(certificateNullOwnerId, adminContextServer);
       await deleteCertificate(certificateId, adminContextServer);
     });
