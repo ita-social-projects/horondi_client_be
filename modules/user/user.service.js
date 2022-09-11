@@ -52,6 +52,7 @@ const {
   TOKEN_IS_EXPIRIED,
   USER_IS_BLOCKED,
   SUPER_ADMIN_IS_IMMUTABLE,
+  USER_EMAIL_IS_NOT_CONFIRMED,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -482,6 +483,9 @@ class UserService extends FilterHelper {
 
     if (!match) {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+    }
+    if (!user.confirmed) {
+      throw new RuleError(USER_EMAIL_IS_NOT_CONFIRMED, BAD_REQUEST);
     }
 
     jwtClient.setData({ userId: user._id });
