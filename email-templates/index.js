@@ -59,11 +59,11 @@ const htmlTemplates = {
     subject: '[HORONDI] Certificate has been gifted',
     templateFileName: ['send-gift-certificate-en', 'send-gift-certificate-ua'],
   },
-  [EmailActions.RESIVE_GIFT_SERTIFICATE]: {
+  [EmailActions.RECIVE_GIFT_SERTIFICATE]: {
     subject: '[HORONDI] Gift Certificate',
     templateFileName: [
-      'resive-gift-certificate-en',
-      'resive-gift-certificate-ua',
+      'reсive-gift-certificate-en',
+      'reсive-gift-certificate-ua',
     ],
   },
 };

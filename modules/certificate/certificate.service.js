@@ -7,7 +7,7 @@ const {
   roles: { USER },
 } = require('../../consts');
 const {
-  EmailActions: { RESIVE_GIFT_SERTIFICATE, SEND_GIFT_CERTIFICATE },
+  EmailActions: { RECIVE_GIFT_SERTIFICATE, SEND_GIFT_CERTIFICATE },
 } = require('../../consts/email-actions');
 
 const {
@@ -247,7 +247,7 @@ class CertificatesService extends FilterHelper {
     const dateEnd = certificate.dateEnd.toLocaleDateString();
     const dateStart = certificate.dateStart.toLocaleDateString();
 
-    await sendEmail(email, RESIVE_GIFT_SERTIFICATE, {
+    await sendEmail(email, RECIVE_GIFT_SERTIFICATE, {
       certificateName: certificate.name,
       certificateValue: certificate.value,
       dateEnd,
