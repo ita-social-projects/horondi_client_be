@@ -1,0 +1,23 @@
+extends template-ua
+block headerText
+	h1.responseTitle  Ваш HORONDI Сертифікат успішно подаровано
+block subheaderText
+	h1.desktopTitle  Ваш HORONDI Сертифікат успішно подаровано
+block content
+	div.contentWrapper
+		p.text Вітаємо!#[br]Ви успішно подарували свій сертифікат іншому користувачу. Дякуємо вам за довіру!
+		h2.productTitle.bestWishes Відомості про подарований сертифікат 
+		div.row
+			div.rowRight Номер сертифікату: 
+			div.rowLeft #[strong !{certificateName}]
+		div.row
+			div.rowRight Номінал: 
+			div.rowLeft #[strong !{certificateValue} грн]
+		div.row
+			div.rowRight Дата купівлі сертифікату: 
+			div.rowLeft #[strong !{dateStart}]
+		div.row.bestWishes
+			div.rowRight Дійсний до: 
+			div.rowLeft #[strong !{dateEnd}]
+		button.continue
+			a(href=frontendUrl + `/my-certificates/`) переглянути мої сертифікати

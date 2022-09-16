@@ -2,9 +2,13 @@ const { randomInt } = require('crypto');
 const RuleError = require('../../errors/rule.error');
 const mongoose = require('mongoose');
 const { CertificateModel } = require('./certificate.model');
+const { sendEmail } = require('../../modules/email/email.service');
 const {
   roles: { USER },
 } = require('../../consts');
+const {
+  EmailActions: { RESIVE_GIFT_SERTIFICATE, SEND_GIFT_CERTIFICATE },
+} = require('../../consts/email-actions');
 
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
@@ -16,6 +20,7 @@ const {
   CERTIFICATE_IS_USED,
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
+
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
 const { modifyDate } = require('../../utils/modify-date');
 const FilterHelper = require('../../helpers/filter-helper');
@@ -141,7 +146,6 @@ class CertificatesService extends FilterHelper {
 
   async getCertificateById(id) {
     const certificate = await CertificateModel.findById(id).exec();
-
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
@@ -233,6 +237,31 @@ class CertificatesService extends FilterHelper {
       { isUsed: true, isActivated: false },
       { new: true }
     ).exec();
+  }
+
+  async gitftCertificateToEmail(id, email, oldEmail, language) {
+    const certificate = await this.getCertificateById(id);
+    certificate.email = email;
+    certificate.save();
+
+    const dateEnd = certificate.dateEnd.toLocaleDateString();
+    const dateStart = certificate.dateStart.toLocaleDateString();
+
+    await sendEmail(email, RESIVE_GIFT_SERTIFICATE, {
+      certificateName: certificate.name,
+      certificateValue: certificate.value,
+      dateEnd,
+      language,
+    });
+    await sendEmail(oldEmail, SEND_GIFT_CERTIFICATE, {
+      certificateName: certificate.name,
+      certificateValue: certificate.value,
+      dateStart,
+      dateEnd,
+      language,
+    });
+
+    return true;
   }
 
   async deleteCertificate(id) {

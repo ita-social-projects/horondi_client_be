@@ -59,6 +59,9 @@ const certificatesMutation = {
 
   updateCertificate: async (_, { name }) =>
     certificatesService.updateCertificate(name),
+
+  gitftCertificateToEmail: async (_, { id, email, oldEmail, language }) =>
+    certificatesService.gitftCertificateToEmail(id, email, oldEmail, language),
 };
 
 module.exports = { certificatesQuery, certificatesMutation };

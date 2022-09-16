@@ -17,7 +17,7 @@
     font-weight: 300;
     line-height: 46px;
     letter-spacing: 0.0025em;
-    color: #fff;
+    color: #fff !important;
   }
 
   .desktopTitle {

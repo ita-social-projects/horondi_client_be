@@ -2,17 +2,24 @@
 
 * {
   margin: 0;
+  color: #000000;
 }
+
 
 body {
   max-width: 1440px;
-  font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Open Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+a {
+color:#0000FF
 }
 
 header {
-  background-image: url('https://horondi.blob.core.windows.net/horondi/images/background-email-image.png');
+  background-image: url('https://horondi.blob.core.windows.net/horondi/images/background.png');
   background-size: cover;
-  height: 290px;
+  background-position: right;
+  height: 320px;
   text-align: center;
   color: #ffffff;
 }
@@ -24,9 +31,9 @@ header {
 .desktopTitle {
   margin-top: 40px;
   margin-bottom: 26px;
-  font-size: 59px;
+  font-size: 48px;
   font-weight: 300;
-  line-height: 80px;
+  line-height: 65px;
   letter-spacing: -0.005em;
   text-align: center;
 }
@@ -40,7 +47,6 @@ header {
   font-size: 16px;
   line-height: 24px;
   letter-spacing: 0.005em;
-  color: #000000;
 }
 
 .link {
@@ -54,19 +60,28 @@ header {
 .code {
   font-weight: 700;
   font-size: 24px;
-  color: #000000;
 }
 
 .continue {
   display: block;
-  width: 213px;
+  max-width: 340px;
   height: 52px;
   background: #000000;
   text-align: center;
   border-radius: 4px;
+  padding: 0 16px;
   margin: 0 auto;
   margin-bottom: 40px;
 }
+
+.certificate {
+	display: block;
+	max-width: 420px;
+	text-align: center;
+	border-radius: 4px;
+	margin: 0 auto;
+	margin-bottom: 16px;
+ }
 
 .continue a {
   font-style: normal;
@@ -194,6 +209,18 @@ footer {
   line-height: 22px;
   text-transform: uppercase;
 }
+.rowRight {
+	margin-right: auto;
+ }
+ .rowLeft {
+	margin-left: auto;
+ }
+ .row{
+	display: flex;
+	width: 80%;
+	line-height: 32px;
+	font-size: 16px;
+ }
 
 
 

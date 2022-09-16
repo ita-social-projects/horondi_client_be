@@ -55,6 +55,17 @@ const htmlTemplates = {
       'certificate-user-purchased-email-ua',
     ],
   },
+  [EmailActions.SEND_GIFT_CERTIFICATE]: {
+    subject: '[HORONDI] Certificate has been gifted',
+    templateFileName: ['send-gift-certificate-en', 'send-gift-certificate-ua'],
+  },
+  [EmailActions.RESIVE_GIFT_SERTIFICATE]: {
+    subject: '[HORONDI] Gift Certificate',
+    templateFileName: [
+      'resive-gift-certificate-en',
+      'resive-gift-certificate-ua',
+    ],
+  },
 };
 
 module.exports = { htmlTemplates };

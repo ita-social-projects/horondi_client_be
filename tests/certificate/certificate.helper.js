@@ -205,6 +205,42 @@ const updateCertificate = async (name, operations) => {
   return result.data.updateCertificate;
 };
 
+const gitftCertificateToEmail = async (id, email, oldEmail, operations) => {
+  const result = await operations.mutate({
+    mutation: gql`
+      mutation (
+        $id: ID!
+        $email: String!
+        $oldEmail: String!
+        $language: Int!
+      ) {
+        gitftCertificateToEmail(
+          id: $id
+          email: $email
+          oldEmail: $oldEmail
+          language: $language
+        ) {
+          __typename
+          ... on Certificate {
+            email
+          }
+          ... on Error {
+            statusCode
+            message
+          }
+        }
+      }
+    `,
+    variables: {
+      oldEmail,
+      id,
+      email,
+    },
+  });
+
+  return result.data.gitftCertificateToEmail;
+};
+
 const deleteCertificate = async (id, operations) => {
   const result = await operations.mutate({
     mutation: gql`
@@ -265,4 +301,5 @@ module.exports = {
   getCertificateByParams,
   registerUser,
   updateCertificate,
+  gitftCertificateToEmail,
 };

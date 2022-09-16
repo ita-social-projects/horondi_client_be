@@ -1,0 +1,23 @@
+extends template-en
+block headerText
+	h1.responseTitle  Your HORONDI Certificate has been successfully gifted
+block subheaderText
+	h1.desktopTitle  Your HORONDI Certificate has been successfully gifted
+block content
+	div.contentWrapper
+		p.text Greetings!#[br]You have successfully gifted your certificate to another user. Thank you for your trust!
+		h2.productTitle.bestWishes Information about the gifted certificate
+		div.row
+			div.rowRight Certificate Number:
+			div.rowLeft #[strong !{certificateName}]
+		div.row
+			div.rowRight Price:  
+			div.rowLeft #[strong !{certificateValue} UAH]
+		div.row
+			div.rowRight Purchase Date:  
+			div.rowLeft #[strong !{dateStart}]
+		div.row.bestWishes
+			div.rowRight Expiration Date:  
+			div.rowLeft #[strong !{dateEnd}]
+		button.continue
+			a(href=frontendUrl + `/my-certificates/`) view my certificates
