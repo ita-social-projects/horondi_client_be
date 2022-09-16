@@ -205,7 +205,13 @@ const updateCertificate = async (name, operations) => {
   return result.data.updateCertificate;
 };
 
-const gitftCertificateToEmail = async (id, email, oldEmail, operations) => {
+const giftCertificateToEmail = async (
+  id,
+  email,
+  oldEmail,
+  language,
+  operations
+) => {
   const result = await operations.mutate({
     mutation: gql`
       mutation (
@@ -214,7 +220,7 @@ const gitftCertificateToEmail = async (id, email, oldEmail, operations) => {
         $oldEmail: String!
         $language: Int!
       ) {
-        gitftCertificateToEmail(
+        giftCertificateToEmail(
           id: $id
           email: $email
           oldEmail: $oldEmail
@@ -235,10 +241,11 @@ const gitftCertificateToEmail = async (id, email, oldEmail, operations) => {
       oldEmail,
       id,
       email,
+      language,
     },
   });
 
-  return result.data.gitftCertificateToEmail;
+  return result.data.giftCertificateToEmail;
 };
 
 const deleteCertificate = async (id, operations) => {
@@ -301,5 +308,5 @@ module.exports = {
   getCertificateByParams,
   registerUser,
   updateCertificate,
-  gitftCertificateToEmail,
+  giftCertificateToEmail,
 };

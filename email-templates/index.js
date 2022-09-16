@@ -59,7 +59,7 @@ const htmlTemplates = {
     subject: '[HORONDI] Certificate has been gifted',
     templateFileName: ['send-gift-certificate-en', 'send-gift-certificate-ua'],
   },
-  [EmailActions.RECIVE_GIFT_SERTIFICATE]: {
+  [EmailActions.RECEIVE_GIFT_SERTIFICATE]: {
     subject: '[HORONDI] Gift Certificate',
     templateFileName: [
       'reсive-gift-certificate-en',
