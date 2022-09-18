@@ -219,12 +219,25 @@ class PaymentService {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
 
-    const updatePaymentStatus = status =>
+    const updatePaymentStatus = (status) => {
       OrderModel.findByIdAndUpdate(order._id, {
         $set: {
           paymentStatus: status,
         },
       }).exec();
+
+      if(order.certificateId && status === PAYMENT_PAID) {
+        CertificateModel.findByIdAndUpdate(order.certificateId, {
+          $set: { inProgress: false,  isUsed: true },
+        }).exec();
+      }
+
+      if(order.certificateId && status !== PAYMENT_PAID) {
+        CertificateModel.findByIdAndUpdate(order.certificateId, {
+          $set: { isActivated: true, inProgress: false },
+        }).exec();
+      }
+    }
 
     switch (order_status.toUpperCase()) {
       case APPROVED: {

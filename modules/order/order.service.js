@@ -7,6 +7,9 @@ const {
   STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
 const {
+  CERTIFICATE_UPDATE_STATUS: { IN_PROGRESS },
+} = require('../../consts/certificate-update-status');
+const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
 } = require('../../error-messages/orders.messages');
@@ -28,6 +31,8 @@ const {
   updateProductStatistic,
   calculateProductsPriceWithDiscount,
 } = require('../../utils/order.utils');
+
+const { getCertificateByParams, updateCertificate } = require('../certificate/certificate.service');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {}, sort }) {
@@ -233,6 +238,8 @@ class OrdersService {
     }
 
     if (data.certificateId) {
+      await getCertificateByParams({ _id: data.certificateId })
+      await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
       totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);
     }
 

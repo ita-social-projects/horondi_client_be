@@ -1,11 +1,15 @@
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
+const { CERTIFICATE_IN_PROGRESS } = require('../../error-messages/certificate.messages');
 const {
   deleteOrder,
   createOrder,
   updateOrderById,
 } = require('./order.helpers');
+const { getCertificateByParams, generateCertificate } = require('../certificate/certificate.helper');
 const {
   wrongId,
+  email,
+  newCertificateInputData,
   newOrderInputData,
   newOrderUpdated,
 } = require('./order.variables');
@@ -60,11 +64,23 @@ let categoryId;
 let patternId;
 let constructorBasicId;
 let closureId;
+let certificateId;
+let certificateName;
+let certificateParams;
 
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
 
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificateId = certificateData.certificates[0]._id;
+    certificateName = certificateData.certificates[0].name;
+    certificateParams = { name: certificateName };
+    
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
@@ -109,7 +125,7 @@ describe('Order queries', () => {
 
   test('Should create order', async () => {
     const order = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId),
+      newOrderInputData(productId, modelId, sizeId, constructorBasicId, undefined, certificateId),
       operations
     );
     orderId = order._id;
@@ -123,6 +139,10 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('delivery', delivery);
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
+    expect(order).toHaveProperty('certificateId', certificateId);
+
+    const certificate = await getCertificateByParams(certificateParams, operations)
+    expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IN_PROGRESS);
   });
   const {
     delivery: updatedDelivery,

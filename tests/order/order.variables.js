@@ -1,4 +1,5 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
+const email = 'test@test.com';
 const orderStatus = 'CREATED';
 const paymentStatus = 'CREATED';
 const price = 2;
@@ -12,12 +13,20 @@ const getOrdersInput = {
   sort: { dateOfCreation: -1 },
 };
 
+const newCertificateInputData = [
+  {
+    value: 1000,
+    count: 1,
+  },
+];
+
 const newOrderInputData = (
   productId,
   modelId,
   sizeId,
   constructorId,
-  userId
+  userId,
+  certificateId
 ) => ({
   status: orderStatus,
   recipient: {
@@ -49,6 +58,7 @@ const newOrderInputData = (
   ],
   paymentMethod: 'CASH',
   paymentStatus,
+  certificateId,
   user_id: userId,
 });
 const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
@@ -85,9 +95,11 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId) => ({
 });
 
 module.exports = {
+  newCertificateInputData,
   newOrderInputData,
   getOrdersInput,
   wrongId,
+  email,
   newOrderUpdated,
   orderStatus,
   paymentStatus,

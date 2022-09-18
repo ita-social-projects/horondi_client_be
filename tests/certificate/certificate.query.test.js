@@ -1,7 +1,10 @@
 const { setupApp } = require('../helper-functions');
 const {
-  CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_NOT_FOUND, CERTIFICATE_IN_PROGRESS
 } = require('../../error-messages/certificate.messages');
+const {
+  CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
+} = require('../../consts/certificate-update-status');
 const {
   deleteCertificate,
   generateCertificate,
@@ -36,7 +39,7 @@ describe('Test certificate Queries', () => {
   });
 
   afterAll(async () => {
-    await updateCertificate(certificateName, operations);
+    await updateCertificate(certificateParams, USED, operations);
     await deleteCertificate(certificateId, operations);
   });
 
@@ -49,11 +52,17 @@ describe('Test certificate Queries', () => {
   it('should filter certificates by status "isActivated" ', async () => {
     const result = await getAllCertificates('', ['isActivated'], operations);
 
-    expect(result.count).toBe(1);
+    expect(result.count).toBe(3);
   });
 
   it('should filter certificates by status "isExpired" ', async () => {
     const result = await getAllCertificates('', ['isExpired'], operations);
+
+    expect(result.count).toBe(0);
+  });
+
+  it('should filter certificates by status "inProgress" ', async () => {
+    const result = await getAllCertificates('', ['inProgress'], operations);
 
     expect(result.count).toBe(0);
   });
@@ -97,6 +106,14 @@ describe('Test certificate Queries', () => {
     );
 
     expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
+    expect(result.data.getCertificateByParams).toEqual(null);
+  });
+
+  it('should throw error CERTIFICATE_IN_PROGRESS for get certificate by name', async () => {
+    await updateCertificate(certificateParams, IN_PROGRESS, operations);
+    const result = await getCertificateByParams(certificateParams, operations);
+
+    expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_IN_PROGRESS);
     expect(result.data.getCertificateByParams).toEqual(null);
   });
 });

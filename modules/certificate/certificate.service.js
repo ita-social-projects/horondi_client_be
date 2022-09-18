@@ -9,13 +9,16 @@ const {
 const {
   EmailActions: { RECEIVE_GIFT_SERTIFICATE, SEND_GIFT_CERTIFICATE },
 } = require('../../consts/email-actions');
-
+const {
+  CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
+} = require('../../consts/certificate-update-status');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   CERTIFICATE_HAVE_OWNER,
   CERTIFICATE_IS_ACTIVE,
+  CERTIFICATE_IN_PROGRESS,
   CERTIFICATE_IS_EXPIRED,
   CERTIFICATE_IS_USED,
   CERTIFICATE_NOT_FOUND,
@@ -56,6 +59,9 @@ class CertificatesService extends FilterHelper {
       }
       if (status.includes('isExpired')) {
         filter['$or'].push({ isExpired: true });
+      }
+      if (status.includes('inProgress')) {
+        filter['$or'].push({ inProgress: true });
       }
       if (status.includes('isActivated')) {
         filter['$or'].push({ isActivated: true });
@@ -122,6 +128,7 @@ class CertificatesService extends FilterHelper {
               $sort: {
                 isUsed: 1,
                 isExpired: 1,
+                inProgress: 1,
                 dateStart: 1,
                 value: -1,
               },
@@ -158,6 +165,10 @@ class CertificatesService extends FilterHelper {
 
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
+    }
+
+    if(certificate.inProgress) {
+      throw new RuleError(CERTIFICATE_IN_PROGRESS, BAD_REQUEST)
     }
 
     if (certificate.isUsed) {
@@ -229,14 +240,23 @@ class CertificatesService extends FilterHelper {
     ).exec();
   }
 
-  async updateCertificate(name) {
-    await this.getCertificateByParams({ name });
+  async updateCertificate(params, statusUpdate) {
 
-    return CertificateModel.findOneAndUpdate(
-      { name },
-      { isUsed: true, isActivated: false },
-      { new: true }
-    ).exec();
+    if(statusUpdate === USED) {
+      return CertificateModel.findOneAndUpdate(
+        { ...params },
+        { isUsed: true, isActivated: false, inProgress: false },
+        { new: true }
+      ).exec();
+    }
+
+    if(statusUpdate === IN_PROGRESS) {
+      return CertificateModel.findOneAndUpdate(
+        { ...params },
+        { inProgress: true, isActivated: false },
+        { new: true }
+      ).exec();
+    }
   }
 
   async giftCertificateToEmail(id, email, oldEmail, language) {
