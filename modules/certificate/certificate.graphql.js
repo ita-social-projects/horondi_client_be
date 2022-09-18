@@ -73,6 +73,7 @@ const certificateTypes = `
     deleteCertificate(id: ID!): CertificateResult
     generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
     updateCertificate(name: String!): CertificateResult
+	 giftCertificateToEmail(id: ID!, email: String!, oldEmail: String!, language: Int!): CertificateResult
   }
 `;
 

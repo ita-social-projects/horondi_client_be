@@ -59,6 +59,9 @@ const certificatesMutation = {
 
   updateCertificate: async (_, { name }) =>
     certificatesService.updateCertificate(name),
+
+  giftCertificateToEmail: async (_, { id, email, oldEmail, language }) =>
+    certificatesService.giftCertificateToEmail(id, email, oldEmail, language),
 };
 
 module.exports = { certificatesQuery, certificatesMutation };

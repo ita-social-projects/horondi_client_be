@@ -82,7 +82,7 @@ describe('queries', () => {
     token = loginedUser.token;
   });
 
-  test('should recive all users', async () => {
+  test('should receive all users', async () => {
     const res = await getAllUsers(operations);
 
     expect(res.data.getAllUsers.items[1]).toBeDefined();

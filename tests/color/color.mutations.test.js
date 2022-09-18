@@ -24,7 +24,7 @@ describe('Color mutations', () => {
       ...color,
     });
   });
-  test('Should recive error message COLOR_ALREADY_EXIST when color already in the db while creating', async () => {
+  test('Should receive error message COLOR_ALREADY_EXIST when color already in the db while creating', async () => {
     const result = await createColor(color, operations);
 
     expect(result).toEqual(ERROR_ALREDY_EXISTS);

@@ -18,7 +18,7 @@ describe('Colors queries', () => {
     colorId = colorData._id;
   });
 
-  test('Should recive all colors', async () => {
+  test('Should receive all colors', async () => {
     const result = await getAllColors(operations);
 
     expect(result).toContainEqual({
@@ -36,7 +36,7 @@ describe('Colors queries', () => {
     });
   });
 
-  test('Should recive error message COLOR_NOT_FOUND while getting by wrong ID', async () => {
+  test('Should receive error message COLOR_NOT_FOUND while getting by wrong ID', async () => {
     const result = await getColorById(wrongId, operations);
 
     expect(result).toEqual(ERROR_NOT_FOUND);

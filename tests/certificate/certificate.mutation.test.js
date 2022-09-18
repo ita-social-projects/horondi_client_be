@@ -1,20 +1,26 @@
 const { setupApp } = require('../helper-functions');
 const {
-  CERTIFICATE_NOT_FOUND, CERTIFICATE_IS_USED
+  CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_IS_USED,
 } = require('../../error-messages/certificate.messages');
 const {
   deleteCertificate,
   generateCertificate,
   updateCertificate,
   getCertificateById,
-  getCertificateByParams
+  getCertificateByParams,
+  giftCertificateToEmail,
 } = require('./certificate.helper');
 const {
   wrongId,
   wrongName,
   email,
+  newEmail,
+  language,
   newCertificateInputData,
 } = require('./certificate.variables');
+
+jest.mock('../../modules/email/email.service');
 
 let operations;
 let certificateId;
@@ -41,17 +47,29 @@ describe('Test mutation methods Admin', () => {
 
     expect(result.certificates[0]).toHaveProperty('name');
   });
+  it('should change certificate email', async () => {
+    const result = await giftCertificateToEmail(
+      certificateId,
+      newEmail,
+      email,
+      language,
+      operations
+    );
+    expect(result.email).toBe(newEmail);
+  });
 
   it('should change `isUsed` field to true with updateCertificate', async () => {
     expect(isUsed).toBeFalsy();
 
     const updateResult = await updateCertificate(certificateName, operations);
-    const getResult = await getCertificateByParams(certificateParams, operations);
-    
+    const getResult = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+
     expect(updateResult.isUsed).toBeTruthy();
     expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
   });
-
   it('should delete certificate', async () => {
     await deleteCertificate(certificateId, operations);
     const result = await getCertificateById(certificateId, operations);
@@ -65,8 +83,6 @@ describe('Test mutation methods Admin', () => {
 
     expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
-
-
 });
 
 describe('Test response for unexist and wrong Code', () => {
