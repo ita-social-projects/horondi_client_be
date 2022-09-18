@@ -62,8 +62,8 @@ const htmlTemplates = {
   [EmailActions.RECEIVE_GIFT_SERTIFICATE]: {
     subject: '[HORONDI] Gift Certificate',
     templateFileName: [
-      'reсive-gift-certificate-en',
-      'reсive-gift-certificate-ua',
+      'receive-gift-certificate-en',
+      'receive-gift-certificate-ua',
     ],
   },
 };
