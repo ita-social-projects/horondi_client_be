@@ -66,7 +66,7 @@ describe('Test mutation methods Admin', () => {
   it('should filter certificates by "inProgress" status', async () => {
     const result = await getAllCertificates('', ['inProgress'], operations);
 
-    expect(result.count).toBe(12);
+    expect(result.count).toBe(0);
   });
 
   it('should change `inProgress` field to true with updateCertificate', async () => {

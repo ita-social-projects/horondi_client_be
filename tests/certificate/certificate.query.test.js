@@ -52,7 +52,7 @@ describe('Test certificate Queries', () => {
   it('should filter certificates by status "isActivated" ', async () => {
     const result = await getAllCertificates('', ['isActivated'], operations);
 
-    expect(result.count).toBe(22);
+    expect(result.count).toBe(1);
   });
 
   it('should filter certificates by status "isExpired" ', async () => {
@@ -64,7 +64,7 @@ describe('Test certificate Queries', () => {
   it('should filter certificates by status "inProgress" ', async () => {
     const result = await getAllCertificates('', ['inProgress'], operations);
 
-    expect(result.count).toBe(12);
+    expect(result.count).toBe(0);
   });
 
   it("should filter certificates by search admin's name", async () => {
