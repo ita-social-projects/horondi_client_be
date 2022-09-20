@@ -169,6 +169,16 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       expect(result).toHaveProperty('message', CERTIFICATE_IS_ACTIVE);
     });
 
+    it('should not update certificate', async () => {
+      await updateCertificate(certificateParams, undefined, adminContextServer);
+      const certificate = await getCertificateByParams(
+        certificateParams,
+        adminContextServer
+      );
+      
+      expect(certificate.data.getCertificateByParams).toBeDefined()
+    });
+
     it('should update certificate and throw CERTIFICATE_IN_PROGRESS', async () => {
       await updateCertificate(certificateParams, IN_PROGRESS, adminContextServer);
       const certificate = await getCertificateByParams(
@@ -205,7 +215,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     });
 
     it('should delete user`s certificates', async () => {
-      await updateCertificate(certificateParams, USED, adminContextServer);
+      await updateCertificate(certificateParams, IN_PROGRESS, adminContextServer);
       await deleteCertificate(certificateId, adminContextServer);
 
       const certificate = await getCertificateById(

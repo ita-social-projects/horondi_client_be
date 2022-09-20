@@ -154,7 +154,7 @@ describe('Order queries', () => {
 
   test('Should update order', async () => {
     const updatedOrder = await updateOrderById(
-      newOrderUpdated(productId, modelId, sizeId),
+      newOrderUpdated(productId, modelId, sizeId, undefined, certificateId),
       orderId,
       operations
     );
@@ -167,6 +167,7 @@ describe('Order queries', () => {
     expect(updatedOrder.delivery).toEqual(updatedDelivery);
     expect(updatedOrder).toHaveProperty('totalItemsPrice');
     expect(updatedOrder).toHaveProperty('totalPriceToPay');
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId)
   });
 
   test('Should throw error ORDER_NOT_FOUND after try to update', async () => {

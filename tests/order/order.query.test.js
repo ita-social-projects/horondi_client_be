@@ -1,6 +1,7 @@
 const {
   deleteOrder,
   createOrder,
+  updateOrderById,
   getOrderById,
   getOrdersByUser,
   getAllOrders,
@@ -16,6 +17,7 @@ const {
   newCertificateInputData,
   newOrderInputData,
   getOrdersInput,
+  newOrderUpdated
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProducts } = require('../product/product.helper');
@@ -314,6 +316,17 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('delivery', delivery);
     expect(order).toHaveProperty('paymentStatus', paymentStatus);
     expect(order).toHaveProperty('status', status);
+  });
+
+    test('Should update order', async () => {
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(productId, modelId, sizeId, undefined, certificateId),
+      orderId,
+      operations
+    );
+
+    expect(updatedOrder).toBeTruthy();
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId)
   });
 
   test('Should throw error ORDER_NOT_FOUND', async () => {
