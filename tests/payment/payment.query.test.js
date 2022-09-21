@@ -1,5 +1,5 @@
-const { deleteOrder, createOrder } = require('../order/order.helpers');
-const { newOrderInputData } = require('../order/order.variables');
+const { deleteOrder, createOrder, updateOrderById } = require('../order/order.helpers');
+const { newOrderInputData, newOrderUpdated } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProducts } = require('../product/product.helper');
 const {
@@ -168,6 +168,25 @@ describe('Payment queries', () => {
     );
     expect(res).toBeDefined();
     expect(res._id).toBe(orderId);
+  });
+
+  test('Should update order without certificate', async () => {
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(productId, modelId, sizeId), orderId, operations);
+
+    expect(updatedOrder).toBeTruthy();
+  });
+
+  test('Should update order with certificate', async () => {
+    const certificateData = await generateCertificate(
+      newCertificateInputData, email, operations );
+    const certificateId = certificateData.certificates[0]._id;
+
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(productId, modelId, sizeId, undefined, certificateId), 
+      orderId, operations);
+
+    expect(updatedOrder).toBeTruthy();
   });
 
   it('should get error message ORDER_NOT_VALID when passed wrong orderId', async () => {

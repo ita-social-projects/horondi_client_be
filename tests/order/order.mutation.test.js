@@ -147,7 +147,7 @@ describe('Order queries', () => {
 
   test('Should update order without certificate', async () => {
     const updatedOrder = await updateOrderById(
-      newOrderUpdated(productId, modelId, sizeId), orderId,operations);
+      newOrderUpdated(productId, modelId, sizeId), orderId, operations);
 
     expect(updatedOrder).toBeTruthy();
     expect(updatedOrder).toHaveProperty('certificateId', '')

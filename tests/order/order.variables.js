@@ -92,6 +92,7 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId, certificateI
   ],
   paymentMethod: 'CASH',
   paymentStatus: 'APPROVED',
+  promoCodeId: '',
   certificateId
 });
 

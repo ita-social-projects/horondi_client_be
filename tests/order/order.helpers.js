@@ -319,6 +319,7 @@ const updateOrderById = async (order, id, operations) => {
             totalPriceToPay
             status
             user_id
+            promoCodeId
             certificateId
             paymentStatus
             recipient {
