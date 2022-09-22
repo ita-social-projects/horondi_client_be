@@ -59,7 +59,7 @@ class PaymentService {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}order_callback/`,
       response_url: `${process.env.FRONT_BASE_URI}/thanks/${isOrderPresent.orderNumber}`,
       order_id: isOrderPresent.orderNumber,
-      order_desc: PAYMENT_DESCRIPTION,
+      order_desc: PAYMENT_DESCRIPTION[0],
       currency,
       amount,
     });
