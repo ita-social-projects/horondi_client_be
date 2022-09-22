@@ -1,5 +1,6 @@
 const mockSignatureValue = 'test|1663775804854|';
 const wrongId = 'ddfdf34';
+let response;
 
 const mockRequestData = (orderNumber, orderStatus) => {
     return {
