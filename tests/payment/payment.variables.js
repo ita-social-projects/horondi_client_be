@@ -1,6 +1,5 @@
 const mockSignatureValue = 'test|1663775804854|';
 const wrongId = 'ddfdf34';
-let response;
 
 const mockRequestData = (orderNumber, orderStatus) => {
     return {
@@ -12,7 +11,7 @@ const mockRequestData = (orderNumber, orderStatus) => {
     }
   };
   const mockResponseData = {
-    json: data => { response = data },
+    json: data => data,
     end: jest.fn().mockReturnThis(),
     status: jest.fn().mockReturnThis(),
   };
