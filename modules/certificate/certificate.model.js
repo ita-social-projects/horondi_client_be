@@ -41,7 +41,7 @@ const certificateSchema = new mongoose.Schema({
   },
   isActivated: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   dateStart: {
     type: Date,

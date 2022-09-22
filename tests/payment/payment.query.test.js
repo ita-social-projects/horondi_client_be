@@ -50,6 +50,7 @@ const {
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
+jest.mock('../../modules/email/email.service');
 jest.mock('../../modules/currency/currency.model', () => ({
   findOne: () => ({
     exec: () => ({
@@ -88,7 +89,7 @@ describe('Certificate payment queries', () => {
 
   it('should get Certificate Payment Checkout', async () => {
     const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'UAH', amount: '100000' },
+      { certificates, currency: 'UAH', amount: '100000', language: 1 },
       operations
     );
 
@@ -211,7 +212,7 @@ describe('Get payment checkout for certificates test', () => {
 
   it('should get payment token', async () => {
     const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'USD', amount: '250000' },
+      { certificates, currency: 'USD', amount: '250000', language: 1 },
       operations
     );
 

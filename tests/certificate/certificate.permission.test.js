@@ -102,7 +102,7 @@ describe('Run ApolloClientServer with role=admin in context', () => {
       const result = await generateCertificate(
         newCertificateInputData,
         email,
-        userContextServer
+        adminContextServer
       );
       certificateId = result.certificates[0]._id;
       certificateName = result.certificates[0].name;
