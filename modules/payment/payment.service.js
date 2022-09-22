@@ -231,6 +231,12 @@ class PaymentService {
           $set: { inProgress: false,  isUsed: true },
         }).exec();
       }
+
+      if(order.certificateId && status !== PAYMENT_PAID) {
+        CertificateModel.findByIdAndUpdate(order.certificateId, {
+          $set: { isActivated: true, inProgress: false },
+        }).exec();
+      }
     }
 
     switch (order_status.toUpperCase()) {
