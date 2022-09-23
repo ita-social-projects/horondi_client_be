@@ -9,6 +9,7 @@ const certificateTypes = `
     isUsed: Boolean
     isActivated: Boolean
     isExpired: Boolean
+    inProgress: Boolean
     dateStart: Date
     dateEnd: Date
     paymentStatus: String
@@ -39,7 +40,7 @@ const certificateTypes = `
 
   input CertificateInput {
     _id: ID
-    name: String!
+    name: String
     dateEnd: String
     dateStart: String
     email: String
@@ -72,7 +73,7 @@ const certificateTypes = `
     addCertificate(name: String!): CertificateResult
     deleteCertificate(id: ID!): CertificateResult
     generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
-    updateCertificate(name: String!): CertificateResult
+    updateCertificate(params: CertificateInput!, statusUpdate: String): CertificateResult
 	 giftCertificateToEmail(id: ID!, email: String!, oldEmail: String!, language: Int!): CertificateResult
   }
 `;

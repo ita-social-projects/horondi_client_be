@@ -44,6 +44,7 @@ const certificatesExpireCheck = () =>
 
     await CertificateModel.updateMany(expiredFilter, {
       isExpired: true,
+      isActivated: false
     }).exec();
 
     const reminderFilter = {

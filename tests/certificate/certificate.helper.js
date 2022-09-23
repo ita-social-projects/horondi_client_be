@@ -180,15 +180,16 @@ const addCertificate = async (certificateName, operations) => {
   return result.data.addCertificate;
 };
 
-const updateCertificate = async (name, operations) => {
+const updateCertificate = async (params, statusUpdate, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation ($name: String!) {
-        updateCertificate(name: $name) {
+      mutation ($params: CertificateInput!, $statusUpdate: String) {
+        updateCertificate(params: $params, statusUpdate: $statusUpdate) {
           ... on Certificate {
             _id
             isUsed
             isExpired
+            inProgress
           }
           ... on Error {
             message
@@ -198,7 +199,8 @@ const updateCertificate = async (name, operations) => {
       }
     `,
     variables: {
-      name,
+      params,
+      statusUpdate
     },
   });
 

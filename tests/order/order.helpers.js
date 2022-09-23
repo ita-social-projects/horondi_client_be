@@ -11,6 +11,7 @@ const createOrder = async (order, operations) => {
             totalItemsPrice
             totalPriceToPay
             status
+            certificateId
             paymentStatus
             recipient {
               firstName
@@ -182,6 +183,7 @@ const getAllOrders = async (filter, sort, operations) => {
             status
             user_id
             paymentStatus
+            certificateId
             orderNumber
             dateOfCreation
             totalItemsPrice
@@ -317,6 +319,8 @@ const updateOrderById = async (order, id, operations) => {
             totalPriceToPay
             status
             user_id
+            promoCodeId
+            certificateId
             paymentStatus
             recipient {
               firstName

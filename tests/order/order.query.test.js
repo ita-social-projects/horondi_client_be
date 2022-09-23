@@ -1,6 +1,7 @@
 const {
   deleteOrder,
   createOrder,
+  updateOrderById,
   getOrderById,
   getOrdersByUser,
   getAllOrders,
@@ -8,10 +9,15 @@ const {
   getOrdersStatistic,
   getUserOrders,
 } = require('./order.helpers');
+const { generateCertificate, getCertificateByParams } = require('../certificate/certificate.helper');
+const { CERTIFICATE_IN_PROGRESS } = require('../../error-messages/certificate.messages')
 const {
   wrongId,
+  email,
+  newCertificateInputData,
   newOrderInputData,
   getOrdersInput,
+  newOrderUpdated
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProducts } = require('../product/product.helper');
@@ -67,11 +73,25 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let userId;
+let certificateId;
+let certificateName;
+let certificateParams;
+
 const date = { dateFrom: '', dateTo: '' };
 
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificateId = certificateData.certificates[0]._id;
+    certificateName = certificateData.certificates[0].name;
+    certificateParams = { name: certificateName };
+
     const {
       data: {
         loginAdmin: { _id },
@@ -124,7 +144,7 @@ describe('Order queries', () => {
     productId = productData._id;
     date.dateFrom = new Date();
     const orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId),
+      newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId, certificateId),
       operations
     );
     date.dateTo = new Date();
@@ -143,6 +163,10 @@ describe('Order queries', () => {
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
     expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('certificateId', certificateId);
+
+    const certificate = await getCertificateByParams(certificateParams, operations)
+    expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IN_PROGRESS);
   });
 
   test('Should receive user orders', async () => {
@@ -292,6 +316,17 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('delivery', delivery);
     expect(order).toHaveProperty('paymentStatus', paymentStatus);
     expect(order).toHaveProperty('status', status);
+  });
+
+    test('Should update order', async () => {
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(productId, modelId, sizeId, undefined, certificateId),
+      orderId,
+      operations
+    );
+
+    expect(updatedOrder).toBeTruthy();
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId)
   });
 
   test('Should throw error ORDER_NOT_FOUND', async () => {

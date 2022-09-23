@@ -57,8 +57,8 @@ const certificatesMutation = {
   deleteCertificate: async (_, { id }) =>
     certificatesService.deleteCertificate(id),
 
-  updateCertificate: async (_, { name }) =>
-    certificatesService.updateCertificate(name),
+  updateCertificate: async (_, { params, statusUpdate }) =>
+    certificatesService.updateCertificate(params, statusUpdate),
 
   giftCertificateToEmail: async (_, { id, email, oldEmail, language }) =>
     certificatesService.giftCertificateToEmail(id, email, oldEmail, language),

@@ -30,8 +30,6 @@ const certificatePermissionsMutations = {
     certificateInputValidator
   ),
 
-  updateCertificate: inputDataValidation('name', certificateNameValidator),
-
   addCertificate: and(
     hasRoles([USER]),
     inputDataValidation('name', certificateNameValidator)
