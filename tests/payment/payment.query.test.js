@@ -1,3 +1,4 @@
+const paymentService = require('../../modules/payment/payment.service');
 const { deleteOrder, createOrder } = require('../order/order.helpers');
 const { newOrderInputData } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
@@ -7,6 +8,10 @@ const {
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
 const { ORDER_NOT_VALID } = require('../../error-messages/orders.messages');
+const { CERTIFICATE_IS_USED } = require('../../error-messages/certificate.messages');
+const {
+  ORDER_PAYMENT_STATUS: { APPROVED, DECLINED },
+} = require('../../consts/order-payment-status');
 const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
@@ -33,6 +38,7 @@ const { setupApp } = require('../helper-functions');
 const {
   generateCertificate,
   deleteCertificate,
+  getCertificateByParams,
 } = require('../certificate/certificate.helper');
 
 const {
@@ -46,10 +52,19 @@ const {
   newCertificateInputData,
   email,
 } = require('../certificate/certificate.variables');
+const { 
+  mockSignatureValue, 
+  wrongId, 
+  mockRequestData, 
+  mockResponseData 
+} = require('./payment.variables');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
+jest.mock('../../utils/payment.utils', () => ({
+  generatePaymentSignature: () => mockSignatureValue
+}));
 jest.mock('../../modules/currency/currency.model', () => ({
   findOne: () => ({
     exec: () => ({
@@ -71,9 +86,9 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let orderNumber;
+let certificateId;
+let certificateParams;
 let certificates;
-
-const wrongId = 'ddfdf34';
 
 describe('Certificate payment queries', () => {
   beforeAll(async () => {
@@ -84,6 +99,8 @@ describe('Certificate payment queries', () => {
       operations
     );
     certificates = certificateData.certificates;
+    certificateId = certificateData.certificates[0]._id;
+    certificateParams = { _id: certificateId };
   });
 
   it('should get Certificate Payment Checkout', async () => {
@@ -154,7 +171,7 @@ describe('Payment queries', () => {
     );
     productId = productData._id;
     orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId),
+      newOrderInputData(productId, modelId, sizeId, constructorBasicId, undefined, certificateId),
       operations
     );
     orderId = orderData._id;
@@ -177,6 +194,26 @@ describe('Payment queries', () => {
     );
 
     expect(res).toHaveProperty('message', ORDER_NOT_VALID);
+  });
+
+  it('should make certificate active when status DECLINED' , async () => {
+    await paymentService.checkOrderPaymentStatus(
+      mockRequestData(orderNumber, DECLINED),
+      mockResponseData
+    );
+
+    const certificate = await getCertificateByParams(certificateParams, operations) 
+    expect(certificate.data.getCertificateByParams).toBeDefined()
+  });
+
+  it('should make certificate used when status PAID' , async () => {
+    await paymentService.checkOrderPaymentStatus(
+      mockRequestData(orderNumber, APPROVED),
+      mockResponseData
+    );
+
+    const certificate = await getCertificateByParams(certificateParams, operations) 
+    expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED)
   });
 
   it('should send email with order data', async () => {

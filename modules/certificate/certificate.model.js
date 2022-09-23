@@ -39,6 +39,10 @@ const certificateSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  inProgress: {
+    type: Boolean,
+    default: false,
+  },
   isActivated: {
     type: Boolean,
     default: true,
