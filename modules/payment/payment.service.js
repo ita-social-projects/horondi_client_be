@@ -59,7 +59,7 @@ class PaymentService {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}order_callback/`,
       response_url: `${process.env.FRONT_BASE_URI}/thanks/${isOrderPresent.orderNumber}`,
       order_id: isOrderPresent.orderNumber,
-      order_desc: PAYMENT_DESCRIPTION,
+      order_desc: PAYMENT_DESCRIPTION[0],
       currency,
       amount,
     });
@@ -80,7 +80,7 @@ class PaymentService {
 
   async checkCertificatesPaymentStatus(req, res) {
     try {
-      const { order_id } = req.body;
+      const { order_id, merchant_data } = req.body;
       const { order_status, response_signature_string, signature } =
         await paymentController(CHECK_PAYMENT_STATUS, {
           order_id,
@@ -116,6 +116,7 @@ class PaymentService {
         {
           $set: {
             paymentStatus: PAID,
+            isActivated: true,
           },
         }
       ).exec();
@@ -128,13 +129,22 @@ class PaymentService {
         certificatesPaid: updatedCertificates,
       });
 
+      const language = parseInt(merchant_data);
+
+      await this.sendCertificatesCodesToEmail(language, updatedCertificates);
+
       res.status(200).end();
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   }
 
-  async getPaymentCheckoutForCertificates({ certificates, currency, amount }) {
+  async getPaymentCheckoutForCertificates({
+    certificates,
+    currency,
+    amount,
+    language,
+  }) {
     let isCertificatePresent;
     certificates.forEach(async certificate => {
       if (!ObjectId.isValid(certificate._id)) {
@@ -150,14 +160,22 @@ class PaymentService {
       }
     });
 
+    const encodedEmail = encodeURIComponent(certificates[0].email);
     const certificatesOrderId = certificates[0].name;
+    const fondyLanguage = language ? 'en' : 'uk';
+    const responseQuery = encodeURI(
+      `?${encodedEmail} ${amount} ${certificatesOrderId}`
+    );
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}certificates_callback/`,
+      response_url: `${process.env.FRONT_BASE_URI}/certificatethanks/${responseQuery}`,
       order_id: certificatesOrderId,
-      order_desc: PAYMENT_DESCRIPTION,
+      order_desc: PAYMENT_DESCRIPTION[language],
       currency,
       amount,
+      merchant_data: language,
+      lang: fondyLanguage,
     });
 
     const paymentToken = paymentUrl.slice(
@@ -299,9 +317,12 @@ class PaymentService {
   }
 
   async sendCertificatesCodesToEmail(language, certificates) {
+    const dateEnd = certificates[0].dateEnd.toLocaleDateString();
+
     await sendEmail(certificates[0].email, CERTIFICATE_EMAIL, {
       language,
       items: certificates,
+      dateEnd,
     });
 
     return {

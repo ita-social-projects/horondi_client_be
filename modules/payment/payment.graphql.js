@@ -26,6 +26,7 @@ const paymentInputForCertificate = `
     currency: String!
     amount: String!
     certificates: [CertificateInput]!
+	 language: Int
   }
 `;
 

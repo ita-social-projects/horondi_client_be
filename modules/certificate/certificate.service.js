@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { CertificateModel } = require('./certificate.model');
 const { sendEmail } = require('../../modules/email/email.service');
 const {
-  roles: { USER },
+  roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts');
 const {
   EmailActions: { RECEIVE_GIFT_SERTIFICATE, SEND_GIFT_CERTIFICATE },
@@ -20,6 +20,7 @@ const {
   CERTIFICATE_IS_ACTIVE,
   CERTIFICATE_IN_PROGRESS,
   CERTIFICATE_IS_EXPIRED,
+  CERTIFICATE_IS_NOT_ACTIVATED,
   CERTIFICATE_IS_USED,
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
@@ -179,6 +180,10 @@ class CertificatesService extends FilterHelper {
       throw new RuleError(CERTIFICATE_IS_EXPIRED, BAD_REQUEST);
     }
 
+    if (!certificate.isActivated) {
+      throw new RuleError(CERTIFICATE_IS_NOT_ACTIVATED, BAD_REQUEST);
+    }
+
     return certificate;
   }
 
@@ -200,6 +205,9 @@ class CertificatesService extends FilterHelper {
       newCertificate.ownedBy = userId;
     } else {
       newCertificate.createdBy = userId;
+    }
+    if (userRole === ADMIN || userRole === SUPERADMIN) {
+      newCertificate.isActivated = true;
     }
 
     for (const certificateData of certificatesData) {
