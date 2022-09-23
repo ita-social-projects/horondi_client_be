@@ -12,6 +12,7 @@ const {
   CERTIFICATE_NOT_FOUND,
   CERTIFICATE_IS_ACTIVE,
   CERTIFICATE_IS_USED,
+  CERTIFICATE_IS_NOT_ACTIVATED,
 } = require('../../error-messages/certificate.messages');
 
 const {
@@ -156,9 +157,46 @@ describe('Run ApolloClientServer with role=admin in context', () => {
         certificateName
       );
     });
+    it('should generate certificate', async () => {
+      const result = await generateCertificate(
+        newCertificateInputData,
+        email,
+        userContextServer
+      );
+      certificateId = result.certificates[0]._id;
+      certificateName = result.certificates[0].name;
+      certificateParams = { name: certificateName };
+
+      expect(result.certificates[0]).toHaveProperty('name');
+    });
+
+    it('should get certificate by name', async () => {
+      const certificate = await getCertificateByParams(
+        certificateParams,
+        userContextServer
+      );
+
+      expect(certificate.errors[0]).toHaveProperty(
+        'message',
+        CERTIFICATE_IS_NOT_ACTIVATED
+      );
+    });
   });
 
   describe('Admin restrictions and cleaning DB', () => {
+    it('should generate certificate', async () => {
+      const result = await generateCertificate(
+        newCertificateInputData,
+        email,
+        adminContextServer
+      );
+      certificateId = result.certificates[0]._id;
+      certificateName = result.certificates[0].name;
+      certificateParams = { name: certificateName };
+
+      expect(result.certificates[0]).toHaveProperty('name');
+    });
+
     it('shouldn`t delete unused certificate', async () => {
       const result = await deleteCertificate(certificateId, adminContextServer);
 
