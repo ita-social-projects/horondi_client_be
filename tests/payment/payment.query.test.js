@@ -89,7 +89,7 @@ describe('Certificate payment queries', () => {
 
   it('should get Certificate Payment Checkout', async () => {
     const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'UAH', amount: '100000', language: 1 },
+      { certificates, currency: 'UAH', amount: '100000', language: 0 },
       operations
     );
 
