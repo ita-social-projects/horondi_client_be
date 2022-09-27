@@ -6,8 +6,7 @@ block subheaderText
 block content
     div.contentWrapper
         p.text Congratulations! #[br] You have successfully registered in our store, all you have to do is to confirm your email address:
-        button.continue
-            a(href=adminUrl + `/confirmation/` + token) CONFIRM E-MAIL
+        a.continue(href=adminUrl + `/confirmation/` + token) CONFIRM E-MAIL
         p.text or follow the link: #[br]
             a.link(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}
         p.text  If you did not register - ignore this message.

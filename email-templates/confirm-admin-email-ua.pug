@@ -6,7 +6,6 @@ block subheaderText
 block content
     div.contentWrapper
         p.text Вітаємо! #[br] Щоб зареєструватись як адміністратор, підтвердіть пошту:
-        button.continue
-            a(href=adminUrl + `/confirmation/` + token) підтвердити пошту
+        a.continue(href=adminUrl + `/confirmation/` + token) підтвердити пошту
         p.text або перейдіть за посиланням нижче: #[br]
             a.link(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}

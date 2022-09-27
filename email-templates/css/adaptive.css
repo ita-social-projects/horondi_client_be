@@ -30,8 +30,9 @@
 
   .continue {
     margin-left: 0 !important;
-    margin-right: auto;
-    margin-bottom: 30px;
+    margin-right: auto !important;
+	 font-size: 12px !important;
+	 max-width: 130px !important;
   }
 
   .productTable {
@@ -103,10 +104,6 @@
 
   .text {
     font-size: 14px;
-  }
-
-  .continue a {
-    font-size: 12px;
   }
 }
 

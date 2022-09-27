@@ -51,9 +51,4 @@ block content
             span.paymentText Total
             span.paymentPrice= `${totalPriceToPay[1].currency}${totalPriceToPay[1].value}`
         p.text Thank you for always being with us!
-        button.continue
-            a(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping
-
-
-
-
+        a.continue(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping

@@ -6,7 +6,7 @@ block subheaderText
 block content
     div.contentWrapper
         each item in items
-            p.text Вітаємо! #[br] Ви успішно придбали подарунковий сертифікат HORONDI №#[strong !{item.name}] на !{item.value} грн. Переглянути свої сертифікати ви можете на нашому #[a(href=frontendUrl + `/my-certificates/`) сайті.]
+            p.text Вітаємо! #[br] Ви успішно придбали подарунковий сертифікат HORONDI №#[strong !{item.name}] на #[strong !{item.value}] грн. Переглянути свої сертифікати ви можете на нашому #[a(href=frontendUrl + `/my-certificates/`) сайті.]
                 div.continerImg
                     div.shadow
                         img.certificate(src=`https://horondi.blob.core.windows.net/horondi/images/certificate-${item.value}.png`)
@@ -16,4 +16,4 @@ block content
                 li Якщо вартість покупки перевищує доступний баланс подарункового сертифікату, #[strong різницю можна доплатити зручним способом.]
                 li Подарунковий сертифікат #[strong не підлягає поверненню або обміну] на відповідний грошовий еквівалент.
                 li Сертифікат дійсний протягом 365 днів з моменту його купівлі - #[strong !{dateEnd}] (дата купівлі вашого сертифікату).
-	 
+        a.continue(href=frontendUrl + `/my-certificates/`) переглянути мої сертифікати

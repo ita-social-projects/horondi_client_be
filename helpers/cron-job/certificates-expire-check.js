@@ -16,24 +16,11 @@ const {
 } = require('../../consts/cron-period');
 
 const currentDate = modifyDate({});
-const tomorrow = modifyDate({ days: 1 });
 const nowPlus30 = modifyDate({ days: 30 });
 const nowPlus31 = modifyDate({ days: 31 });
 
 const certificatesExpireCheck = () =>
   schedule(EVERY_MORNING, async () => {
-    const activateFilter = {
-      isActivated: false,
-      dateStart: {
-        $gte: currentDate,
-        $lt: tomorrow,
-      },
-    };
-
-    await CertificateModel.updateMany(activateFilter, {
-      isActivated: true,
-    }).exec();
-
     const expiredFilter = {
       isUsed: false,
       isExpired: false,
@@ -44,7 +31,7 @@ const certificatesExpireCheck = () =>
 
     await CertificateModel.updateMany(expiredFilter, {
       isExpired: true,
-      isActivated: false
+      isActivated: false,
     }).exec();
 
     const reminderFilter = {
@@ -67,6 +54,7 @@ const certificatesExpireCheck = () =>
           'uk-UA'
         );
         await sendEmail(certificate.email, CERTIFICATE_REMINDER, {
+          item: certificate,
           dateEnd: dateEnd,
         });
       }

@@ -6,7 +6,6 @@ block subheaderText
 block content
     div.contentWrapper
         p.text Congratulations! #[br] To register as an administrator, confirm you email:
-        button.continue
-            a(href=adminUrl + `/confirmation/` + token) confirm e-mail
+        a.continue(href=adminUrl + `/confirmation/` + token) confirm e-mail
         p.text or follow the link: #[br]
             a.link(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}

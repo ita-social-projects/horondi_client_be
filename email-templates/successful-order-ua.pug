@@ -51,9 +51,4 @@ block content
             span.paymentText До оплати
             span.paymentPrice= `${totalPriceToPay[1].currency}${totalPriceToPay[1].value}`
         p.text Дякую що Ви завжди з нами!
-        button.continue
-            a(href=`${frontendUrl}/catalog/products?sort=popularity`) продовжити покупки
-
-
-
-
+        a.continue(href=`${frontendUrl}/catalog/products?sort=popularity`) продовжити покупки
