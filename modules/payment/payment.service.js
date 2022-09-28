@@ -130,8 +130,14 @@ class PaymentService {
       });
 
       const language = parseInt(merchant_data);
+      const dateEnd =
+        updatedCertificates[0].dateEnd.toLocaleDateString('uk-UA');
 
-      await this.sendCertificatesCodesToEmail(language, updatedCertificates);
+      await sendEmail(updatedCertificates[0].email, CERTIFICATE_EMAIL, {
+        language,
+        items: updatedCertificates,
+        dateEnd,
+      });
 
       res.status(200).end();
     } catch (e) {
@@ -237,25 +243,25 @@ class PaymentService {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
 
-    const updatePaymentStatus = (status) => {
+    const updatePaymentStatus = status => {
       OrderModel.findByIdAndUpdate(order._id, {
         $set: {
           paymentStatus: status,
         },
       }).exec();
 
-      if(order.certificateId && status === PAYMENT_PAID) {
+      if (order.certificateId && status === PAYMENT_PAID) {
         CertificateModel.findByIdAndUpdate(order.certificateId, {
-          $set: { inProgress: false,  isUsed: true },
+          $set: { inProgress: false, isUsed: true },
         }).exec();
       }
 
-      if(order.certificateId && status !== PAYMENT_PAID) {
+      if (order.certificateId && status !== PAYMENT_PAID) {
         CertificateModel.findByIdAndUpdate(order.certificateId, {
           $set: { isActivated: true, inProgress: false },
         }).exec();
       }
-    }
+    };
 
     switch (order_status.toUpperCase()) {
       case APPROVED: {
@@ -314,20 +320,6 @@ class PaymentService {
     });
 
     return paidOrder;
-  }
-
-  async sendCertificatesCodesToEmail(language, certificates) {
-    const dateEnd = certificates[0].dateEnd.toLocaleDateString();
-
-    await sendEmail(certificates[0].email, CERTIFICATE_EMAIL, {
-      language,
-      items: certificates,
-      dateEnd,
-    });
-
-    return {
-      certificates,
-    };
   }
 }
 

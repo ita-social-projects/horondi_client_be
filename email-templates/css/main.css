@@ -15,6 +15,10 @@ a {
 color:#0000FF
 }
 
+li {
+	font-size: 14px;
+}
+
 header {
   background-image: url('https://horondi.blob.core.windows.net/horondi/images/background.png');
   background-size: cover;
@@ -63,15 +67,17 @@ header {
 }
 
 .continue {
-  display: block;
-  max-width: 340px;
-  height: 52px;
-  background: #000000;
-  text-align: center;
-  border-radius: 4px;
-  padding: 0 16px;
-  margin: 0 auto;
-  margin-bottom: 40px;
+	display: block;
+	margin: 32px auto;
+	text-transform: uppercase;
+	max-width: 260px;
+	font-size: 14px;
+	padding: 16px 32px;
+	background-color: #000000;
+	color: #fff;
+	border-radius: 4px;
+	text-decoration: none;
+	text-align: center;
 }
 
 .certificate {
@@ -82,14 +88,6 @@ header {
 	margin: 0 auto;
 	margin-bottom: 16px;
  }
-
-.continue a {
-  font-style: normal;
-  font-size: 14px;
-  color: #ffffff;
-  text-decoration: none;
-  text-transform: uppercase;
-}
 
 .productTable {
   table-layout: fixed;
@@ -222,7 +220,10 @@ footer {
 	font-size: 16px;
  }
 
-
+ .listHeader{
+	font-size: 18px;
+	margin-bottom: 14px;
+ }
 
 
 

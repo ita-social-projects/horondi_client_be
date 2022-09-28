@@ -4,13 +4,15 @@ block headerText
 block subheaderText
 	h1.desktopTitle Ви отримали Сертифікат HORONDI
 block content
-	div.contentWrapper
-		p.text Вітаємо!#[br]Ви отримали в подарунок сертифікат HORONDI №!{certificateName} на #[strong !{certificateValue}] грн від одного з наших користувачів. Переглянути свої сертифікати ви можете на нашому #[a(href=frontendUrl) сайті.]
-		img.certificate(src=`https://horondi.blob.core.windows.net/horondi/images/certificate-${certificateValue}.png`)
-		h2.productTitle.bestWishes Зверніть увагу!
-		p.productMaterial 1. Подарунковий сертифікат надає знижку на будь-яку продукцію Horondi.
-		p.productMaterial 2. Якщо вартість покупки перевищує доступний баланс подарункового сертифікату, різницю можна доплатити зручним способом.
-		p.productMaterial 3. Подарунковий сертифікат не підлягає поверненню або обміну на відповідний грошовий еквівалент
-		p.productMaterial.bestWishes 4. Сертифікат дійсний протягом 365 днів з моменту його купівлі - #[strong !{dateEnd}] (дата завершення вашого сертифікату)
-		button.continue
-			a(href=frontendUrl + `/my-certificates/`) переглянути мої сертифікати
+		div.contentWrapper
+			p.text Вітаємо!#[br]Ви отримали в подарунок сертифікат HORONDI №#[strong !{certificateName}] на #[strong !{certificateValue}] грн від одного з наших користувачів. Переглянути свої сертифікати ви можете на нашому #[a(href=frontendUrl + `/my-certificates/`) сайті.]
+				div.continerImg
+					div.shadow
+						img.certificate(src=`https://horondi.blob.core.windows.net/horondi/images/certificate-${certificateValue}.png`)
+			p.listHeader #[strong Зверніть увагу!]
+			ol.bestWishes 
+				li Подарунковий сертифікат надає #[strong знижку на будь-яку продукцію Horondi.]
+				li Якщо вартість покупки перевищує доступний баланс подарункового сертифікату, #[strong різницю можна доплатити зручним способом.]
+				li Подарунковий сертифікат #[strong не підлягає поверненню або обміну] на відповідний грошовий еквівалент.
+				li Сертифікат дійсний протягом 365 днів з моменту його купівлі - #[strong !{dateEnd}] (дата купівлі вашого сертифікату).
+			a.continue(href=frontendUrl + `/my-certificates/`) переглянути мої сертифікати

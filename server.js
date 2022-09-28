@@ -15,7 +15,10 @@ const { INVALID_PERMISSIONS } = require('./error-messages/user.messages');
 const errorOutputPlugin = require('./plugins/error-output.plugin');
 const formatError = require('./utils/format-error');
 const { currencyWorker } = require('./currency.worker');
-const paymentService = require('./modules/payment/payment.service');
+const {
+  checkCertificatesPaymentStatus,
+  checkOrderPaymentStatus,
+} = require('./modules/payment/payment.service');
 const formatErrorForLogger = require('./utils/format-error-for-logger');
 const { cronJob } = require('./helpers/cron-job');
 const translationsService = require('./modules/translations/translations.service');
@@ -131,14 +134,8 @@ app.disable('x-powered-by');
 currencyWorker();
 
 app.use('/graphql', graphqlUploadExpress());
-app.post(
-  '/fondy/certificates_callback',
-  paymentService.checkCertificatesPaymentStatus.bind(paymentService)
-);
-app.post(
-  '/fondy/order_callback',
-  paymentService.checkOrderPaymentStatus.bind(paymentService)
-);
+app.post('/fondy/certificates_callback', checkCertificatesPaymentStatus);
+app.post('/fondy/order_callback', checkOrderPaymentStatus);
 app.get('/translations', translationsService.getAllTranslations);
 
 server.applyMiddleware({

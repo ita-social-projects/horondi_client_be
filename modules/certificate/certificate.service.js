@@ -168,8 +168,8 @@ class CertificatesService extends FilterHelper {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
 
-    if(certificate.inProgress) {
-      throw new RuleError(CERTIFICATE_IN_PROGRESS, BAD_REQUEST)
+    if (certificate.inProgress) {
+      throw new RuleError(CERTIFICATE_IN_PROGRESS, BAD_REQUEST);
     }
 
     if (certificate.isUsed) {
@@ -249,8 +249,7 @@ class CertificatesService extends FilterHelper {
   }
 
   async updateCertificate(params, statusUpdate) {
-
-    if(statusUpdate === USED) {
+    if (statusUpdate === USED) {
       return CertificateModel.findOneAndUpdate(
         { ...params },
         { isUsed: true, isActivated: false, inProgress: false },
@@ -258,7 +257,7 @@ class CertificatesService extends FilterHelper {
       ).exec();
     }
 
-    if(statusUpdate === IN_PROGRESS) {
+    if (statusUpdate === IN_PROGRESS) {
       return CertificateModel.findOneAndUpdate(
         { ...params },
         { inProgress: true, isActivated: false },
@@ -272,8 +271,8 @@ class CertificatesService extends FilterHelper {
     certificate.email = email;
     certificate.save();
 
-    const dateEnd = certificate.dateEnd.toLocaleDateString();
-    const dateStart = certificate.dateStart.toLocaleDateString();
+    const dateEnd = certificate.dateEnd.toLocaleDateString('uk-UA');
+    const dateStart = certificate.dateStart.toLocaleDateString('uk-UA');
 
     await sendEmail(email, RECEIVE_GIFT_SERTIFICATE, {
       certificateName: certificate.name,

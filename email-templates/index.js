@@ -45,7 +45,7 @@ const htmlTemplates = {
     templateFileName: ['answer-email-question-en', 'answer-email-question-ua'],
   },
   [EmailActions.CERTIFICATE_REMINDER]: {
-    subject: '[HORONDI] Certificate reminder',
+    subject: '[HORONDI] Your certificate is expiring',
     templateFileName: ['certificate-reminder-en', 'certificate-reminder-ua'],
   },
   [EmailActions.CERTIFICATE_EMAIL]: {

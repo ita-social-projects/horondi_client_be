@@ -8,7 +8,9 @@ const {
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
 const { ORDER_NOT_VALID } = require('../../error-messages/orders.messages');
-const { CERTIFICATE_IS_USED } = require('../../error-messages/certificate.messages');
+const {
+  CERTIFICATE_IS_USED,
+} = require('../../error-messages/certificate.messages');
 const {
   ORDER_PAYMENT_STATUS: { APPROVED, DECLINED },
 } = require('../../consts/order-payment-status');
@@ -52,21 +54,38 @@ const {
   newCertificateInputData,
   email,
 } = require('../certificate/certificate.variables');
-const { 
-  mockSignatureValue, 
-  wrongId, 
-  mockRequestData, 
-  mockResponseData 
+const {
+  mockSignatureValue,
+  wrongId,
+  mockRequestData,
+  mockResponseData,
 } = require('./payment.variables');
+const {
+  checkCertificatesPaymentStatus,
+} = require('../../modules/payment/payment.service');
+const emailService = require('../../modules/email/email.service');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/email/email.service');
 jest.mock('../../utils/payment.utils', () => ({
-  generatePaymentSignature: () => mockSignatureValue
+  generatePaymentSignature: () => mockSignatureValue,
 }));
-
+jest.mock('../../helpers/payment-controller', () => ({
+  paymentController: action => {
+    if (action === 'GO_TO_CHECKOUT') {
+      return 'https://pay.fondy.eu/merchants/5ad6b888f4becb0c33d543d54e57d86c/default/index.html?token=a28dba98e79aea64ce0d386d53cee087421d406c';
+    }
+    if (action === 'CHECK_PAYMENT_STATUS') {
+      return {
+        order_status: 'approved',
+        response_signature_string: mockSignatureValue,
+        signature: mockSignatureValue,
+      };
+    }
+  },
+}));
 jest.mock('../../modules/currency/currency.model', () => ({
   findOne: () => ({
     exec: () => ({
@@ -110,7 +129,6 @@ describe('Certificate payment queries', () => {
       { certificates, currency: 'UAH', amount: '100000', language: 0 },
       operations
     );
-
     expect(result).toHaveProperty('paymentToken');
   });
 
@@ -173,7 +191,14 @@ describe('Payment queries', () => {
     );
     productId = productData._id;
     orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId, undefined, certificateId),
+      newOrderInputData(
+        productId,
+        modelId,
+        sizeId,
+        constructorBasicId,
+        undefined,
+        certificateId
+      ),
       operations
     );
     orderId = orderData._id;
@@ -198,24 +223,33 @@ describe('Payment queries', () => {
     expect(res).toHaveProperty('message', ORDER_NOT_VALID);
   });
 
-  it('should make certificate active when status DECLINED' , async () => {
+  it('should make certificate active when status DECLINED', async () => {
     await paymentService.checkOrderPaymentStatus(
-      mockRequestData(orderNumber, DECLINED),
+      mockRequestData(orderNumber, DECLINED, mockSignatureValue),
       mockResponseData
     );
 
-    const certificate = await getCertificateByParams(certificateParams, operations) 
-    expect(certificate.data.getCertificateByParams).toBeDefined()
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.data.getCertificateByParams).toBeDefined();
   });
 
-  it('should make certificate used when status PAID' , async () => {
+  it('should make certificate used when status PAID', async () => {
     await paymentService.checkOrderPaymentStatus(
-      mockRequestData(orderNumber, APPROVED),
+      mockRequestData(orderNumber, APPROVED, mockSignatureValue),
       mockResponseData
     );
 
-    const certificate = await getCertificateByParams(certificateParams, operations) 
-    expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED)
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IS_USED
+    );
   });
 
   it('should send email with order data', async () => {
@@ -255,6 +289,14 @@ describe('Get payment checkout for certificates test', () => {
     );
 
     expect(result).toHaveProperty('paymentToken');
+  });
+
+  it('should call paymentCheck', async () => {
+    emailService.sendEmail = jest.fn();
+    const res = { status: jest.fn() };
+    const req = mockRequestData(certificates[0].name, APPROVED);
+    await checkCertificatesPaymentStatus(req, res);
+    expect(emailService.sendEmail).not.toHaveBeenCalled();
   });
 
   afterAll(async () => {
