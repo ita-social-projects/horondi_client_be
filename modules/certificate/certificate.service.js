@@ -1,6 +1,5 @@
 const { randomInt } = require('crypto');
 const RuleError = require('../../errors/rule.error');
-const mongoose = require('mongoose');
 const { CertificateModel } = require('./certificate.model');
 const { sendEmail } = require('../../modules/email/email.service');
 const {
@@ -104,9 +103,8 @@ class CertificatesService extends FilterHelper {
   }
 
   async getAllUserCertificates(skip, limit, user) {
-    const userId = mongoose.Types.ObjectId(user._id);
     const filter = {
-      $and: [{ ownedBy: userId }, { paymentStatus: 'PAID' }],
+      $and: [{ email: user.email }, { paymentStatus: 'PAID' }],
     };
 
     const certificates = await CertificateModel.aggregate([
@@ -208,6 +206,7 @@ class CertificatesService extends FilterHelper {
     }
     if (userRole === ADMIN || userRole === SUPERADMIN) {
       newCertificate.isActivated = true;
+      newCertificate.paymentStatus = 'PAID';
     }
 
     for (const certificateData of certificatesData) {
