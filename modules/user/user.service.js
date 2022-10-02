@@ -600,7 +600,13 @@ class UserService extends FilterHelper {
     };
   }
 
-  async registerSocialUser({ firstName, lastName, email, credentials }) {
+  async registerSocialUser({
+    firstName,
+    lastName,
+    email,
+    credentials,
+    confirmed,
+  }) {
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
@@ -610,6 +616,7 @@ class UserService extends FilterHelper {
       lastName,
       email,
       credentials,
+      confirmed,
     });
 
     return user.save();
