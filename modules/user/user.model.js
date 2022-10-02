@@ -97,6 +97,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  certificateExpires: {
+    type: Date,
+    default: null,
+  },
   otp_code: String,
   recoveryAttempts: Number,
   lastRecoveryDate: {

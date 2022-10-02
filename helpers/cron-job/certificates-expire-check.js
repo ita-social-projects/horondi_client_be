@@ -3,6 +3,7 @@ const { schedule } = require('node-cron');
 const {
   CertificateModel,
 } = require('../../modules/certificate/certificate.model');
+const userModel = require('../../modules/user/user.model');
 
 const { modifyDate } = require('../../utils/modify-date');
 const { sendEmail } = require('../../modules/email/email.service');
@@ -18,12 +19,17 @@ const {
 const currentDate = modifyDate({});
 const nowPlus30 = modifyDate({ days: 30 });
 const nowPlus31 = modifyDate({ days: 31 });
+const certificateFilter = {
+  isUsed: false,
+  isExpired: false,
+  isActivated: true,
+  email: { $ne: null },
+};
 
 const certificatesExpireCheck = () =>
   schedule(EVERY_MORNING, async () => {
     const expiredFilter = {
-      isUsed: false,
-      isExpired: false,
+      ...certificateFilter,
       dateEnd: {
         $lte: currentDate,
       },
@@ -35,9 +41,7 @@ const certificatesExpireCheck = () =>
     }).exec();
 
     const reminderFilter = {
-      isUsed: false,
-      isExpired: false,
-      email: { $ne: null },
+      ...certificateFilter,
       dateEnd: {
         $gte: nowPlus30,
         $lt: nowPlus31,
@@ -53,12 +57,39 @@ const certificatesExpireCheck = () =>
         const dateEnd = new Date(certificate.dateEnd).toLocaleDateString(
           'uk-UA'
         );
+        const user = await userModel
+          .findOne({ email: certificate.email })
+          .exec();
+        const language = user.configs.language === 'ua' ? 0 : 1;
+
         await sendEmail(certificate.email, CERTIFICATE_REMINDER, {
           item: certificate,
-          dateEnd: dateEnd,
+          language,
+          dateEnd,
         });
       }
     }
+
+    const allUsers = await userModel.find().exec();
+
+    allUsers.forEach(async user => {
+      const userCertificates = await CertificateModel.find({
+        ...certificateFilter,
+        email: user.email,
+      }).exec();
+
+      const expiringCertificates = userCertificates.filter(
+        certificate => certificate.dateEnd < nowPlus31
+      );
+
+      const expireDate = expiringCertificates.length
+        ? expiringCertificates[0].dateEnd
+        : null;
+
+      user.certificateExpires = expireDate;
+
+      user.save();
+    });
   });
 
 module.exports = {

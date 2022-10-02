@@ -532,6 +532,7 @@ class UserService extends FilterHelper {
       const user = await this.registerSocialUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
+        confirmed: true,
         email: dataUser.email,
         credentials: [
           {
