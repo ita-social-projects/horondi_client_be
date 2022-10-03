@@ -277,10 +277,11 @@ describe('mutations', () => {
     const res = await checkIfTokenIsValid(wrongToken, operations);
     expect(res.errors[0].message).toBe(AUTHENTICATION_TOKEN_NOT_VALID);
   });
-  test('should recover User with wrong email', async () => {
+  test('should not recover User with wrong email', async () => {
     const res = await recoverUser(wrongEmail, 0, operations);
+    const error = { message: 'USER_NOT_FOUND', statusCode: 400 };
 
-    expect(res).toBe(true);
+    expect(res).toEqual(error);
   });
 
   test('should reset Password', async () => {
