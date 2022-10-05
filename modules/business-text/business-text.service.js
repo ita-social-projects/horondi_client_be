@@ -87,7 +87,7 @@ class BusinessTextService {
     );
 
     let resultOfReplacedImgs = {};
-    if (files.length) {
+    if (files.length && files[0]) {
       resultOfReplacedImgs = await this.replaceImageSourceToLink(
         businessText,
         businessTextTranslationFields,

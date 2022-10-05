@@ -20,7 +20,7 @@ const {
 let businessText;
 let businessTextId;
 let operations;
-const file = new TestFile().testFile;
+const file = [new TestFile().testFile];
 
 describe('Business page queries', () => {
   beforeAll(async () => {
