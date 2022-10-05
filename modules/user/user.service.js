@@ -734,22 +734,17 @@ class UserService extends FilterHelper {
   }
 
   async recoverUser(email, language) {
-    const user = await User.findOne({ email }).exec();
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
 
-    if (user) {
-      jwtClient.setData({ userId: user._id });
-      const accessToken = jwtClient.generateAccessToken(
-        SECRET,
-        RECOVERY_EXPIRE
-      );
+    jwtClient.setData({ userId: user._id });
+    const accessToken = jwtClient.generateAccessToken(SECRET, RECOVERY_EXPIRE);
 
-      user.recoveryToken = accessToken;
-      await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
-        language,
-        token: accessToken,
-      });
-      await user.save();
-    }
+    user.recoveryToken = accessToken;
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+      language,
+      token: accessToken,
+    });
+    await user.save();
 
     return true;
   }
