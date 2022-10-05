@@ -22,6 +22,7 @@ type User{
     banned: UserBlockPeriod
     confirmed: Boolean
     isSuccess: Boolean
+	 certificateExpires: Date
 }
 
 type UserConfigs {
