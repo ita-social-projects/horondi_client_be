@@ -438,14 +438,16 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const match = await bcryptClient.comparePassword(
-      password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
-    );
+    const credentials = user.credentials.find(cred => cred.source === HORONDI);
 
-    if (user.role === USER) {
+    if (user.role === USER || !credentials) {
       throw new RuleError(INVALID_PERMISSIONS, BAD_REQUEST);
     }
+
+    const match = await bcryptClient.comparePassword(
+      password,
+      credentials.tokenPass
+    );
 
     if (!match) {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
