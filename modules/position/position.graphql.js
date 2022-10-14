@@ -17,8 +17,7 @@ const positionInputs = `
 
   input PositionsFilterInput{
     search: String
-    name: [LanguageInput!]
-    available: Boolean
+    name: String
   }
 `;
 

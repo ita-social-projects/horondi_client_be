@@ -1,5 +1,8 @@
 const Pocket = require('./pocket.model');
 const uploadService = require('../upload/upload.service');
+const {
+  commonFiltersHandler,
+} = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -37,14 +40,7 @@ const {
 
 class PocketService {
   async getAllPockets(limit, skip, filter) {
-    const filterOptions = {};
-
-    if (filter?.search) {
-      filterOptions['name.0.value'] = {
-        $regex: `${filter.search.trim()}`,
-        $options: 'i',
-      };
-    }
+    const filterOptions = commonFiltersHandler(filter);
 
     const items = await Pocket.find(filterOptions)
       .skip(skip)
