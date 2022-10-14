@@ -1,5 +1,7 @@
 const Position = require('./position.model');
-
+const {
+  commonFiltersHandler,
+} = require('../../utils/constructorOptionCommonFilters');
 const RuleError = require('../../errors/rule.error');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -45,14 +47,7 @@ class PositionService {
   }
 
   async getAllPositions(limit, skip, filter) {
-    const filterOptions = {};
-
-    if (filter?.search) {
-      filterOptions['name.0.value'] = {
-        $regex: `${filter.search.trim()}`,
-        $options: 'i',
-      };
-    }
+    const filterOptions = commonFiltersHandler(filter);
 
     const items = await Position.find(filterOptions)
       .skip(skip)

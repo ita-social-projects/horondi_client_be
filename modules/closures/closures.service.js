@@ -1,4 +1,7 @@
 const Closure = require('./closures.model');
+const {
+  commonFiltersHandler,
+} = require('../../utils/constructorOptionCommonFilters');
 const createTranslations = require('../../utils/createTranslations');
 const {
   addTranslations,
@@ -37,14 +40,8 @@ const {
 
 class ClosureService {
   async getAllClosure(limit, skip, filter) {
-    const filterOptions = {};
+    const filterOptions = commonFiltersHandler(filter);
 
-    if (filter?.search) {
-      filterOptions['name.0.value'] = {
-        $regex: `${filter.search.trim()}`,
-        $options: 'i',
-      };
-    }
     const items = await Closure.find(filterOptions)
       .skip(skip)
       .limit(limit)

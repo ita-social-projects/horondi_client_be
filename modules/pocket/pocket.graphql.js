@@ -14,13 +14,13 @@ const pocketType = `
 
 const pocketSide = `
     type PocketSide {
-     side: [SideEnum]
+      side: [SideEnum]
     }
 `;
 
 const pocketSideInput = `
     input PocketSideInput {
-     side: [String]
+      side: [String]
     }
 `;
 
@@ -47,9 +47,9 @@ const pocketInputs = `
 
   input PocketFilterInput{
     search: String
-    name:String
-    available:[String]
-    side:[String]
+    name: String
+    available: [String]
+    side: [String]
   }
 `;
 
