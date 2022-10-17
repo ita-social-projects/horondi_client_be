@@ -1,54 +1,38 @@
 extends template-ua
 block headerText
-    h1.responseTitle Ваше замовлення успішно оформленe
+    h1.responseTitle Ваше замовлення успішно оформлено
 block subheaderText
-    h1.desktopTitle Ваше замовлення успішно оформленe
+    h1.desktopTitle Ваше замовлення успішно оформлено
 block content
     div.contentWrapper
         table.productTable
             tr.tableHead
+                th.image 
                 th.product Продукт
                 th.size Розмір
-                th.price Ціна
                 th.quantity Кількість
-                th.total До оплати
-        each val in items
-            if val.product
+                th.price Ціна
+                th.status Статус
+            each val in items
                 tr.tableBody
+                    td.image
+                        if !val.isFromConstructor
+                            img.productImg(src= `${imagesUrl}${val.product.images.primary.small}` alt='img')
+                        else 
+                            p= 'Constructor image'
                     td.product
-                        div.productWrapper
-                            img.productImg(src= `${imagesUrl}/${val.product.images.primary.medium}` alt='img')
-                            div.productInfo
-                                p.productTitle= val.product.name[1].value
-                                p.productMaterial= `Матеріал внизу: ${val.product.bottomMaterial.material.name[1].value}`
-                                p.productSizeResponsive= `Розмір - ${val.options.size.name}`
+                        p.productTitle= val.product.name[0].value
+                        p.productMaterial= `Матеріал низу: ${val.product.bottomMaterial.name[0].value}`
                     td.size
                         p.productSize= `${val.options.size.name}`
-                    td.price
-                        p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
                     td.quantity
                         p.productQuantity= val.quantity
-                    td.total
-                        p.productTotal= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value * val.quantity}`
-            else if val.fromConstructor
-                tr.tableBody
-                    td.product
-                        div.productWrapper
-                            img.productImg(src= `${imagesUrl}/${val.fromConstructor.product.images.primary.medium}` alt='img')
-                            div.productInfo
-                                p.productTitle= val.fromConstructor.product.name[1].value
-                                p.productMaterial= `Матеріал внизу: ${val.fromConstructor.product.bottomMaterial.material.name[1].value}`
-                                p.productSizeResponsive= `Розмір - ${val.options.size.name}`
-                    td.size
-                        p.productSize= `${val.options.size.name}`
                     td.price
-                        p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
-                    td.quantity
-                        p.productQuantity= val.quantity
-                    td.total
-                        p.productTotal= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value * val.quantity}`
+                        p.productPrice= `${Math.floor(val.fixedPrice * fixedExchangeRate)} UAH`
+                    td.status
+                        p.productPrice= `${paymentStatus === 'PAID' ? 'Оплачено' : 'Створено'}`
         div.payment
-            span.paymentText До оплати
-            span.paymentPrice= `${totalPriceToPay[1].currency}${totalPriceToPay[1].value}`
+            span.paymentText До оплати:
+            span.paymentPrice= `${Math.floor(totalPriceToPay * fixedExchangeRate)} UAH`
         p.text Дякую що Ви завжди з нами!
         a.continue(href=`${frontendUrl}/catalog/products?sort=popularity`) продовжити покупки

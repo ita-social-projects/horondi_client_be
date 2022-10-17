@@ -90,10 +90,11 @@ header {
  }
 
 .productTable {
-  table-layout: fixed;
+  table-layout: auto;
+  overflow-x: auto;
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 31px;
+  margin: 70px 0 30px;
 }
 
 .tableHead {
@@ -101,7 +102,7 @@ header {
 }
 
 .tableHead th, .paymentText {
-  padding: 10px 0;
+  padding: 10px 20px;
   text-align: left;
   font-family: 'Open Sans', sans-serif;
   font-style: normal;
@@ -120,21 +121,26 @@ header {
   border-bottom: 1px solid #dedede;
 }
 
-.product {
-  width: 50%;
-}
-
 .tableBody td, .paymentPrice {
-  padding: 32px 0;
+  padding: 32px 20px;
   text-align: left;
   font-family: 'Open Sans', sans-serif;
   font-style: normal;
   font-weight: normal;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 28px;
   letter-spacing: 0.0015em;
   text-transform: capitalize;
   color: #242424;
+}
+
+.tableBody td.image {
+  width: 20%;
+  padding: 32px 0px;
+}
+
+.tableBody td.product {
+  width: 25%
 }
 
 .productWrapper {
@@ -142,7 +148,10 @@ header {
 }
 
 .productImg {
-  margin-right: 32px;
+  object-fit: cover;
+  width: 220px;
+  height: 133px;
+  margin-right: '30px';
 }
 
 .productInfo {
@@ -155,7 +164,7 @@ header {
 .productTitle {
   margin: 0;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 32px;
 }
 
@@ -189,7 +198,8 @@ header {
 }
 
 .paymentText {
-  margin-right: 14px;
+  padding: 0;
+  font-size: 16px;
 }
 
 .bestWishes {
