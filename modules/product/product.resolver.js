@@ -1,5 +1,6 @@
 const productsService = require('./product.service');
 const RuleError = require('../../errors/rule.error');
+const { checkProductForSoftDeletion } = require('./product.utils');
 
 const productsQuery = {
   getProductById: async (_parent, args) => {
@@ -42,7 +43,11 @@ const productsMutation = {
   },
   deleteProducts: async (_parent, args, { user }) => {
     try {
-      return await productsService.deleteProducts(args, user);
+      const productDeleted = await checkProductForSoftDeletion(args);
+
+      return productDeleted
+        ? productDeleted
+        : await productsService.deleteProducts(args, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

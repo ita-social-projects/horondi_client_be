@@ -32,7 +32,10 @@ const {
   calculateProductsPriceWithDiscount,
 } = require('../../utils/order.utils');
 
-const { getCertificateByParams, updateCertificate } = require('../certificate/certificate.service');
+const {
+  getCertificateByParams,
+  updateCertificate,
+} = require('../certificate/certificate.service');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {}, sort }) {
@@ -190,14 +193,20 @@ class OrdersService {
     const {
       discounts: itemsDiscount,
       priceWithDiscount: itemsPriceWithDiscount,
-    } = await calculateProductsPriceWithDiscount(data.promoCodeId, data.certificateId, items);
+    } = await calculateProductsPriceWithDiscount(
+      data.promoCodeId,
+      data.certificateId,
+      items
+    );
 
     if (data.promoCodeId) {
       totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
     }
 
     if (data.certificateId) {
-      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);
+      totalPriceToPay =
+        (await calculateTotalPriceToPay(itemsPriceWithDiscount)) -
+        itemsDiscount / exchangeRate;
     }
 
     const orderUpdate = {
@@ -231,16 +240,22 @@ class OrdersService {
     const {
       discounts: itemsDiscount,
       priceWithDiscount: itemsPriceWithDiscount,
-    } = await calculateProductsPriceWithDiscount(data.promoCodeId, data.certificateId, items);
+    } = await calculateProductsPriceWithDiscount(
+      data.promoCodeId,
+      data.certificateId,
+      items
+    );
 
     if (data.promoCodeId) {
       totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount);
     }
 
     if (data.certificateId) {
-      await getCertificateByParams({ _id: data.certificateId })
+      await getCertificateByParams({ _id: data.certificateId });
       await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
-      totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount) - (itemsDiscount / exchangeRate);
+      totalPriceToPay =
+        calculateTotalPriceToPay(itemsPriceWithDiscount) -
+        itemsDiscount / exchangeRate;
     }
 
     const newOrder = {

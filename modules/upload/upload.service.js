@@ -9,6 +9,7 @@ const {
   IMAGE_LINK,
   CONTRIBUTING,
 } = require('../../dotenvValidator');
+const RuleError = require('../../errors/rule.error');
 const { imageQualities, IMAGES_CONTAINER } = require('../../consts');
 const {
   IMAGE_SIZES: { IMAGE_LARGE, IMAGE_MEDIUM, IMAGE_SMALL, IMAGE_THUMBNAIL },
@@ -129,7 +130,7 @@ class UploadService {
         }
         resolve(res);
       })
-    );
+    ).catch(e => new RuleError(e.message, e.statusCode));
   }
 }
 
