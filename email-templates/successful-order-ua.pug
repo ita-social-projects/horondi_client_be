@@ -17,20 +17,20 @@ block content
                 tr.tableBody
                     td.image
                         if !val.isFromConstructor
-                            img.productImg(src= `${imagesUrl}${val.product.images.primary.small}` alt='img')
+                            img.productImg(src=`${imagesUrl}${val.product.images.primary.small}` alt='img')
                         else 
                             p= 'Constructor image'
                     td.product
-                        p.productTitle= val.product.name[0].value
+                        p.productTitle= `${val.product.name[0].value}`
                         p.productMaterial= `Матеріал низу: ${val.product.bottomMaterial.name[0].value}`
                     td.size
                         p.productSize= `${val.options.size.name}`
                     td.quantity
-                        p.productQuantity= val.quantity
+                        p.productQuantity= `${val.quantity}`
                     td.price
                         p.productPrice= `${Math.floor(val.fixedPrice * fixedExchangeRate)} UAH`
                     td.status
-                        p.productPrice= `${paymentStatus === 'PAID' ? 'Оплачено' : 'Створено'}`
+                        p.productStatus= `${paymentStatus === 'PAID' ? 'Оплачено' : 'Створено'}`
         div.payment
             span.paymentText До оплати:
             span.paymentPrice= `${Math.floor(totalPriceToPay * fixedExchangeRate)} UAH`

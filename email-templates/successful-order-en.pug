@@ -17,20 +17,20 @@ block content
                 tr.tableBody
                     td.image
                         if !val.isFromConstructor
-                            img.productImg(src= `${imagesUrl}${val.product.images.primary.small}` alt='img')
+                            img.productImg(src=`${imagesUrl}${val.product.images.primary.small}` alt='img')
                         else 
                             p= 'Constructor image'
                     td.product
-                        p.productTitle= val.product.name[1].value
+                        p.productTitle= `${val.product.name[1].value}`
                         p.productMaterial= `bottom: ${val.product.bottomMaterial.name[1].value}`
                     td.size
                         p.productSize= `${val.options.size.name}`
                     td.quantity
-                        p.productQuantity= val.quantity
+                        p.productQuantity= `${val.quantity}`
                     td.price
                         p.productPrice= `${val.fixedPrice} USD`
                     td.status
-                        p.productPrice= `${paymentStatus === 'PAID' ? 'Paid' : 'Created'}`
+                        p.productStatus= `${paymentStatus === 'PAID' ? 'Paid' : 'Created'}`
         div.payment
             span.paymentText Total:
             span.paymentPrice= `${Math.floor(totalPriceToPay)} USD`
