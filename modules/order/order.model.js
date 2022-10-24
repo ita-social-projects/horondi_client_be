@@ -82,7 +82,7 @@ const orderSchema = new mongoose.Schema({
   },
   certificateId: {
     type: String,
-    default: ''
+    default: '',
   },
   itemsPriceWithDiscount: [Number],
   itemsDiscount: [Number],

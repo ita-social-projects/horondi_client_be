@@ -39,9 +39,10 @@ const {
 } = require('../../consts/order-payment-status');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
-  EmailActions: { PAYMENT_ORDER, CERTIFICATE_EMAIL },
+  EmailActions: { CERTIFICATE_EMAIL, SUCCESSFUL_ORDER },
 } = require('../../consts/email-actions');
 const productService = require('../product/product.service');
+const materialService = require('../material/material.service');
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }) {
@@ -289,7 +290,7 @@ class PaymentService {
     const paidOrder = await OrderModel.findOne({ orderNumber: paidOrderNumber })
       .populate({
         path: 'items.product',
-        select: 'name images ',
+        select: 'name bottomMaterial images',
       })
       .exec();
 
@@ -299,10 +300,17 @@ class PaymentService {
           item.product,
           item.options.size
         );
+        const bottomMaterial = await materialService.getMaterialById(
+          item.product.bottomMaterial.material
+        );
         item = item.toObject();
 
         return {
           ...item,
+          product: {
+            ...item.product,
+            bottomMaterial,
+          },
           options: {
             ...item.options,
             size,
@@ -311,11 +319,12 @@ class PaymentService {
       })
     );
 
-    await sendEmail(paidOrder.recipient.email, PAYMENT_ORDER, {
+    await sendEmail(paidOrder.recipient.email, SUCCESSFUL_ORDER, {
       language,
       items,
-      totalPrice: paidOrder.totalItemsPrice,
-      paymentUrl: paidOrder.paymentUrl,
+      totalPriceToPay: paidOrder.totalPriceToPay,
+      fixedExchangeRate: paidOrder.fixedExchangeRate,
+      paymentStatus: paidOrder.paymentStatus,
       imagesUrl: IMAGE_LINK,
     });
 
