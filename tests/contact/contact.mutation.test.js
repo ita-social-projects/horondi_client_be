@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const {
   contact,
@@ -19,6 +20,9 @@ let contactsId = '';
 describe('Contacts mutations test', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('should add contact to database', async () => {

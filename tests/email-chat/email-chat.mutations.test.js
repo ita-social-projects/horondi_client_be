@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   emailQuestionInputData,
@@ -54,6 +55,9 @@ describe('Chat email mutations', () => {
     email = _email;
     language = _language;
     question = await addEmailQuestion(emailQuestionInputData, operations);
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('should create email question', () => {

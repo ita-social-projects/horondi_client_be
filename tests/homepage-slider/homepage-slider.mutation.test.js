@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 
 const {
@@ -30,6 +31,9 @@ describe('Homepage looks slider mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
     looksSlideId = (await addHomePageSlide(looksSlide, true, operations))._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should create slide', async () => {

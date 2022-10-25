@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const novaPoshtaService = require('../../../modules/delivery/nova-poshta/nova-poshta.service');
 const { setupApp } = require('../../helper-functions');
 const {
@@ -46,6 +47,9 @@ describe('Nova poshta queries tests', () => {
           ],
         },
       }));
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should get Nova Poshta cities', async () => {

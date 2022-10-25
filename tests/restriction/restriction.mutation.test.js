@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 
 const {
@@ -22,6 +23,9 @@ let restrictionId = null;
 describe('Restriction queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('Should create restriction', async () => {

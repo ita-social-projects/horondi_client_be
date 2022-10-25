@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   newPromoCode,
   newPromoCodeForUpdate,
@@ -17,6 +18,9 @@ let operations;
 describe('PromoCodes mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should add to database', async () => {

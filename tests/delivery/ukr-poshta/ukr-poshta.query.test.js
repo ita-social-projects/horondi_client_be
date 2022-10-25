@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const ukrPoshtaService = require('../../../modules/delivery/ukr-poshta/ukr-poshta.service');
 const { setupApp } = require('../../helper-functions');
 const {
@@ -49,6 +50,9 @@ describe('ukr-poshta queries tests', () => {
           },
         },
       }));
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should return expected getUkrPoshtaRegions result', async () => {

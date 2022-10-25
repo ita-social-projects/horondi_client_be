@@ -100,6 +100,6 @@ describe('constructor mutations', () => {
   });
 
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

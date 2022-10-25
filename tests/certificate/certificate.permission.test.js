@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const { INVALID_PERMISSIONS } = require('../../error-messages/user.messages');
 
@@ -66,6 +67,9 @@ describe('Run ApolloClientServer with role=admin in context', () => {
     certificateNullOwnerId = certificateNullOwner.certificates[0]._id;
     certificateNullOwnerEmail = null;
     certificateNullOwnerName = certificateNullOwner.certificates[0].name;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   describe('Test behaviour of USER with role=user', () => {

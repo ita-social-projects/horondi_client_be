@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const { looksImage } = require('./homepage-images.variables');
 const {
@@ -16,6 +17,9 @@ describe('Homepage looks images queries', () => {
     operations = await setupApp();
 
     looksImageId = await addHomePageLooksImage(operations);
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should receive all looks images', async () => {

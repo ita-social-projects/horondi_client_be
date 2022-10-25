@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   createCategory,
@@ -48,6 +49,7 @@ describe('history query tests', () => {
   afterAll(async () => {
     await deleteModel(modelId, operations);
     await deleteCategory(categoryId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should get all history records', async () => {

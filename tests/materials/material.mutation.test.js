@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   MATERIAL_ALREADY_EXIST,
   MATERIAL_NOT_FOUND,
@@ -33,6 +34,9 @@ describe('material mutations tests', () => {
     colorId = colorData._id;
     material = getMaterial(colorId);
     materialToUpdate = getMaterialToUpdate(colorId);
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should add material to database', async () => {

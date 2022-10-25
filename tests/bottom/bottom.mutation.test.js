@@ -128,6 +128,6 @@ describe('Bottom mutation tests', () => {
     expect(result).toBe(bottomId);
   });
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

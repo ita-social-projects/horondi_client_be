@@ -1,11 +1,12 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
 } = require('../../consts/certificate-update-status');
 const {
-  CERTIFICATE_NOT_FOUND, 
-  CERTIFICATE_IS_USED, 
-  CERTIFICATE_IN_PROGRESS
+  CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_IS_USED,
+  CERTIFICATE_IN_PROGRESS,
 } = require('../../error-messages/certificate.messages');
 const {
   getAllCertificates,
@@ -36,6 +37,9 @@ let isUsed;
 describe('Test mutation methods Admin', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should generate certificate', async () => {
@@ -70,19 +74,36 @@ describe('Test mutation methods Admin', () => {
   });
 
   it('should change `inProgress` field to true with updateCertificate', async () => {
-    const updateResult = await updateCertificate(certificateParams, IN_PROGRESS, operations);
-    const getResult = await getCertificateByParams(certificateParams, operations);
+    const updateResult = await updateCertificate(
+      certificateParams,
+      IN_PROGRESS,
+      operations
+    );
+    const getResult = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
 
     expect(updateResult.inProgress).toBeTruthy();
-    expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IN_PROGRESS);
+    expect(getResult.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IN_PROGRESS
+    );
   });
 
   it('should change `isUsed` field to true with updateCertificate', async () => {
     expect(isUsed).toBeFalsy();
 
-    const updateResult = await updateCertificate(certificateParams, USED, operations);
-    const getResult = await getCertificateByParams(certificateParams, operations);
-    
+    const updateResult = await updateCertificate(
+      certificateParams,
+      USED,
+      operations
+    );
+    const getResult = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+
     expect(updateResult.isUsed).toBeTruthy();
     expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
   });
@@ -105,10 +126,15 @@ describe('Test response for unexist and wrong Code', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
-
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
 
   it('should responde with 404 status for update wrong Name', async () => {
-    const result = await getCertificateByParams({ name: wrongName }, operations);
+    const result = await getCertificateByParams(
+      { name: wrongName },
+      operations
+    );
 
     expect(result.errors[0].extensions).toHaveProperty('code', 404);
   });

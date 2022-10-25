@@ -23,7 +23,8 @@ const uploadProductImages = async filesToUpload => {
 const checkProductForSoftDeletion = async ids => {
   const response = await Promise.all(
     ids.ids.map(async itemId => {
-      if (!ObjectId.isValid(itemId)) {
+      const product = await Product.findById(itemId);
+      if (!ObjectId.isValid(itemId) || !product) {
         throw new RuleError(PRODUCT_NOT_FOUND, BAD_REQUEST);
       }
       const products = await Product.find({ _id: itemId }).exec();
@@ -43,18 +44,11 @@ const checkProductForSoftDeletion = async ids => {
         ...additionalImagesToDelete,
       ]);
 
-      const update = {
-        $set: {
-          isDeleted: true,
-          deletedAt: Date.now(),
-          images: null,
-        },
-      };
-      const deletedProduct = await Product.findByIdAndUpdate(itemId, update, {
-        new: true,
-      }).exec();
+      product.isDeleted = true;
+      product.deletedAt = Date.now();
+      product.save();
 
-      return deletedProduct;
+      return product;
     })
   );
 
