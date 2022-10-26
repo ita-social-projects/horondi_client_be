@@ -487,11 +487,11 @@ class ProductsService {
           adminId
         );
 
-        const orders = await Order.find({ 'items.product': itemId }).exec();
-
         await addHistoryRecord(historyRecord);
 
-        !orders && (await deleteTranslations(product.translationsKey));
+        const orders = await Order.find({ 'items.product': itemId }).exec();
+
+        !orders.length && (await deleteTranslations(product.translationsKey));
 
         const update = {
           $set: {
