@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 const Product = require('./product.model');
 const User = require('../user/user.model');
+const Order = require('../order/order.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
 const {
@@ -436,7 +437,7 @@ class ProductsService {
 
   async deleteProducts(ids, { _id: adminId }) {
     const response = [];
-    for (const itemId of ids.ids) {
+    for (const itemId of ids) {
       const product = await Product.findById(itemId).lean().exec();
 
       if (!product) {
@@ -486,11 +487,24 @@ class ProductsService {
           adminId
         );
 
-        await deleteTranslations(product.translationsKey);
+        const orders = await Order.find({ 'items.product': itemId });
 
         await addHistoryRecord(historyRecord);
 
-        const productRes = await Product.findByIdAndDelete(itemId).exec();
+        !orders && (await deleteTranslations(product.translationsKey));
+
+        const update = {
+          $set: {
+            isDeleted: true,
+            deletedAt: Date.now(),
+          },
+        };
+
+        const productRes = orders.length
+          ? await Product.findByIdAndUpdate(itemId, update, {
+              new: true,
+            }).exec()
+          : await Product.findByIdAndDelete(itemId).exec();
         response.push(productRes);
       }
     }
