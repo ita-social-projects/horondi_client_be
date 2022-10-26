@@ -487,7 +487,7 @@ class ProductsService {
           adminId
         );
 
-        const orders = await Order.find({ 'items.product': itemId });
+        const orders = await Order.find({ 'items.product': itemId }).exec();
 
         await addHistoryRecord(historyRecord);
 
