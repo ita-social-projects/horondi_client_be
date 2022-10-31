@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   emailQuestionInputData,
@@ -47,6 +48,9 @@ describe('Chat email queries', () => {
       getFilterPaginationInputData(dateSince);
     filter = _filter;
     pagination = _pagination;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('should get email questions', async () => {

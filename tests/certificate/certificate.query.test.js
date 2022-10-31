@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
-  CERTIFICATE_NOT_FOUND, CERTIFICATE_IN_PROGRESS
+  CERTIFICATE_NOT_FOUND,
+  CERTIFICATE_IN_PROGRESS,
 } = require('../../error-messages/certificate.messages');
 const {
   CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
@@ -41,6 +43,7 @@ describe('Test certificate Queries', () => {
   afterAll(async () => {
     await updateCertificate(certificateParams, USED, operations);
     await deleteCertificate(certificateId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should check unique field in one of certificates in list', async () => {

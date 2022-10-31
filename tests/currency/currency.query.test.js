@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   getAllCurrencies,
@@ -21,6 +22,9 @@ describe('Currency queries', () => {
     operations = await setupApp();
 
     currency = await addCurrency(newCurrency, operations);
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should get all currencies', async () => {

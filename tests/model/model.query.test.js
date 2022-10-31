@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const {
   wrongId,
   notValidId,
@@ -117,5 +119,6 @@ describe('Model queries', () => {
   afterAll(async () => {
     await deleteModel(modelId, operations);
     await deleteCategory(categoryId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });

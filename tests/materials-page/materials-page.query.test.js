@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   getAllMaterialsBlocks,
@@ -26,6 +27,7 @@ describe('Materials-about block queries', () => {
 
   afterAll(async () => {
     await deleteMaterialsBlock(materialsBlock._id, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should get all materials-about blocks', async () => {

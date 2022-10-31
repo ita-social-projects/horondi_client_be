@@ -137,6 +137,6 @@ describe('Back mutation tests', () => {
     expect(result).toBe(backId);
   });
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

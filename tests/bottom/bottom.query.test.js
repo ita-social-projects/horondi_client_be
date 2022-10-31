@@ -78,6 +78,6 @@ describe('Bottom query test', () => {
     expect(result).toHaveProperty('statusCode', 404);
   });
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

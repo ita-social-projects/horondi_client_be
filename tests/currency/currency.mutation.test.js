@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   addCurrency,
@@ -84,5 +85,6 @@ describe('Currency mutations', () => {
 
   afterAll(async () => {
     await deleteCurrency(existingCurrency._id, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });

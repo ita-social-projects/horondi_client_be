@@ -1,11 +1,17 @@
+const mongoose = require('mongoose');
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
-const { CERTIFICATE_IN_PROGRESS } = require('../../error-messages/certificate.messages');
+const {
+  CERTIFICATE_IN_PROGRESS,
+} = require('../../error-messages/certificate.messages');
 const {
   deleteOrder,
   createOrder,
   updateOrderById,
 } = require('./order.helpers');
-const { getCertificateByParams, generateCertificate } = require('../certificate/certificate.helper');
+const {
+  getCertificateByParams,
+  generateCertificate,
+} = require('../certificate/certificate.helper');
 const {
   wrongId,
   email,
@@ -44,7 +50,6 @@ const { setupApp } = require('../helper-functions');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.model', () => ({
   findOne: () => ({
     exec: () => ({
@@ -80,7 +85,7 @@ describe('Order queries', () => {
     certificateId = certificateData.certificates[0]._id;
     certificateName = certificateData.certificates[0].name;
     certificateParams = { name: certificateName };
-    
+
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
     const categoryData = await createCategory(newCategoryInputData, operations);
@@ -120,6 +125,9 @@ describe('Order queries', () => {
     );
     productId = productData._id;
   });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   const { status, delivery, paymentStatus, userComment, items, recipient } =
     newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
@@ -141,16 +149,22 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('totalPriceToPay');
     expect(order).toHaveProperty('certificateId', '');
 
-    const certificate = await getCertificateByParams(certificateParams, operations)
-    expect(certificate.data.getCertificateByParams).toBeDefined()
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.data.getCertificateByParams).toBeDefined();
   });
 
   test('Should update order without certificate', async () => {
     const updatedOrder = await updateOrderById(
-      newOrderUpdated(productId, modelId, sizeId), orderId, operations);
+      newOrderUpdated(productId, modelId, sizeId),
+      orderId,
+      operations
+    );
 
     expect(updatedOrder).toBeTruthy();
-    expect(updatedOrder).toHaveProperty('certificateId', '')
+    expect(updatedOrder).toHaveProperty('certificateId', '');
   });
 
   const {
@@ -159,7 +173,7 @@ describe('Order queries', () => {
     userComment: updatedUserComment,
     recipient: updatedUser,
     status: updatedStatus,
-    items: updatedItems
+    items: updatedItems,
   } = newOrderUpdated(productId, modelId, sizeId, constructorBasicId);
 
   test('Should update order with certificate', async () => {
@@ -178,23 +192,39 @@ describe('Order queries', () => {
     expect(updatedOrder.delivery).toEqual(updatedDelivery);
     expect(updatedOrder).toHaveProperty('totalItemsPrice');
     expect(updatedOrder).toHaveProperty('totalPriceToPay');
-    expect(updatedOrder).toHaveProperty('certificateId', certificateId)
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId);
 
-    const certificate = await getCertificateByParams(certificateParams, operations)
-    expect(certificate.data.getCertificateByParams).toBeDefined()
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.data.getCertificateByParams).toBeDefined();
   });
 
   test('Should create order with certificate', async () => {
     const order = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId, undefined, certificateId),
+      newOrderInputData(
+        productId,
+        modelId,
+        sizeId,
+        constructorBasicId,
+        undefined,
+        certificateId
+      ),
       operations
     );
 
     expect(order).toBeDefined();
     expect(order).toHaveProperty('certificateId', certificateId);
 
-    const certificate = await getCertificateByParams(certificateParams, operations)
-    expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IN_PROGRESS);
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IN_PROGRESS
+    );
   });
 
   test('Should throw error ORDER_NOT_FOUND after try to update', async () => {

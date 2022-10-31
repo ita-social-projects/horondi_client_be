@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_PRODUCT,
@@ -59,7 +60,6 @@ const { deleteOrder, createOrder } = require('../order/order.helpers');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
 
 let commentId;
@@ -120,6 +120,9 @@ describe('Comment queries', () => {
       operations
     );
     productId = productData._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should add a new comment', async () => {

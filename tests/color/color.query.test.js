@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { wrongId, color, ERROR_NOT_FOUND } = require('./color.variables');
 const { setupApp } = require('../helper-functions');
 const {
@@ -16,6 +17,9 @@ describe('Colors queries', () => {
     const colorData = await createColor(color, operations);
 
     colorId = colorData._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('Should receive all colors', async () => {

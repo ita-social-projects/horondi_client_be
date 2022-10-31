@@ -158,6 +158,7 @@ describe('queries', () => {
 
   afterAll(async () => {
     await deleteUser(userId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });
 
@@ -280,6 +281,7 @@ describe('Testing obtaining information restrictions', () => {
 
   afterAll(async () => {
     await deleteUser(userId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });
 
@@ -373,6 +375,6 @@ describe('Filter users', () => {
   });
 
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

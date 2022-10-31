@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 const Product = require('./product.model');
 const User = require('../user/user.model');
+const Order = require('../order/order.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
 const {
@@ -106,8 +107,14 @@ class ProductsService {
   }
 
   async getProductsFilters() {
-    const categories = await Product.distinct(PRODUCT_CATEGORY).lean().exec();
-    const models = await Product.distinct(PRODUCT_MODEL).lean().exec();
+    const filter = {
+      isFromConstructor: { $ne: true },
+      isDeleted: { $ne: true },
+    };
+    const categories = await Product.distinct(PRODUCT_CATEGORY, filter)
+      .lean()
+      .exec();
+    const models = await Product.distinct(PRODUCT_MODEL, filter).lean().exec();
     const patterns = await Product.distinct(PRODUCT_PATTERN).lean().exec();
     const closures = await Product.distinct(PRODUCT_CLOSURE).lean().exec();
     const mainMaterial = await Product.distinct(PRODUCT_MAIN_MATERIAL)
@@ -172,9 +179,11 @@ class ProductsService {
       isHotItem,
       models,
       isFromConstructor,
+      isDeleted,
     } = args;
 
     filter.isFromConstructor = isFromConstructor;
+    filter.isDeleted = isDeleted;
 
     if (isHotItem) {
       filter.isHotItem = isHotItem;
@@ -211,6 +220,7 @@ class ProductsService {
       isFromConstructor: {
         $ne: true,
       },
+      isDeleted: { $ne: true },
     });
 
     const sortValue = Object.keys(sort).includes('basePrice')
@@ -427,7 +437,7 @@ class ProductsService {
 
   async deleteProducts(ids, { _id: adminId }) {
     const response = [];
-    for (const itemId of ids.ids) {
+    for (const itemId of ids) {
       const product = await Product.findById(itemId).lean().exec();
 
       if (!product) {
@@ -477,11 +487,24 @@ class ProductsService {
           adminId
         );
 
-        await deleteTranslations(product.translationsKey);
-
         await addHistoryRecord(historyRecord);
 
-        const productRes = await Product.findByIdAndDelete(itemId).exec();
+        const orders = await Order.find({ 'items.product': itemId }).exec();
+
+        !orders.length && (await deleteTranslations(product.translationsKey));
+
+        const update = {
+          $set: {
+            isDeleted: true,
+            deletedAt: Date.now(),
+          },
+        };
+
+        const productRes = orders.length
+          ? await Product.findByIdAndUpdate(itemId, update, {
+              new: true,
+            }).exec()
+          : await Product.findByIdAndDelete(itemId).exec();
         response.push(productRes);
       }
     }

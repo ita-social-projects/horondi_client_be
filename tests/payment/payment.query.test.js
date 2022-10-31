@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const paymentService = require('../../modules/payment/payment.service');
 const { deleteOrder, createOrder } = require('../order/order.helpers');
 const { newOrderInputData } = require('../order/order.variables');
@@ -67,7 +68,6 @@ const emailService = require('../../modules/email/email.service');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/email/email.service');
 jest.mock('../../utils/payment.utils', () => ({
   generatePaymentSignature: () => mockSignatureValue,
@@ -123,7 +123,6 @@ describe('Certificate payment queries', () => {
     certificateId = certificateData.certificates[0]._id;
     certificateParams = { _id: certificateId };
   });
-
   it('should get Certificate Payment Checkout', async () => {
     const result = await getPaymentCheckoutForCertificates(
       { certificates, currency: 'UAH', amount: '100000', language: 0 },
@@ -268,6 +267,7 @@ describe('Payment queries', () => {
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });
 
@@ -301,5 +301,6 @@ describe('Get payment checkout for certificates test', () => {
 
   afterAll(async () => {
     await deleteCertificate(certificates[0]._id, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });

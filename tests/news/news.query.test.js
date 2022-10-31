@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { NEWS_NOT_FOUND } = require('../../error-messages/news.messages');
 const { setupApp } = require('../helper-functions');
 const {
@@ -19,6 +20,9 @@ describe('News queries tests', () => {
     operations = await setupApp();
     const addResponse = await createNews(news, operations);
     newsId = addResponse._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('#1 Should Receive All News', async () => {

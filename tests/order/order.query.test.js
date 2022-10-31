@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   deleteOrder,
   createOrder,
@@ -9,15 +10,20 @@ const {
   getOrdersStatistic,
   getUserOrders,
 } = require('./order.helpers');
-const { generateCertificate, getCertificateByParams } = require('../certificate/certificate.helper');
-const { CERTIFICATE_IN_PROGRESS } = require('../../error-messages/certificate.messages')
+const {
+  generateCertificate,
+  getCertificateByParams,
+} = require('../certificate/certificate.helper');
+const {
+  CERTIFICATE_IN_PROGRESS,
+} = require('../../error-messages/certificate.messages');
 const {
   wrongId,
   email,
   newCertificateInputData,
   newOrderInputData,
   getOrdersInput,
-  newOrderUpdated
+  newOrderUpdated,
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProducts } = require('../product/product.helper');
@@ -52,7 +58,6 @@ const { loginAdmin } = require('../user/user.helper');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.model', () => ({
   findOne: () => ({
     exec: () => ({
@@ -144,14 +149,23 @@ describe('Order queries', () => {
     productId = productData._id;
     date.dateFrom = new Date();
     const orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId, certificateId),
+      newOrderInputData(
+        productId,
+        modelId,
+        sizeId,
+        constructorBasicId,
+        userId,
+        certificateId
+      ),
       operations
     );
     date.dateTo = new Date();
     orderId = orderData._id;
     userId = orderData.user_id;
   });
-
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   const { recipient, userComment, delivery, paymentStatus, status } =
     newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
@@ -165,8 +179,14 @@ describe('Order queries', () => {
     expect(orders[0]).toHaveProperty('recipient', recipient);
     expect(orders[0]).toHaveProperty('certificateId', certificateId);
 
-    const certificate = await getCertificateByParams(certificateParams, operations)
-    expect(certificate.errors[0]).toHaveProperty('message', CERTIFICATE_IN_PROGRESS);
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IN_PROGRESS
+    );
   });
 
   test('Should receive user orders', async () => {
@@ -318,7 +338,7 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('status', status);
   });
 
-    test('Should update order', async () => {
+  test('Should update order', async () => {
     const updatedOrder = await updateOrderById(
       newOrderUpdated(productId, modelId, sizeId, undefined, certificateId),
       orderId,
@@ -326,7 +346,7 @@ describe('Order queries', () => {
     );
 
     expect(updatedOrder).toBeTruthy();
-    expect(updatedOrder).toHaveProperty('certificateId', certificateId)
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId);
   });
 
   test('Should throw error ORDER_NOT_FOUND', async () => {

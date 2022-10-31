@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   newMaterialsBlock,
   updatedMaterialsBlock,
@@ -21,7 +22,10 @@ describe('MaterialsBlocks queries', () => {
     operations = await setupApp();
   });
 
-  afterAll(async () => deleteMaterialsBlock(materialsBlock._id, operations));
+  afterAll(async () => {
+    deleteMaterialsBlock(materialsBlock._id, operations);
+    await mongoose.connection.db.dropDatabase();
+  });
 
   it('should add material-about to database', async () => {
     materialsBlock = await addMaterialsBlock(

@@ -25,6 +25,8 @@ const productType = `
     userRates: [UserRate]
     comments: PaginatedComments!
     translationsKey: ID!
+	 isDeleted: Boolean
+	 deletedAt: Date
   }
   type ProductMaterialType{
     material: Material

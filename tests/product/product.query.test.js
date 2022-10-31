@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { PRODUCT_NOT_FOUND } = require('../../error-messages/products.messages');
 const {
   badProductId,
@@ -56,7 +57,6 @@ const {
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 
 let colorId;
 let sizeId;
@@ -199,5 +199,6 @@ describe('Product queries', () => {
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
     await deleteUser(userId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });

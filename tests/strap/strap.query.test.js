@@ -102,6 +102,6 @@ describe('Strap queries', () => {
     expect(result).toHaveProperty('statusCode');
   });
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

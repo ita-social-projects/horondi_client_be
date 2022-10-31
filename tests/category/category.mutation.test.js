@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   CATEGORY_NOT_FOUND,
@@ -22,6 +23,9 @@ let categoryId;
 describe('Closure queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('should create category', async () => {

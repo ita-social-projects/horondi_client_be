@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   BUSINESS_TEXT_NOT_FOUND,
 } = require('../../error-messages/business-text.messages');
@@ -29,6 +30,9 @@ describe('Business page queries', () => {
       businessTextTranslationFields,
       operations
     );
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('Should receive all business texts', async () => {
