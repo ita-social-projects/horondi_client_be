@@ -257,6 +257,7 @@ class OrdersService {
         calculateTotalPriceToPay(itemsPriceWithDiscount) -
         itemsDiscount / exchangeRate;
     }
+    totalPriceToPay = Math.round(totalPriceToPay);
 
     const newOrder = {
       ...data,
