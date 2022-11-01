@@ -16,6 +16,9 @@ const {
   ORDER_PAYMENT_STATUS: { APPROVED, DECLINED },
 } = require('../../consts/order-payment-status');
 const {
+  CERTIFICATE_UPDATE_STATUS: { USED },
+} = require('../../consts/certificate-update-status');
+const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
 const { createColor, deleteColor } = require('../color/color.helper');
@@ -42,6 +45,7 @@ const {
   generateCertificate,
   deleteCertificate,
   getCertificateByParams,
+  updateCertificate,
 } = require('../certificate/certificate.helper');
 
 const {
@@ -232,6 +236,7 @@ describe('Payment queries', () => {
       certificateParams,
       operations
     );
+
     expect(certificate.data.getCertificateByParams).toBeDefined();
   });
 
@@ -240,7 +245,11 @@ describe('Payment queries', () => {
       mockRequestData(orderNumber, APPROVED, mockSignatureValue),
       mockResponseData
     );
-
+    const updateResult = await updateCertificate(
+      certificateParams,
+      USED,
+      operations
+    );
     const certificate = await getCertificateByParams(
       certificateParams,
       operations
@@ -249,6 +258,7 @@ describe('Payment queries', () => {
       'message',
       CERTIFICATE_IS_USED
     );
+    expect(updateResult.dateOfUsing).toBeTruthy();
   });
 
   it('should send email with order data', async () => {

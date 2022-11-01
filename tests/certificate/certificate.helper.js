@@ -189,6 +189,7 @@ const updateCertificate = async (params, statusUpdate, operations) => {
             _id
             isUsed
             isExpired
+            dateOfUsing
             inProgress
           }
           ... on Error {
@@ -200,7 +201,7 @@ const updateCertificate = async (params, statusUpdate, operations) => {
     `,
     variables: {
       params,
-      statusUpdate
+      statusUpdate,
     },
   });
 

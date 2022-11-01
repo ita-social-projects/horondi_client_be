@@ -252,8 +252,9 @@ class PaymentService {
       }).exec();
 
       if (order.certificateId && status === PAYMENT_PAID) {
+        const date = new Date();
         CertificateModel.findByIdAndUpdate(order.certificateId, {
-          $set: { inProgress: false, isUsed: true },
+          $set: { inProgress: false, isUsed: true, dateOfUsing: date },
         }).exec();
       }
 
