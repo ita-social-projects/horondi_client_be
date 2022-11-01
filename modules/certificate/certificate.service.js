@@ -248,10 +248,16 @@ class CertificatesService extends FilterHelper {
   }
 
   async updateCertificate(params, statusUpdate) {
+    const now = new Date();
     if (statusUpdate === USED) {
       return CertificateModel.findOneAndUpdate(
         { ...params },
-        { isUsed: true, isActivated: false, inProgress: false },
+        {
+          isUsed: true,
+          isActivated: false,
+          inProgress: false,
+          dateOfUsing: now,
+        },
         { new: true }
       ).exec();
     }
