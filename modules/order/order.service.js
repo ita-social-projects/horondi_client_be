@@ -208,6 +208,11 @@ class OrdersService {
         (await calculateTotalPriceToPay(itemsPriceWithDiscount)) -
         itemsDiscount / exchangeRate;
     }
+    let paymentStatus = order?.paymentStatus;
+
+    if (order.paymentMethod === 'CASH') {
+      paymentStatus = order.isPaid ? 'PAID' : 'CREATED';
+    }
 
     const orderUpdate = {
       ...order,
@@ -215,6 +220,7 @@ class OrdersService {
       itemsPriceWithDiscount,
       itemsDiscount,
       totalPriceToPay,
+      paymentStatus,
     };
 
     return Order.findByIdAndUpdate(

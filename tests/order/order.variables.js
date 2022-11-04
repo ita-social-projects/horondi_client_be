@@ -61,7 +61,13 @@ const newOrderInputData = (
   certificateId,
   user_id: userId,
 });
-const newOrderUpdated = (productId, modelId, sizeId, constructorId, certificateId) => ({
+const newOrderUpdated = (
+  productId,
+  modelId,
+  sizeId,
+  constructorId,
+  certificateId
+) => ({
   status: 'SENT',
   recipient: {
     firstName: 'Updated',
@@ -91,9 +97,9 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId, certificateI
     },
   ],
   paymentMethod: 'CASH',
-  paymentStatus: 'APPROVED',
+  paymentStatus: 'CREATED',
   promoCodeId: '',
-  certificateId
+  certificateId,
 });
 
 module.exports = {
