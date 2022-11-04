@@ -12,6 +12,7 @@ const certificateTypes = `
     inProgress: Boolean
     dateStart: Date
     dateEnd: Date
+    dateOfUsing: Date
     paymentStatus: String
     paymentUrl: String
     paymentToken: String
