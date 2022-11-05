@@ -265,6 +265,12 @@ class OrdersService {
     }
     totalPriceToPay = Math.round(totalPriceToPay);
 
+    let paymentStatus = order?.paymentStatus;
+
+    if (order.paymentMethod === 'CASH') {
+      paymentStatus = order.isPaid ? 'PAID' : paymentStatus;
+    }
+
     const newOrder = {
       ...data,
       totalItemsPrice,
@@ -272,6 +278,7 @@ class OrdersService {
       itemsPriceWithDiscount,
       itemsDiscount,
       orderNumber,
+      paymentStatus,
       fixedExchangeRate: exchangeRate,
     };
 
