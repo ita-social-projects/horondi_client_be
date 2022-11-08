@@ -10,7 +10,6 @@ const { jwtClient } = require('../client/jwt-client');
 const userService = require('../modules/user/user.service');
 const { INVALID_PERMISSIONS } = require('../error-messages/user.messages');
 const { initLogger: initLoggerHttp } = require('../loggerHttp');
-const { currencyWorker } = require('../currency.worker');
 const { NODE_ENV, SECRET } = require('../dotenvValidator');
 
 let loggerHttp;
@@ -21,7 +20,6 @@ let loggerHttp;
   }
 
   const dbConnection = await connectDB();
-  currencyWorker(dbConnection.db);
   loggerHttp = initLoggerHttp(dbConnection.getClient());
 })();
 
