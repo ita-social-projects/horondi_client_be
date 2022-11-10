@@ -977,7 +977,7 @@ const typeDefs = gql`
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
-    addProductFromConstructor(product: ProductInput!, upload: Upload!): ProductResult
+    addProductFromConstructor(product: ProductInput!): ProductResult
     deleteProducts(ids: [ID!]): ProductResult
     updateProduct(
       id: ID!
