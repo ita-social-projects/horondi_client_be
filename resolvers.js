@@ -235,7 +235,6 @@ const {
   constructorPocketHelper,
 } = require('./helpers/constructor-pocket-helper');
 const productService = require('./modules/product/product.service');
-const sizeService = require('./modules/size/size.service');
 
 const resolvers = {
   Subscription: {
@@ -455,7 +454,10 @@ const resolvers = {
           quantity: item.quantity,
           model: productService.getProductModelById(item.product),
           options: {
-            size: sizeService.getSizeById(item.options.size),
+            size: productService.getProductSizeById(
+              item.product,
+              item.options.size
+            ),
             sidePocket: item.options.sidePocket,
           },
           product: productsService.getProductById(item.product),
