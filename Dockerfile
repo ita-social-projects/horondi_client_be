@@ -1,5 +1,5 @@
 FROM node:14.15.4-alpine
-VOLUME [ "/sys/fs/cgroup" ]
+VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
