@@ -65,7 +65,7 @@ stages:
           azureSubscription: 'Horondi-Admin-Service'
           azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
           action: 'Push an image'
-          imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
+          imageName: '$(Build.Repository.Name):$(Build.BuildId)'
       
       - task: Docker@0
         name: productionBuild
