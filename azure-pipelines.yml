@@ -54,7 +54,7 @@ stages:
           action: 'Build an image'
           dockerFile: '**/Dockerfile'
           buildArguments: 'password=$(pass)'
-          imageName: 'horondi_client_be:$(Build.BuildId)'
+          imageName: '$(Build.Repository.Name):$(Build.BuildId)'
       
       - task: Docker@0
         name: deployedStaging
