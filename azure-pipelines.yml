@@ -103,6 +103,7 @@ stages:
             DockerNamespace: 'horondistaging.azurecr.io'
             DockerRepository: 'ita-social-projects/horondi_client_be'
             DockerImageTag: '$(Build.BuildId)'
+            AppSettings: '-DOCKER_REGISTRY_SERVER_PASSWORD $(ACR_PASSWORD) -DOCKER_REGISTRY_SERVER_URL $(ACR_URL) -DOCKER_REGISTRY_SERVER_USERNAME $(ACR_USERNAME)'
 
         - task: AzureWebAppContainer@1
           condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
