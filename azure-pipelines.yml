@@ -54,18 +54,18 @@ stages:
           action: 'Build an image'
           dockerFile: '**/Dockerfile'
           buildArguments: 'password=$(pass)'
-          imageName: 'horondi_client_be:$(Build.BuildId)'
+          imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
       
-      - task: Docker@0
-        name: deployedStaging
-        displayName: 'Push an image'
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
-        inputs:
-          containerregistrytype: 'Azure Container Registry'
-          azureSubscription: 'Horondi-Admin-Service'
-          azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
-          action: 'Push an image'
-          imageName: 'horondi_client_be:$(Build.BuildId)'
+      # - task: Docker@0
+      #   name: deployedStaging
+      #   displayName: 'Push an image'
+      #   condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+      #   inputs:
+      #     containerregistrytype: 'Azure Container Registry'
+      #     azureSubscription: 'Horondi-Admin-Service'
+      #     azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
+      #     action: 'Push an image'
+      #     imageName: 'horondi_client_be:$(Build.BuildId)'
       
       - task: Docker@0
         name: productionBuild
@@ -100,8 +100,8 @@ stages:
             azureSubscription: 'Horondi-Admin-Service'
             appType: 'webAppContainer'
             WebAppName: 'horondi-back-staging'
-            DockerNamespace: 'horondi.azurecr.io'
-            DockerRepository: 'horondi_client_be'
+            DockerNamespace: 'horondistaging.azurecr.io'
+            DockerRepository: 'ita-social-projects/horondi_client_be'
             DockerImageTag: '$(Build.BuildId)'
 
         - task: AzureWebAppContainer@1
