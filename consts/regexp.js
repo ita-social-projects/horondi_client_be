@@ -9,6 +9,7 @@ const userNameRegExp =
 const passwordRegExp =
   /^(?=.*[A-ZА-ЯІЇЄ])(?=.*\d)[a-zA-Zа-яА-ЯіїєІЇЄ\d!@#$%^&*()~¥=_+}{":;'?/>.<,\\`|[\]-]{6,30}$/;
 const zipcodeRegExp = /^\d{5}(?:[-\s]\d{4})?$/;
+const fileUploadRegExp = /[\s()]/g;
 const certificateRegExp = /^HOR\d{8}$/i;
 const onlyNumbersRegExp = /^\d*$/;
 
@@ -21,6 +22,7 @@ module.exports = {
   userNameRegExp,
   passwordRegExp,
   zipcodeRegExp,
+  fileUploadRegExp,
   certificateRegExp,
   onlyNumbersRegExp,
 };
