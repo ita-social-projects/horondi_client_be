@@ -1,7 +1,6 @@
 const wrongId = '5fb412d8663cf10bec9faa1a';
 const email = 'test@test.com';
 const orderStatus = 'CREATED';
-const paymentStatus = 'CREATED';
 const price = 2;
 const getOrdersInput = {
   filter: {
@@ -26,7 +25,8 @@ const newOrderInputData = (
   sizeId,
   constructorId,
   userId,
-  certificateId
+  certificateId,
+  isPaid
 ) => ({
   status: orderStatus,
   recipient: {
@@ -56,12 +56,20 @@ const newOrderInputData = (
       price,
     },
   ],
+  isPaid,
   paymentMethod: 'CASH',
-  paymentStatus,
+  paymentStatus: isPaid ? 'PAID' : 'CREATED',
   certificateId,
   user_id: userId,
 });
-const newOrderUpdated = (productId, modelId, sizeId, constructorId, certificateId) => ({
+const newOrderUpdated = (
+  productId,
+  modelId,
+  sizeId,
+  constructorId,
+  certificateId,
+  isPaid
+) => ({
   status: 'SENT',
   recipient: {
     firstName: 'Updated',
@@ -90,10 +98,11 @@ const newOrderUpdated = (productId, modelId, sizeId, constructorId, certificateI
       price,
     },
   ],
+  isPaid,
   paymentMethod: 'CASH',
-  paymentStatus: 'APPROVED',
+  paymentStatus: isPaid ? 'PAID' : 'CREATED',
   promoCodeId: '',
-  certificateId
+  certificateId,
 });
 
 module.exports = {
@@ -104,5 +113,4 @@ module.exports = {
   email,
   newOrderUpdated,
   orderStatus,
-  paymentStatus,
 };

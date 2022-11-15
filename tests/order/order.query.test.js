@@ -81,6 +81,7 @@ let userId;
 let certificateId;
 let certificateName;
 let certificateParams;
+let isPaid;
 
 const date = { dateFrom: '', dateTo: '' };
 
@@ -338,15 +339,44 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('status', status);
   });
 
-  test('Should update order', async () => {
+  test('Should update order and return paid', async () => {
+    isPaid = true;
     const updatedOrder = await updateOrderById(
-      newOrderUpdated(productId, modelId, sizeId, undefined, certificateId),
+      newOrderUpdated(
+        productId,
+        modelId,
+        sizeId,
+        undefined,
+        certificateId,
+        isPaid
+      ),
       orderId,
       operations
     );
 
     expect(updatedOrder).toBeTruthy();
     expect(updatedOrder).toHaveProperty('certificateId', certificateId);
+    expect(updatedOrder.paymentStatus).toBe('PAID');
+  });
+
+  test('Should update order and return create', async () => {
+    isPaid = false;
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(
+        productId,
+        modelId,
+        sizeId,
+        undefined,
+        certificateId,
+        isPaid
+      ),
+      orderId,
+      operations
+    );
+
+    expect(updatedOrder).toBeTruthy();
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId);
+    expect(updatedOrder.paymentStatus).toBe('CREATED');
   });
 
   test('Should throw error ORDER_NOT_FOUND', async () => {

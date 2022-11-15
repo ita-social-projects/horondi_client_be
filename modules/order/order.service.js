@@ -36,6 +36,8 @@ const {
   getCertificateByParams,
   updateCertificate,
 } = require('../certificate/certificate.service');
+const { ORDER_PAYMENT_STATUS } = require('../../consts/order-payment-status');
+const { PAYMENT_TYPES } = require('../../consts/payment-types.js');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {}, sort }) {
@@ -177,10 +179,10 @@ class OrdersService {
     }
 
     const { items } = order;
+    const { user_id } = orderToUpdate;
+    let { paymentStatus } = orderToUpdate;
 
-    const userId = orderToUpdate?.user_id;
-
-    const data = { ...order, user_id: userId || null };
+    const data = { ...order, user_id };
 
     await updateProductStatistic(orderToUpdate, data);
 
@@ -209,12 +211,19 @@ class OrdersService {
         itemsDiscount / exchangeRate;
     }
 
+    if (order.paymentMethod === PAYMENT_TYPES.CASH) {
+      paymentStatus = order.isPaid
+        ? ORDER_PAYMENT_STATUS.PAID
+        : ORDER_PAYMENT_STATUS.CREATED;
+    }
+
     const orderUpdate = {
       ...order,
       totalItemsPrice,
       itemsPriceWithDiscount,
       itemsDiscount,
       totalPriceToPay,
+      paymentStatus,
     };
 
     return Order.findByIdAndUpdate(
@@ -226,6 +235,7 @@ class OrdersService {
 
   async addOrder(order, user) {
     const { items } = order;
+    let { paymentStatus } = order;
 
     const data = { ...order, user_id: user ? user._id : null };
     await addProductsToStatistic(items);
@@ -259,6 +269,12 @@ class OrdersService {
     }
     totalPriceToPay = Math.round(totalPriceToPay);
 
+    if (order.paymentMethod === PAYMENT_TYPES.CASH) {
+      paymentStatus = order.isPaid
+        ? ORDER_PAYMENT_STATUS.PAID
+        : ORDER_PAYMENT_STATUS.CREATED;
+    }
+
     const newOrder = {
       ...data,
       totalItemsPrice,
@@ -266,6 +282,7 @@ class OrdersService {
       itemsPriceWithDiscount,
       itemsDiscount,
       orderNumber,
+      paymentStatus,
       fixedExchangeRate: exchangeRate,
     };
 
