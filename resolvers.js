@@ -416,38 +416,6 @@ const resolvers = {
   Order: {
     items: parent =>
       parent.items.map(item => {
-        if (item.isFromConstructor) {
-          return {
-            constructorBottom: constructorServices.getConstructorElementById(
-              item.constructorBottom,
-              constructorBottomModel
-            ),
-            constructorBasics: constructorServices.getConstructorElementById(
-              item.constructorBasics,
-              constructorBasicModel
-            ),
-            constructorFrontPocket:
-              constructorServices.getConstructorElementById(
-                item.constructorFrontPocket,
-                constructorFrontPocketModel
-              ),
-            constructorPattern: patternService.getPatternById(
-              item.constructorPattern
-            ),
-            model: modelService.getModelById(item.model),
-            options: {
-              size: modelService.getModelSizeById(
-                item.model,
-                item.options.size
-              ),
-              sidePocket: item.options.sidePocket,
-            },
-            isFromConstructor: item.isFromConstructor,
-            quantity: item.quantity,
-            fixedPrice: item.fixedPrice,
-          };
-        }
-
         return {
           fixedPrice: item.fixedPrice,
           isFromConstructor: item.isFromConstructor,
@@ -458,7 +426,6 @@ const resolvers = {
               item.product,
               item.options.size
             ),
-            sidePocket: item.options.sidePocket,
           },
           product: productsService.getProductById(item.product),
         };
