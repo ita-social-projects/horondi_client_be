@@ -3,6 +3,7 @@ const { ObjectId } = require('mongoose').Types;
 const Currency = require('../currency/currency.model');
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
+const { CertificateModel } = require('../certificate/certificate.model');
 const {
   STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
@@ -36,7 +37,9 @@ const {
   getCertificateByParams,
   updateCertificate,
 } = require('../certificate/certificate.service');
-const { ORDER_PAYMENT_STATUS } = require('../../consts/order-payment-status');
+const {
+  ORDER_PAYMENT_STATUS: { CREATED, PAID, CANCELLED, REFUNDED },
+} = require('../../consts/order-payment-status');
 const { PAYMENT_TYPES } = require('../../consts/payment-types.js');
 
 class OrdersService {
@@ -178,9 +181,10 @@ class OrdersService {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
 
-    const { items } = order;
-    const { user_id } = orderToUpdate;
+    const { items, status: orderStatus } = order;
+    const { user_id, promoCodeId, certificateId } = orderToUpdate;
     let { paymentStatus } = orderToUpdate;
+    const cancelledStatuses = { CANCELLED, REFUNDED };
 
     const data = { ...order, user_id };
 
@@ -196,25 +200,42 @@ class OrdersService {
       discounts: itemsDiscount,
       priceWithDiscount: itemsPriceWithDiscount,
     } = await calculateProductsPriceWithDiscount(
-      data.promoCodeId,
-      data.certificateId,
+      promoCodeId,
+      certificateId,
       items
     );
 
-    if (data.promoCodeId) {
+    if (promoCodeId) {
       totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
     }
 
-    if (data.certificateId) {
+    if (certificateId) {
       totalPriceToPay =
         (await calculateTotalPriceToPay(itemsPriceWithDiscount)) -
         itemsDiscount / exchangeRate;
     }
 
+    totalPriceToPay = Math.round(totalPriceToPay);
+
     if (order.paymentMethod === PAYMENT_TYPES.CASH) {
-      paymentStatus = order.isPaid
-        ? ORDER_PAYMENT_STATUS.PAID
-        : ORDER_PAYMENT_STATUS.CREATED;
+      paymentStatus = order.isPaid ? PAID : CREATED;
+
+      if (certificateId && paymentStatus === PAID) {
+        CertificateModel.findByIdAndUpdate(certificateId, {
+          $set: { isUsed: true, inProgress: false, dateOfUsing: new Date() },
+        }).exec();
+      }
+
+      if (certificateId && cancelledStatuses[orderStatus]) {
+        CertificateModel.findByIdAndUpdate(certificateId, {
+          $set: {
+            isActivated: true,
+            inProgress: false,
+            isUsed: false,
+            dateOfUsing: null,
+          },
+        }).exec();
+      }
     }
 
     const orderUpdate = {
@@ -270,9 +291,7 @@ class OrdersService {
     totalPriceToPay = Math.round(totalPriceToPay);
 
     if (order.paymentMethod === PAYMENT_TYPES.CASH) {
-      paymentStatus = order.isPaid
-        ? ORDER_PAYMENT_STATUS.PAID
-        : ORDER_PAYMENT_STATUS.CREATED;
+      paymentStatus = order.isPaid ? PAID : CREATED;
     }
 
     const newOrder = {
