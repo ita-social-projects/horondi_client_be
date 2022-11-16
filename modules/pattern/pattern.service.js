@@ -123,7 +123,7 @@ class PatternsService {
       await uploadService.deleteFiles([foundPattern.constructorImg]);
     }
 
-    const updatedPattern = Pattern.findByIdAndUpdate(id, pattern, {
+    const updatedPattern = await Pattern.findByIdAndUpdate(id, pattern, {
       new: true,
     }).exec();
 
