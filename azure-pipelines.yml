@@ -97,7 +97,7 @@ stages:
           condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
           inputs:
             ConnectionType: 'AzureRM'
-            azureSubscription: 'Visual Studio Enterprise – MPN (734fc759-c3a2-4e22-a478-301dc5b10496)'
+            azureSubscription: 'HorondiStage'
             appType: 'webAppContainer'
             WebAppName: 'horondi-back-staging'
             DockerNamespace: 'horondistaging.azurecr.io'
