@@ -38,8 +38,11 @@ const {
   updateCertificate,
 } = require('../certificate/certificate.service');
 const {
-  ORDER_PAYMENT_STATUS: { CREATED, PAID, CANCELLED, REFUNDED },
-} = require('../../consts/order-payment-status');
+  PAYMENT_STATUSES: { PAYMENT_CREATED, PAYMENT_PAID },
+} = require('../../consts/payment-statuses');
+const {
+  ORDER_STATUSES: { REFUNDED, CANCELLED },
+} = require('../../consts/order-statuses');
 const { PAYMENT_TYPES } = require('../../consts/payment-types.js');
 
 class OrdersService {
@@ -218,9 +221,9 @@ class OrdersService {
     totalPriceToPay = Math.round(totalPriceToPay);
 
     if (order.paymentMethod === PAYMENT_TYPES.CASH) {
-      paymentStatus = order.isPaid ? PAID : CREATED;
+      paymentStatus = order.isPaid ? PAYMENT_PAID : PAYMENT_CREATED;
 
-      if (certificateId && paymentStatus === PAID) {
+      if (certificateId && paymentStatus === PAYMENT_PAID) {
         CertificateModel.findByIdAndUpdate(certificateId, {
           $set: { isUsed: true, inProgress: false, dateOfUsing: new Date() },
         }).exec();
@@ -291,7 +294,7 @@ class OrdersService {
     totalPriceToPay = Math.round(totalPriceToPay);
 
     if (order.paymentMethod === PAYMENT_TYPES.CASH) {
-      paymentStatus = order.isPaid ? PAID : CREATED;
+      paymentStatus = order.isPaid ? PAYMENT_PAID : PAYMENT_CREATED;
     }
 
     const newOrder = {

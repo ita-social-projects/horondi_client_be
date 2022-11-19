@@ -13,8 +13,8 @@ const {
   CERTIFICATE_IS_USED,
 } = require('../../error-messages/certificate.messages');
 const {
-  ORDER_PAYMENT_STATUS: { APPROVED, DECLINED },
-} = require('../../consts/order-payment-status');
+  PAYMENT_STATUSES: { PAYMENT_APPROVED, PAYMENT_DECLINED },
+} = require('../../consts/payment-statuses');
 const {
   CERTIFICATE_UPDATE_STATUS: { USED },
 } = require('../../consts/certificate-update-status');
@@ -228,7 +228,7 @@ describe('Payment queries', () => {
 
   it('should make certificate active when status DECLINED', async () => {
     await paymentService.checkOrderPaymentStatus(
-      mockRequestData(orderNumber, DECLINED, mockSignatureValue),
+      mockRequestData(orderNumber, PAYMENT_DECLINED, mockSignatureValue),
       mockResponseData
     );
 
@@ -242,7 +242,7 @@ describe('Payment queries', () => {
 
   it('should make certificate used when status PAID', async () => {
     await paymentService.checkOrderPaymentStatus(
-      mockRequestData(orderNumber, APPROVED, mockSignatureValue),
+      mockRequestData(orderNumber, PAYMENT_APPROVED, mockSignatureValue),
       mockResponseData
     );
     const updateResult = await updateCertificate(
@@ -304,7 +304,7 @@ describe('Get payment checkout for certificates test', () => {
   it('should call paymentCheck', async () => {
     emailService.sendEmail = jest.fn();
     const res = { status: jest.fn() };
-    const req = mockRequestData(certificates[0].name, APPROVED);
+    const req = mockRequestData(certificates[0].name, PAYMENT_APPROVED);
     await checkCertificatesPaymentStatus(req, res);
     expect(emailService.sendEmail).not.toHaveBeenCalled();
   });
