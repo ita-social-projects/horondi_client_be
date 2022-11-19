@@ -9,6 +9,7 @@ RUN apk add --update --no-cache sudo openrc openssh bash \
     && mkdir /run/openrc/ && touch /run/openrc/softlevel \
     && mkdir -p /var/run/sshd \
     && mkdir -p /tmp \
+    && chown -R root:root /usr/app/node_modules/buffer-equal-constant-time/ \
     && echo "root:${password}" | chpasswd
 
 COPY ./sshd_config /etc/ssh/
