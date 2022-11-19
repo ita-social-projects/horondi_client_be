@@ -1,4 +1,4 @@
-FROM node:14.15.4-alpine
+FROM node:alpine
 VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
 COPY package*.json ./
