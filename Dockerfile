@@ -18,7 +18,8 @@ RUN chmod +x /tmp/ssh_setup.sh \
     && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null) \
     && rc-update add sshd \
     && rc-status \
-    && rc-service sshd restart \
-    && chown -R root /usr/app/node_modules/buffer-equal-constant-time/
+    && rc-service sshd restart
+
+RUN chown root:root -R /usr/app/node_modules/buffer-equal-constant-time/
 EXPOSE 80 2222
 CMD /usr/sbin/sshd && npm start
