@@ -1,9 +1,7 @@
 FROM node:14-alpine3.15
-VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
-COPY package*.json ./
-RUN npm install --save --legacy-peer-deps
 COPY . .
+RUN npm install --save --legacy-peer-deps
 # ARG password
 # RUN apk add --update --no-cache sudo openrc openssh bash \
 #     && mkdir /run/openrc/ && touch /run/openrc/softlevel \
