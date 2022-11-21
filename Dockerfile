@@ -2,7 +2,8 @@ FROM node:14.15.4-alpine
 VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
+RUN npm install
+# RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
 COPY . .
 ARG password
 RUN apk add --update --no-cache sudo openrc openssh bash \
