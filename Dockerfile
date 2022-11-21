@@ -2,7 +2,9 @@ FROM node:14.15.4-alpine
 VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm i npm -g --unsafe-perm=false npm@latest && npm i --legacy-peer-deps --unsafe-perm=false
+RUN npm config set user 0
+RUN npm config set unsafe-perm true
+RUN npm i npm -g npm@latest && npm i --legacy-peer-deps
 COPY . .
 ARG password
 RUN apk add --update --no-cache sudo openrc openssh bash \
