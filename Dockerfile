@@ -3,9 +3,8 @@ VOLUME /sys/fs/cgroup
 ARG password
 
 WORKDIR /usr/app
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
-USER node
 COPY --chown=node:node . .
 
 RUN apk add --update --no-cache sudo openrc openssh bash \
