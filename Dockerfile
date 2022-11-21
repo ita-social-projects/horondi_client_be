@@ -5,7 +5,7 @@ ARG password
 WORKDIR /usr/app
 COPY package*.json ./
 RUN apk add shadow \
-    && groupadd -g 45417732 node-app && useradd -r -u 71832246 -g node-app node-app
+    && groupadd -g 45417732 node-app && useradd -r -u 71832246 -g node-app node-app \
     && npm install -g npm@latest && npm install --save --legacy-peer-deps
 COPY . .
 
