@@ -1,11 +1,21 @@
 FROM node:14.15.4-alpine
 VOLUME /sys/fs/cgroup
 
-WORKDIR /usr/app
-COPY package*.json ./
-RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
-COPY . .
+ARG UID=1000
+ARG GID=1000
 ARG password
+
+RUN groupmod -g "${GID}" node && usermod -u "${UID}" -g "${GID}" node
+USER node
+
+WORKDIR /usr/app
+
+COPY --chown=node:node package*.json ./
+
+RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
+
+COPY --chown=node:node . .
+
 RUN apk add --update --no-cache sudo openrc openssh bash \
     && mkdir /run/openrc/ && touch /run/openrc/softlevel \
     && mkdir -p /var/run/sshd \
