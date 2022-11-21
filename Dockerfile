@@ -2,10 +2,10 @@ FROM node:14.15.4-alpine
 VOLUME /sys/fs/cgroup
 ARG password
 
-USER node
 WORKDIR /usr/app
-COPY --chown=node:node package*.json ./
+COPY package*.json ./
 RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
+USER node
 COPY --chown=node:node . .
 
 RUN apk add --update --no-cache sudo openrc openssh bash \
