@@ -1,5 +1,9 @@
 FROM node:14.15.4-alpine
 VOLUME /sys/fs/cgroup
+#
+RUN addgroup -S app && adduser -S app -G app
+USER app
+#
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
@@ -19,7 +23,5 @@ RUN chmod +x /tmp/ssh_setup.sh \
     && rc-update add sshd \
     && rc-status \
     && rc-service sshd restart
-
-RUN chown root:root -R /usr/app/node_modules/buffer-equal-constant-time/
 EXPOSE 80 2222
 CMD /usr/sbin/sshd && npm start
