@@ -138,7 +138,7 @@ class ProductsService {
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
       (a, b) =>
-        a.sizes[a.sizes.length - 1].price - b.sizes[b.sizes.length - 1].price
+        a.sizes[a.sizes.length - 1]?.price - b.sizes[b.sizes.length - 1]?.price
     );
 
     const minPrice = sortedByPrices[0].sizes[0].price;

@@ -13,6 +13,7 @@ const {
   PAYMENT_STATUSES: {
     PAYMENT_PROCESSING,
     PAYMENT_PAID,
+    PAYMENT_APPROVED,
     PAYMENT_EXPIRED,
     PAYMENT_DECLINED,
     PAYMENT_REVERSED,
@@ -35,8 +36,8 @@ const OrderModel = require('../order/order.model');
 const { CertificateModel } = require('../certificate/certificate.model');
 const { paymentController } = require('../../helpers/payment-controller');
 const {
-  ORDER_PAYMENT_STATUS: { APPROVED, EXPIRED, DECLINED, REVERSED, PAID },
-} = require('../../consts/order-payment-status');
+  ORDER_STATUSES: { CONFIRMED, CANCELLED },
+} = require('../../consts/order-statuses');
 const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
   EmailActions: { CERTIFICATE_EMAIL, SUCCESSFUL_ORDER },
@@ -106,7 +107,7 @@ class PaymentService {
       }
 
       if (
-        order_status !== APPROVED.toLowerCase() ||
+        order_status !== PAYMENT_APPROVED.toLowerCase() ||
         signature !== signSignatureToCheck
       ) {
         throw new RuleError(CERTIFICATE_NOT_PAID, FORBIDDEN);
@@ -116,7 +117,7 @@ class PaymentService {
         { paymentToken: certificate.paymentToken },
         {
           $set: {
-            paymentStatus: PAID,
+            paymentStatus: PAYMENT_PAID,
             isActivated: true,
           },
         }
@@ -244,44 +245,39 @@ class PaymentService {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
 
-    const updatePaymentStatus = status => {
+    const orderPaymentStatus = order_status.toUpperCase();
+
+    const updateOrderStatuses = (paymentStatus, status) => {
       OrderModel.findByIdAndUpdate(order._id, {
         $set: {
-          paymentStatus: status,
+          paymentStatus,
+          status,
         },
       }).exec();
-
-      if (order.certificateId && status === PAYMENT_PAID) {
-        const date = new Date();
-        CertificateModel.findByIdAndUpdate(order.certificateId, {
-          $set: { inProgress: false, isUsed: true, dateOfUsing: date },
-        }).exec();
-      }
-
-      if (order.certificateId && status !== PAYMENT_PAID) {
-        CertificateModel.findByIdAndUpdate(order.certificateId, {
-          $set: { isActivated: true, inProgress: false },
-        }).exec();
-      }
     };
 
-    switch (order_status.toUpperCase()) {
-      case APPROVED: {
-        updatePaymentStatus(PAYMENT_PAID);
+    switch (orderPaymentStatus) {
+      case PAYMENT_APPROVED: {
+        updateOrderStatuses(PAYMENT_PAID, CONFIRMED);
         break;
       }
-      case EXPIRED: {
-        updatePaymentStatus(PAYMENT_EXPIRED);
+      case PAYMENT_EXPIRED:
+      case PAYMENT_DECLINED:
+      case PAYMENT_REVERSED: {
+        updateOrderStatuses(orderPaymentStatus, CANCELLED);
         break;
       }
-      case DECLINED: {
-        updatePaymentStatus(PAYMENT_DECLINED);
-        break;
-      }
-      case REVERSED: {
-        updatePaymentStatus(PAYMENT_REVERSED);
-        break;
-      }
+    }
+
+    if (order.certificateId) {
+      const update =
+        orderPaymentStatus === PAYMENT_APPROVED
+          ? { inProgress: false, isUsed: true, dateOfUsing: new Date() }
+          : { isActivated: true, inProgress: false };
+
+      CertificateModel.findByIdAndUpdate(order.certificateId, {
+        $set: update,
+      }).exec();
     }
 
     res.status(200).end();
