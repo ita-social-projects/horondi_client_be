@@ -4,14 +4,17 @@ ARG password
 
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
+RUN apk add shadow \
+    && groupadd -g 45417732 node-app && useradd -r -u 71832246 -g node-app node-app
+    && npm install -g npm@latest && npm install --save --legacy-peer-deps
 COPY . .
 
 RUN apk add --update --no-cache sudo openrc openssh bash \
     && mkdir /run/openrc/ && touch /run/openrc/softlevel \
     && mkdir -p /var/run/sshd \
     && mkdir -p /tmp \
-    && echo "root:${password}" | chpasswd
+    && echo "root:${password}" | chpasswd \
+    && chown node-app:node-app -R /usr/app/node_modules/buffer-equal-constant-time/
 
 COPY ./sshd_config /etc/ssh/
 COPY ./ssh_setup.sh /tmp
