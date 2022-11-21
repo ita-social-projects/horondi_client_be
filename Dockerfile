@@ -3,7 +3,7 @@ VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
 COPY package*.json ./
 # RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
-# COPY . .
+COPY . .
 # ARG password
 # RUN apk add --update --no-cache sudo openrc openssh bash \
 #     && mkdir /run/openrc/ && touch /run/openrc/softlevel \
