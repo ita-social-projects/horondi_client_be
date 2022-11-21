@@ -1,12 +1,11 @@
 FROM node:14.15.4-alpine
 VOLUME /sys/fs/cgroup
-ARG password
-
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
+RUN npm i npm -g --unsafe-perm=true npm@latest && npm i --legacy-peer-deps
+RUN node rebuild
 COPY . .
-
+ARG password
 RUN apk add --update --no-cache sudo openrc openssh bash \
     && mkdir /run/openrc/ && touch /run/openrc/softlevel \
     && mkdir -p /var/run/sshd \
@@ -21,6 +20,5 @@ RUN chmod +x /tmp/ssh_setup.sh \
     && rc-update add sshd \
     && rc-status \
     && rc-service sshd restart
-
 EXPOSE 80 2222
 CMD /usr/sbin/sshd && npm start
