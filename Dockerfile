@@ -3,7 +3,6 @@ VOLUME /sys/fs/cgroup
 WORKDIR /usr/app
 COPY package*.json ./
 RUN npm i npm -g --unsafe-perm=true npm@latest && npm i --legacy-peer-deps
-RUN node rebuild
 COPY . .
 ARG password
 RUN apk add --update --no-cache sudo openrc openssh bash \
