@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master, development, devops-fix-python-gypERR ]
   pull_request:
-    branches: [ master, development ]
+    branches: [ master, development, devops-fix-python-gypERR ]
   workflow_dispatch:
 jobs:
   CI:
@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-node@v2.1.2
         with:
           node-version: '14.15.4'
-      - run: npm install
+      - run: npm install --save --legacy-peer-deps
       - run: npm run test
         env:
           NODE_OPTIONS: --max_old_space_size=4096
