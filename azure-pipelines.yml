@@ -1,6 +1,5 @@
 trigger:
-  - development
-  - master
+  - devops-fix-python-gypERR
 
 pr: none
 
@@ -21,31 +20,20 @@ stages:
       vmImage: $(vmImageName)
     steps:
       - task: DownloadSecureFile@1
-        name: envprod
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        inputs:
-          secureFile: 'env-back'
-      - task: Bash@3
-        name: prodfile
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        inputs:
-          targetType: 'inline'
-          script: 'mv $(envprod.secureFilePath) .env'
-      - task: DownloadSecureFile@1
         name: envdev
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/devops-fix-python-gypERR')
         inputs:
           secureFile: 'env-back-staging'
       - task: Bash@3
         name: devfile
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/devops-fix-python-gypERR')
         inputs:
           targetType: 'inline'
           script: 'mv $(envdev.secureFilePath) .env'
       - task: Docker@0
         name: stagingBuild
         displayName: 'Build an image'
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/devops-fix-python-gypERR')
         inputs:
           containerregistrytype: 'Azure Container Registry'
           azureSubscription: 'HorondiStage'
@@ -57,33 +45,15 @@ stages:
       - task: Docker@0
         name: deployedStaging
         displayName: 'Push an image'
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/devops-fix-python-gypERR')
         inputs:
           containerregistrytype: 'Azure Container Registry'
           azureSubscription: 'HorondiStage'
           azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
           action: 'Push an image'
           imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
-      - task: Docker@0
-        name: productionBuild
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        inputs:
-          containerregistrytype: 'Container Registry'
-          dockerRegistryConnection: 'Horondi-Registry'
-          action: 'Build an image'
-          dockerFile: '**/Dockerfile'
-          imageName: '$(Build.Repository.Name):$(Build.BuildId)'
-      - task: Docker@0
-        name: deployedProduction
-        displayName: 'Push an image'
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-        inputs:
-          containerregistrytype: 'Container Registry'
-          dockerRegistryConnection: 'Horondi-Registry'
-          action: 'Push an image'
-          imageName: '$(Build.Repository.Name):$(Build.BuildId)'
       - task: AzureRmWebAppDeployment@4
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/devops-fix-python-gypERR'))
         inputs:
           ConnectionType: 'AzureRM'
           azureSubscription: 'HorondiStage'
@@ -92,9 +62,3 @@ stages:
           DockerNamespace: 'horondistaging.azurecr.io'
           DockerRepository: 'ita-social-projects/horondi_client_be'
           DockerImageTag: '$(Build.BuildId)'
-      - task: AzureWebAppContainer@1
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          azureSubscription: 'Horondi-Admin-Service'
-          appName: 'horondi-back'
-          containers: 'horondi.azurecr.io/ita-social-projects/horondi_client_be:$(Build.BuildId)'
