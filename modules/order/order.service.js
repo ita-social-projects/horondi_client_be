@@ -184,8 +184,8 @@ class OrdersService {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
 
-    const { items, status: orderStatus } = order;
-    const { user_id, promoCodeId, certificateId } = orderToUpdate;
+    const { items, status: orderStatus, promoCodeId, certificateId } = order;
+    const { user_id } = orderToUpdate;
     let { paymentStatus } = orderToUpdate;
     const cancelledStatuses = { CANCELLED, REFUNDED };
 
@@ -213,6 +213,7 @@ class OrdersService {
     }
 
     if (certificateId) {
+      await updateCertificate({ _id: data.certificateId }, IN_PROGRESS)
       totalPriceToPay =
         (await calculateTotalPriceToPay(itemsPriceWithDiscount)) -
         itemsDiscount / exchangeRate;
