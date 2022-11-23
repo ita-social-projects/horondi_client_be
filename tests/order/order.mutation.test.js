@@ -202,6 +202,13 @@ describe('Order queries', () => {
   });
 
   test('Should create order with certificate', async () => {
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    const newCertificateId = certificateData.certificates[0]._id;
+
     const order = await createOrder(
       newOrderInputData(
         productId,
@@ -209,13 +216,13 @@ describe('Order queries', () => {
         sizeId,
         constructorBasicId,
         undefined,
-        certificateId
+        newCertificateId
       ),
       operations
     );
 
     expect(order).toBeDefined();
-    expect(order).toHaveProperty('certificateId', certificateId);
+    expect(order).toHaveProperty('certificateId', newCertificateId);
 
     const certificate = await getCertificateByParams(
       certificateParams,

@@ -213,7 +213,7 @@ class OrdersService {
     }
 
     if (certificateId) {
-      await updateCertificate({ _id: data.certificateId }, IN_PROGRESS)
+      await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
       totalPriceToPay =
         (await calculateTotalPriceToPay(itemsPriceWithDiscount)) -
         itemsDiscount / exchangeRate;
