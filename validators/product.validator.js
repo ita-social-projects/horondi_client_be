@@ -23,7 +23,7 @@ const productInputValidator = Joi.object({
   pattern: Joi.string().required(),
   closure: Joi.string().required(),
   sizes: Joi.array().items(Joi.string().required()).required(),
-  images: Joi.array(),
+  images: Joi.object(),
   availableCount: Joi.number().integer(),
   basePrice: Joi.number().min(0).required(),
   available: Joi.bool(),
