@@ -368,6 +368,7 @@ const typeDefs = gql`
   type UserRate {
     user: User!
     rate: Int!
+    comment: ID!
   }
   type Error {
     statusCode: Int
@@ -892,8 +893,18 @@ const typeDefs = gql`
     lang: String!
     image: Upload!
   }
-  input UserRateInput {
+  input addRateData {
+    text: String!
+    show: Boolean! 
+    productId: ID!
     rate: Int!
+    userId: ID!
+    commentId: ID!
+  }
+  input deleteRateData {
+    productId: ID!
+    userId: ID!
+    commentId: ID!
   }
   type Mutation {
     addMaterialsBlock(materialsBlock: MaterialsBlockInput!, image: Upload): MaterialsBlockResult
@@ -1008,7 +1019,8 @@ const typeDefs = gql`
       populated: Boolean
     ): BusinessTextResult
     "Rate Mutation"
-    addRate(product: ID!, userRate: UserRateInput!): ProductResult
+    addRate(data: addRateData!): ProductResult
+    deleteRate(data: deleteRateData!): ProductResult
     "Model Mutation"
     addModel(model: ModelInput!, upload: Upload): ModelResult
     updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult

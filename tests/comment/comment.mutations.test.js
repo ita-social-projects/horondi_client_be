@@ -11,8 +11,6 @@ const {
   commentWrongId,
   productWrongId,
   updatedComment,
-  rate,
-  updatedRate,
   newOrderInputData,
   newReplyComment,
   updatedReplyComment,
@@ -22,6 +20,7 @@ const {
   addComment,
   updateComment,
   addRate,
+  deleteRate,
   addReplyComment,
   deleteReplyComment,
   updateReplyComment,
@@ -326,34 +325,33 @@ describe('Comment queries', () => {
     expect(receivedComment).toHaveProperty('message', COMMENT_NOT_FOUND);
     expect(receivedComment).toHaveProperty('statusCode', 404);
   });
-  it('should add rate to the product', async () => {
-    const receivedComment = await addRate(productId, rate, operations);
-
-    expect(receivedComment).toMatchSnapshot();
-    expect(receivedComment).not.toBeNull();
-    expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('rate', rate);
-    expect(receivedComment).toHaveProperty('rateCount', 1);
-    expect(receivedComment.userRates.length).toEqual(1);
-  });
-
-  it('should update rate of the product', async () => {
-    const receivedComment = await addRate(productId, updatedRate, operations);
-
-    expect(receivedComment).toMatchSnapshot();
-    expect(receivedComment).not.toBeNull();
-    expect(receivedComment).toBeDefined();
-    expect(receivedComment).toHaveProperty('rate', updatedRate);
-    expect(receivedComment).toHaveProperty('rateCount', 1);
-    expect(receivedComment.userRates.length).toEqual(1);
-  });
 
   it('should return error if to add rate to not existing product', async () => {
-    const receivedComment = await addRate(productWrongId, rate, operations);
+    const data = {
+      text: 'text',
+      show: true,
+      productId: productWrongId,
+      rate: 1,
+      userId: 1,
+      commentId: 1,
+    };
+    const receivedComment = await addRate(data, operations);
 
-    expect(receivedComment).toMatchSnapshot();
-    expect(receivedComment).not.toBeNull();
-    expect(receivedComment).toBeDefined();
+    expect(receivedComment).toHaveProperty(
+      'message',
+      RATE_FOR_NOT_EXISTING_PRODUCT
+    );
+    expect(receivedComment).toHaveProperty('statusCode', 404);
+  });
+
+  it('should return error if try to delete rate of non existing product', async () => {
+    const data = {
+      productId: productWrongId,
+      userId: 1,
+      commentId: 1,
+    };
+    const receivedComment = await deleteRate(data, operations);
+
     expect(receivedComment).toHaveProperty(
       'message',
       RATE_FOR_NOT_EXISTING_PRODUCT

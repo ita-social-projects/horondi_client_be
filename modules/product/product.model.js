@@ -113,17 +113,12 @@ const productSchema = new mongoose.Schema({
         ref: USER,
       },
       rate: Number,
-    },
-  ],
-  comments: {
-    type: [
-      {
+      comment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: COMMENT,
       },
-    ],
-    default: [],
-  },
+    },
+  ],
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
