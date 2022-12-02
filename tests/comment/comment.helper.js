@@ -33,11 +33,11 @@ const addComment = async (productId, comment, operations) => {
 
   return res.data.addComment;
 };
-const addRate = async (productId, rate, operations) => {
+const addRate = async (data, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation ($product: ID!, $userRate: UserRateInput!) {
-        addRate(product: $product, userRate: $userRate) {
+      mutation ($data: addRateData!) {
+        addRate(data: $data) {
           ... on Product {
             rate
             rateCount
@@ -53,10 +53,36 @@ const addRate = async (productId, rate, operations) => {
         }
       }
     `,
-    variables: { product: productId, userRate: { rate } },
+    variables: { data },
   });
 
   return res.data.addRate;
+};
+
+const deleteRate = async (data, operations) => {
+  const res = await operations.mutate({
+    mutation: gql`
+      mutation ($data: deleteRateData!) {
+        deleteRate(data: $data) {
+          ... on Product {
+            rate
+            rateCount
+            userRates {
+              rate
+            }
+          }
+
+          ... on Error {
+            message
+            statusCode
+          }
+        }
+      }
+    `,
+    variables: { data },
+  });
+
+  return res.data.deleteRate;
 };
 const updateComment = async (id, updatedComment, operations) => {
   const res = await operations.mutate({
@@ -514,6 +540,7 @@ module.exports = {
   getCommentById,
   updateComment,
   addRate,
+  deleteRate,
   addReplyComment,
   deleteReplyComment,
   updateReplyComment,

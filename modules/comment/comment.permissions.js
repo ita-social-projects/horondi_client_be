@@ -50,6 +50,7 @@ const commentPermissionsMutations = {
   deleteComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   deleteReplyForComment: or(isTheSameUser, hasRoles([ADMIN, SUPERADMIN])),
   addRate: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
+  deleteRate: or(isAuthorized, hasRoles([ADMIN, SUPERADMIN, USER])),
 };
 
 module.exports = { commentPermissionsMutations, commentPermissionsQuery };

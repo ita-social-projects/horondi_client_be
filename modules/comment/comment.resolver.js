@@ -161,11 +161,15 @@ const commentsMutation = {
 
   addRate: async (_parent, args, context) => {
     try {
-      return await commentsService.addRate(
-        args.product,
-        args.userRate,
-        context.user
-      );
+      return await commentsService.addRate(args.data, context.user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
+  deleteRate: async (_parent, args, context) => {
+    try {
+      return await commentsService.deleteRate(args.data, context.user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

@@ -23,7 +23,6 @@ const productType = `
     rate: Float
     rateCount: Int
     userRates: [UserRate]
-    comments: PaginatedComments!
     translationsKey: ID!
 	 isDeleted: Boolean
 	 deletedAt: Date
