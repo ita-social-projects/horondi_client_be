@@ -82,6 +82,12 @@ describe('Test mutation methods Admin', () => {
     expect(result.count).toBe(0);
   });
 
+  it('should filter certificates by "inUsed" status', async () => {
+    const result = await getAllCertificates('', ['inUsed'], operations);
+
+    expect(result).toBe(null);
+  });
+
   it('should change `inProgress` field to true with updateCertificate', async () => {
     const updateResult = await updateCertificate(
       certificateParams,
@@ -116,6 +122,7 @@ describe('Test mutation methods Admin', () => {
     expect(updateResult.isUsed).toBeTruthy();
     expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
   });
+
   it('should delete certificate', async () => {
     await deleteCertificate(certificateId, adminId, operations);
     const result = await getCertificateById(certificateId, operations);
