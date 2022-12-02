@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { setupApp } = require('../helper-functions');
+const { setupApp, setupAppForAdmin } = require('../helper-functions');
 const {
   CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
 } = require('../../consts/certificate-update-status');
@@ -7,6 +7,7 @@ const {
   CERTIFICATE_NOT_FOUND,
   CERTIFICATE_IS_USED,
   CERTIFICATE_IN_PROGRESS,
+  CERTIFICATE_IS_ACTIVE,
 } = require('../../error-messages/certificate.messages');
 const {
   getAllCertificates,
@@ -140,7 +141,23 @@ describe('Test mutation methods Admin', () => {
 
 describe('Test response for unexist and wrong Code', () => {
   beforeAll(async () => {
-    operations = await setupApp();
+    operations = await setupAppForAdmin();
+    const authRes = await loginAdmin(
+      superAdminUser.email,
+      superAdminUser.password,
+      operations
+    );
+    adminId = authRes.data.loginAdmin._id;
+    const result = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+
+    certificateId = result.certificates[0]._id;
+    certificateName = result.certificates[0].name;
+    isUsed = result.certificates[0].isUsed;
+    certificateParams = { name: certificateName };
   });
   afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
@@ -153,6 +170,11 @@ describe('Test response for unexist and wrong Code', () => {
     );
 
     expect(result.errors[0].extensions).toHaveProperty('code', 404);
+  });
+
+  it('admin can`t delete active certificate', async () => {
+    const result = await deleteCertificate(certificateId, adminId, operations);
+    expect(result).toHaveProperty('message', CERTIFICATE_IS_ACTIVE);
   });
 
   it('should responde with CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {

@@ -9,7 +9,7 @@ const {
 } = require('../dotenvValidator');
 const {
   SOURCES: { HORONDI },
-  roles: { SUPERADMIN },
+  roles: { SUPERADMIN, ADMIN },
 } = require('../consts');
 const { FIRST_NAME, LAST_NAME } = require('../consts/test-admin');
 
@@ -40,5 +40,32 @@ const setupApp = async user => {
 
   return createTestClient(server);
 };
+const registerAdminNew = async (email, password) => {
+  await User.deleteOne({ email });
+  const admin = new User();
+  admin.firstName = FIRST_NAME;
+  admin.lastName = LAST_NAME;
+  admin.email = email;
+  admin.role = ADMIN;
+  admin.credentials = [
+    {
+      source: HORONDI,
+      tokenPass: await bcryptClient.hashPassword(password, 12),
+    },
+  ];
+  await admin.save();
 
-module.exports = { setupApp, registerAdmin };
+  return admin;
+};
+const setupAppForAdmin = async user => {
+  const admin = await registerAdminNew(SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
+
+  const server = new ApolloServer({
+    ...config,
+    context: { user: user || admin },
+  });
+
+  return createTestClient(server);
+};
+
+module.exports = { setupApp, registerAdmin, setupAppForAdmin };
