@@ -25,6 +25,8 @@ const {
   language,
   newCertificateInputData,
 } = require('./certificate.variables');
+const { loginAdmin } = require('../user/user.helper');
+const { superAdminUser } = require('../user/user.variables');
 
 jest.mock('../../modules/email/email.service');
 
@@ -33,10 +35,17 @@ let certificateId;
 let certificateName;
 let certificateParams;
 let isUsed;
+let adminId;
 
 describe('Test mutation methods Admin', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    const authRes = await loginAdmin(
+      superAdminUser.email,
+      superAdminUser.password,
+      operations
+    );
+    adminId = authRes.data.loginAdmin._id;
   });
   afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
@@ -108,14 +117,14 @@ describe('Test mutation methods Admin', () => {
     expect(getResult.errors[0]).toHaveProperty('message', CERTIFICATE_IS_USED);
   });
   it('should delete certificate', async () => {
-    await deleteCertificate(certificateId, operations);
+    await deleteCertificate(certificateId, adminId, operations);
     const result = await getCertificateById(certificateId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
 
   it('should delete certificate and throw error CERTIFICATE_NOT_FOUND', async () => {
-    await deleteCertificate(certificateId, operations);
+    await deleteCertificate(certificateId, adminId, operations);
     const result = await getCertificateByParams(certificateParams, operations);
 
     expect(result.errors[0]).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
@@ -140,7 +149,7 @@ describe('Test response for unexist and wrong Code', () => {
   });
 
   it('should responde with CERTIFICATE_NOT_FOUND for delete wrong Id', async () => {
-    const result = await deleteCertificate(wrongId, operations);
+    const result = await deleteCertificate(wrongId, adminId, operations);
 
     expect(result).toHaveProperty('message', CERTIFICATE_NOT_FOUND);
   });
