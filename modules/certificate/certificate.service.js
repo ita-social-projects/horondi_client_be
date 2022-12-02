@@ -27,6 +27,7 @@ const {
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
 const { modifyDate } = require('../../utils/modify-date');
 const FilterHelper = require('../../helpers/filter-helper');
+const userService = require('../user/user.service');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
@@ -296,10 +297,14 @@ class CertificatesService extends FilterHelper {
     return certificate;
   }
 
-  async deleteCertificate(id) {
+  async deleteCertificate(id, adminId) {
     const certificateExists = await this.getCertificateById(id);
-
-    if (!certificateExists.isUsed && !certificateExists.isExpired) {
+    const { role } = await userService.getUser(adminId);
+    if (
+      role === ADMIN &&
+      !certificateExists.isUsed &&
+      !certificateExists.isExpired
+    ) {
       throw new RuleError(CERTIFICATE_IS_ACTIVE, BAD_REQUEST);
     }
 
