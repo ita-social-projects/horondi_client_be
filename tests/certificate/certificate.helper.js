@@ -251,11 +251,11 @@ const giftCertificateToEmail = async (
   return result.data.giftCertificateToEmail;
 };
 
-const deleteCertificate = async (id, operations) => {
+const deleteCertificate = async (id, adminId, operations) => {
   const result = await operations.mutate({
     mutation: gql`
-      mutation ($id: ID!) {
-        deleteCertificate(id: $id) {
+      mutation ($id: ID!, $adminId: ID!) {
+        deleteCertificate(id: $id, adminId: $adminId) {
           ... on Certificate {
             _id
           }
@@ -268,6 +268,7 @@ const deleteCertificate = async (id, operations) => {
     `,
     variables: {
       id,
+      adminId,
     },
   });
 

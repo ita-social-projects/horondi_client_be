@@ -72,7 +72,7 @@ const certificateTypes = `
 
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
-    deleteCertificate(id: ID!): CertificateResult
+    deleteCertificate(id: ID!, adminId: ID!): CertificateResult
     generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
     updateCertificate(params: CertificateInput!, statusUpdate: String): CertificateResult
 	 giftCertificateToEmail(id: ID!, email: String!, oldEmail: String!, language: Int!): CertificateResult
