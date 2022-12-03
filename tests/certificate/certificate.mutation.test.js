@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-const { setupApp, setupAppForAdmin } = require('../helper-functions');
+const { setupApp, registerAdmin } = require('../helper-functions');
+const {
+  roles: { ADMIN },
+} = require('../../consts');
 const {
   CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
 } = require('../../consts/certificate-update-status');
@@ -27,8 +30,7 @@ const {
   newCertificateInputData,
 } = require('./certificate.variables');
 const { loginAdmin } = require('../user/user.helper');
-const { superAdminUser } = require('../user/user.variables');
-
+const { superAdminUser, newAdmin } = require('../user/user.variables');
 jest.mock('../../modules/email/email.service');
 
 let operations;
@@ -83,12 +85,6 @@ describe('Test mutation methods Admin', () => {
     expect(result.count).toBe(0);
   });
 
-  it('should filter certificates by "inUsed" status', async () => {
-    const result = await getAllCertificates('', ['inUsed'], operations);
-
-    expect(result).toBe(null);
-  });
-
   it('should change `inProgress` field to true with updateCertificate', async () => {
     const updateResult = await updateCertificate(
       certificateParams,
@@ -141,12 +137,11 @@ describe('Test mutation methods Admin', () => {
 
 describe('Test response for unexist and wrong Code', () => {
   beforeAll(async () => {
-    operations = await setupAppForAdmin();
-    const authRes = await loginAdmin(
-      superAdminUser.email,
-      superAdminUser.password,
-      operations
-    );
+    operations = await setupApp();
+
+    await registerAdmin(newAdmin.email, newAdmin.pass, ADMIN);
+
+    const authRes = await loginAdmin(newAdmin.email, newAdmin.pass, operations);
     adminId = authRes.data.loginAdmin._id;
     const result = await generateCertificate(
       newCertificateInputData,
