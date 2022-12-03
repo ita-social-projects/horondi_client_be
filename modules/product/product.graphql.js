@@ -68,7 +68,7 @@ const productInput = `
     pattern: ID
     closure: ID
     sizes:[ID]!
-    images: [Upload]
+    images: Upload
     availableCount: Int
     basePrice: Float!
     available: Boolean

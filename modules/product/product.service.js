@@ -36,14 +36,7 @@ const {
     PRODUCT_BOTTOM_COLOR,
   },
 } = require('../../consts/product-features');
-const {
-  DEFAULT_IMAGES: {
-    LARGE_SAD_BACKPACK,
-    MEDIUM_SAD_BACKPACK,
-    SMALL_SAD_BACKPACK,
-    THUMBNAIL_SAD_BACKPACK,
-  },
-} = require('../../consts/default-images');
+
 const RuleError = require('../../errors/rule.error');
 const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
@@ -262,16 +255,8 @@ class ProductsService {
     const matchPrimaryInUpload =
       filesToUpload &&
       filesToUpload.filter(
-        item => item.large === productData.images[0].primary.large
+        item => item.large === productData.images.primary.large
       );
-    productData.images = {
-      primary: {
-        large: LARGE_SAD_BACKPACK,
-        medium: MEDIUM_SAD_BACKPACK,
-        small: SMALL_SAD_BACKPACK,
-        thumbnail: THUMBNAIL_SAD_BACKPACK,
-      },
-    };
 
     const product = await Product.findById(id).lean().exec();
     if (!product) {
@@ -290,29 +275,19 @@ class ProductsService {
     }
 
     if (filesToUpload.length) {
-      productData.images.additional = [];
-      const previousImagesLinks = [];
-      const newFiles = [];
-      filesToUpload.forEach(e => {
-        if (e?.large) {
-          previousImagesLinks.push(e);
-        } else {
-          newFiles.push(e);
-        }
-      });
+      const [previousImagesLinks, newFiles] = filesToUpload.reduce(
+        ([prevLinks, newImages], imageFile) =>
+          imageFile?.large
+            ? [[...prevLinks, imageFile], newImages]
+            : [prevLinks, [...newImages, imageFile]],
+        [[], []]
+      );
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
       const additional = imagesResults.map(res => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
-      productData.images.additional = [
-        {
-          large: LARGE_SAD_BACKPACK,
-          medium: MEDIUM_SAD_BACKPACK,
-          small: SMALL_SAD_BACKPACK,
-          thumbnail: THUMBNAIL_SAD_BACKPACK,
-        },
-      ];
+      productData.images.additional = [];
     }
     productData.model = await modelService.getModelById(productData.model);
     productData.sizes = await finalPriceCalculation(productData);
