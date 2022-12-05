@@ -491,6 +491,7 @@ const getModelById = async (id, operations) => {
               small
               thumbnail
             }
+            isDeleted
           }
           ... on Error {
             message

@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
+const Product = require('../product/product.model');
 const Model = require('./model.model');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -102,7 +103,6 @@ class ModelsService {
     }
 
     const foundModel = await Model.findById(id).exec();
-
     if (foundModel) {
       return foundModel;
     }
@@ -208,7 +208,7 @@ class ModelsService {
   }
 
   async deleteModel(id, { _id: adminId }) {
-    const modelToDelete = await Model.findByIdAndDelete(id).exec();
+    const modelToDelete = await Model.findById(id).exec();
     if (!modelToDelete) {
       throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
@@ -220,7 +220,21 @@ class ModelsService {
         )
       );
     }
-    await deleteTranslations(modelToDelete.translationsKey);
+    const products = await Product.find({ model: id }).exec();
+
+    if (products.length) {
+      const update = {
+        $set: {
+          isDeleted: true,
+          deletedAt: Date.now(),
+        },
+      };
+      await Model.findByIdAndUpdate(id, update, { new: true }).exec();
+    } else {
+      await Model.findByIdAndDelete(id).exec();
+      await deleteTranslations(modelToDelete.translationsKey);
+    }
+
     const historyEvent = {
       action: DELETE_EVENT,
       historyName: MODEL_EVENT,
