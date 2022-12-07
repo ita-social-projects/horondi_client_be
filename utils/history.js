@@ -26,7 +26,12 @@ const getChanges = (objBefore, objWithChanges) => {
   const afterChanges = [];
 
   _.mergeWith(objBefore, objWithChanges, (oldValue, newValue, key) => {
-    if (!_.isEqual(oldValue, newValue) && Object(oldValue) !== oldValue) {
+    if (
+      (!_.isEqual(oldValue, newValue) && Object(oldValue) !== oldValue) ||
+      (_.isObject(oldValue) &&
+        _.isString(newValue) &&
+        oldValue.toString() !== newValue)
+    ) {
       beforeChanges.push({ [key]: oldValue });
       afterChanges.push({ [key]: newValue });
     }

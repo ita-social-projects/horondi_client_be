@@ -1,10 +1,7 @@
 const modelsService = require('./model.service');
 const modelService = require('./model.service');
 const RuleError = require('../../errors/rule.error');
-const {
-  removeSizesFromProducts,
-  checkModelForSoftDeletion,
-} = require('./model.helper');
+const { removeSizesFromProducts } = require('./model.helper');
 
 const modelsQuery = {
   getAllModels: async (_, { filter, pagination, sort }) => {
@@ -60,11 +57,7 @@ const modelsMutation = {
 
   deleteModel: async (_, { id }, { user }) => {
     try {
-      const modelDeleted = await checkModelForSoftDeletion(id);
-
-      return modelDeleted
-        ? modelDeleted
-        : await modelsService.deleteModel(id, user);
+      return await modelsService.deleteModel(id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

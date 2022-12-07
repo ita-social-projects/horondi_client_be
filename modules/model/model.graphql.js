@@ -13,6 +13,7 @@ type Model {
     restrictions: [Restriction]
     sizes: [Size]
     translationsKey: ID
+    isDeleted: Boolean
   }
 `;
 

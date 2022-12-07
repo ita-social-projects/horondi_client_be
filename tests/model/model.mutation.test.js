@@ -16,6 +16,7 @@ const {
   deleteModelConstructorPattern,
   addModelConstructorBottom,
   deleteModelConstructorBottom,
+  getModelById,
 } = require('./model.helper');
 const { createProduct } = require('../product/product.helper');
 const { newProductInputData } = require('../product/product.variables');
@@ -47,9 +48,6 @@ const {
   newConstructorBottom,
 } = require('../constructor-bottom/constructor-bottom.variables');
 const modelService = require('../../modules/model/model.service');
-const {
-  checkModelForSoftDeletion,
-} = require('../../modules/model/model.helper');
 
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
@@ -323,9 +321,10 @@ describe('Model mutations', () => {
       model.sizes[0]._id
     );
     await createProduct(productInput, operations);
+    await deleteModel(model._id, operations);
+    const deletedModel = await getModelById(model._id, operations);
 
-    const modelUpdated = await checkModelForSoftDeletion(model._id);
-    expect(modelUpdated.isDeleted).toBe(true);
+    expect(deletedModel.isDeleted).toBe(true);
   });
 
   afterAll(async () => {
