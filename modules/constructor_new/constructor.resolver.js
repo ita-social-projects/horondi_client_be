@@ -10,6 +10,13 @@ const constructorQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
+  getAllConstructorParts: async () => {
+    try {
+      return await constructorService.getAllConstructorParts();
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
   getConstructorById: async (_, { id }) => {
     try {
       return await constructorService.getConstructorById(id);

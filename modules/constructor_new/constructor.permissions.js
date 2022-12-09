@@ -21,6 +21,7 @@ const {
 } = require('../../validators/constructor-items-inputs.validator');
 
 const constructorPermissionsQuery = {
+  getAllConstructorParts: allow,
   getAllConstructors: allow,
   getConstructorById: allow,
   getConstructorByModel: allow,
