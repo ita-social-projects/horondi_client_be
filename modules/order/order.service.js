@@ -327,7 +327,9 @@ class OrdersService {
   }
 
   async getUserOrders({ skip, limit }, { id }) {
+    const sort = { dateOfCreation: -1 };
     const userOrders = await Order.find({ user_id: id })
+      .sort(sort)
       .limit(limit)
       .skip(skip)
       .exec();
