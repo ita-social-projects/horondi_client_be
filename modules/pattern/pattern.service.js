@@ -1,5 +1,6 @@
 const { uploadSmallImage } = require('../upload/upload.utils');
 const Pattern = require('./pattern.model');
+const Product = require('../product/product.model');
 const RuleError = require('../../errors/rule.error');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -11,6 +12,7 @@ const {
 const {
   PATTERN_NOT_FOUND,
   IMAGE_NOT_PROVIDED,
+  PATTERN_IS_IN_PRODUCT,
 } = require('../../error-messages/pattern.messages');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
@@ -193,9 +195,16 @@ class PatternsService {
   }
 
   async deletePattern(id, { _id: adminId }) {
-    const foundPattern = await Pattern.findByIdAndDelete(id).lean().exec();
+    const foundPattern = await Pattern.findById(id).lean().exec();
     if (!foundPattern) {
       throw new RuleError(PATTERN_NOT_FOUND, NOT_FOUND);
+    }
+    const productsWithPatern = await Product.find({
+      pattern: id,
+      isDeleted: false,
+    }).exec();
+    if (productsWithPatern.length) {
+      throw new RuleError(PATTERN_IS_IN_PRODUCT, NOT_FOUND);
     }
 
     await deleteTranslations(foundPattern.translationsKey);
@@ -230,10 +239,8 @@ class PatternsService {
 
       await addHistoryRecord(historyRecord);
 
-      return foundPattern;
+      return Pattern.findByIdAndDelete(id).lean().exec();
     }
-
-    return Pattern.findByIdAndDelete(id).exec();
   }
 }
 
