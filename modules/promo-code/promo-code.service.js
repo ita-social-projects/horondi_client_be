@@ -8,6 +8,7 @@ const {
 } = require('../../consts/status-codes');
 const {
   PROMOCODE_NOT_FOUND,
+  THERE_IS_PROMOCODE_WITH_THIS_NAME,
 } = require('../../error-messages/promocode-messages');
 const { PromocodeModel } = require('../../modules/promo-code/promo-code.model');
 const { format } = require('date-fns');
@@ -84,6 +85,13 @@ class PromoCodeService extends FilterHelper {
   }
 
   async addPromoCode(promoCode) {
+    const existingPromoCode = await PromocodeModel.findOne({
+      code: promoCode.code,
+    }).exec();
+    if (existingPromoCode) {
+      throw new Error(THERE_IS_PROMOCODE_WITH_THIS_NAME);
+    }
+
     return new PromocodeModel(promoCode).save();
   }
 
