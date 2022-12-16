@@ -44,6 +44,7 @@ const {
 } = require('../../consts/email-actions');
 const productService = require('../product/product.service');
 const materialService = require('../material/material.service');
+const bottom = require('../bottom/bottom.service');
 
 class PaymentService {
   async getPaymentCheckout({ orderId, currency, amount }) {
@@ -297,9 +298,17 @@ class PaymentService {
           item.product,
           item.options.size
         );
-        const bottomMaterial = await materialService.getMaterialById(
-          item.product.bottomMaterial.material
-        );
+        let bottomMaterial;
+        if (item.isFromConstructor) {
+          bottomMaterial = await bottom.getBottomById(
+            item.product.bottomMaterial.material
+          );
+        } else {
+          bottomMaterial = await materialService.getMaterialById(
+            item.product.bottomMaterial.material
+          );
+        }
+
         item = item.toObject();
 
         return {
