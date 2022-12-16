@@ -7,6 +7,7 @@ const {
 const {
   createConstructor,
   getAllConstructors,
+  getAllConstructorParts,
   getConstructorById,
   getConstructorByModel,
 } = require('./constructor.helper');
@@ -41,6 +42,12 @@ describe('Constructor query test', () => {
       { limit, skip, filter },
       operations
     );
+
+    expect(result).toHaveProperty('name', constructorInput.name);
+  });
+
+  it('should get all constructors parts', async () => {
+    const [result] = await getAllConstructorParts(operations);
 
     expect(result).toHaveProperty('name', constructorInput.name);
   });

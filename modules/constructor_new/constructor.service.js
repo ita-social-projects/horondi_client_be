@@ -44,6 +44,17 @@ class ConstructorService {
     };
   }
 
+  async getAllConstructorParts() {
+    const items = await Constructor.find().exec();
+
+    const count = await Constructor.countDocuments().exec();
+
+    return {
+      items,
+      count,
+    };
+  }
+
   async getConstructorById(id) {
     const foundConstructor = await Constructor.findById(id).exec();
 
