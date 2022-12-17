@@ -7,7 +7,6 @@ const {
   deleteTranslations,
 } = require('../translations/translations.service');
 const uploadService = require('../upload/upload.service');
-const { uploadSmallImage } = require('../upload/upload.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -119,10 +118,17 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    await uploadService.deleteFiles([strap.image]);
-
     if (image) {
-      strap.image = await uploadSmallImage(image);
+      if (strapToUpdate.images) {
+        const images = Object.values(strapToUpdate.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+
+      const uploadImage = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadImage[0];
+      strap.images = imageResults.fileNames;
     }
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);
