@@ -53,10 +53,10 @@ type OrderItem {
   quantity: Int
   isFromConstructor: Boolean
   options: ItemOptions
-  constructorBasics: ConstructorBasic
+  constructorBasics: Basics
   constructorPattern: Pattern
   constructorFrontPocket: ConstructorFrontPocket
-  constructorBottom: ConstructorBottom
+  constructorBottom: Bottom
   fixedPrice: Int
 }
 type Delivery {

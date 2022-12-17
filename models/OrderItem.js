@@ -5,10 +5,10 @@ const {
     ORDER_ITEM,
     PRODUCT,
     MODEL,
-    CONSTRUCTOR_BASICS,
-    CONSTRUCTOR_BOTTOM,
     CONSTRUCTOR_FRONT_POCKET,
     PATTERN,
+    BASICS,
+    BOTTOM,
   },
 } = require('../consts/db-collections-names');
 
@@ -41,11 +41,11 @@ const orderItemSchema = new mongoose.Schema({
   },
   constructorBasics: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: CONSTRUCTOR_BASICS,
+    ref: BASICS,
   },
   constructorBottom: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: CONSTRUCTOR_BOTTOM,
+    ref: BOTTOM,
   },
   constructorFrontPocket: {
     type: mongoose.Schema.Types.ObjectId,

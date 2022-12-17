@@ -415,21 +415,21 @@ const resolvers = {
   },
   Order: {
     items: parent =>
-      parent.items.map(item => {
-        return {
-          fixedPrice: item.fixedPrice,
-          isFromConstructor: item.isFromConstructor,
-          quantity: item.quantity,
-          model: productService.getProductModelById(item.product),
-          options: {
-            size: productService.getProductSizeById(
-              item.product,
-              item.options.size
-            ),
-          },
-          product: productsService.getProductById(item.product),
-        };
-      }),
+      parent.items.map(item => ({
+        fixedPrice: item.fixedPrice,
+        isFromConstructor: item.isFromConstructor,
+        constructorBasics: basicsService.getBasicById(item.constructorBasics),
+        constructorBottom: bottomService.getBottomById(item.constructorBottom),
+        quantity: item.quantity,
+        model: productService.getProductModelById(item.product),
+        options: {
+          size: productService.getProductSizeById(
+            item.product,
+            item.options.size
+          ),
+        },
+        product: productsService.getProductById(item.product),
+      })),
   },
   Pattern: {
     model: parent => modelService.getModelById(parent.model),

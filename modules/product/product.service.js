@@ -404,6 +404,8 @@ class ProductsService {
 
     productData.sizes = await finalPriceCalculationForConstructor(productData);
 
+    productData.available = false;
+
     const translations = await addTranslations(createTranslations(productData));
     productData.translationsKey = translations._id;
 
