@@ -418,8 +418,12 @@ const resolvers = {
       parent.items.map(item => ({
         fixedPrice: item.fixedPrice,
         isFromConstructor: item.isFromConstructor,
-        constructorBasics: basicsService.getBasicById(item.constructorBasics),
-        constructorBottom: bottomService.getBottomById(item.constructorBottom),
+        constructorBasics:
+          item?.constructorBasics &&
+          basicsService.getBasicById(item?.constructorBasics),
+        constructorBottom:
+          item?.constructorBottom &&
+          bottomService.getBottomById(item?.constructorBottom),
         quantity: item.quantity,
         model: productService.getProductModelById(item.product),
         options: {

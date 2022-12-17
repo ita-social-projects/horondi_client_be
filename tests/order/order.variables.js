@@ -48,8 +48,9 @@ const newOrderInputData = (
       product: productId,
       model: modelId,
       quantity: 2,
+      constructorBasics: null,
+      constructorBottom: null,
       isFromConstructor: false,
-      constructorBasics: constructorId,
       options: {
         size: sizeId,
       },
@@ -91,7 +92,8 @@ const newOrderUpdated = (
       model: modelId,
       quantity: 2,
       isFromConstructor: false,
-      constructorBasics: constructorId,
+      constructorBottom: null,
+      constructorBasics: null,
       options: {
         size: sizeId,
       },
