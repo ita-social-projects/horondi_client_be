@@ -55,7 +55,7 @@ type OrderItem {
   options: ItemOptions
   constructorBasics: Basics
   constructorPattern: Pattern
-  constructorFrontPocket: ConstructorFrontPocket
+  constructorFrontPocket: Pocket
   constructorBottom: Bottom
   fixedPrice: Int
 }
