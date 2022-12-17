@@ -424,6 +424,9 @@ const resolvers = {
         constructorBottom:
           item?.constructorBottom &&
           bottomService.getBottomById(item?.constructorBottom),
+        constructorFrontPocket:
+          item?.constructorFrontPocket &&
+          pocketService.getPocketById(item?.constructorFrontPocket),
         quantity: item.quantity,
         model: productService.getProductModelById(item.product),
         options: {
