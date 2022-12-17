@@ -3,6 +3,8 @@ const Pattern = require('../modules/pattern/pattern.model');
 const Closures = require('../modules/closures/closures.model');
 const Material = require('../modules/material/material.model');
 
+const basic = require('../modules/basics/basics.service');
+const bottom = require('../modules/bottom/bottom.service');
 const modelService = require('../modules/model/model.service');
 
 const checkPriceType = (price, item, basePrice) => {
@@ -31,24 +33,20 @@ const calculateHelper = (entities, sizes, basePrice) => {
 };
 
 const finalPriceCalculationForConstructor = async product => {
-  const mainMaterial = await Material.findById(
-    product.mainMaterial.material
-  ).exec();
+  const basicMaterial = await basic.getBasicById(product.mainMaterial.material);
 
-  const bottomMaterial = await Material.findById(
+  const bottomMaterial = await bottom.getBottomById(
     product.bottomMaterial.material
-  ).exec();
+  );
 
-  const sizesPrice = modelService.getModelSizes(product.model, product.sizes);
-
-  const prices = [mainMaterial, bottomMaterial];
+  const prices = [basicMaterial, bottomMaterial];
 
   if (product.pattern) {
     const pattern = await Pattern.findById(product.pattern).exec();
     prices.push(pattern);
   }
 
-  return calculateHelper(prices, sizesPrice, product.basePrice);
+  return calculateHelper(prices, product.model.sizes, product.basePrice);
 };
 
 const finalPriceCalculation = async product => {
