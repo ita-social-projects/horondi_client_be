@@ -1,6 +1,8 @@
 const productModel = require('../modules/product/product.model');
 const { PromocodeModel } = require('../modules/promo-code/promo-code.model');
-const { CertificateModel } = require('../modules/certificate/certificate.model');
+const {
+  CertificateModel,
+} = require('../modules/certificate/certificate.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
@@ -9,33 +11,38 @@ const calculateTotalItemsPrice = async items =>
   items.reduce(async (prev, item) => {
     const sum = await prev;
 
-    const product = await productModel.findById(item.product).exec();
+    item.fixedPrice = item.price;
 
-    const { price } = product.sizes.find(
-      sz => sz.size._id.toString() === item.options.size
-    );
-
-    item.fixedPrice = price;
-
-    return price * item.quantity + sum;
+    return item.price * item.quantity + sum;
   }, 0);
 
-const calculateProductsPriceWithDiscount = async (promoCodeId, certificateId, products) => {
+const calculateProductsPriceWithDiscount = async (
+  promoCodeId,
+  certificateId,
+  products
+) => {
   if (promoCodeId) {
     const discounts = [];
     const priceWithDiscount = [];
     const promoCode = await PromocodeModel.findById(promoCodeId).exec();
     const { discount, categories } = promoCode;
+    let isAllowCategory;
 
     for (const item of products) {
       const { category } = await productModel
         .findById(item.product)
         .populate({ path: 'category', select: 'code' })
         .exec();
+      if (item.isFromConstructor) {
+        isAllowCategory = categories.some(
+          name => name.toLowerCase() === 'constructor'
+        );
+      } else {
+        isAllowCategory = categories.some(
+          name => name.toLowerCase() === category.code.toLowerCase()
+        );
+      }
 
-      const isAllowCategory = categories.some(
-        name => name.toLowerCase() === category.code.toLowerCase()
-      );
       if (isAllowCategory) {
         discounts.push(discount);
         priceWithDiscount.push(
@@ -51,7 +58,7 @@ const calculateProductsPriceWithDiscount = async (promoCodeId, certificateId, pr
     return { discounts, priceWithDiscount };
   }
 
-  if(certificateId) {
+  if (certificateId) {
     const certificate = await CertificateModel.findById(certificateId).exec();
     const { value } = certificate;
 

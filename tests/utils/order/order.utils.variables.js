@@ -6,6 +6,7 @@ const productItemMock = [
     options: {
       size: '34141134141',
     },
+    price: 171,
   },
 ];
 
@@ -39,7 +40,6 @@ const resultPriceWithCertificate = {
   discounts: 27,
   priceWithDiscount: [450],
 };
-
 
 const priceWithPromoCodeWithoutDiscount = {
   discounts: [0],
