@@ -52,7 +52,6 @@ const {
   getPaymentCheckoutForCertificates,
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
-  sendOrderToEmail,
 } = require('./payment.helper');
 
 const {
@@ -75,6 +74,7 @@ jest.mock('../../modules/currency/currency.utils.js');
 jest.mock('../../modules/email/email.service');
 jest.mock('../../utils/payment.utils', () => ({
   generatePaymentSignature: () => mockSignatureValue,
+  sendOrderToEmail: () => {},
 }));
 jest.mock('../../helpers/payment-controller', () => ({
   paymentController: action => {
@@ -210,7 +210,7 @@ describe('Payment queries', () => {
 
   it('should get Payment Checkout', async () => {
     const res = await getPaymentCheckout(
-      { orderId, currency: 'UAH', amount: '2' },
+      { orderId, currency: 'UAH', amount: '2', language: 1 },
       operations
     );
     expect(res).toBeDefined();
@@ -219,7 +219,7 @@ describe('Payment queries', () => {
 
   it('should get error message ORDER_NOT_VALID when passed wrong orderId', async () => {
     const res = await getPaymentCheckout(
-      { orderId: wrongId, currency: 'UAH', amount: '2' },
+      { orderId: wrongId, currency: 'UAH', amount: '2', language: 1 },
       operations
     );
 
@@ -259,12 +259,6 @@ describe('Payment queries', () => {
       CERTIFICATE_IS_USED
     );
     expect(updateResult.dateOfUsing).toBeTruthy();
-  });
-
-  it('should send email with order data', async () => {
-    const res = await sendOrderToEmail(1, orderNumber, operations);
-
-    expect(res.orderNumber).toBe(orderNumber);
   });
 
   afterAll(async () => {
