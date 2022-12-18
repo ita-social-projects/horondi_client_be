@@ -44,6 +44,7 @@ const {
   ORDER_STATUSES: { REFUNDED, CANCELLED },
 } = require('../../consts/order-statuses');
 const { PAYMENT_TYPES } = require('../../consts/payment-types.js');
+const { sendOrderToEmail } = require('../../utils/payment.utils');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {}, sort }) {
@@ -309,7 +310,14 @@ class OrdersService {
       fixedExchangeRate: exchangeRate,
     };
 
-    return new Order(newOrder).save();
+    const createdOrder = await new Order(newOrder).save();
+
+    if (order.paymentMethod === PAYMENT_TYPES.CASH) {
+      const language = user?.configs.language === 'en' ? 1 : 0;
+      await sendOrderToEmail(language, orderNumber);
+    }
+
+    return createdOrder;
   }
 
   async deleteOrder(id) {

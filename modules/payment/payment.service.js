@@ -1,6 +1,9 @@
 const { ObjectId } = require('mongoose').Types;
 const { PAYMENT_SECRET } = require('../../dotenvValidator');
-const { generatePaymentSignature } = require('../../utils/payment.utils');
+const {
+  generatePaymentSignature,
+  sendOrderToEmail,
+} = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
 const pubsub = require('../../pubsub');
 const { sendEmail } = require('../email/email.service');
@@ -38,16 +41,11 @@ const { paymentController } = require('../../helpers/payment-controller');
 const {
   ORDER_STATUSES: { CONFIRMED, CANCELLED },
 } = require('../../consts/order-statuses');
-const { IMAGE_LINK } = require('../../dotenvValidator');
 const {
-  EmailActions: { CERTIFICATE_EMAIL, SUCCESSFUL_ORDER },
+  EmailActions: { CERTIFICATE_EMAIL },
 } = require('../../consts/email-actions');
-const productService = require('../product/product.service');
-const materialService = require('../material/material.service');
-const bottom = require('../bottom/bottom.service');
-
 class PaymentService {
-  async getPaymentCheckout({ orderId, currency, amount }) {
+  async getPaymentCheckout({ orderId, currency, amount, language }) {
     if (!ObjectId.isValid(orderId)) {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
@@ -57,6 +55,7 @@ class PaymentService {
     if (!isOrderPresent) {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
+    const fondyLanguage = language ? 'en' : 'uk';
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}order_callback/`,
@@ -65,6 +64,8 @@ class PaymentService {
       order_desc: PAYMENT_DESCRIPTION[0],
       currency,
       amount,
+      merchant_data: language,
+      lang: fondyLanguage,
     });
 
     if (paymentUrl) {
@@ -216,7 +217,8 @@ class PaymentService {
 
   async checkOrderPaymentStatus(req, res) {
     const orderState = req.body;
-    const { order_id, order_status, signature } = orderState;
+    const { order_id, order_status, signature, merchant_data } = orderState;
+    const language = parseInt(merchant_data);
 
     const signatureKeys = Object.keys(orderState)
       .filter(
@@ -260,6 +262,7 @@ class PaymentService {
     switch (orderPaymentStatus) {
       case PAYMENT_APPROVED: {
         updateOrderStatuses(PAYMENT_PAID, CONFIRMED);
+        await sendOrderToEmail(language, order_id.toString());
         break;
       }
       case PAYMENT_EXPIRED:
@@ -282,59 +285,6 @@ class PaymentService {
     }
 
     res.status(200).end();
-  }
-
-  async sendOrderToEmail(language, paidOrderNumber) {
-    const paidOrder = await OrderModel.findOne({ orderNumber: paidOrderNumber })
-      .populate({
-        path: 'items.product',
-        select: 'name bottomMaterial images',
-      })
-      .exec();
-
-    const items = await Promise.all(
-      paidOrder.items.map(async item => {
-        const size = await productService.getProductSizeById(
-          item.product,
-          item.options.size
-        );
-        let bottomMaterial;
-        if (item.isFromConstructor) {
-          bottomMaterial = await bottom.getBottomById(
-            item.product.bottomMaterial.material
-          );
-        } else {
-          bottomMaterial = await materialService.getMaterialById(
-            item.product.bottomMaterial.material
-          );
-        }
-
-        item = item.toObject();
-
-        return {
-          ...item,
-          product: {
-            ...item.product,
-            bottomMaterial,
-          },
-          options: {
-            ...item.options,
-            size,
-          },
-        };
-      })
-    );
-
-    await sendEmail(paidOrder.recipient.email, SUCCESSFUL_ORDER, {
-      language,
-      items,
-      totalPriceToPay: paidOrder.totalPriceToPay,
-      fixedExchangeRate: paidOrder.fixedExchangeRate,
-      paymentStatus: paidOrder.paymentStatus,
-      imagesUrl: IMAGE_LINK,
-    });
-
-    return paidOrder;
   }
 }
 
