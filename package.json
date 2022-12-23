@@ -67,7 +67,7 @@
     "into-stream": "^5.1.1",
     "jimp": "^0.16.1",
     "joi": "^14.3.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.20",
     "migrate-mongo": "^8.1.4",
     "mongoose": "^5.9.18",
