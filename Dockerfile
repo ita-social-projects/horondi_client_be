@@ -1,6 +1,7 @@
-FROM node:14.15.4-alpine3.10
+FROM node:14-alpine3.15
 WORKDIR /usr/app
-COPY package*.json ./
-RUN npm install -g npm@latest && npm install --save --legacy-peer-deps
 COPY . .
+RUN npm install --save --legacy-peer-deps
+
+EXPOSE 80 2222
 CMD ["npm", "start"]
