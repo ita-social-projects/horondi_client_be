@@ -7,6 +7,8 @@ const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
 
+const { getAllCurrencies } = require('../modules/currency/currency.service.js');
+
 const calculateTotalItemsPrice = async items =>
   items.reduce(async (prev, item) => {
     const sum = await prev;
@@ -61,11 +63,23 @@ const calculateProductsPriceWithDiscount = async (
   if (certificateId) {
     const certificate = await CertificateModel.findById(certificateId).exec();
     const { value } = certificate;
+    const currencies = await getAllCurrencies();
 
-    return {
-      discounts: value,
-      priceWithDiscount: products.map(item => item.fixedPrice * item.quantity),
-    };
+    const discount = value / currencies[0].convertOptions.UAH.exchangeRate;
+
+    const productsPrice = products.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    let totalPrice = parseFloat(productsPrice - discount).toFixed(2);
+
+    if (totalPrice <= 0) {
+      totalPrice = (1 / currencies[0].convertOptions.UAH.exchangeRate).toFixed(
+        2
+      );
+    }
+
+    return { discounts: discount, priceWithDiscount: totalPrice };
   }
 
   return {

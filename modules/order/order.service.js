@@ -289,11 +289,12 @@ class OrdersService {
     if (data.certificateId) {
       await getCertificateByParams({ _id: data.certificateId });
       await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
-      totalPriceToPay =
-        calculateTotalPriceToPay(itemsPriceWithDiscount) -
-        itemsDiscount / exchangeRate;
+      totalPriceToPay = itemsPriceWithDiscount;
     }
-    totalPriceToPay = Math.round(totalPriceToPay);
+
+    if (totalPriceToPay > 1 && !data.certificateId) {
+      totalPriceToPay = Math.round(totalPriceToPay);
+    }
 
     if (order.paymentMethod === PAYMENT_TYPES.CASH) {
       paymentStatus = order.isPaid ? PAYMENT_PAID : PAYMENT_CREATED;
