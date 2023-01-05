@@ -24,12 +24,7 @@ const productsMock = [
 const promoCodeMock = '62b32ce6b059bc15';
 const certificateMock = '62fd0454ff6e2200299809ac';
 
-const productMock = [
-  {
-    fixedPrice: 150,
-    quantity: 3,
-  },
-];
+const productMock = [{ price: 150, fixedPrice: 150, quantity: 3 }];
 
 const resultPriceWithPromoCode = {
   discounts: [10],
@@ -37,8 +32,8 @@ const resultPriceWithPromoCode = {
 };
 
 const resultPriceWithCertificate = {
-  discounts: 27,
-  priceWithDiscount: [450],
+  discounts: 0.75,
+  priceWithDiscount: '449.25',
 };
 
 const priceWithPromoCodeWithoutDiscount = {

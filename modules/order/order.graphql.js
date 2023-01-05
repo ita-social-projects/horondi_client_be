@@ -20,8 +20,8 @@ type Order {
   fixedExchangeRate: Float
   promoCodeId: String
   certificateId: String
-  itemsPriceWithDiscount: [Int]
-  itemsDiscount: [Int]
+  itemsPriceWithDiscount: [Float]
+  itemsDiscount: [Float]
 }
 
 enum PaymentStatusEnum {
