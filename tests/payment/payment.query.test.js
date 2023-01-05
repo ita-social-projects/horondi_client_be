@@ -68,6 +68,7 @@ const {
   checkCertificatesPaymentStatus,
 } = require('../../modules/payment/payment.service');
 const emailService = require('../../modules/email/email.service');
+const { addCurrency } = require('../currency/currency.helper');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
@@ -90,13 +91,20 @@ jest.mock('../../helpers/payment-controller', () => ({
     }
   },
 }));
-jest.mock('../../modules/currency/currency.model', () => ({
-  findOne: () => ({
-    exec: () => ({
-      convertOptions: { UAH: { exchangeRate: 1, name: 'UAH' } },
-    }),
-  }),
-}));
+
+const newCurrency = {
+  lastUpdatedDate: String(Date.now()),
+  convertOptions: {
+    UAH: {
+      name: 'test',
+      exchangeRate: 36,
+    },
+    USD: {
+      name: 'test',
+      exchangeRate: 1,
+    },
+  },
+};
 
 let colorId;
 let sizeId;
@@ -118,6 +126,7 @@ let certificates;
 describe('Certificate payment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    await addCurrency(newCurrency, operations);
     const certificateData = await generateCertificate(
       newCertificateInputData,
       email,
@@ -210,7 +219,7 @@ describe('Payment queries', () => {
 
   it('should get Payment Checkout', async () => {
     const res = await getPaymentCheckout(
-      { orderId, currency: 'UAH', amount: '2', language: 1 },
+      { orderId, currency: 'UAH', amount: '200', language: 1 },
       operations
     );
     expect(res).toBeDefined();

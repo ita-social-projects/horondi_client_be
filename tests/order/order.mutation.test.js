@@ -47,16 +47,23 @@ const { newModel } = require('../model/model.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
+const { addCurrency } = require('../currency/currency.helper');
 
 jest.mock('../../modules/upload/upload.service');
-jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/currency/currency.model', () => ({
-  findOne: () => ({
-    exec: () => ({
-      convertOptions: { UAH: { exchangeRate: 1, name: 'UAH' } },
-    }),
-  }),
-}));
+
+const newCurrency = {
+  lastUpdatedDate: String(Date.now()),
+  convertOptions: {
+    UAH: {
+      name: 'test',
+      exchangeRate: 36,
+    },
+    USD: {
+      name: 'test',
+      exchangeRate: 1,
+    },
+  },
+};
 
 let colorId;
 let sizeId;
@@ -77,6 +84,7 @@ describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
 
+    await addCurrency(newCurrency, operations);
     const certificateData = await generateCertificate(
       newCertificateInputData,
       email,

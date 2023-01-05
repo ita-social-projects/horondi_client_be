@@ -64,13 +64,13 @@ const calculateProductsPriceWithDiscount = async (
     const certificate = await CertificateModel.findById(certificateId).exec();
     const { value } = certificate;
     const currencies = await getAllCurrencies();
-
     const discount = value / currencies[0].convertOptions.UAH.exchangeRate;
 
     const productsPrice = products.reduce(
       (acc, item) => acc + item.price * item.quantity,
       0
     );
+
     let totalPrice = parseFloat(productsPrice - discount).toFixed(2);
 
     if (totalPrice <= 0) {

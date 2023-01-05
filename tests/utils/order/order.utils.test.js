@@ -1,6 +1,10 @@
 const productModel = require('../../../modules/product/product.model');
-const { PromocodeModel } = require('../../../modules/promo-code/promo-code.model');
-const { CertificateModel } = require('../../../modules/certificate/certificate.model');
+const {
+  PromocodeModel,
+} = require('../../../modules/promo-code/promo-code.model');
+const {
+  CertificateModel,
+} = require('../../../modules/certificate/certificate.model');
 const {
   calculateProductsPriceWithDiscount,
   calculateTotalPriceToPay,
@@ -18,6 +22,7 @@ const {
   resultPriceWithCertificate,
   priceWithPromoCodeWithoutDiscount,
 } = require('./order.utils.variables');
+const currencyModel = require('../../../modules/currency/currency.model');
 
 jest.spyOn(PromocodeModel, 'findById').mockImplementation(() => ({
   exec: () => ({
@@ -28,8 +33,25 @@ jest.spyOn(PromocodeModel, 'findById').mockImplementation(() => ({
 
 jest.spyOn(CertificateModel, 'findById').mockImplementation(() => ({
   exec: () => ({
-    value: 27
+    value: 27,
   }),
+}));
+
+jest.spyOn(currencyModel, 'find').mockImplementation(() => ({
+  exec: () => [
+    {
+      convertOptions: {
+        UAH: {
+          name: 'test',
+          exchangeRate: 36,
+        },
+        USD: {
+          name: 'test',
+          exchangeRate: 1,
+        },
+      },
+    },
+  ],
 }));
 
 jest.spyOn(productModel, 'findById').mockImplementation(() => ({

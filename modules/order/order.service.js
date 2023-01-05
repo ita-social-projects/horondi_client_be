@@ -197,9 +197,6 @@ class OrdersService {
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     let totalPriceToPay = totalItemsPrice;
 
-    const { convertOptions } = await Currency.findOne().exec();
-    const { exchangeRate } = convertOptions.UAH;
-
     const {
       discounts: itemsDiscount,
       priceWithDiscount: itemsPriceWithDiscount,
@@ -215,9 +212,7 @@ class OrdersService {
 
     if (certificateId) {
       await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
-      totalPriceToPay =
-        (await calculateTotalPriceToPay(itemsPriceWithDiscount)) -
-        itemsDiscount / exchangeRate;
+      totalPriceToPay = itemsPriceWithDiscount;
     }
 
     totalPriceToPay = Math.round(totalPriceToPay);
