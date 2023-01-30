@@ -7,53 +7,32 @@ block content
     div.contentWrapper
         table.productTable
             tr.tableHead
+                th.image 
                 th.product Product
                 th.size Size
-                th.price Price
                 th.quantity Quantity
-                th.total Total
+                th.price Price
+                th.status Status
             each val in items
-                if val.product
-                    tr.tableBody
-                        td.product
-                            div.productWrapper
-                                img.productImg(src= `${imagesUrl}/${val.product.images.primary.medium}` alt='img')
-                                div.productInfo
-                                    p.productTitle= val.product.name[1].value
-                                    p.productMaterial= val.product.bottomMaterial.material.name[1].value
-                                    p.productSizeResponsive= `Size - ${val.options.size.name}`
-                        td.size
-                            p.productSize= `${val.options.size.name}`
-                        td.price
-                            p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
-                        td.quantity
-                            p.productQuantity= val.quantity
-                        td.total
-                            p.productTotal= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value * val.quantity}`
-                else if val.fromConstructor
-                    tr.tableBody
-                        td.product
-                            div.productWrapper
-                                img.productImg(src= `${imagesUrl}/${val.fromConstructor.product.images.primary.medium}` alt='img')
-                                div.productInfo
-                                    p.productTitle= val.fromConstructor.product.name[1].value
-                                    p.productMaterial= val.fromConstructor.product.bottomMaterial.material.name[1].value
-                                    p.productSizeResponsive= `Size - ${val.options.size.name}`
-                        td.size
-                            p.productSize= `${val.options.size.name}`
-                        td.price
-                            p.productPrice= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value}}`
-                        td.quantity
-                            p.productQuantity= val.quantity
-                        td.total
-                            p.productTotal= `${val.fixedPrice[1].currency}${val.fixedPrice[1].value * val.quantity}`
+                tr.tableBody
+                    td.image
+                        if !val.isFromConstructor
+                            img.productImg(src=`${imagesUrl}${val.product.images.primary.small}` alt='img')
+                        else 
+                            p= 'Constructor image'
+                    td.product
+                        p.productTitle= `${val.product.name[1].value}`
+                        p.productMaterial= `bottom: ${val.product.bottomMaterial.name[1].value}`
+                    td.size
+                        p.productSize= `${val.options.size.name}`
+                    td.quantity
+                        p.productQuantity= `${val.quantity}`
+                    td.price
+                        p.productPrice= `${val.fixedPrice} USD`
+                    td.status
+                        p.productStatus= `${paymentStatus === 'PAID' ? 'Paid' : 'Created'}`
         div.payment
-            span.paymentText Total
-            span.paymentPrice= `${totalPriceToPay[1].currency}${totalPriceToPay[1].value}`
+            span.paymentText Total:
+            span.paymentPrice= `${Math.floor(totalPriceToPay)} USD`
         p.text Thank you for always being with us!
-        button.continue
-            a(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping
-
-
-
-
+        a.continue(href=`${frontendUrl}/catalog/products?sort=popularity`) continue shopping

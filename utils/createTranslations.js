@@ -3,6 +3,7 @@ function createTranslations(data) {
     (translations, key) => {
       if (
         Array.isArray(data[key]) &&
+        data[key].length !== 0 &&
         Object.prototype.hasOwnProperty.call(data[key][0], 'lang')
       ) {
         translations.ua = Object.assign(translations.ua, {

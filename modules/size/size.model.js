@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
 const {
-  DB_COLLECTIONS_NAMES: { SIZE, MODEL },
+  DB_COLLECTIONS_NAMES: { SIZE },
 } = require('../../consts/db-collections-names');
 
 const sizeSchema = new mongoose.Schema({
   name: {
     type: String,
-  },
-  modelId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: MODEL,
   },
   heightInCm: {
     type: Number,

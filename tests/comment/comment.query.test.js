@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   COMMENT_NOT_FOUND,
   COMMENT_FOR_NOT_EXISTING_USER,
@@ -61,8 +62,6 @@ const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { loginAdmin } = require('../user/user.helper');
 const { superAdminUser } = require('../user/user.variables');
@@ -71,7 +70,6 @@ const { queryPatternToAdd } = require('../pattern/pattern.variables');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 jest.mock('../../modules/currency/currency.utils.js');
 
 let commentId;
@@ -119,11 +117,7 @@ describe('Comment queries', () => {
       operations
     );
     constructorBasicId = constructorBasicData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
+    sizeId = modelData.sizes[0]._id;
     const productData = await createProduct(
       newProductInputData(
         categoryId,
@@ -150,6 +144,9 @@ describe('Comment queries', () => {
       operations
     );
     commentId = commentData._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
   it('Should receive all comments', async () => {
     const receivedComments = await getAllComments(
@@ -460,6 +457,5 @@ describe('Comment queries', () => {
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
-    await deleteSize(sizeId, operations);
   });
 });

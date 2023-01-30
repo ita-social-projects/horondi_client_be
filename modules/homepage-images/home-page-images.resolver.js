@@ -12,7 +12,7 @@ const homePageImagesQuery = {
 };
 
 const homePageImagesMutation = {
-  updateHomePageLooksImage: async (parent, args) => {
+  updateHomePageLooksImage: async (_parent, args) => {
     try {
       return await homePageService.updateHomePageLooksImage(args);
     } catch (e) {
@@ -20,7 +20,7 @@ const homePageImagesMutation = {
     }
   },
 
-  addHomePageLooksImage: async (parent, args) => {
+  addHomePageLooksImage: async (_parent, args) => {
     try {
       return await homePageService.addHomePageLooksImage(args);
     } catch (e) {
@@ -28,7 +28,7 @@ const homePageImagesMutation = {
     }
   },
 
-  deleteHomePageLooksImage: async (parent, args) => {
+  deleteHomePageLooksImage: async (_parent, args) => {
     try {
       return await homePageService.deleteHomePageLooksImage(args);
     } catch (e) {

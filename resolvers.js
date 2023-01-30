@@ -1,6 +1,5 @@
 const pubsub = require('./pubsub');
 const { withFilter } = require('graphql-subscriptions');
-const { ORDER_IS_PAID } = require('./error-messages/orders.messages');
 const {
   CERTIFICATE_IS_PAID,
 } = require('./error-messages/certificate.messages');
@@ -154,9 +153,7 @@ const {
 const categoryService = require('./modules/category/category.service');
 const userService = require('./modules/user/user.service');
 const productsService = require('./modules/product/product.service');
-const sizeService = require('./modules/size/size.service.js');
 const { uploadMutation } = require('./modules/upload/upload.resolver');
-const { sizeQuery, sizeMutation } = require('./modules/size/size.resolver');
 const constructorServices = require('./modules/constructor/constructor.services');
 const constructorBottomModel = require('./modules/constructor/constructor-bottom/constructor-bottom.model');
 const constructorBasicModel = require('./modules/constructor/constructor-basic/constructor-basic.model');
@@ -237,6 +234,7 @@ const SCHEMA_NAMES = {
 const {
   constructorPocketHelper,
 } = require('./helpers/constructor-pocket-helper');
+const productService = require('./modules/product/product.service');
 
 const resolvers = {
   Subscription: {
@@ -246,13 +244,6 @@ const resolvers = {
         (payload, variables) =>
           payload.certificatesPaid.certificates[0].name ===
           variables.certificatesOrderId
-      ),
-    },
-    paidOrder: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator([ORDER_IS_PAID]),
-        (payload, variables) =>
-          payload.paidOrder.orderNumber === variables.orderId
       ),
     },
   },
@@ -302,8 +293,6 @@ const resolvers = {
     ...emailChatQuestionQuery,
 
     ...homePageImagesQuery,
-
-    ...sizeQuery,
 
     ...homePageSlideQuery,
 
@@ -364,10 +353,6 @@ const resolvers = {
       parent.bottomMaterialColor.map(color => colorService.getColorById(color)),
   },
 
-  Size: {
-    model: parent => modelService.getModelById(parent.modelId),
-  },
-
   Comment: {
     product: parent => productsService.getProductById(parent.product),
     user: parent => userService.getUser(parent.user),
@@ -420,7 +405,7 @@ const resolvers = {
     closure: parent => closuresService.getClosureById(parent.closure),
     sizes: parent =>
       parent.sizes.map(size => ({
-        size: sizeService.getSizeById(size.size),
+        size: modelService.getModelSizeById(parent.model, size.size),
         price: size.price,
       })),
   },
@@ -430,47 +415,28 @@ const resolvers = {
   },
   Order: {
     items: parent =>
-      parent.items.map(item => {
-        if (item.isFromConstructor) {
-          return {
-            constructorBottom: constructorServices.getConstructorElementById(
-              item.constructorBottom,
-              constructorBottomModel
-            ),
-            constructorBasics: constructorServices.getConstructorElementById(
-              item.constructorBasics,
-              constructorBasicModel
-            ),
-            constructorFrontPocket:
-              constructorServices.getConstructorElementById(
-                item.constructorFrontPocket,
-                constructorFrontPocketModel
-              ),
-            constructorPattern: patternService.getPatternById(
-              item.constructorPattern
-            ),
-            model: modelService.getModelById(item.model),
-            options: {
-              size: sizeService.getSizeById(item.options.size),
-              sidePocket: item.options.sidePocket,
-            },
-            isFromConstructor: item.isFromConstructor,
-            quantity: item.quantity,
-            fixedPrice: item.fixedPrice,
-          };
-        }
-
-        return {
-          fixedPrice: item.fixedPrice,
-          isFromConstructor: item.isFromConstructor,
-          quantity: item.quantity,
-          options: {
-            size: sizeService.getSizeById(item.options.size),
-            sidePocket: item.options.sidePocket,
-          },
-          product: productsService.getProductById(item.product),
-        };
-      }),
+      parent.items.map(item => ({
+        fixedPrice: item.fixedPrice,
+        isFromConstructor: item.isFromConstructor,
+        constructorBasics:
+          item?.constructorBasics &&
+          basicsService.getBasicById(item?.constructorBasics),
+        constructorBottom:
+          item?.constructorBottom &&
+          bottomService.getBottomById(item?.constructorBottom),
+        constructorFrontPocket:
+          item?.constructorFrontPocket &&
+          pocketService.getPocketById(item?.constructorFrontPocket),
+        quantity: item.quantity,
+        model: productService.getProductModelById(item.product),
+        options: {
+          size: productService.getProductSizeById(
+            item.product,
+            item.options.size
+          ),
+        },
+        product: productsService.getProductById(item.product),
+      })),
   },
   Pattern: {
     model: parent => modelService.getModelById(parent.model),
@@ -481,7 +447,6 @@ const resolvers = {
   },
   Model: {
     category: parent => categoryService.getCategoryById(parent.category),
-    sizes: parent => parent.sizes.map(size => sizeService.getSizeById(size)),
     eligibleOptions: parent => ({
       constructorBottom: () =>
         parent.eligibleOptions.constructorBottom.map(el =>
@@ -631,6 +596,7 @@ const resolvers = {
   Strap: {
     model: parent => modelService.getModelById(parent.model),
     features: parent => ({
+      material: () => materialService.getMaterialById(parent.features.material),
       color: () => colorService.getColorById(parent.features.color),
     }),
   },
@@ -652,22 +618,8 @@ const resolvers = {
     straps: parent => parent.straps.map(id => strapService.getStrapById(id)),
     closures: parent =>
       parent.closures.map(id => closuresService.getClosureById(id)),
-    pocketsWithRestrictions: parent =>
-      parent.pocketsWithRestrictions.map(item => ({
-        currentPocketWithPosition: {
-          pocket: pocketService.getPocketById(
-            item.currentPocketWithPosition.pocket
-          ),
-          position: positionService.getPositionById(
-            item.currentPocketWithPosition.position
-          ),
-        },
-        otherPocketsWithAvailablePositions:
-          item.otherPocketsWithAvailablePositions.map(el => ({
-            pocket: pocketService.getPocketById(el.pocket),
-            position: positionService.getPositionById(el.position),
-          })),
-      })),
+    pockets: parent =>
+      parent.pockets.map(id => pocketService.getPocketById(id)),
   },
 
   Mutation: {
@@ -710,8 +662,6 @@ const resolvers = {
     ...emailChatQuestionMutation,
 
     ...homePageImagesMutation,
-
-    ...sizeMutation,
 
     ...homePageSlideMutation,
 

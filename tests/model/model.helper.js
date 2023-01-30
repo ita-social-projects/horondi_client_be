@@ -27,6 +27,9 @@ const createModel = async (model, operations) => {
                 lang
               }
             }
+            sizes {
+              _id
+            }
           }
           ... on Error {
             message
@@ -404,6 +407,9 @@ const getAllModels = async (filter, pagination, sort, operations) => {
                 lang
               }
             }
+            sizes {
+              _id
+            }
             images {
               large
               medium
@@ -485,6 +491,7 @@ const getModelById = async (id, operations) => {
               small
               thumbnail
             }
+            isDeleted
           }
           ... on Error {
             message

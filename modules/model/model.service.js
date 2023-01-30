@@ -1,5 +1,6 @@
 const { ObjectId } = require('mongoose').Types;
 
+const Product = require('../product/product.model');
 const Model = require('./model.model');
 const createTranslations = require('../../utils/createTranslations');
 const {
@@ -74,6 +75,8 @@ class ModelsService {
       filterOptions.category = { $in: filter.category };
     }
 
+    filterOptions.isDeleted = false;
+
     if (sort.name && sort.name > 0) {
       sort['name.value'] = sort.name;
       delete sort.name;
@@ -100,7 +103,6 @@ class ModelsService {
     }
 
     const foundModel = await Model.findById(id).exec();
-
     if (foundModel) {
       return foundModel;
     }
@@ -108,7 +110,10 @@ class ModelsService {
   }
 
   async getModelsForConstructor() {
-    return Model.find({ availableForConstructor: true });
+    return Model.find({
+      availableForConstructor: true,
+      isDeleted: false,
+    });
   }
 
   async getModelsByCategory(id) {
@@ -116,7 +121,10 @@ class ModelsService {
       throw new RuleError(CATEGORY_NOT_VALID, BAD_REQUEST);
     }
 
-    return Model.find({ category: id });
+    return Model.find({
+      category: id,
+      isDeleted: false,
+    });
   }
 
   async addModel(data, upload, { _id: adminId }) {
@@ -200,7 +208,7 @@ class ModelsService {
   }
 
   async deleteModel(id, { _id: adminId }) {
-    const modelToDelete = await Model.findByIdAndDelete(id).exec();
+    const modelToDelete = await Model.findById(id).exec();
     if (!modelToDelete) {
       throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
     }
@@ -212,7 +220,21 @@ class ModelsService {
         )
       );
     }
-    await deleteTranslations(modelToDelete.translationsKey);
+    const products = await Product.find({ model: id }).exec();
+
+    if (products.length) {
+      const update = {
+        $set: {
+          isDeleted: true,
+          deletedAt: Date.now(),
+        },
+      };
+      await Model.findByIdAndUpdate(id, update, { new: true }).exec();
+    } else {
+      await Model.findByIdAndDelete(id).exec();
+      await deleteTranslations(modelToDelete.translationsKey);
+    }
+
     const historyEvent = {
       action: DELETE_EVENT,
       historyName: MODEL_EVENT,
@@ -333,6 +355,22 @@ class ModelsService {
       { $pull: { constructorBottom: constructorElementID } },
       { safe: true, upsert: true }
     );
+  }
+
+  getModelSizes(model, sizeIDs) {
+    if (!model || !model.sizes || !model.sizes.length) {
+      throw new RuleError(MODEL_NOT_VALID, BAD_REQUEST);
+    }
+
+    return model.sizes.filter(size =>
+      sizeIDs.some(id => id === size._id.toString())
+    );
+  }
+
+  async getModelSizeById(modelId, sizeId) {
+    const model = await this.getModelById(modelId);
+
+    return model.toObject().sizes.find(size => size._id.equals(sizeId));
   }
 }
 

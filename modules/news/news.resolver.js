@@ -2,8 +2,8 @@ const newsService = require('./news.service');
 const RuleError = require('../../errors/rule.error');
 
 const newsQuery = {
-  getAllNews: (parent, args) => newsService.getAllNews(args),
-  getNewsById: async (parent, args) => {
+  getAllNews: (_parent, args) => newsService.getAllNews(args),
+  getNewsById: async (_parent, args) => {
     try {
       return await newsService.getNewsById(args.id);
     } catch (e) {
@@ -13,21 +13,21 @@ const newsQuery = {
 };
 
 const newsMutation = {
-  addNews: async (parent, args, { user }) => {
+  addNews: async (_parent, args, { user }) => {
     try {
       return await newsService.addNews(args.news, args.upload, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  deleteNews: async (parent, args, { user }) => {
+  deleteNews: async (_parent, args, { user }) => {
     try {
       return await newsService.deleteNews(args.id, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  updateNews: async (parent, args, { user }) => {
+  updateNews: async (_parent, args, { user }) => {
     try {
       return await newsService.updateNews(
         args.id,

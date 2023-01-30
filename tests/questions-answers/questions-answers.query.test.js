@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { newQuestionsAnswers } = require('./questions-answers.variables');
 const { setupApp } = require('../helper-functions');
 const {
@@ -17,6 +18,9 @@ describe('Questions and answers queries', () => {
       newQuestionsAnswers,
       operations
     );
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should get all questions and answers', async () => {

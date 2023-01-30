@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   PROMOCODE_NOT_FOUND,
 } = require('../../error-messages/promocode.messages');
@@ -17,7 +18,9 @@ describe('Promo-codes queries', () => {
     expect(answers).toBeDefined();
     expect(answers.items).toBeInstanceOf(Array);
   });
-
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   it('Should get promo-code by field code', async () => {
     const operations = await setupApp();
     await addPromoCode(newPromoCode, operations);

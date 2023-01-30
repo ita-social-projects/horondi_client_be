@@ -32,17 +32,14 @@ const productsMutation = {
   },
   addProductFromConstructor: async (_, args) => {
     try {
-      return await productsService.addProductFromConstructor(
-        args.product,
-        args.upload
-      );
+      return await productsService.addProductFromConstructor(args.product);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   },
   deleteProducts: async (_parent, args, { user }) => {
     try {
-      return await productsService.deleteProducts(args, user);
+      return await productsService.deleteProducts(args.ids, user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

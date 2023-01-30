@@ -6,6 +6,7 @@ const newPositionInputData = () => ({
     { lang: 'en', value: 'Position test' },
   ],
   available: true,
+  optionType: 'Position',
 });
 
 const positionUpdateData = () => ({
@@ -14,6 +15,7 @@ const positionUpdateData = () => ({
     { lang: 'en', value: 'Position update test' },
   ],
   available: false,
+  optionType: 'POSITION',
 });
 
 const filter = {

@@ -13,11 +13,15 @@ type Order {
   delivery: Delivery
   items: [OrderItem]
   totalItemsPrice: Int
-  totalPriceToPay: Int
+  totalPriceToPay: Float
   isPaid: Boolean
   paymentMethod: PaymentEnum
   paymentStatus: PaymentStatusEnum
   fixedExchangeRate: Float
+  promoCodeId: String
+  certificateId: String
+  itemsPriceWithDiscount: [Float]
+  itemsDiscount: [Float]
 }
 
 enum PaymentStatusEnum {
@@ -49,10 +53,10 @@ type OrderItem {
   quantity: Int
   isFromConstructor: Boolean
   options: ItemOptions
-  constructorBasics: ConstructorBasic
+  constructorBasics: Basics
   constructorPattern: Pattern
-  constructorFrontPocket: ConstructorFrontPocket
-  constructorBottom: ConstructorBottom
+  constructorFrontPocket: Pocket
+  constructorBottom: Bottom
   fixedPrice: Int
 }
 type Delivery {
@@ -110,6 +114,8 @@ input OrderInput {
   isPaid: Boolean
   paymentStatus: PaymentStatusEnum
   user_id: ID
+  promoCodeId: String
+  certificateId: String
 }
 
 input OrderUserInput {

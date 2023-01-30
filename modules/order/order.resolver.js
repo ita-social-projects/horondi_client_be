@@ -2,7 +2,7 @@ const ordersService = require('./order.service');
 const RuleError = require('../../errors/rule.error');
 
 const ordersQuery = {
-  getOrderById: async (parent, { id }) => {
+  getOrderById: async (_parent, { id }) => {
     try {
       return await ordersService.getOrderById(id);
     } catch (e) {

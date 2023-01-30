@@ -10,7 +10,8 @@ const pocketSchema = new mongoose.Schema({
   name: [Language],
   images: ImageSet,
   absolutePrice: Number,
-  restriction: Boolean,
+  relativePrice: Number,
+  available: Boolean,
   positions: [
     {
       type: mongoose.Schema.Types.ObjectId,

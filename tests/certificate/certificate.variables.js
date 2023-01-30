@@ -6,6 +6,8 @@ const newCertificateInputData = [
 ];
 
 const email = 'test@test.com';
+const newEmail = 'newTest@test.com';
+const language = 1;
 
 const newUser = {
   firstName: 'Some',
@@ -19,6 +21,8 @@ const wrongName = 'HOR64646556';
 
 module.exports = {
   newCertificateInputData,
+  newEmail,
+  language,
   email,
   newUser,
   wrongId,

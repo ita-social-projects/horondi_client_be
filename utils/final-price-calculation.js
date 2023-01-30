@@ -2,7 +2,10 @@ const Product = require('../modules/product/product.model');
 const Pattern = require('../modules/pattern/pattern.model');
 const Closures = require('../modules/closures/closures.model');
 const Material = require('../modules/material/material.model');
-const Size = require('../modules/size/size.model');
+
+const basic = require('../modules/basics/basics.service');
+const bottom = require('../modules/bottom/bottom.service');
+const modelService = require('../modules/model/model.service');
 
 const checkPriceType = (price, item, basePrice) => {
   if (item.absolutePrice) {
@@ -30,26 +33,20 @@ const calculateHelper = (entities, sizes, basePrice) => {
 };
 
 const finalPriceCalculationForConstructor = async product => {
-  const mainMaterial = await Material.findById(
-    product.mainMaterial.material
-  ).exec();
+  const basicMaterial = await basic.getBasicById(product.mainMaterial.material);
 
-  const bottomMaterial = await Material.findById(
+  const bottomMaterial = await bottom.getBottomById(
     product.bottomMaterial.material
-  ).exec();
+  );
 
-  const sizesPrice = await Size.find({
-    _id: { $in: product.sizes },
-  }).exec();
-
-  const prices = [mainMaterial, bottomMaterial];
+  const prices = [basicMaterial, bottomMaterial];
 
   if (product.pattern) {
     const pattern = await Pattern.findById(product.pattern).exec();
     prices.push(pattern);
   }
 
-  return calculateHelper(prices, sizesPrice, product.basePrice);
+  return calculateHelper(prices, product.model.sizes, product.basePrice);
 };
 
 const finalPriceCalculation = async product => {
@@ -64,11 +61,8 @@ const finalPriceCalculation = async product => {
   const bottomMaterial = await Material.findById(
     product.bottomMaterial.material
   ).exec();
-  const sizesPrice = await Size.find({
-    _id: {
-      $in: product.sizes,
-    },
-  }).exec();
+
+  const sizesPrice = modelService.getModelSizes(product.model, product.sizes);
 
   const prices = [
     pattern,
@@ -82,15 +76,22 @@ const finalPriceCalculation = async product => {
 };
 
 const finalPriceRecalculation = async productId => {
-  let { pattern, closure, sizes, mainMaterial, innerMaterial, bottomMaterial } =
-    await Product.findById(productId)
-      .populate('pattern')
-      .populate('closure')
-      .populate('sizes.size')
-      .populate('mainMaterial.material')
-      .populate('innerMaterial.material')
-      .populate('bottomMaterial.material')
-      .exec();
+  const {
+    pattern,
+    closure,
+    model: modelId,
+    sizes: productSizes,
+    mainMaterial,
+    innerMaterial,
+    bottomMaterial,
+  } = await Product.findById(productId)
+    .populate('pattern')
+    .populate('closure')
+    .populate('model')
+    .populate('mainMaterial.material')
+    .populate('innerMaterial.material')
+    .populate('bottomMaterial.material')
+    .exec();
 
   const prices = [
     pattern,
@@ -102,7 +103,8 @@ const finalPriceRecalculation = async productId => {
 
   const { basePrice } = await Product.findById(productId).exec();
 
-  sizes = sizes.map(size => size.size);
+  const productSizesIds = productSizes.map(size => size.size.toString());
+  const sizes = modelService.getModelSizes(modelId, productSizesIds);
 
   return calculateHelper(prices, sizes, basePrice);
 };

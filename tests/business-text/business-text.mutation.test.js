@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const {
   BUSINESS_TEXT_NOT_FOUND,
   BUSINESS_TEXT_ALREADY_EXIST,
@@ -20,11 +22,14 @@ const {
 let businessText;
 let businessTextId;
 let operations;
-const file = new TestFile().testFile;
+const file = [new TestFile().testFile];
 
 describe('Business page queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
   test('should add business text to database', async () => {
     businessText = await addBusinessText(

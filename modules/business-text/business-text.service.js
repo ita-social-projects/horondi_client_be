@@ -265,7 +265,7 @@ class BusinessTextService {
   }
 
   findImagesInText(uaTranslations) {
-    const images = uaTranslations.text.match(/<img([\w\W]+?)>/g);
+    const images = uaTranslations.text.match(/<img(.+?)>/g);
     if (!images) {
       return [];
     }

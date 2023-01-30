@@ -6,7 +6,7 @@ block content
         div.productTableContent
             p.congrats Congratulations! #[br] You are only one step back from receiving your order: #[br]
             table.productTable
-                caption= `До сплати: ${totalPrice[0].value}  ${totalPrice[0].currency}`
+                caption= `До сплати: ${totalPrice}`
                 tr.tableHead
                     th Photo
                     th Name
@@ -21,7 +21,7 @@ block content
                                 p= val.product.name[0].value
                                 p= `Size - ${val.options.size.name}`
                             td= val.quantity
-                            td= `${val.fixedPrice[0].value} ${val.fixedPrice[0].currency}`
+                            td= `${val.fixedPrice}`
                     else if val.fromConstructor
                         tr.tableBody
                             td
@@ -30,7 +30,7 @@ block content
                                 p= val.fromConstructor.product.name[0].value
                                 p= `Size - ${val.options.size.name}`
                             td= val.quantity
-                            td= `${val.fixedPrice[0].value} ${val.fixedPrice[0].currency}`
+                            td= `${val.fixedPrice}`
         button.confirm
             a(href=paymentUrl) Pay for the order
         p.operationsLink or follow the link below:

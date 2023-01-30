@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const { uploadFiles, deleteFiles } = require('./upload.helper');
 const uploadService = require('../../modules/upload/upload.service');
@@ -9,6 +10,9 @@ const file = new TestFile().testFile;
 describe('Upload mutations tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should upload file', async () => {

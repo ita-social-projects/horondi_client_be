@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const { wrongId } = require('./homepage-images.variables');
 const {
@@ -19,6 +20,9 @@ describe('Homepage looks images mutations', () => {
 
   beforeAll(async () => {
     looksImageId = await addHomePageLooksImage(operations);
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Passing invalid ID should return error', async () => {

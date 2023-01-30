@@ -6,15 +6,14 @@ block subheaderText
 block content
     div.contentWrapper
         each item in items
-            p.text Congratulations! #[br] You have successfully purchased  the gift certificate №p=`${item.code}` HORONDI for p= `${item.value}` UAH.
+            p.text Congratulations! #[br] You have successfully purchased the gift certificate HORONDI №#[strong !{item.name}] for !{item.value} UAH. You can view your certificates on our #[a(href=frontendUrl + `/my-certificates/`) website.]
                 div.continerImg
                     div.shadow
-                        include ./img/certificate-500-front.svg  
-                    div.shadow
-                        include ./img/certificate-back.svg 
+                        img.certificate(src=`https://horondi.blob.core.windows.net/horondi/images/certificate-${item.value}.png`)
             p.listHeader #[strong Pay attention!]
-            ol 
+            ol.bestWishes
                 li The gift certificate provides #[strong a discount on any Horondi product.]
                 li If the purchase price exceeds the avaliable balance of the girt certificate, #[strong the difference can be paid in a convenient way.]
                 li The gift certificate is #[strong non-refundable or exchangeable] for the corresponding cash equivalent.
-                li The certificate is valid for 365 days from the date of purchase - #[strong p= `${item.dateStart}`] (purchase date of your certificate). 
+                li The certificate is valid for 365 days from the date of purchase - #[strong !{dateEnd}] (expiration date of your certificate). 
+        a.continue(href=frontendUrl + `/my-certificates/`) view my certificates

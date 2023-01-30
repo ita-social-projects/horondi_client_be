@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   MATERIAL_NOT_FOUND,
 } = require('../../error-messages/material.messages');
@@ -37,6 +38,9 @@ describe('material quarries test', () => {
     material = getMaterial(colorId);
     const materialData = await createMaterial(material, operations);
     materialId = materialData._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('should receive all materials', async () => {

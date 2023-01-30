@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const {
   deleteOrder,
   createOrder,
+  updateOrderById,
   getOrderById,
   getOrdersByUser,
   getAllOrders,
@@ -9,9 +11,19 @@ const {
   getUserOrders,
 } = require('./order.helpers');
 const {
+  generateCertificate,
+  getCertificateByParams,
+} = require('../certificate/certificate.helper');
+const {
+  CERTIFICATE_IN_PROGRESS,
+} = require('../../error-messages/certificate.messages');
+const {
   wrongId,
+  email,
+  newCertificateInputData,
   newOrderInputData,
   getOrdersInput,
+  newOrderUpdated,
 } = require('./order.variables');
 const { newProductInputData } = require('../product/product.variables');
 const { createProduct, deleteProducts } = require('../product/product.helper');
@@ -38,24 +50,28 @@ const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
 const { superAdminUser } = require('../user/user.variables');
 const { loginAdmin } = require('../user/user.helper');
+const { addCurrency } = require('../currency/currency.helper');
+
+const newCurrency = {
+  lastUpdatedDate: String(Date.now()),
+  convertOptions: {
+    UAH: {
+      name: 'test',
+      exchangeRate: 36,
+    },
+    USD: {
+      name: 'test',
+      exchangeRate: 1,
+    },
+  },
+};
 
 jest.mock('../../modules/upload/upload.service');
-jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
-jest.mock('../../modules/currency/currency.model', () => ({
-  findOne: () => ({
-    exec: () => ({
-      convertOptions: { UAH: { exchangeRate: 1, name: 'UAH' } },
-    }),
-  }),
-}));
 
 let colorId;
 let sizeId;
@@ -69,11 +85,27 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let userId;
+let certificateId;
+let certificateName;
+let certificateParams;
+let isPaid;
+
 const date = { dateFrom: '', dateTo: '' };
 
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+
+    await addCurrency(newCurrency, operations);
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificateId = certificateData.certificates[0]._id;
+    certificateName = certificateData.certificates[0].name;
+    certificateParams = { name: certificateName };
+
     const {
       data: {
         loginAdmin: { _id },
@@ -93,11 +125,7 @@ describe('Order queries', () => {
     materialId = materialData._id;
     const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
+    sizeId = modelData.sizes[0]._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -130,14 +158,23 @@ describe('Order queries', () => {
     productId = productData._id;
     date.dateFrom = new Date();
     const orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId, userId),
+      newOrderInputData(
+        productId,
+        modelId,
+        sizeId,
+        constructorBasicId,
+        userId,
+        certificateId
+      ),
       operations
     );
     date.dateTo = new Date();
     orderId = orderData._id;
     userId = orderData.user_id;
   });
-
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   const { recipient, userComment, delivery, paymentStatus, status } =
     newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
@@ -149,6 +186,16 @@ describe('Order queries', () => {
     expect(orders.length).toBeGreaterThan(0);
     expect(orders).toBeInstanceOf(Array);
     expect(orders[0]).toHaveProperty('recipient', recipient);
+    expect(orders[0]).toHaveProperty('certificateId', certificateId);
+
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IN_PROGRESS
+    );
   });
 
   test('Should receive user orders', async () => {
@@ -300,6 +347,46 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('status', status);
   });
 
+  test('Should update order and return paid', async () => {
+    isPaid = true;
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(
+        productId,
+        modelId,
+        sizeId,
+        undefined,
+        certificateId,
+        isPaid
+      ),
+      orderId,
+      operations
+    );
+
+    expect(updatedOrder).toBeTruthy();
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId);
+    expect(updatedOrder.paymentStatus).toBe('PAID');
+  });
+
+  test('Should update order and return create', async () => {
+    isPaid = false;
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(
+        productId,
+        modelId,
+        sizeId,
+        undefined,
+        certificateId,
+        isPaid
+      ),
+      orderId,
+      operations
+    );
+
+    expect(updatedOrder).toBeTruthy();
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId);
+    expect(updatedOrder.paymentStatus).toBe('CREATED');
+  });
+
   test('Should throw error ORDER_NOT_FOUND', async () => {
     const res = await getOrderById(wrongId, operations);
 
@@ -313,7 +400,6 @@ describe('Order queries', () => {
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
-    await deleteSize(sizeId, operations);
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);

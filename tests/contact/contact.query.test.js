@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { CONTACT_NOT_FOUND } = require('../../error-messages/contact.messages');
 const { contact, notExistContactId } = require('./contact.variables');
 const { setupApp } = require('../helper-functions');
@@ -18,6 +19,9 @@ describe('Contacts queries', () => {
     operations = await setupApp();
     const contactData = await addContact(contact, operations);
     contactsId = contactData._id;
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('should receive all contacts', async () => {

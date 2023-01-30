@@ -23,8 +23,9 @@ const productType = `
     rate: Float
     rateCount: Int
     userRates: [UserRate]
-    comments: PaginatedComments!
     translationsKey: ID!
+	 isDeleted: Boolean
+	 deletedAt: Date
   }
   type ProductMaterialType{
     material: Material
@@ -67,7 +68,7 @@ const productInput = `
     pattern: ID
     closure: ID
     sizes:[ID]!
-    images: [Upload]
+    images: Upload
     availableCount: Int
     basePrice: Float!
     available: Boolean

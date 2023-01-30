@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   PRODUCT_ALREADY_EXIST,
   PRODUCT_NOT_FOUND,
@@ -38,8 +39,6 @@ const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
@@ -47,7 +46,6 @@ const { setupApp } = require('../helper-functions');
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
 
 let colorId;
 let sizeId;
@@ -79,11 +77,7 @@ describe('Product mutations', () => {
       operations
     );
     modelId = modelData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
+    sizeId = modelData.sizes[0]._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -263,9 +257,9 @@ describe('Product mutations', () => {
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
-    await deleteSize(sizeId, operations);
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });

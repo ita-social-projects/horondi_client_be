@@ -8,6 +8,7 @@ const {
 
 const PositionSchema = new mongoose.Schema({
   name: [Language],
+  optionType: String,
   available: Boolean,
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,

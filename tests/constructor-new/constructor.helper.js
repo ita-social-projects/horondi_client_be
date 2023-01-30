@@ -75,6 +75,56 @@ const getAllConstructors = async ({ limit, skip, filter }, operations) => {
   return result.data.getAllConstructors.items;
 };
 
+const getAllConstructorParts = async operations => {
+  const result = await operations.query({
+    query: gql`
+      query {
+        getAllConstructorParts {
+          items {
+            bottoms {
+              _id
+            }
+            basics {
+              _id
+            }
+            patterns {
+              _id
+            }
+            backs {
+              _id
+            }
+            straps {
+              _id
+            }
+            closures {
+              _id
+            }
+            pockets {
+              _id
+            }
+            _id
+            name {
+              lang
+              value
+            }
+            model {
+              _id
+              images {
+                large
+                medium
+                small
+                thumbnail
+              }
+            }
+          }
+        }
+      }
+    `,
+  });
+
+  return result?.data?.getAllConstructorParts.items;
+};
+
 const getConstructorById = async (id, operations) => {
   const result = await operations.query({
     query: gql`
@@ -157,5 +207,6 @@ module.exports = {
   getConstructorById,
   updateConstructor,
   getAllConstructors,
+  getAllConstructorParts,
   getConstructorByModel,
 };

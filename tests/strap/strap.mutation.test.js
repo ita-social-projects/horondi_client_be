@@ -18,6 +18,8 @@ const {
 } = require('./strap.variables');
 const { color } = require('../color/color.variables');
 const { createColor } = require('../color/color.helper');
+const { createMaterial } = require('../materials/material.helper');
+const { getMaterial } = require('../materials/material.variables');
 const { ITEM_ALREADY_EXISTS } = require('../../error-messages/common.messages');
 
 jest.mock('../../modules/upload/upload.service');
@@ -28,7 +30,8 @@ let operations;
 let strapData;
 let strapId;
 let colorId;
-let modelId;
+let materialInput;
+let materialId;
 
 describe('Strap mutations', () => {
   beforeAll(async () => {
@@ -36,13 +39,21 @@ describe('Strap mutations', () => {
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
-    strapData = await createStrap(newStrap(colorId), imgString, operations);
+    materialInput = getMaterial(colorId);
+    const materialData = await createMaterial(materialInput, operations);
+    materialId = materialData._id;
+    strapData = await createStrap(
+      newStrap(colorId, materialId),
+      imgString,
+      operations
+    );
     strapId = strapData._id;
   });
 
   test('#1. should create strap', async () => {
     const convertedObj = await strapWithConvertedPrice(
       colorId,
+      materialId,
       newImgObj,
       strapData.translationsKey
     );
@@ -56,7 +67,7 @@ describe('Strap mutations', () => {
 
   test('#2. should receive Error STRAP_ALREADY_EXISTS when create strap', async () => {
     strapData = await createStrap(
-      newStrap(colorId, modelId),
+      newStrap(colorId, materialId),
       newImgString,
       operations
     );
@@ -69,7 +80,7 @@ describe('Strap mutations', () => {
   test('#3. should receive Error STRAP_NOT_FOUND when update', async () => {
     strapData = await updateStrap(
       wrongId,
-      strapToUpdate(colorId, modelId),
+      strapToUpdate(colorId, materialId),
       null,
       operations
     );
@@ -82,12 +93,12 @@ describe('Strap mutations', () => {
   test('#4. should update strap', async () => {
     const updatedStrap = await updateStrap(
       strapId,
-      strapToUpdate(colorId, modelId),
+      strapToUpdate(colorId, materialId),
       null,
       operations
     );
 
-    const finalStrap = newStrapUpdated(colorId, modelId);
+    const finalStrap = newStrapUpdated(colorId, materialId);
 
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({
@@ -100,12 +111,12 @@ describe('Strap mutations', () => {
   test('#5. should update strap with IMAGE', async () => {
     const updatedStrap = await updateStrap(
       strapId,
-      strapToUpdate(colorId, modelId),
+      strapToUpdate(colorId, materialId),
       newImgString,
       operations
     );
 
-    const finalStrap = newStrapUpdatedWithImage(colorId, modelId, newImgObj);
+    const finalStrap = newStrapUpdatedWithImage(colorId, materialId, newImgObj);
 
     expect(updatedStrap).toBeDefined();
     expect(updatedStrap).toEqual({
@@ -152,6 +163,6 @@ describe('Strap mutations', () => {
   });
 
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

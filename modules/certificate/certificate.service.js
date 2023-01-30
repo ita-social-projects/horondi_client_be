@@ -1,24 +1,33 @@
 const { randomInt } = require('crypto');
 const RuleError = require('../../errors/rule.error');
-const mongoose = require('mongoose');
 const { CertificateModel } = require('./certificate.model');
+const { sendEmail } = require('../../modules/email/email.service');
 const {
-  roles: { USER },
+  roles: { USER, ADMIN, SUPERADMIN },
 } = require('../../consts');
-
+const {
+  EmailActions: { RECEIVE_GIFT_SERTIFICATE, SEND_GIFT_CERTIFICATE },
+} = require('../../consts/email-actions');
+const {
+  CERTIFICATE_UPDATE_STATUS: { USED, IN_PROGRESS },
+} = require('../../consts/certificate-update-status');
 const {
   STATUS_CODES: { NOT_FOUND, BAD_REQUEST },
 } = require('../../consts/status-codes');
 const {
   CERTIFICATE_HAVE_OWNER,
   CERTIFICATE_IS_ACTIVE,
+  CERTIFICATE_IN_PROGRESS,
   CERTIFICATE_IS_EXPIRED,
+  CERTIFICATE_IS_NOT_ACTIVATED,
   CERTIFICATE_IS_USED,
   CERTIFICATE_NOT_FOUND,
 } = require('../../error-messages/certificate.messages');
+
 const { FONDY_PAYMENT_MULTIPLIER } = require('../../consts/payments');
 const { modifyDate } = require('../../utils/modify-date');
 const FilterHelper = require('../../helpers/filter-helper');
+const userService = require('../user/user.service');
 
 const generateName = async () => {
   const firstNamePart = Math.floor(randomInt(1000, 9999));
@@ -34,25 +43,16 @@ const generateName = async () => {
 };
 
 class CertificatesService extends FilterHelper {
-  async getAllCertificates(
-    skip,
-    limit,
-    sortBy,
-    sortOrder,
-    search,
-    status,
-    user
-  ) {
-    let filter = {};
+  async getAllCertificates(skip, limit, sortBy, sortOrder, search, status) {
+    const filter = {
+      $and: [
+        { $or: [{ paymentStatus: 'PAID' }, { createdBy: { $ne: null } }] },
+      ],
+    };
 
-    if (user.role === USER) {
-      const userId = mongoose.Types.ObjectId(user._id);
-      filter = { ownedBy: userId };
-    } else {
-      this.filterByName(filter, search);
-    }
+    this.filterByName(filter, search);
     if (status.length) {
-      if (!Object.keys(filter).length) {
+      if (!filter['$or']) {
         filter['$or'] = [];
       }
       if (status.includes('isUsed')) {
@@ -60,6 +60,9 @@ class CertificatesService extends FilterHelper {
       }
       if (status.includes('isExpired')) {
         filter['$or'].push({ isExpired: true });
+      }
+      if (status.includes('inProgress')) {
+        filter['$or'].push({ inProgress: true });
       }
       if (status.includes('isActivated')) {
         filter['$or'].push({ isActivated: true });
@@ -100,9 +103,56 @@ class CertificatesService extends FilterHelper {
     };
   }
 
+  async getAllUserCertificates(skip, limit, user) {
+    const filter = {
+      $and: [{ email: user.email }, { paymentStatus: 'PAID' }],
+    };
+
+    const certificates = await CertificateModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'admin',
+        },
+      },
+      {
+        $match: filter,
+      },
+      {
+        $facet: {
+          count: [{ $count: 'count' }],
+          data: [
+            {
+              $sort: {
+                isUsed: 1,
+                isExpired: 1,
+                inProgress: 1,
+                dateStart: 1,
+                value: -1,
+              },
+            },
+            { $skip: skip },
+            { $limit: limit },
+          ],
+        },
+      },
+    ]).exec();
+
+    const items = certificates[0].data;
+    const count = certificates[0].count.length
+      ? certificates[0].count[0].count
+      : 0;
+
+    return {
+      items,
+      count,
+    };
+  }
+
   async getCertificateById(id) {
     const certificate = await CertificateModel.findById(id).exec();
-
     if (!certificate) {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
@@ -117,12 +167,20 @@ class CertificatesService extends FilterHelper {
       throw new RuleError(CERTIFICATE_NOT_FOUND, NOT_FOUND);
     }
 
+    if (certificate.inProgress) {
+      throw new RuleError(CERTIFICATE_IN_PROGRESS, BAD_REQUEST);
+    }
+
     if (certificate.isUsed) {
       throw new RuleError(CERTIFICATE_IS_USED, BAD_REQUEST);
     }
 
     if (certificate.isExpired) {
       throw new RuleError(CERTIFICATE_IS_EXPIRED, BAD_REQUEST);
+    }
+
+    if (!certificate.isActivated) {
+      throw new RuleError(CERTIFICATE_IS_NOT_ACTIVATED, BAD_REQUEST);
     }
 
     return certificate;
@@ -147,6 +205,10 @@ class CertificatesService extends FilterHelper {
     } else {
       newCertificate.createdBy = userId;
     }
+    if (userRole === ADMIN || userRole === SUPERADMIN) {
+      newCertificate.isActivated = true;
+      newCertificate.paymentStatus = 'PAID';
+    }
 
     for (const certificateData of certificatesData) {
       const { value, count } = certificateData;
@@ -156,19 +218,15 @@ class CertificatesService extends FilterHelper {
         newCertificate.name = await generateName();
         newCertificate.value = value;
 
-        if (dateStart) {
-          const futureDate = {
-            dateStart,
-            dateEnd: modifyDate({ years: 1, date: dateStart }),
-            isActive: false,
-          };
-          Object.assign(newCertificate, futureDate);
-        }
-
+        const futureDate = {
+          dateStart: modifyDate({ date: dateStart }),
+          dateEnd: modifyDate({ years: 1, date: dateStart }),
+          isActive: false,
+        };
+        Object.assign(newCertificate, futureDate);
         certificatesArr.push({ ...newCertificate });
       }
     }
-
     certificatesPrice *= FONDY_PAYMENT_MULTIPLIER;
 
     const certificates = await CertificateModel.insertMany(certificatesArr);
@@ -190,20 +248,63 @@ class CertificatesService extends FilterHelper {
     ).exec();
   }
 
-  async updateCertificate(name) {
-    await this.getCertificateByParams({ name });
+  async updateCertificate(params, statusUpdate) {
+    const now = new Date();
+    if (statusUpdate === USED) {
+      return CertificateModel.findOneAndUpdate(
+        { ...params },
+        {
+          isUsed: true,
+          isActivated: false,
+          inProgress: false,
+          dateOfUsing: now,
+        },
+        { new: true }
+      ).exec();
+    }
 
-    return CertificateModel.findOneAndUpdate(
-      { name },
-      { isUsed: true, isActivated: false },
-      { new: true }
-    ).exec();
+    if (statusUpdate === IN_PROGRESS) {
+      return CertificateModel.findOneAndUpdate(
+        { ...params },
+        { inProgress: true, isActivated: false },
+        { new: true }
+      ).exec();
+    }
   }
 
-  async deleteCertificate(id) {
-    const certificateExists = await this.getCertificateById(id);
+  async giftCertificateToEmail(id, email, oldEmail, language) {
+    const certificate = await this.getCertificateById(id);
+    certificate.email = email;
+    certificate.save();
 
-    if (!certificateExists.isUsed && !certificateExists.isExpired) {
+    const dateEnd = certificate.dateEnd.toLocaleDateString('uk-UA');
+    const dateStart = certificate.dateStart.toLocaleDateString('uk-UA');
+
+    await sendEmail(email, RECEIVE_GIFT_SERTIFICATE, {
+      certificateName: certificate.name,
+      certificateValue: certificate.value,
+      dateEnd,
+      language,
+    });
+    await sendEmail(oldEmail, SEND_GIFT_CERTIFICATE, {
+      certificateName: certificate.name,
+      certificateValue: certificate.value,
+      dateStart,
+      dateEnd,
+      language,
+    });
+
+    return certificate;
+  }
+
+  async deleteCertificate(id, adminId) {
+    const certificateExists = await this.getCertificateById(id);
+    const { role } = await userService.getUser(adminId);
+    if (
+      role === ADMIN &&
+      !certificateExists.isUsed &&
+      !certificateExists.isExpired
+    ) {
       throw new RuleError(CERTIFICATE_IS_ACTIVE, BAD_REQUEST);
     }
 

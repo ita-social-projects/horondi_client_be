@@ -4,7 +4,7 @@ const RuleError = require('../../errors/rule.error');
 const colorQuery = {
   getAllColors: async () => colorService.getAllColors(),
 
-  getColorById: async (parent, { id }) => {
+  getColorById: async (_parent, { id }) => {
     try {
       return await colorService.getColorById(id);
     } catch (e) {
@@ -14,7 +14,7 @@ const colorQuery = {
 };
 
 const colorMutation = {
-  addColor: async (parent, { data }, { user }) => {
+  addColor: async (_parent, { data }, { user }) => {
     try {
       return await colorService.addColor(data, user);
     } catch (e) {
@@ -22,7 +22,7 @@ const colorMutation = {
     }
   },
 
-  deleteColor: async (parent, { id }, { user }) => {
+  deleteColor: async (_parent, { id }, { user }) => {
     try {
       return await colorService.deleteColor(id, user);
     } catch (e) {

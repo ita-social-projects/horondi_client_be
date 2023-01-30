@@ -10,7 +10,7 @@ const ukrPoshtaQuery = {
     }
   },
 
-  getUkrPoshtaDistrictsByRegionId: async (parent, args) => {
+  getUkrPoshtaDistrictsByRegionId: async (_parent, args) => {
     try {
       return await deliveryService.getUkrPoshtaDistrictsByRegionId(args.id);
     } catch (e) {
@@ -18,7 +18,7 @@ const ukrPoshtaQuery = {
     }
   },
 
-  getUkrPoshtaCitiesByDistrictId: async (parent, args) => {
+  getUkrPoshtaCitiesByDistrictId: async (_parent, args) => {
     try {
       return await deliveryService.getUkrPoshtaCitiesByDistrictId(args.id);
     } catch (e) {
@@ -26,7 +26,7 @@ const ukrPoshtaQuery = {
     }
   },
 
-  getUkrPoshtaStreetsByCityId: async (parent, args) => {
+  getUkrPoshtaStreetsByCityId: async (_parent, args) => {
     try {
       return await deliveryService.getUkrPoshtaStreetsByCityId(args.id);
     } catch (e) {
@@ -34,7 +34,7 @@ const ukrPoshtaQuery = {
     }
   },
 
-  getUkrPoshtaPostofficesCityId: async (parent, args) => {
+  getUkrPoshtaPostofficesCityId: async (_parent, args) => {
     try {
       return await deliveryService.getUkrPoshtaPostofficesCityId(args.id);
     } catch (e) {

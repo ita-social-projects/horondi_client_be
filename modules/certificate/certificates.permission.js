@@ -20,8 +20,8 @@ const {
 
 const certificatePermissionsQuery = {
   getCertificateById: hasRoles([ADMIN, SUPERADMIN]),
-
-  getAllCertificates: and(isAuthorized, isUnlocked),
+  getAllCertificates: hasRoles([ADMIN, SUPERADMIN]),
+  getAllUserCertificates: and(isAuthorized, isUnlocked),
 };
 
 const certificatePermissionsMutations = {
@@ -29,8 +29,6 @@ const certificatePermissionsMutations = {
     CERTIFICATE,
     certificateInputValidator
   ),
-
-  updateCertificate: inputDataValidation('name', certificateNameValidator),
 
   addCertificate: and(
     hasRoles([USER]),

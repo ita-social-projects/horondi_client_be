@@ -3,9 +3,13 @@ const { ObjectId } = require('mongoose').Types;
 const Currency = require('../currency/currency.model');
 const RuleError = require('../../errors/rule.error');
 const Order = require('./order.model');
+const { CertificateModel } = require('../certificate/certificate.model');
 const {
   STATUS_CODES: { BAD_REQUEST, NOT_FOUND },
 } = require('../../consts/status-codes');
+const {
+  CERTIFICATE_UPDATE_STATUS: { IN_PROGRESS },
+} = require('../../consts/certificate-update-status');
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
@@ -26,7 +30,21 @@ const {
   generateOrderNumber,
   addProductsToStatistic,
   updateProductStatistic,
+  calculateProductsPriceWithDiscount,
 } = require('../../utils/order.utils');
+
+const {
+  getCertificateByParams,
+  updateCertificate,
+} = require('../certificate/certificate.service');
+const {
+  PAYMENT_STATUSES: { PAYMENT_CREATED, PAYMENT_PAID },
+} = require('../../consts/payment-statuses');
+const {
+  ORDER_STATUSES: { REFUNDED, CANCELLED },
+} = require('../../consts/order-statuses');
+const { PAYMENT_TYPES } = require('../../consts/payment-types.js');
+const { sendOrderToEmail } = require('../../utils/payment.utils');
 
 class OrdersService {
   async getAllOrders({ skip, limit, filter = {}, sort }) {
@@ -167,24 +185,66 @@ class OrdersService {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
 
-    const { items } = order;
+    const { items, status: orderStatus, promoCodeId, certificateId } = order;
+    const { user_id } = orderToUpdate;
+    let { paymentStatus } = orderToUpdate;
+    const cancelledStatuses = { CANCELLED, REFUNDED };
 
-    const userId = orderToUpdate?.user_id;
-
-    const data = { ...order, user_id: userId || null };
+    const data = { ...order, user_id };
 
     await updateProductStatistic(orderToUpdate, data);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
-    const totalPriceToPay = await calculateTotalPriceToPay(
-      order,
-      totalItemsPrice
+    let totalPriceToPay = totalItemsPrice;
+
+    const {
+      discounts: itemsDiscount,
+      priceWithDiscount: itemsPriceWithDiscount,
+    } = await calculateProductsPriceWithDiscount(
+      promoCodeId,
+      certificateId,
+      items
     );
+
+    if (promoCodeId) {
+      totalPriceToPay = await calculateTotalPriceToPay(itemsPriceWithDiscount);
+    }
+
+    if (certificateId) {
+      await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
+      totalPriceToPay = itemsPriceWithDiscount;
+    }
+
+    totalPriceToPay = Math.round(totalPriceToPay);
+
+    if (order.paymentMethod === PAYMENT_TYPES.CASH) {
+      paymentStatus = order.isPaid ? PAYMENT_PAID : PAYMENT_CREATED;
+
+      if (certificateId && paymentStatus === PAYMENT_PAID) {
+        CertificateModel.findByIdAndUpdate(certificateId, {
+          $set: { isUsed: true, inProgress: false, dateOfUsing: new Date() },
+        }).exec();
+      }
+
+      if (certificateId && cancelledStatuses[orderStatus]) {
+        CertificateModel.findByIdAndUpdate(certificateId, {
+          $set: {
+            isActivated: true,
+            inProgress: false,
+            isUsed: false,
+            dateOfUsing: null,
+          },
+        }).exec();
+      }
+    }
 
     const orderUpdate = {
       ...order,
       totalItemsPrice,
+      itemsPriceWithDiscount,
+      itemsDiscount,
       totalPriceToPay,
+      paymentStatus,
     };
 
     return Order.findByIdAndUpdate(
@@ -196,31 +256,64 @@ class OrdersService {
 
   async addOrder(order, user) {
     const { items } = order;
+    let { paymentStatus } = order;
 
     const data = { ...order, user_id: user ? user._id : null };
     await addProductsToStatistic(items);
 
     const totalItemsPrice = await calculateTotalItemsPrice(items);
     const orderNumber = generateOrderNumber();
-
-    const totalPriceToPay = await calculateTotalPriceToPay(
-      data,
-      totalItemsPrice
-    );
+    let totalPriceToPay = totalItemsPrice;
 
     const { convertOptions } = await Currency.findOne().exec();
-
     const { exchangeRate } = convertOptions.UAH;
+
+    const {
+      discounts: itemsDiscount,
+      priceWithDiscount: itemsPriceWithDiscount,
+    } = await calculateProductsPriceWithDiscount(
+      data.promoCodeId,
+      data.certificateId,
+      items
+    );
+
+    if (data.promoCodeId) {
+      totalPriceToPay = calculateTotalPriceToPay(itemsPriceWithDiscount);
+    }
+
+    if (data.certificateId) {
+      await getCertificateByParams({ _id: data.certificateId });
+      await updateCertificate({ _id: data.certificateId }, IN_PROGRESS);
+      totalPriceToPay = itemsPriceWithDiscount;
+    }
+
+    if (totalPriceToPay > 1 && !data.certificateId) {
+      totalPriceToPay = Math.round(totalPriceToPay);
+    }
+
+    if (order.paymentMethod === PAYMENT_TYPES.CASH) {
+      paymentStatus = order.isPaid ? PAYMENT_PAID : PAYMENT_CREATED;
+    }
 
     const newOrder = {
       ...data,
       totalItemsPrice,
       totalPriceToPay,
+      itemsPriceWithDiscount,
+      itemsDiscount,
       orderNumber,
+      paymentStatus,
       fixedExchangeRate: exchangeRate,
     };
 
-    return new Order(newOrder).save();
+    const createdOrder = await new Order(newOrder).save();
+
+    if (order.paymentMethod === PAYMENT_TYPES.CASH) {
+      const language = user?.configs.language === 'en' ? 1 : 0;
+      await sendOrderToEmail(language, orderNumber);
+    }
+
+    return createdOrder;
   }
 
   async deleteOrder(id) {
@@ -238,7 +331,9 @@ class OrdersService {
   }
 
   async getUserOrders({ skip, limit }, { id }) {
+    const sort = { dateOfCreation: -1 };
     const userOrders = await Order.find({ user_id: id })
+      .sort(sort)
       .limit(limit)
       .skip(skip)
       .exec();

@@ -9,7 +9,6 @@ const {
     COLOR,
     PATTERN,
     CLOSURE,
-    SIZE,
     USER,
     COMMENT,
     PRODUCT,
@@ -84,7 +83,6 @@ const productSchema = new mongoose.Schema({
     {
       size: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: SIZE,
       },
       price: Number,
       _id: false,
@@ -115,20 +113,24 @@ const productSchema = new mongoose.Schema({
         ref: USER,
       },
       rate: Number,
-    },
-  ],
-  comments: {
-    type: [
-      {
+      comment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: COMMENT,
       },
-    ],
-    default: [],
-  },
+    },
+  ],
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
+  },
+  isDeleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
   },
 });
 

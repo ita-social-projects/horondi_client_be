@@ -15,7 +15,7 @@ class FilterHelper {
 
     const searchPattern = {
       $regex: searchTrimmed,
-      $options: 'gi',
+      $options: 'i',
     };
 
     const searchFilter = {

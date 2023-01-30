@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 
 const {
@@ -38,6 +39,9 @@ describe('Homepage looks slider queries', () => {
       )._id;
       looksSlidesIds.push(looksSlideId);
     }
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should receive looks slide', async () => {

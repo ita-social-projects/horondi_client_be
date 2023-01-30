@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { wrongId, color, ERROR_NOT_FOUND } = require('./color.variables');
 const { setupApp } = require('../helper-functions');
 const {
@@ -17,8 +18,11 @@ describe('Colors queries', () => {
 
     colorId = colorData._id;
   });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
 
-  test('Should recive all colors', async () => {
+  test('Should receive all colors', async () => {
     const result = await getAllColors(operations);
 
     expect(result).toContainEqual({
@@ -36,7 +40,7 @@ describe('Colors queries', () => {
     });
   });
 
-  test('Should recive error message COLOR_NOT_FOUND while getting by wrong ID', async () => {
+  test('Should receive error message COLOR_NOT_FOUND while getting by wrong ID', async () => {
     const result = await getColorById(wrongId, operations);
 
     expect(result).toEqual(ERROR_NOT_FOUND);

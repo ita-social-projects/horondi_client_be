@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   newMaterialsBlock,
   updatedMaterialsBlock,
@@ -12,28 +13,49 @@ const {
 
 let materialsBlock;
 let operations;
+const image = 'img.jpg';
+
+jest.mock('../../modules/upload/upload.service');
 
 describe('MaterialsBlocks queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
 
-  afterAll(async () => deleteMaterialsBlock(materialsBlock._id, operations));
+  afterAll(async () => {
+    deleteMaterialsBlock(materialsBlock._id, operations);
+    await mongoose.connection.db.dropDatabase();
+  });
 
   it('should add material-about to database', async () => {
-    materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
+    materialsBlock = await addMaterialsBlock(
+      newMaterialsBlock,
+      image,
+      operations
+    );
+    expect(materialsBlock.title).toEqual('title');
+  });
 
-    expect(materialsBlock.image).toEqual('url');
+  it('Should update material-about block without image', async () => {
+    materialsBlock = await updateMaterialsBlock(
+      materialsBlock._id,
+      updatedMaterialsBlock,
+      undefined,
+      operations
+    );
+
+    expect(materialsBlock.title).toEqual('newTitle');
   });
 
   it('Should update material-about block', async () => {
     materialsBlock = await updateMaterialsBlock(
       materialsBlock._id,
-      updatedMaterialsBlock,
+      newMaterialsBlock,
+      image,
       operations
     );
 
-    expect(materialsBlock.type).toEqual('main');
+    expect(materialsBlock.title).toEqual('title');
   });
 
   it('delete material-about', async () => {
@@ -41,6 +63,6 @@ describe('MaterialsBlocks queries', () => {
 
     materialsBlock = res.data.deleteMaterialsBlock;
 
-    expect(materialsBlock).toHaveProperty('image', newMaterialsBlock.image);
+    expect(materialsBlock).toHaveProperty('title', newMaterialsBlock.title);
   });
 });

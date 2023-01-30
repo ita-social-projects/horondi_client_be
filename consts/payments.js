@@ -6,7 +6,7 @@ const PAYMENT_ACTIONS = {
   CHECK_PAYMENT_STATUS: 'CHECK_PAYMENT_STATUS',
 };
 
-const PAYMENT_DESCRIPTION = 'Оплата замовлення';
+const PAYMENT_DESCRIPTION = ['Оплата замовлення', 'Order payment'];
 
 const PAYMENT_TOKEN_LENGTH = 40;
 const FONDY_PAYMENT_MULTIPLIER = 100;

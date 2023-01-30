@@ -7,7 +7,6 @@ const {
   deleteTranslations,
 } = require('../translations/translations.service');
 const uploadService = require('../upload/upload.service');
-const { uploadSmallImage } = require('../upload/upload.utils');
 const {
   commonFiltersHandler,
 } = require('../../utils/constructorOptionCommonFilters');
@@ -43,12 +42,16 @@ class StrapService {
   async getAllStraps(limit, skip, filter) {
     const filterOptions = commonFiltersHandler(filter);
 
+    if (filter?.material?.length) {
+      filterOptions['features.material'] = { $in: filter.material };
+    }
     if (filter?.color?.length) {
       filterOptions['features.color'] = { $in: filter.color };
     }
 
     const items = await Strap.find(filterOptions)
       .populate('features.color')
+      .populate('features.material')
       .skip(skip)
       .limit(limit)
       .exec();
@@ -77,8 +80,8 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    if (foundStrap.image) {
-      await uploadService.deleteFiles([foundStrap.image]);
+    if (foundStrap.images) {
+      await uploadService.deleteFiles(Object.values(foundStrap.images));
     }
     const historyEvent = {
       action: DELETE_EVENT,
@@ -115,10 +118,17 @@ class StrapService {
       throw new RuleError(STRAP_NOT_FOUND, NOT_FOUND);
     }
 
-    await uploadService.deleteFiles([strap.image]);
-
     if (image) {
-      strap.image = await uploadSmallImage(image);
+      if (strapToUpdate.images) {
+        const images = Object.values(strapToUpdate.images).filter(
+          item => typeof item === 'string' && item
+        );
+        await uploadService.deleteFiles(images);
+      }
+
+      const uploadImage = await uploadService.uploadFiles([image]);
+      const imageResults = await uploadImage[0];
+      strap.images = imageResults.fileNames;
     }
 
     const { beforeChanges, afterChanges } = getChanges(strapToUpdate, strap);

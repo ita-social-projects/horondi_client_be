@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const Language = require('../../models/Language').schema;
 const ImageSet = require('../common/ImageSet').schema;
+const Size = require('../size/size.model').schema;
 const {
   DB_COLLECTIONS_NAMES: {
     CATEGORY,
-    SIZE,
     CONSTRUCTOR_BASICS,
     PATTERN,
     CONSTRUCTOR_FRONT_POCKET,
@@ -30,12 +30,7 @@ const modelSchema = new mongoose.Schema({
   images: ImageSet,
   priority: Number,
   show: Boolean,
-  sizes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: SIZE,
-    },
-  ],
+  sizes: [Size],
   availableForConstructor: Boolean,
   eligibleOptions: {
     constructorBasic: [
@@ -82,6 +77,15 @@ const modelSchema = new mongoose.Schema({
   translationsKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: TRANSLATIONS,
+  },
+  isDeleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
   },
 });
 

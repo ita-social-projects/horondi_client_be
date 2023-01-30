@@ -1,0 +1,18 @@
+extends template-en
+block headerText
+	h1.responseTitle You have received the HORONDI Certificate
+block subheaderText
+	h1.desktopTitle You have received the HORONDI Certificate
+block content
+	div.contentWrapper 
+		p.text Greetings! #[br] You received a HORONDI certificate №#[strong !{certificateName}] for #[strong !{certificateValue}] UAH as a gift from one of our users. You can view your certificates on our #[a(href=frontendUrl) website.]
+			div.continerImg
+				div.shadow
+					img.certificate(src=`https://horondi.blob.core.windows.net/horondi/images/certificate-${certificateValue}.png`)
+		p.listHeader #[strong Pay attention!]
+		ol.bestWishes
+			li The gift certificate provides #[strong a discount on any Horondi product.]
+			li If the purchase price exceeds the avaliable balance of the girt certificate, #[strong the difference can be paid in a convenient way.]
+			li The gift certificate is #[strong non-refundable or exchangeable] for the corresponding cash equivalent.
+			li The certificate is valid for 365 days from the date of purchase - #[strong !{dateEnd}] (expiration date of your certificate). 
+		a.continue(href=frontendUrl + `/my-certificates/`) view my certificates

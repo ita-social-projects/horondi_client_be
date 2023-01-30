@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const paymentService = require('../../modules/payment/payment.service');
 const { deleteOrder, createOrder } = require('../order/order.helpers');
 const { newOrderInputData } = require('../order/order.variables');
 const { newProductInputData } = require('../product/product.variables');
@@ -7,6 +9,15 @@ const {
   createConstructorBasic,
 } = require('../constructor-basic/constructor-basic.helper');
 const { ORDER_NOT_VALID } = require('../../error-messages/orders.messages');
+const {
+  CERTIFICATE_IS_USED,
+} = require('../../error-messages/certificate.messages');
+const {
+  PAYMENT_STATUSES: { PAYMENT_APPROVED, PAYMENT_DECLINED },
+} = require('../../consts/payment-statuses');
+const {
+  CERTIFICATE_UPDATE_STATUS: { USED },
+} = require('../../consts/certificate-update-status');
 const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
@@ -26,8 +37,6 @@ const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
@@ -35,30 +44,67 @@ const { setupApp } = require('../helper-functions');
 const {
   generateCertificate,
   deleteCertificate,
+  getCertificateByParams,
+  updateCertificate,
 } = require('../certificate/certificate.helper');
 
 const {
   getPaymentCheckoutForCertificates,
   getPaymentCheckout,
   sendCertificatesCodesToEmail,
-  sendOrderToEmail,
 } = require('./payment.helper');
 
 const {
   newCertificateInputData,
   email,
 } = require('../certificate/certificate.variables');
+const {
+  mockSignatureValue,
+  wrongId,
+  mockRequestData,
+  mockResponseData,
+} = require('./payment.variables');
+const {
+  checkCertificatesPaymentStatus,
+} = require('../../modules/payment/payment.service');
+const emailService = require('../../modules/email/email.service');
+const { addCurrency } = require('../currency/currency.helper');
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
-jest.mock('../../modules/currency/currency.model', () => ({
-  findOne: () => ({
-    exec: () => ({
-      convertOptions: { UAH: { exchangeRate: 1, name: 'UAH' } },
-    }),
-  }),
+jest.mock('../../modules/email/email.service');
+jest.mock('../../utils/payment.utils', () => ({
+  generatePaymentSignature: () => mockSignatureValue,
+  sendOrderToEmail: () => {},
 }));
+jest.mock('../../helpers/payment-controller', () => ({
+  paymentController: action => {
+    if (action === 'GO_TO_CHECKOUT') {
+      return 'https://pay.fondy.eu/merchants/5ad6b888f4becb0c33d543d54e57d86c/default/index.html?token=a28dba98e79aea64ce0d386d53cee087421d406c';
+    }
+    if (action === 'CHECK_PAYMENT_STATUS') {
+      return {
+        order_status: 'approved',
+        response_signature_string: mockSignatureValue,
+        signature: mockSignatureValue,
+      };
+    }
+  },
+}));
+
+const newCurrency = {
+  lastUpdatedDate: String(Date.now()),
+  convertOptions: {
+    UAH: {
+      name: 'test',
+      exchangeRate: 36,
+    },
+    USD: {
+      name: 'test',
+      exchangeRate: 1,
+    },
+  },
+};
 
 let colorId;
 let sizeId;
@@ -73,27 +119,28 @@ let patternId;
 let constructorBasicId;
 let closureId;
 let orderNumber;
+let certificateId;
+let certificateParams;
 let certificates;
-
-const wrongId = 'ddfdf34';
 
 describe('Certificate payment queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+    await addCurrency(newCurrency, operations);
     const certificateData = await generateCertificate(
       newCertificateInputData,
       email,
       operations
     );
     certificates = certificateData.certificates;
+    certificateId = certificateData.certificates[0]._id;
+    certificateParams = { _id: certificateId };
   });
-
   it('should get Certificate Payment Checkout', async () => {
     const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'UAH', amount: '100000' },
+      { certificates, currency: 'UAH', amount: '100000', language: 0 },
       operations
     );
-
     expect(result).toHaveProperty('paymentToken');
   });
 
@@ -124,11 +171,7 @@ describe('Payment queries', () => {
     materialId = materialData._id;
     const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
+    sizeId = modelData.sizes[0]._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -160,7 +203,14 @@ describe('Payment queries', () => {
     );
     productId = productData._id;
     orderData = await createOrder(
-      newOrderInputData(productId, modelId, sizeId, constructorBasicId),
+      newOrderInputData(
+        productId,
+        modelId,
+        sizeId,
+        constructorBasicId,
+        undefined,
+        certificateId
+      ),
       operations
     );
     orderId = orderData._id;
@@ -169,7 +219,7 @@ describe('Payment queries', () => {
 
   it('should get Payment Checkout', async () => {
     const res = await getPaymentCheckout(
-      { orderId, currency: 'UAH', amount: '2' },
+      { orderId, currency: 'UAH', amount: '200', language: 1 },
       operations
     );
     expect(res).toBeDefined();
@@ -178,17 +228,46 @@ describe('Payment queries', () => {
 
   it('should get error message ORDER_NOT_VALID when passed wrong orderId', async () => {
     const res = await getPaymentCheckout(
-      { orderId: wrongId, currency: 'UAH', amount: '2' },
+      { orderId: wrongId, currency: 'UAH', amount: '2', language: 1 },
       operations
     );
 
     expect(res).toHaveProperty('message', ORDER_NOT_VALID);
   });
 
-  it('should send email with order data', async () => {
-    const res = await sendOrderToEmail(1, orderNumber, operations);
+  it('should make certificate active when status DECLINED', async () => {
+    await paymentService.checkOrderPaymentStatus(
+      mockRequestData(orderNumber, PAYMENT_DECLINED, mockSignatureValue),
+      mockResponseData
+    );
 
-    expect(res).toBeDefined();
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+
+    expect(certificate.data.getCertificateByParams).toBeDefined();
+  });
+
+  it('should make certificate used when status PAID', async () => {
+    await paymentService.checkOrderPaymentStatus(
+      mockRequestData(orderNumber, PAYMENT_APPROVED, mockSignatureValue),
+      mockResponseData
+    );
+    const updateResult = await updateCertificate(
+      certificateParams,
+      USED,
+      operations
+    );
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IS_USED
+    );
+    expect(updateResult.dateOfUsing).toBeTruthy();
   });
 
   afterAll(async () => {
@@ -198,10 +277,10 @@ describe('Payment queries', () => {
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
-    await deleteSize(sizeId, operations);
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });
 
@@ -218,14 +297,23 @@ describe('Get payment checkout for certificates test', () => {
 
   it('should get payment token', async () => {
     const result = await getPaymentCheckoutForCertificates(
-      { certificates, currency: 'USD', amount: '250000' },
+      { certificates, currency: 'USD', amount: '250000', language: 1 },
       operations
     );
 
     expect(result).toHaveProperty('paymentToken');
   });
 
+  it('should call paymentCheck', async () => {
+    emailService.sendEmail = jest.fn();
+    const res = { status: jest.fn() };
+    const req = mockRequestData(certificates[0].name, PAYMENT_APPROVED);
+    await checkCertificatesPaymentStatus(req, res);
+    expect(emailService.sendEmail).not.toHaveBeenCalled();
+  });
+
   afterAll(async () => {
     await deleteCertificate(certificates[0]._id, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 });

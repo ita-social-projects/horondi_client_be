@@ -27,7 +27,9 @@ describe('Position query test', () => {
     positionInput = newPositionInputData();
     positionDataForQuery = await createPosition(positionInput, operations);
   });
-
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   test('should get all positions', async () => {
     const result = await getAllPositions({ limit, skip, filter }, operations);
 
@@ -50,6 +52,6 @@ describe('Position query test', () => {
   });
 
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

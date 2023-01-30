@@ -45,7 +45,7 @@ const htmlTemplates = {
     templateFileName: ['answer-email-question-en', 'answer-email-question-ua'],
   },
   [EmailActions.CERTIFICATE_REMINDER]: {
-    subject: '[HORONDI] Certificate reminder',
+    subject: '[HORONDI] Your certificate is expiring',
     templateFileName: ['certificate-reminder-en', 'certificate-reminder-ua'],
   },
   [EmailActions.CERTIFICATE_EMAIL]: {
@@ -53,6 +53,17 @@ const htmlTemplates = {
     templateFileName: [
       'certificate-user-purchased-email-en',
       'certificate-user-purchased-email-ua',
+    ],
+  },
+  [EmailActions.SEND_GIFT_CERTIFICATE]: {
+    subject: '[HORONDI] Certificate has been gifted',
+    templateFileName: ['send-gift-certificate-en', 'send-gift-certificate-ua'],
+  },
+  [EmailActions.RECEIVE_GIFT_SERTIFICATE]: {
+    subject: '[HORONDI] Gift Certificate',
+    templateFileName: [
+      'receive-gift-certificate-en',
+      'receive-gift-certificate-ua',
     ],
   },
 };

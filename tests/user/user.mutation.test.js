@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 const { gql } = require('@apollo/client');
 
-const { jwtClient } = require('../../client/jwt-client');
+const { jwtClient, JWTClient } = require('../../client/jwt-client');
 
 const User = require('../../modules/user/user.model');
-const { SECRET, TOKEN_EXPIRES_IN } = require('../../dotenvValidator');
+const {
+  SECRET,
+  TOKEN_EXPIRES_IN,
+  RECOVERY_EXPIRE,
+  CONFIRMATION_SECRET,
+} = require('../../dotenvValidator');
 const {
   newAdmin,
   testUser,
@@ -83,7 +88,7 @@ let invitationalToken;
 let operations;
 let loginedUser;
 let recoveryToken;
-let confirmationToken;
+let accessTokenMock;
 
 const {
   firstName,
@@ -97,6 +102,19 @@ const {
   comments,
   pass,
 } = testUser;
+
+const generateAccessTokenMock = (id, secret) => {
+  const tokenMock = jwtClient.createToken(
+    { userId: id },
+    secret,
+    RECOVERY_EXPIRE
+  );
+  jest
+    .spyOn(JWTClient.prototype, 'generateAccessToken')
+    .mockImplementation(() => tokenMock);
+
+  return tokenMock;
+};
 
 describe('mutations', () => {
   beforeAll(async () => {
@@ -120,6 +138,29 @@ describe('mutations', () => {
     expect(res.data.registerUser).toHaveProperty('role', 'user');
     expect(res.data.registerUser).toHaveProperty('registrationDate');
   });
+  test('should send Email Confirmation', async () => {
+    accessTokenMock = generateAccessTokenMock(userId, CONFIRMATION_SECRET);
+    const res = await sendEmailConfirmation(email, 0, operations);
+
+    expect(res.data.sendEmailConfirmation).toBe(true);
+  });
+  test('should confirm user email', async () => {
+    await sendEmailConfirmation(email, language, operations);
+    const { confirmed } = await confirmUserEmail(accessTokenMock, operations);
+    expect(confirmed).toBe(true);
+  });
+  test('should throw error USER_EMAIL_ALREADY_CONFIRMED on sending', async () => {
+    const res = await sendEmailConfirmation(email, 0, operations);
+
+    expect(res.data.sendEmailConfirmation.message).toBe(
+      USER_EMAIL_ALREADY_CONFIRMED
+    );
+  });
+  test('should throw error USER_EMAIL_ALREADY_CONFIRMED on confirm', async () => {
+    const result = await confirmUserEmail(accessTokenMock, operations);
+
+    expect(result.message).toBe(USER_EMAIL_ALREADY_CONFIRMED);
+  });
 
   test('should authenticate facebook user', async () => {
     const res = await facebookUser(socialToken, true, operations);
@@ -139,6 +180,7 @@ describe('mutations', () => {
     expect(res.data.registerUser.message).toBe(USER_ALREADY_EXIST);
   });
   test('should authorize and receive user token', async () => {
+    generateAccessTokenMock(userId, SECRET);
     const res = await loginUser(email, pass, false, operations);
     loginedUser = res.data.loginUser;
     token = res.data.loginUser.token;
@@ -220,7 +262,6 @@ describe('mutations', () => {
   });
   test('should return true on token valid', async () => {
     const userInfo = await loginUser(email, pass, true, operations);
-
     recoveryToken = userInfo.data.loginUser.recoveryToken;
     token = userInfo.data.loginUser.token;
     const res = await checkIfTokenIsValid(recoveryToken, operations);
@@ -228,14 +269,19 @@ describe('mutations', () => {
     expect(res.data.checkIfTokenIsValid).toBe(true);
   });
   test('should throw error on checking tokin valid', async () => {
-    const res = await checkIfTokenIsValid(token, operations);
-
+    const wrongToken = jwtClient.createToken(
+      { userId },
+      SECRET,
+      RECOVERY_EXPIRE
+    );
+    const res = await checkIfTokenIsValid(wrongToken, operations);
     expect(res.errors[0].message).toBe(AUTHENTICATION_TOKEN_NOT_VALID);
   });
-  test('should recover User with wrong email', async () => {
+  test('should not recover User with wrong email', async () => {
     const res = await recoverUser(wrongEmail, 0, operations);
+    const error = { message: 'USER_NOT_FOUND', statusCode: 400 };
 
-    expect(res).toBe(true);
+    expect(res).toEqual(error);
   });
 
   test('should reset Password', async () => {
@@ -249,41 +295,12 @@ describe('mutations', () => {
 
     expect(res.errors[0].message).toBe(RESET_PASSWORD_TOKEN_NOT_VALID);
   });
-  test('should send Email Confirmation', async () => {
-    const res = await sendEmailConfirmation(email, 0, operations);
-
-    expect(res.data.sendEmailConfirmation).toBe(true);
-  });
   test('should throw Error USER_NOT_FOUND on confirm user email', async () => {
     const result = await confirmUserEmail(token, operations);
 
     expect(result.message).toBe(USER_NOT_FOUND);
   });
-  test('should confirmUserEmail', async () => {
-    const userInfo = await loginUser(email, pass, false, operations);
 
-    confirmationToken = userInfo.data.loginUser.confirmationToken;
-    token = userInfo.data.loginUser.token;
-
-    const result = await confirmUserEmail(confirmationToken, operations);
-
-    expect(result.confirmed).toBe(true);
-
-    token = result.token;
-  });
-
-  test('should throw error USER_EMAIL_ALREADY_CONFIRMED on sending', async () => {
-    const res = await sendEmailConfirmation(email, 0, operations);
-
-    expect(res.data.sendEmailConfirmation.message).toBe(
-      USER_EMAIL_ALREADY_CONFIRMED
-    );
-  });
-  test('should throw error USER_EMAIL_ALREADY_CONFIRMED on confirm', async () => {
-    const result = await confirmUserEmail(confirmationToken, operations);
-
-    expect(result.message).toBe(USER_EMAIL_ALREADY_CONFIRMED);
-  });
   test('should resend Email To Confirm Admin', async () => {
     const result = await resendEmailToConfirmAdmin({ email }, operations);
 
@@ -399,6 +416,7 @@ describe('mutations', () => {
   afterAll(async () => {
     operations = await setupApp();
     await deleteUser(userId, operations);
+    jest.clearAllMocks();
   });
 
   describe('Test Avatar adding and deletion', () => {
@@ -765,6 +783,6 @@ describe('User filtering', () => {
   });
 
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

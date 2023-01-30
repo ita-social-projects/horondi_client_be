@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   getAllMaterialsBlocks,
@@ -8,17 +9,25 @@ const {
 } = require('./materials-page.helper');
 const { newMaterialsBlock } = require('./materials-page.variables');
 
+jest.mock('../../modules/upload/upload.service');
+
 let materialsBlock;
 let operations;
+const image = 'img.jpg';
 
 describe('Materials-about block queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
-    materialsBlock = await addMaterialsBlock(newMaterialsBlock, operations);
+    materialsBlock = await addMaterialsBlock(
+      newMaterialsBlock,
+      image,
+      operations
+    );
   });
 
   afterAll(async () => {
     await deleteMaterialsBlock(materialsBlock._id, operations);
+    await mongoose.connection.db.dropDatabase();
   });
 
   it('Should get all materials-about blocks', async () => {

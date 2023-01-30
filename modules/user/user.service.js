@@ -52,6 +52,7 @@ const {
   TOKEN_IS_EXPIRIED,
   USER_IS_BLOCKED,
   SUPER_ADMIN_IS_IMMUTABLE,
+  USER_EMAIL_IS_NOT_CONFIRMED,
 } = require('../../error-messages/user.messages');
 const FilterHelper = require('../../helpers/filter-helper');
 const {
@@ -437,14 +438,16 @@ class UserService extends FilterHelper {
       throw new RuleError(USER_IS_BLOCKED, FORBIDDEN);
     }
 
-    const match = await bcryptClient.comparePassword(
-      password,
-      user.credentials.find(cred => cred.source === HORONDI).tokenPass
-    );
+    const credentials = user.credentials.find(cred => cred.source === HORONDI);
 
-    if (user.role === USER) {
+    if (user.role === USER || !credentials) {
       throw new RuleError(INVALID_PERMISSIONS, BAD_REQUEST);
     }
+
+    const match = await bcryptClient.comparePassword(
+      password,
+      credentials.tokenPass
+    );
 
     if (!match) {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
@@ -482,6 +485,9 @@ class UserService extends FilterHelper {
 
     if (!match) {
       throw new RuleError(WRONG_CREDENTIALS, BAD_REQUEST);
+    }
+    if (!user.confirmed) {
+      throw new RuleError(USER_EMAIL_IS_NOT_CONFIRMED, BAD_REQUEST);
     }
 
     jwtClient.setData({ userId: user._id });
@@ -528,6 +534,7 @@ class UserService extends FilterHelper {
       const user = await this.registerSocialUser({
         firstName: dataUser.given_name,
         lastName: dataUser.family_name,
+        confirmed: true,
         email: dataUser.email,
         credentials: [
           {
@@ -595,7 +602,13 @@ class UserService extends FilterHelper {
     };
   }
 
-  async registerSocialUser({ firstName, lastName, email, credentials }) {
+  async registerSocialUser({
+    firstName,
+    lastName,
+    email,
+    credentials,
+    confirmed,
+  }) {
     if (await User.findOne({ email }).exec()) {
       throw new UserInputError(USER_ALREADY_EXIST, { statusCode: BAD_REQUEST });
     }
@@ -605,6 +618,7 @@ class UserService extends FilterHelper {
       lastName,
       email,
       credentials,
+      confirmed,
     });
 
     return user.save();
@@ -730,22 +744,17 @@ class UserService extends FilterHelper {
   }
 
   async recoverUser(email, language) {
-    const user = await User.findOne({ email }).exec();
+    const user = await this.getUserByFieldOrThrow(USER_EMAIL, email);
 
-    if (user) {
-      jwtClient.setData({ userId: user._id });
-      const accessToken = jwtClient.generateAccessToken(
-        SECRET,
-        RECOVERY_EXPIRE
-      );
+    jwtClient.setData({ userId: user._id });
+    const accessToken = jwtClient.generateAccessToken(SECRET, RECOVERY_EXPIRE);
 
-      user.recoveryToken = accessToken;
-      await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
-        language,
-        token: accessToken,
-      });
-      await user.save();
-    }
+    user.recoveryToken = accessToken;
+    await emailService.sendEmail(user.email, RECOVER_PASSWORD, {
+      language,
+      token: accessToken,
+    });
+    await user.save();
 
     return true;
   }

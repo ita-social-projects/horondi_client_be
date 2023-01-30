@@ -1,11 +1,21 @@
+const mongoose = require('mongoose');
 const { ORDER_NOT_FOUND } = require('../../error-messages/orders.messages');
+const {
+  CERTIFICATE_IN_PROGRESS,
+} = require('../../error-messages/certificate.messages');
 const {
   deleteOrder,
   createOrder,
   updateOrderById,
 } = require('./order.helpers');
 const {
+  getCertificateByParams,
+  generateCertificate,
+} = require('../certificate/certificate.helper');
+const {
   wrongId,
+  email,
+  newCertificateInputData,
   newOrderInputData,
   newOrderUpdated,
 } = require('./order.variables');
@@ -34,22 +44,26 @@ const { createClosure, deleteClosure } = require('../closure/closure.helper');
 const { newClosure } = require('../closure/closure.variables');
 const { createModel, deleteModel } = require('../model/model.helper');
 const { newModel } = require('../model/model.variables');
-const { createSize, deleteSize } = require('../size/size.helper');
-const { createPlainSize } = require('../size/size.variables');
 const { createPattern, deletePattern } = require('../pattern/pattern.helper');
 const { queryPatternToAdd } = require('../pattern/pattern.variables');
 const { setupApp } = require('../helper-functions');
+const { addCurrency } = require('../currency/currency.helper');
 
 jest.mock('../../modules/upload/upload.service');
-jest.mock('../../modules/currency/currency.utils.js');
-jest.mock('../../modules/product/product.utils.js');
-jest.mock('../../modules/currency/currency.model', () => ({
-  findOne: () => ({
-    exec: () => ({
-      convertOptions: { UAH: { exchangeRate: 1, name: 'UAH' } },
-    }),
-  }),
-}));
+
+const newCurrency = {
+  lastUpdatedDate: String(Date.now()),
+  convertOptions: {
+    UAH: {
+      name: 'test',
+      exchangeRate: 36,
+    },
+    USD: {
+      name: 'test',
+      exchangeRate: 1,
+    },
+  },
+};
 
 let colorId;
 let sizeId;
@@ -62,10 +76,23 @@ let categoryId;
 let patternId;
 let constructorBasicId;
 let closureId;
+let certificateId;
+let certificateName;
+let certificateParams;
 
 describe('Order queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
+
+    await addCurrency(newCurrency, operations);
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    certificateId = certificateData.certificates[0]._id;
+    certificateName = certificateData.certificates[0].name;
+    certificateParams = { name: certificateName };
 
     const colorData = await createColor(color, operations);
     colorId = colorData._id;
@@ -73,16 +100,9 @@ describe('Order queries', () => {
     categoryId = categoryData._id;
     const materialData = await createMaterial(getMaterial(colorId), operations);
     materialId = materialData._id;
-    const modelData = await createModel(
-      newModel(categoryId, sizeId),
-      operations
-    );
+    const modelData = await createModel(newModel(categoryId), operations);
     modelId = modelData._id;
-    const sizeData = await createSize(
-      createPlainSize(modelId).size1,
-      operations
-    );
-    sizeId = sizeData._id;
+    sizeId = modelData.sizes[0]._id;
     const patternData = await createPattern(
       queryPatternToAdd(materialId, modelId),
       operations
@@ -113,10 +133,13 @@ describe('Order queries', () => {
     );
     productId = productData._id;
   });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   const { status, delivery, paymentStatus, userComment, items, recipient } =
     newOrderInputData(productId, modelId, sizeId, constructorBasicId);
 
-  test('Should create order', async () => {
+  test('Should create order without certificate', async () => {
     const order = await createOrder(
       newOrderInputData(productId, modelId, sizeId, constructorBasicId),
       operations
@@ -132,16 +155,16 @@ describe('Order queries', () => {
     expect(order).toHaveProperty('delivery', delivery);
     expect(order).toHaveProperty('totalItemsPrice');
     expect(order).toHaveProperty('totalPriceToPay');
-  });
-  const {
-    delivery: updatedDelivery,
-    paymentStatus: updatedPaymentStatus,
-    userComment: updatedUserComment,
-    recipient: updatedUser,
-    status: updatedStatus,
-  } = newOrderUpdated(productId, modelId, sizeId, constructorBasicId);
+    expect(order).toHaveProperty('certificateId', '');
 
-  test('Should update order', async () => {
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.data.getCertificateByParams).toBeDefined();
+  });
+
+  test('Should update order without certificate', async () => {
     const updatedOrder = await updateOrderById(
       newOrderUpdated(productId, modelId, sizeId),
       orderId,
@@ -149,6 +172,27 @@ describe('Order queries', () => {
     );
 
     expect(updatedOrder).toBeTruthy();
+    expect(updatedOrder).toHaveProperty('certificateId', '');
+  });
+
+  const {
+    delivery: updatedDelivery,
+    paymentStatus: updatedPaymentStatus,
+    userComment: updatedUserComment,
+    recipient: updatedUser,
+    status: updatedStatus,
+    items: updatedItems,
+  } = newOrderUpdated(productId, modelId, sizeId, constructorBasicId);
+
+  test('Should update order with certificate', async () => {
+    const updatedOrder = await updateOrderById(
+      newOrderUpdated(productId, modelId, sizeId, undefined, certificateId),
+      orderId,
+      operations
+    );
+
+    expect(updatedOrder).toBeTruthy();
+    expect(updatedItems).toBeInstanceOf(Array);
     expect(updatedOrder).toHaveProperty('status', updatedStatus);
     expect(updatedOrder.recipient).toEqual(updatedUser);
     expect(updatedOrder).toHaveProperty('userComment', updatedUserComment);
@@ -156,6 +200,46 @@ describe('Order queries', () => {
     expect(updatedOrder.delivery).toEqual(updatedDelivery);
     expect(updatedOrder).toHaveProperty('totalItemsPrice');
     expect(updatedOrder).toHaveProperty('totalPriceToPay');
+    expect(updatedOrder).toHaveProperty('certificateId', certificateId);
+
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.data.getCertificateByParams).toBeDefined();
+  });
+
+  test('Should create order with certificate', async () => {
+    const certificateData = await generateCertificate(
+      newCertificateInputData,
+      email,
+      operations
+    );
+    const newCertificateId = certificateData.certificates[0]._id;
+
+    const order = await createOrder(
+      newOrderInputData(
+        productId,
+        modelId,
+        sizeId,
+        constructorBasicId,
+        undefined,
+        newCertificateId
+      ),
+      operations
+    );
+
+    expect(order).toBeDefined();
+    expect(order).toHaveProperty('certificateId', newCertificateId);
+
+    const certificate = await getCertificateByParams(
+      certificateParams,
+      operations
+    );
+    expect(certificate.errors[0]).toHaveProperty(
+      'message',
+      CERTIFICATE_IN_PROGRESS
+    );
   });
 
   test('Should throw error ORDER_NOT_FOUND after try to update', async () => {
@@ -187,7 +271,6 @@ describe('Order queries', () => {
     await deleteConstructorBasic(constructorBasicId, operations);
     await deleteMaterial(materialId, operations);
     await deleteColor(colorId, operations);
-    await deleteSize(sizeId, operations);
     await deleteClosure(closureId, operations);
     await deletePattern(patternId, operations);
     await deleteCategory(categoryId, operations);

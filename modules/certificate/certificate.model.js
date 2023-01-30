@@ -35,13 +35,21 @@ const certificateSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  dateOfUsing: {
+    type: Date,
+    default: null,
+  },
   isExpired: {
+    type: Boolean,
+    default: false,
+  },
+  inProgress: {
     type: Boolean,
     default: false,
   },
   isActivated: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   dateStart: {
     type: Date,

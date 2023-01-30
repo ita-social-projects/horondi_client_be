@@ -19,6 +19,7 @@ const paymentInput = `
       orderId: String!
       currency: String!
       amount: String!
+      language: Int
   }
 `;
 const paymentInputForCertificate = `
@@ -26,6 +27,7 @@ const paymentInputForCertificate = `
     currency: String!
     amount: String!
     certificates: [CertificateInput]!
+	 language: Int
   }
 `;
 

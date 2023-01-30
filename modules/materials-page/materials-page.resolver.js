@@ -12,14 +12,14 @@ const materialsQuery = {
 };
 
 const materialsMutation = {
-  addMaterialsBlock: async (_, { materialsBlock }) =>
-    materialsService.addMaterialsBlock(materialsBlock),
+  addMaterialsBlock: async (_, { materialsBlock, image }, { user }) =>
+    materialsService.addMaterialsBlock(materialsBlock, image, user),
 
-  deleteMaterialsBlock: async (_, { id }) =>
-    materialsService.deleteMaterialsBlock(id),
+  deleteMaterialsBlock: async (_, { id }, { user }) =>
+    materialsService.deleteMaterialsBlock(id, user),
 
-  updateMaterialsBlock: async (_, { id, materialsBlock }) =>
-    materialsService.updateMaterialsBlock(id, materialsBlock),
+  updateMaterialsBlock: async (_, { id, materialsBlock, image }, { user }) =>
+    materialsService.updateMaterialsBlock(id, materialsBlock, image, user),
 };
 
 module.exports = { materialsQuery, materialsMutation };

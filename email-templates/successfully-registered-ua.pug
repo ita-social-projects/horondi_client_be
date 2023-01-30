@@ -6,8 +6,7 @@ block subheaderText
 block content
     div.contentWrapper
         p.text Вітаємо! #[br] Ви успішно зареєструвались у нашому магазині, залишилося лише підтвердити вашу електронну адресу:
-        button.continue
-            a(href=adminUrl + `/confirmation/` + token) підтвердити e-mail
+        a.continue(href=adminUrl + `/confirmation/` + token) підтвердити e-mail
         p.text або перейдіть за посиланням: #[br]
             a.link(href=adminUrl + `/confirmation/` + token) #{adminUrl + `/confirmation/` + token}
         p.text  Якщо Ви не реєструвались - проігноруйте це повідомлення.

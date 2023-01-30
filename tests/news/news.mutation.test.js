@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   news,
@@ -20,6 +21,9 @@ let operations;
 describe('News mutations tests', () => {
   beforeAll(async () => {
     operations = await setupApp();
+  });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
   });
 
   test('#1 Should Add News To Database', async () => {

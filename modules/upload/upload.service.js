@@ -9,10 +9,12 @@ const {
   IMAGE_LINK,
   CONTRIBUTING,
 } = require('../../dotenvValidator');
+const RuleError = require('../../errors/rule.error');
 const { imageQualities, IMAGES_CONTAINER } = require('../../consts');
 const {
   IMAGE_SIZES: { IMAGE_LARGE, IMAGE_MEDIUM, IMAGE_SMALL, IMAGE_THUMBNAIL },
 } = require('../../consts/image-sizes');
+const { fileUploadRegExp } = require('../../consts/regexp');
 
 let blobService;
 let containerName;
@@ -62,6 +64,7 @@ class UploadService {
 
   async uploadFile(file, sizes) {
     const { createReadStream, filename } = await file.promise;
+    const newFileName = filename.replace(fileUploadRegExp, '');
     const inputStream = createReadStream();
     let fileBuffer;
     const id = uniqid();
@@ -82,7 +85,7 @@ class UploadService {
 
     const image = await Jimp.read(inputBuffer);
 
-    const createName = sizeName => `${sizeName}_${id}_${filename}`;
+    const createName = sizeName => `${sizeName}_${id}_${newFileName}`;
     if (Array.isArray(sizes)) {
       sizes.forEach(size => {
         this.uploadResizedImage(imageQualities[size], createName(size), image);
@@ -129,7 +132,7 @@ class UploadService {
         }
         resolve(res);
       })
-    );
+    ).catch(e => new RuleError(e.message, e.statusCode));
   }
 }
 

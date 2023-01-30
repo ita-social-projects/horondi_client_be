@@ -9,14 +9,16 @@ const certificateTypes = `
     isUsed: Boolean
     isActivated: Boolean
     isExpired: Boolean
+    inProgress: Boolean
     dateStart: Date
     dateEnd: Date
+    dateOfUsing: Date
     paymentStatus: String
     paymentUrl: String
     paymentToken: String
     admin: [Admin]
   }
-  
+
   type Admin{
     firstName: String
     lastName: String
@@ -39,7 +41,7 @@ const certificateTypes = `
 
   input CertificateInput {
     _id: ID
-    name: String!
+    name: String
     dateEnd: String
     dateStart: String
     email: String
@@ -64,13 +66,16 @@ const certificateTypes = `
   extend type Query {
     getAllCertificates(limit: Int, skip: Int, sortBy: String, sortOrder: Sort, search: String, status: [String]): CertificatePaginatedResult
     getCertificateById(id: ID!): CertificateResult
+    getCertificateByParams(params: CertificateInput!): CertificateResult,
+    getAllUserCertificates(limit: Int, skip: Int):CertificatePaginatedResult
   }
 
   extend type Mutation {
     addCertificate(name: String!): CertificateResult
-    deleteCertificate(id: ID!): CertificateResult
+    deleteCertificate(id: ID!, adminId: ID!): CertificateResult
     generateCertificate (newCertificates: [GenerateCertificateInput]!, email: String, dateStart: Date ): CertificatesResult
-    updateCertificate(name: String!): CertificateResult
+    updateCertificate(params: CertificateInput!, statusUpdate: String): CertificateResult
+	 giftCertificateToEmail(id: ID!, email: String!, oldEmail: String!, language: Int!): CertificateResult
   }
 `;
 

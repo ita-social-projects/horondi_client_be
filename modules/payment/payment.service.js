@@ -1,6 +1,9 @@
 const { ObjectId } = require('mongoose').Types;
 const { PAYMENT_SECRET } = require('../../dotenvValidator');
-const { generatePaymentSignature } = require('../../utils/payment.utils');
+const {
+  generatePaymentSignature,
+  sendOrderToEmail,
+} = require('../../utils/payment.utils');
 const RuleError = require('../../errors/rule.error');
 const pubsub = require('../../pubsub');
 const { sendEmail } = require('../email/email.service');
@@ -10,7 +13,14 @@ const {
   PAYMENT_TOKEN_LENGTH,
 } = require('../../consts/payments');
 const {
-  PAYMENT_STATUSES: { PAYMENT_PROCESSING },
+  PAYMENT_STATUSES: {
+    PAYMENT_PROCESSING,
+    PAYMENT_PAID,
+    PAYMENT_APPROVED,
+    PAYMENT_EXPIRED,
+    PAYMENT_DECLINED,
+    PAYMENT_REVERSED,
+  },
 } = require('../../consts/payment-statuses');
 const {
   STATUS_CODES: { BAD_REQUEST, FORBIDDEN },
@@ -18,8 +28,6 @@ const {
 const {
   ORDER_NOT_FOUND,
   ORDER_NOT_VALID,
-  ORDER_IS_NOT_PAID,
-  ORDER_IS_PAID,
 } = require('../../error-messages/orders.messages');
 const {
   CERTIFICATE_NOT_VALID,
@@ -31,15 +39,13 @@ const OrderModel = require('../order/order.model');
 const { CertificateModel } = require('../certificate/certificate.model');
 const { paymentController } = require('../../helpers/payment-controller');
 const {
-  ORDER_PAYMENT_STATUS: { APPROVED, PAID },
-} = require('../../consts/order-payment-status');
-const { IMAGE_LINK } = require('../../dotenvValidator');
+  ORDER_STATUSES: { CONFIRMED, CANCELLED },
+} = require('../../consts/order-statuses');
 const {
-  EmailActions: { PAYMENT_ORDER, CERTIFICATE_EMAIL },
+  EmailActions: { CERTIFICATE_EMAIL },
 } = require('../../consts/email-actions');
-
 class PaymentService {
-  async getPaymentCheckout({ orderId, currency, amount }) {
+  async getPaymentCheckout({ orderId, currency, amount, language }) {
     if (!ObjectId.isValid(orderId)) {
       throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
@@ -49,13 +55,17 @@ class PaymentService {
     if (!isOrderPresent) {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
+    const fondyLanguage = language ? 'en' : 'uk';
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}order_callback/`,
+      response_url: `${process.env.FRONT_BASE_URI}/thanks/${isOrderPresent.orderNumber}`,
       order_id: isOrderPresent.orderNumber,
-      order_desc: PAYMENT_DESCRIPTION,
+      order_desc: PAYMENT_DESCRIPTION[0],
       currency,
       amount,
+      merchant_data: language,
+      lang: fondyLanguage,
     });
 
     if (paymentUrl) {
@@ -74,7 +84,7 @@ class PaymentService {
 
   async checkCertificatesPaymentStatus(req, res) {
     try {
-      const { order_id } = req.body;
+      const { order_id, merchant_data } = req.body;
       const { order_status, response_signature_string, signature } =
         await paymentController(CHECK_PAYMENT_STATUS, {
           order_id,
@@ -99,7 +109,7 @@ class PaymentService {
       }
 
       if (
-        order_status !== APPROVED.toLowerCase() ||
+        order_status !== PAYMENT_APPROVED.toLowerCase() ||
         signature !== signSignatureToCheck
       ) {
         throw new RuleError(CERTIFICATE_NOT_PAID, FORBIDDEN);
@@ -109,7 +119,8 @@ class PaymentService {
         { paymentToken: certificate.paymentToken },
         {
           $set: {
-            paymentStatus: PAID,
+            paymentStatus: PAYMENT_PAID,
+            isActivated: true,
           },
         }
       ).exec();
@@ -122,13 +133,28 @@ class PaymentService {
         certificatesPaid: updatedCertificates,
       });
 
+      const language = parseInt(merchant_data);
+      const dateEnd =
+        updatedCertificates[0].dateEnd.toLocaleDateString('uk-UA');
+
+      await sendEmail(updatedCertificates[0].email, CERTIFICATE_EMAIL, {
+        language,
+        items: updatedCertificates,
+        dateEnd,
+      });
+
       res.status(200).end();
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }
   }
 
-  async getPaymentCheckoutForCertificates({ certificates, currency, amount }) {
+  async getPaymentCheckoutForCertificates({
+    certificates,
+    currency,
+    amount,
+    language,
+  }) {
     let isCertificatePresent;
     certificates.forEach(async certificate => {
       if (!ObjectId.isValid(certificate._id)) {
@@ -144,14 +170,22 @@ class PaymentService {
       }
     });
 
+    const encodedEmail = encodeURIComponent(certificates[0].email);
     const certificatesOrderId = certificates[0].name;
+    const fondyLanguage = language ? 'en' : 'uk';
+    const responseQuery = encodeURI(
+      `?${encodedEmail} ${amount} ${certificatesOrderId}`
+    );
 
     const paymentUrl = await paymentController(GO_TO_CHECKOUT, {
       server_callback_url: `${process.env.FONDY_CALLBACK_URL}certificates_callback/`,
+      response_url: `${process.env.FRONT_BASE_URI}/certificatethanks/${responseQuery}`,
       order_id: certificatesOrderId,
-      order_desc: PAYMENT_DESCRIPTION,
+      order_desc: PAYMENT_DESCRIPTION[language],
       currency,
       amount,
+      merchant_data: language,
+      lang: fondyLanguage,
     });
 
     const paymentToken = paymentUrl.slice(
@@ -182,19 +216,23 @@ class PaymentService {
   }
 
   async checkOrderPaymentStatus(req, res) {
-    const { order_id } = req.body;
-    const { order_status, response_signature_string, signature } =
-      await paymentController(CHECK_PAYMENT_STATUS, {
-        order_id,
-      });
+    const orderState = req.body;
+    const { order_id, order_status, signature, merchant_data } = orderState;
+    const language = parseInt(merchant_data);
 
-    const signatureWithoutFirstParam = response_signature_string
-      .split('|')
-      .slice(1);
+    const signatureKeys = Object.keys(orderState)
+      .filter(
+        key =>
+          orderState[key] !== '' &&
+          key !== 'signature' &&
+          key !== 'response_signature_string'
+      )
+      .sort();
 
-    const signatureToCheck = PAYMENT_SECRET.split(' ')
-      .concat(signatureWithoutFirstParam)
-      .join('|');
+    const signatureToCheck = signatureKeys.reduce(
+      (acc, key) => `${acc}|${orderState[key]}`,
+      PAYMENT_SECRET
+    );
 
     const signSignatureToCheck = generatePaymentSignature(signatureToCheck);
 
@@ -206,58 +244,47 @@ class PaymentService {
       throw new RuleError(ORDER_NOT_FOUND, BAD_REQUEST);
     }
 
-    if (
-      order_status !== APPROVED.toLowerCase() ||
-      signature !== signSignatureToCheck
-    ) {
-      throw new RuleError(ORDER_IS_NOT_PAID, FORBIDDEN);
+    if (signature !== signSignatureToCheck) {
+      throw new RuleError(ORDER_NOT_VALID, BAD_REQUEST);
     }
 
-    const paidOrder = await OrderModel.findByIdAndUpdate(order._id, {
-      $set: {
-        paymentStatus: PAID,
-      },
-    }).exec();
+    const orderPaymentStatus = order_status.toUpperCase();
 
-    pubsub.publish(ORDER_IS_PAID, {
-      paidOrder,
-    });
+    const updateOrderStatuses = (paymentStatus, status) => {
+      OrderModel.findByIdAndUpdate(order._id, {
+        $set: {
+          paymentStatus,
+          status,
+        },
+      }).exec();
+    };
+
+    switch (orderPaymentStatus) {
+      case PAYMENT_APPROVED: {
+        updateOrderStatuses(PAYMENT_PAID, CONFIRMED);
+        await sendOrderToEmail(language, order_id.toString());
+        break;
+      }
+      case PAYMENT_EXPIRED:
+      case PAYMENT_DECLINED:
+      case PAYMENT_REVERSED: {
+        updateOrderStatuses(orderPaymentStatus, CANCELLED);
+        break;
+      }
+    }
+
+    if (order.certificateId) {
+      const update =
+        orderPaymentStatus === PAYMENT_APPROVED
+          ? { inProgress: false, isUsed: true, dateOfUsing: new Date() }
+          : { isActivated: true, inProgress: false };
+
+      CertificateModel.findByIdAndUpdate(order.certificateId, {
+        $set: update,
+      }).exec();
+    }
 
     res.status(200).end();
-  }
-
-  async sendOrderToEmail(language, paidOrderNumber) {
-    const paidOrder = await OrderModel.findOne({ orderNumber: paidOrderNumber })
-      .populate({
-        path: 'items.product',
-        select: 'name images ',
-      })
-      .populate({
-        path: 'items.options.size ',
-        select: 'name',
-      })
-      .exec();
-
-    await sendEmail(paidOrder.recipient.email, PAYMENT_ORDER, {
-      language,
-      items: paidOrder.items,
-      totalPrice: paidOrder.totalItemsPrice,
-      paymentUrl: paidOrder.paymentUrl,
-      imagesUrl: IMAGE_LINK,
-    });
-
-    return paidOrder;
-  }
-
-  async sendCertificatesCodesToEmail(language, certificates) {
-    await sendEmail(certificates[0].email, CERTIFICATE_EMAIL, {
-      language,
-      items: certificates,
-    });
-
-    return {
-      certificates,
-    };
   }
 }
 

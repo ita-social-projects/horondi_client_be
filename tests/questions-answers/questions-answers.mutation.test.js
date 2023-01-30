@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
   newQuestionsAnswers,
   updateQuestionsAnswersInput,
@@ -17,7 +18,9 @@ describe('Questionsa and answers queries', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
-
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
   it('should add questions and answers to database', async () => {
     questionsAnswers = await addQuestionsAnswers(
       newQuestionsAnswers,

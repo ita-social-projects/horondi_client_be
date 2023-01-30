@@ -157,7 +157,7 @@ const {
 } = require('./modules/back/back.graphql');
 const {
   strapType,
-  strapFeatureType,
+  strapFeatureSet,
   strapInputs,
 } = require('./modules/strap/strap.graphql');
 const {
@@ -238,7 +238,7 @@ const typeDefs = gql`
   ${bottomType}
   ${bottomFeatureSet}
   ${strapType}
-  ${strapFeatureType}
+  ${strapFeatureSet}
   ${positionType}
   ${basicsType}
   ${basicsFeatureSet}
@@ -254,16 +254,14 @@ const typeDefs = gql`
     user
   }
   enum OptionTypeEnum {
+    BASIC
     BACK
     BOTTOM
-    CLOSURE
-    CONSTRUCTOR_BASIC
-    CONSTRUCTOR_BOTTOM
-    CONSTRUCTOR_FRONT_POCKET
     PATTERN
     POCKET
     STRAP
-    SIDE
+    CLOSURE
+    POSITION
   }
   enum additionalPriceType {
     RELATIVE_INDICATOR
@@ -370,6 +368,7 @@ const typeDefs = gql`
   type UserRate {
     user: User!
     rate: Int!
+    comment: ID!
   }
   type Error {
     statusCode: Int
@@ -471,6 +470,10 @@ const typeDefs = gql`
     count: Int
   }
   type PaginatedConstructors {
+    items: [Constructor]
+    count: Int
+  }
+  type ConstructorParts {
     items: [Constructor]
     count: Int
   }
@@ -688,8 +691,6 @@ const typeDefs = gql`
     getPendingEmailQuestionsCount: Int
     getAllSlides(limit: Int, skip: Int, show_statuses: Boolean): PaginatedHomePageSlides!
     getSlideById(id: ID!): HomePageSlideResult
-    getAllSizes(limit: Int, skip: Int, filter:SizeFilterInput): SizeItems
-    getSizeById(id: ID!): Size
     getAllClosure(limit:Int, skip:Int, filter:ClosureFilterInput): PaginatedClosure!
     getClosureById(id: ID!): ClosureResult!
     getAllColors: [Color]
@@ -707,10 +708,11 @@ const typeDefs = gql`
     getBacksByModel(id: ID): [BackResult]
     getAllBottoms( limit:Int!, skip:Int!, filter:BottomFilterInput): PaginatedBottoms
     getBottomById(id: ID): BottomResult
-    getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps!
+    getAllStraps(limit:Int!, skip:Int!, filter:StrapFilterInput): PaginatedStraps
     getStrapById(id: ID): StrapResult
     getStrapsByModel(id: ID): [StrapResult]
     getAllConstructors(limit:Int!, skip:Int!, filter:ConstructorFilterInput): PaginatedConstructors!
+    getAllConstructorParts: ConstructorParts
     getConstructorById(id: ID): ConstructorResult
     getConstructorByModel(id: ID): ConstructorResult
     getAllRestrictions(limit:Int!, skip:Int!, filter: RestrictionFilterInput): PaginatedRestrictions!
@@ -896,14 +898,24 @@ const typeDefs = gql`
     lang: String!
     image: Upload!
   }
-  input UserRateInput {
+  input addRateData {
+    text: String!
+    show: Boolean! 
+    productId: ID!
     rate: Int!
+    userId: ID!
+    commentId: ID!
+  }
+  input deleteRateData {
+    productId: ID!
+    userId: ID!
+    commentId: ID!
   }
   type Mutation {
-    addMaterialsBlock(materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
+    addMaterialsBlock(materialsBlock: MaterialsBlockInput!, image: Upload): MaterialsBlockResult
     deleteMaterialsBlock(id: ID!): MaterialsBlockResult
     updateMaterialsBlock(id: ID!
-    materialsBlock: MaterialsBlockInput!): MaterialsBlockResult
+    materialsBlock: MaterialsBlockInput!, image: Upload): MaterialsBlockResult
     addPromoCode(promoCode: PromoCodeInput!): PromoCode
     deletePromoCode(id: ID!): PromoCode
     updatePromoCode(id: ID!
@@ -981,7 +993,7 @@ const typeDefs = gql`
     regenerateAccessToken(refreshToken: String!): TokenResult
     "Product Mutation"
     addProduct(product: ProductInput!, upload: Upload!): ProductResult
-    addProductFromConstructor(product: ProductInput!, upload: Upload!): ProductResult
+    addProductFromConstructor(product: ProductInput!): ProductResult
     deleteProducts(ids: [ID!]): ProductResult
     updateProduct(
       id: ID!
@@ -1012,7 +1024,8 @@ const typeDefs = gql`
       populated: Boolean
     ): BusinessTextResult
     "Rate Mutation"
-    addRate(product: ID!, userRate: UserRateInput!): ProductResult
+    addRate(data: addRateData!): ProductResult
+    deleteRate(data: deleteRateData!): ProductResult
     "Model Mutation"
     addModel(model: ModelInput!, upload: Upload): ModelResult
     updateModel(id: ID!, model: ModelInput!, upload: Upload): ModelResult
@@ -1054,11 +1067,7 @@ const typeDefs = gql`
     "Closure Mutation"
     addClosure(closure: ClosureInput!, images: Upload): ClosureResult
     updateClosure(id: ID!, closure: ClosureInput!, image: Upload): ClosureResult  
-    deleteClosure(id: ID!): ClosureResult  
-    "Sizes Mutation"
-    addSize(size: SizeInput!): SizeResult!
-    deleteSize(id: ID!): SizeResult!
-    updateSize(id: ID!, size: SizeInput!): SizeResult!
+    deleteClosure(id: ID!): ClosureResult
     "Color Mutation"
     addColor(data: ColorInput!): ColorResult!
     deleteColor(id: ID!): ColorDeletingResult!
@@ -1121,7 +1130,6 @@ const typeDefs = gql`
   }
   type Subscription {
     certificatesPaid(certificatesOrderId: String!): CertificatesResult
-    paidOrder(orderId: String!): OrderResult
   }
   ${certificateTypes}
 `;

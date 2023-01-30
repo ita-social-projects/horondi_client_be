@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { setupApp } = require('../helper-functions');
 const {
   wrongId,
@@ -14,6 +15,9 @@ describe('Color mutations', () => {
   beforeAll(async () => {
     operations = await setupApp();
   });
+  afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
+  });
 
   test('Should add color', async () => {
     const result = await createColor(color, operations);
@@ -24,7 +28,7 @@ describe('Color mutations', () => {
       ...color,
     });
   });
-  test('Should recive error message COLOR_ALREADY_EXIST when color already in the db while creating', async () => {
+  test('Should receive error message COLOR_ALREADY_EXIST when color already in the db while creating', async () => {
     const result = await createColor(color, operations);
 
     expect(result).toEqual(ERROR_ALREDY_EXISTS);

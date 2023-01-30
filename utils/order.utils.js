@@ -1,35 +1,103 @@
 const productModel = require('../modules/product/product.model');
+const { PromocodeModel } = require('../modules/promo-code/promo-code.model');
+const {
+  CertificateModel,
+} = require('../modules/certificate/certificate.model');
 const {
   ORDER_STATUSES: { CANCELLED, REFUNDED },
 } = require('../consts/order-statuses');
 
-async function calculateTotalItemsPrice(items) {
-  return items.reduce(async (prev, item) => {
+const { getAllCurrencies } = require('../modules/currency/currency.service.js');
+
+const calculateTotalItemsPrice = async items =>
+  items.reduce(async (prev, item) => {
     const sum = await prev;
 
-    const product = await productModel.findById(item.product).exec();
+    item.fixedPrice = item.price;
 
-    const { price } = product.sizes.find(
-      sz => sz.size._id.toString() === item.options.size
+    return item.price * item.quantity + sum;
+  }, 0);
+
+const calculateProductsPriceWithDiscount = async (
+  promoCodeId,
+  certificateId,
+  products
+) => {
+  if (promoCodeId) {
+    const discounts = [];
+    const priceWithDiscount = [];
+    const promoCode = await PromocodeModel.findById(promoCodeId).exec();
+    const { discount, categories } = promoCode;
+    let isAllowCategory;
+
+    for (const item of products) {
+      const { category } = await productModel
+        .findById(item.product)
+        .populate({ path: 'category', select: 'code' })
+        .exec();
+      if (item.isFromConstructor) {
+        isAllowCategory = categories.some(
+          name => name.toLowerCase() === 'constructor'
+        );
+      } else {
+        isAllowCategory = categories.some(
+          name => name.toLowerCase() === category.code.toLowerCase()
+        );
+      }
+
+      if (isAllowCategory) {
+        discounts.push(discount);
+        priceWithDiscount.push(
+          Math.round(item.fixedPrice - (item.fixedPrice / 100) * discount) *
+            item.quantity
+        );
+      } else {
+        discounts.push(0);
+        priceWithDiscount.push(item.fixedPrice * item.quantity);
+      }
+    }
+
+    return { discounts, priceWithDiscount };
+  }
+
+  if (certificateId) {
+    const certificate = await CertificateModel.findById(certificateId).exec();
+    const { value } = certificate;
+    const currencies = await getAllCurrencies();
+    const discount = value / currencies[0].convertOptions.UAH.exchangeRate;
+
+    const productsPrice = products.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
     );
 
-    item.fixedPrice = price;
+    let totalPrice = parseFloat(productsPrice - discount).toFixed(2);
 
-    return price * item.quantity + sum;
-  }, 0);
-}
+    if (totalPrice <= 0) {
+      totalPrice = (1 / currencies[0].convertOptions.UAH.exchangeRate).toFixed(
+        2
+      );
+    }
 
-function calculateTotalPriceToPay(data, totalItemsPrice) {
-  return totalItemsPrice;
-}
+    return { discounts: discount, priceWithDiscount: totalPrice };
+  }
 
-function generateOrderNumber() {
+  return {
+    discounts: products.map(() => 0),
+    priceWithDiscount: products.map(item => item.fixedPrice * item.quantity),
+  };
+};
+
+const calculateTotalPriceToPay = itemsPriceWithDiscount =>
+  itemsPriceWithDiscount.reduce((prev, price) => prev + price, 0);
+
+const generateOrderNumber = () => {
   const uid = new Date().getTime();
 
   return uid.toString();
-}
+};
 
-async function addProductsToStatistic(items) {
+const addProductsToStatistic = async items => {
   items.forEach(async item => {
     if (item.quantity !== 0) {
       const product = await productModel.findById(item.product).exec();
@@ -37,9 +105,9 @@ async function addProductsToStatistic(items) {
       await product.save();
     }
   });
-}
+};
 
-async function updateProductStatistic(orderToUpdate, newOrder) {
+const updateProductStatistic = async (orderToUpdate, newOrder) => {
   if (
     (newOrder.status === CANCELLED || newOrder.status === REFUNDED) &&
     (orderToUpdate.status === CANCELLED || orderToUpdate.status === REFUNDED)
@@ -80,7 +148,7 @@ async function updateProductStatistic(orderToUpdate, newOrder) {
     items.push(...oldItems);
     await addProductsToStatistic(items);
   }
-}
+};
 
 module.exports = {
   calculateTotalPriceToPay,
@@ -88,4 +156,5 @@ module.exports = {
   calculateTotalItemsPrice,
   addProductsToStatistic,
   updateProductStatistic,
+  calculateProductsPriceWithDiscount,
 };

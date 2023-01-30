@@ -13,13 +13,13 @@ const {
 } = require('../consts');
 const { FIRST_NAME, LAST_NAME } = require('../consts/test-admin');
 
-const registerAdmin = async (email, password) => {
+const registerAdmin = async (email, password, role) => {
   await User.deleteOne({ email });
   const admin = new User();
   admin.firstName = FIRST_NAME;
   admin.lastName = LAST_NAME;
   admin.email = email;
-  admin.role = SUPERADMIN;
+  admin.role = role || SUPERADMIN;
   admin.credentials = [
     {
       source: HORONDI,

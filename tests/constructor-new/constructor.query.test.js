@@ -7,6 +7,7 @@ const {
 const {
   createConstructor,
   getAllConstructors,
+  getAllConstructorParts,
   getConstructorById,
   getConstructorByModel,
 } = require('./constructor.helper');
@@ -45,6 +46,12 @@ describe('Constructor query test', () => {
     expect(result).toHaveProperty('name', constructorInput.name);
   });
 
+  it('should get all constructors parts', async () => {
+    const [result] = await getAllConstructorParts(operations);
+
+    expect(result).toHaveProperty('name', constructorInput.name);
+  });
+
   it('should get all constructors with filtered name', async () => {
     filter.name = 'some constructor';
 
@@ -79,6 +86,6 @@ describe('Constructor query test', () => {
   });
 
   afterAll(async () => {
-    mongoose.connection.db.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
   });
 });

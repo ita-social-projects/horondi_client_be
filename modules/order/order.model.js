@@ -76,6 +76,16 @@ const orderSchema = new mongoose.Schema({
     ref: TRANSLATIONS,
   },
   fixedExchangeRate: Number,
+  promoCodeId: {
+    type: String,
+    default: '',
+  },
+  certificateId: {
+    type: String,
+    default: '',
+  },
+  itemsPriceWithDiscount: [Number],
+  itemsDiscount: [Number],
 });
 
 module.exports = mongoose.model(ORDER, orderSchema);

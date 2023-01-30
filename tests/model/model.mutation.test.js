@@ -14,11 +14,16 @@ const {
   deleteModelConstructorBasic,
   addModelConstructorPattern,
   deleteModelConstructorPattern,
-  addModelConstructorFrontPocket,
-  deleteModelConstructorFrontPocket,
   addModelConstructorBottom,
   deleteModelConstructorBottom,
+  getModelById,
 } = require('./model.helper');
+const { createProduct } = require('../product/product.helper');
+const { newProductInputData } = require('../product/product.variables');
+const { createClosure } = require('../closure/closure.helper');
+const { createPattern } = require('../pattern/pattern.helper');
+const { queryPatternToAdd } = require('../pattern/pattern.variables');
+const { newClosure } = require('../closure/closure.variables');
 const { setupApp } = require('../helper-functions');
 const { createCategory } = require('../category/category.helper');
 const { newCategoryInputData } = require('../category/category.variables');
@@ -37,17 +42,12 @@ const {
   createConstructorBottom,
 } = require('../constructor-bottom/constructor-bottom.helper');
 const {
-  createConstructorFrontPocket,
-} = require('../constructor-front/constructor.front.helper');
-const {
   newConstructorBasic,
 } = require('../constructor-basic/constructor-basic.variables');
 const {
   newConstructorBottom,
 } = require('../constructor-bottom/constructor-bottom.variables');
-const {
-  newConstructorFront,
-} = require('../constructor-front/constructor.variables');
+const modelService = require('../../modules/model/model.service');
 
 const MODEL_NOT_FOUND = 'MODEL_NOT_FOUND';
 const MODEL_NOT_VALID = 'MODEL_NOT_VALID';
@@ -58,7 +58,6 @@ let colorId;
 let materialId;
 let constructorElementID;
 let constructorElementIDBottom;
-let constructorElementIDFrontPocket;
 
 jest.mock('../../modules/upload/upload.service');
 jest.mock('../../modules/currency/currency.model.js');
@@ -226,50 +225,6 @@ describe('Model mutations', () => {
     expect(error.message).toBe(MODEL_NOT_VALID);
     expect(error.statusCode).toBe(BAD_REQUEST);
   });
-  test('Should add ModelConstructorFrontPocket', async () => {
-    const constructorFrontPocketData = await createConstructorFrontPocket(
-      newConstructorFront(materialId, colorId, modelId),
-      operations
-    );
-
-    constructorElementIDFrontPocket = constructorFrontPocketData._id;
-
-    const result = await addModelConstructorFrontPocket(
-      modelId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-
-    expect(result).toHaveProperty('_id', modelId);
-  });
-  test('Should delete ModelConstructorFrontPocket', async () => {
-    const result = await deleteModelConstructorFrontPocket(
-      modelId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-
-    expect(result).toHaveProperty('_id', modelId);
-  });
-  test('Should throw error MODEL_NOT_VALID on addModelConstructorFrontPocket', async () => {
-    const error = await addModelConstructorFrontPocket(
-      notValidId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-    expect(error.message).toBe(MODEL_NOT_VALID);
-    expect(error.statusCode).toBe(BAD_REQUEST);
-  });
-  test('Should throw error MODEL_NOT_VALID on deleteModelConstructorFrontPocket', async () => {
-    const error = await deleteModelConstructorFrontPocket(
-      notValidId,
-      constructorElementIDFrontPocket,
-      operations
-    );
-
-    expect(error.message).toBe(MODEL_NOT_VALID);
-    expect(error.statusCode).toBe(BAD_REQUEST);
-  });
   test('Should add ModelConstructorBottom', async () => {
     const constructorBottomData = await createConstructorBottom(
       newConstructorBottom(materialId, colorId, modelId),
@@ -320,6 +275,58 @@ describe('Model mutations', () => {
 
     expect(modelDelete._id).toEqual(modelId);
   });
+
+  test('Should get a size from the model by its id', async () => {
+    const modelInstance = newModel(categoryId);
+    const model = await createModel(modelInstance, operations);
+
+    const sizeById = await modelService.getModelSizeById(
+      model._id,
+      model.sizes[0]._id
+    );
+    delete sizeById._id;
+
+    await deleteModel(model._id, operations);
+    expect(sizeById).toEqual(modelInstance.sizes[0]);
+  });
+
+  test('Should get model sizes filtered by given size IDs', async () => {
+    const model = await createModel(newModel(categoryId), operations);
+    const sizeIDs = [model.sizes[0]._id.toString()];
+
+    const sizes = modelService.getModelSizes(model, sizeIDs);
+
+    await deleteModel(model._id, operations);
+    expect(sizes[0]._id.toString()).toBe(sizeIDs[0]);
+  });
+
+  test('Should perform soft deletion on the model', async () => {
+    const model = await createModel(newModel(categoryId), operations);
+    const { _id: patternId } = await createPattern(
+      queryPatternToAdd(materialId, modelId),
+      operations
+    );
+    const { _id: closureId } = await createClosure(
+      newClosure(materialId, colorId, modelId),
+      operations
+    );
+    const productInput = newProductInputData(
+      categoryId,
+      model._id,
+      materialId,
+      materialId,
+      colorId,
+      patternId,
+      closureId,
+      model.sizes[0]._id
+    );
+    await createProduct(productInput, operations);
+    await deleteModel(model._id, operations);
+    const deletedModel = await getModelById(model._id, operations);
+
+    expect(deletedModel.isDeleted).toBe(true);
+  });
+
   afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
   });

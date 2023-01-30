@@ -1,17 +1,20 @@
 const { gql } = require('@apollo/client');
 
-const addMaterialsBlock = async (materialsBlock, operations) => {
+const addMaterialsBlock = async (materialsBlock, image, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation ($materialsBlock: MaterialsBlockInput!) {
-        addMaterialsBlock(materialsBlock: $materialsBlock) {
+      mutation ($materialsBlock: MaterialsBlockInput!, $image: Upload!) {
+        addMaterialsBlock(materialsBlock: $materialsBlock, image: $image) {
           ... on MaterialsBlock {
             _id
             text {
               lang
               value
             }
-            image
+            image {
+              medium
+              small
+            }
             title
             type
           }
@@ -20,6 +23,7 @@ const addMaterialsBlock = async (materialsBlock, operations) => {
     `,
     variables: {
       materialsBlock,
+      image,
     },
   });
 
@@ -33,7 +37,10 @@ const getAllMaterialsBlocks = async ({ skip, limit }, operations) => {
         getAllMaterialsBlocks(skip: $skip, limit: $limit) {
           items {
             _id
-            image
+            image {
+              medium
+              small
+            }
             title
             type
             text {
@@ -74,7 +81,10 @@ const getMaterialsBlocksByType = async (
         ) {
           items {
             _id
-            image
+            image {
+              medium
+              small
+            }
             title
             type
             text {
@@ -97,14 +107,25 @@ const getMaterialsBlocksByType = async (
   return res.data.getMaterialsBlocksByType;
 };
 
-const updateMaterialsBlock = async (id, materialsBlock, operations) => {
+const updateMaterialsBlock = async (id, materialsBlock, image, operations) => {
   const res = await operations.mutate({
     mutation: gql`
-      mutation ($id: ID!, $materialsBlock: MaterialsBlockInput!) {
-        updateMaterialsBlock(id: $id, materialsBlock: $materialsBlock) {
+      mutation (
+        $id: ID!
+        $materialsBlock: MaterialsBlockInput!
+        $image: Upload
+      ) {
+        updateMaterialsBlock(
+          id: $id
+          materialsBlock: $materialsBlock
+          image: $image
+        ) {
           ... on MaterialsBlock {
             _id
-            image
+            image {
+              medium
+              small
+            }
             title
             type
             text {
@@ -118,6 +139,7 @@ const updateMaterialsBlock = async (id, materialsBlock, operations) => {
     variables: {
       id,
       materialsBlock,
+      image,
     },
   });
 
@@ -130,7 +152,10 @@ const getMaterialsBlockById = async (id, operations) => {
       query ($id: ID!) {
         getMaterialsBlockById(id: $id) {
           ... on MaterialsBlock {
-            image
+            image {
+              medium
+              small
+            }
             title
             type
             text {
@@ -158,7 +183,10 @@ const deleteMaterialsBlock = async (id, operations) =>
               lang
               value
             }
-            image
+            image {
+              medium
+              small
+            }
             title
             type
           }

@@ -233,6 +233,19 @@ class CommentsService {
       throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
     }
 
+    if (comment.show) {
+      const {
+        text,
+        show,
+        product: productId,
+        rate,
+        user: userId,
+        _id: commentId,
+      } = updatedComment;
+
+      await this.addRate({ text, show, productId, rate, userId, commentId });
+    }
+
     return updatedComment;
   }
 
@@ -324,6 +337,13 @@ class CommentsService {
     const deletedComment = await Comment.findById(id).exec();
 
     if (deletedComment) {
+      const {
+        product: productId,
+        user: userId,
+        _id: commentId,
+      } = deletedComment;
+      await this.deleteRate({ productId, userId, commentId });
+
       return Comment.findByIdAndDelete(id).exec();
     }
 
@@ -346,8 +366,10 @@ class CommentsService {
     throw new RuleError(COMMENT_NOT_FOUND, NOT_FOUND);
   }
 
-  async addRate(id, data, user) {
-    const product = await Product.findById(id).exec();
+  async addRate(data) {
+    const { productId, userId, commentId } = data;
+
+    const product = await Product.findById(productId).exec();
 
     if (!product) {
       throw new RuleError(RATE_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
@@ -356,7 +378,7 @@ class CommentsService {
     let { rateCount } = product;
 
     const { rate } =
-      userRates.find(rating => String(rating.user) === String(user._id)) || {};
+      userRates.find(rating => String(rating.user) === String(userId)) || {};
 
     const rateSum = product.rate * rateCount - (rate || !!rate) + data.rate;
     if (!rate) {
@@ -366,14 +388,14 @@ class CommentsService {
 
     const newUserRates = rate
       ? userRates.map(item =>
-          String(item.user) === String(user._id)
-            ? { user: item.user, rate: data.rate }
+          String(item.user) === String(userId)
+            ? { user: item.user, rate: data.rate, comment: commentId }
             : item
         )
-      : [...userRates, { ...data, user: user._id }];
+      : [...userRates, { ...data, user: userId, comment: commentId }];
 
     return Product.findByIdAndUpdate(
-      id,
+      productId,
       {
         rateCount,
         rate: newRate.toFixed(1),
@@ -381,6 +403,42 @@ class CommentsService {
       },
       { new: true }
     ).exec();
+  }
+
+  async deleteRate(data) {
+    const { productId, userId, commentId } = data;
+
+    const product = await Product.findById(productId).exec();
+
+    if (!product) {
+      throw new RuleError(RATE_FOR_NOT_EXISTING_PRODUCT, NOT_FOUND);
+    }
+    const { userRates, rateCount } = product;
+
+    const { rate } =
+      userRates.find(item => String(item.comment) === String(commentId)) || {};
+
+    if (rate) {
+      const rateSum = product.rate * rateCount - rate;
+      const newRate = rateSum / (rateCount - 1) || 0;
+      const newUserRates = [];
+
+      userRates.forEach(item => {
+        if (String(item.user) !== String(userId)) {
+          newUserRates.push(item);
+        }
+      });
+
+      return Product.findByIdAndUpdate(
+        productId,
+        {
+          rateCount: rateCount - 1,
+          rate: newRate.toFixed(1),
+          userRates: newUserRates,
+        },
+        { new: true }
+      ).exec();
+    }
   }
 }
 

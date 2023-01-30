@@ -3,7 +3,7 @@ const {
 } = require('../../consts');
 const {
   HISTORY_ACTIONS: { ADD_EVENT },
-  HISTORY_NAMES: { SIZE_EVENT },
+  HISTORY_NAMES: { MODEL_EVENT },
 } = require('../../consts/history-events');
 const { FIRST_NAME } = require('../../consts/test-admin');
 
@@ -16,7 +16,7 @@ const GET_ALL_RECORDS_PARAMS = {
       dateTo: new Date(2023, 4, 1).getTime(),
     },
     action: [ADD_EVENT],
-    historyName: [SIZE_EVENT],
+    historyName: [MODEL_EVENT],
     fullName: FIRST_NAME,
     role: [SUPERADMIN],
   },

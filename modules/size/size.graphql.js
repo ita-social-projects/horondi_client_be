@@ -1,9 +1,7 @@
 const sizeType = `
   type Size {
-    _id: ID!
+    _id: ID
     name: String!
-    model: Model
-    modelId: Model
     heightInCm: Int!
     widthInCm: Int!
     depthInCm: Int!
@@ -21,9 +19,8 @@ const sizeType = `
 
 const sizeInput = `
   input SizeInput {
+    _id: String
     name: String!
-    model: ID
-    modelId: ID
     heightInCm: Int!
     widthInCm: Int!
     depthInCm: Int!

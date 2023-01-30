@@ -156,17 +156,12 @@ const newProductInputDataForCompare = product => ({
 
 const productUploadedImages = {
   primary: {
-    large: 'large_1_test-file',
-    medium: 'medium_1_test-file',
-    small: 'small_1_test-file',
-    thumbnail: 'thumbnail_1_test-file',
+    large: 'large_test-file',
+    medium: 'medium_test-file',
+    small: 'small_test-file',
+    thumbnail: 'thumbnail_test-file',
   },
-  additional: {
-    large: 'largeXL_1_test-file',
-    medium: 'mediumXL_1_test-file',
-    small: 'smallXL_1_test-file',
-    thumbnail: 'thumbnailXL_1_test-file',
-  },
+  additional: [],
 };
 
 const filterArgs = {

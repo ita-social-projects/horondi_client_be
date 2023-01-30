@@ -13,6 +13,7 @@ type Model {
     restrictions: [Restriction]
     sizes: [Size]
     translationsKey: ID
+    isDeleted: Boolean
   }
 `;
 
@@ -50,7 +51,7 @@ input ModelInput {
     images: ImageSetInput
     priority: Int
     show: Boolean
-    sizes: [ID]
+    sizes: [SizeInput]
     availableForConstructor: Boolean
     eligibleOptions: OptionInput
     restrictions: [ID]

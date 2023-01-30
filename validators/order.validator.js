@@ -207,6 +207,8 @@ const orderValidator = Joi.object({
   user_id: Joi.string().empty(null),
   paymentMethod: Joi.string().trim().valid(CARD, CASH).required(),
   userComment: Joi.string().min(2).max(500).allow(''),
+  promoCodeId: Joi.string().allow(''),
+  certificateId: Joi.string().allow(''),
   isPaid: Joi.boolean(),
   paymentStatus: Joi.string().valid(
     PAYMENT_CREATED,

@@ -6,7 +6,7 @@ describe('modify date', () => {
 
   beforeEach(async () => {
     date = new Date();
-    date.setHours(0, 0, 0, 0);
+    date.setUTCHours(0, 0, 0, 0);
   });
 
   it('should return now Date', async () => {

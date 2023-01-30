@@ -13,7 +13,6 @@ const {
     STRAP,
     CLOSURE,
     POCKET,
-    POSITION,
   },
 } = require('../../consts/db-collections-names');
 
@@ -60,30 +59,10 @@ const constructorSchema = new mongoose.Schema({
       ref: CLOSURE,
     },
   ],
-  pocketsWithRestrictions: [
+  pockets: [
     {
-      currentPocketWithPosition: {
-        pocket: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: POCKET,
-        },
-        position: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: POSITION,
-        },
-      },
-      otherPocketsWithAvailablePositions: [
-        {
-          pocket: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: POCKET,
-          },
-          position: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: POSITION,
-          },
-        },
-      ],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: POCKET,
     },
   ],
   basePrice: Number,

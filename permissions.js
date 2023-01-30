@@ -93,11 +93,6 @@ const {
 } = require('./modules/closures/closures.permission');
 
 const {
-  sizePermissionsMutations,
-  sizePermissionsQuery,
-} = require('./modules/size/size.permissions');
-
-const {
   colorPermissionsMutations,
   colorPermissionsQuery,
 } = require('./modules/color/color.permissions');
@@ -185,7 +180,6 @@ const permissions = shield(
       ...restrictionPermissionsQuery,
       ...homePageImagesPermissionsQuery,
       ...closurePermissionsQuery,
-      ...sizePermissionsQuery,
       ...colorPermissionsQuery,
       ...сonstructorBottomPermissionsQuery,
       ...constructorBasicPermissionsQuery,
@@ -217,7 +211,6 @@ const permissions = shield(
       ...restrictionPermissionsMutations,
       ...homePageImagesPermissionsMutations,
       ...closurePermissionsMutations,
-      ...sizePermissionsMutations,
       ...colorPermissionsMutations,
       ...сonstructorBottomPermissionsMutations,
       ...constructorBasicPermissionsMutations,

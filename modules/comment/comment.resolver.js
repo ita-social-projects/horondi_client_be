@@ -2,9 +2,9 @@ const commentsService = require('./comment.service');
 const RuleError = require('../../errors/rule.error');
 
 const commentsQuery = {
-  getAllComments: (parent, args) => commentsService.getAllComments(args),
+  getAllComments: (_parent, args) => commentsService.getAllComments(args),
 
-  getCommentById: async (parent, { id }) => {
+  getCommentById: async (_parent, { id }) => {
     try {
       return await commentsService.getCommentById(id);
     } catch (e) {
@@ -26,7 +26,7 @@ const commentsQuery = {
     }
   },
   getReplyCommentsByComment: async (
-    parent,
+    _parent,
     { filter, pagination: { skip, limit }, sort },
     { user }
   ) => {
@@ -44,7 +44,7 @@ const commentsQuery = {
   },
 
   getCommentsByProduct: async (
-    parent,
+    _parent,
     { filter, pagination: { skip, limit }, sort },
     { user }
   ) => {
@@ -61,7 +61,7 @@ const commentsQuery = {
     }
   },
   getCommentsByUser: async (
-    parent,
+    _parent,
     { filter, pagination: { skip, limit }, sort, userId }
   ) => {
     try {
@@ -77,7 +77,7 @@ const commentsQuery = {
     }
   },
   getCommentsRepliesByUser: async (
-    parent,
+    _parent,
     { filter, pagination: { skip, limit }, sort, userId }
   ) => {
     try {
@@ -92,7 +92,7 @@ const commentsQuery = {
       return new RuleError(e.message, e.statusCode);
     }
   },
-  getAllCommentsByUser: async (parent, args) => {
+  getAllCommentsByUser: async (_parent, args) => {
     try {
       return await commentsService.getAllCommentsByUser(args.userId);
     } catch (error) {
@@ -151,7 +151,7 @@ const commentsMutation = {
     }
   },
 
-  updateComment: async (parent, { id, comment }) => {
+  updateComment: async (_parent, { id, comment }) => {
     try {
       return await commentsService.updateComment(id, comment);
     } catch (error) {
@@ -159,13 +159,17 @@ const commentsMutation = {
     }
   },
 
-  addRate: async (parent, args, context) => {
+  addRate: async (_parent, args, context) => {
     try {
-      return await commentsService.addRate(
-        args.product,
-        args.userRate,
-        context.user
-      );
+      return await commentsService.addRate(args.data, context.user);
+    } catch (e) {
+      return new RuleError(e.message, e.statusCode);
+    }
+  },
+
+  deleteRate: async (_parent, args, context) => {
+    try {
+      return await commentsService.deleteRate(args.data, context.user);
     } catch (e) {
       return new RuleError(e.message, e.statusCode);
     }

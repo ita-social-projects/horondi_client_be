@@ -4,7 +4,6 @@ const newPocketInputData = () => ({
     { lang: 'en', value: 'left' },
   ],
   optionType: 'POCKET',
-  restriction: false,
   absolutePrice: 5,
   positions: ['60fff9f63affc3410c21ab54'],
 });
@@ -15,7 +14,6 @@ const newPocketInputDataUpdate = () => ({
     { lang: 'en', value: 'left' },
   ],
   optionType: 'POCKET',
-  restriction: false,
   absolutePrice: 5,
   positions: ['60fff9f63affc3410c21ab54'],
 });

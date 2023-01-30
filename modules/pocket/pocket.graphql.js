@@ -5,21 +5,22 @@ const pocketType = `
     optionType: OptionTypeEnum
     images: ImageSet
     absolutePrice: Int
-    restriction: Boolean
+    relativePrice: Int
     positions: [Position]
+    available: Boolean
     translationsKey: ID
   }
 `;
 
 const pocketSide = `
     type PocketSide {
-     side: [SideEnum]
+      side: [SideEnum]
     }
 `;
 
 const pocketSideInput = `
     input PocketSideInput {
-     side: [String]
+      side: [String]
     }
 `;
 
@@ -37,16 +38,18 @@ const pocketInputs = `
     name: [LanguageInput]
     optionType: String
     restriction: Boolean
-    images: ImageSetInput
-    absolutePrice: Int!
+    image: Upload
+    absolutePrice: Int
+    relativePrice: Int
+    available: Boolean
     positions: [ID]
   }
 
   input PocketFilterInput{
     search: String
-    name:String
-    available:[String]
-    side:[String]
+    name: String
+    available: [String]
+    side: [String]
   }
 `;
 

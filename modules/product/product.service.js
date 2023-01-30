@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 const Product = require('./product.model');
 const User = require('../user/user.model');
+const Order = require('../order/order.model');
 const modelService = require('../model/model.service');
 const uploadService = require('../upload/upload.service');
 const {
@@ -9,6 +10,8 @@ const {
   PRODUCT_NOT_FOUND,
   PRODUCT_HAS_NOT_CHANGED,
 } = require('../../error-messages/products.messages');
+const { MODEL_NOT_FOUND } = require('../../error-messages/model.messages');
+const { SIZE_NOT_FOUND } = require('../../error-messages/size.messages');
 const createTranslations = require('../../utils/createTranslations');
 const {
   addTranslations,
@@ -33,14 +36,7 @@ const {
     PRODUCT_BOTTOM_COLOR,
   },
 } = require('../../consts/product-features');
-const {
-  DEFAULT_IMAGES: {
-    LARGE_SAD_BACKPACK,
-    MEDIUM_SAD_BACKPACK,
-    SMALL_SAD_BACKPACK,
-    THUMBNAIL_SAD_BACKPACK,
-  },
-} = require('../../consts/default-images');
+
 const RuleError = require('../../errors/rule.error');
 const {
   STATUS_CODES: { FORBIDDEN, NOT_FOUND, BAD_REQUEST },
@@ -93,9 +89,25 @@ class ProductsService {
     return product;
   }
 
+  async getProductModelById(productId) {
+    const product = await this.getProductById(productId);
+    const model = await modelService.getModelById(product.model);
+    if (!model) {
+      throw new RuleError(MODEL_NOT_FOUND, NOT_FOUND);
+    }
+
+    return model;
+  }
+
   async getProductsFilters() {
-    const categories = await Product.distinct(PRODUCT_CATEGORY).lean().exec();
-    const models = await Product.distinct(PRODUCT_MODEL).lean().exec();
+    const filter = {
+      isFromConstructor: { $ne: true },
+      isDeleted: { $ne: true },
+    };
+    const categories = await Product.distinct(PRODUCT_CATEGORY, filter)
+      .lean()
+      .exec();
+    const models = await Product.distinct(PRODUCT_MODEL, filter).lean().exec();
     const patterns = await Product.distinct(PRODUCT_PATTERN).lean().exec();
     const closures = await Product.distinct(PRODUCT_CLOSURE).lean().exec();
     const mainMaterial = await Product.distinct(PRODUCT_MAIN_MATERIAL)
@@ -119,7 +131,7 @@ class ProductsService {
     const products = await this.getProducts({});
     const sortedByPrices = [...products.items].sort(
       (a, b) =>
-        a.sizes[a.sizes.length - 1].price - b.sizes[b.sizes.length - 1].price
+        a.sizes[a.sizes.length - 1]?.price - b.sizes[b.sizes.length - 1]?.price
     );
 
     const minPrice = sortedByPrices[0].sizes[0].price;
@@ -160,9 +172,11 @@ class ProductsService {
       isHotItem,
       models,
       isFromConstructor,
+      isDeleted,
     } = args;
 
     filter.isFromConstructor = isFromConstructor;
+    filter.isDeleted = isDeleted;
 
     if (isHotItem) {
       filter.isHotItem = isHotItem;
@@ -199,6 +213,7 @@ class ProductsService {
       isFromConstructor: {
         $ne: true,
       },
+      isDeleted: { $ne: true },
     });
 
     const sortValue = Object.keys(sort).includes('basePrice')
@@ -210,11 +225,6 @@ class ProductsService {
       filters.$or = [
         {
           name: {
-            $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
-          },
-        },
-        {
-          description: {
             $elemMatch: { value: { $regex: new RegExp(search.trim(), 'i') } },
           },
         },
@@ -242,17 +252,11 @@ class ProductsService {
     primary,
     { _id: adminId }
   ) {
-    const matchPrimaryInUpload = filesToUpload.filter(
-      item => item.large === productData.images[0].primary.large
-    );
-    productData.images = {
-      primary: {
-        large: LARGE_SAD_BACKPACK,
-        medium: MEDIUM_SAD_BACKPACK,
-        small: SMALL_SAD_BACKPACK,
-        thumbnail: THUMBNAIL_SAD_BACKPACK,
-      },
-    };
+    const matchPrimaryInUpload =
+      filesToUpload &&
+      filesToUpload.filter(
+        item => item.large === productData.images.primary.large
+      );
 
     const product = await Product.findById(id).lean().exec();
     if (!product) {
@@ -261,47 +265,31 @@ class ProductsService {
     if (_.isMatch(productData, product)) {
       throw new RuleError(PRODUCT_HAS_NOT_CHANGED, FORBIDDEN);
     }
+
     if (primary) {
-      if (primary?.large) {
-        productData.images.primary = primary;
-      } else {
-        if (!matchPrimaryInUpload.length) {
-          await uploadService.deleteFiles(
-            Object.values(product.images.primary).filter(
-              item => typeof item === 'string'
-            )
-          );
-        }
-        const uploadResult = await uploadService.uploadFiles([primary]);
-        const imagesResults = await uploadResult[0];
-        productData.images.primary = imagesResults?.fileNames;
-      }
+      productData.images.primary = await this.getPrimaryImages(
+        primary,
+        matchPrimaryInUpload,
+        product
+      );
     }
+
     if (filesToUpload.length) {
-      productData.images.additional = [];
-      const previousImagesLinks = [];
-      const newFiles = [];
-      filesToUpload.forEach(e => {
-        if (e?.large) {
-          previousImagesLinks.push(e);
-        } else {
-          newFiles.push(e);
-        }
-      });
+      const [previousImagesLinks, newFiles] = filesToUpload.reduce(
+        ([prevLinks, newImages], imageFile) =>
+          imageFile?.large
+            ? [[...prevLinks, imageFile], newImages]
+            : [prevLinks, [...newImages, imageFile]],
+        [[], []]
+      );
       const newUploadResult = await uploadService.uploadFiles(newFiles);
       const imagesResults = await Promise.allSettled(newUploadResult);
       const additional = imagesResults.map(res => res?.value?.fileNames);
       productData.images.additional = [...additional, ...previousImagesLinks];
     } else {
-      productData.images.additional = [
-        {
-          large: LARGE_SAD_BACKPACK,
-          medium: MEDIUM_SAD_BACKPACK,
-          small: SMALL_SAD_BACKPACK,
-          thumbnail: THUMBNAIL_SAD_BACKPACK,
-        },
-      ];
+      productData.images.additional = [];
     }
+    productData.model = await modelService.getModelById(productData.model);
     productData.sizes = await finalPriceCalculation(productData);
 
     const { beforeChanges, afterChanges } = getChanges(product, productData);
@@ -327,6 +315,23 @@ class ProductsService {
     return Product.findByIdAndUpdate(id, productData, {
       new: true,
     }).exec();
+  }
+
+  async getPrimaryImages(primary, matchPrimaryInUpload, product) {
+    if (primary.large) {
+      return primary;
+    }
+    if (!matchPrimaryInUpload.length) {
+      await uploadService.deleteFiles(
+        Object.values(product.images.primary).filter(
+          item => typeof item === 'string'
+        )
+      );
+    }
+    const uploadResult = await uploadService.uploadFiles([primary]);
+    const imagesResults = await uploadResult[0];
+
+    return imagesResults?.fileNames;
   }
 
   async addProduct(productData, filesToUpload, { _id: adminId }) {
@@ -399,17 +404,17 @@ class ProductsService {
 
     productData.sizes = await finalPriceCalculationForConstructor(productData);
 
+    productData.available = false;
+
     const translations = await addTranslations(createTranslations(productData));
     productData.translationsKey = translations._id;
 
-    const newProduct = await new Product(productData).save();
-
-    return newProduct;
+    return new Product(productData).save();
   }
 
   async deleteProducts(ids, { _id: adminId }) {
     const response = [];
-    for (const itemId of ids.ids) {
+    for (const itemId of ids) {
       const product = await Product.findById(itemId).lean().exec();
 
       if (!product) {
@@ -459,11 +464,24 @@ class ProductsService {
           adminId
         );
 
-        await deleteTranslations(product.translationsKey);
-
         await addHistoryRecord(historyRecord);
 
-        const productRes = await Product.findByIdAndDelete(itemId).exec();
+        const orders = await Order.find({ 'items.product': itemId }).exec();
+
+        !orders.length && (await deleteTranslations(product.translationsKey));
+
+        const update = {
+          $set: {
+            isDeleted: true,
+            deletedAt: Date.now(),
+          },
+        };
+
+        const productRes = orders.length
+          ? await Product.findByIdAndUpdate(itemId, update, {
+              new: true,
+            }).exec()
+          : await Product.findByIdAndDelete(itemId).exec();
         response.push(productRes);
       }
     }
@@ -553,6 +571,20 @@ class ProductsService {
     const { wishlist } = await User.findById(userId).exec();
 
     return Product.find({ _id: { $in: wishlist } }).exec();
+  }
+
+  async getProductSizeById(productId, sizeId) {
+    const product = await this.getProductById(productId);
+    const model = await modelService.getModelById(product.model);
+    const productSizes = product.sizes.map(size => size.size.toString());
+    const sizesToSearchIn = modelService.getModelSizes(model, productSizes);
+
+    const foundSize = sizesToSearchIn.find(size => size._id.equals(sizeId));
+    if (!foundSize) {
+      throw new RuleError(SIZE_NOT_FOUND, NOT_FOUND);
+    }
+
+    return foundSize;
   }
 
   async updatePrices(path, id) {
