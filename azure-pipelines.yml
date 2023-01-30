@@ -1,25 +1,18 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
   - development
   - master
 
-pr:
-  - master
-  - development
+pr: none
 
 resources:
 - repo: self
 
 variables:
-  # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Main
-  displayName: Main
+  displayName: Build&Deploy
   jobs:
   - job: Build
     displayName: BuildandDeploy
@@ -27,6 +20,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
+      # Secure File
       - task: DownloadSecureFile@1
         name: envprod
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
@@ -49,58 +43,73 @@ stages:
         inputs:
           targetType: 'inline'
           script: 'mv $(envdev.secureFilePath) .env'
-      # - task: Bash@3
-      #   inputs:
-      #     targetType: 'inline'
-      #     script: 'cat .env'
+      # ACR Stage
       - task: Docker@0
         name: stagingBuild
+        displayName: 'Build an image'
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
         inputs:
-         containerregistrytype: 'Azure Container Registry'
-         azureSubscription: 'HorondiStage'
-         azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
-         action: 'Build an image'
-         dockerFile: '**/Dockerfile'
-         imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+          containerregistrytype: 'Azure Container Registry'
+          azureSubscription: 'HorondiStage'
+          azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
+          action: 'Build an image'
+          dockerFile: '**/Dockerfile'
+          buildArguments: 'password=$(pass)'
+          imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
       - task: Docker@0
         name: deployedStaging
         displayName: 'Push an image'
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/development')
         inputs:
+          containerregistrytype: 'Azure Container Registry'
           azureSubscription: 'HorondiStage'
           azureContainerRegistry: '{"loginServer":"horondistaging.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/HorondiStaging"}'
           action: 'Push an image'
+          imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
+      # ACR Prod
       - task: Docker@0
         name: productionBuild
+        displayName: 'Build an image'
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         inputs:
-         containerregistrytype: 'Azure Container Registry'
-         azureSubscription: 'HorondiStage'
-         azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
-         action: 'Build an image'
-         dockerFile: '**/Dockerfile'
-         imageName: '$(Build.Repository.Name):$(Build.BuildId)'
+          containerregistrytype: 'Azure Container Registry'
+          azureSubscription: 'HorondiStage'
+          azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
+          action: 'Build an image'
+          dockerFile: '**/Dockerfile'
+          imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
       - task: Docker@0
-        name: deployedProduction
+        name: deployedProd
         displayName: 'Push an image'
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
         inputs:
+          containerregistrytype: 'Azure Container Registry'
           azureSubscription: 'HorondiStage'
           azureContainerRegistry: '{"loginServer":"horondi.azurecr.io", "id" : "/subscriptions/734fc759-c3a2-4e22-a478-301dc5b10496/resourceGroups/Horondi/providers/Microsoft.ContainerRegistry/registries/Horondi"}'
           action: 'Push an image'
-      - task: AzureWebAppContainer@1
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-        inputs:
-          azureSubscription: 'HorondiStage'
-          appName: 'horondi-back'
-          containers: 'horondi.azurecr.io/ita-social-projects/horondi_client_be:$(Build.BuildId)'
+          imageName: 'ita-social-projects/horondi_client_be:$(Build.BuildId)'
 
-      - task: AzureWebAppContainer@1
+      # Azure WebApp
+      - task: AzureRmWebAppDeployment@4
+        name: WebAppStage
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
         inputs:
+          ConnectionType: 'AzureRM'
           azureSubscription: 'HorondiStage'
-          appName: 'horondi-back-staging'
-          containers: 'horondistaging.azurecr.io/ita-social-projects/horondi_client_be:$(Build.BuildId)'
+          appType: 'webAppContainer'
+          WebAppName: 'horondi-back-staging'
+          DockerNamespace: 'horondistaging.azurecr.io'
+          DockerRepository: 'ita-social-projects/horondi_client_be'
+          DockerImageTag: '$(Build.BuildId)'
 
-        
+      - task: AzureRmWebAppDeployment@4
+        name: WebAppProd
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: 'HorondiStage'
+          appType: 'webAppContainer'
+          WebAppName: 'horondi-back'
+          DockerNamespace: 'horondi.azurecr.io'
+          DockerRepository: 'ita-social-projects/horondi_client_be'
+          DockerImageTag: '$(Build.BuildId)'
