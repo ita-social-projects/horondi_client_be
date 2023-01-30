@@ -91,7 +91,7 @@ stages:
 
       # Azure WebApp
       - task: AzureRmWebAppDeployment@4
-        name: Run-WebApp-Stage
+        name: WebAppStage
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/development'))
         inputs:
           ConnectionType: 'AzureRM'
@@ -103,7 +103,7 @@ stages:
           DockerImageTag: '$(Build.BuildId)'
 
       - task: AzureRmWebAppDeployment@4
-        name: Run-WebApp-Prod
+        name: WebAppProd
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
         inputs:
           ConnectionType: 'AzureRM'
